@@ -1,5 +1,30 @@
 # Changelog
 
+## 1.9.0 — Phase 09 Booking and Scheduling
+
+- Implemented state machine and conflict-safe session scheduling in `apps/api/src/modules/bookings/`:
+  - `BookingSessionEntity` mapped to `booking_sessions` table with UTC `TIMESTAMPTZ` and `Asia/Dhaka` timezone intent.
+  - Definition of Done enforced: At most one overlapping active session per tutor under approved rule via application overlap validation and PostgreSQL GiST exclusion constraint `ex_tutor_session_overlap`.
+  - Concurrency conflict handling: SQL state `23P01` exclusion errors caught and translated into client-friendly `ConflictException`.
+  - Cancelled slot reuse invariant: Cancelled sessions immediately release their time slot for subsequent booking without collision.
+  - One-off session scheduling (`POST /api/v1/sessions`) with past date prevention and booking duration matching.
+  - Recurring weekly session generator (`POST /api/v1/sessions/recurring`) creating sequential classes across specified weekdays and time slots with internal batch collision prevention.
+  - Reschedule workflow (`POST /api/v1/sessions/:id/reschedule`) validating participant authorization, zero overlap, and reason tracking.
+  - Bangladesh cancellation & operational refund policy matrix (`POST /api/v1/sessions/:id/cancel`):
+    - Student/guardian $>24\text{h}$: 100% refund, 0% compensation.
+    - Student/guardian $4\text{h}-24\text{h}$: 80% refund, 20% tutor compensation.
+    - Student/guardian $<4\text{h}$: 0% refund, 80% tutor compensation.
+    - Tutor cancellations deduct reliability points and process 100% refund to learner.
+  - Privacy-safe public calendar endpoint (`GET /api/v1/tutors/:tutorId/calendar`) returning only busy intervals with learner PII completely excluded.
+  - Transactional Outbox pattern implemented via `OutboxEventEntity` (`outbox_events` table) emitting `session.scheduled`, `session.rescheduled`, and `session.cancelled`.
+  - Asynchronous, non-blocking notification dispatch outside critical transaction locks.
+- Built accessible frontend `SessionScheduleCalendar` component in `apps/web/src/components/scheduling/SessionScheduleCalendar.tsx` with class cards, status badges, meeting links, reschedule dialog, and cancellation refund preview modal.
+- Configured route at `apps/web/src/app/[locale]/sessions/page.tsx`.
+- Updated bilingual translation catalogs `messages/bn.json` and `messages/en.json` with `scheduling` namespace while maintaining 100% key parity and localized Bengali numeral support.
+- Authored 33 new automated unit, conflict-safety, and invariant tests across `scheduling.service.spec.ts`, `sessions.controller.spec.ts`, and `scheduling.spec.ts`.
+- Expanded monorepo test suite from 173 to **206 passing tests, 0 failures, 0 skipped**.
+- Published Phase 09 audit report `docs/audits/booking-and-scheduling-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
+
 ## 1.8.0 — Phase 08 Tutor Discovery and Requests
 
 - Implemented real DB-backed discovery search engine (`TutorsService.searchTutors`) exposed at `GET /api/v1/tutors/search`:
