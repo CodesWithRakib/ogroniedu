@@ -16,12 +16,25 @@ import {
 import { StudentProfileEntity } from './modules/users/entities/student-profile.entity';
 import { GuardianStudentLinkEntity } from './modules/guardians/entities/guardian-student-link.entity';
 import { AuditLogEntity } from './modules/audit/entities/audit-log.entity';
+import { FileAssetEntity } from './modules/files/entities/file-asset.entity';
+import { TutorProfileEntity } from './modules/tutors/entities/tutor-profile.entity';
+import { TutorQualificationEntity } from './modules/tutors/entities/tutor-qualification.entity';
+import { TutorVerificationReviewEntity } from './modules/tutors/entities/tutor-verification-review.entity';
+import { TutorSubjectEntity } from './modules/tutors/entities/tutor-subject.entity';
+import { TutorServiceAreaEntity } from './modules/tutors/entities/tutor-service-area.entity';
+import { TutorAvailabilityEntity } from './modules/tutors/entities/tutor-availability.entity';
+import { SubjectEntity } from './modules/taxonomy/entities/subject.entity';
+import { EducationLevelEntity } from './modules/taxonomy/entities/education-level.entity';
+import { CurriculumEntity } from './modules/taxonomy/entities/curriculum.entity';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { StructuredLoggerService } from './common/logger/structured-logger.service';
 import { validateEnvironment } from './config/env.validation';
 import { AuditModule } from './modules/audit/audit.module';
 import { UsersModule } from './modules/users/users.module';
 import { GuardiansModule } from './modules/guardians/guardians.module';
+import { FilesModule } from './modules/files/files.module';
+import { TaxonomyModule } from './modules/taxonomy/taxonomy.module';
+import { TutorsModule } from './modules/tutors/tutors.module';
 
 @Module({
   imports: [
@@ -53,6 +66,16 @@ import { GuardiansModule } from './modules/guardians/guardians.module';
             StudentProfileEntity,
             GuardianStudentLinkEntity,
             AuditLogEntity,
+            FileAssetEntity,
+            TutorProfileEntity,
+            TutorQualificationEntity,
+            TutorVerificationReviewEntity,
+            TutorSubjectEntity,
+            TutorServiceAreaEntity,
+            TutorAvailabilityEntity,
+            SubjectEntity,
+            EducationLevelEntity,
+            CurriculumEntity,
           ],
           synchronize: false, // Never auto-sync in production or development (migrations are source of truth)
           autoLoadEntities: true,
@@ -66,6 +89,9 @@ import { GuardiansModule } from './modules/guardians/guardians.module';
     AuthModule,
     UsersModule,
     GuardiansModule,
+    FilesModule,
+    TaxonomyModule,
+    TutorsModule,
     NotificationsModule,
   ],
   providers: [StructuredLoggerService],

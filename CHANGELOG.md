@@ -1,5 +1,32 @@
 # Changelog
 
+## 1.7.0 — Phase 07 Tutor Onboarding and Verification
+
+- Established canonical tutor verification, credential review, and trust policy in `docs/policies/tutor-verification-and-credential-policy.md` (policy version `v1.0-bd-tutor-verification`) under statutory Bangladesh laws.
+- Implemented `TutorsModule` in `apps/api/src/modules/tutors/`:
+  - `TutorProfileEntity` mapped to `tutor_profiles` relational schema.
+  - `TutorQualificationEntity` mapped to `tutor_qualifications` relational table.
+  - `TutorVerificationReviewEntity` mapped to `tutor_verification_reviews` relational table.
+  - `TutorSubjectEntity` mapped to `tutor_subjects` relational table.
+  - `TutorServiceAreaEntity` mapped to `tutor_service_areas` relational table.
+  - `TutorAvailabilityEntity` mapped to `tutor_availability` relational table.
+  - Strict Self-Approval Denial: Server rejects tutors attempting to approve or alter their own verification status.
+  - Publication eligibility gate: Tutors cannot transition to `published` unless verified, with active subjects and availability slots.
+  - Dynamic verification badges: Platform trust marks reflect only checks actually performed (`verified_identity`, `verified_academic`, `verified_tutor`).
+  - Automated depublication on suspension/rejection: Suspended tutors are automatically unpublished.
+  - Public profile data redaction: Sanitized public profile endpoint redacts contact PII, raw document paths, and reviewer internal notes.
+- Implemented `FilesModule` in `apps/api/src/modules/files/`:
+  - `FileAssetEntity` mapped to `file_assets` table.
+  - Private evidence upload with 10MB limit and mime type validation (`application/pdf`, `image/jpeg`, `image/png`, `image/webp`).
+  - Server-side ownership guard: Evidence files restricted strictly to owner and compliance reviewers (`admin`, `super_admin`).
+- Implemented `TaxonomyModule` in `apps/api/src/modules/taxonomy/`:
+  - `SubjectEntity`, `EducationLevelEntity`, `CurriculumEntity` providing reference catalogs.
+- Built accessible frontend `TutorVerificationStatusCard` in `apps/web/src/components/tutor/TutorVerificationStatusCard.tsx` with dynamic badge rendering, publication toggles, qualification list, and bilingual support.
+- Updated bilingual dictionaries `messages/bn.json` and `messages/en.json` with tutor verification namespace, maintaining 100% key parity.
+- Authored 32 new unit and security tests across `tutors.service.spec.ts`, `files.service.spec.ts`, `tutors.controller.spec.ts`, and `tutor-verification.spec.ts`.
+- Expanded monorepo test suite from 114 to **146 passing tests, 0 failures, 0 skipped**.
+- Published Phase 07 audit report `docs/audits/tutor-onboarding-and-verification-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
+
 ## 1.6.0 — Phase 06 Users, Students, Guardians and Consent
 
 - Formalized Bangladeshi minor statutory consent policy in `docs/policies/guardian-consent-and-minor-safety-policy.md` (policy version `v1.0-bd-minor-consent`) under The Children Act 2013 and Contract Act 1872.
