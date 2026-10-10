@@ -29,8 +29,8 @@
     - `@ogroniedu/api`: 38 test files, 334 tests passing.
     - `@ogroniedu/database`: 2 test files, 15 tests passing.
     - `pnpm typecheck` passed with 0 errors across 5 workspace packages.
-    - Next.js production build (`pnpm --filter @ogroniedu/web build`) succeeded in 2.1s with all routes compiled.
 
+## 1.15.0 — Phase 15 Operational Analytics and Source-of-Truth Reporting
 
 - **Definition of Done Enforced — Every metric has a precise definition and reconciles:**
   - Authored canonical metric specification `docs/analytics-metric-definitions.md` with explicit formulas, numerators, denominators, time-window anchors, and anti-double-counting invariants.
@@ -52,7 +52,7 @@
 - **Frontend Dashboard UI & Localization (`@ogroniedu/web`):**
   - Created `AnalyticsDashboardView.tsx` with dynamic time presets (`7d`, `30d`, `90d`), KPI cards, conversion funnel progress bars, session reliability matrix, financial volume cards, and daily activity trends.
   - Added timestamped client-side CSV and JSON report export features.
-  - Implemented Next.js route at `apps/web/src/app/[locale]/analytics/page.tsx`.
+  - Implemented Next.js route at `apps/web/src/app/[locale]/(admin)/analytics/page.tsx`.
   - Added `"analytics"` namespace with 34 keys to `messages/en.json` and `messages/bn.json` with 100% key parity.
 - **Automated Verification:**
   - Full monorepo test suite stands at **404 total passed tests, 0 failures, 0 skipped** across 54 test files:
@@ -62,6 +62,7 @@
     - `pnpm typecheck` passed with 0 errors across 5 workspace packages.
     - Next.js production build (`pnpm --filter @ogroniedu/web build`) succeeded.
 
+## 1.14.0 — Phase 14 Admin Operations, Least Privilege & Privileged Governance
 
 - **Definition of Done Enforced — All privileged operations least-privileged and audited:**
   - Strict RBAC separation across `support_agent`, `compliance_reviewer`, `admin`, and `super_admin` via NestJS `RolesGuard`.
