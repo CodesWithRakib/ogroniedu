@@ -22,7 +22,12 @@ import { NotificationService } from './notification.service';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
-import { DispatchNotificationDto, GetNotificationsQueryDto, MarkAsReadParamDto } from './dto';
+import {
+  DispatchNotificationDto,
+  GetNotificationsQueryDto,
+  MarkAsReadParamDto,
+  UpdateNotificationPreferencesDto,
+} from './dto';
 
 @ApiTags('Notifications')
 @ApiBearerAuth()
@@ -67,6 +72,23 @@ export class NotificationController {
   @ApiResponse({ status: 200, description: 'Count of marked notifications' })
   async markAllAsRead(@CurrentUser() user: AuthenticatedUser): Promise<MarkAllAsReadResponseDto> {
     return this.notificationService.markAllAsRead(user.id);
+  }
+
+  @Get('preferences')
+  @ApiOperation({ summary: 'Get current user notification channel and category preferences' })
+  @ApiResponse({ status: 200, description: 'List of user notification preferences' })
+  async getPreferences(@CurrentUser() user: AuthenticatedUser) {
+    return this.notificationService.getPreferences(user.id);
+  }
+
+  @Patch('preferences')
+  @ApiOperation({ summary: 'Update user notification channel and category preferences' })
+  @ApiResponse({ status: 200, description: 'Updated notification preferences' })
+  async updatePreferences(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: UpdateNotificationPreferencesDto,
+  ) {
+    return this.notificationService.updatePreferences(user.id, dto);
   }
 
   @Post('test-dispatch')

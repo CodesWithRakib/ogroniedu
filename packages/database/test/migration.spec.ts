@@ -86,6 +86,8 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       'assignment_submissions',
       'progress_reports',
       'payment_refunds',
+      'notification_preferences',
+      'booking_messages',
       'schema_migrations',
     ];
 
@@ -257,6 +259,27 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       `);
 
       expect(unbalancedRes.rows[0].verify_ledger_journal_balance).toBe(false);
+    });
+
+    it('NEGATIVE TEST: should reject duplicate notification preference for same user, category and channel', async () => {
+      const testUserId = crypto.randomUUID();
+      await client.query(`
+        INSERT INTO users (id, display_name, email)
+        VALUES ('${testUserId}', 'Pref Tester', 'preftester-${Date.now()}@example.com');
+      `);
+
+      await client.query(`
+        INSERT INTO notification_preferences (user_id, category, channel, is_enabled)
+        VALUES ('${testUserId}', 'booking', 'sms', true);
+      `);
+
+      // Duplicate insertion must violate uq_notification_preferences
+      await expect(
+        client.query(`
+          INSERT INTO notification_preferences (user_id, category, channel, is_enabled)
+          VALUES ('${testUserId}', 'booking', 'sms', false);
+        `),
+      ).rejects.toThrow(/uq_notification_preferences/);
     });
   });
 });

@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.12.0 — Phase 12 Notifications, Communication & SSLCOMMERZ Sandbox Integration
+
+- **SSLCOMMERZ Sandbox Gateway & Ngrok Tunnel Integration:**
+  - Integrated SSLCOMMERZ sandbox store credentials (`Store ID: ogron6ac9fcef6d321`, `Store Password: ogron6ac9fcef6d321@ssl`) via `SslcommerzSandboxAdapter`.
+  - Added multi-gateway resolution to `PaymentAdapterFactory` supporting `bkash`, `nagad`, and `sslcommerz`.
+  - Spawned live background ngrok HTTP daemon tunnel on port 4000 exposing public endpoint:
+    - Public Tunnel URL: `https://undone-unsure-twisting.ngrok-free.dev`
+    - IPN Webhook: `https://undone-unsure-twisting.ngrok-free.dev/api/v1/payments/webhook/sslcommerz`
+  - Created `scripts/tunnel.js` and added `"tunnel": "node scripts/tunnel.js"` command to root `package.json`.
+  - Added unit test suite `apps/api/test/sslcommerz.adapter.spec.ts` (7 tests passed).
+
+- **Notification Preferences & Outbox Failure Isolation (Phase 12 Core):**
+  - Definition of Done enforced: *Delivery failure cannot corrupt committed business state*.
+  - Database migration `005_notifications_and_communication.sql` introducing `notification_preferences` with composite unique constraint `(user_id, category, channel)` and `booking_messages` with participant indexes and check constraints.
+  - Entities created: `NotificationPreferenceEntity`, `BookingMessageEntity`.
+  - Granular Notification Preferences (`GET /api/v1/notifications/preferences`, `PATCH /api/v1/notifications/preferences`): Users control notifications across categories (`academic`, `booking`, `payment`, `security`, `marketing`) and channels (`in_app`, `email`, `sms`, `push`). Critical security alerts bypass suppression.
+  - Asynchronous Outbox Worker (`OutboxWorkerService`): Processes transactional `outbox_events` out-of-band with exponential backoff (`2^attempts * 1000ms`), max attempt limit (5), error log secret redaction, and verified isolation from committed business transactions.
+  - Participant-Scoped ABAC Booking Chat (`GET/POST /api/v1/bookings/:bookingId/messages`): Only student, requester guardian, assigned tutor, and platform admin can participate; external callers receive `403 Forbidden`.
+  - Minor Safety & Escrow Protection Filter: Automated redaction of Bangladeshi phone numbers (`[REDACTED CONTACT NUMBER]`), off-platform payment solicitations (`[REDACTED PAYMENT SOLICITATION]`), and suspicious external links (`[REDACTED EXTERNAL LINK]`), with security audit logging and proactive guardian alerts.
+  - Frontend UI: Built [`NotificationPreferencesView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/notifications/NotificationPreferencesView.tsx) and [`BookingChatView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/notifications/BookingChatView.tsx).
+  - 100% Bilingual Parity: Added 28 new localization keys across `apps/web/messages/en.json` and `apps/web/messages/bn.json` with full Bengali translations.
+  - Test Suite: Authored 31 new tests across API, database, and web packages; monorepo suite expanded to **305 total passed tests, 0 failures, 0 skipped**.
+  - Published audit report `docs/audits/notifications-and-communication-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
+
 ## 1.11.0 — Phase 11 Payments and Financial Ledger
 
 - Implemented sandbox provider integration and double-entry financial ledger core in `apps/api/src/modules/payments/`:

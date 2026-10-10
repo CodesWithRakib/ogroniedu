@@ -4,8 +4,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
-import { NotificationEntity } from './modules/notifications/entities/notification.entity';
-import { NotificationDeliveryEntity } from './modules/notifications/entities/notification-delivery.entity';
+import {
+  NotificationEntity,
+  NotificationDeliveryEntity,
+  NotificationPreferenceEntity,
+  BookingMessageEntity,
+} from './modules/notifications/entities';
 import {
   UserEntity,
   RoleEntity,
@@ -76,6 +80,8 @@ import {
           entities: [
             NotificationEntity,
             NotificationDeliveryEntity,
+            NotificationPreferenceEntity,
+            BookingMessageEntity,
             UserEntity,
             RoleEntity,
             UserRoleEntity,
