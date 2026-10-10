@@ -58,7 +58,8 @@ export class AllExceptionsFilter implements ExceptionFilter {
     };
 
     if (status >= 500) {
-      const detail = exception instanceof Error ? `${exception.message}\n${exception.stack}` : String(exception);
+      const detail =
+        exception instanceof Error ? `${exception.message}\n${exception.stack}` : String(exception);
       this.logger.error(
         `[${request.requestId || 'no-id'}] ${request.method} ${request.url} - ${status} ${error}: ${detail}`,
       );

@@ -161,9 +161,7 @@ export function PaymentCheckoutView({
         <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
           {p.title}
         </h1>
-        <p className="text-muted-foreground mt-1 text-sm sm:text-base">
-          {p.subtitle}
-        </p>
+        <p className="text-muted-foreground mt-1 text-sm sm:text-base">{p.subtitle}</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
@@ -202,7 +200,9 @@ export function PaymentCheckoutView({
                 </div>
                 <div>
                   <span className="text-muted-foreground block text-xs">{p.subject}</span>
-                  <span className="font-medium text-slate-900 dark:text-white">{order.subjectName}</span>
+                  <span className="font-medium text-slate-900 dark:text-white">
+                    {order.subjectName}
+                  </span>
                 </div>
                 <div>
                   <span className="text-muted-foreground block text-xs">{p.tutor}</span>
@@ -210,7 +210,9 @@ export function PaymentCheckoutView({
                 </div>
                 <div>
                   <span className="text-muted-foreground block text-xs">{p.student}</span>
-                  <span className="font-medium">{order.studentName} ({order.payerName})</span>
+                  <span className="font-medium">
+                    {order.studentName} ({order.payerName})
+                  </span>
                 </div>
               </div>
 
@@ -249,7 +251,9 @@ export function PaymentCheckoutView({
                       বিকাশ
                     </div>
                     <div>
-                      <div className="font-semibold text-slate-900 dark:text-white">{p.bkashTitle}</div>
+                      <div className="font-semibold text-slate-900 dark:text-white">
+                        {p.bkashTitle}
+                      </div>
                       <div className="text-xs text-muted-foreground">{p.bkashDesc}</div>
                     </div>
                   </div>
@@ -276,7 +280,9 @@ export function PaymentCheckoutView({
                       নগদ
                     </div>
                     <div>
-                      <div className="font-semibold text-slate-900 dark:text-white">{p.nagadTitle}</div>
+                      <div className="font-semibold text-slate-900 dark:text-white">
+                        {p.nagadTitle}
+                      </div>
                       <div className="text-xs text-muted-foreground">{p.nagadDesc}</div>
                     </div>
                   </div>
@@ -303,7 +309,9 @@ export function PaymentCheckoutView({
                       CARDS
                     </div>
                     <div>
-                      <div className="font-semibold text-slate-900 dark:text-white">{p.sslTitle}</div>
+                      <div className="font-semibold text-slate-900 dark:text-white">
+                        {p.sslTitle}
+                      </div>
                       <div className="text-xs text-muted-foreground">{p.sslDesc}</div>
                     </div>
                   </div>
@@ -372,7 +380,9 @@ export function PaymentCheckoutView({
                   <span>{new Date(receipt.paidAt).toLocaleString()}</span>
                 </div>
                 <div className="flex justify-between py-2 items-baseline">
-                  <span className="font-semibold text-slate-900 dark:text-white">{p.totalAmount}</span>
+                  <span className="font-semibold text-slate-900 dark:text-white">
+                    {p.totalAmount}
+                  </span>
                   <span className="text-xl font-black text-emerald-600">
                     ৳ {formatLocalizedNumber(receipt.amountBdt, locale)} {receipt.currency}
                   </span>
@@ -391,9 +401,7 @@ export function PaymentCheckoutView({
                 <Scale className="w-5 h-5 text-indigo-600" />
                 {p.ledgerBreakdownTitle}
               </CardTitle>
-              <CardDescription className="text-xs">
-                {p.escrowDepositNote}
-              </CardDescription>
+              <CardDescription className="text-xs">{p.escrowDepositNote}</CardDescription>
             </CardHeader>
             <CardContent className="pt-4 space-y-4">
               {/* Milestone Settlement Accounting Structure */}
@@ -463,7 +471,10 @@ export function PaymentCheckoutView({
               </div>
               <div className="flex justify-between py-1">
                 <span className="text-muted-foreground">Payment Tunnel</span>
-                <span className="font-mono text-[10px] text-emerald-600 truncate max-w-[150px]" title="https://undone-unsure-twisting.ngrok-free.dev">
+                <span
+                  className="font-mono text-[10px] text-emerald-600 truncate max-w-[150px]"
+                  title="https://undone-unsure-twisting.ngrok-free.dev"
+                >
                   ngrok active
                 </span>
               </div>

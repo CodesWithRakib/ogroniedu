@@ -57,7 +57,10 @@ export class StructuredLoggerService implements LoggerService {
         // Mask BD phone number format (+8801XXXXXXXXX or 01XXXXXXXXX)
         val = val.replace(/(?:\+?880|0)(1[3-9]\d{2})\d{4}(\d{2})/g, '$1****$2');
         // Mask email addresses (preserve first char and domain)
-        val = val.replace(/([a-zA-Z0-9_.+-])[a-zA-Z0-9_.+-]*@([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)/g, '$1***@$2');
+        val = val.replace(
+          /([a-zA-Z0-9_.+-])[a-zA-Z0-9_.+-]*@([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)/g,
+          '$1***@$2',
+        );
         masked[key] = val;
       } else if (typeof masked[key] === 'object' && masked[key] !== null) {
         masked[key] = this.maskPii(masked[key] as Record<string, unknown>);

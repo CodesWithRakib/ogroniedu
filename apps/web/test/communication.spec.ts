@@ -4,10 +4,7 @@ import {
   NotificationPreferencesView,
   UserNotificationPreference,
 } from '../src/components/notifications/NotificationPreferencesView';
-import {
-  BookingChatView,
-  ChatMessageItem,
-} from '../src/components/notifications/BookingChatView';
+import { BookingChatView, ChatMessageItem } from '../src/components/notifications/BookingChatView';
 import { getDictionary } from '../src/lib/i18n';
 
 describe('Notification Preferences & Booking Chat Frontend Tests (Phase 12)', () => {

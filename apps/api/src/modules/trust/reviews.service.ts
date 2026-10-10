@@ -44,10 +44,7 @@ export class ReviewsService {
    * - Booking must be in eligible state ('completed' or 'confirmed').
    * - Unique review per booking and reviewer (no duplicate reviews).
    */
-  async createReview(
-    user: AuthenticatedUser,
-    dto: CreateReviewDto,
-  ): Promise<ReviewEntity> {
+  async createReview(user: AuthenticatedUser, dto: CreateReviewDto): Promise<ReviewEntity> {
     const booking = await this.bookingRepo.findOne({
       where: { id: dto.bookingId },
     });
@@ -130,9 +127,9 @@ export class ReviewsService {
         moderationStatus,
       },
     });
-    await this.auditRepo.save(auditLog).catch((err) =>
-      this.logger.warn(`Failed to persist audit log for review: ${err}`),
-    );
+    await this.auditRepo
+      .save(auditLog)
+      .catch((err) => this.logger.warn(`Failed to persist audit log for review: ${err}`));
 
     // Emit Outbox Event
     const outboxEvent = this.outboxRepo.create({
@@ -147,9 +144,9 @@ export class ReviewsService {
         moderationStatus,
       },
     });
-    await this.outboxRepo.save(outboxEvent).catch((err) =>
-      this.logger.warn(`Failed to emit outbox event for review: ${err}`),
-    );
+    await this.outboxRepo
+      .save(outboxEvent)
+      .catch((err) => this.logger.warn(`Failed to emit outbox event for review: ${err}`));
 
     // Notify reviewed tutor
     await this.notificationService
@@ -163,9 +160,7 @@ export class ReviewsService {
           message: 'A student has submitted a new review for your tutoring course.',
         },
       })
-      .catch((err) =>
-        this.logger.warn(`Failed to dispatch review notification to tutor: ${err}`),
-      );
+      .catch((err) => this.logger.warn(`Failed to dispatch review notification to tutor: ${err}`));
 
     return savedReview;
   }
@@ -173,10 +168,7 @@ export class ReviewsService {
   /**
    * 2. Get Published Reviews for a Tutor
    */
-  async getTutorReviews(
-    tutorUserId: string,
-    includeAll = false,
-  ): Promise<ReviewEntity[]> {
+  async getTutorReviews(tutorUserId: string, includeAll = false): Promise<ReviewEntity[]> {
     const where: any = { tutorUserId };
     if (!includeAll) {
       where.moderationStatus = 'published';
@@ -207,16 +199,12 @@ export class ReviewsService {
 
     // Only reviewed tutor can reply
     if (user.id !== review.tutorUserId) {
-      throw new ForbiddenException(
-        'Only the reviewed tutor can submit a response to this review',
-      );
+      throw new ForbiddenException('Only the reviewed tutor can submit a response to this review');
     }
 
     // Only one response allowed
     if (review.tutorResponse) {
-      throw new ConflictException(
-        'A formal response has already been submitted for this review',
-      );
+      throw new ConflictException('A formal response has already been submitted for this review');
     }
 
     review.tutorResponse = dto.reply;
@@ -234,9 +222,7 @@ export class ReviewsService {
           safeMetadata: { tutorUserId: user.id },
         }),
       )
-      .catch((err) =>
-        this.logger.warn(`Failed to persist audit log for review reply: ${err}`),
-      );
+      .catch((err) => this.logger.warn(`Failed to persist audit log for review reply: ${err}`));
 
     return updated;
   }
@@ -276,9 +262,7 @@ export class ReviewsService {
           safeMetadata: { oldStatus, newStatus: dto.status },
         }),
       )
-      .catch((err) =>
-        this.logger.warn(`Failed to persist audit log for moderation: ${err}`),
-      );
+      .catch((err) => this.logger.warn(`Failed to persist audit log for moderation: ${err}`));
 
     return updated;
   }

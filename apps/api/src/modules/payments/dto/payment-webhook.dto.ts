@@ -1,10 +1,4 @@
-import {
-  IsString,
-  IsNotEmpty,
-  IsNumber,
-  IsOptional,
-  IsIn,
-} from 'class-validator';
+import { IsString, IsNotEmpty, IsNumber, IsOptional, IsIn } from 'class-validator';
 
 export class PaymentWebhookDto {
   @IsString()

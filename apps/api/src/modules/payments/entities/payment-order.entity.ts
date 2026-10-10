@@ -16,12 +16,7 @@ import { PaymentTransactionEntity } from './payment-transaction.entity';
 import { PaymentRefundEntity } from './payment-refund.entity';
 
 export type PaymentOrderStatus =
-  | 'created'
-  | 'pending'
-  | 'succeeded'
-  | 'failed'
-  | 'expired'
-  | 'cancelled';
+  'created' | 'pending' | 'succeeded' | 'failed' | 'expired' | 'cancelled';
 
 @Entity('payment_orders')
 @Unique(['payerUserId', 'idempotencyKey'])

@@ -79,7 +79,10 @@ export default function PricingPage({ params }: PageProps) {
     <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <Badge variant="outline" className="text-emerald-700 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300">
+        <Badge
+          variant="outline"
+          className="text-emerald-700 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300"
+        >
           {p.badge}
         </Badge>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 font-bengali">
@@ -129,7 +132,10 @@ export default function PricingPage({ params }: PageProps) {
           ].map((item, idx) => {
             const Icon = item.icon;
             return (
-              <Card key={idx} className="bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800">
+              <Card
+                key={idx}
+                className="bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800"
+              >
                 <CardContent className="pt-6 flex flex-col gap-3">
                   <div className="h-10 w-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
                     <Icon className="h-5 w-5" />
@@ -152,7 +158,9 @@ export default function PricingPage({ params }: PageProps) {
           </div>
           <div>
             <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 font-bengali">
-              {locale === 'bn' ? 'টিউশন ফি ও পারিশ্রমিক ক্যালকুলেটর' : 'Tuition & Earnings Calculator'}
+              {locale === 'bn'
+                ? 'টিউশন ফি ও পারিশ্রমিক ক্যালকুলেটর'
+                : 'Tuition & Earnings Calculator'}
             </h3>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-bengali">
               {locale === 'bn'

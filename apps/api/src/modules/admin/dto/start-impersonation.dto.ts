@@ -1,11 +1,22 @@
-import { IsUUID, IsString, MinLength, MaxLength, IsOptional, IsInt, Min, Max } from 'class-validator';
+import {
+  IsUUID,
+  IsString,
+  MinLength,
+  MaxLength,
+  IsOptional,
+  IsInt,
+  Min,
+  Max,
+} from 'class-validator';
 
 export class StartImpersonationDto {
   @IsUUID('4', { message: 'targetUserId must be a valid UUID' })
   targetUserId!: string;
 
   @IsString()
-  @MinLength(5, { message: 'Explicit operational justification reason is required (min 5 characters)' })
+  @MinLength(5, {
+    message: 'Explicit operational justification reason is required (min 5 characters)',
+  })
   @MaxLength(500, { message: 'Reason cannot exceed 500 characters' })
   reason!: string;
 

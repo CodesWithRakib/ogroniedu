@@ -69,7 +69,10 @@ export default function SafetyPage({ params }: PageProps) {
     <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <Badge variant="outline" className="text-rose-700 border-rose-500/30 bg-rose-50 dark:bg-rose-950/40 dark:text-rose-300">
+        <Badge
+          variant="outline"
+          className="text-rose-700 border-rose-500/30 bg-rose-50 dark:bg-rose-950/40 dark:text-rose-300"
+        >
           {p.badge}
         </Badge>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 font-bengali">
@@ -115,7 +118,9 @@ export default function SafetyPage({ params }: PageProps) {
         <div className="space-y-2 text-center sm:text-left">
           <div className="flex items-center justify-center sm:justify-start gap-2 text-rose-700 dark:text-rose-400 font-bold text-sm">
             <ShieldAlert className="h-5 w-5" />
-            <span>{locale === 'bn' ? 'জরুরি নিরাপত্তা সাপোর্ট' : 'Emergency Child Safety Protocol'}</span>
+            <span>
+              {locale === 'bn' ? 'জরুরি নিরাপত্তা সাপোর্ট' : 'Emergency Child Safety Protocol'}
+            </span>
           </div>
           <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 font-bengali max-w-xl">
             {locale === 'bn'
@@ -124,7 +129,10 @@ export default function SafetyPage({ params }: PageProps) {
           </p>
         </div>
         <Link href={`/${locale}/contact`}>
-          <Button variant="outline" className="border-rose-300 text-rose-700 hover:bg-rose-100 dark:border-rose-800 dark:text-rose-300 font-bengali whitespace-nowrap">
+          <Button
+            variant="outline"
+            className="border-rose-300 text-rose-700 hover:bg-rose-100 dark:border-rose-800 dark:text-rose-300 font-bengali whitespace-nowrap"
+          >
             {dict.nav.contact}
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>

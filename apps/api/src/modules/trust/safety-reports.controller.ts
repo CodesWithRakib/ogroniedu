@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Param,
-  Body,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -24,10 +16,7 @@ export class SafetyReportsController {
   @Post()
   @ApiOperation({ summary: 'Submit safety, abuse, or child protection report' })
   @ApiResponse({ status: 201, description: 'Safety report registered and evaluated' })
-  async createReport(
-    @CurrentUser() user: AuthenticatedUser,
-    @Body() dto: CreateSafetyReportDto,
-  ) {
+  async createReport(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateSafetyReportDto) {
     return this.safetyService.createReport(user, dto);
   }
 
@@ -41,10 +30,7 @@ export class SafetyReportsController {
   @Get(':id')
   @ApiOperation({ summary: 'Get details of a safety report (ABAC Scoped)' })
   @ApiResponse({ status: 200, description: 'Report details' })
-  async getReport(
-    @CurrentUser() user: AuthenticatedUser,
-    @Param('id') reportId: string,
-  ) {
+  async getReport(@CurrentUser() user: AuthenticatedUser, @Param('id') reportId: string) {
     return this.safetyService.getReport(user, reportId);
   }
 

@@ -16,7 +16,11 @@ import type {
   MarkAsReadResponseDto,
   MarkAllAsReadResponseDto,
 } from '@ogroniedu/contracts';
-import { DispatchNotificationDto, GetNotificationsQueryDto, UpdateNotificationPreferencesDto } from './dto';
+import {
+  DispatchNotificationDto,
+  GetNotificationsQueryDto,
+  UpdateNotificationPreferencesDto,
+} from './dto';
 import { NotificationEntity } from './entities/notification.entity';
 import { NotificationDeliveryEntity } from './entities/notification-delivery.entity';
 import { NotificationPreferenceEntity } from './entities/notification-preference.entity';

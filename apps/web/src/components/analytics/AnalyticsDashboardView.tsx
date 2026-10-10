@@ -164,7 +164,11 @@ export function AnalyticsDashboardView({
       ['Financials', 'Net Volume (BDT)', data.financials.netProcessedVolumeBdt],
       ['Financials', 'Platform Revenue (8%) (BDT)', data.financials.platformCommissionRevenueBdt],
       ['Trust & Quality', 'Average Rating', data.trustAndQuality.averageRating],
-      ['Trust & Quality', 'Replacement Guarantee Rate %', `${data.trustAndQuality.replacementRate}%`],
+      [
+        'Trust & Quality',
+        'Replacement Guarantee Rate %',
+        `${data.trustAndQuality.replacementRate}%`,
+      ],
       ['Retention', 'Total Unique Learners', data.retention.totalUniqueLearners],
       ['Retention', 'Repeat Learners', data.retention.repeatLearners],
       ['Retention', 'Learner Retention Rate %', `${data.retention.retentionRate}%`],
@@ -177,7 +181,10 @@ export function AnalyticsDashboardView({
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6" data-testid="analytics-dashboard-view">
+    <div
+      className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6"
+      data-testid="analytics-dashboard-view"
+    >
       {/* 1. Header & Time Filter Bar */}
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-slate-800">
         <div>
@@ -189,11 +196,16 @@ export function AnalyticsDashboardView({
 
         <div className="flex flex-wrap items-center gap-3">
           {/* Preset Buttons */}
-          <div className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold" role="group">
+          <div
+            className="flex bg-slate-900 p-1 rounded-xl border border-slate-800 text-xs font-semibold"
+            role="group"
+          >
             <button
               onClick={() => handlePresetSelect('7d')}
               className={`px-3 py-1.5 rounded-lg transition ${
-                selectedPreset === '7d' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
+                selectedPreset === '7d'
+                  ? 'bg-indigo-600 text-white shadow'
+                  : 'text-slate-400 hover:text-slate-200'
               }`}
               data-testid="filter-7d-btn"
             >
@@ -202,7 +214,9 @@ export function AnalyticsDashboardView({
             <button
               onClick={() => handlePresetSelect('30d')}
               className={`px-3 py-1.5 rounded-lg transition ${
-                selectedPreset === '30d' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
+                selectedPreset === '30d'
+                  ? 'bg-indigo-600 text-white shadow'
+                  : 'text-slate-400 hover:text-slate-200'
               }`}
               data-testid="filter-30d-btn"
             >
@@ -211,7 +225,9 @@ export function AnalyticsDashboardView({
             <button
               onClick={() => handlePresetSelect('90d')}
               className={`px-3 py-1.5 rounded-lg transition ${
-                selectedPreset === '90d' ? 'bg-indigo-600 text-white shadow' : 'text-slate-400 hover:text-slate-200'
+                selectedPreset === '90d'
+                  ? 'bg-indigo-600 text-white shadow'
+                  : 'text-slate-400 hover:text-slate-200'
               }`}
               data-testid="filter-90d-btn"
             >
@@ -246,7 +262,10 @@ export function AnalyticsDashboardView({
       </div>
 
       {/* 2. Top-Line KPI Cards Grid */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4" data-testid="kpi-cards-grid">
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4"
+        data-testid="kpi-cards-grid"
+      >
         {/* Booking Conversion Rate */}
         <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm space-y-2">
           <p className="text-xs font-medium text-slate-400">{t('conversionRate')}</p>
@@ -259,7 +278,10 @@ export function AnalyticsDashboardView({
             </span>
           </div>
           <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div className="bg-teal-500 h-1.5 rounded-full" style={{ width: `${Math.min(data.conversion.conversionRate, 100)}%` }} />
+            <div
+              className="bg-teal-500 h-1.5 rounded-full"
+              style={{ width: `${Math.min(data.conversion.conversionRate, 100)}%` }}
+            />
           </div>
         </div>
 
@@ -267,7 +289,10 @@ export function AnalyticsDashboardView({
         <div className="bg-slate-900/90 border border-slate-800 rounded-xl p-5 shadow-sm space-y-2">
           <p className="text-xs font-medium text-slate-400">{t('completionRate')}</p>
           <div className="flex items-baseline space-x-2">
-            <p className="text-3xl font-extrabold text-indigo-400" data-testid="kpi-completion-rate">
+            <p
+              className="text-3xl font-extrabold text-indigo-400"
+              data-testid="kpi-completion-rate"
+            >
               {data.sessions.completionRate}%
             </p>
             <span className="text-xs text-slate-500">
@@ -275,7 +300,10 @@ export function AnalyticsDashboardView({
             </span>
           </div>
           <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div className="bg-indigo-500 h-1.5 rounded-full" style={{ width: `${Math.min(data.sessions.completionRate, 100)}%` }} />
+            <div
+              className="bg-indigo-500 h-1.5 rounded-full"
+              style={{ width: `${Math.min(data.sessions.completionRate, 100)}%` }}
+            />
           </div>
         </div>
 
@@ -289,7 +317,8 @@ export function AnalyticsDashboardView({
             <span className="text-xs text-slate-400 font-semibold">BDT</span>
           </div>
           <p className="text-[11px] text-emerald-400/80">
-            {t('platformRevenue')}: {data.financials.platformCommissionRevenueBdt.toLocaleString()} BDT
+            {t('platformRevenue')}: {data.financials.platformCommissionRevenueBdt.toLocaleString()}{' '}
+            BDT
           </p>
         </div>
 
@@ -305,7 +334,10 @@ export function AnalyticsDashboardView({
             </span>
           </div>
           <div className="w-full bg-slate-800 rounded-full h-1.5 overflow-hidden">
-            <div className="bg-amber-500 h-1.5 rounded-full" style={{ width: `${Math.min(data.retention.retentionRate, 100)}%` }} />
+            <div
+              className="bg-amber-500 h-1.5 rounded-full"
+              style={{ width: `${Math.min(data.retention.retentionRate, 100)}%` }}
+            />
           </div>
         </div>
       </div>
@@ -313,7 +345,10 @@ export function AnalyticsDashboardView({
       {/* 3. Operational Funnel & Reliability Detail Panels */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Booking Conversion Funnel Breakdown */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4" data-testid="conversion-funnel-card">
+        <div
+          className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4"
+          data-testid="conversion-funnel-card"
+        >
           <h3 className="text-base font-bold text-slate-200">{t('conversionFunnelTitle')}</h3>
           <div className="space-y-3">
             <div>
@@ -334,36 +369,53 @@ export function AnalyticsDashboardView({
               <div className="w-full bg-slate-950 h-2 rounded-full overflow-hidden">
                 <div
                   className="bg-teal-500 h-full"
-                  style={{ width: `${(data.conversion.confirmedBookings / (data.conversion.totalRequests || 1)) * 100}%` }}
+                  style={{
+                    width: `${(data.conversion.confirmedBookings / (data.conversion.totalRequests || 1)) * 100}%`,
+                  }}
                 />
               </div>
             </div>
 
             <div className="flex justify-between text-xs text-slate-400 pt-2 border-t border-slate-800">
-              <span>{t('cancelledRequests')}: {data.conversion.cancelledRequests}</span>
+              <span>
+                {t('cancelledRequests')}: {data.conversion.cancelledRequests}
+              </span>
               <span>Declined: {data.conversion.declinedRequests}</span>
             </div>
           </div>
         </div>
 
         {/* Session Reliability & No-Show Matrix */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4" data-testid="session-reliability-card">
+        <div
+          className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4"
+          data-testid="session-reliability-card"
+        >
           <h3 className="text-base font-bold text-slate-200">{t('sessionReliabilityTitle')}</h3>
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
               <p className="text-xs text-slate-400">{t('completedSessions')}</p>
-              <p className="text-xl font-bold text-indigo-400 mt-1">{data.sessions.completedSessions}</p>
-              <span className="text-[10px] text-slate-500">{data.sessions.completionRate}% of total</span>
+              <p className="text-xl font-bold text-indigo-400 mt-1">
+                {data.sessions.completedSessions}
+              </p>
+              <span className="text-[10px] text-slate-500">
+                {data.sessions.completionRate}% of total
+              </span>
             </div>
             <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
               <p className="text-xs text-slate-400">{t('noShowRate')}</p>
               <p className="text-xl font-bold text-amber-400 mt-1">{data.sessions.noShowRate}%</p>
-              <span className="text-[10px] text-slate-500">{data.sessions.noShowSessions} instances</span>
+              <span className="text-[10px] text-slate-500">
+                {data.sessions.noShowSessions} instances
+              </span>
             </div>
             <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
               <p className="text-xs text-slate-400">{t('sessionCancellationRate')}</p>
-              <p className="text-xl font-bold text-rose-400 mt-1">{data.sessions.sessionCancellationRate}%</p>
-              <span className="text-[10px] text-slate-500">{data.sessions.cancelledSessions} cancelled</span>
+              <p className="text-xl font-bold text-rose-400 mt-1">
+                {data.sessions.sessionCancellationRate}%
+              </p>
+              <span className="text-[10px] text-slate-500">
+                {data.sessions.cancelledSessions} cancelled
+              </span>
             </div>
           </div>
         </div>
@@ -372,20 +424,29 @@ export function AnalyticsDashboardView({
       {/* 4. Financial & Trust Integrity Breakdown */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Financial Flow & Net Processed Volume */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4" data-testid="financial-overview-card">
+        <div
+          className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4"
+          data-testid="financial-overview-card"
+        >
           <h3 className="text-base font-bold text-slate-200">{t('financialOverviewTitle')}</h3>
           <div className="space-y-3 text-xs">
             <div className="flex justify-between py-1.5 border-b border-slate-800">
               <span className="text-slate-400">{t('grossMerchandiseValue')}</span>
-              <span className="font-mono font-bold text-slate-200">{data.financials.grossMerchandiseValueBdt.toLocaleString()} BDT</span>
+              <span className="font-mono font-bold text-slate-200">
+                {data.financials.grossMerchandiseValueBdt.toLocaleString()} BDT
+              </span>
             </div>
             <div className="flex justify-between py-1.5 border-b border-slate-800">
               <span className="text-slate-400">{t('totalRefunded')}</span>
-              <span className="font-mono font-bold text-rose-400">- {data.financials.totalRefundedBdt.toLocaleString()} BDT</span>
+              <span className="font-mono font-bold text-rose-400">
+                - {data.financials.totalRefundedBdt.toLocaleString()} BDT
+              </span>
             </div>
             <div className="flex justify-between py-1.5 border-b border-slate-800">
               <span className="text-slate-400">{t('netVolume')}</span>
-              <span className="font-mono font-bold text-emerald-400">{data.financials.netProcessedVolumeBdt.toLocaleString()} BDT</span>
+              <span className="font-mono font-bold text-emerald-400">
+                {data.financials.netProcessedVolumeBdt.toLocaleString()} BDT
+              </span>
             </div>
             <div className="flex justify-between py-1.5 font-semibold text-slate-300">
               <span>{t('refundRate')}</span>
@@ -395,24 +456,36 @@ export function AnalyticsDashboardView({
         </div>
 
         {/* Trust, Quality & Replacement Guarantee Metrics */}
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4" data-testid="trust-quality-card">
+        <div
+          className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4"
+          data-testid="trust-quality-card"
+        >
           <h3 className="text-base font-bold text-slate-200">{t('qualityTitle')}</h3>
           <div className="space-y-3 text-xs">
             <div className="flex justify-between py-1.5 border-b border-slate-800">
               <span className="text-slate-400">{t('averageRating')}</span>
-              <span className="font-bold text-amber-400">★ {data.trustAndQuality.averageRating} / 5.0</span>
+              <span className="font-bold text-amber-400">
+                ★ {data.trustAndQuality.averageRating} / 5.0
+              </span>
             </div>
             <div className="flex justify-between py-1.5 border-b border-slate-800">
               <span className="text-slate-400">{t('replacementRate')}</span>
-              <span className="font-bold text-slate-200">{data.trustAndQuality.replacementRate}% ({data.trustAndQuality.replacementCasesCount} cases)</span>
+              <span className="font-bold text-slate-200">
+                {data.trustAndQuality.replacementRate}% (
+                {data.trustAndQuality.replacementCasesCount} cases)
+              </span>
             </div>
             <div className="flex justify-between py-1.5 border-b border-slate-800">
               <span className="text-slate-400">{t('criticalSafetyIncidents')}</span>
-              <span className="font-bold text-rose-400">{data.trustAndQuality.criticalSafetyCount} critical alerts</span>
+              <span className="font-bold text-rose-400">
+                {data.trustAndQuality.criticalSafetyCount} critical alerts
+              </span>
             </div>
             <div className="flex justify-between py-1.5 text-slate-400">
               <span>Total Verified Reviews</span>
-              <span className="font-semibold text-slate-300">{data.trustAndQuality.totalReviews} reviews</span>
+              <span className="font-semibold text-slate-300">
+                {data.trustAndQuality.totalReviews} reviews
+              </span>
             </div>
           </div>
         </div>
@@ -420,11 +493,17 @@ export function AnalyticsDashboardView({
 
       {/* 5. Daily Activity Trend Bar Visuals */}
       {data.trends.length > 0 && (
-        <div className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4" data-testid="trends-card">
+        <div
+          className="bg-slate-900 border border-slate-800 rounded-xl p-6 space-y-4"
+          data-testid="trends-card"
+        >
           <h3 className="text-base font-bold text-slate-200">{t('trendTitle')}</h3>
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {data.trends.map((point) => (
-              <div key={point.date} className="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-2">
+              <div
+                key={point.date}
+                className="bg-slate-950 p-4 rounded-lg border border-slate-800 space-y-2"
+              >
                 <span className="text-[11px] font-mono text-slate-500 block">{point.date}</span>
                 <div className="flex justify-between text-xs">
                   <span className="text-slate-400">Requests:</span>

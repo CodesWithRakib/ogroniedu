@@ -1,12 +1,4 @@
-import {
-  IsUUID,
-  IsNotEmpty,
-  IsNumber,
-  Min,
-  IsString,
-  MinLength,
-  MaxLength,
-} from 'class-validator';
+import { IsUUID, IsNotEmpty, IsNumber, Min, IsString, MinLength, MaxLength } from 'class-validator';
 
 export class ProcessRefundDto {
   @IsUUID()

@@ -9,19 +9,9 @@ import {
 } from 'typeorm';
 
 export type NotificationCategoryType =
-  | 'booking'
-  | 'schedule'
-  | 'payment'
-  | 'learning'
-  | 'system'
-  | 'marketing';
+  'booking' | 'schedule' | 'payment' | 'learning' | 'system' | 'marketing';
 
-export type NotificationChannelType =
-  | 'in_app'
-  | 'email'
-  | 'sms'
-  | 'push'
-  | 'whatsapp';
+export type NotificationChannelType = 'in_app' | 'email' | 'sms' | 'push' | 'whatsapp';
 
 @Entity('notification_preferences')
 @Unique('uq_notification_preferences', ['userId', 'category', 'channel'])

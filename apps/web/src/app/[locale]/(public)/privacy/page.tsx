@@ -28,7 +28,10 @@ export default function PrivacyPage({ params }: PageProps) {
     <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12">
       {/* Header Banner */}
       <div className="text-center space-y-4">
-        <Badge variant="outline" className="text-emerald-700 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300">
+        <Badge
+          variant="outline"
+          className="text-emerald-700 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300"
+        >
           {p.badge}
         </Badge>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 font-bengali">

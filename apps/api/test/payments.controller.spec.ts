@@ -102,7 +102,10 @@ describe('PaymentsController Unit Tests', () => {
   });
 
   it('should get payment receipt', async () => {
-    const res = await controller.getPaymentReceipt(mockUser, '00000000-0000-4000-8000-000000000000');
+    const res = await controller.getPaymentReceipt(
+      mockUser,
+      '00000000-0000-4000-8000-000000000000',
+    );
     expect(res.success).toBe(true);
     expect(res.data.receiptId).toBe('REC-123');
   });

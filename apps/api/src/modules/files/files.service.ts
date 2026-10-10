@@ -42,12 +42,7 @@ export class FilesService {
     switch (mediaType) {
       case 'application/pdf':
         // %PDF -> 0x25 0x50 0x44 0x46
-        return (
-          buffer[0] === 0x25 &&
-          buffer[1] === 0x50 &&
-          buffer[2] === 0x44 &&
-          buffer[3] === 0x46
-        );
+        return buffer[0] === 0x25 && buffer[1] === 0x50 && buffer[2] === 0x44 && buffer[3] === 0x46;
 
       case 'image/jpeg':
         // JPEG -> 0xFF 0xD8 0xFF
@@ -71,15 +66,9 @@ export class FilesService {
         // RIFF....WEBP -> 0x52 0x49 0x46 0x46 ... 0x57 0x45 0x42 0x50
         if (buffer.length < 12) return false;
         const isRiff =
-          buffer[0] === 0x52 &&
-          buffer[1] === 0x49 &&
-          buffer[2] === 0x46 &&
-          buffer[3] === 0x46;
+          buffer[0] === 0x52 && buffer[1] === 0x49 && buffer[2] === 0x46 && buffer[3] === 0x46;
         const isWebp =
-          buffer[8] === 0x57 &&
-          buffer[9] === 0x45 &&
-          buffer[10] === 0x42 &&
-          buffer[11] === 0x50;
+          buffer[8] === 0x57 && buffer[9] === 0x45 && buffer[10] === 0x42 && buffer[11] === 0x50;
         return isRiff && isWebp;
 
       default:
@@ -192,7 +181,9 @@ export class FilesService {
   async getFileAccess(
     fileId: string,
     user: AuthenticatedUser,
-  ): Promise<FileAssetEntity & { signedAccessToken: string; signedAccessUrl: string; expiresAt: string }> {
+  ): Promise<
+    FileAssetEntity & { signedAccessToken: string; signedAccessUrl: string; expiresAt: string }
+  > {
     const file = await this.fileRepo.findOne({
       where: { id: fileId },
     });

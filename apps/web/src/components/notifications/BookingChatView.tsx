@@ -62,7 +62,8 @@ export function BookingChatView({
       senderId: 'tutor-1',
       senderName: 'Nusrat Jahan (Tutor)',
       senderRole: 'tutor',
-      content: 'Welcome! Please make sure to have your Class 10 Physics NCTB textbook ready for our vectors lesson.',
+      content:
+        'Welcome! Please make sure to have your Class 10 Physics NCTB textbook ready for our vectors lesson.',
       isRedacted: false,
       readAt: new Date(Date.now() - 3600000).toISOString(),
       createdAt: new Date(Date.now() - 7200000).toISOString(),
@@ -72,7 +73,8 @@ export function BookingChatView({
       senderId: currentUserId,
       senderName: 'Zafir Rahman (Student)',
       senderRole: 'student',
-      content: 'Yes teacher, I have completed the exercise 3.2 problems and kept questions noted down.',
+      content:
+        'Yes teacher, I have completed the exercise 3.2 problems and kept questions noted down.',
       isRedacted: false,
       readAt: new Date(Date.now() - 1800000).toISOString(),
       createdAt: new Date(Date.now() - 3600000).toISOString(),
@@ -105,9 +107,7 @@ export function BookingChatView({
         senderId: currentUserId,
         senderName: 'Me',
         senderRole: 'student',
-        content: isSensitive
-          ? content.replace(phoneRegex, '[REDACTED CONTACT NUMBER]')
-          : content,
+        content: isSensitive ? content.replace(phoneRegex, '[REDACTED CONTACT NUMBER]') : content,
         isRedacted: isSensitive,
         redactionReason: isSensitive
           ? 'Direct phone number sharing restricted for escrow and child safety'
@@ -135,7 +135,10 @@ export function BookingChatView({
             {subjectName} • Booking #{bookingId.slice(0, 8)}
           </p>
         </div>
-        <Badge variant="outline" className="w-fit text-[11px] font-normal border-emerald-500/30 text-emerald-700 dark:text-emerald-300">
+        <Badge
+          variant="outline"
+          className="w-fit text-[11px] font-normal border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
+        >
           <ShieldCheck className="w-3.5 h-3.5 mr-1 text-emerald-600" />
           ABAC Encrypted & Audited
         </Badge>
@@ -170,7 +173,12 @@ export function BookingChatView({
                   <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground mb-1 px-1">
                     <span className="font-medium">{msg.senderName}</span>
                     <span>•</span>
-                    <span>{new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+                    <span>
+                      {new Date(msg.createdAt).toLocaleTimeString([], {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                      })}
+                    </span>
                   </div>
 
                   <div
@@ -191,13 +199,12 @@ export function BookingChatView({
                   </div>
 
                   <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5 px-1">
-                    {isMine && (
-                      msg.readAt ? (
+                    {isMine &&
+                      (msg.readAt ? (
                         <CheckCheck className="w-3.5 h-3.5 text-emerald-600" />
                       ) : (
                         <Check className="w-3.5 h-3.5 text-slate-400" />
-                      )
-                    )}
+                      ))}
                   </div>
                 </div>
               );

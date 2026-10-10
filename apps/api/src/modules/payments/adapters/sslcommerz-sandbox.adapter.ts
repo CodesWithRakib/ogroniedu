@@ -12,14 +12,11 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
   readonly providerName = 'sslcommerz';
   private readonly logger = new Logger(SslcommerzSandboxAdapter.name);
 
-  private readonly storeId =
-    process.env.SSLCOMMERZ_STORE_ID || 'ogron6ac9fcef6d321';
-  private readonly storePasswd =
-    process.env.SSLCOMMERZ_STORE_PASSWD || 'ogron6ac9fcef6d321@ssl';
+  private readonly storeId = process.env.SSLCOMMERZ_STORE_ID || 'ogron6ac9fcef6d321';
+  private readonly storePasswd = process.env.SSLCOMMERZ_STORE_PASSWD || 'ogron6ac9fcef6d321@ssl';
   private readonly isLive = process.env.SSLCOMMERZ_IS_LIVE === 'true';
   private readonly sessionApiUrl =
-    process.env.SSLCOMMERZ_SESSION_URL ||
-    'https://sandbox.sslcommerz.com/gwprocess/v4/process.php';
+    process.env.SSLCOMMERZ_SESSION_URL || 'https://sandbox.sslcommerz.com/gwprocess/v4/process.php';
   private readonly validationApiUrl =
     process.env.SSLCOMMERZ_VALIDATION_URL ||
     'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php';
@@ -70,7 +67,9 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
     });
 
     try {
-      this.logger.log(`Calling SSLCOMMERZ Sandbox Session API for order ${orderId} (${amountBdt} BDT)`);
+      this.logger.log(
+        `Calling SSLCOMMERZ Sandbox Session API for order ${orderId} (${amountBdt} BDT)`,
+      );
 
       const controller = new AbortController();
       const timeoutId = setTimeout(() => controller.abort(), 8000);
@@ -121,7 +120,8 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
     const rawSignature =
       headers['x-sslcommerz-signature'] ||
       headers['X-SSLCOMMERZ-SIGNATURE'] ||
-      (typeof rawBody === 'object' && ((rawBody as any)?.verify_sign || (rawBody as any)?.signature));
+      (typeof rawBody === 'object' &&
+        ((rawBody as any)?.verify_sign || (rawBody as any)?.signature));
 
     // If signature provided, enforce strict cryptographic check
     if (rawSignature && typeof rawSignature === 'string') {
@@ -155,11 +155,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
     // When signature header is absent, allow sandbox IPN with verified status
     if (typeof rawBody === 'object') {
       const body = rawBody as Record<string, unknown>;
-      if (
-        body.status === 'VALID' ||
-        body.status === 'VALIDATED' ||
-        body.status === 'succeeded'
-      ) {
+      if (body.status === 'VALID' || body.status === 'VALIDATED' || body.status === 'succeeded') {
         return true;
       }
     }

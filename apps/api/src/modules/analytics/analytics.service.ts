@@ -59,7 +59,8 @@ export class AnalyticsService {
     const confirmedBookings = bookingFunnelRes[0]?.confirmed_bookings || 0;
     const cancelledRequests = bookingFunnelRes[0]?.cancelled_requests || 0;
     const declinedRequests = bookingFunnelRes[0]?.declined_requests || 0;
-    const conversionRate = totalRequests > 0 ? Number(((confirmedBookings / totalRequests) * 100).toFixed(2)) : 0;
+    const conversionRate =
+      totalRequests > 0 ? Number(((confirmedBookings / totalRequests) * 100).toFixed(2)) : 0;
 
     // 1.2. Session Reliability & Completion
     const sessionsRes = await this.dataSource.query(
@@ -80,9 +81,12 @@ export class AnalyticsService {
     const noShowSessions = sessionsRes[0]?.no_show_sessions || 0;
     const scheduledSessions = sessionsRes[0]?.scheduled_sessions || 0;
 
-    const completionRate = totalSessions > 0 ? Number(((completedSessions / totalSessions) * 100).toFixed(2)) : 0;
-    const sessionCancellationRate = totalSessions > 0 ? Number(((cancelledSessions / totalSessions) * 100).toFixed(2)) : 0;
-    const noShowRate = totalSessions > 0 ? Number(((noShowSessions / totalSessions) * 100).toFixed(2)) : 0;
+    const completionRate =
+      totalSessions > 0 ? Number(((completedSessions / totalSessions) * 100).toFixed(2)) : 0;
+    const sessionCancellationRate =
+      totalSessions > 0 ? Number(((cancelledSessions / totalSessions) * 100).toFixed(2)) : 0;
+    const noShowRate =
+      totalSessions > 0 ? Number(((noShowSessions / totalSessions) * 100).toFixed(2)) : 0;
 
     // 1.3. Financial Gross Merchandise Volume (GMV) & Refunds
     const paymentsRes = await this.dataSource.query(
@@ -132,7 +136,10 @@ export class AnalyticsService {
       [start, end],
     );
     const replacementCasesCount = replacementCasesRes[0]?.count || 0;
-    const replacementRate = confirmedBookings > 0 ? Number(((replacementCasesCount / confirmedBookings) * 100).toFixed(2)) : 0;
+    const replacementRate =
+      confirmedBookings > 0
+        ? Number(((replacementCasesCount / confirmedBookings) * 100).toFixed(2))
+        : 0;
 
     const safetyReportsRes = await this.dataSource.query(
       `SELECT 
@@ -362,7 +369,10 @@ export class AnalyticsService {
     const totalUniqueLearners = cohortRes[0]?.total_unique_learners || 0;
     const repeatLearners = cohortRes[0]?.repeat_learners || 0;
     const loyalLearners = cohortRes[0]?.loyal_learners || 0;
-    const retentionRate = totalUniqueLearners > 0 ? Number(((repeatLearners / totalUniqueLearners) * 100).toFixed(2)) : 0;
+    const retentionRate =
+      totalUniqueLearners > 0
+        ? Number(((repeatLearners / totalUniqueLearners) * 100).toFixed(2))
+        : 0;
 
     return {
       timeWindow: {
@@ -394,7 +404,8 @@ export class AnalyticsService {
 
     const totalInquiries = inquiriesRes[0]?.total_inquiries || 0;
     const acceptedInquiries = inquiriesRes[0]?.accepted_inquiries || 0;
-    const acceptanceRate = totalInquiries > 0 ? Number(((acceptedInquiries / totalInquiries) * 100).toFixed(2)) : 0;
+    const acceptanceRate =
+      totalInquiries > 0 ? Number(((acceptedInquiries / totalInquiries) * 100).toFixed(2)) : 0;
 
     const sessionsRes = await this.dataSource.query(
       `SELECT 
@@ -409,7 +420,8 @@ export class AnalyticsService {
     const totalSessions = sessionsRes[0]?.total_sessions || 0;
     const completedSessions = sessionsRes[0]?.completed_sessions || 0;
     const noShowSessions = sessionsRes[0]?.no_show_sessions || 0;
-    const completionRate = totalSessions > 0 ? Number(((completedSessions / totalSessions) * 100).toFixed(2)) : 0;
+    const completionRate =
+      totalSessions > 0 ? Number(((completedSessions / totalSessions) * 100).toFixed(2)) : 0;
 
     // Earnings: sum of completed session amounts
     const earningsRes = await this.dataSource.query(

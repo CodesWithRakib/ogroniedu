@@ -1,13 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Param,
-  Body,
-  UseGuards,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseGuards, Query } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -25,20 +16,14 @@ export class ReviewsController {
   @Post()
   @ApiOperation({ summary: 'Submit a verified review for a completed booking' })
   @ApiResponse({ status: 201, description: 'Review successfully submitted' })
-  async createReview(
-    @CurrentUser() user: AuthenticatedUser,
-    @Body() dto: CreateReviewDto,
-  ) {
+  async createReview(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateReviewDto) {
     return this.reviewsService.createReview(user, dto);
   }
 
   @Get('tutors/:tutorId')
   @ApiOperation({ summary: 'Get published reviews for a tutor' })
   @ApiResponse({ status: 200, description: 'List of tutor reviews' })
-  async getTutorReviews(
-    @Param('tutorId') tutorId: string,
-    @Query('all') all?: string,
-  ) {
+  async getTutorReviews(@Param('tutorId') tutorId: string, @Query('all') all?: string) {
     return this.reviewsService.getTutorReviews(tutorId, all === 'true');
   }
 

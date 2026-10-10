@@ -23,9 +23,7 @@ describe('BookingMessagesController Unit Tests', () => {
         content: 'Hello!',
         isRedacted: false,
       }),
-      getMessages: vi.fn().mockResolvedValue([
-        { id: 'msg-1', content: 'Hello!' },
-      ]),
+      getMessages: vi.fn().mockResolvedValue([{ id: 'msg-1', content: 'Hello!' }]),
       markAsRead: vi.fn().mockResolvedValue({
         id: 'msg-1',
         readAt: new Date(),
@@ -38,7 +36,12 @@ describe('BookingMessagesController Unit Tests', () => {
   it('should call sendMessage on service and return message entity', async () => {
     const res = await controller.sendMessage(mockUser, bookingId, { content: 'Hello!' }, 'req-1');
 
-    expect(mockService.sendMessage).toHaveBeenCalledWith(mockUser, bookingId, { content: 'Hello!' }, 'req-1');
+    expect(mockService.sendMessage).toHaveBeenCalledWith(
+      mockUser,
+      bookingId,
+      { content: 'Hello!' },
+      'req-1',
+    );
     expect(res.id).toBe('msg-1');
   });
 

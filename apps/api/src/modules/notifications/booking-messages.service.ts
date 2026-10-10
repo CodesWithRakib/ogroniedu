@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingMessageEntity } from './entities/booking-message.entity';
@@ -23,8 +18,7 @@ export class BookingMessagesService {
   private readonly phoneRegex = /(?:\+?880\s?|0)1[3-9]\d{2}[\s\-]?\d{6}/gi;
   private readonly paymentSolicitationRegex =
     /(?:bkash\s+personal|nagad\s+personal|send\s+money|হাতে\s+হাতে\s+টাকা|বিকাশ\s+পার্সোনাল|নগদ\s+পার্সোনাল)/gi;
-  private readonly externalLinkRegex =
-    /(?:https?:\/\/|www\.)[^\s]+(?:\.com|\.me|\.org|\.net)/gi;
+  private readonly externalLinkRegex = /(?:https?:\/\/|www\.)[^\s]+(?:\.com|\.me|\.org|\.net)/gi;
 
   constructor(
     @InjectRepository(BookingMessageEntity)
@@ -93,13 +87,9 @@ export class BookingMessagesService {
     let redactionReason: string | null = null;
 
     if (this.phoneRegex.test(sanitizedContent)) {
-      sanitizedContent = sanitizedContent.replace(
-        this.phoneRegex,
-        '[REDACTED CONTACT NUMBER]',
-      );
+      sanitizedContent = sanitizedContent.replace(this.phoneRegex, '[REDACTED CONTACT NUMBER]');
       isRedacted = true;
-      redactionReason =
-        'Direct phone number sharing restricted for escrow and child safety';
+      redactionReason = 'Direct phone number sharing restricted for escrow and child safety';
     }
 
     if (this.paymentSolicitationRegex.test(sanitizedContent)) {
@@ -108,8 +98,7 @@ export class BookingMessagesService {
         '[REDACTED PAYMENT SOLICITATION]',
       );
       isRedacted = true;
-      redactionReason =
-        'Direct off-platform payment solicitations strictly prohibited';
+      redactionReason = 'Direct off-platform payment solicitations strictly prohibited';
     }
 
     if (this.externalLinkRegex.test(sanitizedContent)) {
@@ -174,9 +163,7 @@ export class BookingMessagesService {
           snippet: sanitizedContent.slice(0, 50),
         },
       })
-      .catch((err) =>
-        this.logger.warn(`Failed to dispatch message notification: ${err}`),
-      );
+      .catch((err) => this.logger.warn(`Failed to dispatch message notification: ${err}`));
 
     // Notify linked guardians if student received message
     if (recipientUserId === booking.studentUserId) {
@@ -207,10 +194,7 @@ export class BookingMessagesService {
   /**
    * 2. Get Messages for a Booking (ABAC Scoped)
    */
-  async getMessages(
-    user: AuthenticatedUser,
-    bookingId: string,
-  ): Promise<BookingMessageEntity[]> {
+  async getMessages(user: AuthenticatedUser, bookingId: string): Promise<BookingMessageEntity[]> {
     const booking = await this.bookingRepo.findOne({
       where: { id: bookingId },
     });

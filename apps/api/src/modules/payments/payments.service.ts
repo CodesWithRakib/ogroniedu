@@ -176,6 +176,14 @@ export class PaymentsService {
     const amountMinor = Number(booking.pricePerSessionMinor);
 
     if (existingOrder) {
+      if (
+        existingOrder.bookingId !== dto.bookingId ||
+        (dto.amountMinor && Number(existingOrder.amountMinor) !== Number(dto.amountMinor))
+      ) {
+        throw new BadRequestException(
+          'Idempotency key was already used for a different order or amount',
+        );
+      }
       this.logger.log(`Idempotent order returned for key ${idempotencyKey}`);
       const sessionResult = await adapter.createCheckoutSession(
         existingOrder.id,
@@ -249,7 +257,10 @@ export class PaymentsService {
     const adapter = this.adapterFactory.getAdapter(provider);
 
     // 1. Verify Cryptographic Webhook Signature
-    const isValidSignature = adapter.verifyWebhookSignature(headers, rawBody as unknown as Record<string, unknown>);
+    const isValidSignature = adapter.verifyWebhookSignature(
+      headers,
+      rawBody as unknown as Record<string, unknown>,
+    );
     if (!isValidSignature) {
       this.logger.warn(`Rejected webhook from provider '${provider}' due to invalid signature`);
       throw new UnauthorizedException('Invalid payment webhook signature');
@@ -302,13 +313,15 @@ export class PaymentsService {
     }
 
     // 3. Find matching pending order
-    const order = await this.orderRepo.findOne({
-      where: { id: rawBody.providerTransactionId ? undefined : undefined }, // will find by booking or query
-    }) || await this.orderRepo.findOne({
-      where: { status: 'pending' },
-      order: { createdAt: 'DESC' },
-      relations: { booking: { subject: true, studentUser: true } },
-    });
+    const order =
+      (await this.orderRepo.findOne({
+        where: { id: rawBody.providerTransactionId ? undefined : undefined }, // will find by booking or query
+      })) ||
+      (await this.orderRepo.findOne({
+        where: { status: 'pending' },
+        order: { createdAt: 'DESC' },
+        relations: { booking: { subject: true, studentUser: true } },
+      }));
 
     if (!order) {
       throw new NotFoundException('Matching pending payment order not found');
@@ -355,7 +368,9 @@ export class PaymentsService {
             eventType: 'payment.failed',
             payload: { bookingId: order.bookingId, amount: amountBdt },
           })
-          .catch((err) => this.logger.warn(`Failed to dispatch payment.failed notification: ${err}`));
+          .catch((err) =>
+            this.logger.warn(`Failed to dispatch payment.failed notification: ${err}`),
+          );
       }
 
       return { received: true, processed: true, orderId: order.id, status: 'failed' };
@@ -450,7 +465,9 @@ export class PaymentsService {
             amount: amountBdt,
           },
         })
-        .catch((err) => this.logger.warn(`Failed to dispatch student payment notification: ${err}`));
+        .catch((err) =>
+          this.logger.warn(`Failed to dispatch student payment notification: ${err}`),
+        );
 
       // Linked guardians
       const guardians = await this.guardianLinkRepo.find({
@@ -506,10 +523,7 @@ export class PaymentsService {
       },
     });
 
-    const alreadyRefunded = previousRefunds.reduce(
-      (sum, r) => sum + BigInt(r.amountMinor),
-      0n,
-    );
+    const alreadyRefunded = previousRefunds.reduce((sum, r) => sum + BigInt(r.amountMinor), 0n);
 
     const requestedAmount = BigInt(dto.amountMinor);
     const orderTotal = BigInt(order.amountMinor);
@@ -667,10 +681,7 @@ export class PaymentsService {
   /**
    * 5. Generate Verifiable Payment Receipt
    */
-  async getPaymentReceipt(
-    user: AuthenticatedUser,
-    orderId: string,
-  ): Promise<PaymentReceiptDto> {
+  async getPaymentReceipt(user: AuthenticatedUser, orderId: string): Promise<PaymentReceiptDto> {
     const order = await this.orderRepo.findOne({
       where: { id: orderId },
       relations: {

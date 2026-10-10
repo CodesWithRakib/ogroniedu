@@ -134,7 +134,13 @@ export class AdminOperationsController {
     @Query('limit') limit?: number,
     @Query('offset') offset?: number,
   ) {
-    const result = await this.adminService.listAllBookings({ status, studentId, tutorId, limit, offset });
+    const result = await this.adminService.listAllBookings({
+      status,
+      studentId,
+      tutorId,
+      limit,
+      offset,
+    });
     return {
       success: true,
       data: result.bookings,
@@ -164,10 +170,7 @@ export class AdminOperationsController {
   @Post('cases/assign')
   @HttpCode(HttpStatus.OK)
   @Roles('admin', 'super_admin')
-  async assignCase(
-    @CurrentUser() adminUser: AuthenticatedUser,
-    @Body() dto: AssignSupportCaseDto,
-  ) {
+  async assignCase(@CurrentUser() adminUser: AuthenticatedUser, @Body() dto: AssignSupportCaseDto) {
     const result = await this.adminService.assignCase(adminUser, dto);
     return {
       success: true,

@@ -5,26 +5,10 @@ import type { ReplacementStatus } from '../entities/tutor-replacement-case.entit
 export class UpdateReplacementCaseDto {
   @ApiPropertyOptional({
     description: 'Updated state machine status',
-    enum: [
-      'requested',
-      'under_review',
-      'matching',
-      'offered',
-      'accepted',
-      'rejected',
-      'closed',
-    ],
+    enum: ['requested', 'under_review', 'matching', 'offered', 'accepted', 'rejected', 'closed'],
   })
   @IsOptional()
-  @IsIn([
-    'requested',
-    'under_review',
-    'matching',
-    'offered',
-    'accepted',
-    'rejected',
-    'closed',
-  ])
+  @IsIn(['requested', 'under_review', 'matching', 'offered', 'accepted', 'rejected', 'closed'])
   status?: ReplacementStatus;
 
   @ApiPropertyOptional({ description: 'UUID of the replacement tutor offered/assigned' })

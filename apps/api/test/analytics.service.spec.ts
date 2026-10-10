@@ -18,7 +18,12 @@ describe('Analytics & Reporting Service Specifications (Phase 15)', () => {
       status: 'reconciled',
       accounts: [
         { code: '1010_CASH_SSLCOMMERZ', name: 'Cash', accountType: 'asset', balance: '100000' },
-        { code: '2010_STUDENT_ESCROW', name: 'Escrow', accountType: 'liability', balance: '100000' },
+        {
+          code: '2010_STUDENT_ESCROW',
+          name: 'Escrow',
+          accountType: 'liability',
+          balance: '100000',
+        },
       ],
       checkedAt: new Date(),
     }),
@@ -112,9 +117,7 @@ describe('Analytics & Reporting Service Specifications (Phase 15)', () => {
       mockDataSource.query.mockResolvedValueOnce([{ count: 3 }]);
 
       // 7. Safety reports
-      mockDataSource.query.mockResolvedValueOnce([
-        { total_safety: 2, critical_safety: 1 },
-      ]);
+      mockDataSource.query.mockResolvedValueOnce([{ total_safety: 2, critical_safety: 1 }]);
 
       // 8. Trends
       mockDataSource.query.mockResolvedValueOnce([
@@ -215,7 +218,12 @@ describe('Analytics & Reporting Service Specifications (Phase 15)', () => {
           },
         ])
         .mockResolvedValueOnce([
-          { name_en: 'Physics', name_bn: 'পদার্থবিজ্ঞান', total_bookings: 30, completed_sessions: 60 },
+          {
+            name_en: 'Physics',
+            name_bn: 'পদার্থবিজ্ঞান',
+            total_bookings: 30,
+            completed_sessions: 60,
+          },
         ]);
 
       const res = await service.getTutorPerformanceAnalytics({});
@@ -257,9 +265,7 @@ describe('Analytics & Reporting Service Specifications (Phase 15)', () => {
         .mockResolvedValueOnce([
           { total_earnings_minor: '4500000' }, // 45,000.00 BDT
         ])
-        .mockResolvedValueOnce([
-          { reviews_count: 15, average_rating: '4.90' },
-        ]);
+        .mockResolvedValueOnce([{ reviews_count: 15, average_rating: '4.90' }]);
 
       const tutorMetrics = await service.getMyTutorAnalytics(tutorId, {});
 
@@ -268,7 +274,7 @@ describe('Analytics & Reporting Service Specifications (Phase 15)', () => {
       expect(tutorMetrics.sessions.completedSessions).toBe(35);
       expect(tutorMetrics.sessions.completionRate).toBe(97.22); // 35 / 36 * 100
       expect(tutorMetrics.earnings.totalEarningsBdt).toBe(45000);
-      expect(tutorMetrics.feedback.averageRating).toBe(4.90);
+      expect(tutorMetrics.feedback.averageRating).toBe(4.9);
     });
   });
 });

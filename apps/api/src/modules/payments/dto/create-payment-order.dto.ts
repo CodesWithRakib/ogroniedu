@@ -1,10 +1,4 @@
-import {
-  IsUUID,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  IsIn,
-} from 'class-validator';
+import { IsUUID, IsNotEmpty, IsOptional, IsString, IsIn } from 'class-validator';
 
 export class CreatePaymentOrderDto {
   @IsUUID()
@@ -24,4 +18,7 @@ export class CreatePaymentOrderDto {
     message: 'paymentMethod must be bkash, nagad, rocket, upay, or card',
   })
   paymentMethod?: string;
+
+  @IsOptional()
+  amountMinor?: string | number;
 }

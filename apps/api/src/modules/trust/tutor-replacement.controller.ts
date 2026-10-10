@@ -1,12 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Patch,
-  Param,
-  Body,
-  UseGuards,
-} from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseGuards } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -41,10 +33,7 @@ export class TutorReplacementController {
   @Get(':id')
   @ApiOperation({ summary: 'Get replacement case details (ABAC Scoped)' })
   @ApiResponse({ status: 200, description: 'Replacement case details' })
-  async getCase(
-    @CurrentUser() user: AuthenticatedUser,
-    @Param('id') caseId: string,
-  ) {
+  async getCase(@CurrentUser() user: AuthenticatedUser, @Param('id') caseId: string) {
     return this.replacementService.getCase(user, caseId);
   }
 

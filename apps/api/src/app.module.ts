@@ -64,10 +64,7 @@ import {
   TutorReplacementCaseEntity,
 } from './modules/trust/entities';
 import { TrustModule } from './modules/trust/trust.module';
-import {
-  SystemSettingEntity,
-  FeatureFlagEntity,
-} from './modules/admin/entities';
+import { SystemSettingEntity, FeatureFlagEntity } from './modules/admin/entities';
 import { AdminModule } from './modules/admin/admin.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 

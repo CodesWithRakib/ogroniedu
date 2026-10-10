@@ -78,12 +78,7 @@ describe('LedgerService Unit & Invariant Tests (Double-Entry Financial Accountin
       }),
     };
 
-    service = new LedgerService(
-      mockAccountRepo,
-      mockJournalRepo,
-      mockEntryRepo,
-      mockDataSource,
-    );
+    service = new LedgerService(mockAccountRepo, mockJournalRepo, mockEntryRepo, mockDataSource);
   });
 
   describe('Double-Entry Balance Invariant (Debits == Credits)', () => {

@@ -101,7 +101,14 @@ export function SafetyReportModal({
           border: '1px solid #e2e8f0',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            marginBottom: '16px',
+          }}
+        >
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '1.25rem' }}>🚨</span>
@@ -180,11 +187,24 @@ export function SafetyReportModal({
         )}
 
         <form onSubmit={handleSubmit}>
-          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px', marginBottom: '16px' }}>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              gap: '12px',
+              marginBottom: '16px',
+            }}
+          >
             <div>
               <label
                 htmlFor="incident-category"
-                style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}
+                style={{
+                  display: 'block',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  marginBottom: '6px',
+                  color: '#334155',
+                }}
               >
                 {t('category')}
               </label>
@@ -212,7 +232,13 @@ export function SafetyReportModal({
             <div>
               <label
                 htmlFor="incident-severity"
-                style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}
+                style={{
+                  display: 'block',
+                  fontSize: '0.85rem',
+                  fontWeight: 600,
+                  marginBottom: '6px',
+                  color: '#334155',
+                }}
               >
                 {t('severity')}
               </label>
@@ -240,7 +266,13 @@ export function SafetyReportModal({
           <div style={{ marginBottom: '20px' }}>
             <label
               htmlFor="incident-description"
-              style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}
+              style={{
+                display: 'block',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                marginBottom: '6px',
+                color: '#334155',
+              }}
             >
               Description of Incident
             </label>

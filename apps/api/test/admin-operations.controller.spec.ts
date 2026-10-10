@@ -34,7 +34,10 @@ describe('AdminOperationsController & RolesGuard Permissions (Phase 14)', () => 
     queryAuditLogs: vi.fn().mockResolvedValue({ logs: [], total: 0 }),
   };
 
-  function createMockExecutionContext(user: AuthenticatedUser | undefined, requiredRoles?: string[]): ExecutionContext {
+  function createMockExecutionContext(
+    user: AuthenticatedUser | undefined,
+    requiredRoles?: string[],
+  ): ExecutionContext {
     return {
       getHandler: () => () => {},
       getClass: () => AdminOperationsController,
@@ -130,13 +133,17 @@ describe('AdminOperationsController & RolesGuard Permissions (Phase 14)', () => 
     it('should invoke user suspension endpoint', async () => {
       const res = await controller.suspendUser(adminUser, 'u1', { reason: 'Policy violation' });
       expect(res.success).toBe(true);
-      expect(mockAdminService.suspendUser).toHaveBeenCalledWith(adminUser, 'u1', { reason: 'Policy violation' });
+      expect(mockAdminService.suspendUser).toHaveBeenCalledWith(adminUser, 'u1', {
+        reason: 'Policy violation',
+      });
     });
 
     it('should invoke user roles update endpoint', async () => {
       const res = await controller.updateUserRoles(superAdminUser, 'u1', { roles: ['admin'] });
       expect(res.success).toBe(true);
-      expect(mockAdminService.updateUserRoles).toHaveBeenCalledWith(superAdminUser, 'u1', { roles: ['admin'] });
+      expect(mockAdminService.updateUserRoles).toHaveBeenCalledWith(superAdminUser, 'u1', {
+        roles: ['admin'],
+      });
     });
 
     it('should invoke impersonation start endpoint', async () => {
@@ -145,7 +152,10 @@ describe('AdminOperationsController & RolesGuard Permissions (Phase 14)', () => 
         reason: 'Debugging emergency issue',
       });
       expect(res.success).toBe(true);
-      expect(mockAdminService.startImpersonation).toHaveBeenCalledWith(superAdminUser, expect.anything());
+      expect(mockAdminService.startImpersonation).toHaveBeenCalledWith(
+        superAdminUser,
+        expect.anything(),
+      );
     });
 
     it('should invoke audit logs query endpoint', async () => {

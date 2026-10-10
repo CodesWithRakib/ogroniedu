@@ -74,18 +74,17 @@ export function ReviewFormModal({
     }
   };
 
-  const renderStarSelector = (
-    label: string,
-    value: number,
-    onChange: (val: number) => void,
-  ) => (
+  const renderStarSelector = (label: string, value: number, onChange: (val: number) => void) => (
     <div style={{ marginBottom: '12px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary, #475569)' }}>
+        <span
+          style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary, #475569)' }}
+        >
           {label}
         </span>
         <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f59e0b' }}>
-          {'★'.repeat(value)}{'☆'.repeat(5 - value)} ({value}/5)
+          {'★'.repeat(value)}
+          {'☆'.repeat(5 - value)} ({value}/5)
         </span>
       </div>
       <div style={{ display: 'flex', gap: '6px' }}>
@@ -97,7 +96,8 @@ export function ReviewFormModal({
             style={{
               flex: 1,
               padding: '6px',
-              border: star <= value ? '1px solid #f59e0b' : '1px solid var(--border-color, #e2e8f0)',
+              border:
+                star <= value ? '1px solid #f59e0b' : '1px solid var(--border-color, #e2e8f0)',
               backgroundColor: star <= value ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
               borderRadius: '6px',
               cursor: 'pointer',
@@ -144,7 +144,14 @@ export function ReviewFormModal({
           overflowY: 'auto',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            marginBottom: '16px',
+          }}
+        >
           <div>
             <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, color: '#0f172a' }}>
               {t('writeReview')}
@@ -239,7 +246,13 @@ export function ReviewFormModal({
           <div style={{ marginTop: '16px', marginBottom: '20px' }}>
             <label
               htmlFor="review-comment"
-              style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}
+              style={{
+                display: 'block',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                marginBottom: '6px',
+                color: '#334155',
+              }}
             >
               {t('writeReview')}
             </label>
@@ -261,7 +274,15 @@ export function ReviewFormModal({
                 boxSizing: 'border-box',
               }}
             />
-            <div style={{ display: 'flex', justifyContent: 'flex-end', fontSize: '0.75rem', color: '#94a3b8', marginTop: '4px' }}>
+            <div
+              style={{
+                display: 'flex',
+                justifyContent: 'flex-end',
+                fontSize: '0.75rem',
+                color: '#94a3b8',
+                marginTop: '4px',
+              }}
+            >
               {comment.length} / 2000
             </div>
           </div>

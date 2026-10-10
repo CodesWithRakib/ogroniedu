@@ -1,15 +1,7 @@
 'use client';
 
 import React, { useState, use } from 'react';
-import {
-  MapPin,
-  Mail,
-  Phone,
-  Clock,
-  Send,
-  CheckCircle2,
-  AlertCircle,
-} from 'lucide-react';
+import { MapPin, Mail, Phone, Clock, Send, CheckCircle2, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
@@ -45,7 +37,10 @@ export default function ContactPage({ params }: PageProps) {
     <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
-        <Badge variant="outline" className="text-emerald-700 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300">
+        <Badge
+          variant="outline"
+          className="text-emerald-700 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300"
+        >
           {p.badge}
         </Badge>
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 font-bengali">
@@ -77,7 +72,13 @@ export default function ContactPage({ params }: PageProps) {
                     size="sm"
                     onClick={() => {
                       setSubmitted(false);
-                      setFormData({ name: '', email: '', phone: '', category: 'general', message: '' });
+                      setFormData({
+                        name: '',
+                        email: '',
+                        phone: '',
+                        category: 'general',
+                        message: '',
+                      });
                     }}
                     className="mt-2 text-xs"
                   >
@@ -155,7 +156,10 @@ export default function ContactPage({ params }: PageProps) {
                     />
                   </div>
 
-                  <Button type="submit" className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold">
+                  <Button
+                    type="submit"
+                    className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold"
+                  >
                     <Send className="h-4 w-4 mr-2" />
                     {p.submitBtn}
                   </Button>
@@ -177,21 +181,28 @@ export default function ContactPage({ params }: PageProps) {
               <div className="flex items-start gap-3">
                 <MapPin className="h-5 w-5 text-emerald-600 shrink-0 mt-0.5" />
                 <div>
-                  <p className="font-semibold text-slate-900 dark:text-slate-100">{p.addressLine1}</p>
+                  <p className="font-semibold text-slate-900 dark:text-slate-100">
+                    {p.addressLine1}
+                  </p>
                   <p>{p.addressLine2}</p>
                 </div>
               </div>
 
               <div className="flex items-center gap-3">
                 <Mail className="h-5 w-5 text-emerald-600 shrink-0" />
-                <a href={`mailto:${p.officialEmail}`} className="text-emerald-700 dark:text-emerald-400 hover:underline">
+                <a
+                  href={`mailto:${p.officialEmail}`}
+                  className="text-emerald-700 dark:text-emerald-400 hover:underline"
+                >
                   {p.officialEmail}
                 </a>
               </div>
 
               <div className="flex items-center gap-3">
                 <Phone className="h-5 w-5 text-emerald-600 shrink-0" />
-                <span className="font-semibold text-slate-900 dark:text-slate-100">{p.officialPhone}</span>
+                <span className="font-semibold text-slate-900 dark:text-slate-100">
+                  {p.officialPhone}
+                </span>
               </div>
 
               <div className="flex items-start gap-3 pt-3 border-t border-slate-100 dark:border-slate-800 text-xs text-slate-500">

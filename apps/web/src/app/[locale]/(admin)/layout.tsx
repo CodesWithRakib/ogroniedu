@@ -32,7 +32,9 @@ export default async function AdminLayout({
               {isBn ? 'অপারেশনস ও কমপ্লায়েন্স কন্ট্রোল' : 'Ops & Compliance Control'}
             </span>
             <span className="text-xs text-slate-400 hidden sm:inline">
-              {isBn ? 'প্রশাসনিক গভর্ন্যান্স ও অডিট ট্রেইল' : 'Administrative Governance & Audit Trail'}
+              {isBn
+                ? 'প্রশাসনিক গভর্ন্যান্স ও অডিট ট্রেইল'
+                : 'Administrative Governance & Audit Trail'}
             </span>
           </div>
 

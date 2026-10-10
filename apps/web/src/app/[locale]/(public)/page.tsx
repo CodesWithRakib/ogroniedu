@@ -164,7 +164,10 @@ export default function HomePage({ params }: PageProps) {
             </p>
 
             {/* Search Bar Input */}
-            <form onSubmit={handleSearchSubmit} className="w-full max-w-xl flex flex-col sm:flex-row gap-2.5 pt-2">
+            <form
+              onSubmit={handleSearchSubmit}
+              className="w-full max-w-xl flex flex-col sm:flex-row gap-2.5 pt-2"
+            >
               <Input
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -172,7 +175,11 @@ export default function HomePage({ params }: PageProps) {
                 leadingIcon={<Search className="w-4 h-4" />}
                 className="flex-1 h-12 text-sm"
               />
-              <Button type="submit" size="lg" className="h-12 px-6 font-semibold gap-2 whitespace-nowrap bg-emerald-700 hover:bg-emerald-800 text-white">
+              <Button
+                type="submit"
+                size="lg"
+                className="h-12 px-6 font-semibold gap-2 whitespace-nowrap bg-emerald-700 hover:bg-emerald-800 text-white"
+              >
                 <Search className="w-4 h-4" />
                 {dict.hero.ctaSearch}
               </Button>
@@ -190,9 +197,7 @@ export default function HomePage({ params }: PageProps) {
                 <div className="text-xl sm:text-2xl font-bold text-slate-900 dark:text-slate-100 font-bengali">
                   {formatLocalizedNumber(20000, locale)}+
                 </div>
-                <div className="text-xs text-slate-500 font-bengali">
-                  {dict.hero.statsStudents}
-                </div>
+                <div className="text-xs text-slate-500 font-bengali">{dict.hero.statsStudents}</div>
               </div>
               <div className="col-span-2 sm:col-span-1">
                 <div className="text-xl sm:text-2xl font-bold text-emerald-700 dark:text-emerald-400 font-bengali">
@@ -212,9 +217,7 @@ export default function HomePage({ params }: PageProps) {
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-12 space-y-3">
-            <Badge variant="outline">
-              {locale === 'bn' ? 'মূল বৈশিষ্ট্যসমূহ' : 'Key Pillars'}
-            </Badge>
+            <Badge variant="outline">{locale === 'bn' ? 'মূল বৈশিষ্ট্যসমূহ' : 'Key Pillars'}</Badge>
             <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-slate-100 font-bengali">
               {dict.features.title}
             </h2>

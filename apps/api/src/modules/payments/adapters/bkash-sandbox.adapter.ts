@@ -63,7 +63,10 @@ export class BkashSandboxAdapter implements PaymentProviderAdapter {
               }, {}),
           );
 
-    const expected = crypto.createHmac('sha256', this.secretKey).update(payloadString).digest('hex');
+    const expected = crypto
+      .createHmac('sha256', this.secretKey)
+      .update(payloadString)
+      .digest('hex');
 
     try {
       const sigBuf = Buffer.from(rawSignature.toLowerCase(), 'utf-8');
@@ -78,7 +81,9 @@ export class BkashSandboxAdapter implements PaymentProviderAdapter {
   }
 
   async queryTransaction(providerTransactionId: string): Promise<ProviderTransactionResult> {
-    this.logger.log(`Querying bKash sandbox transaction server-to-server: ${providerTransactionId}`);
+    this.logger.log(
+      `Querying bKash sandbox transaction server-to-server: ${providerTransactionId}`,
+    );
     // Simulate server-to-server verified query
     return {
       providerTransactionId,

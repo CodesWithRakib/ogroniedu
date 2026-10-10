@@ -97,7 +97,9 @@ describe('Phase 16 — Public Website, SEO & Route Layout Separation Tests', () 
     expect(bnDict.pricingPage.commissionSubtitle).toContain('৯২%');
 
     expect(enDict.safetyPage.minorPolicyHeading).toContain('Minor Consent Policy (Under 18)');
-    expect(bnDict.safetyPage.minorPolicyHeading).toContain('১৮ বছরের কম বয়সীদের অভিভাবক সম্মতি নীতি');
+    expect(bnDict.safetyPage.minorPolicyHeading).toContain(
+      '১৮ বছরের কম বয়সীদের অভিভাবক সম্মতি নীতি',
+    );
 
     expect(enDict.safetyPage.screeningHeading).toContain('100% Educator Screening');
     expect(bnDict.safetyPage.screeningHeading).toContain('১০০% শিক্ষক ব্যাকগ্রাউন্ড যাচাই');

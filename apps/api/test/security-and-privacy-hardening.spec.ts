@@ -102,7 +102,10 @@ describe('Phase 17 — Security and Privacy Hardening Tests', () => {
         }),
       } as any;
 
-      filter.catch(new Error('FATAL: syntax error at or near "SELECT * FROM users WHERE password="'), mockHost);
+      filter.catch(
+        new Error('FATAL: syntax error at or near "SELECT * FROM users WHERE password="'),
+        mockHost,
+      );
 
       expect(status).toBe(500);
       expect(body.error).toBe('Internal Server Error');
@@ -239,7 +242,11 @@ describe('Phase 17 — Security and Privacy Hardening Tests', () => {
 
     beforeEach(() => {
       mockOrderRepo = { findOne: vi.fn(), save: vi.fn((o) => Promise.resolve(o)) };
-      mockTxnRepo = { findOne: vi.fn(), create: vi.fn((t) => t), save: vi.fn((t) => Promise.resolve(t)) };
+      mockTxnRepo = {
+        findOne: vi.fn(),
+        create: vi.fn((t) => t),
+        save: vi.fn((t) => Promise.resolve(t)),
+      };
       mockRefundRepo = { findOne: vi.fn() };
       mockBookingRepo = { findOne: vi.fn(), save: vi.fn((b) => Promise.resolve(b)) };
       mockSessionRepo = { find: vi.fn() };
@@ -367,9 +374,7 @@ describe('Phase 17 — Security and Privacy Hardening Tests', () => {
     });
 
     it('NEGATIVE TEST: should reject account deletion if user has active tutoring bookings', async () => {
-      mockBookingRepo.find.mockResolvedValueOnce([
-        { id: 'booking-active-1', status: 'confirmed' },
-      ]);
+      mockBookingRepo.find.mockResolvedValueOnce([{ id: 'booking-active-1', status: 'confirmed' }]);
 
       await expect(
         usersService.deleteAccount('usr-active-1', 'Need to leave platform'),

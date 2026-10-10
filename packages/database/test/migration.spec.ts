@@ -340,9 +340,11 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
     });
 
     it('NEGATIVE TEST: should reject duplicate review for same booking and reviewer via uq_review_booking_reviewer', async () => {
-      const res = await client.query<{ id: string; student_user_id: string; tutor_user_id: string }>(
-        'SELECT id, student_user_id, tutor_user_id FROM bookings LIMIT 1;'
-      );
+      const res = await client.query<{
+        id: string;
+        student_user_id: string;
+        tutor_user_id: string;
+      }>('SELECT id, student_user_id, tutor_user_id FROM bookings LIMIT 1;');
       if (res.rows.length > 0) {
         const b = res.rows[0];
         await client.query(`
@@ -399,4 +401,3 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
     });
   });
 });
-

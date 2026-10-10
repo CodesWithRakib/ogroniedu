@@ -275,9 +275,9 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
     it('NEGATIVE TEST: should reject webhook with invalid signature (401 Unauthorized)', async () => {
       mockAdapterFactory.getAdapter().verifyWebhookSignature.mockReturnValue(false);
 
-      await expect(
-        service.handleWebhook('bkash', {}, validWebhookPayload),
-      ).rejects.toThrow(UnauthorizedException);
+      await expect(service.handleWebhook('bkash', {}, validWebhookPayload)).rejects.toThrow(
+        UnauthorizedException,
+      );
     });
 
     it('NEGATIVE TEST: should reject webhook when amount mismatches pending order (400 BadRequest)', async () => {
@@ -287,9 +287,9 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
         amountMinor: 50000, // 500 BDT instead of 1000 BDT!
       };
 
-      await expect(
-        service.handleWebhook('bkash', {}, tamperedPayload),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.handleWebhook('bkash', {}, tamperedPayload)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('IDEMPOTENCY: should ignore duplicate webhook event without double posting to ledger', async () => {
@@ -392,9 +392,7 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
     });
 
     it('should execute reconciliation audit confirming matching orders and balanced ledger', async () => {
-      mockOrderRepo.find.mockResolvedValue([
-        { ...sampleOrder, status: 'succeeded' },
-      ]);
+      mockOrderRepo.find.mockResolvedValue([{ ...sampleOrder, status: 'succeeded' }]);
       mockTransactionRepo.find.mockResolvedValue([
         { paymentOrderId: orderId, status: 'succeeded' },
       ]);
@@ -407,9 +405,7 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
     });
 
     it('should flag discrepancy when succeeded order has missing transaction record', async () => {
-      mockOrderRepo.find.mockResolvedValue([
-        { ...sampleOrder, status: 'succeeded' },
-      ]);
+      mockOrderRepo.find.mockResolvedValue([{ ...sampleOrder, status: 'succeeded' }]);
       mockTransactionRepo.find.mockResolvedValue([]);
 
       const report = await service.runReconciliation();

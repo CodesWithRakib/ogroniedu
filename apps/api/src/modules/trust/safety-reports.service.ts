@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SafetyReportEntity } from './entities/safety-report.entity';
@@ -70,15 +65,13 @@ export class SafetyReportsService {
         hasEvidence: (dto.evidenceAssetIds?.length || 0) > 0,
       },
     });
-    await this.auditRepo.save(auditLog).catch((err) =>
-      this.logger.warn(`Failed to persist audit log for safety report: ${err}`),
-    );
+    await this.auditRepo
+      .save(auditLog)
+      .catch((err) => this.logger.warn(`Failed to persist audit log for safety report: ${err}`));
 
     // Outbox Event
     const outboxEvent = this.outboxRepo.create({
-      eventType: isUrgent
-        ? 'safety.critical_escalation'
-        : 'safety.report_created',
+      eventType: isUrgent ? 'safety.critical_escalation' : 'safety.report_created',
       aggregateType: 'safety_report',
       aggregateId: savedReport.id,
       payload: {
@@ -90,9 +83,9 @@ export class SafetyReportsService {
         reportedUserId: dto.reportedUserId,
       },
     });
-    await this.outboxRepo.save(outboxEvent).catch((err) =>
-      this.logger.warn(`Failed to emit outbox event for safety report: ${err}`),
-    );
+    await this.outboxRepo
+      .save(outboxEvent)
+      .catch((err) => this.logger.warn(`Failed to emit outbox event for safety report: ${err}`));
 
     if (isUrgent) {
       this.logger.warn(
@@ -107,10 +100,7 @@ export class SafetyReportsService {
    * 2. Get Safety Report (ABAC Scoped: Reporter or Admin only)
    * Invariant: Reported users or unrelated users CANNOT see confidential reports or evidence
    */
-  async getReport(
-    user: AuthenticatedUser,
-    reportId: string,
-  ): Promise<SafetyReportEntity> {
+  async getReport(user: AuthenticatedUser, reportId: string): Promise<SafetyReportEntity> {
     const report = await this.reportRepo.findOne({
       where: { id: reportId },
       relations: { reporter: true, reportedUser: true },
@@ -193,9 +183,7 @@ export class SafetyReportsService {
           safeMetadata: { status: report.status, escalationLevel: report.escalationLevel },
         }),
       )
-      .catch((err) =>
-        this.logger.warn(`Failed to persist audit log for report update: ${err}`),
-      );
+      .catch((err) => this.logger.warn(`Failed to persist audit log for report update: ${err}`));
 
     return updated;
   }

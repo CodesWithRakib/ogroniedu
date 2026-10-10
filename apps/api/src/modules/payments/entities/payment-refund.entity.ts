@@ -12,12 +12,7 @@ import { PaymentOrderEntity } from './payment-order.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 
 export type RefundStatus =
-  | 'requested'
-  | 'approved'
-  | 'processing'
-  | 'succeeded'
-  | 'failed'
-  | 'rejected';
+  'requested' | 'approved' | 'processing' | 'succeeded' | 'failed' | 'rejected';
 
 @Entity('payment_refunds')
 @Index('ix_payment_refunds_order', ['paymentOrderId', 'createdAt'])

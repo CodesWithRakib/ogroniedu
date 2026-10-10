@@ -72,9 +72,7 @@ export class TutorReplacementService {
     });
 
     if (existing && !['closed', 'rejected'].includes(existing.status)) {
-      throw new BadRequestException(
-        'A replacement case is already active for this booking',
-      );
+      throw new BadRequestException('A replacement case is already active for this booking');
     }
 
     const replacementCase = this.caseRepo.create({
@@ -103,9 +101,11 @@ export class TutorReplacementService {
         reasonCode: dto.reasonCode,
       },
     });
-    await this.auditRepo.save(auditLog).catch((err) =>
-      this.logger.warn(`Failed to persist audit log for replacement request: ${err}`),
-    );
+    await this.auditRepo
+      .save(auditLog)
+      .catch((err) =>
+        this.logger.warn(`Failed to persist audit log for replacement request: ${err}`),
+      );
 
     // Outbox Event
     const outboxEvent = this.outboxRepo.create({
@@ -119,9 +119,11 @@ export class TutorReplacementService {
         requestedBy: user.id,
       },
     });
-    await this.outboxRepo.save(outboxEvent).catch((err) =>
-      this.logger.warn(`Failed to emit outbox event for replacement request: ${err}`),
-    );
+    await this.outboxRepo
+      .save(outboxEvent)
+      .catch((err) =>
+        this.logger.warn(`Failed to emit outbox event for replacement request: ${err}`),
+      );
 
     // Notify Operations / Support
     this.logger.log(
@@ -135,10 +137,7 @@ export class TutorReplacementService {
    * 2. Get Replacement Case Details (ABAC Scoped)
    * Invariant: Unrelated users receive 403 Forbidden (Unrelated case denial)
    */
-  async getCase(
-    user: AuthenticatedUser,
-    caseId: string,
-  ): Promise<TutorReplacementCaseEntity> {
+  async getCase(user: AuthenticatedUser, caseId: string): Promise<TutorReplacementCaseEntity> {
     const replacementCase = await this.caseRepo.findOne({
       where: { id: caseId },
       relations: { booking: true, requester: true, replacementTutor: true },
@@ -149,10 +148,8 @@ export class TutorReplacementService {
     }
 
     const isRequester = user.id === replacementCase.requestedBy;
-    const isBookingStudent =
-      user.id === replacementCase.booking?.studentUserId;
-    const isBookingGuardian =
-      user.id === replacementCase.booking?.requesterUserId;
+    const isBookingStudent = user.id === replacementCase.booking?.studentUserId;
+    const isBookingGuardian = user.id === replacementCase.booking?.requesterUserId;
     const isAdmin = user.roles?.includes('admin');
 
     if (!isRequester && !isBookingStudent && !isBookingGuardian && !isAdmin) {
@@ -188,9 +185,7 @@ export class TutorReplacementService {
     dto: UpdateReplacementCaseDto,
   ): Promise<TutorReplacementCaseEntity> {
     if (!user.roles?.includes('admin')) {
-      throw new ForbiddenException(
-        'Admin privileges required to manage tutor replacement cases',
-      );
+      throw new ForbiddenException('Admin privileges required to manage tutor replacement cases');
     }
 
     const replacementCase = await this.caseRepo.findOne({
@@ -233,8 +228,7 @@ export class TutorReplacementService {
           eventType: 'system.announcement',
           payload: {
             bookingId: booking.id,
-            message:
-              'A verified replacement tutor has been matched and assigned to your course.',
+            message: 'A verified replacement tutor has been matched and assigned to your course.',
           },
         })
         .catch((err) =>

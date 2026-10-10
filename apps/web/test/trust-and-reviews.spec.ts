@@ -102,7 +102,11 @@ describe('Trust, Reviews, Safety & Replacement Frontend Tests (Phase 13)', () =>
     expect(enDict.trust.replacementTitle).toContain('Tutor Replacement Guarantee');
     expect(bnDict.trust.safetyReportTitle).toBe('নিরাপত্তা ও অভিযোগ পর্যবেক্ষণ');
     expect(enDict.trust.safetyReportTitle).toBe('Trust, Safety & Abuse Reporting');
-    expect(bnDict.trust.antiSelfReviewNotice).toContain('টিউটর কখনোই নিজের কোর্সের জন্য রিভিউ দিতে পারবেন না');
-    expect(enDict.trust.antiSelfReviewNotice).toContain('Tutors are strictly prohibited from reviewing their own courses');
+    expect(bnDict.trust.antiSelfReviewNotice).toContain(
+      'টিউটর কখনোই নিজের কোর্সের জন্য রিভিউ দিতে পারবেন না',
+    );
+    expect(enDict.trust.antiSelfReviewNotice).toContain(
+      'Tutors are strictly prohibited from reviewing their own courses',
+    );
   });
 });

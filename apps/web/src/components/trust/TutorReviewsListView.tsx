@@ -54,9 +54,7 @@ export function TutorReviewsListView({
       }
 
       const updated = await res.json();
-      setLocalReviews((prev) =>
-        prev.map((r) => (r.id === reviewId ? { ...r, ...updated } : r)),
-      );
+      setLocalReviews((prev) => prev.map((r) => (r.id === reviewId ? { ...r, ...updated } : r)));
       setActiveReplyReviewId(null);
       setReplyText('');
     } catch (err: any) {
@@ -84,7 +82,8 @@ export function TutorReviewsListView({
             fontSize: '0.9rem',
           }}
         >
-          No reviews yet. Completed session students and guardians will be able to leave feedback here.
+          No reviews yet. Completed session students and guardians will be able to leave feedback
+          here.
         </div>
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
@@ -225,7 +224,14 @@ export function TutorReviewsListView({
                           boxSizing: 'border-box',
                         }}
                       />
-                      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '8px', marginTop: '6px' }}>
+                      <div
+                        style={{
+                          display: 'flex',
+                          justifyContent: 'flex-end',
+                          gap: '8px',
+                          marginTop: '6px',
+                        }}
+                      >
                         <button
                           type="button"
                           onClick={() => setActiveReplyReviewId(null)}

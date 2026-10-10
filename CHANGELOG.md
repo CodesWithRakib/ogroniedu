@@ -1,5 +1,41 @@
 # Changelog
 
+## 1.18.0 — Phase 18 Testing and Automation Completion
+
+- **Definition of Done Enforced — Every implemented requirement has test mapping/evidence:**
+  - Complete verification across all requirements in `docs/traceability-matrix.md`.
+  - Monorepo test suite expanded to **451 total passed tests (0 failures, 0 skipped, 0 disabled)** across 60 test files:
+    - `@ogroniedu/api`: 41 test files, 360 tests passing (+11 tests).
+    - `@ogroniedu/web`: 16 test files, 70 tests passing (+10 tests).
+    - `@ogroniedu/database`: 3 test files, 21 tests passing (+5 tests).
+  - TypeScript compilation passes 100% cleanly across all 5 workspace packages (`pnpm typecheck`).
+  - Documentation validation passed 100% across all 141 files (`pnpm docs:validate`).
+- **End-to-End Tutoring Lifecycle Test Suite (`apps/api/test/e2e-tutoring-lifecycle.spec.ts`):**
+  - Stage 1: Student submits tutoring request (`requested`), tutor reviews and accepts (`accepted`).
+  - Stage 2: Student creates bKash order, webhook delivers signed callback, ledger funds Escrow account (`1000`), booking transitions to `confirmed`.
+  - Stage 3: Tutor marks session attendance (`present`), creates calculus coursework, student submits assignment, and tutor grades with feedback (`reviewed`, score 95/100).
+  - Stage 4: Student settles session milestone releasing 92% to tutor and 8% platform fee; student leaves verified 5-star review.
+  - Stage 5 (Negative Test): Enforced anti-self-review invariant preventing tutors from submitting reviews on their own sessions.
+- **Concurrency & Idempotency Test Suite (`apps/api/test/idempotency.spec.ts`):**
+  - Validated HTTP order creation replay caching returning identical checkout responses without double-charging.
+  - Validated payload conflict detection: replaying the same idempotency key with mismatched booking or amount throws `400 BadRequestException`.
+  - Validated double-entry ledger `postJournal` idempotency deduplicating duplicate entries.
+  - Validated payment webhook event deduplication ignoring repeated provider notifications.
+- **Database BCDR Disaster Recovery Drill (`packages/database/test/bcdr-recovery.spec.ts`):**
+  - Simulated catastrophic primary storage wipe, verifying cold replay of all 9 migrations (`001_initial_schema.sql` through `009_security_and_privacy_hardening.sql`) in monotonic ID sequence without gaps.
+  - Verified catalog consistency: all mandatory tables, indexes, and operational analytics view `v_operational_daily_metrics` restored.
+  - Verified Point-In-Time Recovery (PITR) idempotency: subsequent run detects 0 pending migrations and preserves schema intact.
+  - Verified double-entry ledger balance conservation: debit sum equals credit sum (net zero) validated via database function `verify_ledger_journal_balance`.
+- **Web Accessibility & WCAG 2.1 AA Compliance Suite (`apps/web/test/accessibility-and-a11y.spec.ts`):**
+  - Validated form control label associations (`htmlFor` matching input `id`) for assistive technology screen readers.
+  - Validated error state handling with `aria-invalid="true"` and `aria-describedby` error container linking.
+  - Validated button async loading states (`aria-busy="true"` and `aria-disabled="true"`).
+  - Validated WAI-ARIA tab hierarchy (`tablist`, `tab`, `tabpanel`) with keyboard navigable focus rings.
+  - Validated high-contrast AA tokens (`bg-emerald-700`, `text-white`, `ring-emerald-600`) and Bengali Unicode typography rendering.
+- **Traceability & Audits Documentation:**
+  - Updated `docs/traceability-matrix.md` with test mappings for `FR-007`, `FR-010`, `FR-011`, `NFR-002`, `NFR-004`, `NFR-006`, and `NFR-008`.
+  - Authored `docs/audits/testing-and-automation-audit.md`.
+
 ## 1.17.0 — Phase 17 Security and Privacy Hardening
 
 - **Definition of Done Enforced — No known critical defect; unresolved high risks block release:**
@@ -206,7 +242,7 @@
   - Added unit test suite `apps/api/test/sslcommerz.adapter.spec.ts` (7 tests passed).
 
 - **Notification Preferences & Outbox Failure Isolation (Phase 12 Core):**
-  - Definition of Done enforced: *Delivery failure cannot corrupt committed business state*.
+  - Definition of Done enforced: _Delivery failure cannot corrupt committed business state_.
   - Database migration `005_notifications_and_communication.sql` introducing `notification_preferences` with composite unique constraint `(user_id, category, channel)` and `booking_messages` with participant indexes and check constraints.
   - Entities created: `NotificationPreferenceEntity`, `BookingMessageEntity`.
   - Granular Notification Preferences (`GET /api/v1/notifications/preferences`, `PATCH /api/v1/notifications/preferences`): Users control notifications across categories (`academic`, `booking`, `payment`, `security`, `marketing`) and channels (`in_app`, `email`, `sms`, `push`). Critical security alerts bypass suppression.

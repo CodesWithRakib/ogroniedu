@@ -39,13 +39,9 @@ export class PaymentsController {
     @Headers('idempotency-key') idempotencyKeyHeader?: string,
     @Headers('x-request-id') requestId?: string,
   ) {
-    const key = idempotencyKeyHeader || `order-idem-${Date.now()}-${Math.random().toString(36).substring(7)}`;
-    const result = await this.paymentsService.createPaymentOrder(
-      user,
-      dto,
-      key,
-      requestId,
-    );
+    const key =
+      idempotencyKeyHeader || `order-idem-${Date.now()}-${Math.random().toString(36).substring(7)}`;
+    const result = await this.paymentsService.createPaymentOrder(user, dto, key, requestId);
     return {
       success: true,
       message: 'Payment order created successfully.',
@@ -61,12 +57,7 @@ export class PaymentsController {
     @Body() body: PaymentWebhookDto,
     @Headers('x-request-id') requestId?: string,
   ) {
-    const result = await this.paymentsService.handleWebhook(
-      provider,
-      headers,
-      body,
-      requestId,
-    );
+    const result = await this.paymentsService.handleWebhook(provider, headers, body, requestId);
     return {
       success: true,
       message: 'Webhook processed successfully.',

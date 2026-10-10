@@ -19,13 +19,7 @@ export type ReplacementReasonCode =
   | 'other';
 
 export type ReplacementStatus =
-  | 'requested'
-  | 'under_review'
-  | 'matching'
-  | 'offered'
-  | 'accepted'
-  | 'rejected'
-  | 'closed';
+  'requested' | 'under_review' | 'matching' | 'offered' | 'accepted' | 'rejected' | 'closed';
 
 @Entity('tutor_replacement_cases')
 export class TutorReplacementCaseEntity {

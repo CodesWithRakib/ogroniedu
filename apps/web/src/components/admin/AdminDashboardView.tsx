@@ -82,7 +82,11 @@ export interface AdminDashboardProps {
   onReactivateUser?: (userId: string) => Promise<void>;
   onUpdateRoles?: (userId: string, roles: string[]) => Promise<void>;
   onCancelBooking?: (bookingId: string, reason: string, refundStudent: boolean) => Promise<void>;
-  onStartImpersonation?: (targetUserId: string, reason: string, durationMinutes: number) => Promise<void>;
+  onStartImpersonation?: (
+    targetUserId: string,
+    reason: string,
+    durationMinutes: number,
+  ) => Promise<void>;
   onUpdateSetting?: (key: string, value: Record<string, any>) => Promise<void>;
   onUpdateFeatureFlag?: (key: string, enabled: boolean) => Promise<void>;
 }
@@ -99,18 +103,44 @@ export function AdminDashboardView({
     discrepancy: '0',
     status: 'reconciled',
     accounts: [
-      { code: '1010_CASH_SSLCOMMERZ', name: 'SSLCOMMERZ Settlement', accountType: 'asset', balance: '500,000' },
-      { code: '2010_STUDENT_ESCROW', name: 'Student Escrow Holding', accountType: 'liability', balance: '500,000' },
+      {
+        code: '1010_CASH_SSLCOMMERZ',
+        name: 'SSLCOMMERZ Settlement',
+        accountType: 'asset',
+        balance: '500,000',
+      },
+      {
+        code: '2010_STUDENT_ESCROW',
+        name: 'Student Escrow Holding',
+        accountType: 'liability',
+        balance: '500,000',
+      },
     ],
   },
   initialSettings = [
     { key: 'platform_fee_percent', value: { percent: 8 }, description: 'Platform fee percentage' },
-    { key: 'cancellation_window_hours', value: { hours: 24 }, description: 'Free cancellation window' },
-    { key: 'replacement_guarantee_trial_hours', value: { hours: 48 }, description: 'Replacement trial hours' },
-    { key: 'impersonation_max_minutes', value: { minutes: 15 }, description: 'Max impersonation time' },
+    {
+      key: 'cancellation_window_hours',
+      value: { hours: 24 },
+      description: 'Free cancellation window',
+    },
+    {
+      key: 'replacement_guarantee_trial_hours',
+      value: { hours: 48 },
+      description: 'Replacement trial hours',
+    },
+    {
+      key: 'impersonation_max_minutes',
+      value: { minutes: 15 },
+      description: 'Max impersonation time',
+    },
   ],
   initialFeatureFlags = [
-    { key: 'emergency_maintenance_mode', enabled: false, rules: { allowRoles: ['admin', 'super_admin'] } },
+    {
+      key: 'emergency_maintenance_mode',
+      enabled: false,
+      rules: { allowRoles: ['admin', 'super_admin'] },
+    },
     { key: 'instant_replacement_matching', enabled: true, rules: {} },
     { key: 'strict_pnr_verification', enabled: true, rules: {} },
   ],
@@ -134,7 +164,8 @@ export function AdminDashboardView({
   const [bookings, setBookings] = useState<AdminBookingItem[]>(initialBookings);
   const [settings, setSettings] = useState<AdminSystemSettingItem[]>(initialSettings);
   const [featureFlags, setFeatureFlags] = useState<AdminFeatureFlagItem[]>(initialFeatureFlags);
-  const [reconciliation, setReconciliation] = useState<AdminReconciliationData>(initialReconciliation);
+  const [reconciliation, setReconciliation] =
+    useState<AdminReconciliationData>(initialReconciliation);
   const [auditLogs] = useState<AdminAuditLogItem[]>(initialAuditLogs);
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -147,11 +178,14 @@ export function AdminDashboardView({
   const [selectedUserForRoles, setSelectedUserForRoles] = useState<AdminUserItem | null>(null);
   const [editingRoles, setEditingRoles] = useState<string[]>([]);
 
-  const [selectedBookingForCancel, setSelectedBookingForCancel] = useState<AdminBookingItem | null>(null);
+  const [selectedBookingForCancel, setSelectedBookingForCancel] = useState<AdminBookingItem | null>(
+    null,
+  );
   const [cancelReason, setCancelReason] = useState('');
   const [refundChecked, setRefundChecked] = useState(true);
 
-  const [selectedUserForImpersonate, setSelectedUserForImpersonate] = useState<AdminUserItem | null>(null);
+  const [selectedUserForImpersonate, setSelectedUserForImpersonate] =
+    useState<AdminUserItem | null>(null);
   const [impersonateReason, setImpersonateReason] = useState('');
   const [impersonateMinutes, setImpersonateMinutes] = useState(15);
   const [activeImpersonation, setActiveImpersonation] = useState<{
@@ -219,7 +253,11 @@ export function AdminDashboardView({
     if (!selectedUserForImpersonate || !impersonateReason.trim()) return;
     const cappedDuration = Math.min(impersonateMinutes, 15);
     if (onStartImpersonation) {
-      await onStartImpersonation(selectedUserForImpersonate.id, impersonateReason.trim(), cappedDuration);
+      await onStartImpersonation(
+        selectedUserForImpersonate.id,
+        impersonateReason.trim(),
+        cappedDuration,
+      );
     }
     setActiveImpersonation({
       targetName: selectedUserForImpersonate.displayName,
@@ -241,7 +279,10 @@ export function AdminDashboardView({
   };
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6" data-testid="admin-dashboard-view">
+    <div
+      className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6"
+      data-testid="admin-dashboard-view"
+    >
       {/* 1. Active Impersonation Top Warning Banner */}
       {activeImpersonation && (
         <div
@@ -252,7 +293,9 @@ export function AdminDashboardView({
             <span className="text-2xl">⚠️</span>
             <div>
               <p className="font-bold text-amber-300 text-sm tracking-wide">
-                {t('activeImpersonationBanner')}: <span className="underline">{activeImpersonation.targetName}</span> ({activeImpersonation.targetId})
+                {t('activeImpersonationBanner')}:{' '}
+                <span className="underline">{activeImpersonation.targetName}</span> (
+                {activeImpersonation.targetId})
               </p>
               <p className="text-xs text-amber-200/80">
                 {t('impersonationWarning')} (Session window: {activeImpersonation.expiresIn} min)
@@ -301,7 +344,10 @@ export function AdminDashboardView({
         </div>
         <div className="bg-slate-900/80 border border-slate-800 rounded-xl p-4 shadow-sm">
           <p className="text-xs font-medium text-slate-400">{t('replacementQueue')}</p>
-          <p className="text-2xl font-bold text-amber-400 mt-1" data-testid="metric-replacement-cases">
+          <p
+            className="text-2xl font-bold text-amber-400 mt-1"
+            data-testid="metric-replacement-cases"
+          >
             {metrics.activeReplacementCases}
           </p>
           <span className="text-[10px] text-amber-500/80">Active Cases</span>
@@ -380,15 +426,21 @@ export function AdminDashboardView({
             <div className="grid grid-cols-3 gap-3 text-center">
               <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
                 <p className="text-xs text-slate-400">{t('totalDebits')}</p>
-                <p className="text-sm font-mono font-bold text-slate-200 mt-1">{reconciliation.totalDebits} BDT</p>
+                <p className="text-sm font-mono font-bold text-slate-200 mt-1">
+                  {reconciliation.totalDebits} BDT
+                </p>
               </div>
               <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
                 <p className="text-xs text-slate-400">{t('totalCredits')}</p>
-                <p className="text-sm font-mono font-bold text-slate-200 mt-1">{reconciliation.totalCredits} BDT</p>
+                <p className="text-sm font-mono font-bold text-slate-200 mt-1">
+                  {reconciliation.totalCredits} BDT
+                </p>
               </div>
               <div className="bg-slate-950 p-3 rounded-lg border border-slate-800">
                 <p className="text-xs text-slate-400">{t('discrepancy')}</p>
-                <p className={`text-sm font-mono font-bold mt-1 ${reconciliation.discrepancy === '0' ? 'text-emerald-400' : 'text-rose-400'}`}>
+                <p
+                  className={`text-sm font-mono font-bold mt-1 ${reconciliation.discrepancy === '0' ? 'text-emerald-400' : 'text-rose-400'}`}
+                >
                   {reconciliation.discrepancy}
                 </p>
               </div>
@@ -403,8 +455,12 @@ export function AdminDashboardView({
             </p>
             <div className="text-xs text-slate-400 space-y-2">
               <p>• All mutations are recorded to PostgreSQL `audit_logs` table.</p>
-              <p>• Credentials, passwords, card PANs, and session tokens are automatically sanitized.</p>
-              <p>• Least-privilege role boundaries enforced at NestJS `RolesGuard` controller level.</p>
+              <p>
+                • Credentials, passwords, card PANs, and session tokens are automatically sanitized.
+              </p>
+              <p>
+                • Least-privilege role boundaries enforced at NestJS `RolesGuard` controller level.
+              </p>
             </div>
           </div>
         </div>
@@ -456,10 +512,16 @@ export function AdminDashboardView({
                   </tr>
                 ) : (
                   filteredUsers.map((user) => (
-                    <tr key={user.id} className="hover:bg-slate-800/40" data-testid={`user-row-${user.id}`}>
+                    <tr
+                      key={user.id}
+                      className="hover:bg-slate-800/40"
+                      data-testid={`user-row-${user.id}`}
+                    >
                       <td className="px-4 py-3 font-medium text-slate-200">
                         {user.displayName}
-                        <span className="block text-[10px] text-slate-500 font-mono">{user.id}</span>
+                        <span className="block text-[10px] text-slate-500 font-mono">
+                          {user.id}
+                        </span>
                       </td>
                       <td className="px-4 py-3 text-slate-400">
                         {user.email || user.phoneE164 || '—'}
@@ -473,8 +535,8 @@ export function AdminDashboardView({
                                 r === 'super_admin'
                                   ? 'bg-rose-500/20 text-rose-300 border border-rose-500/30'
                                   : r === 'admin'
-                                  ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
-                                  : 'bg-slate-800 text-slate-300'
+                                    ? 'bg-purple-500/20 text-purple-300 border border-purple-500/30'
+                                    : 'bg-slate-800 text-slate-300'
                               }`}
                             >
                               {r}
@@ -570,22 +632,32 @@ export function AdminDashboardView({
                   </tr>
                 ) : (
                   bookings.map((booking) => (
-                    <tr key={booking.id} className="hover:bg-slate-800/40" data-testid={`booking-row-${booking.id}`}>
-                      <td className="px-4 py-3 font-mono text-[11px] text-slate-400">{booking.id.substring(0, 8)}...</td>
-                      <td className="px-4 py-3 font-medium text-slate-200">{booking.studentName}</td>
+                    <tr
+                      key={booking.id}
+                      className="hover:bg-slate-800/40"
+                      data-testid={`booking-row-${booking.id}`}
+                    >
+                      <td className="px-4 py-3 font-mono text-[11px] text-slate-400">
+                        {booking.id.substring(0, 8)}...
+                      </td>
+                      <td className="px-4 py-3 font-medium text-slate-200">
+                        {booking.studentName}
+                      </td>
                       <td className="px-4 py-3 text-slate-300">{booking.tutorName}</td>
                       <td className="px-4 py-3 text-slate-400">
                         {booking.subjectName} ({booking.mode})
                       </td>
-                      <td className="px-4 py-3 font-semibold text-slate-200">{booking.priceBdt} BDT</td>
+                      <td className="px-4 py-3 font-semibold text-slate-200">
+                        {booking.priceBdt} BDT
+                      </td>
                       <td className="px-4 py-3">
                         <span
                           className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                             booking.status === 'confirmed'
                               ? 'bg-blue-500/20 text-blue-300'
                               : booking.status === 'completed'
-                              ? 'bg-emerald-500/20 text-emerald-300'
-                              : 'bg-slate-800 text-slate-400'
+                                ? 'bg-emerald-500/20 text-emerald-300'
+                                : 'bg-slate-800 text-slate-400'
                           }`}
                         >
                           {booking.status}
@@ -618,7 +690,9 @@ export function AdminDashboardView({
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-lg font-bold text-slate-200">{t('reconciliationTitle')}</h3>
-                <p className="text-xs text-slate-400">Continuous ledger reconciliation across bank settlement and student escrow</p>
+                <p className="text-xs text-slate-400">
+                  Continuous ledger reconciliation across bank settlement and student escrow
+                </p>
               </div>
               <button
                 onClick={() => {
@@ -633,7 +707,10 @@ export function AdminDashboardView({
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
               {reconciliation.accounts.map((acc) => (
-                <div key={acc.code} className="bg-slate-950 border border-slate-800 p-4 rounded-lg flex justify-between items-center">
+                <div
+                  key={acc.code}
+                  className="bg-slate-950 border border-slate-800 p-4 rounded-lg flex justify-between items-center"
+                >
                   <div>
                     <span className="text-xs font-mono text-slate-500">{acc.code}</span>
                     <p className="text-sm font-semibold text-slate-200">{acc.name}</p>
@@ -659,7 +736,9 @@ export function AdminDashboardView({
                 <div key={setting.key} className="py-3 flex items-center justify-between">
                   <div>
                     <p className="text-sm font-semibold text-slate-200 font-mono">{setting.key}</p>
-                    <p className="text-xs text-slate-400">{setting.description || 'Configurable operational threshold'}</p>
+                    <p className="text-xs text-slate-400">
+                      {setting.description || 'Configurable operational threshold'}
+                    </p>
                   </div>
                   <div className="flex items-center space-x-3">
                     <span className="text-xs font-mono bg-slate-950 px-3 py-1 rounded border border-slate-800 text-teal-300">
@@ -680,7 +759,11 @@ export function AdminDashboardView({
             <h3 className="text-base font-bold text-slate-200">Feature Flags & Canary Toggles</h3>
             <div className="divide-y divide-slate-800">
               {featureFlags.map((flag) => (
-                <div key={flag.key} className="py-3 flex items-center justify-between" data-testid={`flag-row-${flag.key}`}>
+                <div
+                  key={flag.key}
+                  className="py-3 flex items-center justify-between"
+                  data-testid={`flag-row-${flag.key}`}
+                >
                   <div>
                     <p className="text-sm font-semibold text-slate-200 font-mono">{flag.key}</p>
                     <p className="text-xs text-slate-400">
@@ -731,10 +814,20 @@ export function AdminDashboardView({
                   </tr>
                 ) : (
                   auditLogs.map((log) => (
-                    <tr key={log.id} className="hover:bg-slate-800/40" data-testid={`audit-row-${log.id}`}>
-                      <td className="px-4 py-3 text-slate-400 font-mono text-[11px]">{log.createdAt}</td>
-                      <td className="px-4 py-3 font-mono text-[11px] text-slate-300">{log.actorUserId || 'system'}</td>
-                      <td className="px-4 py-3 font-semibold text-teal-400 font-mono">{log.action}</td>
+                    <tr
+                      key={log.id}
+                      className="hover:bg-slate-800/40"
+                      data-testid={`audit-row-${log.id}`}
+                    >
+                      <td className="px-4 py-3 text-slate-400 font-mono text-[11px]">
+                        {log.createdAt}
+                      </td>
+                      <td className="px-4 py-3 font-mono text-[11px] text-slate-300">
+                        {log.actorUserId || 'system'}
+                      </td>
+                      <td className="px-4 py-3 font-semibold text-teal-400 font-mono">
+                        {log.action}
+                      </td>
                       <td className="px-4 py-3 text-slate-400">
                         {log.resourceType}:{log.resourceId || '—'}
                       </td>
@@ -750,14 +843,23 @@ export function AdminDashboardView({
 
       {/* MODAL: Suspend User */}
       {selectedUserForSuspend && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50" data-testid="suspend-modal">
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
+          data-testid="suspend-modal"
+        >
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4">
             <h3 className="text-lg font-bold text-rose-400">{t('suspendModalTitle')}</h3>
             <p className="text-xs text-slate-400">
-              Target User: <span className="font-semibold text-slate-200">{selectedUserForSuspend.displayName}</span> ({selectedUserForSuspend.id})
+              Target User:{' '}
+              <span className="font-semibold text-slate-200">
+                {selectedUserForSuspend.displayName}
+              </span>{' '}
+              ({selectedUserForSuspend.id})
             </p>
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">{t('suspendReasonLabel')} *</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">
+                {t('suspendReasonLabel')} *
+              </label>
               <textarea
                 rows={3}
                 value={suspendReason}
@@ -789,17 +891,34 @@ export function AdminDashboardView({
 
       {/* MODAL: Roles Management (Super Admin) */}
       {selectedUserForRoles && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50" data-testid="roles-modal">
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
+          data-testid="roles-modal"
+        >
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4">
             <h3 className="text-lg font-bold text-indigo-400">{t('rolesModalTitle')}</h3>
             <p className="text-xs text-slate-400">
-              User: <span className="font-semibold text-slate-200">{selectedUserForRoles.displayName}</span>
+              User:{' '}
+              <span className="font-semibold text-slate-200">
+                {selectedUserForRoles.displayName}
+              </span>
             </p>
             <div className="space-y-2">
               {(
-                ['student', 'guardian', 'tutor', 'support_agent', 'compliance_reviewer', 'admin', 'super_admin'] as const
+                [
+                  'student',
+                  'guardian',
+                  'tutor',
+                  'support_agent',
+                  'compliance_reviewer',
+                  'admin',
+                  'super_admin',
+                ] as const
               ).map((role) => (
-                <label key={role} className="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer">
+                <label
+                  key={role}
+                  className="flex items-center space-x-2 text-xs text-slate-300 cursor-pointer"
+                >
                   <input
                     type="checkbox"
                     checked={editingRoles.includes(role)}
@@ -838,14 +957,20 @@ export function AdminDashboardView({
 
       {/* MODAL: Booking Emergency Cancellation */}
       {selectedBookingForCancel && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50" data-testid="cancel-booking-modal">
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
+          data-testid="cancel-booking-modal"
+        >
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4">
             <h3 className="text-lg font-bold text-rose-400">{t('cancelIntervention')}</h3>
             <p className="text-xs text-slate-400">
-              Booking: <span className="font-semibold text-slate-200">{selectedBookingForCancel.id}</span>
+              Booking:{' '}
+              <span className="font-semibold text-slate-200">{selectedBookingForCancel.id}</span>
             </p>
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">{t('cancelReasonLabel')} *</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">
+                {t('cancelReasonLabel')} *
+              </label>
               <textarea
                 rows={3}
                 value={cancelReason}
@@ -887,17 +1012,26 @@ export function AdminDashboardView({
 
       {/* MODAL: Start Impersonation (Super Admin) */}
       {selectedUserForImpersonate && (
-        <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50" data-testid="impersonate-modal">
+        <div
+          className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
+          data-testid="impersonate-modal"
+        >
           <div className="bg-slate-900 border border-slate-800 rounded-2xl p-6 max-w-md w-full space-y-4">
             <h3 className="text-lg font-bold text-amber-400">{t('impersonationBadge')}</h3>
             <p className="text-xs text-amber-300/90 bg-amber-500/10 border border-amber-500/20 p-2.5 rounded-lg">
               {t('impersonationWarning')}
             </p>
             <p className="text-xs text-slate-400">
-              Target User: <span className="font-semibold text-slate-200">{selectedUserForImpersonate.displayName}</span> ({selectedUserForImpersonate.id})
+              Target User:{' '}
+              <span className="font-semibold text-slate-200">
+                {selectedUserForImpersonate.displayName}
+              </span>{' '}
+              ({selectedUserForImpersonate.id})
             </p>
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Operational Justification *</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">
+                Operational Justification *
+              </label>
               <textarea
                 rows={2}
                 value={impersonateReason}
@@ -908,7 +1042,9 @@ export function AdminDashboardView({
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-slate-300 mb-1">Session Duration (Max 15 min)</label>
+              <label className="block text-xs font-medium text-slate-300 mb-1">
+                Session Duration (Max 15 min)
+              </label>
               <input
                 type="number"
                 min={1}

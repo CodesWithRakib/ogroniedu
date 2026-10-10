@@ -37,11 +37,6 @@ import { AuditModule } from '../audit/audit.module';
     OutboxWorkerService,
     BookingMessagesService,
   ],
-  exports: [
-    NotificationService,
-    NotificationGateway,
-    OutboxWorkerService,
-    BookingMessagesService,
-  ],
+  exports: [NotificationService, NotificationGateway, OutboxWorkerService, BookingMessagesService],
 })
 export class NotificationsModule {}

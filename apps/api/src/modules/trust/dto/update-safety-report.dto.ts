@@ -5,22 +5,10 @@ import type { SafetyStatus, EscalationLevel } from '../entities/safety-report.en
 export class UpdateSafetyReportDto {
   @ApiPropertyOptional({
     description: 'New status for the report',
-    enum: [
-      'submitted',
-      'under_investigation',
-      'escalated',
-      'action_taken',
-      'dismissed',
-    ],
+    enum: ['submitted', 'under_investigation', 'escalated', 'action_taken', 'dismissed'],
   })
   @IsOptional()
-  @IsIn([
-    'submitted',
-    'under_investigation',
-    'escalated',
-    'action_taken',
-    'dismissed',
-  ])
+  @IsIn(['submitted', 'under_investigation', 'escalated', 'action_taken', 'dismissed'])
   status?: SafetyStatus;
 
   @ApiPropertyOptional({

@@ -143,9 +143,7 @@ describe('SafetyReportsService Unit Tests (Phase 13)', () => {
         reportedUserId: intruderId,
       });
 
-      await expect(service.getReport(intruderUser, 'rep-1')).rejects.toThrow(
-        ForbiddenException,
-      );
+      await expect(service.getReport(intruderUser, 'rep-1')).rejects.toThrow(ForbiddenException);
     });
   });
 

@@ -97,7 +97,8 @@ export function NotificationPreferencesView({
   categories.forEach((cat) => {
     channels.forEach((ch) => {
       const key = `${cat.id}:${ch.id}`;
-      defaultPrefs[key] = cat.id === 'marketing' && (ch.id === 'sms' || ch.id === 'push') ? false : true;
+      defaultPrefs[key] =
+        cat.id === 'marketing' && (ch.id === 'sms' || ch.id === 'push') ? false : true;
     });
   });
 
@@ -151,9 +152,7 @@ export function NotificationPreferencesView({
         <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
           {n.preferencesTitle}
         </h1>
-        <p className="text-muted-foreground mt-1 text-sm sm:text-base">
-          {n.preferencesSubtitle}
-        </p>
+        <p className="text-muted-foreground mt-1 text-sm sm:text-base">{n.preferencesSubtitle}</p>
       </div>
 
       {/* Safety Notice & Delivery Failure Invariant Banner */}
@@ -164,7 +163,9 @@ export function NotificationPreferencesView({
             High Reliability Standard: Delivery Failure Isolation
           </div>
           <div>
-            Third-party SMS or email delivery outages never delay or corrupt your confirmed bookings or financial escrow payments. Outbox workers automatically retry with exponential backoff.
+            Third-party SMS or email delivery outages never delay or corrupt your confirmed bookings
+            or financial escrow payments. Outbox workers automatically retry with exponential
+            backoff.
           </div>
         </div>
       </div>
@@ -182,19 +183,21 @@ export function NotificationPreferencesView({
             )}
           </CardTitle>
           <CardDescription className="text-xs">
-            Toggle your notification delivery channels. Critical security & guardian safety alerts are always sent in-app.
+            Toggle your notification delivery channels. Critical security & guardian safety alerts
+            are always sent in-app.
           </CardDescription>
         </CardHeader>
         <CardContent className="pt-4 divide-y divide-border/40">
           {categories.map((cat) => (
-            <div key={cat.id} className="py-4 first:pt-0 last:pb-0 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div
+              key={cat.id}
+              className="py-4 first:pt-0 last:pb-0 flex flex-col md:flex-row md:items-center justify-between gap-4"
+            >
               <div className="md:max-w-xs">
                 <div className="font-semibold text-sm text-slate-900 dark:text-white">
                   {cat.label}
                 </div>
-                <div className="text-xs text-muted-foreground mt-0.5">
-                  {cat.description}
-                </div>
+                <div className="text-xs text-muted-foreground mt-0.5">{cat.description}</div>
               </div>
 
               {/* Channels Grid */}

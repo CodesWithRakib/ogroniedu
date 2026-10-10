@@ -123,15 +123,18 @@ describe('Operational Analytics & Source-of-Truth Reporting Frontend Tests (Phas
     const data = sampleAnalyticsData;
 
     // Conversion rate: (confirmed / total) * 100
-    const calculatedConversion = (data.conversion.confirmedBookings / data.conversion.totalRequests) * 100;
+    const calculatedConversion =
+      (data.conversion.confirmedBookings / data.conversion.totalRequests) * 100;
     expect(data.conversion.conversionRate).toBeCloseTo(calculatedConversion, 2);
 
     // Session completion rate: (completed / total) * 100
-    const calculatedCompletion = (data.sessions.completedSessions / data.sessions.totalSessions) * 100;
+    const calculatedCompletion =
+      (data.sessions.completedSessions / data.sessions.totalSessions) * 100;
     expect(data.sessions.completionRate).toBeCloseTo(calculatedCompletion, 2);
 
     // Net processed volume: GMV - refunds
-    const calculatedNet = data.financials.grossMerchandiseValueBdt - data.financials.totalRefundedBdt;
+    const calculatedNet =
+      data.financials.grossMerchandiseValueBdt - data.financials.totalRefundedBdt;
     expect(data.financials.netProcessedVolumeBdt).toBe(calculatedNet);
 
     // Platform commission is 8% of GMV: 250000 * 0.08 = 20000
@@ -139,7 +142,8 @@ describe('Operational Analytics & Source-of-Truth Reporting Frontend Tests (Phas
     expect(data.financials.platformCommissionRevenueBdt).toBe(calculatedCommission);
 
     // Retention rate: (repeatLearners / totalUniqueLearners) * 100
-    const calculatedRetention = (data.retention.repeatLearners / data.retention.totalUniqueLearners) * 100;
+    const calculatedRetention =
+      (data.retention.repeatLearners / data.retention.totalUniqueLearners) * 100;
     expect(data.retention.retentionRate).toBeCloseTo(calculatedRetention, 2);
   });
 });

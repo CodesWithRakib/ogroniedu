@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, BadRequestException, Logger, Optional } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Logger,
+  Optional,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource, In } from 'typeorm';
 import { UserEntity } from '../auth/entities/user.entity';
@@ -228,11 +234,7 @@ export class UsersService {
 
     const userBookings = this.bookingRepository
       ? await this.bookingRepository.find({
-          where: [
-            { requesterUserId: userId },
-            { studentUserId: userId },
-            { tutorUserId: userId },
-          ],
+          where: [{ requesterUserId: userId }, { studentUserId: userId }, { tutorUserId: userId }],
           select: {
             id: true,
             status: true,
@@ -300,9 +302,18 @@ export class UsersService {
     if (this.bookingRepository) {
       const activeBookings = await this.bookingRepository.find({
         where: [
-          { requesterUserId: userId, status: In(['requested', 'accepted', 'confirmed', 'in_progress']) },
-          { tutorUserId: userId, status: In(['requested', 'accepted', 'confirmed', 'in_progress']) },
-          { studentUserId: userId, status: In(['requested', 'accepted', 'confirmed', 'in_progress']) },
+          {
+            requesterUserId: userId,
+            status: In(['requested', 'accepted', 'confirmed', 'in_progress']),
+          },
+          {
+            tutorUserId: userId,
+            status: In(['requested', 'accepted', 'confirmed', 'in_progress']),
+          },
+          {
+            studentUserId: userId,
+            status: In(['requested', 'accepted', 'confirmed', 'in_progress']),
+          },
         ],
       });
 

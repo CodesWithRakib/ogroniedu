@@ -52,7 +52,9 @@ export function TutorReplacementModal({
       }
 
       const caseData = await response.json();
-      setSuccessMsg('Your replacement guarantee claim has been registered. Our matching team will assign a replacement.');
+      setSuccessMsg(
+        'Your replacement guarantee claim has been registered. Our matching team will assign a replacement.',
+      );
       if (onRequestSuccess) {
         onRequestSuccess(caseData);
       }
@@ -94,7 +96,14 @@ export function TutorReplacementModal({
           border: '1px solid #e2e8f0',
         }}
       >
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '16px' }}>
+        <div
+          style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'flex-start',
+            marginBottom: '16px',
+          }}
+        >
           <div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
               <span style={{ fontSize: '1.25rem' }}>🛡️</span>
@@ -102,7 +111,9 @@ export function TutorReplacementModal({
                 {t('replacementTitle')}
               </h2>
             </div>
-            <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748b', lineHeight: 1.4 }}>
+            <p
+              style={{ margin: '4px 0 0', fontSize: '0.85rem', color: '#64748b', lineHeight: 1.4 }}
+            >
               {t('replacementSubtitle')}
             </p>
           </div>
@@ -174,7 +185,13 @@ export function TutorReplacementModal({
           <div style={{ marginBottom: '16px' }}>
             <label
               htmlFor="reason-code"
-              style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}
+              style={{
+                display: 'block',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                marginBottom: '6px',
+                color: '#334155',
+              }}
             >
               {t('reasonCode')}
             </label>
@@ -203,7 +220,13 @@ export function TutorReplacementModal({
           <div style={{ marginBottom: '20px' }}>
             <label
               htmlFor="replacement-explanation"
-              style={{ display: 'block', fontSize: '0.85rem', fontWeight: 600, marginBottom: '6px', color: '#334155' }}
+              style={{
+                display: 'block',
+                fontSize: '0.85rem',
+                fontWeight: 600,
+                marginBottom: '6px',
+                color: '#334155',
+              }}
             >
               Details / Explanation
             </label>

@@ -24,20 +24,8 @@ import { TutorReplacementController } from './tutor-replacement.controller';
     ]),
     NotificationsModule,
   ],
-  controllers: [
-    ReviewsController,
-    SafetyReportsController,
-    TutorReplacementController,
-  ],
-  providers: [
-    ReviewsService,
-    SafetyReportsService,
-    TutorReplacementService,
-  ],
-  exports: [
-    ReviewsService,
-    SafetyReportsService,
-    TutorReplacementService,
-  ],
+  controllers: [ReviewsController, SafetyReportsController, TutorReplacementController],
+  providers: [ReviewsService, SafetyReportsService, TutorReplacementService],
+  exports: [ReviewsService, SafetyReportsService, TutorReplacementService],
 })
 export class TrustModule {}

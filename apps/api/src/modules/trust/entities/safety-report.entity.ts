@@ -22,11 +22,7 @@ export type SafetyCategory =
 export type SafetySeverity = 'low' | 'medium' | 'high' | 'critical';
 
 export type SafetyStatus =
-  | 'submitted'
-  | 'under_investigation'
-  | 'escalated'
-  | 'action_taken'
-  | 'dismissed';
+  'submitted' | 'under_investigation' | 'escalated' | 'action_taken' | 'dismissed';
 
 export type EscalationLevel = 'standard' | 'urgent_child_safety' | 'legal_review';
 

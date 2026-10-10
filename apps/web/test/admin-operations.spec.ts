@@ -49,8 +49,18 @@ describe('Admin Operations & Control Center Frontend Tests (Phase 14)', () => {
     discrepancy: '0',
     status: 'reconciled',
     accounts: [
-      { code: '1010_CASH_SSLCOMMERZ', name: 'SSLCOMMERZ Settlement', accountType: 'asset', balance: '500,000' },
-      { code: '2010_STUDENT_ESCROW', name: 'Student Escrow Holding', accountType: 'liability', balance: '500,000' },
+      {
+        code: '1010_CASH_SSLCOMMERZ',
+        name: 'SSLCOMMERZ Settlement',
+        accountType: 'asset',
+        balance: '500,000',
+      },
+      {
+        code: '2010_STUDENT_ESCROW',
+        name: 'Student Escrow Holding',
+        accountType: 'liability',
+        balance: '500,000',
+      },
     ],
   };
 
@@ -106,10 +116,18 @@ describe('Admin Operations & Control Center Frontend Tests (Phase 14)', () => {
     expect(bnDict.admin.reconciliationTitle).toBe('ডাবল-এন্ট্রি লেজার অখণ্ডতা অডিট');
     expect(enDict.admin.reconciliationTitle).toBe('Double-Entry Ledger Integrity Audit');
 
-    expect(bnDict.admin.impersonationWarning).toContain('সুপার-এডমিন জরুরি প্রোটোকল: সর্বোচ্চ ১৫ মিনিট');
-    expect(enDict.admin.impersonationWarning).toContain('Super-Admin Emergency Protocol: 15-Minute Strict Limit');
+    expect(bnDict.admin.impersonationWarning).toContain(
+      'সুপার-এডমিন জরুরি প্রোটোকল: সর্বোচ্চ ১৫ মিনিট',
+    );
+    expect(enDict.admin.impersonationWarning).toContain(
+      'Super-Admin Emergency Protocol: 15-Minute Strict Limit',
+    );
 
-    expect(bnDict.admin.auditRedactedNotice).toContain('স্বয়ংক্রিয় ক্রেডেনশিয়াল ও গোপনীয় তথ্য মাস্কিং সক্রিয়');
-    expect(enDict.admin.auditRedactedNotice).toContain('Automated Secret & Credential Redaction Active');
+    expect(bnDict.admin.auditRedactedNotice).toContain(
+      'স্বয়ংক্রিয় ক্রেডেনশিয়াল ও গোপনীয় তথ্য মাস্কিং সক্রিয়',
+    );
+    expect(enDict.admin.auditRedactedNotice).toContain(
+      'Automated Secret & Credential Redaction Active',
+    );
   });
 });

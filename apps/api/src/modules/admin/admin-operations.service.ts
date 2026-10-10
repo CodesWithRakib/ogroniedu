@@ -40,7 +40,8 @@ export function redactSensitiveData(obj: any): any {
     return obj.map((item) => redactSensitiveData(item));
   }
   const redacted: Record<string, any> = {};
-  const sensitiveKeyRegex = /(password|token|secret|cvv|pan|card|pin|hash|credential|api_?key|^key$)/i;
+  const sensitiveKeyRegex =
+    /(password|token|secret|cvv|pan|card|pin|hash|credential|api_?key|^key$)/i;
 
   for (const [key, value] of Object.entries(obj)) {
     if (sensitiveKeyRegex.test(key)) {
@@ -187,7 +188,9 @@ export class AdminOperationsService {
 
     const rows = await this.dataSource.query(sql, params);
 
-    const countRes = await this.dataSource.query(`SELECT count(*)::int as total FROM users WHERE deleted_at IS NULL;`);
+    const countRes = await this.dataSource.query(
+      `SELECT count(*)::int as total FROM users WHERE deleted_at IS NULL;`,
+    );
     const total = countRes[0]?.total || 0;
 
     return { users: rows, total };
@@ -280,10 +283,7 @@ export class AdminOperationsService {
   /**
    * 5. Reactivate User
    */
-  async reactivateUser(
-    adminUser: AuthenticatedUser,
-    targetUserId: string,
-  ): Promise<UserEntity> {
+  async reactivateUser(adminUser: AuthenticatedUser, targetUserId: string): Promise<UserEntity> {
     const targetUser = await this.userRepo.findOne({ where: { id: targetUserId } });
     if (!targetUser) {
       throw new NotFoundException(`User ${targetUserId} not found`);
@@ -331,7 +331,9 @@ export class AdminOperationsService {
       );
       const totalSuperAdmins = superAdminCountRes[0]?.count || 0;
       if (totalSuperAdmins <= 1 && superAdmin.id === targetUserId) {
-        throw new BadRequestException('Cannot revoke super_admin from the sole remaining super_admin in system');
+        throw new BadRequestException(
+          'Cannot revoke super_admin from the sole remaining super_admin in system',
+        );
       }
     }
 
@@ -341,7 +343,9 @@ export class AdminOperationsService {
       [dto.roles],
     );
 
-    const roleMap = new Map<string, string>(roleRows.map((r: { id: string; code: string }) => [r.code, r.id]));
+    const roleMap = new Map<string, string>(
+      roleRows.map((r: { id: string; code: string }) => [r.code, r.id]),
+    );
     for (const rCode of dto.roles) {
       if (!roleMap.has(rCode)) {
         throw new BadRequestException(`Role code '${rCode}' does not exist in roles catalog`);
@@ -374,7 +378,9 @@ export class AdminOperationsService {
       safeMetadata: { newRoles: dto.roles },
     });
 
-    this.logger.log(`User ${targetUserId} roles updated by super_admin ${superAdmin.id}: [${dto.roles.join(', ')}]`);
+    this.logger.log(
+      `User ${targetUserId} roles updated by super_admin ${superAdmin.id}: [${dto.roles.join(', ')}]`,
+    );
     return { userId: targetUserId, assignedRoles: dto.roles };
   }
 
@@ -391,7 +397,8 @@ export class AdminOperationsService {
     const limit = Math.min(query.limit || 50, 100);
     const offset = query.offset || 0;
 
-    const qb = this.bookingRepo.createQueryBuilder('booking')
+    const qb = this.bookingRepo
+      .createQueryBuilder('booking')
       .leftJoinAndSelect('booking.student', 'student')
       .leftJoinAndSelect('booking.tutor', 'tutor')
       .leftJoinAndSelect('booking.subject', 'subject')
@@ -474,9 +481,13 @@ export class AdminOperationsService {
             `admin-refund-${bookingId}-${Date.now()}`,
           );
           refundIssued = true;
-          this.logger.log(`Administrative refund issued for order ${order.id} on booking ${bookingId}`);
+          this.logger.log(
+            `Administrative refund issued for order ${order.id} on booking ${bookingId}`,
+          );
         } catch (err: any) {
-          this.logger.error(`Administrative refund failed for booking ${bookingId}: ${err.message}`);
+          this.logger.error(
+            `Administrative refund failed for booking ${bookingId}: ${err.message}`,
+          );
         }
       }
     }
@@ -499,7 +510,9 @@ export class AdminOperationsService {
     if (dto.caseType === 'replacement') {
       const repCase = await this.replacementCaseRepo.findOne({ where: { id: dto.caseId } });
       if (!repCase) throw new NotFoundException(`Replacement case ${dto.caseId} not found`);
-      repCase.outcomeNotes = dto.notes ? `${repCase.outcomeNotes || ''}\nAssigned: ${dto.notes}` : repCase.outcomeNotes;
+      repCase.outcomeNotes = dto.notes
+        ? `${repCase.outcomeNotes || ''}\nAssigned: ${dto.notes}`
+        : repCase.outcomeNotes;
       await this.replacementCaseRepo.save(repCase);
     } else if (dto.caseType === 'safety') {
       const safetyCase = await this.safetyReportRepo.findOne({ where: { id: dto.caseId } });
@@ -554,12 +567,18 @@ export class AdminOperationsService {
     dto: UpdateSystemSettingDto,
   ): Promise<SystemSettingEntity> {
     if (!superAdmin.roles.includes('super_admin')) {
-      throw new ForbiddenException('Updating system settings is strictly restricted to super_admin');
+      throw new ForbiddenException(
+        'Updating system settings is strictly restricted to super_admin',
+      );
     }
 
     let setting = await this.systemSettingRepo.findOne({ where: { key } });
     if (!setting) {
-      setting = this.systemSettingRepo.create({ key, value: dto.value, description: dto.description });
+      setting = this.systemSettingRepo.create({
+        key,
+        value: dto.value,
+        description: dto.description,
+      });
     } else {
       setting.value = dto.value;
       if (dto.description !== undefined) {
@@ -636,13 +655,17 @@ export class AdminOperationsService {
   }> {
     // Invariant 1: Caller MUST hold super_admin role
     if (!superAdmin.roles.includes('super_admin')) {
-      throw new ForbiddenException('Impersonation protocol is exclusively restricted to super_admin');
+      throw new ForbiddenException(
+        'Impersonation protocol is exclusively restricted to super_admin',
+      );
     }
 
     // Invariant 2: Target user must exist
     const targetUser = await this.userRepo.findOne({ where: { id: dto.targetUserId } });
     if (!targetUser) {
-      throw new NotFoundException(`Target user ${dto.targetUserId} for impersonation does not exist`);
+      throw new NotFoundException(
+        `Target user ${dto.targetUserId} for impersonation does not exist`,
+      );
     }
 
     // Invariant 3: Target user cannot be a super_admin (Prevention of privilege escalation / peer impersonation)
@@ -719,7 +742,8 @@ export class AdminOperationsService {
     const limit = Math.min(dto.limit || 50, 200);
     const offset = dto.offset || 0;
 
-    const qb = this.auditRepo.createQueryBuilder('audit')
+    const qb = this.auditRepo
+      .createQueryBuilder('audit')
       .orderBy('audit.createdAt', 'DESC')
       .take(limit)
       .skip(offset);

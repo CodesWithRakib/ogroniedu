@@ -153,10 +153,7 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
           apiSecret: 'secret123',
           normalKey: 'public-data',
         },
-        items: [
-          { cardPan: '4111222233334444', cvv: '123' },
-          { harmlessField: 'ok' },
-        ],
+        items: [{ cardPan: '4111222233334444', cvv: '123' }, { harmlessField: 'ok' }],
       };
 
       const sanitized = redactSensitiveData(rawPayload);
@@ -234,7 +231,9 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
       mockDataSource.query.mockResolvedValueOnce([{ code: 'super_admin' }]);
 
       await expect(
-        service.suspendUser(adminUser, targetSuperAdminId, { reason: 'Unauthorized peer suspension' }),
+        service.suspendUser(adminUser, targetSuperAdminId, {
+          reason: 'Unauthorized peer suspension',
+        }),
       ).rejects.toThrow(ForbiddenException);
     });
 
@@ -388,9 +387,13 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
       });
       mockFeatureFlagRepo.save.mockImplementationOnce((f) => Promise.resolve(f));
 
-      const updated = await service.updateFeatureFlag(superAdminUser, 'emergency_maintenance_mode', {
-        enabled: true,
-      });
+      const updated = await service.updateFeatureFlag(
+        superAdminUser,
+        'emergency_maintenance_mode',
+        {
+          enabled: true,
+        },
+      );
 
       expect(updated.enabled).toBe(true);
       expect(mockAuditService.record).toHaveBeenCalledWith(
