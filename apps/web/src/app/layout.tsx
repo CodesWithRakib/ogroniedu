@@ -5,9 +5,39 @@ import { NotificationToastContainer } from '@/components/notifications/Notificat
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
 
 export const metadata: Metadata = {
-  title: 'OgroniEdu (অগ্রণী এডু) — বিশ্বস্ত শিক্ষক ও শিক্ষার্থী প্ল্যাটফর্ম',
+  metadataBase: new URL('https://ogroni.edu.bd'),
+  title: {
+    default: 'OgroniEdu (অগ্রণী এডু) — বিশ্বস্ত শিক্ষক ও শিক্ষার্থী প্ল্যাটফর্ম',
+    template: '%s | OgroniEdu Bangladesh',
+  },
   description:
-    'বাংলাদেশের প্রথম সমন্বিত টিউশন ও লার্নিং ম্যানেজমেন্ট প্ল্যাটফর্ম। ১ম-১২শ শ্রেণি ও বিশ্ববিদ্যালয় ভর্তি প্রস্তুতি।',
+    'বাংলাদেশের প্রথম সমন্বিত টিউশন ও লার্নিং ম্যানেজমেন্ট প্ল্যাটফর্ম। ১ম-১২শ শ্রেণি, বাংলা ও ইংলিশ ভার্সন, ইংলিশ মিডিয়াম ও বিশ্ববিদ্যালয় ভর্তি প্রস্তুতি।',
+  keywords: [
+    'tutor in bangladesh',
+    'home tutor dhaka',
+    'buet tutor',
+    'online tuition bd',
+    'ssc math tutor',
+    'hsc physics tutor',
+    'admission test prep',
+  ],
+  authors: [{ name: 'OgroniEdu Team', url: 'https://ogroni.edu.bd' }],
+  creator: 'OgroniEdu',
+  openGraph: {
+    type: 'website',
+    locale: 'bn_BD',
+    alternateLocale: 'en_US',
+    url: 'https://ogroni.edu.bd',
+    siteName: 'OgroniEdu',
+    title: 'OgroniEdu (অগ্রণী এডু) — বিশ্বস্ত শিক্ষক ও শিক্ষার্থী প্ল্যাটফর্ম',
+    description:
+      '১ম-১২শ শ্রেণি ও ভর্তি প্রস্তুতির জন্য বুয়েট, ঢাবি ও মেডিকেল শিক্ষার্থী টিউটর খুঁজুন নিরাপদে।',
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: 'OgroniEdu — Bangladesh Tutoring Platform',
+    description: 'NID-verified educators and escrow-protected tutoring in Bangladesh.',
+  },
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {

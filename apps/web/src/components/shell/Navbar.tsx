@@ -47,7 +47,7 @@ export function Navbar({ locale }: NavbarProps) {
         {/* Desktop Navigation Links */}
         <nav
           aria-label="Main Navigation"
-          className="hidden md:flex items-center gap-6 text-sm font-medium text-slate-600 dark:text-slate-300"
+          className="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600 dark:text-slate-300"
         >
           <Link
             href={`/${locale}`}
@@ -56,16 +56,40 @@ export function Navbar({ locale }: NavbarProps) {
             {dict.nav.home}
           </Link>
           <Link
-            href={`/${locale}#features`}
+            href={`/${locale}/tutors`}
+            className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors font-semibold text-emerald-800 dark:text-emerald-300"
+          >
+            {dict.nav.findTutors}
+          </Link>
+          <Link
+            href={`/${locale}/how-it-works`}
             className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
           >
             {dict.nav.howItWorks}
           </Link>
           <Link
-            href={`/${locale}#find-tutors`}
+            href={`/${locale}/pricing`}
             className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
           >
-            {dict.nav.findTutors}
+            {dict.nav.pricing}
+          </Link>
+          <Link
+            href={`/${locale}/safety`}
+            className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+          >
+            {dict.nav.safety}
+          </Link>
+          <Link
+            href={`/${locale}/faq`}
+            className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+          >
+            {dict.nav.faq}
+          </Link>
+          <Link
+            href={`/${locale}/contact`}
+            className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+          >
+            {dict.nav.contact}
           </Link>
         </nav>
 
@@ -126,18 +150,46 @@ export function Navbar({ locale }: NavbarProps) {
               {dict.nav.home}
             </Link>
             <Link
-              href={`/${locale}#features`}
+              href={`/${locale}/tutors`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-lg px-3 py-2 text-emerald-800 dark:text-emerald-300 font-semibold hover:bg-emerald-50 dark:hover:bg-emerald-950"
+            >
+              {dict.nav.findTutors}
+            </Link>
+            <Link
+              href={`/${locale}/how-it-works`}
               onClick={() => setMobileMenuOpen(false)}
               className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
             >
               {dict.nav.howItWorks}
             </Link>
             <Link
-              href={`/${locale}#find-tutors`}
+              href={`/${locale}/pricing`}
               onClick={() => setMobileMenuOpen(false)}
               className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
             >
-              {dict.nav.findTutors}
+              {dict.nav.pricing}
+            </Link>
+            <Link
+              href={`/${locale}/safety`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              {dict.nav.safety}
+            </Link>
+            <Link
+              href={`/${locale}/faq`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              {dict.nav.faq}
+            </Link>
+            <Link
+              href={`/${locale}/contact`}
+              onClick={() => setMobileMenuOpen(false)}
+              className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800"
+            >
+              {dict.nav.contact}
             </Link>
           </div>
           <div className="pt-2 border-t border-slate-100 dark:border-slate-800">

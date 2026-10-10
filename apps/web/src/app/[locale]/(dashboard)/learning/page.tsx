@@ -1,8 +1,6 @@
 'use client';
 
 import React, { use } from 'react';
-import { Navbar } from '@/components/shell/Navbar';
-import { Footer } from '@/components/shell/Footer';
 import { LearningManagementView } from '@/components/learning/LearningManagementView';
 import { type Locale } from '@/lib/i18n';
 
@@ -95,18 +93,14 @@ export default function LearningPage({ params }: LearningPageProps) {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 font-sans selection:bg-emerald-500 selection:text-white">
-      <Navbar locale={locale} />
-      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <LearningManagementView
-          locale={locale}
-          userRole="tutor"
-          initialAttendance={sampleAttendance}
-          initialAssignments={sampleAssignments}
-          initialReports={sampleReports}
-        />
-      </main>
-      <Footer locale={locale} />
+    <div className="max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <LearningManagementView
+        locale={locale}
+        userRole="tutor"
+        initialAttendance={sampleAttendance}
+        initialAssignments={sampleAssignments}
+        initialReports={sampleReports}
+      />
     </div>
   );
 }

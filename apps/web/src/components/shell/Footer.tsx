@@ -29,7 +29,7 @@ export function Footer({ locale }: FooterProps) {
             </p>
           </div>
 
-          {/* Quick Links */}
+          {/* Discover & Learning Links */}
           <div className="space-y-3">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-200">
               {dict.footer.quickLinks}
@@ -45,7 +45,15 @@ export function Footer({ locale }: FooterProps) {
               </li>
               <li>
                 <Link
-                  href={`/${locale}#features`}
+                  href={`/${locale}/tutors`}
+                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors font-medium text-emerald-800 dark:text-emerald-300"
+                >
+                  {dict.nav.findTutors}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/${locale}/how-it-works`}
                   className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
                 >
                   {dict.nav.howItWorks}
@@ -53,21 +61,45 @@ export function Footer({ locale }: FooterProps) {
               </li>
               <li>
                 <Link
-                  href={`/${locale}#find-tutors`}
+                  href={`/${locale}/pricing`}
                   className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
                 >
-                  {dict.nav.findTutors}
+                  {dict.nav.pricing}
                 </Link>
               </li>
             </ul>
           </div>
 
-          {/* Legal & Compliance */}
+          {/* Trust, Safety & Support */}
           <div className="space-y-3">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-200">
-              {dict.footer.contact}
+              {dict.safetyPage.badge}
             </h4>
             <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+              <li>
+                <Link
+                  href={`/${locale}/safety`}
+                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                >
+                  {dict.nav.safety}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/${locale}/faq`}
+                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                >
+                  {dict.nav.faq}
+                </Link>
+              </li>
+              <li>
+                <Link
+                  href={`/${locale}/contact`}
+                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                >
+                  {dict.nav.contact}
+                </Link>
+              </li>
               <li>
                 <Link
                   href={`/${locale}/privacy`}

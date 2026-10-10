@@ -1,8 +1,6 @@
 'use client';
 
 import React, { use } from 'react';
-import { Navbar } from '@/components/shell/Navbar';
-import { Footer } from '@/components/shell/Footer';
 import { AdminDashboardView } from '@/components/admin/AdminDashboardView';
 import { type Locale } from '@/lib/i18n';
 
@@ -80,17 +78,13 @@ export default function AdminPage({ params }: AdminPageProps) {
   ];
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-950">
-      <Navbar locale={locale} />
-      <main className="flex-1">
-        <AdminDashboardView
-          currentUser={mockAdminUser}
-          metrics={sampleMetrics}
-          initialUsers={sampleUsers}
-          initialBookings={sampleBookings}
-        />
-      </main>
-      <Footer locale={locale} />
+    <div className="py-6">
+      <AdminDashboardView
+        currentUser={mockAdminUser}
+        metrics={sampleMetrics}
+        initialUsers={sampleUsers}
+        initialBookings={sampleBookings}
+      />
     </div>
   );
 }

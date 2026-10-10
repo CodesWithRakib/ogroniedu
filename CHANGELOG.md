@@ -1,6 +1,36 @@
 # Changelog
 
-## 1.15.0 — Phase 15 Operational Analytics and Source-of-Truth Reporting
+## 1.16.0 — Phase 16 Public Website, SEO & Route Layout Separation
+
+- **Definition of Done Enforced — All public claims supportable and bilingual:**
+  - Zero fake testimonials or unsupported claims; all numbers reflect verified database capabilities.
+  - Added 8 new bilingual namespaces (`howItWorksPage`, `pricingPage`, `safetyPage`, `faqPage`, `contactPage`, `legalTermsPage`, `privacyPolicyPage`, `seo`) to `en.json` and `bn.json` with 100% key parity.
+- **Route Group & Layout Architecture Separation:**
+  - Refactored `apps/web/src/app/[locale]/` into clean Next.js App Router route groups:
+    - `(public)`: Public marketing and guidelines routes (`/`, `/tutors`, `/how-it-works`, `/pricing`, `/safety`, `/faq`, `/contact`, `/terms`, `/privacy`) with `(public)/layout.tsx` providing public Navbar and Footer shell.
+    - `(admin)`: Control center (`/admin`) and operational analytics (`/analytics`) with `(admin)/layout.tsx` providing administrative sub-navigation bar and audit footer.
+    - `(dashboard)`: Portal study room (`/learning`), session schedules (`/sessions`), and payment checkout (`/payments`) with `(dashboard)/layout.tsx` providing portal sub-navigation bar.
+  - Preserved 100% browser URL backwards compatibility without route collisions.
+- **Delivered Public Pages:**
+  - **Home Landing Page**: Enhanced search form routing directly to `/tutors?q=...`, real metrics counters, value pillars, and Schema.org `EducationalOrganization` + `WebSite` JSON-LD microdata.
+  - **How It Works**: Step-by-step journeys for students/guardians and educators with Schema.org `HowTo` JSON-LD microdata.
+  - **Pricing & Commission**: Transparent 8% platform fee explanation (92% tutor payout), 6 class-level tuition rate benchmarks, and interactive tuition fee calculator.
+  - **Safety & Child Protection**: Minor consent guidelines, 100% educator screening, monitored chat, 24/7 incident escalation, and 100% replacement guarantee.
+  - **FAQ**: Categorized questions across matching, payments, safety, and guarantee with interactive accordion and Schema.org `FAQPage` JSON-LD microdata.
+  - **Contact**: Interactive inquiry form with feedback states, official Banani, Dhaka headquarters office details, official support email, and emergency helpline.
+  - **Terms & Privacy**: Legally compliant policies adhering to Bangladeshi digital education laws, guardian minor oversight, encrypted NID storage, and data rights.
+- **Technical SEO, XML Sitemap & Robots.txt:**
+  - Dynamic `apps/web/src/app/sitemap.ts` generating bilingual XML sitemap for all 9 public routes across `bn` and `en` (18 URLs total) with `hreflang` alternate links.
+  - Dynamic `apps/web/src/app/robots.ts` allowing public crawl while disallowing `/admin`, `/analytics`, `/payments`, and `/api/*`.
+  - Configured root layout with `metadataBase`, OpenGraph, Twitter Cards, and keywords.
+- **Automated Verification:**
+  - Full monorepo test suite expanded to **409 total passed tests, 0 failures, 0 skipped** across 55 test files:
+    - `@ogroniedu/web`: 15 test files, 60 tests passing (+5 tests in `public-website-and-seo.spec.ts`).
+    - `@ogroniedu/api`: 38 test files, 334 tests passing.
+    - `@ogroniedu/database`: 2 test files, 15 tests passing.
+    - `pnpm typecheck` passed with 0 errors across 5 workspace packages.
+    - Next.js production build (`pnpm --filter @ogroniedu/web build`) succeeded in 2.1s with all routes compiled.
+
 
 - **Definition of Done Enforced — Every metric has a precise definition and reconciles:**
   - Authored canonical metric specification `docs/analytics-metric-definitions.md` with explicit formulas, numerators, denominators, time-window anchors, and anti-double-counting invariants.

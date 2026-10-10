@@ -1,8 +1,6 @@
 'use client';
 
 import React, { use } from 'react';
-import { Navbar } from '@/components/shell/Navbar';
-import { Footer } from '@/components/shell/Footer';
 import { PaymentCheckoutView } from '@/components/payments/PaymentCheckoutView';
 import { type Locale } from '@/lib/i18n';
 
@@ -29,12 +27,8 @@ export default function PaymentsPage({ params }: PaymentsPageProps) {
   };
 
   return (
-    <div className="min-h-screen flex flex-col bg-slate-50 dark:bg-slate-950">
-      <Navbar locale={locale} />
-      <main className="flex-1 py-10">
-        <PaymentCheckoutView locale={locale} initialOrder={sampleOrder} />
-      </main>
-      <Footer locale={locale} />
+    <div className="py-10">
+      <PaymentCheckoutView locale={locale} initialOrder={sampleOrder} />
     </div>
   );
 }

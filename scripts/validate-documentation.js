@@ -39,8 +39,8 @@ for (const filePath of docsFiles) {
     errors.push(`Too little content: ${relPath}`);
   }
 
-  // Link check regex
-  const linkRegex = /\]\(([^)]+)\)/g;
+  // Link check regex supporting nested parentheses (e.g. Next.js route groups like (public), (dashboard), (admin))
+  const linkRegex = /\]\(((?:[^()]+|\([^()]*\))+)\)/g;
   let match;
   while ((match = linkRegex.exec(text)) !== null) {
     const target = match[1];
