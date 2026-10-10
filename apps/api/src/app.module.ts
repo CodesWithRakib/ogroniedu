@@ -37,6 +37,13 @@ import { FilesModule } from './modules/files/files.module';
 import { TaxonomyModule } from './modules/taxonomy/taxonomy.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
+import { LearningModule } from './modules/learning/learning.module';
+import {
+  SessionAttendanceEntity,
+  AssignmentEntity,
+  AssignmentSubmissionEntity,
+  ProgressReportEntity,
+} from './modules/learning/entities';
 
 @Module({
   imports: [
@@ -79,6 +86,10 @@ import { BookingsModule } from './modules/bookings/bookings.module';
             EducationLevelEntity,
             CurriculumEntity,
             BookingEntity,
+            SessionAttendanceEntity,
+            AssignmentEntity,
+            AssignmentSubmissionEntity,
+            ProgressReportEntity,
           ],
           synchronize: false, // Never auto-sync in production or development (migrations are source of truth)
           autoLoadEntities: true,
@@ -96,6 +107,7 @@ import { BookingsModule } from './modules/bookings/bookings.module';
     TaxonomyModule,
     TutorsModule,
     BookingsModule,
+    LearningModule,
     NotificationsModule,
   ],
   providers: [StructuredLoggerService],

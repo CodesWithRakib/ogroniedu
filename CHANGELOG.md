@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.10.0 — Phase 10 Learning Management (Attendance, Homework, and Progress)
+
+- Implemented authorized, attributable, and auditable Learning Management System in `apps/api/src/modules/learning/`:
+  - Definition of Done enforced: Records are authorized, attributable and auditable with strict role-based and attribute-based access control (ABAC).
+  - Database migration `003_learning_management.sql` creating `assignments`, `assignment_submissions`, and `progress_reports` tables with indexes and check constraints.
+  - Entities created: `SessionAttendanceEntity`, `AssignmentEntity`, `AssignmentSubmissionEntity`, `ProgressReportEntity`.
+  - Attendance recording (`POST /api/v1/learning/attendance`): tutor-scoped, immutable actor ID, automatic notification to student and active linked guardians.
+  - Assignment lifecycle (`POST /api/v1/learning/assignments`, `POST /api/v1/learning/assignments/:id/submissions`): tutor creates homework, only assigned student can submit, late submissions tagged automatically based on due date.
+  - Grading & Score Revision Auditing (`POST /api/v1/learning/submissions/:id/grade`): tutors review submissions with max score validation; revising an already graded score strictly requires a `revisionReason` and logs previous score, new score, actor ID, and reason in `audit_logs`.
+  - Auditable Progress Reports (`POST /api/v1/learning/progress-reports`): computes observable metrics (attendance %, assignments completed, average score) directly from database records, preventing unsupported mastery claims.
+  - Guardian oversight: only active linked guardians (`guardian_student_links`) can access student learning records and progress reports; unlinked/revoked users receive `403 Forbidden`.
+  - Built frontend UI [`LearningManagementView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/learning/LearningManagementView.tsx) and page at `apps/web/src/app/[locale]/learning/page.tsx` with attendance cards, homework submission modal, grading modal, and progress reports dashboard.
+  - Added bilingual namespace `"learning"` (36 keys) to `messages/en.json` and `messages/bn.json` with 100% key parity and Bengali digit localization.
+  - Added 34 new tests across `learning.service.spec.ts`, `learning.controller.spec.ts`, `learning.spec.ts`, and `migration.spec.ts`.
+  - Expanded monorepo test suite from 206 to **240 passing tests, 0 failures, 0 skipped**.
+  - Published audit report `docs/audits/learning-management-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
+
 ## 1.9.0 — Phase 09 Booking and Scheduling
 
 - Implemented state machine and conflict-safe session scheduling in `apps/api/src/modules/bookings/`:

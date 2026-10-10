@@ -82,6 +82,9 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       'outbox_events',
       'idempotency_keys',
       'audit_logs',
+      'assignments',
+      'assignment_submissions',
+      'progress_reports',
       'schema_migrations',
     ];
 
@@ -164,6 +167,44 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
           VALUES ('${bookingId}', '${tutorUserId}', '${studentUserId}', '${startB}', '${endB}', 'scheduled');
         `),
       ).rejects.toThrow(/ex_tutor_session_overlap/);
+    });
+
+    it('NEGATIVE TEST: should reject progress report when period_end is before period_start (chk_progress_report_dates)', async () => {
+      const tutorUserId = crypto.randomUUID();
+      const studentUserId = crypto.randomUUID();
+      const bookingId = crypto.randomUUID();
+
+      await client.query(`
+        INSERT INTO users (id, display_name, email)
+        VALUES ('${tutorUserId}', 'Tutor PR', 'tutor.${tutorUserId}@test.com'),
+               ('${studentUserId}', 'Student PR', 'student.${studentUserId}@test.com');
+      `);
+
+      await client.query(`
+        INSERT INTO tutor_profiles (user_id, headline)
+        VALUES ('${tutorUserId}', 'Math Tutor');
+      `);
+
+      const levelRes = await client.query('SELECT id FROM education_levels LIMIT 1;');
+      const subjectRes = await client.query('SELECT id FROM subjects LIMIT 1;');
+
+      await client.query(`
+        INSERT INTO bookings (id, requester_user_id, student_user_id, tutor_user_id, subject_id, education_level_id, mode, price_per_session_minor, duration_minutes, cancellation_policy_version)
+        VALUES ('${bookingId}', '${studentUserId}', '${studentUserId}', '${tutorUserId}', '${subjectRes.rows[0].id}', '${levelRes.rows[0].id}', 'online', 100000, 60, 'v1');
+      `);
+
+      await expect(
+        client.query(`
+          INSERT INTO progress_reports (
+            booking_id, student_user_id, tutor_user_id,
+            period_start, period_end, attendance_rate, observable_progress
+          )
+          VALUES (
+            '${bookingId}', '${studentUserId}', '${tutorUserId}',
+            '2026-10-15', '2026-10-01', 95.0, 'Inverted dates test'
+          );
+        `),
+      ).rejects.toThrow(/chk_progress_report_dates/);
     });
   });
 });
