@@ -453,9 +453,19 @@ export function PaymentCheckoutView({
                 <span className="text-muted-foreground">Discrepancies</span>
                 <span className="font-semibold text-emerald-600">{p.zeroDiscrepancy}</span>
               </div>
-              <div className="flex justify-between py-1">
+              <div className="flex justify-between py-1 border-b border-border/40">
                 <span className="text-muted-foreground">Precision</span>
                 <span className="font-mono">Minor Units (Poisha)</span>
+              </div>
+              <div className="flex justify-between py-1 border-b border-border/40">
+                <span className="text-muted-foreground">Store ID (Sandbox)</span>
+                <span className="font-mono font-medium">ogron6ac9fcef6d321</span>
+              </div>
+              <div className="flex justify-between py-1">
+                <span className="text-muted-foreground">Payment Tunnel</span>
+                <span className="font-mono text-[10px] text-emerald-600 truncate max-w-[150px]" title="https://undone-unsure-twisting.ngrok-free.dev">
+                  ngrok active
+                </span>
               </div>
             </CardContent>
           </Card>

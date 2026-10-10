@@ -10,6 +10,7 @@
     "db:migrate": "pnpm --filter @ogroniedu/database db:migrate",
     "db:seed": "pnpm --filter @ogroniedu/database db:seed",
     "docs:validate": "node scripts/validate-documentation.js",
+    "tunnel": "node scripts/tunnel.js",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\""
   },

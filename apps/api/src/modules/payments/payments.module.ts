@@ -16,6 +16,7 @@ import { PaymentsService } from './payments.service';
 import { LedgerService } from './ledger.service';
 import { PaymentsController } from './payments.controller';
 import { BkashSandboxAdapter } from './adapters/bkash-sandbox.adapter';
+import { SslcommerzSandboxAdapter } from './adapters/sslcommerz-sandbox.adapter';
 import { PaymentAdapterFactory } from './adapters/adapter.factory';
 import { AuthModule } from '../auth/auth.module';
 import { AuditModule } from '../audit/audit.module';
@@ -44,6 +45,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     PaymentsService,
     LedgerService,
     BkashSandboxAdapter,
+    SslcommerzSandboxAdapter,
     PaymentAdapterFactory,
   ],
   exports: [PaymentsService, LedgerService, TypeOrmModule],
