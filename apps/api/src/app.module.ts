@@ -57,6 +57,12 @@ import {
   LedgerJournalEntity,
   LedgerEntryEntity,
 } from './modules/payments/entities';
+import {
+  ReviewEntity,
+  SafetyReportEntity,
+  TutorReplacementCaseEntity,
+} from './modules/trust/entities';
+import { TrustModule } from './modules/trust/trust.module';
 
 @Module({
   imports: [
@@ -111,6 +117,9 @@ import {
             LedgerAccountEntity,
             LedgerJournalEntity,
             LedgerEntryEntity,
+            ReviewEntity,
+            SafetyReportEntity,
+            TutorReplacementCaseEntity,
           ],
           synchronize: false, // Never auto-sync in production or development (migrations are source of truth)
           autoLoadEntities: true,
@@ -131,6 +140,7 @@ import {
     LearningModule,
     PaymentsModule,
     NotificationsModule,
+    TrustModule,
   ],
   providers: [StructuredLoggerService],
   exports: [StructuredLoggerService],

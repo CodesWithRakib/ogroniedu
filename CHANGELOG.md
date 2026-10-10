@@ -1,5 +1,36 @@
 # Changelog
 
+## 1.13.0 — Phase 13 Reviews, Trust, Safety and Replacement Guarantee
+
+- **Definition of Done Enforced — Policies are transparent and enforceable:**
+  - Published canonical policies:
+    - `docs/policies/fair-reviews-and-moderation-policy.md` (`v1.0-fair-reviews`).
+    - `docs/policies/tutor-replacement-guarantee-and-dispute-policy.md` (`v1.0-tutor-replacement-guarantee`).
+  - Database migration `006_reviews_and_trust_safety.sql` introducing `reviews`, `safety_reports`, and `tutor_replacement_cases` tables with check constraints and unique indexes.
+  - Entities created in `apps/api/src/modules/trust/entities/`: `ReviewEntity`, `SafetyReportEntity`, `TutorReplacementCaseEntity`.
+  - Wired into `apps/api/src/app.module.ts` via `TrustModule`.
+- **Fair and Verified Reviews (Anti-Self / Anti-Fake Invariants):**
+  - Zero Self-Reviews: Enforced via `chk_review_no_self_review` database constraint and service guard (`403 Forbidden`).
+  - Zero Fake Reviews: Only confirmed or completed booking participants (student or guardian) can review (`403 Forbidden` for unrelated users).
+  - Multi-dimensional rating criteria: Overall rating (1-5), punctuality, teaching clarity, and subject mastery.
+  - Verified Booking Badges: Linked immutably to booking agreements (`is_verified_booking = true`).
+  - Tutor Rebuttal: Reviewed tutors have the professional right to post a single formal, courteous response (`tutor_response`). Subsequent attempts rejected (`409 Conflict`).
+- **Trust, Abuse & Safety Reporting (Emergency Child Safety Protocol):**
+  - Confidential reporting intake across harassment, child safety, inappropriate content, off-platform payment solicitations, and fraud.
+  - Emergency Child Safety Escalation: Category `child_safety` or severity `critical` automatically triggers `urgent_child_safety` escalation level, logs emergency audit entries, and emits `safety.critical_escalation` outbox event.
+  - Evidence Privacy: Strictly scoped to reporter and platform administrators (`403 Forbidden` for reported or unrelated users).
+- **Tutor Replacement Guarantee Workflow (FR-011):**
+  - Automated replacement guarantee state machine: `requested` -> `under_review` -> `matching` -> `offered` -> `accepted` / `rejected` / `closed`.
+  - Unrelated Case Denial: Only affected booking participants and Trust & Safety staff have access (`403 Forbidden`).
+  - On accepted replacement: booking is re-assigned to alternate verified tutor, restored to `confirmed`, and escrow transfers seamlessly.
+- **Frontend Views & Bilingual Parity:**
+  - Created [`ReviewFormModal`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/ReviewFormModal.tsx), [`TutorReviewsListView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/TutorReviewsListView.tsx), [`TutorReplacementModal`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/TutorReplacementModal.tsx), and [`SafetyReportModal`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/SafetyReportModal.tsx).
+  - 100% Bilingual Parity: Added `"trust"` namespace (41 keys) to both `messages/en.json` and `messages/bn.json` with Bengali translations.
+- **Test Suite:**
+  - Authored 44 new tests across database migration, API, and web packages.
+  - Monorepo test suite expanded from 305 to **349 passing tests (0 failures, 0 skipped)** across 48 test files.
+  - Published audit report `docs/audits/reviews-trust-safety-and-replacement-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
+
 ## 1.12.0 — Phase 12 Notifications, Communication & SSLCOMMERZ Sandbox Integration
 
 - **SSLCOMMERZ Sandbox Gateway & Ngrok Tunnel Integration:**

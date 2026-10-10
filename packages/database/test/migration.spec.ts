@@ -88,6 +88,9 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       'payment_refunds',
       'notification_preferences',
       'booking_messages',
+      'reviews',
+      'safety_reports',
+      'tutor_replacement_cases',
       'schema_migrations',
     ];
 
@@ -280,6 +283,79 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
           VALUES ('${testUserId}', 'booking', 'sms', false);
         `),
       ).rejects.toThrow(/uq_notification_preferences/);
+    });
+
+    it('NEGATIVE TEST: should reject self-review where reviewer_user_id equals tutor_user_id via chk_review_no_self_review', async () => {
+      const tutorUserId = crypto.randomUUID();
+      const studentUserId = crypto.randomUUID();
+      const bookingId = crypto.randomUUID();
+
+      await client.query(`
+        INSERT INTO users (id, display_name, email)
+        VALUES ('${tutorUserId}', 'Tutor Self', 'tutorself-${Date.now()}@example.com'),
+               ('${studentUserId}', 'Student Self', 'studentself-${Date.now()}@example.com');
+      `);
+
+      await client.query(`
+        INSERT INTO tutor_profiles (user_id, headline, bio, hourly_rate_minor, publication_status)
+        VALUES ('${tutorUserId}', 'Self Test', 'Bio', 50000, 'published');
+      `);
+
+      const levelRes = await client.query('SELECT id FROM education_levels LIMIT 1;');
+      const subjectRes = await client.query('SELECT id FROM subjects LIMIT 1;');
+
+      let levelId = levelRes.rows[0]?.id;
+      let subjectId = subjectRes.rows[0]?.id;
+
+      if (!levelId) {
+        const insertLvl = await client.query(`
+          INSERT INTO education_levels (code, name_en, name_bn, sort_order)
+          VALUES ('test_lvl_ph13_${Date.now()}', 'Level 13', 'লেভেল ১৩', 1) RETURNING id;
+        `);
+        levelId = insertLvl.rows[0].id;
+      }
+
+      if (!subjectId) {
+        const insertSub = await client.query(`
+          INSERT INTO subjects (code, name_en, name_bn)
+          VALUES ('test_sub_ph13_${Date.now()}', 'Subject 13', 'বিষয় ১৩') RETURNING id;
+        `);
+        subjectId = insertSub.rows[0].id;
+      }
+
+      await client.query(`
+        INSERT INTO bookings (id, requester_user_id, student_user_id, tutor_user_id, subject_id, education_level_id, mode, status, price_per_session_minor, duration_minutes, cancellation_policy_version)
+        VALUES ('${bookingId}', '${studentUserId}', '${studentUserId}', '${tutorUserId}', '${subjectId}', '${levelId}', 'online', 'completed', 50000, 60, 'v1.0-standard-cancellation');
+      `);
+
+      // Attempt self-review: reviewer_user_id = tutorUserId
+      await expect(
+        client.query(`
+          INSERT INTO reviews (booking_id, reviewer_user_id, tutor_user_id, rating, comment)
+          VALUES ('${bookingId}', '${tutorUserId}', '${tutorUserId}', 5, 'Great self review!');
+        `),
+      ).rejects.toThrow(/chk_review_no_self_review/);
+    });
+
+    it('NEGATIVE TEST: should reject duplicate review for same booking and reviewer via uq_review_booking_reviewer', async () => {
+      const res = await client.query<{ id: string; student_user_id: string; tutor_user_id: string }>(
+        'SELECT id, student_user_id, tutor_user_id FROM bookings LIMIT 1;'
+      );
+      if (res.rows.length > 0) {
+        const b = res.rows[0];
+        await client.query(`
+          INSERT INTO reviews (booking_id, reviewer_user_id, tutor_user_id, rating, comment)
+          VALUES ('${b.id}', '${b.student_user_id}', '${b.tutor_user_id}', 5, 'Initial verified review');
+        `);
+
+        // Duplicate review must fail
+        await expect(
+          client.query(`
+            INSERT INTO reviews (booking_id, reviewer_user_id, tutor_user_id, rating, comment)
+            VALUES ('${b.id}', '${b.student_user_id}', '${b.tutor_user_id}', 4, 'Duplicate review');
+          `),
+        ).rejects.toThrow(/uq_review_booking_reviewer/);
+      }
     });
   });
 });
