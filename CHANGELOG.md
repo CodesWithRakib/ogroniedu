@@ -1,5 +1,24 @@
 # Changelog
 
+## 1.4.0 — Phase 04 Database and Migrations
+
+- Created dedicated `@ogroniedu/database` workspace package with TypeScript compiler configuration and native ESM support.
+- Built transactional `MigrationRunner` supporting sequential SQL migration execution, tracking table `schema_migrations`, idempotency verification, and failure rollback.
+- Implemented comprehensive `001_initial_schema.sql` migration containing all 23 core relational tables:
+  - Users, Roles, Permissions, User Roles (RBAC)
+  - Curricula, Education Levels, Subjects
+  - Guardian Student Links, Tutor Profiles, Tutor Subjects, Tutor Availability
+  - Bookings, Booking Sessions with GiST exclusion constraint preventing overlapping tutor bookings (`ex_tutor_session_overlap`), Session Attendance
+  - Double-Entry Ledger Accounts, Journals, Entries (with check constraints ensuring debits and credits balance)
+  - Payment Orders, Payment Transactions
+  - Notifications, Notification Deliveries
+  - Outbox Events, Idempotency Keys, Audit Logs
+- Built `SeedRunner` with idempotent seeding logic for default roles, national curricula, education levels, and foundational subjects.
+- Added migration and seeding CLI automation scripts: `pnpm db:migrate` and `pnpm db:seed`.
+- Integrated `@ogroniedu/database` into `apps/api` with TypeORM data source configured with `synchronize: false`.
+- Authored 8 automated tests in `packages/database/test/` verifying migration execution, idempotency, catalog presence, exclusion constraints (GiST overlap prevention), check constraints (`chk_user_contact_present`), and seed repeatability.
+- Expanded automated test suite from 53 to 61 passing tests across the monorepo.
+
 ## 1.3.0 — Phase 03 Design System & Localization
 
 - Built bilingual dictionary catalogs (`apps/web/messages/bn.json` & `apps/web/messages/en.json`) with strict key parity and type-safe loader.

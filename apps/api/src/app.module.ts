@@ -26,7 +26,7 @@ import { validateEnvironment } from './config/env.validation';
           host: config.get<string>('DB_HOST', 'localhost'),
           port: config.get<number>('DB_PORT', 5432),
           username: config.get<string>('DB_USERNAME', 'postgres'),
-          password: config.get<string>('DB_PASSWORD', 'postgres'),
+          password: config.get<string>('DB_PASSWORD', 'password'),
           database: config.get<string>('DB_NAME', 'ogroniedu_dev'),
           entities: [NotificationEntity, NotificationDeliveryEntity],
           synchronize: false, // Never auto-sync in production or development (migrations are source of truth)
