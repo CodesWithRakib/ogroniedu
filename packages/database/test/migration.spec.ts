@@ -85,6 +85,7 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       'assignments',
       'assignment_submissions',
       'progress_reports',
+      'payment_refunds',
       'schema_migrations',
     ];
 
@@ -205,6 +206,57 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
           );
         `),
       ).rejects.toThrow(/chk_progress_report_dates/);
+    });
+
+    it('FINANCIAL INVARIANT: verify_ledger_journal_balance should confirm balanced debits and credits', async () => {
+      const journalId = crypto.randomUUID();
+      const idempotencyKey = `ledger-test-balance-${Date.now()}`;
+
+      // Insert test journal
+      await client.query(`
+        INSERT INTO ledger_journals (id, source_type, source_id, idempotency_key, description)
+        VALUES ('${journalId}', 'test_payment', gen_random_uuid(), '${idempotencyKey}', 'Test balanced journal');
+      `);
+
+      // Insert or ensure test accounts exist
+      await client.query(`
+        INSERT INTO ledger_accounts (code, name, account_type, currency)
+        VALUES ('1000', 'Escrow Holding Pool', 'asset', 'BDT'),
+               ('2100', 'Student Escrow Deposit', 'liability', 'BDT')
+        ON CONFLICT (code) DO NOTHING;
+      `);
+
+      // Fetch sample accounts (e.g. 1000 and 2100)
+      const acc1000 = await client.query("SELECT id FROM ledger_accounts WHERE code = '1000';");
+      const acc2100 = await client.query("SELECT id FROM ledger_accounts WHERE code = '2100';");
+
+      const acc1000Id = acc1000.rows[0].id;
+      const acc2100Id = acc2100.rows[0].id;
+
+      // 1. Insert balanced entries: Debit 50,000 poisha and Credit 50,000 poisha (500 BDT)
+      await client.query(`
+        INSERT INTO ledger_entries (journal_id, account_id, direction, amount_minor, currency)
+        VALUES ('${journalId}', '${acc1000Id}', 'debit', 50000, 'BDT'),
+               ('${journalId}', '${acc2100Id}', 'credit', 50000, 'BDT');
+      `);
+
+      const verifyRes = await client.query<{ verify_ledger_journal_balance: boolean }>(`
+        SELECT verify_ledger_journal_balance('${journalId}');
+      `);
+
+      expect(verifyRes.rows[0].verify_ledger_journal_balance).toBe(true);
+
+      // 2. Unbalanced test: add extra debit of 10,000 poisha to break balance
+      await client.query(`
+        INSERT INTO ledger_entries (journal_id, account_id, direction, amount_minor, currency)
+        VALUES ('${journalId}', '${acc1000Id}', 'debit', 10000, 'BDT');
+      `);
+
+      const unbalancedRes = await client.query<{ verify_ledger_journal_balance: boolean }>(`
+        SELECT verify_ledger_journal_balance('${journalId}');
+      `);
+
+      expect(unbalancedRes.rows[0].verify_ledger_journal_balance).toBe(false);
     });
   });
 });

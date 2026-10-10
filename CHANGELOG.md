@@ -1,5 +1,25 @@
 # Changelog
 
+## 1.11.0 — Phase 11 Payments and Financial Ledger
+
+- Implemented sandbox provider integration and double-entry financial ledger core in `apps/api/src/modules/payments/`:
+  - Definition of Done enforced: No live money until provider/business/accounting approvals; all providers run in strict sandbox simulation mode (`PROVIDER_SANDBOX_MODE=true`).
+  - Strict security invariant: No success based on redirect. Payment success state is exclusively granted via cryptographically verified server-to-server webhook callbacks (HMAC-SHA256 signature verification) matching order amount.
+  - Database migration `004_payments_and_ledger.sql` introducing `payment_refunds` table, check constraints, indexes, and PL/pgSQL function `verify_ledger_journal_balance(p_journal_id)`.
+  - TypeORM Entities created: `PaymentOrderEntity`, `PaymentTransactionEntity`, `PaymentRefundEntity`, `LedgerAccountEntity`, `LedgerJournalEntity`, `LedgerEntryEntity`.
+  - Double-Entry Ledger Service (`LedgerService`): Enforces mathematical invariant `SUM(debits) = SUM(credits)` with zero floating-point errors using 64-bit integer minor units (poisha = BDT * 100). Rejects unbalanced, zero, or negative postings.
+  - Milestone Escrow Accounting:
+    - On payment: Debit `1000` (Escrow Holding Pool Asset) / Credit `2100` (Student Advance Escrow Deposit Liability).
+    - On milestone completion: Clears escrow liability into 92% Tutor Earnings Payable Liability (`2000`) and 8% Platform Service Fee Revenue (`4000`).
+  - Operational Refund bounds checking: Cannot refund more than total paid order amount; posts balanced reversal journal (`Debit 2100`, `Credit 1000`) and emits `refund.processed` outbox event.
+  - Financial Reconciliation Audit (`runReconciliation()`): Audits all payment orders against verified transaction records and validates double-entry ledger balance integrity.
+  - Printable Receipts (`getPaymentReceipt()`): Formats official payment receipts with BDT currency, transaction IDs, payer/student/tutor details, and BST timestamps.
+  - Frontend UI: Built [`PaymentCheckoutView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/payments/PaymentCheckoutView.tsx) and page at `apps/web/src/app/[locale]/payments/page.tsx` with MFS gateway selectors (bKash, Nagad, Cards), escrow breakdown card, live ledger balance status, and printable receipts.
+  - Added bilingual namespace `"payments"` (25 keys) to `messages/en.json` and `messages/bn.json` with 100% key parity and Bengali digit formatting.
+  - Added 34 new tests across `ledger.service.spec.ts`, `payments.service.spec.ts`, `payments.controller.spec.ts`, `payments.spec.ts`, and `migration.spec.ts`.
+  - Expanded monorepo test suite from 240 to **274 passing tests, 0 failures, 0 skipped**.
+  - Published audit report `docs/audits/payments-and-financial-ledger-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
+
 ## 1.10.0 — Phase 10 Learning Management (Attendance, Homework, and Progress)
 
 - Implemented authorized, attributable, and auditable Learning Management System in `apps/api/src/modules/learning/`:

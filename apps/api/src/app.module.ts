@@ -38,12 +38,21 @@ import { TaxonomyModule } from './modules/taxonomy/taxonomy.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
 import { BookingsModule } from './modules/bookings/bookings.module';
 import { LearningModule } from './modules/learning/learning.module';
+import { PaymentsModule } from './modules/payments/payments.module';
 import {
   SessionAttendanceEntity,
   AssignmentEntity,
   AssignmentSubmissionEntity,
   ProgressReportEntity,
 } from './modules/learning/entities';
+import {
+  PaymentOrderEntity,
+  PaymentTransactionEntity,
+  PaymentRefundEntity,
+  LedgerAccountEntity,
+  LedgerJournalEntity,
+  LedgerEntryEntity,
+} from './modules/payments/entities';
 
 @Module({
   imports: [
@@ -90,6 +99,12 @@ import {
             AssignmentEntity,
             AssignmentSubmissionEntity,
             ProgressReportEntity,
+            PaymentOrderEntity,
+            PaymentTransactionEntity,
+            PaymentRefundEntity,
+            LedgerAccountEntity,
+            LedgerJournalEntity,
+            LedgerEntryEntity,
           ],
           synchronize: false, // Never auto-sync in production or development (migrations are source of truth)
           autoLoadEntities: true,
@@ -108,6 +123,7 @@ import {
     TutorsModule,
     BookingsModule,
     LearningModule,
+    PaymentsModule,
     NotificationsModule,
   ],
   providers: [StructuredLoggerService],
