@@ -1,0 +1,10 @@
+node_modules
+dist
+build
+out
+.next
+.turbo
+pnpm-lock.yaml
+coverage
+.nyc_output
+*.tsbuildinfo

@@ -1,0 +1,49 @@
+import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { ConfigModule, ConfigService } from '@nestjs/config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { NotificationsModule } from './modules/notifications/notifications.module';
+import { HealthModule } from './modules/health/health.module';
+import { NotificationEntity } from './modules/notifications/entities/notification.entity';
+import { NotificationDeliveryEntity } from './modules/notifications/entities/notification-delivery.entity';
+import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
+import { StructuredLoggerService } from './common/logger/structured-logger.service';
+import { validateEnvironment } from './config/env.validation';
+
+@Module({
+  imports: [
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validate: validateEnvironment,
+      envFilePath: ['.env.local', '.env'],
+    }),
+    TypeOrmModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (config: ConfigService) => {
+        const isTest = process.env.NODE_ENV === 'test';
+        return {
+          type: 'postgres',
+          host: config.get<string>('DB_HOST', 'localhost'),
+          port: config.get<number>('DB_PORT', 5432),
+          username: config.get<string>('DB_USERNAME', 'postgres'),
+          password: config.get<string>('DB_PASSWORD', 'postgres'),
+          database: config.get<string>('DB_NAME', 'ogroniedu_dev'),
+          entities: [NotificationEntity, NotificationDeliveryEntity],
+          synchronize: false, // Never auto-sync in production or development (migrations are source of truth)
+          autoLoadEntities: true,
+          retryAttempts: isTest ? 1 : 3,
+          retryDelay: 1000,
+        };
+      },
+    }),
+    HealthModule,
+    NotificationsModule,
+  ],
+  providers: [StructuredLoggerService],
+  exports: [StructuredLoggerService],
+})
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer): void {
+    consumer.apply(RequestIdMiddleware).forRoutes('*');
+  }
+}
