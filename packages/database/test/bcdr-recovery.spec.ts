@@ -42,8 +42,8 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
     // 2. Execute full cold recovery via MigrationRunner
     const executed = await runner.runMigrations();
 
-    // Verify all 9 ordered migrations were replayed from WAL / migration log
-    expect(executed).toHaveLength(9);
+    // Verify all 10 ordered migrations were replayed from WAL / migration log
+    expect(executed).toHaveLength(10);
     expect(executed).toEqual([
       '001_initial_schema.sql',
       '002_auth_verification_codes.sql',
@@ -54,15 +54,16 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
       '007_admin_and_operations.sql',
       '008_analytics_and_reporting.sql',
       '009_security_and_privacy_hardening.sql',
+      '010_performance_and_load_indexes.sql',
     ]);
 
-    // Verify schema_migrations ledger records all 9 entries
+    // Verify schema_migrations ledger records all 10 entries
     const migrationRecords = await client.query<{ name: string; id: number }>(
       'SELECT id, name FROM schema_migrations ORDER BY id ASC;',
     );
-    expect(migrationRecords.rows).toHaveLength(9);
+    expect(migrationRecords.rows).toHaveLength(10);
     expect(migrationRecords.rows[0].name).toBe('001_initial_schema.sql');
-    expect(migrationRecords.rows[8].name).toBe('009_security_and_privacy_hardening.sql');
+    expect(migrationRecords.rows[9].name).toBe('010_performance_and_load_indexes.sql');
   });
 
   it('STAGE 2: Verify post-recovery schema completeness and catalog invariants', async () => {
@@ -124,18 +125,26 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
     expect(Array.isArray(viewQueryRes.rows)).toBe(true);
   });
 
-  it('STAGE 3: Verify Phase 17 security indexes and tables exist post-recovery in recovered catalog', async () => {
+  it('STAGE 3: Verify Phase 17 security and Phase 19 performance indexes exist post-recovery in recovered catalog', async () => {
     const indexRes = await client.query<{ indexname: string }>(`
       SELECT indexname 
       FROM pg_indexes 
       WHERE schemaname = 'public'
-        AND indexname IN ('ix_file_assets_owner', 'ix_users_status_privacy', 'ix_bookings_active_participants');
+        AND indexname IN (
+          'ix_file_assets_owner',
+          'ix_users_status_privacy',
+          'ix_bookings_active_participants',
+          'ix_booking_sessions_booking_start',
+          'ix_audit_logs_created_desc'
+        );
     `);
 
     const indexes = indexRes.rows.map((r) => r.indexname);
     expect(indexes).toContain('ix_file_assets_owner');
     expect(indexes).toContain('ix_users_status_privacy');
     expect(indexes).toContain('ix_bookings_active_participants');
+    expect(indexes).toContain('ix_booking_sessions_booking_start');
+    expect(indexes).toContain('ix_audit_logs_created_desc');
   });
 
   it('STAGE 4: Point-In-Time Recovery (PITR) replay idempotency drill', async () => {
@@ -145,7 +154,7 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
 
     const status = await runner.getStatus();
     expect(status.pending).toHaveLength(0);
-    expect(status.applied).toHaveLength(9);
+    expect(status.applied).toHaveLength(10);
   });
 
   it('STAGE 5: Double-entry ledger balance conservation invariant drill', async () => {
