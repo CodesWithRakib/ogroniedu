@@ -374,6 +374,12 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       expect(flagKeys).toContain('instant_replacement_matching');
       expect(flagKeys).toContain('strict_pnr_verification');
     });
+
+    it('POSITIVE TEST: should verify v_operational_daily_metrics analytics view exists and can be queried', async () => {
+      const viewRes = await client.query('SELECT * FROM v_operational_daily_metrics LIMIT 1;');
+      expect(viewRes).toBeDefined();
+      expect(Array.isArray(viewRes.rows)).toBe(true);
+    });
   });
 });
 

@@ -68,6 +68,7 @@ import {
   FeatureFlagEntity,
 } from './modules/admin/entities';
 import { AdminModule } from './modules/admin/admin.module';
+import { AnalyticsModule } from './modules/analytics/analytics.module';
 
 @Module({
   imports: [
@@ -149,6 +150,7 @@ import { AdminModule } from './modules/admin/admin.module';
     NotificationsModule,
     TrustModule,
     AdminModule,
+    AnalyticsModule,
   ],
   providers: [StructuredLoggerService],
   exports: [StructuredLoggerService],

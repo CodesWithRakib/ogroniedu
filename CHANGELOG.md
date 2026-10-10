@@ -1,6 +1,37 @@
 # Changelog
 
-## 1.14.0 — Phase 14 Admin Operations, Least Privilege & Privileged Governance
+## 1.15.0 — Phase 15 Operational Analytics and Source-of-Truth Reporting
+
+- **Definition of Done Enforced — Every metric has a precise definition and reconciles:**
+  - Authored canonical metric specification `docs/analytics-metric-definitions.md` with explicit formulas, numerators, denominators, time-window anchors, and anti-double-counting invariants.
+  - Reconciles GMV and 8% platform fee commissions against double-entry ledger journals.
+- **Database Schema & Temporal Performance Optimization:**
+  - Migration `008_analytics_and_reporting.sql` introducing compound temporal indexes on `bookings`, `booking_sessions`, `payment_orders`, `payment_refunds`, `tutor_replacement_cases`, and `safety_reports`.
+  - Created canonical SQL analytical view `v_operational_daily_metrics` aggregating requests, bookings, completed sessions, and poisha financial volumes directly from transactional tables.
+- **Core Analytics API Service & Controller (`@ogroniedu/api`):**
+  - Implemented `AnalyticsService` executing parameterized TypeORM aggregation queries directly on source tables:
+    - **Temporal Boundary Invariant**: Validates `startDate <= endDate`. Rejects inverted date ranges with `BadRequestException`.
+    - **Anti-Double-Counting Guard**: GMV aggregates only succeeded `payment_orders`; multi-session bookings count sessions strictly once anchored on `booking_sessions.starts_at`.
+    - **Zero-Division Defense**: Guarded all rate calculations against zero denominators, preventing `NaN` or `Infinity`.
+    - **Operational Overview**: Booking conversion funnels, session reliability rates, financial volume, trust ratings, and daily trends.
+    - **Financial Analytics**: Gateway distribution breakdown (`bkash`, `sslcommerz`), refund reasons, and net processed volume.
+    - **Tutor Performance**: Average response hours, leaderboard rankings, and subject demand volume.
+    - **Cohort Retention**: Distinct learner grouping, repeat booking rate ($\ge 2$ bookings), and retention rate.
+    - **ABAC Tutor Self Metrics**: Scoped strictly to logged-in tutor (`tutorUserId = user.id`) for inquiries, acceptance rate, completed sessions, and net earnings.
+  - Implemented `AnalyticsController` protected with `@Roles('admin', 'super_admin')` for operational/financial endpoints and `@Roles('tutor')` for personal tutor analytics.
+- **Frontend Dashboard UI & Localization (`@ogroniedu/web`):**
+  - Created `AnalyticsDashboardView.tsx` with dynamic time presets (`7d`, `30d`, `90d`), KPI cards, conversion funnel progress bars, session reliability matrix, financial volume cards, and daily activity trends.
+  - Added timestamped client-side CSV and JSON report export features.
+  - Implemented Next.js route at `apps/web/src/app/[locale]/analytics/page.tsx`.
+  - Added `"analytics"` namespace with 34 keys to `messages/en.json` and `messages/bn.json` with 100% key parity.
+- **Automated Verification:**
+  - Full monorepo test suite stands at **404 total passed tests, 0 failures, 0 skipped** across 54 test files:
+    - `@ogroniedu/api`: 38 test files, 334 tests passing.
+    - `@ogroniedu/web`: 14 test files, 55 tests passing.
+    - `@ogroniedu/database`: 2 test files, 15 tests passing.
+    - `pnpm typecheck` passed with 0 errors across 5 workspace packages.
+    - Next.js production build (`pnpm --filter @ogroniedu/web build`) succeeded.
+
 
 - **Definition of Done Enforced — All privileged operations least-privileged and audited:**
   - Strict RBAC separation across `support_agent`, `compliance_reviewer`, `admin`, and `super_admin` via NestJS `RolesGuard`.
