@@ -29,6 +29,8 @@ import {
   AvailabilitySlotItemDto,
   AdminReviewTutorDto,
   TutorPublicProfileDto,
+  SearchTutorsQueryDto,
+  SearchTutorsResponseDto,
 } from './dto';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 
@@ -592,6 +594,232 @@ export class TutorsService {
       subjects: publicSubjects,
       serviceAreas: publicServiceAreas,
       availability: publicAvailability,
+    };
+  }
+
+  /**
+   * Real DB-backed multi-dimensional tutor discovery search
+   * Definition of Done: "No static production catalog"
+   * Enforces: Unpublished/unverified tutor exclusion, private PII redaction,
+   *           explainable ranking, and deterministic pagination.
+   */
+  async searchTutors(query: SearchTutorsQueryDto): Promise<SearchTutorsResponseDto> {
+    const publishedProfiles = await this.profileRepo.find({
+      where: {
+        publicationStatus: 'published',
+        verificationStatus: 'approved',
+      },
+      relations: {
+        qualifications: true,
+        subjects: true,
+        serviceAreas: true,
+        availabilities: true,
+      },
+    });
+
+    const userIds = publishedProfiles.map((p) => p.userId);
+    const users =
+      userIds.length > 0 ? await this.userRepo.find({ where: { id: In(userIds) } }) : [];
+
+    // Filter out inactive or deleted users
+    let candidates = publishedProfiles.filter((p) => {
+      const u = users.find((usr) => usr.id === p.userId);
+      return u && u.status === 'active' && !u.deletedAt;
+    });
+
+    // 1. Keyword search (q)
+    if (query.q && query.q.trim()) {
+      const term = query.q.trim().toLowerCase();
+      candidates = candidates.filter((p) => {
+        const u = users.find((usr) => usr.id === p.userId);
+        const nameMatch = u?.displayName?.toLowerCase().includes(term);
+        const headlineMatch = p.headline?.toLowerCase().includes(term);
+        const bioMatch = p.bio?.toLowerCase().includes(term);
+        return nameMatch || headlineMatch || bioMatch;
+      });
+    }
+
+    // 2. Mode filter
+    if (query.mode) {
+      candidates = candidates.filter((p) => (p.teachingModes || []).includes(query.mode!));
+    }
+
+    // 3. Price range
+    if (query.minPrice !== undefined) {
+      candidates = candidates.filter((p) => Number(p.hourlyRateMinor || 0) >= query.minPrice!);
+    }
+    if (query.maxPrice !== undefined) {
+      candidates = candidates.filter((p) => Number(p.hourlyRateMinor || 0) <= query.maxPrice!);
+    }
+
+    // 4. Subject filter
+    if (query.subjectId) {
+      candidates = candidates.filter((p) =>
+        (p.subjects || []).some((s) => s.subjectId === query.subjectId),
+      );
+    }
+
+    // 5. Education level filter
+    if (query.educationLevelId) {
+      candidates = candidates.filter((p) =>
+        (p.subjects || []).some((s) => s.educationLevelId === query.educationLevelId),
+      );
+    }
+
+    // 6. Curriculum filter
+    if (query.curriculumId) {
+      candidates = candidates.filter((p) =>
+        (p.subjects || []).some((s) => s.curriculumId === query.curriculumId),
+      );
+    }
+
+    // 7. District filter
+    if (query.districtCode) {
+      candidates = candidates.filter((p) =>
+        (p.serviceAreas || []).some(
+          (a) => a.districtCode.toLowerCase() === query.districtCode!.toLowerCase(),
+        ),
+      );
+    }
+
+    // 8. Upazila filter
+    if (query.upazilaCode) {
+      candidates = candidates.filter((p) =>
+        (p.serviceAreas || []).some(
+          (a) => a.upazilaCode && a.upazilaCode.toLowerCase() === query.upazilaCode!.toLowerCase(),
+        ),
+      );
+    }
+
+    // Collect all subject & level IDs for taxonomy resolution
+    const allSubjectIds = Array.from(
+      new Set(candidates.flatMap((c) => (c.subjects || []).map((s) => s.subjectId))),
+    );
+    const allLevelIds = Array.from(
+      new Set(candidates.flatMap((c) => (c.subjects || []).map((s) => s.educationLevelId))),
+    );
+
+    const taxonomySubjects =
+      allSubjectIds.length > 0
+        ? await this.taxonomySubjectRepo.find({ where: { id: In(allSubjectIds) } })
+        : [];
+    const taxonomyLevels =
+      allLevelIds.length > 0
+        ? await this.taxonomyLevelRepo.find({ where: { id: In(allLevelIds) } })
+        : [];
+
+    // Map candidates to scored results
+    const scoredItems = candidates.map((profile) => {
+      const user = users.find((u) => u.id === profile.userId)!;
+
+      // Dynamic badges: Only checks actually performed
+      const badges: string[] = ['verified_tutor'];
+      const rankingReasons: string[] = ['Approved Platform Tutor (+100)'];
+      let matchScore = 100;
+
+      const approvedQualifications = (profile.qualifications || []).filter(
+        (q) => q.reviewStatus === 'approved',
+      );
+
+      const hasApprovedIdentity = approvedQualifications.some((q) => q.qualificationType === 'nid');
+      if (hasApprovedIdentity) {
+        badges.push('verified_identity');
+        matchScore += 20;
+        rankingReasons.push('Verified Government Identity (+20)');
+      }
+
+      const hasApprovedAcademic = approvedQualifications.some(
+        (q) => q.qualificationType === 'academic_certificate' || q.qualificationType === 'degree',
+      );
+      if (hasApprovedAcademic) {
+        badges.push('verified_academic');
+        matchScore += 20;
+        rankingReasons.push('Verified Academic Credentials (+20)');
+      }
+
+      const exp = profile.yearsExperience || 0;
+      if (exp > 0) {
+        const expScore = Math.min(exp * 5, 50);
+        matchScore += expScore;
+        rankingReasons.push(`${exp} Years Experience (+${expScore})`);
+      }
+
+      if (profile.responseTimeMinutes && profile.responseTimeMinutes <= 60) {
+        matchScore += 10;
+        rankingReasons.push('Fast Responder (+10)');
+      }
+
+      const publicSubjects = (profile.subjects || []).map((s) => {
+        const sub = taxonomySubjects.find((t) => t.id === s.subjectId);
+        const lvl = taxonomyLevels.find((l) => l.id === s.educationLevelId);
+        return {
+          id: s.id,
+          subjectCode: sub?.code || 'unknown',
+          subjectNameEn: sub?.nameEn || 'Subject',
+          subjectNameBn: sub?.nameBn || 'বিষয়',
+          educationLevelCode: lvl?.code || 'unknown',
+          educationLevelNameEn: lvl?.nameEn || 'Level',
+          educationLevelNameBn: lvl?.nameBn || 'শ্রেণি',
+          curriculumCode: s.curriculumId,
+          rateMinor: s.rateMinor || profile.hourlyRateMinor,
+        };
+      });
+
+      const publicServiceAreas = (profile.serviceAreas || []).map((a) => ({
+        id: a.id,
+        districtCode: a.districtCode,
+        upazilaCode: a.upazilaCode,
+        localityName: a.localityName,
+        radiusKm: a.radiusKm ? Number(a.radiusKm) : null,
+      }));
+
+      return {
+        id: profile.userId,
+        displayName: user.displayName,
+        headline: profile.headline,
+        bio: profile.bio,
+        yearsExperience: profile.yearsExperience,
+        teachingModes: profile.teachingModes,
+        hourlyRateMinor: profile.hourlyRateMinor,
+        currency: profile.currency,
+        responseTimeMinutes: profile.responseTimeMinutes,
+        badges,
+        matchScore,
+        rankingReasons,
+        subjects: publicSubjects,
+        serviceAreas: publicServiceAreas,
+      };
+    });
+
+    // Sort candidates
+    const sort = query.sort || 'recommended';
+    scoredItems.sort((a, b) => {
+      switch (sort) {
+        case 'price_asc':
+          return Number(a.hourlyRateMinor || 0) - Number(b.hourlyRateMinor || 0);
+        case 'price_desc':
+          return Number(b.hourlyRateMinor || 0) - Number(a.hourlyRateMinor || 0);
+        case 'experience_desc':
+          return (b.yearsExperience || 0) - (a.yearsExperience || 0);
+        case 'recommended':
+        default:
+          return b.matchScore - a.matchScore;
+      }
+    });
+
+    // Pagination
+    const page = Math.max(1, query.page || 1);
+    const limit = Math.min(50, Math.max(1, query.limit || 10));
+    const total = scoredItems.length;
+    const totalPages = Math.ceil(total / limit) || 1;
+    const paginatedData = scoredItems.slice((page - 1) * limit, page * limit);
+
+    return {
+      data: paginatedData,
+      total,
+      page,
+      limit,
+      totalPages,
     };
   }
 

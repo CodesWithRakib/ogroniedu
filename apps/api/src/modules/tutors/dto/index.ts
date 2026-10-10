@@ -7,3 +7,5 @@ export * from './set-availability.dto';
 export * from './admin-review-tutor.dto';
 export * from './upload-evidence-file.dto';
 export * from './tutor-public-profile.dto';
+export * from './search-tutors-query.dto';
+export * from './search-tutors-response.dto';

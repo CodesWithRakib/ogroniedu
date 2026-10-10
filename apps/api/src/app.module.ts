@@ -26,6 +26,7 @@ import { TutorAvailabilityEntity } from './modules/tutors/entities/tutor-availab
 import { SubjectEntity } from './modules/taxonomy/entities/subject.entity';
 import { EducationLevelEntity } from './modules/taxonomy/entities/education-level.entity';
 import { CurriculumEntity } from './modules/taxonomy/entities/curriculum.entity';
+import { BookingEntity } from './modules/bookings/entities/booking.entity';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { StructuredLoggerService } from './common/logger/structured-logger.service';
 import { validateEnvironment } from './config/env.validation';
@@ -35,6 +36,7 @@ import { GuardiansModule } from './modules/guardians/guardians.module';
 import { FilesModule } from './modules/files/files.module';
 import { TaxonomyModule } from './modules/taxonomy/taxonomy.module';
 import { TutorsModule } from './modules/tutors/tutors.module';
+import { BookingsModule } from './modules/bookings/bookings.module';
 
 @Module({
   imports: [
@@ -76,6 +78,7 @@ import { TutorsModule } from './modules/tutors/tutors.module';
             SubjectEntity,
             EducationLevelEntity,
             CurriculumEntity,
+            BookingEntity,
           ],
           synchronize: false, // Never auto-sync in production or development (migrations are source of truth)
           autoLoadEntities: true,
@@ -92,6 +95,7 @@ import { TutorsModule } from './modules/tutors/tutors.module';
     FilesModule,
     TaxonomyModule,
     TutorsModule,
+    BookingsModule,
     NotificationsModule,
   ],
   providers: [StructuredLoggerService],

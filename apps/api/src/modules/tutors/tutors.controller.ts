@@ -11,6 +11,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  Query,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
@@ -22,6 +23,7 @@ import {
   AddTutorSubjectDto,
   SetServiceAreasDto,
   SetAvailabilityDto,
+  SearchTutorsQueryDto,
 } from './dto';
 
 @Controller('api/v1/tutors')
@@ -29,8 +31,17 @@ export class TutorsController {
   constructor(private readonly tutorsService: TutorsService) {}
 
   // --------------------------------------------------------------------------
-  // Public Endpoint: Sanitized Public Profile
+  // Public Endpoints: Search & Public Profile
   // --------------------------------------------------------------------------
+
+  @Get('search')
+  async searchTutors(@Query() query: SearchTutorsQueryDto) {
+    const results = await this.tutorsService.searchTutors(query);
+    return {
+      success: true,
+      ...results,
+    };
+  }
 
   @Get('public/:id')
   async getPublicProfile(@Param('id', ParseUUIDPipe) id: string) {

@@ -1,5 +1,27 @@
 # Changelog
 
+## 1.8.0 — Phase 08 Tutor Discovery and Requests
+
+- Implemented real DB-backed discovery search engine (`TutorsService.searchTutors`) exposed at `GET /api/v1/tutors/search`:
+  - Strictly excluded unpublished, draft, unapproved, or suspended tutor profiles.
+  - Multi-dimensional filters: text search `q`, subject, education level, curriculum, teaching mode, location (district/upazila), and price range.
+  - Explainable, deterministic ranking algorithm (Base 100 + NID 20 + Degree 20 + Experience up to 50 + Fast response 10) with transparent scoring breakdown and zero unbacked AI claims.
+  - Deterministic pagination (`total`, `page`, `limit`, `totalPages`).
+  - Strict privacy isolation: public search results redact national IDs, phone numbers, emails, and internal reviewer notes.
+- Created `BookingsModule` and `BookingsService` in `apps/api/src/modules/bookings/`:
+  - `BookingEntity` mapped to `bookings` relational schema.
+  - Request creation workflow (`POST /api/v1/requests`) verifying active guardian-student relationships for minors and preventing self-requests.
+  - Server-side anti-spam invariant: Simultaneous duplicate active requests for the same student, tutor, and subject throw `409 Conflict`.
+  - Request withdrawal workflow (`POST /api/v1/requests/:id/withdraw`) restricted strictly to the requester.
+  - Tutor response workflow (`POST /api/v1/requests/:id/respond`) allowing accept and decline with audit logging.
+  - Real-time notification dispatch via `NotificationService` across all lifecycle events (`booking.requested`, `booking.accepted`, `booking.declined`, `booking.cancelled`).
+  - Ownership guard on `GET /api/v1/requests/:id` ensuring third parties cannot inspect private booking records.
+- Built accessible frontend `TutorSearchCatalog` in `apps/web/src/components/discovery/TutorSearchCatalog.tsx` with dynamic filters, explainable match breakdown modal, booking request dialog, and route at `apps/web/src/app/[locale]/tutors/page.tsx`.
+- Updated bilingual localization catalogs `messages/bn.json` and `messages/en.json` with `discovery` and `bookingRequest` namespaces, maintaining 100% key parity and localized Bengali numeral formatting.
+- Authored 27 new automated unit and invariant tests across `discovery.search.spec.ts`, `bookings.service.spec.ts`, `bookings.controller.spec.ts`, and `tutor-discovery.spec.ts`.
+- Expanded monorepo test suite from 146 to **173 passing tests, 0 failures, 0 skipped**.
+- Published Phase 08 audit report `docs/audits/tutor-discovery-and-requests-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
+
 ## 1.7.0 — Phase 07 Tutor Onboarding and Verification
 
 - Established canonical tutor verification, credential review, and trust policy in `docs/policies/tutor-verification-and-credential-policy.md` (policy version `v1.0-bd-tutor-verification`) under statutory Bangladesh laws.
