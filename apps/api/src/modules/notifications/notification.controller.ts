@@ -9,6 +9,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Inject,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import type {
@@ -34,7 +35,10 @@ import {
 @UseGuards(AuthGuard)
 @Controller('api/v1/notifications')
 export class NotificationController {
-  constructor(private readonly notificationService: NotificationService) {}
+  constructor(
+    @Inject(NotificationService)
+    private readonly notificationService: NotificationService,
+  ) {}
 
   @Get()
   @ApiOperation({ summary: 'Get paginated notifications for current authenticated user' })

@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { JwtModule } from '@nestjs/jwt';
 import { UserEntity } from '../auth/entities/user.entity';
@@ -8,6 +8,7 @@ import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-studen
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
+import { AuditModule } from '../audit/audit.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { UsersController } from './users.controller';
       BookingEntity,
     ]),
     JwtModule.register({}),
+    forwardRef(() => AuditModule),
   ],
   controllers: [UsersController],
   providers: [UsersService],

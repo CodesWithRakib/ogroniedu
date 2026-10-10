@@ -7,6 +7,7 @@ import {
   Logger,
   Optional,
   Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -51,6 +52,7 @@ export class SchedulingService {
     private readonly availabilityRepo: Repository<TutorAvailabilityEntity>,
     @InjectRepository(GuardianStudentLinkEntity)
     private readonly linkRepo: Repository<GuardianStudentLinkEntity>,
+    @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
     @Optional()
     @Inject(NotificationService)

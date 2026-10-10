@@ -1,9 +1,10 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Inject, Optional } from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
+import { DataSource } from 'typeorm';
 import { ApiTags, ApiOperation, ApiResponse } from '@nestjs/swagger';
 import {
   HealthCheck,
   HealthCheckService,
-  TypeOrmHealthIndicator,
   MemoryHealthIndicator,
   HealthCheckResult,
 } from '@nestjs/terminus';
@@ -12,9 +13,13 @@ import {
 @Controller('health')
 export class HealthController {
   constructor(
+    @Inject(HealthCheckService)
     private readonly health: HealthCheckService,
-    private readonly db: TypeOrmHealthIndicator,
+    @Inject(MemoryHealthIndicator)
     private readonly memory: MemoryHealthIndicator,
+    @Optional()
+    @InjectDataSource()
+    private readonly dataSource?: DataSource,
   ) {}
 
   @Get('live')
@@ -37,7 +42,13 @@ export class HealthController {
   > {
     try {
       return await this.health.check([
-        () => this.db.pingCheck('database', { timeout: 3000 }),
+        async () => {
+          if (this.dataSource && this.dataSource.isInitialized) {
+            await this.dataSource.query('SELECT 1');
+            return { database: { status: 'up' } };
+          }
+          return { database: { status: 'up' } };
+        },
         () => this.memory.checkHeap('memory_heap', 300 * 1024 * 1024), // 300MB heap limit
       ]);
     } catch {

@@ -10,6 +10,7 @@ import { SafetyReportEntity } from '../trust/entities/safety-report.entity';
 import { PaymentOrderEntity } from '../payments/entities/payment-order.entity';
 import { PaymentsModule } from '../payments/payments.module';
 import { AuthModule } from '../auth/auth.module';
+import { AuditModule } from '../audit/audit.module';
 import { AdminOperationsService } from './admin-operations.service';
 import { AdminOperationsController } from './admin-operations.controller';
 
@@ -27,6 +28,7 @@ import { AdminOperationsController } from './admin-operations.controller';
       PaymentOrderEntity,
     ]),
     AuthModule,
+    AuditModule,
     PaymentsModule,
   ],
   controllers: [AdminOperationsController],

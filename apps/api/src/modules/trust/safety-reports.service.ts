@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, ForbiddenException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, Logger, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SafetyReportEntity } from './entities/safety-report.entity';
@@ -19,6 +19,7 @@ export class SafetyReportsService {
     private readonly outboxRepo: Repository<OutboxEventEntity>,
     @InjectRepository(AuditLogEntity)
     private readonly auditRepo: Repository<AuditLogEntity>,
+    @Inject(NotificationService)
     private readonly notificationService: NotificationService,
   ) {}
 

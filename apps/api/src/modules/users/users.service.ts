@@ -4,8 +4,10 @@ import {
   BadRequestException,
   Logger,
   Optional,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource, In } from 'typeorm';
 import { UserEntity } from '../auth/entities/user.entity';
 import { StudentProfileEntity } from './entities/student-profile.entity';
@@ -51,7 +53,9 @@ export class UsersService {
     private readonly sessionRepository: Repository<AuthSessionEntity>,
     @InjectRepository(GuardianStudentLinkEntity)
     private readonly guardianLinkRepository: Repository<GuardianStudentLinkEntity>,
+    @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
+    @InjectDataSource()
     private readonly dataSource: DataSource,
     @Optional()
     @InjectRepository(BookingEntity)

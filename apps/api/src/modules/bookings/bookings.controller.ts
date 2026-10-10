@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  Inject,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
@@ -21,7 +22,10 @@ import {
 @Controller('api/v1/requests')
 @UseGuards(AuthGuard)
 export class BookingsController {
-  constructor(private readonly bookingsService: BookingsService) {}
+  constructor(
+    @Inject(BookingsService)
+    private readonly bookingsService: BookingsService,
+  ) {}
 
   @Post()
   @HttpCode(HttpStatus.CREATED)

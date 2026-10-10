@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseGuards, Inject } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -11,7 +11,10 @@ import { CreateReplacementCaseDto, UpdateReplacementCaseDto } from './dto';
 @UseGuards(AuthGuard)
 @Controller('api/v1/tutor-replacements')
 export class TutorReplacementController {
-  constructor(private readonly replacementService: TutorReplacementService) {}
+  constructor(
+    @Inject(TutorReplacementService)
+    private readonly replacementService: TutorReplacementService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Submit a tutor replacement guarantee request (FR-011)' })

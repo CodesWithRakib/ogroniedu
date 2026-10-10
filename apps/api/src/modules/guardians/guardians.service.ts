@@ -5,8 +5,10 @@ import {
   ConflictException,
   ForbiddenException,
   Logger,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { UserEntity } from '../auth/entities/user.entity';
 import { RoleEntity } from '../auth/entities/role.entity';
@@ -51,7 +53,9 @@ export class GuardiansService {
     private readonly studentProfileRepository: Repository<StudentProfileEntity>,
     @InjectRepository(GuardianStudentLinkEntity)
     private readonly linkRepository: Repository<GuardianStudentLinkEntity>,
+    @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
+    @InjectDataSource()
     private readonly dataSource: DataSource,
   ) {}
 

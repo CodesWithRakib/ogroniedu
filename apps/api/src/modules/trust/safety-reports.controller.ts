@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Body, UseGuards } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseGuards, Inject } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -11,7 +11,10 @@ import { CreateSafetyReportDto, UpdateSafetyReportDto } from './dto';
 @UseGuards(AuthGuard)
 @Controller('api/v1/safety-reports')
 export class SafetyReportsController {
-  constructor(private readonly safetyService: SafetyReportsService) {}
+  constructor(
+    @Inject(SafetyReportsService)
+    private readonly safetyService: SafetyReportsService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Submit safety, abuse, or child protection report' })

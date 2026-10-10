@@ -12,6 +12,7 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   Query,
+  Inject,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
@@ -28,7 +29,10 @@ import {
 
 @Controller('api/v1/tutors')
 export class TutorsController {
-  constructor(private readonly tutorsService: TutorsService) {}
+  constructor(
+    @Inject(TutorsService)
+    private readonly tutorsService: TutorsService,
+  ) {}
 
   // --------------------------------------------------------------------------
   // Public Endpoints: Search & Public Profile

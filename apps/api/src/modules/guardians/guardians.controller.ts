@@ -8,6 +8,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Inject,
 } from '@nestjs/common';
 import { GuardiansService, LinkedChildSummary } from './guardians.service';
 import { AuthGuard } from '../../common/guards/auth.guard';
@@ -20,7 +21,10 @@ import { LinkChildRequestDto, RegisterChildDto, VerifyLinkDto, RevokeLinkDto } f
 @Controller('api/v1/guardians')
 @UseGuards(AuthGuard, RolesGuard)
 export class GuardiansController {
-  constructor(private readonly guardiansService: GuardiansService) {}
+  constructor(
+    @Inject(GuardiansService)
+    private readonly guardiansService: GuardiansService,
+  ) {}
 
   @Post('children')
   @Roles('guardian', 'admin', 'super_admin')

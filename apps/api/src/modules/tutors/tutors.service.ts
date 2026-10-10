@@ -6,6 +6,7 @@ import {
   Logger,
   Optional,
   Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
@@ -61,6 +62,7 @@ export class TutorsService {
     private readonly taxonomySubjectRepo: Repository<SubjectEntity>,
     @InjectRepository(EducationLevelEntity)
     private readonly taxonomyLevelRepo: Repository<EducationLevelEntity>,
+    @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
     @Optional()
     @Inject(NotificationService)

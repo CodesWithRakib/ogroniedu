@@ -5,6 +5,7 @@ import {
   BadRequestException,
   ConflictException,
   Logger,
+  Inject,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -33,6 +34,7 @@ export class ReviewsService {
     private readonly outboxRepo: Repository<OutboxEventEntity>,
     @InjectRepository(AuditLogEntity)
     private readonly auditRepo: Repository<AuditLogEntity>,
+    @Inject(NotificationService)
     private readonly notificationService: NotificationService,
   ) {}
 

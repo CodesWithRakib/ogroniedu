@@ -11,6 +11,7 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   BadRequestException,
+  Inject,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
@@ -26,7 +27,9 @@ import {
 @Controller('api/v1/payments')
 export class PaymentsController {
   constructor(
+    @Inject(PaymentsService)
     private readonly paymentsService: PaymentsService,
+    @Inject(LedgerService)
     private readonly ledgerService: LedgerService,
   ) {}
 

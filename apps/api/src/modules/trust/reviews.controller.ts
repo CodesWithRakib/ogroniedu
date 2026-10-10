@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Body, UseGuards, Query } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseGuards, Query, Inject } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
@@ -11,7 +11,10 @@ import { CreateReviewDto, TutorReplyDto, ModerateReviewDto } from './dto';
 @UseGuards(AuthGuard)
 @Controller('api/v1/reviews')
 export class ReviewsController {
-  constructor(private readonly reviewsService: ReviewsService) {}
+  constructor(
+    @Inject(ReviewsService)
+    private readonly reviewsService: ReviewsService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Submit a verified review for a completed booking' })

@@ -8,6 +8,7 @@ import {
   UseGuards,
   HttpCode,
   HttpStatus,
+  Inject,
 } from '@nestjs/common';
 import { UsersService, UserProfileResponse } from './users.service';
 import { AuthGuard } from '../../common/guards/auth.guard';
@@ -17,7 +18,10 @@ import { UpdateProfileDto, UpsertStudentProfileDto, DeleteAccountDto } from './d
 @Controller('api/v1/users')
 @UseGuards(AuthGuard)
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    @Inject(UsersService)
+    private readonly usersService: UsersService,
+  ) {}
 
   @Get('me')
   async getMyProfile(@CurrentUser() user: AuthenticatedUser): Promise<UserProfileResponse> {

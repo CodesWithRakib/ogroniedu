@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  Inject,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -21,7 +22,10 @@ import { AdminReviewTutorDto, AdminVerifyQualificationDto } from './dto';
 @UseGuards(AuthGuard, RolesGuard)
 @Roles('admin', 'super_admin')
 export class AdminTutorsController {
-  constructor(private readonly tutorsService: TutorsService) {}
+  constructor(
+    @Inject(TutorsService)
+    private readonly tutorsService: TutorsService,
+  ) {}
 
   @Get('pending')
   async getPendingTutors() {

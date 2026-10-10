@@ -8,6 +8,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  Inject,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
@@ -17,7 +18,10 @@ import { UploadEvidenceFileDto } from '../tutors/dto/upload-evidence-file.dto';
 @Controller('api/v1/files')
 @UseGuards(AuthGuard)
 export class FilesController {
-  constructor(private readonly filesService: FilesService) {}
+  constructor(
+    @Inject(FilesService)
+    private readonly filesService: FilesService,
+  ) {}
 
   @Post('upload-evidence')
   @HttpCode(HttpStatus.CREATED)

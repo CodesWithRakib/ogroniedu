@@ -1,4 +1,5 @@
-import { Injectable, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, BadRequestException, Logger, Inject } from '@nestjs/common';
+import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { LedgerService } from '../payments/ledger.service';
 import { AnalyticsTimeQueryDto } from './dto';
@@ -13,7 +14,9 @@ export class AnalyticsService {
   private readonly logger = new Logger(AnalyticsService.name);
 
   constructor(
+    @InjectDataSource()
     private readonly dataSource: DataSource,
+    @Inject(LedgerService)
     private readonly ledgerService: LedgerService,
   ) {}
 

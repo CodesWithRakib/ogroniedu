@@ -1,4 +1,4 @@
-import { Controller, Get, Query, UseGuards } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, Inject } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -9,7 +9,10 @@ import { AnalyticsTimeQueryDto } from './dto';
 @Controller('api/v1/analytics')
 @UseGuards(AuthGuard, RolesGuard)
 export class AnalyticsController {
-  constructor(private readonly analyticsService: AnalyticsService) {}
+  constructor(
+    @Inject(AnalyticsService)
+    private readonly analyticsService: AnalyticsService,
+  ) {}
 
   /**
    * 1. Operational Overview KPI Analytics (Admin / Super-Admin Only)

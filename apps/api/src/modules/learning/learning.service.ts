@@ -6,6 +6,7 @@ import {
   Logger,
   Optional,
   Inject,
+  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, Between, In } from 'typeorm';
@@ -65,6 +66,7 @@ export class LearningService {
     private readonly sessionRepo: Repository<BookingSessionEntity>,
     @InjectRepository(GuardianStudentLinkEntity)
     private readonly guardianLinkRepo: Repository<GuardianStudentLinkEntity>,
+    @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
     @Optional()
     @Inject(NotificationService)

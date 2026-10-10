@@ -8,6 +8,7 @@ import { StudentProfileEntity } from '../users/entities/student-profile.entity';
 import { GuardianStudentLinkEntity } from './entities/guardian-student-link.entity';
 import { GuardiansService } from './guardians.service';
 import { GuardiansController } from './guardians.controller';
+import { AuditModule } from '../audit/audit.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { GuardiansController } from './guardians.controller';
       GuardianStudentLinkEntity,
     ]),
     JwtModule.register({}),
+    AuditModule,
   ],
   controllers: [GuardiansController],
   providers: [GuardiansService],

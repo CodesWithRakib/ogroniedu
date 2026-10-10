@@ -48,13 +48,20 @@ export class AllExceptionsFilter implements ExceptionFilter {
       error = 'Internal Server Error';
     }
 
-    const errorPayload: CanonicalErrorResponse = {
+    const errorPayload: CanonicalErrorResponse & { details?: string } = {
       statusCode: status,
       error,
-      message,
+      message:
+        process.env.NODE_ENV !== 'production' && !(exception instanceof HttpException) && exception instanceof Error
+          ? exception.message
+          : message,
       timestamp: new Date().toISOString(),
       path: request.url,
       requestId: request.requestId,
+      details:
+        process.env.NODE_ENV !== 'production' && !(exception instanceof HttpException) && exception instanceof Error
+          ? exception.stack
+          : undefined,
     };
 
     if (status >= 500) {

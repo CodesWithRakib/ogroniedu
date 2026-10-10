@@ -10,6 +10,7 @@ import {
   ParseUUIDPipe,
   HttpCode,
   HttpStatus,
+  Inject,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -31,7 +32,10 @@ import {
 @Controller('api/v1/admin')
 @UseGuards(AuthGuard, RolesGuard)
 export class AdminOperationsController {
-  constructor(private readonly adminService: AdminOperationsService) {}
+  constructor(
+    @Inject(AdminOperationsService)
+    private readonly adminService: AdminOperationsService,
+  ) {}
 
   /**
    * 1. Operational Dashboard Metrics

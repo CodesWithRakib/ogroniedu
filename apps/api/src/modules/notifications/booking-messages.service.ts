@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ForbiddenException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingMessageEntity } from './entities/booking-message.entity';
@@ -29,7 +29,9 @@ export class BookingMessagesService {
     private readonly guardianLinkRepo: Repository<GuardianStudentLinkEntity>,
     @InjectRepository(OutboxEventEntity)
     private readonly outboxRepo: Repository<OutboxEventEntity>,
+    @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
+    @Inject(NotificationService)
     private readonly notificationService: NotificationService,
   ) {}
 

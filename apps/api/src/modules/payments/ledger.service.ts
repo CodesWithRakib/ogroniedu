@@ -1,5 +1,5 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import {
   LedgerAccountEntity,
@@ -34,6 +34,7 @@ export class LedgerService {
     private readonly journalRepo: Repository<LedgerJournalEntity>,
     @InjectRepository(LedgerEntryEntity)
     private readonly entryRepo: Repository<LedgerEntryEntity>,
+    @InjectDataSource()
     private readonly dataSource: DataSource,
   ) {}
 

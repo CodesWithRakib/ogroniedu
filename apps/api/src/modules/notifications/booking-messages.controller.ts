@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Patch, Param, Body, UseGuards, Headers } from '@nestjs/common';
+import { Controller, Get, Post, Patch, Param, Body, UseGuards, Headers, Inject } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import { BookingMessagesService } from './booking-messages.service';
 import { SendBookingMessageDto } from './dto/send-booking-message.dto';
@@ -11,7 +11,10 @@ import type { AuthenticatedUser } from '../../common/decorators/current-user.dec
 @UseGuards(AuthGuard)
 @Controller('api/v1/bookings/:bookingId/messages')
 export class BookingMessagesController {
-  constructor(private readonly messagesService: BookingMessagesService) {}
+  constructor(
+    @Inject(BookingMessagesService)
+    private readonly messagesService: BookingMessagesService,
+  ) {}
 
   @Post()
   @ApiOperation({ summary: 'Send participant-scoped message with content safety inspection' })

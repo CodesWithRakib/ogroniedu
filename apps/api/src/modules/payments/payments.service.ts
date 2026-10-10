@@ -7,8 +7,9 @@ import {
   Logger,
   Optional,
   Inject,
+  forwardRef,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource, In } from 'typeorm';
 import {
   PaymentOrderEntity,
@@ -81,9 +82,13 @@ export class PaymentsService {
     private readonly guardianLinkRepo: Repository<GuardianStudentLinkEntity>,
     @InjectRepository(OutboxEventEntity)
     private readonly outboxRepo: Repository<OutboxEventEntity>,
+    @Inject(LedgerService)
     private readonly ledgerService: LedgerService,
+    @Inject(PaymentAdapterFactory)
     private readonly adapterFactory: PaymentAdapterFactory,
+    @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
+    @InjectDataSource()
     private readonly dataSource: DataSource,
     @Optional()
     @Inject(NotificationService)

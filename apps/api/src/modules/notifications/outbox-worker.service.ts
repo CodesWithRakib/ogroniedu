@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThanOrEqual, IsNull } from 'typeorm';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
@@ -19,6 +19,7 @@ export class OutboxWorkerService {
   constructor(
     @InjectRepository(OutboxEventEntity)
     private readonly outboxRepo: Repository<OutboxEventEntity>,
+    @Inject(NotificationService)
     private readonly notificationService: NotificationService,
   ) {}
 

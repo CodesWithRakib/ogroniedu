@@ -4,8 +4,10 @@ import {
   ForbiddenException,
   BadRequestException,
   Logger,
+  Inject,
+  forwardRef,
 } from '@nestjs/common';
-import { InjectRepository } from '@nestjs/typeorm';
+import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource, In } from 'typeorm';
 import jwt from 'jsonwebtoken';
 
@@ -80,9 +82,13 @@ export class AdminOperationsService {
     private readonly safetyReportRepo: Repository<SafetyReportEntity>,
     @InjectRepository(PaymentOrderEntity)
     private readonly paymentOrderRepo: Repository<PaymentOrderEntity>,
+    @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
+    @Inject(LedgerService)
     private readonly ledgerService: LedgerService,
+    @Inject(PaymentsService)
     private readonly paymentsService: PaymentsService,
+    @InjectDataSource()
     private readonly dataSource: DataSource,
   ) {}
 

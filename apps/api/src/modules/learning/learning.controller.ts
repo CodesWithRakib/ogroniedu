@@ -9,6 +9,7 @@ import {
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
+  Inject,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
@@ -23,7 +24,10 @@ import {
 
 @Controller('api/v1/learning')
 export class LearningController {
-  constructor(private readonly learningService: LearningService) {}
+  constructor(
+    @Inject(LearningService)
+    private readonly learningService: LearningService,
+  ) {}
 
   @Post('attendance')
   @UseGuards(AuthGuard)
