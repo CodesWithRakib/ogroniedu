@@ -255,7 +255,40 @@ export class PaymentsService {
       throw new UnauthorizedException('Invalid payment webhook signature');
     }
 
-    // 2. Replay & Duplicate Event Check
+    // 2. Timestamp Anti-Replay Tolerance Window Check (tolerance: 300 seconds / 5 minutes)
+    const rawTimestamp =
+      headers['x-webhook-timestamp'] ||
+      headers['X-WEBHOOK-TIMESTAMP'] ||
+      headers['x-timestamp'] ||
+      (typeof rawBody === 'object' && (rawBody as any)?.timestamp);
+
+    if (rawTimestamp) {
+      const eventTimeMs =
+        typeof rawTimestamp === 'number'
+          ? rawTimestamp > 1e11
+            ? rawTimestamp
+            : rawTimestamp * 1000
+          : new Date(rawTimestamp).getTime();
+
+      if (isNaN(eventTimeMs)) {
+        throw new BadRequestException('Malformed webhook timestamp header');
+      }
+
+      const nowMs = Date.now();
+      const diffSeconds = Math.abs(nowMs - eventTimeMs) / 1000;
+      const MAX_TOLERANCE_SECONDS = 300; // 5 minutes
+
+      if (diffSeconds > MAX_TOLERANCE_SECONDS) {
+        this.logger.warn(
+          `Rejected webhook from provider '${provider}' due to timestamp expiration/replay (${diffSeconds}s skew)`,
+        );
+        throw new UnauthorizedException(
+          'Webhook timestamp outside acceptable tolerance window (replay attack prevention)',
+        );
+      }
+    }
+
+    // 3. Replay & Duplicate Event Check
     const existingTxn = await this.transactionRepo.findOne({
       where: {
         provider,

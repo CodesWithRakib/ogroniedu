@@ -1,10 +1,11 @@
-import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, In } from 'typeorm';
 import { UserEntity } from '../auth/entities/user.entity';
 import { StudentProfileEntity } from './entities/student-profile.entity';
 import { AuthSessionEntity } from '../auth/entities/auth-session.entity';
 import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-student-link.entity';
+import { BookingEntity } from '../bookings/entities/booking.entity';
 import { AuditService } from '../audit/audit.service';
 import { UpdateProfileDto, UpsertStudentProfileDto } from './dto';
 
@@ -46,6 +47,9 @@ export class UsersService {
     private readonly guardianLinkRepository: Repository<GuardianStudentLinkEntity>,
     private readonly auditService: AuditService,
     private readonly dataSource: DataSource,
+    @Optional()
+    @InjectRepository(BookingEntity)
+    private readonly bookingRepository?: Repository<BookingEntity>,
   ) {}
 
   /**
@@ -222,6 +226,25 @@ export class UsersService {
 
     const auditHistory = await this.auditService.getUserAuditHistory(userId, 50);
 
+    const userBookings = this.bookingRepository
+      ? await this.bookingRepository.find({
+          where: [
+            { requesterUserId: userId },
+            { studentUserId: userId },
+            { tutorUserId: userId },
+          ],
+          select: {
+            id: true,
+            status: true,
+            mode: true,
+            pricePerSessionMinor: true,
+            currency: true,
+            durationMinutes: true,
+            createdAt: true,
+          },
+        })
+      : [];
+
     await this.auditService.record({
       actorUserId: userId,
       action: 'user.data.exported',
@@ -259,6 +282,7 @@ export class UsersService {
         consentRecordedAt: l.consentRecordedAt,
         isGuardian: l.guardianUserId === userId,
       })),
+      bookings: userBookings,
       auditHistoryCount: auditHistory.length,
     };
   }
@@ -270,6 +294,23 @@ export class UsersService {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) {
       throw new NotFoundException('User not found');
+    }
+
+    // Invariant: Cannot self-delete if user has active tutoring bookings or escrow commitments
+    if (this.bookingRepository) {
+      const activeBookings = await this.bookingRepository.find({
+        where: [
+          { requesterUserId: userId, status: In(['requested', 'accepted', 'confirmed', 'in_progress']) },
+          { tutorUserId: userId, status: In(['requested', 'accepted', 'confirmed', 'in_progress']) },
+          { studentUserId: userId, status: In(['requested', 'accepted', 'confirmed', 'in_progress']) },
+        ],
+      });
+
+      if (activeBookings.length > 0) {
+        throw new BadRequestException(
+          'Cannot delete account while you have active tutoring bookings or unreleased escrow holdings. Please complete or cancel pending bookings first.',
+        );
+      }
     }
 
     // Set user account to deletion_pending status (30-day compliance retention period)

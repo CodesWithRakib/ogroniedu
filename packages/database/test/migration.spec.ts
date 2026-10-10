@@ -380,6 +380,23 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       expect(viewRes).toBeDefined();
       expect(Array.isArray(viewRes.rows)).toBe(true);
     });
+
+    it('POSITIVE TEST: should verify security and privacy hardening indexes from 009 exist', async () => {
+      const indexRes = await client.query<{ indexname: string }>(`
+        SELECT indexname FROM pg_indexes 
+        WHERE indexname IN (
+          'ix_file_assets_owner',
+          'ix_file_assets_created',
+          'ix_users_status_privacy',
+          'ix_bookings_active_participants'
+        );
+      `);
+      const names = indexRes.rows.map((r) => r.indexname);
+      expect(names).toContain('ix_file_assets_owner');
+      expect(names).toContain('ix_file_assets_created');
+      expect(names).toContain('ix_users_status_privacy');
+      expect(names).toContain('ix_bookings_active_participants');
+    });
   });
 });
 

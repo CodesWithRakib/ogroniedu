@@ -42,9 +42,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
         message = (resObj.message as string | string[]) || exception.message;
         error = (resObj.error as string) || exception.name;
       }
-    } else if (exception instanceof Error) {
-      message = exception.message;
-      error = exception.name;
+    } else {
+      // Unhandled system / database errors: sanitize client response to prevent CWE-209 information disclosure
+      message = 'Internal server error. Please contact support with request ID.';
+      error = 'Internal Server Error';
     }
 
     const errorPayload: CanonicalErrorResponse = {
@@ -57,9 +58,9 @@ export class AllExceptionsFilter implements ExceptionFilter {
     };
 
     if (status >= 500) {
+      const detail = exception instanceof Error ? `${exception.message}\n${exception.stack}` : String(exception);
       this.logger.error(
-        `[${request.requestId || 'no-id'}] ${request.method} ${request.url} - ${status} ${error}`,
-        exception instanceof Error ? exception.stack : undefined,
+        `[${request.requestId || 'no-id'}] ${request.method} ${request.url} - ${status} ${error}: ${detail}`,
       );
     } else {
       this.logger.warn(

@@ -5,6 +5,7 @@ import { UserEntity } from '../auth/entities/user.entity';
 import { StudentProfileEntity } from './entities/student-profile.entity';
 import { AuthSessionEntity } from '../auth/entities/auth-session.entity';
 import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-student-link.entity';
+import { BookingEntity } from '../bookings/entities/booking.entity';
 import { UsersService } from './users.service';
 import { UsersController } from './users.controller';
 
@@ -15,6 +16,7 @@ import { UsersController } from './users.controller';
       StudentProfileEntity,
       AuthSessionEntity,
       GuardianStudentLinkEntity,
+      BookingEntity,
     ]),
     JwtModule.register({}),
   ],

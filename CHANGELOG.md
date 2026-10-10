@@ -1,5 +1,51 @@
 # Changelog
 
+## 1.17.0 — Phase 17 Security and Privacy Hardening
+
+- **Definition of Done Enforced — No known critical defect; unresolved high risks block release:**
+  - Audited threat models against STRIDE and OWASP Top 10 API Security (2023). Zero high or critical vulnerabilities identified.
+  - Zero package vulnerabilities identified in dependency audit (`pnpm audit`).
+- **OWASP Defense-in-Depth Security Headers:**
+  - Implemented `SecurityHeadersMiddleware` attached globally in `AppModule.configure`:
+    - `X-Content-Type-Options: nosniff` (MIME sniffing defense).
+    - `X-Frame-Options: DENY` (clickjacking defense).
+    - `X-XSS-Protection: 0` (modern standard).
+    - `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload` (HSTS).
+    - `Referrer-Policy: strict-origin-when-cross-origin`.
+    - `Content-Security-Policy: default-src 'self' ...` (CSP baseline).
+    - `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()`.
+- **File Upload Hardening & Anti-MIME Spoofing:**
+  - Implemented `verifyMagicBytes()` inspecting header byte signatures (`%PDF`, JPEG `0xFFD8FF`, PNG `0x89504E47`, WEBP `RIFF...WEBP`) before storing credential files.
+  - Enforced strict extension-to-media-type matching (`ALLOWED_EXTENSIONS_BY_MIME`).
+  - Added path traversal defenses rejecting filenames with `..`, `/`, `\`, and null bytes (`\0`).
+  - Implemented short-lived expiring signed access tokens (60-minute TTL) with HMAC SHA-256 for private evidence retrieval.
+- **Payment Webhook Anti-Replay Protection:**
+  - Implemented anti-replay timestamp skew verification ($\pm 300$ seconds / 5 minutes tolerance). Stale or replayed webhooks rejected with `401 Unauthorized`.
+  - Enforced timing-safe HMAC signature verification (`crypto.timingSafeEqual`) and event deduplication by `providerEventId`.
+- **Error Sanitization (CWE-209 Information Disclosure Defense):**
+  - Hardened `AllExceptionsFilter` to mask unhandled internal errors (500 status): clients receive canonical message `"Internal server error. Please contact support with request ID."` while full SQL/stack traces are logged internally tied to `x-request-id`.
+- **PII and Credential Log Scrubbing:**
+  - Enhanced `StructuredLoggerService` with recursive masking of passwords, JWTs, API tokens, NID numbers, bank accounts, and OTPs.
+  - Added regex scrubbing for Bangladeshi mobile phone numbers (`+8801XXXXXXXXX`) and email addresses in log message strings.
+- **User Privacy, Data Portability & Account Deletion Safety:**
+  - Enforced active booking deletion safety invariant: users with active tutoring commitments or unreleased escrow holdings are blocked from deleting accounts (`400 BadRequestException`).
+  - Clean accounts transition to `deletion_pending` status with session revocation and a 30-day compliance retention hold before purging.
+  - Expanded `exportUserData` (`GET /api/v1/users/me/export`) to include structured bookings, family links, and active sessions with sensitive password hashes omitted.
+- **Security Incident Response Runbook & Threat Model Documentation:**
+  - Authored `docs/policies/security-incident-response-runbook.md` with SEV-1 to SEV-4 incident classification, containment protocols, secret rotation, and statutory disclosure under the Bangladeshi Cyber Security Act 2023.
+  - Updated `docs/17-security-and-threat-model.md` with full STRIDE and OWASP Top 10 API Security matrix.
+  - Updated `docs/traceability-matrix.md` with requirement `SEC-001`.
+  - Authored `docs/audits/security-and-privacy-hardening-audit.md`.
+- **Database Schema Migration (009):**
+  - Migration `009_security_and_privacy_hardening.sql` adding indexes for `file_assets(owner_user_id)`, `file_assets(created_at DESC)`, `users(status)` for privacy retention queues, and `bookings` active participant lookups.
+- **Automated Verification:**
+  - Full monorepo test suite expanded to **425 total passed tests, 0 failures, 0 skipped** across 56 test files:
+    - `@ogroniedu/api`: 39 test files, 349 tests passing (+15 tests in `security-and-privacy-hardening.spec.ts`).
+    - `@ogroniedu/web`: 15 test files, 60 tests passing.
+    - `@ogroniedu/database`: 2 test files, 16 tests passing (+1 test in `migration.spec.ts`).
+    - `pnpm typecheck` passed with 0 errors across 5 workspace packages.
+    - `node scripts/validate-documentation.js` passed (141 files verified).
+
 ## 1.16.0 — Phase 16 Public Website, SEO & Route Layout Separation
 
 - **Definition of Done Enforced — All public claims supportable and bilingual:**

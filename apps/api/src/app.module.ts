@@ -32,6 +32,7 @@ import { EducationLevelEntity } from './modules/taxonomy/entities/education-leve
 import { CurriculumEntity } from './modules/taxonomy/entities/curriculum.entity';
 import { BookingEntity } from './modules/bookings/entities/booking.entity';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
+import { SecurityHeadersMiddleware } from './common/middleware/security-headers.middleware';
 import { StructuredLoggerService } from './common/logger/structured-logger.service';
 import { validateEnvironment } from './config/env.validation';
 import { AuditModule } from './modules/audit/audit.module';
@@ -157,6 +158,6 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
-    consumer.apply(RequestIdMiddleware).forRoutes('*');
+    consumer.apply(RequestIdMiddleware, SecurityHeadersMiddleware).forRoutes('*');
   }
 }

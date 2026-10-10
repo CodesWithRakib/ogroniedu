@@ -28,13 +28,37 @@ export class StructuredLoggerService implements LoggerService {
     return JSON.stringify(logObject);
   }
 
-  private maskPii(data: Record<string, unknown>): Record<string, unknown> {
+  public maskPii(data: Record<string, unknown>): Record<string, unknown> {
     const masked: Record<string, unknown> = { ...data };
-    const sensitiveKeys = ['password', 'token', 'authorization', 'secret', 'pin', 'nid', 'otp'];
+    const sensitiveKeys = [
+      'password',
+      'token',
+      'authorization',
+      'secret',
+      'pin',
+      'nid',
+      'otp',
+      'cvv',
+      'card',
+      'bankaccount',
+      'accountnumber',
+      'cookie',
+      'sessionid',
+      'refreshtoken',
+      'privatekey',
+      'signature',
+    ];
 
     for (const key of Object.keys(masked)) {
       if (sensitiveKeys.some((s) => key.toLowerCase().includes(s))) {
         masked[key] = '***MASKED***';
+      } else if (typeof masked[key] === 'string') {
+        let val = masked[key] as string;
+        // Mask BD phone number format (+8801XXXXXXXXX or 01XXXXXXXXX)
+        val = val.replace(/(?:\+?880|0)(1[3-9]\d{2})\d{4}(\d{2})/g, '$1****$2');
+        // Mask email addresses (preserve first char and domain)
+        val = val.replace(/([a-zA-Z0-9_.+-])[a-zA-Z0-9_.+-]*@([a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)/g, '$1***@$2');
+        masked[key] = val;
       } else if (typeof masked[key] === 'object' && masked[key] !== null) {
         masked[key] = this.maskPii(masked[key] as Record<string, unknown>);
       }
