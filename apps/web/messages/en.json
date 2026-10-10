@@ -1,0 +1,90 @@
+{
+  "common": {
+    "appName": "OgroniEdu",
+    "appTagline": "Bangladesh's Trusted Tutoring & Educational Management Platform",
+    "loading": "Loading...",
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "delete": "Delete",
+    "edit": "Edit",
+    "back": "Go Back",
+    "language": "Language",
+    "bangla": "বাংলা",
+    "english": "English",
+    "viewAll": "View All",
+    "search": "Search...",
+    "noData": "No data found"
+  },
+  "nav": {
+    "home": "Home",
+    "findTutors": "Find Tutors",
+    "becomeTutor": "Become a Tutor",
+    "howItWorks": "How It Works",
+    "pricing": "Pricing & Packages",
+    "dashboard": "Dashboard",
+    "notifications": "Notifications",
+    "login": "Login",
+    "register": "Sign Up",
+    "logout": "Logout"
+  },
+  "hero": {
+    "badge": "First Choice for Parents & Students",
+    "title": "Empower Your Child's Future with the Right Qualified Tutor",
+    "subtitle": "NID-verified tutors for National Curriculum (Bangla & English Version), Madrasah, and University Admission Prep — directly at your home or online.",
+    "searchPlaceholder": "Search by class, subject, or location (e.g. Mirpur, Uttara)",
+    "ctaSearch": "Find Tutors",
+    "ctaDemoNotification": "Send Test Alert",
+    "statsTutors": "5,000+ Verified Tutors",
+    "statsStudents": "20,000+ Happy Guardians",
+    "statsRating": "4.9/5 Average Rating",
+    "verifiedProtection": "100% Safe with Guardian Oversight Tools"
+  },
+  "features": {
+    "title": "Why Choose OgroniEdu?",
+    "subtitle": "Purpose-built educational management engineered for Bangladesh",
+    "verifiedTutorsTitle": "NID & Certificate Verified Tutors",
+    "verifiedTutorsDesc": "National ID and academic credentials manually vetted for every educator.",
+    "guardianAppTitle": "Guardian Dashboard & Oversight",
+    "guardianAppDesc": "Receive real-time alerts for session attendance, homework, and progress updates.",
+    "securePaymentTitle": "Secure Digital Fee Payments",
+    "securePaymentDesc": "Seamless bKash and Nagad milestone payments backed by double-entry financial ledger.",
+    "conflictFreeTitle": "Zero Double-Booking Technology",
+    "conflictFreeDesc": "PostgreSQL GiST calendar conflict engine guarantees time slots never overlap."
+  },
+  "notifications": {
+    "title": "Notification Center",
+    "allTab": "All Notifications",
+    "unreadTab": "Unread",
+    "markAllRead": "Mark All as Read",
+    "emptyTitle": "No new notifications",
+    "emptyDesc": "Your recent system alerts and session updates will appear here.",
+    "realtimeConnected": "Real-Time Connected",
+    "realtimeDisconnected": "Offline",
+    "newBadge": "NEW"
+  },
+  "auth": {
+    "loginTitle": "Access Your Account",
+    "loginSubtitle": "Continue with your phone number or email",
+    "phoneLabel": "Mobile Number",
+    "passwordLabel": "Password",
+    "continueOtp": "Continue with OTP",
+    "forgotPassword": "Forgot Password?",
+    "or": "OR"
+  },
+  "feedback": {
+    "emptyStateTitle": "No records found",
+    "emptyStateDescription": "Please adjust your search filters and try again.",
+    "networkError": "Network connection error encountered.",
+    "tryAgain": "Try Again",
+    "success": "Operation completed successfully."
+  },
+  "footer": {
+    "about": "OgroniEdu is Bangladesh's premier tutoring and education management platform from Primary to HSC & Admission preparation.",
+    "quickLinks": "Quick Links",
+    "contact": "Contact Us",
+    "rightsReserved": "All rights reserved.",
+    "privacy": "Privacy Policy",
+    "terms": "Terms of Service"
+  }
+}

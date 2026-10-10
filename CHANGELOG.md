@@ -1,5 +1,14 @@
 # Changelog
 
+## 1.3.0 — Phase 03 Design System & Localization
+
+- Built bilingual dictionary catalogs (`apps/web/messages/bn.json` & `apps/web/messages/en.json`) with strict key parity and type-safe loader.
+- Implemented accessible design system UI primitives in `apps/web/src/components/ui/` (`Button`, `Card`, `Badge`, `Input`, `Tabs`, `EmptyState`, `LoadingSpinner`, `Skeleton`) conforming to WCAG 2.1 AA.
+- Developed responsive shells in `apps/web/src/components/shell/` (`Navbar` with interactive language switcher, `Footer`).
+- Refactored home landing page to use design system primitives and dictionary strings.
+- Added automated unit tests for dictionary key parity and UI component states (expanding test suite to 53 tests).
+- Published design system guidelines document `docs/design-system-and-ui-guidelines.md`.
+
 ## 1.2.0 — Phase 02 Architecture Foundation & Centralized State Management
 
 - Added centralized state management and resilient API data fetching using **Redux Toolkit 2.x** and **RTK Query** in `apps/web/src/store/`.
