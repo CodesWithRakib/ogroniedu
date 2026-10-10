@@ -79,6 +79,23 @@
     "tryAgain": "Try Again",
     "success": "Operation completed successfully."
   },
+  "guardian": {
+    "childrenTitle": "My Children / Learners",
+    "childrenSubtitle": "Manage linked learners, education level, and tutoring permissions",
+    "addChild": "Add / Link Child",
+    "relationship": "Relationship",
+    "father": "Father",
+    "mother": "Mother",
+    "legalGuardian": "Legal Guardian",
+    "studentIdentifier": "Student ID, Email or Mobile",
+    "consentTitle": "Guardian Consent Affirmation",
+    "consentAgreement": "I affirm that I am the parent or legal guardian of this minor student and consent to tutoring services under policy v1.0-bd-minor-consent.",
+    "activeBadge": "Active",
+    "pendingBadge": "Verification Pending",
+    "unlink": "Revoke Link",
+    "unlinkConfirm": "Are you sure you want to revoke guardian access to this learner?",
+    "noChildren": "No linked children yet. Add a child to manage their tutoring."
+  },
   "footer": {
     "about": "OgroniEdu is Bangladesh's premier tutoring and education management platform from Primary to HSC & Admission preparation.",
     "quickLinks": "Quick Links",

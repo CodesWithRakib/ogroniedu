@@ -1,5 +1,29 @@
 # Changelog
 
+## 1.6.0 — Phase 06 Users, Students, Guardians and Consent
+
+- Formalized Bangladeshi minor statutory consent policy in `docs/policies/guardian-consent-and-minor-safety-policy.md` (policy version `v1.0-bd-minor-consent`) under The Children Act 2013 and Contract Act 1872.
+- Created `AuditModule` and `AuditService` with `audit_logs` entity to provide global, immutable audit tracking across all sensitive and privileged platform operations.
+- Implemented `UsersModule` in `apps/api/src/modules/users/`:
+  - `StudentProfileEntity` mapped to `student_profiles` relational schema.
+  - Profile retrieval with dynamic minor age calculation (DOB < 18 years threshold).
+  - Student academic profile management (education levels, curricula, stream, institution, learning goals, visibility).
+  - Self-service data export (`GET /api/v1/users/me/export`) and GDPR/privacy account deletion request (`POST /api/v1/users/me/delete-account`) transitioning user to `deletion_pending` status and revoking active sessions.
+- Implemented `GuardiansModule` in `apps/api/src/modules/guardians/`:
+  - `GuardianStudentLinkEntity` mapped to `guardian_student_links` relational table.
+  - Multi-child guardian management (`GET /api/v1/guardians/children`).
+  - Link request creation with mandatory `v1.0-bd-minor-consent` agreement and audit logging.
+  - Direct child registration onboarding under parent account.
+  - Student approval/rejection verification workflow.
+  - Relationship revocation with immediate termination of guardian record visibility.
+  - Minimal child PII protection (child email and phone shielded from unlinked third parties).
+  - Attribute-Based Access Control (ABAC) verified: Unrelated guardians denied access via `GuardianStudentGuard`.
+- Built frontend `GuardianChildrenManager` component in `apps/web/src/components/guardian/GuardianChildrenManager.tsx` featuring multi-child cards, minor badges, interactive link modal with consent affirmation checkbox, and revocation triggers.
+- Updated bilingual dictionary catalogs `messages/bn.json` and `messages/en.json` with guardian management namespaces while maintaining 100% key parity.
+- Authored 26 new automated unit tests across `guardians.service.spec.ts`, `guardians.controller.spec.ts`, `users.service.spec.ts`, and `guardian-children.spec.ts`.
+- Expanded monorepo test suite from 88 to **114 passing tests, 0 failures, 0 skipped**.
+- Published Phase 06 audit report `docs/audits/user-and-guardian-management-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
+
 ## 1.5.0 — Phase 05 Authentication and Authorization
 
 - Implemented comprehensive IAM `AuthModule` in `apps/api/src/modules/auth/` featuring registration, login, logout, refresh, revocation, contact verification, and password reset.

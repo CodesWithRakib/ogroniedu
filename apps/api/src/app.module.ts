@@ -13,9 +13,15 @@ import {
   AuthSessionEntity,
   AuthVerificationCodeEntity,
 } from './modules/auth/entities';
+import { StudentProfileEntity } from './modules/users/entities/student-profile.entity';
+import { GuardianStudentLinkEntity } from './modules/guardians/entities/guardian-student-link.entity';
+import { AuditLogEntity } from './modules/audit/entities/audit-log.entity';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { StructuredLoggerService } from './common/logger/structured-logger.service';
 import { validateEnvironment } from './config/env.validation';
+import { AuditModule } from './modules/audit/audit.module';
+import { UsersModule } from './modules/users/users.module';
+import { GuardiansModule } from './modules/guardians/guardians.module';
 
 @Module({
   imports: [
@@ -44,6 +50,9 @@ import { validateEnvironment } from './config/env.validation';
             UserRoleEntity,
             AuthSessionEntity,
             AuthVerificationCodeEntity,
+            StudentProfileEntity,
+            GuardianStudentLinkEntity,
+            AuditLogEntity,
           ],
           synchronize: false, // Never auto-sync in production or development (migrations are source of truth)
           autoLoadEntities: true,
@@ -53,7 +62,10 @@ import { validateEnvironment } from './config/env.validation';
       },
     }),
     HealthModule,
+    AuditModule,
     AuthModule,
+    UsersModule,
+    GuardiansModule,
     NotificationsModule,
   ],
   providers: [StructuredLoggerService],

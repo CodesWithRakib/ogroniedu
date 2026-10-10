@@ -1,0 +1,77 @@
+import {
+  Controller,
+  Post,
+  Get,
+  Delete,
+  Param,
+  Body,
+  UseGuards,
+  HttpCode,
+  HttpStatus,
+} from '@nestjs/common';
+import { GuardiansService, LinkedChildSummary } from './guardians.service';
+import { AuthGuard } from '../../common/guards/auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { GuardianStudentGuard } from '../../common/guards/guardian-student.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { LinkChildRequestDto, RegisterChildDto, VerifyLinkDto, RevokeLinkDto } from './dto';
+
+@Controller('api/v1/guardians')
+@UseGuards(AuthGuard, RolesGuard)
+export class GuardiansController {
+  constructor(private readonly guardiansService: GuardiansService) {}
+
+  @Post('children')
+  @Roles('guardian', 'admin', 'super_admin')
+  @HttpCode(HttpStatus.CREATED)
+  async registerChild(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: RegisterChildDto,
+  ): Promise<LinkedChildSummary> {
+    return this.guardiansService.registerChild(user.id, dto);
+  }
+
+  @Post('children/link-request')
+  @Roles('guardian', 'admin', 'super_admin')
+  @HttpCode(HttpStatus.CREATED)
+  async linkChildRequest(@CurrentUser() user: AuthenticatedUser, @Body() dto: LinkChildRequestDto) {
+    return this.guardiansService.linkChildRequest(user.id, dto);
+  }
+
+  @Get('children')
+  @Roles('guardian', 'admin', 'super_admin')
+  async getLinkedChildren(@CurrentUser() user: AuthenticatedUser): Promise<LinkedChildSummary[]> {
+    return this.guardiansService.getLinkedChildren(user.id);
+  }
+
+  @Get('children/:studentId')
+  @UseGuards(GuardianStudentGuard)
+  async getChildDetails(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('studentId') studentId: string,
+  ): Promise<LinkedChildSummary> {
+    return this.guardiansService.getChildDetails(user.id, studentId);
+  }
+
+  @Post('children/:linkId/verify')
+  @Roles('student', 'admin', 'super_admin')
+  @HttpCode(HttpStatus.OK)
+  async verifyLinkRequest(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('linkId') linkId: string,
+    @Body() dto: VerifyLinkDto,
+  ) {
+    return this.guardiansService.verifyLinkRequest(user.id, linkId, dto);
+  }
+
+  @Delete('children/:studentId')
+  @HttpCode(HttpStatus.OK)
+  async revokeLink(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('studentId') studentId: string,
+    @Body() dto: RevokeLinkDto,
+  ) {
+    return this.guardiansService.revokeLink(user.id, studentId, dto);
+  }
+}
