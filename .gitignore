@@ -4,7 +4,6 @@ node_modules/
 .pnpm-debug.log*
 docs
 prompts
-scripts
 
 # Production & Build outputs
 dist/

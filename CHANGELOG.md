@@ -1,5 +1,23 @@
 # Changelog
 
+## 1.5.0 — Phase 05 Authentication and Authorization
+
+- Implemented comprehensive IAM `AuthModule` in `apps/api/src/modules/auth/` featuring registration, login, logout, refresh, revocation, contact verification, and password reset.
+- Configured password hashing using `bcryptjs` with cost factor 12 and strict password strength validation (uppercase, lowercase, number, 8+ characters).
+- Designed single-use rotating refresh token lifecycle with cryptographic replay attack detection:
+  - Refresh tokens stored as SHA-256 hashes in `auth_sessions`.
+  - Re-use of previously rotated or revoked refresh tokens triggers blanket session invalidation across all active devices for the affected user.
+- Added dual transport for refresh tokens: HTTP-only secure cookies (`ogroni_rt`) for web security and DTO body for mobile clients.
+- Built sliding-window anti-abuse rate limiter (`RateLimiterService`) protecting authentication endpoints against brute-force attacks with HTTP 429 status codes.
+- Created `auth_verification_codes` table via database migration `002_auth_verification_codes.sql` for 6-digit OTP contact verification and self-service password reset.
+- Implemented server-side authorization guards:
+  - `AuthGuard` validating JWT bearer tokens with `@Public()` decorator bypass.
+  - `RolesGuard` enforcing RBAC via `@Roles(...)` metadata with `super_admin` privilege escalation bypass.
+  - `GuardianStudentGuard` providing ABAC relationship checks via database lookup against `guardian_student_links`.
+- Authored 27 new automated tests across `auth.service.spec.ts`, `auth.authorization.spec.ts`, and `auth.controller.spec.ts` covering success paths, negative inputs, role denials, replay attacks, and guardian ABAC checks.
+- Expanded monorepo test coverage to 88 passing tests with 0 failures.
+- Published Phase 05 audit report `docs/audits/authentication-and-authorization-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
+
 ## 1.4.0 — Phase 04 Database and Migrations
 
 - Created dedicated `@ogroniedu/database` workspace package with TypeScript compiler configuration and native ESM support.

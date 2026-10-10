@@ -1,12 +1,15 @@
 import { NestFactory } from '@nestjs/core';
 import { ValidationPipe, Logger } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
 
   app.enableCors({
     origin: process.env.FRONTEND_URL || 'http://localhost:3000',
@@ -31,6 +34,7 @@ async function bootstrap() {
     .setDescription('Enterprise Tutoring Marketplace & Learning Management API for Bangladesh')
     .setVersion('1.0.0')
     .addBearerAuth()
+    .addTag('Auth', 'Identity, Registration, Verification, Session Management & RBAC')
     .addTag('Health', 'Platform Health, Liveness & Readiness Probes')
     .addTag('Notifications', 'Centralized Real-Time Notification & In-App Alerts Engine')
     .build();

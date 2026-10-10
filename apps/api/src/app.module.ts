@@ -3,8 +3,16 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { HealthModule } from './modules/health/health.module';
+import { AuthModule } from './modules/auth/auth.module';
 import { NotificationEntity } from './modules/notifications/entities/notification.entity';
 import { NotificationDeliveryEntity } from './modules/notifications/entities/notification-delivery.entity';
+import {
+  UserEntity,
+  RoleEntity,
+  UserRoleEntity,
+  AuthSessionEntity,
+  AuthVerificationCodeEntity,
+} from './modules/auth/entities';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { StructuredLoggerService } from './common/logger/structured-logger.service';
 import { validateEnvironment } from './config/env.validation';
@@ -28,7 +36,15 @@ import { validateEnvironment } from './config/env.validation';
           username: config.get<string>('DB_USERNAME', 'postgres'),
           password: config.get<string>('DB_PASSWORD', 'password'),
           database: config.get<string>('DB_NAME', 'ogroniedu_dev'),
-          entities: [NotificationEntity, NotificationDeliveryEntity],
+          entities: [
+            NotificationEntity,
+            NotificationDeliveryEntity,
+            UserEntity,
+            RoleEntity,
+            UserRoleEntity,
+            AuthSessionEntity,
+            AuthVerificationCodeEntity,
+          ],
           synchronize: false, // Never auto-sync in production or development (migrations are source of truth)
           autoLoadEntities: true,
           retryAttempts: isTest ? 1 : 3,
@@ -37,6 +53,7 @@ import { validateEnvironment } from './config/env.validation';
       },
     }),
     HealthModule,
+    AuthModule,
     NotificationsModule,
   ],
   providers: [StructuredLoggerService],
