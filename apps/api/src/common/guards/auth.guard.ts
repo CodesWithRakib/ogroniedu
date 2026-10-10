@@ -63,6 +63,8 @@ export class AuthGuard implements CanActivate {
           phone: decoded.phone,
           roles: decoded.roles || ['student'],
           preferredLocale: decoded.preferredLocale || 'bn',
+          isImpersonated: Boolean(decoded.isImpersonated),
+          impersonatorUserId: decoded.impersonatorUserId || null,
         };
         return true;
       } catch (err: any) {

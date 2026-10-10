@@ -91,6 +91,8 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       'reviews',
       'safety_reports',
       'tutor_replacement_cases',
+      'system_settings',
+      'feature_flags',
       'schema_migrations',
     ];
 
@@ -357,5 +359,21 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
         ).rejects.toThrow(/uq_review_booking_reviewer/);
       }
     });
+
+    it('POSITIVE TEST: should verify system_settings and feature_flags are seeded with operational defaults', async () => {
+      const settingsRes = await client.query('SELECT key, value FROM system_settings;');
+      const settingKeys = settingsRes.rows.map((r: { key: string }) => r.key);
+      expect(settingKeys).toContain('platform_fee_percent');
+      expect(settingKeys).toContain('cancellation_window_hours');
+      expect(settingKeys).toContain('replacement_guarantee_trial_hours');
+      expect(settingKeys).toContain('impersonation_max_minutes');
+
+      const flagsRes = await client.query('SELECT key, enabled FROM feature_flags;');
+      const flagKeys = flagsRes.rows.map((r: { key: string }) => r.key);
+      expect(flagKeys).toContain('emergency_maintenance_mode');
+      expect(flagKeys).toContain('instant_replacement_matching');
+      expect(flagKeys).toContain('strict_pnr_verification');
+    });
   });
 });
+

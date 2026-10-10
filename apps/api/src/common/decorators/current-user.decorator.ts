@@ -6,6 +6,8 @@ export interface AuthenticatedUser {
   phone?: string;
   roles: string[];
   preferredLocale?: 'bn' | 'en';
+  isImpersonated?: boolean;
+  impersonatorUserId?: string | null;
 }
 
 export const CurrentUser = createParamDecorator(

@@ -63,6 +63,11 @@ import {
   TutorReplacementCaseEntity,
 } from './modules/trust/entities';
 import { TrustModule } from './modules/trust/trust.module';
+import {
+  SystemSettingEntity,
+  FeatureFlagEntity,
+} from './modules/admin/entities';
+import { AdminModule } from './modules/admin/admin.module';
 
 @Module({
   imports: [
@@ -120,6 +125,8 @@ import { TrustModule } from './modules/trust/trust.module';
             ReviewEntity,
             SafetyReportEntity,
             TutorReplacementCaseEntity,
+            SystemSettingEntity,
+            FeatureFlagEntity,
           ],
           synchronize: false, // Never auto-sync in production or development (migrations are source of truth)
           autoLoadEntities: true,
@@ -141,6 +148,7 @@ import { TrustModule } from './modules/trust/trust.module';
     PaymentsModule,
     NotificationsModule,
     TrustModule,
+    AdminModule,
   ],
   providers: [StructuredLoggerService],
   exports: [StructuredLoggerService],

@@ -193,4 +193,47 @@ export class LedgerService {
       discrepancy,
     };
   }
+
+  /**
+   * Run full operational reconciliation with per-account balances and discrepancy detection
+   */
+  async runReconciliation(): Promise<{
+    isBalanced: boolean;
+    totalDebits: string;
+    totalCredits: string;
+    discrepancy: string;
+    accounts: Array<{
+      code: string;
+      name: string;
+      accountType: string;
+      balance: string;
+    }>;
+    status: 'reconciled' | 'discrepancy_detected';
+    checkedAt: Date;
+  }> {
+    const integrity = await this.verifySystemLedgerIntegrity();
+    const accounts = await this.accountRepo.find();
+    const accountBalances = await Promise.all(
+      accounts.map(async (acc) => {
+        const bal = await this.getAccountBalance(acc.code);
+        return {
+          code: acc.code,
+          name: acc.name,
+          accountType: acc.accountType,
+          balance: bal.toString(),
+        };
+      }),
+    );
+
+    return {
+      isBalanced: integrity.isBalanced,
+      totalDebits: integrity.totalDebits.toString(),
+      totalCredits: integrity.totalCredits.toString(),
+      discrepancy: integrity.discrepancy.toString(),
+      accounts: accountBalances,
+      status: integrity.isBalanced ? 'reconciled' : 'discrepancy_detected',
+      checkedAt: new Date(),
+    };
+  }
 }
+

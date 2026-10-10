@@ -1,5 +1,60 @@
 # Changelog
 
+## 1.14.0 — Phase 14 Admin Operations, Least Privilege & Privileged Governance
+
+- **Definition of Done Enforced — All privileged operations least-privileged and audited:**
+  - Strict RBAC separation across `support_agent`, `compliance_reviewer`, `admin`, and `super_admin` via NestJS `RolesGuard`.
+  - Non-privileged access strictly denied (`403 ForbiddenException` for regular students, guardians, tutors).
+  - General `admin` accounts denied access to super-admin operations (`role management`, `system settings`, `feature flags`, `impersonation`).
+- **Database Schema & Migrations:**
+  - Migration `007_admin_and_operations.sql` introducing `system_settings` and `feature_flags` tables.
+  - Seeded default system settings (`platform_fee_percent`, `cancellation_window_hours`, `replacement_guarantee_trial_hours`, `impersonation_max_minutes`).
+  - Seeded default feature flags (`emergency_maintenance_mode`, `instant_replacement_matching`, `strict_pnr_verification`).
+  - Created TypeORM entities: `SystemSettingEntity`, `FeatureFlagEntity`.
+- **Operational Dashboard & Verification Queues:**
+  - Centralized real-time overview displaying queue depths:
+    - Pending tutor verification dossiers.
+    - Active tutor replacement guarantee cases.
+    - Open trust and child safety abuse reports.
+    - Active tutoring bookings count.
+    - Total registered user accounts catalog.
+    - System ledger integrity balance status.
+- **User Management, Suspension Controls & Dossiers:**
+  - Search and filter users by display name, email, phone, role, and status.
+  - User Dossier API combining contact verification timestamps, active/revoked roles, booking totals, and sanitized audit history.
+  - Account Suspension: Mandatory operational justification string (`reason`). Hard-coded self-suspension denial and protection preventing general admins from suspending super-admins.
+  - Account Reactivation: Instant reactivation with audit logging.
+  - Role Management: Restricted strictly to `super_admin`. Validates against platform role catalog and protects the sole remaining super_admin from demotion.
+- **Emergency Administrative Booking Cancellation & Escrow Reversal:**
+  - Emergency intervention capability allowing operations staff to cancel any booking upon safety/fraud breach.
+  - Optional automatic escrow reversal: locates succeeded payment orders and issues ledger refund reversal via `PaymentsService.processRefund()`.
+  - Records privileged action audit log: `admin.booking.emergency_cancelled`.
+- **Financial Reconciliation Visibility:**
+  - Extended `LedgerService.runReconciliation()`:
+    - Mathematical balance invariant check: Debits === Credits across all entries.
+    - Per-account balance audit for cash gateway settlements, student escrow holdings, tutor payables, and platform commission revenues.
+    - Detects and alerts on any discrepancy.
+    - Writes `admin.ledger.reconciliation_inspected` audit trail.
+- **System Settings & Feature Flags Management:**
+  - Platform configuration and canary toggle endpoints strictly gated by `@Roles('super_admin')`.
+- **Strict Time-Limited Audited Impersonation Protocol:**
+  - Exclusively restricted to `super_admin`.
+  - Hard-coded security denial preventing impersonation of another `super_admin`.
+  - Mandatory justification reason (`reason`).
+  - Duration strictly capped at 15 minutes (900 seconds) regardless of client request.
+  - High-priority audit log: `admin.impersonation_started`.
+  - Signs JWT token embedding `isImpersonated: true`, `impersonatorUserId`, and target user claims.
+  - `AuthGuard` extracts and attaches impersonation metadata to `request.user`.
+- **Automated Secret & Credential Redaction:**
+  - Recursive sanitization function `redactSensitiveData()` automatically masks passwords, token hashes, api keys, cvv, card numbers, and credentials before audit logs are exposed.
+- **Frontend Admin Dashboard & 100% Localization Parity:**
+  - Created `AdminDashboardView.tsx` and route `/[locale]/admin/page.tsx`.
+  - Added `"admin"` namespace with 47 keys to `messages/en.json` and `messages/bn.json` with 100% key parity.
+- **Test Suite:**
+  - Authored 32 new tests across database migration, API, and web packages.
+  - Monorepo test suite expanded from 349 to **381 passing tests (0 failures, 0 skipped)** across 51 test files.
+  - Published audit report `docs/audits/admin-operations-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
+
 ## 1.13.0 — Phase 13 Reviews, Trust, Safety and Replacement Guarantee
 
 - **Definition of Done Enforced — Policies are transparent and enforceable:**
