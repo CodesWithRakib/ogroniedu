@@ -348,7 +348,7 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
       educationLevelId: 'level-hsc-01',
       mode: 'online',
       messageNotes: 'Looking forward to calculus lessons.',
-      preferredDays: ['Monday', 'Wednesday'],
+      preferredDays: [1, 3],
     };
 
     const createdBooking = await bookingsService.createRequest(studentUser, createDto);
@@ -369,7 +369,6 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
     const orderDto: CreatePaymentOrderDto = {
       bookingId: sharedBooking.id,
       amountMinor: 60000,
-      currency: 'BDT',
       paymentMethod: 'bkash',
     };
 
@@ -421,9 +420,8 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
     // 2. Tutor creates assignment
     const assignDto: CreateAssignmentDto = {
       bookingId: sharedBooking.id,
-      studentUserId: studentUser.id,
       title: 'Problem Set 4: Differential Equations',
-      description: 'Complete exercises 1 through 10.',
+      instructions: 'Complete exercises 1 through 10.',
       maxScore: 100,
       dueAt: new Date(Date.now() + 86400000 * 3).toISOString(),
     };
@@ -434,7 +432,7 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
 
     // 3. Student submits assignment
     const submitDto: SubmitAssignmentDto = {
-      content: 'Calculus solutions attached. Completed all 10 problems.',
+      submissionText: 'Calculus solutions attached. Completed all 10 problems.',
     };
 
     const submission = await learningService.submitAssignment(
@@ -478,8 +476,8 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
       rating: 5,
       comment: 'Best calculus tutor in Dhaka. Explanations are crystal clear!',
       punctualityRating: 5,
-      subjectExpertiseRating: 5,
-      communicationRating: 5,
+      subjectMasteryRating: 5,
+      teachingClarityRating: 5,
     };
 
     const review = await reviewsService.createReview(studentUser, reviewDto);

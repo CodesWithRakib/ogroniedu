@@ -101,7 +101,6 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
 
   const superAdminUser: AuthenticatedUser = {
     id: '00000000-0000-0000-0000-000000000001',
-    displayName: 'Super Admin User',
     email: 'superadmin@ogroni.test',
     roles: ['super_admin', 'admin'],
     preferredLocale: 'bn',
@@ -109,7 +108,6 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
 
   const adminUser: AuthenticatedUser = {
     id: '00000000-0000-0000-0000-000000000002',
-    displayName: 'General Admin User',
     email: 'admin@ogroni.test',
     roles: ['admin'],
     preferredLocale: 'en',
@@ -117,7 +115,6 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
 
   const regularUser: AuthenticatedUser = {
     id: '00000000-0000-0000-0000-000000000003',
-    displayName: 'Regular Student',
     email: 'student@ogroni.test',
     roles: ['student'],
     preferredLocale: 'bn',

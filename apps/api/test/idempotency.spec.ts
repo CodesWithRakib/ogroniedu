@@ -111,7 +111,6 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
       const dto: CreatePaymentOrderDto = {
         bookingId: mockBooking.id,
         amountMinor: 50000,
-        currency: 'BDT',
         paymentMethod: 'bkash',
       };
 
@@ -137,7 +136,6 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
         amountMinor: '50000',
         currency: 'BDT',
         status: 'pending',
-        providerOrderId: 'PROV-ORD-123',
       };
 
       // Mock that finding by idempotency key returns the existing order
@@ -146,7 +144,6 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
       const dto: CreatePaymentOrderDto = {
         bookingId: mockBooking.id,
         amountMinor: 50000,
-        currency: 'BDT',
         paymentMethod: 'bkash',
       };
 
@@ -180,7 +177,6 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
       const mismatchDto: CreatePaymentOrderDto = {
         bookingId: mockBooking.id,
         amountMinor: 75000, // Different amount with same key!
-        currency: 'BDT',
         paymentMethod: 'bkash',
       };
 
@@ -210,8 +206,7 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
             id: `acc-${where.code}`,
             code: where.code,
             name: where.code,
-            type: 'liability',
-            balanceMinor: '0',
+            accountType: 'liability',
             currency: 'BDT',
             isActive: true,
           } as LedgerAccountEntity);
@@ -221,8 +216,7 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
             id: 'acc-1',
             code: 'GATEWAY_CLEARING',
             name: 'Gateway',
-            type: 'asset',
-            balanceMinor: '0',
+            accountType: 'asset',
             currency: 'BDT',
             isActive: true,
           },
@@ -230,8 +224,7 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
             id: 'acc-2',
             code: 'STUDENT_ESCROW',
             name: 'Escrow',
-            type: 'liability',
-            balanceMinor: '0',
+            accountType: 'liability',
             currency: 'BDT',
             isActive: true,
           },

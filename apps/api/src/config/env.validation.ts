@@ -74,5 +74,23 @@ export function validateEnvironment(config: Record<string, unknown>): Environmen
     throw new Error(`Environment validation failed: ${messages}`);
   }
 
+  // Strict production security invariants
+  if (validatedConfig.NODE_ENV === Environment.Production) {
+    if (
+      !validatedConfig.JWT_SECRET ||
+      validatedConfig.JWT_SECRET === 'super-secret-jwt-key-replace-in-production' ||
+      validatedConfig.JWT_SECRET.includes('replace-in-production')
+    ) {
+      throw new Error(
+        'Production security violation: Insecure JWT_SECRET detected in production environment. A strong, non-default secret must be configured.',
+      );
+    }
+    if (!validatedConfig.DB_PASSWORD || validatedConfig.DB_PASSWORD === 'postgres') {
+      throw new Error(
+        'Production security violation: Insecure DB_PASSWORD detected in production environment.',
+      );
+    }
+  }
+
   return validatedConfig;
 }

@@ -1,7 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BookingMessagesService } from '../src/modules/notifications/booking-messages.service';
 import { ForbiddenException, NotFoundException } from '@nestjs/common';
-import type { AuthenticatedUser } from '../src/modules/auth/guards/auth.guard';
+import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
 describe('BookingMessagesService ABAC & Content Safety Tests (Phase 12)', () => {
   let service: BookingMessagesService;
@@ -22,21 +22,18 @@ describe('BookingMessagesService ABAC & Content Safety Tests (Phase 12)', () => 
     id: studentId,
     email: 'student@example.com',
     roles: ['student'],
-    displayName: 'Rahim',
   };
 
   const tutorUser: AuthenticatedUser = {
     id: tutorUserId,
     email: 'tutor@example.com',
     roles: ['tutor'],
-    displayName: 'Sir Karim',
   };
 
   const attackerUser: AuthenticatedUser = {
     id: attackerUserId,
     email: 'attacker@example.com',
     roles: ['student'],
-    displayName: 'Unknown Intruder',
   };
 
   const sampleBooking: any = {

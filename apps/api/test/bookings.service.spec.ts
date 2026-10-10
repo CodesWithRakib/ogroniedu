@@ -51,10 +51,8 @@ describe('BookingsService Unit & Invariant Tests', () => {
     code: 'MATH-101',
     nameEn: 'Mathematics',
     nameBn: 'গণিত',
+    category: 'academic',
     isActive: true,
-    displayOrder: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
   };
 
   const sampleLevel: EducationLevelEntity = {
@@ -62,10 +60,8 @@ describe('BookingsService Unit & Invariant Tests', () => {
     code: 'SSC',
     nameEn: 'Secondary (Class 9-10)',
     nameBn: 'মাধ্যমিক (৯ম-১০ম শ্রেণী)',
+    sortOrder: 1,
     isActive: true,
-    displayOrder: 1,
-    createdAt: new Date(),
-    updatedAt: new Date(),
   };
 
   const sampleProfile: Partial<TutorProfileEntity> = {
@@ -234,7 +230,7 @@ describe('BookingsService Unit & Invariant Tests', () => {
         educationLevelId: 'level-ssc-1',
         mode: 'online',
         messageNotes: 'Looking forward to trial class',
-        preferredDays: ['sunday', 'tuesday'],
+        preferredDays: [0, 2],
       });
 
       expect(result).toBeDefined();

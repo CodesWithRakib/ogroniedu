@@ -1,6 +1,9 @@
 import pg from 'pg';
 
-export async function runInitialSeed(client: pg.Client): Promise<void> {
+export async function runInitialSeed(
+  client: pg.Client,
+  options: { isProduction?: boolean } = {},
+): Promise<void> {
   // 1. Seed Roles (Idempotent ON CONFLICT)
   const roles = [
     {
@@ -185,6 +188,12 @@ export async function runInitialSeed(client: pg.Client): Promise<void> {
   }
 
   // 6. Seed Synthetic Demo Users (Guardian, Tutor, Student)
+  // Production security invariant: Production seed MUST NEVER create demo users.
+  const isProd = options.isProduction ?? process.env.NODE_ENV === 'production';
+  if (isProd) {
+    return;
+  }
+
   const demoUsers = [
     {
       id: '11111111-1111-4111-a111-111111111111',

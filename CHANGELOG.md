@@ -1,5 +1,40 @@
 # Changelog
 
+## 1.20.0 — Phase 20 CI/CD and Deployment Completion
+
+- **Definition of Done Enforced — Automated pipeline builds, tests, checks security, and containerizes with zero manual intervention or broken gates:**
+  - Automated CI/CD pipeline, multi-stage Docker containerization, strict startup environment validation, zero-downtime rolling release runbooks, and production seed safety invariants established.
+- **Multi-Stage Containerization Architecture (`apps/api/Dockerfile`, `apps/web/Dockerfile`):**
+  - Built `@ogroniedu/api` Dockerfile using alpine runtime with frozen lockfile installation (`pnpm install --frozen-lockfile`), Turborepo compilation, `dumb-init`, non-root execution (`USER node`), port 4000 exposure, and HTTP liveness healthcheck probe (`/api/health/liveness`).
+  - Built `@ogroniedu/web` Dockerfile for Next.js 16 standalone server (`output: 'standalone'`), non-root execution (`USER nextjs`), static asset mounting, port 3000 exposure, and HTTP healthcheck probe.
+  - Authored `.dockerignore` context exclusion rules preventing leakage of credentials, local dependencies, builds, and development caches.
+- **Docker Compose Orchestration (`docker-compose.yml`, `docker-compose.staging.yml`):**
+  - Created root `docker-compose.yml` orchestrating `postgres:16-alpine` (with `pg_isready` probe), `redis:7-alpine` (with `redis-cli ping` probe), `api`, and `web` with dependent health check ordering.
+  - Created `docker-compose.staging.yml` providing staging and pre-production isolated networks, volume persistence, and secure secret injection.
+- **GitHub Actions Workflows (`.github/workflows/ci.yml`, `.github/workflows/deploy.yml`):**
+  - Hardened `.github/workflows/ci.yml` with container build validation (`docker/build-push-action`) ensuring API and Web Dockerfiles build cleanly on every pull request and push to `main`.
+  - Authored `.github/workflows/deploy.yml` with automated staging deployments and protected production releases executing forward-compatible expand-phase migrations (`pnpm --filter @ogroniedu/database db:migrate`) and post-deploy health probes.
+- **Strict Startup Environment Secret Validation (`apps/api/src/config/env.validation.ts`):**
+  - Added fail-fast production security invariants: `validateEnvironment()` aborts immediately in `production` if default development placeholder secrets (`super-secret-jwt-key-replace-in-production`, `postgres`) are provided.
+  - Added `apps/api/test/env.validation.spec.ts` asserting positive and negative failure cases.
+- **Production Seed Safety Invariant (`packages/database/src/seeds/initial_seed.ts`):**
+  - Enforced strict invariant: when `isProduction: true` (or `NODE_ENV === 'production'`), foundational taxonomy and chart of accounts are seeded idempotently, but synthetic demo accounts (`guardian.demo@ogroniedu.com`, etc.) are strictly excluded.
+  - Added regression test in `packages/database/test/seed.spec.ts` validating demo user omission in production mode.
+- **Dev Server & TypeScript Hardening:**
+  - Migrated `@ogroniedu/api` development runner to `tsx watch src/main.ts` resolving TypeScript 7 / ts-node compatibility issues during `pnpm dev`.
+  - Fixed test typing issues across `admin-operations.spec.ts`, `booking-messages.spec.ts`, `bookings.service.spec.ts`, `e2e-tutoring-lifecycle.spec.ts`, `idempotency.spec.ts`, and `accessibility-and-a11y.spec.ts`.
+- **Automated Smoke Verification Harness (`scripts/smoke-test.mjs`):**
+  - Implemented post-deployment probe testing API liveness, readiness, frontend availability, and response headers.
+- **Monorepo Test Suite Metrics:**
+  - Expanded to **463 passed tests across 62 test files (0 failures, 0 skipped, 0 disabled)**:
+    - `@ogroniedu/api`: 42 test files, 365 tests (+5 tests).
+    - `@ogroniedu/database`: 4 test files, 28 tests (+1 test).
+    - `@ogroniedu/web`: 16 test files, 70 tests.
+- **Documentation & Audits:**
+  - Updated `docs/DEPLOYMENT_AND_OPERATIONS.md` with complete zero-downtime rolling update runbooks, expand-and-contract database migration protocols, and forward-fix rollback strategies.
+  - Updated `docs/traceability-matrix.md` with requirement `NFR-007` (CI/CD Automation & Production Deployment).
+  - Authored `docs/audits/ci-cd-and-deployment-audit.md`.
+
 ## 1.19.0 — Phase 19 Performance and Load Testing
 
 - **Definition of Done Enforced — Report actual measurements, never invented improvement:**

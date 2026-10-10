@@ -95,4 +95,27 @@ describe('Database Seed Runner & Idempotency Tests', () => {
     expect(types).toContain('revenue');
     expect(types).toContain('expense');
   });
+
+  it('PRODUCTION SAFETY INVARIANT: should never seed demo users when isProduction is true', async () => {
+    // Delete demo users in test db to verify isolated production seed execution
+    await client.query("DELETE FROM users WHERE email LIKE '%@ogroniedu.com';");
+
+    await seedRunner.runSeeds({ isProduction: true });
+
+    // Verify system foundational records are present
+    const rolesRes = await client.query('SELECT count(*) FROM roles;');
+    expect(Number(rolesRes.rows[0].count)).toBeGreaterThanOrEqual(5);
+
+    const accountsRes = await client.query('SELECT count(*) FROM ledger_accounts;');
+    expect(Number(accountsRes.rows[0].count)).toBeGreaterThanOrEqual(7);
+
+    // Verify demo users were strictly NOT created in production mode
+    const demoUsersRes = await client.query(
+      "SELECT count(*) FROM users WHERE email LIKE '%@ogroniedu.com';",
+    );
+    expect(Number(demoUsersRes.rows[0].count)).toBe(0);
+
+    // Re-run standard seed to restore demo fixtures for other test suites
+    await seedRunner.runSeeds({ isProduction: false });
+  });
 });

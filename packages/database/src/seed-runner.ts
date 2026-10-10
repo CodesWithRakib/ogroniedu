@@ -17,13 +17,13 @@ export class SeedRunner {
     };
   }
 
-  async runSeeds(): Promise<void> {
+  async runSeeds(options: { isProduction?: boolean } = {}): Promise<void> {
     const client = new Client(this.config);
     await client.connect();
 
     try {
       await client.query('BEGIN');
-      await runInitialSeed(client);
+      await runInitialSeed(client, options);
       await client.query('COMMIT');
     } catch (err) {
       await client.query('ROLLBACK');

@@ -110,11 +110,7 @@ describe('NFR-008: Accessibility & WCAG 2.1 AA Standards Compliance', () => {
     });
 
     it('should render verified badge with high-contrast badge tokens', () => {
-      const badge = React.createElement(
-        Badge,
-        { variant: 'success', size: 'sm' },
-        '✓ এনআইডি যাচাইকৃত শিক্ষক',
-      );
+      const badge = React.createElement(Badge, { variant: 'success' }, '✓ এনআইডি যাচাইকৃত শিক্ষক');
 
       expect(badge.props.variant).toBe('success');
       expect(badge.props.children).toContain('এনআইডি যাচাইকৃত শিক্ষক');
@@ -139,7 +135,7 @@ describe('NFR-008: Accessibility & WCAG 2.1 AA Standards Compliance', () => {
     it('should render bilingual numbers and currency symbols (৳ / BDT)', () => {
       const rateBadge = React.createElement(
         Badge,
-        { variant: 'neutral' },
+        { variant: 'default' },
         '৳ ৬০০ / ঘন্টা (600 BDT/hr)',
       );
 
