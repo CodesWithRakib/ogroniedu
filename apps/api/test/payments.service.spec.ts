@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PaymentsService } from '../src/modules/payments/payments.service';
+import { PaymentOrdersService } from '../src/modules/payments/services/payment-orders.service';
+import { PaymentWebhooksService } from '../src/modules/payments/services/payment-webhooks.service';
+import { RefundsService } from '../src/modules/payments/services/refunds.service';
+import { SettlementService } from '../src/modules/payments/services/settlement.service';
 import {
   NotFoundException,
   BadRequestException,
@@ -162,18 +166,39 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
     };
 
     service = new PaymentsService(
-      mockOrderRepo,
-      mockTransactionRepo,
-      mockRefundRepo,
-      mockBookingRepo,
-      mockSessionRepo,
-      mockGuardianLinkRepo,
-      mockOutboxRepo,
-      mockLedgerService,
-      mockAdapterFactory,
-      mockAuditService,
-      mockDataSource,
-      mockNotificationService,
+      new PaymentOrdersService(
+        mockOrderRepo,
+        mockBookingRepo,
+        mockGuardianLinkRepo,
+        mockAdapterFactory,
+        mockAuditService,
+      ) as never,
+      new PaymentWebhooksService(
+        mockOrderRepo,
+        mockTransactionRepo,
+        mockGuardianLinkRepo,
+        mockLedgerService,
+        mockAdapterFactory,
+        mockAuditService,
+        mockDataSource,
+        mockNotificationService,
+      ) as never,
+      new RefundsService(
+        mockOrderRepo,
+        mockRefundRepo,
+        mockOutboxRepo,
+        mockLedgerService,
+        mockAdapterFactory,
+        mockAuditService,
+        mockNotificationService,
+      ) as never,
+      new SettlementService(
+        mockSessionRepo,
+        mockOrderRepo,
+        mockTransactionRepo,
+        mockLedgerService,
+        mockAuditService,
+      ) as never,
     );
   });
 

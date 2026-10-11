@@ -1,8 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BookingsService } from '../src/modules/bookings/bookings.service';
 import { PaymentsService } from '../src/modules/payments/payments.service';
+import { PaymentOrdersService } from '../src/modules/payments/services/payment-orders.service';
+import { PaymentWebhooksService } from '../src/modules/payments/services/payment-webhooks.service';
+import { RefundsService } from '../src/modules/payments/services/refunds.service';
+import { SettlementService } from '../src/modules/payments/services/settlement.service';
 import { LedgerService } from '../src/modules/payments/ledger.service';
 import { LearningService } from '../src/modules/learning/learning.service';
+import { LearningAccessService } from '../src/modules/learning/services/learning-access.service';
+import { LearningAttendanceService } from '../src/modules/learning/services/attendance.service';
+import { LearningAssignmentsService } from '../src/modules/learning/services/assignments.service';
+import { LearningProgressService } from '../src/modules/learning/services/progress.service';
 import { ReviewsService } from '../src/modules/trust/reviews.service';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 import { CreateBookingRequestDto } from '../src/modules/bookings/dto';
@@ -240,17 +248,37 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
     };
 
     paymentsService = new PaymentsService(
-      mockOrderRepo,
-      mockTxnRepo,
-      mockRefundRepo,
-      mockBookingRepo,
-      mockSessionRepo,
-      mockLinkRepo,
-      mockOutboxRepo,
-      ledgerService,
-      mockAdapterFactory as any,
-      mockAuditService,
-      mockDataSource,
+      new PaymentOrdersService(
+        mockOrderRepo,
+        mockBookingRepo,
+        mockLinkRepo,
+        mockAdapterFactory as any,
+        mockAuditService,
+      ) as never,
+      new PaymentWebhooksService(
+        mockOrderRepo,
+        mockTxnRepo,
+        mockLinkRepo,
+        ledgerService,
+        mockAdapterFactory as any,
+        mockAuditService,
+        mockDataSource,
+      ) as never,
+      new RefundsService(
+        mockOrderRepo,
+        mockRefundRepo,
+        mockOutboxRepo,
+        ledgerService,
+        mockAdapterFactory as any,
+        mockAuditService,
+      ) as never,
+      new SettlementService(
+        mockSessionRepo,
+        mockOrderRepo,
+        mockTxnRepo,
+        ledgerService,
+        mockAuditService,
+      ) as never,
     );
 
     // 4. Learning Service Mock Setup
@@ -301,15 +329,34 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
       find: vi.fn().mockResolvedValue([]),
     };
 
+    const access = new LearningAccessService(mockLinkRepo, mockBookingRepo) as never;
     learningService = new LearningService(
-      mockAttendanceRepo,
-      mockAssignmentRepo,
-      mockSubmissionRepo,
-      mockProgressRepo,
-      mockBookingRepo,
-      mockSessionRepo,
-      mockLinkRepo,
-      mockAuditService,
+      access,
+      new LearningAttendanceService(
+        mockAttendanceRepo,
+        mockSessionRepo,
+        mockLinkRepo,
+        access,
+        mockAuditService,
+      ) as never,
+      new LearningAssignmentsService(
+        mockAssignmentRepo,
+        mockSubmissionRepo,
+        mockBookingRepo,
+        mockSessionRepo,
+        mockLinkRepo,
+        mockAuditService,
+      ) as never,
+      new LearningProgressService(
+        mockProgressRepo,
+        mockBookingRepo,
+        mockSessionRepo,
+        mockAttendanceRepo,
+        mockAssignmentRepo,
+        mockSubmissionRepo,
+        access,
+        mockAuditService,
+      ) as never,
     );
 
     // 5. Reviews Service Mock Setup

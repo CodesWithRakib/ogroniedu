@@ -8,7 +8,51 @@ import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { AuditService } from '../audit/audit.service';
 import { NotificationService } from './notification.service';
 import { SendBookingMessageDto } from './dto/send-booking-message.dto';
+import { GetMessagesQueryDto } from './dto/get-messages-query.dto';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import {
+  cursorPaginated,
+  type CursorCollectionEnvelope,
+} from '../../common/api-response/api-response';
+import { decodeCursor, encodeCursor } from '../../common/pagination/pagination';
+
+/** Default chat history page size (preserves the previous take:100 cap via max 100). */
+const DEFAULT_MESSAGES_PAGE_SIZE = 50;
+
+/**
+ * Resolve the tutor user id for a booking without `any` casts.
+ * Falls back to loaded `tutor` / `tutorProfile` relations (identical runtime
+ * semantics to the previous `(booking as any).tutor?.userId` chain: falsy
+ * values fall through, first truthy string wins).
+ */
+function resolveBookingTutorUserId(booking: BookingEntity): string | undefined {
+  const record = booking as unknown as Record<string, unknown>;
+  const candidates: unknown[] = [booking.tutorUserId];
+  for (const relation of ['tutor', 'tutorProfile'] as const) {
+    const rel = record[relation];
+    candidates.push(
+      typeof rel === 'object' && rel !== null
+        ? (rel as Record<string, unknown>).userId
+        : undefined,
+    );
+  }
+  for (const candidate of candidates) {
+    if (typeof candidate === 'string' && candidate.length > 0) return candidate;
+  }
+  return undefined;
+}
+
+/**
+ * Resolve a participant display name without `any` casts.
+ * Identical runtime semantics to `(user as any).displayName || user.email || fallback`.
+ */
+function resolveParticipantDisplayName(user: AuthenticatedUser, fallback: string): string {
+  const record = user as unknown as Record<string, unknown>;
+  const displayName = record.displayName;
+  if (typeof displayName === 'string' && displayName.length > 0) return displayName;
+  if (typeof user.email === 'string' && user.email.length > 0) return user.email;
+  return fallback;
+}
 
 @Injectable()
 export class BookingMessagesService {
@@ -57,10 +101,7 @@ export class BookingMessagesService {
     }
 
     // ABAC Check: User must be student, requester guardian, or tutor of the booking
-    const tutorUserId =
-      booking.tutorUserId ||
-      (booking as any).tutor?.userId ||
-      (booking as any).tutorProfile?.userId;
+    const tutorUserId = resolveBookingTutorUserId(booking);
     const isStudent = user.id === booking.studentUserId;
     const isRequester = user.id === booking.requesterUserId;
     const isTutor = user.id === tutorUserId;
@@ -161,7 +202,7 @@ export class BookingMessagesService {
         eventType: 'system.announcement',
         payload: {
           bookingId: booking.id,
-          senderName: (user as any).displayName || user.email || 'Participant',
+          senderName: resolveParticipantDisplayName(user, 'Participant'),
           snippet: sanitizedContent.slice(0, 50),
         },
       })
@@ -181,7 +222,7 @@ export class BookingMessagesService {
             payload: {
               bookingId: booking.id,
               studentName: booking.studentUser?.displayName || 'Student',
-              senderName: (user as any).displayName || user.email || 'Tutor',
+              senderName: resolveParticipantDisplayName(user, 'Tutor'),
             },
           })
           .catch((err) =>
@@ -194,9 +235,17 @@ export class BookingMessagesService {
   }
 
   /**
-   * 2. Get Messages for a Booking (ABAC Scoped)
+   * 2. Get Messages for a Booking (ABAC Scoped, cursor-backward history).
+   * No cursor → latest `pageSize` messages. With cursor → messages strictly
+   * older than the cursor edge. Internal order is (created_at DESC, id DESC)
+   * via bound query-builder parameters; `data` is returned ASC
+   * (oldest→newest) for display compat.
    */
-  async getMessages(user: AuthenticatedUser, bookingId: string): Promise<BookingMessageEntity[]> {
+  async getMessages(
+    user: AuthenticatedUser,
+    bookingId: string,
+    query?: GetMessagesQueryDto,
+  ): Promise<CursorCollectionEnvelope<BookingMessageEntity>> {
     const booking = await this.bookingRepo.findOne({
       where: { id: bookingId },
     });
@@ -205,10 +254,7 @@ export class BookingMessagesService {
       throw new NotFoundException(`Booking ${bookingId} not found`);
     }
 
-    const tutorUserId =
-      booking.tutorUserId ||
-      (booking as any).tutor?.userId ||
-      (booking as any).tutorProfile?.userId;
+    const tutorUserId = resolveBookingTutorUserId(booking);
     const isStudent = user.id === booking.studentUserId;
     const isRequester = user.id === booking.requesterUserId;
     const isTutor = user.id === tutorUserId;
@@ -220,11 +266,42 @@ export class BookingMessagesService {
       );
     }
 
-    return this.messageRepo.find({
-      where: { bookingId },
-      relations: { senderUser: true },
-      order: { createdAt: 'ASC' },
-      take: 100,
+    const pageSize = query?.pageSize ?? DEFAULT_MESSAGES_PAGE_SIZE;
+    const cursor = decodeCursor(query?.cursor);
+
+    const qb = this.messageRepo
+      .createQueryBuilder('m')
+      .leftJoinAndSelect('m.senderUser', 'senderUser')
+      .where('m.booking_id = :bookingId', { bookingId });
+
+    if (cursor) {
+      qb.andWhere(
+        '(m.created_at < :cursorTime OR (m.created_at = :cursorTime AND m.id < :cursorId))',
+        { cursorTime: cursor.t, cursorId: cursor.id },
+      );
+    }
+
+    const rows = await qb
+      .orderBy('m.created_at', 'DESC')
+      .addOrderBy('m.id', 'DESC')
+      .take(pageSize + 1)
+      .getMany();
+
+    const hasNextPage = rows.length > pageSize;
+    const page = hasNextPage ? rows.slice(0, pageSize) : rows;
+    // Display compat: oldest→newest.
+    const data = [...page].reverse();
+    const oldest = page.length > 0 ? page[page.length - 1] : undefined;
+    const nextCursor =
+      hasNextPage && oldest
+        ? encodeCursor({ t: oldest.createdAt.toISOString(), id: oldest.id })
+        : null;
+
+    return cursorPaginated(data, {
+      nextCursor,
+      previousCursor: null,
+      hasNextPage,
+      pageSize,
     });
   }
 

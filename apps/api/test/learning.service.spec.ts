@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { LearningService } from '../src/modules/learning/learning.service';
+import { LearningAccessService } from '../src/modules/learning/services/learning-access.service';
+import { LearningAttendanceService } from '../src/modules/learning/services/attendance.service';
+import { LearningAssignmentsService } from '../src/modules/learning/services/assignments.service';
+import { LearningProgressService } from '../src/modules/learning/services/progress.service';
 import { NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
@@ -153,17 +157,39 @@ describe('LearningService Unit & Security Invariant Tests', () => {
       dispatch: vi.fn().mockResolvedValue({ id: 'notif-1' }),
     };
 
-    service = new LearningService(
+    const access = new LearningAccessService(
+      mockGuardianLinkRepo,
+      mockBookingRepo,
+    ) as never;
+    const attendance = new LearningAttendanceService(
       mockAttendanceRepo,
+      mockSessionRepo,
+      mockGuardianLinkRepo,
+      access as never,
+      mockAuditService,
+      mockNotificationService,
+    ) as never;
+    const assignments = new LearningAssignmentsService(
       mockAssignmentRepo,
       mockSubmissionRepo,
-      mockProgressReportRepo,
       mockBookingRepo,
       mockSessionRepo,
       mockGuardianLinkRepo,
       mockAuditService,
       mockNotificationService,
-    );
+    ) as never;
+    const progress = new LearningProgressService(
+      mockProgressReportRepo,
+      mockBookingRepo,
+      mockSessionRepo,
+      mockAttendanceRepo,
+      mockAssignmentRepo,
+      mockSubmissionRepo,
+      access as never,
+      mockAuditService,
+    ) as never;
+
+    service = new LearningService(access, attendance, assignments, progress);
   });
 
   describe('Attendance Tracking', () => {

@@ -1,7 +1,16 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BookingMessagesService } from '../src/modules/notifications/booking-messages.service';
-import { ForbiddenException, NotFoundException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
+
+interface SeedMessage {
+  id: string;
+  bookingId: string;
+  senderUserId: string;
+  recipientUserId: string;
+  content: string;
+  createdAt: Date;
+}
 
 describe('BookingMessagesService ABAC & Content Safety Tests (Phase 12)', () => {
   let service: BookingMessagesService;
@@ -51,11 +60,71 @@ describe('BookingMessagesService ABAC & Content Safety Tests (Phase 12)', () => 
     status: 'confirmed',
   };
 
+  const BASE_TIME = new Date('2026-01-01T00:00:00.000Z').getTime();
+
+  function seedMessages(count: number): SeedMessage[] {
+    return Array.from({ length: count }, (_, i) => ({
+      id: `msg-${String(i + 1).padStart(2, '0')}`,
+      bookingId,
+      senderUserId: i % 2 === 0 ? studentId : tutorUserId,
+      recipientUserId: i % 2 === 0 ? tutorUserId : studentId,
+      content: `message-${i + 1}`,
+      createdAt: new Date(BASE_TIME + (i + 1) * 1000),
+    }));
+  }
+
+  /**
+   * In-memory emulation of the service's TypeORM query-builder chain:
+   * booking filter → optional strictly-older cursor predicate →
+   * (created_at DESC, id DESC) → take. Mirrors the SQL semantics so cursor
+   * paging behavior is verified end-to-end through the service.
+   */
+  function installMessageSeed(seed: SeedMessage[]): any {
+    let cursorTime: string | undefined;
+    let cursorId: string | undefined;
+    let takeCount: number | undefined;
+    const qb: any = {
+      leftJoinAndSelect: vi.fn(() => qb),
+      where: vi.fn(() => qb),
+      andWhere: vi.fn((_sql: string, params: { cursorTime: string; cursorId: string }) => {
+        cursorTime = params.cursorTime;
+        cursorId = params.cursorId;
+        return qb;
+      }),
+      orderBy: vi.fn(() => qb),
+      addOrderBy: vi.fn(() => qb),
+      take: vi.fn((n: number) => {
+        takeCount = n;
+        return qb;
+      }),
+      getMany: vi.fn(() => {
+        const sorted = [...seed].sort((a, b) => {
+          const dt = b.createdAt.getTime() - a.createdAt.getTime();
+          if (dt !== 0) return dt;
+          if (a.id === b.id) return 0;
+          return a.id < b.id ? 1 : -1;
+        });
+        let rows = sorted;
+        if (cursorTime !== undefined && cursorId !== undefined) {
+          const ct = Date.parse(cursorTime);
+          const cid: string = cursorId;
+          rows = rows.filter((m) => {
+            const t = m.createdAt.getTime();
+            return t < ct || (t === ct && m.id < cid);
+          });
+        }
+        return Promise.resolve(rows.slice(0, takeCount ?? rows.length));
+      }),
+    };
+    mockMessageRepo.createQueryBuilder.mockReturnValue(qb);
+    return qb;
+  }
+
   beforeEach(() => {
     mockMessageRepo = {
       create: vi.fn((data) => ({ id: 'msg-1', createdAt: new Date(), ...data })),
       save: vi.fn((entity) => Promise.resolve({ id: entity.id || 'msg-1', ...entity })),
-      find: vi.fn().mockResolvedValue([]),
+      createQueryBuilder: vi.fn(),
       findOne: vi.fn(),
     };
 
@@ -196,6 +265,106 @@ describe('BookingMessagesService ABAC & Content Safety Tests (Phase 12)', () => 
       mockMessageRepo.findOne.mockResolvedValue(existingMsg);
 
       await expect(service.markAsRead(attackerUser, 'msg-10')).rejects.toThrow(ForbiddenException);
+    });
+  });
+
+  describe('Cursor Pagination for Chat History (C-3)', () => {
+    it('first page returns the latest N messages ASC with nextCursor when older exist', async () => {
+      const qb = installMessageSeed(seedMessages(5));
+
+      const res = await service.getMessages(studentUser, bookingId, { pageSize: 2 });
+
+      expect(res.success).toBe(true);
+      expect(res.data.map((m) => m.content)).toEqual(['message-4', 'message-5']);
+      expect(res.meta.pagination.strategy).toBe('cursor');
+      expect(res.meta.pagination.pageSize).toBe(2);
+      expect(res.meta.pagination.hasNextPage).toBe(true);
+      expect(res.meta.pagination.previousCursor).toBeNull();
+      expect(typeof res.meta.pagination.nextCursor).toBe('string');
+      // Bound parameters, never interpolated SQL.
+      expect(qb.where).toHaveBeenCalledWith(expect.stringContaining(':bookingId'), {
+        bookingId,
+      });
+      expect(qb.take).toHaveBeenCalledWith(3);
+    });
+
+    it('second page via cursor returns older messages with no overlap, deterministically', async () => {
+      installMessageSeed(seedMessages(5));
+
+      const first = await service.getMessages(studentUser, bookingId, { pageSize: 2 });
+      const cursor = first.meta.pagination.nextCursor as string;
+      expect(typeof cursor).toBe('string');
+
+      const second = await service.getMessages(studentUser, bookingId, { pageSize: 2, cursor });
+      expect(second.data.map((m) => m.content)).toEqual(['message-2', 'message-3']);
+      expect(second.meta.pagination.hasNextPage).toBe(true);
+
+      const firstIds = first.data.map((m) => m.id);
+      const secondIds = second.data.map((m) => m.id);
+      expect(secondIds.some((id) => firstIds.includes(id))).toBe(false);
+
+      // Deterministic: the same cursor yields the same page.
+      const repeat = await service.getMessages(studentUser, bookingId, { pageSize: 2, cursor });
+      expect(repeat.data.map((m) => m.id)).toEqual(secondIds);
+
+      // Final page exhausts history: no older remain.
+      const third = await service.getMessages(studentUser, bookingId, {
+        pageSize: 2,
+        cursor: second.meta.pagination.nextCursor as string,
+      });
+      expect(third.data.map((m) => m.content)).toEqual(['message-1']);
+      expect(third.meta.pagination.hasNextPage).toBe(false);
+      expect(third.meta.pagination.nextCursor).toBeNull();
+    });
+
+    it('no cursor returns the latest pageSize messages (default 50) ASC', async () => {
+      installMessageSeed(seedMessages(3));
+
+      const res = await service.getMessages(studentUser, bookingId);
+
+      expect(res.data.map((m) => m.content)).toEqual(['message-1', 'message-2', 'message-3']);
+      expect(res.meta.pagination.hasNextPage).toBe(false);
+      expect(res.meta.pagination.nextCursor).toBeNull();
+      expect(res.meta.pagination.pageSize).toBe(50);
+    });
+
+    it('INVALID_CURSOR: malformed cursor yields 400 INVALID_CURSOR before querying', async () => {
+      installMessageSeed(seedMessages(3));
+
+      const outcome: unknown = await service
+        .getMessages(studentUser, bookingId, { cursor: '!!!not-a-cursor!!!' })
+        .then(
+          () => 'no-throw',
+          (err: unknown) => err,
+        );
+
+      expect(outcome).toBeInstanceOf(BadRequestException);
+      expect((outcome as BadRequestException).getStatus()).toBe(400);
+      const response = (outcome as BadRequestException).getResponse() as Record<string, unknown>;
+      expect(response.code).toBe('INVALID_CURSOR');
+      expect(mockMessageRepo.createQueryBuilder).not.toHaveBeenCalled();
+    });
+
+    it('ABAC: tutor resolved via tutorProfile relation fallback (unknown narrowing)', async () => {
+      mockBookingRepo.findOne.mockResolvedValue({
+        id: bookingId,
+        studentUserId: studentId,
+        requesterUserId: requesterId,
+        tutorUserId: null,
+        tutorProfile: { userId: tutorUserId },
+      });
+      installMessageSeed(seedMessages(2));
+
+      const res = await service.getMessages(tutorUser, bookingId, {});
+      expect(res.success).toBe(true);
+      expect(res.data).toHaveLength(2);
+    });
+
+    it('NEGATIVE TEST: unknown booking still yields 404', async () => {
+      mockBookingRepo.findOne.mockResolvedValue(null);
+      await expect(service.getMessages(studentUser, bookingId, {})).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 });

@@ -26,6 +26,34 @@ import { NotificationDeliveryEntity } from './entities/notification-delivery.ent
 import { NotificationPreferenceEntity } from './entities/notification-preference.entity';
 import { NotificationGateway } from './notification.gateway';
 import { Optional } from '@nestjs/common';
+import {
+  decodeCursor,
+  encodeCursor,
+  type CursorPayload,
+} from '../../common/pagination/pagination';
+
+/** Default cursor page size for the notifications feed. */
+const DEFAULT_NOTIFICATIONS_CURSOR_PAGE_SIZE = 20;
+
+/** Epoch millis for a notification timestamp (entity or ISO string at runtime). */
+function notificationTime(value: Date): number {
+  return value instanceof Date ? value.getTime() : Date.parse(String(value));
+}
+
+/** ISO timestamp for a notification edge (entity or ISO string at runtime). */
+function notificationIso(value: Date): string {
+  if (value instanceof Date) return value.toISOString();
+  return new Date(Date.parse(String(value))).toISOString();
+}
+
+/** Deterministic feed order: (created_at DESC, id DESC). */
+function compareNotificationsDesc(a: NotificationEntity, b: NotificationEntity): number {
+  const ta = notificationTime(a.createdAt);
+  const tb = notificationTime(b.createdAt);
+  if (ta !== tb) return tb - ta;
+  if (a.id === b.id) return 0;
+  return a.id < b.id ? 1 : -1;
+}
 
 @Injectable()
 export class NotificationService {
@@ -130,13 +158,24 @@ export class NotificationService {
   }
 
   /**
-   * Retrieve paginated notifications for a specific user
+   * Retrieve paginated notifications for a specific user.
+   * Legacy mode (no cursor): offset page/limit behavior identical to before,
+   * plus canonical `success/data/meta` envelope fields.
+   * Cursor mode: append-heavy feed ordered (created_at DESC, id DESC);
+   * `page/limit/totalPages` are omitted and cursor `meta.pagination` is
+   * returned instead. `unreadOnly`/locale filters apply before pagination
+   * in both modes.
    */
   async getNotifications(
     userId: string,
     query: GetNotificationsQueryDto,
   ): Promise<NotificationsListResponseDto> {
     const locale = query.locale || 'bn';
+    const cursor = decodeCursor(query.cursor);
+    if (cursor) {
+      return this.getNotificationsCursorPage(userId, query, cursor, locale);
+    }
+
     const limit = query.limit || 20;
     const page = query.page || 1;
     const skip = (page - 1) * limit;
@@ -159,7 +198,7 @@ export class NotificationService {
         const [results, count] = await queryBuilder.getManyAndCount();
         items = results;
         total = count;
-      } catch (err: any) {
+      } catch {
         // Fallback to in-memory store
         const userItems = this.memoryNotifications.filter((n) => n.userId === userId);
         const filtered = query.unreadOnly ? userItems.filter((n) => !n.readAt) : userItems;
@@ -175,15 +214,121 @@ export class NotificationService {
 
     const { unreadCount } = await this.getUnreadCount(userId);
     const totalPages = Math.ceil(total / limit) || 1;
+    const hasNextPage = page < totalPages;
+    const formatted = items.map((item) => this.formatNotificationItem(item, locale));
 
     return {
-      items: items.map((item) => this.formatNotificationItem(item, locale)),
+      items: formatted,
       total,
       unreadCount,
       page,
       limit,
       totalPages,
-      hasNextPage: page < totalPages,
+      hasNextPage,
+      success: true,
+      data: formatted,
+      meta: {
+        pagination: {
+          strategy: 'offset',
+          page,
+          pageSize: limit,
+          totalItems: total,
+          totalPages,
+          hasNextPage,
+          hasPreviousPage: page > 1,
+        },
+      },
+    };
+  }
+
+  /**
+   * Cursor-backward page for the notifications feed. `total` counts every
+   * matching notification (filters applied, pagination ignored); `totalPages`
+   * is never emitted here.
+   */
+  private async getNotificationsCursorPage(
+    userId: string,
+    query: GetNotificationsQueryDto,
+    cursor: CursorPayload,
+    locale: 'bn' | 'en',
+  ): Promise<NotificationsListResponseDto> {
+    const pageSize = query.pageSize ?? DEFAULT_NOTIFICATIONS_CURSOR_PAGE_SIZE;
+
+    let rows: NotificationEntity[] = [];
+    let total = 0;
+    let loadedFromDb = false;
+
+    if (this.notificationRepo) {
+      try {
+        const countQuery = this.notificationRepo
+          .createQueryBuilder('n')
+          .where('n.user_id = :userId', { userId });
+        if (query.unreadOnly) {
+          countQuery.andWhere('n.read_at IS NULL');
+        }
+        total = await countQuery.getCount();
+
+        const rowsQuery = this.notificationRepo
+          .createQueryBuilder('n')
+          .where('n.user_id = :userId', { userId });
+        if (query.unreadOnly) {
+          rowsQuery.andWhere('n.read_at IS NULL');
+        }
+        rowsQuery.andWhere(
+          '(n.created_at < :cursorTime OR (n.created_at = :cursorTime AND n.id < :cursorId))',
+          { cursorTime: cursor.t, cursorId: cursor.id },
+        );
+        rows = await rowsQuery
+          .orderBy('n.created_at', 'DESC')
+          .addOrderBy('n.id', 'DESC')
+          .take(pageSize + 1)
+          .getMany();
+        loadedFromDb = true;
+      } catch {
+        // Fallback to in-memory store below.
+      }
+    }
+
+    if (!loadedFromDb) {
+      const cursorTime = Date.parse(cursor.t);
+      const owned = this.memoryNotifications.filter((n) => n.userId === userId);
+      const filtered = query.unreadOnly ? owned.filter((n) => !n.readAt) : owned;
+      total = filtered.length;
+      rows = filtered
+        .filter((n) => {
+          const t = notificationTime(n.createdAt);
+          return t < cursorTime || (t === cursorTime && n.id < cursor.id);
+        })
+        .sort(compareNotificationsDesc)
+        .slice(0, pageSize + 1);
+    }
+
+    const hasNextPage = rows.length > pageSize;
+    const page = hasNextPage ? rows.slice(0, pageSize) : rows;
+    const formatted = page.map((item) => this.formatNotificationItem(item, locale));
+    const { unreadCount } = await this.getUnreadCount(userId);
+    const oldest = page.length > 0 ? page[page.length - 1] : undefined;
+    const nextCursor =
+      hasNextPage && oldest
+        ? encodeCursor({ t: notificationIso(oldest.createdAt), id: oldest.id })
+        : null;
+
+    return {
+      items: formatted,
+      total,
+      unreadCount,
+      hasNextPage,
+      success: true,
+      data: formatted,
+      meta: {
+        pagination: {
+          strategy: 'cursor',
+          nextCursor,
+          previousCursor: null,
+          hasNextPage,
+          pageSize,
+        },
+      },
     };
   }
 

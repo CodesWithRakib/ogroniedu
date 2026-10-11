@@ -13,6 +13,9 @@ import { EducationLevelEntity } from '../taxonomy/entities/education-level.entit
 import { BookingsService } from './bookings.service';
 import { BookingsController } from './bookings.controller';
 import { SchedulingService } from './scheduling.service';
+import { SessionSchedulingService } from './services/session-scheduling.service';
+import { SessionReschedulingService } from './services/session-rescheduling.service';
+import { SessionQueriesService } from './services/session-queries.service';
 import { SessionsController } from './sessions.controller';
 import { AuthModule } from '../auth/auth.module';
 import { AuditModule } from '../audit/audit.module';
@@ -37,7 +40,20 @@ import { NotificationsModule } from '../notifications/notifications.module';
     forwardRef(() => NotificationsModule),
   ],
   controllers: [BookingsController, SessionsController],
-  providers: [BookingsService, SchedulingService],
-  exports: [BookingsService, SchedulingService, TypeOrmModule],
+  providers: [
+    BookingsService,
+    SchedulingService,
+    SessionSchedulingService,
+    SessionReschedulingService,
+    SessionQueriesService,
+  ],
+  exports: [
+    BookingsService,
+    SchedulingService,
+    SessionSchedulingService,
+    SessionReschedulingService,
+    SessionQueriesService,
+    TypeOrmModule,
+  ],
 })
 export class BookingsModule {}

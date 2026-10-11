@@ -1,4 +1,5 @@
 export * from './dispatch-notification.dto';
+export * from './get-messages-query.dto';
 export * from './get-notifications-query.dto';
 export * from './mark-as-read-param.dto';
 export * from './update-notification-preferences.dto';

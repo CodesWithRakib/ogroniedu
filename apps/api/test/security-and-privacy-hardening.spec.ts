@@ -4,6 +4,10 @@ import { StructuredLoggerService } from '../src/common/logger/structured-logger.
 import { AllExceptionsFilter } from '../src/common/filters/http-exception.filter';
 import { FilesService } from '../src/modules/files/files.service';
 import { PaymentsService } from '../src/modules/payments/payments.service';
+import { PaymentOrdersService } from '../src/modules/payments/services/payment-orders.service';
+import { PaymentWebhooksService } from '../src/modules/payments/services/payment-webhooks.service';
+import { RefundsService } from '../src/modules/payments/services/refunds.service';
+import { SettlementService } from '../src/modules/payments/services/settlement.service';
 import { UsersService } from '../src/modules/users/users.service';
 import { BadRequestException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import type { Request, Response } from 'express';
@@ -276,17 +280,37 @@ describe('Phase 17 — Security and Privacy Hardening Tests', () => {
       };
 
       paymentsService = new PaymentsService(
-        mockOrderRepo,
-        mockTxnRepo,
-        mockRefundRepo,
-        mockBookingRepo,
-        mockSessionRepo,
-        mockGuardianLinkRepo,
-        mockOutboxRepo,
-        mockLedgerService,
-        mockFactory,
-        mockAuditService,
-        mockDataSource,
+        new PaymentOrdersService(
+          mockOrderRepo,
+          mockBookingRepo,
+          mockGuardianLinkRepo,
+          mockFactory,
+          mockAuditService,
+        ) as never,
+        new PaymentWebhooksService(
+          mockOrderRepo,
+          mockTxnRepo,
+          mockGuardianLinkRepo,
+          mockLedgerService,
+          mockFactory,
+          mockAuditService,
+          mockDataSource,
+        ) as never,
+        new RefundsService(
+          mockOrderRepo,
+          mockRefundRepo,
+          mockOutboxRepo,
+          mockLedgerService,
+          mockFactory,
+          mockAuditService,
+        ) as never,
+        new SettlementService(
+          mockSessionRepo,
+          mockOrderRepo,
+          mockTxnRepo,
+          mockLedgerService,
+          mockAuditService,
+        ) as never,
       );
     });
 

@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SchedulingService } from '../src/modules/bookings/scheduling.service';
+import { SessionSchedulingService } from '../src/modules/bookings/services/session-scheduling.service';
+import { SessionReschedulingService } from '../src/modules/bookings/services/session-rescheduling.service';
+import { SessionQueriesService } from '../src/modules/bookings/services/session-queries.service';
 import {
   NotFoundException,
   BadRequestException,
@@ -15,7 +18,6 @@ describe('SchedulingService Unit & Conflict-Safety Tests (Phase 09)', () => {
   let mockBookingRepo: any;
   let mockSessionRepo: any;
   let mockOutboxRepo: any;
-  let mockAvailabilityRepo: any;
   let mockLinkRepo: any;
   let mockAuditService: any;
   let mockNotificationService: any;
@@ -79,10 +81,6 @@ describe('SchedulingService Unit & Conflict-Safety Tests (Phase 09)', () => {
       save: vi.fn().mockImplementation(async (e) => e),
     };
 
-    mockAvailabilityRepo = {
-      find: vi.fn().mockResolvedValue([]),
-    };
-
     mockLinkRepo = {
       findOne: vi.fn().mockResolvedValue({
         guardianUserId: guardianUser.id,
@@ -100,14 +98,24 @@ describe('SchedulingService Unit & Conflict-Safety Tests (Phase 09)', () => {
       dispatch: vi.fn().mockResolvedValue(undefined),
     };
 
+    const queries = new SessionQueriesService(mockSessionRepo, mockLinkRepo) as never;
     service = new SchedulingService(
-      mockBookingRepo,
-      mockSessionRepo,
-      mockOutboxRepo,
-      mockAvailabilityRepo,
-      mockLinkRepo,
-      mockAuditService,
-      mockNotificationService,
+      new SessionSchedulingService(
+        mockBookingRepo,
+        mockSessionRepo,
+        mockOutboxRepo,
+        mockAuditService,
+        mockNotificationService,
+        queries,
+      ) as never,
+      new SessionReschedulingService(
+        mockSessionRepo,
+        mockOutboxRepo,
+        mockAuditService,
+        mockNotificationService,
+        queries,
+      ) as never,
+      queries,
     );
   });
 

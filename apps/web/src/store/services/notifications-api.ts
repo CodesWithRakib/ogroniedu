@@ -1,4 +1,5 @@
 import { baseApi } from '../base-api';
+import { toQueryString } from '@/lib/api/query';
 import type {
   NotificationsListResponseDto,
   UnreadCountResponseDto,
@@ -12,24 +13,15 @@ import type {
 export const notificationsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getNotifications: builder.query<NotificationsListResponseDto, GetNotificationsQueryDto | void>({
-      query: (params) => {
-        const queryParams = new URLSearchParams();
-        if (params?.unreadOnly !== undefined) {
-          queryParams.append('unreadOnly', String(params.unreadOnly));
-        }
-        if (params?.limit) {
-          queryParams.append('limit', String(params.limit));
-        }
-        if (params?.page) {
-          queryParams.append('page', String(params.page));
-        }
-        if (params?.locale) {
-          queryParams.append('locale', params.locale);
-        }
-
-        const queryString = queryParams.toString();
-        return `/api/v1/notifications${queryString ? `?${queryString}` : ''}`;
-      },
+      query: (params) =>
+        `/api/v1/notifications${toQueryString({
+          unreadOnly: params?.unreadOnly,
+          limit: params?.limit,
+          page: params?.page,
+          cursor: params?.cursor,
+          pageSize: params?.pageSize,
+          locale: params?.locale,
+        })}`,
       providesTags: (result) =>
         result
           ? [

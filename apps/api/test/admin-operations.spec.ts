@@ -3,6 +3,10 @@ import {
   AdminOperationsService,
   redactSensitiveData,
 } from '../src/modules/admin/admin-operations.service';
+import { AdminDashboardService } from '../src/modules/admin/services/admin-dashboard.service';
+import { AdminUsersService } from '../src/modules/admin/services/admin-users.service';
+import { AdminBookingsService } from '../src/modules/admin/services/admin-bookings.service';
+import { AdminPlatformService } from '../src/modules/admin/services/admin-platform.service';
 import { ForbiddenException, BadRequestException, NotFoundException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 import jwt from 'jsonwebtoken';
@@ -123,19 +127,37 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     service = new AdminOperationsService(
-      mockSystemSettingRepo as any,
-      mockFeatureFlagRepo as any,
-      mockUserRepo as any,
-      mockUserRoleRepo as any,
-      mockBookingRepo as any,
-      mockAuditRepo as any,
-      mockReplacementCaseRepo as any,
-      mockSafetyReportRepo as any,
-      mockPaymentOrderRepo as any,
-      mockAuditService as any,
-      mockLedgerService as any,
-      mockPaymentsService as any,
-      mockDataSource as any,
+      new AdminDashboardService(
+        mockUserRepo as never,
+        mockBookingRepo as never,
+        mockReplacementCaseRepo as never,
+        mockSafetyReportRepo as never,
+        mockLedgerService as never,
+        mockDataSource as never,
+      ) as never,
+      new AdminUsersService(
+        mockUserRepo as never,
+        mockDataSource as never,
+        mockAuditService as never,
+      ) as never,
+      new AdminBookingsService(
+        mockBookingRepo as never,
+        mockUserRepo as never,
+        mockReplacementCaseRepo as never,
+        mockSafetyReportRepo as never,
+        mockPaymentOrderRepo as never,
+        mockAuditService as never,
+        mockPaymentsService as never,
+      ) as never,
+      new AdminPlatformService(
+        mockSystemSettingRepo as never,
+        mockFeatureFlagRepo as never,
+        mockUserRepo as never,
+        mockAuditRepo as never,
+        mockDataSource as never,
+        mockAuditService as never,
+        mockLedgerService as never,
+      ) as never,
     );
   });
 
@@ -452,11 +474,11 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
       expect(result.targetUser.displayName).toBe('Target Student');
 
       // Verify JWT payload contents
-      const decoded = jwt.decode(result.accessToken) as any;
-      expect(decoded.sub).toBe(targetUserId);
-      expect(decoded.isImpersonated).toBe(true);
-      expect(decoded.impersonatorUserId).toBe(superAdminUser.id);
-      expect(decoded.roles).toContain('student');
+      const decoded = jwt.decode(result.accessToken) as Record<string, unknown> | null;
+      expect(decoded?.['sub']).toBe(targetUserId);
+      expect(decoded?.['isImpersonated']).toBe(true);
+      expect(decoded?.['impersonatorUserId']).toBe(superAdminUser.id);
+      expect(decoded?.['roles']).toContain('student');
 
       // Verify mandatory high-priority audit log
       expect(mockAuditService.record).toHaveBeenCalledWith(

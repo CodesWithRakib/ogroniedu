@@ -1,6 +1,6 @@
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Transform, Type } from 'class-transformer';
-import { IsBoolean, IsIn, IsInt, IsOptional, Max, Min } from 'class-validator';
+import { IsBoolean, IsIn, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
 
 export class GetNotificationsQueryDto {
   @ApiPropertyOptional({
@@ -49,4 +49,24 @@ export class GetNotificationsQueryDto {
   @IsOptional()
   @IsIn(['bn', 'en'], { message: 'locale must be either bn or en' })
   locale: 'bn' | 'en' = 'bn';
+
+  @ApiPropertyOptional({
+    description:
+      'Opaque cursor for cursor pagination (edge of the oldest notification on the previous page). When present, cursor mode is used and page/limit/totalPages are omitted.',
+  })
+  @IsOptional()
+  @IsString({ message: 'cursor must be an opaque string' })
+  cursor?: string;
+
+  @ApiPropertyOptional({
+    description: 'Cursor page size (1-100, default: 20). Only applies in cursor mode.',
+    default: 20,
+    example: 20,
+  })
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt({ message: 'pageSize must be an integer' })
+  @Min(1, { message: 'pageSize must be at least 1' })
+  @Max(100, { message: 'pageSize cannot exceed 100' })
+  pageSize?: number = 20;
 }

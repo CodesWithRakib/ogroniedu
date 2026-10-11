@@ -1,5 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PaymentsService } from '../src/modules/payments/payments.service';
+import { PaymentOrdersService } from '../src/modules/payments/services/payment-orders.service';
+import { PaymentWebhooksService } from '../src/modules/payments/services/payment-webhooks.service';
+import { RefundsService } from '../src/modules/payments/services/refunds.service';
+import { SettlementService } from '../src/modules/payments/services/settlement.service';
 import { LedgerService } from '../src/modules/payments/ledger.service';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 import { CreatePaymentOrderDto, PaymentWebhookDto } from '../src/modules/payments/dto';
@@ -91,17 +95,37 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
       };
 
       paymentsService = new PaymentsService(
-        mockOrderRepo,
-        mockTxnRepo,
-        mockRefundRepo,
-        mockBookingRepo,
-        mockSessionRepo,
-        mockGuardianLinkRepo,
-        mockOutboxRepo,
-        mockLedgerService,
-        mockAdapterFactory,
-        mockAuditService,
-        mockDataSource,
+        new PaymentOrdersService(
+          mockOrderRepo,
+          mockBookingRepo,
+          mockGuardianLinkRepo,
+          mockAdapterFactory,
+          mockAuditService,
+        ) as never,
+        new PaymentWebhooksService(
+          mockOrderRepo,
+          mockTxnRepo,
+          mockGuardianLinkRepo,
+          mockLedgerService,
+          mockAdapterFactory,
+          mockAuditService,
+          mockDataSource,
+        ) as never,
+        new RefundsService(
+          mockOrderRepo,
+          mockRefundRepo,
+          mockOutboxRepo,
+          mockLedgerService,
+          mockAdapterFactory,
+          mockAuditService,
+        ) as never,
+        new SettlementService(
+          mockSessionRepo,
+          mockOrderRepo,
+          mockTxnRepo,
+          mockLedgerService,
+          mockAuditService,
+        ) as never,
       );
     });
 
@@ -352,17 +376,37 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
       };
 
       paymentsService = new PaymentsService(
-        mockOrderRepo,
-        mockTxnRepo,
-        mockRefundRepo,
-        mockBookingRepo,
-        mockSessionRepo,
-        mockGuardianLinkRepo,
-        mockOutboxRepo,
-        mockLedgerService,
-        mockAdapterFactory,
-        mockAuditService,
-        mockDataSource,
+        new PaymentOrdersService(
+          mockOrderRepo,
+          mockBookingRepo,
+          mockGuardianLinkRepo,
+          mockAdapterFactory,
+          mockAuditService,
+        ) as never,
+        new PaymentWebhooksService(
+          mockOrderRepo,
+          mockTxnRepo,
+          mockGuardianLinkRepo,
+          mockLedgerService,
+          mockAdapterFactory,
+          mockAuditService,
+          mockDataSource,
+        ) as never,
+        new RefundsService(
+          mockOrderRepo,
+          mockRefundRepo,
+          mockOutboxRepo,
+          mockLedgerService,
+          mockAdapterFactory,
+          mockAuditService,
+        ) as never,
+        new SettlementService(
+          mockSessionRepo,
+          mockOrderRepo,
+          mockTxnRepo,
+          mockLedgerService,
+          mockAuditService,
+        ) as never,
       );
     });
 

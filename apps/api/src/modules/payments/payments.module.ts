@@ -13,6 +13,10 @@ import { BookingSessionEntity } from '../bookings/entities/booking-session.entit
 import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-student-link.entity';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { PaymentsService } from './payments.service';
+import { PaymentOrdersService } from './services/payment-orders.service';
+import { PaymentWebhooksService } from './services/payment-webhooks.service';
+import { RefundsService } from './services/refunds.service';
+import { SettlementService } from './services/settlement.service';
 import { LedgerService } from './ledger.service';
 import { PaymentsController } from './payments.controller';
 import { BkashSandboxAdapter } from './adapters/bkash-sandbox.adapter';
@@ -43,11 +47,23 @@ import { NotificationsModule } from '../notifications/notifications.module';
   controllers: [PaymentsController],
   providers: [
     PaymentsService,
+    PaymentOrdersService,
+    PaymentWebhooksService,
+    RefundsService,
+    SettlementService,
     LedgerService,
     BkashSandboxAdapter,
     SslcommerzSandboxAdapter,
     PaymentAdapterFactory,
   ],
-  exports: [PaymentsService, LedgerService, TypeOrmModule],
+  exports: [
+    PaymentsService,
+    PaymentOrdersService,
+    PaymentWebhooksService,
+    RefundsService,
+    SettlementService,
+    LedgerService,
+    TypeOrmModule,
+  ],
 })
 export class PaymentsModule {}

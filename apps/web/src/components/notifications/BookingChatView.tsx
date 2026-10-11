@@ -42,6 +42,12 @@ interface BookingChatViewProps {
   subjectName: string;
   currentUserId: string;
   initialMessages?: ChatMessageItem[];
+  /**
+   * Controlled mode: when provided, the thread renders `messages` directly and
+   * send delegates persistence to the parent (server echo arrives via refetch).
+   * When omitted, the component keeps its legacy local optimistic behavior.
+   */
+  messages?: ChatMessageItem[];
   onSendMessage?: (content: string) => Promise<void>;
 }
 
@@ -51,12 +57,13 @@ export function BookingChatView({
   subjectName,
   currentUserId,
   initialMessages = [],
+  messages: controlledMessages,
   onSendMessage,
 }: BookingChatViewProps) {
   const dict = getDictionary(locale);
   const n = dict.notifications;
 
-  const [messages, setMessages] = useState<ChatMessageItem[]>(initialMessages ?? []);
+  const [localMessages, setLocalMessages] = useState<ChatMessageItem[]>(initialMessages ?? []);
   const [inputText, setInputText] = useState('');
   const [isSending, setIsSending] = useState(false);
 
@@ -72,6 +79,9 @@ export function BookingChatView({
       if (onSendMessage) {
         await onSendMessage(content);
       }
+
+      // Controlled mode: server echo arrives via parent refetch — no local append.
+      if (controlledMessages !== undefined) return;
 
       // Check client-side regex for instant preview safety tag
       const phoneRegex = /(?:\+?880\s?|0)1[3-9]\d{2}[\s\-]?\d{6}/gi;
@@ -91,11 +101,13 @@ export function BookingChatView({
         createdAt: new Date().toISOString(),
       };
 
-      setMessages((prev) => [...prev, newMsg]);
+      setLocalMessages((prev) => [...prev, newMsg]);
     } finally {
       setIsSending(false);
     }
   };
+
+  const messages = controlledMessages ?? localMessages;
 
   return (
     <div className="max-w-3xl mx-auto space-y-4 py-4 px-4 sm:px-6">

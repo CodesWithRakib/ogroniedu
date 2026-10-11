@@ -3,6 +3,7 @@ import { validate } from 'class-validator';
 import { plainToInstance } from 'class-transformer';
 import {
   DispatchNotificationDto,
+  GetMessagesQueryDto,
   GetNotificationsQueryDto,
   MarkAsReadParamDto,
 } from '../src/modules/notifications/dto';
@@ -144,6 +145,90 @@ describe('Notification DTO Validation & Transformation Tests', () => {
       const localeError = errors.find((e) => e.property === 'locale');
       expect(localeError).toBeDefined();
       expect(localeError?.constraints?.isIn).toBeDefined();
+    });
+
+    it('should accept an opaque cursor with a custom pageSize', async () => {
+      const plain = { cursor: 'b3BhcXVlLWN1cnNvcg', pageSize: '10' };
+      const dto = plainToInstance(GetNotificationsQueryDto, plain);
+      const errors = await validate(dto);
+
+      expect(errors.length).toBe(0);
+      expect(dto.cursor).toBe('b3BhcXVlLWN1cnNvcg');
+      expect(dto.pageSize).toBe(10);
+    });
+
+    it('should default pageSize to 20 when omitted', async () => {
+      const dto = plainToInstance(GetNotificationsQueryDto, {});
+      const errors = await validate(dto);
+
+      expect(errors.length).toBe(0);
+      expect(dto.pageSize).toBe(20);
+      expect(dto.cursor).toBeUndefined();
+    });
+
+    it('NEGATIVE TEST: should reject pageSize greater than 100', async () => {
+      const plain = { pageSize: '250' };
+      const dto = plainToInstance(GetNotificationsQueryDto, plain);
+      const errors = await validate(dto);
+
+      expect(errors.length).toBeGreaterThan(0);
+      const pageSizeError = errors.find((e) => e.property === 'pageSize');
+      expect(pageSizeError).toBeDefined();
+      expect(pageSizeError?.constraints?.max).toBeDefined();
+    });
+
+    it('NEGATIVE TEST: should reject pageSize below 1', async () => {
+      const plain = { pageSize: '0' };
+      const dto = plainToInstance(GetNotificationsQueryDto, plain);
+      const errors = await validate(dto);
+
+      expect(errors.length).toBeGreaterThan(0);
+      const pageSizeError = errors.find((e) => e.property === 'pageSize');
+      expect(pageSizeError).toBeDefined();
+      expect(pageSizeError?.constraints?.min).toBeDefined();
+    });
+  });
+
+  describe('GetMessagesQueryDto', () => {
+    it('should default pageSize to 50 and leave cursor undefined when omitted', async () => {
+      const dto = plainToInstance(GetMessagesQueryDto, {});
+      const errors = await validate(dto);
+
+      expect(errors.length).toBe(0);
+      expect(dto.pageSize).toBe(50);
+      expect(dto.cursor).toBeUndefined();
+    });
+
+    it('should accept an opaque cursor with a custom pageSize', async () => {
+      const plain = { cursor: 'b3BhcXVlLWN1cnNvcg', pageSize: '25' };
+      const dto = plainToInstance(GetMessagesQueryDto, plain);
+      const errors = await validate(dto);
+
+      expect(errors.length).toBe(0);
+      expect(dto.cursor).toBe('b3BhcXVlLWN1cnNvcg');
+      expect(dto.pageSize).toBe(25);
+    });
+
+    it('NEGATIVE TEST: should reject pageSize greater than 100 (preserves take:100 cap)', async () => {
+      const plain = { pageSize: '250' };
+      const dto = plainToInstance(GetMessagesQueryDto, plain);
+      const errors = await validate(dto);
+
+      expect(errors.length).toBeGreaterThan(0);
+      const pageSizeError = errors.find((e) => e.property === 'pageSize');
+      expect(pageSizeError).toBeDefined();
+      expect(pageSizeError?.constraints?.max).toBeDefined();
+    });
+
+    it('NEGATIVE TEST: should reject pageSize below 1', async () => {
+      const plain = { pageSize: '0' };
+      const dto = plainToInstance(GetMessagesQueryDto, plain);
+      const errors = await validate(dto);
+
+      expect(errors.length).toBeGreaterThan(0);
+      const pageSizeError = errors.find((e) => e.property === 'pageSize');
+      expect(pageSizeError).toBeDefined();
+      expect(pageSizeError?.constraints?.min).toBeDefined();
     });
   });
 
