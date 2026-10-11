@@ -126,6 +126,16 @@ export function LearningManagementView({
   const [assignmentList, setAssignmentList] = useState<AssignmentItem[]>(initialAssignments);
   const [reportList, setReportList] = useState<ProgressReportItem[]>(initialReports);
 
+  React.useEffect(() => {
+    setAttendanceList(initialAttendance);
+  }, [initialAttendance]);
+  React.useEffect(() => {
+    setAssignmentList(initialAssignments);
+  }, [initialAssignments]);
+  React.useEffect(() => {
+    setReportList(initialReports);
+  }, [initialReports]);
+
   // Modals state
   const [submitModalAssignment, setSubmitModalAssignment] = useState<AssignmentItem | null>(null);
   const [submissionText, setSubmissionText] = useState('');

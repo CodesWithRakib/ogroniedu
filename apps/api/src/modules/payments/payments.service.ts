@@ -317,16 +317,13 @@ export class PaymentsService {
       return { received: true, processed: false, status: 'succeeded' };
     }
 
-    // 3. Find matching pending order
-    const order =
-      (await this.orderRepo.findOne({
-        where: { id: rawBody.providerTransactionId ? undefined : undefined }, // will find by booking or query
-      })) ||
-      (await this.orderRepo.findOne({
-        where: { status: 'pending' },
-        order: { createdAt: 'DESC' },
-        relations: { booking: { subject: true, studentUser: true } },
-      }));
+    // 3. Find matching pending order (most recent pending order; sandbox
+    // providers correlate via server-to-server query + amount checks below)
+    const order = await this.orderRepo.findOne({
+      where: { status: 'pending' },
+      order: { createdAt: 'DESC' },
+      relations: { booking: { subject: true, studentUser: true } },
+    });
 
     if (!order) {
       throw new NotFoundException('Matching pending payment order not found');

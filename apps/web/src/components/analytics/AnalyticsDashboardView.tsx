@@ -134,6 +134,10 @@ export function AnalyticsDashboardView({
   const [data, setData] = useState<AnalyticsOperationalData>(initialData);
   const [selectedPreset, setSelectedPreset] = useState<'7d' | '30d' | '90d'>('30d');
 
+  React.useEffect(() => {
+    setData(initialData);
+  }, [initialData]);
+
   const handlePresetSelect = async (preset: '7d' | '30d' | '90d') => {
     setSelectedPreset(preset);
     if (onDateRangeChange) {

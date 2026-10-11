@@ -3,15 +3,19 @@ import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Inbox } from 'lucide-react';
 
+import Link from 'next/link';
+
 export interface EmptyStateProps {
   icon?: React.ReactNode;
   title: string;
   description: string;
   action?: React.ReactNode;
+  actionLabel?: string;
+  actionHref?: string;
   className?: string;
 }
 
-export function EmptyState({ icon, title, description, action, className }: EmptyStateProps) {
+export function EmptyState({ icon, title, description, action, actionLabel, actionHref, className }: EmptyStateProps) {
   return (
     <div
       role="status"
@@ -25,7 +29,18 @@ export function EmptyState({ icon, title, description, action, className }: Empt
       </div>
       <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
       <p className="mt-1.5 max-w-sm text-sm text-slate-500 dark:text-slate-400">{description}</p>
-      {action && <div className="mt-5">{action}</div>}
+      {action ? (
+        <div className="mt-5">{action}</div>
+      ) : actionLabel && actionHref ? (
+        <div className="mt-5">
+          <Link
+            href={actionHref}
+            className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-emerald-800"
+          >
+            {actionLabel}
+          </Link>
+        </div>
+      ) : null}
     </div>
   );
 }

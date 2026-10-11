@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException } from '@nestjs/common';
+import { Injectable, BadRequestException, Inject } from '@nestjs/common';
 import { PaymentProviderAdapter } from './payment-provider.interface';
 import { BkashSandboxAdapter } from './bkash-sandbox.adapter';
 import { SslcommerzSandboxAdapter } from './sslcommerz-sandbox.adapter';
@@ -6,8 +6,8 @@ import { SslcommerzSandboxAdapter } from './sslcommerz-sandbox.adapter';
 @Injectable()
 export class PaymentAdapterFactory {
   constructor(
-    private readonly bkashAdapter: BkashSandboxAdapter,
-    private readonly sslcommerzAdapter: SslcommerzSandboxAdapter,
+    @Inject(BkashSandboxAdapter) private readonly bkashAdapter: BkashSandboxAdapter,
+    @Inject(SslcommerzSandboxAdapter) private readonly sslcommerzAdapter: SslcommerzSandboxAdapter,
   ) {}
 
   getAdapter(provider: string = 'bkash'): PaymentProviderAdapter {

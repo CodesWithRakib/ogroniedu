@@ -1,7 +1,8 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useCallback } from 'react';
-import { io, Socket } from 'socket.io-client';
+import React, { createContext, useContext, useEffect, useState, useCallback, useRef } from 'react';
+import { io, type Socket } from 'socket.io-client';
+import { useAppSelector } from '@/store';
 import type { NotificationItemDto, UnreadCountResponseDto } from '@ogroniedu/contracts';
 
 interface NotificationToastItem extends NotificationItemDto {
@@ -26,34 +27,56 @@ const NotificationContext = createContext<NotificationContextType | undefined>(u
 
 interface NotificationProviderProps {
   children: React.ReactNode;
-  userId: string;
-  userRole?: string;
   locale?: 'bn' | 'en';
   apiUrl?: string;
+  /** @deprecated Auth is now read from the Redux session. Kept for backward compatibility. */
+  userId?: string;
+  /** @deprecated Auth is now read from the Redux session. Kept for backward compatibility. */
+  userRole?: string;
 }
+
+const seenToastIds = new Set<string>();
 
 export function NotificationProvider({
   children,
-  userId,
-  userRole = 'guardian',
   locale = 'bn',
   apiUrl = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000',
 }: NotificationProviderProps) {
+  const token = useAppSelector((s) => s.auth.token);
+  const sessionUser = useAppSelector((s) => s.auth.user);
+  const activeLocale = useAppSelector((s) => s.ui.activeLocale) || locale;
   const [socket, setSocket] = useState<Socket | null>(null);
   const [isConnected, setIsConnected] = useState(false);
   const [unreadCount, setUnreadCount] = useState(0);
   const [notifications, setNotifications] = useState<NotificationItemDto[]>([]);
   const [toasts, setToasts] = useState<NotificationToastItem[]>([]);
   const [isCenterOpen, setIsCenterOpen] = useState(false);
+  const socketRef = useRef<Socket | null>(null);
 
-  // Initialize Socket.IO connection
+  const pushToast = useCallback((item: NotificationItemDto) => {
+    const dedupeKey = item.id || `${item.title}-${item.createdAt}`;
+    if (seenToastIds.has(dedupeKey)) return;
+    seenToastIds.add(dedupeKey);
+    const toastItem: NotificationToastItem = {
+      ...item,
+      toastId: `toast-${Date.now()}-${Math.random().toString(36).slice(2)}`,
+    };
+    setToasts((prev) => [toastItem, ...prev].slice(0, 5));
+    setTimeout(() => {
+      setToasts((prev) => prev.filter((t) => t.toastId !== toastItem.toastId));
+    }, 6000);
+  }, []);
+
+  // Authenticated Socket.IO connection (Bearer session, reconnects on token change)
   useEffect(() => {
-    if (!userId) return;
+    socketRef.current?.disconnect();
+    socketRef.current = null;
+    setSocket(null);
+    setIsConnected(false);
+    if (!token) return;
 
     const socketInstance: Socket = io(`${apiUrl}/notifications`, {
-      auth: {
-        token: `mock:${userId}:${userRole}`,
-      },
+      auth: { token: `Bearer ${token}` },
       transports: ['websocket', 'polling'],
       reconnection: true,
       reconnectionAttempts: 10,
@@ -65,34 +88,19 @@ export function NotificationProvider({
       setIsConnected(true);
       socketInstance.emit('get_unread_count');
     });
+    socketInstance.on('disconnect', () => setIsConnected(false));
+    socketInstance.on('connect_error', () => setIsConnected(false));
 
-    socketInstance.on('disconnect', () => {
-      setIsConnected(false);
-    });
-
-    // Real-time notification received
     socketInstance.on('notification', (item: NotificationItemDto) => {
-      setNotifications((prev) => [item, ...prev]);
-
-      // Trigger pop-up toast
-      const toastItem: NotificationToastItem = {
-        ...item,
-        toastId: `toast-${Date.now()}-${Math.random()}`,
-      };
-      setToasts((prev) => [toastItem, ...prev]);
-
-      // Auto-dismiss toast after 6 seconds
-      setTimeout(() => {
-        setToasts((prev) => prev.filter((t) => t.toastId !== toastItem.toastId));
-      }, 6000);
+      setNotifications((prev) => {
+        if (prev.some((n) => n.id === item.id)) return prev;
+        return [item, ...prev];
+      });
+      pushToast(item);
     });
-
-    // Unread count update
     socketInstance.on('unread_count', (data: UnreadCountResponseDto) => {
       setUnreadCount(data.unreadCount);
     });
-
-    // Notification marked as read from another tab
     socketInstance.on('notification_read', (data: { id: string; unreadCount: number }) => {
       setNotifications((prev) =>
         prev.map((n) =>
@@ -101,8 +109,6 @@ export function NotificationProvider({
       );
       setUnreadCount(data.unreadCount);
     });
-
-    // All marked as read from another tab
     socketInstance.on('notifications_all_read', () => {
       setNotifications((prev) =>
         prev.map((n) => ({ ...n, isRead: true, readAt: new Date().toISOString() })),
@@ -110,36 +116,49 @@ export function NotificationProvider({
       setUnreadCount(0);
     });
 
+    socketRef.current = socketInstance;
     setSocket(socketInstance);
-
     return () => {
       socketInstance.disconnect();
+      socketRef.current = null;
     };
-  }, [userId, userRole, apiUrl]);
+  }, [token, apiUrl, pushToast]);
 
-  // Fetch initial notifications from REST endpoint
+  // Persisted history is the source of truth on (re)connect — recovers missed events.
   const refreshNotifications = useCallback(async () => {
+    if (!token) {
+      setNotifications([]);
+      setUnreadCount(0);
+      return;
+    }
     try {
-      const res = await fetch(`${apiUrl}/api/v1/notifications?locale=${locale}`, {
+      const res = await fetch(`${apiUrl}/api/v1/notifications?locale=${activeLocale}`, {
         headers: {
-          'x-user-id': userId,
-          'x-user-roles': userRole,
-          'x-user-locale': locale,
+          authorization: `Bearer ${token}`,
+          'x-locale': activeLocale,
+          accept: 'application/json',
         },
+        credentials: 'include',
       });
       if (res.ok) {
         const data = await res.json();
-        setNotifications(data.items || []);
-        setUnreadCount(data.unreadCount ?? 0);
+        const items: NotificationItemDto[] = data.items || data.data || [];
+        setNotifications(items);
+        setUnreadCount(data.unreadCount ?? items.filter((n) => !n.isRead).length ?? 0);
       }
     } catch {
-      // Offline or network error handled gracefully
+      // Offline: keep last known state; socket reconnect will resync.
     }
-  }, [apiUrl, userId, userRole, locale]);
+  }, [apiUrl, token, activeLocale]);
 
   useEffect(() => {
     refreshNotifications();
   }, [refreshNotifications]);
+
+  // Resync after socket reconnects so missed events are recovered from history.
+  useEffect(() => {
+    if (isConnected) refreshNotifications();
+  }, [isConnected, refreshNotifications]);
 
   const dismissToast = useCallback((toastId: string) => {
     setToasts((prev) => prev.filter((t) => t.toastId !== toastId));
@@ -147,60 +166,52 @@ export function NotificationProvider({
 
   const markAsRead = useCallback(
     async (id: string) => {
-      if (socket && isConnected) {
-        socket.emit('mark_as_read', { id });
-      }
-
+      if (socketRef.current?.connected) socketRef.current.emit('mark_as_read', { id });
       setNotifications((prev) =>
         prev.map((n) =>
           n.id === id ? { ...n, isRead: true, readAt: new Date().toISOString() } : n,
         ),
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
-
+      if (!token) return;
       try {
         await fetch(`${apiUrl}/api/v1/notifications/${id}/read`, {
           method: 'PATCH',
-          headers: {
-            'x-user-id': userId,
-            'x-user-roles': userRole,
-          },
+          headers: { authorization: `Bearer ${token}` },
+          credentials: 'include',
         });
       } catch {
-        // Handled silently
+        // Optimistic state already applied; history resync will correct.
       }
     },
-    [socket, isConnected, apiUrl, userId, userRole],
+    [apiUrl, token],
   );
 
   const markAllAsRead = useCallback(async () => {
-    if (socket && isConnected) {
-      socket.emit('mark_all_as_read');
-    }
-
+    if (socketRef.current?.connected) socketRef.current.emit('mark_all_as_read');
     setNotifications((prev) =>
       prev.map((n) => ({ ...n, isRead: true, readAt: new Date().toISOString() })),
     );
     setUnreadCount(0);
-
+    if (!token) return;
     try {
       await fetch(`${apiUrl}/api/v1/notifications/read-all`, {
         method: 'POST',
-        headers: {
-          'x-user-id': userId,
-          'x-user-roles': userRole,
-        },
+        headers: { authorization: `Bearer ${token}` },
+        credentials: 'include',
       });
     } catch {
-      // Handled silently
+      // Optimistic state already applied.
     }
-  }, [socket, isConnected, apiUrl, userId, userRole]);
+  }, [apiUrl, token]);
+
+  void sessionUser;
 
   return (
     <NotificationContext.Provider
       value={{
         socket,
-        isConnected,
+        isConnected: Boolean(token) && isConnected,
         unreadCount,
         notifications,
         toasts,

@@ -8,7 +8,14 @@ export interface SafetyReportModalProps {
   bookingId?: string;
   isOpen: boolean;
   onClose: () => void;
-  onReportSuccess?: (report: any) => void;
+  onReportSuccess?: (report: unknown) => void;
+  onSubmitReport?: (payload: {
+    reportedUserId?: string;
+    bookingId?: string;
+    category: string;
+    severity: string;
+    description: string;
+  }) => Promise<unknown>;
 }
 
 export function SafetyReportModal({
@@ -17,6 +24,7 @@ export function SafetyReportModal({
   isOpen,
   onClose,
   onReportSuccess,
+  onSubmitReport,
 }: SafetyReportModalProps) {
   const t = useTranslations('trust');
   const [category, setCategory] = useState<string>('harassment');
@@ -41,24 +49,17 @@ export function SafetyReportModal({
     setErrorMsg(null);
 
     try {
-      const response = await fetch('/api/v1/safety-reports', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          reportedUserId,
-          bookingId,
-          category,
-          severity,
-          description,
-        }),
+      if (!onSubmitReport) {
+        throw new Error('Sign in to file a safety report.');
+      }
+      const report = await onSubmitReport({
+        reportedUserId,
+        bookingId,
+        category,
+        severity,
+        description,
       });
 
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || 'Failed to file safety report');
-      }
-
-      const report = await response.json();
       setSuccessMsg(t('reportSubmitted'));
       if (onReportSuccess) {
         onReportSuccess(report);
@@ -66,8 +67,8 @@ export function SafetyReportModal({
       setTimeout(() => {
         onClose();
       }, 1800);
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Error filing report.');
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Error filing report.');
     } finally {
       setIsSubmitting(false);
     }

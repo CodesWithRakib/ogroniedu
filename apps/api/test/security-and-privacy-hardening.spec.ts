@@ -108,11 +108,14 @@ describe('Phase 17 — Security and Privacy Hardening Tests', () => {
       );
 
       expect(status).toBe(500);
-      expect(body.error).toBe('Internal Server Error');
+      expect(body.success).toBe(false);
+      expect(body.error.code).toBe('INTERNAL_ERROR');
       // Must not leak the raw SQL query to the client
-      expect(body.message).not.toContain('syntax error at or near');
-      expect(body.message).toBe('Internal server error. Please contact support with request ID.');
-      expect(body.requestId).toBe('req-sec-500');
+      expect(JSON.stringify(body)).not.toContain('syntax error at or near');
+      expect(body.error.message).toBe(
+        'Internal server error. Please contact support with request ID.',
+      );
+      expect(body.meta.requestId).toBe('req-sec-500');
     });
   });
 

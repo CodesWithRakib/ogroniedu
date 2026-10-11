@@ -24,6 +24,7 @@ export interface TutorReviewsListViewProps {
   reviews: ReviewItem[];
   currentUserId?: string;
   isCurrentTutor?: boolean;
+  onReply?: (reviewId: string, reply: string) => Promise<unknown>;
 }
 
 export function TutorReviewsListView({
@@ -31,34 +32,39 @@ export function TutorReviewsListView({
   reviews,
   currentUserId,
   isCurrentTutor = false,
+  onReply,
 }: TutorReviewsListViewProps) {
+  void tutorId;
+  void currentUserId;
   const t = useTranslations('trust');
   const [activeReplyReviewId, setActiveReplyReviewId] = useState<string | null>(null);
   const [replyText, setReplyText] = useState<string>('');
   const [isPostingReply, setIsPostingReply] = useState<boolean>(false);
+  const [replyError, setReplyError] = useState<string | null>(null);
   const [localReviews, setLocalReviews] = useState<ReviewItem[]>(reviews);
+
+  React.useEffect(() => {
+    setLocalReviews(reviews);
+  }, [reviews]);
 
   const handlePostReply = async (reviewId: string) => {
     if (!replyText.trim()) return;
     setIsPostingReply(true);
+    setReplyError(null);
 
     try {
-      const res = await fetch(`/api/v1/reviews/${reviewId}/reply`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ reply: replyText }),
-      });
-
-      if (!res.ok) {
-        throw new Error('Failed to post reply');
+      if (!onReply) {
+        throw new Error('Sign in as the tutor to reply to reviews.');
       }
+      const updated = (await onReply(reviewId, replyText.trim())) as Partial<ReviewItem> | null;
 
-      const updated = await res.json();
-      setLocalReviews((prev) => prev.map((r) => (r.id === reviewId ? { ...r, ...updated } : r)));
+      setLocalReviews((prev) =>
+        prev.map((r) => (r.id === reviewId ? { ...r, ...(updated ?? {}) } : r)),
+      );
       setActiveReplyReviewId(null);
       setReplyText('');
-    } catch (err: any) {
-      alert(err.message || 'Failed to post reply');
+    } catch (err: unknown) {
+      setReplyError(err instanceof Error ? err.message : 'Failed to post reply');
     } finally {
       setIsPostingReply(false);
     }
@@ -209,6 +215,11 @@ export function TutorReviewsListView({
                 <div style={{ marginTop: '12px' }}>
                   {activeReplyReviewId === rev.id ? (
                     <div style={{ marginTop: '8px' }}>
+                      {replyError && activeReplyReviewId === rev.id && (
+                        <p role="alert" style={{ color: '#dc2626', fontSize: '0.8rem' }}>
+                          {replyError}
+                        </p>
+                      )}
                       <textarea
                         rows={3}
                         maxLength={1000}

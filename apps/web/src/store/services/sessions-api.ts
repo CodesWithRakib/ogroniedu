@@ -1,0 +1,133 @@
+import { baseApi, type ApiSuccessEnvelope } from '../base-api';
+
+export type SessionStatus =
+  | 'scheduled'
+  | 'in_progress'
+  | 'completed'
+  | 'cancelled'
+  | 'no_show'
+  | 'reschedule_pending';
+
+export interface SessionItem {
+  id: string;
+  bookingId: string;
+  subjectName?: string;
+  tutorName?: string;
+  studentName?: string;
+  startsAt: string;
+  endsAt: string;
+  timezone?: string;
+  status: SessionStatus;
+  meetingUrl?: string | null;
+  locationInstructions?: string | null;
+  [key: string]: unknown;
+}
+
+export interface GetSessionsParams {
+  bookingId?: string;
+  from?: string;
+  to?: string;
+  status?: SessionStatus;
+}
+
+export const sessionsApi = baseApi.injectEndpoints({
+  endpoints: (builder) => ({
+    getSessions: builder.query<ApiSuccessEnvelope<SessionItem[]>, GetSessionsParams | void>({
+      query: (params) => {
+        const search = new URLSearchParams();
+        if (params?.bookingId) search.append('bookingId', params.bookingId);
+        if (params?.from) search.append('from', params.from);
+        if (params?.to) search.append('to', params.to);
+        if (params?.status) search.append('status', params.status);
+        const qs = search.toString();
+        return `/api/v1/sessions${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: (result) =>
+        result
+          ? [
+              { type: 'Session', id: 'LIST' },
+              ...result.data.map((s) => ({ type: 'Session' as const, id: s.id })),
+            ]
+          : [{ type: 'Session', id: 'LIST' }],
+    }),
+    getSessionById: builder.query<ApiSuccessEnvelope<SessionItem>, string>({
+      query: (id) => `/api/v1/sessions/${id}`,
+      providesTags: (_r, _e, id) => [{ type: 'Session', id }],
+    }),
+    scheduleSession: builder.mutation<
+      ApiSuccessEnvelope<SessionItem>,
+      { bookingId: string; startsAt: string; meetingUrl?: string; locationInstructions?: string }
+    >({
+      query: (body) => ({ url: '/api/v1/sessions', method: 'POST', body }),
+      invalidatesTags: [
+        { type: 'Session', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+        { type: 'UnreadCount', id: 'COUNT' },
+      ],
+    }),
+    scheduleRecurringSessions: builder.mutation<
+      ApiSuccessEnvelope<SessionItem[]>,
+      Record<string, unknown>
+    >({
+      query: (body) => ({ url: '/api/v1/sessions/recurring', method: 'POST', body }),
+      invalidatesTags: [
+        { type: 'Session', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
+    rescheduleSession: builder.mutation<
+      ApiSuccessEnvelope<SessionItem>,
+      { id: string; newStartsAt: string; reason: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/api/v1/sessions/${id}/reschedule`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [
+        { type: 'Session', id },
+        { type: 'Session', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
+    cancelSession: builder.mutation<
+      ApiSuccessEnvelope<SessionItem> & { assessment?: unknown },
+      { id: string; reason: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/api/v1/sessions/${id}/cancel`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [
+        { type: 'Session', id },
+        { type: 'Session', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
+    getTutorCalendar: builder.query<
+      ApiSuccessEnvelope<Array<Record<string, unknown>>>,
+      { tutorId: string; from?: string; to?: string }
+    >({
+      query: ({ tutorId, from, to }) => {
+        const search = new URLSearchParams();
+        if (from) search.append('from', from);
+        if (to) search.append('to', to);
+        const qs = search.toString();
+        return `/api/v1/tutors/${tutorId}/calendar${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: (_r, _e, arg) => [{ type: 'TutorCalendar', id: arg.tutorId }],
+    }),
+  }),
+  overrideExisting: false,
+});
+
+export const {
+  useGetSessionsQuery,
+  useGetSessionByIdQuery,
+  useScheduleSessionMutation,
+  useScheduleRecurringSessionsMutation,
+  useRescheduleSessionMutation,
+  useCancelSessionMutation,
+  useGetTutorCalendarQuery,
+} = sessionsApi;

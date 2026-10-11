@@ -7,7 +7,12 @@ export interface TutorReplacementModalProps {
   bookingId: string;
   isOpen: boolean;
   onClose: () => void;
-  onRequestSuccess?: (caseData: any) => void;
+  onRequestSuccess?: (caseData: unknown) => void;
+  onSubmitReplacement?: (payload: {
+    bookingId: string;
+    reasonCode: string;
+    explanation: string;
+  }) => Promise<unknown>;
 }
 
 export function TutorReplacementModal({
@@ -15,6 +20,7 @@ export function TutorReplacementModal({
   isOpen,
   onClose,
   onRequestSuccess,
+  onSubmitReplacement,
 }: TutorReplacementModalProps) {
   const t = useTranslations('trust');
   const [reasonCode, setReasonCode] = useState<string>('trial_dissatisfaction');
@@ -36,22 +42,15 @@ export function TutorReplacementModal({
     setErrorMsg(null);
 
     try {
-      const response = await fetch('/api/v1/tutor-replacements', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          bookingId,
-          reasonCode,
-          explanation,
-        }),
+      if (!onSubmitReplacement) {
+        throw new Error('Sign in to request a tutor replacement.');
+      }
+      const caseData = await onSubmitReplacement({
+        bookingId,
+        reasonCode,
+        explanation,
       });
 
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || 'Failed to submit replacement request');
-      }
-
-      const caseData = await response.json();
       setSuccessMsg(
         'Your replacement guarantee claim has been registered. Our matching team will assign a replacement.',
       );
@@ -61,8 +60,8 @@ export function TutorReplacementModal({
       setTimeout(() => {
         onClose();
       }, 1800);
-    } catch (err: any) {
-      setErrorMsg(err.message || 'Error submitting replacement request.');
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'Error submitting replacement request.');
     } finally {
       setIsSubmitting(false);
     }

@@ -18,6 +18,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 
 import { AdminOperationsService } from './admin-operations.service';
+import { paginated } from '../../common/api-response/api-response';
 import {
   SuspendUserDto,
   UpdateUserRolesDto,
@@ -63,11 +64,9 @@ export class AdminOperationsController {
     @Query('offset') offset?: number,
   ) {
     const result = await this.adminService.listUsers({ search, role, status, limit, offset });
-    return {
-      success: true,
-      data: result.users,
-      total: result.total,
-    };
+    const pageSize = limit ?? 20;
+    const page = pageSize > 0 ? Math.floor((offset ?? 0) / pageSize) + 1 : 1;
+    return paginated(result.users, { page, pageSize, totalItems: result.total });
   }
 
   @Get('users/:id/dossier')
@@ -145,11 +144,9 @@ export class AdminOperationsController {
       limit,
       offset,
     });
-    return {
-      success: true,
-      data: result.bookings,
-      total: result.total,
-    };
+    const pageSize = limit ?? 20;
+    const page = pageSize > 0 ? Math.floor((offset ?? 0) / pageSize) + 1 : 1;
+    return paginated(result.bookings, { page, pageSize, totalItems: result.total });
   }
 
   @Post('bookings/:id/cancel')
@@ -279,10 +276,8 @@ export class AdminOperationsController {
     @Query() dto: QueryAuditLogsDto,
   ) {
     const result = await this.adminService.queryAuditLogs(adminUser, dto);
-    return {
-      success: true,
-      data: result.logs,
-      total: result.total,
-    };
+    const pageSize = dto.limit ?? 20;
+    const page = pageSize > 0 ? Math.floor((dto.offset ?? 0) / pageSize) + 1 : 1;
+    return paginated(result.logs, { page, pageSize, totalItems: result.total });
   }
 }

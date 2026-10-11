@@ -17,6 +17,7 @@ import {
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { TutorsService } from './tutors.service';
+import { buildOffsetMeta } from '../../common/api-response/api-response';
 import {
   UpdateTutorProfileDto,
   SetPublicationStatusDto,
@@ -41,9 +42,20 @@ export class TutorsController {
   @Get('search')
   async searchTutors(@Query() query: SearchTutorsQueryDto) {
     const results = await this.tutorsService.searchTutors(query);
+    const pagination = buildOffsetMeta({
+      page: results.page,
+      pageSize: results.limit,
+      totalItems: results.total,
+    });
     return {
       success: true,
-      ...results,
+      data: results.data,
+      meta: { pagination },
+      // Legacy compat (deprecated): kept until frontend cutover to meta.pagination.
+      total: results.total,
+      page: results.page,
+      limit: results.limit,
+      totalPages: results.totalPages,
     };
   }
 

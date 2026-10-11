@@ -62,74 +62,73 @@ export interface PaymentReceiptData {
 interface PaymentCheckoutViewProps {
   locale: Locale;
   initialOrder?: PaymentOrderDetails;
+  receipt?: PaymentReceiptData | null;
+  payDisabledReason?: string | null;
+  onPay?: (provider: 'bkash' | 'nagad' | 'sslcommerz') => Promise<PaymentReceiptData>;
   onSimulateWebhook?: (orderId: string, provider: string) => Promise<void>;
 }
 
 export function PaymentCheckoutView({
   locale,
   initialOrder,
+  receipt: receiptProp,
+  payDisabledReason,
+  onPay,
   onSimulateWebhook,
 }: PaymentCheckoutViewProps) {
   const dict = getDictionary(locale);
   const p = dict.payments;
 
-  const defaultOrder: PaymentOrderDetails = initialOrder || {
-    id: 'ord-8839-42b1',
-    bookingId: 'book-7721-a490',
-    payerName: 'Kazi Mahfuzur Rahman',
-    studentName: 'Zafir Rahman',
-    tutorName: 'Nusrat Jahan (BUET, CSE)',
-    subjectName: 'Physics (Class 10 - SSC Prep)',
-    amountMinor: 100000, // 1000 BDT
-    currency: 'BDT',
-    status: 'pending',
-    provider: 'bkash',
-    createdAt: new Date().toISOString(),
-  };
-
-  const [order, setOrder] = useState<PaymentOrderDetails>(defaultOrder);
-  const [selectedGateway, setSelectedGateway] = useState<'bkash' | 'nagad' | 'sslcommerz'>('bkash');
+  const [order, setOrder] = useState<PaymentOrderDetails | null>(initialOrder ?? null);
+  const [selectedGateway, setSelectedGateway] = useState<'bkash' | 'nagad' | 'sslcommerz'>(
+    initialOrder?.provider ?? 'bkash',
+  );
   const [isProcessing, setIsProcessing] = useState(false);
-  const [receipt, setReceipt] = useState<PaymentReceiptData | null>(null);
-  const [showReceiptModal, setShowReceiptModal] = useState(false);
+  const [receipt, setReceipt] = useState<PaymentReceiptData | null>(receiptProp ?? null);
+  const [payError, setPayError] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    setOrder(initialOrder ?? null);
+  }, [initialOrder]);
+  React.useEffect(() => {
+    setReceipt(receiptProp ?? null);
+  }, [receiptProp]);
+
+  if (!order) {
+    return (
+      <div className="space-y-8 max-w-5xl mx-auto py-6 px-4 sm:px-6" data-testid="payment-empty-state">
+        <div className="rounded-xl border border-dashed p-8 text-center text-sm text-slate-500">
+          {locale === 'bn'
+            ? 'পেমেন্ট অর্ডার তৈরি করতে একটি বুকিং নির্বাচন করুন।'
+            : 'Select a booking to create a payment order.'}
+        </div>
+      </div>
+    );
+  }
 
   const amountBdt = (order.amountMinor / 100).toFixed(2);
   const tutorShareBdt = ((order.amountMinor * 0.92) / 100).toFixed(2);
   const platformShareBdt = ((order.amountMinor * 0.08) / 100).toFixed(2);
 
-  const handleSimulatePayment = async () => {
+  const handlePay = async () => {
     setIsProcessing(true);
+    setPayError(null);
     try {
-      if (onSimulateWebhook) {
+      if (onPay) {
+        const serverReceipt = await onPay(selectedGateway);
+        setReceipt(serverReceipt);
+        setOrder({ ...order, status: 'succeeded', provider: selectedGateway, paidAt: serverReceipt.paidAt });
+      } else if (onSimulateWebhook) {
         await onSimulateWebhook(order.id, selectedGateway);
       } else {
-        // Local state simulation
-        await new Promise((res) => setTimeout(res, 800));
+        throw new Error(
+          locale === 'bn'
+            ? 'পেমেন্ট এখন উপলব্ধ নয়।'
+            : 'Payment is unavailable right now.',
+        );
       }
-
-      const succeededOrder: PaymentOrderDetails = {
-        ...order,
-        status: 'succeeded',
-        provider: selectedGateway,
-        paidAt: new Date().toISOString(),
-      };
-      setOrder(succeededOrder);
-
-      const generatedReceipt: PaymentReceiptData = {
-        receiptId: `REC-${order.id.slice(0, 8).toUpperCase()}`,
-        orderId: order.id,
-        bookingId: order.bookingId,
-        payerName: order.payerName,
-        studentName: order.studentName,
-        tutorName: order.tutorName,
-        subjectName: order.subjectName,
-        amountBdt,
-        currency: 'BDT',
-        status: 'succeeded',
-        paymentMethod: selectedGateway.toUpperCase(),
-        paidAt: new Date().toISOString(),
-      };
-      setReceipt(generatedReceipt);
+    } catch (err) {
+      setPayError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsProcessing(false);
     }
@@ -326,13 +325,21 @@ export function PaymentCheckoutView({
               </CardContent>
 
               <CardFooter className="pt-2">
+                {payError && (
+                  <div role="alert" className="mb-3 w-full rounded-lg border border-rose-200 bg-rose-50 p-2.5 text-xs text-rose-700" data-testid="payment-error">
+                    {payError}
+                  </div>
+                )}
                 <Button
-                  onClick={handleSimulatePayment}
-                  disabled={isProcessing}
+                  onClick={handlePay}
+                  disabled={isProcessing || Boolean(payDisabledReason) || order.status !== 'pending'}
                   className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 text-base flex items-center justify-center gap-2"
+                  data-testid="pay-now-btn"
                 >
                   {isProcessing ? (
                     <span>{dict.common.loading}</span>
+                  ) : payDisabledReason ? (
+                    <span className="text-sm">{payDisabledReason}</span>
                   ) : (
                     <>
                       <Lock className="w-4 h-4" />

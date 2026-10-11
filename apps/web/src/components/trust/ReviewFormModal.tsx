@@ -8,7 +8,15 @@ export interface ReviewFormModalProps {
   tutorName: string;
   isOpen: boolean;
   onClose: () => void;
-  onSubmitSuccess?: (review: any) => void;
+  onSubmitSuccess?: (review: unknown) => void;
+  onSubmitReview?: (payload: {
+    bookingId: string;
+    rating: number;
+    punctualityRating: number;
+    teachingClarityRating: number;
+    subjectMasteryRating: number;
+    comment: string;
+  }) => Promise<unknown>;
 }
 
 export function ReviewFormModal({
@@ -17,6 +25,7 @@ export function ReviewFormModal({
   isOpen,
   onClose,
   onSubmitSuccess,
+  onSubmitReview,
 }: ReviewFormModalProps) {
   const t = useTranslations('trust');
   const [rating, setRating] = useState<number>(5);
@@ -41,25 +50,18 @@ export function ReviewFormModal({
     setErrorMsg(null);
 
     try {
-      const response = await fetch('/api/v1/reviews', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          bookingId,
-          rating,
-          punctualityRating: punctuality,
-          teachingClarityRating: teachingClarity,
-          subjectMasteryRating: subjectMastery,
-          comment,
-        }),
+      if (!onSubmitReview) {
+        throw new Error('Sign in to submit a verified review.');
+      }
+      const saved = await onSubmitReview({
+        bookingId,
+        rating,
+        punctualityRating: punctuality,
+        teachingClarityRating: teachingClarity,
+        subjectMasteryRating: subjectMastery,
+        comment,
       });
 
-      if (!response.ok) {
-        const err = await response.json();
-        throw new Error(err.message || 'Failed to submit review');
-      }
-
-      const saved = await response.json();
       setSuccessMsg(t('reviewSubmitted'));
       if (onSubmitSuccess) {
         onSubmitSuccess(saved);
@@ -67,8 +69,8 @@ export function ReviewFormModal({
       setTimeout(() => {
         onClose();
       }, 1500);
-    } catch (err: any) {
-      setErrorMsg(err.message || 'An error occurred while submitting review.');
+    } catch (err: unknown) {
+      setErrorMsg(err instanceof Error ? err.message : 'An error occurred while submitting review.');
     } finally {
       setIsSubmitting(false);
     }

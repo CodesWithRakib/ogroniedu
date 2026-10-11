@@ -50,25 +50,16 @@ interface GuardianChildrenManagerProps {
 
 export function GuardianChildrenManager({
   locale,
-  initialChildren = [
-    {
-      linkId: 'demo-link-1',
-      studentId: '22222222-2222-2222-2222-222222222222',
-      displayName: 'তানভীর হোসেন (Tanvir Hossain)',
-      relationshipType: 'father',
-      status: 'active',
-      consentPolicyVersion: 'v1.0-bd-minor-consent',
-      consentRecordedAt: new Date().toISOString(),
-      isMinor: true,
-      institutionName: 'Rajuk Uttara Model College',
-      educationLevelName: 'Class 9 (SSC Candidate)',
-    },
-  ],
+  initialChildren = [],
   onAddChild,
   onRevokeLink,
 }: GuardianChildrenManagerProps) {
   const dict = getDictionary(locale);
   const [children, setChildren] = useState<ChildItem[]>(initialChildren);
+
+  React.useEffect(() => {
+    setChildren(initialChildren);
+  }, [initialChildren]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [identifier, setIdentifier] = useState('');
   const [relationship, setRelationship] = useState<'father' | 'mother' | 'legal_guardian'>(
@@ -107,20 +98,11 @@ export function GuardianChildrenManager({
           consentAgreed,
         });
       } else {
-        // Mock fallback for UI demo
-        const newChild: ChildItem = {
-          linkId: `link-${Date.now()}`,
-          studentId: `student-${Date.now()}`,
-          displayName: identifier,
-          relationshipType: relationship,
-          status: 'pending',
-          consentPolicyVersion: 'v1.0-bd-minor-consent',
-          consentRecordedAt: new Date().toISOString(),
-          isMinor: true,
-          institutionName: locale === 'bn' ? 'যাচাই করা হচ্ছে...' : 'Verifying institution...',
-          educationLevelName: locale === 'bn' ? 'অপেক্ষমান' : 'Pending verification',
-        };
-        setChildren((prev) => [newChild, ...prev]);
+        throw new Error(
+          locale === 'bn'
+            ? 'সন্তান যুক্ত করতে লগইন করুন।'
+            : 'Sign in to link a child.',
+        );
       }
 
       setIdentifier('');

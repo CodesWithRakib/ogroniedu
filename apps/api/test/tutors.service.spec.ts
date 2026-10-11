@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TutorsService } from '../src/modules/tutors/tutors.service';
+import { TutorProfileService } from '../src/modules/tutors/services/tutor-profile.service';
+import { TutorSearchService } from '../src/modules/tutors/services/tutor-search.service';
+import { TutorVerificationService } from '../src/modules/tutors/services/tutor-verification.service';
 import { ForbiddenException, BadRequestException, NotFoundException } from '@nestjs/common';
 import { TutorProfileEntity } from '../src/modules/tutors/entities/tutor-profile.entity';
 import { TutorQualificationEntity } from '../src/modules/tutors/entities/tutor-qualification.entity';
@@ -97,18 +100,30 @@ describe('TutorsService Unit & Security Invariant Tests', () => {
     };
 
     service = new TutorsService(
-      mockProfileRepo,
-      mockQualificationRepo,
-      mockReviewRepo,
-      mockSubjectRepo,
-      mockServiceAreaRepo,
-      mockAvailabilityRepo,
-      mockFileRepo,
-      mockUserRepo,
-      mockTaxonomySubjectRepo,
-      mockTaxonomyLevelRepo,
-      mockAuditService,
-      mockNotificationService,
+      new TutorProfileService(
+        mockProfileRepo,
+        mockQualificationRepo,
+        mockSubjectRepo,
+        mockServiceAreaRepo,
+        mockAvailabilityRepo,
+        mockFileRepo,
+        mockUserRepo,
+        mockAuditService,
+      ) as never,
+      new TutorSearchService(
+        mockProfileRepo,
+        mockUserRepo,
+        mockTaxonomySubjectRepo,
+        mockTaxonomyLevelRepo,
+      ) as never,
+      new TutorVerificationService(
+        mockProfileRepo,
+        mockQualificationRepo,
+        mockReviewRepo,
+        mockUserRepo,
+        mockAuditService,
+        mockNotificationService,
+      ) as never,
     );
   });
 

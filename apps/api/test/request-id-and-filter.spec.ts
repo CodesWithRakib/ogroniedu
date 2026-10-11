@@ -56,7 +56,7 @@ describe('RequestIdMiddleware and AllExceptionsFilter Tests', () => {
   describe('AllExceptionsFilter', () => {
     const filter = new AllExceptionsFilter();
 
-    it('should format HttpException into canonical response with requestId and timestamp', () => {
+    it('should format HttpException into canonical error envelope with code and requestId', () => {
       let responseStatus = 0;
       let responseBody: any = null;
 
@@ -88,12 +88,11 @@ describe('RequestIdMiddleware and AllExceptionsFilter Tests', () => {
 
       expect(responseStatus).toBe(400);
       expect(responseBody).toBeDefined();
-      expect(responseBody.statusCode).toBe(400);
-      expect(responseBody.error).toBe('Bad Request');
-      expect(responseBody.message).toBe('Invalid payload submitted');
-      expect(responseBody.path).toBe('/api/v1/notifications');
-      expect(responseBody.requestId).toBe('req-test-999');
-      expect(new Date(responseBody.timestamp).getTime()).not.toBeNaN();
+      expect(responseBody.success).toBe(false);
+      expect(responseBody.error.code).toBe('VALIDATION_ERROR');
+      expect(responseBody.error.message).toBe('Invalid payload submitted');
+      expect(responseBody.meta.requestId).toBe('req-test-999');
+      expect(responseBody).not.toHaveProperty('stack');
     });
 
     it('should sanitize generic unhandled errors to 500 status code', () => {
@@ -127,8 +126,11 @@ describe('RequestIdMiddleware and AllExceptionsFilter Tests', () => {
       filter.catch(new Error('Database socket dropped'), mockHost);
 
       expect(responseStatus).toBe(500);
-      expect(responseBody.statusCode).toBe(500);
-      expect(responseBody.requestId).toBe('req-err-500');
+      expect(responseBody.success).toBe(false);
+      expect(responseBody.error.code).toBe('INTERNAL_ERROR');
+      expect(responseBody.meta.requestId).toBe('req-err-500');
+      // Sanitized: internal detail must not leak to clients
+      expect(JSON.stringify(responseBody)).not.toContain('Database socket dropped');
     });
   });
 });

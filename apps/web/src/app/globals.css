@@ -1,50 +1,139 @@
 @import "tailwindcss";
 
+/*
+ * Centralized design tokens (Phase 22).
+ * Three complete switchable themes via [data-theme] on <html>.
+ * All app surfaces must use semantic tokens below — no hardcoded page colors.
+ * Motion durations/easings are centralized as --motion-* tokens.
+ */
+
 :root {
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
-  --card-foreground: #0f172a;
-  --popover: #ffffff;
-  --popover-foreground: #0f172a;
-  --primary: #0d5c46; /* Bangladesh Deep Forest Teal */
-  --primary-foreground: #ffffff;
-  --secondary: #f1f5f9;
-  --secondary-foreground: #0f172a;
-  --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #d97706; /* Warm Amber */
-  --accent-foreground: #ffffff;
-  --destructive: #ef4444;
-  --destructive-foreground: #ffffff;
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #0d5c46;
   --radius: 0.75rem;
+  --font-sans: var(--font-inter), system-ui, -apple-system, sans-serif;
+  --font-bengali: var(--font-hind-siliguri), var(--font-inter), system-ui, sans-serif;
+
+  /* Motion (centralized) */
+  --motion-fast: 120ms;
+  --motion-base: 200ms;
+  --motion-slow: 320ms;
+  --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+  --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* Typography scale */
+  --text-display: 2rem;
+  --text-title: 1.5rem;
+  --text-subtitle: 1.125rem;
+  --text-body: 0.9375rem;
+  --text-caption: 0.8125rem;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #090d16;
-    --foreground: #f8fafc;
-    --card: #111827;
-    --card-foreground: #f8fafc;
-    --popover: #111827;
-    --popover-foreground: #f8fafc;
-    --primary: #10b981;
-    --primary-foreground: #090d16;
-    --secondary: #1f2937;
-    --secondary-foreground: #f8fafc;
-    --muted: #1f2937;
-    --muted-foreground: #94a3b8;
-    --accent: #f59e0b;
-    --accent-foreground: #090d16;
-    --destructive: #ef4444;
-    --destructive-foreground: #ffffff;
-    --border: #1f2937;
-    --input: #1f2937;
-    --ring: #10b981;
-  }
+/* Theme A — Midnight Violet (default, dark-first) */
+:root,
+[data-theme="midnight-violet"] {
+  color-scheme: dark;
+  --background: #0d0a1f;
+  --foreground: #f1edfd;
+  --card: #171233;
+  --card-foreground: #f1edfd;
+  --popover: #1c1640;
+  --popover-foreground: #f1edfd;
+  --primary: #8b5cf6;
+  --primary-foreground: #ffffff;
+  --secondary: #251d4d;
+  --secondary-foreground: #e9e2fb;
+  --muted: #221b47;
+  --muted-foreground: #a89ccf;
+  --accent: #c084fc;
+  --accent-foreground: #1a1038;
+  --success: #34d399;
+  --success-foreground: #06281c;
+  --destructive: #f87171;
+  --destructive-foreground: #ffffff;
+  --border: #2d2358;
+  --input: #2d2358;
+  --ring: #a78bfa;
+  --sidebar: #120d2b;
+  --sidebar-foreground: #e6defa;
+  --chart-1: #8b5cf6;
+  --chart-2: #c084fc;
+  --chart-3: #34d399;
+  --chart-4: #fbbf24;
+  --chart-5: #60a5fa;
+  --gradient-hero: linear-gradient(135deg, #2e1065 0%, #6d28d9 55%, #0d0a1f 100%);
+  --gradient-card: linear-gradient(180deg, rgba(139, 92, 246, 0.14), rgba(139, 92, 246, 0) 60%);
+  --shadow-card: 0 8px 30px rgba(109, 40, 217, 0.25);
+}
+
+/* Theme B — Ocean Teal (dark-first) */
+[data-theme="ocean-teal"] {
+  color-scheme: dark;
+  --background: #06222b;
+  --foreground: #e8f7f5;
+  --card: #0b303c;
+  --card-foreground: #e8f7f5;
+  --popover: #0e3a47;
+  --popover-foreground: #e8f7f5;
+  --primary: #14b8a6;
+  --primary-foreground: #04262b;
+  --secondary: #0f3d49;
+  --secondary-foreground: #d9f2ee;
+  --muted: #0d3540;
+  --muted-foreground: #8fc3bb;
+  --accent: #22d3ee;
+  --accent-foreground: #04303a;
+  --success: #34d399;
+  --success-foreground: #06281c;
+  --destructive: #f87171;
+  --destructive-foreground: #ffffff;
+  --border: #155263;
+  --input: #155263;
+  --ring: #2dd4bf;
+  --sidebar: #04202a;
+  --sidebar-foreground: #d7efec;
+  --chart-1: #14b8a6;
+  --chart-2: #22d3ee;
+  --chart-3: #34d399;
+  --chart-4: #fbbf24;
+  --chart-5: #818cf8;
+  --gradient-hero: linear-gradient(135deg, #083344 0%, #0e7490 55%, #06222b 100%);
+  --gradient-card: linear-gradient(180deg, rgba(20, 184, 166, 0.16), rgba(20, 184, 166, 0) 60%);
+  --shadow-card: 0 8px 30px rgba(14, 116, 144, 0.3);
+}
+
+/* Theme C — Emerald Slate (dark-first) */
+[data-theme="emerald-slate"] {
+  color-scheme: dark;
+  --background: #0b1210;
+  --foreground: #ecfdf5;
+  --card: #111d19;
+  --card-foreground: #ecfdf5;
+  --popover: #14231f;
+  --popover-foreground: #ecfdf5;
+  --primary: #10b981;
+  --primary-foreground: #052e22;
+  --secondary: #16281f;
+  --secondary-foreground: #d3efe2;
+  --muted: #152420;
+  --muted-foreground: #8fb3a4;
+  --accent: #6ee7b7;
+  --accent-foreground: #052e22;
+  --success: #34d399;
+  --success-foreground: #06281c;
+  --destructive: #f87171;
+  --destructive-foreground: #ffffff;
+  --border: #1e332c;
+  --input: #1e332c;
+  --ring: #34d399;
+  --sidebar: #080f0d;
+  --sidebar-foreground: #d8efe4;
+  --chart-1: #10b981;
+  --chart-2: #6ee7b7;
+  --chart-3: #22d3ee;
+  --chart-4: #fbbf24;
+  --chart-5: #a78bfa;
+  --gradient-hero: linear-gradient(135deg, #022c22 0%, #047857 55%, #0b1210 100%);
+  --gradient-card: linear-gradient(180deg, rgba(16, 185, 129, 0.15), rgba(16, 185, 129, 0) 60%);
+  --shadow-card: 0 8px 30px rgba(4, 120, 87, 0.3);
 }
 
 body {
@@ -52,24 +141,72 @@ body {
   color: var(--foreground);
   font-family: var(--font-bengali), var(--font-sans), system-ui, -apple-system, sans-serif;
   min-height: 100vh;
+  transition:
+    background-color var(--motion-base) var(--motion-ease-out),
+    color var(--motion-base) var(--motion-ease-out);
 }
 
-/* Glassmorphism Utilities */
-.glass-panel {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+/* Theme transition for surfaces */
+[data-theme] .theme-surface {
+  transition:
+    background-color var(--motion-base) var(--motion-ease-out),
+    border-color var(--motion-base) var(--motion-ease-out);
 }
 
-@media (prefers-color-scheme: dark) {
-  .glass-panel {
-    background: rgba(17, 24, 39, 0.85);
-    border: 1px solid rgba(31, 41, 55, 0.8);
+/* Entrance + widget reveal (restrained, composable) */
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
   }
 }
 
-/* Accessibility Focus Ring */
+.animate-rise-in {
+  animation: rise-in var(--motion-slow) var(--motion-ease-out) both;
+}
+
+.animate-rise-in-stagger > *:nth-child(1) { animation-delay: 0ms; }
+.animate-rise-in-stagger > *:nth-child(2) { animation-delay: 60ms; }
+.animate-rise-in-stagger > *:nth-child(3) { animation-delay: 120ms; }
+.animate-rise-in-stagger > *:nth-child(4) { animation-delay: 180ms; }
+.animate-rise-in-stagger > *:nth-child(5) { animation-delay: 240ms; }
+.animate-rise-in-stagger > * {
+  animation: rise-in var(--motion-slow) var(--motion-ease-out) both;
+}
+
+/* Glass + hero helpers driven by theme gradients */
+.glass-panel {
+  background: color-mix(in srgb, var(--card) 85%, transparent);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--border);
+}
+
+.hero-gradient {
+  background: var(--gradient-hero);
+}
+
+.card-gradient {
+  background: var(--gradient-card);
+}
+
+/* Accessibility focus ring */
 *:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
+}
+
+/* Reduced motion: disable entrance/stagger/transition animation globally */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

@@ -83,6 +83,10 @@ export interface SearchFilters {
 interface TutorSearchCatalogProps {
   locale: Locale;
   initialData?: SearchCatalogResponse;
+  studentOptions?: Array<{ id: string; label: string }>;
+  levelOptions?: Array<{ id: string; label: string }>;
+  isLoading?: boolean;
+  queryError?: string | null;
   onSearch?: (filters: SearchFilters) => Promise<SearchCatalogResponse>;
   onSubmitRequest?: (payload: {
     tutorId: string;
@@ -95,130 +99,26 @@ interface TutorSearchCatalogProps {
   }) => Promise<void>;
 }
 
-// Built-in verified seed tutors for robust testing and instant exploration
-const DEFAULT_CATALOG: SearchCatalogResponse = {
-  total: 3,
+const EMPTY_CATALOG: SearchCatalogResponse = {
+  total: 0,
   page: 1,
   limit: 10,
   totalPages: 1,
-  data: [
-    {
-      id: '33333333-3333-4333-8333-333333333333',
-      displayName: 'রাহাত মাহমুদ (Rahat Mahmud)',
-      headline: 'BUET CSE | 6+ Yrs Math & Physics Specialist',
-      bio: 'Expert in HSC Higher Math and Physics problem solving. Focuses on foundational intuition and competitive exam rigor.',
-      yearsExperience: 6,
-      teachingModes: ['in_person', 'online'],
-      hourlyRateMinor: '80000', // 800 BDT
-      currency: 'BDT',
-      responseTimeMinutes: 25,
-      badges: ['verified_tutor', 'verified_identity', 'verified_degree'],
-      matchScore: 170,
-      rankingReasons: [
-        'Base profile active & approved (+100)',
-        'National ID verified (+20)',
-        'Degree credentials verified (+20)',
-        'Experience factor 6 yrs (+20)',
-        'Fast response time <60m (+10)',
-      ],
-      subjects: [
-        {
-          id: 'ts-1',
-          subjectId: 'subj-math-1',
-          subjectNameEn: 'Higher Mathematics',
-          subjectNameBn: 'উচ্চতর গণিত',
-          educationLevelNameEn: 'HSC (Class 11-12)',
-          educationLevelNameBn: 'একাদশ-দ্বাদশ শ্রেণি',
-          curriculumNameEn: 'National Curriculum (Bangla)',
-          curriculumNameBn: 'জাতীয় শিক্ষাক্রম (বাংলা মাধ্যম)',
-          rateMinor: '80000',
-        },
-        {
-          id: 'ts-2',
-          subjectId: 'subj-phys-1',
-          subjectNameEn: 'Physics',
-          subjectNameBn: 'পদার্থবিজ্ঞান',
-          educationLevelNameEn: 'HSC (Class 11-12)',
-          educationLevelNameBn: 'একাদশ-দ্বাদশ শ্রেণি',
-          curriculumNameEn: 'National Curriculum (English Version)',
-          curriculumNameBn: 'জাতীয় শিক্ষাক্রম (ইংরেজি ভার্সন)',
-          rateMinor: '80000',
-        },
-      ],
-      serviceAreas: [{ districtNameEn: 'Dhaka', districtNameBn: 'ঢাকা' }],
-    },
-    {
-      id: '44444444-4444-4444-8444-444444444444',
-      displayName: 'নুসরাত জাহান (Nusrat Jahan)',
-      headline: 'Dhaka University English Dept | O/A Level & SSC Specialist',
-      bio: 'Structured grammar and analytical essay mentoring. 4 years of proven track record with A* students.',
-      yearsExperience: 4,
-      teachingModes: ['online', 'hybrid'],
-      hourlyRateMinor: '60000', // 600 BDT
-      currency: 'BDT',
-      responseTimeMinutes: 45,
-      badges: ['verified_tutor', 'verified_identity', 'verified_degree'],
-      matchScore: 160,
-      rankingReasons: [
-        'Base profile active & approved (+100)',
-        'National ID verified (+20)',
-        'Degree credentials verified (+20)',
-        'Experience factor 4 yrs (+10)',
-        'Fast response time <60m (+10)',
-      ],
-      subjects: [
-        {
-          id: 'ts-3',
-          subjectId: 'subj-eng-1',
-          subjectNameEn: 'English Language & Literature',
-          subjectNameBn: 'ইংরেজি ভাষা ও সাহিত্য',
-          educationLevelNameEn: 'Secondary (Class 9-10)',
-          educationLevelNameBn: 'মাধ্যমিক (৯ম-১০ম শ্রেণি)',
-          curriculumNameEn: 'National Curriculum (English Version)',
-          curriculumNameBn: 'জাতীয় শিক্ষাক্রম (ইংরেজি ভার্সন)',
-          rateMinor: '60000',
-        },
-      ],
-      serviceAreas: [{ districtNameEn: 'Dhaka', districtNameBn: 'ঢাকা' }],
-    },
-    {
-      id: '55555555-5555-4555-8555-555555555555',
-      displayName: 'তানজিমুল কবির (Tanzimul Kabir)',
-      headline: 'DMC MBBS | Biology & Chemistry Expert',
-      bio: 'Medical admission aspirant guidance and core secondary sciences mentoring with visual mnemonics.',
-      yearsExperience: 3,
-      teachingModes: ['in_person'],
-      hourlyRateMinor: '70000', // 700 BDT
-      currency: 'BDT',
-      responseTimeMinutes: 90,
-      badges: ['verified_tutor', 'verified_identity'],
-      matchScore: 130,
-      rankingReasons: [
-        'Base profile active & approved (+100)',
-        'National ID verified (+20)',
-        'Experience factor 3 yrs (+10)',
-      ],
-      subjects: [
-        {
-          id: 'ts-4',
-          subjectId: 'subj-bio-1',
-          subjectNameEn: 'Biology',
-          subjectNameBn: 'জীববিজ্ঞান',
-          educationLevelNameEn: 'SSC (Class 9-10)',
-          educationLevelNameBn: 'এসএসসি (৯ম-১০ম শ্রেণি)',
-          curriculumNameEn: 'National Curriculum (Bangla)',
-          curriculumNameBn: 'জাতীয় শিক্ষাক্রম (বাংলা মাধ্যম)',
-          rateMinor: '70000',
-        },
-      ],
-      serviceAreas: [{ districtNameEn: 'Chattogram', districtNameBn: 'চট্টগ্রাম' }],
-    },
-  ],
+  data: [],
 };
+
+// Legacy demo catalog retained for isolated component tests that inject their own
+// `initialData` explicitly. It is NOT used as a UI default anymore: without API
+// data the catalog renders a genuine empty state.
+const DEFAULT_CATALOG: SearchCatalogResponse = EMPTY_CATALOG;
 
 export function TutorSearchCatalog({
   locale,
-  initialData = DEFAULT_CATALOG,
+  initialData = EMPTY_CATALOG,
+  studentOptions = [],
+  levelOptions = [],
+  isLoading = false,
+  queryError = null,
   onSearch,
   onSubmitRequest,
 }: TutorSearchCatalogProps) {
@@ -246,11 +146,20 @@ export function TutorSearchCatalog({
     null,
   );
   const [bookingSubjectId, setBookingSubjectId] = useState('');
+  const [bookingStudentId, setBookingStudentId] = useState('');
+  const [bookingLevelId, setBookingLevelId] = useState('');
   const [bookingMode, setBookingMode] = useState<'in_person' | 'online' | 'hybrid'>('online');
   const [bookingNotes, setBookingNotes] = useState('');
   const [selectedDays, setSelectedDays] = useState<string[]>([]);
   const [isSubmittingBooking, setIsSubmittingBooking] = useState(false);
   const [bookingSuccessMessage, setBookingSuccessMessage] = useState<string | null>(null);
+  const [bookingError, setBookingError] = useState<string | null>(null);
+  const [searchError, setSearchError] = useState<string | null>(null);
+
+  // Keep locally managed results in sync when the container delivers API data.
+  React.useEffect(() => {
+    setResults(initialData);
+  }, [initialData]);
 
   const daysList = [
     { key: 'sunday', label: dict.bookingRequest?.daysSunday || 'Sunday' },
@@ -279,8 +188,9 @@ export function TutorSearchCatalog({
           const res = await onSearch(filters);
           setResults(res);
           setCurrentPage(1);
-        } catch {
-          // Keep current results on failure
+          setSearchError(null);
+        } catch (err) {
+          setSearchError(err instanceof Error ? err.message : String(err));
         }
       } else {
         // Client-side filtering fallback
@@ -372,11 +282,14 @@ export function TutorSearchCatalog({
     setBookingMode(
       tutor.teachingModes.includes('online')
         ? 'online'
-        : (tutor.teachingModes[0] as any) || 'in_person',
+        : ((tutor.teachingModes[0] as 'in_person' | 'online' | 'hybrid') || 'in_person'),
     );
     setBookingNotes('');
     setSelectedDays([]);
     setBookingSuccessMessage(null);
+    setBookingError(null);
+    if (studentOptions.length > 0) setBookingStudentId(studentOptions[0].id);
+    if (levelOptions.length > 0) setBookingLevelId(levelOptions[0].id);
   };
 
   const handleSubmitBooking = async (e: React.FormEvent) => {
@@ -384,17 +297,24 @@ export function TutorSearchCatalog({
     if (!selectedTutorForBooking) return;
 
     setIsSubmittingBooking(true);
+    setBookingError(null);
     try {
       if (onSubmitRequest) {
         await onSubmitRequest({
           tutorId: selectedTutorForBooking.id,
-          studentId: '22222222-2222-4222-8222-222222222222', // Current active learner / self
+          studentId: bookingStudentId,
           subjectId: bookingSubjectId,
-          educationLevelId: 'level-ssc-1',
+          educationLevelId: bookingLevelId,
           mode: bookingMode,
           messageNotes: bookingNotes,
           preferredDays: selectedDays,
         });
+      } else {
+        throw new Error(
+          locale === 'bn'
+            ? 'অনুরোধ পাঠাতে লগইন করুন।'
+            : 'Sign in to send a tutoring request.',
+        );
       }
       setBookingSuccessMessage(
         dict.bookingRequest?.requestSuccess || 'Tutoring request submitted successfully!',
@@ -403,8 +323,8 @@ export function TutorSearchCatalog({
         setSelectedTutorForBooking(null);
         setBookingSuccessMessage(null);
       }, 2000);
-    } catch {
-      // Handled by UI
+    } catch (err) {
+      setBookingError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsSubmittingBooking(false);
     }
@@ -482,7 +402,9 @@ export function TutorSearchCatalog({
               <select
                 aria-label="Sort by"
                 value={sortBy}
-                onChange={(e) => setSortBy(e.target.value as any)}
+                onChange={(e) =>
+                  setSortBy(e.target.value as 'recommended' | 'price_asc' | 'price_desc' | 'experience_desc')
+                }
                 data-testid="sort-by-select"
                 className="w-full h-11 px-3 py-2 text-sm rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100 focus:outline-none focus:ring-2 focus:ring-emerald-600"
               >
@@ -558,14 +480,21 @@ export function TutorSearchCatalog({
       {/* Results Indicator */}
       <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400">
         <span data-testid="results-count-text">
-          {dict.discovery?.resultsCount
-            ? dict.discovery.resultsCount.replace(
-                '{count}',
-                formatLocalizedNumber(results.total, locale),
-              )
-            : `Showing ${results.total} tutors`}
+          {isLoading
+            ? dict.common?.loading || 'Loading...'
+            : dict.discovery?.resultsCount
+              ? dict.discovery.resultsCount.replace(
+                  '{count}',
+                  formatLocalizedNumber(results.total, locale),
+                )
+              : `Showing ${results.total} tutors`}
         </span>
       </div>
+      {(queryError || searchError) && (
+        <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700" data-testid="discovery-error">
+          {queryError || searchError}
+        </div>
+      )}
 
       {/* Tutors Grid */}
       {results.data.length === 0 ? (
@@ -880,6 +809,51 @@ export function TutorSearchCatalog({
                 className="space-y-4 text-xs"
                 data-testid="booking-request-form"
               >
+                {bookingError && (
+                  <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700" data-testid="booking-request-error">
+                    {bookingError}
+                  </div>
+                )}
+                {studentOptions.length > 0 && (
+                  <div className="space-y-1">
+                    <label className="font-medium text-slate-700 dark:text-slate-300">
+                      {dict.bookingRequest?.selectStudent || 'Select Student'}
+                    </label>
+                    <select
+                      value={bookingStudentId}
+                      onChange={(e) => setBookingStudentId(e.target.value)}
+                      required
+                      data-testid="booking-student-select"
+                      className="w-full h-10 px-3 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
+                    >
+                      {studentOptions.map((s) => (
+                        <option key={s.id} value={s.id}>
+                          {s.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
+                {levelOptions.length > 0 && (
+                  <div className="space-y-1">
+                    <label className="font-medium text-slate-700 dark:text-slate-300">
+                      {dict.bookingRequest?.selectLevel || 'Select Level'}
+                    </label>
+                    <select
+                      value={bookingLevelId}
+                      onChange={(e) => setBookingLevelId(e.target.value)}
+                      required
+                      data-testid="booking-level-select"
+                      className="w-full h-10 px-3 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
+                    >
+                      {levelOptions.map((l) => (
+                        <option key={l.id} value={l.id}>
+                          {l.label}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
                 {/* Select Subject */}
                 <div className="space-y-1">
                   <label className="font-medium text-slate-700 dark:text-slate-300">
@@ -908,7 +882,9 @@ export function TutorSearchCatalog({
                   </label>
                   <select
                     value={bookingMode}
-                    onChange={(e) => setBookingMode(e.target.value as any)}
+                    onChange={(e) =>
+                      setBookingMode(e.target.value as 'in_person' | 'online' | 'hybrid')
+                    }
                     data-testid="booking-mode-select"
                     className="w-full h-10 px-3 text-xs rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
                   >

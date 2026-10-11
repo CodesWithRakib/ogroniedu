@@ -78,6 +78,8 @@ export interface AdminDashboardProps {
   initialSettings?: AdminSystemSettingItem[];
   initialFeatureFlags?: AdminFeatureFlagItem[];
   initialAuditLogs?: AdminAuditLogItem[];
+  isLoading?: boolean;
+  queryError?: string | null;
   onSuspendUser?: (userId: string, reason: string) => Promise<void>;
   onReactivateUser?: (userId: string) => Promise<void>;
   onUpdateRoles?: (userId: string, roles: string[]) => Promise<void>;
@@ -98,53 +100,17 @@ export function AdminDashboardView({
   initialBookings = [],
   initialReconciliation = {
     isBalanced: true,
-    totalDebits: '500,000',
-    totalCredits: '500,000',
+    totalDebits: '0',
+    totalCredits: '0',
     discrepancy: '0',
     status: 'reconciled',
-    accounts: [
-      {
-        code: '1010_CASH_SSLCOMMERZ',
-        name: 'SSLCOMMERZ Settlement',
-        accountType: 'asset',
-        balance: '500,000',
-      },
-      {
-        code: '2010_STUDENT_ESCROW',
-        name: 'Student Escrow Holding',
-        accountType: 'liability',
-        balance: '500,000',
-      },
-    ],
+    accounts: [],
   },
-  initialSettings = [
-    { key: 'platform_fee_percent', value: { percent: 8 }, description: 'Platform fee percentage' },
-    {
-      key: 'cancellation_window_hours',
-      value: { hours: 24 },
-      description: 'Free cancellation window',
-    },
-    {
-      key: 'replacement_guarantee_trial_hours',
-      value: { hours: 48 },
-      description: 'Replacement trial hours',
-    },
-    {
-      key: 'impersonation_max_minutes',
-      value: { minutes: 15 },
-      description: 'Max impersonation time',
-    },
-  ],
-  initialFeatureFlags = [
-    {
-      key: 'emergency_maintenance_mode',
-      enabled: false,
-      rules: { allowRoles: ['admin', 'super_admin'] },
-    },
-    { key: 'instant_replacement_matching', enabled: true, rules: {} },
-    { key: 'strict_pnr_verification', enabled: true, rules: {} },
-  ],
+  initialSettings = [],
+  initialFeatureFlags = [],
   initialAuditLogs = [],
+  isLoading = false,
+  queryError = null,
   onSuspendUser,
   onReactivateUser,
   onUpdateRoles,
@@ -166,7 +132,27 @@ export function AdminDashboardView({
   const [featureFlags, setFeatureFlags] = useState<AdminFeatureFlagItem[]>(initialFeatureFlags);
   const [reconciliation, setReconciliation] =
     useState<AdminReconciliationData>(initialReconciliation);
-  const [auditLogs] = useState<AdminAuditLogItem[]>(initialAuditLogs);
+  const [auditLogs, setAuditLogs] = useState<AdminAuditLogItem[]>(initialAuditLogs);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    setUsers(initialUsers);
+  }, [initialUsers]);
+  React.useEffect(() => {
+    setBookings(initialBookings);
+  }, [initialBookings]);
+  React.useEffect(() => {
+    setSettings(initialSettings);
+  }, [initialSettings]);
+  React.useEffect(() => {
+    setFeatureFlags(initialFeatureFlags);
+  }, [initialFeatureFlags]);
+  React.useEffect(() => {
+    setReconciliation(initialReconciliation);
+  }, [initialReconciliation]);
+  React.useEffect(() => {
+    setAuditLogs(initialAuditLogs);
+  }, [initialAuditLogs]);
 
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<string>('all');
@@ -209,73 +195,115 @@ export function AdminDashboardView({
   // Action handlers
   const handleConfirmSuspend = async () => {
     if (!selectedUserForSuspend || !suspendReason.trim()) return;
-    if (onSuspendUser) {
-      await onSuspendUser(selectedUserForSuspend.id, suspendReason.trim());
+    setActionError(null);
+    try {
+      if (onSuspendUser) {
+        await onSuspendUser(selectedUserForSuspend.id, suspendReason.trim());
+      } else {
+        throw new Error('Suspension is unavailable (missing admin permission).');
+      }
+      setUsers((prev) =>
+        prev.map((u) => (u.id === selectedUserForSuspend.id ? { ...u, status: 'suspended' } : u)),
+      );
+      setSelectedUserForSuspend(null);
+      setSuspendReason('');
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : String(err));
     }
-    setUsers((prev) =>
-      prev.map((u) => (u.id === selectedUserForSuspend.id ? { ...u, status: 'suspended' } : u)),
-    );
-    setSelectedUserForSuspend(null);
-    setSuspendReason('');
   };
 
   const handleReactivate = async (userId: string) => {
-    if (onReactivateUser) {
-      await onReactivateUser(userId);
+    setActionError(null);
+    try {
+      if (onReactivateUser) {
+        await onReactivateUser(userId);
+      } else {
+        throw new Error('Reactivation is unavailable (missing admin permission).');
+      }
+      setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, status: 'active' } : u)));
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : String(err));
     }
-    setUsers((prev) => prev.map((u) => (u.id === userId ? { ...u, status: 'active' } : u)));
   };
 
   const handleConfirmRoles = async () => {
     if (!selectedUserForRoles) return;
-    if (onUpdateRoles) {
-      await onUpdateRoles(selectedUserForRoles.id, editingRoles);
+    setActionError(null);
+    try {
+      if (onUpdateRoles) {
+        await onUpdateRoles(selectedUserForRoles.id, editingRoles);
+      } else {
+        throw new Error('Role update is unavailable (super-admin only).');
+      }
+      setUsers((prev) =>
+        prev.map((u) => (u.id === selectedUserForRoles.id ? { ...u, roles: editingRoles } : u)),
+      );
+      setSelectedUserForRoles(null);
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : String(err));
     }
-    setUsers((prev) =>
-      prev.map((u) => (u.id === selectedUserForRoles.id ? { ...u, roles: editingRoles } : u)),
-    );
-    setSelectedUserForRoles(null);
   };
 
   const handleConfirmCancelBooking = async () => {
     if (!selectedBookingForCancel || !cancelReason.trim()) return;
-    if (onCancelBooking) {
-      await onCancelBooking(selectedBookingForCancel.id, cancelReason.trim(), refundChecked);
+    setActionError(null);
+    try {
+      if (onCancelBooking) {
+        await onCancelBooking(selectedBookingForCancel.id, cancelReason.trim(), refundChecked);
+      } else {
+        throw new Error('Booking cancellation is unavailable (missing admin permission).');
+      }
+      setBookings((prev) =>
+        prev.map((b) => (b.id === selectedBookingForCancel.id ? { ...b, status: 'cancelled' } : b)),
+      );
+      setSelectedBookingForCancel(null);
+      setCancelReason('');
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : String(err));
     }
-    setBookings((prev) =>
-      prev.map((b) => (b.id === selectedBookingForCancel.id ? { ...b, status: 'cancelled' } : b)),
-    );
-    setSelectedBookingForCancel(null);
-    setCancelReason('');
   };
 
   const handleConfirmImpersonation = async () => {
     if (!selectedUserForImpersonate || !impersonateReason.trim()) return;
     const cappedDuration = Math.min(impersonateMinutes, 15);
-    if (onStartImpersonation) {
-      await onStartImpersonation(
-        selectedUserForImpersonate.id,
-        impersonateReason.trim(),
-        cappedDuration,
-      );
+    setActionError(null);
+    try {
+      if (onStartImpersonation) {
+        await onStartImpersonation(
+          selectedUserForImpersonate.id,
+          impersonateReason.trim(),
+          cappedDuration,
+        );
+      } else {
+        throw new Error('Impersonation is unavailable (super-admin only).');
+      }
+      setActiveImpersonation({
+        targetName: selectedUserForImpersonate.displayName,
+        targetId: selectedUserForImpersonate.id,
+        expiresIn: cappedDuration,
+      });
+      setSelectedUserForImpersonate(null);
+      setImpersonateReason('');
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : String(err));
     }
-    setActiveImpersonation({
-      targetName: selectedUserForImpersonate.displayName,
-      targetId: selectedUserForImpersonate.id,
-      expiresIn: cappedDuration,
-    });
-    setSelectedUserForImpersonate(null);
-    setImpersonateReason('');
   };
 
   const handleToggleFlag = async (key: string, currentVal: boolean) => {
     if (!isSuperAdmin) return;
-    if (onUpdateFeatureFlag) {
-      await onUpdateFeatureFlag(key, !currentVal);
+    setActionError(null);
+    try {
+      if (onUpdateFeatureFlag) {
+        await onUpdateFeatureFlag(key, !currentVal);
+      } else {
+        throw new Error('Feature flag update is unavailable (super-admin only).');
+      }
+      setFeatureFlags((prev) =>
+        prev.map((f) => (f.key === key ? { ...f, enabled: !currentVal } : f)),
+      );
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : String(err));
     }
-    setFeatureFlags((prev) =>
-      prev.map((f) => (f.key === key ? { ...f, enabled: !currentVal } : f)),
-    );
   };
 
   return (
@@ -284,6 +312,21 @@ export function AdminDashboardView({
       data-testid="admin-dashboard-view"
     >
       {/* 1. Active Impersonation Top Warning Banner */}
+      {actionError && (
+        <div role="alert" className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-sm text-rose-300" data-testid="admin-action-error">
+          {actionError}
+        </div>
+      )}
+      {queryError && (
+        <div role="alert" className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-sm text-rose-300" data-testid="admin-query-error">
+          {queryError}
+        </div>
+      )}
+      {isLoading && (
+        <div role="status" className="rounded-xl border border-slate-800 bg-slate-900 p-3 text-sm text-slate-300" data-testid="admin-loading">
+          Loading…
+        </div>
+      )}
       {activeImpersonation && (
         <div
           className="bg-amber-500/20 border-2 border-amber-500 rounded-xl p-4 flex items-center justify-between shadow-lg shadow-amber-500/10 animate-pulse"

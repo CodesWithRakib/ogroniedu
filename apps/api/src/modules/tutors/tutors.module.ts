@@ -11,6 +11,9 @@ import { UserEntity } from '../auth/entities/user.entity';
 import { SubjectEntity } from '../taxonomy/entities/subject.entity';
 import { EducationLevelEntity } from '../taxonomy/entities/education-level.entity';
 import { TutorsService } from './tutors.service';
+import { TutorProfileService } from './services/tutor-profile.service';
+import { TutorSearchService } from './services/tutor-search.service';
+import { TutorVerificationService } from './services/tutor-verification.service';
 import { TutorsController } from './tutors.controller';
 import { AdminTutorsController } from './admin-tutors.controller';
 import { AuthModule } from '../auth/auth.module';
@@ -38,7 +41,7 @@ import { FilesModule } from '../files/files.module';
     FilesModule,
   ],
   controllers: [TutorsController, AdminTutorsController],
-  providers: [TutorsService],
-  exports: [TutorsService, TypeOrmModule],
+  providers: [TutorsService, TutorProfileService, TutorSearchService, TutorVerificationService],
+  exports: [TutorsService, TutorProfileService, TutorSearchService, TutorVerificationService, TypeOrmModule],
 })
 export class TutorsModule {}

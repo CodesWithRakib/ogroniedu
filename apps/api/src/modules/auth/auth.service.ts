@@ -4,8 +4,10 @@ import {
   UnauthorizedException,
   NotFoundException,
   ConflictException,
+  Inject,
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
+import { InjectDataSource } from '@nestjs/typeorm';
 import crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
@@ -44,9 +46,9 @@ export class AuthService {
   private refreshTokenExpiryDays = 7;
 
   constructor(
-    private dataSource: DataSource,
-    private rateLimiter: RateLimiterService,
-    private logger: StructuredLoggerService,
+    @InjectDataSource() private dataSource: DataSource,
+    @Inject(RateLimiterService) private rateLimiter: RateLimiterService,
+    @Inject(StructuredLoggerService) private logger: StructuredLoggerService,
   ) {}
 
   private hashToken(token: string): string {

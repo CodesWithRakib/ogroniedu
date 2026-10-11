@@ -4,6 +4,7 @@ import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
 import cookieParser from 'cookie-parser';
 import { AppModule } from './app.module';
 import { AllExceptionsFilter } from './common/filters/http-exception.filter';
+import { ResponseMetaInterceptor } from './common/interceptors/response-meta.interceptor';
 
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
@@ -19,6 +20,9 @@ async function bootstrap() {
   // Global Exception Filter
   app.useGlobalFilters(new AllExceptionsFilter());
 
+  // Injects meta.requestId into success envelopes (never double-wraps)
+  app.useGlobalInterceptors(new ResponseMetaInterceptor());
+
   // Global Validation Pipe
   app.useGlobalPipes(
     new ValidationPipe({
@@ -29,9 +33,17 @@ async function bootstrap() {
   );
 
   // OpenAPI Swagger Documentation
+  // API contract: success {success:true,data,meta:{requestId,pagination?}},
+  // errors {success:false,error:{code,message,details?},meta:{requestId}}.
+  // See docs/architecture/api-contract-standard.md for the normative spec.
   const config = new DocumentBuilder()
     .setTitle('OgroniEdu API')
-    .setDescription('Enterprise Tutoring Marketplace & Learning Management API for Bangladesh')
+    .setDescription(
+      'Enterprise Tutoring Marketplace & Learning Management API for Bangladesh. ' +
+        'Success envelope: {success:true, data, message?, meta:{requestId, pagination?}}. ' +
+        'Error envelope: {success:false, error:{code,message,details?}, meta:{requestId}}. ' +
+        'Collections use offset pagination (meta.pagination.strategy=offset) except chat/notification/audit feeds (cursor).',
+    )
     .setVersion('1.0.0')
     .addBearerAuth()
     .addTag('Auth', 'Identity, Registration, Verification, Session Management & RBAC')

@@ -50,38 +50,13 @@ export function BookingChatView({
   bookingId,
   subjectName,
   currentUserId,
-  initialMessages,
+  initialMessages = [],
   onSendMessage,
 }: BookingChatViewProps) {
   const dict = getDictionary(locale);
   const n = dict.notifications;
 
-  const defaultMessages: ChatMessageItem[] = initialMessages || [
-    {
-      id: 'msg-1',
-      senderId: 'tutor-1',
-      senderName: 'Nusrat Jahan (Tutor)',
-      senderRole: 'tutor',
-      content:
-        'Welcome! Please make sure to have your Class 10 Physics NCTB textbook ready for our vectors lesson.',
-      isRedacted: false,
-      readAt: new Date(Date.now() - 3600000).toISOString(),
-      createdAt: new Date(Date.now() - 7200000).toISOString(),
-    },
-    {
-      id: 'msg-2',
-      senderId: currentUserId,
-      senderName: 'Zafir Rahman (Student)',
-      senderRole: 'student',
-      content:
-        'Yes teacher, I have completed the exercise 3.2 problems and kept questions noted down.',
-      isRedacted: false,
-      readAt: new Date(Date.now() - 1800000).toISOString(),
-      createdAt: new Date(Date.now() - 3600000).toISOString(),
-    },
-  ];
-
-  const [messages, setMessages] = useState<ChatMessageItem[]>(defaultMessages);
+  const [messages, setMessages] = useState<ChatMessageItem[]>(initialMessages ?? []);
   const [inputText, setInputText] = useState('');
   const [isSending, setIsSending] = useState(false);
 

@@ -1,4 +1,4 @@
-import { Injectable, CanActivate, ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { Injectable, CanActivate, ExecutionContext, UnauthorizedException, Inject, Optional } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import jwt from 'jsonwebtoken';
 import { AuthenticatedUser } from '../decorators/current-user.decorator';
@@ -9,7 +9,7 @@ export class AuthGuard implements CanActivate {
   private jwtSecret =
     process.env.JWT_SECRET || 'ogroniedu-super-secure-jwt-secret-key-2026-bangladesh';
 
-  constructor(private reflector?: Reflector) {}
+  constructor(@Optional() @Inject(Reflector) private readonly reflector?: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
     if (this.reflector) {

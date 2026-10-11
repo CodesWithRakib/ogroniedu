@@ -55,6 +55,8 @@ export interface CalendarSessionItem {
 interface SessionScheduleCalendarProps {
   locale: Locale;
   initialSessions?: CalendarSessionItem[];
+  isLoading?: boolean;
+  queryError?: string | null;
   onScheduleOneOff?: (data: {
     bookingId: string;
     startsAt: string;
@@ -64,54 +66,25 @@ interface SessionScheduleCalendarProps {
   onCancel?: (sessionId: string, reason: string) => Promise<void>;
 }
 
-const DEFAULT_SESSIONS: CalendarSessionItem[] = [
-  {
-    id: 'sess-1',
-    bookingId: 'booking-uuid-1',
-    subjectName: 'Higher Mathematics (উচ্চতর গণিত)',
-    tutorName: 'Rahat Mahmud (রাহাত মাহমুদ)',
-    studentName: 'Tanvir Hossain (তানভীর হোসেন)',
-    startsAt: '2026-10-15T10:00:00Z',
-    endsAt: '2026-10-15T11:00:00Z',
-    timezone: 'Asia/Dhaka',
-    status: 'scheduled',
-    meetingUrl: 'https://meet.ogroni.edu/room-math-101',
-    locationInstructions: 'Online Google Meet Classroom',
-  },
-  {
-    id: 'sess-2',
-    bookingId: 'booking-uuid-1',
-    subjectName: 'Higher Mathematics (উচ্চতর গণিত)',
-    tutorName: 'Rahat Mahmud (রাহাত মাহমুদ)',
-    studentName: 'Tanvir Hossain (তানভীর হোসেন)',
-    startsAt: '2026-10-18T10:00:00Z',
-    endsAt: '2026-10-18T11:00:00Z',
-    timezone: 'Asia/Dhaka',
-    status: 'scheduled',
-    meetingUrl: 'https://meet.ogroni.edu/room-math-101',
-  },
-  {
-    id: 'sess-3',
-    bookingId: 'booking-uuid-2',
-    subjectName: 'Physics (পদার্থবিজ্ঞান)',
-    tutorName: 'Nusrat Jahan (নুসরাত জাহান)',
-    studentName: 'Subarna Hossain (সুবর্ণা হোসেন)',
-    startsAt: '2026-10-12T11:00:00Z',
-    endsAt: '2026-10-12T12:00:00Z',
-    timezone: 'Asia/Dhaka',
-    status: 'completed',
-    meetingUrl: 'https://meet.ogroni.edu/room-phys-201',
-  },
-];
+const DEFAULT_SESSIONS: CalendarSessionItem[] = [];
 
 export function SessionScheduleCalendar({
   locale,
   initialSessions = DEFAULT_SESSIONS,
+  isLoading = false,
+  queryError = null,
+  onScheduleOneOff,
   onReschedule,
   onCancel,
 }: SessionScheduleCalendarProps) {
   const dict = getDictionary(locale);
   const [sessions, setSessions] = useState<CalendarSessionItem[]>(initialSessions);
+  const [actionError, setActionError] = useState<string | null>(null);
+
+  React.useEffect(() => {
+    setSessions(initialSessions);
+  }, [initialSessions]);
+  void onScheduleOneOff;
   const [selectedSessionForReschedule, setSelectedSessionForReschedule] =
     useState<CalendarSessionItem | null>(null);
   const [selectedSessionForCancel, setSelectedSessionForCancel] =
@@ -168,9 +141,12 @@ export function SessionScheduleCalendar({
     e.preventDefault();
     if (!selectedSessionForReschedule) return;
     setIsSubmitting(true);
+    setActionError(null);
     try {
       if (onReschedule) {
         await onReschedule(selectedSessionForReschedule.id, rescheduleTime, rescheduleReason);
+      } else {
+        throw new Error(locale === 'bn' ? 'পুনর্নির্ধারণ এখন উপলব্ধ নয়।' : 'Rescheduling is unavailable right now.');
       }
       setSessions((prev) =>
         prev.map((s) =>
@@ -181,8 +157,8 @@ export function SessionScheduleCalendar({
       );
       setSelectedSessionForReschedule(null);
       setRescheduleReason('');
-    } catch {
-      // Handled by UI
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -192,9 +168,12 @@ export function SessionScheduleCalendar({
     e.preventDefault();
     if (!selectedSessionForCancel) return;
     setIsSubmitting(true);
+    setActionError(null);
     try {
       if (onCancel) {
         await onCancel(selectedSessionForCancel.id, cancelReason);
+      } else {
+        throw new Error(locale === 'bn' ? 'বাতিলকরণ এখন উপলব্ধ নয়।' : 'Cancellation is unavailable right now.');
       }
       setSessions((prev) =>
         prev.map((s) =>
@@ -214,8 +193,8 @@ export function SessionScheduleCalendar({
       );
       setSelectedSessionForCancel(null);
       setCancelReason('');
-    } catch {
-      // Handled by UI
+    } catch (err) {
+      setActionError(err instanceof Error ? err.message : String(err));
     } finally {
       setIsSubmitting(false);
     }
@@ -267,7 +246,21 @@ export function SessionScheduleCalendar({
           <span>Scheduled Classes</span>
         </h2>
 
-        {sessions.length === 0 ? (
+        {actionError && (
+          <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700" data-testid="scheduling-action-error">
+            {actionError}
+          </div>
+        )}
+        {queryError && (
+          <div role="alert" className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700" data-testid="scheduling-query-error">
+            {queryError}
+          </div>
+        )}
+        {isLoading ? (
+          <Card className="text-center py-12">
+            <CardContent className="text-slate-500 text-sm">{dict.common?.loading || 'Loading...'}</CardContent>
+          </Card>
+        ) : sessions.length === 0 ? (
           <Card className="text-center py-12">
             <CardContent className="space-y-2 text-slate-500">
               <CalendarIcon className="w-10 h-10 mx-auto text-slate-300" />

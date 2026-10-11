@@ -21,8 +21,10 @@ describe('Centralized Redux Store & Slices Unit Tests', () => {
     expect(state.ui).toBeDefined();
     expect(state.api).toBeDefined();
 
-    expect(state.auth.isAuthenticated).toBe(true);
-    expect(state.auth.user?.role).toBe('guardian');
+    // Phase 21: no mock session — boot is logged out until real login.
+    expect(state.auth.isAuthenticated).toBe(false);
+    expect(state.auth.user).toBeNull();
+    expect(state.auth.token).toBeNull();
     expect(state.ui.isNotificationCenterOpen).toBe(false);
     expect(state.ui.activeLocale).toBe('bn');
   });
@@ -32,9 +34,10 @@ describe('Centralized Redux Store & Slices Unit Tests', () => {
       const store = makeStore();
       const newUser = {
         id: '22222222-2222-4222-b222-222222222222',
-        name: 'রাশেদ করিম (Rashed Karim)',
+        displayName: 'রাশেদ করিম (Rashed Karim)',
         email: 'tutor@ogroniedu.com',
-        role: 'tutor' as const,
+        phone: null,
+        roles: ['tutor'] as Array<'tutor'>,
         preferredLocale: 'bn' as const,
       };
 
@@ -47,7 +50,7 @@ describe('Centralized Redux Store & Slices Unit Tests', () => {
 
       const state = store.getState().auth;
       expect(state.user?.id).toBe(newUser.id);
-      expect(state.user?.role).toBe('tutor');
+      expect(state.user?.roles).toContain('tutor');
       expect(state.token).toBe('jwt-token-xyz');
       expect(state.isAuthenticated).toBe(true);
     });
@@ -64,6 +67,19 @@ describe('Centralized Redux Store & Slices Unit Tests', () => {
 
     it('should handle setPreferredLocale correctly', () => {
       const store = makeStore();
+      store.dispatch(
+        setCredentials({
+          user: {
+            id: 'u-1',
+            displayName: 'Test User',
+            email: null,
+            phone: null,
+            roles: ['student'],
+            preferredLocale: 'bn',
+          },
+          token: 't',
+        }),
+      );
       store.dispatch(setPreferredLocale('en'));
 
       const state = store.getState().auth;
@@ -123,6 +139,27 @@ describe('Centralized Redux Store & Slices Unit Tests', () => {
       expect(notificationsApi.endpoints.markAsRead).toBeDefined();
       expect(notificationsApi.endpoints.markAllAsRead).toBeDefined();
       expect(notificationsApi.endpoints.dispatchNotification).toBeDefined();
+    });
+
+    it('should define real domain endpoints (no mock-only store)', async () => {
+      const { authApi } = await import('../src/store/services/auth-api');
+      const { tutorsApi } = await import('../src/store/services/tutors-api');
+      const { bookingsApi } = await import('../src/store/services/bookings-api');
+      const { sessionsApi } = await import('../src/store/services/sessions-api');
+      const { learningApi } = await import('../src/store/services/learning-api');
+      const { paymentsApi } = await import('../src/store/services/payments-api');
+      const { guardiansApi } = await import('../src/store/services/guardians-api');
+      const { adminApi } = await import('../src/store/services/admin-api');
+      expect(authApi.endpoints.login).toBeDefined();
+      expect(authApi.endpoints.register).toBeDefined();
+      expect(authApi.endpoints.getSessionUser).toBeDefined();
+      expect(tutorsApi.endpoints.searchTutors).toBeDefined();
+      expect(bookingsApi.endpoints.createBookingRequest).toBeDefined();
+      expect(sessionsApi.endpoints.getSessions).toBeDefined();
+      expect(learningApi.endpoints.submitAssignment).toBeDefined();
+      expect(paymentsApi.endpoints.createPaymentOrder).toBeDefined();
+      expect(guardiansApi.endpoints.getLinkedChildren).toBeDefined();
+      expect(adminApi.endpoints.getAdminDashboard).toBeDefined();
     });
   });
 });

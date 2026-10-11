@@ -9,7 +9,6 @@ import {
   Users,
   CalendarCheck,
   CreditCard,
-  Send,
   Sparkles,
   BookOpen,
   ArrowRight,
@@ -26,10 +25,8 @@ import {
   Badge,
   Input,
 } from '@/components/ui';
-import { useNotifications } from '@/components/notifications/NotificationProvider';
+import { useAppSelector } from '@/store';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
-import { useAppDispatch } from '@/store';
-import { enqueueToast } from '@/store/slices/ui-slice';
 
 interface PageProps {
   params: Promise<{ locale: string }>;
@@ -39,14 +36,10 @@ export default function HomePage({ params }: PageProps) {
   const resolvedParams = use(params);
   const locale: Locale = resolvedParams.locale === 'en' ? 'en' : 'bn';
   const dict = getDictionary(locale);
-  const dispatch = useAppDispatch();
   const router = useRouter();
 
   const [searchQuery, setSearchQuery] = useState('');
-  const [triggerLoading, setTriggerLoading] = useState<string | null>(null);
-  const { isConnected, refreshNotifications } = useNotifications();
-
-  const demoUserId = '11111111-1111-1111-1111-111111111111';
+  const { isAuthenticated } = useAppSelector((s) => s.auth);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -54,56 +47,6 @@ export default function HomePage({ params }: PageProps) {
       router.push(`/${locale}/tutors?q=${encodeURIComponent(searchQuery.trim())}`);
     } else {
       router.push(`/${locale}/tutors`);
-    }
-  };
-
-  // Helper to trigger test notifications directly to API
-  const handleTriggerTestNotification = async (
-    eventType: string,
-    recipientRole: string,
-    payload: Record<string, string | number>,
-  ) => {
-    setTriggerLoading(eventType);
-    try {
-      const res = await fetch('http://localhost:4000/api/v1/notifications/test-dispatch', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'x-user-id': demoUserId,
-          'x-user-roles': recipientRole,
-        },
-        body: JSON.stringify({
-          userId: demoUserId,
-          eventType,
-          recipientRole,
-          payload,
-        }),
-      });
-
-      if (!res.ok) {
-        throw new Error(`Failed to dispatch notification: ${res.statusText}`);
-      }
-
-      dispatch(
-        enqueueToast({
-          title: locale === 'bn' ? 'বিজ্ঞপ্তি পাঠানো হয়েছে' : 'Notification Sent',
-          message: locale === 'bn' ? `ইভেন্ট: ${eventType}` : `Dispatched: ${eventType}`,
-          type: 'success',
-        }),
-      );
-
-      await refreshNotifications();
-    } catch (err) {
-      console.error(err);
-      dispatch(
-        enqueueToast({
-          title: locale === 'bn' ? 'ত্রুটি' : 'Error',
-          message: locale === 'bn' ? 'সার্ভার সংযোগ ব্যর্থ হয়েছে' : 'Connection failed',
-          type: 'error',
-        }),
-      );
-    } finally {
-      setTriggerLoading(null);
     }
   };
 
@@ -290,84 +233,60 @@ export default function HomePage({ params }: PageProps) {
         </div>
       </section>
 
-      {/* Real-time Notification Engine Showcase */}
+      {/* Getting started — authenticated users go to their dashboard */}
       <section className="py-16">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <Card className="border-emerald-200/60 dark:border-emerald-900/60 bg-gradient-to-br from-emerald-50/50 via-white to-slate-50 dark:from-slate-900 dark:via-slate-900 dark:to-emerald-950/20 p-8">
             <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="space-y-4 max-w-xl">
                 <div className="flex items-center gap-2">
-                  <Badge variant={isConnected ? 'success' : 'destructive'} className="gap-1.5">
-                    <span
-                      className={`w-2 h-2 rounded-full ${isConnected ? 'bg-emerald-600 animate-ping' : 'bg-rose-600'}`}
-                    />
-                    {isConnected
-                      ? dict.notifications.realtimeConnected
-                      : dict.notifications.realtimeDisconnected}
+                  <Badge variant="outline">Socket.IO</Badge>
+                  <Badge variant="success" className="gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-600" />
+                    {dict.notifications.realtimeConnected}
                   </Badge>
-                  <Badge variant="outline">Socket.IO v4.8</Badge>
                 </div>
                 <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-bengali">
                   {locale === 'bn'
-                    ? 'রিয়েল-টাইম নোটিফিকেশন ইঞ্জিন পরীক্ষা করুন'
-                    : 'Test Real-Time Notification Engine'}
+                    ? 'রিয়েল-টাইম নোটিফিকেশনসহ সম্পূর্ণ টিউটরিং যাত্রা'
+                    : 'Complete tutoring journey with real-time notifications'}
                 </h3>
                 <p className="text-sm text-slate-600 dark:text-slate-400 font-bengali leading-relaxed">
                   {locale === 'bn'
-                    ? 'নিচের বাটনগুলোতে ক্লিক করে ব্যাকএন্ড ইভেন্ট ট্রিগার করুন। উপরে ডানপাশে নোটিফিকেশন বেল আইকন ও ফ্লোটিং টোস্টে লাইভ আপডেট পর্যবেক্ষণ করুন।'
-                    : 'Trigger real-time backend notification events below. Notice instant unread count badge increments and floating toasts.'}
+                    ? 'নিবন্ধন করে আপনার ড্যাশবোর্ডে প্রবেশ করুন। বুকিং, ক্লাস ও পেমেন্টের প্রতিটি আপডেট সংরক্ষিত নোটিফিকেশন হিসেবে পাবেন।'
+                    : 'Create an account to reach your role dashboard. Every booking, class, and payment update arrives as a persisted notification.'}
                 </p>
               </div>
 
-              {/* Dispatch Trigger Buttons */}
               <div className="flex flex-wrap gap-3">
-                <Button
-                  variant="primary"
-                  size="sm"
-                  isLoading={triggerLoading === 'booking.requested'}
-                  onClick={() =>
-                    handleTriggerTestNotification('booking.requested', 'tutor', {
-                      bookingId: 'bk-901',
-                      subjectName:
-                        locale === 'bn' ? 'পদার্থবিজ্ঞান (একাদশ শ্রেণি)' : 'Physics (Class 11)',
-                      requesterName: 'মোঃ তানভীর আহমেদ',
-                    })
-                  }
-                >
-                  <Send className="w-3.5 h-3.5" />
-                  {locale === 'bn' ? 'বুকিং অনুরোধ (শিক্ষক)' : 'Booking Requested'}
-                </Button>
-
-                <Button
-                  variant="secondary"
-                  size="sm"
-                  isLoading={triggerLoading === 'payment.succeeded'}
-                  onClick={() =>
-                    handleTriggerTestNotification('payment.succeeded', 'guardian', {
-                      bookingId: 'bk-901',
-                      amount: 2500,
-                      paymentId: 'pay-bd-8871',
-                    })
-                  }
-                >
-                  <CreditCard className="w-3.5 h-3.5" />
-                  {locale === 'bn' ? 'ফি প্রদান নিশ্চিত (অভিভাবক)' : 'Payment Succeeded'}
-                </Button>
-
-                <Button
-                  variant="outline"
-                  size="sm"
-                  isLoading={triggerLoading === 'system.announcement'}
-                  onClick={() =>
-                    handleTriggerTestNotification('system.announcement', 'guardian', {
-                      messageBn: 'এইচএসসি ২০২৬ বিশেষ রিভিশন ব্যাচ শুরু হয়েছে।',
-                      messageEn: 'HSC 2026 Special Revision Batch is now open.',
-                    })
-                  }
-                >
-                  <Sparkles className="w-3.5 h-3.5" />
-                  {locale === 'bn' ? 'সিস্টেম ঘোষণা' : 'System Announcement'}
-                </Button>
+                {isAuthenticated ? (
+                  <Link href={`/${locale}/dashboard`}>
+                    <Button variant="primary" size="sm" data-testid="home-dashboard-cta">
+                      {dict.nav.dashboard}
+                      <ArrowRight className="w-3.5 h-3.5" />
+                    </Button>
+                  </Link>
+                ) : (
+                  <>
+                    <Link href={`/${locale}/register`}>
+                      <Button variant="primary" size="sm" data-testid="home-register-cta">
+                        {dict.nav.register}
+                        <ArrowRight className="w-3.5 h-3.5" />
+                      </Button>
+                    </Link>
+                    <Link href={`/${locale}/login`}>
+                      <Button variant="outline" size="sm" data-testid="home-login-cta">
+                        {dict.nav.login}
+                      </Button>
+                    </Link>
+                  </>
+                )}
+                <Link href={`/${locale}/tutors`}>
+                  <Button variant="secondary" size="sm" data-testid="home-browse-tutors-cta">
+                    <Search className="w-3.5 h-3.5" />
+                    {dict.nav.findTutors}
+                  </Button>
+                </Link>
               </div>
             </div>
           </Card>

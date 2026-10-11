@@ -1,8 +1,6 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { NotificationProvider } from '@/components/notifications/NotificationProvider';
-import { NotificationToastContainer } from '@/components/notifications/NotificationToast';
-import { NotificationCenter } from '@/components/notifications/NotificationCenter';
+import { DEFAULT_THEME, THEME_STORAGE_KEY } from '@/lib/theme/themes';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ogroni.edu.bd'),
@@ -40,26 +38,16 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
-  const demoUserId = '11111111-1111-1111-1111-111111111111';
+// Inline, no-flash theme init: reads persisted data-theme before hydration.
+const themeInitScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var m=document.cookie.match(/(?:^|;\\s*)${THEME_STORAGE_KEY}=([^;]+)/);var v=t||(m&&m[1])||'${DEFAULT_THEME}';document.documentElement.setAttribute('data-theme',v);}catch(e){document.documentElement.setAttribute('data-theme','${DEFAULT_THEME}');}})();`;
 
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bn" dir="ltr">
+    <html lang="bn" dir="ltr" data-theme={DEFAULT_THEME} suppressHydrationWarning>
       <head>
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-        <link
-          href="https://fonts.googleapis.com/css2?family=Hind+Siliguri:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap"
-          rel="stylesheet"
-        />
+        <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="antialiased selection:bg-emerald-500 selection:text-white">
-        <NotificationProvider userId={demoUserId} userRole="guardian" locale="bn">
-          {children}
-          <NotificationToastContainer locale="bn" />
-          <NotificationCenter locale="bn" />
-        </NotificationProvider>
-      </body>
+      <body className="antialiased selection:bg-emerald-500 selection:text-white">{children}</body>
     </html>
   );
 }

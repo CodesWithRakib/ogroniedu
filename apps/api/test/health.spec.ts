@@ -35,7 +35,7 @@ describe('Health & Readiness Probes Tests', () => {
       checkHeap: vi.fn().mockResolvedValue({ memory_heap: { status: 'up' } }),
     } as unknown as MemoryHealthIndicator;
 
-    const controller = new HealthController(mockHealthService, mockDb, mockMemory);
+    const controller = new HealthController(mockHealthService, mockMemory, mockDb as any);
     const result = await controller.checkReadiness();
 
     expect(result.status).toBe('ok');

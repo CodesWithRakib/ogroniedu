@@ -11,32 +11,13 @@ import { UserEntity } from '../../auth/entities/user.entity';
 import { TutorProfileEntity } from '../../tutors/entities/tutor-profile.entity';
 import { SubjectEntity } from '../../taxonomy/entities/subject.entity';
 import { EducationLevelEntity } from '../../taxonomy/entities/education-level.entity';
+import type { BookingStatus } from '../enums/booking-status.enum';
+import type { TutoringMode } from '../enums/tutoring-mode.enum';
+import type { ServiceAgreementSnapshot } from '../interfaces/service-agreement-snapshot.interface';
 
-export type BookingStatus =
-  | 'requested'
-  | 'accepted'
-  | 'awaiting_payment'
-  | 'confirmed'
-  | 'in_progress'
-  | 'completed'
-  | 'declined'
-  | 'cancelled'
-  | 'expired'
-  | 'disputed'
-  | 'replacement_requested';
-
-export type TutoringMode = 'in_person' | 'online' | 'hybrid';
-
-export interface ServiceAgreementSnapshot {
-  message?: string;
-  scheduleNotes?: string;
-  preferredDays?: number[];
-  hourlyRateMinor?: string | number;
-  sessionDurationMinutes?: number;
-  declinedReason?: string;
-  withdrawnReason?: string;
-  [key: string]: unknown;
-}
+export type { BookingStatus } from '../enums/booking-status.enum';
+export type { TutoringMode } from '../enums/tutoring-mode.enum';
+export type { ServiceAgreementSnapshot } from '../interfaces/service-agreement-snapshot.interface';
 
 @Entity('bookings')
 export class BookingEntity {

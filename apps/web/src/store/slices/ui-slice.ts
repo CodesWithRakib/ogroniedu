@@ -1,4 +1,6 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import type { AppTheme } from '@/lib/theme/themes';
+import { DEFAULT_THEME } from '@/lib/theme/themes';
 
 export interface ToastMessage {
   id: string;
@@ -11,14 +13,17 @@ export interface ToastMessage {
 export interface UiState {
   isNotificationCenterOpen: boolean;
   activeLocale: 'bn' | 'en';
+  /** @deprecated Legacy light/dark/system value. Use AppTheme via lib/theme instead. */
   theme: 'light' | 'dark' | 'system';
+  appTheme: AppTheme;
   toasts: ToastMessage[];
 }
 
 const initialState: UiState = {
   isNotificationCenterOpen: false,
   activeLocale: 'bn',
-  theme: 'light',
+  theme: 'system',
+  appTheme: DEFAULT_THEME,
   toasts: [],
 };
 
@@ -37,6 +42,9 @@ export const uiSlice = createSlice({
     },
     setTheme: (state, action: PayloadAction<'light' | 'dark' | 'system'>) => {
       state.theme = action.payload;
+    },
+    setAppTheme: (state, action: PayloadAction<AppTheme>) => {
+      state.appTheme = action.payload;
     },
     enqueueToast: (state, action: PayloadAction<Omit<ToastMessage, 'id' | 'timestamp'>>) => {
       const newToast: ToastMessage = {
@@ -60,6 +68,7 @@ export const {
   setNotificationCenterOpen,
   setActiveLocale,
   setTheme,
+  setAppTheme,
   enqueueToast,
   removeToast,
 } = uiSlice.actions;

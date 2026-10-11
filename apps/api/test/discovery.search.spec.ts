@@ -1,10 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { TutorsService } from '../src/modules/tutors/tutors.service';
+import { TutorSearchService } from '../src/modules/tutors/services/tutor-search.service';
 import { TutorProfileEntity } from '../src/modules/tutors/entities/tutor-profile.entity';
 import { UserEntity } from '../src/modules/auth/entities/user.entity';
 
 describe('Tutor Discovery & Explainable Search Unit Tests (FR-001)', () => {
-  let service: TutorsService;
+  let service: TutorSearchService;
   let mockProfileRepo: any;
   let mockUserRepo: any;
   let mockTaxonomySubjectRepo: any;
@@ -106,18 +106,11 @@ describe('Tutor Discovery & Explainable Search Unit Tests (FR-001)', () => {
       ]),
     };
 
-    service = new TutorsService(
+    service = new TutorSearchService(
       mockProfileRepo,
-      null as any,
-      null as any,
-      null as any,
-      null as any,
-      null as any,
-      null as any,
       mockUserRepo,
       mockTaxonomySubjectRepo,
       mockTaxonomyLevelRepo,
-      { record: vi.fn() } as any,
     );
   });
 

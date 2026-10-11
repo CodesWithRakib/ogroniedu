@@ -1,7 +1,31 @@
+// Core App UI Components
 export * from './Button';
 export * from './Card';
 export * from './Badge';
 export * from './Input';
 export * from './Tabs';
 export * from './EmptyState';
-export * from './LoadingSpinner';
+export { LoadingSpinner, type LoadingSpinnerProps } from './LoadingSpinner';
+
+// shadcn Reusable Component Library
+export * from './accordion';
+export * from './alert-dialog';
+export * from './alert';
+export * from './avatar';
+export * from './checkbox';
+export * from './dialog';
+export * from './dropdown-menu';
+export * from './label';
+export * from './popover';
+export * from './progress';
+export * from './scroll-area';
+export * from './select';
+export * from './separator';
+export * from './sheet';
+export * from './skeleton';
+export * from './slider';
+export * from './sonner';
+export * from './switch';
+export * from './table';
+export * from './textarea';
+export * from './tooltip';
