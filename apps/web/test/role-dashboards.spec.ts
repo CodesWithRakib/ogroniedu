@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
-import { TutorSearchCatalog } from '../src/components/discovery/TutorSearchCatalog';
+import { TutorSearchCatalog } from '../src/features/tutor-discovery';
 import { GuardianChildrenManager } from '../src/components/guardian/GuardianChildrenManager';
 import { SessionScheduleCalendar } from '../src/components/scheduling/SessionScheduleCalendar';
 

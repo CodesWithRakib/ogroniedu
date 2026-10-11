@@ -4,7 +4,7 @@ import {
   TutorSearchCatalog,
   TutorCardData,
   SearchCatalogResponse,
-} from '../src/components/discovery/TutorSearchCatalog';
+} from '../src/features/tutor-discovery';
 import { getDictionary, formatLocalizedNumber } from '../src/lib/i18n';
 
 describe('TutorSearchCatalog Component & Invariant Tests', () => {

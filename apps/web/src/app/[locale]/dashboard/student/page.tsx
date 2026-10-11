@@ -4,7 +4,14 @@ import React, { use } from 'react';
 import Link from 'next/link';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { RequireAuth } from '@/components/auth/RequireAuth';
-import { Card, CardHeader, CardTitle, CardContent, EmptyState, LoadingSpinner } from '@/components/ui';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  EmptyState,
+  LoadingSpinner,
+} from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { normalizeApiError } from '@/lib/api-error';
 import { withLocale } from '@/lib/auth';
@@ -20,9 +27,8 @@ function StudentDashboardContent({ locale }: { locale: Locale }) {
   const sessions = useGetSessionsQuery();
   const unread = useGetUnreadCountQuery();
 
-  const myRequests = (requests.data?.data ?? []).filter(
-    (r) => String((r as Record<string, unknown>).studentId ?? '') === '' || true,
-  );
+  // The requests endpoint is already scoped to the authenticated student server-side.
+  const myRequests = requests.data?.data ?? [];
 
   return (
     <DashboardShell
@@ -32,29 +38,51 @@ function StudentDashboardContent({ locale }: { locale: Locale }) {
     >
       <div className="grid grid-cols-2 gap-4 lg:grid-cols-4" data-testid="student-overview-grid">
         <Card>
-          <CardHeader><CardTitle className="text-sm">{locale === 'bn' ? 'বুকিং অনুরোধ' : 'Requests'}</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-sm">
+              {locale === 'bn' ? 'বুকিং অনুরোধ' : 'Requests'}
+            </CardTitle>
+          </CardHeader>
           <CardContent>
-            {requests.isLoading ? <LoadingSpinner /> : (
+            {requests.isLoading ? (
+              <LoadingSpinner />
+            ) : (
               <p className="text-2xl font-bold" data-testid="student-requests-count">
                 {formatLocalizedNumber(requests.data?.data?.length ?? 0, locale)}
               </p>
             )}
-            {requests.isError && <p className="text-xs text-rose-600">{normalizeApiError(requests.error, locale).message}</p>}
+            {requests.isError && (
+              <p className="text-xs text-rose-600">
+                {normalizeApiError(requests.error, locale).message}
+              </p>
+            )}
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle className="text-sm">{locale === 'bn' ? 'আসন্ন ক্লাস' : 'Sessions'}</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-sm">
+              {locale === 'bn' ? 'আসন্ন ক্লাস' : 'Sessions'}
+            </CardTitle>
+          </CardHeader>
           <CardContent>
-            {sessions.isLoading ? <LoadingSpinner /> : (
+            {sessions.isLoading ? (
+              <LoadingSpinner />
+            ) : (
               <p className="text-2xl font-bold" data-testid="student-sessions-count">
                 {formatLocalizedNumber(sessions.data?.data?.length ?? 0, locale)}
               </p>
             )}
-            {sessions.isError && <p className="text-xs text-rose-600">{normalizeApiError(sessions.error, locale).message}</p>}
+            {sessions.isError && (
+              <p className="text-xs text-rose-600">
+                {normalizeApiError(sessions.error, locale).message}
+              </p>
+            )}
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle className="text-sm">{dict.notifications.title}</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-sm">{dict.notifications.title}</CardTitle>
+          </CardHeader>
           <CardContent>
             <p className="text-2xl font-bold" data-testid="student-unread-count">
               {formatLocalizedNumber(unread.data?.unreadCount ?? 0, locale)}
@@ -62,12 +90,24 @@ function StudentDashboardContent({ locale }: { locale: Locale }) {
           </CardContent>
         </Card>
         <Card>
-          <CardHeader><CardTitle className="text-sm">{locale === 'bn' ? 'পরবর্তী পদক্ষেপ' : 'Next steps'}</CardTitle></CardHeader>
+          <CardHeader>
+            <CardTitle className="text-sm">
+              {locale === 'bn' ? 'পরবর্তী পদক্ষেপ' : 'Next steps'}
+            </CardTitle>
+          </CardHeader>
           <CardContent className="space-y-2 text-sm">
-            <Link className="text-emerald-700 underline" href={withLocale('/tutors', locale)} data-testid="student-find-tutors-link">
+            <Link
+              className="text-emerald-700 underline"
+              href={withLocale('/tutors', locale)}
+              data-testid="student-find-tutors-link"
+            >
               {dict.nav.findTutors}
             </Link>
-            <Link className="block text-emerald-700 underline" href={withLocale('/requests', locale)} data-testid="student-requests-link">
+            <Link
+              className="block text-emerald-700 underline"
+              href={withLocale('/requests', locale)}
+              data-testid="student-requests-link"
+            >
               {locale === 'bn' ? 'আমার অনুরোধ দেখুন' : 'View my requests'}
             </Link>
           </CardContent>
@@ -90,10 +130,15 @@ function StudentDashboardContent({ locale }: { locale: Locale }) {
           />
         ) : (
           <Card>
-            <CardHeader><CardTitle>{locale === 'bn' ? 'সাম্প্রতিক অনুরোধ' : 'Recent requests'}</CardTitle></CardHeader>
+            <CardHeader>
+              <CardTitle>{locale === 'bn' ? 'সাম্প্রতিক অনুরোধ' : 'Recent requests'}</CardTitle>
+            </CardHeader>
             <CardContent className="space-y-2 text-sm" data-testid="student-recent-requests">
               {myRequests.slice(0, 5).map((r) => (
-                <div key={r.id} className="flex items-center justify-between rounded-lg border p-2.5">
+                <div
+                  key={r.id}
+                  className="flex items-center justify-between rounded-lg border p-2.5"
+                >
                   <span className="font-mono text-xs">{r.id.slice(0, 8)}…</span>
                   <span className="text-xs font-semibold">{String(r.status)}</span>
                 </div>

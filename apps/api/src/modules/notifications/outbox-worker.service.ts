@@ -3,6 +3,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThanOrEqual, IsNull } from 'typeorm';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { NotificationService } from './notification.service';
+import { readErrorMessage } from '../../common/errors/error-message';
 
 export interface OutboxProcessingResult {
   processed: number;
@@ -66,9 +67,9 @@ export class OutboxWorkerService {
         event.lastErrorCode = null;
         await this.outboxRepo.save(event);
         succeeded++;
-      } catch (err: any) {
+      } catch (err: unknown) {
         // Safe error redaction
-        const sanitizedError = (err.message || 'DELIVERY_ERROR')
+        const sanitizedError = (readErrorMessage(err) || 'DELIVERY_ERROR')
           .replace(/[a-zA-Z0-9_\-\.]{20,}/g, '[REDACTED_SECRET]')
           .slice(0, 200);
 

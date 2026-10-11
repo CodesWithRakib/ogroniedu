@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException, ForbiddenException, Logger, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, type FindOptionsWhere } from 'typeorm';
 import { SafetyReportEntity } from './entities/safety-report.entity';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { AuditLogEntity } from '../audit/entities/audit-log.entity';
@@ -128,7 +128,7 @@ export class SafetyReportsService {
    */
   async listReports(user: AuthenticatedUser): Promise<SafetyReportEntity[]> {
     const isAdmin = user.roles?.includes('admin');
-    const where: any = isAdmin ? {} : { reporterUserId: user.id };
+    const where: FindOptionsWhere<SafetyReportEntity> = isAdmin ? {} : { reporterUserId: user.id };
 
     return this.reportRepo.find({
       where,

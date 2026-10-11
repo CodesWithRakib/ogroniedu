@@ -7,7 +7,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, type FindOptionsWhere } from 'typeorm';
 import { TutorReplacementCaseEntity } from './entities/tutor-replacement-case.entity';
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
@@ -168,7 +168,9 @@ export class TutorReplacementService {
    */
   async listCases(user: AuthenticatedUser): Promise<TutorReplacementCaseEntity[]> {
     const isAdmin = user.roles?.includes('admin');
-    const where: any = isAdmin ? {} : { requestedBy: user.id };
+    const where: FindOptionsWhere<TutorReplacementCaseEntity> = isAdmin
+      ? {}
+      : { requestedBy: user.id };
 
     return this.caseRepo.find({
       where,

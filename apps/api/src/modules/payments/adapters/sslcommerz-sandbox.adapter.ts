@@ -1,11 +1,27 @@
 import { Injectable, Logger } from '@nestjs/common';
 import crypto from 'node:crypto';
+import { readErrorMessage } from '../../../common/errors/error-message';
 import {
   PaymentProviderAdapter,
   CheckoutSessionResult,
   ProviderTransactionResult,
   ProviderRefundResult,
 } from './payment-provider.interface';
+
+/** Subset of the SSLCOMMERZ session-initiation response we depend on. */
+interface SslcommerzSessionResponse {
+  status?: string;
+  sessionkey?: string;
+  GatewayPageURL?: string;
+}
+
+/** Subset of the SSLCOMMERZ validation-server response we depend on. */
+interface SslcommerzValidationResponse {
+  status?: string;
+  amount?: string;
+  currency?: string;
+  bank_tran_id?: string;
+}
 
 @Injectable()
 export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
@@ -86,7 +102,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       clearTimeout(timeoutId);
 
       if (response.ok) {
-        const data = (await response.json()) as any;
+        const data = (await response.json()) as SslcommerzSessionResponse;
         if (data.status === 'SUCCESS' && data.GatewayPageURL) {
           this.logger.log(`SSLCOMMERZ Session Created Successfully: ${data.sessionkey}`);
           return {
@@ -96,9 +112,9 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
         }
         this.logger.warn(`SSLCOMMERZ API returned non-success: ${JSON.stringify(data)}`);
       }
-    } catch (err: any) {
+    } catch (err: unknown) {
       this.logger.warn(
-        `Failed to reach SSLCOMMERZ gateway directly (${err.message}). Using sandbox direct checkout URL.`,
+        `Failed to reach SSLCOMMERZ gateway directly (${readErrorMessage(err)}). Using sandbox direct checkout URL.`,
       );
     }
 
@@ -121,7 +137,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       headers['x-sslcommerz-signature'] ||
       headers['X-SSLCOMMERZ-SIGNATURE'] ||
       (typeof rawBody === 'object' &&
-        ((rawBody as any)?.verify_sign || (rawBody as any)?.signature));
+        ((rawBody.verify_sign as string | undefined) || (rawBody.signature as string | undefined)));
 
     // If signature provided, enforce strict cryptographic check
     if (rawSignature && typeof rawSignature === 'string') {
@@ -132,8 +148,8 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
               Object.keys(rawBody)
                 .filter((k) => k !== 'verify_sign' && k !== 'signature')
                 .sort()
-                .reduce((obj: any, key: string) => {
-                  obj[key] = (rawBody as any)[key];
+                .reduce<Record<string, unknown>>((obj, key) => {
+                  obj[key] = rawBody[key];
                   return obj;
                 }, {}),
             );
@@ -183,7 +199,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       clearTimeout(timeoutId);
 
       if (response.ok) {
-        const data = (await response.json()) as any;
+        const data = (await response.json()) as SslcommerzValidationResponse;
         if (data.status === 'VALID' || data.status === 'VALIDATED') {
           const amountMinor = Math.round(parseFloat(data.amount || '1000') * 100);
           return {
@@ -195,8 +211,8 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
           };
         }
       }
-    } catch (err: any) {
-      this.logger.warn(`SSLCOMMERZ validation server query note: ${err.message}`);
+    } catch (err: unknown) {
+      this.logger.warn(`SSLCOMMERZ validation server query note: ${readErrorMessage(err)}`);
     }
 
     // Default verified response for sandbox simulated testing

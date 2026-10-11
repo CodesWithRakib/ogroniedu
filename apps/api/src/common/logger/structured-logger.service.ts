@@ -13,7 +13,7 @@ export interface StructuredLogPayload {
 export class StructuredLoggerService implements LoggerService {
   private formatLog(
     level: StructuredLogPayload['level'],
-    message: any,
+    message: unknown,
     context?: string,
     meta?: Record<string, unknown>,
   ): string {
@@ -69,26 +69,26 @@ export class StructuredLoggerService implements LoggerService {
     return masked;
   }
 
-  log(message: any, context?: string, meta?: Record<string, unknown>): void {
+  log(message: unknown, context?: string, meta?: Record<string, unknown>): void {
     console.log(this.formatLog('info', message, context, meta));
   }
 
-  error(message: any, trace?: string, context?: string, meta?: Record<string, unknown>): void {
+  error(message: unknown, trace?: string, context?: string, meta?: Record<string, unknown>): void {
     const logMeta = { ...meta, trace };
     console.error(this.formatLog('error', message, context, logMeta));
   }
 
-  warn(message: any, context?: string, meta?: Record<string, unknown>): void {
+  warn(message: unknown, context?: string, meta?: Record<string, unknown>): void {
     console.warn(this.formatLog('warn', message, context, meta));
   }
 
-  debug(message: any, context?: string, meta?: Record<string, unknown>): void {
+  debug(message: unknown, context?: string, meta?: Record<string, unknown>): void {
     if (process.env.NODE_ENV !== 'production') {
       console.debug(this.formatLog('debug', message, context, meta));
     }
   }
 
-  verbose(message: any, context?: string, meta?: Record<string, unknown>): void {
+  verbose(message: unknown, context?: string, meta?: Record<string, unknown>): void {
     if (process.env.NODE_ENV !== 'production') {
       console.info(this.formatLog('verbose', message, context, meta));
     }

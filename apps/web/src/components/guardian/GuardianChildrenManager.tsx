@@ -23,6 +23,13 @@ import {
 } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 
+export type GuardianRelationship = 'father' | 'mother' | 'legal_guardian';
+
+/** Narrow the raw select value into the relationship union without asserting `any`. */
+function toGuardianRelationship(value: string): GuardianRelationship {
+  return value === 'mother' || value === 'legal_guardian' ? value : 'father';
+}
+
 export interface ChildItem {
   linkId: string;
   studentId: string;
@@ -62,9 +69,7 @@ export function GuardianChildrenManager({
   }, [initialChildren]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [identifier, setIdentifier] = useState('');
-  const [relationship, setRelationship] = useState<'father' | 'mother' | 'legal_guardian'>(
-    'father',
-  );
+  const [relationship, setRelationship] = useState<GuardianRelationship>('father');
   const [consentAgreed, setConsentAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
@@ -99,9 +104,7 @@ export function GuardianChildrenManager({
         });
       } else {
         throw new Error(
-          locale === 'bn'
-            ? 'সন্তান যুক্ত করতে লগইন করুন।'
-            : 'Sign in to link a child.',
+          locale === 'bn' ? 'সন্তান যুক্ত করতে লগইন করুন।' : 'Sign in to link a child.',
         );
       }
 
@@ -251,7 +254,7 @@ export function GuardianChildrenManager({
                   <select
                     id="select-relationship"
                     value={relationship}
-                    onChange={(e) => setRelationship(e.target.value as any)}
+                    onChange={(e) => setRelationship(toGuardianRelationship(e.target.value))}
                     className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                   >
                     <option value="father">{dict.guardian.father}</option>

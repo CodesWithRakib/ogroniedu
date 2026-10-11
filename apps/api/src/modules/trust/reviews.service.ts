@@ -8,7 +8,7 @@ import {
   Inject,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, type FindOptionsWhere } from 'typeorm';
 import { ReviewEntity } from './entities/review.entity';
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
@@ -55,10 +55,8 @@ export class ReviewsService {
       throw new NotFoundException(`Booking ${dto.bookingId} not found`);
     }
 
-    const tutorUserId =
-      booking.tutorUserId ||
-      (booking as any).tutor?.userId ||
-      (booking as any).tutorProfile?.userId;
+    // tutorUserId is a column; tutorProfile is the optional loaded relation.
+    const tutorUserId = booking.tutorUserId || booking.tutorProfile?.userId;
 
     if (!tutorUserId) {
       throw new NotFoundException('Tutor not found for this booking');
@@ -171,10 +169,9 @@ export class ReviewsService {
    * 2. Get Published Reviews for a Tutor
    */
   async getTutorReviews(tutorUserId: string, includeAll = false): Promise<ReviewEntity[]> {
-    const where: any = { tutorUserId };
-    if (!includeAll) {
-      where.moderationStatus = 'published';
-    }
+    const where: FindOptionsWhere<ReviewEntity> = includeAll
+      ? { tutorUserId }
+      : { tutorUserId, moderationStatus: 'published' };
 
     return this.reviewRepo.find({
       where,

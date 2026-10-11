@@ -18,6 +18,34 @@ export interface AdminBookingItem {
   mode: 'online' | 'in_person';
 }
 
+export interface AdminReconciliationAccount {
+  code: string;
+  name: string;
+  accountType: string;
+  balance: string;
+}
+
+export interface AdminReconciliationData {
+  isBalanced: boolean;
+  totalDebits: string;
+  totalCredits: string;
+  discrepancy: string;
+  status: 'reconciled' | 'discrepancy_detected';
+  accounts: AdminReconciliationAccount[];
+}
+
+export interface AdminSystemSettingItem {
+  key: string;
+  value: Record<string, unknown>;
+  description: string | null;
+}
+
+export interface AdminFeatureFlagItem {
+  key: string;
+  enabled: boolean;
+  rules: Record<string, unknown>;
+}
+
 export interface AdminAuditLogItem {
   id: string;
   actorUserId: string | null;

@@ -7,8 +7,40 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { getNotificationDefinition, interpolateTemplate } from '@ogroniedu/contracts';
+import { Repository, IsNull } from 'typeorm';
+import {
+  getNotificationDefinition,
+  interpolateTemplate,
+  NotificationCategories,
+  NotificationEventTypes,
+  type NotificationCategory,
+  type NotificationEventType,
+} from '@ogroniedu/contracts';
+import { readErrorMessage } from '../../common/errors/error-message';
+import type {
+  NotificationCategoryType,
+  NotificationChannelType,
+} from './entities/notification-preference.entity';
+
+/** Entity event_type is stored as text; narrow to the registry union at read time. */
+function readEventType(value: string): NotificationEventType {
+  return (NotificationEventTypes as readonly string[]).includes(value)
+    ? (value as NotificationEventType)
+    : 'booking.requested';
+}
+
+/** Preference category/channel are validated unions at the entity boundary. */
+function readCategory(value: string): NotificationCategoryType {
+  return (NotificationCategories as readonly string[]).includes(value)
+    ? (value as NotificationCategoryType)
+    : 'system';
+}
+
+function readChannel(value: string): NotificationChannelType {
+  return value === 'email' || value === 'sms' || value === 'push' || value === 'whatsapp'
+    ? value
+    : 'in_app';
+}
 import type {
   NotificationItemDto,
   NotificationsListResponseDto,
@@ -26,11 +58,7 @@ import { NotificationDeliveryEntity } from './entities/notification-delivery.ent
 import { NotificationPreferenceEntity } from './entities/notification-preference.entity';
 import { NotificationGateway } from './notification.gateway';
 import { Optional } from '@nestjs/common';
-import {
-  decodeCursor,
-  encodeCursor,
-  type CursorPayload,
-} from '../../common/pagination/pagination';
+import { decodeCursor, encodeCursor, type CursorPayload } from '../../common/pagination/pagination';
 
 /** Default cursor page size for the notifications feed. */
 const DEFAULT_NOTIFICATIONS_CURSOR_PAGE_SIZE = 20;
@@ -83,7 +111,7 @@ export class NotificationService {
     const def = getNotificationDefinition(dto.eventType);
 
     // 1. Recipient Eligibility & Role Validation
-    if (!def.allowedRoles.includes(dto.recipientRole as any)) {
+    if (!def.allowedRoles.includes(dto.recipientRole)) {
       throw new ForbiddenException(
         `Role '${dto.recipientRole}' is not eligible to receive notification type '${dto.eventType}'`,
       );
@@ -103,8 +131,8 @@ export class NotificationService {
     if (this.notificationRepo) {
       try {
         await this.notificationRepo.save(notification);
-      } catch (err: any) {
-        this.logger.warn(`DB save fallback to in-memory: ${err.message}`);
+      } catch (err: unknown) {
+        this.logger.warn(`DB save fallback to in-memory: ${readErrorMessage(err)}`);
         this.memoryNotifications.push(notification);
       }
     } else {
@@ -129,7 +157,7 @@ export class NotificationService {
     if (this.deliveryRepo) {
       try {
         await this.deliveryRepo.save(delivery);
-      } catch (err: any) {
+      } catch {
         this.memoryDeliveries.push(delivery);
       }
     } else {
@@ -146,8 +174,8 @@ export class NotificationService {
     if (this.gateway && !isSuppressed) {
       try {
         this.gateway.sendToUser(dto.userId, itemDto, unreadCount);
-      } catch (err: any) {
-        this.logger.warn(`Gateway dispatch error: ${err.message}`);
+      } catch (err: unknown) {
+        this.logger.warn(`Gateway dispatch error: ${readErrorMessage(err)}`);
       }
     }
 
@@ -341,11 +369,11 @@ export class NotificationService {
         const count = await this.notificationRepo.count({
           where: {
             userId,
-            readAt: null as any,
+            readAt: IsNull(),
           },
         });
         return { unreadCount: count };
-      } catch (err: any) {
+      } catch {
         const count = this.memoryNotifications.filter(
           (n) => n.userId === userId && !n.readAt,
         ).length;
@@ -375,7 +403,7 @@ export class NotificationService {
 
         notification.readAt = readAt;
         await this.notificationRepo.save(notification);
-      } catch (err: any) {
+      } catch {
         const memoryItem = this.memoryNotifications.find(
           (n) => n.id === notificationId && n.userId === userId,
         );
@@ -421,7 +449,7 @@ export class NotificationService {
           .execute();
 
         markedCount = result.affected || 0;
-      } catch (err: any) {
+      } catch {
         const unreadItems = this.memoryNotifications.filter(
           (n) => n.userId === userId && !n.readAt,
         );
@@ -447,7 +475,7 @@ export class NotificationService {
     entity: NotificationEntity,
     locale: 'bn' | 'en' = 'bn',
   ): NotificationItemDto {
-    const def = getNotificationDefinition(entity.eventType as any);
+    const def = getNotificationDefinition(readEventType(entity.eventType));
     const template = locale === 'en' ? def.templateEn : def.templateBn;
 
     const payload = entity.payload as Record<string, string | number>;
@@ -458,7 +486,7 @@ export class NotificationService {
     return {
       id: entity.id,
       userId: entity.userId,
-      eventType: entity.eventType as any,
+      eventType: readEventType(entity.eventType),
       title,
       body,
       titleKey: entity.titleKey,
@@ -541,12 +569,12 @@ export class NotificationService {
    */
   private async isChannelSuppressed(
     userId: string,
-    category: string,
-    channel: string,
+    category: NotificationCategory,
+    channel: NotificationChannelType,
   ): Promise<boolean> {
     if (this.preferenceRepo) {
       const pref = await this.preferenceRepo.findOne({
-        where: { userId, category: category as any, channel: channel as any },
+        where: { userId, category: readCategory(category), channel: readChannel(channel) },
       });
       return pref ? !pref.isEnabled : false;
     }

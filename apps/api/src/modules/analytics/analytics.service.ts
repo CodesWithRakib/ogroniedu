@@ -9,6 +9,18 @@ export interface TimeBounds {
   end: Date;
 }
 
+/** Raw SQL is returned as untyped rows by the pg driver; narrow at the boundary. */
+type SqlRow = Record<string, unknown>;
+
+function asSqlRows(rows: unknown): SqlRow[] {
+  return Array.isArray(rows) ? (rows as SqlRow[]) : [];
+}
+
+function toNumber(value: unknown, fallback = 0): number {
+  const num = Number(value);
+  return Number.isFinite(num) ? num : fallback;
+}
+
 @Injectable()
 export class AnalyticsService {
   private readonly logger = new Logger(AnalyticsService.name);
@@ -210,7 +222,7 @@ export class AnalyticsService {
         safetyReportsCount,
         criticalSafetyCount,
       },
-      trends: trendsRes.map((r: any) => ({
+      trends: asSqlRows(trendsRes).map((r) => ({
         date: r.metric_date,
         requests: r.requests,
         confirmed: r.confirmed,
@@ -236,10 +248,10 @@ export class AnalyticsService {
       [start, end],
     );
 
-    const providerBreakdown = providersRes.map((p: any) => ({
+    const providerBreakdown = asSqlRows(providersRes).map((p) => ({
       provider: p.provider,
       ordersCount: p.orders_count,
-      volumeBdt: Number(BigInt(p.volume_minor)) / 100,
+      volumeBdt: toNumber(p.volume_minor) / 100,
     }));
 
     // Refunds Reason Breakdown
@@ -254,10 +266,10 @@ export class AnalyticsService {
       [start, end],
     );
 
-    const refundBreakdown = refundReasonsRes.map((r: any) => ({
+    const refundBreakdown = asSqlRows(refundReasonsRes).map((r) => ({
       reason: r.reason,
       count: r.count,
-      amountBdt: Number(BigInt(r.amount_minor)) / 100,
+      amountBdt: toNumber(r.amount_minor) / 100,
     }));
 
     // Ledger Reconciliation Check
@@ -330,14 +342,14 @@ export class AnalyticsService {
         endDate: end.toISOString(),
       },
       avgResponseHours,
-      topTutors: leaderboardRes.map((t: any) => ({
+      topTutors: asSqlRows(leaderboardRes).map((t) => ({
         tutorUserId: t.tutor_user_id,
         tutorName: t.tutor_name,
         completedSessions: t.completed_sessions,
         noShowSessions: t.no_show_sessions,
-        averageRating: Number(t.average_rating),
+        averageRating: toNumber(t.average_rating),
       })),
-      subjects: subjectsRes.map((s: any) => ({
+      subjects: asSqlRows(subjectsRes).map((s) => ({
         nameEn: s.name_en,
         nameBn: s.name_bn,
         totalBookings: s.total_bookings,

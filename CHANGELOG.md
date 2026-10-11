@@ -1,5 +1,22 @@
 # Changelog
 
+## 1.21.0 — Phase 22 Architecture Refactoring, Oversized-File Split & Auth Hardening
+
+- **Definition of Done Enforced — no oversized mixed-responsibility files left in the web app, no source `any`, and no unauthenticated auth bypass reachable in production:**
+- **Oversized frontend views split into thin orchestrators + feature modules:**
+  - `AdminDashboardView` (1122 → 310 lines): operational state/actions moved to `features/admin/hooks/use-admin-actions.ts`; metrics strip and tabs bar extracted; each of the 7 admin tabs and 4 action modals is now a focused component under `features/admin/components/`. Duplicated admin types consolidated into `features/admin/types/admin.types.ts`; all `Record<string, any>` removed.
+  - `TutorSearchCatalog` (968 lines): split into `features/tutor-discovery/` (`types`, `utils/catalog-filter`, `components/tutor-card`, `tutor-filters-form`, `tutor-results-grid`, `score-breakdown-modal`, `booking-request-modal`, `tutor-search-catalog`). Route and tests now import `@/features/tutor-discovery`; legacy `components/discovery` directory removed.
+  - `LearningManagementView` (814 lines): split into `features/learning/` (`types`, `hooks/use-learning-management`, banner, metric cards, tabs bar, `tabs/*`, `modals/*`, view). Route and tests now import `@/features/learning`; legacy `components/learning` directory removed.
+- **Security hardening (previously reachable auth bypass):**
+  - Gated the HTTP `AuthGuard` `x-user-id`/`x-user-roles` header bypass and `mock:` bearer tokens behind a new `common/auth/test-auth.ts` helper (`NODE_ENV=test|development` or explicit `ALLOW_TEST_AUTH_BYPASS=true`); production requests presenting these are now rejected with `401`.
+  - `NotificationGateway` socket handshake now verifies JWT signatures with `jwt.verify` instead of trusting an unsigned base64-decoded token; the socket `x-user-id`/`?userId=` fallbacks are gated by the same helper. Previously any client could join another user's notification room.
+  - Added `apps/api/test/auth-bypass-guard.spec.ts` (4 tests) proving bypass denial under `NODE_ENV=production` and continued test-mode behaviour.
+- **Strict-TypeScript cleanup — zero `any` in application source:**
+  - Removed all `apps/api/src` `any`: analytics raw-SQL rows now narrow through `asSqlRows`/`toNumber`, notification enums through typed guards, trust service `where` clauses use `FindOptionsWhere<T>`, payment adapters type webhook bodies and provider JSON, `StructuredLoggerService` and all `catch` clauses use `unknown` with a shared `readErrorMessage` helper.
+  - Removed the remaining web `any` (admin `Record<string, any>` props and the guardian relationship cast) and the no-op student-dashboard request filter (`... || true`).
+- **Baseline repair:** updated `packages/database/test/bcdr-recovery.spec.ts` to expect migration `011_session_cancellation_tracking.sql` (the assertion still expected 10 migrations after 011 was added).
+- **Verification:** `pnpm typecheck` clean across 5 packages; `pnpm build` (web + api + contracts + database) succeeds; test suites — api 44 files / **397 passed**, web 20 files / **92 passed**, database 4 files / **28 passed**; full `pnpm test` exits 0.
+
 ## 1.20.0 — Phase 20 CI/CD and Deployment Completion
 
 - **Definition of Done Enforced — Automated pipeline builds, tests, checks security, and containerizes with zero manual intervention or broken gates:**
@@ -350,7 +367,7 @@
   - Grading & Score Revision Auditing (`POST /api/v1/learning/submissions/:id/grade`): tutors review submissions with max score validation; revising an already graded score strictly requires a `revisionReason` and logs previous score, new score, actor ID, and reason in `audit_logs`.
   - Auditable Progress Reports (`POST /api/v1/learning/progress-reports`): computes observable metrics (attendance %, assignments completed, average score) directly from database records, preventing unsupported mastery claims.
   - Guardian oversight: only active linked guardians (`guardian_student_links`) can access student learning records and progress reports; unlinked/revoked users receive `403 Forbidden`.
-  - Built frontend UI [`LearningManagementView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/learning/LearningManagementView.tsx) and page at `apps/web/src/app/[locale]/learning/page.tsx` with attendance cards, homework submission modal, grading modal, and progress reports dashboard.
+  - Built frontend UI [`LearningManagementView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/features/learning/components/learning-management-view.tsx) and page at `apps/web/src/app/[locale]/learning/page.tsx` with attendance cards, homework submission modal, grading modal, and progress reports dashboard.
   - Added bilingual namespace `"learning"` (36 keys) to `messages/en.json` and `messages/bn.json` with 100% key parity and Bengali digit localization.
   - Added 34 new tests across `learning.service.spec.ts`, `learning.controller.spec.ts`, `learning.spec.ts`, and `migration.spec.ts`.
   - Expanded monorepo test suite from 206 to **240 passing tests, 0 failures, 0 skipped**.

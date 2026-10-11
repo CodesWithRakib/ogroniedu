@@ -5,7 +5,7 @@ import {
   AttendanceRecordItem,
   AssignmentItem,
   ProgressReportItem,
-} from '../src/components/learning/LearningManagementView';
+} from '../src/features/learning';
 import { getDictionary, formatLocalizedNumber } from '../src/lib/i18n';
 
 describe('LearningManagementView Component & Localization Tests (Phase 10)', () => {

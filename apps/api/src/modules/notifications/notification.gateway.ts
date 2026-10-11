@@ -9,8 +9,14 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 import { Logger, Inject, forwardRef } from '@nestjs/common';
+import jwt from 'jsonwebtoken';
 import type { NotificationItemDto, UnreadCountResponseDto } from '@ogroniedu/contracts';
 import { NotificationService } from './notification.service';
+import { isTestAuthBypassEnabled } from '../../common/auth/test-auth';
+
+function readString(value: unknown): string | undefined {
+  return typeof value === 'string' ? value : undefined;
+}
 
 @WebSocketGateway({
   namespace: '/notifications',
@@ -21,6 +27,8 @@ import { NotificationService } from './notification.service';
 })
 export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
   private readonly logger = new Logger(NotificationGateway.name);
+  private readonly jwtSecret =
+    process.env.JWT_SECRET || 'ogroniedu-super-secure-jwt-secret-key-2026-bangladesh';
 
   @WebSocketServer()
   server!: Server;
@@ -34,28 +42,28 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     try {
       const auth = client.handshake.auth || {};
       const headers = client.handshake.headers || {};
+      const allowBypass = isTestAuthBypassEnabled();
       let userId: string | null = null;
 
-      // 1. Check handshake.auth.token
-      if (auth.token) {
-        if (typeof auth.token === 'string' && auth.token.startsWith('mock:')) {
-          userId = auth.token.split(':')[1];
-        } else if (typeof auth.token === 'string' && auth.token.includes('.')) {
-          const payloadBase64 = auth.token.split('.')[1];
-          if (payloadBase64) {
-            const decoded = JSON.parse(Buffer.from(payloadBase64, 'base64').toString('utf-8'));
-            userId = decoded.sub || decoded.id;
+      // 1. Verify a real JWT signature; never trust an unsigned/decoded token.
+      if (typeof auth.token === 'string' && auth.token.includes('.')) {
+        try {
+          const claims = jwt.verify(auth.token, this.jwtSecret);
+          if (typeof claims !== 'string') {
+            userId = readString(claims.sub) ?? readString(claims.id) ?? null;
           }
-        } else {
-          userId = String(auth.token);
+        } catch {
+          userId = null;
         }
+      } else if (allowBypass && typeof auth.token === 'string' && auth.token.startsWith('mock:')) {
+        userId = auth.token.split(':')[1] ?? null;
       }
 
-      // 2. Fallback to header or query parameter
-      if (!userId && headers['x-user-id']) {
+      // 2. Test-only fallbacks (header / query). Disabled outside test/development.
+      if (allowBypass && !userId && headers['x-user-id']) {
         userId = String(headers['x-user-id']);
       }
-      if (!userId && client.handshake.query.userId) {
+      if (allowBypass && !userId && client.handshake.query.userId) {
         userId = String(client.handshake.query.userId);
       }
 
@@ -75,8 +83,9 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
       // Send initial unread count immediately upon connection
       const { unreadCount } = await this.notificationService.getUnreadCount(userId);
       client.emit('unread_count', { unreadCount });
-    } catch (err: any) {
-      this.logger.error(`Error during socket handshake authentication: ${err.message}`);
+    } catch (err: unknown) {
+      const message = err instanceof Error ? err.message : String(err);
+      this.logger.error(`Error during socket handshake authentication: ${message}`);
       client.emit('auth_error', { message: 'Internal authentication error' });
       client.disconnect(true);
     }

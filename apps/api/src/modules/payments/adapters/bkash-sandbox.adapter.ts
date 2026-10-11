@@ -44,7 +44,7 @@ export class BkashSandboxAdapter implements PaymentProviderAdapter {
     const rawSignature =
       headers['x-bkash-signature'] ||
       headers['X-BKASH-SIGNATURE'] ||
-      (typeof rawBody === 'object' && (rawBody as any)?.signature);
+      (typeof rawBody === 'object' ? (rawBody.signature as string | undefined) : undefined);
 
     if (!rawSignature || typeof rawSignature !== 'string') {
       return false;
@@ -57,8 +57,8 @@ export class BkashSandboxAdapter implements PaymentProviderAdapter {
             Object.keys(rawBody)
               .filter((k) => k !== 'signature')
               .sort()
-              .reduce((obj: any, key: string) => {
-                obj[key] = (rawBody as any)[key];
+              .reduce<Record<string, unknown>>((obj, key) => {
+                obj[key] = rawBody[key];
                 return obj;
               }, {}),
           );
