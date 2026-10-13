@@ -10,6 +10,7 @@ import {
   SelectValue,
 } from '@/components/ui/select';
 import type { OffsetPaginationMeta } from '@/lib/api/contract';
+import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 
 export function TablePagination({
   pagination,
@@ -17,17 +18,22 @@ export function TablePagination({
   onPageSizeChange,
   pageSizeOptions = [10, 20, 50],
   testId = 'table-pagination',
+  locale = 'bn',
 }: {
   pagination: OffsetPaginationMeta;
   onPageChange: (page: number) => void;
   onPageSizeChange?: (pageSize: number) => void;
   pageSizeOptions?: number[];
   testId?: string;
+  locale?: Locale;
 }) {
+  const isBn = locale === 'bn';
   return (
     <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" data-testid={testId}>
       <p className="text-xs text-slate-500" data-testid={`${testId}-summary`}>
-        Page {pagination.page} of {pagination.totalPages} · {pagination.totalItems} items
+        {isBn
+          ? `পৃষ্ঠা ${formatLocalizedNumber(pagination.page, locale)} / ${formatLocalizedNumber(pagination.totalPages, locale)} · ${formatLocalizedNumber(pagination.totalItems, locale)}টি`
+          : `Page ${pagination.page} of ${pagination.totalPages} · ${pagination.totalItems} items`}
       </p>
       <div className="flex items-center gap-2">
         {onPageSizeChange && (
@@ -35,13 +41,13 @@ export function TablePagination({
             value={String(pagination.pageSize)}
             onValueChange={(v) => onPageSizeChange(Number(v))}
           >
-            <SelectTrigger className="h-8 w-24" aria-label="Page size" data-testid={`${testId}-page-size`}>
+            <SelectTrigger className="h-8 w-24" aria-label={isBn ? 'পৃষ্ঠার আকার' : 'Page size'} data-testid={`${testId}-page-size`}>
               <SelectValue />
             </SelectTrigger>
             <SelectContent>
               {pageSizeOptions.map((n) => (
                 <SelectItem key={n} value={String(n)}>
-                  {n} / page
+                  {isBn ? `${formatLocalizedNumber(n, locale)} / পৃষ্ঠা` : `${n} / page`}
                 </SelectItem>
               ))}
             </SelectContent>
@@ -54,7 +60,7 @@ export function TablePagination({
           onClick={() => onPageChange(pagination.page - 1)}
           data-testid={`${testId}-prev`}
         >
-          Previous
+          {isBn ? 'পূর্ববর্তী' : 'Previous'}
         </Button>
         <Button
           variant="outline"
@@ -63,7 +69,7 @@ export function TablePagination({
           onClick={() => onPageChange(pagination.page + 1)}
           data-testid={`${testId}-next`}
         >
-          Next
+          {isBn ? 'পরবর্তী' : 'Next'}
         </Button>
       </div>
     </div>

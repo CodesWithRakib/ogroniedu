@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { TrustModalShell, TrustFormAlert } from '@/features/trust/components/trust-modal-shell';
 import { useModalSubmit } from '@/features/trust/hooks/use-modal-submit';
 import type { TutorReplacementModalProps } from '@/features/trust/types/trust.types';
@@ -16,6 +16,7 @@ export function TutorReplacementModal({
   onSubmitReplacement,
 }: TutorReplacementModalProps) {
   const t = useTranslations('trust');
+  const locale = useLocale();
   const [reasonCode, setReasonCode] = useState<string>('trial_dissatisfaction');
   const [explanation, setExplanation] = useState<string>('');
   const submit = useModalSubmit<unknown>({
@@ -50,6 +51,7 @@ export function TutorReplacementModal({
       subtitle={t('replacementSubtitle')}
       maxWidth={540}
       onClose={onClose}
+      closeLabel={locale === 'bn' ? 'বন্ধ করুন' : 'Close'}
     >
       <div
         style={{

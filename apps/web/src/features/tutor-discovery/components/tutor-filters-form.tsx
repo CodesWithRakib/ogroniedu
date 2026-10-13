@@ -49,14 +49,14 @@ export function TutorFiltersForm({
               }
               value={value.query}
               onChange={(e) => onChange({ query: e.target.value })}
-              aria-label="Search tutors"
+              aria-label={locale === 'bn' ? 'শিক্ষক খুঁজুন' : 'Search tutors'}
               data-testid="search-query-input"
             />
           </div>
 
           <div className="md:col-span-2">
             <select
-              aria-label="Filter mode"
+              aria-label={locale === 'bn' ? 'পাঠদানের পদ্ধতি অনুযায়ী ছাঁকুন' : 'Filter mode'}
               value={value.modeFilter}
               onChange={(e) => onChange({ modeFilter: e.target.value })}
               data-testid="mode-select"
@@ -71,7 +71,7 @@ export function TutorFiltersForm({
 
           <div className="md:col-span-3">
             <select
-              aria-label="Sort by"
+              aria-label={locale === 'bn' ? 'সাজানোর নিয়ম' : 'Sort by'}
               value={value.sortBy}
               onChange={(e) => onChange({ sortBy: e.target.value as TutorSortKey })}
               data-testid="sort-by-select"

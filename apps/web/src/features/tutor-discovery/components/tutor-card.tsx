@@ -54,7 +54,7 @@ export function TutorCard({
             type="button"
             onClick={() => onShowScore(tutor)}
             className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-emerald-50 text-emerald-800 dark:bg-emerald-950/60 dark:text-emerald-300 border border-emerald-200 dark:border-emerald-800 hover:bg-emerald-100 transition-colors cursor-pointer"
-            title="Click to view explainable match breakdown"
+            title={locale === 'bn' ? 'ম্যাচ স্কোরের ব্যাখ্যা দেখুন' : 'Click to view explainable match breakdown'}
             data-testid={`match-score-badge-${tutor.id}`}
           >
             <Sparkles className="w-3 h-3 text-emerald-600" />
@@ -147,7 +147,7 @@ export function TutorCard({
                 : `BDT ${hourlyRate}/hr`}
             </span>
           ) : (
-            <span className="text-xs text-slate-400">Contact for fee</span>
+            <span className="text-xs text-slate-400">{dict.discovery.contactForFee}</span>
           )}
         </div>
         <Button

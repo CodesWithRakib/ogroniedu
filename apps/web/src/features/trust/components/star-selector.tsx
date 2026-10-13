@@ -1,14 +1,18 @@
 'use client';
 
+import { formatLocalizedNumber } from '@/lib/i18n';
+
 /** 1–5 star picker used by the review form (display-only, controlled). */
 export function StarSelector({
   label,
   value,
   onChange,
+  locale = 'en',
 }: {
   label: string;
   value: number;
   onChange: (val: number) => void;
+  locale?: 'bn' | 'en';
 }) {
   return (
     <div style={{ marginBottom: '12px' }}>
@@ -29,7 +33,11 @@ export function StarSelector({
             key={star}
             type="button"
             onClick={() => onChange(star)}
-            aria-label={`${label}: ${star} of 5 stars`}
+            aria-label={
+              locale === 'bn'
+                ? `${label}: ${formatLocalizedNumber(5, 'bn')} এর মধ্যে ${formatLocalizedNumber(star, 'bn')}`
+                : `${label}: ${star} of 5 stars`
+            }
             aria-pressed={star <= value}
             style={{
               flex: 1,

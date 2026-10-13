@@ -10,7 +10,9 @@ export default function StudentDashboardRoute({ params }: { params: Promise<{ lo
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   return (
     <RequireAuth locale={locale}>
-      <StudentDashboardPage locale={locale} />
+      <main id="main-content">
+        <StudentDashboardPage locale={locale} />
+      </main>
     </RequireAuth>
   );
 }

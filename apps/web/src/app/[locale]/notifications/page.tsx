@@ -10,7 +10,9 @@ export default function Page({ params }: { params: Promise<{ locale: string }> }
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   return (
     <RequireAuth locale={locale}>
-      <NotificationsPage locale={locale} />
+      <main id="main-content">
+        <NotificationsPage locale={locale} />
+      </main>
     </RequireAuth>
   );
 }

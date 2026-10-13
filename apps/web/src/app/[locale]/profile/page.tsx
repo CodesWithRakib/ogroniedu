@@ -10,7 +10,9 @@ export default function ProfileRoute({ params }: { params: Promise<{ locale: str
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   return (
     <RequireAuth locale={locale}>
-      <ProfilePage locale={locale} />
+      <main id="main-content">
+        <ProfilePage locale={locale} />
+      </main>
     </RequireAuth>
   );
 }

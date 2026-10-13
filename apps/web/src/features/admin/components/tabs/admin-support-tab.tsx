@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import type { AdminSupportTicketItem } from '../../types/admin.types';
 
 const STATUS_TONE: Record<AdminSupportTicketItem['status'], string> = {
@@ -32,6 +32,8 @@ export function AdminSupportTab({
 }) {
   const t = useTranslations('admin');
   const tCommon = useTranslations('common');
+  const locale = useLocale();
+  const isBn = locale === 'bn';
   const [statusFilter, setStatusFilter] = React.useState<string>('all');
   const [notes, setNotes] = React.useState<Record<string, string>>({});
 
@@ -48,7 +50,7 @@ export function AdminSupportTab({
           data-testid="support-status-filter"
           aria-label={t('supportTab')}
         >
-          <option value="all">All Statuses</option>
+          <option value="all">{isBn ? 'সব অবস্থা' : 'All Statuses'}</option>
           {NEXT_STATUS.map((s) => (
             <option key={s} value={s}>
               {s}
@@ -106,7 +108,7 @@ export function AdminSupportTab({
                       rows={2}
                       value={notes[row.id] ?? row.resolutionNotes ?? ''}
                       onChange={(e) => setNotes((prev) => ({ ...prev, [row.id]: e.target.value }))}
-                      placeholder="Resolution notes…"
+                      placeholder={isBn ? 'সমাধান নোট…' : 'Resolution notes…'}
                       className="w-full px-2 py-1.5 bg-slate-950 border border-slate-800 rounded-lg text-[11px] text-slate-200 focus:outline-none focus:border-indigo-500"
                       data-testid={`support-notes-${row.id}`}
                     />
@@ -123,7 +125,7 @@ export function AdminSupportTab({
                       }
                       className="px-2 py-1.5 bg-slate-800 border border-slate-700 rounded-lg text-[11px] text-slate-200 focus:outline-none"
                       data-testid={`support-status-${row.id}`}
-                      aria-label={`Triage ticket from ${row.name}`}
+                      aria-label={isBn ? `${row.name}-এর টিকিট যাচাই করুন` : `Triage ticket from ${row.name}`}
                     >
                       {NEXT_STATUS.map((s) => (
                         <option key={s} value={s}>

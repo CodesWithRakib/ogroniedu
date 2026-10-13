@@ -98,22 +98,8 @@ export function useLearningManagement({
         if (onSubmitAssignment) {
           await onSubmitAssignment(target.id, { submissionText });
         }
-        setAssignmentList((prev) =>
-          prev.map((a) =>
-            a.id === target.id
-              ? {
-                  ...a,
-                  submission: {
-                    id: `sub-local-${Date.now()}`,
-                    studentUserId: 'student-id',
-                    submissionText,
-                    status: 'submitted',
-                    maxScore: a.maxScore,
-                  },
-                }
-              : a,
-          ),
-        );
+        // No local fabrication: the data boundary refetches booking records
+        // after the mutation and server truth flows back via initialAssignments.
         setSubmitModalAssignment(null);
         setSubmissionText('');
       } catch (err) {
@@ -143,22 +129,8 @@ export function useLearningManagement({
             revisionReason: isRevision ? gradingRevisionReason : undefined,
           });
         }
-        setAssignmentList((prev) =>
-          prev.map((a) =>
-            a.id === target.id
-              ? {
-                  ...a,
-                  submission: {
-                    ...a.submission!,
-                    score: gradingScore,
-                    tutorFeedback: gradingFeedback,
-                    status: 'reviewed',
-                    reviewedAt: new Date().toISOString(),
-                  },
-                }
-              : a,
-          ),
-        );
+        // No local fabrication: the data boundary refetches booking records
+        // after the mutation and server truth flows back via initialAssignments.
         setGradingModalAssignment(null);
       } catch (err) {
         setGradingError(err instanceof Error ? err.message : String(err));

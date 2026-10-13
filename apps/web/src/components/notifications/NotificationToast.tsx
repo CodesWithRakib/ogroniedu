@@ -84,7 +84,7 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
             type="button"
             onClick={() => dismissToast(toast.toastId)}
             className="shrink-0 p-1 rounded-md text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
-            aria-label="Dismiss notification"
+            aria-label={locale === 'bn' ? 'বিজ্ঞপ্তি সরান' : 'Dismiss notification'}
           >
             <X className="w-4 h-4" />
           </button>

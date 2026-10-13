@@ -3,6 +3,7 @@
 import React from 'react';
 import { SearchInput } from './SearchInput';
 import { FilterChips, type ActiveFilter } from './FilterChips';
+import type { Locale } from '@/lib/i18n';
 
 export function FilterToolbar({
   searchValue,
@@ -12,6 +13,7 @@ export function FilterToolbar({
   onRemoveFilter,
   onResetFilters,
   children,
+  locale = 'bn',
 }: {
   searchValue: string;
   onSearchChange: (v: string) => void;
@@ -20,6 +22,7 @@ export function FilterToolbar({
   onRemoveFilter?: (key: string) => void;
   onResetFilters?: () => void;
   children?: React.ReactNode;
+  locale?: Locale;
 }) {
   return (
     <div className="space-y-3" data-testid="filter-toolbar">
@@ -33,7 +36,12 @@ export function FilterToolbar({
         {children}
       </div>
       {filters && onRemoveFilter && onResetFilters && (
-        <FilterChips filters={filters} onRemove={onRemoveFilter} onResetAll={onResetFilters} />
+        <FilterChips
+          filters={filters}
+          onRemove={onRemoveFilter}
+          onResetAll={onResetFilters}
+          locale={locale}
+        />
       )}
     </div>
   );

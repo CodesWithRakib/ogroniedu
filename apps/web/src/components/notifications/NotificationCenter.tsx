@@ -95,7 +95,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
           type="button"
           onClick={() => setIsCenterOpen(false)}
           className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 dark:hover:text-slate-200 hover:bg-slate-100 dark:hover:bg-slate-800"
-          aria-label="Close"
+          aria-label={locale === 'bn' ? 'বন্ধ করুন' : 'Close'}
         >
           <X className="w-5 h-5" />
         </button>

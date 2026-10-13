@@ -10,7 +10,9 @@ export default function GuardianDashboardRoute({ params }: { params: Promise<{ l
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   return (
     <RequireAuth locale={locale}>
-      <GuardianDashboardPage locale={locale} />
+      <main id="main-content">
+        <GuardianDashboardPage locale={locale} />
+      </main>
     </RequireAuth>
   );
 }

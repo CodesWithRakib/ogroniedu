@@ -57,7 +57,7 @@ export default async function AdminLayout({
         </div>
       </nav>
 
-      <main className="flex-1">{children}</main>
+      <main id="main-content" className="flex-1">{children}</main>
       <Footer locale={locale} />
     </div>
   );

@@ -67,7 +67,7 @@ export function TutorSearchFilters({
         onSubmit={onSubmit}
         onReset={onReset}
       />
-      <FilterChips filters={activeFilters} onRemove={handleRemoveFilter} onResetAll={onReset} />
+      <FilterChips filters={activeFilters} onRemove={handleRemoveFilter} onResetAll={onReset} locale={locale} />
     </div>
   );
 }

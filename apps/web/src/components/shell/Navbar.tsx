@@ -72,7 +72,7 @@ export function Navbar({ locale }: NavbarProps) {
         </Link>
 
         <nav
-          aria-label="Main Navigation"
+          aria-label={isBn ? 'প্রধান নেভিগেশন' : 'Main Navigation'}
           className="hidden lg:flex items-center gap-5 text-sm font-medium text-slate-600 dark:text-slate-300"
         >
           <Link href={`/${locale}`} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
@@ -148,7 +148,7 @@ export function Navbar({ locale }: NavbarProps) {
           <button
             type="button"
             aria-expanded={mobileMenuOpen}
-            aria-label="Toggle mobile menu"
+            aria-label={isBn ? 'মোবাইল মেনু খুলুন/বন্ধ করুন' : 'Toggle mobile menu'}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="lg:hidden inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
           >
@@ -160,7 +160,7 @@ export function Navbar({ locale }: NavbarProps) {
       {mobileMenuOpen && (
         <div
           role="region"
-          aria-label="Mobile Navigation Menu"
+          aria-label={isBn ? 'মোবাইল নেভিগেশন মেনু' : 'Mobile Navigation Menu'}
           className="lg:hidden border-b border-slate-200 bg-white px-4 pt-2 pb-6 space-y-3 dark:border-slate-800 dark:bg-slate-900"
         >
           <div className="flex flex-col space-y-2 text-sm font-medium">

@@ -1,11 +1,18 @@
 'use client';
 
 import { use } from 'react';
+import { RequireAuth } from '@/components/auth/RequireAuth';
 import { TutorDashboardPage } from '@/features/tutors/pages/tutor-dashboard-page';
 import type { Locale } from '@/lib/i18n';
 
 export default function Page({ params }: { params: Promise<{ locale: string }> }) {
   const resolved = use(params);
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
-  return <TutorDashboardPage locale={locale} />;
+  return (
+    <RequireAuth locale={locale}>
+      <main id="main-content">
+        <TutorDashboardPage locale={locale} />
+      </main>
+    </RequireAuth>
+  );
 }

@@ -41,7 +41,7 @@ export function CancelSessionModal({
             type="button"
             onClick={onClose}
             className="text-slate-400 hover:text-slate-600 rounded-lg p-1"
-            aria-label="Close modal"
+            aria-label={locale === 'bn' ? 'মোডাল বন্ধ করুন' : 'Close modal'}
           >
             <X className="w-5 h-5" />
           </button>

@@ -58,7 +58,7 @@ export function CheckoutLedger({ order, locale }: CheckoutLedgerProps) {
               {p.ledgerBalanced}
             </div>
             <div className="text-muted-foreground text-[11px]">
-              Invariant: SUM(Debits) = SUM(Credits)
+              {p.ledgerInvariantNote}
             </div>
           </div>
 
@@ -78,29 +78,14 @@ export function CheckoutLedger({ order, locale }: CheckoutLedgerProps) {
         </CardHeader>
         <CardContent className="space-y-2 text-xs">
           <div className="flex justify-between py-1 border-b border-border/40">
-            <span className="text-muted-foreground">Ledger Status</span>
-            <span className="font-semibold text-emerald-600">Balanced</span>
-          </div>
-          <div className="flex justify-between py-1 border-b border-border/40">
-            <span className="text-muted-foreground">Discrepancies</span>
-            <span className="font-semibold text-emerald-600">{p.zeroDiscrepancy}</span>
-          </div>
-          <div className="flex justify-between py-1 border-b border-border/40">
-            <span className="text-muted-foreground">Precision</span>
-            <span className="font-mono">Minor Units (Poisha)</span>
-          </div>
-          <div className="flex justify-between py-1 border-b border-border/40">
-            <span className="text-muted-foreground">Store ID (Sandbox)</span>
-            <span className="font-mono font-medium">ogron6ac9fcef6d321</span>
+            <span className="text-muted-foreground">{p.ledgerStatus}</span>
+            <span className="font-semibold text-emerald-600">
+              {order.status === 'succeeded' ? p.statusSucceeded : p.statusPending}
+            </span>
           </div>
           <div className="flex justify-between py-1">
-            <span className="text-muted-foreground">Payment Tunnel</span>
-            <span
-              className="font-mono text-[10px] text-emerald-600 truncate max-w-[150px]"
-              title="https://undone-unsure-twisting.ngrok-free.dev"
-            >
-              ngrok active
-            </span>
+            <span className="text-muted-foreground">{p.ledgerPrecision}</span>
+            <span className="font-mono">{p.minorUnitsNote}</span>
           </div>
         </CardContent>
       </Card>

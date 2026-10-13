@@ -126,7 +126,7 @@ export function Footer({ locale }: FooterProps) {
             © {new Date().getFullYear()} {dict.common.appName}. {dict.footer.rightsReserved}
           </p>
           <div className="flex items-center gap-1">
-            <span>Built with care for Bangladesh</span>
+            <span>{dict.footer.tagline}</span>
             <Heart className="h-3.5 w-3.5 text-rose-500 inline fill-rose-500" />
           </div>
         </div>

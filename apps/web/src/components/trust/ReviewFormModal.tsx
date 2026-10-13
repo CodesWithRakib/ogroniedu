@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { TrustModalShell, TrustFormAlert } from '@/features/trust/components/trust-modal-shell';
 import { StarSelector } from '@/features/trust/components/star-selector';
 import { useModalSubmit } from '@/features/trust/hooks/use-modal-submit';
@@ -18,6 +18,7 @@ export function ReviewFormModal({
   onSubmitReview,
 }: ReviewFormModalProps) {
   const t = useTranslations('trust');
+  const locale = (useLocale() === 'bn' ? 'bn' : 'en') as 'bn' | 'en';
   const [rating, setRating] = useState<number>(5);
   const [punctuality, setPunctuality] = useState<number>(5);
   const [teachingClarity, setTeachingClarity] = useState<number>(5);
@@ -58,6 +59,7 @@ export function ReviewFormModal({
     <TrustModalShell
       icon="⭐"
       title={t('writeReview')}
+      closeLabel={locale === 'bn' ? 'বন্ধ করুন' : 'Close'}
       headerExtra={
         <span style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
           <span style={{ fontSize: '0.85rem', color: '#64748b' }}>{tutorName}</span>
@@ -97,17 +99,19 @@ export function ReviewFormModal({
       {submit.successMsg && <TrustFormAlert tone="success">{submit.successMsg}</TrustFormAlert>}
 
       <form onSubmit={handleSubmit}>
-        <StarSelector label={t('overallRating')} value={rating} onChange={setRating} />
-        <StarSelector label={t('punctuality')} value={punctuality} onChange={setPunctuality} />
+        <StarSelector label={t('overallRating')} value={rating} onChange={setRating} locale={locale} />
+        <StarSelector label={t('punctuality')} value={punctuality} onChange={setPunctuality} locale={locale} />
         <StarSelector
           label={t('teachingClarity')}
           value={teachingClarity}
           onChange={setTeachingClarity}
+          locale={locale}
         />
         <StarSelector
           label={t('subjectMastery')}
           value={subjectMastery}
           onChange={setSubjectMastery}
+          locale={locale}
         />
 
         <div style={{ marginTop: '16px', marginBottom: '20px' }}>

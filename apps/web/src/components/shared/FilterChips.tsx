@@ -4,6 +4,7 @@ import React from 'react';
 import { X } from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
+import type { Locale } from '@/lib/i18n';
 
 export interface ActiveFilter {
   key: string;
@@ -15,10 +16,12 @@ export function FilterChips({
   filters,
   onRemove,
   onResetAll,
+  locale = 'bn',
 }: {
   filters: ActiveFilter[];
   onRemove: (key: string) => void;
   onResetAll: () => void;
+  locale?: Locale;
 }) {
   if (filters.length === 0) return null;
   return (
@@ -28,7 +31,9 @@ export function FilterChips({
           {f.label}
           <button
             type="button"
-            aria-label={`Remove ${f.label} filter`}
+            aria-label={
+              locale === 'bn' ? `${f.label} ফিল্টার সরান` : `Remove ${f.label} filter`
+            }
             onClick={() => onRemove(f.key)}
             className="ml-1 rounded-full p-0.5 hover:bg-slate-300/50"
           >
@@ -37,7 +42,7 @@ export function FilterChips({
         </Badge>
       ))}
       <Button variant="ghost" size="sm" onClick={onResetAll} data-testid="filter-reset-all">
-        Reset all
+        {locale === 'bn' ? 'সব রিসেট করুন' : 'Reset all'}
       </Button>
     </div>
   );

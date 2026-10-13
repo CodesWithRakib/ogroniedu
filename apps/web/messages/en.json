@@ -154,6 +154,7 @@
     "quickLinks": "Quick Links",
     "contact": "Contact Us",
     "rightsReserved": "All rights reserved.",
+    "tagline": "Built with care for Bangladesh",
     "privacy": "Privacy Policy",
     "terms": "Terms of Service"
   },
@@ -180,6 +181,7 @@
     "resultsCount": "Showing {count} tutors",
     "noResults": "No tutors matched your criteria.",
     "noResultsSuggestion": "Try expanding your search radius or clearing price filters.",
+    "contactForFee": "Contact for fee",
     "hourlyRate": "BDT {rate}/hr",
     "yearsExperience": "{count} yrs experience",
     "explainableMatch": "Match Score: {score}",
@@ -335,6 +337,10 @@
     "refundPolicyNotice": "Operational Refunds: Refunds are bounds-checked and post balanced debit-credit reversal journals.",
     "reconciliationTitle": "System Financial Integrity Status",
     "ledgerBalanced": "Double-Entry Ledger Balanced (Debits = Credits)",
+    "ledgerStatus": "Ledger status",
+    "ledgerPrecision": "Precision",
+    "minorUnitsNote": "Minor units (poisha)",
+    "ledgerInvariantNote": "Invariant: total debits = total credits",
     "zeroDiscrepancy": "0 Unreconciled Discrepancies"
   },
   "trust": {

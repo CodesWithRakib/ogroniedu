@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { TrustModalShell, TrustFormAlert } from '@/features/trust/components/trust-modal-shell';
 import { useModalSubmit } from '@/features/trust/hooks/use-modal-submit';
 import type { SafetyReportModalProps } from '@/features/trust/types/trust.types';
@@ -34,6 +34,7 @@ export function SafetyReportModal({
   onSubmitReport,
 }: SafetyReportModalProps) {
   const t = useTranslations('trust');
+  const locale = useLocale();
   const [category, setCategory] = useState<string>('harassment');
   const [severity, setSeverity] = useState<string>('medium');
   const [description, setDescription] = useState<string>('');
@@ -70,6 +71,7 @@ export function SafetyReportModal({
       subtitle={t('safetyReportSubtitle')}
       maxWidth={540}
       onClose={onClose}
+      closeLabel={locale === 'bn' ? 'বন্ধ করুন' : 'Close'}
     >
       {isUrgent && (
         <div

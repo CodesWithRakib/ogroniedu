@@ -14,6 +14,7 @@ export function TrustModalShell({
   headerExtra,
   maxWidth = 520,
   onClose,
+  closeLabel = 'Close',
   children,
 }: {
   icon: string;
@@ -22,6 +23,7 @@ export function TrustModalShell({
   headerExtra?: React.ReactNode;
   maxWidth?: number;
   onClose: () => void;
+  closeLabel?: string;
   children: React.ReactNode;
 }) {
   return (
@@ -77,7 +79,7 @@ export function TrustModalShell({
           <button
             type="button"
             onClick={onClose}
-            aria-label="Close"
+            aria-label={closeLabel}
             style={{
               background: 'none',
               border: 'none',
