@@ -64,7 +64,9 @@ export function mapSupportTickets(rows: unknown[]): AdminSupportTicketItem[] {
       phoneE164: strOrNull(row.phoneE164),
       category: str(row.category, 'general'),
       message: str(row.message),
-      status: (SUPPORT_STATUSES.includes(rawStatus) ? rawStatus : 'submitted') as AdminSupportTicketItem['status'],
+      status: (SUPPORT_STATUSES.includes(rawStatus)
+        ? rawStatus
+        : 'submitted') as AdminSupportTicketItem['status'],
       reporterUserId: strOrNull(row.reporterUserId),
       resolutionNotes: strOrNull(row.resolutionNotes),
       createdAt: str(row.createdAt),

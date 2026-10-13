@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   HttpException,
   HttpStatus,
   Inject,
@@ -11,13 +12,14 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { MoreThan, Repository } from 'typeorm';
 import { SupportTicketEntity } from './entities/support-ticket.entity';
 import {
+  SUPPORT_TICKET_CATEGORIES,
+  type SupportTicketCategory,
+} from './enums/support-ticket-category.enum';
+import {
   SUPPORT_TICKET_STATUSES,
   SUPPORT_TICKET_TERMINAL_STATUSES,
 } from './enums/support-ticket-status.enum';
-import {
-  CreateSupportTicketDto,
-  normalizeTicketPhone,
-} from './dto/create-support-ticket.dto';
+import { CreateSupportTicketDto, normalizeTicketPhone } from './dto/create-support-ticket.dto';
 import { UpdateSupportTicketDto } from './dto/update-support-ticket.dto';
 import { QuerySupportTicketsDto } from './dto/query-support-tickets.dto';
 import { AuditService } from '../audit/audit.service';
@@ -46,7 +48,24 @@ export class SupportService {
     dto: CreateSupportTicketDto,
     reporterUserId: string | null,
   ): Promise<SupportTicketEntity> {
-    const email = dto.email.trim().toLowerCase();
+    // Defense in depth: ValidationPipe metadata is unavailable on runtimes
+    // without decorator metadata (e.g. tsx dev), so required fields are
+    // re-checked here to fail fast with 400 instead of crashing below.
+    const name = typeof dto.name === 'string' ? dto.name.trim() : '';
+    const email = typeof dto.email === 'string' ? dto.email.trim().toLowerCase() : '';
+    const message = typeof dto.message === 'string' ? dto.message.trim() : '';
+    const missing: Array<{ field: string; code: string; message: string }> = [];
+    if (!name) missing.push({ field: 'name', code: 'REQUIRED', message: 'Name is required.' });
+    if (!email) missing.push({ field: 'email', code: 'REQUIRED', message: 'Email is required.' });
+    if (!message || message.length < 10)
+      missing.push({
+        field: 'message',
+        code: 'TOO_SHORT',
+        message: 'Message must be at least 10 characters.',
+      });
+    if (missing.length > 0) {
+      throw new BadRequestException(missing);
+    }
     const since = new Date(Date.now() - DAY_MS);
     const recentCount = await this.ticketRepo.count({
       where: { email, createdAt: MoreThan(since) },
@@ -61,12 +80,17 @@ export class SupportService {
       );
     }
 
+    const category: SupportTicketCategory =
+      typeof dto.category === 'string' &&
+      (SUPPORT_TICKET_CATEGORIES as readonly string[]).includes(dto.category)
+        ? (dto.category as SupportTicketCategory)
+        : 'general';
     const ticket = this.ticketRepo.create({
-      name: dto.name.trim(),
+      name,
       email,
       phoneE164: normalizeTicketPhone(dto.phone),
-      category: (dto.category ?? 'general') as SupportTicketEntity['category'],
-      message: dto.message.trim(),
+      category,
+      message,
       status: 'submitted',
       reporterUserId,
     });
@@ -127,6 +151,14 @@ export class SupportService {
     const ticket = await this.ticketRepo.findOne({ where: { id: ticketId } });
     if (!ticket) {
       throw new NotFoundException(`Support ticket ${ticketId} not found`);
+    }
+    if (
+      typeof dto.status !== 'string' ||
+      !(SUPPORT_TICKET_STATUSES as readonly string[]).includes(dto.status)
+    ) {
+      throw new BadRequestException([
+        { field: 'status', code: 'INVALID_VALUE', message: 'Unknown ticket status.' },
+      ]);
     }
     const status = dto.status as SupportTicketEntity['status'];
     ticket.status = status;

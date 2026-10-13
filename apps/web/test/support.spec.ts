@@ -51,7 +51,12 @@ describe('Support triage + platform stats (Phase 22 H-3)', () => {
   it('parses the platform stats envelope', () => {
     const stats = parseItem<PlatformStats>({
       success: true,
-      data: { verifiedTutors: 128, activeStudents: 940, completedSessions: 12, averageRating: null },
+      data: {
+        verifiedTutors: 128,
+        activeStudents: 940,
+        completedSessions: 12,
+        averageRating: null,
+      },
     });
     expect(stats.verifiedTutors).toBe(128);
     expect(stats.averageRating).toBeNull();

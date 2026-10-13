@@ -20,10 +20,7 @@ import {
   recordOutboxEvent,
   dispatchNotificationSafe,
 } from './session-booking.helpers';
-import {
-  CreateSessionDto,
-  CreateRecurringSessionsDto,
-} from '../dto';
+import { CreateSessionDto, CreateRecurringSessionsDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { SessionQueriesService } from './session-queries.service';
 

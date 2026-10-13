@@ -162,11 +162,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                     className="w-full bg-emerald-700 hover:bg-emerald-800 text-white font-semibold"
                   >
                     <Send className="h-4 w-4 mr-2" />
-                    {isSubmitting
-                      ? locale === 'bn'
-                        ? 'পাঠানো হচ্ছে…'
-                        : 'Sending…'
-                      : p.submitBtn}
+                    {isSubmitting ? (locale === 'bn' ? 'পাঠানো হচ্ছে…' : 'Sending…') : p.submitBtn}
                   </Button>
                 </form>
               )}

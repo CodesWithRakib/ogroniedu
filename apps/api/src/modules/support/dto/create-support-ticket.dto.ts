@@ -1,11 +1,4 @@
-import {
-  IsEmail,
-  IsIn,
-  IsNotEmpty,
-  IsOptional,
-  IsString,
-  Length,
-} from 'class-validator';
+import { IsEmail, IsIn, IsNotEmpty, IsOptional, IsString, Length } from 'class-validator';
 import { SUPPORT_TICKET_CATEGORIES } from '../enums/support-ticket-category.enum';
 
 export class CreateSupportTicketDto {
@@ -15,6 +8,7 @@ export class CreateSupportTicketDto {
   name!: string;
 
   @IsEmail()
+  @IsNotEmpty()
   @Length(5, 160)
   email!: string;
 
@@ -36,6 +30,9 @@ export class CreateSupportTicketDto {
 /** Normalized phone: keep digits and a single leading + only. */
 export function normalizeTicketPhone(raw: unknown): string | null {
   if (typeof raw !== 'string' || raw.trim() === '') return null;
-  const cleaned = raw.trim().replace(/(?!^)\+/g, '').replace(/[^\d+]/g, '');
+  const cleaned = raw
+    .trim()
+    .replace(/(?!^)\+/g, '')
+    .replace(/[^\d+]/g, '');
   return cleaned === '' ? null : cleaned;
 }

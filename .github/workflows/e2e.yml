@@ -1,0 +1,73 @@
+name: Browser E2E
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/web/e2e/**'
+      - 'apps/web/playwright.config.ts'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  e2e:
+    name: Playwright journeys on staging stack
+    runs-on: ubuntu-latest
+    env:
+      DB_USERNAME: ${{ secrets.STAGING_DB_USERNAME }}
+      DB_PASSWORD: ${{ secrets.STAGING_DB_PASSWORD }}
+      DB_NAME: ogroniedu_staging
+      REDIS_PASSWORD: ${{ secrets.STAGING_REDIS_PASSWORD }}
+      JWT_SECRET: ${{ secrets.STAGING_JWT_SECRET }}
+      FRONTEND_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:4000
+      E2E_BASE_URL: http://localhost:3000
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js v26
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Setup pnpm 12
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.10.1
+          run_install: false
+
+      - name: Frozen Dependency Installation
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm --filter @ogroniedu/web exec playwright install chromium --with-deps
+
+      - name: Start staging stack
+        run: docker compose -f docker-compose.staging.yml up --build -d
+
+      - name: Migrate and seed staging database
+        run: pnpm db:migrate && pnpm db:seed
+
+      - name: Run browser journeys
+        run: pnpm --filter @ogroniedu/web e2e
+        env:
+          E2E_STUDENT_EMAIL: ${{ secrets.E2E_STUDENT_EMAIL }}
+          E2E_STUDENT_PASSWORD: ${{ secrets.E2E_STUDENT_PASSWORD }}
+          E2E_TUTOR_EMAIL: ${{ secrets.E2E_TUTOR_EMAIL }}
+          E2E_TUTOR_PASSWORD: ${{ secrets.E2E_TUTOR_PASSWORD }}
+
+      - name: Upload Playwright report
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report
+          path: apps/web/playwright-report
+
+      - name: Tear down staging stack
+        if: always()
+        run: docker compose -f docker-compose.staging.yml down -v

@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource, In } from 'typeorm';
 import { UserEntity } from '../../auth/entities/user.entity';
@@ -21,6 +21,7 @@ export class AdminDashboardService {
     private readonly replacementCaseRepo: Repository<TutorReplacementCaseEntity>,
     @InjectRepository(SafetyReportEntity)
     private readonly safetyReportRepo: Repository<SafetyReportEntity>,
+    @Inject(LedgerService)
     private readonly ledgerService: LedgerService,
     @InjectDataSource()
     private readonly dataSource: DataSource,

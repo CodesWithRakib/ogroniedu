@@ -1,12 +1,8 @@
 import { baseApi, type ApiSuccessEnvelope } from '../base-api';
+import { toQueryString } from '@/lib/api/query';
 
 export type SessionStatus =
-  | 'scheduled'
-  | 'in_progress'
-  | 'completed'
-  | 'cancelled'
-  | 'no_show'
-  | 'reschedule_pending';
+  'scheduled' | 'in_progress' | 'completed' | 'cancelled' | 'no_show' | 'reschedule_pending';
 
 export interface SessionItem {
   id: string;
@@ -33,15 +29,13 @@ export interface GetSessionsParams {
 export const sessionsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getSessions: builder.query<ApiSuccessEnvelope<SessionItem[]>, GetSessionsParams | void>({
-      query: (params) => {
-        const search = new URLSearchParams();
-        if (params?.bookingId) search.append('bookingId', params.bookingId);
-        if (params?.from) search.append('from', params.from);
-        if (params?.to) search.append('to', params.to);
-        if (params?.status) search.append('status', params.status);
-        const qs = search.toString();
-        return `/api/v1/sessions${qs ? `?${qs}` : ''}`;
-      },
+      query: (params) =>
+        `/api/v1/sessions${toQueryString({
+          bookingId: params?.bookingId,
+          from: params?.from,
+          to: params?.to,
+          status: params?.status,
+        })}`,
       providesTags: (result) =>
         result
           ? [
@@ -109,13 +103,8 @@ export const sessionsApi = baseApi.injectEndpoints({
       ApiSuccessEnvelope<Array<Record<string, unknown>>>,
       { tutorId: string; from?: string; to?: string }
     >({
-      query: ({ tutorId, from, to }) => {
-        const search = new URLSearchParams();
-        if (from) search.append('from', from);
-        if (to) search.append('to', to);
-        const qs = search.toString();
-        return `/api/v1/tutors/${tutorId}/calendar${qs ? `?${qs}` : ''}`;
-      },
+      query: ({ tutorId, from, to }) =>
+        `/api/v1/tutors/${tutorId}/calendar${toQueryString({ from, to })}`,
       providesTags: (_r, _e, arg) => [{ type: 'TutorCalendar', id: arg.tutorId }],
     }),
   }),

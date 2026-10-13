@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Inject,
   NotFoundException,
   ForbiddenException,
   BadRequestException,
@@ -25,6 +26,7 @@ export class AdminUsersService {
     private readonly userRepo: Repository<UserEntity>,
     @InjectDataSource()
     private readonly dataSource: DataSource,
+    @Inject(AuditService)
     private readonly auditService: AuditService,
   ) {}
 

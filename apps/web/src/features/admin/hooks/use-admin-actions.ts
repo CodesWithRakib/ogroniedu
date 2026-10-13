@@ -210,11 +210,7 @@ export function useAdminActions(params: UseAdminActionsParams): UseAdminActionsR
   );
 
   const updateTicketStatus = React.useCallback(
-    async (
-      id: string,
-      status: AdminSupportTicketItem['status'],
-      resolutionNotes?: string,
-    ) =>
+    async (id: string, status: AdminSupportTicketItem['status'], resolutionNotes?: string) =>
       runAction(async () => {
         if (!params.onUpdateTicketStatus) {
           throw new Error('Ticket triage is unavailable (missing staff permission).');

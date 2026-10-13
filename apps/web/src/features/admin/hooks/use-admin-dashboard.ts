@@ -20,7 +20,12 @@ import {
   useUpdateSupportTicketMutation,
 } from '@/store/services/admin-api';
 import { EMPTY_METRICS, type AdminDashboardMetrics } from '../types/admin.types';
-import { mapAdminBookings, mapAdminUsers, mapAuditLogs, mapSupportTickets } from '../utils/admin-mappers';
+import {
+  mapAdminBookings,
+  mapAdminUsers,
+  mapAuditLogs,
+  mapSupportTickets,
+} from '../utils/admin-mappers';
 
 /**
  * Admin dashboard data boundary: all queries + mutations + typed mapping in one hook.
@@ -105,9 +110,15 @@ export function useAdminDashboard(locale: Locale) {
       await updateFlag({ key, enabled }).unwrap();
       flags.refetch();
     }),
-    onUpdateTicketStatus: wrap(async (id: string, status: 'submitted' | 'in_review' | 'resolved' | 'spam', resolutionNotes?: string) => {
-      await updateTicket({ id, status, resolutionNotes }).unwrap();
-      ticketsQuery.refetch();
-    }),
+    onUpdateTicketStatus: wrap(
+      async (
+        id: string,
+        status: 'submitted' | 'in_review' | 'resolved' | 'spam',
+        resolutionNotes?: string,
+      ) => {
+        await updateTicket({ id, status, resolutionNotes }).unwrap();
+        ticketsQuery.refetch();
+      },
+    ),
   };
 }

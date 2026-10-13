@@ -29,8 +29,7 @@ export const bookingMessagesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getBookingMessages: builder.query<BookingMessagesResponse, BookingMessagesParams | string>({
       query: (params) => {
-        const { bookingId, ...rest } =
-          typeof params === 'string' ? { bookingId: params } : params;
+        const { bookingId, ...rest } = typeof params === 'string' ? { bookingId: params } : params;
         return `/api/v1/bookings/${bookingId}/messages${toQueryString(rest)}`;
       },
       providesTags: (_r, _e, params) => {

@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Inject,
   NotFoundException,
   ForbiddenException,
   Logger,
@@ -42,7 +43,9 @@ export class AdminPlatformService {
     private readonly auditRepo: Repository<AuditLogEntity>,
     @InjectDataSource()
     private readonly dataSource: DataSource,
+    @Inject(AuditService)
     private readonly auditService: AuditService,
+    @Inject(LedgerService)
     private readonly ledgerService: LedgerService,
   ) {}
 

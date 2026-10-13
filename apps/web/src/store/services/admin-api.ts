@@ -51,8 +51,12 @@ export const adminApi = baseApi.injectEndpoints({
       query: () => '/api/v1/admin/dashboard',
       providesTags: [{ type: 'AdminDashboard', id: 'SUMMARY' }],
     }),
-    listAdminUsers: builder.query<ApiSuccessEnvelope<unknown[]> & { total: number }, ListUsersParams | void>({
-      query: (params) => `/api/v1/admin/users${toQuery((params ?? {}) as Record<string, string | number | undefined>)}`,
+    listAdminUsers: builder.query<
+      ApiSuccessEnvelope<unknown[]> & { total: number },
+      ListUsersParams | void
+    >({
+      query: (params) =>
+        `/api/v1/admin/users${toQuery((params ?? {}) as Record<string, string | number | undefined>)}`,
       providesTags: [{ type: 'AdminUser', id: 'LIST' }],
     }),
     getUserDossier: builder.query<ApiSuccessEnvelope<unknown>, string>({
@@ -60,7 +64,11 @@ export const adminApi = baseApi.injectEndpoints({
       providesTags: (_r, _e, id) => [{ type: 'AdminUser', id }],
     }),
     suspendUser: builder.mutation<unknown, { id: string; reason: string }>({
-      query: ({ id, ...body }) => ({ url: `/api/v1/admin/users/${id}/suspend`, method: 'POST', body }),
+      query: ({ id, ...body }) => ({
+        url: `/api/v1/admin/users/${id}/suspend`,
+        method: 'POST',
+        body,
+      }),
       invalidatesTags: (_r, _e, { id }) => [
         { type: 'AdminUser', id },
         { type: 'AdminUser', id: 'LIST' },
@@ -82,7 +90,13 @@ export const adminApi = baseApi.injectEndpoints({
     }),
     listAdminBookings: builder.query<
       ApiSuccessEnvelope<unknown[]> & { total: number },
-      { status?: string; studentId?: string; tutorId?: string; limit?: number; offset?: number } | void
+      {
+        status?: string;
+        studentId?: string;
+        tutorId?: string;
+        limit?: number;
+        offset?: number;
+      } | void
     >({
       query: (params) =>
         `/api/v1/admin/bookings${toQuery((params ?? {}) as Record<string, string | number | undefined>)}`,
@@ -110,14 +124,16 @@ export const adminApi = baseApi.injectEndpoints({
       query: () => '/api/v1/admin/settings',
       providesTags: [{ type: 'SystemSetting', id: 'LIST' }],
     }),
-    updateSystemSetting: builder.mutation<unknown, { key: string; value: Record<string, unknown> }>({
-      query: ({ key, value }) => ({
-        url: `/api/v1/admin/settings/${key}`,
-        method: 'PUT',
-        body: { value },
-      }),
-      invalidatesTags: [{ type: 'SystemSetting', id: 'LIST' }],
-    }),
+    updateSystemSetting: builder.mutation<unknown, { key: string; value: Record<string, unknown> }>(
+      {
+        query: ({ key, value }) => ({
+          url: `/api/v1/admin/settings/${key}`,
+          method: 'PUT',
+          body: { value },
+        }),
+        invalidatesTags: [{ type: 'SystemSetting', id: 'LIST' }],
+      },
+    ),
     getFeatureFlags: builder.query<ApiSuccessEnvelope<unknown[]>, void>({
       query: () => '/api/v1/admin/feature-flags',
       providesTags: [{ type: 'FeatureFlag', id: 'LIST' }],

@@ -44,8 +44,7 @@ export class PublicService {
       this.dataSource.query(`SELECT round(avg(rating)::numeric, 1)::float AS avg FROM reviews;`),
     ]);
     const avgRaw: unknown = rating?.[0]?.avg;
-    const averageRating =
-      typeof avgRaw === 'number' && Number.isFinite(avgRaw) ? avgRaw : null;
+    const averageRating = typeof avgRaw === 'number' && Number.isFinite(avgRaw) ? avgRaw : null;
     return {
       verifiedTutors: toCount(tutors?.[0]?.count),
       activeStudents: toCount(students?.[0]?.count),
@@ -56,7 +55,5 @@ export class PublicService {
 }
 
 function toCount(value: unknown): number {
-  return typeof value === 'number' && Number.isFinite(value) && value >= 0
-    ? Math.floor(value)
-    : 0;
+  return typeof value === 'number' && Number.isFinite(value) && value >= 0 ? Math.floor(value) : 0;
 }

@@ -1,9 +1,6 @@
 import { ConflictException, Logger } from '@nestjs/common';
 import type { Repository } from 'typeorm';
-import type {
-  NotificationEventType,
-  NotificationRole,
-} from '@ogroniedu/contracts';
+import type { NotificationEventType, NotificationRole } from '@ogroniedu/contracts';
 import { BookingSessionEntity } from '../entities/booking-session.entity';
 import { OutboxEventEntity } from '../entities/outbox-event.entity';
 import type { NotificationService } from '../../notifications/notification.service';

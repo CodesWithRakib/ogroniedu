@@ -227,7 +227,9 @@ export function AdminDashboardView({
       <AdminMetricsGrid metrics={metrics} />
       <AdminTabsBar activeTab={view.activeTab} onSelect={view.setActiveTab} />
 
-      {view.activeTab === 'overview' && <AdminOverviewTab reconciliation={actions.reconciliation} />}
+      {view.activeTab === 'overview' && (
+        <AdminOverviewTab reconciliation={actions.reconciliation} />
+      )}
       {view.activeTab === 'users' && (
         <AdminUsersTab
           users={actions.users}
@@ -260,10 +262,7 @@ export function AdminDashboardView({
       )}
       {view.activeTab === 'auditLogs' && <AdminAuditLogsTab auditLogs={actions.auditLogs} />}
       {view.activeTab === 'support' && (
-        <AdminSupportTab
-          tickets={actions.tickets}
-          onUpdateStatus={actions.updateTicketStatus}
-        />
+        <AdminSupportTab tickets={actions.tickets} onUpdateStatus={actions.updateTicketStatus} />
       )}
 
       {view.selectedUserForSuspend && (

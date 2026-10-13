@@ -30,7 +30,8 @@ import { usePlatformStats } from '../hooks/use-platform-stats';
 /** Public home entry: hero search, live trust metrics, value pillars, and auth-aware CTA. */
 export function HomePage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
-  const { searchQuery, setSearchQuery, isAuthenticated, handleSearchSubmit } = useHomeSearch(locale);
+  const { searchQuery, setSearchQuery, isAuthenticated, handleSearchSubmit } =
+    useHomeSearch(locale);
   const { stats, isLoading: statsLoading, isError: statsError } = usePlatformStats();
 
   return (

@@ -1,11 +1,7 @@
 import { baseApi, type ApiSuccessEnvelope } from '../base-api';
 
 export type SupportTicketCategory =
-  | 'general'
-  | 'tutorHelp'
-  | 'tutorVerification'
-  | 'paymentSupport'
-  | 'safetyIncident';
+  'general' | 'tutorHelp' | 'tutorVerification' | 'paymentSupport' | 'safetyIncident';
 
 export interface SubmitSupportTicketBody {
   name: string;

@@ -1,0 +1,56 @@
+'use client';
+
+import { Badge } from '@/components/ui';
+import { CheckCircle2, Clock, XCircle, RotateCcw } from 'lucide-react';
+import { getDictionary, type Locale } from '@/lib/i18n';
+import type { SessionItemStatus } from '../../types/session.types';
+
+/** Status badge for a session card (display-only). */
+export function SessionStatusBadge({
+  locale,
+  status,
+}: {
+  locale: Locale;
+  status: SessionItemStatus;
+}) {
+  const dict = getDictionary(locale);
+  switch (status) {
+    case 'scheduled':
+      return (
+        <Badge variant="success" className="gap-1">
+          <CheckCircle2 className="w-3 h-3" />
+          {dict.scheduling?.statusScheduled || 'Scheduled'}
+        </Badge>
+      );
+    case 'in_progress':
+      return (
+        <Badge variant="warning" className="gap-1 animate-pulse">
+          <Clock className="w-3 h-3" />
+          {dict.scheduling?.statusInProgress || 'In Progress'}
+        </Badge>
+      );
+    case 'completed':
+      return (
+        <Badge variant="default" className="gap-1 bg-slate-100 text-slate-700">
+          <CheckCircle2 className="w-3 h-3 text-slate-500" />
+          {dict.scheduling?.statusCompleted || 'Completed'}
+        </Badge>
+      );
+    case 'cancelled':
+      return (
+        <Badge variant="destructive" className="gap-1">
+          <XCircle className="w-3 h-3" />
+          {dict.scheduling?.statusCancelled || 'Cancelled'}
+        </Badge>
+      );
+    case 'reschedule_pending':
+      return (
+        <Badge variant="warning" className="gap-1">
+          <RotateCcw className="w-3 h-3" />
+          {dict.scheduling?.statusReschedulePending || 'Reschedule Pending'}
+        </Badge>
+      );
+    default:
+      return <Badge variant="default">{status}</Badge>;
+  }
+}

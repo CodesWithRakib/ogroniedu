@@ -32,7 +32,8 @@ export function useContactForm(locale: Locale) {
         name: formData.name.trim(),
         email: formData.email.trim(),
         phone: formData.phone.trim() || undefined,
-        category: formData.category as 'general' | 'tutorHelp' | 'tutorVerification' | 'paymentSupport' | 'safetyIncident',
+        category: formData.category as
+          'general' | 'tutorHelp' | 'tutorVerification' | 'paymentSupport' | 'safetyIncident',
         message: formData.message.trim(),
       }).unwrap();
       setTicketRef(res.data.id.slice(0, 8).toUpperCase());

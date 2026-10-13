@@ -1,5 +1,6 @@
 import {
   Injectable,
+  Inject,
   NotFoundException,
   BadRequestException,
   Logger,
@@ -35,7 +36,9 @@ export class AdminBookingsService {
     private readonly safetyReportRepo: Repository<SafetyReportEntity>,
     @InjectRepository(PaymentOrderEntity)
     private readonly paymentOrderRepo: Repository<PaymentOrderEntity>,
+    @Inject(AuditService)
     private readonly auditService: AuditService,
+    @Inject(PaymentsService)
     private readonly paymentsService: PaymentsService,
   ) {}
 

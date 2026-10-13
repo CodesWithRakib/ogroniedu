@@ -8,7 +8,8 @@ import {
   useRescheduleSessionMutation,
   useCancelSessionMutation,
 } from '@/store/services/sessions-api';
-import type { CalendarSessionItem } from '@/components/scheduling/SessionScheduleCalendar';
+import { mapSessionItems, toCancelAssessment } from '../utils/session-mappers';
+import type { CalendarSessionItem, CancelAssessmentView } from '../types/session.types';
 
 /** Feature-level sessions hook: calendar items + reschedule/cancel actions with localized errors. */
 export function useSessionsCalendar(locale: Locale) {
@@ -17,20 +18,7 @@ export function useSessionsCalendar(locale: Locale) {
   const [cancel] = useCancelSessionMutation();
 
   const items: CalendarSessionItem[] = React.useMemo(
-    () =>
-      (data?.data ?? []).map((s) => ({
-        id: s.id,
-        bookingId: s.bookingId,
-        subjectName: s.subjectName ?? (locale === 'bn' ? 'টিউটরিং ক্লাস' : 'Tutoring class'),
-        tutorName: s.tutorName ?? '—',
-        studentName: s.studentName ?? '—',
-        startsAt: s.startsAt,
-        endsAt: s.endsAt,
-        timezone: s.timezone ?? 'Asia/Dhaka',
-        status: s.status,
-        meetingUrl: s.meetingUrl ?? null,
-        locationInstructions: (s.locationInstructions as string | null) ?? null,
-      })),
+    () => mapSessionItems(data?.data ?? [], locale),
     [data, locale],
   );
 
@@ -45,10 +33,15 @@ export function useSessionsCalendar(locale: Locale) {
     }
   }
 
-  async function onCancel(sessionId: string, reason: string) {
+  /**
+   * Returns the server-computed cancellation assessment (refund matrix) so the
+   * UI displays real policy values. Null when the backend omits it.
+   */
+  async function onCancel(sessionId: string, reason: string): Promise<CancelAssessmentView | null> {
     try {
-      await cancel({ id: sessionId, reason }).unwrap();
+      const res = await cancel({ id: sessionId, reason }).unwrap();
       refetch();
+      return toCancelAssessment((res as { assessment?: unknown }).assessment ?? null);
     } catch (err) {
       throw new Error(normalizeApiError(err as never, locale).message);
     }

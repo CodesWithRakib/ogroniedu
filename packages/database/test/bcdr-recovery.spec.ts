@@ -42,8 +42,8 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
     // 2. Execute full cold recovery via MigrationRunner
     const executed = await runner.runMigrations();
 
-    // Verify all 11 ordered migrations were replayed from WAL / migration log
-    expect(executed).toHaveLength(11);
+    // Verify all 12 ordered migrations were replayed from WAL / migration log
+    expect(executed).toHaveLength(12);
     expect(executed).toEqual([
       '001_initial_schema.sql',
       '002_auth_verification_codes.sql',
@@ -56,15 +56,16 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
       '009_security_and_privacy_hardening.sql',
       '010_performance_and_load_indexes.sql',
       '011_session_cancellation_tracking.sql',
+      '012_support_tickets.sql',
     ]);
 
-    // Verify schema_migrations ledger records all 11 entries
+    // Verify schema_migrations ledger records all 12 entries
     const migrationRecords = await client.query<{ name: string; id: number }>(
       'SELECT id, name FROM schema_migrations ORDER BY id ASC;',
     );
-    expect(migrationRecords.rows).toHaveLength(11);
+    expect(migrationRecords.rows).toHaveLength(12);
     expect(migrationRecords.rows[0].name).toBe('001_initial_schema.sql');
-    expect(migrationRecords.rows[10].name).toBe('011_session_cancellation_tracking.sql');
+    expect(migrationRecords.rows[11].name).toBe('012_support_tickets.sql');
   });
 
   it('STAGE 2: Verify post-recovery schema completeness and catalog invariants', async () => {
@@ -102,6 +103,7 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
       'reviews',
       'safety_reports',
       'tutor_replacement_cases',
+      'support_tickets',
       'system_settings',
       'feature_flags',
       'schema_migrations',
@@ -155,7 +157,7 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
 
     const status = await runner.getStatus();
     expect(status.pending).toHaveLength(0);
-    expect(status.applied).toHaveLength(11);
+    expect(status.applied).toHaveLength(12);
   });
 
   it('STAGE 5: Double-entry ledger balance conservation invariant drill', async () => {

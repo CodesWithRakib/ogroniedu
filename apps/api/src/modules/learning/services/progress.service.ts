@@ -55,6 +55,7 @@ export class LearningProgressService {
     private readonly assignmentRepo: Repository<AssignmentEntity>,
     @InjectRepository(AssignmentSubmissionEntity)
     private readonly submissionRepo: Repository<AssignmentSubmissionEntity>,
+    @Inject(forwardRef(() => LearningAccessService))
     private readonly access: LearningAccessService,
     @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,

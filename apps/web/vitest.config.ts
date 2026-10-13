@@ -6,6 +6,14 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'node',
+    // Playwright browser specs live in e2e/ and must never run under vitest.
+    exclude: [
+      '**/node_modules/**',
+      '**/dist/**',
+      '**/.next/**',
+      '**/e2e/**',
+      '**/{karma,rollup,webpack,vite,vitest,jest,ava,babel,nyc,cypress,tsup,build}.config.*',
+    ],
   },
   resolve: {
     alias: {

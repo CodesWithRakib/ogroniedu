@@ -247,6 +247,9 @@
     "rescheduleNewTime": "New Date & Time",
     "rescheduleReasonLabel": "Reason for Rescheduling",
     "confirmReschedule": "Confirm Reschedule",
+    "scheduleBookingLabel": "Booking",
+    "meetingLinkLabel": "Meeting link (optional)",
+    "confirmSchedule": "Schedule",
     "noSessions": "No sessions scheduled.",
     "timezoneNotice": "All times in Bangladesh Standard Time (BST / UTC+6)",
     "weeklySlots": "Weekly Slots",
@@ -461,7 +464,9 @@
     "retentionRate": "Learner Retention Rate",
     "gatewayTitle": "Payment Gateway Distribution",
     "trendTitle": "Daily Operational Activity Trend",
-    "sourceOfTruthNotice": "Reconciliation Invariant: All analytics computed directly from ACID transactional tables without double-counting."
+    "sourceOfTruthNotice": "Reconciliation Invariant: All analytics computed directly from ACID transactional tables without double-counting.",
+    "noDataTitle": "No analytics data yet",
+    "noDataDesc": "Metrics appear here once tutoring activity is recorded."
   },
   "howItWorksPage": {
     "badge": "Transparent Tutoring Process",

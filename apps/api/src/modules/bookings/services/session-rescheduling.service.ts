@@ -9,10 +9,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  BookingSessionEntity,
-  CancellationAssessment,
-} from '../entities/booking-session.entity';
+import { BookingSessionEntity, CancellationAssessment } from '../entities/booking-session.entity';
 import { OutboxEventEntity } from '../entities/outbox-event.entity';
 import { AuditService } from '../../audit/audit.service';
 import { NotificationService } from '../../notifications/notification.service';
@@ -21,10 +18,7 @@ import {
   recordOutboxEvent,
   dispatchNotificationSafe,
 } from './session-booking.helpers';
-import {
-  RescheduleSessionDto,
-  CancelSessionDto,
-} from '../dto';
+import { RescheduleSessionDto, CancelSessionDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { SessionQueriesService } from './session-queries.service';
 
