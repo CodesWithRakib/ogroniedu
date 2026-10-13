@@ -1,5 +1,7 @@
 export * from './types/learning.types';
+export * from './utils/learning-mappers';
 export * from './hooks/use-learning-management';
+export * from './hooks/use-learning-records';
 export * from './components/learning-banner';
 export * from './components/learning-metrics-cards';
 export * from './components/learning-tabs-bar';

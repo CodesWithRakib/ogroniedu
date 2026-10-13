@@ -1,14 +1,24 @@
-export type AttendanceItemStatus = 'present' | 'late' | 'absent' | 'excused';
+import type { Locale } from '@/lib/i18n';
+import type {
+  AssignmentRecord,
+  AttendanceRecord,
+  AttendanceStatus,
+  ProgressReportRecord,
+} from '@/store/services/learning-api';
+
+/**
+ * Learning feature view-model types.
+ *
+ * Raw record shapes live in `@/store/services/learning-api` (single source of
+ * truth). This module only narrows loose API fields for rendering and adds
+ * display-only enrichment — it never re-declares the wire shape.
+ */
+export type AttendanceItemStatus = AttendanceStatus;
 export type SubmissionItemStatus = 'submitted' | 'late' | 'reviewed' | 'returned';
 export type LearningRole = 'student' | 'tutor' | 'guardian' | 'admin';
 
-export interface AttendanceRecordItem {
-  id: string;
-  sessionId: string;
-  participantUserId: string;
-  attendanceStatus: AttendanceItemStatus;
-  recordedAt: string;
-  notes?: string | null;
+/** Attendance row plus display-only enrichment resolved from the session. */
+export interface AttendanceRecordItem extends AttendanceRecord {
   subjectName?: string;
   sessionDate?: string;
 }
@@ -24,30 +34,13 @@ export interface SubmissionItem {
   reviewedAt?: string | null;
 }
 
-export interface AssignmentItem {
-  id: string;
-  bookingId: string;
-  title: string;
-  instructions?: string | null;
-  dueAt?: string | null;
-  maxScore: number;
+/** Assignment with the API's loose `status`/`submission.status` narrowed for UI. */
+export interface AssignmentItem extends Omit<AssignmentRecord, 'status' | 'submission'> {
   status: 'draft' | 'published' | 'archived';
   submission?: SubmissionItem | null;
 }
 
-export interface ProgressReportItem {
-  id: string;
-  bookingId: string;
-  periodStart: string;
-  periodEnd: string;
-  attendanceRate: number;
-  assignmentsCompleted: number;
-  averageScore?: number | null;
-  observableProgress: string;
-  areasForGrowth?: string | null;
-  tutorRemarks?: string | null;
-  generatedAt: string;
-}
+export type ProgressReportItem = ProgressReportRecord;
 
 export interface MarkAttendanceInput {
   sessionId: string;
@@ -72,7 +65,7 @@ export interface GenerateReportInput {
 }
 
 export interface LearningManagementViewProps {
-  locale: import('@/lib/i18n').Locale;
+  locale: Locale;
   userRole?: LearningRole;
   initialAttendance?: AttendanceRecordItem[];
   initialAssignments?: AssignmentItem[];

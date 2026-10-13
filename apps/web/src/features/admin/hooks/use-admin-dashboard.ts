@@ -16,9 +16,11 @@ import {
   useUpdateFeatureFlagMutation,
   useStartImpersonationMutation,
   useQueryAuditLogsQuery,
+  useListSupportTicketsQuery,
+  useUpdateSupportTicketMutation,
 } from '@/store/services/admin-api';
 import { EMPTY_METRICS, type AdminDashboardMetrics } from '../types/admin.types';
-import { mapAdminBookings, mapAdminUsers, mapAuditLogs } from '../utils/admin-mappers';
+import { mapAdminBookings, mapAdminUsers, mapAuditLogs, mapSupportTickets } from '../utils/admin-mappers';
 
 /**
  * Admin dashboard data boundary: all queries + mutations + typed mapping in one hook.
@@ -32,12 +34,14 @@ export function useAdminDashboard(locale: Locale) {
   const settings = useGetSystemSettingsQuery();
   const flags = useGetFeatureFlagsQuery();
   const auditLogs = useQueryAuditLogsQuery({ limit: 50 });
+  const ticketsQuery = useListSupportTicketsQuery({ limit: 50 });
   const [suspendUser] = useSuspendUserMutation();
   const [reactivateUser] = useReactivateUserMutation();
   const [updateRoles] = useUpdateUserRolesMutation();
   const [cancelBooking] = useAdminCancelBookingMutation();
   const [updateFlag] = useUpdateFeatureFlagMutation();
   const [startImpersonation] = useStartImpersonationMutation();
+  const [updateTicket] = useUpdateSupportTicketMutation();
 
   const loading = dashboard.isLoading || usersQuery.isLoading || bookingsQuery.isLoading;
   const queryError = dashboard.isError
@@ -52,6 +56,7 @@ export function useAdminDashboard(locale: Locale) {
   const users = mapAdminUsers((usersQuery.data?.data ?? []) as unknown[]);
   const bookings = mapAdminBookings((bookingsQuery.data?.data ?? []) as unknown[]);
   const logs = mapAuditLogs((auditLogs.data?.data ?? []) as unknown[]);
+  const tickets = mapSupportTickets((ticketsQuery.data?.data ?? []) as unknown[]);
 
   const wrap =
     <A extends unknown[]>(fn: (...a: A) => Promise<unknown>) =>
@@ -68,6 +73,7 @@ export function useAdminDashboard(locale: Locale) {
     users,
     bookings,
     logs,
+    tickets,
     reconciliation: reconciliation.data?.data,
     settings: (settings.data?.data as unknown[] | undefined) ?? [],
     flags: (flags.data?.data as unknown[] | undefined) ?? [],
@@ -98,6 +104,10 @@ export function useAdminDashboard(locale: Locale) {
     onUpdateFeatureFlag: wrap(async (key: string, enabled: boolean) => {
       await updateFlag({ key, enabled }).unwrap();
       flags.refetch();
+    }),
+    onUpdateTicketStatus: wrap(async (id: string, status: 'submitted' | 'in_review' | 'resolved' | 'spam', resolutionNotes?: string) => {
+      await updateTicket({ id, status, resolutionNotes }).unwrap();
+      ticketsQuery.refetch();
     }),
   };
 }

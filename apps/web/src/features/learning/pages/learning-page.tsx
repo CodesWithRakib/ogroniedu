@@ -6,23 +6,11 @@ import { Button, Card, CardContent, Input, LoadingSpinner } from '@/components/u
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { normalizeApiError } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
-import { useGetBookingRequestsQuery } from '@/store/services/bookings-api';
-import {
-  useGetBookingLearningRecordsQuery,
-  useCreateAssignmentMutation,
-  useSubmitAssignmentMutation,
-  useGradeSubmissionMutation,
-  useGenerateProgressReportMutation,
-} from '@/store/services/learning-api';
 import { LearningManagementView } from '../components/learning-management-view';
-import type {
-  AssignmentItem,
-  AttendanceRecordItem,
-  LearningRole,
-  ProgressReportItem,
-} from '../types/learning.types';
+import { useLearningRecords } from '../hooks/use-learning-records';
+import type { LearningRole } from '../types/learning.types';
 
-/** Learning management container: owns booking selection, record queries and mutations. */
+/** Learning management container: booking picker + tutor create form + records view. */
 export function LearningPage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   const user = useAppSelector((s) => s.auth.user);
@@ -32,38 +20,21 @@ export function LearningPage({ locale }: { locale: Locale }) {
       ? 'guardian'
       : 'student';
 
-  const requests = useGetBookingRequestsQuery();
-  const bookingIds = (requests.data?.data ?? []).map((r) => r.id);
-  const [activeBookingId, setActiveBookingId] = React.useState<string>('');
-  React.useEffect(() => {
-    if (!activeBookingId && bookingIds[0]) setActiveBookingId(bookingIds[0]);
-  }, [bookingIds, activeBookingId]);
-
-  const records = useGetBookingLearningRecordsQuery(activeBookingId, { skip: !activeBookingId });
-  const [createAssignment, { isLoading: creating }] = useCreateAssignmentMutation();
-  const [submitAssignment] = useSubmitAssignmentMutation();
-  const [gradeSubmission] = useGradeSubmissionMutation();
-  const [generateReport, { isLoading: generating }] = useGenerateProgressReportMutation();
+  const records = useLearningRecords(locale);
   const [formError, setFormError] = React.useState<string | null>(null);
   const [assignmentTitle, setAssignmentTitle] = React.useState('');
   const [assignmentMax, setAssignmentMax] = React.useState('100');
 
-  const attendance = (records.data?.data?.attendance ?? []) as AttendanceRecordItem[];
-  const assignments = (records.data?.data?.assignments ?? []) as AssignmentItem[];
-  const reports = (records.data?.data?.reports ?? []) as ProgressReportItem[];
-
   async function handleCreateAssignment(e: React.FormEvent) {
     e.preventDefault();
-    if (!activeBookingId || !assignmentTitle.trim()) return;
+    if (!records.activeBookingId || !assignmentTitle.trim()) return;
     setFormError(null);
     try {
-      await createAssignment({
-        bookingId: activeBookingId,
+      await records.createAssignment({
         title: assignmentTitle.trim(),
         maxScore: Number(assignmentMax) || 100,
-      }).unwrap();
+      });
       setAssignmentTitle('');
-      records.refetch();
     } catch (err) {
       setFormError(normalizeApiError(err as never, locale).message);
     }
@@ -77,12 +48,12 @@ export function LearningPage({ locale }: { locale: Locale }) {
         </label>
         <select
           id="learning-booking-select"
-          value={activeBookingId}
-          onChange={(e) => setActiveBookingId(e.target.value)}
+          value={records.activeBookingId}
+          onChange={(e) => records.setActiveBookingId(e.target.value)}
           className="h-10 rounded-xl border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
           data-testid="learning-booking-select"
         >
-          {bookingIds.map((id) => (
+          {records.bookingIds.map((id) => (
             <option key={id} value={id}>
               {id.slice(0, 8)}…
             </option>
@@ -99,7 +70,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
         </div>
       )}
 
-      {role === 'tutor' && activeBookingId && (
+      {role === 'tutor' && records.activeBookingId && (
         <Card className="mb-4">
           <CardContent className="py-4">
             <form
@@ -134,7 +105,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
               <Button
                 type="submit"
                 size="sm"
-                isLoading={creating}
+                isLoading={records.creating}
                 data-testid="create-assignment-btn"
               >
                 {dict.learning.createAssignment}
@@ -144,51 +115,27 @@ export function LearningPage({ locale }: { locale: Locale }) {
         </Card>
       )}
 
-      {records.isLoading || requests.isLoading ? (
+      {records.isLoading ? (
         <LoadingSpinner />
-      ) : records.isError ? (
+      ) : records.queryError ? (
         <Card>
           <CardContent className="py-8 text-center text-sm text-rose-600">
-            {normalizeApiError(records.error, locale).message}
+            {records.queryError}
           </CardContent>
         </Card>
       ) : (
         <LearningManagementView
           locale={locale}
           userRole={role}
-          initialAttendance={attendance}
-          initialAssignments={assignments}
-          initialReports={reports}
-          onSubmitAssignment={async (assignmentId, data) => {
-            try {
-              await submitAssignment({
-                assignmentId,
-                submissionText: data.submissionText,
-              }).unwrap();
-              records.refetch();
-            } catch (err) {
-              throw new Error(normalizeApiError(err as never, locale).message);
-            }
-          }}
-          onGradeSubmission={async (submissionId, data) => {
-            try {
-              await gradeSubmission({ submissionId, ...data }).unwrap();
-              records.refetch();
-            } catch (err) {
-              throw new Error(normalizeApiError(err as never, locale).message);
-            }
-          }}
-          onGenerateReport={async (data) => {
-            try {
-              await generateReport(data).unwrap();
-              records.refetch();
-            } catch (err) {
-              throw new Error(normalizeApiError(err as never, locale).message);
-            }
-          }}
+          initialAttendance={records.attendance}
+          initialAssignments={records.assignments}
+          initialReports={records.reports}
+          onSubmitAssignment={records.submitAssignment}
+          onGradeSubmission={records.gradeSubmission}
+          onGenerateReport={records.generateReport}
         />
       )}
-      {generating && <LoadingSpinner />}
+      {records.generating && <LoadingSpinner />}
     </DashboardShell>
   );
 }

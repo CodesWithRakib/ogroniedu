@@ -1,4 +1,6 @@
 import { baseApi, type ApiSuccessEnvelope } from '../base-api';
+import { toQueryString } from '@/lib/api/query';
+import type { OffsetCollectionEnvelope } from '@/lib/api/contract';
 
 export interface AdminDashboardMetrics {
   pendingTutorVerifications: number;
@@ -16,13 +18,31 @@ export interface ListUsersParams {
   offset?: number;
 }
 
+export interface ListSupportTicketsParams {
+  status?: string;
+  limit?: number;
+  offset?: number;
+}
+
+export interface SupportTicketRow {
+  id: string;
+  name: string;
+  email: string;
+  phoneE164: string | null;
+  category: string;
+  message: string;
+  status: 'submitted' | 'in_review' | 'resolved' | 'spam';
+  reporterUserId: string | null;
+  resolvedBy: string | null;
+  resolvedAt: string | null;
+  resolutionNotes: string | null;
+  createdAt: string;
+  updatedAt: string;
+}
+
+/** Shared serializer (replaces the former per-file toQuery duplicate). */
 function toQuery(params: Record<string, string | number | undefined>): string {
-  const search = new URLSearchParams();
-  for (const [k, v] of Object.entries(params)) {
-    if (v !== undefined && v !== '') search.append(k, String(v));
-  }
-  const qs = search.toString();
-  return qs ? `?${qs}` : '';
+  return toQueryString(params);
 }
 
 export const adminApi = baseApi.injectEndpoints({
@@ -127,6 +147,28 @@ export const adminApi = baseApi.injectEndpoints({
         `/api/v1/admin/audit-logs${toQuery((params ?? {}) as Record<string, string | number | undefined>)}`,
       providesTags: [{ type: 'AuditLog', id: 'LIST' }],
     }),
+    listSupportTickets: builder.query<
+      OffsetCollectionEnvelope<SupportTicketRow>,
+      ListSupportTicketsParams | void
+    >({
+      query: (params) =>
+        `/api/v1/admin/support-tickets${toQuery((params ?? {}) as Record<string, string | number | undefined>)}`,
+      providesTags: [{ type: 'SupportTicket', id: 'LIST' }],
+    }),
+    updateSupportTicket: builder.mutation<
+      ApiSuccessEnvelope<SupportTicketRow>,
+      { id: string; status: SupportTicketRow['status']; resolutionNotes?: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/api/v1/admin/support-tickets/${id}`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [
+        { type: 'SupportTicket', id },
+        { type: 'SupportTicket', id: 'LIST' },
+      ],
+    }),
   }),
   overrideExisting: false,
 });
@@ -148,4 +190,6 @@ export const {
   useUpdateFeatureFlagMutation,
   useStartImpersonationMutation,
   useQueryAuditLogsQuery,
+  useListSupportTicketsQuery,
+  useUpdateSupportTicketMutation,
 } = adminApi;

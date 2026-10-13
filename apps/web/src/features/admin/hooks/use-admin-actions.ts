@@ -6,6 +6,7 @@ import type {
   AdminBookingItem,
   AdminFeatureFlagItem,
   AdminReconciliationData,
+  AdminSupportTicketItem,
   AdminSystemSettingItem,
   AdminUserItem,
 } from '../types/admin.types';
@@ -32,6 +33,11 @@ export interface AdminActionHandlers {
   ) => Promise<void>;
   onUpdateSetting?: (key: string, value: Record<string, unknown>) => Promise<void>;
   onUpdateFeatureFlag?: (key: string, enabled: boolean) => Promise<void>;
+  onUpdateTicketStatus?: (
+    id: string,
+    status: AdminSupportTicketItem['status'],
+    resolutionNotes?: string,
+  ) => Promise<void>;
 }
 
 export interface ActiveImpersonation {
@@ -47,6 +53,7 @@ export interface UseAdminActionsParams extends AdminActionHandlers {
   initialFeatureFlags: AdminFeatureFlagItem[];
   initialReconciliation: AdminReconciliationData;
   initialAuditLogs: AdminAuditLogItem[];
+  initialTickets: AdminSupportTicketItem[];
 }
 
 export interface UseAdminActionsResult {
@@ -56,6 +63,7 @@ export interface UseAdminActionsResult {
   featureFlags: AdminFeatureFlagItem[];
   reconciliation: AdminReconciliationData;
   auditLogs: AdminAuditLogItem[];
+  tickets: AdminSupportTicketItem[];
   actionError: string | null;
   activeImpersonation: ActiveImpersonation | null;
   suspendUser: (userId: string, reason: string) => Promise<void>;
@@ -69,6 +77,11 @@ export interface UseAdminActionsResult {
     durationMinutes: number,
   ) => Promise<void>;
   toggleFeatureFlag: (key: string, enabled: boolean) => Promise<void>;
+  updateTicketStatus: (
+    id: string,
+    status: AdminSupportTicketItem['status'],
+    resolutionNotes?: string,
+  ) => Promise<void>;
   rerunReconciliation: () => void;
   terminateImpersonation: () => void;
 }
@@ -87,6 +100,7 @@ export function useAdminActions(params: UseAdminActionsParams): UseAdminActionsR
     initialFeatureFlags,
     initialReconciliation,
     initialAuditLogs,
+    initialTickets,
   } = params;
 
   const [users, setUsers] = React.useState<AdminUserItem[]>(initialUsers);
@@ -97,6 +111,7 @@ export function useAdminActions(params: UseAdminActionsParams): UseAdminActionsR
   const [reconciliation, setReconciliation] =
     React.useState<AdminReconciliationData>(initialReconciliation);
   const [auditLogs, setAuditLogs] = React.useState<AdminAuditLogItem[]>(initialAuditLogs);
+  const [tickets, setTickets] = React.useState<AdminSupportTicketItem[]>(initialTickets);
   const [actionError, setActionError] = React.useState<string | null>(null);
   const [activeImpersonation, setActiveImpersonation] = React.useState<ActiveImpersonation | null>(
     null,
@@ -108,6 +123,7 @@ export function useAdminActions(params: UseAdminActionsParams): UseAdminActionsR
   React.useEffect(() => setFeatureFlags(initialFeatureFlags), [initialFeatureFlags]);
   React.useEffect(() => setReconciliation(initialReconciliation), [initialReconciliation]);
   React.useEffect(() => setAuditLogs(initialAuditLogs), [initialAuditLogs]);
+  React.useEffect(() => setTickets(initialTickets), [initialTickets]);
 
   const runAction = React.useCallback(async (action: () => Promise<void>) => {
     setActionError(null);
@@ -193,6 +209,32 @@ export function useAdminActions(params: UseAdminActionsParams): UseAdminActionsR
     [params, runAction],
   );
 
+  const updateTicketStatus = React.useCallback(
+    async (
+      id: string,
+      status: AdminSupportTicketItem['status'],
+      resolutionNotes?: string,
+    ) =>
+      runAction(async () => {
+        if (!params.onUpdateTicketStatus) {
+          throw new Error('Ticket triage is unavailable (missing staff permission).');
+        }
+        await params.onUpdateTicketStatus(id, status, resolutionNotes);
+        setTickets((prev) =>
+          prev.map((row) =>
+            row.id === id
+              ? {
+                  ...row,
+                  status,
+                  resolutionNotes: resolutionNotes ?? row.resolutionNotes,
+                }
+              : row,
+          ),
+        );
+      }),
+    [params, runAction],
+  );
+
   const rerunReconciliation = React.useCallback(() => {
     setReconciliation((prev) => ({ ...prev, isBalanced: true, discrepancy: '0' }));
   }, []);
@@ -206,6 +248,7 @@ export function useAdminActions(params: UseAdminActionsParams): UseAdminActionsR
     featureFlags,
     reconciliation,
     auditLogs,
+    tickets,
     actionError,
     activeImpersonation,
     suspendUser,
@@ -214,6 +257,7 @@ export function useAdminActions(params: UseAdminActionsParams): UseAdminActionsR
     cancelBooking,
     startImpersonation,
     toggleFeatureFlag,
+    updateTicketStatus,
     rerunReconciliation,
     terminateImpersonation,
   };

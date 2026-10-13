@@ -56,6 +56,21 @@ export interface AdminAuditLogItem {
   createdAt: string;
 }
 
+export type AdminSupportTicketStatus = 'submitted' | 'in_review' | 'resolved' | 'spam';
+
+export interface AdminSupportTicketItem {
+  id: string;
+  name: string;
+  email: string;
+  phoneE164: string | null;
+  category: string;
+  message: string;
+  status: AdminSupportTicketStatus;
+  reporterUserId: string | null;
+  resolutionNotes: string | null;
+  createdAt: string;
+}
+
 export interface AdminDashboardMetrics {
   pendingTutorVerifications: number;
   activeReplacementCases: number;

@@ -387,6 +387,7 @@
     "settingsTab": "System Settings",
     "featureFlagsTab": "Feature Flags",
     "auditLogsTab": "Audit Logs",
+    "supportTab": "Support Tickets",
     "tutorVerificationQueue": "Tutor Verification Queue",
     "replacementQueue": "Replacement Guarantee Cases",
     "safetyQueue": "Safety & Abuse Reports",

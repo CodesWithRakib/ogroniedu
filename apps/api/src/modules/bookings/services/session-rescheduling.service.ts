@@ -2,7 +2,6 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  ConflictException,
   Logger,
   Optional,
   Inject,
@@ -10,10 +9,6 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import type {
-  NotificationEventType,
-  NotificationRole,
-} from '@ogroniedu/contracts';
 import {
   BookingSessionEntity,
   CancellationAssessment,
@@ -21,6 +16,11 @@ import {
 import { OutboxEventEntity } from '../entities/outbox-event.entity';
 import { AuditService } from '../../audit/audit.service';
 import { NotificationService } from '../../notifications/notification.service';
+import {
+  assertNoTutorOverlap,
+  recordOutboxEvent,
+  dispatchNotificationSafe,
+} from './session-booking.helpers';
 import {
   RescheduleSessionDto,
   CancelSessionDto,
@@ -97,7 +97,13 @@ export class SessionReschedulingService {
     }
 
     // Check overlap excluding this session id
-    await this.assertNoTutorOverlap(session.tutorUserId, newStartsAt, newEndsAt, session.id);
+    await assertNoTutorOverlap(
+      this.sessionRepo,
+      session.tutorUserId,
+      newStartsAt,
+      newEndsAt,
+      session.id,
+    );
 
     session.startsAt = newStartsAt;
     session.endsAt = newEndsAt;
@@ -105,7 +111,7 @@ export class SessionReschedulingService {
 
     const saved = await this.sessionRepo.save(session);
 
-    await this.recordOutboxEvent('session.rescheduled', 'session', saved.id, {
+    await recordOutboxEvent(this.outboxRepo, 'session.rescheduled', 'session', saved.id, {
       sessionId: saved.id,
       newStartsAt: saved.startsAt.toISOString(),
       newEndsAt: saved.endsAt.toISOString(),
@@ -120,10 +126,17 @@ export class SessionReschedulingService {
       reason: dto.reason,
     });
 
-    this.dispatchNotificationSafe(session.tutorUserId, 'booking.confirmed', 'tutor', {
-      bookingId: session.bookingId,
-      subjectName: 'Rescheduled Session',
-    });
+    dispatchNotificationSafe(
+      this.logger,
+      this.notificationService,
+      session.tutorUserId,
+      'booking.confirmed',
+      'tutor',
+      {
+        bookingId: session.bookingId,
+        subjectName: 'Rescheduled Session',
+      },
+    );
 
     return saved;
   }
@@ -234,7 +247,7 @@ export class SessionReschedulingService {
     const saved = await this.sessionRepo.save(session);
 
     // Persist outbox event
-    await this.recordOutboxEvent('session.cancelled', 'session', saved.id, {
+    await recordOutboxEvent(this.outboxRepo, 'session.cancelled', 'session', saved.id, {
       sessionId: saved.id,
       bookingId: session.bookingId,
       leadHours: assessment.leadHours,
@@ -254,88 +267,18 @@ export class SessionReschedulingService {
     // Notify other participant
     const notifyRecipientId = isTutor ? session.studentUserId : session.tutorUserId;
     const recipientRole = isTutor ? 'student' : 'tutor';
-    this.dispatchNotificationSafe(notifyRecipientId, 'booking.cancelled', recipientRole, {
-      bookingId: session.bookingId,
-      reason: dto.reason,
-    });
+    dispatchNotificationSafe(
+      this.logger,
+      this.notificationService,
+      notifyRecipientId,
+      'booking.cancelled',
+      recipientRole,
+      {
+        bookingId: session.bookingId,
+        reason: dto.reason,
+      },
+    );
 
     return { session: saved, policyAssessment: assessment };
-  }
-
-  // ---------------------------------------------------------------------------
-  // Internal Invariant Protections & Helpers
-  // ---------------------------------------------------------------------------
-
-  /**
-   * Invariant: At most one overlapping active session per tutor.
-   * Cancelled and completed sessions are excluded from the check.
-   */
-  private async assertNoTutorOverlap(
-    tutorUserId: string,
-    startsAt: Date,
-    endsAt: Date,
-    excludeSessionId?: string,
-  ): Promise<void> {
-    const qb = this.sessionRepo
-      .createQueryBuilder('s')
-      .where('s.tutorUserId = :tutorUserId', { tutorUserId })
-      .andWhere('s.status IN (:...activeStatuses)', {
-        activeStatuses: ['scheduled', 'in_progress'],
-      })
-      .andWhere('s.startsAt < :endsAt AND s.endsAt > :startsAt', { startsAt, endsAt });
-
-    if (excludeSessionId) {
-      qb.andWhere('s.id != :excludeSessionId', { excludeSessionId });
-    }
-
-    const collision = await qb.getOne();
-    if (collision) {
-      throw new ConflictException(
-        'Tutor already has an active session overlapping with the requested time slot.',
-      );
-    }
-  }
-
-  /**
-   * Persist durable outbox event within the database
-   */
-  private async recordOutboxEvent(
-    eventType: string,
-    aggregateType: string,
-    aggregateId: string,
-    payload: Record<string, unknown>,
-  ): Promise<OutboxEventEntity> {
-    const event = this.outboxRepo.create({
-      eventType,
-      aggregateType,
-      aggregateId,
-      payload,
-    });
-    return await this.outboxRepo.save(event);
-  }
-
-  /**
-   * Non-blocking notification dispatch (outside transaction locks)
-   */
-  private dispatchNotificationSafe(
-    userId: string,
-    eventType: NotificationEventType,
-    recipientRole: NotificationRole,
-    payload: Record<string, string | number>,
-  ): void {
-    const service = this.notificationService;
-    if (!service) return;
-    setImmediate(async () => {
-      try {
-        await service.dispatch({
-          userId,
-          eventType,
-          recipientRole,
-          payload,
-        });
-      } catch (err: unknown) {
-        this.logger.warn(`Failed to dispatch notification ${eventType}: ${err}`);
-      }
-    });
   }
 }

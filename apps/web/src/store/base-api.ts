@@ -84,6 +84,7 @@ export const baseApi = createApi({
     'Reconciliation',
     'LedgerBalance',
     'BookingMessage',
+    'SupportTicket',
     'Review',
     'SafetyReport',
     'ReplacementCase',

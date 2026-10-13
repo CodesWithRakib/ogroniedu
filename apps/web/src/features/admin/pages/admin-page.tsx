@@ -41,6 +41,7 @@ export function AdminPage({ locale }: { locale: Locale }) {
             initialSettings={(admin.settings as AdminSystemSettingItem[] | undefined) ?? []}
             initialFeatureFlags={(admin.flags as AdminFeatureFlagItem[] | undefined) ?? []}
             initialAuditLogs={admin.logs}
+            initialTickets={admin.tickets}
             isLoading={admin.loading}
             queryError={admin.queryError}
             onSuspendUser={admin.onSuspendUser}
@@ -49,6 +50,7 @@ export function AdminPage({ locale }: { locale: Locale }) {
             onCancelBooking={admin.onCancelBooking}
             onStartImpersonation={admin.onStartImpersonation}
             onUpdateFeatureFlag={admin.onUpdateFeatureFlag}
+            onUpdateTicketStatus={admin.onUpdateTicketStatus}
           />
           {admin.secondaryError && (
             <Card className="mx-6 mb-6">

@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useAdminActions } from '@/features/admin/hooks/use-admin-actions';
 import { AdminMetricsGrid } from '@/features/admin/components/admin-metrics-grid';
-import { AdminTabsBar, type AdminTabKey } from '@/features/admin/components/admin-tabs-bar';
+import { AdminTabsBar } from '@/features/admin/components/admin-tabs-bar';
 import { AdminOverviewTab } from '@/features/admin/components/tabs/admin-overview-tab';
 import { AdminUsersTab } from '@/features/admin/components/tabs/admin-users-tab';
 import { AdminBookingsTab } from '@/features/admin/components/tabs/admin-bookings-tab';
@@ -12,6 +12,7 @@ import { AdminReconciliationTab } from '@/features/admin/components/tabs/admin-r
 import { AdminSettingsTab } from '@/features/admin/components/tabs/admin-settings-tab';
 import { AdminFeatureFlagsTab } from '@/features/admin/components/tabs/admin-feature-flags-tab';
 import { AdminAuditLogsTab } from '@/features/admin/components/tabs/admin-audit-logs-tab';
+import { AdminSupportTab } from '@/features/admin/components/tabs/admin-support-tab';
 import { AdminSuspendUserModal } from '@/features/admin/components/modals/admin-suspend-user-modal';
 import { AdminRolesModal } from '@/features/admin/components/modals/admin-roles-modal';
 import { AdminCancelBookingModal } from '@/features/admin/components/modals/admin-cancel-booking-modal';
@@ -20,11 +21,13 @@ import {
   EMPTY_RECONCILIATION,
   type AdminActionHandlers,
 } from '@/features/admin/hooks/use-admin-actions';
+import { useAdminViewState } from '@/features/admin/hooks/use-admin-view-state';
 import type {
   AdminAuditLogItem,
   AdminBookingItem,
   AdminFeatureFlagItem,
   AdminReconciliationData,
+  AdminSupportTicketItem,
   AdminSystemSettingItem,
   AdminUserItem,
 } from '@/features/admin/types/admin.types';
@@ -34,6 +37,7 @@ export type {
   AdminBookingItem,
   AdminFeatureFlagItem,
   AdminReconciliationData,
+  AdminSupportTicketItem,
   AdminSystemSettingItem,
   AdminUserItem,
 };
@@ -57,6 +61,7 @@ export interface AdminDashboardProps extends AdminActionHandlers {
   initialSettings?: AdminSystemSettingItem[];
   initialFeatureFlags?: AdminFeatureFlagItem[];
   initialAuditLogs?: AdminAuditLogItem[];
+  initialTickets?: AdminSupportTicketItem[];
   isLoading?: boolean;
   queryError?: string | null;
 }
@@ -70,6 +75,7 @@ export function AdminDashboardView({
   initialSettings = [],
   initialFeatureFlags = [],
   initialAuditLogs = [],
+  initialTickets = [],
   isLoading = false,
   queryError = null,
   onSuspendUser,
@@ -79,28 +85,12 @@ export function AdminDashboardView({
   onStartImpersonation,
   onUpdateSetting,
   onUpdateFeatureFlag,
+  onUpdateTicketStatus,
 }: AdminDashboardProps) {
   const t = useTranslations('admin');
 
-  const [activeTab, setActiveTab] = React.useState<AdminTabKey>('overview');
-
-  // Modal visibility + transient form state (owned by the view, not the data layer).
-  const [selectedUserForSuspend, setSelectedUserForSuspend] = React.useState<AdminUserItem | null>(
-    null,
-  );
-  const [suspendReason, setSuspendReason] = React.useState('');
-  const [selectedUserForRoles, setSelectedUserForRoles] = React.useState<AdminUserItem | null>(
-    null,
-  );
-  const [editingRoles, setEditingRoles] = React.useState<string[]>([]);
-  const [selectedBookingForCancel, setSelectedBookingForCancel] =
-    React.useState<AdminBookingItem | null>(null);
-  const [cancelReason, setCancelReason] = React.useState('');
-  const [refundChecked, setRefundChecked] = React.useState(true);
-  const [selectedUserForImpersonate, setSelectedUserForImpersonate] =
-    React.useState<AdminUserItem | null>(null);
-  const [impersonateReason, setImpersonateReason] = React.useState('');
-  const [impersonateMinutes, setImpersonateMinutes] = React.useState(15);
+  // Local UI state (active tab, modal selection, transient form values).
+  const view = useAdminViewState();
 
   const actions = useAdminActions({
     initialUsers,
@@ -109,6 +99,7 @@ export function AdminDashboardView({
     initialFeatureFlags,
     initialReconciliation,
     initialAuditLogs,
+    initialTickets,
     onSuspendUser,
     onReactivateUser,
     onUpdateRoles,
@@ -116,40 +107,42 @@ export function AdminDashboardView({
     onStartImpersonation,
     onUpdateSetting,
     onUpdateFeatureFlag,
+    onUpdateTicketStatus,
   });
 
   const isSuperAdmin = currentUser.roles.includes('super_admin');
 
   const handleConfirmSuspend = async () => {
-    if (!selectedUserForSuspend || !suspendReason.trim()) return;
-    await actions.suspendUser(selectedUserForSuspend.id, suspendReason.trim());
-    setSelectedUserForSuspend(null);
-    setSuspendReason('');
+    if (!view.selectedUserForSuspend || !view.suspendReason.trim()) return;
+    await actions.suspendUser(view.selectedUserForSuspend.id, view.suspendReason.trim());
+    view.resetSuspendForm();
   };
 
   const handleConfirmRoles = async () => {
-    if (!selectedUserForRoles) return;
-    await actions.updateRoles(selectedUserForRoles.id, editingRoles);
-    setSelectedUserForRoles(null);
+    if (!view.selectedUserForRoles) return;
+    await actions.updateRoles(view.selectedUserForRoles.id, view.editingRoles);
+    view.closeRolesModal();
   };
 
   const handleConfirmCancelBooking = async () => {
-    if (!selectedBookingForCancel || !cancelReason.trim()) return;
-    await actions.cancelBooking(selectedBookingForCancel.id, cancelReason.trim(), refundChecked);
-    setSelectedBookingForCancel(null);
-    setCancelReason('');
+    if (!view.selectedBookingForCancel || !view.cancelReason.trim()) return;
+    await actions.cancelBooking(
+      view.selectedBookingForCancel.id,
+      view.cancelReason.trim(),
+      view.refundChecked,
+    );
+    view.resetCancelForm();
   };
 
   const handleConfirmImpersonation = async () => {
-    if (!selectedUserForImpersonate || !impersonateReason.trim()) return;
+    if (!view.selectedUserForImpersonate || !view.impersonateReason.trim()) return;
     await actions.startImpersonation(
-      selectedUserForImpersonate.id,
-      selectedUserForImpersonate.displayName,
-      impersonateReason.trim(),
-      impersonateMinutes,
+      view.selectedUserForImpersonate.id,
+      view.selectedUserForImpersonate.displayName,
+      view.impersonateReason.trim(),
+      view.impersonateMinutes,
     );
-    setSelectedUserForImpersonate(null);
-    setImpersonateReason('');
+    view.resetImpersonateForm();
   };
 
   return (
@@ -232,81 +225,84 @@ export function AdminDashboardView({
       </div>
 
       <AdminMetricsGrid metrics={metrics} />
-      <AdminTabsBar activeTab={activeTab} onSelect={setActiveTab} />
+      <AdminTabsBar activeTab={view.activeTab} onSelect={view.setActiveTab} />
 
-      {activeTab === 'overview' && <AdminOverviewTab reconciliation={actions.reconciliation} />}
-      {activeTab === 'users' && (
+      {view.activeTab === 'overview' && <AdminOverviewTab reconciliation={actions.reconciliation} />}
+      {view.activeTab === 'users' && (
         <AdminUsersTab
           users={actions.users}
           isSuperAdmin={isSuperAdmin}
-          onRequestSuspend={setSelectedUserForSuspend}
-          onRequestRoles={(user) => {
-            setSelectedUserForRoles(user);
-            setEditingRoles([...user.roles]);
-          }}
-          onRequestImpersonate={setSelectedUserForImpersonate}
+          onRequestSuspend={view.setSelectedUserForSuspend}
+          onRequestRoles={view.requestRoles}
+          onRequestImpersonate={view.setSelectedUserForImpersonate}
           onReactivate={actions.reactivateUser}
         />
       )}
-      {activeTab === 'bookings' && (
+      {view.activeTab === 'bookings' && (
         <AdminBookingsTab
           bookings={actions.bookings}
-          onRequestCancel={setSelectedBookingForCancel}
+          onRequestCancel={view.setSelectedBookingForCancel}
         />
       )}
-      {activeTab === 'reconciliation' && (
+      {view.activeTab === 'reconciliation' && (
         <AdminReconciliationTab
           reconciliation={actions.reconciliation}
           onRunAudit={actions.rerunReconciliation}
         />
       )}
-      {activeTab === 'settings' && <AdminSettingsTab settings={actions.settings} />}
-      {activeTab === 'featureFlags' && (
+      {view.activeTab === 'settings' && <AdminSettingsTab settings={actions.settings} />}
+      {view.activeTab === 'featureFlags' && (
         <AdminFeatureFlagsTab
           featureFlags={actions.featureFlags}
           isSuperAdmin={isSuperAdmin}
           onToggle={actions.toggleFeatureFlag}
         />
       )}
-      {activeTab === 'auditLogs' && <AdminAuditLogsTab auditLogs={actions.auditLogs} />}
+      {view.activeTab === 'auditLogs' && <AdminAuditLogsTab auditLogs={actions.auditLogs} />}
+      {view.activeTab === 'support' && (
+        <AdminSupportTab
+          tickets={actions.tickets}
+          onUpdateStatus={actions.updateTicketStatus}
+        />
+      )}
 
-      {selectedUserForSuspend && (
+      {view.selectedUserForSuspend && (
         <AdminSuspendUserModal
-          user={selectedUserForSuspend}
-          reason={suspendReason}
-          onReasonChange={setSuspendReason}
-          onClose={() => setSelectedUserForSuspend(null)}
+          user={view.selectedUserForSuspend}
+          reason={view.suspendReason}
+          onReasonChange={view.setSuspendReason}
+          onClose={view.resetSuspendForm}
           onConfirm={handleConfirmSuspend}
         />
       )}
-      {selectedUserForRoles && (
+      {view.selectedUserForRoles && (
         <AdminRolesModal
-          user={selectedUserForRoles}
-          editingRoles={editingRoles}
-          onEditingRolesChange={setEditingRoles}
-          onClose={() => setSelectedUserForRoles(null)}
+          user={view.selectedUserForRoles}
+          editingRoles={view.editingRoles}
+          onEditingRolesChange={view.setEditingRoles}
+          onClose={view.closeRolesModal}
           onConfirm={handleConfirmRoles}
         />
       )}
-      {selectedBookingForCancel && (
+      {view.selectedBookingForCancel && (
         <AdminCancelBookingModal
-          booking={selectedBookingForCancel}
-          reason={cancelReason}
-          refundEscrow={refundChecked}
-          onReasonChange={setCancelReason}
-          onRefundChange={setRefundChecked}
-          onClose={() => setSelectedBookingForCancel(null)}
+          booking={view.selectedBookingForCancel}
+          reason={view.cancelReason}
+          refundEscrow={view.refundChecked}
+          onReasonChange={view.setCancelReason}
+          onRefundChange={view.setRefundChecked}
+          onClose={view.resetCancelForm}
           onConfirm={handleConfirmCancelBooking}
         />
       )}
-      {selectedUserForImpersonate && (
+      {view.selectedUserForImpersonate && (
         <AdminImpersonationModal
-          user={selectedUserForImpersonate}
-          reason={impersonateReason}
-          minutes={impersonateMinutes}
-          onReasonChange={setImpersonateReason}
-          onMinutesChange={setImpersonateMinutes}
-          onClose={() => setSelectedUserForImpersonate(null)}
+          user={view.selectedUserForImpersonate}
+          reason={view.impersonateReason}
+          minutes={view.impersonateMinutes}
+          onReasonChange={view.setImpersonateReason}
+          onMinutesChange={view.setImpersonateMinutes}
+          onClose={view.resetImpersonateForm}
           onConfirm={handleConfirmImpersonation}
         />
       )}
