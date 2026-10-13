@@ -26,14 +26,14 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         {label && (
           <label
             htmlFor={inputId}
-            className="block text-sm font-medium text-slate-700 dark:text-slate-200"
+            className="block text-sm font-medium text-foreground"
           >
             {label}
           </label>
         )}
         <div className="relative rounded-xl shadow-xs">
           {leadingIcon && (
-            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400">
+            <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-foreground">
               {leadingIcon}
             </div>
           )}
@@ -45,11 +45,11 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             aria-describedby={hasError ? errorId : helperText ? helperId : undefined}
             className={twMerge(
               clsx(
-                'block w-full rounded-xl border bg-white px-3.5 py-2.5 text-sm text-slate-900 transition-colors placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-emerald-600 focus:border-transparent disabled:cursor-not-allowed disabled:bg-slate-50 disabled:text-slate-400 dark:bg-slate-900 dark:text-slate-100 dark:placeholder:text-slate-500',
+                'block w-full rounded-xl border bg-card px-3.5 py-2.5 text-sm text-foreground transition-colors placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-muted-foreground',
                 leadingIcon && 'pl-10',
                 hasError
-                  ? 'border-rose-500 focus:ring-rose-500 dark:border-rose-500'
-                  : 'border-slate-300 dark:border-slate-700',
+                  ? 'border-destructive focus:ring-destructive'
+                  : 'border-border focus:border-primary/50',
                 className,
               ),
             )}
@@ -57,12 +57,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           />
         </div>
         {hasError && (
-          <p id={errorId} className="text-xs text-rose-600 dark:text-rose-400">
+          <p id={errorId} className="text-xs text-destructive">
             {errorMessage}
           </p>
         )}
         {!hasError && helperText && (
-          <p id={helperId} className="text-xs text-slate-500 dark:text-slate-400">
+          <p id={helperId} className="text-xs text-muted-foreground">
             {helperText}
           </p>
         )}

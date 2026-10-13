@@ -10,7 +10,7 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+} from '@/components/ui/alertDialog';
 
 export function ConfirmDialog({
   open,
@@ -47,7 +47,7 @@ export function ConfirmDialog({
             data-testid={`${testId}-confirm`}
             disabled={pending}
             className={destructive ? 'bg-rose-600 hover:bg-rose-500' : undefined}
-            onClick={async (e) => {
+            onClick={async (e: React.MouseEvent) => {
               e.preventDefault();
               setPending(true);
               try {

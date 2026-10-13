@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { AnalyticsDashboardView } from '@/components/analytics/AnalyticsDashboardView';
+import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner, Card, CardContent } from '@/components/ui';
 import { type Locale } from '@/lib/i18n';
 import { normalizeApiError } from '@/lib/api-error';
@@ -36,18 +37,22 @@ export function AnalyticsPage({ locale }: { locale: Locale }) {
 
   if (loading && !overview.data) {
     return (
-      <div className="py-10">
-        <LoadingSpinner />
-      </div>
+      <AdminLayout locale={locale} title={locale === 'bn' ? 'অ্যানালিটিক্স' : 'Analytics'}>
+        <div className="py-10">
+          <LoadingSpinner />
+        </div>
+      </AdminLayout>
     );
   }
   if (queryError && !overview.data) {
     return (
-      <div className="py-10 px-6">
-        <Card>
-          <CardContent className="py-8 text-center text-sm text-rose-600">{queryError}</CardContent>
-        </Card>
-      </div>
+      <AdminLayout locale={locale} title={locale === 'bn' ? 'অ্যানালিটিক্স' : 'Analytics'}>
+        <div className="py-10">
+          <Card>
+            <CardContent className="py-8 text-center text-sm text-rose-600">{queryError}</CardContent>
+          </Card>
+        </div>
+      </AdminLayout>
     );
   }
 
@@ -62,8 +67,8 @@ export function AnalyticsPage({ locale }: { locale: Locale }) {
     : null;
 
   return (
-    <div className="py-6">
+    <AdminLayout locale={locale} title={locale === 'bn' ? 'অ্যানালিটিক্স' : 'Analytics'}>
       <AnalyticsDashboardView initialData={initialData} onDateRangeChange={onDateRangeChange} />
-    </div>
+    </AdminLayout>
   );
 }

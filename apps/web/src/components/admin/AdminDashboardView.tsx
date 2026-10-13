@@ -3,20 +3,20 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import { useAdminActions } from '@/features/admin/hooks/use-admin-actions';
-import { AdminMetricsGrid } from '@/features/admin/components/admin-metrics-grid';
-import { AdminTabsBar } from '@/features/admin/components/admin-tabs-bar';
-import { AdminOverviewTab } from '@/features/admin/components/tabs/admin-overview-tab';
-import { AdminUsersTab } from '@/features/admin/components/tabs/admin-users-tab';
-import { AdminBookingsTab } from '@/features/admin/components/tabs/admin-bookings-tab';
-import { AdminReconciliationTab } from '@/features/admin/components/tabs/admin-reconciliation-tab';
-import { AdminSettingsTab } from '@/features/admin/components/tabs/admin-settings-tab';
-import { AdminFeatureFlagsTab } from '@/features/admin/components/tabs/admin-feature-flags-tab';
-import { AdminAuditLogsTab } from '@/features/admin/components/tabs/admin-audit-logs-tab';
-import { AdminSupportTab } from '@/features/admin/components/tabs/admin-support-tab';
-import { AdminSuspendUserModal } from '@/features/admin/components/modals/admin-suspend-user-modal';
-import { AdminRolesModal } from '@/features/admin/components/modals/admin-roles-modal';
-import { AdminCancelBookingModal } from '@/features/admin/components/modals/admin-cancel-booking-modal';
-import { AdminImpersonationModal } from '@/features/admin/components/modals/admin-impersonation-modal';
+import { AdminMetricsGrid } from '@/features/admin/components/adminMetricsGrid';
+import { AdminTabsBar } from '@/features/admin/components/adminTabsBar';
+import { AdminOverviewTab } from '@/features/admin/components/tabs/adminOverviewTab';
+import { AdminUsersTab } from '@/features/admin/components/tabs/adminUsersTab';
+import { AdminBookingsTab } from '@/features/admin/components/tabs/adminBookingsTab';
+import { AdminReconciliationTab } from '@/features/admin/components/tabs/adminReconciliationTab';
+import { AdminSettingsTab } from '@/features/admin/components/tabs/adminSettingsTab';
+import { AdminFeatureFlagsTab } from '@/features/admin/components/tabs/adminFeatureFlagsTab';
+import { AdminAuditLogsTab } from '@/features/admin/components/tabs/adminAuditLogsTab';
+import { AdminSupportTab } from '@/features/admin/components/tabs/adminSupportTab';
+import { AdminSuspendUserModal } from '@/features/admin/components/modals/adminSuspendUserModal';
+import { AdminRolesModal } from '@/features/admin/components/modals/adminRolesModal';
+import { AdminCancelBookingModal } from '@/features/admin/components/modals/adminCancelBookingModal';
+import { AdminImpersonationModal } from '@/features/admin/components/modals/adminImpersonationModal';
 import {
   EMPTY_RECONCILIATION,
   type AdminActionHandlers,
@@ -171,7 +171,7 @@ export function AdminDashboardView({
       {isLoading && (
         <div
           role="status"
-          className="rounded-xl border border-slate-800 bg-slate-900 p-3 text-sm text-slate-300"
+          className="rounded-2xl border border-border bg-card p-4 text-sm text-muted-foreground shadow-xs"
           data-testid="admin-loading"
         >
           Loading…
@@ -179,18 +179,18 @@ export function AdminDashboardView({
       )}
       {actions.activeImpersonation && (
         <div
-          className="bg-amber-500/20 border-2 border-amber-500 rounded-xl p-4 flex items-center justify-between shadow-lg shadow-amber-500/10 animate-pulse"
+          className="bg-amber-500/10 border-2 border-amber-500/50 rounded-2xl p-4 flex items-center justify-between shadow-lg shadow-amber-500/10 animate-pulse"
           data-testid="active-impersonation-banner"
         >
           <div className="flex items-center space-x-3">
             <span className="text-2xl">⚠️</span>
             <div>
-              <p className="font-bold text-amber-300 text-sm tracking-wide">
+              <p className="font-bold text-amber-600 dark:text-amber-400 text-sm tracking-wide">
                 {t('activeImpersonationBanner')}:{' '}
                 <span className="underline">{actions.activeImpersonation.targetName}</span> (
                 {actions.activeImpersonation.targetId})
               </p>
-              <p className="text-xs text-amber-200/80">
+              <p className="text-xs text-amber-600/80 dark:text-amber-300/80">
                 {t('impersonationWarning')} (Session window: {actions.activeImpersonation.expiresIn}{' '}
                 min)
               </p>
@@ -198,7 +198,7 @@ export function AdminDashboardView({
           </div>
           <button
             onClick={actions.terminateImpersonation}
-            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-lg font-medium text-xs transition"
+            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-medium text-xs shadow-xs transition"
             data-testid="terminate-impersonation-btn"
           >
             {t('terminateImpersonation')}
@@ -206,21 +206,21 @@ export function AdminDashboardView({
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-slate-800">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
           <div className="flex items-center space-x-3">
-            <h1 className="text-3xl font-extrabold tracking-tight bg-gradient-to-r from-teal-400 to-indigo-400 bg-clip-text text-transparent">
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
               {t('title')}
             </h1>
-            <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-indigo-500/20 text-indigo-300 border border-indigo-500/30">
+            <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-primary/10 text-primary border border-primary/25">
               {isSuperAdmin ? 'SUPER ADMIN' : 'ADMIN'}
             </span>
           </div>
-          <p className="text-slate-400 text-sm mt-1">{t('subtitle')}</p>
+          <p className="text-muted-foreground text-sm mt-1">{t('subtitle')}</p>
         </div>
         <div className="text-right">
-          <p className="text-xs text-slate-400">Authenticated Actor</p>
-          <p className="text-sm font-semibold text-slate-200">{currentUser.displayName}</p>
+          <p className="text-xs text-muted-foreground">Authenticated Actor</p>
+          <p className="text-sm font-semibold text-foreground">{currentUser.displayName}</p>
         </div>
       </div>
 

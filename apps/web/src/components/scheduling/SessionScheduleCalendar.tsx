@@ -9,10 +9,10 @@ import type {
   CancelAssessmentView,
   ScheduleOneOffInput,
 } from '@/features/bookings/types/session.types';
-import { SessionCard } from '@/features/bookings/components/sessions/session-card';
-import { RescheduleModal } from '@/features/bookings/components/sessions/reschedule-modal';
-import { CancelSessionModal } from '@/features/bookings/components/sessions/cancel-modal';
-import { ScheduleSessionModal } from '@/features/bookings/components/sessions/schedule-modal';
+import { SessionCard } from '@/features/bookings/components/sessions/sessionCard';
+import { RescheduleModal } from '@/features/bookings/components/sessions/rescheduleModal';
+import { CancelSessionModal } from '@/features/bookings/components/sessions/cancelModal';
+import { ScheduleSessionModal } from '@/features/bookings/components/sessions/scheduleModal';
 
 export type { CalendarSessionItem, CancelAssessmentView, ScheduleOneOffInput };
 export type { SessionItemStatus } from '@/features/bookings/types/session.types';

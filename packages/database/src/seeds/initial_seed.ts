@@ -201,6 +201,14 @@ export async function runInitialSeed(
 
   const demoUsers = [
     {
+      id: '00000000-0000-4000-a000-000000000000',
+      email: 'admin.demo@ogroniedu.com',
+      phone: '+8801711000000',
+      name: 'সুপার অ্যাডমিন (Super Admin)',
+      locale: 'bn',
+      status: 'active',
+    },
+    {
       id: '11111111-1111-4111-a111-111111111111',
       email: 'guardian.demo@ogroniedu.com',
       phone: '+8801711000001',
@@ -238,6 +246,8 @@ export async function runInitialSeed(
 
   // Assign user roles
   const userRoleAssignments = [
+    { userId: '00000000-0000-4000-a000-000000000000', roleCode: 'super_admin' },
+    { userId: '00000000-0000-4000-a000-000000000000', roleCode: 'admin' },
     { userId: '11111111-1111-4111-a111-111111111111', roleCode: 'guardian' },
     { userId: '22222222-2222-4222-b222-222222222222', roleCode: 'tutor' },
     { userId: '33333333-3333-4333-c333-333333333333', roleCode: 'student' },

@@ -9,7 +9,7 @@ import { useSearchTutorsQuery, type TutorSearchItem } from '@/store/services/tut
 import { useCreateBookingRequestMutation } from '@/store/services/bookings-api';
 import { useGetLinkedChildrenQuery } from '@/store/services/guardians-api';
 import { useGetEducationLevelsQuery } from '@/store/services/taxonomy-api';
-import { TutorSearchCatalog } from '../components/tutor-search-catalog';
+import { TutorSearchCatalog } from '../components/tutorSearchCatalog';
 import type {
   SearchCatalogResponse,
   SearchFilters,

@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
-import { ReviewCard } from '@/features/trust/components/review-card';
+import { ReviewCard } from '@/features/trust/components/reviewCard';
 import type { ReviewItem, TutorReviewsListViewProps } from '@/features/trust/types/trust.types';
 
 export type { ReviewItem, TutorReviewsListViewProps } from '@/features/trust/types/trust.types';

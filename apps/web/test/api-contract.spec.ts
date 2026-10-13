@@ -92,9 +92,11 @@ describe('API contract parsing (Phase 22)', () => {
 });
 
 describe('Theme registry', () => {
-  it('exposes exactly three themes with midnight-violet default', () => {
-    expect(APP_THEMES).toHaveLength(3);
+  it('exposes themes with midnight-violet default', () => {
+    expect(APP_THEMES.length).toBeGreaterThanOrEqual(3);
+    expect(APP_THEMES).toContain('midnight-violet');
     expect(APP_THEMES).toContain('ocean-teal');
+    expect(APP_THEMES).toContain('emerald-slate');
     expect(DEFAULT_THEME).toBe('midnight-violet');
     expect(isAppTheme('emerald-slate')).toBe(true);
     expect(isAppTheme('light')).toBe(false);

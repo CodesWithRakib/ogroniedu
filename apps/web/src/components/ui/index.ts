@@ -9,16 +9,16 @@ export { LoadingSpinner, type LoadingSpinnerProps } from './LoadingSpinner';
 
 // shadcn Reusable Component Library
 export * from './accordion';
-export * from './alert-dialog';
+export * from './alertDialog';
 export * from './alert';
 export * from './avatar';
 export * from './checkbox';
 export * from './dialog';
-export * from './dropdown-menu';
+export * from './dropdownMenu';
 export * from './label';
 export * from './popover';
 export * from './progress';
-export * from './scroll-area';
+export * from './scrollArea';
 export * from './select';
 export * from './separator';
 export * from './sheet';

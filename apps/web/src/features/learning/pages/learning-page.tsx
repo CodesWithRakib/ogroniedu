@@ -6,7 +6,7 @@ import { Button, Card, CardContent, Input, LoadingSpinner } from '@/components/u
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { normalizeApiError } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
-import { LearningManagementView } from '../components/learning-management-view';
+import { LearningManagementView } from '../components/learningManagementView';
 import { useLearningRecords } from '../hooks/use-learning-records';
 import type { LearningRole } from '../types/learning.types';
 

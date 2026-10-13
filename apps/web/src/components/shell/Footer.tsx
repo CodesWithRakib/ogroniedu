@@ -11,34 +11,34 @@ export function Footer({ locale }: FooterProps) {
   const dict = getDictionary(locale);
 
   return (
-    <footer className="border-t border-slate-200/80 bg-slate-50 dark:border-slate-800 dark:bg-slate-950">
+    <footer className="border-t border-border bg-card/70 text-foreground backdrop-blur-md transition-colors">
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-8">
           {/* Brand Info */}
           <div className="md:col-span-2 space-y-4">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-emerald-700 text-white">
+              <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/25">
                 <GraduationCap className="h-5 w-5" />
               </div>
-              <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 font-bengali">
+              <span className="text-lg font-bold tracking-tight text-foreground font-bengali">
                 {dict.common.appName}
               </span>
             </div>
-            <p className="max-w-md text-sm text-slate-600 dark:text-slate-400 leading-relaxed font-bengali">
+            <p className="max-w-md text-sm text-muted-foreground leading-relaxed font-bengali">
               {dict.footer.about}
             </p>
           </div>
 
           {/* Discover & Learning Links */}
           <div className="space-y-3">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-200">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
               {dict.footer.quickLinks}
             </h4>
-            <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+            <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
                   href={`/${locale}`}
-                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   {dict.nav.home}
                 </Link>
@@ -46,7 +46,7 @@ export function Footer({ locale }: FooterProps) {
               <li>
                 <Link
                   href={`/${locale}/tutors`}
-                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors font-medium text-emerald-800 dark:text-emerald-300"
+                  className="hover:text-primary transition-colors font-semibold text-primary"
                 >
                   {dict.nav.findTutors}
                 </Link>
@@ -54,7 +54,7 @@ export function Footer({ locale }: FooterProps) {
               <li>
                 <Link
                   href={`/${locale}/how-it-works`}
-                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   {dict.nav.howItWorks}
                 </Link>
@@ -62,7 +62,7 @@ export function Footer({ locale }: FooterProps) {
               <li>
                 <Link
                   href={`/${locale}/pricing`}
-                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   {dict.nav.pricing}
                 </Link>
@@ -72,14 +72,14 @@ export function Footer({ locale }: FooterProps) {
 
           {/* Trust, Safety & Support */}
           <div className="space-y-3">
-            <h4 className="text-xs font-semibold uppercase tracking-wider text-slate-900 dark:text-slate-200">
+            <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
               {dict.safetyPage.badge}
             </h4>
-            <ul className="space-y-2 text-sm text-slate-600 dark:text-slate-400">
+            <ul className="space-y-2 text-sm text-muted-foreground">
               <li>
                 <Link
                   href={`/${locale}/safety`}
-                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   {dict.nav.safety}
                 </Link>
@@ -87,7 +87,7 @@ export function Footer({ locale }: FooterProps) {
               <li>
                 <Link
                   href={`/${locale}/faq`}
-                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   {dict.nav.faq}
                 </Link>
@@ -95,7 +95,7 @@ export function Footer({ locale }: FooterProps) {
               <li>
                 <Link
                   href={`/${locale}/contact`}
-                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   {dict.nav.contact}
                 </Link>
@@ -103,7 +103,7 @@ export function Footer({ locale }: FooterProps) {
               <li>
                 <Link
                   href={`/${locale}/privacy`}
-                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   {dict.footer.privacy}
                 </Link>
@@ -111,7 +111,7 @@ export function Footer({ locale }: FooterProps) {
               <li>
                 <Link
                   href={`/${locale}/terms`}
-                  className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors"
+                  className="hover:text-primary transition-colors"
                 >
                   {dict.footer.terms}
                 </Link>
@@ -121,7 +121,7 @@ export function Footer({ locale }: FooterProps) {
         </div>
 
         {/* Bottom Bar */}
-        <div className="mt-8 border-t border-slate-200/60 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-slate-500 dark:border-slate-800 dark:text-slate-400 gap-4">
+        <div className="mt-8 border-t border-border/70 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground gap-4">
           <p>
             © {new Date().getFullYear()} {dict.common.appName}. {dict.footer.rightsReserved}
           </p>

@@ -48,7 +48,7 @@ export const TabList = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
       ref={ref}
       role="tablist"
       className={twMerge(
-        'inline-flex items-center justify-center rounded-xl bg-slate-100 p-1 text-slate-500 dark:bg-slate-800/80 dark:text-slate-400',
+        'inline-flex items-center justify-center rounded-xl bg-surface-muted p-1 text-muted-foreground border border-border/60 shadow-xs',
         className,
       )}
       {...props}
@@ -77,10 +77,10 @@ export const TabTrigger = forwardRef<HTMLButtonElement, TabTriggerProps>(
         onClick={() => context.setActiveTab(value)}
         className={twMerge(
           clsx(
-            'inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3 py-1.5 text-sm font-medium transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
+            'inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
             isSelected
-              ? 'bg-white text-slate-900 shadow-xs dark:bg-slate-900 dark:text-slate-100'
-              : 'text-slate-600 hover:text-slate-900 dark:text-slate-400 dark:hover:text-slate-100',
+              ? 'bg-card text-foreground shadow-xs ring-1 ring-border/50'
+              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover/60',
             className,
           ),
         )}

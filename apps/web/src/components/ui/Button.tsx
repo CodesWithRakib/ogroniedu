@@ -5,22 +5,24 @@ import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-emerald-600 focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] rounded-xl cursor-pointer',
+  'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] rounded-xl cursor-pointer',
   {
     variants: {
       variant: {
         primary:
-          'bg-emerald-700 text-white hover:bg-emerald-800 shadow-sm shadow-emerald-900/20 active:bg-emerald-900',
+          'bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm shadow-primary/25 active:opacity-95',
         default:
-          'bg-emerald-700 text-white hover:bg-emerald-800 shadow-sm shadow-emerald-900/20 active:bg-emerald-900',
+          'bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm shadow-primary/25 active:opacity-95',
         secondary:
-          'bg-slate-100 text-slate-800 hover:bg-slate-200 dark:bg-slate-800 dark:text-slate-100 dark:hover:bg-slate-700',
+          'bg-surface-muted text-foreground hover:bg-surface-hover border border-border/50 active:bg-surface-muted',
         outline:
-          'border border-slate-200 bg-transparent text-slate-700 hover:bg-slate-50 dark:border-slate-800 dark:text-slate-200 dark:hover:bg-slate-800/50',
+          'border border-border bg-card/60 text-foreground hover:bg-surface-hover hover:border-primary/40 backdrop-blur-xs',
         ghost:
-          'bg-transparent text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800',
-        destructive: 'bg-rose-600 text-white hover:bg-rose-700 shadow-sm active:bg-rose-800',
-        link: 'text-emerald-700 underline-offset-4 hover:underline dark:text-emerald-400',
+          'bg-transparent text-foreground hover:bg-surface-hover',
+        destructive:
+          'bg-destructive text-white hover:opacity-90 shadow-sm shadow-destructive/20 active:opacity-95',
+        link:
+          'text-primary underline-offset-4 hover:underline',
       },
       size: {
         sm: 'text-xs px-3 py-1.5 gap-1.5',

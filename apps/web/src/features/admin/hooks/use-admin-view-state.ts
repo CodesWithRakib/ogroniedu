@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { AdminBookingItem, AdminUserItem } from '../types/admin.types';
-import type { AdminTabKey } from '../components/admin-tabs-bar';
+import type { AdminTabKey } from '../components/adminTabsBar';
 
 /**
  * Local UI state for the admin dashboard view: active tab, modal selection,

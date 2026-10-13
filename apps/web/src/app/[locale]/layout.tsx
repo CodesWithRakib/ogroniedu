@@ -1,5 +1,11 @@
 import type { ReactNode } from 'react';
-import { Inter, Hind_Siliguri } from 'next/font/google';
+import {
+  Plus_Jakarta_Sans,
+  Inter,
+  Noto_Sans_Bengali,
+  Hind_Siliguri,
+  Instrument_Serif,
+} from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { StoreProvider } from '../../store';
 import { AuthBootstrap } from '@/components/auth/AuthBootstrap';
@@ -12,14 +18,44 @@ import bnMessages from '../../../messages/bn.json';
 import enMessages from '../../../messages/en.json';
 
 /**
- * Centralized typography: Inter (Latin) + Hind Siliguri (Bangla).
- * CSS vars --font-inter / --font-hind-siliguri feed globals.css --font-sans/--font-bengali.
+ * Premium Typography Stack (with display: 'swap' on all fonts):
+ * - Plus Jakarta Sans: modern high-clarity UI headline & lead font
+ * - Inter: crisp body copy & tabular numeric readability
+ * - Noto Sans Bengali & Hind Siliguri: authentic Bengali script shaping
+ * - Instrument Serif: editorial luxury italic accent for headline emphasis
  */
-const inter = Inter({ subsets: ['latin'], variable: '--font-inter', display: 'swap' });
+const plusJakartaSans = Plus_Jakarta_Sans({
+  subsets: ['latin'],
+  weight: ['400', '500', '600', '700', '800'],
+  variable: '--font-plus-jakarta',
+  display: 'swap',
+});
+
+const inter = Inter({
+  subsets: ['latin'],
+  variable: '--font-inter',
+  display: 'swap',
+});
+
+const notoSansBengali = Noto_Sans_Bengali({
+  subsets: ['bengali'],
+  weight: ['400', '500', '600', '700'],
+  variable: '--font-noto-bengali',
+  display: 'swap',
+});
+
 const hindSiliguri = Hind_Siliguri({
   weight: ['400', '500', '600', '700'],
   subsets: ['bengali', 'latin'],
   variable: '--font-hind-siliguri',
+  display: 'swap',
+});
+
+const instrumentSerif = Instrument_Serif({
+  weight: '400',
+  style: ['normal', 'italic'],
+  subsets: ['latin'],
+  variable: '--font-instrument-serif',
   display: 'swap',
 });
 
@@ -32,9 +68,10 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const resolved = await params;
   const locale = resolved.locale === 'en' ? 'en' : 'bn';
   const messages = locale === 'en' ? enMessages : bnMessages;
+  const fontVariables = `${plusJakartaSans.variable} ${inter.variable} ${notoSansBengali.variable} ${hindSiliguri.variable} ${instrumentSerif.variable}`;
 
   return (
-    <div className={`${inter.variable} ${hindSiliguri.variable}`}>
+    <div className={fontVariables}>
       <StoreProvider>
         <AuthBootstrap>
           <AppThemeProvider>

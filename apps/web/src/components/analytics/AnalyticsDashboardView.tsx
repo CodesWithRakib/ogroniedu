@@ -7,11 +7,11 @@ import type {
   AnalyticsDashboardViewProps,
   AnalyticsOperationalData,
 } from '@/features/analytics/types/analytics.types';
-import { AnalyticsHeader } from '@/features/analytics/components/analytics-header';
-import { AnalyticsKpiGrid } from '@/features/analytics/components/analytics-kpi-grid';
-import { AnalyticsFunnelCards } from '@/features/analytics/components/analytics-funnel-cards';
-import { AnalyticsIntegrityCards } from '@/features/analytics/components/analytics-integrity-cards';
-import { AnalyticsTrendsCard } from '@/features/analytics/components/analytics-trends-card';
+import { AnalyticsHeader } from '@/features/analytics/components/analyticsHeader';
+import { AnalyticsKpiGrid } from '@/features/analytics/components/analyticsKpiGrid';
+import { AnalyticsFunnelCards } from '@/features/analytics/components/analyticsFunnelCards';
+import { AnalyticsIntegrityCards } from '@/features/analytics/components/analyticsIntegrityCards';
+import { AnalyticsTrendsCard } from '@/features/analytics/components/analyticsTrendsCard';
 import { buildExportRows, downloadFile, toCsv } from '@/features/analytics/utils/analytics-export';
 import type { AnalyticsWindowPreset } from '@/features/analytics/hooks/use-analytics-window';
 
@@ -62,7 +62,7 @@ export function AnalyticsDashboardView({
 
   return (
     <div
-      className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6"
+      className="space-y-6"
       data-testid="analytics-dashboard-view"
     >
       <AnalyticsHeader
@@ -72,7 +72,7 @@ export function AnalyticsDashboardView({
         onExportJson={handleExportJson}
       />
 
-      <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-3 flex items-center space-x-3 text-xs text-emerald-300">
+      <div className="bg-emerald-500/10 border border-emerald-500/25 rounded-2xl p-3.5 flex items-center space-x-3 text-xs text-emerald-600 dark:text-emerald-400 font-medium shadow-2xs">
         <span className="text-base">🛡️</span>
         <span>{t('sourceOfTruthNotice')}</span>
       </div>

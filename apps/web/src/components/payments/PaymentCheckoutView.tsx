@@ -3,10 +3,10 @@
 import { ShieldCheck } from 'lucide-react';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { useCheckoutFlow } from '@/features/payments/hooks/use-checkout-flow';
-import { CheckoutSummary } from '@/features/payments/components/checkout-summary';
-import { CheckoutMethodPicker } from '@/features/payments/components/checkout-method-picker';
-import { PaymentReceipt } from '@/features/payments/components/payment-receipt';
-import { CheckoutLedger } from '@/features/payments/components/checkout-ledger';
+import { CheckoutSummary } from '@/features/payments/components/checkoutSummary';
+import { CheckoutMethodPicker } from '@/features/payments/components/checkoutMethodPicker';
+import { PaymentReceipt } from '@/features/payments/components/paymentReceipt';
+import { CheckoutLedger } from '@/features/payments/components/checkoutLedger';
 import type {
   PaymentOrderDetails,
   PaymentReceiptData,

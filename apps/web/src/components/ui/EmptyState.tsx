@@ -1,8 +1,6 @@
 import React from 'react';
-import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import { Inbox } from 'lucide-react';
-
 import Link from 'next/link';
 
 export interface EmptyStateProps {
@@ -20,22 +18,22 @@ export function EmptyState({ icon, title, description, action, actionLabel, acti
     <div
       role="status"
       className={twMerge(
-        'flex flex-col items-center justify-center rounded-2xl border border-dashed border-slate-200 p-8 text-center dark:border-slate-800',
+        'flex flex-col items-center justify-center rounded-2xl border border-dashed border-border p-8 text-center bg-card/40 backdrop-blur-xs',
         className,
       )}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-full bg-slate-100 text-slate-500 dark:bg-slate-800 dark:text-slate-400">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface-muted text-muted-foreground ring-1 ring-border/50 shadow-xs">
         {icon || <Inbox className="h-6 w-6" />}
       </div>
-      <h3 className="mt-4 text-base font-semibold text-slate-900 dark:text-slate-100">{title}</h3>
-      <p className="mt-1.5 max-w-sm text-sm text-slate-500 dark:text-slate-400">{description}</p>
+      <h3 className="mt-4 text-base font-semibold text-foreground">{title}</h3>
+      <p className="mt-1.5 max-w-sm text-sm text-muted-foreground">{description}</p>
       {action ? (
         <div className="mt-5">{action}</div>
       ) : actionLabel && actionHref ? (
         <div className="mt-5">
           <Link
             href={actionHref}
-            className="inline-flex items-center justify-center rounded-xl bg-emerald-700 px-4 py-2.5 text-sm font-medium text-white shadow-sm hover:bg-emerald-800"
+            className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm shadow-primary/25 hover:bg-primary-hover transition-colors"
           >
             {actionLabel}
           </Link>

@@ -6,6 +6,7 @@ import { usePathname, useRouter } from 'next/navigation';
 import { GraduationCap, Menu, X, Globe, User, LogOut } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { NotificationBell } from '../notifications/NotificationBell';
+import { ThemePicker } from '../theme/ThemePicker';
 import { getDictionary, type Locale } from '../../lib/i18n';
 import { dashboardPathForRoles, withLocale } from '@/lib/auth';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -26,9 +27,6 @@ export function Navbar({ locale }: NavbarProps) {
   const [logoutApi] = useLogoutMutation();
   const dict = getDictionary(locale);
 
-  // Auth state comes from localStorage, which does not exist during SSR.
-  // Render the logged-out chrome until mounted so server HTML and the first
-  // client render match (avoids hydration mismatch for logged-in users).
   React.useEffect(() => {
     setMounted(true);
   }, []);
@@ -55,17 +53,17 @@ export function Navbar({ locale }: NavbarProps) {
   const dashboardHref = user ? dashboardPathForRoles(user.roles, locale) : withLocale('/dashboard', locale);
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-slate-200/80 bg-white/90 backdrop-blur-md dark:border-slate-800 dark:bg-slate-900/90">
+    <header className="sticky top-0 z-40 w-full border-b border-border bg-card/85 backdrop-blur-md shadow-xs transition-colors">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         <Link href={`/${locale}`} className="flex items-center gap-2.5 group">
-          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-700 text-white shadow-sm shadow-emerald-900/20 group-hover:bg-emerald-800 transition-colors">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-sm shadow-primary/25 group-hover:scale-105 transition-transform">
             <GraduationCap className="h-6 w-6" />
           </div>
           <div className="flex flex-col">
-            <span className="text-lg font-bold tracking-tight text-slate-900 dark:text-slate-100 font-bengali">
+            <span className="text-lg font-bold tracking-tight text-foreground font-bengali">
               {dict.common.appName}
             </span>
-            <span className="text-[10px] text-emerald-700 dark:text-emerald-400 font-medium">
+            <span className="text-[10px] text-primary font-semibold tracking-wide">
               Bangladesh Tutoring Platform
             </span>
           </div>
@@ -73,60 +71,64 @@ export function Navbar({ locale }: NavbarProps) {
 
         <nav
           aria-label={isBn ? 'প্রধান নেভিগেশন' : 'Main Navigation'}
-          className="hidden lg:flex items-center gap-5 text-sm font-medium text-slate-600 dark:text-slate-300"
+          className="hidden lg:flex items-center gap-5 text-sm font-medium text-muted-foreground"
         >
-          <Link href={`/${locale}`} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
+          <Link href={`/${locale}`} className="hover:text-primary transition-colors">
             {dict.nav.home}
           </Link>
-          <Link href={`/${locale}/tutors`} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors font-semibold text-emerald-800 dark:text-emerald-300">
+          <Link href={`/${locale}/tutors`} className="hover:text-primary transition-colors font-semibold text-primary">
             {dict.nav.findTutors}
           </Link>
-          <Link href={`/${locale}/how-it-works`} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
+          <Link href={`/${locale}/how-it-works`} className="hover:text-primary transition-colors">
             {dict.nav.howItWorks}
           </Link>
-          <Link href={`/${locale}/pricing`} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
+          <Link href={`/${locale}/pricing`} className="hover:text-primary transition-colors">
             {dict.nav.pricing}
           </Link>
-          <Link href={`/${locale}/safety`} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
+          <Link href={`/${locale}/safety`} className="hover:text-primary transition-colors">
             {dict.nav.safety}
           </Link>
-          <Link href={`/${locale}/faq`} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
+          <Link href={`/${locale}/faq`} className="hover:text-primary transition-colors">
             {dict.nav.faq}
           </Link>
-          <Link href={`/${locale}/contact`} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
+          <Link href={`/${locale}/contact`} className="hover:text-primary transition-colors">
             {dict.nav.contact}
           </Link>
         </nav>
 
-        <div className="flex items-center gap-3">
+        <div className="flex items-center gap-2.5">
+          {/* Integrated Theme & Color Customizer */}
+          <ThemePicker locale={locale} />
+
+          {/* Bilingual Language Switcher */}
           <Link
             href={targetPath}
             aria-label={`Switch language to ${isBn ? 'English' : 'বাংলা'}`}
-            className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-slate-50 px-2.5 py-1.5 text-xs font-semibold text-slate-700 hover:bg-slate-100 hover:text-emerald-700 dark:border-slate-800 dark:bg-slate-800 dark:text-slate-200 dark:hover:bg-slate-700 transition-colors"
+            className="inline-flex items-center gap-1.5 rounded-xl border border-border bg-card/80 px-2.5 py-1.5 text-xs font-semibold text-foreground hover:bg-surface-hover hover:text-primary transition-colors"
           >
-            <Globe className="h-3.5 w-3.5 text-slate-500" />
+            <Globe className="h-3.5 w-3.5 text-muted-foreground" />
             <span>{isBn ? 'EN' : 'বাং'}</span>
           </Link>
 
           {showAuthed && <NotificationBell locale={locale} />}
 
-          <div className="hidden sm:flex items-center gap-2 border-l border-slate-200 pl-3 dark:border-slate-800">
+          <div className="hidden sm:flex items-center gap-2 border-l border-border pl-2.5">
             {showAuthed ? (
               <>
-                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                <div className="flex h-8 w-8 items-center justify-center rounded-full bg-primary-soft text-primary-soft-foreground font-bold text-xs ring-1 ring-primary/20">
                   <User className="h-4 w-4" />
                 </div>
                 <div className="hidden lg:flex flex-col text-left">
-                  <Link href={dashboardHref} className="text-xs font-semibold text-slate-900 hover:text-emerald-700 dark:text-slate-100" data-testid="navbar-dashboard-link">
+                  <Link href={dashboardHref} className="text-xs font-semibold text-foreground hover:text-primary" data-testid="navbar-dashboard-link">
                     {user.displayName}
                   </Link>
-                  <span className="text-[10px] text-slate-500">{user.roles.join(', ')}</span>
+                  <span className="text-[10px] text-muted-foreground">{user.roles.join(', ')}</span>
                 </div>
                 <button
                   type="button"
                   onClick={handleLogout}
                   aria-label={dict.nav.logout}
-                  className="ml-1 inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-slate-500 hover:bg-slate-100 hover:text-rose-600"
+                  className="ml-1 inline-flex items-center gap-1 rounded-lg px-2 py-1.5 text-xs font-medium text-muted-foreground hover:bg-surface-hover hover:text-destructive"
                   data-testid="navbar-logout-btn"
                 >
                   <LogOut className="h-3.5 w-3.5" />
@@ -135,7 +137,7 @@ export function Navbar({ locale }: NavbarProps) {
               </>
             ) : (
               <div className="flex items-center gap-2">
-                <Link href={withLocale('/login', locale)} className="text-xs font-semibold text-slate-700 hover:text-emerald-700" data-testid="navbar-login-link">
+                <Link href={withLocale('/login', locale)} className="text-xs font-semibold text-muted-foreground hover:text-primary" data-testid="navbar-login-link">
                   {dict.nav.login}
                 </Link>
                 <Link href={withLocale('/register', locale)} data-testid="navbar-register-link">
@@ -150,7 +152,7 @@ export function Navbar({ locale }: NavbarProps) {
             aria-expanded={mobileMenuOpen}
             aria-label={isBn ? 'মোবাইল মেনু খুলুন/বন্ধ করুন' : 'Toggle mobile menu'}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+            className="lg:hidden inline-flex items-center justify-center rounded-xl p-2 text-muted-foreground hover:bg-surface-hover hover:text-foreground"
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -161,35 +163,35 @@ export function Navbar({ locale }: NavbarProps) {
         <div
           role="region"
           aria-label={isBn ? 'মোবাইল নেভিগেশন মেনু' : 'Mobile Navigation Menu'}
-          className="lg:hidden border-b border-slate-200 bg-white px-4 pt-2 pb-6 space-y-3 dark:border-slate-800 dark:bg-slate-900"
+          className="lg:hidden border-b border-border bg-card px-4 pt-2 pb-6 space-y-3"
         >
           <div className="flex flex-col space-y-2 text-sm font-medium">
-            <Link href={`/${locale}`} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800">
+            <Link href={`/${locale}`} onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-3 py-2 text-foreground hover:bg-surface-hover">
               {dict.nav.home}
             </Link>
-            <Link href={`/${locale}/tutors`} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2 text-emerald-800 dark:text-emerald-300 font-semibold hover:bg-emerald-50 dark:hover:bg-emerald-950">
+            <Link href={`/${locale}/tutors`} onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-3 py-2 text-primary font-semibold hover:bg-primary-soft">
               {dict.nav.findTutors}
             </Link>
-            <Link href={`/${locale}/how-it-works`} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800">
+            <Link href={`/${locale}/how-it-works`} onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-3 py-2 text-foreground hover:bg-surface-hover">
               {dict.nav.howItWorks}
             </Link>
-            <Link href={`/${locale}/pricing`} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800">
+            <Link href={`/${locale}/pricing`} onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-3 py-2 text-foreground hover:bg-surface-hover">
               {dict.nav.pricing}
             </Link>
-            <Link href={`/${locale}/safety`} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800">
+            <Link href={`/${locale}/safety`} onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-3 py-2 text-foreground hover:bg-surface-hover">
               {dict.nav.safety}
             </Link>
-            <Link href={`/${locale}/faq`} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800">
+            <Link href={`/${locale}/faq`} onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-3 py-2 text-foreground hover:bg-surface-hover">
               {dict.nav.faq}
             </Link>
-            <Link href={`/${locale}/contact`} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800">
+            <Link href={`/${locale}/contact`} onClick={() => setMobileMenuOpen(false)} className="rounded-xl px-3 py-2 text-foreground hover:bg-surface-hover">
               {dict.nav.contact}
             </Link>
           </div>
-          <div className="pt-2 border-t border-slate-100 dark:border-slate-800">
+          <div className="pt-2 border-t border-border">
             {isAuthenticated && user ? (
               <div className="space-y-2">
-                <Link href={dashboardHref} onClick={() => setMobileMenuOpen(false)} className="block rounded-lg px-3 py-2 text-sm font-semibold text-emerald-800 dark:text-emerald-300">
+                <Link href={dashboardHref} onClick={() => setMobileMenuOpen(false)} className="block rounded-xl px-3 py-2 text-sm font-semibold text-primary">
                   {dict.nav.dashboard} — {user.displayName}
                 </Link>
                 <Button variant="outline" size="sm" className="w-full justify-center" onClick={handleLogout}>

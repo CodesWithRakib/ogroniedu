@@ -1,5 +1,4 @@
 import React, { forwardRef, type HTMLAttributes } from 'react';
-import { clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 
 export const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
@@ -7,7 +6,7 @@ export const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
     <div
       ref={ref}
       className={twMerge(
-        'rounded-2xl border border-slate-200/80 bg-white p-6 shadow-sm shadow-slate-200/40 transition-all dark:border-slate-800 dark:bg-slate-900/90 dark:shadow-none',
+        'rounded-2xl border border-border bg-card text-card-foreground p-6 shadow-sm shadow-black/5 transition-all',
         className,
       )}
       {...props}
@@ -28,7 +27,7 @@ export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadi
     <h3
       ref={ref}
       className={twMerge(
-        'text-lg font-semibold tracking-tight text-slate-900 dark:text-slate-100',
+        'text-lg font-semibold tracking-tight text-foreground',
         className,
       )}
       {...props}
@@ -45,7 +44,7 @@ export const CardDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={twMerge('text-sm text-slate-500 dark:text-slate-400', className)}
+    className={twMerge('text-sm text-muted-foreground', className)}
     {...props}
   />
 ));
@@ -63,7 +62,7 @@ export const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEleme
     <div
       ref={ref}
       className={twMerge(
-        'flex items-center pt-4 border-t border-slate-100 dark:border-slate-800/80',
+        'flex items-center pt-4 border-t border-border/70',
         className,
       )}
       {...props}

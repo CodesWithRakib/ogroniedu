@@ -1,6 +1,11 @@
 import type { Metadata } from 'next';
 import './globals.css';
-import { DEFAULT_THEME, THEME_STORAGE_KEY } from '@/lib/theme/themes';
+import {
+  DEFAULT_THEME,
+  DEFAULT_MODE,
+  THEME_STORAGE_KEY,
+  THEME_MODE_STORAGE_KEY,
+} from '@/lib/theme/themes';
 
 export const metadata: Metadata = {
   metadataBase: new URL('https://ogroni.edu.bd'),
@@ -38,19 +43,35 @@ export const metadata: Metadata = {
   },
 };
 
-// Inline, no-flash theme init: reads persisted data-theme before hydration.
-const themeInitScript = `(function(){try{var t=localStorage.getItem('${THEME_STORAGE_KEY}');var m=document.cookie.match(/(?:^|;\\s*)${THEME_STORAGE_KEY}=([^;]+)/);var v=t||(m&&m[1])||'${DEFAULT_THEME}';document.documentElement.setAttribute('data-theme',v);}catch(e){document.documentElement.setAttribute('data-theme','${DEFAULT_THEME}');}})();`;
+// Inline, zero-flash theme & mode init script before first paint.
+const themeInitScript = `(function(){
+  try{
+    var t=localStorage.getItem('${THEME_STORAGE_KEY}')||'${DEFAULT_THEME}';
+    var m=localStorage.getItem('${THEME_MODE_STORAGE_KEY}')||'${DEFAULT_MODE}';
+    var isDark = m === 'dark' || (m === 'system' && window.matchMedia('(prefers-color-scheme: dark)').matches);
+    document.documentElement.setAttribute('data-theme', t);
+    document.documentElement.setAttribute('data-mode', isDark ? 'dark' : 'light');
+    if (isDark) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }catch(e){
+    document.documentElement.setAttribute('data-theme','${DEFAULT_THEME}');
+    document.documentElement.setAttribute('data-mode','light');
+  }
+})();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bn" dir="ltr" data-theme={DEFAULT_THEME} suppressHydrationWarning>
+    <html lang="bn" dir="ltr" data-theme={DEFAULT_THEME} data-mode="light" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
-      <body className="antialiased selection:bg-emerald-500 selection:text-white">
+      <body className="antialiased selection:bg-primary selection:text-white">
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-emerald-700 focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-[100] focus:rounded-lg focus:bg-primary focus:px-4 focus:py-2 focus:text-sm focus:font-semibold focus:text-white shadow-md"
         >
           মূল কনটেন্টে যান / Skip to content
         </a>

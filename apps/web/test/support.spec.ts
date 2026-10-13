@@ -1,6 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
-import { AdminSupportTab } from '../src/features/admin/components/tabs/admin-support-tab';
+import { AdminSupportTab } from '../src/features/admin/components/tabs/adminSupportTab';
 import { mapSupportTickets } from '../src/features/admin/utils/admin-mappers';
 import { parseItem } from '../src/lib/api/parse';
 import type { PlatformStats } from '../src/store/services/public-api';

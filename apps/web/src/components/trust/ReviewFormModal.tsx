@@ -2,8 +2,8 @@
 
 import React, { useState } from 'react';
 import { useTranslations, useLocale } from 'next-intl';
-import { TrustModalShell, TrustFormAlert } from '@/features/trust/components/trust-modal-shell';
-import { StarSelector } from '@/features/trust/components/star-selector';
+import { TrustModalShell, TrustFormAlert } from '@/features/trust/components/trustModalShell';
+import { StarSelector } from '@/features/trust/components/starSelector';
 import { useModalSubmit } from '@/features/trust/hooks/use-modal-submit';
 import type { ReviewFormModalProps } from '@/features/trust/types/trust.types';
 

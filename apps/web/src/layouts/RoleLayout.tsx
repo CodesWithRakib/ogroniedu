@@ -27,7 +27,7 @@ export function RoleLayout({
 }) {
   return (
     <RequireRole locale={locale} allow={allow}>
-      <DashboardShell locale={locale} title={title} subtitle={subtitle} actions={actions}>
+      <DashboardShell locale={locale} title={title} subtitle={subtitle} actions={actions} role={allow[0]}>
         {children}
       </DashboardShell>
     </RequireRole>

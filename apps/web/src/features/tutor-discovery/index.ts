@@ -1,9 +1,10 @@
 export * from './types/tutor-discovery.types';
 export * from './utils/catalog-filter';
-export * from './components/tutor-card';
-export * from './components/tutor-filters-form';
-export * from './components/tutor-results-grid';
-export * from './components/score-breakdown-modal';
-export * from './components/booking-request-modal';
-export * from './components/tutor-search-catalog';
+export * from './components/tutorCard';
+export * from './components/tutorFiltersForm';
+export * from './components/tutorResultsGrid';
+export * from './components/scoreBreakdownModal';
+export * from './components/bookingRequestModal';
+export * from './components/tutorSearchCatalog';
 export * from './pages/tutors-page';
+
