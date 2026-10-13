@@ -11,6 +11,7 @@ import {
   ArrowRight,
   TrendingUp,
   Percent,
+  CheckCircle2,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
@@ -22,39 +23,41 @@ import { usePricingCalculator } from '../hooks/use-pricing-calculator';
 export function PricingPage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   const p = dict.pricingPage;
+  const isBn = locale === 'bn';
   const calc = usePricingCalculator(locale);
   const { hoursPerWeek, setHoursPerWeek, hourlyRate, setHourlyRate, monthlyGross, tutorEarnings, platformFee, tiers } = calc;
 
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
+    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <Badge
           variant="outline"
-          className="text-emerald-700 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300"
+          className="text-primary border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
         >
           {p.badge}
         </Badge>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 font-bengali">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground font-bengali">
           {p.title}
         </h1>
-        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-bengali leading-relaxed">
+        <p className="text-base sm:text-lg text-muted-foreground font-bengali leading-relaxed">
           {p.subtitle}
         </p>
       </div>
 
       {/* Free for Students Banner */}
-      <div className="rounded-2xl bg-gradient-to-r from-emerald-500/10 via-emerald-600/10 to-teal-500/10 border border-emerald-500/30 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
+      <div className="rounded-3xl bg-gradient-to-r from-primary/10 via-primary/5 to-emerald-500/10 border border-primary/25 p-6 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl shadow-primary/5">
         <div className="space-y-2 text-center sm:text-left">
-          <span className="text-xs font-bold uppercase tracking-wider text-emerald-700 dark:text-emerald-400">
-            {locale === 'bn' ? 'অভিভাবকদের জন্য সম্পূর্ণ ফ্রি' : '100% Free For Parents'}
-          </span>
-          <p className="text-base sm:text-lg font-semibold text-slate-900 dark:text-slate-100 font-bengali">
+          <div className="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-bold text-primary">
+            <CheckCircle2 className="h-3.5 w-3.5" />
+            <span>{locale === 'bn' ? 'অভিভাবকদের জন্য সম্পূর্ণ ফ্রি' : '100% Free For Parents'}</span>
+          </div>
+          <p className="text-lg sm:text-xl font-bold text-foreground font-bengali">
             {p.studentFreeNotice}
           </p>
         </div>
         <Link href={`/${locale}/tutors`}>
-          <Button className="bg-emerald-700 hover:bg-emerald-800 text-white font-bengali whitespace-nowrap px-6">
+          <Button className="rounded-full px-7 font-bold shadow-md shadow-primary/25 font-bengali whitespace-nowrap">
             {dict.nav.findTutors}
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>
@@ -62,18 +65,20 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* 8% Platform Commission Breakdown */}
-      <section className="space-y-6">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-bengali flex items-center gap-2">
-            <Percent className="h-6 w-6 text-emerald-600" />
-            {p.commissionTitle}
+      <section className="space-y-8">
+        <div className="border-b border-border/70 pb-4">
+          <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <Percent className="h-4 w-4" />
+            </div>
+            <span>{p.commissionTitle}</span>
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-bengali mt-1">
+          <p className="text-sm text-muted-foreground font-bengali mt-1">
             {p.commissionSubtitle}
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
           {[
             { icon: Shield, text: p.commissionPoint1 },
             { icon: DollarSign, text: p.commissionPoint2 },
@@ -84,13 +89,13 @@ export function PricingPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800"
+                className="bg-card/85 backdrop-blur-sm border-border/80 rounded-3xl hover:shadow-xl hover:border-primary/40 transition-all"
               >
-                <CardContent className="pt-6 flex flex-col gap-3">
-                  <div className="h-10 w-10 rounded-lg bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400">
+                <CardContent className="p-6 flex flex-col gap-3">
+                  <div className="h-11 w-11 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/20">
                     <Icon className="h-5 w-5" />
                   </div>
-                  <p className="text-xs sm:text-sm text-slate-700 dark:text-slate-300 font-bengali leading-relaxed">
+                  <p className="text-xs sm:text-sm text-muted-foreground font-bengali leading-relaxed">
                     {item.text}
                   </p>
                 </CardContent>
@@ -101,18 +106,18 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </section>
 
       {/* Interactive Calculator */}
-      <section className="rounded-2xl border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900/60 p-6 sm:p-8 space-y-6">
+      <section className="rounded-3xl border border-border/80 bg-card/90 backdrop-blur-xl p-6 sm:p-10 space-y-8 shadow-xl">
         <div className="flex items-center gap-3">
-          <div className="h-10 w-10 rounded-xl bg-purple-100 dark:bg-purple-950 text-purple-600 dark:text-purple-400 flex items-center justify-center">
-            <Calculator className="h-5 w-5" />
+          <div className="h-12 w-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center ring-1 ring-primary/20">
+            <Calculator className="h-6 w-6" />
           </div>
           <div>
-            <h3 className="text-xl font-bold text-slate-900 dark:text-slate-100 font-bengali">
+            <h3 className="text-xl sm:text-2xl font-bold text-foreground font-bengali">
               {locale === 'bn'
                 ? 'টিউশন ফি ও পারিশ্রমিক ক্যালকুলেটর'
                 : 'Tuition & Earnings Calculator'}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-bengali">
+            <p className="text-xs sm:text-sm text-muted-foreground font-bengali">
               {locale === 'bn'
                 ? 'ঘণ্টা ও রেট নির্বাচন করে মাসিক ফি এবং ৯২% শিক্ষক প্রাপ্তি হিসাব করুন'
                 : 'Estimate monthly tuition fee and 92% net tutor payout based on hours and hourly rate'}
@@ -120,12 +125,12 @@ export function PricingPage({ locale }: { locale: Locale }) {
           </div>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-2">
           <div className="space-y-6">
             <div>
-              <div className="flex justify-between text-sm font-medium mb-2 font-bengali">
-                <span>{locale === 'bn' ? 'সাপ্তাহিক ঘণ্টা:' : 'Hours per week:'}</span>
-                <span className="font-bold text-emerald-600">
+              <div className="flex justify-between text-sm font-semibold mb-2 font-bengali">
+                <span className="text-muted-foreground">{locale === 'bn' ? 'সাপ্তাহিক ঘণ্টা:' : 'Hours per week:'}</span>
+                <span className="font-bold text-primary">
                   {formatLocalizedNumber(hoursPerWeek, locale)} {locale === 'bn' ? 'ঘণ্টা' : 'hrs'}
                 </span>
               </div>
@@ -136,14 +141,14 @@ export function PricingPage({ locale }: { locale: Locale }) {
                 step="1"
                 value={hoursPerWeek}
                 onChange={(e) => setHoursPerWeek(Number(e.target.value))}
-                className="w-full accent-emerald-600"
+                className="w-full accent-primary h-2 bg-surface-muted rounded-lg cursor-pointer"
               />
             </div>
 
             <div>
-              <div className="flex justify-between text-sm font-medium mb-2 font-bengali">
-                <span>{locale === 'bn' ? 'ঘণ্টাপ্রতি রেট:' : 'Hourly rate:'}</span>
-                <span className="font-bold text-emerald-600">
+              <div className="flex justify-between text-sm font-semibold mb-2 font-bengali">
+                <span className="text-muted-foreground">{locale === 'bn' ? 'ঘণ্টাপ্রতি রেট:' : 'Hourly rate:'}</span>
+                <span className="font-bold text-primary">
                   ৳{formatLocalizedNumber(hourlyRate, locale)}
                 </span>
               </div>
@@ -154,45 +159,45 @@ export function PricingPage({ locale }: { locale: Locale }) {
                 step="50"
                 value={hourlyRate}
                 onChange={(e) => setHourlyRate(Number(e.target.value))}
-                className="w-full accent-emerald-600"
+                className="w-full accent-primary h-2 bg-surface-muted rounded-lg cursor-pointer"
               />
             </div>
           </div>
 
-          <div className="rounded-xl bg-slate-50 dark:bg-slate-950 p-6 border border-slate-200 dark:border-slate-800 space-y-4">
+          <div className="rounded-2xl bg-surface-muted/60 p-6 border border-border/80 space-y-4">
             <div className="flex justify-between items-center text-sm">
-              <span className="text-slate-600 dark:text-slate-400 font-bengali">
+              <span className="text-muted-foreground font-bengali">
                 {locale === 'bn' ? 'মাসিক মোট ফি (শিক্ষার্থী জমা):' : 'Gross Monthly Fee:'}
               </span>
-              <span className="text-lg font-bold text-slate-900 dark:text-slate-100">
+              <span className="text-lg font-bold text-foreground">
                 ৳{formatLocalizedNumber(monthlyGross.toLocaleString(), locale)}
               </span>
             </div>
             <div className="flex justify-between items-center text-sm">
-              <span className="text-emerald-700 dark:text-emerald-400 font-semibold font-bengali">
+              <span className="text-primary font-semibold font-bengali">
                 {locale === 'bn' ? 'শিক্ষকের নিট প্রাপ্তি (৯২%):' : 'Tutor Net Payout (92%):'}
               </span>
-              <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400">
+              <span className="text-xl font-extrabold text-primary">
                 ৳{formatLocalizedNumber(tutorEarnings.toLocaleString(), locale)}
               </span>
             </div>
-            <div className="flex justify-between items-center text-xs text-slate-500 pt-2 border-t border-slate-200 dark:border-slate-800">
+            <div className="flex justify-between items-center text-xs text-muted-foreground pt-3 border-t border-border/80">
               <span className="font-bengali">
                 {locale === 'bn' ? 'প্ল্যাটফর্ম সার্ভিস ফি (৮%):' : 'Platform Fee (8%):'}
               </span>
-              <span>৳{formatLocalizedNumber(platformFee.toLocaleString(), locale)}</span>
+              <span className="font-semibold">৳{formatLocalizedNumber(platformFee.toLocaleString(), locale)}</span>
             </div>
           </div>
         </div>
       </section>
 
       {/* Hourly Benchmarks Grid */}
-      <section className="space-y-6">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-bengali">
+      <section className="space-y-8">
+        <div className="border-b border-border/70 pb-4">
+          <h2 className="text-2xl font-bold text-foreground font-bengali">
             {p.benchmarksTitle}
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-bengali mt-1">
+          <p className="text-sm text-muted-foreground font-bengali mt-1">
             {p.benchmarksSubtitle}
           </p>
         </div>
@@ -201,23 +206,23 @@ export function PricingPage({ locale }: { locale: Locale }) {
           {tiers.map((tier, idx) => (
             <Card
               key={idx}
-              className="bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden"
+              className="bg-card/85 backdrop-blur-sm border-border/80 rounded-3xl shadow-sm relative overflow-hidden hover:border-primary/40 transition-all"
             >
-              <div className="absolute top-3 right-3">
-                <span className="text-[10px] font-bold px-2 py-0.5 rounded bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
+              <div className="absolute top-4 right-4">
+                <span className="text-[10px] font-bold px-2.5 py-1 rounded-full bg-surface-muted text-muted-foreground border border-border/60">
                   {tier.tag}
                 </span>
               </div>
-              <CardHeader>
-                <CardTitle className="text-base font-bold font-bengali text-slate-900 dark:text-slate-100">
+              <CardHeader className="p-6">
+                <CardTitle className="text-base font-bold font-bengali text-foreground">
                   {tier.title}
                 </CardTitle>
-                <div className="text-lg font-extrabold text-emerald-700 dark:text-emerald-400 pt-1 font-bengali">
+                <div className="text-xl font-extrabold text-primary pt-1 font-bengali">
                   {tier.range}
                 </div>
               </CardHeader>
-              <CardContent>
-                <CardDescription className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-bengali leading-relaxed">
+              <CardContent className="px-6 pb-6 pt-0">
+                <CardDescription className="text-xs sm:text-sm text-muted-foreground font-bengali leading-relaxed">
                   {tier.desc}
                 </CardDescription>
               </CardContent>

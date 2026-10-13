@@ -19,35 +19,35 @@ export function PrivacyPage({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12">
+    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12">
       {/* Header Banner */}
       <div className="text-center space-y-4">
         <Badge
           variant="outline"
-          className="text-emerald-700 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300"
+          className="text-primary border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
         >
           {p.badge}
         </Badge>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 font-bengali">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground font-bengali">
           {p.title}
         </h1>
-        <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 font-bengali">
+        <p className="text-xs sm:text-sm text-muted-foreground font-bengali">
           {p.subtitle}
         </p>
       </div>
 
-      <Card className="bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 shadow-sm p-6 sm:p-8 space-y-6">
-        <p className="text-sm sm:text-base text-slate-700 dark:text-slate-300 font-bengali leading-relaxed border-b border-slate-100 dark:border-slate-800 pb-4">
+      <Card className="bg-card/90 backdrop-blur-xl border-border/80 rounded-3xl shadow-xl p-6 sm:p-10 space-y-6">
+        <p className="text-sm sm:text-base text-foreground font-bengali leading-relaxed border-b border-border/60 pb-6">
           {p.introText}
         </p>
 
         <div className="space-y-6">
           {sections.map((sec, idx) => (
             <div key={idx} className="space-y-2">
-              <h2 className="text-lg font-bold text-slate-900 dark:text-slate-100 font-bengali">
+              <h2 className="text-lg font-bold text-foreground font-bengali">
                 {sec.title}
               </h2>
-              <p className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-bengali leading-relaxed">
+              <p className="text-xs sm:text-sm text-muted-foreground font-bengali leading-relaxed">
                 {sec.text}
               </p>
             </div>

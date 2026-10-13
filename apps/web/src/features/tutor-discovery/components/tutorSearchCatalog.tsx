@@ -201,16 +201,17 @@ export function TutorSearchCatalog({
       className="w-full max-w-7xl mx-auto px-4 py-8 space-y-8"
       data-testid="tutor-discovery-container"
     >
-      <div className="bg-gradient-to-r from-emerald-800 via-teal-800 to-slate-900 rounded-3xl p-8 text-white shadow-xl relative overflow-hidden">
+      <div className="bg-gradient-to-r from-primary via-primary/90 to-primary/80 rounded-3xl p-8 sm:p-10 text-primary-foreground shadow-2xl relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
         <div className="relative z-10 max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 border border-emerald-400/30 rounded-full text-xs font-medium text-emerald-300">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/15 border border-white/20 rounded-full text-xs font-semibold text-primary-foreground">
             <Sparkles className="w-3.5 h-3.5" />
             <span>NID &amp; Academic Verified Educators</span>
           </div>
           <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
             {dict.discovery?.searchHeading || 'Find Verified Qualified Tutors'}
           </h1>
-          <p className="text-emerald-100/90 text-sm sm:text-base leading-relaxed">
+          <p className="text-primary-foreground/90 text-sm sm:text-base leading-relaxed">
             {dict.discovery?.searchSubheading ||
               'Browse vetted educators across Bangladesh with transparent pricing and credential breakdown'}
           </p>

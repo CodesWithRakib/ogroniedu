@@ -91,7 +91,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <div className="py-12 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
+    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
       {/* Schema.org HowTo Microdata */}
       <script
         type="application/ld+json"
@@ -115,26 +115,28 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <Badge
           variant="outline"
-          className="text-emerald-700 border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/40 dark:text-emerald-300"
+          className="text-primary border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
         >
           {p.badge}
         </Badge>
-        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-slate-900 dark:text-slate-50 font-bengali">
+        <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground font-bengali">
           {p.title}
         </h1>
-        <p className="text-base sm:text-lg text-slate-600 dark:text-slate-400 font-bengali leading-relaxed">
+        <p className="text-base sm:text-lg text-muted-foreground font-bengali leading-relaxed">
           {p.subtitle}
         </p>
       </div>
 
       {/* Section 1: For Students & Guardians */}
       <section className="space-y-8">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-bengali flex items-center gap-2">
-            <CheckCircle2 className="h-6 w-6 text-emerald-600" />
-            {p.forStudentsHeading}
+        <div className="border-b border-border/70 pb-4">
+          <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <CheckCircle2 className="h-4 w-4" />
+            </div>
+            <span>{p.forStudentsHeading}</span>
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-bengali mt-1">
+          <p className="text-sm text-muted-foreground font-bengali mt-1">
             {p.forStudentsSubheading}
           </p>
         </div>
@@ -145,23 +147,23 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
+                className="bg-card/85 backdrop-blur-sm border-border/80 rounded-3xl shadow-sm hover:shadow-xl hover:border-primary/40 transition-all relative overflow-hidden"
               >
-                <div className="absolute top-3 right-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
+                <div className="absolute top-4 right-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary-soft text-primary font-mono">
                     {step.tag}
                   </span>
                 </div>
-                <CardHeader>
-                  <div className="h-12 w-12 rounded-xl bg-emerald-50 dark:bg-emerald-950/50 flex items-center justify-center text-emerald-600 dark:text-emerald-400 mb-2">
+                <CardHeader className="p-6">
+                  <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/20 mb-3">
                     <Icon className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-base font-bold font-bengali text-slate-900 dark:text-slate-100">
+                  <CardTitle className="text-base font-bold font-bengali text-foreground">
                     {step.title}
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-bengali leading-relaxed">
+                <CardContent className="px-6 pb-6 pt-0">
+                  <CardDescription className="text-xs sm:text-sm text-muted-foreground font-bengali leading-relaxed">
                     {step.desc}
                   </CardDescription>
                 </CardContent>
@@ -172,7 +174,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
 
         <div className="text-center pt-4">
           <Link href={`/${locale}/tutors`}>
-            <Button className="bg-emerald-700 hover:bg-emerald-800 text-white font-bengali px-6">
+            <Button size="lg" className="rounded-full px-8 font-bold shadow-md shadow-primary/25 font-bengali">
               {dict.nav.findTutors}
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
@@ -182,12 +184,14 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
 
       {/* Section 2: For Tutors */}
       <section className="space-y-8 pt-8">
-        <div className="border-b border-slate-200 dark:border-slate-800 pb-4">
-          <h2 className="text-2xl font-bold text-slate-900 dark:text-slate-100 font-bengali flex items-center gap-2">
-            <GraduationCap className="h-6 w-6 text-blue-600" />
-            {p.forTutorsHeading}
+        <div className="border-b border-border/70 pb-4">
+          <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
+              <GraduationCap className="h-4 w-4" />
+            </div>
+            <span>{p.forTutorsHeading}</span>
           </h2>
-          <p className="text-sm text-slate-500 dark:text-slate-400 font-bengali mt-1">
+          <p className="text-sm text-muted-foreground font-bengali mt-1">
             {p.forTutorsSubheading}
           </p>
         </div>
@@ -198,23 +202,23 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-white dark:bg-slate-900/60 border-slate-200 dark:border-slate-800 shadow-sm hover:shadow-md transition-shadow relative overflow-hidden"
+                className="bg-card/85 backdrop-blur-sm border-border/80 rounded-3xl shadow-sm hover:shadow-xl hover:border-primary/40 transition-all relative overflow-hidden"
               >
-                <div className="absolute top-3 right-3">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded bg-blue-100 text-blue-800 dark:bg-blue-950 dark:text-blue-300">
+                <div className="absolute top-4 right-4">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-surface-muted text-muted-foreground font-mono">
                     {step.tag}
                   </span>
                 </div>
-                <CardHeader>
-                  <div className="h-12 w-12 rounded-xl bg-blue-50 dark:bg-blue-950/50 flex items-center justify-center text-blue-600 dark:text-blue-400 mb-2">
+                <CardHeader className="p-6">
+                  <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/20 mb-3">
                     <Icon className="h-6 w-6" />
                   </div>
-                  <CardTitle className="text-base font-bold font-bengali text-slate-900 dark:text-slate-100">
+                  <CardTitle className="text-base font-bold font-bengali text-foreground">
                     {step.title}
                   </CardTitle>
                 </CardHeader>
-                <CardContent>
-                  <CardDescription className="text-xs sm:text-sm text-slate-600 dark:text-slate-400 font-bengali leading-relaxed">
+                <CardContent className="px-6 pb-6 pt-0">
+                  <CardDescription className="text-xs sm:text-sm text-muted-foreground font-bengali leading-relaxed">
                     {step.desc}
                   </CardDescription>
                 </CardContent>
