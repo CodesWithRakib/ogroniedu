@@ -1,0 +1,109 @@
+name: Production Boot Smoke
+
+# Guards the class of regression where unit tests pass but the Nest
+# application cannot boot (missing DI metadata, broken dist packaging).
+# Boots the COMPILED bundle (node dist/main.js — same as Docker CMD)
+# against a real Postgres service and probes health + public endpoints.
+on:
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - 'apps/api/**'
+      - 'packages/contracts/**'
+      - 'packages/database/src/migrations/**'
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  boot-smoke:
+    name: Compile, migrate, boot dist, probe
+    runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: password
+          POSTGRES_DB: ogroniedu_smoke
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d ogroniedu_smoke"
+          --health-interval 5s
+          --health-timeout 5s
+          --health-retries 10
+
+    env:
+      NODE_ENV: test
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: password
+      DB_NAME: ogroniedu_smoke
+      PORT: 4000
+      JWT_SECRET: ci-boot-smoke-secret-not-for-production
+      FRONTEND_URL: http://localhost:5000
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js v26
+        uses: actions/setup-node@v4
+        with:
+          node-version: 26
+
+      - name: Setup pnpm 12
+        uses: pnpm/action-setup@v4
+        with:
+          version: 12.10.1
+          run_install: false
+
+      - name: Frozen Dependency Installation
+        run: pnpm install --frozen-lockfile
+
+      - name: Build API bundle
+        run: pnpm --filter @ogroniedu/api build
+
+      - name: Migrate smoke database (includes 012_support_tickets)
+        run: pnpm db:migrate
+
+      - name: Boot compiled bundle in background
+        run: |
+          (pnpm --filter @ogroniedu/api start > /tmp/api-boot.log 2>&1 & echo $! > /tmp/api.pid)
+          for i in $(seq 1 30); do
+            if curl -sf http://localhost:4000/health/live; then
+              echo "API is up"
+              exit 0
+            fi
+            sleep 5
+          done
+          echo "API failed to boot:"
+          cat /tmp/api-boot.log
+          exit 1
+
+      - name: Probe public contract endpoints
+        run: |
+          curl -sf http://localhost:4000/api/v1/public/stats | tee /tmp/stats.json
+          node -e "const s = require('/tmp/stats.json'); if (s.success !== true || typeof s.data.verifiedTutors !== 'number') { throw new Error('bad stats envelope'); }"
+          curl -sf -X POST http://localhost:4000/api/v1/support/tickets \
+            -H 'content-type: application/json' \
+            -d '{"name":"CI Smoke","email":"ci-smoke@example.com","message":"Boot smoke ticket from CI."}' \
+            | tee /tmp/ticket.json
+          node -e "const t = require('/tmp/ticket.json'); if (t.success !== true || !t.data.id) { throw new Error('bad ticket envelope'); }"
+          curl -sf -X POST http://localhost:4000/api/v1/support/tickets \
+            -H 'content-type: application/json' \
+            -d '{"name":"x"}' -o /tmp/neg.json -w '%{http_code}\n' | grep -q '^400$' \
+            || (echo 'expected 400 for invalid ticket:' && cat /tmp/neg.json && exit 1)
+
+      - name: Show API log on failure
+        if: failure()
+        run: cat /tmp/api-boot.log
+
+      - name: Stop API
+        if: always()
+        run: kill "$(cat /tmp/api.pid)" || true

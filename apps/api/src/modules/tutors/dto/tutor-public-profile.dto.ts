@@ -1,8 +1,10 @@
 export interface PublicSubjectItem {
   id: string;
+  subjectId: string;
   subjectCode: string;
   subjectNameEn: string;
   subjectNameBn: string;
+  educationLevelId: string;
   educationLevelCode: string;
   educationLevelNameEn: string;
   educationLevelNameBn: string;

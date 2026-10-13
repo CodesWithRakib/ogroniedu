@@ -4,6 +4,7 @@ import React from 'react';
 import { TutorLayout } from '@/layouts/tutor/TutorLayout';
 import { Card, CardHeader, CardTitle, CardContent, LoadingSpinner } from '@/components/ui';
 import { TutorVerificationStatusCard } from '@/components/tutor/TutorVerificationStatusCard';
+import { QualificationUploadCard } from '../components/qualification-upload-card';
 import { StatCard } from '@/components/shared/StatCard';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
@@ -58,6 +59,30 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
   const rawPublication = String(prof?.publicationStatus ?? 'draft');
   const publicationStatus =
     rawPublication === 'published' ? 'published' : rawPublication === 'unpublished' ? 'unpublished' : 'draft';
+  const rawQualifications = (prof as { qualifications?: unknown } | undefined)?.qualifications;
+  const qualifications = Array.isArray(rawQualifications)
+    ? rawQualifications.flatMap((q) => {
+        if (typeof q !== 'object' || q === null) return [];
+        const row = q as Record<string, unknown>;
+        if (typeof row.id !== 'string' || typeof row.title !== 'string') return [];
+        const status: 'pending' | 'approved' | 'rejected' | 'expired' =
+          row.reviewStatus === 'approved' ||
+          row.reviewStatus === 'rejected' ||
+          row.reviewStatus === 'expired'
+            ? row.reviewStatus
+            : 'pending';
+        return [
+          {
+            id: row.id,
+            title: row.title,
+            qualificationType:
+              typeof row.qualificationType === 'string' ? row.qualificationType : '',
+            institution: typeof row.institution === 'string' ? row.institution : null,
+            reviewStatus: status,
+          },
+        ];
+      })
+    : [];
 
   return (
     <TutorLayout
@@ -75,10 +100,12 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
               onRetry={profile.refetch}
             />
           ) : (
+            <>
             <TutorVerificationStatusCard
               locale={locale}
               verificationStatus={verificationStatus}
               publicationStatus={publicationStatus as 'draft' | 'published' | 'unpublished'}
+              qualifications={qualifications}
               onSubmitVerification={async () => {
                 await submitVerification().unwrap();
                 profile.refetch();
@@ -90,6 +117,10 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                 profile.refetch();
               }}
             />
+            <div className="mt-4">
+              <QualificationUploadCard locale={locale} onUploaded={() => profile.refetch()} />
+            </div>
+            </>
           )}
         </div>
         <div className="grid grid-cols-2 gap-4 lg:col-span-2">

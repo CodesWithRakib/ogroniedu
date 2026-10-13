@@ -155,7 +155,7 @@ export function BookingRequestModal({
                 className={selectClass}
               >
                 {tutor.subjects.map((sub) => (
-                  <option key={sub.subjectId} value={sub.subjectId}>
+                  <option key={sub.id || sub.subjectId} value={sub.subjectId}>
                     {locale === 'bn' ? sub.subjectNameBn : sub.subjectNameEn} (
                     {sub.educationLevelNameEn || 'General'})
                   </option>

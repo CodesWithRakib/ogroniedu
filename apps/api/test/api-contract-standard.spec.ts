@@ -101,4 +101,19 @@ describe('API contract standard (Phase 22)', () => {
     expect(details?.[0]).toMatchObject({ code: 'INVALID_VALUE' });
     expect(toErrorDetails('single string')).toBeUndefined();
   });
+
+  it('toErrorDetails() expands class-validator ValidationError objects per constraint', () => {
+    const details = toErrorDetails([
+      {
+        property: 'email',
+        constraints: { isNotEmpty: 'email should not be empty', isEmail: 'email must be an email' },
+      },
+      { property: 'message', constraints: { minLength: 'message too short' } },
+    ]);
+    expect(details).toEqual([
+      { field: 'email', code: 'REQUIRED', message: 'email should not be empty' },
+      { field: 'email', code: 'INVALID_FORMAT', message: 'email must be an email' },
+      { field: 'message', code: 'TOO_SHORT', message: 'message too short' },
+    ]);
+  });
 });

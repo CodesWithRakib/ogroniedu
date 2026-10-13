@@ -27,7 +27,7 @@ RUN apk add --no-cache dumb-init curl
 WORKDIR /app
 
 ENV NODE_ENV=production
-ENV PORT=3000
+ENV PORT=5000
 ENV HOSTNAME="0.0.0.0"
 ENV NEXT_TELEMETRY_DISABLED=1
 
@@ -42,10 +42,10 @@ COPY --from=builder --chown=nextjs:nodejs /app/apps/web/public ./apps/web/public
 
 USER nextjs
 
-EXPOSE 3000
+EXPOSE 5000
 
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost:3000 || exit 1
+  CMD curl -f http://localhost:5000 || exit 1
 
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "apps/web/server.js"]

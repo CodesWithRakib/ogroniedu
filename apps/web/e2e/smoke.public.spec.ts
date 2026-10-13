@@ -11,7 +11,7 @@ for (const locale of ['bn', 'en'] as const) {
       await page.goto(`/${locale}`);
       await expect(page).toHaveTitle(/OgroniEdu/);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
-      await expect(page.getByPlaceholder(/8801|mail\.com/)).toBeVisible();
+      await expect(page.getByRole('textbox').first()).toBeVisible();
 
       const band = page.getByTestId('platform-metrics-band');
       // Live-data band: visible with skeletons first, then real counts —

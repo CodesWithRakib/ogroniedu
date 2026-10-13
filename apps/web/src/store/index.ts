@@ -17,3 +17,4 @@ export * from './services/analytics-api';
 export * from './services/taxonomy-api';
 export * from './services/users-api';
 export * from './services/booking-messages-api';
+export * from './services/files-api';

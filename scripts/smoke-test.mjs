@@ -20,7 +20,7 @@ const target = process.argv.includes('--target')
 const config = {
   local: {
     apiBase: process.env.API_URL || 'http://localhost:4000',
-    webBase: process.env.WEB_URL || 'http://localhost:3000',
+    webBase: process.env.WEB_URL || 'http://localhost:5000',
   },
   staging: {
     apiBase: process.env.API_URL || 'https://api.staging.ogroniedu.com',
@@ -32,7 +32,7 @@ const config = {
   },
 }[target] || {
   apiBase: 'http://localhost:4000',
-  webBase: 'http://localhost:3000',
+  webBase: 'http://localhost:5000',
 };
 
 async function fetchUrl(url, timeoutMs = 5000) {

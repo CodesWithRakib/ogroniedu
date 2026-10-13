@@ -1,4 +1,4 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, BadRequestException, NotFoundException, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import { TutorProfileEntity, PublicationStatus } from '../entities/tutor-profile.entity';
@@ -39,6 +39,7 @@ export class TutorProfileService {
     private readonly fileRepo: Repository<FileAssetEntity>,
     @InjectRepository(UserEntity)
     private readonly userRepo: Repository<UserEntity>,
+    @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
   ) {}
 
@@ -188,7 +189,7 @@ export class TutorProfileService {
     await this.getOrCreateProfile(userId);
     if (dto.evidenceAssetId) {
       const fileAsset = await this.fileRepo.findOne({
-        where: { id: dto.evidenceAssetId, deletedAt: undefined },
+        where: { id: dto.evidenceAssetId, deletedAt: IsNull() },
       });
       if (!fileAsset || fileAsset.ownerUserId !== userId) {
         throw new BadRequestException(

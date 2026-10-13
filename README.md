@@ -97,7 +97,7 @@ Run both frontend and backend concurrently via Turborepo:
 pnpm dev
 ```
 
-- **Web App (Next.js):** [http://localhost:3000](http://localhost:3000)
+- **Web App (Next.js):** [http://localhost:5000](http://localhost:5000)
 - **API Server (NestJS):** [http://localhost:4000](http://localhost:4000)
 - **Swagger API Documentation:** [http://localhost:4000/api/docs](http://localhost:4000/api/docs)
 - **WebSocket Gateway:** `ws://localhost:4000/notifications`

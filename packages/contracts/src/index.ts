@@ -1,3 +1,3 @@
-export * from './notification-types';
-export * from './notification-registry';
-export * from './notification-dto';
+export * from './notification-types.js';
+export * from './notification-registry.js';
+export * from './notification-dto.js';

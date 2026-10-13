@@ -10,7 +10,7 @@ import {
   NotificationPriority,
   NotificationRole,
   NotificationRoles,
-} from './notification-types';
+} from './notification-types.js';
 
 export const DispatchNotificationSchema = z.object({
   userId: z.string().uuid(),

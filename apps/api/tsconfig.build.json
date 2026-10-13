@@ -2,7 +2,9 @@
   "extends": "./tsconfig.json",
   "compilerOptions": {
     "module": "commonjs",
-    "moduleResolution": "bundler"
+    "moduleResolution": "bundler",
+    "outDir": "./dist",
+    "rootDir": "./src"
   },
   "exclude": ["node_modules", "dist", "**/*spec.ts", "**/*test.ts"]
 }

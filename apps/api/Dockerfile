@@ -41,7 +41,7 @@ COPY --chown=node:node --from=builder /app/apps/api/package.json ./apps/api/pack
 EXPOSE 4000
 
 HEALTHCHECK --interval=15s --timeout=5s --start-period=10s --retries=3 \
-  CMD curl -f http://localhost:4000/api/health/liveness || exit 1
+  CMD curl -f http://localhost:4000/health/live || exit 1
 
 ENTRYPOINT ["dumb-init", "--"]
 CMD ["node", "apps/api/dist/main.js"]

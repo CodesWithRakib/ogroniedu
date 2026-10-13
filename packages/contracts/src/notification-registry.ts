@@ -3,7 +3,7 @@ import {
   NotificationEventType,
   NotificationPriority,
   NotificationRole,
-} from './notification-types';
+} from './notification-types.js';
 
 export interface NotificationDefinition {
   type: NotificationEventType;

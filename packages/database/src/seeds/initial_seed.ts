@@ -194,6 +194,11 @@ export async function runInitialSeed(
     return;
   }
 
+  // Dev/E2E-only credential for the three demo accounts below.
+  // Documented in apps/web/e2e/README.md; unusable in production (early return above).
+  // bcrypt(12) of 'OgroniDev#2026'.
+  const DEMO_PASSWORD_HASH = '$2b$12$Cr4Ty5alrOGkqdKbbsY8Nevf6tLD4YTjwkmLwwOki.Q0YB2soQ7bi';
+
   const demoUsers = [
     {
       id: '11111111-1111-4111-a111-111111111111',
@@ -223,11 +228,11 @@ export async function runInitialSeed(
 
   for (const u of demoUsers) {
     await client.query(
-      `INSERT INTO users (id, email, phone_e164, display_name, preferred_locale, status)
-       VALUES ($1, $2, $3, $4, $5, $6)
+      `INSERT INTO users (id, email, phone_e164, password_hash, display_name, preferred_locale, status)
+       VALUES ($1, $2, $3, $4, $5, $6, $7)
        ON CONFLICT (id) DO UPDATE
-       SET display_name = EXCLUDED.display_name, status = EXCLUDED.status;`,
-      [u.id, u.email, u.phone, u.name, u.locale, u.status],
+       SET display_name = EXCLUDED.display_name, status = EXCLUDED.status, password_hash = EXCLUDED.password_hash;`,
+      [u.id, u.email, u.phone, DEMO_PASSWORD_HASH, u.name, u.locale, u.status],
     );
   }
 
@@ -276,5 +281,22 @@ export async function runInitialSeed(
       'approved',
       'published',
     ],
+  );
+
+  // Demo teaching subject so discovery + booking-request flows work end to end.
+  // NOT EXISTS guard (not ON CONFLICT DO NOTHING: the table has no unique
+  // constraint covering these columns, so a bare ON CONFLICT would insert
+  // duplicate rows on every re-seed and duplicate subject cards in search).
+  await client.query(
+    `INSERT INTO tutor_subjects (tutor_user_id, subject_id, education_level_id, rate_minor, currency)
+     SELECT '22222222-2222-4222-b222-222222222222', s.id, l.id, 120000, 'BDT'
+     FROM subjects s, education_levels l
+     WHERE s.code = 'physics' AND l.code = 'higher_hsc'
+       AND NOT EXISTS (
+         SELECT 1 FROM tutor_subjects ts
+         WHERE ts.tutor_user_id = '22222222-2222-4222-b222-222222222222'
+           AND ts.subject_id = s.id
+           AND ts.education_level_id = l.id
+       );`,
   );
 }

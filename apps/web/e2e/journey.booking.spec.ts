@@ -13,6 +13,8 @@ const tutorPassword = process.env.E2E_TUTOR_PASSWORD;
 const ready = Boolean(studentEmail && studentPassword && tutorEmail && tutorPassword);
 
 test.describe('tutoring lifecycle journey', () => {
+  // Ordered inbox flow: the tutor half depends on the request filed above.
+  test.describe.configure({ mode: 'serial' });
   test.skip(!ready, 'needs seeded staging credentials (E2E_*_EMAIL/PASSWORD)');
 
   async function loginAs(page: Page, email: string, password: string) {
@@ -25,6 +27,17 @@ test.describe('tutoring lifecycle journey', () => {
   test('student discovers a tutor and files a booking request', async ({ page }) => {
     await loginAs(page, studentEmail!, studentPassword!);
     await expect(page).toHaveURL(/\/bn\/dashboard/, { timeout: 20_000 });
+
+    // Withdraw prior open requests so the journey is repeatable run to run.
+    await page.goto('/bn/requests');
+    // Let the RTK Query list settle before scanning for withdraw buttons.
+    await page.waitForTimeout(4000);
+    for (let i = 0; i < 5; i++) {
+      const withdrawBtn = page.locator('[data-testid^="withdraw-btn-"]').first();
+      if ((await withdrawBtn.count()) === 0) break;
+      await withdrawBtn.click();
+      await page.waitForTimeout(1500);
+    }
 
     await page.goto('/bn/tutors');
     await expect(page.getByTestId('tutor-discovery-container')).toBeVisible();

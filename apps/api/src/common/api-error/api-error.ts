@@ -73,25 +73,51 @@ export function errorEnvelope(args: {
  */
 export function toErrorDetails(message: unknown): ApiErrorDetail[] | undefined {
   if (!Array.isArray(message)) return undefined;
-  return message.map((m) => {
-    if (typeof m === 'string') return { code: 'INVALID_VALUE', message: m };
+  const out: ApiErrorDetail[] = [];
+  for (const m of message) {
+    if (typeof m === 'string') {
+      out.push({ code: 'INVALID_VALUE', message: m });
+      continue;
+    }
     if (typeof m === 'object' && m !== null) {
       const r = m as Record<string, unknown>;
-      const field =
-        typeof r.property === 'string'
-          ? r.property
-          : typeof r.field === 'string'
-            ? r.field
-            : undefined;
+      const field = typeof r.property === 'string' ? r.property : undefined;
+      // class-validator ValidationError: { property, constraints: { key: msg } }
+      if (field && typeof r.constraints === 'object' && r.constraints !== null) {
+        for (const [key, msg] of Object.entries(r.constraints as Record<string, unknown>)) {
+          if (typeof msg === 'string') {
+            out.push({ field, code: toDetailCode(key), message: msg });
+          }
+        }
+        continue;
+      }
       const msg =
-        typeof r.message === 'string'
-          ? r.message
-          : typeof m === 'object'
-            ? JSON.stringify(m)
-            : 'Invalid value.';
+        typeof r.message === 'string' ? r.message : JSON.stringify(m);
       const code = typeof r.code === 'string' ? r.code : 'INVALID_VALUE';
-      return field ? { field, code, message: msg } : { code, message: msg };
+      out.push(field ? { field, code, message: msg } : { code, message: msg });
+    } else {
+      out.push({ code: 'INVALID_VALUE', message: String(m) });
     }
-    return { code: 'INVALID_VALUE', message: String(m) };
-  });
+  }
+  return out;
+}
+
+/** Map class-validator constraint keys to stable detail codes. */
+function toDetailCode(constraint: string): string {
+  const map: Record<string, string> = {
+    isNotEmpty: 'REQUIRED',
+    isDefined: 'REQUIRED',
+    isEmail: 'INVALID_FORMAT',
+    isUUID: 'INVALID_FORMAT',
+    minLength: 'TOO_SHORT',
+    maxLength: 'TOO_LONG',
+    min: 'TOO_SMALL',
+    max: 'TOO_LARGE',
+    isIn: 'INVALID_VALUE',
+    isInt: 'INVALID_TYPE',
+    isString: 'INVALID_TYPE',
+    isNumber: 'INVALID_TYPE',
+    isBoolean: 'INVALID_TYPE',
+  };
+  return map[constraint] ?? 'INVALID_VALUE';
 }

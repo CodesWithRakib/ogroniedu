@@ -11,7 +11,7 @@ import { setCredentials } from '@/store/slices/auth-slice';
 import { useLoginMutation, toAuthUser } from '@/store/services/auth-api';
 import { enqueueToast } from '@/store/slices/ui-slice';
 
-export function LoginForm({ locale }: { locale: Locale }) {
+export function LoginForm({ locale, notice }: { locale: Locale; notice?: string | null }) {
   const dict = getDictionary(locale);
   const router = useRouter();
   const dispatch = useAppDispatch();
@@ -58,6 +58,15 @@ export function LoginForm({ locale }: { locale: Locale }) {
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-4" data-testid="login-form">
+          {notice && (
+            <div
+              role="status"
+              className="rounded-lg border border-emerald-200 bg-emerald-50 p-3 text-sm text-emerald-800"
+              data-testid="login-notice"
+            >
+              {notice}
+            </div>
+          )}
           {formError && (
             <div role="alert" className="rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700" data-testid="login-error">
               {formError}

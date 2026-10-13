@@ -12,8 +12,13 @@ async function bootstrap() {
 
   app.use(cookieParser());
 
+  const frontendOrigins = (process.env.FRONTEND_URL || 'http://localhost:5000')
+    .split(',')
+    .map((o) => o.trim())
+    .filter(Boolean);
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL || 'http://localhost:3000',
+    origin: frontendOrigins.length === 1 ? frontendOrigins[0] : frontendOrigins,
     credentials: true,
   });
 

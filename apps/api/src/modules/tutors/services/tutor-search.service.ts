@@ -77,9 +77,11 @@ export class TutorSearchService {
       const lvl = taxonomyLevels.find((l) => l.id === s.educationLevelId);
       return {
         id: s.id,
+        subjectId: s.subjectId,
         subjectCode: sub?.code || 'unknown',
         subjectNameEn: sub?.nameEn || 'Subject',
         subjectNameBn: sub?.nameBn || 'বিষয়',
+        educationLevelId: s.educationLevelId,
         educationLevelCode: lvl?.code || 'unknown',
         educationLevelNameEn: lvl?.nameEn || 'Level',
         educationLevelNameBn: lvl?.nameBn || 'শ্রেণি',
@@ -231,9 +233,11 @@ export class TutorSearchService {
         const lvl = taxonomyLevels.find((l) => l.id === s.educationLevelId);
         return {
           id: s.id,
+          subjectId: s.subjectId,
           subjectCode: sub?.code || 'unknown',
           subjectNameEn: sub?.nameEn || 'Subject',
           subjectNameBn: sub?.nameBn || 'বিষয়',
+          educationLevelId: s.educationLevelId,
           educationLevelCode: lvl?.code || 'unknown',
           educationLevelNameEn: lvl?.nameEn || 'Level',
           educationLevelNameBn: lvl?.nameBn || 'শ্রেণি',

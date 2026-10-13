@@ -18,12 +18,21 @@ export interface NavbarProps {
 
 export function Navbar({ locale }: NavbarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
   const pathname = usePathname();
   const router = useRouter();
   const dispatch = useAppDispatch();
   const { user, isAuthenticated, refreshToken } = useAppSelector((s) => s.auth);
   const [logoutApi] = useLogoutMutation();
   const dict = getDictionary(locale);
+
+  // Auth state comes from localStorage, which does not exist during SSR.
+  // Render the logged-out chrome until mounted so server HTML and the first
+  // client render match (avoids hydration mismatch for logged-in users).
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+  const showAuthed = mounted && isAuthenticated && user;
 
   const isBn = locale === 'bn';
   const targetLocale: Locale = isBn ? 'en' : 'bn';
@@ -64,7 +73,7 @@ export function Navbar({ locale }: NavbarProps) {
 
         <nav
           aria-label="Main Navigation"
-          className="hidden md:flex items-center gap-5 text-sm font-medium text-slate-600 dark:text-slate-300"
+          className="hidden lg:flex items-center gap-5 text-sm font-medium text-slate-600 dark:text-slate-300"
         >
           <Link href={`/${locale}`} className="hover:text-emerald-700 dark:hover:text-emerald-400 transition-colors">
             {dict.nav.home}
@@ -99,10 +108,10 @@ export function Navbar({ locale }: NavbarProps) {
             <span>{isBn ? 'EN' : 'বাং'}</span>
           </Link>
 
-          {isAuthenticated && <NotificationBell locale={locale} />}
+          {showAuthed && <NotificationBell locale={locale} />}
 
           <div className="hidden sm:flex items-center gap-2 border-l border-slate-200 pl-3 dark:border-slate-800">
-            {isAuthenticated && user ? (
+            {showAuthed ? (
               <>
                 <div className="flex h-8 w-8 items-center justify-center rounded-full bg-emerald-100 text-emerald-800 dark:bg-emerald-950 dark:text-emerald-300">
                   <User className="h-4 w-4" />
@@ -141,7 +150,7 @@ export function Navbar({ locale }: NavbarProps) {
             aria-expanded={mobileMenuOpen}
             aria-label="Toggle mobile menu"
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
+            className="lg:hidden inline-flex items-center justify-center rounded-lg p-2 text-slate-600 hover:bg-slate-100 hover:text-slate-900 dark:text-slate-300 dark:hover:bg-slate-800"
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
@@ -152,7 +161,7 @@ export function Navbar({ locale }: NavbarProps) {
         <div
           role="region"
           aria-label="Mobile Navigation Menu"
-          className="md:hidden border-b border-slate-200 bg-white px-4 pt-2 pb-6 space-y-3 dark:border-slate-800 dark:bg-slate-900"
+          className="lg:hidden border-b border-slate-200 bg-white px-4 pt-2 pb-6 space-y-3 dark:border-slate-800 dark:bg-slate-900"
         >
           <div className="flex flex-col space-y-2 text-sm font-medium">
             <Link href={`/${locale}`} onClick={() => setMobileMenuOpen(false)} className="rounded-lg px-3 py-2 text-slate-700 hover:bg-slate-100 dark:text-slate-200 dark:hover:bg-slate-800">
