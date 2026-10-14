@@ -248,7 +248,7 @@ export function Footer({ locale }: FooterProps) {
         </div>
 
         {/* Bottom Bar: Copyright & Operational Status */}
-        <div className="mt-12 border-t border-border/70 pt-6 flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground gap-4">
+        <div className="mt-12 border-t border-border/70 pt-6 pb-14 md:pb-0 flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground gap-4">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
             <p>
               © {new Date().getFullYear()} {dict.common.appName}. {dict.footer.rightsReserved}

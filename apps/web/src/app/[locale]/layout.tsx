@@ -15,6 +15,8 @@ import { NotificationToastContainer } from '@/components/notifications/Notificat
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
 import { AppThemeProvider } from '@/lib/theme/ThemeProvider';
 import { Toaster } from '@/components/ui/sonner';
+import { BottomNavbar } from '@/components/shell/BottomNavbar';
+import { PWARegister } from '@/components/pwa/PWARegister';
 import bnMessages from '../../../messages/bn.json';
 import enMessages from '../../../messages/en.json';
 
@@ -90,6 +92,8 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
                 <NotificationToastContainer locale={locale} />
                 <NotificationCenter locale={locale} />
                 <Toaster />
+                <BottomNavbar locale={locale} />
+                <PWARegister locale={locale} />
               </NotificationProvider>
             </NextIntlClientProvider>
           </AppThemeProvider>

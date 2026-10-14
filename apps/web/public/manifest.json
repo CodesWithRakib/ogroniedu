@@ -1,0 +1,60 @@
+{
+  "name": "OgroniEdu (অগ্রণী এডু) — বিশ্বস্ত শিক্ষক ও শিক্ষার্থী প্ল্যাটফর্ম",
+  "short_name": "OgroniEdu",
+  "description": "বাংলাদেশের প্রথম সমন্বিত টিউশন ও লার্নিং প্ল্যাটফর্ম। ১ম-১২শ শ্রেণি, বাংলা ও ইংলিশ ভার্সন, ইংলিশ মিডিয়াম এবং বিশ্ববিদ্যালয় ভর্তি প্রস্তুতি।",
+  "start_url": "/bn",
+  "scope": "/",
+  "display": "standalone",
+  "display_override": ["window-controls-overlay", "standalone", "minimal-ui"],
+  "orientation": "portrait-primary",
+  "background_color": "#031317",
+  "theme_color": "#031317",
+  "lang": "bn",
+  "categories": ["education", "productivity"],
+  "icons": [
+    {
+      "src": "/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/icons/icon-maskable-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "শিক্ষক খুঁজুন (Find Tutors)",
+      "short_name": "শিক্ষক",
+      "url": "/bn/tutors",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "টিউশন পোস্ট / জব (Tuition Requests)",
+      "short_name": "টিউশন",
+      "url": "/bn/requests",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    },
+    {
+      "name": "ড্যাশবোর্ড / প্রোফাইল (Dashboard)",
+      "short_name": "ড্যাশবোর্ড",
+      "url": "/bn/login",
+      "icons": [{ "src": "/icons/icon-192.png", "sizes": "192x192" }]
+    }
+  ]
+}

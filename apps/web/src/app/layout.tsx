@@ -41,6 +41,21 @@ export const metadata: Metadata = {
     title: 'OgroniEdu — Bangladesh Tutoring Platform',
     description: 'NID-verified educators and escrow-protected tutoring in Bangladesh.',
   },
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'OgroniEdu',
+  },
+  icons: {
+    icon: [
+      { url: '/icons/favicon-32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/icons/icon.svg', type: 'image/svg+xml' },
+    ],
+    apple: [
+      { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
+    ],
+  },
 };
 
 // Inline, zero-flash theme & mode init script before first paint.
@@ -67,6 +82,15 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="bn" dir="ltr" data-theme={DEFAULT_THEME} data-mode="dark" className="dark" suppressHydrationWarning>
       <head>
+        <link rel="manifest" href="/manifest.json" />
+        <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/icons/favicon-32.png" />
+        <link rel="icon" type="image/svg+xml" href="/icons/icon.svg" />
+        <meta name="theme-color" content="#031317" />
+        <meta name="mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-capable" content="yes" />
+        <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+        <meta name="apple-mobile-web-app-title" content="OgroniEdu" />
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>
       <body className="antialiased selection:bg-primary selection:text-white">
