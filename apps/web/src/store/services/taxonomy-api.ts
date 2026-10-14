@@ -14,6 +14,13 @@ export const taxonomyApi = baseApi.injectEndpoints({
       query: () => '/api/v1/taxonomy/curricula',
       providesTags: [{ type: 'Taxonomy', id: 'CURRICULA' }],
     }),
+    getLocations: builder.query<
+      ApiSuccessEnvelope<Array<{ code: string; nameEn: string; nameBn: string; division: string }>>,
+      void
+    >({
+      query: () => '/api/v1/taxonomy/locations',
+      providesTags: [{ type: 'Taxonomy', id: 'LOCATIONS' }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -22,4 +29,6 @@ export const {
   useGetSubjectsQuery,
   useGetEducationLevelsQuery,
   useGetCurriculaQuery,
+  useGetLocationsQuery,
 } = taxonomyApi;
+

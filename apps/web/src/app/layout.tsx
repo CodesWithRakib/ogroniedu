@@ -58,13 +58,14 @@ const themeInitScript = `(function(){
     }
   }catch(e){
     document.documentElement.setAttribute('data-theme','${DEFAULT_THEME}');
-    document.documentElement.setAttribute('data-mode','light');
+    document.documentElement.setAttribute('data-mode','dark');
+    document.documentElement.classList.add('dark');
   }
 })();`;
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bn" dir="ltr" data-theme={DEFAULT_THEME} data-mode="light" suppressHydrationWarning>
+    <html lang="bn" dir="ltr" data-theme={DEFAULT_THEME} data-mode="dark" className="dark" suppressHydrationWarning>
       <head>
         <script dangerouslySetInnerHTML={{ __html: themeInitScript }} />
       </head>

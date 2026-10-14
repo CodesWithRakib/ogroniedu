@@ -18,8 +18,8 @@ export type AppTheme = (typeof APP_THEMES)[number];
 export const THEME_MODES = ['light', 'dark', 'system'] as const;
 export type ThemeMode = (typeof THEME_MODES)[number];
 
-export const DEFAULT_THEME: AppTheme = 'midnight-violet';
-export const DEFAULT_MODE: ThemeMode = 'system';
+export const DEFAULT_THEME: AppTheme = 'ocean-teal';
+export const DEFAULT_MODE: ThemeMode = 'dark';
 
 export const THEME_STORAGE_KEY = 'ogroniedu.theme';
 export const THEME_MODE_STORAGE_KEY = 'ogroniedu.mode';

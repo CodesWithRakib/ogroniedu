@@ -11,6 +11,7 @@ import {
   MapPin,
   CheckCircle2,
 } from 'lucide-react';
+import { OgroniEduBrand } from '../brand/OgroniEduBrand';
 import { getDictionary, type Locale } from '@/lib/i18n';
 
 export interface FooterProps {
@@ -91,19 +92,7 @@ export function Footer({ locale }: FooterProps) {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand & Organization Bio */}
           <div className="lg:col-span-2 space-y-4">
-            <Link href={`/${locale}`} className="flex items-center gap-3 group inline-block">
-              <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-primary/80 text-primary-foreground shadow-md shadow-primary/20 ring-1 ring-primary/30">
-                <GraduationCap className="h-5 w-5" />
-              </div>
-              <div className="flex flex-col">
-                <span className="text-xl font-extrabold tracking-tight text-foreground font-bengali">
-                  {dict.common.appName}
-                </span>
-                <span className="text-[10px] text-primary font-bold tracking-wider uppercase">
-                  {isBn ? 'বাংলাদেশ এডুকেটর নেটওয়ার্ক' : 'Bangladesh Educator Network'}
-                </span>
-              </div>
-            </Link>
+            <OgroniEduBrand locale={locale} />
 
             <p className="max-w-md text-sm text-muted-foreground leading-relaxed font-bengali">
               {dict.footer.about}

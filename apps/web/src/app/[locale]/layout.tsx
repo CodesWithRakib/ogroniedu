@@ -5,6 +5,7 @@ import {
   Noto_Sans_Bengali,
   Hind_Siliguri,
   Instrument_Serif,
+  Caveat,
 } from 'next/font/google';
 import { NextIntlClientProvider } from 'next-intl';
 import { StoreProvider } from '../../store';
@@ -23,6 +24,7 @@ import enMessages from '../../../messages/en.json';
  * - Inter: crisp body copy & tabular numeric readability
  * - Noto Sans Bengali & Hind Siliguri: authentic Bengali script shaping
  * - Instrument Serif: editorial luxury italic accent for headline emphasis
+ * - Caveat: playful hand-drawn annotations and doodles
  */
 const plusJakartaSans = Plus_Jakarta_Sans({
   subsets: ['latin'],
@@ -59,6 +61,13 @@ const instrumentSerif = Instrument_Serif({
   display: 'swap',
 });
 
+const caveat = Caveat({
+  weight: ['600', '700'],
+  subsets: ['latin'],
+  variable: '--font-caveat',
+  display: 'swap',
+});
+
 interface LocaleLayoutProps {
   children: ReactNode;
   params: Promise<{ locale: string }>;
@@ -68,7 +77,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   const resolved = await params;
   const locale = resolved.locale === 'en' ? 'en' : 'bn';
   const messages = locale === 'en' ? enMessages : bnMessages;
-  const fontVariables = `${plusJakartaSans.variable} ${inter.variable} ${notoSansBengali.variable} ${hindSiliguri.variable} ${instrumentSerif.variable}`;
+  const fontVariables = `${plusJakartaSans.variable} ${inter.variable} ${notoSansBengali.variable} ${hindSiliguri.variable} ${instrumentSerif.variable} ${caveat.variable}`;
 
   return (
     <div className={fontVariables}>

@@ -42,4 +42,24 @@ export class TaxonomyController {
     });
     return { success: true, data };
   }
+
+  @Get('locations')
+  async getLocations() {
+    const data = [
+      { code: 'dhaka', nameEn: 'Dhaka', nameBn: 'ঢাকা', division: 'Dhaka' },
+      { code: 'chittagong', nameEn: 'Chattogram', nameBn: 'চট্টগ্রাম', division: 'Chattogram' },
+      { code: 'sylhet', nameEn: 'Sylhet', nameBn: 'সিলেট', division: 'Sylhet' },
+      { code: 'rajshahi', nameEn: 'Rajshahi', nameBn: 'রাজশাহী', division: 'Rajshahi' },
+      { code: 'khulna', nameEn: 'Khulna', nameBn: 'খুলনা', division: 'Khulna' },
+      { code: 'barishal', nameEn: 'Barishal', nameBn: 'বরিশাল', division: 'Barishal' },
+      { code: 'rangpur', nameEn: 'Rangpur', nameBn: 'রংপুর', division: 'Rangpur' },
+      { code: 'mymensingh', nameEn: 'Mymensingh', nameBn: 'ময়মনসিংহ', division: 'Mymensingh' },
+      { code: 'comilla', nameEn: 'Cumilla', nameBn: 'কুমিল্লা', division: 'Chattogram' },
+      { code: 'gazipur', nameEn: 'Gazipur', nameBn: 'গাজীপুর', division: 'Dhaka' },
+      { code: 'narayanganj', nameEn: 'Narayanganj', nameBn: 'নারায়ণগঞ্জ', division: 'Dhaka' },
+      { code: 'bogra', nameEn: 'Bogura', nameBn: 'বগুড়া', division: 'Rajshahi' },
+    ];
+    return { success: true, data };
+  }
 }
+

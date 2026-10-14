@@ -49,11 +49,11 @@ export class BookingsService {
     private readonly levelRepo: Repository<EducationLevelEntity>,
     @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
+    @Inject(GuardianAccessService)
+    private readonly guardianAccess: GuardianAccessService,
     @Optional()
     @Inject(NotificationService)
     private readonly notificationService?: NotificationService,
-    @Inject(GuardianAccessService)
-    private readonly guardianAccess: GuardianAccessService,
   ) {}
 
   /**

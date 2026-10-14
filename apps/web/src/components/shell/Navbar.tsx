@@ -13,10 +13,12 @@ import {
   Sparkles,
   ArrowRight,
   Compass,
+  Moon,
 } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { NotificationBell } from '../notifications/NotificationBell';
 import { ThemePicker } from '../theme/ThemePicker';
+import { OgroniEduBrand } from '../brand/OgroniEduBrand';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { dashboardPathForRoles, withLocale } from '@/lib/auth';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -81,33 +83,15 @@ export function Navbar({ locale }: NavbarProps) {
   }
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border/70 bg-card/75 backdrop-blur-xl supports-[backdrop-filter]:bg-card/60 shadow-xs transition-colors">
+    <header className="sticky top-0 z-40 w-full bg-[#051318]/95 backdrop-blur-xl border-b border-teal-500/15">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
-        {/* Brand Logo & Tagline */}
-        <Link href={`/${locale}`} className="flex items-center gap-3 group">
-          <div className="relative flex h-10 w-10 items-center justify-center rounded-2xl bg-gradient-to-tr from-primary to-primary/80 text-primary-foreground shadow-md shadow-primary/20 ring-1 ring-primary/30 group-hover:scale-105 group-hover:shadow-primary/35 transition-all">
-            <GraduationCap className="h-5 w-5" />
-            <span className="absolute -top-0.5 -right-0.5 h-2 w-2 rounded-full bg-emerald-400 ring-2 ring-card animate-pulse" />
-          </div>
-          <div className="flex flex-col">
-            <div className="flex items-center gap-1.5">
-              <span className="text-base sm:text-lg font-extrabold tracking-tight text-foreground font-bengali">
-                {dict.common.appName}
-              </span>
-              <span className="hidden sm:inline-flex items-center rounded-md bg-primary-soft px-1.5 py-0.5 text-[9px] font-bold text-primary-soft-foreground uppercase tracking-wider">
-                Ver. 2.0
-              </span>
-            </div>
-            <span className="text-[10px] text-muted-foreground font-medium hidden sm:inline-block">
-              {isBn ? 'বিশ্বস্ত শিক্ষক ও শিক্ষার্থী নেটওয়ার্ক' : 'Trusted Tutoring Platform'}
-            </span>
-          </div>
-        </Link>
+        {/* Brand Logo with Owl Mascot & Tagline */}
+        <OgroniEduBrand locale={locale} />
 
         {/* Center Pill Navigation */}
         <nav
           aria-label={isBn ? 'প্রধান নেভিগেশন' : 'Main Navigation'}
-          className="hidden lg:flex items-center gap-1 p-1 rounded-full bg-surface-muted/60 border border-border/60 text-xs font-semibold backdrop-blur-sm"
+          className="hidden xl:flex items-center gap-1.5 p-1 rounded-full bg-transparent text-xs font-medium"
         >
           {navLinks.map((link) => {
             const active = isActive(link.href, link.exact);
@@ -117,53 +101,61 @@ export function Navbar({ locale }: NavbarProps) {
                 href={link.href}
                 className={`relative px-3.5 py-1.5 rounded-full transition-all duration-200 ${
                   active
-                    ? 'bg-card text-primary shadow-xs font-bold border border-border/80'
-                    : link.isHighlight
-                      ? 'text-primary hover:text-primary hover:bg-primary-soft/60'
-                      : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover/80'
+                    ? 'bg-[#08262e] text-[#0df5c4] font-bold border border-[#0df5c4]/60 shadow-[0_0_12px_rgba(13,245,196,0.25)]'
+                    : 'text-slate-300 hover:text-white hover:bg-white/5'
                 }`}
               >
                 {link.label}
-                {link.isHighlight && !active && (
-                  <span className="ml-1 inline-block h-1.5 w-1.5 rounded-full bg-primary" />
-                )}
               </Link>
             );
           })}
         </nav>
 
         {/* Right Utility & Auth Area */}
-        <div className="flex items-center gap-2 sm:gap-2.5">
-          {/* Theme & Palette Switcher */}
-          <ThemePicker locale={locale} />
-
+        <div className="flex items-center gap-2.5 sm:gap-3.5">
           {/* Bilingual Language Switcher */}
           <Link
             href={targetPath}
             aria-label={`Switch language to ${isBn ? 'English' : 'বাংলা'}`}
-            className="inline-flex items-center gap-1.5 rounded-xl border border-border/80 bg-card/80 px-2.5 py-1.5 text-xs font-semibold text-foreground hover:bg-surface-hover hover:text-primary transition-all shadow-xs"
+            className="inline-flex items-center gap-1.5 rounded-full border border-teal-500/30 bg-[#081f26]/80 px-3 py-1.5 text-xs font-semibold text-slate-200 hover:bg-teal-500/10 hover:text-[#0df5c4] hover:border-teal-400 transition-all shadow-xs"
           >
-            <Globe className="h-3.5 w-3.5 text-primary" />
-            <span className="font-bold">{isBn ? 'EN' : 'বাং'}</span>
+            <Globe className="h-3.5 w-3.5 text-[#0df5c4]" />
+            <span className="font-bold">{isBn ? 'বাং' : 'EN'}</span>
+            <span className="text-[9px] text-slate-400">▼</span>
           </Link>
+
+          {/* Minimal Dark Mode Crescent Moon Toggle */}
+          <button
+            type="button"
+            onClick={() => {
+              const next = document.documentElement.classList.contains('dark') ? 'light' : 'dark';
+              document.documentElement.setAttribute('data-mode', next);
+              if (next === 'dark') document.documentElement.classList.add('dark');
+              else document.documentElement.classList.remove('dark');
+            }}
+            aria-label="Toggle dark mode"
+            className="inline-flex h-8 w-8 items-center justify-center rounded-full border border-teal-500/30 bg-[#081f26]/80 text-slate-300 hover:text-[#0df5c4] hover:border-teal-400 transition-all shadow-xs cursor-pointer"
+          >
+            <Moon className="h-3.5 w-3.5" />
+          </button>
 
           {showAuthed && <NotificationBell locale={locale} />}
 
           {/* Auth CTA Container */}
-          <div className="hidden sm:flex items-center gap-2 border-l border-border/70 pl-2.5">
+          <div className="hidden sm:flex items-center gap-3">
             {showAuthed ? (
               <div className="flex items-center gap-2.5">
                 <Link
                   href={dashboardHref}
                   data-testid="navbar-dashboard-link"
-                  className="flex items-center gap-2 p-1.5 rounded-full bg-surface-muted/60 hover:bg-surface-hover border border-border/60 transition-all pr-3"
+                  className="flex items-center gap-2 p-1.5 rounded-full bg-[#0a252d] hover:bg-[#0f343f] border border-teal-500/30 transition-all pr-3"
                 >
-                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-primary text-primary-foreground font-bold text-xs ring-1 ring-primary/30">
+                  <div className="flex h-7 w-7 items-center justify-center rounded-full bg-[#0df5c4] text-[#042426] font-bold text-xs ring-1 ring-[#0df5c4]/40">
                     <User className="h-3.5 w-3.5" />
                   </div>
                   <div className="flex flex-col text-left leading-none">
-                    <span className="text-xs font-bold text-foreground">{user.displayName}</span>
-                    <span className="text-[9px] text-muted-foreground capitalize">
+                    <span className="text-xs font-bold text-white">{user.displayName}</span>
+                    <span className="text-[9px] text-teal-300 capitalize">
                       {user.roles[0] || 'Member'}
                     </span>
                   </div>
@@ -172,7 +164,7 @@ export function Navbar({ locale }: NavbarProps) {
                   type="button"
                   onClick={handleLogout}
                   aria-label={dict.nav.logout}
-                  className="inline-flex items-center gap-1 rounded-xl p-2 text-xs font-medium text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+                  className="inline-flex items-center gap-1 rounded-xl p-2 text-xs font-medium text-slate-400 hover:bg-rose-500/10 hover:text-rose-400 transition-colors"
                   data-testid="navbar-logout-btn"
                   title={dict.nav.logout}
                 >
@@ -180,22 +172,22 @@ export function Navbar({ locale }: NavbarProps) {
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-1.5">
+              <div className="flex items-center gap-3">
                 <Link
                   href={withLocale('/login', locale)}
-                  className="px-3.5 py-2 text-xs font-semibold text-muted-foreground hover:text-foreground rounded-full hover:bg-surface-hover transition-colors"
+                  className="text-xs font-semibold text-slate-300 hover:text-white transition-colors px-2 py-1"
                   data-testid="navbar-login-link"
                 >
-                  {dict.nav.login}
+                  {isBn ? 'লগইন' : 'Login'}
                 </Link>
                 <Link href={withLocale('/register', locale)} data-testid="navbar-register-link">
-                  <Button
-                    size="sm"
-                    className="rounded-full px-4 text-xs font-bold shadow-sm shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all gap-1.5"
+                  <button
+                    type="button"
+                    className="rounded-full bg-[#0df5c4] hover:bg-[#00f2c3] text-[#042426] px-5 py-2 text-xs font-extrabold shadow-[0_0_20px_rgba(13,245,196,0.35)] hover:shadow-[0_0_25px_rgba(13,245,196,0.55)] hover:scale-[1.02] active:scale-[0.98] transition-all flex items-center gap-1.5 cursor-pointer"
                   >
-                    <span>{dict.nav.register}</span>
-                    <ArrowRight className="h-3.5 w-3.5 opacity-80" />
-                  </Button>
+                    <span>{isBn ? 'সাইন আপ' : 'Sign Up'}</span>
+                    <ArrowRight className="h-3.5 w-3.5 stroke-[2.5]" />
+                  </button>
                 </Link>
               </div>
             )}
@@ -207,7 +199,7 @@ export function Navbar({ locale }: NavbarProps) {
             aria-expanded={mobileMenuOpen}
             aria-label={isBn ? 'মোবাইল মেনু খুলুন/বন্ধ করুন' : 'Toggle mobile menu'}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="lg:hidden inline-flex items-center justify-center rounded-xl p-2 text-muted-foreground hover:bg-surface-hover hover:text-foreground transition-colors"
+            className="xl:hidden inline-flex items-center justify-center rounded-xl p-2 text-slate-300 hover:bg-white/10 hover:text-white transition-colors"
           >
             {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
           </button>
