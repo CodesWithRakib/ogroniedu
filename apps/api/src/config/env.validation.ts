@@ -8,12 +8,9 @@ import {
   MinLength,
   validateSync,
 } from 'class-validator';
+import { Environment } from './environment.enum';
 
-export enum Environment {
-  Development = 'development',
-  Production = 'production',
-  Test = 'test',
-}
+export { Environment } from './environment.enum';
 
 export class EnvironmentVariables {
   @IsEnum(Environment)

@@ -8,6 +8,7 @@ import {
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { AuthenticatedUser } from '../decorators/current-user.decorator';
+import { isAdminRole } from '../auth/role.utils';
 
 @Injectable()
 export class GuardianStudentGuard implements CanActivate {
@@ -22,7 +23,7 @@ export class GuardianStudentGuard implements CanActivate {
     }
 
     // Admins have access across students
-    if (user.roles.includes('admin') || user.roles.includes('super_admin')) {
+    if (isAdminRole(user)) {
       return true;
     }
 

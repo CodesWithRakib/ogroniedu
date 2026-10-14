@@ -42,6 +42,13 @@ export function AdminPage({ locale }: { locale: Locale }) {
             initialFeatureFlags={(admin.flags as AdminFeatureFlagItem[] | undefined) ?? []}
             initialAuditLogs={admin.logs}
             initialTickets={admin.tickets}
+            initialPendingTutors={admin.pendingTutors}
+            pendingTutorsLoading={admin.pendingTutorsLoading}
+            pendingTutorsError={admin.pendingTutorsError}
+            userSearch={admin.userSearch}
+            onUserSearchChange={admin.setUserSearch}
+            userStatus={admin.userStatus}
+            onUserStatusChange={admin.setUserStatus}
             isLoading={admin.loading}
             queryError={admin.queryError}
             onSuspendUser={admin.onSuspendUser}
@@ -51,6 +58,8 @@ export function AdminPage({ locale }: { locale: Locale }) {
             onStartImpersonation={admin.onStartImpersonation}
             onUpdateFeatureFlag={admin.onUpdateFeatureFlag}
             onUpdateTicketStatus={admin.onUpdateTicketStatus}
+            onReviewTutor={admin.onReviewTutor}
+            onRefetchPendingTutors={admin.refetchPendingTutors}
           />
           {admin.secondaryError && (
             <Card className="mx-6 mb-6">

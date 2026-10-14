@@ -2,16 +2,9 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { AuditLogEntity } from './entities/audit-log.entity';
+import type { RecordAuditParams } from './interfaces/record-audit-params.interface';
 
-export interface RecordAuditParams {
-  actorUserId?: string | null;
-  action: string;
-  resourceType: string;
-  resourceId?: string | null;
-  requestId?: string | null;
-  reason?: string | null;
-  safeMetadata?: Record<string, unknown>;
-}
+export type { RecordAuditParams } from './interfaces/record-audit-params.interface';
 
 @Injectable()
 export class AuditService {

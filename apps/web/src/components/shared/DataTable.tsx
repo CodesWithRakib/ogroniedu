@@ -32,6 +32,8 @@ export function DataTable<T extends { id: string | number }>({
   onRetry,
   emptyTitle,
   emptyDescription,
+  emptyActionLabel,
+  emptyActionHref,
   testId = 'data-table',
 }: {
   columns: DataTableColumn<T>[];
@@ -41,12 +43,21 @@ export function DataTable<T extends { id: string | number }>({
   onRetry?: () => void;
   emptyTitle: string;
   emptyDescription: string;
+  emptyActionLabel?: string;
+  emptyActionHref?: string;
   testId?: string;
 }) {
   if (isLoading) return <LoadingState testId={`${testId}-loading`} />;
   if (errorMessage) return <ErrorState message={errorMessage} onRetry={onRetry} testId={`${testId}-error`} />;
   if (rows.length === 0) {
-    return <EmptyState title={emptyTitle} description={emptyDescription} />;
+    return (
+      <EmptyState
+        title={emptyTitle}
+        description={emptyDescription}
+        actionLabel={emptyActionLabel}
+        actionHref={emptyActionHref}
+      />
+    );
   }
   return (
     <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800" data-testid={testId}>

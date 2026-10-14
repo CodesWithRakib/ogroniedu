@@ -6,6 +6,7 @@ import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { AuditLogEntity } from '../audit/entities/audit-log.entity';
 import { NotificationService } from '../notifications/notification.service';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { isAdminRole } from '../../common/auth/role.utils';
 import { CreateSafetyReportDto, UpdateSafetyReportDto } from './dto';
 
 @Injectable()
@@ -112,7 +113,7 @@ export class SafetyReportsService {
     }
 
     const isReporter = user.id === report.reporterUserId;
-    const isAdmin = user.roles?.includes('admin');
+    const isAdmin = isAdminRole(user);
 
     if (!isReporter && !isAdmin) {
       throw new ForbiddenException(
@@ -127,7 +128,7 @@ export class SafetyReportsService {
    * 3. List Reports (Admin Queue or Reporter History)
    */
   async listReports(user: AuthenticatedUser): Promise<SafetyReportEntity[]> {
-    const isAdmin = user.roles?.includes('admin');
+    const isAdmin = isAdminRole(user);
     const where: FindOptionsWhere<SafetyReportEntity> = isAdmin ? {} : { reporterUserId: user.id };
 
     return this.reportRepo.find({
@@ -144,7 +145,7 @@ export class SafetyReportsService {
     reportId: string,
     dto: UpdateSafetyReportDto,
   ): Promise<SafetyReportEntity> {
-    if (!user.roles?.includes('admin')) {
+    if (!isAdminRole(user)) {
       throw new ForbiddenException(
         'Admin privileges required to update safety report investigation status',
       );

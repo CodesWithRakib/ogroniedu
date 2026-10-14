@@ -1,12 +1,36 @@
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect, vi } from 'vitest';
 import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
+import { Provider } from 'react-redux';
+import { NextIntlClientProvider } from 'next-intl';
+import { makeStore } from '../src/store';
+import bnMessages from '../messages/bn.json';
 import {
   AdminDashboardView,
   AdminUserItem,
   AdminBookingItem,
   AdminReconciliationData,
 } from '../src/components/admin/AdminDashboardView';
+import { AdminVerificationTab } from '../src/features/admin/components/tabs/adminVerificationTab';
+import type { PendingTutorItem } from '../src/features/admin/types/admin.types';
 import { getDictionary } from '../src/lib/i18n';
+
+function renderWithProviders(node: React.ReactElement): string {
+  const store = makeStore();
+  return renderToStaticMarkup(
+    React.createElement(
+      Provider,
+      {
+        store,
+        children: React.createElement(NextIntlClientProvider, {
+          locale: 'bn',
+          messages: bnMessages,
+          children: node,
+        }),
+      },
+    ),
+  );
+}
 
 describe('Admin Operations & Control Center Frontend Tests (Phase 14)', () => {
   const sampleUsers: AdminUserItem[] = [
@@ -81,6 +105,13 @@ describe('Admin Operations & Control Center Frontend Tests (Phase 14)', () => {
       initialUsers: sampleUsers,
       initialBookings: sampleBookings,
       initialReconciliation: sampleReconciliation,
+      initialPendingTutors: [],
+      onReviewTutor: async () => {},
+      onRefetchPendingTutors: () => {},
+      userSearch: '',
+      onUserSearchChange: () => {},
+      userStatus: 'all' as const,
+      onUserStatusChange: () => {},
     });
 
     expect(el).toBeDefined();
@@ -129,5 +160,66 @@ describe('Admin Operations & Control Center Frontend Tests (Phase 14)', () => {
     expect(enDict.admin.auditRedactedNotice).toContain(
       'Automated Secret & Credential Redaction Active',
     );
+  });
+
+  it('should render the verification queue with pending tutor rows', () => {
+    const pending: PendingTutorItem[] = [
+      {
+        userId: 'tutor-pending-1',
+        displayName: 'Pending Tutor',
+        email: 'pending@example.com',
+        phoneE164: null,
+        headline: 'Physics Tutor',
+        verificationStatus: 'submitted',
+        publicationStatus: 'draft',
+        qualificationsCount: 2,
+        submittedAt: '2026-10-14T10:00:00Z',
+      },
+    ];
+    const html = renderWithProviders(
+      React.createElement(AdminVerificationTab, {
+        tutors: pending,
+        isLoading: false,
+        queryError: null,
+        onRetry: () => {},
+        onReview: async () => {},
+      }),
+    );
+    expect(html).toContain('Pending Tutor');
+    expect(html).toContain('verification-row-tutor-pending-1');
+    expect(html).toContain('review-tutor-btn-tutor-pending-1');
+  });
+
+  it('should render the verification empty state when the queue is clear', () => {
+    const html = renderWithProviders(
+      React.createElement(AdminVerificationTab, {
+        tutors: [],
+        isLoading: false,
+        queryError: null,
+        onRetry: () => {},
+        onReview: async () => {},
+      }),
+    );
+    expect(html).toContain('verification-tab-content');
+    expect(html).not.toContain('verification-row-');
+  });
+
+  it('should forward review decisions through onReviewTutor', async () => {
+    const seen: unknown[] = [];
+    const onReview = vi.fn(async (input: unknown) => {
+      seen.push(input);
+    });
+    await onReview({
+      tutorId: 'tutor-pending-1',
+      decision: 'approved',
+      reasonCode: 'nid-verified',
+      internalNotes: 'Docs look good.',
+    });
+    expect(onReview).toHaveBeenCalledOnce();
+    expect(seen[0]).toMatchObject({
+      tutorId: 'tutor-pending-1',
+      decision: 'approved',
+      reasonCode: 'nid-verified',
+    });
   });
 });

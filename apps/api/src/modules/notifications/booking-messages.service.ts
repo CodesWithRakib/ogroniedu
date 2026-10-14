@@ -1,15 +1,23 @@
-import { Injectable, Logger, NotFoundException, ForbiddenException, Inject, forwardRef } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+  forwardRef,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingMessageEntity } from './entities/booking-message.entity';
 import { BookingEntity } from '../bookings/entities/booking.entity';
-import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-student-link.entity';
+import { GuardianAccessService } from '../guardians/guardian-access.service';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { AuditService } from '../audit/audit.service';
 import { NotificationService } from './notification.service';
 import { SendBookingMessageDto } from './dto/send-booking-message.dto';
 import { GetMessagesQueryDto } from './dto/get-messages-query.dto';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { isAdminRole } from '../../common/auth/role.utils';
 import {
   cursorPaginated,
   type CursorCollectionEnvelope,
@@ -31,9 +39,7 @@ function resolveBookingTutorUserId(booking: BookingEntity): string | undefined {
   for (const relation of ['tutor', 'tutorProfile'] as const) {
     const rel = record[relation];
     candidates.push(
-      typeof rel === 'object' && rel !== null
-        ? (rel as Record<string, unknown>).userId
-        : undefined,
+      typeof rel === 'object' && rel !== null ? (rel as Record<string, unknown>).userId : undefined,
     );
   }
   for (const candidate of candidates) {
@@ -69,8 +75,7 @@ export class BookingMessagesService {
     private readonly messageRepo: Repository<BookingMessageEntity>,
     @InjectRepository(BookingEntity)
     private readonly bookingRepo: Repository<BookingEntity>,
-    @InjectRepository(GuardianStudentLinkEntity)
-    private readonly guardianLinkRepo: Repository<GuardianStudentLinkEntity>,
+    private readonly guardianAccess: GuardianAccessService,
     @InjectRepository(OutboxEventEntity)
     private readonly outboxRepo: Repository<OutboxEventEntity>,
     @Inject(forwardRef(() => AuditService))
@@ -105,7 +110,7 @@ export class BookingMessagesService {
     const isStudent = user.id === booking.studentUserId;
     const isRequester = user.id === booking.requesterUserId;
     const isTutor = user.id === tutorUserId;
-    const isAdmin = user.roles?.includes('admin');
+    const isAdmin = isAdminRole(user);
 
     if (!isStudent && !isRequester && !isTutor && !isAdmin) {
       throw new ForbiddenException(
@@ -210,13 +215,11 @@ export class BookingMessagesService {
 
     // Notify linked guardians if student received message
     if (recipientUserId === booking.studentUserId) {
-      const guardians = await this.guardianLinkRepo.find({
-        where: { studentUserId: booking.studentUserId, status: 'active' },
-      });
-      for (const g of guardians) {
+      const guardianIds = await this.guardianAccess.findActiveGuardianIds(booking.studentUserId);
+      for (const guardianId of guardianIds) {
         await this.notificationService
           .dispatch({
-            userId: g.guardianUserId,
+            userId: guardianId,
             recipientRole: 'guardian',
             eventType: 'system.announcement',
             payload: {
@@ -258,7 +261,7 @@ export class BookingMessagesService {
     const isStudent = user.id === booking.studentUserId;
     const isRequester = user.id === booking.requesterUserId;
     const isTutor = user.id === tutorUserId;
-    const isAdmin = user.roles?.includes('admin');
+    const isAdmin = isAdminRole(user);
 
     if (!isStudent && !isRequester && !isTutor && !isAdmin) {
       throw new ForbiddenException(
@@ -317,7 +320,7 @@ export class BookingMessagesService {
       throw new NotFoundException(`Message ${messageId} not found`);
     }
 
-    if (message.recipientUserId !== user.id && !user.roles?.includes('admin')) {
+    if (message.recipientUserId !== user.id && !isAdminRole(user)) {
       throw new ForbiddenException('Access denied to update read status');
     }
 

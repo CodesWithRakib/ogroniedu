@@ -40,6 +40,32 @@ export interface SupportTicketRow {
   updatedAt: string;
 }
 
+export interface PendingTutorRow {
+  userId: string;
+  displayName: string;
+  email?: string | null;
+  phoneE164?: string | null;
+  headline?: string | null;
+  verificationStatus: string;
+  publicationStatus: string;
+  qualificationsCount: number;
+  submittedAt: string;
+}
+
+export type TutorReviewDecision =
+  | 'approved'
+  | 'rejected'
+  | 'needs_information'
+  | 'suspended'
+  | 'reinstated';
+
+export interface ReviewTutorRequest {
+  tutorId: string;
+  decision: TutorReviewDecision;
+  reasonCode: string;
+  internalNotes?: string;
+}
+
 /** Shared serializer (replaces the former per-file toQuery duplicate). */
 function toQuery(params: Record<string, string | number | undefined>): string {
   return toQueryString(params);
@@ -185,6 +211,26 @@ export const adminApi = baseApi.injectEndpoints({
         { type: 'SupportTicket', id: 'LIST' },
       ],
     }),
+    getPendingTutors: builder.query<ApiSuccessEnvelope<PendingTutorRow[]>, void>({
+      query: () => '/api/v1/admin/tutors/pending',
+      providesTags: [{ type: 'TutorVerification', id: 'LIST' }],
+    }),
+    getTutorReviewDossier: builder.query<ApiSuccessEnvelope<unknown>, string>({
+      query: (tutorId) => `/api/v1/admin/tutors/${tutorId}/review-dossier`,
+      providesTags: (_r, _e, tutorId) => [{ type: 'TutorVerification', id: tutorId }],
+    }),
+    reviewTutor: builder.mutation<unknown, ReviewTutorRequest>({
+      query: ({ tutorId, ...body }) => ({
+        url: `/api/v1/admin/tutors/${tutorId}/review`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { tutorId }) => [
+        { type: 'TutorVerification', id: 'LIST' },
+        { type: 'TutorVerification', id: tutorId },
+        { type: 'AdminDashboard', id: 'SUMMARY' },
+      ],
+    }),
   }),
   overrideExisting: false,
 });
@@ -208,4 +254,7 @@ export const {
   useQueryAuditLogsQuery,
   useListSupportTicketsQuery,
   useUpdateSupportTicketMutation,
+  useGetPendingTutorsQuery,
+  useLazyGetTutorReviewDossierQuery,
+  useReviewTutorMutation,
 } = adminApi;

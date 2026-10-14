@@ -10,7 +10,7 @@ export default function RequestsRoute({ params }: { params: Promise<{ locale: st
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   return (
     <RequireAuth locale={locale}>
-      <main id="main-content">
+      <main id="main-content" tabIndex={-1}>
         <RequestsPage locale={locale} />
       </main>
     </RequireAuth>

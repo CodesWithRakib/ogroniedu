@@ -3,9 +3,17 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
-import { Button, Card, CardHeader, CardTitle, CardContent, Input, LoadingSpinner } from '@/components/ui';
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  Input,
+  LoadingSpinner,
+} from '@/components/ui';
 import { type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeUnknownError } from '@/lib/api-error';
 import { withLocale } from '@/lib/auth';
 import { useAppDispatch } from '@/store';
 import { logout } from '@/store/slices/auth-slice';
@@ -45,7 +53,7 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
       dispatch(logout());
       router.replace(withLocale('/login', locale));
     } catch (err) {
-      setError(normalizeApiError(err as never, locale).message);
+      setError(normalizeUnknownError(err, locale).message);
     } finally {
       setConfirming(false);
     }
@@ -54,7 +62,9 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
   return (
     <Card className="mt-4">
       <CardHeader>
-        <CardTitle className="text-sm">{isBn ? 'সেশন ও নিরাপত্তা' : 'Sessions & security'}</CardTitle>
+        <CardTitle className="text-sm">
+          {isBn ? 'সেশন ও নিরাপত্তা' : 'Sessions & security'}
+        </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
         <p className="text-xs text-slate-500">
@@ -106,26 +116,52 @@ export function ProfilePage({ locale }: { locale: Locale }) {
       {profile.isLoading ? (
         <LoadingSpinner />
       ) : profile.queryError ? (
-        <Card><CardContent className="py-8 text-center text-sm text-rose-600">{profile.queryError}</CardContent></Card>
-      ) : (
-        <>
         <Card>
-          <CardHeader><CardTitle>{profile.data?.displayName}</CardTitle></CardHeader>
-          <CardContent>
-            <form onSubmit={profile.handleSave} className="space-y-4" data-testid="profile-form">
-              {profile.formError && <p role="alert" className="text-sm text-rose-600">{profile.formError}</p>}
-              {profile.saved && <p role="status" className="text-sm text-emerald-600">{profile.saved}</p>}
-              <div className="space-y-1.5">
-                <label htmlFor="profile-name" className="text-sm font-medium">{locale === 'bn' ? 'পুরো নাম' : 'Full name'}</label>
-                <Input id="profile-name" value={profile.displayName} onChange={(e) => profile.setDisplayName(e.target.value)} data-testid="profile-name-input" />
-              </div>
-              <Button type="submit" size="sm" isLoading={profile.saving} data-testid="profile-save-btn">
-                {locale === 'bn' ? 'সংরক্ষণ করুন' : 'Save'}
-              </Button>
-            </form>
+          <CardContent className="py-8 text-center text-sm text-rose-600">
+            {profile.queryError}
           </CardContent>
         </Card>
-        <SessionSecurityCard locale={locale} />
+      ) : (
+        <>
+          <Card>
+            <CardHeader>
+              <CardTitle>{profile.data?.displayName}</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <form onSubmit={profile.handleSave} className="space-y-4" data-testid="profile-form">
+                {profile.formError && (
+                  <p role="alert" className="text-sm text-rose-600">
+                    {profile.formError}
+                  </p>
+                )}
+                {profile.saved && (
+                  <p role="status" className="text-sm text-emerald-600">
+                    {profile.saved}
+                  </p>
+                )}
+                <div className="space-y-1.5">
+                  <label htmlFor="profile-name" className="text-sm font-medium">
+                    {locale === 'bn' ? 'পুরো নাম' : 'Full name'}
+                  </label>
+                  <Input
+                    id="profile-name"
+                    value={profile.displayName}
+                    onChange={(e) => profile.setDisplayName(e.target.value)}
+                    data-testid="profile-name-input"
+                  />
+                </div>
+                <Button
+                  type="submit"
+                  size="sm"
+                  isLoading={profile.saving}
+                  data-testid="profile-save-btn"
+                >
+                  {locale === 'bn' ? 'সংরক্ষণ করুন' : 'Save'}
+                </Button>
+              </form>
+            </CardContent>
+          </Card>
+          <SessionSecurityCard locale={locale} />
         </>
       )}
     </DashboardShell>

@@ -71,3 +71,17 @@ export function toPageSize(pageSize: number | undefined, max = MAX_PAGE_SIZE): n
   if (!pageSize || !Number.isFinite(pageSize)) return DEFAULT_PAGE_SIZE;
   return Math.min(max, Math.max(1, Math.floor(pageSize)));
 }
+
+/**
+ * Convert legacy offset/limit params to canonical page/pageSize.
+ * Single home for the `Math.floor(offset/limit)+1` math previously
+ * copy-pasted across admin controllers. Phase 23 P1-1.
+ */
+export function fromOffsetLimit(arg: { offset?: number; limit?: number }): {
+  page: number;
+  pageSize: number;
+} {
+  const pageSize = arg.limit && arg.limit > 0 ? Math.floor(arg.limit) : DEFAULT_PAGE_SIZE;
+  const offset = arg.offset && arg.offset > 0 ? Math.floor(arg.offset) : 0;
+  return { page: Math.floor(offset / pageSize) + 1, pageSize };
+}

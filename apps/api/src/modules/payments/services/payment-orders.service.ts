@@ -11,11 +11,12 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaymentOrderEntity, PaymentOrderStatus } from '../entities';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
-import { GuardianStudentLinkEntity } from '../../guardians/entities/guardian-student-link.entity';
+import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { PaymentAdapterFactory } from '../adapters/adapter.factory';
 import { AuditService } from '../../audit/audit.service';
 import { CreatePaymentOrderDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
+import { isAdminRole } from '../../../common/auth/role.utils';
 
 export interface PaymentReceiptDto {
   receiptId: string;
@@ -48,8 +49,7 @@ export class PaymentOrdersService {
     private readonly orderRepo: Repository<PaymentOrderEntity>,
     @InjectRepository(BookingEntity)
     private readonly bookingRepo: Repository<BookingEntity>,
-    @InjectRepository(GuardianStudentLinkEntity)
-    private readonly guardianLinkRepo: Repository<GuardianStudentLinkEntity>,
+    private readonly guardianAccess: GuardianAccessService,
     @Inject(PaymentAdapterFactory)
     private readonly adapterFactory: PaymentAdapterFactory,
     @Inject(forwardRef(() => AuditService))
@@ -63,7 +63,7 @@ export class PaymentOrdersService {
     user: AuthenticatedUser,
     booking: BookingEntity,
   ): Promise<void> {
-    if (user.roles?.includes('admin')) {
+    if (isAdminRole(user)) {
       return;
     }
 
@@ -71,19 +71,9 @@ export class PaymentOrdersService {
       return;
     }
 
-    const activeLink = await this.guardianLinkRepo.findOne({
-      where: {
-        guardianUserId: user.id,
-        studentUserId: booking.studentUserId,
-        status: 'active',
-      },
-    });
-
-    if (activeLink) {
-      return;
-    }
-
-    throw new ForbiddenException(
+    await this.guardianAccess.assertActiveLink(
+      user.id,
+      booking.studentUserId,
       'Access denied: Only the student, requester, or active linked guardian can pay for this booking',
     );
   }
@@ -231,7 +221,7 @@ export class PaymentOrdersService {
       user.id !== order.payerUserId &&
       user.id !== order.booking?.studentUserId &&
       user.id !== order.booking?.requesterUserId &&
-      !user.roles?.includes('admin')
+      !isAdminRole(user)
     ) {
       throw new ForbiddenException('Access denied to payment receipt');
     }

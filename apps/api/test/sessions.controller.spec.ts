@@ -95,12 +95,14 @@ describe('SessionsController Unit Tests', () => {
     expect(mockService.rescheduleSession).toHaveBeenCalledWith('session-1', mockUser, dto);
   });
 
-  it('should cancel session and return policy assessment', async () => {
+  it('should cancel session and return policy assessment inside data', async () => {
     const dto = { reason: 'No longer needed' };
     const res = await controller.cancelSession(mockUser, 'session-1', dto);
     expect(res.success).toBe(true);
-    expect(res.data.status).toBe('cancelled');
-    expect(res.assessment.refundPercentage).toBe(100);
+    expect(res.data.session.status).toBe('cancelled');
+    expect(res.data.policyAssessment.refundPercentage).toBe(100);
+    // Contract: assessment must live inside data (SuccessEnvelope<T>), never top-level.
+    expect(res).not.toHaveProperty('assessment');
     expect(mockService.cancelSession).toHaveBeenCalledWith('session-1', mockUser, dto);
   });
 

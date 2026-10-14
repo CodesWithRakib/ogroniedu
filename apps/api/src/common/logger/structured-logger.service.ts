@@ -1,13 +1,7 @@
 import { Injectable, LoggerService, Scope } from '@nestjs/common';
+import type { StructuredLogPayload } from './structured-log-payload.interface';
 
-export interface StructuredLogPayload {
-  timestamp: string;
-  level: 'info' | 'warn' | 'error' | 'debug' | 'verbose';
-  context?: string;
-  message: string;
-  requestId?: string;
-  meta?: Record<string, unknown>;
-}
+export type { StructuredLogPayload } from './structured-log-payload.interface';
 
 @Injectable({ scope: Scope.DEFAULT })
 export class StructuredLoggerService implements LoggerService {

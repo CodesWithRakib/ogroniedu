@@ -7,7 +7,7 @@ import {
   type BookingMessage,
 } from '@/store/services/booking-messages-api';
 import { parseCursorCollection } from '@/lib/api/parse';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
 import type { Locale } from '@/lib/i18n';
 
 const HISTORY_PAGE_SIZE = 30;
@@ -79,7 +79,7 @@ export function useBookingChat(bookingId: string, locale: Locale) {
       try {
         await sendMutation({ bookingId, content }).unwrap();
       } catch (err) {
-        throw new Error(normalizeApiError(err as never, locale).message);
+        throw new Error(normalizeUnknownError(err, locale).message);
       }
     },
     [sendMutation, bookingId, locale],

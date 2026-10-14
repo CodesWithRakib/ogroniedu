@@ -6,7 +6,6 @@ import { AssignmentSubmissionEntity } from './entities/assignment-submission.ent
 import { ProgressReportEntity } from './entities/progress-report.entity';
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { BookingSessionEntity } from '../bookings/entities/booking-session.entity';
-import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-student-link.entity';
 import { LearningService } from './learning.service';
 import { LearningAccessService } from './services/learning-access.service';
 import { LearningAttendanceService } from './services/attendance.service';
@@ -16,6 +15,7 @@ import { LearningController } from './learning.controller';
 import { AuthModule } from '../auth/auth.module';
 import { AuditModule } from '../audit/audit.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { GuardiansModule } from '../guardians/guardians.module';
 
 @Module({
   imports: [
@@ -26,11 +26,11 @@ import { NotificationsModule } from '../notifications/notifications.module';
       ProgressReportEntity,
       BookingEntity,
       BookingSessionEntity,
-      GuardianStudentLinkEntity,
     ]),
     AuthModule,
     AuditModule,
     forwardRef(() => NotificationsModule),
+    GuardiansModule,
   ],
   controllers: [LearningController],
   providers: [

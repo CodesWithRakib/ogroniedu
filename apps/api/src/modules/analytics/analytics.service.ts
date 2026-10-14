@@ -3,11 +3,9 @@ import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { LedgerService } from '../payments/ledger.service';
 import { AnalyticsTimeQueryDto } from './dto';
+import type { TimeBounds } from './interfaces/time-bounds.interface';
 
-export interface TimeBounds {
-  start: Date;
-  end: Date;
-}
+export type { TimeBounds } from './interfaces/time-bounds.interface';
 
 /** Raw SQL is returned as untyped rows by the pg driver; narrow at the boundary. */
 type SqlRow = Record<string, unknown>;

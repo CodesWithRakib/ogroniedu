@@ -1,17 +1,19 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingEntity } from '../entities/booking.entity';
 import { BookingSessionEntity } from '../entities/booking-session.entity';
-import { GuardianStudentLinkEntity } from '../../guardians/entities/guardian-student-link.entity';
 import { GetSessionsQueryDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
+import {
+  GuardianAccessService,
+  type BookingParties,
+} from '../../guardians/guardian-access.service';
+import { isAdminRole } from '../../../common/auth/role.utils';
+import type { PublicCalendarSlot } from '../interfaces/public-calendar-slot.interface';
 
-export interface PublicCalendarSlot {
-  startsAt: string;
-  endsAt: string;
-  type: 'busy' | 'available';
-}
+export type { PublicCalendarSlot } from '../interfaces/public-calendar-slot.interface';
+export type { BookingParties } from '../../guardians/guardian-access.service';
 
 /**
  * Read-model queries for booking sessions plus the shared
@@ -24,44 +26,17 @@ export class SessionQueriesService {
   constructor(
     @InjectRepository(BookingSessionEntity)
     private readonly sessionRepo: Repository<BookingSessionEntity>,
-    @InjectRepository(GuardianStudentLinkEntity)
-    private readonly linkRepo: Repository<GuardianStudentLinkEntity>,
+    private readonly guardianAccess: GuardianAccessService,
   ) {}
 
   /**
-   * Ensure user is authorized to manage or view sessions for this booking
+   * Ensure user is authorized to manage or view sessions for this booking.
+   * Delegates to the shared guardian-access service (single rule home).
    */
-  async assertCanManageSessions(
-    user: AuthenticatedUser,
-    booking: BookingEntity,
-  ): Promise<void> {
-    if (user.roles?.includes('admin') || user.roles?.includes('super_admin')) {
-      return;
-    }
-
-    const isDirectParticipant =
-      booking.tutorUserId === user.id ||
-      booking.requesterUserId === user.id ||
-      booking.studentUserId === user.id;
-
-    if (isDirectParticipant) {
-      return;
-    }
-
-    // Active guardian check
-    const activeLink = await this.linkRepo.findOne({
-      where: {
-        guardianUserId: user.id,
-        studentUserId: booking.studentUserId,
-        status: 'active',
-      },
-    });
-
-    if (activeLink) {
-      return;
-    }
-
-    throw new ForbiddenException(
+  async assertCanManageSessions(user: AuthenticatedUser, booking: BookingEntity): Promise<void> {
+    await this.guardianAccess.assertCanAccessBooking(
+      user,
+      booking,
       'Access denied: You are not authorized to view or manage sessions for this booking.',
     );
   }
@@ -74,10 +49,7 @@ export class SessionQueriesService {
     query: GetSessionsQueryDto,
   ): Promise<BookingSessionEntity[]> {
     // Collect allowed student IDs for guardians
-    const guardianLinks = await this.linkRepo.find({
-      where: { guardianUserId: user.id, status: 'active' },
-    });
-    const childIds = guardianLinks.map((l) => l.studentUserId);
+    const childIds = await this.guardianAccess.findActiveStudentIds(user.id);
     const allowedStudentIds = [user.id, ...childIds];
 
     const qb = this.sessionRepo
@@ -87,7 +59,7 @@ export class SessionQueriesService {
       .leftJoinAndSelect('booking.educationLevel', 'educationLevel');
 
     // Scoped ownership check
-    if (!user.roles?.includes('admin') && !user.roles?.includes('super_admin')) {
+    if (!isAdminRole(user)) {
       qb.where('(session.tutorUserId = :userId OR session.studentUserId IN (:...studentIds))', {
         userId: user.id,
         studentIds: allowedStudentIds,

@@ -10,33 +10,13 @@ import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 import crypto from 'node:crypto';
 import bcrypt from 'bcryptjs';
-import jwt from 'jsonwebtoken';
 import { RegisterDto, LoginDto, RequestCodeDto, VerifyCodeDto, ResetPasswordDto } from './dto';
 import { RateLimiterService } from './rate-limiter.service';
 import { StructuredLoggerService } from '../../common/logger/structured-logger.service';
+import { generateTokenPair, hashToken } from './utils/token.utils';
+import type { AuthMeta, AuthResponse } from './interfaces/auth-response.interface';
 
-export interface TokenPayload {
-  sub: string;
-  email?: string | null;
-  phone?: string | null;
-  roles: string[];
-  preferredLocale: string;
-}
-
-export interface AuthResponse {
-  user: {
-    id: string;
-    displayName: string;
-    email: string | null;
-    phone: string | null;
-    roles: string[];
-    status: string;
-    preferredLocale: string;
-  };
-  accessToken: string;
-  refreshToken: string;
-  expiresIn: number;
-}
+export type { TokenPayload, AuthResponse, AuthMeta } from './interfaces/auth-response.interface';
 
 @Injectable()
 export class AuthService {
@@ -51,40 +31,10 @@ export class AuthService {
     @Inject(StructuredLoggerService) private logger: StructuredLoggerService,
   ) {}
 
-  private hashToken(token: string): string {
-    return crypto.createHash('sha256').update(token).digest('hex');
-  }
-
-  private generateTokenPair(user: {
-    id: string;
-    email?: string | null;
-    phone?: string | null;
-    roles: string[];
-    preferredLocale: string;
-  }): { accessToken: string; refreshToken: string } {
-    const payload: TokenPayload = {
-      sub: user.id,
-      email: user.email,
-      phone: user.phone,
-      roles: user.roles,
-      preferredLocale: user.preferredLocale,
-    };
-
-    const accessToken = jwt.sign(payload, this.jwtSecret, {
-      expiresIn: this.accessTokenExpirySeconds,
-    });
-
-    const refreshToken = crypto.randomBytes(40).toString('hex');
-    return { accessToken, refreshToken };
-  }
-
   /**
    * Register a new user with validation, password hashing, and role assignment
    */
-  async register(
-    dto: RegisterDto,
-    meta: { userAgent?: string; ip?: string } = {},
-  ): Promise<AuthResponse> {
+  async register(dto: RegisterDto, meta: AuthMeta = {}): Promise<AuthResponse> {
     if (!dto.email && !dto.phone) {
       throw new BadRequestException('At least one contact method (email or phone) is mandatory.');
     }
@@ -156,15 +106,19 @@ export class AuthService {
       }
 
       // 5. Generate and store session
-      const { accessToken, refreshToken } = this.generateTokenPair({
-        id: userId,
-        email: normalizedEmail,
-        phone,
-        roles: [dto.role],
-        preferredLocale,
+      const { accessToken, refreshToken } = generateTokenPair({
+        jwtSecret: this.jwtSecret,
+        accessTokenExpirySeconds: this.accessTokenExpirySeconds,
+        user: {
+          id: userId,
+          email: normalizedEmail,
+          phone,
+          roles: [dto.role],
+          preferredLocale,
+        },
       });
 
-      const refreshTokenHash = this.hashToken(refreshToken);
+      const refreshTokenHash = hashToken(refreshToken);
       const expiresAt = new Date(Date.now() + this.refreshTokenExpiryDays * 24 * 60 * 60 * 1000);
 
       await queryRunner.query(
@@ -174,7 +128,7 @@ export class AuthService {
           userId,
           refreshTokenHash,
           meta.userAgent || null,
-          meta.ip ? this.hashToken(meta.ip) : null,
+          meta.ip ? hashToken(meta.ip) : null,
           expiresAt,
         ],
       );
@@ -208,10 +162,7 @@ export class AuthService {
   /**
    * User login with rate limiting, password verification, and session creation
    */
-  async login(
-    dto: LoginDto,
-    meta: { userAgent?: string; ip?: string } = {},
-  ): Promise<AuthResponse> {
+  async login(dto: LoginDto, meta: AuthMeta = {}): Promise<AuthResponse> {
     const rateLimitKey = `login:${meta.ip || 'unknown'}:${dto.identifier.toLowerCase().trim()}`;
     this.rateLimiter.checkLimit(rateLimitKey, 5, 60000); // 5 attempts per minute
 
@@ -262,15 +213,19 @@ export class AuthService {
     await this.dataSource.query('UPDATE users SET last_login_at = now() WHERE id = $1;', [user.id]);
 
     // Create session
-    const { accessToken, refreshToken } = this.generateTokenPair({
-      id: user.id,
-      email: user.email,
-      phone: user.phone_e164,
-      roles: roles.length > 0 ? roles : ['student'],
-      preferredLocale: user.preferred_locale,
+    const { accessToken, refreshToken } = generateTokenPair({
+      jwtSecret: this.jwtSecret,
+      accessTokenExpirySeconds: this.accessTokenExpirySeconds,
+      user: {
+        id: user.id,
+        email: user.email,
+        phone: user.phone_e164,
+        roles: roles.length > 0 ? roles : ['student'],
+        preferredLocale: user.preferred_locale,
+      },
     });
 
-    const refreshTokenHash = this.hashToken(refreshToken);
+    const refreshTokenHash = hashToken(refreshToken);
     const expiresAt = new Date(Date.now() + this.refreshTokenExpiryDays * 24 * 60 * 60 * 1000);
 
     await this.dataSource.query(
@@ -280,7 +235,7 @@ export class AuthService {
         user.id,
         refreshTokenHash,
         meta.userAgent || null,
-        meta.ip ? this.hashToken(meta.ip) : null,
+        meta.ip ? hashToken(meta.ip) : null,
         expiresAt,
       ],
     );
@@ -308,13 +263,13 @@ export class AuthService {
    */
   async refresh(
     refreshToken: string,
-    meta: { userAgent?: string; ip?: string } = {},
+    meta: AuthMeta = {},
   ): Promise<{ accessToken: string; refreshToken: string; expiresIn: number }> {
     if (!refreshToken) {
       throw new UnauthorizedException('Refresh token is required');
     }
 
-    const tokenHash = this.hashToken(refreshToken);
+    const tokenHash = hashToken(refreshToken);
 
     const sessionRes = await this.dataSource.query(
       `SELECT id, user_id, expires_at, revoked_at
@@ -382,27 +337,25 @@ export class AuthService {
     const roles = rolesRes.map((r: { code: string }) => r.code);
 
     // Issue new pair
-    const { accessToken, refreshToken: newRefreshToken } = this.generateTokenPair({
-      id: user.id,
-      email: user.email,
-      phone: user.phone_e164,
-      roles: roles.length > 0 ? roles : ['student'],
-      preferredLocale: user.preferred_locale,
+    const { accessToken, refreshToken: newRefreshToken } = generateTokenPair({
+      jwtSecret: this.jwtSecret,
+      accessTokenExpirySeconds: this.accessTokenExpirySeconds,
+      user: {
+        id: user.id,
+        email: user.email,
+        phone: user.phone_e164,
+        roles: roles.length > 0 ? roles : ['student'],
+        preferredLocale: user.preferred_locale,
+      },
     });
 
-    const newHash = this.hashToken(newRefreshToken);
+    const newHash = hashToken(newRefreshToken);
     const newExpiresAt = new Date(Date.now() + this.refreshTokenExpiryDays * 24 * 60 * 60 * 1000);
 
     await this.dataSource.query(
       `INSERT INTO auth_sessions (user_id, refresh_token_hash, user_agent, ip_hash, expires_at)
        VALUES ($1, $2, $3, $4, $5);`,
-      [
-        user.id,
-        newHash,
-        meta.userAgent || null,
-        meta.ip ? this.hashToken(meta.ip) : null,
-        newExpiresAt,
-      ],
+      [user.id, newHash, meta.userAgent || null, meta.ip ? hashToken(meta.ip) : null, newExpiresAt],
     );
 
     return {
@@ -417,7 +370,7 @@ export class AuthService {
    */
   async logout(refreshToken?: string): Promise<{ success: boolean; message: string }> {
     if (refreshToken) {
-      const hash = this.hashToken(refreshToken);
+      const hash = hashToken(refreshToken);
       await this.dataSource.query(
         `UPDATE auth_sessions 
          SET revoked_at = now(), revoke_reason = 'user_logout' 
@@ -449,7 +402,7 @@ export class AuthService {
    */
   async requestCode(
     dto: RequestCodeDto,
-    meta: { ip?: string } = {},
+    meta: AuthMeta = {},
   ): Promise<{
     success: boolean;
     message: string;
@@ -462,7 +415,7 @@ export class AuthService {
 
     const contact = dto.contact.trim();
     const code = crypto.randomInt(100000, 999999).toString();
-    const codeHash = this.hashToken(code);
+    const codeHash = hashToken(code);
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     // Find user if exists
@@ -496,7 +449,7 @@ export class AuthService {
    */
   async verifyCode(dto: VerifyCodeDto): Promise<{ success: boolean; message: string }> {
     const contact = dto.contact.trim();
-    const codeHash = this.hashToken(dto.code.trim());
+    const codeHash = hashToken(dto.code.trim());
 
     const records = await this.dataSource.query(
       `SELECT id, user_id, code_hash, attempts, expires_at
@@ -554,7 +507,7 @@ export class AuthService {
    */
   async resetPassword(dto: ResetPasswordDto): Promise<{ success: boolean; message: string }> {
     const contact = dto.contact.trim();
-    const codeHash = this.hashToken(dto.code.trim());
+    const codeHash = hashToken(dto.code.trim());
 
     const records = await this.dataSource.query(
       `SELECT id, user_id

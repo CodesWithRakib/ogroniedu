@@ -17,15 +17,12 @@ import {
 } from '../entities/assignment-submission.entity';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
 import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
-import { GuardianStudentLinkEntity } from '../../guardians/entities/guardian-student-link.entity';
 import { AuditService } from '../../audit/audit.service';
+import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { NotificationService } from '../../notifications/notification.service';
-import {
-  CreateAssignmentDto,
-  SubmitAssignmentDto,
-  GradeSubmissionDto,
-} from '../dto';
+import { CreateAssignmentDto, SubmitAssignmentDto, GradeSubmissionDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
+import { isAdminRole } from '../../../common/auth/role.utils';
 
 /**
  * Homework lifecycle: tutor-created assignments, learner submissions
@@ -44,8 +41,7 @@ export class LearningAssignmentsService {
     private readonly bookingRepo: Repository<BookingEntity>,
     @InjectRepository(BookingSessionEntity)
     private readonly sessionRepo: Repository<BookingSessionEntity>,
-    @InjectRepository(GuardianStudentLinkEntity)
-    private readonly guardianLinkRepo: Repository<GuardianStudentLinkEntity>,
+    private readonly guardianAccess: GuardianAccessService,
     @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
     @Optional()
@@ -72,7 +68,7 @@ export class LearningAssignmentsService {
 
     // Only booking tutor or admin can create assignments
     const isTutor = booking.tutorUserId === user.id;
-    const isAdmin = user.roles?.includes('admin');
+    const isAdmin = isAdminRole(user);
     if (!isTutor && !isAdmin) {
       throw new ForbiddenException(
         'Only the assigned tutor or admin can create assignments for this booking',
@@ -137,14 +133,14 @@ export class LearningAssignmentsService {
           this.logger.warn(`Failed to dispatch student assignment notification: ${err}`),
         );
 
-      const guardians = await this.guardianLinkRepo.find({
-        where: { studentUserId: booking.studentUserId, status: 'active' },
-      });
+      const guardianIds = await this.guardianAccess.findActiveGuardianIds(
+        booking.studentUserId,
+      );
 
-      for (const link of guardians) {
+      for (const guardianId of guardianIds) {
         await this.notificationService
           .dispatch({
-            userId: link.guardianUserId,
+            userId: guardianId,
             recipientRole: 'guardian',
             eventType: 'assignment.created',
             payload: {
@@ -279,7 +275,7 @@ export class LearningAssignmentsService {
 
     // Only the assigned tutor or admin can grade
     const isTutor = assignment.tutorUserId === user.id;
-    const isAdmin = user.roles?.includes('admin');
+    const isAdmin = isAdminRole(user);
     if (!isTutor && !isAdmin) {
       throw new ForbiddenException(
         'Only the assigned tutor or admin can grade this assignment submission',
@@ -363,14 +359,14 @@ export class LearningAssignmentsService {
         })
         .catch((err) => this.logger.warn(`Failed to dispatch student graded notification: ${err}`));
 
-      const guardians = await this.guardianLinkRepo.find({
-        where: { studentUserId: submission.studentUserId, status: 'active' },
-      });
+      const guardianIds = await this.guardianAccess.findActiveGuardianIds(
+        submission.studentUserId,
+      );
 
-      for (const link of guardians) {
+      for (const guardianId of guardianIds) {
         await this.notificationService
           .dispatch({
-            userId: link.guardianUserId,
+            userId: guardianId,
             recipientRole: 'guardian',
             eventType: 'assignment.graded',
             payload: {

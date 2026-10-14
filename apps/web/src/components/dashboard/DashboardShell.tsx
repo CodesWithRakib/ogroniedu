@@ -3,30 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  LayoutDashboard,
-  Search,
-  Inbox,
-  Calendar,
-  BookOpen,
-  CreditCard,
-  Users,
-  UserCog,
-  ShieldCheck,
-  BarChart3,
-  MessageSquare,
-  GraduationCap,
-  LogOut,
-  Menu,
-  X,
-  ChevronRight,
-  User,
-  Sparkles,
-  CheckCircle2,
-  Globe,
-  Bell,
-  FileText,
-} from 'lucide-react';
+import { LogOut, Menu, X, GraduationCap, Globe, Search } from 'lucide-react';
 import { useAppSelector, useAppDispatch } from '@/store';
 import { withLocale } from '@/lib/auth';
 import { primaryRole, logout, type UserRole } from '@/store/slices/auth-slice';
@@ -36,157 +13,10 @@ import { cn } from '@/lib/utils';
 import { ThemePicker } from '@/components/theme/ThemePicker';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { SidebarPromoCard } from './SidebarPromoCard';
+import { navForRole, ROLE_PRESETS, type NavItem, type RoleConfig } from '@/lib/navigation';
 
-export interface NavItem {
-  href: string;
-  labelBn: string;
-  labelEn: string;
-  icon: React.ComponentType<{ className?: string }>;
-  testId: string;
-}
-
-export function navForRole(role: UserRole | null): NavItem[] {
-  const dashboard: Record<string, NavItem> = {
-    student: { href: '/dashboard/student', labelBn: 'ড্যাশবোর্ড', labelEn: 'Dashboard', icon: LayoutDashboard, testId: 'nav-dashboard' },
-    guardian: { href: '/dashboard/guardian', labelBn: 'ড্যাশবোর্ড', labelEn: 'Dashboard', icon: LayoutDashboard, testId: 'nav-dashboard' },
-    tutor: { href: '/dashboard/tutor', labelBn: 'ড্যাশবোর্ড', labelEn: 'Dashboard', icon: LayoutDashboard, testId: 'nav-dashboard' },
-  };
-
-  if (role === 'student') {
-    return [
-      dashboard.student,
-      { href: '/learning', labelBn: 'স্টাডি রুম', labelEn: 'Study Room', icon: BookOpen, testId: 'nav-learning' },
-      { href: '/sessions', labelBn: 'ক্লাস শিডিউল', labelEn: 'Sessions', icon: Calendar, testId: 'nav-sessions' },
-      { href: '/tutors', labelBn: 'শিক্ষক খুঁজুন', labelEn: 'Find Tutors', icon: Search, testId: 'nav-tutors' },
-      { href: '/requests', labelBn: 'অনুরোধ', labelEn: 'Requests', icon: Inbox, testId: 'nav-requests' },
-      { href: '/payments', labelBn: 'পেমেন্ট ও ফি', labelEn: 'Payments', icon: CreditCard, testId: 'nav-payments' },
-      { href: '/notifications', labelBn: 'বিজ্ঞপ্তি', labelEn: 'Alerts', icon: MessageSquare, testId: 'nav-notifications' },
-      { href: '/profile', labelBn: 'প্রোফাইল', labelEn: 'Profile', icon: User, testId: 'nav-profile' },
-    ];
-  }
-
-  if (role === 'guardian') {
-    return [
-      dashboard.guardian,
-      { href: '/tutors', labelBn: 'শিক্ষক খুঁজুন', labelEn: 'Find Tutors', icon: Search, testId: 'nav-tutors' },
-      { href: '/requests', labelBn: 'অনুরোধ ও বুকিং', labelEn: 'Requests', icon: Inbox, testId: 'nav-requests' },
-      { href: '/sessions', labelBn: 'ক্লাস শিডিউল', labelEn: 'Sessions', icon: Calendar, testId: 'nav-sessions' },
-      { href: '/learning', labelBn: 'পড়াশোনার অগ্রগতি', labelEn: 'Learning', icon: BookOpen, testId: 'nav-learning' },
-      { href: '/payments', labelBn: 'ফি ও এসক্রো', labelEn: 'Payments', icon: CreditCard, testId: 'nav-payments' },
-      { href: '/dashboard/guardian?tab=children', labelBn: 'সন্তান তালিকা', labelEn: 'Children', icon: Users, testId: 'nav-children' },
-      { href: '/notifications', labelBn: 'বিজ্ঞপ্তি', labelEn: 'Alerts', icon: MessageSquare, testId: 'nav-notifications' },
-      { href: '/profile', labelBn: 'প্রোফাইল', labelEn: 'Profile', icon: User, testId: 'nav-profile' },
-    ];
-  }
-
-  if (role === 'tutor') {
-    return [
-      dashboard.tutor,
-      { href: '/requests', labelBn: 'বুকিং ইনবক্স', labelEn: 'Requests', icon: Inbox, testId: 'nav-requests' },
-      { href: '/sessions', labelBn: 'ক্লাস শিডিউল', labelEn: 'Schedule', icon: Calendar, testId: 'nav-sessions' },
-      { href: '/learning', labelBn: 'টিচিং ও অ্যাসাইনমেন্ট', labelEn: 'Teaching', icon: BookOpen, testId: 'nav-learning' },
-      { href: '/payments', labelBn: 'আয় ও উত্তোলন', labelEn: 'Earnings', icon: CreditCard, testId: 'nav-payments' },
-      { href: '/notifications', labelBn: 'বিজ্ঞপ্তি', labelEn: 'Alerts', icon: MessageSquare, testId: 'nav-notifications' },
-      { href: '/profile', labelBn: 'সনদ ও প্রোফাইল', labelEn: 'Profile', icon: User, testId: 'nav-profile' },
-    ];
-  }
-
-  if (role === 'admin' || role === 'super_admin' || role === 'support_agent' || role === 'compliance_reviewer') {
-    return [
-      { href: '/admin', labelBn: 'কন্ট্রোল সেন্টার', labelEn: 'Control Center', icon: ShieldCheck, testId: 'nav-admin' },
-      { href: '/analytics', labelBn: 'অ্যানালিটিক্স', labelEn: 'Analytics', icon: BarChart3, testId: 'nav-analytics' },
-      { href: '/admin?tab=tutors', labelBn: 'শিক্ষক যাচাই', labelEn: 'Tutor Verification', icon: Search, testId: 'nav-tutors' },
-      { href: '/admin?tab=reconciliation', labelBn: 'লেজার রিকনসিলিয়েশন', labelEn: 'Reconciliation', icon: CreditCard, testId: 'nav-reconciliation' },
-      { href: '/admin?tab=users', labelBn: 'ইউজার ম্যানেজার', labelEn: 'User Manager', icon: Users, testId: 'nav-users' },
-      { href: '/admin?tab=audit', labelBn: 'অডিট লগ', labelEn: 'Audit Logs', icon: FileText, testId: 'nav-audit' },
-      { href: '/admin?tab=settings', labelBn: 'প্ল্যাটফর্ম সেটিংস', labelEn: 'Settings', icon: UserCog, testId: 'nav-settings' },
-    ];
-  }
-
-  return [
-    { href: '/tutors', labelBn: 'শিক্ষক খুঁজুন', labelEn: 'Find tutors', icon: Search, testId: 'nav-tutors' },
-    { href: '/login', labelBn: 'লগইন', labelEn: 'Login', icon: UserCog, testId: 'nav-login' },
-  ];
-}
-
-interface RoleConfig {
-  badgeBn: string;
-  badgeEn: string;
-  badgeClasses: string;
-  portalTitleBn: string;
-  portalTitleEn: string;
-  widget?: {
-    titleBn: string;
-    titleEn: string;
-    descBn: string;
-    descEn: string;
-    icon: React.ComponentType<{ className?: string }>;
-    accentColor: string;
-  };
-}
-
-const ROLE_PRESETS: Record<string, RoleConfig> = {
-  guardian: {
-    badgeBn: 'অভিভাবক পোর্টাল',
-    badgeEn: 'Guardian Portal',
-    badgeClasses: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25',
-    portalTitleBn: 'অভিভাবক ড্যাশবোর্ড',
-    portalTitleEn: 'Guardian Portal',
-    widget: {
-      titleBn: 'সুরক্ষিত এসক্রো',
-      titleEn: 'Secure Escrow',
-      descBn: 'ক্লাস যাচাই শেষে পেমেন্ট নিশ্চিতকরণ',
-      descEn: 'Disbursement after session verify',
-      icon: ShieldCheck,
-      accentColor: 'text-amber-500',
-    },
-  },
-  student: {
-    badgeBn: 'শিক্ষার্থী পোর্টাল',
-    badgeEn: 'Student Portal',
-    badgeClasses: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25',
-    portalTitleBn: 'শিক্ষার্থী ড্যাশবোর্ড',
-    portalTitleEn: 'Student Portal',
-    widget: {
-      titleBn: 'স্টাডি স্ট্রিক 🔥',
-      titleEn: 'Study Streak 🔥',
-      descBn: 'ধারাবাহিক লার্নিং ট্র্যাক সক্রিয়',
-      descEn: 'Consistent learning tracker active',
-      icon: Sparkles,
-      accentColor: 'text-emerald-500',
-    },
-  },
-  tutor: {
-    badgeBn: 'শিক্ষক পোর্টাল',
-    badgeEn: 'Tutor Portal',
-    badgeClasses: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/25',
-    portalTitleBn: 'শিক্ষক ড্যাশবোর্ড',
-    portalTitleEn: 'Tutor Portal',
-    widget: {
-      titleBn: 'টিচিং স্ট্যাটাস',
-      titleEn: 'Teaching Status',
-      descBn: '🟢 নতুন শিক্ষার্থী গ্রহণে সক্রিয়',
-      descEn: '🟢 Open for new bookings',
-      icon: CheckCircle2,
-      accentColor: 'text-teal-500',
-    },
-  },
-  admin: {
-    badgeBn: 'সুপার অ্যাডমিন',
-    badgeEn: 'Super Admin',
-    badgeClasses: 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/25',
-    portalTitleBn: 'অ্যাডমিন কনসোল',
-    portalTitleEn: 'Admin Operations',
-    widget: {
-      titleBn: 'সিস্টেম স্ট্যাটাস',
-      titleEn: 'System Health',
-      descBn: '⚡ ৯৯.৯৯% আপটাইম ও নিরাপদ',
-      descEn: '⚡ 99.99% uptime & secure',
-      icon: ShieldCheck,
-      accentColor: 'text-violet-500',
-    },
-  },
-};
+export type { NavItem, RoleConfig };
+export { navForRole, ROLE_PRESETS };
 
 export interface DashboardShellProps {
   children: React.ReactNode;
@@ -237,9 +67,7 @@ export function DashboardShell({
   }
 
   // User display metadata
-  const userInitials = (authUser?.displayName ?? authUser?.phone ?? 'U')
-    .slice(0, 2)
-    .toUpperCase();
+  const userInitials = (authUser?.displayName ?? authUser?.phone ?? 'U').slice(0, 2).toUpperCase();
 
   return (
     <div
@@ -264,7 +92,10 @@ export function DashboardShell({
             </div>
             <div className="flex flex-col">
               <span className="font-serif text-lg font-bold tracking-tight text-foreground leading-none">
-                {isBn ? 'অগ্রণী' : 'Ogroni'}<span className="text-primary font-sans font-extrabold text-sm ml-0.5">{isBn ? 'এডু' : 'Edu'}</span>
+                {isBn ? 'অগ্রণী' : 'Ogroni'}
+                <span className="text-primary font-sans font-extrabold text-sm ml-0.5">
+                  {isBn ? 'এডু' : 'Edu'}
+                </span>
               </span>
               <span className="text-[10px] text-muted-foreground font-medium mt-0.5">
                 {isBn ? 'স্মার্ট লার্নিং প্ল্যাটফর্ম' : 'Smart Learning Platform'}
@@ -274,7 +105,7 @@ export function DashboardShell({
           <span
             className={cn(
               'px-2 py-0.5 text-[10px] font-bold rounded-full border',
-              rolePreset.badgeClasses
+              rolePreset.badgeClasses,
             )}
           >
             {isBn ? rolePreset.badgeBn : rolePreset.badgeEn}
@@ -286,7 +117,9 @@ export function DashboardShell({
           <div className="px-3 pt-3.5 pb-1">
             <div className="rounded-xl border border-border/80 bg-surface/75 p-2.5 shadow-2xs">
               <div className="flex items-center gap-2">
-                <rolePreset.widget.icon className={cn('h-4 w-4 shrink-0', rolePreset.widget.accentColor)} />
+                <rolePreset.widget.icon
+                  className={cn('h-4 w-4 shrink-0', rolePreset.widget.accentColor)}
+                />
                 <div className="min-w-0 flex-1">
                   <p className="text-xs font-bold text-foreground truncate">
                     {isBn ? rolePreset.widget.titleBn : rolePreset.widget.titleEn}
@@ -310,7 +143,8 @@ export function DashboardShell({
             <nav className="space-y-1">
               {items.map((item) => {
                 const href = withLocale(item.href, locale);
-                const active = pathname === href || (item.href !== '/dashboard' && pathname?.startsWith(href));
+                const active =
+                  pathname === href || (item.href !== '/dashboard' && pathname?.startsWith(href));
                 const Icon = item.icon;
 
                 return (
@@ -323,14 +157,16 @@ export function DashboardShell({
                       'group flex items-center justify-between rounded-2xl px-3 py-2.5 text-xs font-semibold transition-all duration-150',
                       active
                         ? 'bg-primary text-primary-foreground shadow-xs shadow-primary/20'
-                        : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground'
+                        : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground',
                     )}
                   >
                     <div className="flex items-center gap-2.5 truncate">
                       <Icon
                         className={cn(
                           'h-4 w-4 shrink-0 transition-transform group-hover:scale-110',
-                          active ? 'text-primary-foreground' : 'text-muted-foreground group-hover:text-primary'
+                          active
+                            ? 'text-primary-foreground'
+                            : 'text-muted-foreground group-hover:text-primary',
                         )}
                       />
                       <span className="truncate">{isBn ? item.labelBn : item.labelEn}</span>
@@ -350,20 +186,34 @@ export function DashboardShell({
               locale={locale}
               title={
                 roleKey === 'tutor'
-                  ? (isBn ? 'টিচিং প্রোফাইল বুস্ট' : 'Boost Tutor Profile')
+                  ? isBn
+                    ? 'টিচিং প্রোফাইল বুস্ট'
+                    : 'Boost Tutor Profile'
                   : roleKey === 'guardian'
-                    ? (isBn ? 'এসক্রো নিরাপত্তা পাস' : 'Parent Escrow Pass')
-                    : (isBn ? 'মোবাইল অ্যাপ নামিয়ে নিন' : 'Download Mobile App')
+                    ? isBn
+                      ? 'এসক্রো নিরাপত্তা পাস'
+                      : 'Parent Escrow Pass'
+                    : isBn
+                      ? 'মোবাইল অ্যাপ নামিয়ে নিন'
+                      : 'Download Mobile App'
               }
               subtitle={
                 roleKey === 'tutor'
-                  ? (isBn ? 'অনুমোদিত শিক্ষক ব্যাজ পান' : 'Get verified badge & more students')
-                  : (isBn ? 'যেকোনো সময় লাইভ ক্লাস ও নোট' : 'Get easy in another way')
+                  ? isBn
+                    ? 'অনুমোদিত শিক্ষক ব্যাজ পান'
+                    : 'Get verified badge & more students'
+                  : isBn
+                    ? 'যেকোনো সময় লাইভ ক্লাস ও নোট'
+                    : 'Get easy in another way'
               }
               actionLabel={
                 roleKey === 'tutor'
-                  ? (isBn ? 'যাচাই করুন' : 'Verify Now')
-                  : (isBn ? 'ডাউনলোড' : 'Download')
+                  ? isBn
+                    ? 'যাচাই করুন'
+                    : 'Verify Now'
+                  : isBn
+                    ? 'ডাউনলোড'
+                    : 'Download'
               }
               actionHref={roleKey === 'tutor' ? '/profile' : '/tutors'}
             />
@@ -385,7 +235,9 @@ export function DashboardShell({
                   {authUser?.displayName || authUser?.phone || (isBn ? 'ব্যবহারকারী' : 'User')}
                 </p>
                 <p className="text-[10px] text-muted-foreground truncate">
-                  {authUser?.email || authUser?.phone || (isBn ? 'সক্রিয় প্রোফাইল' : 'Active Account')}
+                  {authUser?.email ||
+                    authUser?.phone ||
+                    (isBn ? 'সক্রিয় প্রোফাইল' : 'Active Account')}
                 </p>
               </div>
             </Link>
@@ -423,7 +275,10 @@ export function DashboardShell({
                   <GraduationCap className="h-5 w-5" />
                 </div>
                 <span className="font-serif text-lg font-bold">
-                  {isBn ? 'অগ্রণী' : 'Ogroni'}<span className="text-primary font-sans text-sm ml-0.5">{isBn ? 'এডু' : 'Edu'}</span>
+                  {isBn ? 'অগ্রণী' : 'Ogroni'}
+                  <span className="text-primary font-sans text-sm ml-0.5">
+                    {isBn ? 'এডু' : 'Edu'}
+                  </span>
                 </span>
               </div>
               <button
@@ -439,7 +294,8 @@ export function DashboardShell({
             <div className="flex-1 overflow-y-auto py-4 space-y-1">
               {items.map((item) => {
                 const href = withLocale(item.href, locale);
-                const active = pathname === href || (item.href !== '/dashboard' && pathname?.startsWith(href));
+                const active =
+                  pathname === href || (item.href !== '/dashboard' && pathname?.startsWith(href));
                 const Icon = item.icon;
 
                 return (
@@ -451,7 +307,7 @@ export function DashboardShell({
                       'flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors',
                       active
                         ? 'bg-primary text-primary-foreground shadow-xs'
-                        : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground'
+                        : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground',
                     )}
                   >
                     <Icon className="h-4 w-4 shrink-0" />
@@ -462,7 +318,12 @@ export function DashboardShell({
             </div>
 
             <div className="pt-3 border-t border-border flex items-center justify-between">
-              <span className={cn('px-2 py-0.5 text-[10px] font-bold rounded-full border', rolePreset.badgeClasses)}>
+              <span
+                className={cn(
+                  'px-2 py-0.5 text-[10px] font-bold rounded-full border',
+                  rolePreset.badgeClasses,
+                )}
+              >
                 {isBn ? rolePreset.badgeBn : rolePreset.badgeEn}
               </span>
               <button
@@ -500,7 +361,9 @@ export function DashboardShell({
               <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
               <input
                 type="text"
-                placeholder={isBn ? 'শিক্ষক, বিষয় বা সেশন খুঁজুন...' : 'Search tutors, subjects, sessions...'}
+                placeholder={
+                  isBn ? 'শিক্ষক, বিষয় বা সেশন খুঁজুন...' : 'Search tutors, subjects, sessions...'
+                }
                 className="w-full h-9 pl-9 pr-12 rounded-full border border-border/80 bg-surface/75 hover:bg-surface focus:bg-background text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all"
                 onKeyDown={(e) => {
                   if (e.key === 'Enter') {
@@ -558,7 +421,10 @@ export function DashboardShell({
         </header>
 
         {/* Main Content Body */}
-        <main id="main-content" className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6">
+        <main
+          id="main-content"
+          className="flex-1 w-full max-w-7xl mx-auto p-4 sm:p-6 lg:p-8 space-y-6"
+        >
           {subtitle && (
             <div className="mb-2">
               <p className="text-xs sm:text-sm text-muted-foreground font-medium">{subtitle}</p>
@@ -575,10 +441,14 @@ export function DashboardShell({
         aria-label={isBn ? 'মোবাইল নেভিগেশন' : 'Mobile navigation'}
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md lg:hidden shadow-lg"
       >
-        <div className="grid" style={{ gridTemplateColumns: `repeat(${Math.min(items.length, 5)}, 1fr)` }}>
+        <div
+          className="grid"
+          style={{ gridTemplateColumns: `repeat(${Math.min(items.length, 5)}, 1fr)` }}
+        >
           {items.slice(0, 5).map((item) => {
             const href = withLocale(item.href, locale);
-            const active = pathname === href || (item.href !== '/dashboard' && pathname?.startsWith(href));
+            const active =
+              pathname === href || (item.href !== '/dashboard' && pathname?.startsWith(href));
             const Icon = item.icon;
 
             return (
@@ -589,7 +459,7 @@ export function DashboardShell({
                 aria-current={active ? 'page' : undefined}
                 className={cn(
                   'flex flex-col items-center gap-1 px-1 py-2 text-[10px] font-medium transition-colors',
-                  active ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+                  active ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground',
                 )}
               >
                 <Icon className={cn('h-4 w-4', active && 'stroke-[2.5px]')} />

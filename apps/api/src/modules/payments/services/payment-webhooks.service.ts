@@ -15,7 +15,7 @@ import {
   PaymentTransactionEntity,
 } from '../entities';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
-import { GuardianStudentLinkEntity } from '../../guardians/entities/guardian-student-link.entity';
+import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { OutboxEventEntity } from '../../bookings/entities/outbox-event.entity';
 import { LedgerService } from '../ledger.service';
 import { PaymentAdapterFactory } from '../adapters/adapter.factory';
@@ -40,8 +40,7 @@ export class PaymentWebhooksService {
     private readonly orderRepo: Repository<PaymentOrderEntity>,
     @InjectRepository(PaymentTransactionEntity)
     private readonly transactionRepo: Repository<PaymentTransactionEntity>,
-    @InjectRepository(GuardianStudentLinkEntity)
-    private readonly guardianLinkRepo: Repository<GuardianStudentLinkEntity>,
+    private readonly guardianAccess: GuardianAccessService,
     @Inject(LedgerService)
     private readonly ledgerService: LedgerService,
     @Inject(PaymentAdapterFactory)
@@ -283,13 +282,11 @@ export class PaymentWebhooksService {
         );
 
       // Linked guardians
-      const guardians = await this.guardianLinkRepo.find({
-        where: { studentUserId: order.payerUserId, status: 'active' },
-      });
-      for (const g of guardians) {
+      const guardianIds = await this.guardianAccess.findActiveGuardianIds(order.payerUserId);
+      for (const guardianId of guardianIds) {
         await this.notificationService
           .dispatch({
-            userId: g.guardianUserId,
+            userId: guardianId,
             recipientRole: 'guardian',
             eventType: 'payment.succeeded',
             payload: {

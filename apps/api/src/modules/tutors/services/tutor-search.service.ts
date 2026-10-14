@@ -9,11 +9,8 @@ import {
   TutorPublicProfileDto,
   SearchTutorsQueryDto,
   SearchTutorsResponseDto,
+  resolveTutorSearchPageSize,
 } from '../dto';
-import {
-  TUTOR_SEARCH_DEFAULT_LIMIT,
-  TUTOR_SEARCH_MAX_LIMIT,
-} from '../constants/tutor.constants';
 
 /**
  * Public discovery: sanitized public profiles + multi-dimensional search.
@@ -284,10 +281,7 @@ export class TutorSearchService {
       }
     });
     const page = Math.max(1, query.page || 1);
-    const limit = Math.min(
-      TUTOR_SEARCH_MAX_LIMIT,
-      Math.max(1, query.limit || TUTOR_SEARCH_DEFAULT_LIMIT),
-    );
+    const limit = resolveTutorSearchPageSize(query);
     const total = scoredItems.length;
     const totalPages = Math.ceil(total / limit) || 1;
     const paginatedData = scoredItems.slice((page - 1) * limit, page * limit);

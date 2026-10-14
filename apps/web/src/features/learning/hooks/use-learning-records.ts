@@ -1,13 +1,10 @@
 'use client';
 
 import React from 'react';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
 import { parseItem, parseOffsetCollection } from '@/lib/api/parse';
 import type { Locale } from '@/lib/i18n';
-import {
-  useGetBookingRequestsQuery,
-  type BookingRequestItem,
-} from '@/store/services/bookings-api';
+import { useGetBookingRequestsQuery, type BookingRequestItem } from '@/store/services/bookings-api';
 import {
   useCreateAssignmentMutation,
   useGenerateProgressReportMutation,
@@ -113,7 +110,7 @@ export function useLearningRecords(locale: Locale): LearningRecordsState {
 
   const fail = (err: unknown): never => {
     setFieldErrors(learningFieldErrors(err));
-    throw new Error(normalizeApiError(err as never, locale).message);
+    throw new Error(normalizeUnknownError(err, locale).message);
   };
 
   const runMutation = async (fn: () => Promise<unknown>): Promise<void> => {

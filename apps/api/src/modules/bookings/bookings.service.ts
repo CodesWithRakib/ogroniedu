@@ -26,6 +26,7 @@ import {
   WithdrawBookingRequestDto,
 } from './dto';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { GuardianAccessService } from '../guardians/guardian-access.service';
 
 @Injectable()
 export class BookingsService {
@@ -51,6 +52,8 @@ export class BookingsService {
     @Optional()
     @Inject(NotificationService)
     private readonly notificationService?: NotificationService,
+    @Inject(GuardianAccessService)
+    private readonly guardianAccess: GuardianAccessService,
   ) {}
 
   /**
@@ -207,10 +210,7 @@ export class BookingsService {
    */
   async getRequests(user: AuthenticatedUser): Promise<BookingEntity[]> {
     // Collect all student IDs user can access as guardian
-    const guardianLinks = await this.linkRepo.find({
-      where: { guardianUserId: user.id, status: 'active' },
-    });
-    const childIds = guardianLinks.map((l) => l.studentUserId);
+    const childIds = await this.guardianAccess.findActiveStudentIds(user.id);
 
     const allAllowedStudentIds = [user.id, ...childIds];
 
@@ -247,37 +247,13 @@ export class BookingsService {
       throw new NotFoundException(`Booking request not found: ${requestId}`);
     }
 
-    // Ownership check
-    const isDirectParticipant =
-      booking.requesterUserId === user.id ||
-      booking.studentUserId === user.id ||
-      booking.tutorUserId === user.id;
-
-    if (isDirectParticipant) {
-      return booking;
-    }
-
-    // Allow compliance admins
-    if (user.roles?.includes('admin') || user.roles?.includes('super_admin')) {
-      return booking;
-    }
-
-    // Allow active guardian of student
-    const activeLink = await this.linkRepo.findOne({
-      where: {
-        guardianUserId: user.id,
-        studentUserId: booking.studentUserId,
-        status: 'active',
-      },
-    });
-
-    if (activeLink) {
-      return booking;
-    }
-
-    throw new ForbiddenException(
+    // Ownership guard: participant, admin, or active guardian (single rule home)
+    await this.guardianAccess.assertCanAccessBooking(
+      user,
+      booking,
       'Access denied: You are not authorized to view this booking request.',
     );
+    return booking;
   }
 
   /**

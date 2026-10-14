@@ -23,6 +23,7 @@ import {
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { ADMIN_ROLES } from '../../common/auth/role.utils';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 
 @Controller('api/v1/auth')
@@ -156,7 +157,7 @@ export class AuthController {
 
   @Get('admin-only')
   @UseGuards(AuthGuard, RolesGuard)
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async adminOnlyCheck(@CurrentUser() user: AuthenticatedUser) {
     return {
       message: 'Access granted to privileged admin endpoint',

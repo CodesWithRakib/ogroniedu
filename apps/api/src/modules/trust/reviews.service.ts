@@ -15,6 +15,7 @@ import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { AuditLogEntity } from '../audit/entities/audit-log.entity';
 import { NotificationService } from '../notifications/notification.service';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { isAdminRole } from '../../common/auth/role.utils';
 import { CreateReviewDto, TutorReplyDto, ModerateReviewDto } from './dto';
 
 @Injectable()
@@ -234,7 +235,7 @@ export class ReviewsService {
     reviewId: string,
     dto: ModerateReviewDto,
   ): Promise<ReviewEntity> {
-    if (!user.roles?.includes('admin')) {
+    if (!isAdminRole(user)) {
       throw new ForbiddenException('Admin privileges required to moderate reviews');
     }
 

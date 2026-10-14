@@ -24,10 +24,13 @@ import { UpdateSupportTicketDto } from './dto/update-support-ticket.dto';
 import { QuerySupportTicketsDto } from './dto/query-support-tickets.dto';
 import { AuditService } from '../audit/audit.service';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import {
+  SUPPORT_TICKET_DAILY_CAP_PER_EMAIL,
+  SUPPORT_TICKET_WINDOW_MS,
+} from './constants/support-ticket-limits.constants';
 
-/** Anti-spam: max tickets per email address per rolling 24h window. */
-export const SUPPORT_TICKET_DAILY_CAP_PER_EMAIL = 5;
-const DAY_MS = 24 * 60 * 60 * 1000;
+export { SUPPORT_TICKET_DAILY_CAP_PER_EMAIL } from './constants/support-ticket-limits.constants';
+const DAY_MS = SUPPORT_TICKET_WINDOW_MS;
 
 /**
  * Public contact-ticket lifecycle: guest/authenticated submission with

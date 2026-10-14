@@ -367,7 +367,7 @@
   - Grading & Score Revision Auditing (`POST /api/v1/learning/submissions/:id/grade`): tutors review submissions with max score validation; revising an already graded score strictly requires a `revisionReason` and logs previous score, new score, actor ID, and reason in `audit_logs`.
   - Auditable Progress Reports (`POST /api/v1/learning/progress-reports`): computes observable metrics (attendance %, assignments completed, average score) directly from database records, preventing unsupported mastery claims.
   - Guardian oversight: only active linked guardians (`guardian_student_links`) can access student learning records and progress reports; unlinked/revoked users receive `403 Forbidden`.
-  - Built frontend UI [`LearningManagementView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/features/learning/components/learning-management-view.tsx) and page at `apps/web/src/app/[locale]/learning/page.tsx` with attendance cards, homework submission modal, grading modal, and progress reports dashboard.
+  - Built frontend UI [`LearningManagementView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/features/learning/components/learningManagementView.tsx) and page at `apps/web/src/app/[locale]/learning/page.tsx` with attendance cards, homework submission modal, grading modal, and progress reports dashboard.
   - Added bilingual namespace `"learning"` (36 keys) to `messages/en.json` and `messages/bn.json` with 100% key parity and Bengali digit localization.
   - Added 34 new tests across `learning.service.spec.ts`, `learning.controller.spec.ts`, `learning.spec.ts`, and `migration.spec.ts`.
   - Expanded monorepo test suite from 206 to **240 passing tests, 0 failures, 0 skipped**.

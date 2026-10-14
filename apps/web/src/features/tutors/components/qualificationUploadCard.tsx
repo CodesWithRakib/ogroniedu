@@ -3,7 +3,7 @@
 import React from 'react';
 import { Card, CardHeader, CardTitle, CardContent, Button, Input } from '@/components/ui';
 import { type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeUnknownError } from '@/lib/api-error';
 import { useUploadEvidenceMutation, type EvidencePurpose } from '@/store/services/files-api';
 import { useAddTutorQualificationMutation } from '@/store/services/tutors-api';
 
@@ -23,7 +23,7 @@ function fileToBase64(file: File): Promise<string> {
     const reader = new FileReader();
     reader.onload = () => {
       const result = String(reader.result ?? '');
-      resolve(result.includes(',') ? result.split(',').pop() ?? '' : result);
+      resolve(result.includes(',') ? (result.split(',').pop() ?? '') : result);
     };
     reader.onerror = () => reject(new Error('Could not read file'));
     reader.readAsDataURL(file);
@@ -73,9 +73,7 @@ export function QualificationUploadCard({
       return;
     }
     if (file.size < 1 || file.size > MAX_BYTES) {
-      setFormError(
-        isBn ? 'ফাইলের আকার সর্বোচ্চ ১০MB হতে হবে।' : 'File must be at most 10MB.',
-      );
+      setFormError(isBn ? 'ফাইলের আকার সর্বোচ্চ ১০MB হতে হবে।' : 'File must be at most 10MB.');
       return;
     }
     if (title.trim().length < 2) {
@@ -107,7 +105,7 @@ export function QualificationUploadCard({
       setFile(null);
       onUploaded?.();
     } catch (err) {
-      setFormError(normalizeApiError(err as never, locale).message);
+      setFormError(normalizeUnknownError(err, locale).message);
     }
   }
 
@@ -121,12 +119,20 @@ export function QualificationUploadCard({
       <CardContent>
         <form onSubmit={handleSubmit} className="space-y-3" data-testid="qualification-upload-form">
           {formError && (
-            <p role="alert" className="text-xs text-rose-600" data-testid="qualification-upload-error">
+            <p
+              role="alert"
+              className="text-xs text-rose-600"
+              data-testid="qualification-upload-error"
+            >
               {formError}
             </p>
           )}
           {saved && (
-            <p role="status" className="text-xs text-emerald-600" data-testid="qualification-upload-saved">
+            <p
+              role="status"
+              className="text-xs text-emerald-600"
+              data-testid="qualification-upload-saved"
+            >
               {saved}
             </p>
           )}
@@ -173,7 +179,9 @@ export function QualificationUploadCard({
           </div>
           <div className="space-y-1">
             <label htmlFor="qual-file" className="text-xs font-medium">
-              {isBn ? 'ফাইল (PDF/JPEG/PNG/WEBP, সর্বোচ্চ ১০MB)' : 'File (PDF/JPEG/PNG/WEBP, max 10MB)'}
+              {isBn
+                ? 'ফাইল (PDF/JPEG/PNG/WEBP, সর্বোচ্চ ১০MB)'
+                : 'File (PDF/JPEG/PNG/WEBP, max 10MB)'}
             </label>
             <input
               id="qual-file"

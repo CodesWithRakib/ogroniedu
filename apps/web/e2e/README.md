@@ -26,6 +26,12 @@ password `OgroniDev#2026`:
 - student: `student.demo@ogroniedu.com`
 - tutor: `tutor.demo@ogroniedu.com`
 - guardian: `guardian.demo@ogroniedu.com`
+- admin (super_admin): `admin.demo@ogroniedu.com`
+
+`admin.console.spec.ts` additionally needs `E2E_ADMIN_EMAIL` /
+`E2E_ADMIN_PASSWORD`; it registers disposable student/tutor accounts per run
+via the real API for setup (all assertions stay browser-visible) and drives
+the verification queue plus suspend/reactivate entirely through the UI.
 
 Smoke (`smoke.public.spec.ts`) and guard (`auth.guards.spec.ts`) specs need
 no credentials. The contact-form smoke proves backend wiring: it passes on

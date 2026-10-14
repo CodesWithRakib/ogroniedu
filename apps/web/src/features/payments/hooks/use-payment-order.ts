@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { getDictionary, type Locale } from '@/lib/i18n';
-import { normalizeApiError, newIdempotencyKey } from '@/lib/api-error';
+import { normalizeApiError, normalizeUnknownError, newIdempotencyKey } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
 import { useGetBookingRequestsQuery } from '@/store/services/bookings-api';
 import {
@@ -30,7 +30,9 @@ export function usePaymentOrder(locale: Locale) {
   const [createOrder, { isLoading: creating }] = useCreatePaymentOrderMutation();
   const [fetchReceipt] = useLazyGetPaymentReceiptQuery();
   const [processRefund, { isLoading: refunding }] = useProcessRefundMutation();
-  const canRefund = user?.roles?.some((r) => r === 'admin' || r === 'super_admin' || r === 'guardian');
+  const canRefund = user?.roles?.some(
+    (r) => r === 'admin' || r === 'super_admin' || r === 'guardian',
+  );
 
   React.useEffect(() => {
     if (!bookingId && bookingIds[0]) setBookingId(bookingIds[0]);
@@ -65,7 +67,7 @@ export function usePaymentOrder(locale: Locale) {
         createdAt: new Date().toISOString(),
       });
     } catch (err) {
-      setFormError(normalizeApiError(err as never, locale).message);
+      setFormError(normalizeUnknownError(err, locale).message);
     }
   }
 
@@ -75,9 +77,11 @@ export function usePaymentOrder(locale: Locale) {
     // Sandbox: the provider confirms via signed server webhook. The
     // receipt endpoint only succeeds once that webhook has been
     // processed — we never fabricate a receipt locally.
-    const receiptRes = await fetchReceipt(order.id).unwrap().catch((err: unknown) => {
-      throw new Error(normalizeApiError(err as never, locale).message);
-    });
+    const receiptRes = await fetchReceipt(order.id)
+      .unwrap()
+      .catch((err: unknown) => {
+        throw new Error(normalizeUnknownError(err, locale).message);
+      });
     const receipt = receiptRes.data;
     if (receipt.status !== 'succeeded') {
       throw new Error(
@@ -98,7 +102,7 @@ export function usePaymentOrder(locale: Locale) {
         reason: 'customer_request_refund',
       }).unwrap();
     } catch (err) {
-      setFormError(normalizeApiError(err as never, locale).message);
+      setFormError(normalizeUnknownError(err, locale).message);
     }
   }
 

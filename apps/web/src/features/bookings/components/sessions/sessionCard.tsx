@@ -11,6 +11,7 @@ import {
   CardFooter,
 } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { formatWeekdayDate, formatTime } from '@/lib/format';
 import type { CalendarSessionItem } from '../../types/session.types';
 import { SessionStatusBadge } from './sessionStatusBadge';
 
@@ -27,17 +28,8 @@ export function SessionCard({
   onCancelClick: (session: CalendarSessionItem) => void;
 }) {
   const dict = getDictionary(locale);
-  const startDate = new Date(session.startsAt);
-  const formattedDate = startDate.toLocaleDateString(locale === 'bn' ? 'bn-BD' : 'en-US', {
-    weekday: 'short',
-    month: 'short',
-    day: 'numeric',
-    year: 'numeric',
-  });
-  const formattedTime = startDate.toLocaleTimeString(locale === 'bn' ? 'bn-BD' : 'en-US', {
-    hour: '2-digit',
-    minute: '2-digit',
-  });
+  const formattedDate = formatWeekdayDate(session.startsAt, locale);
+  const formattedTime = formatTime(session.startsAt, locale);
 
   return (
     <Card

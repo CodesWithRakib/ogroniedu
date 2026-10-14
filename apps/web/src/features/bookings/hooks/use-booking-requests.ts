@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
 import {
   useGetBookingRequestsQuery,
@@ -27,7 +27,7 @@ export function useBookingRequests(locale: Locale) {
       await withdraw({ id }).unwrap();
       refetch();
     } catch (err) {
-      setActionError(normalizeApiError(err as never, locale).message);
+      setActionError(normalizeUnknownError(err, locale).message);
     }
   }
 
@@ -37,7 +37,7 @@ export function useBookingRequests(locale: Locale) {
       await respond({ id, action }).unwrap();
       refetch();
     } catch (err) {
-      setActionError(normalizeApiError(err as never, locale).message);
+      setActionError(normalizeUnknownError(err, locale).message);
     }
   }
 

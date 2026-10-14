@@ -1,6 +1,7 @@
 'use client';
 
-import { normalizeApiError } from '@/lib/api-error';
+import React from 'react';
+import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
 import type { Locale } from '@/lib/i18n';
 import {
   useGetAdminDashboardQuery,
@@ -18,12 +19,16 @@ import {
   useQueryAuditLogsQuery,
   useListSupportTicketsQuery,
   useUpdateSupportTicketMutation,
+  useGetPendingTutorsQuery,
+  useReviewTutorMutation,
+  type TutorReviewDecision,
 } from '@/store/services/admin-api';
 import { EMPTY_METRICS, type AdminDashboardMetrics } from '../types/admin.types';
 import {
   mapAdminBookings,
   mapAdminUsers,
   mapAuditLogs,
+  mapPendingTutors,
   mapSupportTickets,
 } from '../utils/admin-mappers';
 
@@ -33,13 +38,25 @@ import {
  */
 export function useAdminDashboard(locale: Locale) {
   const dashboard = useGetAdminDashboardQuery();
-  const usersQuery = useListAdminUsersQuery({ limit: 50 });
+  const [userSearch, setUserSearch] = React.useState('');
+  const [userStatus, setUserStatus] = React.useState<'all' | 'active' | 'suspended'>('all');
+  const [debouncedSearch, setDebouncedSearch] = React.useState('');
+  React.useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(userSearch.trim()), 400);
+    return () => clearTimeout(timer);
+  }, [userSearch]);
+  const usersQuery = useListAdminUsersQuery({
+    limit: 50,
+    search: debouncedSearch || undefined,
+    status: userStatus === 'all' ? undefined : userStatus,
+  });
   const bookingsQuery = useListAdminBookingsQuery({ limit: 50 });
   const reconciliation = useGetAdminReconciliationQuery();
   const settings = useGetSystemSettingsQuery();
   const flags = useGetFeatureFlagsQuery();
   const auditLogs = useQueryAuditLogsQuery({ limit: 50 });
   const ticketsQuery = useListSupportTicketsQuery({ limit: 50 });
+  const pendingTutorsQuery = useGetPendingTutorsQuery();
   const [suspendUser] = useSuspendUserMutation();
   const [reactivateUser] = useReactivateUserMutation();
   const [updateRoles] = useUpdateUserRolesMutation();
@@ -47,6 +64,7 @@ export function useAdminDashboard(locale: Locale) {
   const [updateFlag] = useUpdateFeatureFlagMutation();
   const [startImpersonation] = useStartImpersonationMutation();
   const [updateTicket] = useUpdateSupportTicketMutation();
+  const [reviewTutor] = useReviewTutorMutation();
 
   const loading = dashboard.isLoading || usersQuery.isLoading || bookingsQuery.isLoading;
   const queryError = dashboard.isError
@@ -62,6 +80,7 @@ export function useAdminDashboard(locale: Locale) {
   const bookings = mapAdminBookings((bookingsQuery.data?.data ?? []) as unknown[]);
   const logs = mapAuditLogs((auditLogs.data?.data ?? []) as unknown[]);
   const tickets = mapSupportTickets((ticketsQuery.data?.data ?? []) as unknown[]);
+  const pendingTutors = mapPendingTutors((pendingTutorsQuery.data?.data ?? []) as unknown[]);
 
   const wrap =
     <A extends unknown[]>(fn: (...a: A) => Promise<unknown>) =>
@@ -69,16 +88,26 @@ export function useAdminDashboard(locale: Locale) {
       try {
         await fn(...a);
       } catch (err) {
-        throw new Error(normalizeApiError(err as never, locale).message);
+        throw new Error(normalizeUnknownError(err, locale).message);
       }
     };
 
   return {
     metrics,
     users,
+    userSearch,
+    setUserSearch,
+    userStatus,
+    setUserStatus,
     bookings,
     logs,
     tickets,
+    pendingTutors,
+    pendingTutorsLoading: pendingTutorsQuery.isLoading,
+    pendingTutorsError: pendingTutorsQuery.isError
+      ? normalizeApiError(pendingTutorsQuery.error, locale).message
+      : null,
+    refetchPendingTutors: pendingTutorsQuery.refetch,
     reconciliation: reconciliation.data?.data,
     settings: (settings.data?.data as unknown[] | undefined) ?? [],
     flags: (flags.data?.data as unknown[] | undefined) ?? [],
@@ -118,6 +147,17 @@ export function useAdminDashboard(locale: Locale) {
       ) => {
         await updateTicket({ id, status, resolutionNotes }).unwrap();
         ticketsQuery.refetch();
+      },
+    ),
+    onReviewTutor: wrap(
+      async (input: {
+        tutorId: string;
+        decision: TutorReviewDecision;
+        reasonCode: string;
+        internalNotes?: string;
+      }) => {
+        await reviewTutor(input).unwrap();
+        pendingTutorsQuery.refetch();
       },
     ),
   };

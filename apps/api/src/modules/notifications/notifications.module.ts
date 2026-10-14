@@ -7,7 +7,6 @@ import {
   BookingMessageEntity,
 } from './entities';
 import { BookingEntity } from '../bookings/entities/booking.entity';
-import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-student-link.entity';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { NotificationService } from './notification.service';
 import { OutboxWorkerService } from './outbox-worker.service';
@@ -16,6 +15,7 @@ import { NotificationGateway } from './notification.gateway';
 import { NotificationController } from './notification.controller';
 import { BookingMessagesController } from './booking-messages.controller';
 import { AuditModule } from '../audit/audit.module';
+import { GuardiansModule } from '../guardians/guardians.module';
 
 @Module({
   imports: [
@@ -25,10 +25,10 @@ import { AuditModule } from '../audit/audit.module';
       NotificationPreferenceEntity,
       BookingMessageEntity,
       BookingEntity,
-      GuardianStudentLinkEntity,
       OutboxEventEntity,
     ]),
     AuditModule,
+    GuardiansModule,
   ],
   controllers: [NotificationController, BookingMessagesController],
   providers: [

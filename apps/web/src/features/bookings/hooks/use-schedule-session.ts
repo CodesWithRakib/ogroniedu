@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeUnknownError } from '@/lib/api-error';
 import { useGetBookingRequestsQuery } from '@/store/services/bookings-api';
 import { useScheduleSessionMutation } from '@/store/services/sessions-api';
 import { schedulableBookings } from '../utils/session-mappers';
@@ -32,7 +32,7 @@ export function useScheduleSession(locale: Locale) {
         meetingUrl: input.meetingUrl || undefined,
       }).unwrap();
     } catch (err) {
-      throw new Error(normalizeApiError(err as never, locale).message);
+      throw new Error(normalizeUnknownError(err, locale).message);
     }
   }
 

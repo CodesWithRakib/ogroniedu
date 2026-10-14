@@ -15,10 +15,12 @@ import {
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { ADMIN_ROLES, SUPER_ADMIN_ROLE } from '../../common/auth/role.utils';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 
 import { AdminOperationsService } from './admin-operations.service';
 import { paginated } from '../../common/api-response/api-response';
+import { fromOffsetLimit } from '../../common/pagination/pagination.dto';
 import {
   SuspendUserDto,
   UpdateUserRolesDto,
@@ -42,7 +44,7 @@ export class AdminOperationsController {
    * 1. Operational Dashboard Metrics
    */
   @Get('dashboard')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async getDashboard() {
     const data = await this.adminService.getOperationalDashboard();
     return {
@@ -55,7 +57,7 @@ export class AdminOperationsController {
    * 2. Users Management
    */
   @Get('users')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async listUsers(
     @Query('search') search?: string,
     @Query('role') role?: string,
@@ -64,13 +66,12 @@ export class AdminOperationsController {
     @Query('offset') offset?: number,
   ) {
     const result = await this.adminService.listUsers({ search, role, status, limit, offset });
-    const pageSize = limit ?? 20;
-    const page = pageSize > 0 ? Math.floor((offset ?? 0) / pageSize) + 1 : 1;
+    const { page, pageSize } = fromOffsetLimit({ offset, limit });
     return paginated(result.users, { page, pageSize, totalItems: result.total });
   }
 
   @Get('users/:id/dossier')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async getUserDossier(@Param('id', ParseUUIDPipe) userId: string) {
     const dossier = await this.adminService.getUserDossier(userId);
     return {
@@ -81,7 +82,7 @@ export class AdminOperationsController {
 
   @Post('users/:id/suspend')
   @HttpCode(HttpStatus.OK)
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async suspendUser(
     @CurrentUser() adminUser: AuthenticatedUser,
     @Param('id', ParseUUIDPipe) targetUserId: string,
@@ -97,7 +98,7 @@ export class AdminOperationsController {
 
   @Post('users/:id/reactivate')
   @HttpCode(HttpStatus.OK)
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async reactivateUser(
     @CurrentUser() adminUser: AuthenticatedUser,
     @Param('id', ParseUUIDPipe) targetUserId: string,
@@ -111,7 +112,7 @@ export class AdminOperationsController {
   }
 
   @Put('users/:id/roles')
-  @Roles('super_admin')
+  @Roles(SUPER_ADMIN_ROLE)
   async updateUserRoles(
     @CurrentUser() superAdmin: AuthenticatedUser,
     @Param('id', ParseUUIDPipe) targetUserId: string,
@@ -129,7 +130,7 @@ export class AdminOperationsController {
    * 3. Bookings Operations & Emergency Intervention
    */
   @Get('bookings')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async listBookings(
     @Query('status') status?: string,
     @Query('studentId') studentId?: string,
@@ -144,14 +145,13 @@ export class AdminOperationsController {
       limit,
       offset,
     });
-    const pageSize = limit ?? 20;
-    const page = pageSize > 0 ? Math.floor((offset ?? 0) / pageSize) + 1 : 1;
+    const { page, pageSize } = fromOffsetLimit({ offset, limit });
     return paginated(result.bookings, { page, pageSize, totalItems: result.total });
   }
 
   @Post('bookings/:id/cancel')
   @HttpCode(HttpStatus.OK)
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async adminCancelBooking(
     @CurrentUser() adminUser: AuthenticatedUser,
     @Param('id', ParseUUIDPipe) bookingId: string,
@@ -170,7 +170,7 @@ export class AdminOperationsController {
    */
   @Post('cases/assign')
   @HttpCode(HttpStatus.OK)
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async assignCase(@CurrentUser() adminUser: AuthenticatedUser, @Body() dto: AssignSupportCaseDto) {
     const result = await this.adminService.assignCase(adminUser, dto);
     return {
@@ -183,7 +183,7 @@ export class AdminOperationsController {
    * 5. Financial Reconciliation Visibility
    */
   @Get('reconciliation')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async getReconciliationOverview(@CurrentUser() adminUser: AuthenticatedUser) {
     const data = await this.adminService.getReconciliationOverview(adminUser);
     return {
@@ -196,7 +196,7 @@ export class AdminOperationsController {
    * 6. System Settings
    */
   @Get('settings')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async getSettings() {
     const data = await this.adminService.getSettings();
     return {
@@ -206,7 +206,7 @@ export class AdminOperationsController {
   }
 
   @Put('settings/:key')
-  @Roles('super_admin')
+  @Roles(SUPER_ADMIN_ROLE)
   async updateSetting(
     @CurrentUser() superAdmin: AuthenticatedUser,
     @Param('key') key: string,
@@ -224,7 +224,7 @@ export class AdminOperationsController {
    * 7. Feature Flags
    */
   @Get('feature-flags')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async getFeatureFlags() {
     const data = await this.adminService.getFeatureFlags();
     return {
@@ -234,7 +234,7 @@ export class AdminOperationsController {
   }
 
   @Put('feature-flags/:key')
-  @Roles('super_admin')
+  @Roles(SUPER_ADMIN_ROLE)
   async updateFeatureFlag(
     @CurrentUser() superAdmin: AuthenticatedUser,
     @Param('key') key: string,
@@ -253,7 +253,7 @@ export class AdminOperationsController {
    */
   @Post('impersonation/start')
   @HttpCode(HttpStatus.OK)
-  @Roles('super_admin')
+  @Roles(SUPER_ADMIN_ROLE)
   async startImpersonation(
     @CurrentUser() superAdmin: AuthenticatedUser,
     @Body() dto: StartImpersonationDto,
@@ -270,14 +270,13 @@ export class AdminOperationsController {
    * 9. Audit Logs Querying with Automated PII Redaction
    */
   @Get('audit-logs')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async queryAuditLogs(
     @CurrentUser() adminUser: AuthenticatedUser,
     @Query() dto: QueryAuditLogsDto,
   ) {
     const result = await this.adminService.queryAuditLogs(adminUser, dto);
-    const pageSize = dto.limit ?? 20;
-    const page = pageSize > 0 ? Math.floor((dto.offset ?? 0) / pageSize) + 1 : 1;
+    const { page, pageSize } = fromOffsetLimit({ offset: dto.offset, limit: dto.limit });
     return paginated(result.logs, { page, pageSize, totalItems: result.total });
   }
 }

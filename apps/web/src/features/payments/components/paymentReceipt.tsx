@@ -3,6 +3,7 @@
 import { CheckCircle2, Printer } from 'lucide-react';
 import { Button, Card, CardHeader, CardTitle, CardContent } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { formatDateTime } from '@/lib/format';
 import type { PaymentReceiptData } from '../types/payment-checkout.types';
 
 interface PaymentReceiptProps {
@@ -48,7 +49,7 @@ export function PaymentReceipt({ receipt, locale, onPrint }: PaymentReceiptProps
         </div>
         <div className="flex justify-between py-1 border-b border-border/40">
           <span className="text-muted-foreground">{p.paidAt}</span>
-          <span>{new Date(receipt.paidAt).toLocaleString()}</span>
+          <span>{formatDateTime(receipt.paidAt, locale)}</span>
         </div>
         <div className="flex justify-between py-2 items-baseline">
           <span className="font-semibold text-slate-900 dark:text-white">{p.totalAmount}</span>

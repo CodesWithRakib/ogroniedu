@@ -18,9 +18,10 @@ export class GetNotificationsQueryDto {
   unreadOnly: boolean = false;
 
   @ApiPropertyOptional({
-    description: 'Pagination limit (1-100, default: 20)',
+    description: 'Pagination limit (1-100, default: 20). DEPRECATED: prefer pageSize (canonical).',
     default: 20,
     example: 20,
+    deprecated: true,
   })
   @IsOptional()
   @Type(() => Number)
@@ -69,4 +70,18 @@ export class GetNotificationsQueryDto {
   @Min(1, { message: 'pageSize must be at least 1' })
   @Max(100, { message: 'pageSize cannot exceed 100' })
   pageSize?: number = 20;
+}
+
+/**
+ * Resolve the effective offset-mode page size: canonical `pageSize`
+ * preferred, legacy `limit` fallback (Phase 23 P1-1). Cursor mode reads
+ * `pageSize` directly.
+ */
+export function resolveNotificationsOffsetLimit(query: {
+  limit?: number;
+  pageSize?: number;
+}): number {
+  const raw = query.pageSize ?? query.limit ?? 20;
+  if (!Number.isFinite(raw)) return 20;
+  return Math.min(100, Math.max(1, Math.floor(raw)));
 }

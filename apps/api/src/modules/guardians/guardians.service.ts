@@ -17,25 +17,10 @@ import { StudentProfileEntity } from '../users/entities/student-profile.entity';
 import { GuardianStudentLinkEntity } from './entities/guardian-student-link.entity';
 import { AuditService } from '../audit/audit.service';
 import { LinkChildRequestDto, RegisterChildDto, VerifyLinkDto, RevokeLinkDto } from './dto';
+import { assertGuardianConsent } from './utils/guardian-consent.util';
+import type { LinkedChildSummary } from './interfaces/linked-child-summary.interface';
 
-export interface LinkedChildSummary {
-  linkId: string;
-  studentId: string;
-  displayName: string;
-  relationshipType: string;
-  status: 'pending' | 'active' | 'rejected' | 'revoked';
-  consentPolicyVersion: string | null;
-  consentRecordedAt: Date | null;
-  isMinor: boolean;
-  studentProfile: {
-    dateOfBirth: string | null;
-    educationLevelId: string | null;
-    curriculumId: string | null;
-    institutionName: string | null;
-    stream: string | null;
-    learningGoals: string | null;
-  } | null;
-}
+export type { LinkedChildSummary } from './interfaces/linked-child-summary.interface';
 
 @Injectable()
 export class GuardiansService {
@@ -76,14 +61,7 @@ export class GuardiansService {
     guardianUserId: string,
     dto: LinkChildRequestDto,
   ): Promise<GuardianStudentLinkEntity> {
-    if (dto.consentPolicyVersion !== GuardiansService.APPROVED_CONSENT_POLICY) {
-      throw new BadRequestException(
-        `Invalid consent policy version. Must be '${GuardiansService.APPROVED_CONSENT_POLICY}'`,
-      );
-    }
-    if (!dto.consentAgreed) {
-      throw new BadRequestException('Explicit guardian consent affirmation is mandatory.');
-    }
+    assertGuardianConsent(dto, GuardiansService.APPROVED_CONSENT_POLICY);
 
     const guardian = await this.userRepository.findOne({ where: { id: guardianUserId } });
     if (!guardian) {
@@ -179,14 +157,7 @@ export class GuardiansService {
   }
 
   async registerChild(guardianUserId: string, dto: RegisterChildDto): Promise<LinkedChildSummary> {
-    if (dto.consentPolicyVersion !== GuardiansService.APPROVED_CONSENT_POLICY) {
-      throw new BadRequestException(
-        `Invalid consent policy version. Must be '${GuardiansService.APPROVED_CONSENT_POLICY}'`,
-      );
-    }
-    if (!dto.consentAgreed) {
-      throw new BadRequestException('Explicit guardian consent affirmation is mandatory.');
-    }
+    assertGuardianConsent(dto, GuardiansService.APPROVED_CONSENT_POLICY);
 
     const guardian = await this.userRepository.findOne({ where: { id: guardianUserId } });
     if (!guardian) {

@@ -17,7 +17,7 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { getDictionary, type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeUnknownError } from '@/lib/api-error';
 import { dashboardPathForRoles, withLocale } from '@/lib/auth';
 import { useAppDispatch } from '@/store';
 import { setCredentials } from '@/store/slices/auth-slice';
@@ -49,7 +49,11 @@ export function RegisterForm({ locale }: { locale: Locale }) {
 
   const isBn = locale === 'bn';
 
-  const roleOptions: { value: RegisterRole; label: string; icon: React.ComponentType<{ className?: string }> }[] = [
+  const roleOptions: {
+    value: RegisterRole;
+    label: string;
+    icon: React.ComponentType<{ className?: string }>;
+  }[] = [
     { value: 'student', label: isBn ? 'শিক্ষার্থী' : 'Student', icon: GraduationCap },
     { value: 'guardian', label: isBn ? 'অভিভাবক' : 'Guardian', icon: ShieldCheck },
     { value: 'tutor', label: isBn ? 'শিক্ষক' : 'Tutor', icon: BookOpen },
@@ -59,7 +63,9 @@ export function RegisterForm({ locale }: { locale: Locale }) {
     e.preventDefault();
     setFormError(null);
     if (displayName.trim().length < 2) {
-      setFormError(isBn ? 'সঠিক নাম দিন (কমপক্ষে ২ অক্ষর)।' : 'Enter your full name (at least 2 letters).');
+      setFormError(
+        isBn ? 'সঠিক নাম দিন (কমপক্ষে ২ অক্ষর)।' : 'Enter your full name (at least 2 letters).',
+      );
       return;
     }
     if (!email.trim() && !phone.trim()) {
@@ -70,7 +76,9 @@ export function RegisterForm({ locale }: { locale: Locale }) {
     }
     const pwError = validatePassword(password);
     if (pwError === 'PASSWORD_TOO_SHORT') {
-      setFormError(isBn ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।' : 'Password must be at least 8 characters.');
+      setFormError(
+        isBn ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।' : 'Password must be at least 8 characters.',
+      );
       return;
     }
     if (pwError === 'PASSWORD_WEAK') {
@@ -106,7 +114,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
       );
       router.replace(withLocale(dashboardPathForRoles(res.user.roles, locale), locale));
     } catch (err) {
-      setFormError(normalizeApiError(err as never, locale).message);
+      setFormError(normalizeUnknownError(err, locale).message);
     }
   }
 
@@ -152,10 +160,12 @@ export function RegisterForm({ locale }: { locale: Locale }) {
                     'flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl border text-xs font-bold transition-all shadow-2xs cursor-pointer',
                     active
                       ? 'border-primary bg-primary text-primary-foreground shadow-xs shadow-primary/20 scale-[1.02]'
-                      : 'border-border bg-surface hover:bg-surface-hover text-muted-foreground hover:text-foreground'
+                      : 'border-border bg-surface hover:bg-surface-hover text-muted-foreground hover:text-foreground',
                   )}
                 >
-                  <Icon className={cn('h-4 w-4', active ? 'text-primary-foreground' : 'text-primary')} />
+                  <Icon
+                    className={cn('h-4 w-4', active ? 'text-primary-foreground' : 'text-primary')}
+                  />
                   <span>{opt.label}</span>
                 </button>
               );

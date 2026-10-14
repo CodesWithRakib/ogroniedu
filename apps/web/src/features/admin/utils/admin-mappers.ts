@@ -3,6 +3,9 @@ import type {
   AdminBookingItem,
   AdminSupportTicketItem,
   AdminUserItem,
+  PendingTutorItem,
+  TutorDossierQualification,
+  TutorReviewHistoryEntry,
 } from '../types/admin.types';
 
 type UnknownRecord = Record<string, unknown>;
@@ -72,4 +75,52 @@ export function mapSupportTickets(rows: unknown[]): AdminSupportTicketItem[] {
       createdAt: str(row.createdAt),
     };
   });
+}
+
+export function mapPendingTutors(rows: unknown[]): PendingTutorItem[] {
+  return (rows as UnknownRecord[]).map((p) => ({
+    userId: String(p.userId ?? p.id ?? ''),
+    displayName: str(p.displayName ?? p.email, '—'),
+    email: strOrNull(p.email),
+    phoneE164: strOrNull(p.phoneE164 ?? p.phone),
+    headline: strOrNull(p.headline),
+    verificationStatus: str(p.verificationStatus, 'submitted'),
+    publicationStatus: str(p.publicationStatus, 'draft'),
+    qualificationsCount:
+      typeof p.qualificationsCount === 'number'
+        ? p.qualificationsCount
+        : Array.isArray(p.qualifications)
+          ? p.qualifications.length
+          : 0,
+    submittedAt: str(p.submittedAt ?? p.updatedAt),
+  }));
+}
+
+export function mapDossierQualifications(value: unknown): TutorDossierQualification[] {
+  if (!Array.isArray(value)) return [];
+  return (value as UnknownRecord[])
+    .filter((q) => typeof q === 'object' && q !== null)
+    .map((q) => ({
+      id: String(q.id ?? ''),
+      title: str(q.title),
+      qualificationType: str(q.qualificationType, 'other'),
+      institution: strOrNull(q.institution),
+      reviewStatus: str(q.reviewStatus, 'pending'),
+    }))
+    .filter((q) => q.id);
+}
+
+export function mapReviewHistory(value: unknown): TutorReviewHistoryEntry[] {
+  if (!Array.isArray(value)) return [];
+  return (value as UnknownRecord[])
+    .filter((r) => typeof r === 'object' && r !== null)
+    .map((r) => ({
+      id: String(r.id ?? ''),
+      decision: str(r.decision),
+      reasonCode: strOrNull(r.reasonCode),
+      internalNotes: strOrNull(r.internalNotes),
+      reviewerUserId: strOrNull(r.reviewerUserId),
+      createdAt: str(r.createdAt),
+    }))
+    .filter((r) => r.id);
 }

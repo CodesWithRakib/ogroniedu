@@ -107,8 +107,10 @@ export class SessionsController {
     return {
       success: true,
       message: 'Tutoring session cancelled.',
-      data: result.session,
-      assessment: result.policyAssessment,
+      data: {
+        session: result.session,
+        policyAssessment: result.policyAssessment,
+      },
     };
   }
 

@@ -14,13 +14,14 @@ import {
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { ADMIN_ROLES } from '../../common/auth/role.utils';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { TutorsService } from './tutors.service';
 import { AdminReviewTutorDto, AdminVerifyQualificationDto } from './dto';
 
 @Controller('api/v1/admin/tutors')
 @UseGuards(AuthGuard, RolesGuard)
-@Roles('admin', 'super_admin')
+@Roles(...ADMIN_ROLES)
 export class AdminTutorsController {
   constructor(
     @Inject(TutorsService)

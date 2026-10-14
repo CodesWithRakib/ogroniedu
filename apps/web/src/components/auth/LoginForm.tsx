@@ -3,18 +3,10 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import {
-  Mail,
-  Lock,
-  Eye,
-  EyeOff,
-  ArrowRight,
-  AlertCircle,
-  CheckCircle2,
-} from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
 import { Button, Input } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeUnknownError } from '@/lib/api-error';
 import { dashboardPathForRoles, withLocale } from '@/lib/auth';
 import { useAppDispatch } from '@/store';
 import { setCredentials } from '@/store/slices/auth-slice';
@@ -68,7 +60,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
       );
       router.replace(withLocale(dashboardPathForRoles(res.user.roles, locale), locale));
     } catch (err) {
-      const normalized = normalizeApiError(err as never, locale);
+      const normalized = normalizeUnknownError(err, locale);
       setFormError(normalized.message);
     }
   }
@@ -128,7 +120,9 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
               type="text"
               value={identifier}
               onChange={(e) => setIdentifier(e.target.value)}
-              placeholder={isBn ? '+8801XXXXXXXXX অথবা you@mail.com' : '+8801XXXXXXXXX or you@mail.com'}
+              placeholder={
+                isBn ? '+8801XXXXXXXXX অথবা you@mail.com' : '+8801XXXXXXXXX or you@mail.com'
+              }
               autoComplete="username"
               className="w-full h-11 pl-10 pr-4 rounded-2xl border border-border bg-surface hover:bg-surface-hover focus:bg-background text-xs sm:text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all"
               data-testid="login-identifier-input"

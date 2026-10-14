@@ -20,6 +20,7 @@ import { SessionsController } from './sessions.controller';
 import { AuthModule } from '../auth/auth.module';
 import { AuditModule } from '../audit/audit.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { GuardiansModule } from '../guardians/guardians.module';
 
 @Module({
   imports: [
@@ -38,6 +39,7 @@ import { NotificationsModule } from '../notifications/notifications.module';
     AuthModule,
     AuditModule,
     forwardRef(() => NotificationsModule),
+    GuardiansModule,
   ],
   controllers: [BookingsController, SessionsController],
   providers: [

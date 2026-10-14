@@ -3,7 +3,7 @@
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
 import { type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
 import { useSearchTutorsQuery, type TutorSearchItem } from '@/store/services/tutors-api';
 import { useCreateBookingRequestMutation } from '@/store/services/bookings-api';
@@ -180,7 +180,7 @@ export function TutorsPage({ locale }: { locale: Locale }) {
         preferredDays: (payload.preferredDays ?? []).map((d) => DAY_TO_INDEX[d] ?? 0),
       }).unwrap();
     } catch (err) {
-      throw new Error(normalizeApiError(err as never, locale).message);
+      throw new Error(normalizeUnknownError(err, locale).message);
     }
   }
 

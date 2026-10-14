@@ -2,8 +2,9 @@ import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
-import { GuardianStudentLinkEntity } from '../../guardians/entities/guardian-student-link.entity';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
+import { isAdminRole } from '../../../common/auth/role.utils';
+import { GuardianAccessService } from '../../guardians/guardian-access.service';
 
 /**
  * Ownership / access checks for student learning records: admin bypass,
@@ -14,10 +15,9 @@ import { AuthenticatedUser } from '../../../common/decorators/current-user.decor
 @Injectable()
 export class LearningAccessService {
   constructor(
-    @InjectRepository(GuardianStudentLinkEntity)
-    private readonly guardianLinkRepo: Repository<GuardianStudentLinkEntity>,
     @InjectRepository(BookingEntity)
     private readonly bookingRepo: Repository<BookingEntity>,
+    private readonly guardianAccess: GuardianAccessService,
   ) {}
 
   /**
@@ -28,7 +28,7 @@ export class LearningAccessService {
     studentUserId: string,
     bookingId?: string,
   ): Promise<void> {
-    if (user.roles?.includes('admin')) {
+    if (isAdminRole(user)) {
       return;
     }
 
@@ -36,15 +36,8 @@ export class LearningAccessService {
       return;
     }
 
-    // Check active guardian link
-    const activeLink = await this.guardianLinkRepo.findOne({
-      where: {
-        guardianUserId: user.id,
-        studentUserId,
-        status: 'active',
-      },
-    });
-    if (activeLink) {
+    // Check active guardian link (shared rule home)
+    if (await this.guardianAccess.hasActiveLink(user.id, studentUserId)) {
       return;
     }
 

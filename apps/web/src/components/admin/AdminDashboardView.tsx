@@ -13,6 +13,7 @@ import { AdminSettingsTab } from '@/features/admin/components/tabs/adminSettings
 import { AdminFeatureFlagsTab } from '@/features/admin/components/tabs/adminFeatureFlagsTab';
 import { AdminAuditLogsTab } from '@/features/admin/components/tabs/adminAuditLogsTab';
 import { AdminSupportTab } from '@/features/admin/components/tabs/adminSupportTab';
+import { AdminVerificationTab } from '@/features/admin/components/tabs/adminVerificationTab';
 import { AdminSuspendUserModal } from '@/features/admin/components/modals/adminSuspendUserModal';
 import { AdminRolesModal } from '@/features/admin/components/modals/adminRolesModal';
 import { AdminCancelBookingModal } from '@/features/admin/components/modals/adminCancelBookingModal';
@@ -30,7 +31,9 @@ import type {
   AdminSupportTicketItem,
   AdminSystemSettingItem,
   AdminUserItem,
+  PendingTutorItem,
 } from '@/features/admin/types/admin.types';
+import type { TutorReviewDecision } from '@/store/services/admin-api';
 
 export type {
   AdminAuditLogItem,
@@ -62,6 +65,13 @@ export interface AdminDashboardProps extends AdminActionHandlers {
   initialFeatureFlags?: AdminFeatureFlagItem[];
   initialAuditLogs?: AdminAuditLogItem[];
   initialTickets?: AdminSupportTicketItem[];
+  initialPendingTutors?: PendingTutorItem[];
+  pendingTutorsLoading?: boolean;
+  pendingTutorsError?: string | null;
+  userSearch: string;
+  onUserSearchChange: (value: string) => void;
+  userStatus: 'all' | 'active' | 'suspended';
+  onUserStatusChange: (value: 'all' | 'active' | 'suspended') => void;
   isLoading?: boolean;
   queryError?: string | null;
 }
@@ -76,6 +86,13 @@ export function AdminDashboardView({
   initialFeatureFlags = [],
   initialAuditLogs = [],
   initialTickets = [],
+  initialPendingTutors = [],
+  pendingTutorsLoading = false,
+  pendingTutorsError = null,
+  userSearch = '',
+  onUserSearchChange,
+  userStatus = 'all',
+  onUserStatusChange,
   isLoading = false,
   queryError = null,
   onSuspendUser,
@@ -86,7 +103,17 @@ export function AdminDashboardView({
   onUpdateSetting,
   onUpdateFeatureFlag,
   onUpdateTicketStatus,
-}: AdminDashboardProps) {
+  onReviewTutor,
+  onRefetchPendingTutors,
+}: AdminDashboardProps & {
+  onReviewTutor: (input: {
+    tutorId: string;
+    decision: TutorReviewDecision;
+    reasonCode: string;
+    internalNotes?: string;
+  }) => Promise<void>;
+  onRefetchPendingTutors: () => void;
+}) {
   const t = useTranslations('admin');
 
   // Local UI state (active tab, modal selection, transient form values).
@@ -230,6 +257,15 @@ export function AdminDashboardView({
       {view.activeTab === 'overview' && (
         <AdminOverviewTab reconciliation={actions.reconciliation} />
       )}
+      {view.activeTab === 'verification' && (
+        <AdminVerificationTab
+          tutors={initialPendingTutors}
+          isLoading={pendingTutorsLoading}
+          queryError={pendingTutorsError}
+          onRetry={onRefetchPendingTutors}
+          onReview={onReviewTutor}
+        />
+      )}
       {view.activeTab === 'users' && (
         <AdminUsersTab
           users={actions.users}
@@ -238,6 +274,10 @@ export function AdminDashboardView({
           onRequestRoles={view.requestRoles}
           onRequestImpersonate={view.setSelectedUserForImpersonate}
           onReactivate={actions.reactivateUser}
+          searchQuery={userSearch}
+          onSearchChange={onUserSearchChange}
+          statusFilter={userStatus}
+          onStatusFilterChange={onUserStatusChange}
         />
       )}
       {view.activeTab === 'bookings' && (

@@ -12,6 +12,7 @@ import {
   Badge,
 } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
+import { withLocale } from '@/lib/auth';
 import { useBookingRequests } from '../hooks/use-booking-requests';
 
 /** Tutoring requests entry: withdraw (student) and accept/decline (tutor) over the bookings API. */
@@ -51,6 +52,8 @@ export function RequestsPage({ locale }: { locale: Locale }) {
         <EmptyState
           title={dict.feedback.emptyStateTitle}
           description={dict.feedback.emptyStateDescription}
+          actionLabel={req.isTutor ? undefined : dict.nav.findTutors}
+          actionHref={req.isTutor ? undefined : withLocale('/tutors', locale)}
         />
       ) : (
         <div className="grid grid-cols-1 gap-4 md:grid-cols-2" data-testid="requests-list">

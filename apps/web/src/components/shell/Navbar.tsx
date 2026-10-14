@@ -17,7 +17,7 @@ import {
 import { Button } from '../ui/Button';
 import { NotificationBell } from '../notifications/NotificationBell';
 import { ThemePicker } from '../theme/ThemePicker';
-import { getDictionary, type Locale } from '../../lib/i18n';
+import { getDictionary, type Locale } from '@/lib/i18n';
 import { dashboardPathForRoles, withLocale } from '@/lib/auth';
 import { useAppDispatch, useAppSelector } from '@/store';
 import { logout } from '@/store/slices/auth-slice';
@@ -162,9 +162,7 @@ export function Navbar({ locale }: NavbarProps) {
                     <User className="h-3.5 w-3.5" />
                   </div>
                   <div className="flex flex-col text-left leading-none">
-                    <span className="text-xs font-bold text-foreground">
-                      {user.displayName}
-                    </span>
+                    <span className="text-xs font-bold text-foreground">{user.displayName}</span>
                     <span className="text-[9px] text-muted-foreground capitalize">
                       {user.roles[0] || 'Member'}
                     </span>
@@ -190,10 +188,7 @@ export function Navbar({ locale }: NavbarProps) {
                 >
                   {dict.nav.login}
                 </Link>
-                <Link
-                  href={withLocale('/register', locale)}
-                  data-testid="navbar-register-link"
-                >
+                <Link href={withLocale('/register', locale)} data-testid="navbar-register-link">
                   <Button
                     size="sm"
                     className="rounded-full px-4 text-xs font-bold shadow-sm shadow-primary/25 hover:shadow-primary/40 hover:scale-[1.02] active:scale-[0.98] transition-all gap-1.5"
@@ -275,15 +270,8 @@ export function Navbar({ locale }: NavbarProps) {
               </div>
             ) : (
               <div className="grid grid-cols-2 gap-2.5">
-                <Link
-                  href={withLocale('/login', locale)}
-                  onClick={() => setMobileMenuOpen(false)}
-                >
-                  <Button
-                    variant="outline"
-                    size="sm"
-                    className="w-full justify-center rounded-xl"
-                  >
+                <Link href={withLocale('/login', locale)} onClick={() => setMobileMenuOpen(false)}>
+                  <Button variant="outline" size="sm" className="w-full justify-center rounded-xl">
                     {dict.nav.login}
                   </Button>
                 </Link>
@@ -291,10 +279,7 @@ export function Navbar({ locale }: NavbarProps) {
                   href={withLocale('/register', locale)}
                   onClick={() => setMobileMenuOpen(false)}
                 >
-                  <Button
-                    size="sm"
-                    className="w-full justify-center rounded-xl shadow-sm"
-                  >
+                  <Button size="sm" className="w-full justify-center rounded-xl shadow-sm">
                     {dict.nav.register}
                   </Button>
                 </Link>

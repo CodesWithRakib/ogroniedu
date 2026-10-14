@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  Inject,
-  NotFoundException,
-  ForbiddenException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, ForbiddenException, Logger } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import jwt from 'jsonwebtoken';
@@ -15,6 +9,7 @@ import { AuditService } from '../../audit/audit.service';
 import { LedgerService } from '../../payments/ledger.service';
 import { redactSensitiveData } from '../utils/redact.util';
 import type { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
+import { isSuperAdmin } from '../../../common/auth/role.utils';
 import {
   UpdateSystemSettingDto,
   UpdateFeatureFlagDto,
@@ -77,7 +72,7 @@ export class AdminPlatformService {
     key: string,
     dto: UpdateSystemSettingDto,
   ): Promise<SystemSettingEntity> {
-    if (!superAdmin.roles.includes('super_admin')) {
+    if (!isSuperAdmin(superAdmin)) {
       throw new ForbiddenException(
         'Updating system settings is strictly restricted to super_admin',
       );
@@ -123,7 +118,7 @@ export class AdminPlatformService {
     key: string,
     dto: UpdateFeatureFlagDto,
   ): Promise<FeatureFlagEntity> {
-    if (!superAdmin.roles.includes('super_admin')) {
+    if (!isSuperAdmin(superAdmin)) {
       throw new ForbiddenException('Updating feature flags is strictly restricted to super_admin');
     }
 
@@ -165,7 +160,7 @@ export class AdminPlatformService {
     impersonatorUserId: string;
   }> {
     // Invariant 1: Caller MUST hold super_admin role
-    if (!superAdmin.roles.includes('super_admin')) {
+    if (!isSuperAdmin(superAdmin)) {
       throw new ForbiddenException(
         'Impersonation protocol is exclusively restricted to super_admin',
       );

@@ -1,4 +1,6 @@
 import { baseApi, type ApiSuccessEnvelope } from '../base-api';
+import { toQueryString } from '@/lib/api/query';
+import type { TutoringMode } from '@/features/bookings/types/booking.types';
 
 export interface TutorSubject {
   id: string;
@@ -39,13 +41,16 @@ export interface SearchTutorsParams {
   subjectId?: string;
   educationLevelId?: string;
   curriculumId?: string;
-  mode?: 'in_person' | 'online' | 'hybrid';
+  mode?: TutoringMode;
   districtCode?: string;
   minPrice?: number;
   maxPrice?: number;
   sort?: 'recommended' | 'price_asc' | 'price_desc' | 'experience_desc';
   page?: number;
+  /** @deprecated Prefer pageSize (canonical). Both accepted; pageSize wins server-side. */
   limit?: number;
+  /** Canonical page size (1-50). Takes precedence over limit when both are sent. */
+  pageSize?: number;
 }
 
 export interface SearchTutorsResponse {
@@ -55,6 +60,19 @@ export interface SearchTutorsResponse {
   page: number;
   limit: number;
   totalPages: number;
+  /** Canonical pagination (preferred over legacy top-level fields). */
+  meta?: {
+    requestId?: string;
+    pagination?: {
+      strategy: 'offset';
+      page: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+    };
+  };
 }
 
 export interface TutorOwnProfile {
@@ -68,16 +86,6 @@ export interface TutorOwnProfile {
   verificationStatus?: string;
   publicationStatus?: string;
   [key: string]: unknown;
-}
-
-function toQueryString(params: SearchTutorsParams): string {
-  const search = new URLSearchParams();
-  for (const [key, value] of Object.entries(params)) {
-    if (value === undefined || value === null || value === '') continue;
-    search.append(key, String(value));
-  }
-  const qs = search.toString();
-  return qs ? `?${qs}` : '';
 }
 
 export const tutorsApi = baseApi.injectEndpoints({

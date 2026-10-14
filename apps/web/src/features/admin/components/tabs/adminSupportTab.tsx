@@ -50,7 +50,7 @@ export function AdminSupportTab({
           data-testid="support-status-filter"
           aria-label={t('supportTab')}
         >
-          <option value="all">{isBn ? 'সব অবস্থা' : 'All Statuses'}</option>
+          <option value="all">{t('allStatuses')}</option>
           {NEXT_STATUS.map((s) => (
             <option key={s} value={s}>
               {s}

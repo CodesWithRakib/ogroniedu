@@ -15,6 +15,7 @@ import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { GuardianStudentGuard } from '../../common/guards/guardian-student.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { ADMIN_ROLES } from '../../common/auth/role.utils';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { LinkChildRequestDto, RegisterChildDto, VerifyLinkDto, RevokeLinkDto } from './dto';
 
@@ -27,7 +28,7 @@ export class GuardiansController {
   ) {}
 
   @Post('children')
-  @Roles('guardian', 'admin', 'super_admin')
+  @Roles('guardian', ...ADMIN_ROLES)
   @HttpCode(HttpStatus.CREATED)
   async registerChild(
     @CurrentUser() user: AuthenticatedUser,
@@ -37,14 +38,14 @@ export class GuardiansController {
   }
 
   @Post('children/link-request')
-  @Roles('guardian', 'admin', 'super_admin')
+  @Roles('guardian', ...ADMIN_ROLES)
   @HttpCode(HttpStatus.CREATED)
   async linkChildRequest(@CurrentUser() user: AuthenticatedUser, @Body() dto: LinkChildRequestDto) {
     return this.guardiansService.linkChildRequest(user.id, dto);
   }
 
   @Get('children')
-  @Roles('guardian', 'admin', 'super_admin')
+  @Roles('guardian', ...ADMIN_ROLES)
   async getLinkedChildren(@CurrentUser() user: AuthenticatedUser): Promise<LinkedChildSummary[]> {
     return this.guardiansService.getLinkedChildren(user.id);
   }
@@ -59,7 +60,7 @@ export class GuardiansController {
   }
 
   @Post('children/:linkId/verify')
-  @Roles('student', 'admin', 'super_admin')
+  @Roles('student', ...ADMIN_ROLES)
   @HttpCode(HttpStatus.OK)
   async verifyLinkRequest(
     @CurrentUser() user: AuthenticatedUser,

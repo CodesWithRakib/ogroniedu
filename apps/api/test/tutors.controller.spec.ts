@@ -81,6 +81,21 @@ describe('TutorsController & AdminTutorsController Unit Tests', () => {
       expect(res.success).toBe(true);
       expect(res.data.badges).toContain('verified_tutor');
     });
+
+    it('delete endpoints return data:null per SuccessEnvelope<T> (Phase 23)', async () => {
+      const qual = await tutorsController.deleteQualification(
+        tutorUser,
+        '33333333-3333-4333-8333-333333333333',
+      );
+      expect(qual.success).toBe(true);
+      expect(qual).toHaveProperty('data', null);
+      const subj = await tutorsController.deleteSubject(
+        tutorUser,
+        '44444444-4444-4333-8333-444444444444',
+      );
+      expect(subj.success).toBe(true);
+      expect(subj).toHaveProperty('data', null);
+    });
   });
 
   describe('AdminTutorsController Endpoints', () => {

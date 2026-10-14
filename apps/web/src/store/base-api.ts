@@ -101,9 +101,7 @@ export const baseApi = createApi({
   endpoints: () => ({}),
 });
 
-export type ApiSuccessEnvelope<T> = {
-  success: boolean;
-  message?: string;
-  data: T;
-  total?: number;
-};
+import type { SuccessEnvelope } from '@/lib/api/contract';
+
+/** @deprecated Use SuccessEnvelope<T> from @/lib/api/contract (canonical envelope). */
+export type ApiSuccessEnvelope<T> = SuccessEnvelope<T> & { total?: number };

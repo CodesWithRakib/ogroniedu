@@ -2,7 +2,7 @@ import { IsObject, IsOptional, IsString, MaxLength } from 'class-validator';
 
 export class UpdateSystemSettingDto {
   @IsObject()
-  value!: Record<string, any>;
+  value!: Record<string, unknown>;
 
   @IsOptional()
   @IsString()

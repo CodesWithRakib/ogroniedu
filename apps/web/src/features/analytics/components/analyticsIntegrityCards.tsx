@@ -1,11 +1,14 @@
 'use client';
 
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
+import { formatGroupedNumber } from '@/lib/format';
+import type { Locale } from '@/lib/i18n';
 import type { AnalyticsOperationalData } from '../types/analytics.types';
 
 /** Financial flow + trust/quality guarantee metrics. */
 export function AnalyticsIntegrityCards({ data }: { data: AnalyticsOperationalData }) {
   const t = useTranslations('analytics');
+  const locale = useLocale() as Locale;
 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
@@ -18,19 +21,19 @@ export function AnalyticsIntegrityCards({ data }: { data: AnalyticsOperationalDa
           <div className="flex justify-between py-1.5 border-b border-border/60">
             <span className="text-muted-foreground">{t('grossMerchandiseValue')}</span>
             <span className="font-mono font-bold text-foreground">
-              {data.financials.grossMerchandiseValueBdt.toLocaleString()} BDT
+              {formatGroupedNumber(data.financials.grossMerchandiseValueBdt, locale)} BDT
             </span>
           </div>
           <div className="flex justify-between py-1.5 border-b border-border/60">
             <span className="text-muted-foreground">{t('totalRefunded')}</span>
             <span className="font-mono font-bold text-rose-500">
-              - {data.financials.totalRefundedBdt.toLocaleString()} BDT
+              - {formatGroupedNumber(data.financials.totalRefundedBdt, locale)} BDT
             </span>
           </div>
           <div className="flex justify-between py-1.5 border-b border-border/60">
             <span className="text-muted-foreground">{t('netVolume')}</span>
             <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
-              {data.financials.netProcessedVolumeBdt.toLocaleString()} BDT
+              {formatGroupedNumber(data.financials.netProcessedVolumeBdt, locale)} BDT
             </span>
           </div>
           <div className="flex justify-between py-1.5 font-semibold text-foreground">

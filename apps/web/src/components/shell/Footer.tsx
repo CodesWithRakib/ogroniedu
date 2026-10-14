@@ -11,7 +11,7 @@ import {
   MapPin,
   CheckCircle2,
 } from 'lucide-react';
-import { getDictionary, type Locale } from '../../lib/i18n';
+import { getDictionary, type Locale } from '@/lib/i18n';
 
 export interface FooterProps {
   locale: Locale;
@@ -112,11 +112,17 @@ export function Footer({ locale }: FooterProps) {
             <div className="pt-2 flex flex-col gap-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
                 <MapPin className="h-3.5 w-3.5 text-primary" />
-                <span>{isBn ? 'গুলশান-২, ঢাকা-১২১২, বাংলাদেশ' : 'Gulshan-2, Dhaka-1212, Bangladesh'}</span>
+                <span>
+                  {isBn ? 'গুলশান-২, ঢাকা-১২১২, বাংলাদেশ' : 'Gulshan-2, Dhaka-1212, Bangladesh'}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <PhoneCall className="h-3.5 w-3.5 text-primary" />
-                <span>{isBn ? 'হটলাইন: ০৯৬১২-অগ্রণী (সকাল ৯টা - রাত ১০টা)' : 'Hotline: +880 9612-OGRONI (9 AM - 10 PM)'}</span>
+                <span>
+                  {isBn
+                    ? 'হটলাইন: ০৯৬১২-অগ্রণী (সকাল ৯টা - রাত ১০টা)'
+                    : 'Hotline: +880 9612-OGRONI (9 AM - 10 PM)'}
+                </span>
               </div>
               <div className="flex items-center gap-2">
                 <Mail className="h-3.5 w-3.5 text-primary" />
@@ -148,7 +154,10 @@ export function Footer({ locale }: FooterProps) {
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/how-it-works`} className="hover:text-primary transition-colors">
+                <Link
+                  href={`/${locale}/how-it-works`}
+                  className="hover:text-primary transition-colors"
+                >
                   {dict.nav.howItWorks}
                 </Link>
               </li>
@@ -177,22 +186,34 @@ export function Footer({ locale }: FooterProps) {
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/safety#verification`} className="hover:text-primary transition-colors">
+                <Link
+                  href={`/${locale}/safety#verification`}
+                  className="hover:text-primary transition-colors"
+                >
                   {isBn ? 'এনআইডি ব্যাকগ্রাউন্ড যাচাই' : 'Identity Verification'}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/safety#escrow`} className="hover:text-primary transition-colors">
+                <Link
+                  href={`/${locale}/safety#escrow`}
+                  className="hover:text-primary transition-colors"
+                >
                   {isBn ? 'এসক্রো পেমেন্ট নিয়মাবলী' : 'Escrow Guidelines'}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/safety#minor-policy`} className="hover:text-primary transition-colors">
+                <Link
+                  href={`/${locale}/safety#minor-policy`}
+                  className="hover:text-primary transition-colors"
+                >
                   {isBn ? 'নাবালক শিক্ষার্থী সুরক্ষা নীতি' : 'Minor Safety Policy'}
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/safety#disputes`} className="hover:text-primary transition-colors">
+                <Link
+                  href={`/${locale}/safety#disputes`}
+                  className="hover:text-primary transition-colors"
+                >
                   {isBn ? 'অভিযোগ ও নিষ্পত্তি' : 'Dispute Resolution'}
                 </Link>
               </li>
@@ -226,7 +247,10 @@ export function Footer({ locale }: FooterProps) {
                 </Link>
               </li>
               <li>
-                <Link href={`/${locale}/contact#report`} className="hover:text-primary transition-colors">
+                <Link
+                  href={`/${locale}/contact#report`}
+                  className="hover:text-primary transition-colors"
+                >
                   {isBn ? 'জরুরি রিপোর্ট ও হেল্প' : 'Emergency Report'}
                 </Link>
               </li>

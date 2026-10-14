@@ -16,29 +16,9 @@ import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-studen
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { AuditService } from '../audit/audit.service';
 import { UpdateProfileDto, UpsertStudentProfileDto } from './dto';
+import type { UserProfileResponse } from './interfaces/user-profile-response.interface';
 
-export interface UserProfileResponse {
-  id: string;
-  email: string | null;
-  phoneE164: string | null;
-  displayName: string;
-  preferredLocale: 'bn' | 'en';
-  status: string;
-  roles: string[];
-  isMinor: boolean;
-  studentProfile?: {
-    dateOfBirth: string | null;
-    educationLevelId: string | null;
-    curriculumId: string | null;
-    institutionName: string | null;
-    stream: string | null;
-    districtCode: string | null;
-    upazilaCode: string | null;
-    learningGoals: string | null;
-    profileVisibility: 'private' | 'limited';
-  } | null;
-  createdAt: Date;
-}
+export type { UserProfileResponse } from './interfaces/user-profile-response.interface';
 
 @Injectable()
 export class UsersService {

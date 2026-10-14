@@ -6,5 +6,5 @@ export class UpdateFeatureFlagDto {
 
   @IsOptional()
   @IsObject()
-  rules?: Record<string, any>;
+  rules?: Record<string, unknown>;
 }

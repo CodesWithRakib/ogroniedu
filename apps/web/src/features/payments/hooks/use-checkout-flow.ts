@@ -2,7 +2,7 @@
 
 import React from 'react';
 import type { Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeUnknownError } from '@/lib/api-error';
 import { fieldErrorsOf } from '@/lib/api/parse';
 import type {
   PaymentOrderDetails,
@@ -20,21 +20,16 @@ export interface UseCheckoutFlowOptions {
 
 function fieldErrorsFrom(err: unknown): Record<string, string> {
   if (typeof err === 'object' && err !== null && 'data' in err) {
-    return fieldErrorsOf((err as { data: unknown }).data);
+    return fieldErrorsOf(err.data);
   }
   return fieldErrorsOf(err);
 }
 
 function displayMessage(err: unknown, locale: Locale): string {
   if (typeof err === 'string') {
-    return err.trim() ? err : normalizeApiError(err as never, locale).message;
+    return err.trim() ? err : normalizeUnknownError(err, locale).message;
   }
-  if (err instanceof Error) {
-    // onPay callbacks already throw display-ready messages; normalize
-    // preserves plain Error messages while localizing RTK Query shapes.
-    return normalizeApiError(err as never, locale).message;
-  }
-  return normalizeApiError(err as never, locale).message;
+  return normalizeUnknownError(err, locale).message;
 }
 
 /** Checkout interaction state: gateway pick, pay dispatch, receipt, errors. */

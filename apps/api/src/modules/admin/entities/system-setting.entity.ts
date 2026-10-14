@@ -6,7 +6,7 @@ export class SystemSettingEntity {
   key!: string;
 
   @Column({ type: 'jsonb', default: () => "'{}'::jsonb" })
-  value!: Record<string, any>;
+  value!: Record<string, unknown>;
 
   @Column({ type: 'text', nullable: true })
   description!: string | null;

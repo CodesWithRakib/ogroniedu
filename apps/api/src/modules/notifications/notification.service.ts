@@ -52,6 +52,7 @@ import {
   DispatchNotificationDto,
   GetNotificationsQueryDto,
   UpdateNotificationPreferencesDto,
+  resolveNotificationsOffsetLimit,
 } from './dto';
 import { NotificationEntity } from './entities/notification.entity';
 import { NotificationDeliveryEntity } from './entities/notification-delivery.entity';
@@ -204,7 +205,7 @@ export class NotificationService {
       return this.getNotificationsCursorPage(userId, query, cursor, locale);
     }
 
-    const limit = query.limit || 20;
+    const limit = resolveNotificationsOffsetLimit(query);
     const page = query.page || 1;
     const skip = (page - 1) * limit;
 

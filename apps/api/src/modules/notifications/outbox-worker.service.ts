@@ -4,13 +4,9 @@ import { Repository, LessThanOrEqual, IsNull } from 'typeorm';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { NotificationService } from './notification.service';
 import { readErrorMessage } from '../../common/errors/error-message';
+import type { OutboxProcessingResult } from './interfaces/outbox-processing-result.interface';
 
-export interface OutboxProcessingResult {
-  processed: number;
-  succeeded: number;
-  failed: number;
-  retried: number;
-}
+export type { OutboxProcessingResult } from './interfaces/outbox-processing-result.interface';
 
 @Injectable()
 export class OutboxWorkerService {
@@ -96,7 +92,10 @@ export class OutboxWorkerService {
    * Map domain outbox events to appropriate notification dispatches
    */
   private async dispatchOutboxEvent(event: OutboxEventEntity): Promise<void> {
-    const payload = (event.payload || {}) as Record<string, any>;
+    const payload: Record<string, unknown> =
+      typeof event.payload === 'object' && event.payload !== null
+        ? (event.payload as Record<string, unknown>)
+        : {};
 
     switch (event.eventType) {
       case 'booking.requested':

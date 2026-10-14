@@ -4,7 +4,7 @@ import React from 'react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { Button, Card, CardContent, Input, LoadingSpinner } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeUnknownError } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
 import { LearningManagementView } from '../components/learningManagementView';
 import { useLearningRecords } from '../hooks/use-learning-records';
@@ -36,7 +36,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
       });
       setAssignmentTitle('');
     } catch (err) {
-      setFormError(normalizeApiError(err as never, locale).message);
+      setFormError(normalizeUnknownError(err, locale).message);
     }
   }
 

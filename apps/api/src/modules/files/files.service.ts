@@ -10,21 +10,17 @@ import * as crypto from 'crypto';
 import { FileAssetEntity } from './entities/file-asset.entity';
 import { UploadEvidenceFileDto } from '../tutors/dto/upload-evidence-file.dto';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
-
-export const MAX_EVIDENCE_FILE_SIZE_BYTES = 10 * 1024 * 1024; // 10MB
-export const ALLOWED_EVIDENCE_MIME_TYPES = [
-  'application/pdf',
-  'image/jpeg',
-  'image/png',
-  'image/webp',
-];
-
-export const ALLOWED_EXTENSIONS_BY_MIME: Record<string, string[]> = {
-  'application/pdf': ['.pdf'],
-  'image/jpeg': ['.jpg', '.jpeg'],
-  'image/png': ['.png'],
-  'image/webp': ['.webp'],
-};
+import { isAdminRole } from '../../common/auth/role.utils';
+export {
+  MAX_EVIDENCE_FILE_SIZE_BYTES,
+  ALLOWED_EVIDENCE_MIME_TYPES,
+  ALLOWED_EXTENSIONS_BY_MIME,
+} from './constants/file-validation.constants';
+import {
+  MAX_EVIDENCE_FILE_SIZE_BYTES,
+  ALLOWED_EVIDENCE_MIME_TYPES,
+  ALLOWED_EXTENSIONS_BY_MIME,
+} from './constants/file-validation.constants';
 
 @Injectable()
 export class FilesService {
@@ -194,8 +190,7 @@ export class FilesService {
 
     // Allow owner or compliance admin
     const isOwner = file.ownerUserId === user.id;
-    const isAdmin =
-      user.roles && (user.roles.includes('admin') || user.roles.includes('super_admin'));
+    const isAdmin = isAdminRole(user);
 
     if (!isOwner && !isAdmin) {
       throw new ForbiddenException(

@@ -1,13 +1,16 @@
 'use client';
 
 import React from 'react';
-import { useTranslations } from 'next-intl';
+import { useTranslations, useLocale } from 'next-intl';
 import { ArrowUpRight, TrendingUp } from 'lucide-react';
+import { formatGroupedNumber } from '@/lib/format';
+import type { Locale } from '@/lib/i18n';
 import type { AnalyticsOperationalData } from '../types/analytics.types';
 
 /** Top-line KPI cards: conversion, completion, GMV, retention styled with Donezo/Shopeers aesthetics. */
 export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
   const t = useTranslations('analytics');
+  const locale = useLocale() as Locale;
 
   return (
     <div
@@ -24,7 +27,10 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
         </div>
         <div className="my-3">
           <div className="flex items-baseline gap-2">
-            <p className="text-3xl sm:text-4xl font-extrabold text-white tabular-nums tracking-tight font-sans" data-testid="kpi-conversion-rate">
+            <p
+              className="text-3xl sm:text-4xl font-extrabold text-white tabular-nums tracking-tight font-sans"
+              data-testid="kpi-conversion-rate"
+            >
               {data.conversion.conversionRate}%
             </p>
             <span className="text-xs text-white/80 tabular-nums">
@@ -54,7 +60,10 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
         </div>
         <div className="my-3">
           <div className="flex items-baseline gap-2">
-            <p className="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400 tabular-nums tracking-tight font-sans" data-testid="kpi-completion-rate">
+            <p
+              className="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400 tabular-nums tracking-tight font-sans"
+              data-testid="kpi-completion-rate"
+            >
               {data.sessions.completionRate}%
             </p>
             <span className="text-xs text-muted-foreground tabular-nums">
@@ -76,20 +85,28 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
       {/* Card 3: GMV */}
       <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-md hover:-translate-y-0.5 group select-none">
         <div className="flex items-center justify-between">
-          <p className="text-xs font-semibold text-muted-foreground">{t('grossMerchandiseValue')}</p>
+          <p className="text-xs font-semibold text-muted-foreground">
+            {t('grossMerchandiseValue')}
+          </p>
           <div className="h-8 w-8 rounded-full border border-border/80 bg-surface/75 text-foreground flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
             <ArrowUpRight className="h-4 w-4" />
           </div>
         </div>
         <div className="my-3">
           <div className="flex items-baseline gap-1.5">
-            <p className="text-3xl sm:text-4xl font-extrabold text-foreground font-mono tabular-nums tracking-tight" data-testid="kpi-gmv">
-              {data.financials.grossMerchandiseValueBdt.toLocaleString()}
+            <p
+              className="text-3xl sm:text-4xl font-extrabold text-foreground font-mono tabular-nums tracking-tight"
+              data-testid="kpi-gmv"
+            >
+              {formatGroupedNumber(data.financials.grossMerchandiseValueBdt, locale)}
             </p>
             <span className="text-xs text-muted-foreground font-bold">BDT</span>
           </div>
           <p className="text-[11px] text-muted-foreground font-medium mt-2">
-            {t('platformRevenue')}: <span className="text-foreground font-bold">{data.financials.platformCommissionRevenueBdt.toLocaleString()} BDT</span>
+            {t('platformRevenue')}:{' '}
+            <span className="text-foreground font-bold">
+              {formatGroupedNumber(data.financials.platformCommissionRevenueBdt, locale)} BDT
+            </span>
           </p>
         </div>
         <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 w-fit">
@@ -107,7 +124,10 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
         </div>
         <div className="my-3">
           <div className="flex items-baseline gap-2">
-            <p className="text-3xl sm:text-4xl font-extrabold text-foreground tabular-nums tracking-tight font-sans" data-testid="kpi-retention-rate">
+            <p
+              className="text-3xl sm:text-4xl font-extrabold text-foreground tabular-nums tracking-tight font-sans"
+              data-testid="kpi-retention-rate"
+            >
               {data.retention.retentionRate}%
             </p>
             <span className="text-xs text-muted-foreground tabular-nums">

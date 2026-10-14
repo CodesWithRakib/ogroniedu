@@ -14,6 +14,7 @@ import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { AuditLogEntity } from '../audit/entities/audit-log.entity';
 import { NotificationService } from '../notifications/notification.service';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { isAdminRole } from '../../common/auth/role.utils';
 import { CreateReplacementCaseDto, UpdateReplacementCaseDto } from './dto';
 
 @Injectable()
@@ -152,7 +153,7 @@ export class TutorReplacementService {
     const isRequester = user.id === replacementCase.requestedBy;
     const isBookingStudent = user.id === replacementCase.booking?.studentUserId;
     const isBookingGuardian = user.id === replacementCase.booking?.requesterUserId;
-    const isAdmin = user.roles?.includes('admin');
+    const isAdmin = isAdminRole(user);
 
     if (!isRequester && !isBookingStudent && !isBookingGuardian && !isAdmin) {
       throw new ForbiddenException(
@@ -167,7 +168,7 @@ export class TutorReplacementService {
    * 3. List Replacement Cases (Admin or User's Own)
    */
   async listCases(user: AuthenticatedUser): Promise<TutorReplacementCaseEntity[]> {
-    const isAdmin = user.roles?.includes('admin');
+    const isAdmin = isAdminRole(user);
     const where: FindOptionsWhere<TutorReplacementCaseEntity> = isAdmin
       ? {}
       : { requestedBy: user.id };
@@ -188,7 +189,7 @@ export class TutorReplacementService {
     caseId: string,
     dto: UpdateReplacementCaseDto,
   ): Promise<TutorReplacementCaseEntity> {
-    if (!user.roles?.includes('admin')) {
+    if (!isAdminRole(user)) {
       throw new ForbiddenException('Admin privileges required to manage tutor replacement cases');
     }
 

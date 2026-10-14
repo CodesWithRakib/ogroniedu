@@ -85,7 +85,7 @@ export const sessionsApi = baseApi.injectEndpoints({
       ],
     }),
     cancelSession: builder.mutation<
-      ApiSuccessEnvelope<SessionItem> & { assessment?: unknown },
+      ApiSuccessEnvelope<{ session: SessionItem; policyAssessment: unknown }>,
       { id: string; reason: string }
     >({
       query: ({ id, ...body }) => ({

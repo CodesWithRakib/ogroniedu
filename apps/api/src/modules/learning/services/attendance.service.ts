@@ -12,12 +12,13 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { SessionAttendanceEntity } from '../entities/session-attendance.entity';
 import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
-import { GuardianStudentLinkEntity } from '../../guardians/entities/guardian-student-link.entity';
 import { AuditService } from '../../audit/audit.service';
+import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { NotificationService } from '../../notifications/notification.service';
 import { LearningAccessService } from './learning-access.service';
 import { MarkAttendanceDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
+import { isAdminRole } from '../../../common/auth/role.utils';
 
 /**
  * Session attendance: tutor/admin recording with participant validation,
@@ -32,8 +33,7 @@ export class LearningAttendanceService {
     private readonly attendanceRepo: Repository<SessionAttendanceEntity>,
     @InjectRepository(BookingSessionEntity)
     private readonly sessionRepo: Repository<BookingSessionEntity>,
-    @InjectRepository(GuardianStudentLinkEntity)
-    private readonly guardianLinkRepo: Repository<GuardianStudentLinkEntity>,
+    private readonly guardianAccess: GuardianAccessService,
     @Inject(forwardRef(() => LearningAccessService))
     private readonly access: LearningAccessService,
     @Inject(forwardRef(() => AuditService))
@@ -62,7 +62,7 @@ export class LearningAttendanceService {
 
     // Only session tutor or admin can record attendance
     const isTutor = session.tutorUserId === user.id;
-    const isAdmin = user.roles?.includes('admin');
+    const isAdmin = isAdminRole(user);
     if (!isTutor && !isAdmin) {
       throw new ForbiddenException(
         'Only the assigned tutor or admin can record attendance for this session',
@@ -134,14 +134,12 @@ export class LearningAttendanceService {
         );
 
       // Notify Active Guardians
-      const guardians = await this.guardianLinkRepo.find({
-        where: { studentUserId: dto.participantUserId, status: 'active' },
-      });
+      const guardianIds = await this.guardianAccess.findActiveGuardianIds(dto.participantUserId);
 
-      for (const link of guardians) {
+      for (const guardianId of guardianIds) {
         await this.notificationService
           .dispatch({
-            userId: link.guardianUserId,
+            userId: guardianId,
             recipientRole: 'guardian',
             eventType: 'attendance.marked',
             payload: {

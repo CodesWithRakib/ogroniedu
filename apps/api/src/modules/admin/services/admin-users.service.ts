@@ -12,6 +12,7 @@ import { UserEntity } from '../../auth/entities/user.entity';
 import { AuditService } from '../../audit/audit.service';
 import { redactSensitiveData } from '../utils/redact.util';
 import type { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
+import { isSuperAdmin } from '../../../common/auth/role.utils';
 import { SuspendUserDto, UpdateUserRolesDto } from '../dto';
 
 /**
@@ -152,7 +153,7 @@ export class AdminUsersService {
       [targetUserId],
     );
     const targetRoles: string[] = targetRolesRes.map((r: { code: string }) => r.code);
-    if (targetRoles.includes('super_admin') && !adminUser.roles.includes('super_admin')) {
+    if (targetRoles.includes('super_admin') && !isSuperAdmin(adminUser)) {
       throw new ForbiddenException('Only a super_admin can suspend another super_admin');
     }
 
@@ -204,7 +205,7 @@ export class AdminUsersService {
     targetUserId: string,
     dto: UpdateUserRolesDto,
   ): Promise<{ userId: string; assignedRoles: string[] }> {
-    if (!superAdmin.roles.includes('super_admin')) {
+    if (!isSuperAdmin(superAdmin)) {
       throw new ForbiddenException('Role management is strictly restricted to super_admin');
     }
 

@@ -15,8 +15,23 @@ function messageFromData(data: unknown, fallback: string): string {
   if (typeof data === 'string' && data.trim()) return data;
   if (typeof data === 'object' && data !== null) {
     const record = data as Record<string, unknown>;
+    // Canonical envelope: { success:false, error:{ code, message, details? } }
+    const err = record.error;
+    if (typeof err === 'object' && err !== null) {
+      const errRec = err as Record<string, unknown>;
+      if (typeof errRec.message === 'string' && errRec.message.trim()) return errRec.message;
+      const details = errRec.details;
+      if (Array.isArray(details)) {
+        const first = details[0] as Record<string, unknown> | undefined;
+        if (first && typeof first.message === 'string' && first.message.trim()) {
+          return first.message;
+        }
+      }
+    }
     const direct = record.message;
     if (typeof direct === 'string' && direct.trim()) return direct;
+    // Legacy Nest shape: { statusCode, message: string | string[] }
+    if (Array.isArray(direct) && typeof direct[0] === 'string') return direct[0];
     const errors = record.errors;
     if (Array.isArray(errors) && typeof errors[0] === 'string') return errors[0];
     if (Array.isArray(errors) && errors[0] && typeof errors[0] === 'object') {
@@ -109,6 +124,14 @@ export function normalizeApiError(
       isBn ? 'সার্ভারে সমস্যা হয়েছে। কিছুক্ষণ পর আবার চেষ্টা করুন।' : 'Server error. Try again.',
     ),
   };
+}
+
+/** Type-safe error normalization: accepts unknown RTK errors without `as never` casts. */
+export function normalizeUnknownError(
+  error: unknown,
+  locale: 'bn' | 'en' = 'bn',
+): NormalizedApiError {
+  return normalizeApiError(error as FetchBaseQueryError | SerializedError | undefined, locale);
 }
 
 /** Build a stable idempotency key for payment/order mutations. */

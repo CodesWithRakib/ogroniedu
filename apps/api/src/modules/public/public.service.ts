@@ -1,17 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
+import type { PlatformStats } from './interfaces/platform-stats.interface';
 
-export interface PlatformStats {
-  /** Tutors with approved verification and a published profile. */
-  verifiedTutors: number;
-  /** Users holding an active student role grant. */
-  activeStudents: number;
-  /** Sessions completed on the platform. */
-  completedSessions: number;
-  /** Mean review rating (1–5, one decimal) or null when no reviews exist yet. */
-  averageRating: number | null;
-}
+export type { PlatformStats } from './interfaces/platform-stats.interface';
 
 /**
  * Unauthenticated platform aggregates for the public site.

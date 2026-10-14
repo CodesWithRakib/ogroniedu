@@ -18,6 +18,35 @@ export interface AdminBookingItem {
   mode: 'online' | 'in_person';
 }
 
+export interface PendingTutorItem {
+  userId: string;
+  displayName: string;
+  email: string | null;
+  phoneE164: string | null;
+  headline: string | null;
+  verificationStatus: string;
+  publicationStatus: string;
+  qualificationsCount: number;
+  submittedAt: string;
+}
+
+export interface TutorDossierQualification {
+  id: string;
+  title: string;
+  qualificationType: string;
+  institution: string | null;
+  reviewStatus: string;
+}
+
+export interface TutorReviewHistoryEntry {
+  id: string;
+  decision: string;
+  reasonCode: string | null;
+  internalNotes: string | null;
+  reviewerUserId: string | null;
+  createdAt: string;
+}
+
 export interface AdminReconciliationAccount {
   code: string;
   name: string;

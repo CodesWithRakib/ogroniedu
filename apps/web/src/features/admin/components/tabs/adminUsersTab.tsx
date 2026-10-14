@@ -20,6 +20,10 @@ export function AdminUsersTab({
   onRequestRoles,
   onRequestImpersonate,
   onReactivate,
+  searchQuery,
+  onSearchChange,
+  statusFilter,
+  onStatusFilterChange,
 }: {
   users: AdminUserItem[];
   isSuperAdmin: boolean;
@@ -27,20 +31,24 @@ export function AdminUsersTab({
   onRequestRoles: (user: AdminUserItem) => void;
   onRequestImpersonate: (user: AdminUserItem) => void;
   onReactivate: (userId: string) => void;
+  searchQuery: string;
+  onSearchChange: (value: string) => void;
+  statusFilter: StatusFilter;
+  onStatusFilterChange: (value: StatusFilter) => void;
 }) {
   const t = useTranslations('admin');
   const tCommon = useTranslations('common');
-  const [searchQuery, setSearchQuery] = React.useState('');
-  const [statusFilter, setStatusFilter] = React.useState<StatusFilter>('all');
 
+  // Server already scopes rows by the lifted search/status query; the local
+  // pass only guards against stale rows racing a refetch.
   const filteredUsers = users.filter((u) => {
-    const query = searchQuery.toLowerCase();
-    const matchesQuery =
+    const query = searchQuery.trim().toLowerCase();
+    if (!query) return true;
+    return (
       u.displayName.toLowerCase().includes(query) ||
       (u.email?.toLowerCase().includes(query) ?? false) ||
-      (u.phoneE164?.includes(searchQuery) ?? false);
-    const matchesStatus = statusFilter === 'all' || u.status === statusFilter;
-    return matchesQuery && matchesStatus;
+      (u.phoneE164?.includes(searchQuery.trim()) ?? false)
+    );
   });
 
   return (
@@ -50,17 +58,17 @@ export function AdminUsersTab({
           type="text"
           placeholder={t('searchPlaceholder')}
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => onSearchChange(e.target.value)}
           className="w-full sm:w-80 px-4 py-2 bg-surface/80 border border-border/80 rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all"
           data-testid="users-search-input"
         />
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+          onChange={(e) => onStatusFilterChange(e.target.value as StatusFilter)}
           className="px-3 py-2 bg-surface/80 border border-border/80 rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25"
           data-testid="users-status-filter"
         >
-          <option value="all">All Statuses</option>
+          <option value="all">{t('allStatuses')}</option>
           <option value="active">{t('statusActive')}</option>
           <option value="suspended">{t('statusSuspended')}</option>
         </select>
@@ -115,14 +123,20 @@ export function AdminUsersTab({
                       className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                         user.status === 'active'
                           ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25'
-                          : 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25'
+                          : user.status === 'suspended'
+                            ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25'
+                            : 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25'
                       }`}
                     >
-                      {user.status === 'active' ? t('statusActive') : t('statusSuspended')}
+                      {user.status === 'active'
+                        ? t('statusActive')
+                        : user.status === 'suspended'
+                          ? t('statusSuspended')
+                          : user.status}
                     </span>
                   </td>
                   <td className="px-4 py-3 text-right space-x-2">
-                    {user.status === 'active' ? (
+                    {user.status !== 'suspended' ? (
                       <button
                         onClick={() => onRequestSuspend(user)}
                         className="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 rounded-lg border border-rose-500/30 transition text-[11px] font-medium"

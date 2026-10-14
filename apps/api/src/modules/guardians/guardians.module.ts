@@ -7,6 +7,7 @@ import { UserRoleEntity } from '../auth/entities/user-role.entity';
 import { StudentProfileEntity } from '../users/entities/student-profile.entity';
 import { GuardianStudentLinkEntity } from './entities/guardian-student-link.entity';
 import { GuardiansService } from './guardians.service';
+import { GuardianAccessService } from './guardian-access.service';
 import { GuardiansController } from './guardians.controller';
 import { AuditModule } from '../audit/audit.module';
 
@@ -23,7 +24,7 @@ import { AuditModule } from '../audit/audit.module';
     AuditModule,
   ],
   controllers: [GuardiansController],
-  providers: [GuardiansService],
-  exports: [GuardiansService],
+  providers: [GuardiansService, GuardianAccessService],
+  exports: [GuardiansService, GuardianAccessService],
 })
 export class GuardiansModule {}

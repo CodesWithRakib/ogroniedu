@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils';
 
 export const ADMIN_TABS = [
   'overview',
+  'verification',
   'users',
   'bookings',
   'support',
@@ -19,6 +20,7 @@ export type AdminTabKey = (typeof ADMIN_TABS)[number];
 
 const TAB_LABEL_KEY: Record<AdminTabKey, string> = {
   overview: 'overviewTab',
+  verification: 'verificationTab',
   users: 'usersTab',
   bookings: 'bookingsTab',
   support: 'supportTab',

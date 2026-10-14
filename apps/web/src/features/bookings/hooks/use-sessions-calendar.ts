@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
 import {
   useGetSessionsQuery,
   useRescheduleSessionMutation,
@@ -29,7 +29,7 @@ export function useSessionsCalendar(locale: Locale) {
       await reschedule({ id: sessionId, newStartsAt, reason }).unwrap();
       refetch();
     } catch (err) {
-      throw new Error(normalizeApiError(err as never, locale).message);
+      throw new Error(normalizeUnknownError(err, locale).message);
     }
   }
 
@@ -41,9 +41,11 @@ export function useSessionsCalendar(locale: Locale) {
     try {
       const res = await cancel({ id: sessionId, reason }).unwrap();
       refetch();
-      return toCancelAssessment((res as { assessment?: unknown }).assessment ?? null);
+      const data = res?.data as { policyAssessment?: unknown } | undefined;
+      const legacy = res as unknown as { assessment?: unknown };
+      return toCancelAssessment(data?.policyAssessment ?? legacy.assessment ?? null);
     } catch (err) {
-      throw new Error(normalizeApiError(err as never, locale).message);
+      throw new Error(normalizeUnknownError(err, locale).message);
     }
   }
 

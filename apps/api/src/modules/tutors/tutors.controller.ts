@@ -144,6 +144,7 @@ export class TutorsController {
     return {
       success: true,
       message: 'Qualification removed successfully.',
+      data: null,
     };
   }
 
@@ -168,6 +169,7 @@ export class TutorsController {
     return {
       success: true,
       message: 'Teaching subject removed successfully.',
+      data: null,
     };
   }
 

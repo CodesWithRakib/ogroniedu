@@ -9,7 +9,7 @@ export class FeatureFlagEntity {
   enabled!: boolean;
 
   @Column({ type: 'jsonb', default: () => "'{}'::jsonb" })
-  rules!: Record<string, any>;
+  rules!: Record<string, unknown>;
 
   @Column('uuid', { name: 'updated_by', nullable: true })
   updatedBy!: string | null;

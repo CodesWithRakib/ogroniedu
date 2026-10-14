@@ -2,6 +2,7 @@ import { Controller, Get, Query, UseGuards, Inject } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { ADMIN_ROLES } from '../../common/auth/role.utils';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { AnalyticsService } from './analytics.service';
 import { AnalyticsTimeQueryDto } from './dto';
@@ -18,7 +19,7 @@ export class AnalyticsController {
    * 1. Operational Overview KPI Analytics (Admin / Super-Admin Only)
    */
   @Get('overview')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async getOperationalOverview(@Query() query: AnalyticsTimeQueryDto) {
     const data = await this.analyticsService.getOperationalOverview(query);
     return {
@@ -31,7 +32,7 @@ export class AnalyticsController {
    * 2. Financial & Double-Entry Ledger Analytics (Admin / Super-Admin Only)
    */
   @Get('financials')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async getFinancialAnalytics(@Query() query: AnalyticsTimeQueryDto) {
     const data = await this.analyticsService.getFinancialAnalytics(query);
     return {
@@ -44,7 +45,7 @@ export class AnalyticsController {
    * 3. Tutor Performance Leaderboard & Response Times (Admin / Super-Admin Only)
    */
   @Get('tutors')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async getTutorPerformanceAnalytics(@Query() query: AnalyticsTimeQueryDto) {
     const data = await this.analyticsService.getTutorPerformanceAnalytics(query);
     return {
@@ -57,7 +58,7 @@ export class AnalyticsController {
    * 4. Learner Cohort Retention & Re-Booking Rates (Admin / Super-Admin Only)
    */
   @Get('retention')
-  @Roles('admin', 'super_admin')
+  @Roles(...ADMIN_ROLES)
   async getRetentionAnalytics(@Query() query: AnalyticsTimeQueryDto) {
     const data = await this.analyticsService.getRetentionAnalytics(query);
     return {

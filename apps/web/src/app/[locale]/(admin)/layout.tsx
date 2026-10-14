@@ -7,7 +7,9 @@ export default async function AdminRouteLayout({
 }) {
   return (
     <div className="min-h-screen w-full bg-background text-foreground font-sans selection:bg-primary selection:text-primary-foreground">
-      {children}
+      <main id="main-content" tabIndex={-1}>
+        {children}
+      </main>
     </div>
   );
 }

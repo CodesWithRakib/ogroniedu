@@ -18,22 +18,10 @@ import { AuditService } from '../../audit/audit.service';
 import { LearningAccessService } from './learning-access.service';
 import { CreateProgressReportDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
+import { isAdminRole } from '../../../common/auth/role.utils';
+import type { StudentLearningSummary } from '../interfaces/student-learning-summary.interface';
 
-export interface StudentLearningSummary {
-  studentUserId: string;
-  metrics: {
-    totalSessionsRecorded: number;
-    sessionsAttended: number;
-    attendanceRate: number;
-    assignmentsAssigned: number;
-    assignmentsCompleted: number;
-    averageScore: number | null;
-  };
-  attendance: SessionAttendanceEntity[];
-  assignments: AssignmentEntity[];
-  submissions: AssignmentSubmissionEntity[];
-  progressReports: ProgressReportEntity[];
-}
+export type { StudentLearningSummary } from '../interfaces/student-learning-summary.interface';
 
 /**
  * Progress analytics: auditable progress reports computed from real
@@ -80,7 +68,7 @@ export class LearningProgressService {
 
     // Only assigned tutor or admin can generate progress reports
     const isTutor = booking.tutorUserId === user.id;
-    const isAdmin = user.roles?.includes('admin');
+    const isAdmin = isAdminRole(user);
     if (!isTutor && !isAdmin) {
       throw new ForbiddenException(
         'Only the assigned tutor or admin can generate progress reports for this booking',

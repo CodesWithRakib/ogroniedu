@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
 import { useAppDispatch } from '@/store';
 import { setSessionUser } from '@/store/slices/auth-slice';
 import { toAuthUser, useLazyGetSessionUserQuery } from '@/store/services/auth-api';
@@ -39,11 +39,21 @@ export function useProfileForm(locale: Locale) {
       }
       setSaved(locale === 'bn' ? 'সংরক্ষিত হয়েছে।' : 'Saved.');
     } catch (err) {
-      setFormError(normalizeApiError(err as never, locale).message);
+      setFormError(normalizeUnknownError(err, locale).message);
     }
   }
 
   const queryError = isError ? normalizeApiError(error, locale).message : null;
 
-  return { data, isLoading, queryError, displayName, setDisplayName, saved, formError, saving, handleSave };
+  return {
+    data,
+    isLoading,
+    queryError,
+    displayName,
+    setDisplayName,
+    saved,
+    formError,
+    saving,
+    handleSave,
+  };
 }

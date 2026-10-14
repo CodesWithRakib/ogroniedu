@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useSubmitSupportTicketMutation } from '@/store/services/support-api';
-import { normalizeApiError } from '@/lib/api-error';
+import { normalizeUnknownError } from '@/lib/api-error';
 import type { Locale } from '@/lib/i18n';
 
 /**
@@ -39,7 +39,7 @@ export function useContactForm(locale: Locale) {
       setTicketRef(res.data.id.slice(0, 8).toUpperCase());
       setSubmitted(true);
     } catch (err) {
-      setSubmitError(normalizeApiError(err as never, locale).message);
+      setSubmitError(normalizeUnknownError(err, locale).message);
     }
   }
 
