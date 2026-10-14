@@ -3,6 +3,7 @@ import { SchedulingService } from '../src/modules/bookings/scheduling.service';
 import { SessionSchedulingService } from '../src/modules/bookings/services/session-scheduling.service';
 import { SessionReschedulingService } from '../src/modules/bookings/services/session-rescheduling.service';
 import { SessionQueriesService } from '../src/modules/bookings/services/session-queries.service';
+import { GuardianAccessService } from '../src/modules/guardians/guardian-access.service';
 import {
   NotFoundException,
   BadRequestException,
@@ -98,7 +99,8 @@ describe('SchedulingService Unit & Conflict-Safety Tests (Phase 09)', () => {
       dispatch: vi.fn().mockResolvedValue(undefined),
     };
 
-    const queries = new SessionQueriesService(mockSessionRepo, mockLinkRepo) as never;
+    const guardianAccess = new GuardianAccessService(mockLinkRepo);
+    const queries = new SessionQueriesService(mockSessionRepo, guardianAccess) as never;
     service = new SchedulingService(
       new SessionSchedulingService(
         mockBookingRepo,

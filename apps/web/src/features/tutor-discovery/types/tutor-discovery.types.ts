@@ -42,6 +42,7 @@ export interface SearchFilters {
   subjectId?: string;
   educationLevelId?: string;
   curriculumId?: string;
+  districtCode?: string;
   mode?: string;
   minPrice?: number;
   maxPrice?: number;

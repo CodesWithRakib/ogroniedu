@@ -196,25 +196,41 @@ export function TutorSearchCatalog({
         : [...prev.days, dayKey],
     }));
 
+  const isBn = locale === 'bn';
+
   return (
     <div
       className="w-full max-w-7xl mx-auto px-4 py-8 space-y-8"
       data-testid="tutor-discovery-container"
     >
-      <div className="bg-gradient-to-r from-primary via-primary/90 to-primary/80 rounded-3xl p-8 sm:p-10 text-primary-foreground shadow-2xl relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-white/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+      <div className="rounded-3xl p-6 sm:p-10 bg-[#061f26]/90 border border-[#0df5c4]/30 text-white shadow-[0_20px_50px_rgba(0,0,0,0.6),0_0_35px_rgba(13,245,196,0.12)] relative overflow-hidden backdrop-blur-xl">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-[#0df5c4]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
         <div className="relative z-10 max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-white/15 border border-white/20 rounded-full text-xs font-semibold text-primary-foreground">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#0df5c4]/15 border border-[#0df5c4]/35 rounded-full text-xs font-semibold text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>NID &amp; Academic Verified Educators</span>
+            <span>{isBn ? '১০০% এনআইডি ও ডিগ্রি যাচাইকৃত শিক্ষক' : 'NID & Academic Verified Educators'}</span>
           </div>
-          <h1 className="text-3xl sm:text-4xl font-extrabold tracking-tight">
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
             {dict.discovery?.searchHeading || 'Find Verified Qualified Tutors'}
           </h1>
-          <p className="text-primary-foreground/90 text-sm sm:text-base leading-relaxed">
+          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl">
             {dict.discovery?.searchSubheading ||
               'Browse vetted educators across Bangladesh with transparent pricing and credential breakdown'}
           </p>
+          <div className="flex flex-wrap gap-2.5 pt-2 text-xs text-slate-300">
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#041a21] border border-[#0df5c4]/20 px-2.5 py-1 text-[11px]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#0df5c4]" />
+              <span>{isBn ? 'বুয়েট, ঢাবি ও মেডিকেল টিউটর' : 'BUET, DU & Medical Tutors'}</span>
+            </div>
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#041a21] border border-[#0df5c4]/20 px-2.5 py-1 text-[11px]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#0df5c4]" />
+              <span>{isBn ? '১০০% এসক্রো ফি সুরক্ষা' : '100% Escrow Protection'}</span>
+            </div>
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#041a21] border border-[#0df5c4]/20 px-2.5 py-1 text-[11px]">
+              <span className="h-1.5 w-1.5 rounded-full bg-[#0df5c4]" />
+              <span>{isBn ? 'ফ্রি ট্রায়াল সেশন' : 'Free Trial Sessions'}</span>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -227,8 +243,8 @@ export function TutorSearchCatalog({
         onReset={handleResetFilters}
       />
 
-      <div className="flex items-center justify-between text-sm text-slate-600 dark:text-slate-400">
-        <span data-testid="results-count-text">
+      <div className="flex items-center justify-between text-sm text-slate-300">
+        <span data-testid="results-count-text" className="font-semibold text-slate-200">
           {isLoading
             ? dict.common?.loading || 'Loading...'
             : dict.discovery?.resultsCount
@@ -242,7 +258,7 @@ export function TutorSearchCatalog({
       {(queryError || searchError) && (
         <div
           role="alert"
-          className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700"
+          className="rounded-2xl border border-rose-500/30 bg-rose-950/40 p-4 text-sm text-rose-300 backdrop-blur-md shadow-lg"
           data-testid="discovery-error"
         >
           {queryError || searchError}

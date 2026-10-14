@@ -53,10 +53,10 @@ export const THEME_META: Record<AppTheme, ThemeMeta> = {
   'ocean-teal': {
     labelEn: 'Ocean Teal',
     labelBn: 'ওশান টিল',
-    descriptionEn: 'Deep coastal navy + crisp teal/cyan. Clean focus for study sessions.',
-    descriptionBn: 'শান্ত ও পরিচ্ছন্ন উপকূলীয় ব্লু-টিল লার্নিং থিম।',
-    primaryColor: '#0d9488',
-    accentColor: '#14b8a6',
+    descriptionEn: 'Deep obsidian-cyan + electric mint emerald. Signature OgroniEdu aesthetic.',
+    descriptionBn: 'স্বাক্ষরিত অবসিডিয়ান ডার্ক সায়ান ও উজ্জ্বল এমারাল্ড থিম।',
+    primaryColor: '#0df5c4',
+    accentColor: '#00e1b2',
   },
   'sapphire-blue': {
     labelEn: 'Sapphire Blue',

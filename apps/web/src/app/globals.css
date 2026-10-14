@@ -101,7 +101,6 @@
 
 /* Emerald Slate — Dark */
 html.dark[data-theme="emerald-slate"],
-html.dark:not([data-theme]),
 [data-theme="emerald-slate"][data-mode="dark"] {
   color-scheme: dark;
   --background: #09120f;
@@ -258,42 +257,43 @@ html.dark[data-theme="midnight-violet"],
   --shadow-card: 0 4px 20px -2px rgba(9, 35, 43, 0.08);
 }
 
-/* Ocean Teal — Dark */
+/* Ocean Teal — Dark (OgroniEdu Hero Signature Palette) */
 html.dark[data-theme="ocean-teal"],
+html.dark:not([data-theme]),
 [data-theme="ocean-teal"][data-mode="dark"] {
   color-scheme: dark;
-  --background: #06222b;
-  --foreground: #e8f7f5;
-  --card: #0b303c;
-  --card-foreground: #e8f7f5;
-  --popover: #0e3a47;
-  --popover-foreground: #e8f7f5;
-  --surface-muted: #0d3540;
-  --surface-elevated: #114251;
-  --surface-hover: #164f61;
+  --background: #031317;
+  --foreground: #f1fbf8;
+  --card: #061f26;
+  --card-foreground: #f1fbf8;
+  --popover: #061f26;
+  --popover-foreground: #f1fbf8;
+  --surface-muted: #07252d;
+  --surface-elevated: #0a313b;
+  --surface-hover: #0e3f4c;
 
-  --primary: #14b8a6;
-  --primary-hover: #0d9488;
-  --primary-foreground: #04262b;
-  --primary-soft: rgba(20, 184, 166, 0.18);
-  --primary-soft-foreground: #5eead4;
+  --primary: #0df5c4;
+  --primary-hover: #00e1b2;
+  --primary-foreground: #042426;
+  --primary-soft: rgba(13, 245, 196, 0.16);
+  --primary-soft-foreground: #0df5c4;
 
-  --secondary: #0f3d49;
-  --secondary-foreground: #d9f2ee;
-  --muted: #0d3540;
-  --muted-foreground: #8fc3bb;
-  --accent: #22d3ee;
-  --accent-foreground: #04303a;
+  --secondary: #082832;
+  --secondary-foreground: #e2f8f4;
+  --muted: #082832;
+  --muted-foreground: #8faeb4;
+  --accent: #0df5c4;
+  --accent-foreground: #042426;
 
-  --border: #155263;
-  --input: #155263;
-  --ring: #2dd4bf;
-  --success: #34d399;
+  --border: rgba(13, 245, 196, 0.22);
+  --input: rgba(13, 245, 196, 0.25);
+  --ring: #0df5c4;
+  --success: #0df5c4;
   --destructive: #f87171;
 
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(20, 184, 166, 0.22) 0%, rgba(6, 34, 43, 0) 70%);
-  --gradient-card: linear-gradient(180deg, rgba(20, 184, 166, 0.14) 0%, rgba(11, 48, 60, 0) 100%);
-  --shadow-card: 0 8px 30px rgba(14, 116, 144, 0.3);
+  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(13, 245, 196, 0.25) 0%, rgba(3, 19, 23, 0) 75%);
+  --gradient-card: linear-gradient(180deg, rgba(13, 245, 196, 0.12) 0%, rgba(6, 31, 38, 0) 100%);
+  --shadow-card: 0 10px 35px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(13, 245, 196, 0.08);
 }
 
 /* ==================================================================

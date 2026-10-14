@@ -154,6 +154,10 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
       record: vi.fn().mockResolvedValue({ id: 'audit-ok' }),
     };
 
+    const mockGuardianAccess: any = {
+      assertGuardianHasAccess: vi.fn().mockResolvedValue(true),
+    };
+
     bookingsService = new BookingsService(
       mockBookingRepo,
       mockTutorProfileRepo,
@@ -163,6 +167,7 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
       mockSubjectRepo,
       mockLevelRepo,
       mockAuditService,
+      mockGuardianAccess,
     );
 
     // 2. Ledger Service Mock Setup

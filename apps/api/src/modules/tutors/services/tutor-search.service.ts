@@ -134,10 +134,26 @@ export class TutorSearchService {
       const term = query.q.trim().toLowerCase();
       candidates = candidates.filter((p) => {
         const u = users.find((usr) => usr.id === p.userId);
+        const matchesUser = u?.displayName?.toLowerCase().includes(term);
+        const matchesHeadline = p.headline?.toLowerCase().includes(term);
+        const matchesBio = p.bio?.toLowerCase().includes(term);
+        const matchesQualification = (p.qualifications || []).some(
+          (q) =>
+            q.institution?.toLowerCase().includes(term) ||
+            q.title?.toLowerCase().includes(term),
+        );
+        const matchesServiceArea = (p.serviceAreas || []).some(
+          (a) =>
+            a.districtCode?.toLowerCase().includes(term) ||
+            a.localityName?.toLowerCase().includes(term) ||
+            a.upazilaCode?.toLowerCase().includes(term),
+        );
         return (
-          u?.displayName?.toLowerCase().includes(term) ||
-          p.headline?.toLowerCase().includes(term) ||
-          p.bio?.toLowerCase().includes(term)
+          matchesUser ||
+          matchesHeadline ||
+          matchesBio ||
+          matchesQualification ||
+          matchesServiceArea
         );
       });
     }
