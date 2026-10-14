@@ -27,6 +27,15 @@ export interface PublicAvailabilityItem {
   timezone: string;
 }
 
+export interface PublicQualificationItem {
+  id: string;
+  qualificationType: string;
+  institution: string | null;
+  title: string;
+  issuedYear?: number | null;
+  isVerified: boolean;
+}
+
 export class TutorPublicProfileDto {
   id!: string;
   displayName!: string;
@@ -38,7 +47,11 @@ export class TutorPublicProfileDto {
   currency!: string;
   responseTimeMinutes!: number | null;
   badges!: string[]; // Only checks actually performed (e.g. 'verified_identity', 'verified_academic')
+  qualifications!: PublicQualificationItem[];
   subjects!: PublicSubjectItem[];
   serviceAreas!: PublicServiceAreaItem[];
   availability!: PublicAvailabilityItem[];
+  ratingAverage?: number;
+  totalReviews?: number;
+  completedSessions?: number;
 }

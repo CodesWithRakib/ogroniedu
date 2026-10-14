@@ -1,6 +1,5 @@
-'use client';
-
 import React from 'react';
+import Link from 'next/link';
 import {
   Award,
   CheckCircle2,
@@ -10,6 +9,7 @@ import {
   MapPin,
   Calendar,
   Star,
+  ArrowRight,
 } from 'lucide-react';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import type { TutorCardData } from '../types/tutor-discovery.types';
@@ -55,7 +55,10 @@ export function TutorCard({
       <div className="p-5 space-y-3.5">
         {/* Top Row: Avatar + Name + Match Score */}
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-start gap-3">
+          <Link
+            href={`/${locale}/tutors/${tutor.id}`}
+            className="flex items-start gap-3 group/link flex-1 min-w-0"
+          >
             {/* Avatar with status indicator */}
             <div className="relative shrink-0">
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-br from-[#0a3540] via-[#052128] to-[#03151a] text-[#0df5c4] font-bold text-sm ring-2 ring-[#0df5c4]/30 group-hover:ring-[#0df5c4]/60 transition-all shadow-inner">
@@ -67,7 +70,7 @@ export function TutorCard({
             {/* Name, Headline & Rating */}
             <div className="min-w-0">
               <div className="flex items-center gap-1.5 flex-wrap">
-                <h3 className="text-base font-bold text-white group-hover:text-[#0df5c4] transition-colors truncate">
+                <h3 className="text-base font-bold text-white group-hover/link:text-[#0df5c4] transition-colors truncate">
                   {tutor.displayName}
                 </h3>
               </div>
@@ -85,7 +88,7 @@ export function TutorCard({
                 </span>
               </div>
             </div>
-          </div>
+          </Link>
 
           {/* Explainable Match Score Badge */}
           <button
@@ -206,14 +209,24 @@ export function TutorCard({
           )}
         </div>
 
-        <button
-          type="button"
-          onClick={() => onRequestBooking(tutor)}
-          data-testid={`request-tutoring-btn-${tutor.id}`}
-          className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#0df5c4] to-[#00cba0] hover:from-[#00cba0] hover:to-[#0df5c4] text-[#031317] font-extrabold text-xs px-4 py-2.5 shadow-[0_0_15px_rgba(13,245,196,0.4)] hover:shadow-[0_0_20px_rgba(13,245,196,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0"
-        >
-          <span>{dict.discovery?.requestSession || 'Request Tutoring'}</span>
-        </button>
+        <div className="flex items-center gap-2 shrink-0">
+          <Link
+            href={`/${locale}/tutors/${tutor.id}`}
+            className="inline-flex items-center justify-center gap-1 rounded-xl bg-[#072d36] hover:bg-[#0a3843] border border-[#0df5c4]/30 hover:border-[#0df5c4]/60 text-[#0df5c4] font-bold text-xs px-3 py-2.5 transition-all"
+            title={locale === 'bn' ? 'সম্পূর্ণ প্রোফাইল ও যোগ্যতা দেখুন' : 'View Full Profile & Credentials'}
+          >
+            <span>{locale === 'bn' ? 'বিস্তারিত' : 'Details'}</span>
+            <ArrowRight className="w-3.5 h-3.5" />
+          </Link>
+          <button
+            type="button"
+            onClick={() => onRequestBooking(tutor)}
+            data-testid={`request-tutoring-btn-${tutor.id}`}
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-[#0df5c4] to-[#00cba0] hover:from-[#00cba0] hover:to-[#0df5c4] text-[#031317] font-extrabold text-xs px-3.5 py-2.5 shadow-[0_0_15px_rgba(13,245,196,0.4)] hover:shadow-[0_0_20px_rgba(13,245,196,0.6)] hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0"
+          >
+            <span>{dict.discovery?.requestSession || 'Request Tutoring'}</span>
+          </button>
+        </div>
       </div>
     </div>
   );

@@ -7,8 +7,6 @@ import { ReviewsService } from './reviews.service';
 import { CreateReviewDto, TutorReplyDto, ModerateReviewDto } from './dto';
 
 @ApiTags('Trust & Reviews')
-@ApiBearerAuth()
-@UseGuards(AuthGuard)
 @Controller('api/v1/reviews')
 export class ReviewsController {
   constructor(
@@ -17,6 +15,8 @@ export class ReviewsController {
   ) {}
 
   @Post()
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Submit a verified review for a completed booking' })
   @ApiResponse({ status: 201, description: 'Review successfully submitted' })
   async createReview(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateReviewDto) {
@@ -31,6 +31,8 @@ export class ReviewsController {
   }
 
   @Post(':id/reply')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Tutor formal rebuttal response to a review' })
   @ApiResponse({ status: 200, description: 'Reply posted' })
   async replyToReview(
@@ -42,6 +44,8 @@ export class ReviewsController {
   }
 
   @Patch(':id/moderate')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Admin review moderation (flag / hide / publish)' })
   @ApiResponse({ status: 200, description: 'Review moderation updated' })
   async moderateReview(

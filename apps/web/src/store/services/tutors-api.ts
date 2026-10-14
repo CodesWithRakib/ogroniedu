@@ -75,6 +75,49 @@ export interface SearchTutorsResponse {
   };
 }
 
+export interface PublicQualification {
+  id: string;
+  qualificationType: string;
+  institution: string | null;
+  title: string;
+  issuedYear?: number | null;
+  isVerified: boolean;
+}
+
+export interface PublicAvailability {
+  weekday: number;
+  startLocal: string;
+  endLocal: string;
+  timezone: string;
+}
+
+export interface TutorPublicProfile {
+  id: string;
+  displayName: string;
+  headline: string | null;
+  bio: string | null;
+  yearsExperience: number | null;
+  teachingModes: string[];
+  hourlyRateMinor: string | null;
+  currency: string;
+  responseTimeMinutes: number | null;
+  badges: string[];
+  qualifications?: PublicQualification[];
+  subjects: TutorSubject[];
+  serviceAreas: Array<{
+    id?: string;
+    districtCode?: string;
+    upazilaCode?: string | null;
+    localityName?: string | null;
+    districtNameEn?: string;
+    districtNameBn?: string;
+  }>;
+  availability?: PublicAvailability[];
+  ratingAverage?: number;
+  totalReviews?: number;
+  completedSessions?: number;
+}
+
 export interface TutorOwnProfile {
   id: string;
   userId: string;
@@ -94,7 +137,7 @@ export const tutorsApi = baseApi.injectEndpoints({
       query: (params) => `/api/v1/tutors/search${toQueryString(params ?? {})}`,
       providesTags: [{ type: 'TutorSearch', id: 'LIST' }],
     }),
-    getTutorPublicProfile: builder.query<ApiSuccessEnvelope<unknown>, string>({
+    getTutorPublicProfile: builder.query<ApiSuccessEnvelope<TutorPublicProfile>, string>({
       query: (id) => `/api/v1/tutors/public/${id}`,
       providesTags: (_r, _e, id) => [{ type: 'TutorProfile', id }],
     }),
