@@ -29,7 +29,10 @@ export function TablePagination({
 }) {
   const isBn = locale === 'bn';
   return (
-    <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between" data-testid={testId}>
+    <div
+      className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
+      data-testid={testId}
+    >
       <p className="text-xs text-slate-500" data-testid={`${testId}-summary`}>
         {isBn
           ? `পৃষ্ঠা ${formatLocalizedNumber(pagination.page, locale)} / ${formatLocalizedNumber(pagination.totalPages, locale)} · ${formatLocalizedNumber(pagination.totalItems, locale)}টি`
@@ -41,7 +44,11 @@ export function TablePagination({
             value={String(pagination.pageSize)}
             onValueChange={(v) => onPageSizeChange(Number(v))}
           >
-            <SelectTrigger className="h-8 w-24" aria-label={isBn ? 'পৃষ্ঠার আকার' : 'Page size'} data-testid={`${testId}-page-size`}>
+            <SelectTrigger
+              className="h-8 w-24"
+              aria-label={isBn ? 'পৃষ্ঠার আকার' : 'Page size'}
+              data-testid={`${testId}-page-size`}
+            >
               <SelectValue />
             </SelectTrigger>
             <SelectContent>

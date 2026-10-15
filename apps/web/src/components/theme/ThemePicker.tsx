@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Sun, Moon, Laptop, Palette, Check } from 'lucide-react';
 import { useAppTheme } from '@/lib/theme';
-import { APP_THEMES, THEME_META, type AppTheme, type ThemeMode } from '@/lib/theme/themes';
+import { APP_THEMES, THEME_META } from '@/lib/theme/themes';
 import { cn } from '@/lib/utils';
 import type { Locale } from '@/lib/i18n';
 
@@ -86,7 +86,13 @@ export function ThemePicker({ locale = 'bn', compact = false, className }: Theme
               <span>{isBn ? 'থিম ও কালার কন্ট্রোল' : 'Theme & Appearance'}</span>
             </div>
             <span className="text-[10px] text-muted-foreground uppercase font-semibold tracking-wider">
-              {resolvedMode === 'dark' ? (isBn ? 'ডার্ক মোড' : 'Dark Mode') : (isBn ? 'লাইট মোড' : 'Light Mode')}
+              {resolvedMode === 'dark'
+                ? isBn
+                  ? 'ডার্ক মোড'
+                  : 'Dark Mode'
+                : isBn
+                  ? 'লাইট মোড'
+                  : 'Light Mode'}
             </span>
           </div>
 

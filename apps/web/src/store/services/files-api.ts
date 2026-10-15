@@ -23,7 +23,10 @@ export interface EvidenceFile {
 
 export const filesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    uploadEvidence: builder.mutation<{ success: boolean; file: EvidenceFile }, UploadEvidenceRequest>({
+    uploadEvidence: builder.mutation<
+      { success: boolean; file: EvidenceFile },
+      UploadEvidenceRequest
+    >({
       query: (body) => ({ url: '/api/v1/files/upload-evidence', method: 'POST', body }),
       invalidatesTags: [{ type: 'FileAsset', id: 'LIST' }],
     }),

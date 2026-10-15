@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import {
   Users,
   UserPlus,
   ShieldCheck,
   GraduationCap,
   AlertCircle,
-  CheckCircle2,
   Trash2,
   Lock,
 } from 'lucide-react';
@@ -22,11 +21,12 @@ import {
   Input,
 } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
+import { useGuardianChildren } from './use-guardian-children';
 
 export type GuardianRelationship = 'father' | 'mother' | 'legal_guardian';
 
 /** Narrow the raw select value into the relationship union without asserting `any`. */
-function toGuardianRelationship(value: string): GuardianRelationship {
+export function toGuardianRelationship(value: string): GuardianRelationship {
   return value === 'mother' || value === 'legal_guardian' ? value : 'father';
 }
 
@@ -43,9 +43,7 @@ export interface ChildItem {
   educationLevelName?: string | null;
 }
 
-interface GuardianChildrenManagerProps {
-  locale: Locale;
-  initialChildren?: ChildItem[];
+export interface GuardianChildrenCallbacks {
   onAddChild?: (data: {
     studentIdentifier: string;
     relationshipType: string;
@@ -55,6 +53,11 @@ interface GuardianChildrenManagerProps {
   onRevokeLink?: (studentId: string) => Promise<void>;
 }
 
+interface GuardianChildrenManagerProps extends GuardianChildrenCallbacks {
+  locale: Locale;
+  initialChildren?: ChildItem[];
+}
+
 export function GuardianChildrenManager({
   locale,
   initialChildren = [],
@@ -62,70 +65,22 @@ export function GuardianChildrenManager({
   onRevokeLink,
 }: GuardianChildrenManagerProps) {
   const dict = getDictionary(locale);
-  const [children, setChildren] = useState<ChildItem[]>(initialChildren);
-
-  React.useEffect(() => {
-    setChildren(initialChildren);
-  }, [initialChildren]);
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [identifier, setIdentifier] = useState('');
-  const [relationship, setRelationship] = useState<GuardianRelationship>('father');
-  const [consentAgreed, setConsentAgreed] = useState(false);
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  const handleLinkChild = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!identifier.trim()) {
-      setErrorMessage(
-        locale === 'bn' ? 'শিক্ষার্থীর তথ্য আবশ্যক' : 'Student identifier is required',
-      );
-      return;
-    }
-    if (!consentAgreed) {
-      setErrorMessage(
-        locale === 'bn'
-          ? 'নীতিমালার অধীনে অভিভাবকের সম্মতি আবশ্যক'
-          : 'Guardian consent agreement is mandatory',
-      );
-      return;
-    }
-
-    setLoading(true);
-    setErrorMessage(null);
-
-    try {
-      if (onAddChild) {
-        await onAddChild({
-          studentIdentifier: identifier,
-          relationshipType: relationship,
-          consentPolicyVersion: 'v1.0-bd-minor-consent',
-          consentAgreed,
-        });
-      } else {
-        throw new Error(
-          locale === 'bn' ? 'সন্তান যুক্ত করতে লগইন করুন।' : 'Sign in to link a child.',
-        );
-      }
-
-      setIdentifier('');
-      setConsentAgreed(false);
-      setIsModalOpen(false);
-    } catch (err) {
-      setErrorMessage(err instanceof Error ? err.message : 'Failed to submit link request');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const handleRevoke = async (studentId: string) => {
-    if (confirm(dict.guardian.unlinkConfirm)) {
-      if (onRevokeLink) {
-        await onRevokeLink(studentId);
-      }
-      setChildren((prev) => prev.filter((c) => c.studentId !== studentId));
-    }
-  };
+  const {
+    children,
+    isModalOpen,
+    setIsModalOpen,
+    identifier,
+    setIdentifier,
+    relationship,
+    setRelationship,
+    consentAgreed,
+    setConsentAgreed,
+    loading,
+    errorMessage,
+    handleLinkChild,
+    handleRevoke,
+    closeModal,
+  } = useGuardianChildren(locale, initialChildren, { onAddChild, onRevokeLink });
 
   return (
     <div className="space-y-6" data-testid="guardian-children-manager">
@@ -286,15 +241,7 @@ export function GuardianChildrenManager({
                 </div>
               </CardContent>
               <div className="p-6 pt-0 flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => {
-                    setIsModalOpen(false);
-                    setErrorMessage(null);
-                  }}
-                  disabled={loading}
-                >
+                <Button type="button" variant="outline" onClick={closeModal} disabled={loading}>
                   {dict.common.cancel}
                 </Button>
                 <Button type="submit" disabled={loading} className="gap-2">

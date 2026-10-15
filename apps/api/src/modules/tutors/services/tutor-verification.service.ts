@@ -173,7 +173,9 @@ export class TutorVerificationService {
           });
         }
       } catch (err) {
-        this.logger.warn(`Failed to dispatch verification notification to tutor ${tutorId}: ${err}`);
+        this.logger.warn(
+          `Failed to dispatch verification notification to tutor ${tutorId}: ${err}`,
+        );
       }
     }
     return savedReview;

@@ -31,11 +31,18 @@ export function FormField({
         )}
       </Label>
       {React.isValidElement(children)
-        ? React.cloneElement(children as React.ReactElement<{ id?: string; 'aria-invalid'?: boolean; 'aria-describedby'?: string }>, {
-            id: htmlFor,
-            'aria-invalid': error ? true : undefined,
-            'aria-describedby': [errorId, hintId].filter(Boolean).join(' ') || undefined,
-          })
+        ? React.cloneElement(
+            children as React.ReactElement<{
+              id?: string;
+              'aria-invalid'?: boolean;
+              'aria-describedby'?: string;
+            }>,
+            {
+              id: htmlFor,
+              'aria-invalid': error ? true : undefined,
+              'aria-describedby': [errorId, hintId].filter(Boolean).join(' ') || undefined,
+            },
+          )
         : children}
       {hint && !error && (
         <p id={hintId} className="text-xs text-slate-500">

@@ -28,7 +28,10 @@ export interface BookingRequestItem {
 
 export const bookingsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    createBookingRequest: builder.mutation<ApiSuccessEnvelope<BookingRequestItem>, CreateBookingRequest>({
+    createBookingRequest: builder.mutation<
+      ApiSuccessEnvelope<BookingRequestItem>,
+      CreateBookingRequest
+    >({
       query: (body) => ({ url: '/api/v1/requests', method: 'POST', body }),
       invalidatesTags: [
         { type: 'BookingRequest', id: 'LIST' },

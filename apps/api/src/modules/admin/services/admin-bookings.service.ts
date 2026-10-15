@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  Inject,
-  NotFoundException,
-  BadRequestException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, Inject, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { UserEntity } from '../../auth/entities/user.entity';
@@ -57,8 +51,9 @@ export class AdminBookingsService {
 
     const qb = this.bookingRepo
       .createQueryBuilder('booking')
-      .leftJoinAndSelect('booking.student', 'student')
-      .leftJoinAndSelect('booking.tutor', 'tutor')
+      .leftJoinAndSelect('booking.requesterUser', 'requester')
+      .leftJoinAndSelect('booking.studentUser', 'student')
+      .leftJoinAndSelect('booking.tutorProfile', 'tutorProfile')
       .leftJoinAndSelect('booking.subject', 'subject')
       .leftJoinAndSelect('booking.educationLevel', 'level')
       .orderBy('booking.createdAt', 'DESC')

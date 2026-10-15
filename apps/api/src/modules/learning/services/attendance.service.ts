@@ -33,6 +33,7 @@ export class LearningAttendanceService {
     private readonly attendanceRepo: Repository<SessionAttendanceEntity>,
     @InjectRepository(BookingSessionEntity)
     private readonly sessionRepo: Repository<BookingSessionEntity>,
+    @Inject(GuardianAccessService)
     private readonly guardianAccess: GuardianAccessService,
     @Inject(forwardRef(() => LearningAccessService))
     private readonly access: LearningAccessService,

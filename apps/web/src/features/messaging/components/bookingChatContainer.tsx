@@ -1,10 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  BookingChatView,
-  type ChatMessageItem,
-} from '@/components/notifications/BookingChatView';
+import { BookingChatView, type ChatMessageItem } from '@/components/notifications/BookingChatView';
 import { LoadingState } from '@/components/shared/LoadingState';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { Button } from '@/components/ui/Button';
@@ -41,7 +38,9 @@ export function BookingChatContainer({
 
   if (chat.isLoading) return <LoadingState testId={`${testId}-loading`} />;
   if (chat.errorMessage)
-    return <ErrorState message={chat.errorMessage} onRetry={chat.refetch} testId={`${testId}-error`} />;
+    return (
+      <ErrorState message={chat.errorMessage} onRetry={chat.refetch} testId={`${testId}-error`} />
+    );
 
   return (
     <div data-testid={testId} className="space-y-3">

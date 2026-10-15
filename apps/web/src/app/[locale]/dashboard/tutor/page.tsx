@@ -2,7 +2,7 @@
 
 import { use } from 'react';
 import { RequireAuth } from '@/components/auth/RequireAuth';
-import { TutorDashboardPage } from '@/features/tutors/pages/tutor-dashboard-page';
+import { TutorDashboardPage } from '@/features/tutors';
 import type { Locale } from '@/lib/i18n';
 
 export default function Page({ params }: { params: Promise<{ locale: string }> }) {

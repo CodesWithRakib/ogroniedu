@@ -10,7 +10,6 @@ import {
 } from './entities';
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { BookingSessionEntity } from '../bookings/entities/booking-session.entity';
-import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-student-link.entity';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { PaymentsService } from './payments.service';
 import { PaymentOrdersService } from './services/payment-orders.service';
@@ -25,6 +24,7 @@ import { PaymentAdapterFactory } from './adapters/adapter.factory';
 import { AuthModule } from '../auth/auth.module';
 import { AuditModule } from '../audit/audit.module';
 import { NotificationsModule } from '../notifications/notifications.module';
+import { GuardiansModule } from '../guardians/guardians.module';
 
 @Module({
   imports: [
@@ -37,12 +37,12 @@ import { NotificationsModule } from '../notifications/notifications.module';
       LedgerEntryEntity,
       BookingEntity,
       BookingSessionEntity,
-      GuardianStudentLinkEntity,
       OutboxEventEntity,
     ]),
     AuthModule,
     AuditModule,
     forwardRef(() => NotificationsModule),
+    GuardiansModule,
   ],
   controllers: [PaymentsController],
   providers: [

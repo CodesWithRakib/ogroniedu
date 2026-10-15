@@ -49,7 +49,9 @@ export function AnalyticsPage({ locale }: { locale: Locale }) {
       <AdminLayout locale={locale} title={locale === 'bn' ? 'অ্যানালিটিক্স' : 'Analytics'}>
         <div className="py-10">
           <Card>
-            <CardContent className="py-8 text-center text-sm text-rose-600">{queryError}</CardContent>
+            <CardContent className="py-8 text-center text-sm text-rose-600">
+              {queryError}
+            </CardContent>
           </Card>
         </div>
       </AdminLayout>

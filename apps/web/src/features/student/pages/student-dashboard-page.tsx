@@ -2,32 +2,16 @@
 
 import React from 'react';
 import Link from 'next/link';
-import {
-  Inbox,
-  Calendar,
-  Bell,
-  BookOpen,
-  Search,
-  Sparkles,
-  ArrowRight,
-  Plus,
-} from 'lucide-react';
+import { Inbox, Calendar, Bell, BookOpen, Search, Sparkles, ArrowRight } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
 import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart';
 import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard';
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
 import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  EmptyState,
-  LoadingSpinner,
-} from '@/components/ui';
+import { EmptyState, LoadingSpinner } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { formatDate, formatDateTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
 import { useStudentDashboard } from '../hooks/use-student-dashboard';
 
@@ -148,17 +132,10 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
         <div className="lg:col-span-1">
           <SessionReminderCard
             locale={locale}
-            title={
-              upcomingSession?.subject
-                ? String(upcomingSession.subject)
-                : undefined
-            }
+            title={upcomingSession?.subject ? String(upcomingSession.subject) : undefined}
             timeRange={
               upcomingSession?.scheduledAt
-                ? new Date(String(upcomingSession.scheduledAt)).toLocaleString(
-                    isBn ? 'bn-BD' : 'en-US',
-                    { dateStyle: 'medium', timeStyle: 'short' }
-                  )
+                ? formatDateTime(String(upcomingSession.scheduledAt), locale)
                 : undefined
             }
             roomUrl={upcomingSession?.meetingUrl ?? undefined}
@@ -276,12 +253,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                         {r.id.slice(0, 12)}…
                       </p>
                       <p className="text-[11px] text-muted-foreground truncate">
-                        {r.createdAt
-                          ? new Date(r.createdAt).toLocaleDateString(
-                              isBn ? 'bn-BD' : 'en-US',
-                              { dateStyle: 'medium' }
-                            )
-                          : '—'}
+                        {r.createdAt ? formatDate(r.createdAt, locale) : '—'}
                       </p>
                     </div>
                   </div>

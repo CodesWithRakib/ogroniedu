@@ -24,11 +24,7 @@ const ATTENDANCE_STATUSES: readonly AttendanceItemStatus[] = [
   'absent',
   'excused',
 ];
-const ASSIGNMENT_STATUSES: readonly AssignmentItem['status'][] = [
-  'draft',
-  'published',
-  'archived',
-];
+const ASSIGNMENT_STATUSES: readonly AssignmentItem['status'][] = ['draft', 'published', 'archived'];
 
 function isKnown<T extends string>(value: unknown, known: readonly T[]): value is T {
   return typeof value === 'string' && (known as readonly string[]).includes(value);

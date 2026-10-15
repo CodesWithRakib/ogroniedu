@@ -2,15 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import {
-  Users,
-  Calendar,
-  Inbox,
-  ShieldCheck,
-  Search,
-  Plus,
-  Download,
-} from 'lucide-react';
+import { Users, Calendar, Inbox, ShieldCheck, Search, Plus, Download } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
 import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart';
@@ -18,9 +10,9 @@ import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard'
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
 import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
 import { GuardianChildrenManager } from '@/components/guardian/GuardianChildrenManager';
-import { Card, CardHeader, CardTitle, CardContent, LoadingSpinner } from '@/components/ui';
+import { LoadingSpinner } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
-import { normalizeApiError } from '@/lib/api-error';
+import { formatDateTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
 import { useGuardianDashboard } from '../hooks/use-guardian-dashboard';
 
@@ -74,11 +66,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
           variant="hero"
           icon={Users}
           title={dict.guardian.childrenTitle}
-          value={
-            childrenQuery.isLoading
-              ? '...'
-              : formatLocalizedNumber(children.length, locale)
-          }
+          value={childrenQuery.isLoading ? '...' : formatLocalizedNumber(children.length, locale)}
           changeText={
             isBn
               ? `${formatLocalizedNumber(children.length, locale)}টি সক্রিয় সন্তান প্রোফাইল`
@@ -98,9 +86,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
               ? '...'
               : formatLocalizedNumber(requests.data?.data?.length ?? 0, locale)
           }
-          changeText={
-            isBn ? 'যাচাইকৃত শিক্ষক নির্বাচন' : 'Verified tutor bookings'
-          }
+          changeText={isBn ? 'যাচাইকৃত শিক্ষক নির্বাচন' : 'Verified tutor bookings'}
           href={withLocale('/requests', locale)}
           testId="guardian-requests-count"
         />
@@ -183,17 +169,10 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         <div className="lg:col-span-1">
           <SessionReminderCard
             locale={locale}
-            title={
-              upcomingSession?.subject
-                ? String(upcomingSession.subject)
-                : undefined
-            }
+            title={upcomingSession?.subject ? String(upcomingSession.subject) : undefined}
             timeRange={
               upcomingSession?.scheduledAt
-                ? new Date(String(upcomingSession.scheduledAt)).toLocaleString(
-                    isBn ? 'bn-BD' : 'en-US',
-                    { dateStyle: 'medium', timeStyle: 'short' }
-                  )
+                ? formatDateTime(String(upcomingSession.scheduledAt), locale)
                 : undefined
             }
             roomUrl={upcomingSession?.meetingUrl ?? undefined}

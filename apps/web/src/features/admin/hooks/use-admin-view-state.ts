@@ -41,8 +41,9 @@ export interface AdminViewState {
 export function useAdminViewState(): AdminViewState {
   const [activeTab, setActiveTab] = React.useState<AdminTabKey>('overview');
 
-  const [selectedUserForSuspend, setSelectedUserForSuspend] =
-    React.useState<AdminUserItem | null>(null);
+  const [selectedUserForSuspend, setSelectedUserForSuspend] = React.useState<AdminUserItem | null>(
+    null,
+  );
   const [suspendReason, setSuspendReason] = React.useState('');
   const [selectedUserForRoles, setSelectedUserForRoles] = React.useState<AdminUserItem | null>(
     null,

@@ -32,19 +32,15 @@ test.describe('evidence upload + session revocation', () => {
     const form = page.getByTestId('qualification-upload-form');
     await expect(form).toBeVisible({ timeout: 20_000 });
     await form.getByTestId('qualification-type-select').selectOption('nid');
-    await form
-      .getByTestId('qualification-title-input')
-      .fill(`E2E NID ${Date.now()}`);
-    await form
-      .getByTestId('qualification-file-input')
-      .setInputFiles({
-        name: 'nid-evidence.png',
-        mimeType: 'image/png',
-        buffer: Buffer.from(
-          'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
-          'base64',
-        ),
-      });
+    await form.getByTestId('qualification-title-input').fill(`E2E NID ${Date.now()}`);
+    await form.getByTestId('qualification-file-input').setInputFiles({
+      name: 'nid-evidence.png',
+      mimeType: 'image/png',
+      buffer: Buffer.from(
+        'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==',
+        'base64',
+      ),
+    });
     await form.getByTestId('qualification-upload-btn').click();
     await expect(form.getByTestId('qualification-upload-saved')).toBeVisible({
       timeout: 20_000,

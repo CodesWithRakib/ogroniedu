@@ -3,9 +3,8 @@ import { TutorsService } from '../src/modules/tutors/tutors.service';
 import { TutorProfileService } from '../src/modules/tutors/services/tutor-profile.service';
 import { TutorSearchService } from '../src/modules/tutors/services/tutor-search.service';
 import { TutorVerificationService } from '../src/modules/tutors/services/tutor-verification.service';
-import { ForbiddenException, BadRequestException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, BadRequestException } from '@nestjs/common';
 import { TutorProfileEntity } from '../src/modules/tutors/entities/tutor-profile.entity';
-import { TutorQualificationEntity } from '../src/modules/tutors/entities/tutor-qualification.entity';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
 describe('TutorsService Unit & Security Invariant Tests', () => {

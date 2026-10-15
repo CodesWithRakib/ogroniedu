@@ -3,7 +3,11 @@
 import { CreditCard, Lock } from 'lucide-react';
 import { Button, Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
-import { orderAmountBdt, type PaymentOrderDetails, type PaymentProvider } from '../types/payment-checkout.types';
+import {
+  orderAmountBdt,
+  type PaymentOrderDetails,
+  type PaymentProvider,
+} from '../types/payment-checkout.types';
 
 export interface CheckoutMethodPickerProps {
   order: PaymentOrderDetails;

@@ -99,8 +99,18 @@ export function ReviewFormModal({
       {submit.successMsg && <TrustFormAlert tone="success">{submit.successMsg}</TrustFormAlert>}
 
       <form onSubmit={handleSubmit}>
-        <StarSelector label={t('overallRating')} value={rating} onChange={setRating} locale={locale} />
-        <StarSelector label={t('punctuality')} value={punctuality} onChange={setPunctuality} locale={locale} />
+        <StarSelector
+          label={t('overallRating')}
+          value={rating}
+          onChange={setRating}
+          locale={locale}
+        />
+        <StarSelector
+          label={t('punctuality')}
+          value={punctuality}
+          onChange={setPunctuality}
+          locale={locale}
+        />
         <StarSelector
           label={t('teachingClarity')}
           value={teachingClarity}

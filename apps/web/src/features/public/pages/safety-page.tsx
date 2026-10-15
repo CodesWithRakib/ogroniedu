@@ -5,7 +5,6 @@ import {
   ShieldAlert,
   ShieldCheck,
   UserCheck,
-  Lock,
   MessageSquare,
   AlertTriangle,
   RotateCcw,

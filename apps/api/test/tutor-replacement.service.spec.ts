@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { TutorReplacementService } from '../src/modules/trust/tutor-replacement.service';
-import { ForbiddenException, NotFoundException, BadRequestException } from '@nestjs/common';
+import { ForbiddenException, BadRequestException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
 describe('TutorReplacementService Unit Tests (Phase 13 / FR-011)', () => {

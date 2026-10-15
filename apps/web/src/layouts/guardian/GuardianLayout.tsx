@@ -18,7 +18,13 @@ export function GuardianLayout({
   children: React.ReactNode;
 }) {
   return (
-    <RoleLayout locale={locale} allow={['guardian']} title={title} subtitle={subtitle} actions={actions}>
+    <RoleLayout
+      locale={locale}
+      allow={['guardian']}
+      title={title}
+      subtitle={subtitle}
+      actions={actions}
+    >
       {children}
     </RoleLayout>
   );

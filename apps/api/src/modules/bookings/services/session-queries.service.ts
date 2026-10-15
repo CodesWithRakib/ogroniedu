@@ -1,14 +1,11 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingEntity } from '../entities/booking.entity';
 import { BookingSessionEntity } from '../entities/booking-session.entity';
 import { GetSessionsQueryDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
-import {
-  GuardianAccessService,
-  type BookingParties,
-} from '../../guardians/guardian-access.service';
+import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { isAdminRole } from '../../../common/auth/role.utils';
 import type { PublicCalendarSlot } from '../interfaces/public-calendar-slot.interface';
 
@@ -26,6 +23,7 @@ export class SessionQueriesService {
   constructor(
     @InjectRepository(BookingSessionEntity)
     private readonly sessionRepo: Repository<BookingSessionEntity>,
+    @Inject(GuardianAccessService)
     private readonly guardianAccess: GuardianAccessService,
   ) {}
 

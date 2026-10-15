@@ -66,13 +66,17 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
           </div>
           <div className="bg-surface/75 p-3.5 rounded-2xl border border-border/70 shadow-2xs">
             <p className="text-xs text-muted-foreground font-medium">{t('noShowRate')}</p>
-            <p className="text-xl font-bold text-amber-500 mt-1 font-sans">{data.sessions.noShowRate}%</p>
+            <p className="text-xl font-bold text-amber-500 mt-1 font-sans">
+              {data.sessions.noShowRate}%
+            </p>
             <span className="text-[10px] text-muted-foreground">
               {data.sessions.noShowSessions} instances
             </span>
           </div>
           <div className="bg-surface/75 p-3.5 rounded-2xl border border-border/70 shadow-2xs">
-            <p className="text-xs text-muted-foreground font-medium">{t('sessionCancellationRate')}</p>
+            <p className="text-xs text-muted-foreground font-medium">
+              {t('sessionCancellationRate')}
+            </p>
             <p className="text-xl font-bold text-rose-500 mt-1 font-sans">
               {data.sessions.sessionCancellationRate}%
             </p>

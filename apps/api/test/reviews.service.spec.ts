@@ -1,11 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ReviewsService } from '../src/modules/trust/reviews.service';
-import {
-  ForbiddenException,
-  NotFoundException,
-  BadRequestException,
-  ConflictException,
-} from '@nestjs/common';
+import { ForbiddenException, BadRequestException, ConflictException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
 describe('ReviewsService Unit Tests (Phase 13)', () => {

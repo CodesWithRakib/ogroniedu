@@ -19,15 +19,54 @@ export function usePricingCalculator(locale: Locale) {
 
   const tiers = React.useMemo(
     () => [
-      { title: p.tierPrimaryTitle, range: p.tierPrimaryRange, desc: p.tierPrimaryDesc, tag: 'Class 1-5' },
-      { title: p.tierJuniorTitle, range: p.tierJuniorRange, desc: p.tierJuniorDesc, tag: 'Class 6-8' },
-      { title: p.tierSscTitle, range: p.tierSscRange, desc: p.tierSscDesc, tag: 'Class 9-10 (SSC)' },
-      { title: p.tierHscTitle, range: p.tierHscRange, desc: p.tierHscDesc, tag: 'Class 11-12 (HSC)' },
-      { title: p.tierAdmissionTitle, range: p.tierAdmissionRange, desc: p.tierAdmissionDesc, tag: 'Admission Test' },
-      { title: p.tierEnglishMediumTitle, range: p.tierEnglishMediumRange, desc: p.tierEnglishMediumDesc, tag: 'O / A Levels' },
+      {
+        title: p.tierPrimaryTitle,
+        range: p.tierPrimaryRange,
+        desc: p.tierPrimaryDesc,
+        tag: 'Class 1-5',
+      },
+      {
+        title: p.tierJuniorTitle,
+        range: p.tierJuniorRange,
+        desc: p.tierJuniorDesc,
+        tag: 'Class 6-8',
+      },
+      {
+        title: p.tierSscTitle,
+        range: p.tierSscRange,
+        desc: p.tierSscDesc,
+        tag: 'Class 9-10 (SSC)',
+      },
+      {
+        title: p.tierHscTitle,
+        range: p.tierHscRange,
+        desc: p.tierHscDesc,
+        tag: 'Class 11-12 (HSC)',
+      },
+      {
+        title: p.tierAdmissionTitle,
+        range: p.tierAdmissionRange,
+        desc: p.tierAdmissionDesc,
+        tag: 'Admission Test',
+      },
+      {
+        title: p.tierEnglishMediumTitle,
+        range: p.tierEnglishMediumRange,
+        desc: p.tierEnglishMediumDesc,
+        tag: 'O / A Levels',
+      },
     ],
     [p],
   );
 
-  return { hoursPerWeek, setHoursPerWeek, hourlyRate, setHourlyRate, monthlyGross, tutorEarnings, platformFee, tiers };
+  return {
+    hoursPerWeek,
+    setHoursPerWeek,
+    hourlyRate,
+    setHourlyRate,
+    monthlyGross,
+    tutorEarnings,
+    platformFee,
+    tiers,
+  };
 }

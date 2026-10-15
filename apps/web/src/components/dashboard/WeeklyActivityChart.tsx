@@ -39,7 +39,9 @@ export function WeeklyActivityChart({
 }: WeeklyActivityChartProps) {
   const isBn = locale === 'bn';
   const heading = title ?? (isBn ? 'সাপ্তাহিক স্টাডি অ্যাক্টিভিটি' : 'Weekly Activity');
-  const sub = subtitle ?? (isBn ? 'সপ্তাহের দিনগুলোতে ক্লাস ও স্টাডির সময়' : 'Learning and session volume across week');
+  const sub =
+    subtitle ??
+    (isBn ? 'সপ্তাহের দিনগুলোতে ক্লাস ও স্টাডির সময়' : 'Learning and session volume across week');
 
   return (
     <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between select-none">
@@ -64,7 +66,10 @@ export function WeeklyActivityChart({
           const isHighest = item.isPeak || item.percentage >= 85;
 
           return (
-            <div key={idx} className="flex-1 flex flex-col items-center h-full justify-end group relative">
+            <div
+              key={idx}
+              className="flex-1 flex flex-col items-center h-full justify-end group relative"
+            >
               {/* Tooltip Badge on Hover or Peak */}
               {isHighest && (
                 <div className="absolute -top-6 bg-card border border-border shadow-xs text-foreground text-[10px] font-bold px-1.5 py-0.5 rounded-md pointer-events-none z-10 transition-transform group-hover:scale-110">
@@ -97,7 +102,7 @@ export function WeeklyActivityChart({
               <span
                 className={cn(
                   'mt-3 text-xs font-bold transition-colors',
-                  isHighest ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground'
+                  isHighest ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground',
                 )}
                 title={isBn ? item.fullDayBn : item.fullDayEn}
               >

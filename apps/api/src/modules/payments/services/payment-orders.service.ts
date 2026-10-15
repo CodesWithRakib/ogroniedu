@@ -49,6 +49,7 @@ export class PaymentOrdersService {
     private readonly orderRepo: Repository<PaymentOrderEntity>,
     @InjectRepository(BookingEntity)
     private readonly bookingRepo: Repository<BookingEntity>,
+    @Inject(GuardianAccessService)
     private readonly guardianAccess: GuardianAccessService,
     @Inject(PaymentAdapterFactory)
     private readonly adapterFactory: PaymentAdapterFactory,

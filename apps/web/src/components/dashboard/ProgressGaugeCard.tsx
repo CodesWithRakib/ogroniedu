@@ -26,7 +26,8 @@ export function ProgressGaugeCard({
   const isBn = locale === 'bn';
 
   const heading = title ?? (isBn ? 'লার্নিং ও কোর্স অগ্রগতি' : 'Course Progress');
-  const sub = subtitle ?? (isBn ? 'সিলেবাস কভারেজ ও পাঠ পরিকল্পনা' : 'Syllabus coverage & lesson milestones');
+  const sub =
+    subtitle ?? (isBn ? 'সিলেবাস কভারেজ ও পাঠ পরিকল্পনা' : 'Syllabus coverage & lesson milestones');
   const lblDone = completedLabel ?? (isBn ? 'সম্পন্ন' : 'Completed');
   const lblActive = inProgressLabel ?? (isBn ? 'চলমান' : 'In Progress');
   const lblPending = pendingLabel ?? (isBn ? 'অবশিষ্ট' : 'Pending');
@@ -76,9 +77,7 @@ export function ProgressGaugeCard({
           <span className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight font-sans leading-none">
             {percentage}%
           </span>
-          <span className="text-[11px] text-muted-foreground font-semibold mt-1">
-            {lblDone}
-          </span>
+          <span className="text-[11px] text-muted-foreground font-semibold mt-1">{lblDone}</span>
         </div>
       </div>
 

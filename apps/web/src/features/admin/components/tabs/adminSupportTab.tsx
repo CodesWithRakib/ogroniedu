@@ -90,9 +90,13 @@ export function AdminSupportTab({
                     {row.phoneE164 && (
                       <p className="text-[11px] text-muted-foreground font-mono">{row.phoneE164}</p>
                     )}
-                    <p className="text-[10px] text-muted-foreground font-mono mt-1">{row.createdAt}</p>
+                    <p className="text-[10px] text-muted-foreground font-mono mt-1">
+                      {row.createdAt}
+                    </p>
                   </td>
-                  <td className="px-4 py-3 text-muted-foreground font-mono text-[11px]">{row.category}</td>
+                  <td className="px-4 py-3 text-muted-foreground font-mono text-[11px]">
+                    {row.category}
+                  </td>
                   <td className="px-4 py-3 text-foreground/90 max-w-xs">
                     <p className="whitespace-pre-wrap break-words">{row.message}</p>
                   </td>
@@ -125,7 +129,9 @@ export function AdminSupportTab({
                       }
                       className="px-2.5 py-1.5 bg-surface border border-border/80 rounded-xl text-[11px] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25"
                       data-testid={`support-status-${row.id}`}
-                      aria-label={isBn ? `${row.name}-এর টিকিট যাচাই করুন` : `Triage ticket from ${row.name}`}
+                      aria-label={
+                        isBn ? `${row.name}-এর টিকিট যাচাই করুন` : `Triage ticket from ${row.name}`
+                      }
                     >
                       {NEXT_STATUS.map((s) => (
                         <option key={s} value={s}>

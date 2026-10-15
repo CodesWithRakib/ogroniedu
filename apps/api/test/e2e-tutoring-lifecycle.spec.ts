@@ -25,6 +25,7 @@ import {
   GradeSubmissionDto,
 } from '../src/modules/learning/dto';
 import { CreateReviewDto } from '../src/modules/trust/dto';
+import { GuardianAccessService } from '../src/modules/guardians/guardian-access.service';
 
 describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () => {
   // Test Actors
@@ -40,7 +41,7 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
     roles: ['tutor'],
   };
 
-  const adminUser: AuthenticatedUser = {
+  const _adminUser: AuthenticatedUser = {
     id: '99999999-9999-4999-8999-999999999999',
     email: 'admin@example.com',
     roles: ['admin', 'super_admin'],
@@ -154,10 +155,6 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
       record: vi.fn().mockResolvedValue({ id: 'audit-ok' }),
     };
 
-    const mockGuardianAccess: any = {
-      assertGuardianHasAccess: vi.fn().mockResolvedValue(true),
-    };
-
     bookingsService = new BookingsService(
       mockBookingRepo,
       mockTutorProfileRepo,
@@ -167,7 +164,8 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
       mockSubjectRepo,
       mockLevelRepo,
       mockAuditService,
-      mockGuardianAccess,
+      new GuardianAccessService(mockLinkRepo),
+      undefined,
     );
 
     // 2. Ledger Service Mock Setup
@@ -193,7 +191,7 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
         return await cb({
           save: vi.fn((x) => Promise.resolve({ id: 'saved-id-1', ...(Array.isArray(x) ? {} : x) })),
           create: vi.fn((_, x) => ({ id: 'created-id-1', ...x })),
-          findOne: vi.fn().mockImplementation((_, opts) => Promise.resolve(sharedBooking)),
+          findOne: vi.fn().mockImplementation((__, _opts) => Promise.resolve(sharedBooking)),
         });
       }),
     };
@@ -256,14 +254,14 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
       new PaymentOrdersService(
         mockOrderRepo,
         mockBookingRepo,
-        mockLinkRepo,
+        new GuardianAccessService(mockLinkRepo),
         mockAdapterFactory as any,
         mockAuditService,
       ) as never,
       new PaymentWebhooksService(
         mockOrderRepo,
         mockTxnRepo,
-        mockLinkRepo,
+        new GuardianAccessService(mockLinkRepo),
         ledgerService,
         mockAdapterFactory as any,
         mockAuditService,
@@ -334,13 +332,16 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
       find: vi.fn().mockResolvedValue([]),
     };
 
-    const access = new LearningAccessService(mockLinkRepo, mockBookingRepo) as never;
+    const access = new LearningAccessService(
+      mockBookingRepo,
+      new GuardianAccessService(mockLinkRepo),
+    ) as never;
     learningService = new LearningService(
       access,
       new LearningAttendanceService(
         mockAttendanceRepo,
         mockSessionRepo,
-        mockLinkRepo,
+        new GuardianAccessService(mockLinkRepo),
         access,
         mockAuditService,
       ) as never,
@@ -349,7 +350,7 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
         mockSubmissionRepo,
         mockBookingRepo,
         mockSessionRepo,
-        mockLinkRepo,
+        new GuardianAccessService(mockLinkRepo),
         mockAuditService,
       ) as never,
       new LearningProgressService(

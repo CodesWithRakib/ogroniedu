@@ -6,8 +6,6 @@ import {
   Clock,
   GraduationCap,
   Sparkles,
-  MapPin,
-  Calendar,
   Star,
   ArrowRight,
 } from 'lucide-react';
@@ -95,11 +93,17 @@ export function TutorCard({
             type="button"
             onClick={() => onShowScore(tutor)}
             className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-[#0df5c4]/15 text-[#0df5c4] border border-[#0df5c4]/35 hover:bg-[#0df5c4]/25 transition-all cursor-pointer shadow-[0_0_12px_rgba(13,245,196,0.15)] shrink-0 active:scale-95"
-            title={locale === 'bn' ? 'ম্যাচ স্কোরের ব্যাখ্যা দেখুন' : 'Click to view explainable match breakdown'}
+            title={
+              locale === 'bn'
+                ? 'ম্যাচ স্কোরের ব্যাখ্যা দেখুন'
+                : 'Click to view explainable match breakdown'
+            }
             data-testid={`match-score-badge-${tutor.id}`}
           >
             <Sparkles className="w-3.5 h-3.5 text-[#0df5c4]" />
-            <span className="tabular-nums">{formatLocalizedNumber(tutor.matchScore, locale)} pts</span>
+            <span className="tabular-nums">
+              {formatLocalizedNumber(tutor.matchScore, locale)} pts
+            </span>
           </button>
         </div>
 
@@ -125,9 +129,7 @@ export function TutorCard({
 
         {/* Bio */}
         {tutor.bio && (
-          <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">
-            {tutor.bio}
-          </p>
+          <p className="text-xs text-slate-300 line-clamp-2 leading-relaxed">{tutor.bio}</p>
         )}
 
         {/* Teaching Subjects Box */}
@@ -213,7 +215,11 @@ export function TutorCard({
           <Link
             href={`/${locale}/tutors/${tutor.id}`}
             className="inline-flex items-center justify-center gap-1 rounded-xl bg-[#072d36] hover:bg-[#0a3843] border border-[#0df5c4]/30 hover:border-[#0df5c4]/60 text-[#0df5c4] font-bold text-xs px-3 py-2.5 transition-all"
-            title={locale === 'bn' ? 'সম্পূর্ণ প্রোফাইল ও যোগ্যতা দেখুন' : 'View Full Profile & Credentials'}
+            title={
+              locale === 'bn'
+                ? 'সম্পূর্ণ প্রোফাইল ও যোগ্যতা দেখুন'
+                : 'View Full Profile & Credentials'
+            }
           >
             <span>{locale === 'bn' ? 'বিস্তারিত' : 'Details'}</span>
             <ArrowRight className="w-3.5 h-3.5" />

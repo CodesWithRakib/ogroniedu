@@ -41,6 +41,7 @@ export class LearningAssignmentsService {
     private readonly bookingRepo: Repository<BookingEntity>,
     @InjectRepository(BookingSessionEntity)
     private readonly sessionRepo: Repository<BookingSessionEntity>,
+    @Inject(GuardianAccessService)
     private readonly guardianAccess: GuardianAccessService,
     @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
@@ -133,9 +134,7 @@ export class LearningAssignmentsService {
           this.logger.warn(`Failed to dispatch student assignment notification: ${err}`),
         );
 
-      const guardianIds = await this.guardianAccess.findActiveGuardianIds(
-        booking.studentUserId,
-      );
+      const guardianIds = await this.guardianAccess.findActiveGuardianIds(booking.studentUserId);
 
       for (const guardianId of guardianIds) {
         await this.notificationService
@@ -359,9 +358,7 @@ export class LearningAssignmentsService {
         })
         .catch((err) => this.logger.warn(`Failed to dispatch student graded notification: ${err}`));
 
-      const guardianIds = await this.guardianAccess.findActiveGuardianIds(
-        submission.studentUserId,
-      );
+      const guardianIds = await this.guardianAccess.findActiveGuardianIds(submission.studentUserId);
 
       for (const guardianId of guardianIds) {
         await this.notificationService

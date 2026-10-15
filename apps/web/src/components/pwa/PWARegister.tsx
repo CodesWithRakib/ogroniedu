@@ -108,9 +108,7 @@ export function PWARegister({ locale }: { locale: Locale }) {
             </span>
           </div>
           <p className="text-xs text-slate-300 line-clamp-1">
-            {isBn
-              ? 'মোবাইলে সহজে ব্যবহার ও অফলাইন সুবিধা'
-              : 'Fast mobile access & offline support'}
+            {isBn ? 'মোবাইলে সহজে ব্যবহার ও অফলাইন সুবিধা' : 'Fast mobile access & offline support'}
           </p>
         </div>
 

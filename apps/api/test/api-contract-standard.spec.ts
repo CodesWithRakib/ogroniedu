@@ -6,11 +6,7 @@ import {
   cursorPaginated,
   buildOffsetMeta,
 } from '../src/common/api-response/api-response';
-import {
-  codeForStatus,
-  errorEnvelope,
-  toErrorDetails,
-} from '../src/common/api-error/api-error';
+import { codeForStatus, errorEnvelope, toErrorDetails } from '../src/common/api-error/api-error';
 import {
   assertSortAllowed,
   paginateArray,

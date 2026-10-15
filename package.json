@@ -13,10 +13,12 @@
     "tunnel": "node scripts/tunnel.js",
     "ui:add": "pnpm dlx shadcn@latest add -c apps/web",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
-    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\""
+    "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
+    "lint": "turbo run lint"
   },
   "type": "module",
   "devDependencies": {
+    "oxlint": "^1.88.0",
     "prettier": "3.9.9",
     "turbo": "2.11.7",
     "typescript": "7.0.2"

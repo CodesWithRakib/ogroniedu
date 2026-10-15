@@ -53,11 +53,7 @@ export interface PendingTutorRow {
 }
 
 export type TutorReviewDecision =
-  | 'approved'
-  | 'rejected'
-  | 'needs_information'
-  | 'suspended'
-  | 'reinstated';
+  'approved' | 'rejected' | 'needs_information' | 'suspended' | 'reinstated';
 
 export interface ReviewTutorRequest {
   tutorId: string;

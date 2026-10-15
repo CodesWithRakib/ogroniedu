@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useState } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   User,
   Mail,
@@ -17,37 +16,32 @@ import {
   BookOpen,
 } from 'lucide-react';
 import { getDictionary, type Locale } from '@/lib/i18n';
-import { normalizeUnknownError } from '@/lib/api-error';
-import { dashboardPathForRoles, withLocale } from '@/lib/auth';
-import { useAppDispatch } from '@/store';
-import { setCredentials } from '@/store/slices/auth-slice';
-import { useRegisterMutation, toAuthUser, type RegisterRole } from '@/store/services/auth-api';
-import { enqueueToast } from '@/store/slices/ui-slice';
+import { withLocale } from '@/lib/auth';
+import type { RegisterRole } from '@/store/services/auth-api';
 import { AuthShell } from './authShell';
 import { cn } from '@/lib/utils';
-
-function validatePassword(password: string): string | null {
-  if (password.length < 8) return 'PASSWORD_TOO_SHORT';
-  if (!/[a-z]/.test(password) || !/[A-Z]/.test(password) || !/\d/.test(password)) {
-    return 'PASSWORD_WEAK';
-  }
-  return null;
-}
+import { useRegisterForm } from './use-register-form';
 
 export function RegisterForm({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
-  const router = useRouter();
-  const dispatch = useAppDispatch();
-  const [register, { isLoading }] = useRegisterMutation();
-  const [displayName, setDisplayName] = useState('');
-  const [email, setEmail] = useState('');
-  const [phone, setPhone] = useState('');
-  const [password, setPassword] = useState('');
-  const [showPassword, setShowPassword] = useState(false);
-  const [role, setRole] = useState<RegisterRole>('student');
-  const [formError, setFormError] = useState<string | null>(null);
-
-  const isBn = locale === 'bn';
+  const {
+    displayName,
+    setDisplayName,
+    email,
+    setEmail,
+    phone,
+    setPhone,
+    password,
+    setPassword,
+    showPassword,
+    setShowPassword,
+    role,
+    setRole,
+    formError,
+    isLoading,
+    isBn,
+    handleSubmit,
+  } = useRegisterForm(locale);
 
   const roleOptions: {
     value: RegisterRole;
@@ -58,65 +52,6 @@ export function RegisterForm({ locale }: { locale: Locale }) {
     { value: 'guardian', label: isBn ? 'অভিভাবক' : 'Guardian', icon: ShieldCheck },
     { value: 'tutor', label: isBn ? 'শিক্ষক' : 'Tutor', icon: BookOpen },
   ];
-
-  async function handleSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    setFormError(null);
-    if (displayName.trim().length < 2) {
-      setFormError(
-        isBn ? 'সঠিক নাম দিন (কমপক্ষে ২ অক্ষর)।' : 'Enter your full name (at least 2 letters).',
-      );
-      return;
-    }
-    if (!email.trim() && !phone.trim()) {
-      setFormError(
-        isBn ? 'ইমেইল অথবা ফোন নম্বর প্রদান আবশ্যক।' : 'Email or phone number is required.',
-      );
-      return;
-    }
-    const pwError = validatePassword(password);
-    if (pwError === 'PASSWORD_TOO_SHORT') {
-      setFormError(
-        isBn ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।' : 'Password must be at least 8 characters.',
-      );
-      return;
-    }
-    if (pwError === 'PASSWORD_WEAK') {
-      setFormError(
-        isBn
-          ? 'পাসওয়ার্ডে বড় হাতের, ছোট হাতের অক্ষর ও সংখ্যা থাকতে হবে।'
-          : 'Password needs uppercase, lowercase, and a number.',
-      );
-      return;
-    }
-    try {
-      const res = await register({
-        displayName: displayName.trim(),
-        email: email.trim() || undefined,
-        phone: phone.trim() || undefined,
-        password,
-        role,
-        preferredLocale: locale,
-      }).unwrap();
-      dispatch(
-        setCredentials({
-          user: toAuthUser(res.user),
-          token: res.accessToken,
-          refreshToken: res.refreshToken,
-        }),
-      );
-      dispatch(
-        enqueueToast({
-          title: isBn ? 'নিবন্ধন সফল হয়েছে' : 'Account created successfully',
-          message: res.user.displayName,
-          type: 'success',
-        }),
-      );
-      router.replace(withLocale(dashboardPathForRoles(res.user.roles, locale), locale));
-    } catch (err) {
-      setFormError(normalizeUnknownError(err, locale).message);
-    }
-  }
 
   return (
     <AuthShell

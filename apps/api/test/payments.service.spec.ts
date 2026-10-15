@@ -4,13 +4,9 @@ import { PaymentOrdersService } from '../src/modules/payments/services/payment-o
 import { PaymentWebhooksService } from '../src/modules/payments/services/payment-webhooks.service';
 import { RefundsService } from '../src/modules/payments/services/refunds.service';
 import { SettlementService } from '../src/modules/payments/services/settlement.service';
-import {
-  NotFoundException,
-  BadRequestException,
-  ForbiddenException,
-  UnauthorizedException,
-} from '@nestjs/common';
+import { BadRequestException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
+import { GuardianAccessService } from '../src/modules/guardians/guardian-access.service';
 
 describe('PaymentsService Unit & Financial Invariant Tests', () => {
   let service: PaymentsService;
@@ -28,7 +24,7 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
   let mockNotificationService: any;
 
   const studentId = '11111111-1111-4111-8111-111111111111';
-  const guardianId = '22222222-2222-4222-8222-222222222222';
+  const _guardianId = '22222222-2222-4222-8222-222222222222';
   const strangerId = '99999999-9999-4999-8999-999999999999';
   const tutorId = '33333333-3333-4333-8333-333333333333';
   const bookingId = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
@@ -169,14 +165,14 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
       new PaymentOrdersService(
         mockOrderRepo,
         mockBookingRepo,
-        mockGuardianLinkRepo,
+        new GuardianAccessService(mockGuardianLinkRepo),
         mockAdapterFactory,
         mockAuditService,
       ) as never,
       new PaymentWebhooksService(
         mockOrderRepo,
         mockTransactionRepo,
-        mockGuardianLinkRepo,
+        new GuardianAccessService(mockGuardianLinkRepo),
         mockLedgerService,
         mockAdapterFactory,
         mockAuditService,

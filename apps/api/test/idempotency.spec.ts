@@ -220,7 +220,7 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
     let mockAccountRepo: any;
     let mockJournalRepo: any;
     let mockEntryRepo: any;
-    let mockAuditService: any;
+    let _mockAuditService: any;
     let mockDataSource: any;
 
     beforeEach(() => {

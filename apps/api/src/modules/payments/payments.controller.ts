@@ -5,12 +5,10 @@ import {
   Param,
   Body,
   Headers,
-  Query,
   UseGuards,
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
-  BadRequestException,
   Inject,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';

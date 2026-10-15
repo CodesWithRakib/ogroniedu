@@ -39,7 +39,10 @@ export function PaymentCheckoutView({
 
   if (!order) {
     return (
-      <div className="space-y-8 max-w-5xl mx-auto py-6 px-4 sm:px-6" data-testid="payment-empty-state">
+      <div
+        className="space-y-8 max-w-5xl mx-auto py-6 px-4 sm:px-6"
+        data-testid="payment-empty-state"
+      >
         <div className="rounded-xl border border-dashed p-8 text-center text-sm text-slate-500">
           {locale === 'bn'
             ? 'পেমেন্ট অর্ডার তৈরি করতে একটি বুকিং নির্বাচন করুন।'

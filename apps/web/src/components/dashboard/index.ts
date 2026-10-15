@@ -1,4 +1,7 @@
 export * from './DashboardShell';
+export * from './DashboardSidebar';
+export * from './DashboardTopbar';
+export * from './DashboardMobileNav';
 export * from './HeroKpiCard';
 export * from './WeeklyActivityChart';
 export * from './SessionReminderCard';

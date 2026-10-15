@@ -10,10 +10,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
-import {
-  PaymentOrderEntity,
-  PaymentTransactionEntity,
-} from '../entities';
+import { PaymentOrderEntity, PaymentTransactionEntity } from '../entities';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
 import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { OutboxEventEntity } from '../../bookings/entities/outbox-event.entity';
@@ -40,6 +37,7 @@ export class PaymentWebhooksService {
     private readonly orderRepo: Repository<PaymentOrderEntity>,
     @InjectRepository(PaymentTransactionEntity)
     private readonly transactionRepo: Repository<PaymentTransactionEntity>,
+    @Inject(GuardianAccessService)
     private readonly guardianAccess: GuardianAccessService,
     @Inject(LedgerService)
     private readonly ledgerService: LedgerService,

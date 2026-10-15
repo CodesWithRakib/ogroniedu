@@ -1,11 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import {
-  makeStore,
-  setCredentials,
-  logout,
-  primaryRole,
-  dashboardPathForRole,
-} from '../src/store';
+import { makeStore, setCredentials, logout, primaryRole, dashboardPathForRole } from '../src/store';
 import { dashboardPathForRoles, withLocale, canAccessAdmin } from '../src/lib/auth';
 import { normalizeApiError } from '../src/lib/api-error';
 
@@ -62,8 +56,6 @@ describe('Real auth session (Phase 21)', () => {
     expect(normalizeApiError({ status: 401 } as never, 'bn').message).toContain('সেশন');
     expect(normalizeApiError({ status: 401 } as never, 'en').message).toContain('session');
     expect(normalizeApiError({ status: 403 } as never, 'en').message).toContain('permission');
-    expect(normalizeApiError({ status: 'FETCH_ERROR' } as never, 'bn').message).toContain(
-      'সংযোগ',
-    );
+    expect(normalizeApiError({ status: 'FETCH_ERROR' } as never, 'bn').message).toContain('সংযোগ');
   });
 });

@@ -3,9 +3,7 @@
 import Link from 'next/link';
 import {
   DollarSign,
-  Check,
   Shield,
-  HelpCircle,
   Sparkles,
   Calculator,
   ArrowRight,
@@ -17,15 +15,25 @@ import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { formatGroupedNumber } from '@/lib/format';
 import { usePricingCalculator } from '../hooks/use-pricing-calculator';
 
 /** Public pricing entry: commission breakdown, interactive fee calculator, and benchmarks. */
 export function PricingPage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   const p = dict.pricingPage;
-  const isBn = locale === 'bn';
+  const _isBn = locale === 'bn';
   const calc = usePricingCalculator(locale);
-  const { hoursPerWeek, setHoursPerWeek, hourlyRate, setHourlyRate, monthlyGross, tutorEarnings, platformFee, tiers } = calc;
+  const {
+    hoursPerWeek,
+    setHoursPerWeek,
+    hourlyRate,
+    setHourlyRate,
+    monthlyGross,
+    tutorEarnings,
+    platformFee,
+    tiers,
+  } = calc;
 
   return (
     <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
@@ -50,7 +58,9 @@ export function PricingPage({ locale }: { locale: Locale }) {
         <div className="space-y-2 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-bold text-primary">
             <CheckCircle2 className="h-3.5 w-3.5" />
-            <span>{locale === 'bn' ? 'অভিভাবকদের জন্য সম্পূর্ণ ফ্রি' : '100% Free For Parents'}</span>
+            <span>
+              {locale === 'bn' ? 'অভিভাবকদের জন্য সম্পূর্ণ ফ্রি' : '100% Free For Parents'}
+            </span>
           </div>
           <p className="text-lg sm:text-xl font-bold text-foreground font-bengali">
             {p.studentFreeNotice}
@@ -73,9 +83,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
             </div>
             <span>{p.commissionTitle}</span>
           </h2>
-          <p className="text-sm text-muted-foreground font-bengali mt-1">
-            {p.commissionSubtitle}
-          </p>
+          <p className="text-sm text-muted-foreground font-bengali mt-1">{p.commissionSubtitle}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5">
@@ -129,7 +137,9 @@ export function PricingPage({ locale }: { locale: Locale }) {
           <div className="space-y-6">
             <div>
               <div className="flex justify-between text-sm font-semibold mb-2 font-bengali">
-                <span className="text-muted-foreground">{locale === 'bn' ? 'সাপ্তাহিক ঘণ্টা:' : 'Hours per week:'}</span>
+                <span className="text-muted-foreground">
+                  {locale === 'bn' ? 'সাপ্তাহিক ঘণ্টা:' : 'Hours per week:'}
+                </span>
                 <span className="font-bold text-primary">
                   {formatLocalizedNumber(hoursPerWeek, locale)} {locale === 'bn' ? 'ঘণ্টা' : 'hrs'}
                 </span>
@@ -147,7 +157,9 @@ export function PricingPage({ locale }: { locale: Locale }) {
 
             <div>
               <div className="flex justify-between text-sm font-semibold mb-2 font-bengali">
-                <span className="text-muted-foreground">{locale === 'bn' ? 'ঘণ্টাপ্রতি রেট:' : 'Hourly rate:'}</span>
+                <span className="text-muted-foreground">
+                  {locale === 'bn' ? 'ঘণ্টাপ্রতি রেট:' : 'Hourly rate:'}
+                </span>
                 <span className="font-bold text-primary">
                   ৳{formatLocalizedNumber(hourlyRate, locale)}
                 </span>
@@ -170,7 +182,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
                 {locale === 'bn' ? 'মাসিক মোট ফি (শিক্ষার্থী জমা):' : 'Gross Monthly Fee:'}
               </span>
               <span className="text-lg font-bold text-foreground">
-                ৳{formatLocalizedNumber(monthlyGross.toLocaleString(), locale)}
+                ৳{formatGroupedNumber(monthlyGross, locale)}
               </span>
             </div>
             <div className="flex justify-between items-center text-sm">
@@ -178,14 +190,14 @@ export function PricingPage({ locale }: { locale: Locale }) {
                 {locale === 'bn' ? 'শিক্ষকের নিট প্রাপ্তি (৯২%):' : 'Tutor Net Payout (92%):'}
               </span>
               <span className="text-xl font-extrabold text-primary">
-                ৳{formatLocalizedNumber(tutorEarnings.toLocaleString(), locale)}
+                ৳{formatGroupedNumber(tutorEarnings, locale)}
               </span>
             </div>
             <div className="flex justify-between items-center text-xs text-muted-foreground pt-3 border-t border-border/80">
               <span className="font-bengali">
                 {locale === 'bn' ? 'প্ল্যাটফর্ম সার্ভিস ফি (৮%):' : 'Platform Fee (8%):'}
               </span>
-              <span className="font-semibold">৳{formatLocalizedNumber(platformFee.toLocaleString(), locale)}</span>
+              <span className="font-semibold">৳{formatGroupedNumber(platformFee, locale)}</span>
             </div>
           </div>
         </div>
@@ -194,12 +206,8 @@ export function PricingPage({ locale }: { locale: Locale }) {
       {/* Hourly Benchmarks Grid */}
       <section className="space-y-8">
         <div className="border-b border-border/70 pb-4">
-          <h2 className="text-2xl font-bold text-foreground font-bengali">
-            {p.benchmarksTitle}
-          </h2>
-          <p className="text-sm text-muted-foreground font-bengali mt-1">
-            {p.benchmarksSubtitle}
-          </p>
+          <h2 className="text-2xl font-bold text-foreground font-bengali">{p.benchmarksTitle}</h2>
+          <p className="text-sm text-muted-foreground font-bengali mt-1">{p.benchmarksSubtitle}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

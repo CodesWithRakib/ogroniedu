@@ -9,6 +9,8 @@ import { PaymentWebhooksService } from '../src/modules/payments/services/payment
 import { RefundsService } from '../src/modules/payments/services/refunds.service';
 import { SettlementService } from '../src/modules/payments/services/settlement.service';
 import { UsersService } from '../src/modules/users/users.service';
+import { StudentProfileService } from '../src/modules/users/services/student-profile.service';
+import { UserLifecycleService } from '../src/modules/users/services/user-lifecycle.service';
 import { BadRequestException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
 import type { Request, Response } from 'express';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
@@ -392,11 +394,17 @@ describe('Phase 17 — Security and Privacy Hardening Tests', () => {
       usersService = new UsersService(
         mockUserRepo,
         mockStudentProfileRepo,
-        mockSessionRepo,
-        mockGuardianLinkRepo,
-        mockAuditService,
         mockDataSource,
-        mockBookingRepo,
+        mockAuditService,
+        new StudentProfileService(mockUserRepo, mockStudentProfileRepo, mockAuditService),
+        new UserLifecycleService(
+          mockUserRepo,
+          mockStudentProfileRepo,
+          mockSessionRepo,
+          mockGuardianLinkRepo,
+          mockAuditService,
+          mockBookingRepo,
+        ),
       );
     });
 

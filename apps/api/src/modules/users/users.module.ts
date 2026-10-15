@@ -7,6 +7,8 @@ import { AuthSessionEntity } from '../auth/entities/auth-session.entity';
 import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-student-link.entity';
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { UsersService } from './users.service';
+import { StudentProfileService } from './services/student-profile.service';
+import { UserLifecycleService } from './services/user-lifecycle.service';
 import { UsersController } from './users.controller';
 import { AuditModule } from '../audit/audit.module';
 
@@ -23,7 +25,7 @@ import { AuditModule } from '../audit/audit.module';
     forwardRef(() => AuditModule),
   ],
   controllers: [UsersController],
-  providers: [UsersService],
-  exports: [UsersService],
+  providers: [UsersService, StudentProfileService, UserLifecycleService],
+  exports: [UsersService, StudentProfileService, UserLifecycleService],
 })
 export class UsersModule {}

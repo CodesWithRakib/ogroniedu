@@ -1,27 +1,8 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  Send,
-  ShieldAlert,
-  ShieldCheck,
-  Check,
-  CheckCheck,
-  User,
-  GraduationCap,
-  Sparkles,
-  Info,
-} from 'lucide-react';
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  CardContent,
-  CardFooter,
-  Badge,
-} from '@/components/ui';
+import { Send, ShieldAlert, ShieldCheck, Check, CheckCheck, GraduationCap } from 'lucide-react';
+import { Button, Card, CardContent, CardFooter, Badge } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 
 export interface ChatMessageItem {
@@ -84,7 +65,7 @@ export function BookingChatView({
       if (controlledMessages !== undefined) return;
 
       // Check client-side regex for instant preview safety tag
-      const phoneRegex = /(?:\+?880\s?|0)1[3-9]\d{2}[\s\-]?\d{6}/gi;
+      const phoneRegex = /(?:\+?880\s?|0)1[3-9]\d{2}[\s-]?\d{6}/gi;
       const isSensitive = phoneRegex.test(content);
 
       const newMsg: ChatMessageItem = {

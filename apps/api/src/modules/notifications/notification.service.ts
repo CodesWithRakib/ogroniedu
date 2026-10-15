@@ -11,35 +11,17 @@ import { Repository, IsNull } from 'typeorm';
 import {
   getNotificationDefinition,
   interpolateTemplate,
-  NotificationCategories,
   NotificationEventTypes,
-  type NotificationCategory,
   type NotificationEventType,
 } from '@ogroniedu/contracts';
 import { readErrorMessage } from '../../common/errors/error-message';
-import type {
-  NotificationCategoryType,
-  NotificationChannelType,
-} from './entities/notification-preference.entity';
+import { NotificationPreferencesService } from './notification-preferences.service';
 
 /** Entity event_type is stored as text; narrow to the registry union at read time. */
 function readEventType(value: string): NotificationEventType {
   return (NotificationEventTypes as readonly string[]).includes(value)
     ? (value as NotificationEventType)
     : 'booking.requested';
-}
-
-/** Preference category/channel are validated unions at the entity boundary. */
-function readCategory(value: string): NotificationCategoryType {
-  return (NotificationCategories as readonly string[]).includes(value)
-    ? (value as NotificationCategoryType)
-    : 'system';
-}
-
-function readChannel(value: string): NotificationChannelType {
-  return value === 'email' || value === 'sms' || value === 'push' || value === 'whatsapp'
-    ? value
-    : 'in_app';
 }
 import type {
   NotificationItemDto,
@@ -91,7 +73,7 @@ export class NotificationService {
   // In-memory fallback stores for test isolation and quick local bootstrapping
   private memoryNotifications: NotificationEntity[] = [];
   private memoryDeliveries: NotificationDeliveryEntity[] = [];
-  private memoryPreferences: NotificationPreferenceEntity[] = [];
+  private readonly prefs: NotificationPreferencesService;
 
   constructor(
     @InjectRepository(NotificationEntity)
@@ -101,9 +83,11 @@ export class NotificationService {
     @Inject(forwardRef(() => NotificationGateway))
     private readonly gateway: NotificationGateway,
     @Optional()
-    @InjectRepository(NotificationPreferenceEntity)
-    private readonly preferenceRepo?: Repository<NotificationPreferenceEntity>,
-  ) {}
+    @Inject(NotificationPreferencesService)
+    prefs?: NotificationPreferencesService,
+  ) {
+    this.prefs = prefs ?? new NotificationPreferencesService();
+  }
 
   /**
    * Dispatch a notification using the Centralized Notification Registry
@@ -141,7 +125,7 @@ export class NotificationService {
     }
 
     // Check user preference for category on in_app channel
-    const isSuppressed = await this.isChannelSuppressed(dto.userId, def.category, 'in_app');
+    const isSuppressed = await this.prefs.isChannelSuppressed(dto.userId, def.category, 'in_app');
 
     // 3. Persist delivery record for in_app channel
     const delivery = new NotificationDeliveryEntity();
@@ -503,85 +487,19 @@ export class NotificationService {
   }
 
   /**
-   * Retrieve notification preferences for user
+   * Retrieve notification preferences for user (delegates to the preferences service).
    */
   async getPreferences(userId: string): Promise<NotificationPreferenceEntity[]> {
-    if (this.preferenceRepo) {
-      return this.preferenceRepo.find({ where: { userId } });
-    }
-    return this.memoryPreferences.filter((p) => p.userId === userId);
+    return this.prefs.getPreferences(userId);
   }
 
   /**
-   * Update notification preferences for user
+   * Update notification preferences for user (delegates to the preferences service).
    */
   async updatePreferences(
     userId: string,
     dto: UpdateNotificationPreferencesDto,
   ): Promise<NotificationPreferenceEntity[]> {
-    const updated: NotificationPreferenceEntity[] = [];
-
-    for (const item of dto.preferences) {
-      if (this.preferenceRepo) {
-        let pref = await this.preferenceRepo.findOne({
-          where: { userId, category: item.category, channel: item.channel },
-        });
-        if (!pref) {
-          pref = this.preferenceRepo.create({
-            userId,
-            category: item.category,
-            channel: item.channel,
-            isEnabled: item.isEnabled,
-          });
-        } else {
-          pref.isEnabled = item.isEnabled;
-          pref.updatedAt = new Date();
-        }
-        const saved = await this.preferenceRepo.save(pref);
-        updated.push(saved);
-      } else {
-        const existingIdx = this.memoryPreferences.findIndex(
-          (p) => p.userId === userId && p.category === item.category && p.channel === item.channel,
-        );
-        if (existingIdx >= 0) {
-          this.memoryPreferences[existingIdx].isEnabled = item.isEnabled;
-          this.memoryPreferences[existingIdx].updatedAt = new Date();
-          updated.push(this.memoryPreferences[existingIdx]);
-        } else {
-          const newPref = new NotificationPreferenceEntity();
-          newPref.id = crypto.randomUUID();
-          newPref.userId = userId;
-          newPref.category = item.category;
-          newPref.channel = item.channel;
-          newPref.isEnabled = item.isEnabled;
-          newPref.createdAt = new Date();
-          newPref.updatedAt = new Date();
-          this.memoryPreferences.push(newPref);
-          updated.push(newPref);
-        }
-      }
-    }
-
-    return updated;
-  }
-
-  /**
-   * Helper to check if a specific category & channel is disabled by user
-   */
-  private async isChannelSuppressed(
-    userId: string,
-    category: NotificationCategory,
-    channel: NotificationChannelType,
-  ): Promise<boolean> {
-    if (this.preferenceRepo) {
-      const pref = await this.preferenceRepo.findOne({
-        where: { userId, category: readCategory(category), channel: readChannel(channel) },
-      });
-      return pref ? !pref.isEnabled : false;
-    }
-    const memPref = this.memoryPreferences.find(
-      (p) => p.userId === userId && p.category === category && p.channel === channel,
-    );
-    return memPref ? !memPref.isEnabled : false;
+    return this.prefs.updatePreferences(userId, dto);
   }
 }

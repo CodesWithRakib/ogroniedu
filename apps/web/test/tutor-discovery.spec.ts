@@ -1,10 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import React from 'react';
-import {
-  TutorSearchCatalog,
-  TutorCardData,
-  SearchCatalogResponse,
-} from '../src/features/tutor-discovery';
+import { TutorSearchCatalog, SearchCatalogResponse } from '../src/features/tutor-discovery';
 import { getDictionary, formatLocalizedNumber } from '../src/lib/i18n';
 
 describe('TutorSearchCatalog Component & Invariant Tests', () => {

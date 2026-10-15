@@ -21,7 +21,11 @@ export function StatusBadge({
   testId?: string;
 }) {
   return (
-    <Badge variant="outline" data-testid={testId} className={cn('border font-medium', TONE_CLASS[tone])}>
+    <Badge
+      variant="outline"
+      data-testid={testId}
+      className={cn('border font-medium', TONE_CLASS[tone])}
+    >
       {children}
     </Badge>
   );

@@ -1,16 +1,9 @@
 'use client';
 
 import Link from 'next/link';
-import {
-  HelpCircle,
-  ChevronDown,
-  ChevronUp,
-  Search,
-  MessageSquare,
-  ArrowRight,
-} from 'lucide-react';
+import { ChevronDown, ChevronUp, ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Card, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { useFaqBrowser } from '../hooks/use-faq-browser';
@@ -19,7 +12,15 @@ import { useFaqBrowser } from '../hooks/use-faq-browser';
 export function FaqPage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   const p = dict.faqPage;
-  const { faqs, categories, filteredFaqs, activeCategory, setActiveCategory, openIndex, setOpenIndex } = useFaqBrowser(locale);
+  const {
+    faqs,
+    categories,
+    filteredFaqs,
+    activeCategory,
+    setActiveCategory,
+    openIndex,
+    setOpenIndex,
+  } = useFaqBrowser(locale);
 
   return (
     <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12">
@@ -91,11 +92,13 @@ export function FaqPage({ locale }: { locale: Locale }) {
                 className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 font-bengali"
                 aria-expanded={isOpen}
               >
-                <span className="text-base sm:text-lg font-bold text-foreground">
-                  {faq.q}
-                </span>
+                <span className="text-base sm:text-lg font-bold text-foreground">{faq.q}</span>
                 <span className="text-muted-foreground">
-                  {isOpen ? <ChevronUp className="h-5 w-5 text-primary" /> : <ChevronDown className="h-5 w-5" />}
+                  {isOpen ? (
+                    <ChevronUp className="h-5 w-5 text-primary" />
+                  ) : (
+                    <ChevronDown className="h-5 w-5" />
+                  )}
                 </span>
               </button>
               {isOpen && (
@@ -123,7 +126,10 @@ export function FaqPage({ locale }: { locale: Locale }) {
             : 'Our customer support team is available 7 days a week to assist you.'}
         </p>
         <Link href={`/${locale}/contact`}>
-          <Button size="lg" className="rounded-full px-8 font-bold shadow-md shadow-primary/25 font-bengali">
+          <Button
+            size="lg"
+            className="rounded-full px-8 font-bold shadow-md shadow-primary/25 font-bengali"
+          >
             {dict.nav.contact}
             <ArrowRight className="h-4 w-4 ml-2" />
           </Button>

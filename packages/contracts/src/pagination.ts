@@ -81,6 +81,15 @@ export const SearchTutorsQuerySchema = z.object({
 export type SearchTutorsQuery = z.infer<typeof SearchTutorsQuerySchema>;
 
 /**
+ * ISO-8601 date or datetime string (mirrors class-validator `IsDateString`,
+ * which accepts both `2026-11-01` and full datetimes — stricter
+ * `z.string().datetime()` would wrongly reject date-only input).
+ */
+export const IsoDateString = z.string().refine((s) => !Number.isNaN(Date.parse(s)), {
+  message: 'Expected an ISO-8601 date or datetime string',
+});
+
+/**
  * Resolve the effective tutor-search page size with the same precedence as
  * the backend (`pageSize` wins, then `limit`, then default). Single
  * precedence rule shared by API and web.

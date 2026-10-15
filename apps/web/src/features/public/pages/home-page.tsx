@@ -11,11 +11,9 @@ import {
   BookOpen,
   ArrowRight,
   Search,
-  Star,
   Award,
   TrendingUp,
   Heart,
-  Headphones,
   Sparkles,
 } from 'lucide-react';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
@@ -24,10 +22,7 @@ import { HeroSearchBar } from '../components/HeroSearchBar';
 import { BetterLearningDoodle, YourSuccessDoodle } from '../components/HeroDoodles';
 import { StudentAvatar } from '../components/StudentAvatar';
 import { HeroStudentTablet } from '../components/HeroStudentTablet';
-import {
-  QualifiedTutorsBadge,
-  SafeSecureBadge,
-} from '../components/HeroFloatingBadges';
+import { QualifiedTutorsBadge, SafeSecureBadge } from '../components/HeroFloatingBadges';
 
 export function HomePage({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
@@ -87,7 +82,9 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-teal-200">
                   <ShieldCheck className="h-4 w-4 text-[#0df5c4]" />
                   <span>
-                    {isBn ? '১০,০০০+ অভিভাবক ও শিক্ষার্থীর আস্থা' : 'Trusted by 10,000+ Parents & Students'}
+                    {isBn
+                      ? '১০,০০০+ অভিভাবক ও শিক্ষার্থীর আস্থা'
+                      : 'Trusted by 10,000+ Parents & Students'}
                   </span>
                 </div>
 
@@ -178,7 +175,10 @@ export function HomePage({ locale }: { locale: Locale }) {
       {/* ====================================================================
        * STATS & SOCIAL PROOF STRIP (Directly Below Hero)
        * ==================================================================== */}
-      <section className="relative py-6 sm:py-7 border-y border-teal-500/20 bg-[#061820]/95 backdrop-blur-xl">
+      <section
+        className="relative py-6 sm:py-7 border-y border-teal-500/20 bg-[#061820]/95 backdrop-blur-xl"
+        data-testid="platform-metrics-band"
+      >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-6 lg:gap-8">
             {/* 4 Large Platform Stats */}
@@ -190,7 +190,9 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </div>
                 <div>
                   <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                    {stats?.activeStudents ? `${formatLocalizedNumber(stats.activeStudents, locale)}+` : '10,000+'}
+                    {stats?.activeStudents
+                      ? `${formatLocalizedNumber(stats.activeStudents, locale)}+`
+                      : '10,000+'}
                   </div>
                   <div className="text-xs text-slate-400 font-medium">
                     {isBn ? 'সন্তুষ্ট শিক্ষার্থী' : 'Happy Students'}
@@ -205,7 +207,9 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </div>
                 <div>
                   <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
-                    {stats?.verifiedTutors ? `${formatLocalizedNumber(stats.verifiedTutors, locale)}+` : '2,500+'}
+                    {stats?.verifiedTutors
+                      ? `${formatLocalizedNumber(stats.verifiedTutors, locale)}+`
+                      : '2,500+'}
                   </div>
                   <div className="text-xs text-slate-400 font-medium">
                     {isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutors'}
@@ -279,7 +283,9 @@ export function HomePage({ locale }: { locale: Locale }) {
               {isBn ? 'কেন অগ্রণী এডু বেছে নেবেন' : 'WHY CHOOSE OGRONIEDU'}
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white font-sans">
-              {isBn ? 'উন্নত শিক্ষার জন্য আপনার যা প্রয়োজন' : 'Everything You Need for Better Learning'}
+              {isBn
+                ? 'উন্নত শিক্ষার জন্য আপনার যা প্রয়োজন'
+                : 'Everything You Need for Better Learning'}
             </h2>
           </div>
 

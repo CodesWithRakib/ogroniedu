@@ -18,17 +18,14 @@ import { getDictionary } from '../src/lib/i18n';
 function renderWithProviders(node: React.ReactElement): string {
   const store = makeStore();
   return renderToStaticMarkup(
-    React.createElement(
-      Provider,
-      {
-        store,
-        children: React.createElement(NextIntlClientProvider, {
-          locale: 'bn',
-          messages: bnMessages,
-          children: node,
-        }),
-      },
-    ),
+    React.createElement(Provider, {
+      store,
+      children: React.createElement(NextIntlClientProvider, {
+        locale: 'bn',
+        messages: bnMessages,
+        children: node,
+      }),
+    }),
   );
 }
 

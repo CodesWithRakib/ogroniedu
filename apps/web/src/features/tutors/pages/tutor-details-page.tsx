@@ -2,7 +2,6 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   Award,
   CheckCircle2,
@@ -18,19 +17,14 @@ import {
   BookOpen,
   Check,
   Send,
-  User,
-  MessageSquare,
-  HelpCircle,
-  ThumbsUp,
   AlertCircle,
 } from 'lucide-react';
-import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { useGetTutorPublicProfileQuery } from '@/store/services/tutors-api';
 import { useCreateBookingRequestMutation } from '@/store/services/bookings-api';
 import { useGetLinkedChildrenQuery } from '@/store/services/guardians-api';
-import { useGetEducationLevelsQuery } from '@/store/services/taxonomy-api';
 import { useAppSelector, type RootState } from '@/store';
-import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
+import { normalizeUnknownError } from '@/lib/api-error';
 
 const DAY_MAP: Record<string, number> = {
   sunday: 0,
@@ -43,49 +37,52 @@ const DAY_MAP: Record<string, number> = {
 };
 
 /** Curated rich details fallback for top academic tutors */
-const FALLBACK_TUTORS_DETAILS: Record<string, {
-  id: string;
-  displayName: string;
-  headline: string;
-  bio: string;
-  fullBio: string[];
-  institution: string;
-  degreeTitle: string;
-  graduationYear: number;
-  yearsExperience: number;
-  teachingModes: ('online' | 'in_person' | 'hybrid')[];
-  hourlyRateMinor: string;
-  responseTimeMinutes: number;
-  badges: string[];
-  qualifications: Array<{
+const FALLBACK_TUTORS_DETAILS: Record<
+  string,
+  {
     id: string;
-    title: string;
+    displayName: string;
+    headline: string;
+    bio: string;
+    fullBio: string[];
     institution: string;
-    year: number;
-    qualificationType: string;
-    isVerified: boolean;
-  }>;
-  subjects: Array<{
-    id: string;
-    subjectId: string;
-    nameEn: string;
-    nameBn: string;
-    levelEn: string;
-    levelBn: string;
-    rateMinor: string;
-  }>;
-  serviceAreas: string[];
-  availableDays: string[];
-  availableTimeSlots: string;
-  reviews: Array<{
-    id: string;
-    studentName: string;
-    rating: number;
-    date: string;
-    comment: string;
-    tutorReply?: string;
-  }>;
-}> = {
+    degreeTitle: string;
+    graduationYear: number;
+    yearsExperience: number;
+    teachingModes: ('online' | 'in_person' | 'hybrid')[];
+    hourlyRateMinor: string;
+    responseTimeMinutes: number;
+    badges: string[];
+    qualifications: Array<{
+      id: string;
+      title: string;
+      institution: string;
+      year: number;
+      qualificationType: string;
+      isVerified: boolean;
+    }>;
+    subjects: Array<{
+      id: string;
+      subjectId: string;
+      nameEn: string;
+      nameBn: string;
+      levelEn: string;
+      levelBn: string;
+      rateMinor: string;
+    }>;
+    serviceAreas: string[];
+    availableDays: string[];
+    availableTimeSlots: string;
+    reviews: Array<{
+      id: string;
+      studentName: string;
+      rating: number;
+      date: string;
+      comment: string;
+      tutorReply?: string;
+    }>;
+  }
+> = {
   'tutor-buet-1': {
     id: 'tutor-buet-1',
     displayName: 'তানভীর হাসান (Tanvir Hasan)',
@@ -168,15 +165,18 @@ const FALLBACK_TUTORS_DETAILS: Record<string, {
         studentName: 'রাফসান আহমেদ (অভিভাবক)',
         rating: 5,
         date: '১ সপ্তাহ আগে',
-        comment: 'তানভীর স্যারের পড়ানোর স্টাইল চমৎকার। আমার ছেলে গণিতে খুবই ভয় পেত, কিন্তু স্যারের ২ মাসের গাইডেন্সে তার টেস্ট পরীক্ষায় সর্বোচ্চ নম্বর এসেছে। অনেক আন্তরিক শিক্ষক।',
-        tutorReply: 'ধন্যবাদ আঙ্কেল! রাফসান অনেক মনোযোগী এবং কঠোর পরিশ্রমী। সামনে এইচএসসি পরীক্ষায় ও নিশ্চিত ভালো করবে।',
+        comment:
+          'তানভীর স্যারের পড়ানোর স্টাইল চমৎকার। আমার ছেলে গণিতে খুবই ভয় পেত, কিন্তু স্যারের ২ মাসের গাইডেন্সে তার টেস্ট পরীক্ষায় সর্বোচ্চ নম্বর এসেছে। অনেক আন্তরিক শিক্ষক।',
+        tutorReply:
+          'ধন্যবাদ আঙ্কেল! রাফসান অনেক মনোযোগী এবং কঠোর পরিশ্রমী। সামনে এইচএসসি পরীক্ষায় ও নিশ্চিত ভালো করবে।',
       },
       {
         id: 'r-2',
         studentName: 'সাদিয়া তাসনিম (এইচএসসি শিক্ষার্থী)',
         rating: 5,
         date: '৩ সপ্তাহ আগে',
-        comment: 'পদার্থবিজ্ঞানের গতিবিদ্যা ও স্থির তড়িৎ নিয়ে আমার অনেক কনফিউশন ছিল। তানভীর ভাইয়া যেভাবে প্রবলেম সলভিং টেকনিক দেখিয়েছেন তা অসাধারণ!',
+        comment:
+          'পদার্থবিজ্ঞানের গতিবিদ্যা ও স্থির তড়িৎ নিয়ে আমার অনেক কনফিউশন ছিল। তানভীর ভাইয়া যেভাবে প্রবলেম সলভিং টেকনিক দেখিয়েছেন তা অসাধারণ!',
       },
     ],
   },
@@ -244,7 +244,8 @@ const FALLBACK_TUTORS_DETAILS: Record<string, {
         studentName: 'মেহজাবিন চৌধুরী (মেডিকেল ভর্তিচ্ছু)',
         rating: 5,
         date: '২ সপ্তাহ আগে',
-        comment: 'আপু প্রতিটি টপিক খুব সুন্দরভাবে ভিজ্যুয়ালাইজ করান। মেডিকেল কোয়েশ্চেন ব্যাংকের সলভ ক্লাসগুলো অসাধারণ ছিল।',
+        comment:
+          'আপু প্রতিটি টপিক খুব সুন্দরভাবে ভিজ্যুয়ালাইজ করান। মেডিকেল কোয়েশ্চেন ব্যাংকের সলভ ক্লাসগুলো অসাধারণ ছিল।',
       },
     ],
   },
@@ -303,36 +304,29 @@ const FALLBACK_TUTORS_DETAILS: Record<string, {
         studentName: 'কামরুল হাসান (অভিভাবক)',
         rating: 5,
         date: '১ মাস আগে',
-        comment: 'ফারহান ভাই অত্যন্ত ধৈর্যশীল শিক্ষক। আমার মেয়ে নবম শ্রেণিতে ফিজিক্সে দুর্বল ছিল, এখন ওর আত্মবিশ্বাস অনেক বেড়েছে।',
+        comment:
+          'ফারহান ভাই অত্যন্ত ধৈর্যশীল শিক্ষক। আমার মেয়ে নবম শ্রেণিতে ফিজিক্সে দুর্বল ছিল, এখন ওর আত্মবিশ্বাস অনেক বেড়েছে।',
       },
     ],
   },
 };
 
-export function TutorDetailsPage({
-  tutorId,
-  locale,
-}: {
-  tutorId: string;
-  locale: Locale;
-}) {
-  const router = useRouter();
-  const dict = getDictionary(locale);
+export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale: Locale }) {
   const isBn = locale === 'bn';
   const currentUser = useAppSelector((state: RootState) => state.auth.user);
 
   // Queries
-  const { data: apiProfileResponse, isLoading, error: apiError } = useGetTutorPublicProfileQuery(tutorId);
+  const { data: apiProfileResponse } = useGetTutorPublicProfileQuery(tutorId);
   const childrenQuery = useGetLinkedChildrenQuery(undefined, {
     skip: !currentUser?.roles?.includes('guardian'),
   });
-  const levelsQuery = useGetEducationLevelsQuery();
-  const [createBookingRequest, { isLoading: isBookingSubmitting }] = useCreateBookingRequestMutation();
+  const [createBookingRequest, { isLoading: isBookingSubmitting }] =
+    useCreateBookingRequestMutation();
 
   // Booking Form State
   const [selectedStudentId, setSelectedStudentId] = useState('');
   const [selectedSubjectId, setSelectedSubjectId] = useState('');
-  const [selectedLevelId, setSelectedLevelId] = useState('');
+  const [selectedLevelId, _setSelectedLevelId] = useState('');
   const [selectedMode, setSelectedMode] = useState<'online' | 'in_person' | 'hybrid'>('online');
   const [selectedDays, setSelectedDays] = useState<string[]>(['saturday', 'monday', 'wednesday']);
   const [bookingNotes, setBookingNotes] = useState('');
@@ -346,42 +340,47 @@ export function TutorDetailsPage({
 
   const displayName = profile?.displayName || fallback.displayName;
   const headline = profile?.headline || fallback.headline;
-  const bio = profile?.bio || fallback.bio;
+  const _bio = profile?.bio || fallback.bio;
   const hourlyRateMinor = profile?.hourlyRateMinor || fallback.hourlyRateMinor;
   const hourlyRateFormatted = formatLocalizedNumber(Number(hourlyRateMinor) / 100, locale);
   const yearsExp = profile?.yearsExperience || fallback.yearsExperience;
   const responseTime = profile?.responseTimeMinutes || fallback.responseTimeMinutes;
-  const badges = profile?.badges && profile.badges.length > 0 ? profile.badges : fallback.badges;
+  const _badges = profile?.badges && profile.badges.length > 0 ? profile.badges : fallback.badges;
 
   // Subjects
-  const subjects = profile?.subjects && profile.subjects.length > 0
-    ? profile.subjects.map((s) => ({
-        id: s.id,
-        subjectId: s.subjectId,
-        nameEn: s.subjectNameEn,
-        nameBn: s.subjectNameBn,
-        levelEn: s.educationLevelNameEn || 'Class Level',
-        levelBn: s.educationLevelNameBn || 'শ্রেণি',
-        rateMinor: s.rateMinor || hourlyRateMinor,
-      }))
-    : fallback.subjects;
+  const subjects =
+    profile?.subjects && profile.subjects.length > 0
+      ? profile.subjects.map((s) => ({
+          id: s.id,
+          subjectId: s.subjectId,
+          nameEn: s.subjectNameEn,
+          nameBn: s.subjectNameBn,
+          levelEn: s.educationLevelNameEn || 'Class Level',
+          levelBn: s.educationLevelNameBn || 'শ্রেণি',
+          rateMinor: s.rateMinor || hourlyRateMinor,
+        }))
+      : fallback.subjects;
 
   // Qualifications
-  const qualifications = profile?.qualifications && profile.qualifications.length > 0
-    ? profile.qualifications.map((q) => ({
-        id: q.id,
-        title: q.title,
-        institution: q.institution || 'বিশ্ববিদ্যালয় / কলেজ',
-        year: q.issuedYear || 2023,
-        qualificationType: q.qualificationType,
-        isVerified: q.isVerified,
-      }))
-    : fallback.qualifications;
+  const qualifications =
+    profile?.qualifications && profile.qualifications.length > 0
+      ? profile.qualifications.map((q) => ({
+          id: q.id,
+          title: q.title,
+          institution: q.institution || 'বিশ্ববিদ্যালয় / কলেজ',
+          year: q.issuedYear || 2023,
+          qualificationType: q.qualificationType,
+          isVerified: q.isVerified,
+        }))
+      : fallback.qualifications;
 
   // Service Areas
-  const serviceAreas = profile?.serviceAreas && profile.serviceAreas.length > 0
-    ? profile.serviceAreas.map((a) => a.localityName || a.districtNameBn || a.districtNameEn || a.districtCode || 'ঢাকা')
-    : fallback.serviceAreas;
+  const serviceAreas =
+    profile?.serviceAreas && profile.serviceAreas.length > 0
+      ? profile.serviceAreas.map(
+          (a) => a.localityName || a.districtNameBn || a.districtNameEn || a.districtCode || 'ঢাকা',
+        )
+      : fallback.serviceAreas;
 
   // Availability
   const availableDays = fallback.availableDays;
@@ -472,7 +471,7 @@ export function TutorDetailsPage({
           : 'Booking request sent successfully! The tutor will respond shortly.',
       );
     } catch (err: unknown) {
-      const appErr = normalizeApiError(err as any, locale) || normalizeUnknownError(err);
+      const appErr = normalizeUnknownError(err, locale);
       setBookingError(appErr.message);
     }
   };
@@ -549,9 +548,7 @@ export function TutorDetailsPage({
               </div>
 
               {headline && (
-                <p className="text-sm sm:text-base font-semibold text-teal-300">
-                  {headline}
-                </p>
+                <p className="text-sm sm:text-base font-semibold text-teal-300">{headline}</p>
               )}
 
               {/* Rating & Reviews */}
@@ -595,7 +592,8 @@ export function TutorDetailsPage({
                 {isBn ? 'ঘণ্টাপ্রতি টিউশন ফি' : 'Hourly Rate'}
               </span>
               <span className="text-3xl font-black text-white tabular-nums tracking-tight">
-                ৳{hourlyRateFormatted} <span className="text-sm font-semibold text-slate-400">/ঘণ্টা</span>
+                ৳{hourlyRateFormatted}{' '}
+                <span className="text-sm font-semibold text-slate-400">/ঘণ্টা</span>
               </span>
             </div>
             <a
@@ -655,9 +653,7 @@ export function TutorDetailsPage({
                   <span className="text-[11px] text-slate-400 block font-semibold">
                     {isBn ? 'এসক্রো নিরাপত্তা' : 'Payment Security'}
                   </span>
-                  <span className="text-sm font-bold text-white">
-                    ১০০% সুরক্ষিত
-                  </span>
+                  <span className="text-sm font-bold text-white">১০০% সুরক্ষিত</span>
                 </div>
               </div>
             </div>
@@ -668,7 +664,11 @@ export function TutorDetailsPage({
             <div className="flex items-center justify-between border-b border-[#0df5c4]/15 pb-3">
               <div className="flex items-center gap-2.5 text-lg font-bold text-white">
                 <GraduationCap className="w-5 h-5 text-[#0df5c4]" />
-                <h2>{isBn ? 'শিক্ষাগত যোগ্যতা ও ভেরিফাইড সনদপত্র' : 'Academic Credentials & Certificates'}</h2>
+                <h2>
+                  {isBn
+                    ? 'শিক্ষাগত যোগ্যতা ও ভেরিফাইড সনদপত্র'
+                    : 'Academic Credentials & Certificates'}
+                </h2>
               </div>
               <span className="inline-flex items-center gap-1 text-xs text-emerald-400 font-semibold">
                 <CheckCircle2 className="w-3.5 h-3.5" />
@@ -730,7 +730,8 @@ export function TutorDetailsPage({
                       {isBn ? sub.levelBn : sub.levelEn}
                     </span>
                     <p className="text-[11px] text-slate-400">
-                      জাতীয় শিক্ষাক্রম (বাংলা ও ইংলিশ ভার্সন) • অধ্যায়ভিত্তিক কনসেপ্ট ও হ্যান্ডনোট প্রদান
+                      জাতীয় শিক্ষাক্রম (বাংলা ও ইংলিশ ভার্সন) • অধ্যায়ভিত্তিক কনসেপ্ট ও হ্যান্ডনোট
+                      প্রদান
                     </p>
                   </div>
                 );
@@ -840,7 +841,9 @@ export function TutorDetailsPage({
                         {rev.studentName[0]}
                       </div>
                       <div>
-                        <span className="text-xs font-bold text-white block">{rev.studentName}</span>
+                        <span className="text-xs font-bold text-white block">
+                          {rev.studentName}
+                        </span>
                         <span className="text-[10px] text-slate-400">{rev.date}</span>
                       </div>
                     </div>
@@ -870,19 +873,25 @@ export function TutorDetailsPage({
           <div className="rounded-3xl bg-gradient-to-br from-[#06242c] to-[#041920] border border-[#0df5c4]/30 p-6 space-y-3 shadow-lg">
             <div className="flex items-center gap-2 text-base font-bold text-[#0df5c4]">
               <ShieldCheck className="w-5 h-5" />
-              <h3>{isBn ? 'অগ্রণী এডু ১০০% সুরক্ষা ও সন্তুষ্টি গ্যারান্টি' : '100% Protection & Escrow Guarantee'}</h3>
+              <h3>
+                {isBn
+                  ? 'অগ্রণী এডু ১০০% সুরক্ষা ও সন্তুষ্টি গ্যারান্টি'
+                  : '100% Protection & Escrow Guarantee'}
+              </h3>
             </div>
             <ul className="text-xs text-slate-300 space-y-2 leading-relaxed">
               <li className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <span>
-                  <strong>এসক্রো সুরক্ষা:</strong> টিউশন ফি অগ্রণী এডু এসক্রো অ্যাকাউন্টে সুরক্ষিত থাকে। ক্লাস ঠিকমতো হওয়ার পর শিক্ষককে টাকা প্রদান করা হয়।
+                  <strong>এসক্রো সুরক্ষা:</strong> টিউশন ফি অগ্রণী এডু এসক্রো অ্যাকাউন্টে সুরক্ষিত
+                  থাকে। ক্লাস ঠিকমতো হওয়ার পর শিক্ষককে টাকা প্রদান করা হয়।
                 </span>
               </li>
               <li className="flex items-start gap-2">
                 <Check className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
                 <span>
-                  <strong>ফ্রি ডেমো সেশন:</strong> প্রথম ক্লাস পছন্দ না হলে সম্পূর্ণ বিনামূল্যে শিক্ষক পরিবর্তন অথবা ফি ফেরত পাওয়ার নিশ্চয়তা।
+                  <strong>ফ্রি ডেমো সেশন:</strong> প্রথম ক্লাস পছন্দ না হলে সম্পূর্ণ বিনামূল্যে
+                  শিক্ষক পরিবর্তন অথবা ফি ফেরত পাওয়ার নিশ্চয়তা।
                 </span>
               </li>
             </ul>
@@ -903,7 +912,9 @@ export function TutorDetailsPage({
                 <span className="text-xs text-slate-400">/ঘণ্টা</span>
               </div>
               <p className="text-[11px] text-slate-400 mt-1">
-                {isBn ? 'কোনো হিডেন চার্জ নেই • এসক্রো সুরক্ষিত' : 'No hidden fees • 100% Escrow Protected'}
+                {isBn
+                  ? 'কোনো হিডেন চার্জ নেই • এসক্রো সুরক্ষিত'
+                  : 'No hidden fees • 100% Escrow Protected'}
               </p>
             </div>
 
@@ -913,9 +924,7 @@ export function TutorDetailsPage({
                 <h4 className="text-sm font-bold text-white">
                   {isBn ? 'অনুরোধ পাঠানো হয়েছে!' : 'Request Sent!'}
                 </h4>
-                <p className="text-xs text-emerald-200 leading-relaxed">
-                  {bookingSuccess}
-                </p>
+                <p className="text-xs text-emerald-200 leading-relaxed">{bookingSuccess}</p>
                 <button
                   type="button"
                   onClick={() => setBookingSuccess(null)}
@@ -958,8 +967,12 @@ export function TutorDetailsPage({
                     </span>
                     <p className="text-[11px] text-slate-400">
                       {currentUser
-                        ? (isBn ? `আপনি ${currentUser.displayName} হিসেবে অনুরোধ পাঠাচ্ছেন।` : `Requesting as ${currentUser.displayName}`)
-                        : (isBn ? 'অভিভাবক বা শিক্ষার্থী হিসেবে সরাসরি বুকিং করতে পারেন।' : 'Direct booking as parent or student.')}
+                        ? isBn
+                          ? `আপনি ${currentUser.displayName} হিসেবে অনুরোধ পাঠাচ্ছেন।`
+                          : `Requesting as ${currentUser.displayName}`
+                        : isBn
+                          ? 'অভিভাবক বা শিক্ষার্থী হিসেবে সরাসরি বুকিং করতে পারেন।'
+                          : 'Direct booking as parent or student.'}
                     </p>
                   </div>
                 )}
@@ -975,7 +988,11 @@ export function TutorDetailsPage({
                     className="w-full h-10 px-3 rounded-xl bg-[#03171d] border border-[#0df5c4]/25 text-white focus:outline-none focus:border-[#0df5c4] transition-colors"
                   >
                     {subjects.map((sub) => (
-                      <option key={sub.id} value={sub.subjectId || sub.id} className="bg-[#03171d] text-white">
+                      <option
+                        key={sub.id}
+                        value={sub.subjectId || sub.id}
+                        className="bg-[#03171d] text-white"
+                      >
                         {isBn ? sub.nameBn : sub.nameEn} ({isBn ? sub.levelBn : sub.levelEn})
                       </option>
                     ))}
@@ -996,7 +1013,9 @@ export function TutorDetailsPage({
                       <button
                         key={mode.key}
                         type="button"
-                        onClick={() => setSelectedMode(mode.key as any)}
+                        onClick={() =>
+                          setSelectedMode(mode.key as 'online' | 'in_person' | 'hybrid')
+                        }
                         className={`py-2 rounded-xl border text-xs font-semibold transition-all ${
                           selectedMode === mode.key
                             ? 'bg-[#0df5c4] text-[#031317] border-[#0df5c4] font-bold shadow-[0_0_12px_rgba(13,245,196,0.3)]'
@@ -1038,7 +1057,9 @@ export function TutorDetailsPage({
                 {/* Additional Notes */}
                 <div className="space-y-1.5">
                   <label className="font-semibold text-slate-200 block">
-                    {isBn ? 'বিশেষ কোনো বার্তা বা চাহিদা (ঐচ্ছিক):' : 'Notes / Special Requests (Optional):'}
+                    {isBn
+                      ? 'বিশেষ কোনো বার্তা বা চাহিদা (ঐচ্ছিক):'
+                      : 'Notes / Special Requests (Optional):'}
                   </label>
                   <textarea
                     rows={3}
@@ -1062,8 +1083,12 @@ export function TutorDetailsPage({
                   <Send className="w-4 h-4" />
                   <span>
                     {isBookingSubmitting
-                      ? (isBn ? 'অনুরোধ পাঠানো হচ্ছে...' : 'Submitting Request...')
-                      : (isBn ? 'টিউশন অনুরোধ পাঠান' : 'Submit Tutoring Request')}
+                      ? isBn
+                        ? 'অনুরোধ পাঠানো হচ্ছে...'
+                        : 'Submitting Request...'
+                      : isBn
+                        ? 'টিউশন অনুরোধ পাঠান'
+                        : 'Submit Tutoring Request'}
                   </span>
                 </button>
               </form>

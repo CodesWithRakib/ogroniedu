@@ -27,7 +27,12 @@ export function useGuardianDashboard() {
     if (!activeChildId && children[0]) setActiveChildId(children[0].studentId);
   }, [children, activeChildId]);
 
-  async function handleAddChild(data: { studentIdentifier: string; relationshipType: string; consentPolicyVersion: string; consentAgreed: boolean }) {
+  async function handleAddChild(data: {
+    studentIdentifier: string;
+    relationshipType: string;
+    consentPolicyVersion: string;
+    consentAgreed: boolean;
+  }) {
     await linkChild(data).unwrap();
     childrenQuery.refetch();
   }

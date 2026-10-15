@@ -10,11 +10,7 @@ export interface StudyTimeTrackerCardProps {
   subtitle?: string;
 }
 
-export function StudyTimeTrackerCard({
-  locale,
-  title,
-  subtitle,
-}: StudyTimeTrackerCardProps) {
+export function StudyTimeTrackerCard({ locale, title, subtitle }: StudyTimeTrackerCardProps) {
   const isBn = locale === 'bn';
   const heading = title ?? (isBn ? 'স্টাডি টাইম ট্র্যাকার' : 'Time Tracker');
   const sub = subtitle ?? (isBn ? 'ফোকাস ও শেখার সময় গণনা' : 'Focus session duration');

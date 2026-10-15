@@ -151,8 +151,7 @@ export class TutorSearchService {
         const matchesBio = p.bio?.toLowerCase().includes(term);
         const matchesQualification = (p.qualifications || []).some(
           (q) =>
-            q.institution?.toLowerCase().includes(term) ||
-            q.title?.toLowerCase().includes(term),
+            q.institution?.toLowerCase().includes(term) || q.title?.toLowerCase().includes(term),
         );
         const matchesServiceArea = (p.serviceAreas || []).some(
           (a) =>
@@ -161,11 +160,7 @@ export class TutorSearchService {
             a.upazilaCode?.toLowerCase().includes(term),
         );
         return (
-          matchesUser ||
-          matchesHeadline ||
-          matchesBio ||
-          matchesQualification ||
-          matchesServiceArea
+          matchesUser || matchesHeadline || matchesBio || matchesQualification || matchesServiceArea
         );
       });
     }

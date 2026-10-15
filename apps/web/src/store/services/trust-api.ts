@@ -77,13 +77,16 @@ export const trustApi = baseApi.injectEndpoints({
       query: () => '/api/v1/tutor-replacements',
       providesTags: [{ type: 'ReplacementCase', id: 'LIST' }],
     }),
-    updateReplacementCase: builder.mutation<
-      unknown,
-      { id: string; body: Record<string, unknown> }
-    >({
-      query: ({ id, body }) => ({ url: `/api/v1/tutor-replacements/${id}`, method: 'PATCH', body }),
-      invalidatesTags: [{ type: 'ReplacementCase', id: 'LIST' }],
-    }),
+    updateReplacementCase: builder.mutation<unknown, { id: string; body: Record<string, unknown> }>(
+      {
+        query: ({ id, body }) => ({
+          url: `/api/v1/tutor-replacements/${id}`,
+          method: 'PATCH',
+          body,
+        }),
+        invalidatesTags: [{ type: 'ReplacementCase', id: 'LIST' }],
+      },
+    ),
   }),
   overrideExisting: false,
 });

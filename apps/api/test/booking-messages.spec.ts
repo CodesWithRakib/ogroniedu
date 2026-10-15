@@ -2,6 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BookingMessagesService } from '../src/modules/notifications/booking-messages.service';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
+import { GuardianAccessService } from '../src/modules/guardians/guardian-access.service';
 
 interface SeedMessage {
   id: string;
@@ -152,7 +153,7 @@ describe('BookingMessagesService ABAC & Content Safety Tests (Phase 12)', () => 
     service = new BookingMessagesService(
       mockMessageRepo,
       mockBookingRepo,
-      mockGuardianLinkRepo,
+      new GuardianAccessService(mockGuardianLinkRepo),
       mockOutboxRepo,
       mockAuditService,
       mockNotificationService,

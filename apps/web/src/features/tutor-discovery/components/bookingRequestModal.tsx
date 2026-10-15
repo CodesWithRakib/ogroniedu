@@ -84,9 +84,7 @@ export function BookingRequestModal({
         {successMessage ? (
           <div className="p-4 bg-primary-soft border border-primary/25 rounded-2xl text-center space-y-2">
             <CheckCircle2 className="w-8 h-8 text-primary mx-auto" />
-            <p className="text-sm font-semibold text-primary-soft-foreground">
-              {successMessage}
-            </p>
+            <p className="text-sm font-semibold text-primary-soft-foreground">{successMessage}</p>
           </div>
         ) : (
           <form

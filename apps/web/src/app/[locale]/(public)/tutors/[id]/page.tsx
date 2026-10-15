@@ -1,7 +1,7 @@
 'use client';
 
 import React, { Suspense, use } from 'react';
-import { TutorDetailsPage } from '@/features/tutors/pages/tutor-details-page';
+import { TutorDetailsPage } from '@/features/tutors';
 import { LoadingSpinner } from '@/components/ui';
 import { type Locale } from '@/lib/i18n';
 

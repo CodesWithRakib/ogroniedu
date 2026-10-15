@@ -36,11 +36,7 @@ export class SchedulingService {
   scheduleRecurringSessions(user: AuthenticatedUser, dto: CreateRecurringSessionsDto) {
     return this.scheduling.scheduleRecurringSessions(user, dto);
   }
-  rescheduleSession(
-    sessionId: string,
-    user: AuthenticatedUser,
-    dto: RescheduleSessionDto,
-  ) {
+  rescheduleSession(sessionId: string, user: AuthenticatedUser, dto: RescheduleSessionDto) {
     return this.rescheduling.rescheduleSession(sessionId, user, dto);
   }
   cancelSession(sessionId: string, user: AuthenticatedUser, dto: CancelSessionDto) {

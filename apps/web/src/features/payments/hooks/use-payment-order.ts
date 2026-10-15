@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { getDictionary, type Locale } from '@/lib/i18n';
-import { normalizeApiError, normalizeUnknownError, newIdempotencyKey } from '@/lib/api-error';
+import { normalizeUnknownError, newIdempotencyKey } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
 import { useGetBookingRequestsQuery } from '@/store/services/bookings-api';
 import {

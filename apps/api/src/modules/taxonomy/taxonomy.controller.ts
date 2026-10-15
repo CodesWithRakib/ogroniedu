@@ -62,4 +62,3 @@ export class TaxonomyController {
     return { success: true, data };
   }
 }
-

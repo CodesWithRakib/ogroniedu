@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BookingEntity, BookingStatus } from './entities/booking.entity';
+import { BookingEntity } from './entities/booking.entity';
 import { TutorProfileEntity } from '../tutors/entities/tutor-profile.entity';
 import { TutorSubjectEntity } from '../tutors/entities/tutor-subject.entity';
 import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-student-link.entity';

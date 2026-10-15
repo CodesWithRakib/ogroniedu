@@ -2,15 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import {
-  Star,
-  CheckCircle2,
-  Users,
-  Video,
-  Award,
-  ArrowRight,
-  Sparkles,
-} from 'lucide-react';
+import { Star, CheckCircle2, Users, Video, Award, ArrowRight } from 'lucide-react';
 import type { Locale } from '@/lib/i18n';
 
 export function HeroTutorCard({ locale }: { locale: Locale }) {
@@ -31,7 +23,11 @@ export function HeroTutorCard({ locale }: { locale: Locale }) {
               <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden border-2 border-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.4)]">
                 <div
                   className="w-full h-full bg-cover bg-center"
-                  style={{ backgroundImage: "url('/images/avatars-group.jpg')", backgroundPosition: '0% 100%', backgroundSize: '200% 200%' }}
+                  style={{
+                    backgroundImage: "url('/images/avatars-group.jpg')",
+                    backgroundPosition: '0% 100%',
+                    backgroundSize: '200% 200%',
+                  }}
                 />
               </div>
               <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-[#0df5c4] text-[#042426] ring-2 ring-[#062028] shadow-xs">

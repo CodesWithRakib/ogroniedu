@@ -46,9 +46,7 @@ describe('BookingMessagesController Unit Tests', () => {
       }),
     };
 
-    controller = new BookingMessagesController(
-      mockService as unknown as BookingMessagesService,
-    );
+    controller = new BookingMessagesController(mockService as unknown as BookingMessagesService);
   });
 
   it('should call sendMessage on service and return enveloped message entity', async () => {

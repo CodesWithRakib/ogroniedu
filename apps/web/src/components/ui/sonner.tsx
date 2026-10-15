@@ -1,14 +1,7 @@
 'use client';
 
 import * as React from 'react';
-import {
-  CheckCircle2,
-  AlertCircle,
-  AlertTriangle,
-  Info,
-  Loader2,
-  X,
-} from 'lucide-react';
+import { CheckCircle2, AlertCircle, AlertTriangle, Info, Loader2 } from 'lucide-react';
 import { useTheme } from 'next-themes';
 import { Toaster as Sonner, toast, type ToasterProps } from 'sonner';
 
@@ -80,8 +73,7 @@ const Toaster = ({
             '!bg-rose-50/95 dark:!bg-rose-950/80 !border-rose-200 dark:!border-rose-800/60 !text-rose-950 dark:!text-rose-100',
           warning:
             '!bg-amber-50/95 dark:!bg-amber-950/80 !border-amber-200 dark:!border-amber-800/60 !text-amber-950 dark:!text-amber-100',
-          info:
-            '!bg-sky-50/95 dark:!bg-sky-950/80 !border-sky-200 dark:!border-sky-800/60 !text-sky-950 dark:!text-sky-100',
+          info: '!bg-sky-50/95 dark:!bg-sky-950/80 !border-sky-200 dark:!border-sky-800/60 !text-sky-950 dark:!text-sky-100',
         },
       }}
       {...props}

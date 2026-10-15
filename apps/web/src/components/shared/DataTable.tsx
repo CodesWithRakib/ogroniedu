@@ -48,7 +48,8 @@ export function DataTable<T extends { id: string | number }>({
   testId?: string;
 }) {
   if (isLoading) return <LoadingState testId={`${testId}-loading`} />;
-  if (errorMessage) return <ErrorState message={errorMessage} onRetry={onRetry} testId={`${testId}-error`} />;
+  if (errorMessage)
+    return <ErrorState message={errorMessage} onRetry={onRetry} testId={`${testId}-error`} />;
   if (rows.length === 0) {
     return (
       <EmptyState
@@ -60,7 +61,10 @@ export function DataTable<T extends { id: string | number }>({
     );
   }
   return (
-    <div className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800" data-testid={testId}>
+    <div
+      className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800"
+      data-testid={testId}
+    >
       <Table>
         <TableHeader>
           <TableRow>

@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Smartphone, Sparkles, ArrowRight } from 'lucide-react';
+import { Smartphone, ArrowRight } from 'lucide-react';
 import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
 
@@ -45,12 +45,8 @@ export function SidebarPromoCard({
 
       {/* Content */}
       <div className="relative z-10 mb-3">
-        <p className="text-xs font-bold text-white tracking-tight leading-snug">
-          {heading}
-        </p>
-        <p className="text-[10px] text-slate-300 mt-0.5 leading-tight">
-          {sub}
-        </p>
+        <p className="text-xs font-bold text-white tracking-tight leading-snug">{heading}</p>
+        <p className="text-[10px] text-slate-300 mt-0.5 leading-tight">{sub}</p>
       </div>
 
       {/* Action Button */}

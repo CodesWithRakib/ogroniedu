@@ -1,5 +1,5 @@
 import { IsIn, IsString, IsNotEmpty, IsOptional } from 'class-validator';
-import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
+import { ApiPropertyOptional } from '@nestjs/swagger';
 import type { SafetyStatus, EscalationLevel } from '../entities/safety-report.entity';
 
 export class UpdateSafetyReportDto {

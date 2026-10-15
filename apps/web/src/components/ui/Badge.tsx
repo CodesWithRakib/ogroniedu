@@ -16,10 +16,8 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
       primary: 'bg-primary-soft text-primary-soft-foreground border border-primary/25',
       success:
         'bg-emerald-500/12 text-emerald-700 dark:text-emerald-300 border border-emerald-500/25',
-      warning:
-        'bg-amber-500/12 text-amber-800 dark:text-amber-300 border border-amber-500/25',
-      destructive:
-        'bg-rose-500/12 text-rose-700 dark:text-rose-300 border border-rose-500/25',
+      warning: 'bg-amber-500/12 text-amber-800 dark:text-amber-300 border border-amber-500/25',
+      destructive: 'bg-rose-500/12 text-rose-700 dark:text-rose-300 border border-rose-500/25',
       info: 'bg-blue-500/12 text-blue-700 dark:text-blue-300 border border-blue-500/25',
       outline: 'border border-border text-foreground bg-card/60 backdrop-blur-xs',
     };

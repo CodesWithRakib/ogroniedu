@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   NotificationEntity,
@@ -9,6 +9,7 @@ import {
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { NotificationService } from './notification.service';
+import { NotificationPreferencesService } from './notification-preferences.service';
 import { OutboxWorkerService } from './outbox-worker.service';
 import { BookingMessagesService } from './booking-messages.service';
 import { NotificationGateway } from './notification.gateway';
@@ -33,10 +34,17 @@ import { GuardiansModule } from '../guardians/guardians.module';
   controllers: [NotificationController, BookingMessagesController],
   providers: [
     NotificationService,
+    NotificationPreferencesService,
     NotificationGateway,
     OutboxWorkerService,
     BookingMessagesService,
   ],
-  exports: [NotificationService, NotificationGateway, OutboxWorkerService, BookingMessagesService],
+  exports: [
+    NotificationService,
+    NotificationPreferencesService,
+    NotificationGateway,
+    OutboxWorkerService,
+    BookingMessagesService,
+  ],
 })
 export class NotificationsModule {}

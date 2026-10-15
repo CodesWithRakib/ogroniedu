@@ -7,7 +7,7 @@ import { AdminDashboardService } from '../src/modules/admin/services/admin-dashb
 import { AdminUsersService } from '../src/modules/admin/services/admin-users.service';
 import { AdminBookingsService } from '../src/modules/admin/services/admin-bookings.service';
 import { AdminPlatformService } from '../src/modules/admin/services/admin-platform.service';
-import { ForbiddenException, BadRequestException, NotFoundException } from '@nestjs/common';
+import { ForbiddenException, BadRequestException } from '@nestjs/common';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 import jwt from 'jsonwebtoken';
 
@@ -35,7 +35,7 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
     save: vi.fn(),
   };
 
-  const mockUserRoleRepo = {
+  const _mockUserRoleRepo = {
     find: vi.fn(),
     save: vi.fn(),
   };
@@ -117,7 +117,7 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
     preferredLocale: 'en',
   };
 
-  const regularUser: AuthenticatedUser = {
+  const _regularUser: AuthenticatedUser = {
     id: '00000000-0000-0000-0000-000000000003',
     email: 'student@ogroni.test',
     roles: ['student'],

@@ -13,7 +13,15 @@ export interface EmptyStateProps {
   className?: string;
 }
 
-export function EmptyState({ icon, title, description, action, actionLabel, actionHref, className }: EmptyStateProps) {
+export function EmptyState({
+  icon,
+  title,
+  description,
+  action,
+  actionLabel,
+  actionHref,
+  className,
+}: EmptyStateProps) {
   return (
     <div
       role="status"

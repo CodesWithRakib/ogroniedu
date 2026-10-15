@@ -5,8 +5,10 @@ import { useTranslations } from 'next-intl';
 import type { AdminBookingItem } from '../../types/admin.types';
 
 function bookingStatusClass(status: AdminBookingItem['status']): string {
-  if (status === 'confirmed') return 'bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/30';
-  if (status === 'completed') return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30';
+  if (status === 'confirmed')
+    return 'bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/30';
+  if (status === 'completed')
+    return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30';
   return 'bg-surface-muted text-muted-foreground border border-border/60';
 }
 
@@ -57,7 +59,9 @@ export function AdminBookingsTab({
                   <td className="px-4 py-3 text-muted-foreground">
                     {booking.subjectName} ({booking.mode})
                   </td>
-                  <td className="px-4 py-3 font-semibold text-foreground">{booking.priceBdt} BDT</td>
+                  <td className="px-4 py-3 font-semibold text-foreground">
+                    {booking.priceBdt} BDT
+                  </td>
                   <td className="px-4 py-3">
                     <span
                       className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${bookingStatusClass(booking.status)}`}

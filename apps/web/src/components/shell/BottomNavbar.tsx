@@ -3,14 +3,7 @@
 import React from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import {
-  Home,
-  GraduationCap,
-  PlusCircle,
-  Bell,
-  User,
-  LayoutDashboard,
-} from 'lucide-react';
+import { Home, GraduationCap, PlusCircle, Bell, User, LayoutDashboard } from 'lucide-react';
 import { type Locale, formatLocalizedNumber } from '@/lib/i18n';
 import { useAppSelector } from '@/store';
 import { dashboardPathForRoles, withLocale } from '@/lib/auth';
@@ -35,9 +28,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
     ? dashboardPathForRoles(user.roles, locale)
     : withLocale('/dashboard', locale);
 
-  const accountHref = isAuthenticated && user
-    ? dashboardHref
-    : withLocale('/login', locale);
+  const accountHref = isAuthenticated && user ? dashboardHref : withLocale('/login', locale);
 
   function isActive(href: string, exact: boolean = false) {
     if (!pathname) return false;
@@ -63,9 +54,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
         <Link
           href={`/${locale}`}
           className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-all active:scale-90 ${
-            isHomeActive
-              ? 'text-[#0df5c4] font-bold'
-              : 'text-slate-400 hover:text-slate-200'
+            isHomeActive ? 'text-[#0df5c4] font-bold' : 'text-slate-400 hover:text-slate-200'
           }`}
         >
           <div className="relative">
@@ -74,18 +63,14 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
               <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0df5c4] shadow-[0_0_8px_#0df5c4]" />
             )}
           </div>
-          <span className="text-[10px] tracking-tight mt-1">
-            {isBn ? 'হোম' : 'Home'}
-          </span>
+          <span className="text-[10px] tracking-tight mt-1">{isBn ? 'হোম' : 'Home'}</span>
         </Link>
 
         {/* 2. Find Tutors Tab */}
         <Link
           href={`/${locale}/tutors`}
           className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-all active:scale-90 ${
-            isTutorsActive
-              ? 'text-[#0df5c4] font-bold'
-              : 'text-slate-400 hover:text-slate-200'
+            isTutorsActive ? 'text-[#0df5c4] font-bold' : 'text-slate-400 hover:text-slate-200'
           }`}
         >
           <div className="relative">
@@ -94,9 +79,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
               <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0df5c4] shadow-[0_0_8px_#0df5c4]" />
             )}
           </div>
-          <span className="text-[10px] tracking-tight mt-1">
-            {isBn ? 'শিক্ষক' : 'Tutors'}
-          </span>
+          <span className="text-[10px] tracking-tight mt-1">{isBn ? 'শিক্ষক' : 'Tutors'}</span>
         </Link>
 
         {/* 3. Center Elevated Action: Post Tuition Request */}
@@ -105,14 +88,18 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           className="relative flex flex-col items-center justify-center -top-3.5 px-1 group active:scale-90 transition-transform"
           aria-label={isBn ? 'টিউশন রিকোয়েস্ট পোস্ট করুন' : 'Post Tuition Request'}
         >
-          <div className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#0df5c4] via-[#00e1b2] to-[#00bfa5] text-[#031317] shadow-[0_0_20px_rgba(13,245,196,0.65)] ring-4 ring-[#031419] transition-all group-hover:scale-105 ${
-            isRequestsActive ? 'ring-[#0df5c4]/40' : ''
-          }`}>
+          <div
+            className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#0df5c4] via-[#00e1b2] to-[#00bfa5] text-[#031317] shadow-[0_0_20px_rgba(13,245,196,0.65)] ring-4 ring-[#031419] transition-all group-hover:scale-105 ${
+              isRequestsActive ? 'ring-[#0df5c4]/40' : ''
+            }`}
+          >
             <PlusCircle className="h-6 w-6 stroke-[2.4]" />
           </div>
-          <span className={`text-[10px] tracking-tight mt-0.5 ${
-            isRequestsActive ? 'text-[#0df5c4] font-bold' : 'text-slate-300 font-medium'
-          }`}>
+          <span
+            className={`text-[10px] tracking-tight mt-0.5 ${
+              isRequestsActive ? 'text-[#0df5c4] font-bold' : 'text-slate-300 font-medium'
+            }`}
+          >
             {isBn ? 'টিউশন পোস্ট' : 'Post Request'}
           </span>
         </Link>
@@ -137,18 +124,14 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
               <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0df5c4] shadow-[0_0_8px_#0df5c4]" />
             )}
           </div>
-          <span className="text-[10px] tracking-tight mt-1">
-            {isBn ? 'বিজ্ঞপ্তি' : 'Alerts'}
-          </span>
+          <span className="text-[10px] tracking-tight mt-1">{isBn ? 'বিজ্ঞপ্তি' : 'Alerts'}</span>
         </Link>
 
         {/* 5. Account / Dashboard Tab */}
         <Link
           href={accountHref}
           className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-all active:scale-90 ${
-            isAccountActive
-              ? 'text-[#0df5c4] font-bold'
-              : 'text-slate-400 hover:text-slate-200'
+            isAccountActive ? 'text-[#0df5c4] font-bold' : 'text-slate-400 hover:text-slate-200'
           }`}
         >
           <div className="relative">
@@ -163,8 +146,12 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           </div>
           <span className="text-[10px] tracking-tight mt-1 truncate max-w-[54px]">
             {isAuthenticated && user
-              ? (isBn ? 'ড্যাশবোর্ড' : 'Dashboard')
-              : (isBn ? 'প্রোফাইল' : 'Account')}
+              ? isBn
+                ? 'ড্যাশবোর্ড'
+                : 'Dashboard'
+              : isBn
+                ? 'প্রোফাইল'
+                : 'Account'}
           </span>
         </Link>
       </div>

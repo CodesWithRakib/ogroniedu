@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { FilesService, MAX_EVIDENCE_FILE_SIZE_BYTES } from '../src/modules/files/files.service';
+import { FilesService } from '../src/modules/files/files.service';
 import { BadRequestException, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { FileAssetEntity } from '../src/modules/files/entities/file-asset.entity';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';

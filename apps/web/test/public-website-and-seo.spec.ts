@@ -2,7 +2,6 @@ import { describe, it, expect } from 'vitest';
 import React from 'react';
 import sitemap from '../src/app/sitemap';
 import robots from '../src/app/robots';
-import { getDictionary } from '../src/lib/i18n';
 import bnDict from '../messages/bn.json';
 import enDict from '../messages/en.json';
 import HowItWorksPage from '../src/app/[locale]/(public)/how-it-works/page';

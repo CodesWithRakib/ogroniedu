@@ -61,10 +61,7 @@ export function AnalyticsDashboardView({
   };
 
   return (
-    <div
-      className="space-y-6"
-      data-testid="analytics-dashboard-view"
-    >
+    <div className="space-y-6" data-testid="analytics-dashboard-view">
       <AnalyticsHeader
         selectedPreset={selectedPreset}
         onPreset={handlePresetSelect}

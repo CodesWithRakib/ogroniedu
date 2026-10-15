@@ -71,6 +71,11 @@ const DASHBOARD: Record<string, NavItem> = {
   },
 };
 
+/** True when the nav item matches the current pathname (shared by all shell navs). */
+export function isNavActive(pathname: string | null, href: string): boolean {
+  return pathname === href || (href !== '/dashboard' && !!pathname?.startsWith(href));
+}
+
 /** Single source of truth for role → navigation items. DashboardShell renders this. */
 export function navForRole(role: UserRole | null): NavItem[] {
   if (role === 'student') {

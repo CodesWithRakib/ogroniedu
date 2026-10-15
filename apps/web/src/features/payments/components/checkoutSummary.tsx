@@ -3,10 +3,7 @@
 import { FileText } from 'lucide-react';
 import { Card, CardHeader, CardTitle, CardContent, Badge } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
-import {
-  orderAmountBdt,
-  type PaymentOrderDetails,
-} from '../types/payment-checkout.types';
+import { orderAmountBdt, type PaymentOrderDetails } from '../types/payment-checkout.types';
 
 interface CheckoutSummaryProps {
   order: PaymentOrderDetails;

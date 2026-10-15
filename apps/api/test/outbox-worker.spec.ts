@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { OutboxWorkerService } from '../src/modules/notifications/outbox-worker.service';
-import { OutboxEventEntity } from '../src/modules/bookings/entities/outbox-event.entity';
 
 describe('OutboxWorkerService Unit & Business Invariant Tests (Phase 12)', () => {
   let worker: OutboxWorkerService;

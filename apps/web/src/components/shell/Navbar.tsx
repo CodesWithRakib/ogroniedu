@@ -3,21 +3,9 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
-import {
-  GraduationCap,
-  Menu,
-  X,
-  Globe,
-  User,
-  LogOut,
-  Sparkles,
-  ArrowRight,
-  Compass,
-  Moon,
-} from 'lucide-react';
+import { Menu, X, Globe, User, LogOut, ArrowRight, Moon } from 'lucide-react';
 import { Button } from '../ui/Button';
 import { NotificationBell } from '../notifications/NotificationBell';
-import { ThemePicker } from '../theme/ThemePicker';
 import { OgroniEduBrand } from '../brand/OgroniEduBrand';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { dashboardPathForRoles, withLocale } from '@/lib/auth';

@@ -21,7 +21,13 @@ test.describe('admin console journey', () => {
   const tutorName = `E2E Tutor ${stamp}`;
   let tutorId = '';
 
-  async function api(request: APIRequestContext, method: 'GET' | 'POST' | 'PUT' | 'PATCH', path: string, token?: string, body?: unknown) {
+  async function api(
+    request: APIRequestContext,
+    method: 'GET' | 'POST' | 'PUT' | 'PATCH',
+    path: string,
+    token?: string,
+    body?: unknown,
+  ) {
     const res = await request.fetch(`${API}${path}`, {
       method,
       headers: {
@@ -36,7 +42,12 @@ test.describe('admin console journey', () => {
     return res.json();
   }
 
-  async function register(request: APIRequestContext, displayName: string, email: string, role: string) {
+  async function register(
+    request: APIRequestContext,
+    displayName: string,
+    email: string,
+    role: string,
+  ) {
     const res = await api(request, 'POST', '/api/v1/auth/register', undefined, {
       displayName,
       email,
@@ -54,7 +65,7 @@ test.describe('admin console journey', () => {
     const tutor = await register(request, tutorName, tutorEmail, 'tutor');
     tutorId = tutor.user.id;
     const th = tutor.accessToken;
-    const headers = { Authorization: `Bearer ${th}` };
+    const _headers = { Authorization: `Bearer ${th}` };
     const subjects = (await api(request, 'GET', '/api/v1/taxonomy/subjects', th)).data;
     const levels = (await api(request, 'GET', '/api/v1/taxonomy/education-levels', th)).data;
     await api(request, 'PUT', '/api/v1/tutors/me/profile', th, {

@@ -40,7 +40,10 @@ export function AdminTabsBar({
   const t = useTranslations('admin');
 
   return (
-    <div className="flex border-b border-border gap-1.5 overflow-x-auto pb-2 scrollbar-none" role="tablist">
+    <div
+      className="flex border-b border-border gap-1.5 overflow-x-auto pb-2 scrollbar-none"
+      role="tablist"
+    >
       {ADMIN_TABS.map((key) => (
         <button
           key={key}

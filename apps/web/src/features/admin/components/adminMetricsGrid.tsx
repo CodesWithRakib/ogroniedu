@@ -73,12 +73,17 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
               className="bg-gradient-to-br from-primary via-primary/95 to-primary-hover text-primary-foreground border border-primary/20 rounded-3xl p-5 shadow-lg shadow-primary/20 col-span-2 md:col-span-1 transition-all hover:-translate-y-0.5 relative overflow-hidden group select-none"
             >
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold text-primary-foreground/90 truncate">{card.label}</p>
+                <p className="text-xs font-semibold text-primary-foreground/90 truncate">
+                  {card.label}
+                </p>
                 <div className="h-7 w-7 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0">
                   <ArrowUpRight className="h-3.5 w-3.5" />
                 </div>
               </div>
-              <p className="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight font-sans leading-none text-white" data-testid={card.testId}>
+              <p
+                className="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight font-sans leading-none text-white"
+                data-testid={card.testId}
+              >
                 {card.value}
               </p>
               <span className="text-[10px] text-white/80 font-semibold mt-2 inline-block px-2 py-0.5 rounded-full bg-white/15">
@@ -99,7 +104,10 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
                 <ArrowUpRight className="h-3.5 w-3.5" />
               </div>
             </div>
-            <p className={`text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight font-sans leading-none ${card.valueClass}`} data-testid={card.testId}>
+            <p
+              className={`text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight font-sans leading-none ${card.valueClass}`}
+              data-testid={card.testId}
+            >
               {card.value}
             </p>
             <span className="text-[10px] text-muted-foreground font-medium mt-2 inline-block px-2 py-0.5 rounded-full bg-surface border border-border/70">

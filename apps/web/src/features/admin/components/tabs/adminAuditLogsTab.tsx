@@ -40,7 +40,9 @@ export function AdminAuditLogsTab({ auditLogs }: { auditLogs: AdminAuditLogItem[
                   <td className="px-4 py-3 font-mono text-[11px] text-foreground/80">
                     {log.actorUserId || 'system'}
                   </td>
-                  <td className="px-4 py-3 font-semibold text-teal-600 dark:text-teal-400 font-mono">{log.action}</td>
+                  <td className="px-4 py-3 font-semibold text-teal-600 dark:text-teal-400 font-mono">
+                    {log.action}
+                  </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {log.resourceType}:{log.resourceId || '—'}
                   </td>

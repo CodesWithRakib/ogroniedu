@@ -1,11 +1,9 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { UsersService } from '../src/modules/users/users.service';
+import { StudentProfileService } from '../src/modules/users/services/student-profile.service';
+import { UserLifecycleService } from '../src/modules/users/services/user-lifecycle.service';
 import { NotFoundException } from '@nestjs/common';
 import { UserEntity } from '../src/modules/auth/entities/user.entity';
-import { StudentProfileEntity } from '../src/modules/users/entities/student-profile.entity';
-import { AuthSessionEntity } from '../src/modules/auth/entities/auth-session.entity';
-import { GuardianStudentLinkEntity } from '../src/modules/guardians/entities/guardian-student-link.entity';
-import { AuditService } from '../src/modules/audit/audit.service';
 
 describe('UsersService Unit Tests', () => {
   let service: UsersService;
@@ -65,10 +63,17 @@ describe('UsersService Unit Tests', () => {
     service = new UsersService(
       mockUserRepo,
       mockStudentProfileRepo,
-      mockSessionRepo,
-      mockGuardianLinkRepo,
-      mockAuditService,
       mockDataSource,
+      mockAuditService,
+      new StudentProfileService(mockUserRepo, mockStudentProfileRepo, mockAuditService),
+      new UserLifecycleService(
+        mockUserRepo,
+        mockStudentProfileRepo,
+        mockSessionRepo,
+        mockGuardianLinkRepo,
+        mockAuditService,
+        undefined,
+      ),
     );
   });
 
@@ -111,7 +116,7 @@ describe('UsersService Unit Tests', () => {
     it('should update display name and preferred locale', async () => {
       mockUserRepo.findOne.mockResolvedValue({ ...testUser });
 
-      const updated = await service.updateProfile(testUser.id, {
+      const _updated = await service.updateProfile(testUser.id, {
         displayName: 'Rakib Islam Updated',
         preferredLocale: 'en',
       });

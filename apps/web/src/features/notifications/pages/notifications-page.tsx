@@ -50,9 +50,16 @@ export function NotificationsPage({ locale }: { locale: Locale }) {
       {feed.isLoading ? (
         <LoadingState testId="notifications-loading" />
       ) : feed.errorMessage ? (
-        <ErrorState message={feed.errorMessage} onRetry={feed.refetch} testId="notifications-error" />
+        <ErrorState
+          message={feed.errorMessage}
+          onRetry={feed.refetch}
+          testId="notifications-error"
+        />
       ) : feed.items.length === 0 ? (
-        <EmptyState title={dict.notifications.emptyTitle} description={dict.notifications.emptyDesc} />
+        <EmptyState
+          title={dict.notifications.emptyTitle}
+          description={dict.notifications.emptyDesc}
+        />
       ) : (
         <>
           <div className="space-y-3" data-testid="notifications-list">

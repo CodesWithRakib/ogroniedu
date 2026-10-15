@@ -4,8 +4,9 @@ import { LearningAccessService } from '../src/modules/learning/services/learning
 import { LearningAttendanceService } from '../src/modules/learning/services/attendance.service';
 import { LearningAssignmentsService } from '../src/modules/learning/services/assignments.service';
 import { LearningProgressService } from '../src/modules/learning/services/progress.service';
-import { NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
+import { GuardianAccessService } from '../src/modules/guardians/guardian-access.service';
 
 describe('LearningService Unit & Security Invariant Tests', () => {
   let service: LearningService;
@@ -56,7 +57,7 @@ describe('LearningService Unit & Security Invariant Tests', () => {
     roles: ['guardian'],
   };
 
-  const adminUser: AuthenticatedUser = {
+  const _adminUser: AuthenticatedUser = {
     id: adminId,
     email: 'admin@example.com',
     roles: ['admin'],
@@ -158,13 +159,13 @@ describe('LearningService Unit & Security Invariant Tests', () => {
     };
 
     const access = new LearningAccessService(
-      mockGuardianLinkRepo,
       mockBookingRepo,
+      new GuardianAccessService(mockGuardianLinkRepo),
     ) as never;
     const attendance = new LearningAttendanceService(
       mockAttendanceRepo,
       mockSessionRepo,
-      mockGuardianLinkRepo,
+      new GuardianAccessService(mockGuardianLinkRepo),
       access as never,
       mockAuditService,
       mockNotificationService,
@@ -174,7 +175,7 @@ describe('LearningService Unit & Security Invariant Tests', () => {
       mockSubmissionRepo,
       mockBookingRepo,
       mockSessionRepo,
-      mockGuardianLinkRepo,
+      new GuardianAccessService(mockGuardianLinkRepo),
       mockAuditService,
       mockNotificationService,
     ) as never;

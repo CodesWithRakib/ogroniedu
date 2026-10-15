@@ -4,7 +4,13 @@ import { parseCursorCollection } from '../src/lib/api/parse';
 import type { BookingMessage } from '../src/store/services/booking-messages-api';
 
 const thread: BookingMessage[] = [
-  { id: 'm-old', bookingId: 'b1', senderUserId: 'tutor-1', content: 'Hello', createdAt: '2026-01-01T10:00:00Z' },
+  {
+    id: 'm-old',
+    bookingId: 'b1',
+    senderUserId: 'tutor-1',
+    content: 'Hello',
+    createdAt: '2026-01-01T10:00:00Z',
+  },
   {
     id: 'm-new',
     bookingId: 'b1',

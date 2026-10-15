@@ -5,6 +5,7 @@ import { Roles } from '../../common/decorators/roles.decorator';
 import { ADMIN_ROLES } from '../../common/auth/role.utils';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { AnalyticsService } from './analytics.service';
+import { AnalyticsTutorService } from './services/analytics-tutor.service';
 import { AnalyticsTimeQueryDto } from './dto';
 
 @Controller('api/v1/analytics')
@@ -13,6 +14,8 @@ export class AnalyticsController {
   constructor(
     @Inject(AnalyticsService)
     private readonly analyticsService: AnalyticsService,
+    @Inject(AnalyticsTutorService)
+    private readonly tutorAnalytics: AnalyticsTutorService,
   ) {}
 
   /**
@@ -47,7 +50,7 @@ export class AnalyticsController {
   @Get('tutors')
   @Roles(...ADMIN_ROLES)
   async getTutorPerformanceAnalytics(@Query() query: AnalyticsTimeQueryDto) {
-    const data = await this.analyticsService.getTutorPerformanceAnalytics(query);
+    const data = await this.tutorAnalytics.getTutorPerformanceAnalytics(query);
     return {
       success: true,
       data,
@@ -76,7 +79,7 @@ export class AnalyticsController {
     @CurrentUser() user: AuthenticatedUser,
     @Query() query: AnalyticsTimeQueryDto,
   ) {
-    const data = await this.analyticsService.getMyTutorAnalytics(user.id, query);
+    const data = await this.tutorAnalytics.getMyTutorAnalytics(user.id, query);
     return {
       success: true,
       data,

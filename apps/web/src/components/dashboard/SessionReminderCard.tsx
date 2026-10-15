@@ -21,11 +21,11 @@ export function SessionReminderCard({
   tutorName,
   timeRange,
   roomUrl,
-  hasUpcoming = true,
 }: SessionReminderCardProps) {
   const isBn = locale === 'bn';
 
-  const sessionTitle = title ?? (isBn ? 'পদার্থবিজ্ঞান ও উচ্চতর গণিত' : 'Physics & Higher Math Live Class');
+  const sessionTitle =
+    title ?? (isBn ? 'পদার্থবিজ্ঞান ও উচ্চতর গণিত' : 'Physics & Higher Math Live Class');
   const tutor = tutorName ?? (isBn ? 'শিক্ষক: রাহাত মাহমুদ' : 'Tutor: Rahat Mahmud');
   const time = timeRange ?? (isBn ? 'আজ বিকাল ০৪:০০ - ০৫:৩০' : 'Today 04:00 PM - 05:30 PM');
 

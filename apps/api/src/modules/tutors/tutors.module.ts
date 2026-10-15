@@ -42,6 +42,12 @@ import { FilesModule } from '../files/files.module';
   ],
   controllers: [TutorsController, AdminTutorsController],
   providers: [TutorsService, TutorProfileService, TutorSearchService, TutorVerificationService],
-  exports: [TutorsService, TutorProfileService, TutorSearchService, TutorVerificationService, TypeOrmModule],
+  exports: [
+    TutorsService,
+    TutorProfileService,
+    TutorSearchService,
+    TutorVerificationService,
+    TypeOrmModule,
+  ],
 })
 export class TutorsModule {}

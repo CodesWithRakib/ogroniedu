@@ -91,8 +91,7 @@ export function toErrorDetails(message: unknown): ApiErrorDetail[] | undefined {
         }
         continue;
       }
-      const msg =
-        typeof r.message === 'string' ? r.message : JSON.stringify(m);
+      const msg = typeof r.message === 'string' ? r.message : JSON.stringify(m);
       const code = typeof r.code === 'string' ? r.code : 'INVALID_VALUE';
       out.push(field ? { field, code, message: msg } : { code, message: msg });
     } else {

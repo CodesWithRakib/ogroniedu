@@ -32,9 +32,7 @@ export function AnalyticsHeader({
   return (
     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-border transition-colors">
       <div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
-          {t('title')}
-        </h1>
+        <h1 className="text-3xl font-extrabold tracking-tight text-foreground">{t('title')}</h1>
         <p className="text-muted-foreground text-sm mt-1">{t('subtitle')}</p>
       </div>
 

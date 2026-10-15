@@ -178,7 +178,10 @@ export function HeroStudentTablet() {
                   {/* Dual Bar Columns with Interactive Micro-Tooltips */}
                   <div className="flex items-end justify-between gap-1 pt-0.5 h-11 px-1 border-b border-teal-500/20">
                     {subjects.map((sub) => (
-                      <div key={sub.name} className="group relative flex flex-col items-center gap-0.5 flex-1 cursor-pointer">
+                      <div
+                        key={sub.name}
+                        className="group relative flex flex-col items-center gap-0.5 flex-1 cursor-pointer"
+                      >
                         {/* Hover Tooltip */}
                         <div className="absolute -top-5 left-1/2 -translate-x-1/2 opacity-0 group-hover:opacity-100 transition-opacity duration-200 pointer-events-none z-30 bg-[#062026] text-[#0df5c4] font-bold text-[6.5px] px-1 py-0.2 rounded border border-teal-500/40 shadow-xs whitespace-nowrap">
                           {sub.current}%

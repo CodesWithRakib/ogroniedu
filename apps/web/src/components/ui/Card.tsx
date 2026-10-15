@@ -26,10 +26,7 @@ export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadi
   ({ className, children, ...props }, ref) => (
     <h3
       ref={ref}
-      className={twMerge(
-        'text-lg font-semibold tracking-tight text-foreground',
-        className,
-      )}
+      className={twMerge('text-lg font-semibold tracking-tight text-foreground', className)}
       {...props}
     >
       {children}
@@ -42,11 +39,7 @@ export const CardDescription = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p
-    ref={ref}
-    className={twMerge('text-sm text-muted-foreground', className)}
-    {...props}
-  />
+  <p ref={ref} className={twMerge('text-sm text-muted-foreground', className)} {...props} />
 ));
 CardDescription.displayName = 'CardDescription';
 
@@ -61,10 +54,7 @@ export const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEleme
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={twMerge(
-        'flex items-center pt-4 border-t border-border/70',
-        className,
-      )}
+      className={twMerge('flex items-center pt-4 border-t border-border/70', className)}
       {...props}
     />
   ),

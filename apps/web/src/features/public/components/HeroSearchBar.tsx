@@ -54,7 +54,11 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           { id: '4', nameEn: 'Class 11-12 (HSC)', nameBn: 'একাদশ-দ্বাদশ (এইচএসসি)' },
           { id: '5', nameEn: 'O-Level (English Medium)', nameBn: 'ও-লেভেল (ইংরেজি মাধ্যম)' },
           { id: '6', nameEn: 'A-Level (English Medium)', nameBn: 'এ-লেভেল (ইংরেজি মাধ্যম)' },
-          { id: '7', nameEn: 'University Admission Prep', nameBn: 'বিশ্ববিদ্যালয় ভর্তি প্রস্তুতি' },
+          {
+            id: '7',
+            nameEn: 'University Admission Prep',
+            nameBn: 'বিশ্ববিদ্যালয় ভর্তি প্রস্তুতি',
+          },
           { id: '8', nameEn: 'Madrasah (Dakhil/Alim)', nameBn: 'মাদ্রাসা (দাখিল/আলিম)' },
         ];
 
@@ -126,6 +130,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
       <div className="flex items-center gap-2">
         <button
           type="button"
+          data-testid="hero-tab-filter"
           onClick={() => setActiveTab('filter')}
           className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'filter'
@@ -139,6 +144,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
 
         <button
           type="button"
+          data-testid="hero-tab-search"
           onClick={() => setActiveTab('search')}
           className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'search'
@@ -174,7 +180,11 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                     {isBn ? 'সকল শ্রেণি ও মাধ্যম' : 'All Classes & Curriculums'}
                   </option>
                   {levels.map((lvl) => (
-                    <option key={String(lvl.id)} value={String(lvl.id)} className="bg-[#081b22] text-slate-200">
+                    <option
+                      key={String(lvl.id)}
+                      value={String(lvl.id)}
+                      className="bg-[#081b22] text-slate-200"
+                    >
                       {String(isBn ? lvl.nameBn || lvl.nameEn : lvl.nameEn)}
                     </option>
                   ))}
@@ -199,7 +209,11 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                     {isBn ? 'সকল বিষয়' : 'All Subjects'}
                   </option>
                   {subjects.map((sub) => (
-                    <option key={String(sub.id)} value={String(sub.id)} className="bg-[#081b22] text-slate-200">
+                    <option
+                      key={String(sub.id)}
+                      value={String(sub.id)}
+                      className="bg-[#081b22] text-slate-200"
+                    >
                       {String(isBn ? sub.nameBn || sub.nameEn : sub.nameEn)}
                     </option>
                   ))}

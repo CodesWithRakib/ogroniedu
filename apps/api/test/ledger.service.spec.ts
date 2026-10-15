@@ -1,11 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { LedgerService } from '../src/modules/payments/ledger.service';
 import { BadRequestException } from '@nestjs/common';
-import {
-  LedgerAccountEntity,
-  LedgerJournalEntity,
-  LedgerEntryEntity,
-} from '../src/modules/payments/entities';
+import { LedgerAccountEntity } from '../src/modules/payments/entities';
 
 describe('LedgerService Unit & Invariant Tests (Double-Entry Financial Accounting)', () => {
   let service: LedgerService;

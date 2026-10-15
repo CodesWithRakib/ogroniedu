@@ -9,7 +9,8 @@
     "start": "next start -p 5000",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
-    "e2e": "playwright test"
+    "e2e": "playwright test",
+    "lint": "oxlint src test e2e --deny-warnings"
   },
   "dependencies": {
     "@ogroniedu/contracts": "workspace:*",

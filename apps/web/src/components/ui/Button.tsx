@@ -17,12 +17,10 @@ export const buttonVariants = cva(
           'bg-surface-muted text-foreground hover:bg-surface-hover border border-border/50 active:bg-surface-muted',
         outline:
           'border border-border bg-card/60 text-foreground hover:bg-surface-hover hover:border-primary/40 backdrop-blur-xs',
-        ghost:
-          'bg-transparent text-foreground hover:bg-surface-hover',
+        ghost: 'bg-transparent text-foreground hover:bg-surface-hover',
         destructive:
           'bg-destructive text-white hover:opacity-90 shadow-sm shadow-destructive/20 active:opacity-95',
-        link:
-          'text-primary underline-offset-4 hover:underline',
+        link: 'text-primary underline-offset-4 hover:underline',
       },
       size: {
         sm: 'text-xs px-3 py-1.5 gap-1.5',
@@ -41,8 +39,7 @@ export const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
-    VariantProps<typeof buttonVariants> {
+  extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isLoading?: boolean;
 }

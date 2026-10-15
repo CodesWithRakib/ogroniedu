@@ -49,7 +49,12 @@ export const learningApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     markAttendance: builder.mutation<
       ApiSuccessEnvelope<AttendanceRecord>,
-      { sessionId: string; participantUserId: string; attendanceStatus: AttendanceStatus; notes?: string }
+      {
+        sessionId: string;
+        participantUserId: string;
+        attendanceStatus: AttendanceStatus;
+        notes?: string;
+      }
     >({
       query: (body) => ({ url: '/api/v1/learning/attendance', method: 'POST', body }),
       invalidatesTags: [

@@ -3,7 +3,9 @@ import React from 'react';
 import {
   GuardianChildrenManager,
   ChildItem,
+  toGuardianRelationship,
 } from '../src/components/guardian/GuardianChildrenManager';
+import { validateLinkChildFields } from '../src/components/guardian/use-guardian-children';
 import { getDictionary } from '../src/lib/i18n';
 
 describe('GuardianChildrenManager Component Tests', () => {
@@ -72,5 +74,28 @@ describe('GuardianChildrenManager Component Tests', () => {
     const pendingMinorChild = mockChildren[1];
     expect(pendingMinorChild.status).toBe('pending');
     expect(pendingMinorChild.relationshipType).toBe('mother');
+  });
+});
+
+describe('link-child validation (Phase 23)', () => {
+  it('requires identifier, then explicit consent', () => {
+    expect(validateLinkChildFields({ identifier: '', consentAgreed: false })).toBe(
+      'IDENTIFIER_REQUIRED',
+    );
+    expect(validateLinkChildFields({ identifier: '  ', consentAgreed: true })).toBe(
+      'IDENTIFIER_REQUIRED',
+    );
+    expect(validateLinkChildFields({ identifier: '0191', consentAgreed: false })).toBe(
+      'CONSENT_REQUIRED',
+    );
+    expect(validateLinkChildFields({ identifier: '0191', consentAgreed: true })).toBeNull();
+  });
+
+  it('narrows relationship values without casts', () => {
+    expect(toGuardianRelationship('mother')).toBe('mother');
+    expect(toGuardianRelationship('legal_guardian')).toBe('legal_guardian');
+    expect(toGuardianRelationship('father')).toBe('father');
+    expect(toGuardianRelationship('uncle')).toBe('father');
+    expect(toGuardianRelationship('')).toBe('father');
   });
 });

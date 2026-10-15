@@ -174,7 +174,10 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
 
         <div className="text-center pt-4">
           <Link href={`/${locale}/tutors`}>
-            <Button size="lg" className="rounded-full px-8 font-bold shadow-md shadow-primary/25 font-bengali">
+            <Button
+              size="lg"
+              className="rounded-full px-8 font-bold shadow-md shadow-primary/25 font-bengali"
+            >
               {dict.nav.findTutors}
               <ArrowRight className="h-4 w-4 ml-2" />
             </Button>
@@ -191,9 +194,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             </div>
             <span>{p.forTutorsHeading}</span>
           </h2>
-          <p className="text-sm text-muted-foreground font-bengali mt-1">
-            {p.forTutorsSubheading}
-          </p>
+          <p className="text-sm text-muted-foreground font-bengali mt-1">{p.forTutorsSubheading}</p>
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">

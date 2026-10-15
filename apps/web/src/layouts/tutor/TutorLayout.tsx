@@ -18,7 +18,13 @@ export function TutorLayout({
   children: React.ReactNode;
 }) {
   return (
-    <RoleLayout locale={locale} allow={['tutor']} title={title} subtitle={subtitle} actions={actions}>
+    <RoleLayout
+      locale={locale}
+      allow={['tutor']}
+      title={title}
+      subtitle={subtitle}
+      actions={actions}
+    >
       {children}
     </RoleLayout>
   );

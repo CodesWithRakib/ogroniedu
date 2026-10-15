@@ -52,9 +52,7 @@ export const metadata: Metadata = {
       { url: '/icons/favicon-32.png', sizes: '32x32', type: 'image/png' },
       { url: '/icons/icon.svg', type: 'image/svg+xml' },
     ],
-    apple: [
-      { url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' },
-    ],
+    apple: [{ url: '/icons/apple-touch-icon.png', sizes: '180x180', type: 'image/png' }],
   },
 };
 
@@ -80,7 +78,14 @@ const themeInitScript = `(function(){
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="bn" dir="ltr" data-theme={DEFAULT_THEME} data-mode="dark" className="dark" suppressHydrationWarning>
+    <html
+      lang="bn"
+      dir="ltr"
+      data-theme={DEFAULT_THEME}
+      data-mode="dark"
+      className="dark"
+      suppressHydrationWarning
+    >
       <head>
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icons/apple-touch-icon.png" />

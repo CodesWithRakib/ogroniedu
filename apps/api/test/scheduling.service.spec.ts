@@ -11,7 +11,6 @@ import {
   ConflictException,
 } from '@nestjs/common';
 import { BookingEntity } from '../src/modules/bookings/entities/booking.entity';
-import { BookingSessionEntity } from '../src/modules/bookings/entities/booking-session.entity';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
 describe('SchedulingService Unit & Conflict-Safety Tests (Phase 09)', () => {

@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NotificationService } from '../src/modules/notifications/notification.service';
-import { NotificationPreferenceEntity } from '../src/modules/notifications/entities/notification-preference.entity';
+import { NotificationPreferencesService } from '../src/modules/notifications/notification-preferences.service';
 
 describe('Notification Preferences & Channel Suppression Tests (Phase 12)', () => {
   let service: NotificationService;
@@ -45,7 +45,7 @@ describe('Notification Preferences & Channel Suppression Tests (Phase 12)', () =
       mockNotifRepo,
       mockDeliveryRepo,
       mockGateway,
-      mockPreferenceRepo,
+      new NotificationPreferencesService(mockPreferenceRepo),
     );
   });
 

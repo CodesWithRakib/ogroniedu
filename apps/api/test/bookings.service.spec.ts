@@ -6,14 +6,11 @@ import {
   ForbiddenException,
   ConflictException,
 } from '@nestjs/common';
-import { BookingEntity } from '../src/modules/bookings/entities/booking.entity';
 import { TutorProfileEntity } from '../src/modules/tutors/entities/tutor-profile.entity';
-import { TutorSubjectEntity } from '../src/modules/tutors/entities/tutor-subject.entity';
-import { GuardianStudentLinkEntity } from '../src/modules/guardians/entities/guardian-student-link.entity';
-import { UserEntity } from '../src/modules/auth/entities/user.entity';
 import { SubjectEntity } from '../src/modules/taxonomy/entities/subject.entity';
 import { EducationLevelEntity } from '../src/modules/taxonomy/entities/education-level.entity';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
+import { GuardianAccessService } from '../src/modules/guardians/guardian-access.service';
 
 describe('BookingsService Unit & Invariant Tests', () => {
   let service: BookingsService;
@@ -125,6 +122,7 @@ describe('BookingsService Unit & Invariant Tests', () => {
       mockSubjectRepo,
       mockLevelRepo,
       mockAuditService,
+      new GuardianAccessService(mockLinkRepo),
       mockNotificationService,
     );
   });

@@ -14,6 +14,7 @@ export * from './components/tabs/adminSettingsTab';
 export * from './components/tabs/adminFeatureFlagsTab';
 export * from './components/tabs/adminAuditLogsTab';
 export * from './components/tabs/adminSupportTab';
+export * from './components/tabs/adminVerificationTab';
 export * from './components/modals/adminSuspendUserModal';
 export * from './components/modals/adminRolesModal';
 export * from './components/modals/adminCancelBookingModal';

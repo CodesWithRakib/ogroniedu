@@ -1,7 +1,7 @@
 import { describe, it, expect, vi } from 'vitest';
 import { RequestIdMiddleware } from '../src/common/middleware/request-id.middleware';
 import { AllExceptionsFilter } from '../src/common/filters/http-exception.filter';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import type { Request, Response } from 'express';
 
 describe('RequestIdMiddleware and AllExceptionsFilter Tests', () => {

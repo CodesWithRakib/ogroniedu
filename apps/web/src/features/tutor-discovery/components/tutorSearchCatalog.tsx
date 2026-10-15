@@ -208,7 +208,9 @@ export function TutorSearchCatalog({
         <div className="relative z-10 max-w-3xl space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#0df5c4]/15 border border-[#0df5c4]/35 rounded-full text-xs font-semibold text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
             <Sparkles className="w-3.5 h-3.5" />
-            <span>{isBn ? '১০০% এনআইডি ও ডিগ্রি যাচাইকৃত শিক্ষক' : 'NID & Academic Verified Educators'}</span>
+            <span>
+              {isBn ? '১০০% এনআইডি ও ডিগ্রি যাচাইকৃত শিক্ষক' : 'NID & Academic Verified Educators'}
+            </span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
             {dict.discovery?.searchHeading || 'Find Verified Qualified Tutors'}

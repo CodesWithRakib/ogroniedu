@@ -1,7 +1,6 @@
 'use client';
 
-import { ShieldCheck, Lock } from 'lucide-react';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
+import { Card } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
 import { getDictionary, type Locale } from '@/lib/i18n';
 
@@ -31,9 +30,7 @@ export function PrivacyPage({ locale }: { locale: Locale }) {
         <h1 className="text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground font-bengali">
           {p.title}
         </h1>
-        <p className="text-xs sm:text-sm text-muted-foreground font-bengali">
-          {p.subtitle}
-        </p>
+        <p className="text-xs sm:text-sm text-muted-foreground font-bengali">{p.subtitle}</p>
       </div>
 
       <Card className="bg-card/90 backdrop-blur-xl border-border/80 rounded-3xl shadow-xl p-6 sm:p-10 space-y-6">
@@ -44,9 +41,7 @@ export function PrivacyPage({ locale }: { locale: Locale }) {
         <div className="space-y-6">
           {sections.map((sec, idx) => (
             <div key={idx} className="space-y-2">
-              <h2 className="text-lg font-bold text-foreground font-bengali">
-                {sec.title}
-              </h2>
+              <h2 className="text-lg font-bold text-foreground font-bengali">{sec.title}</h2>
               <p className="text-xs sm:text-sm text-muted-foreground font-bengali leading-relaxed">
                 {sec.text}
               </p>

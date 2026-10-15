@@ -40,10 +40,14 @@ export function AdminReconciliationTab({
               <div>
                 <span className="text-xs font-mono text-muted-foreground">{acc.code}</span>
                 <p className="text-sm font-semibold text-foreground mt-0.5">{acc.name}</p>
-                <span className="text-[10px] text-muted-foreground capitalize">{acc.accountType}</span>
+                <span className="text-[10px] text-muted-foreground capitalize">
+                  {acc.accountType}
+                </span>
               </div>
               <div className="text-right">
-                <p className="text-base font-mono font-bold text-teal-600 dark:text-teal-400">{acc.balance} BDT</p>
+                <p className="text-base font-mono font-bold text-teal-600 dark:text-teal-400">
+                  {acc.balance} BDT
+                </p>
               </div>
             </div>
           ))}

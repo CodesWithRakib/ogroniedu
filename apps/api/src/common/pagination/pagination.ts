@@ -18,7 +18,11 @@ export interface SlicePage<T> {
 }
 
 /** Slice an already-filtered array into an offset page. Filters must be applied before calling. */
-export function paginateArray<T>(all: T[], page: number, pageSize: number): SlicePage<T> & {
+export function paginateArray<T>(
+  all: T[],
+  page: number,
+  pageSize: number,
+): SlicePage<T> & {
   meta: ReturnType<typeof buildOffsetMeta>;
 } {
   const safePage = Math.max(1, Math.floor(page) || 1);

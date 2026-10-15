@@ -8,7 +8,8 @@ const STATUS_FILTERS = ['all', 'active', 'suspended'] as const;
 type StatusFilter = (typeof STATUS_FILTERS)[number];
 
 function roleBadgeClass(role: string): string {
-  if (role === 'super_admin') return 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30';
+  if (role === 'super_admin')
+    return 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30';
   if (role === 'admin') return 'bg-primary/15 text-primary border border-primary/30';
   return 'bg-surface-muted text-muted-foreground border border-border/60';
 }
@@ -101,7 +102,9 @@ export function AdminUsersTab({
                 >
                   <td className="px-4 py-3 font-medium text-foreground">
                     {user.displayName}
-                    <span className="block text-[10px] text-muted-foreground font-mono">{user.id}</span>
+                    <span className="block text-[10px] text-muted-foreground font-mono">
+                      {user.id}
+                    </span>
                   </td>
                   <td className="px-4 py-3 text-muted-foreground">
                     {user.email || user.phoneE164 || '—'}

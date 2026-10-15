@@ -1,17 +1,10 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { GuardiansService, LinkedChildSummary } from '../src/modules/guardians/guardians.service';
-import {
-  NotFoundException,
-  BadRequestException,
-  ConflictException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { GuardiansService } from '../src/modules/guardians/guardians.service';
+import { GuardianProvisioningService } from '../src/modules/guardians/services/guardian-provisioning.service';
+import { BadRequestException, ConflictException, ForbiddenException } from '@nestjs/common';
 import { UserEntity } from '../src/modules/auth/entities/user.entity';
 import { RoleEntity } from '../src/modules/auth/entities/role.entity';
-import { UserRoleEntity } from '../src/modules/auth/entities/user-role.entity';
-import { StudentProfileEntity } from '../src/modules/users/entities/student-profile.entity';
 import { GuardianStudentLinkEntity } from '../src/modules/guardians/entities/guardian-student-link.entity';
-import { AuditService } from '../src/modules/audit/audit.service';
 
 describe('GuardiansService Unit & Ownership Tests', () => {
   let service: GuardiansService;
@@ -99,7 +92,7 @@ describe('GuardiansService Unit & Ownership Tests', () => {
         manager: {
           create: vi.fn((entityClass, data) => ({ id: 'gen-uuid', ...data })),
           save: vi.fn((entity) => Promise.resolve({ id: entity.id || 'saved-uuid', ...entity })),
-          findOne: vi.fn((entityClass, query) => {
+          findOne: vi.fn((entityClass, _query) => {
             if (entityClass === RoleEntity) {
               return Promise.resolve({ id: 'role-student-uuid', code: 'student' });
             }
@@ -118,6 +111,7 @@ describe('GuardiansService Unit & Ownership Tests', () => {
       mockLinkRepo,
       mockAuditService,
       mockDataSource,
+      new GuardianProvisioningService(mockUserRepo, mockDataSource, mockAuditService),
     );
   });
 

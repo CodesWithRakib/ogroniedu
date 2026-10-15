@@ -1,6 +1,6 @@
 import { Injectable, Logger, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThanOrEqual, IsNull } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { NotificationService } from './notification.service';
 import { readErrorMessage } from '../../common/errors/error-message';
@@ -66,7 +66,7 @@ export class OutboxWorkerService {
       } catch (err: unknown) {
         // Safe error redaction
         const sanitizedError = (readErrorMessage(err) || 'DELIVERY_ERROR')
-          .replace(/[a-zA-Z0-9_\-\.]{20,}/g, '[REDACTED_SECRET]')
+          .replace(/[a-zA-Z0-9_.-]{20,}/g, '[REDACTED_SECRET]')
           .slice(0, 200);
 
         event.attempts += 1;

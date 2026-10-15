@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { BookOpen, ChevronLeft, ChevronRight, SearchX, RotateCcw } from 'lucide-react';
+import { ChevronLeft, ChevronRight, SearchX, RotateCcw } from 'lucide-react';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import type { TutorCardData } from '../types/tutor-discovery.types';
 import { TutorCard } from './tutorCard';
@@ -26,7 +26,7 @@ export function TutorResultsGrid({
   onReset: () => void;
 }) {
   const dict = getDictionary(locale);
-  const isBn = locale === 'bn';
+  const _isBn = locale === 'bn';
 
   if (tutors.length === 0) {
     return (
@@ -85,10 +85,7 @@ export function TutorResultsGrid({
             <ChevronLeft className="w-4 h-4 mr-0.5" />
             <span>{dict.discovery?.paginationPrevious || 'Previous'}</span>
           </button>
-          <span
-            className="text-xs font-semibold text-slate-300 px-2"
-            data-testid="page-indicator"
-          >
+          <span className="text-xs font-semibold text-slate-300 px-2" data-testid="page-indicator">
             {dict.discovery?.pageIndicator
               ? dict.discovery.pageIndicator
                   .replace('{page}', formatLocalizedNumber(currentPage, locale))

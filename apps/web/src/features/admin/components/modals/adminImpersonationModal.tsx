@@ -30,7 +30,9 @@ export function AdminImpersonationModal({
       data-testid="impersonate-modal"
     >
       <div className="bg-card border border-border rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-        <h3 className="text-lg font-bold text-amber-600 dark:text-amber-400">{t('impersonationBadge')}</h3>
+        <h3 className="text-lg font-bold text-amber-600 dark:text-amber-400">
+          {t('impersonationBadge')}
+        </h3>
         <p className="text-xs text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/25 p-3 rounded-xl font-medium">
           {t('impersonationWarning')}
         </p>

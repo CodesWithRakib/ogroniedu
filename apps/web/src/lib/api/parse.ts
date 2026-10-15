@@ -83,9 +83,7 @@ export function parseOffsetCollection<T>(
         hasNextPage:
           typeof pagination.hasNextPage === 'boolean' ? pagination.hasNextPage : page < totalPages,
         hasPreviousPage:
-          typeof pagination.hasPreviousPage === 'boolean'
-            ? pagination.hasPreviousPage
-            : page > 1,
+          typeof pagination.hasPreviousPage === 'boolean' ? pagination.hasPreviousPage : page > 1,
       },
       message,
       requestId,
@@ -128,7 +126,13 @@ export function parseCursorCollection<T>(
   const message = typeof payload.message === 'string' ? payload.message : undefined;
   const meta = isRecord(payload.meta) ? payload.meta : undefined;
   const pagination = meta?.pagination as
-    | { strategy?: string; nextCursor?: string | null; previousCursor?: string | null; hasNextPage?: boolean; pageSize?: number }
+    | {
+        strategy?: string;
+        nextCursor?: string | null;
+        previousCursor?: string | null;
+        hasNextPage?: boolean;
+        pageSize?: number;
+      }
     | undefined;
   if (pagination && (pagination.strategy === 'cursor' || 'nextCursor' in (pagination ?? {}))) {
     return {

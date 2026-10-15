@@ -189,9 +189,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                   <MapPin className="h-4 w-4" />
                 </div>
                 <div>
-                  <p className="font-bold text-foreground">
-                    {p.addressLine1}
-                  </p>
+                  <p className="font-bold text-foreground">{p.addressLine1}</p>
                   <p>{p.addressLine2}</p>
                 </div>
               </div>
@@ -212,9 +210,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                 <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
                   <Phone className="h-4 w-4" />
                 </div>
-                <span className="font-bold text-foreground">
-                  {p.officialPhone}
-                </span>
+                <span className="font-bold text-foreground">{p.officialPhone}</span>
               </div>
 
               <div className="flex items-start gap-3 pt-4 border-t border-border/60 text-xs text-muted-foreground">

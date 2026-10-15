@@ -65,7 +65,7 @@ export class BookingMessagesService {
   private readonly logger = new Logger(BookingMessagesService.name);
 
   // Content safety regex for Bangladeshi phone numbers & off-platform channels
-  private readonly phoneRegex = /(?:\+?880\s?|0)1[3-9]\d{2}[\s\-]?\d{6}/gi;
+  private readonly phoneRegex = /(?:\+?880\s?|0)1[3-9]\d{2}[\s-]?\d{6}/gi;
   private readonly paymentSolicitationRegex =
     /(?:bkash\s+personal|nagad\s+personal|send\s+money|হাতে\s+হাতে\s+টাকা|বিকাশ\s+পার্সোনাল|নগদ\s+পার্সোনাল)/gi;
   private readonly externalLinkRegex = /(?:https?:\/\/|www\.)[^\s]+(?:\.com|\.me|\.org|\.net)/gi;
@@ -75,6 +75,7 @@ export class BookingMessagesService {
     private readonly messageRepo: Repository<BookingMessageEntity>,
     @InjectRepository(BookingEntity)
     private readonly bookingRepo: Repository<BookingEntity>,
+    @Inject(GuardianAccessService)
     private readonly guardianAccess: GuardianAccessService,
     @InjectRepository(OutboxEventEntity)
     private readonly outboxRepo: Repository<OutboxEventEntity>,

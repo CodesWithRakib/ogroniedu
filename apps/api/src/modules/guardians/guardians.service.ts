@@ -18,6 +18,9 @@ import { GuardianStudentLinkEntity } from './entities/guardian-student-link.enti
 import { AuditService } from '../audit/audit.service';
 import { LinkChildRequestDto, RegisterChildDto, VerifyLinkDto, RevokeLinkDto } from './dto';
 import { assertGuardianConsent } from './utils/guardian-consent.util';
+import { APPROVED_CONSENT_POLICY } from './constants/guardian-policy.constants';
+import { GuardianProvisioningService } from './services/guardian-provisioning.service';
+import { isMinor as isMinorAge } from '../../common/utils/age.util';
 import type { LinkedChildSummary } from './interfaces/linked-child-summary.interface';
 
 export type { LinkedChildSummary } from './interfaces/linked-child-summary.interface';
@@ -25,7 +28,7 @@ export type { LinkedChildSummary } from './interfaces/linked-child-summary.inter
 @Injectable()
 export class GuardiansService {
   private readonly logger = new Logger(GuardiansService.name);
-  static readonly APPROVED_CONSENT_POLICY = 'v1.0-bd-minor-consent';
+  static readonly APPROVED_CONSENT_POLICY = APPROVED_CONSENT_POLICY;
 
   constructor(
     @InjectRepository(UserEntity)
@@ -42,19 +45,12 @@ export class GuardiansService {
     private readonly auditService: AuditService,
     @InjectDataSource()
     private readonly dataSource: DataSource,
+    @Inject(GuardianProvisioningService)
+    private readonly provisioning: GuardianProvisioningService,
   ) {}
 
   private isMinor(dateOfBirth: string | null | undefined): boolean {
-    if (!dateOfBirth) return false;
-    const dob = new Date(dateOfBirth);
-    if (isNaN(dob.getTime())) return false;
-    const today = new Date();
-    let age = today.getFullYear() - dob.getFullYear();
-    const m = today.getMonth() - dob.getMonth();
-    if (m < 0 || (m === 0 && today.getDate() < dob.getDate())) {
-      age--;
-    }
-    return age < 18;
+    return isMinorAge(dateOfBirth);
   }
 
   async linkChildRequest(
@@ -157,125 +153,7 @@ export class GuardiansService {
   }
 
   async registerChild(guardianUserId: string, dto: RegisterChildDto): Promise<LinkedChildSummary> {
-    assertGuardianConsent(dto, GuardiansService.APPROVED_CONSENT_POLICY);
-
-    const guardian = await this.userRepository.findOne({ where: { id: guardianUserId } });
-    if (!guardian) {
-      throw new NotFoundException('Guardian user not found');
-    }
-
-    // Check duplicate email or phone if provided
-    if (dto.email) {
-      const existingEmail = await this.userRepository
-        .createQueryBuilder('u')
-        .where('LOWER(u.email) = :email', { email: dto.email.toLowerCase() })
-        .getOne();
-      if (existingEmail) {
-        throw new ConflictException('A user account with this email already exists');
-      }
-    }
-
-    if (dto.phone) {
-      const existingPhone = await this.userRepository.findOne({
-        where: { phoneE164: dto.phone },
-      });
-      if (existingPhone) {
-        throw new ConflictException('A user account with this phone number already exists');
-      }
-    }
-
-    const queryRunner = this.dataSource.createQueryRunner();
-    await queryRunner.connect();
-    await queryRunner.startTransaction();
-
-    try {
-      // 1. Create student UserEntity
-      const studentUser = queryRunner.manager.create(UserEntity, {
-        displayName: dto.displayName,
-        email: dto.email ? dto.email.toLowerCase() : null,
-        phoneE164: dto.phone ?? null,
-        preferredLocale: guardian.preferredLocale,
-        status: 'active',
-        emailVerifiedAt: dto.email ? new Date() : null,
-        phoneVerifiedAt: dto.phone ? new Date() : null,
-      });
-      const savedStudent = await queryRunner.manager.save(studentUser);
-
-      // 2. Assign 'student' role
-      const studentRole = await queryRunner.manager.findOne(RoleEntity, {
-        where: { code: 'student' },
-      });
-      if (studentRole) {
-        const userRole = queryRunner.manager.create(UserRoleEntity, {
-          userId: savedStudent.id,
-          roleId: studentRole.id,
-          grantedBy: guardianUserId,
-          grantedAt: new Date(),
-        });
-        await queryRunner.manager.save(userRole);
-      }
-
-      // 3. Create StudentProfileEntity
-      const studentProfile = queryRunner.manager.create(StudentProfileEntity, {
-        userId: savedStudent.id,
-        dateOfBirth: dto.dateOfBirth ?? null,
-        educationLevelId: dto.educationLevelId ?? null,
-        curriculumId: dto.curriculumId ?? null,
-        institutionName: dto.institutionName ?? null,
-        profileVisibility: 'private',
-      });
-      await queryRunner.manager.save(studentProfile);
-
-      // 4. Create active GuardianStudentLinkEntity (since parent created account directly)
-      const link = queryRunner.manager.create(GuardianStudentLinkEntity, {
-        guardianUserId,
-        studentUserId: savedStudent.id,
-        relationshipType: dto.relationshipType,
-        status: 'active',
-        consentPolicyVersion: dto.consentPolicyVersion,
-        consentRecordedAt: new Date(),
-        verifiedBy: guardianUserId,
-      });
-      const savedLink = await queryRunner.manager.save(link);
-
-      await queryRunner.commitTransaction();
-
-      await this.auditService.record({
-        actorUserId: guardianUserId,
-        action: 'guardian.child.registered',
-        resourceType: 'guardian_student_link',
-        resourceId: savedLink.id,
-        safeMetadata: {
-          studentId: savedStudent.id,
-          relationshipType: dto.relationshipType,
-          consentPolicyVersion: dto.consentPolicyVersion,
-        },
-      });
-
-      return {
-        linkId: savedLink.id,
-        studentId: savedStudent.id,
-        displayName: savedStudent.displayName,
-        relationshipType: savedLink.relationshipType,
-        status: savedLink.status,
-        consentPolicyVersion: savedLink.consentPolicyVersion,
-        consentRecordedAt: savedLink.consentRecordedAt,
-        isMinor: this.isMinor(dto.dateOfBirth),
-        studentProfile: {
-          dateOfBirth: studentProfile.dateOfBirth,
-          educationLevelId: studentProfile.educationLevelId,
-          curriculumId: studentProfile.curriculumId,
-          institutionName: studentProfile.institutionName,
-          stream: null,
-          learningGoals: null,
-        },
-      };
-    } catch (err) {
-      await queryRunner.rollbackTransaction();
-      throw err;
-    } finally {
-      await queryRunner.release();
-    }
+    return this.provisioning.registerChild(guardianUserId, dto);
   }
 
   async getLinkedChildren(guardianUserId: string): Promise<LinkedChildSummary[]> {

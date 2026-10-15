@@ -11,6 +11,9 @@ for (const locale of ['bn', 'en'] as const) {
       await page.goto(`/${locale}`);
       await expect(page).toHaveTitle(/OgroniEdu/);
       await expect(page.getByRole('heading', { level: 1 })).toBeVisible();
+      // Hero search defaults to filter-by-class mode; switch to the keyword
+      // tab before asserting the free-text box.
+      await page.getByTestId('hero-tab-search').click();
       await expect(page.getByRole('textbox').first()).toBeVisible();
 
       const band = page.getByTestId('platform-metrics-band');

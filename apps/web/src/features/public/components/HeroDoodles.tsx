@@ -8,7 +8,9 @@ export function BetterLearningDoodle({ className = '' }: { className?: string })
       <div className="flex flex-col items-center rotate-[-8deg]">
         <span
           className="text-sm sm:text-base font-semibold tracking-wide text-white drop-shadow-[0_2px_10px_rgba(13,245,196,0.3)] whitespace-nowrap leading-tight text-center"
-          style={{ fontFamily: "var(--font-caveat), 'Caveat', 'Patrick Hand', cursive, sans-serif" }}
+          style={{
+            fontFamily: "var(--font-caveat), 'Caveat', 'Patrick Hand', cursive, sans-serif",
+          }}
         >
           Better Learning
           <br />
@@ -45,7 +47,9 @@ export function BetterLearningDoodle({ className = '' }: { className?: string })
 
 export function YourSuccessDoodle({ className = '' }: { className?: string }) {
   return (
-    <div className={`relative inline-flex flex-col items-start select-none pointer-events-none -rotate-[10deg] ${className}`}>
+    <div
+      className={`relative inline-flex flex-col items-start select-none pointer-events-none -rotate-[10deg] ${className}`}
+    >
       <span
         className="text-xs sm:text-[13px] font-semibold tracking-wide text-slate-100 drop-shadow-[0_2px_8px_rgba(13,245,196,0.3)] whitespace-nowrap leading-tight"
         style={{ fontFamily: "var(--font-caveat), 'Caveat', 'Patrick Hand', cursive, sans-serif" }}

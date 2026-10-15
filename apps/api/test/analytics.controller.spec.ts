@@ -32,7 +32,7 @@ describe('AnalyticsController & RBAC Security Specifications (Phase 15)', () => 
 
   beforeEach(() => {
     vi.clearAllMocks();
-    controller = new AnalyticsController(mockAnalyticsService as any);
+    controller = new AnalyticsController(mockAnalyticsService as any, mockAnalyticsService as any);
     reflector = new Reflector();
     rolesGuard = new RolesGuard(reflector);
   });
@@ -90,7 +90,7 @@ describe('AnalyticsController & RBAC Security Specifications (Phase 15)', () => 
   });
 
   describe('Controller Endpoints Invocation', () => {
-    const adminUser: AuthenticatedUser = {
+    const _adminUser: AuthenticatedUser = {
       id: 'admin-1',
       roles: ['admin'],
       preferredLocale: 'en',

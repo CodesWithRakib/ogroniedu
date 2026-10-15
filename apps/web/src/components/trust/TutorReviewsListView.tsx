@@ -38,9 +38,7 @@ export function TutorReviewsListView({
       }
       const updated = (await onReply(reviewId, replyText.trim())) as Partial<ReviewItem> | null;
 
-      setLocalReviews((prev) =>
-        prev.map((r) => (r.id === reviewId ? { ...r, ...(updated ?? {}) } : r)),
-      );
+      setLocalReviews((prev) => prev.map((r) => (r.id === reviewId ? { ...r, ...updated } : r)));
       setActiveReplyReviewId(null);
       setReplyText('');
     } catch (err: unknown) {

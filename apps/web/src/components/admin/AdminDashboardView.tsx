@@ -2,37 +2,35 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { useAdminActions } from '@/features/admin/hooks/use-admin-actions';
-import { AdminMetricsGrid } from '@/features/admin/components/adminMetricsGrid';
-import { AdminTabsBar } from '@/features/admin/components/adminTabsBar';
-import { AdminOverviewTab } from '@/features/admin/components/tabs/adminOverviewTab';
-import { AdminUsersTab } from '@/features/admin/components/tabs/adminUsersTab';
-import { AdminBookingsTab } from '@/features/admin/components/tabs/adminBookingsTab';
-import { AdminReconciliationTab } from '@/features/admin/components/tabs/adminReconciliationTab';
-import { AdminSettingsTab } from '@/features/admin/components/tabs/adminSettingsTab';
-import { AdminFeatureFlagsTab } from '@/features/admin/components/tabs/adminFeatureFlagsTab';
-import { AdminAuditLogsTab } from '@/features/admin/components/tabs/adminAuditLogsTab';
-import { AdminSupportTab } from '@/features/admin/components/tabs/adminSupportTab';
-import { AdminVerificationTab } from '@/features/admin/components/tabs/adminVerificationTab';
-import { AdminSuspendUserModal } from '@/features/admin/components/modals/adminSuspendUserModal';
-import { AdminRolesModal } from '@/features/admin/components/modals/adminRolesModal';
-import { AdminCancelBookingModal } from '@/features/admin/components/modals/adminCancelBookingModal';
-import { AdminImpersonationModal } from '@/features/admin/components/modals/adminImpersonationModal';
 import {
+  useAdminActions,
   EMPTY_RECONCILIATION,
+  useAdminViewState,
+  AdminMetricsGrid,
+  AdminTabsBar,
+  AdminOverviewTab,
+  AdminUsersTab,
+  AdminBookingsTab,
+  AdminReconciliationTab,
+  AdminSettingsTab,
+  AdminFeatureFlagsTab,
+  AdminAuditLogsTab,
+  AdminSupportTab,
+  AdminVerificationTab,
+  AdminSuspendUserModal,
+  AdminRolesModal,
+  AdminCancelBookingModal,
+  AdminImpersonationModal,
   type AdminActionHandlers,
-} from '@/features/admin/hooks/use-admin-actions';
-import { useAdminViewState } from '@/features/admin/hooks/use-admin-view-state';
-import type {
-  AdminAuditLogItem,
-  AdminBookingItem,
-  AdminFeatureFlagItem,
-  AdminReconciliationData,
-  AdminSupportTicketItem,
-  AdminSystemSettingItem,
-  AdminUserItem,
-  PendingTutorItem,
-} from '@/features/admin/types/admin.types';
+  type AdminAuditLogItem,
+  type AdminBookingItem,
+  type AdminFeatureFlagItem,
+  type AdminReconciliationData,
+  type AdminSupportTicketItem,
+  type AdminSystemSettingItem,
+  type AdminUserItem,
+  type PendingTutorItem,
+} from '@/features/admin';
 import type { TutorReviewDecision } from '@/store/services/admin-api';
 
 export type {
@@ -236,9 +234,7 @@ export function AdminDashboardView({
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
           <div className="flex items-center space-x-3">
-            <h1 className="text-3xl font-extrabold tracking-tight text-foreground">
-              {t('title')}
-            </h1>
+            <h1 className="text-3xl font-extrabold tracking-tight text-foreground">{t('title')}</h1>
             <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-primary/10 text-primary border border-primary/25">
               {isSuperAdmin ? 'SUPER ADMIN' : 'ADMIN'}
             </span>

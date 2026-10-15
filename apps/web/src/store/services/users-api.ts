@@ -14,7 +14,10 @@ export const usersApi = baseApi.injectEndpoints({
       query: () => '/api/v1/users/me',
       providesTags: [{ type: 'User', id: 'ME' }],
     }),
-    updateMyProfile: builder.mutation<UserProfile, { displayName?: string; preferredLocale?: 'bn' | 'en' }>({
+    updateMyProfile: builder.mutation<
+      UserProfile,
+      { displayName?: string; preferredLocale?: 'bn' | 'en' }
+    >({
       query: (body) => ({ url: '/api/v1/users/me', method: 'PATCH', body }),
       invalidatesTags: [
         { type: 'User', id: 'ME' },

@@ -1,6 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BadRequestException } from '@nestjs/common';
 import { AnalyticsService } from '../src/modules/analytics/analytics.service';
+import { AnalyticsTutorService } from '../src/modules/analytics/services/analytics-tutor.service';
 
 describe('Analytics & Reporting Service Specifications (Phase 15)', () => {
   let service: AnalyticsService;
@@ -31,7 +32,11 @@ describe('Analytics & Reporting Service Specifications (Phase 15)', () => {
 
   beforeEach(() => {
     vi.clearAllMocks();
-    service = new AnalyticsService(mockDataSource as any, mockLedgerService as any);
+    service = new AnalyticsService(
+      mockDataSource as any,
+      mockLedgerService as any,
+      new AnalyticsTutorService(mockDataSource as any),
+    );
   });
 
   describe('Temporal Boundary Validation & Anti-Double-Counting Constraints', () => {

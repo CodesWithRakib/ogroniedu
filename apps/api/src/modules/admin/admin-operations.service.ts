@@ -57,11 +57,7 @@ export class AdminOperationsService {
   listAllBookings(query: Parameters<AdminBookingsService['listAllBookings']>[0]) {
     return this.bookings.listAllBookings(query);
   }
-  adminCancelBooking(
-    adminUser: AuthenticatedUser,
-    bookingId: string,
-    dto: AdminCancelBookingDto,
-  ) {
+  adminCancelBooking(adminUser: AuthenticatedUser, bookingId: string, dto: AdminCancelBookingDto) {
     return this.bookings.adminCancelBooking(adminUser, bookingId, dto);
   }
   assignCase(adminUser: AuthenticatedUser, dto: AssignSupportCaseDto) {

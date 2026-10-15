@@ -7,4 +7,3 @@ export * from './components/scoreBreakdownModal';
 export * from './components/bookingRequestModal';
 export * from './components/tutorSearchCatalog';
 export * from './pages/tutors-page';
-

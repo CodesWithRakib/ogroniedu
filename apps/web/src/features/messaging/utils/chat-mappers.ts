@@ -20,9 +20,7 @@ export function mapToChatItems(
     return {
       id: m.id,
       senderId: m.senderUserId,
-      senderName: isOwn
-        ? 'Me'
-        : (m.senderName ?? m.senderUser?.displayName ?? 'Participant'),
+      senderName: isOwn ? 'Me' : (m.senderName ?? m.senderUser?.displayName ?? 'Participant'),
       senderRole: isOwn ? ownRole : peerRole,
       content: m.body ?? m.content,
       isRedacted: m.isRedacted ?? false,

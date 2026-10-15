@@ -57,9 +57,7 @@ export function CheckoutLedger({ order, locale }: CheckoutLedgerProps) {
               <CheckCircle2 className="w-4 h-4 text-emerald-600" />
               {p.ledgerBalanced}
             </div>
-            <div className="text-muted-foreground text-[11px]">
-              {p.ledgerInvariantNote}
-            </div>
+            <div className="text-muted-foreground text-[11px]">{p.ledgerInvariantNote}</div>
           </div>
 
           <div className="text-xs text-muted-foreground bg-slate-50 dark:bg-slate-900 p-3 rounded-lg border border-border flex items-start gap-2">

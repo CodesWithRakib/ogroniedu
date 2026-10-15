@@ -3,7 +3,6 @@ import { ExecutionContext, ForbiddenException } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { AdminOperationsController } from '../src/modules/admin/admin-operations.controller';
 import { RolesGuard } from '../src/common/guards/roles.guard';
-import { ROLES_KEY } from '../src/common/decorators/roles.decorator';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
 describe('AdminOperationsController & RolesGuard Permissions (Phase 14)', () => {
@@ -36,7 +35,7 @@ describe('AdminOperationsController & RolesGuard Permissions (Phase 14)', () => 
 
   function createMockExecutionContext(
     user: AuthenticatedUser | undefined,
-    requiredRoles?: string[],
+    _requiredRoles?: string[],
   ): ExecutionContext {
     return {
       getHandler: () => () => {},

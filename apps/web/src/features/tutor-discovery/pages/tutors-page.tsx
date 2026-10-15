@@ -3,7 +3,7 @@
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
 import { type Locale } from '@/lib/i18n';
-import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
+import { normalizeUnknownError } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
 import { useSearchTutorsQuery, type TutorSearchItem } from '@/store/services/tutors-api';
 import { useCreateBookingRequestMutation } from '@/store/services/bookings-api';
@@ -422,9 +422,7 @@ export function TutorsPage({ locale }: { locale: Locale }) {
   }) {
     const studentId = payload.studentId || user?.id || '';
     if (!studentId) {
-      throw new Error(
-        locale === 'bn' ? 'শিক্ষার্থী নির্বাচন করুন।' : 'Please select a student.',
-      );
+      throw new Error(locale === 'bn' ? 'শিক্ষার্থী নির্বাচন করুন।' : 'Please select a student.');
     }
     const preferredDays = payload.preferredDays?.map((d) => DAY_TO_INDEX[d] ?? 0);
     try {
@@ -438,7 +436,7 @@ export function TutorsPage({ locale }: { locale: Locale }) {
         preferredDays,
       }).unwrap();
     } catch (err: unknown) {
-      const appErr = normalizeApiError(err as any, locale) || normalizeUnknownError(err);
+      const appErr = normalizeUnknownError(err, locale);
       throw new Error(appErr.message);
     }
   }
@@ -452,7 +450,9 @@ export function TutorsPage({ locale }: { locale: Locale }) {
       isLoading={searchQuery.isLoading}
       queryError={
         searchQuery.error && resultSnapshot.data.length === 0
-          ? (locale === 'bn' ? 'শিক্ষকদের তথ্য লোড করা যায়নি' : 'Failed to load tutors')
+          ? locale === 'bn'
+            ? 'শিক্ষকদের তথ্য লোড করা যায়নি'
+            : 'Failed to load tutors'
           : null
       }
       onSearch={handleSearch}

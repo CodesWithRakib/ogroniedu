@@ -27,14 +27,7 @@ export interface AuthShellProps {
   onQuickFill?: (identifier: string, pass: string) => void;
 }
 
-export function AuthShell({
-  locale,
-  mode,
-  title,
-  subtitle,
-  children,
-  onQuickFill,
-}: AuthShellProps) {
+export function AuthShell({ locale, title, subtitle, children, onQuickFill }: AuthShellProps) {
   const pathname = usePathname();
   const isBn = locale === 'bn';
   const targetLocale: Locale = isBn ? 'en' : 'bn';
@@ -49,7 +42,8 @@ export function AuthShell({
       email: 'student.demo@ogroniedu.com',
       pass: 'OgroniDev#2026',
       icon: '🎓',
-      badgeClass: 'hover:border-emerald-500 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+      badgeClass:
+        'hover:border-emerald-500 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
     },
     {
       role: isBn ? 'অভিভাবক' : 'Guardian',
@@ -70,7 +64,8 @@ export function AuthShell({
       email: 'admin.demo@ogroniedu.com',
       pass: 'OgroniDev#2026',
       icon: '⚡',
-      badgeClass: 'hover:border-violet-500 hover:bg-violet-500/10 text-violet-600 dark:text-violet-400',
+      badgeClass:
+        'hover:border-violet-500 hover:bg-violet-500/10 text-violet-600 dark:text-violet-400',
     },
   ];
 
@@ -94,16 +89,16 @@ export function AuthShell({
 
           {/* Top Bar on Visual Panel */}
           <div className="relative z-10 flex items-center justify-between">
-            <Link
-              href={withLocale('/', locale)}
-              className="inline-flex items-center gap-2.5 group"
-            >
+            <Link href={withLocale('/', locale)} className="inline-flex items-center gap-2.5 group">
               <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-primary to-primary-hover flex items-center justify-center shadow-lg shadow-primary/30 group-hover:scale-105 transition-transform">
                 <GraduationCap className="h-5 w-5 text-primary-foreground" />
               </div>
               <div className="flex flex-col text-left">
                 <span className="font-serif text-lg font-bold tracking-tight text-white leading-none">
-                  {isBn ? 'অগ্রণী' : 'Ogroni'}<span className="text-primary font-sans font-extrabold text-sm ml-0.5">{isBn ? 'এডু' : 'Edu'}</span>
+                  {isBn ? 'অগ্রণী' : 'Ogroni'}
+                  <span className="text-primary font-sans font-extrabold text-sm ml-0.5">
+                    {isBn ? 'এডু' : 'Edu'}
+                  </span>
                 </span>
                 <span className="text-[10px] text-white/70 font-medium mt-0.5">
                   {isBn ? 'বিশ্বস্ত শিক্ষা প্ল্যাটফর্ম' : 'Trusted Tutoring Platform'}
@@ -133,11 +128,19 @@ export function AuthShell({
             <div className="space-y-2.5 pt-2">
               <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 text-xs font-medium text-white/90">
                 <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
-                <span>{isBn ? '১০০% এনআইডি ও সনদ যাচাইকৃত শিক্ষক' : '100% NID & verified credentials for every tutor'}</span>
+                <span>
+                  {isBn
+                    ? '১০০% এনআইডি ও সনদ যাচাইকৃত শিক্ষক'
+                    : '100% NID & verified credentials for every tutor'}
+                </span>
               </div>
               <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 text-xs font-medium text-white/90">
                 <ShieldCheck className="h-4 w-4 text-amber-400 shrink-0" />
-                <span>{isBn ? 'ক্লাস যাচাই সাপেক্ষে নিরাপদ এসক্রো পেমেন্ট' : 'Funds protected in escrow until session completion'}</span>
+                <span>
+                  {isBn
+                    ? 'ক্লাস যাচাই সাপেক্ষে নিরাপদ এসক্রো পেমেন্ট'
+                    : 'Funds protected in escrow until session completion'}
+                </span>
               </div>
             </div>
           </div>
@@ -213,16 +216,18 @@ export function AuthShell({
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground font-bengali">
                 {title}
               </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground font-medium">
-                {subtitle}
-              </p>
+              <p className="text-xs sm:text-sm text-muted-foreground font-medium">{subtitle}</p>
             </div>
 
             {/* 1-Click Demo Accounts Quick-Fill Strip for Evaluators */}
             {onQuickFill && (
               <div className="rounded-2xl border border-border/80 bg-surface/60 p-3 space-y-2">
                 <div className="flex items-center justify-between text-[11px] font-bold text-muted-foreground">
-                  <span>{isBn ? '⚡ এক ক্লিকে ডেমো অ্যাকাউন্ট নির্বাচন করুন:' : '⚡ 1-Click Demo Quick Fill:'}</span>
+                  <span>
+                    {isBn
+                      ? '⚡ এক ক্লিকে ডেমো অ্যাকাউন্ট নির্বাচন করুন:'
+                      : '⚡ 1-Click Demo Quick Fill:'}
+                  </span>
                   <span className="text-[10px] text-primary font-mono">OgroniDev#2026</span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
@@ -233,7 +238,7 @@ export function AuthShell({
                       onClick={() => onQuickFill(acc.email, acc.pass)}
                       className={cn(
                         'flex items-center justify-center gap-1 py-1.5 px-2 rounded-xl border border-border/70 bg-card text-[11px] font-bold transition-all shadow-2xs cursor-pointer',
-                        acc.badgeClass
+                        acc.badgeClass,
                       )}
                     >
                       <span>{acc.icon}</span>
@@ -252,7 +257,9 @@ export function AuthShell({
           <div className="pt-4 border-t border-border/60 flex flex-wrap items-center justify-between gap-3 text-[11px] text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <Lock className="h-3.5 w-3.5 text-emerald-500" />
-              <span>{isBn ? '২৫৬-বিট সুরক্ষিত এসএসএল এনক্রিপশন' : '256-bit Secure SSL Encryption'}</span>
+              <span>
+                {isBn ? '২৫৬-বিট সুরক্ষিত এসএসএল এনক্রিপশন' : '256-bit Secure SSL Encryption'}
+              </span>
             </div>
             <div className="flex items-center gap-2">
               <Link href={withLocale('/privacy', locale)} className="hover:underline">

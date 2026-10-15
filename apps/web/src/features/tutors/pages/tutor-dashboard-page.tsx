@@ -2,29 +2,19 @@
 
 import React from 'react';
 import Link from 'next/link';
-import {
-  Inbox,
-  Calendar,
-  ShieldCheck,
-  CheckCircle2,
-  BarChart3,
-  Video,
-  Plus,
-  ArrowRight,
-  Clock,
-  Sparkles,
-} from 'lucide-react';
+import { Inbox, Calendar, ShieldCheck, BarChart3, Plus, Sparkles } from 'lucide-react';
 import { TutorLayout } from '@/layouts/tutor/TutorLayout';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
 import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart';
 import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard';
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
 import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
-import { Card, CardHeader, CardTitle, CardContent, LoadingSpinner } from '@/components/ui';
+import { LoadingSpinner } from '@/components/ui';
 import { TutorVerificationStatusCard } from '@/components/tutor/TutorVerificationStatusCard';
 import { QualificationUploadCard } from '../components/qualificationUploadCard';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { formatDateTime } from '@/lib/format';
 import { normalizeApiError } from '@/lib/api-error';
 import { withLocale } from '@/lib/auth';
 import { useAppSelector } from '@/store';
@@ -51,8 +41,7 @@ const VERIFICATION_STATUSES = [
 type VerificationStatus = (typeof VERIFICATION_STATUSES)[number];
 
 function toVerificationStatus(raw: unknown): VerificationStatus {
-  return typeof raw === 'string' &&
-    (VERIFICATION_STATUSES as readonly string[]).includes(raw)
+  return typeof raw === 'string' && (VERIFICATION_STATUSES as readonly string[]).includes(raw)
     ? (raw as VerificationStatus)
     : 'not_submitted';
 }
@@ -77,7 +66,11 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
   const verificationStatus = toVerificationStatus(prof?.verificationStatus);
   const rawPublication = String(prof?.publicationStatus ?? 'draft');
   const publicationStatus =
-    rawPublication === 'published' ? 'published' : rawPublication === 'unpublished' ? 'unpublished' : 'draft';
+    rawPublication === 'published'
+      ? 'published'
+      : rawPublication === 'unpublished'
+        ? 'unpublished'
+        : 'draft';
   const rawQualifications = (prof as { qualifications?: unknown } | undefined)?.qualifications;
   const qualifications = Array.isArray(rawQualifications)
     ? rawQualifications.flatMap((q) => {
@@ -142,11 +135,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
           variant="hero"
           icon={Inbox}
           title={isBn ? 'আগত বুকিং অনুরোধ' : 'Incoming Requests'}
-          value={
-            requests.isLoading
-              ? '...'
-              : formatLocalizedNumber(incoming.length, locale)
-          }
+          value={requests.isLoading ? '...' : formatLocalizedNumber(incoming.length, locale)}
           changeText={
             isBn
               ? `${formatLocalizedNumber(incoming.length, locale)}টি নতুন টিউশন অনুরোধ`
@@ -178,15 +167,25 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
           title={isBn ? 'যাচাইকরণ স্ট্যাটাস' : 'Verification Status'}
           value={
             verificationStatus === 'approved'
-              ? (isBn ? 'অনুমোদিত' : 'Verified')
+              ? isBn
+                ? 'অনুমোদিত'
+                : 'Verified'
               : verificationStatus === 'under_review'
-                ? (isBn ? 'যাচাইধীন' : 'In Review')
-                : (isBn ? 'খসড়া' : 'Draft')
+                ? isBn
+                  ? 'যাচাইধীন'
+                  : 'In Review'
+                : isBn
+                  ? 'খসড়া'
+                  : 'Draft'
           }
           changeText={
             publicationStatus === 'published'
-              ? (isBn ? '🟢 প্রোফাইল দৃশ্যমান' : '🟢 Profile Live')
-              : (isBn ? '⚪ খসড়া মোড' : '⚪ Draft Mode')
+              ? isBn
+                ? '🟢 প্রোফাইল দৃশ্যমান'
+                : '🟢 Profile Live'
+              : isBn
+                ? '⚪ খসড়া মোড'
+                : '⚪ Draft Mode'
           }
           href={withLocale('/profile', locale)}
         />
@@ -212,9 +211,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
             locale={locale}
             title={isBn ? 'সাপ্তাহিক টিচিং সময়' : 'Weekly Teaching Hours'}
             subtitle={
-              isBn
-                ? 'সপ্তাহজুড়ে পাঠদান ও ক্লাসের ঘণ্টা'
-                : 'Tutoring hours and engagement volume'
+              isBn ? 'সপ্তাহজুড়ে পাঠদান ও ক্লাসের ঘণ্টা' : 'Tutoring hours and engagement volume'
             }
           />
         </div>
@@ -226,14 +223,13 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
             title={
               upcomingSession?.subject
                 ? String(upcomingSession.subject)
-                : (isBn ? 'পরবর্তী ক্লাস শিডিউল' : 'Next Session')
+                : isBn
+                  ? 'পরবর্তী ক্লাস শিডিউল'
+                  : 'Next Session'
             }
             timeRange={
               upcomingSession?.scheduledAt
-                ? new Date(String(upcomingSession.scheduledAt)).toLocaleString(
-                    isBn ? 'bn-BD' : 'en-US',
-                    { dateStyle: 'medium', timeStyle: 'short' }
-                  )
+                ? formatDateTime(String(upcomingSession.scheduledAt), locale)
                 : undefined
             }
             roomUrl={upcomingSession?.meetingUrl ?? undefined}

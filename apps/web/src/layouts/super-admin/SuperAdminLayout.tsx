@@ -18,7 +18,13 @@ export function SuperAdminLayout({
   children: React.ReactNode;
 }) {
   return (
-    <RoleLayout locale={locale} allow={['super_admin']} title={title} subtitle={subtitle} actions={actions}>
+    <RoleLayout
+      locale={locale}
+      allow={['super_admin']}
+      title={title}
+      subtitle={subtitle}
+      actions={actions}
+    >
       {children}
     </RoleLayout>
   );
