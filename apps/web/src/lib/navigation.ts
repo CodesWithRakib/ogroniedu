@@ -73,7 +73,23 @@ const DASHBOARD: Record<string, NavItem> = {
 
 /** True when the nav item matches the current pathname (shared by all shell navs). */
 export function isNavActive(pathname: string | null, href: string): boolean {
-  return pathname === href || (href !== '/dashboard' && !!pathname?.startsWith(href));
+  if (!pathname) return false;
+  if (pathname === href) return true;
+
+  const normalizedPath = pathname.replace(/^\/(bn|en)/, '');
+  const normalizedHref = href.replace(/^\/(bn|en)/, '');
+  if (normalizedPath === normalizedHref) return true;
+
+  // Never match bare '/dashboard' against sub-dashboards like '/dashboard/student'
+  if (normalizedHref === '/dashboard' || href === '/dashboard') {
+    return false;
+  }
+
+  // Root role dashboard should only match exact to avoid highlighting dashboard on subpages
+  if (/^\/dashboard\/(student|tutor|guardian|admin)$/.test(normalizedHref)) {
+    return normalizedPath === normalizedHref;
+  }
+  return normalizedPath.startsWith(normalizedHref);
 }
 
 /** Single source of truth for role → navigation items. DashboardShell renders this. */
@@ -82,14 +98,14 @@ export function navForRole(role: UserRole | null): NavItem[] {
     return [
       DASHBOARD.student,
       {
-        href: '/learning',
+        href: '/dashboard/student/learning',
         labelBn: 'স্টাডি রুম',
         labelEn: 'Study Room',
         icon: BookOpen,
         testId: 'nav-learning',
       },
       {
-        href: '/sessions',
+        href: '/dashboard/student/sessions',
         labelBn: 'ক্লাস শিডিউল',
         labelEn: 'Sessions',
         icon: Calendar,
@@ -103,14 +119,14 @@ export function navForRole(role: UserRole | null): NavItem[] {
         testId: 'nav-tutors',
       },
       {
-        href: '/requests',
+        href: '/dashboard/student/requests',
         labelBn: 'অনুরোধ',
         labelEn: 'Requests',
         icon: Inbox,
         testId: 'nav-requests',
       },
       {
-        href: '/payments',
+        href: '/dashboard/student/payments',
         labelBn: 'পেমেন্ট ও ফি',
         labelEn: 'Payments',
         icon: CreditCard,
@@ -143,35 +159,35 @@ export function navForRole(role: UserRole | null): NavItem[] {
         testId: 'nav-tutors',
       },
       {
-        href: '/requests',
+        href: '/dashboard/guardian/requests',
         labelBn: 'অনুরোধ ও বুকিং',
         labelEn: 'Requests',
         icon: Inbox,
         testId: 'nav-requests',
       },
       {
-        href: '/sessions',
+        href: '/dashboard/guardian/sessions',
         labelBn: 'ক্লাস শিডিউল',
         labelEn: 'Sessions',
         icon: Calendar,
         testId: 'nav-sessions',
       },
       {
-        href: '/learning',
+        href: '/dashboard/guardian/learning',
         labelBn: 'পড়াশোনার অগ্রগতি',
         labelEn: 'Learning',
         icon: BookOpen,
         testId: 'nav-learning',
       },
       {
-        href: '/payments',
+        href: '/dashboard/guardian/payments',
         labelBn: 'ফি ও এসক্রো',
         labelEn: 'Payments',
         icon: CreditCard,
         testId: 'nav-payments',
       },
       {
-        href: '/dashboard/guardian?tab=children',
+        href: '/dashboard/guardian/children',
         labelBn: 'সন্তান তালিকা',
         labelEn: 'Children',
         icon: Users,
@@ -197,32 +213,39 @@ export function navForRole(role: UserRole | null): NavItem[] {
     return [
       DASHBOARD.tutor,
       {
-        href: '/requests',
+        href: '/dashboard/tutor/requests',
         labelBn: 'বুকিং ইনবক্স',
         labelEn: 'Requests',
         icon: Inbox,
         testId: 'nav-requests',
       },
       {
-        href: '/sessions',
+        href: '/dashboard/tutor/sessions',
         labelBn: 'ক্লাস শিডিউল',
         labelEn: 'Schedule',
         icon: Calendar,
         testId: 'nav-sessions',
       },
       {
-        href: '/learning',
+        href: '/dashboard/tutor/learning',
         labelBn: 'টিচিং ও অ্যাসাইনমেন্ট',
         labelEn: 'Teaching',
         icon: BookOpen,
         testId: 'nav-learning',
       },
       {
-        href: '/payments',
+        href: '/dashboard/tutor/payments',
         labelBn: 'আয় ও উত্তোলন',
         labelEn: 'Earnings',
         icon: CreditCard,
         testId: 'nav-payments',
+      },
+      {
+        href: '/dashboard/tutor/verification',
+        labelBn: 'সনদ ও ভেরিফিকেশন',
+        labelEn: 'Verification',
+        icon: ShieldCheck,
+        testId: 'nav-verification',
       },
       {
         href: '/notifications',
@@ -233,7 +256,7 @@ export function navForRole(role: UserRole | null): NavItem[] {
       },
       {
         href: '/profile',
-        labelBn: 'সনদ ও প্রোফাইল',
+        labelBn: 'প্রোফাইল',
         labelEn: 'Profile',
         icon: User,
         testId: 'nav-profile',
@@ -248,35 +271,35 @@ export function navForRole(role: UserRole | null): NavItem[] {
   ) {
     return [
       {
-        href: '/admin',
+        href: '/dashboard/admin',
         labelBn: 'কন্ট্রোল সেন্টার',
         labelEn: 'Control Center',
         icon: ShieldCheck,
         testId: 'nav-admin',
       },
       {
-        href: '/analytics',
+        href: '/dashboard/admin/analytics',
         labelBn: 'অ্যানালিটিক্স',
         labelEn: 'Analytics',
         icon: BarChart3,
         testId: 'nav-analytics',
       },
       {
-        href: '/admin?tab=tutors',
+        href: '/dashboard/admin/verification',
         labelBn: 'শিক্ষক যাচাই',
         labelEn: 'Tutor Verification',
         icon: Search,
         testId: 'nav-tutors',
       },
       {
-        href: '/admin?tab=reconciliation',
+        href: '/dashboard/admin/disputes',
         labelBn: 'লেজার রিকনসিলিয়েশন',
         labelEn: 'Reconciliation',
         icon: CreditCard,
         testId: 'nav-reconciliation',
       },
       {
-        href: '/admin?tab=users',
+        href: '/dashboard/admin/users',
         labelBn: 'ইউজার ম্যানেজার',
         labelEn: 'User Manager',
         icon: Users,

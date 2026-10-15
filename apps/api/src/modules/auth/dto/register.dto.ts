@@ -20,8 +20,8 @@ export class RegisterDto {
 
   @IsOptional()
   @IsString()
-  @Matches(/^\+?[1-9]\d{6,14}$/, {
-    message: 'phone must be a valid E.164 formatted number (e.g. +8801712345678)',
+  @Matches(/^(\+?8801[3-9]\d{8}|01[3-9]\d{8}|\+?[1-9]\d{6,14})$/, {
+    message: 'phone must be a valid Bangladeshi or international number (e.g. 01712345678 or +8801712345678)',
   })
   phone?: string;
 

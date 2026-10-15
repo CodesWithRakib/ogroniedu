@@ -14,6 +14,7 @@ import { RegisterDto, LoginDto, RequestCodeDto, VerifyCodeDto, ResetPasswordDto 
 import { RateLimiterService } from './rate-limiter.service';
 import { StructuredLoggerService } from '../../common/logger/structured-logger.service';
 import { generateTokenPair, hashToken } from './utils/token.utils';
+import { normalizePhone, getPhoneSearchCandidates } from './utils/phone.utils';
 import type { AuthMeta, AuthResponse } from './interfaces/auth-response.interface';
 
 export type { TokenPayload, AuthResponse, AuthMeta } from './interfaces/auth-response.interface';
@@ -40,7 +41,7 @@ export class AuthService {
     }
 
     const normalizedEmail = dto.email ? dto.email.trim().toLowerCase() : null;
-    const phone = dto.phone ? dto.phone.trim() : null;
+    const phone = dto.phone ? normalizePhone(dto.phone) : null;
 
     // Check duplicates
     if (normalizedEmail) {
@@ -54,9 +55,10 @@ export class AuthService {
     }
 
     if (phone) {
+      const candidates = getPhoneSearchCandidates(dto.phone || phone);
       const existingPhone = await this.dataSource.query(
-        'SELECT id FROM users WHERE phone_e164 = $1 AND deleted_at IS NULL LIMIT 1;',
-        [phone],
+        'SELECT id FROM users WHERE phone_e164 = ANY($1) AND deleted_at IS NULL LIMIT 1;',
+        [candidates],
       );
       if (existingPhone.length > 0) {
         throw new ConflictException('A user with this phone number already exists.');
@@ -169,14 +171,27 @@ export class AuthService {
     const identifier = dto.identifier.trim();
     const isEmail = identifier.includes('@');
 
-    const userRows = await this.dataSource.query(
-      `SELECT u.id, u.email, u.phone_e164, u.password_hash, u.display_name, u.preferred_locale, u.status
-       FROM users u
-       WHERE (${isEmail ? 'lower(u.email) = lower($1)' : 'u.phone_e164 = $1'})
-         AND u.deleted_at IS NULL
-       LIMIT 1;`,
-      [identifier],
-    );
+    let userRows: any[] = [];
+    if (isEmail) {
+      userRows = await this.dataSource.query(
+        `SELECT u.id, u.email, u.phone_e164, u.password_hash, u.display_name, u.preferred_locale, u.status
+         FROM users u
+         WHERE lower(u.email) = lower($1)
+           AND u.deleted_at IS NULL
+         LIMIT 1;`,
+        [identifier.toLowerCase()],
+      );
+    } else {
+      const candidates = getPhoneSearchCandidates(identifier);
+      userRows = await this.dataSource.query(
+        `SELECT u.id, u.email, u.phone_e164, u.password_hash, u.display_name, u.preferred_locale, u.status
+         FROM users u
+         WHERE u.phone_e164 = ANY($1)
+           AND u.deleted_at IS NULL
+         LIMIT 1;`,
+        [candidates],
+      );
+    }
 
     if (userRows.length === 0) {
       throw new UnauthorizedException('Invalid email/phone or password');
@@ -414,14 +429,16 @@ export class AuthService {
     this.rateLimiter.checkLimit(rateLimitKey, 3, 120000); // 3 OTP requests per 2 minutes
 
     const contact = dto.contact.trim();
+    const isEmail = contact.includes('@');
     const code = crypto.randomInt(100000, 999999).toString();
     const codeHash = hashToken(code);
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // 10 minutes
 
     // Find user if exists
+    const candidates = isEmail ? [contact.toLowerCase()] : getPhoneSearchCandidates(contact);
     const userRes = await this.dataSource.query(
-      `SELECT id FROM users WHERE (lower(email) = lower($1) OR phone_e164 = $1) AND deleted_at IS NULL LIMIT 1;`,
-      [contact],
+      `SELECT id FROM users WHERE (lower(email) = lower($1) OR phone_e164 = ANY($2)) AND deleted_at IS NULL LIMIT 1;`,
+      [contact.toLowerCase(), candidates],
     );
     const userId = userRes.length > 0 ? userRes[0].id : null;
 
@@ -450,17 +467,19 @@ export class AuthService {
   async verifyCode(dto: VerifyCodeDto): Promise<{ success: boolean; message: string }> {
     const contact = dto.contact.trim();
     const codeHash = hashToken(dto.code.trim());
+    const isEmail = contact.includes('@');
+    const candidates = isEmail ? [contact.toLowerCase(), contact] : getPhoneSearchCandidates(contact);
 
     const records = await this.dataSource.query(
       `SELECT id, user_id, code_hash, attempts, expires_at
        FROM auth_verification_codes
-       WHERE contact = $1 
+       WHERE (contact = ANY($1)) 
          AND purpose = $2 
          AND verified_at IS NULL
          AND expires_at > now()
        ORDER BY created_at DESC
        LIMIT 1;`,
-      [contact, dto.purpose],
+      [candidates, dto.purpose],
     );
 
     if (records.length === 0) {
@@ -489,7 +508,6 @@ export class AuthService {
 
     // If contact verification, mark user verified
     if (dto.purpose === 'contact_verification' && rec.user_id) {
-      const isEmail = contact.includes('@');
       await this.dataSource.query(
         `UPDATE users 
          SET ${isEmail ? 'email_verified_at' : 'phone_verified_at'} = now(),
@@ -508,17 +526,19 @@ export class AuthService {
   async resetPassword(dto: ResetPasswordDto): Promise<{ success: boolean; message: string }> {
     const contact = dto.contact.trim();
     const codeHash = hashToken(dto.code.trim());
+    const isEmail = contact.includes('@');
+    const candidates = isEmail ? [contact.toLowerCase(), contact] : getPhoneSearchCandidates(contact);
 
     const records = await this.dataSource.query(
       `SELECT id, user_id
        FROM auth_verification_codes
-       WHERE contact = $1 
+       WHERE (contact = ANY($1)) 
          AND purpose = 'password_recovery'
          AND code_hash = $2
          AND verified_at IS NULL
          AND expires_at > now()
        LIMIT 1;`,
-      [contact, codeHash],
+      [candidates, codeHash],
     );
 
     if (records.length === 0) {
@@ -529,8 +549,8 @@ export class AuthService {
     const newPasswordHash = await bcrypt.hash(dto.newPassword, 12);
 
     await this.dataSource.query(
-      'UPDATE users SET password_hash = $1, updated_at = now() WHERE (lower(email) = lower($2) OR phone_e164 = $2);',
-      [newPasswordHash, contact],
+      'UPDATE users SET password_hash = $1, updated_at = now() WHERE (lower(email) = lower($2) OR phone_e164 = ANY($3));',
+      [newPasswordHash, contact, candidates],
     );
 
     // Mark code as used
