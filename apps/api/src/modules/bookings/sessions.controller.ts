@@ -66,6 +66,23 @@ export class SessionsController {
     };
   }
 
+  @Get('sessions/calendar/ical')
+  @UseGuards(AuthGuard)
+  async getIcsCalendar(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query() query: GetSessionsQueryDto,
+  ) {
+    const icsContent = await this.schedulingService.generateIcsCalendar(user, query);
+    return {
+      success: true,
+      data: {
+        icsContent,
+        filename: 'ogroniedu-classes.ics',
+        eventsCount: (icsContent.match(/BEGIN:VEVENT/g) || []).length,
+      },
+    };
+  }
+
   @Get('sessions/:id')
   @UseGuards(AuthGuard)
   async getSessionById(

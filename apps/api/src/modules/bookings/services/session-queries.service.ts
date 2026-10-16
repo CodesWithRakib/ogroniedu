@@ -136,4 +136,64 @@ export class SessionQueriesService {
       type: 'busy' as const,
     }));
   }
+
+  /**
+   * RFC 5545 iCalendar format generator for calendar sync (Google, Apple, Outlook)
+   */
+  async generateIcsCalendar(
+    user: AuthenticatedUser,
+    query: GetSessionsQueryDto,
+  ): Promise<string> {
+    const sessions = await this.getSessions(user, query);
+
+    const formatIcsDate = (d: Date): string => {
+      return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
+    };
+
+    const escapeIcs = (str: string): string => {
+      return str
+        .replace(/\\/g, '\\\\')
+        .replace(/;/g, '\\;')
+        .replace(/,/g, '\\,')
+        .replace(/\n/g, '\\n');
+    };
+
+    const nowStr = formatIcsDate(new Date());
+
+    const events = sessions.map((s) => {
+      const subjectName =
+        s.booking?.subject?.nameEn || s.booking?.subject?.nameBn || 'Tuition Class';
+      const tutorName = s.tutorProfile?.user?.displayName || 'Tutor';
+      const studentName = s.studentUser?.displayName || 'Student';
+      const starts = formatIcsDate(new Date(s.startsAt));
+      const ends = formatIcsDate(new Date(s.endsAt));
+      const loc = s.meetingUrl || s.locationInstructions || 'Online (OgroniEdu Class)';
+      const desc = `OgroniEdu Live Class\nSubject: ${subjectName}\nTutor: ${tutorName}\nStudent: ${studentName}\nMeeting URL: ${s.meetingUrl || 'Will be shared before class'}\nNotes: ${s.locationInstructions || 'None'}`;
+
+      return [
+        'BEGIN:VEVENT',
+        `UID:${s.id}@ogroniedu.com`,
+        `DTSTAMP:${nowStr}`,
+        `DTSTART:${starts}`,
+        `DTEND:${ends}`,
+        `SUMMARY:${escapeIcs(`OgroniEdu: ${subjectName} with ${tutorName}`)}`,
+        `DESCRIPTION:${escapeIcs(desc)}`,
+        `LOCATION:${escapeIcs(loc)}`,
+        `STATUS:${s.status === 'cancelled' ? 'CANCELLED' : 'CONFIRMED'}`,
+        'END:VEVENT',
+      ].join('\r\n');
+    });
+
+    return [
+      'BEGIN:VCALENDAR',
+      'VERSION:2.0',
+      'PRODID:-//OgroniEdu//Tuition Class Schedule//BN',
+      'CALSCALE:GREGORIAN',
+      'METHOD:PUBLISH',
+      'X-WR-CALNAME:OgroniEdu Classes',
+      'X-WR-TIMEZONE:Asia/Dhaka',
+      ...events,
+      'END:VCALENDAR',
+    ].join('\r\n');
+  }
 }

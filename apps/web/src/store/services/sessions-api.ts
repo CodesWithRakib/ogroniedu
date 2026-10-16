@@ -111,6 +111,21 @@ export const sessionsApi = baseApi.injectEndpoints({
         `/api/v1/tutors/${tutorId}/calendar${toQueryString({ from, to })}`,
       providesTags: (_r, _e, arg) => [{ type: 'TutorCalendar', id: arg.tutorId }],
     }),
+    getIcsCalendar: builder.query<
+      ApiSuccessEnvelope<{ icsContent: string; filename: string; eventsCount: number }>,
+      GetSessionsParams | void
+    >({
+      query: (params) =>
+        `/api/v1/sessions/calendar/ical${toQueryString({
+          bookingId: params?.bookingId,
+          studentId: params?.studentId,
+          tutorId: params?.tutorId,
+          from: params?.from,
+          to: params?.to,
+          status: params?.status,
+        })}`,
+      providesTags: [{ type: 'Session', id: 'LIST' }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -123,4 +138,6 @@ export const {
   useRescheduleSessionMutation,
   useCancelSessionMutation,
   useGetTutorCalendarQuery,
+  useGetIcsCalendarQuery,
+  useLazyGetIcsCalendarQuery,
 } = sessionsApi;

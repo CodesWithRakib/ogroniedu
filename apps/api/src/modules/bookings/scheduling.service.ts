@@ -51,4 +51,7 @@ export class SchedulingService {
   getTutorCalendar(tutorId: string, from: Date, to: Date) {
     return this.queries.getTutorCalendar(tutorId, from, to);
   }
+  generateIcsCalendar(user: AuthenticatedUser, query: GetSessionsQueryDto) {
+    return this.queries.generateIcsCalendar(user, query);
+  }
 }

@@ -1,44 +1,674 @@
 'use client';
 
-import React, { use } from 'react';
+import React, { use, useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import {
+  Calendar,
+  Clock,
+  ShieldCheck,
+  Video,
+  MapPin,
+  CheckCircle2,
+  XCircle,
+  AlertTriangle,
+  ArrowLeft,
+  ExternalLink,
+  Download,
+  CreditCard,
+  User,
+  GraduationCap,
+  MessageSquare,
+  Sparkles,
+  Share2,
+} from 'lucide-react';
 import { useAppSelector } from '@/store';
-import { LoadingSpinner } from '@/components/ui';
+import { Button, LoadingSpinner } from '@/components/ui';
+import {
+  useGetBookingRequestByIdQuery,
+  useRespondBookingRequestMutation,
+  useWithdrawBookingRequestMutation,
+} from '@/store/services/bookings-api';
+import { useGetSessionsQuery, useLazyGetIcsCalendarQuery } from '@/store/services/sessions-api';
+import { SafetyReportModal, TutorReplacementModal } from '@/features/trust';
+import { playAudioTone } from '@/lib/audio/notification-sound';
+import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { formatDate } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
-import type { Locale } from '@/lib/i18n';
 
-interface BookingDetailProps {
+interface BookingDetailPageProps {
   params: Promise<{ locale: string; id: string }>;
 }
 
-/**
- * Dedicated route for `booking.confirmed` / `booking.cancelled` navigation target:
- * Directs user to their appropriate requests or bookings overview.
- */
-export default function BookingDetailRoute({ params }: BookingDetailProps) {
+const WEEKDAY_NAMES_BN = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
+const WEEKDAY_NAMES_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+export default function BookingDetailPage({ params }: BookingDetailPageProps) {
   const router = useRouter();
   const resolved = use(params);
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
+  const isBn = locale === 'bn';
   const bookingId = resolved.id;
-  const user = useAppSelector((s) => s.auth.user);
 
-  React.useEffect(() => {
-    let targetPath = `/dashboard/student/requests?highlight=${bookingId}`;
-    if (user?.roles?.includes('tutor')) {
-      targetPath = `/dashboard/tutor/requests?highlight=${bookingId}`;
-    } else if (user?.roles?.includes('guardian')) {
-      targetPath = `/dashboard/guardian/requests?highlight=${bookingId}`;
+  const currentUser = useAppSelector((s) => s.auth.user);
+  const isTutor = currentUser?.roles?.includes('tutor');
+  const isGuardian = currentUser?.roles?.includes('guardian');
+
+  const { data: bookingData, isLoading: loadingBooking, refetch: refetchBooking } =
+    useGetBookingRequestByIdQuery(bookingId);
+  const { data: sessionsData, isLoading: loadingSessions, refetch: refetchSessions } =
+    useGetSessionsQuery({ bookingId });
+
+  const [respondBooking, { isLoading: responding }] = useRespondBookingRequestMutation();
+  const [withdrawBooking, { isLoading: withdrawing }] = useWithdrawBookingRequestMutation();
+  const [getIcsCalendar, { isFetching: downloadingIcs }] = useLazyGetIcsCalendarQuery();
+
+  const [safetyModalOpen, setSafetyModalOpen] = useState(false);
+  const [replacementModalOpen, setReplacementModalOpen] = useState(false);
+  const [actionMessage, setActionMessage] = useState<string | null>(null);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const booking = bookingData?.data;
+  const sessions = sessionsData?.data || [];
+
+  const status = booking?.status || 'requested';
+  const priceBdt = booking?.pricePerSessionMinor
+    ? Math.round(Number(booking.pricePerSessionMinor) / 100)
+    : 1200;
+
+  const preferredDays = Array.isArray(booking?.preferredDays) ? booking.preferredDays : [];
+  const weekdayLabels = isBn ? WEEKDAY_NAMES_BN : WEEKDAY_NAMES_EN;
+
+  const subjectName = isBn
+    ? booking?.subject?.nameBn || booking?.subject?.name || 'টিউটরিং বিষয়'
+    : booking?.subject?.name || 'Tuition Subject';
+  const educationLevelName = isBn
+    ? booking?.educationLevel?.nameBn || booking?.educationLevel?.name || 'শ্রেণি'
+    : booking?.educationLevel?.name || 'Education Level';
+
+  const tutorName =
+    booking?.tutorProfile?.user?.displayName ||
+    booking?.tutorProfile?.user?.fullName ||
+    (isBn ? 'নির্ধারিত শিক্ষক' : 'Assigned Tutor');
+  const studentName =
+    booking?.studentUser?.displayName ||
+    booking?.studentUser?.fullName ||
+    (isBn ? 'শিক্ষার্থী' : 'Student');
+
+  // Generate Google Calendar Link for First Scheduled Session
+  const firstSession = sessions[0];
+  const googleCalUrl = React.useMemo(() => {
+    if (!firstSession) return null;
+    const startIso = new Date(firstSession.startsAt).toISOString().replace(/-|:|\.\d\d\d/g, '');
+    const endIso = new Date(firstSession.endsAt).toISOString().replace(/-|:|\.\d\d\d/g, '');
+    const title = encodeURIComponent(`OgroniEdu Class: ${subjectName} with ${tutorName}`);
+    const details = encodeURIComponent(
+      `OgroniEdu Live Class Session\nSubject: ${subjectName}\nTutor: ${tutorName}\nStudent: ${studentName}\nClass URL: ${firstSession.meetingUrl || 'https://meet.google.com'}`,
+    );
+    const location = encodeURIComponent(firstSession.meetingUrl || 'Online (Google Meet)');
+    return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startIso}/${endIso}&details=${details}&location=${location}`;
+  }, [firstSession, subjectName, tutorName, studentName]);
+
+  async function handleDownloadIcs() {
+    try {
+      const res = await getIcsCalendar({ bookingId }).unwrap();
+      const ics = res.data.icsContent;
+      const blob = new Blob([ics], { type: 'text/calendar;charset=utf-8' });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      a.download = res.data.filename || `ogroniedu-booking-${bookingId.slice(0, 8)}.ics`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      playAudioTone('success');
+    } catch {
+      setErrorMessage(isBn ? 'ক্যালেন্ডার ডাউনলোড ব্যর্থ হয়েছে।' : 'Failed to download calendar.');
     }
+  }
 
-    router.replace(withLocale(targetPath, locale));
-  }, [user, bookingId, locale, router]);
+  async function handleTutorResponse(action: 'accept' | 'decline') {
+    setActionMessage(null);
+    setErrorMessage(null);
+    try {
+      await respondBooking({ id: bookingId, action }).unwrap();
+      playAudioTone(action === 'accept' ? 'success' : 'alert');
+      setActionMessage(
+        action === 'accept'
+          ? isBn
+            ? 'বুকিং সফলভাবে গ্রহণ করা হয়েছে। শিক্ষার্থী/অভিভাবক এখন ফি পরিশোধ করতে পারবেন।'
+            : 'Booking accepted successfully. The student/guardian can now deposit escrow fees.'
+          : isBn
+            ? 'বুকিং অনুরোধ বাতিল করা হয়েছে।'
+            : 'Booking request has been declined.',
+      );
+      refetchBooking();
+    } catch {
+      setErrorMessage(isBn ? 'পদক্ষেপ সম্পন্ন করা যায়নি।' : 'Failed to respond to booking.');
+    }
+  }
+
+  async function handleWithdraw() {
+    if (
+      !confirm(
+        isBn
+          ? 'আপনি কি নিশ্চিতভাবে এই বুকিং অনুরোধ প্রত্যাহার করতে চান?'
+          : 'Are you sure you want to withdraw this booking request?',
+      )
+    )
+      return;
+    setActionMessage(null);
+    setErrorMessage(null);
+    try {
+      await withdrawBooking({ id: bookingId }).unwrap();
+      playAudioTone('alert');
+      setActionMessage(isBn ? 'বুকিং অনুরোধ প্রত্যাহার করা হয়েছে।' : 'Booking request withdrawn.');
+      refetchBooking();
+    } catch {
+      setErrorMessage(isBn ? 'অনুরোধ প্রত্যাহার করা যায়নি।' : 'Failed to withdraw booking.');
+    }
+  }
+
+  if (loadingBooking) {
+    return (
+      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3">
+        <LoadingSpinner />
+        <p className="text-xs text-muted-foreground">
+          {isBn ? 'বুকিং ডসিয়ার লোড হচ্ছে...' : 'Loading booking dossier...'}
+        </p>
+      </div>
+    );
+  }
 
   return (
-    <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3">
-      <LoadingSpinner />
-      <p className="text-xs text-slate-500">
-        {locale === 'bn' ? 'বুকিংয়ের তথ্যে নিয়ে যাওয়া হচ্ছে...' : 'Redirecting to booking details...'}
-      </p>
+    <div className="min-h-screen bg-background text-foreground py-8 px-4 sm:px-6 lg:px-8">
+      <div className="max-w-6xl mx-auto space-y-6" data-testid="booking-dossier-page">
+        {/* Navigation Breadcrumb */}
+        <div className="flex items-center justify-between">
+          <Link
+            href={withLocale(
+              isTutor
+                ? '/dashboard/tutor/requests'
+                : isGuardian
+                  ? '/dashboard/guardian/requests'
+                  : '/dashboard/student/requests',
+              locale,
+            )}
+            className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground font-medium transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            <span>{isBn ? 'অনুরোধ তালিকায় ফিরে যান' : 'Back to Requests Overview'}</span>
+          </Link>
+          <span className="font-mono text-xs text-muted-foreground bg-surface/80 border border-border px-3 py-1 rounded-full">
+            ID: #{bookingId.slice(0, 8)}
+          </span>
+        </div>
+
+        {/* Feedback / Alert Banners */}
+        {actionMessage && (
+          <div
+            role="status"
+            className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-xs text-emerald-400 flex items-center gap-2.5"
+            data-testid="booking-success-banner"
+          >
+            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <span>{actionMessage}</span>
+          </div>
+        )}
+        {errorMessage && (
+          <div
+            role="alert"
+            className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-400 flex items-center gap-2.5"
+            data-testid="booking-error-banner"
+          >
+            <AlertTriangle className="w-4 h-4 shrink-0" />
+            <span>{errorMessage}</span>
+          </div>
+        )}
+
+        {/* Hero Card */}
+        <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-br from-card via-card/95 to-primary/5 p-6 sm:p-8 shadow-xl">
+          <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2.5">
+                <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                  {educationLevelName}
+                </span>
+                {status === 'requested' && (
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                    {isBn ? 'অনুরোধ অপেক্ষমান' : 'Pending Response'}
+                  </span>
+                )}
+                {status === 'accepted' && (
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                    {isBn ? 'গৃহীত — এসক্রো ফি জমা দিন' : 'Accepted — Escrow Deposit Required'}
+                  </span>
+                )}
+                {status === 'confirmed' && (
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    {isBn ? 'নিশ্চিতকৃত বুকিং' : 'Confirmed & Active'}
+                  </span>
+                )}
+                {status === 'cancelled' && (
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                    {isBn ? 'বাতিলকৃত' : 'Cancelled'}
+                  </span>
+                )}
+              </div>
+
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                {subjectName}
+              </h1>
+
+              <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+                <span className="flex items-center gap-1.5">
+                  <User className="w-3.5 h-3.5 text-cyan-400" />
+                  {isBn ? 'শিক্ষক:' : 'Tutor:'} <strong className="text-foreground">{tutorName}</strong>
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1.5">
+                  <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
+                  {isBn ? 'শিক্ষার্থী:' : 'Student:'}{' '}
+                  <strong className="text-foreground">{studentName}</strong>
+                </span>
+                <span>•</span>
+                <span className="flex items-center gap-1.5">
+                  <Calendar className="w-3.5 h-3.5 text-purple-400" />
+                  {formatDate(booking?.createdAt || new Date(), locale)}
+                </span>
+              </div>
+            </div>
+
+            {/* Action CTA Box */}
+            <div className="flex flex-wrap items-center gap-3">
+              {status === 'accepted' && (
+                <Link
+                  href={withLocale(`/bookings/${bookingId}/pay`, locale)}
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/20 transition-all hover:scale-102"
+                  data-testid="pay-escrow-cta-btn"
+                >
+                  <CreditCard className="w-4 h-4" />
+                  <span>{isBn ? 'এসক্রো ফি পরিশোধ করুন' : 'Pay Escrow Fees'}</span>
+                </Link>
+              )}
+
+              {status === 'requested' && isTutor && (
+                <>
+                  <Button
+                    size="sm"
+                    disabled={responding}
+                    onClick={() => handleTutorResponse('accept')}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs"
+                    data-testid="tutor-accept-booking-btn"
+                  >
+                    <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
+                    {isBn ? 'বুকিং গ্রহণ করুন' : 'Accept Request'}
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    disabled={responding}
+                    onClick={() => handleTutorResponse('decline')}
+                    className="border-rose-500/30 text-rose-400 hover:bg-rose-500/10 text-xs"
+                    data-testid="tutor-decline-booking-btn"
+                  >
+                    <XCircle className="w-3.5 h-3.5 mr-1.5" />
+                    {isBn ? 'প্রত্যাখ্যান' : 'Decline'}
+                  </Button>
+                </>
+              )}
+
+              {status === 'requested' && !isTutor && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  disabled={withdrawing}
+                  onClick={handleWithdraw}
+                  className="border-rose-500/30 text-rose-400 hover:bg-rose-500/10 text-xs"
+                  data-testid="withdraw-booking-btn"
+                >
+                  {isBn ? 'অনুরোধ প্রত্যাহার' : 'Withdraw Request'}
+                </Button>
+              )}
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setSafetyModalOpen(true)}
+                className="border-border text-xs"
+              >
+                <ShieldCheck className="w-3.5 h-3.5 mr-1.5 text-rose-400" />
+                {isBn ? 'সুরক্ষা রিপোর্ট' : 'Report Issue'}
+              </Button>
+
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => setReplacementModalOpen(true)}
+                className="border-border text-xs"
+              >
+                <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-400" />
+                {isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacement'}
+              </Button>
+            </div>
+          </div>
+        </div>
+
+        {/* 4 KPI Metrics */}
+        <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          <div className="rounded-2xl border border-border/80 bg-card p-4.5 space-y-1">
+            <p className="text-xs text-muted-foreground font-medium">
+              {isBn ? 'সেশন ফি (প্রতি ক্লাস)' : 'Fee Per Session'}
+            </p>
+            <p className="text-xl sm:text-2xl font-black text-white font-mono">
+              ৳{formatLocalizedNumber(priceBdt, locale)}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-border/80 bg-card p-4.5 space-y-1">
+            <p className="text-xs text-muted-foreground font-medium">
+              {isBn ? 'ক্লাসের মাধ্যম' : 'Tutoring Mode'}
+            </p>
+            <p className="text-base font-bold text-cyan-400 capitalize">
+              {booking?.mode === 'in_person'
+                ? isBn
+                  ? 'বাসায় গিয়ে (In-Person)'
+                  : 'In-Person'
+                : isBn
+                  ? 'অনলাইন ক্লাস (Google Meet)'
+                  : 'Online'}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-border/80 bg-card p-4.5 space-y-1">
+            <p className="text-xs text-muted-foreground font-medium">
+              {isBn ? 'সেশন ব্যাপ্তি' : 'Duration'}
+            </p>
+            <p className="text-base font-bold text-emerald-400 font-mono">
+              {formatLocalizedNumber(Number(booking?.durationMinutes) || 60, locale)}{' '}
+              {isBn ? 'মিনিট' : 'Mins'}
+            </p>
+          </div>
+
+          <div className="rounded-2xl border border-border/80 bg-card p-4.5 space-y-1">
+            <p className="text-xs text-muted-foreground font-medium">
+              {isBn ? 'এসক্রো নিরাপত্তা' : 'Escrow Protection'}
+            </p>
+            <p className="text-base font-bold text-teal-400 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 shrink-0" />
+              <span>{isBn ? '১০০% সুরক্ষিত' : '100% Guaranteed'}</span>
+            </p>
+          </div>
+        </div>
+
+        {/* 2-Column Core Layout */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          {/* Left Column (2 Cols wide) */}
+          <div className="lg:col-span-2 space-y-6">
+            {/* Preferred Weekly Routine & Schedule Slots */}
+            <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border/70">
+                <div className="flex items-center gap-2">
+                  <Calendar className="w-4 h-4 text-primary" />
+                  <h3 className="font-bold text-sm text-foreground">
+                    {isBn ? 'সাপ্তাহিক ক্লাসের পছন্দের দিন ও রুটিন' : 'Weekly Class Routine'}
+                  </h3>
+                </div>
+                <span className="text-xs text-muted-foreground font-mono">
+                  {preferredDays.length > 0
+                    ? `${formatLocalizedNumber(preferredDays.length, locale)} ${isBn ? 'দিন/সপ্তাহ' : 'days/wk'}`
+                    : isBn
+                      ? 'রিকারিং শিডিউল'
+                      : 'Recurring Schedule'}
+                </span>
+              </div>
+
+              {preferredDays.length > 0 ? (
+                <div className="flex flex-wrap gap-2">
+                  {preferredDays.map((dayNum) => (
+                    <span
+                      key={dayNum}
+                      className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-primary/10 text-primary border border-primary/20 flex items-center gap-1.5"
+                    >
+                      <Clock className="w-3.5 h-3.5" />
+                      <span>{weekdayLabels[dayNum] || `Day ${dayNum}`}</span>
+                    </span>
+                  ))}
+                </div>
+              ) : (
+                <p className="text-xs text-muted-foreground">
+                  {isBn
+                    ? 'শিক্ষক ও শিক্ষার্থী আলোচনার মাধ্যমে নিয়মিত শিডিউল নির্ধারণ করবেন।'
+                    : 'Flexible schedule as coordinated between tutor and student.'}
+                </p>
+              )}
+
+              {/* Instructions / Learning Goals */}
+              {Boolean(
+                booking?.messageNotes ||
+                  (booking?.serviceAgreementSnapshot as Record<string, unknown> | undefined)
+                    ?.message,
+              ) && (
+                <div className="rounded-2xl border border-border/60 bg-surface/60 p-4 space-y-1.5">
+                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                    {isBn ? 'শিক্ষার্থীর প্রয়োজন ও শিক্ষকের জন্য নোট:' : 'Learning Goals & Notes:'}
+                  </p>
+                  <p className="text-xs text-foreground leading-relaxed">
+                    "
+                    {String(
+                      booking?.messageNotes ||
+                        (booking?.serviceAgreementSnapshot as Record<string, unknown> | undefined)
+                          ?.message ||
+                        '',
+                    )}
+                    "
+                  </p>
+                </div>
+              )}
+            </div>
+
+            {/* Scheduled Class Sessions Table */}
+            <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border/70">
+                <div className="flex items-center gap-2">
+                  <Video className="w-4 h-4 text-cyan-400" />
+                  <h3 className="font-bold text-sm text-foreground">
+                    {isBn ? 'নির্ধারিত ক্লাস সেশনসমূহ' : 'Scheduled Class Sessions'}
+                  </h3>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {formatLocalizedNumber(sessions.length, locale)} {isBn ? 'টি সেশন' : 'Sessions'}
+                </span>
+              </div>
+
+              {sessions.length === 0 ? (
+                <div className="text-center py-8 border border-dashed border-border/80 rounded-2xl space-y-2">
+                  <Calendar className="w-8 h-8 text-muted-foreground mx-auto" />
+                  <p className="text-xs text-muted-foreground">
+                    {isBn
+                      ? 'বুকিং ফি পরিশোধের পর সেশন শিডিউল স্বয়ংক্রিয়ভাবে ক্যালেন্ডারে যুক্ত হবে।'
+                      : 'Class sessions will be populated upon escrow payment confirmation.'}
+                  </p>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {sessions.map((session, idx) => (
+                    <div
+                      key={session.id}
+                      className="rounded-2xl border border-border/80 bg-surface/50 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                      data-testid={`session-row-${session.id}`}
+                    >
+                      <div className="space-y-1">
+                        <div className="flex items-center gap-2">
+                          <span className="font-bold text-foreground">
+                            {isBn ? `ক্লাস #${idx + 1}` : `Class #${idx + 1}`}
+                          </span>
+                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
+                            {session.status}
+                          </span>
+                        </div>
+                        <p className="text-[11px] text-muted-foreground flex items-center gap-2">
+                          <span className="flex items-center gap-1">
+                            <Calendar className="w-3 h-3 text-purple-400" />
+                            {formatDate(session.startsAt, locale)}
+                          </span>
+                          <span>•</span>
+                          <span className="flex items-center gap-1">
+                            <Clock className="w-3 h-3 text-cyan-400" />
+                            {new Date(session.startsAt).toLocaleTimeString(
+                              locale === 'bn' ? 'bn-BD' : 'en-US',
+                              { hour: '2-digit', minute: '2-digit' },
+                            )}
+                          </span>
+                        </p>
+                      </div>
+
+                      <div className="flex items-center gap-2">
+                        {session.meetingUrl ? (
+                          <a
+                            href={session.meetingUrl}
+                            target="_blank"
+                            rel="noreferrer"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/15 text-cyan-400 hover:bg-cyan-500/25 border border-cyan-500/30 font-medium text-xs transition-colors"
+                          >
+                            <Video className="w-3.5 h-3.5" />
+                            <span>{isBn ? 'ক্লাসে যোগ দিন' : 'Join Class'}</span>
+                            <ExternalLink className="w-3 h-3 ml-0.5" />
+                          </a>
+                        ) : (
+                          <span className="text-[11px] text-muted-foreground italic">
+                            {isBn ? 'লিংক তৈরির অপেক্ষায়' : 'Link Pending'}
+                          </span>
+                        )}
+                        <Link
+                          href={withLocale(`/sessions/${session.id}`, locale)}
+                          className="px-3 py-1.5 rounded-xl border border-border/80 hover:bg-surface text-foreground font-medium text-xs transition-colors"
+                        >
+                          {isBn ? 'বিস্তারিত' : 'Details'}
+                        </Link>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              )}
+            </div>
+          </div>
+
+          {/* Right Column (1 Col wide) */}
+          <div className="space-y-6">
+            {/* Calendar Synchronization Hub */}
+            <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-border/70">
+                <Calendar className="w-4 h-4 text-purple-400" />
+                <h3 className="font-bold text-sm text-foreground">
+                  {isBn ? 'ক্যালেন্ডার সিঙ্ক ও রুটিন' : 'Calendar Synchronization'}
+                </h3>
+              </div>
+
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {isBn
+                  ? 'আপনার Google, Apple বা Outlook ক্যালেন্ডারের সাথে ক্লাসের সময়সূচী স্বয়ংক্রিয়ভাবে যুক্ত করুন।'
+                  : 'Sync tuition class schedule with your personal Google, Apple, or Outlook calendar.'}
+              </p>
+
+              <div className="space-y-2.5">
+                {googleCalUrl && (
+                  <a
+                    href={googleCalUrl}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-surface/80 hover:bg-surface border border-border/80 text-foreground font-semibold text-xs transition-all hover:border-primary/40"
+                    data-testid="google-calendar-sync-btn"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>{isBn ? 'Google Calendar-এ যোগ করুন' : 'Add to Google Calendar'}</span>
+                  </a>
+                )}
+
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={handleDownloadIcs}
+                  disabled={downloadingIcs}
+                  className="w-full justify-center text-xs h-10 border-border/80 hover:bg-surface"
+                  data-testid="download-ics-calendar-btn"
+                >
+                  <Download className="w-3.5 h-3.5 mr-1.5 text-purple-400" />
+                  <span>
+                    {downloadingIcs
+                      ? isBn
+                        ? 'ডাউনলোড হচ্ছে...'
+                        : 'Generating iCal...'
+                      : isBn
+                        ? 'Apple / Outlook (.ics ডাউনলোড)'
+                        : 'Download iCal (.ics File)'}
+                  </span>
+                </Button>
+              </div>
+            </div>
+
+            {/* Escrow Guarantee & Trust Seal */}
+            <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-border/70">
+                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <h3 className="font-bold text-sm text-foreground">
+                  {isBn ? 'অগ্রণী এডু আর্থিক ট্রাস্ট নিশ্চয়তা' : 'OgroniEdu Escrow Protection'}
+                </h3>
+              </div>
+
+              <ul className="space-y-2.5 text-xs text-muted-foreground">
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <span>
+                    {isBn
+                      ? 'ক্লাস সন্তোষজনকভাবে সম্পন্ন না হওয়া পর্যন্ত শিক্ষকের কাছে টাকা ছাড় করা হয় না।'
+                      : 'Tutor payout is held safely in escrow until milestone approval.'}
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <span>
+                    {isBn
+                      ? '৪৮ ঘণ্টার ফ্রি টিউটর রিপ্লেসমেন্ট নিশ্চয়তা কার্যকর।'
+                      : '48-Hour Free Tutor Replacement Guarantee protected.'}
+                  </span>
+                </li>
+                <li className="flex items-start gap-2">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <span>
+                    {isBn
+                      ? '২৪/৭ জাতীয় হেল্পলাইন ১০৯৮ ও প্ল্যাটফর্ম সাপোর্ট টিম সংযুক্ত।'
+                      : 'Direct escalation to Child Safety Hotline 1098 & support.'}
+                  </span>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        {/* Safety & Replacement Modals */}
+        <SafetyReportModal
+          isOpen={safetyModalOpen}
+          onClose={() => setSafetyModalOpen(false)}
+          defaultBookingId={bookingId}
+          defaultReportedUserId={isTutor ? booking?.studentUserId : booking?.tutorUserId}
+          reportedUserName={isTutor ? studentName : tutorName}
+          locale={locale}
+        />
+
+        <TutorReplacementModal
+          isOpen={replacementModalOpen}
+          onClose={() => setReplacementModalOpen(false)}
+          bookingId={bookingId}
+          tutorName={tutorName}
+          subjectName={subjectName}
+          locale={locale}
+        />
+      </div>
     </div>
   );
 }
