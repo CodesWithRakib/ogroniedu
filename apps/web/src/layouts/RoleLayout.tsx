@@ -3,6 +3,7 @@
 import React from 'react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { RequireRole } from '@/components/auth/RequireRole';
+import { OnboardingGate } from '@/components/auth/OnboardingGate';
 import type { UserRole } from '@/store/slices/auth-slice';
 import type { Locale } from '@/lib/i18n';
 
@@ -27,15 +28,17 @@ export function RoleLayout({
 }) {
   return (
     <RequireRole locale={locale} allow={allow}>
-      <DashboardShell
-        locale={locale}
-        title={title}
-        subtitle={subtitle}
-        actions={actions}
-        role={allow[0]}
-      >
-        {children}
-      </DashboardShell>
+      <OnboardingGate locale={locale}>
+        <DashboardShell
+          locale={locale}
+          title={title}
+          subtitle={subtitle}
+          actions={actions}
+          role={allow[0]}
+        >
+          {children}
+        </DashboardShell>
+      </OnboardingGate>
     </RequireRole>
   );
 }

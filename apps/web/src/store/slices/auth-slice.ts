@@ -7,7 +7,9 @@ export type UserRole =
   | 'admin'
   | 'super_admin'
   | 'support_agent'
-  | 'compliance_reviewer';
+  | 'compliance_reviewer'
+  | 'organization_owner'
+  | 'organization_staff';
 
 export interface AuthUser {
   id: string;
@@ -22,7 +24,14 @@ export interface AuthUser {
 
 export interface AuthState {
   user: AuthUser | null;
+  /** Short-lived access token (persisted for reload resilience — see note below). */
   token: string | null;
+  /**
+   * Refresh token held **in memory only**. The web client never persists it:
+   * the API sets it as an `HttpOnly` cookie which the browser sends with
+   * `credentials: 'include'`. Persisting it in `localStorage` would hand any XSS
+   * a long-lived credential and defeat the cookie design.
+   */
   refreshToken: string | null;
   isAuthenticated: boolean;
   isLoading: boolean;
@@ -30,8 +39,9 @@ export interface AuthState {
 
 const STORAGE_KEYS = {
   token: 'ogroniedu.accessToken',
-  refreshToken: 'ogroniedu.refreshToken',
   user: 'ogroniedu.user',
+  /** Legacy key purged on boot so pre-existing sessions stop leaking the token. */
+  legacyRefreshToken: 'ogroniedu.refreshToken',
 } as const;
 
 function isBrowser(): boolean {
@@ -41,11 +51,13 @@ function isBrowser(): boolean {
 export function readPersistedAuth(): Pick<AuthState, 'user' | 'token' | 'refreshToken'> {
   if (!isBrowser()) return { user: null, token: null, refreshToken: null };
   try {
+    // Remove the legacy persisted refresh token if a previous build stored one.
+    localStorage.removeItem(STORAGE_KEYS.legacyRefreshToken);
+
     const token = localStorage.getItem(STORAGE_KEYS.token);
-    const refreshToken = localStorage.getItem(STORAGE_KEYS.refreshToken);
     const rawUser = localStorage.getItem(STORAGE_KEYS.user);
     const user = rawUser ? (JSON.parse(rawUser) as AuthUser) : null;
-    if (token && user?.id) return { user, token, refreshToken };
+    if (token && user?.id) return { user, token, refreshToken: null };
   } catch {
     // Corrupt storage must never crash boot; start logged out.
   }
@@ -58,26 +70,12 @@ function persistAuth(state: Pick<AuthState, 'user' | 'token' | 'refreshToken'>):
     if (state.token && state.user) {
       localStorage.setItem(STORAGE_KEYS.token, state.token);
       localStorage.setItem(STORAGE_KEYS.user, JSON.stringify(state.user));
-      if (state.refreshToken) {
-        localStorage.setItem(STORAGE_KEYS.refreshToken, state.refreshToken);
-      } else {
-        localStorage.removeItem(STORAGE_KEYS.refreshToken);
-      }
-      try {
-        document.cookie = `access_token=${state.token}; path=/; max-age=900; SameSite=Lax`;
-      } catch {
-        // Ignore cookie write failure in restricted environments
-      }
     } else {
       localStorage.removeItem(STORAGE_KEYS.token);
-      localStorage.removeItem(STORAGE_KEYS.refreshToken);
       localStorage.removeItem(STORAGE_KEYS.user);
-      try {
-        document.cookie = 'access_token=; path=/; max-age=0; SameSite=Lax';
-      } catch {
-        // Ignore
-      }
     }
+    // The refresh token is intentionally never written to web storage.
+    localStorage.removeItem(STORAGE_KEYS.legacyRefreshToken);
   } catch {
     // Storage quota / privacy mode: session continues in memory only.
   }
@@ -162,6 +160,8 @@ export function primaryRole(roles: UserRole[] | undefined): UserRole | null {
     'admin',
     'support_agent',
     'compliance_reviewer',
+    'organization_owner',
+    'organization_staff',
     'tutor',
     'guardian',
     'student',
@@ -187,6 +187,9 @@ export function dashboardPathForRole(role: UserRole | null | undefined): string 
     case 'support_agent':
     case 'compliance_reviewer':
       return '/admin';
+    case 'organization_owner':
+    case 'organization_staff':
+      return '/dashboard';
     default:
       return '/dashboard';
   }

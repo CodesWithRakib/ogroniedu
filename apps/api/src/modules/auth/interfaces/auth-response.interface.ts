@@ -4,6 +4,8 @@ export interface TokenPayload {
   phone?: string | null;
   roles: string[];
   preferredLocale: string;
+  /** Monotonic credential epoch (users.auth_epoch) so stale tokens can be invalidated. */
+  authEpoch?: number;
 }
 
 export interface AuthUserSummary {

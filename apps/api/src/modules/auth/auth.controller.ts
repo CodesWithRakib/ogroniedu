@@ -19,6 +19,8 @@ import {
   RequestCodeDto,
   VerifyCodeDto,
   ResetPasswordDto,
+  RequestMagicLinkDto,
+  ConsumeMagicLinkDto,
 } from './dto';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
@@ -161,6 +163,32 @@ export class AuthController {
   async requestCode(@Body() dto: RequestCodeDto, @Req() req: Request) {
     const ip = (req.headers['x-forwarded-for'] as string) || req.socket?.remoteAddress;
     return this.authService.requestCode(dto, { ip });
+  }
+
+  @Post('magic-link/request')
+  @HttpCode(HttpStatus.OK)
+  async requestMagicLink(@Body() dto: RequestMagicLinkDto, @Req() req: Request) {
+    const meta = {
+      userAgent: req.headers['user-agent'],
+      ip: (req.headers['x-forwarded-for'] as string) || req.socket?.remoteAddress,
+    };
+    return this.authService.requestMagicLink(dto, meta);
+  }
+
+  @Post('magic-link/consume')
+  @HttpCode(HttpStatus.OK)
+  async consumeMagicLink(
+    @Body() dto: ConsumeMagicLinkDto,
+    @Req() req: Request,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    const meta = {
+      userAgent: req.headers['user-agent'],
+      ip: (req.headers['x-forwarded-for'] as string) || req.socket?.remoteAddress,
+    };
+    const result = await this.authService.consumeMagicLink(dto, meta);
+    this.setAuthCookies(res, result.accessToken, result.refreshToken);
+    return result;
   }
 
   @Post('verify-code')

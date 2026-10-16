@@ -27,6 +27,14 @@ export interface AuthShellProps {
   onQuickFill?: (identifier: string, pass: string) => void;
 }
 
+/**
+ * The 1-click demo strip exposes the seeded dev password, so it is rendered in
+ * development/test builds only — never in a production bundle.
+ */
+function isDemoQuickFillAllowed(): boolean {
+  return process.env.NODE_ENV !== 'production';
+}
+
 export function AuthShell({ locale, title, subtitle, children, onQuickFill }: AuthShellProps) {
   const pathname = usePathname();
   const isBn = locale === 'bn';
@@ -219,8 +227,8 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
               <p className="text-xs sm:text-sm text-muted-foreground font-medium">{subtitle}</p>
             </div>
 
-            {/* 1-Click Demo Accounts Quick-Fill Strip for Evaluators */}
-            {onQuickFill && (
+            {/* 1-Click Demo Accounts Quick-Fill Strip (development/test builds only) */}
+            {onQuickFill && isDemoQuickFillAllowed() && (
               <div className="rounded-2xl border border-border/80 bg-surface/60 p-3 space-y-2">
                 <div className="flex items-center justify-between text-[11px] font-bold text-muted-foreground">
                   <span>

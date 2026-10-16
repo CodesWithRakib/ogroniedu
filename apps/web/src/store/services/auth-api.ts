@@ -2,7 +2,12 @@ import { baseApi, type ApiSuccessEnvelope } from '../base-api';
 import type { AuthUser } from '../slices/auth-slice';
 
 function unwrapEnvelope<T>(response: ApiSuccessEnvelope<T> | T): T {
-  if (response && typeof response === 'object' && 'data' in response && response.data !== undefined) {
+  if (
+    response &&
+    typeof response === 'object' &&
+    'data' in response &&
+    response.data !== undefined
+  ) {
     return response.data as T;
   }
   return response as T;
@@ -45,6 +50,22 @@ export interface RefreshResponse {
   accessToken: string;
   refreshToken: string;
   expiresIn: number;
+}
+
+export interface MagicLinkRequest {
+  email: string;
+  redirectPath?: string;
+  locale?: 'bn' | 'en';
+}
+
+export interface MagicLinkRequestResponse {
+  success: boolean;
+  message: string;
+  expiresInSeconds: number;
+}
+
+export interface ConsumeMagicLinkResponse extends AuthResponse {
+  redirectPath: string | null;
 }
 
 export interface MeResponse {
@@ -130,6 +151,19 @@ export const authApi = baseApi.injectEndpoints({
     >({
       query: (body) => ({ url: '/api/v1/auth/reset-password', method: 'POST', body }),
     }),
+    requestMagicLink: builder.mutation<MagicLinkRequestResponse, MagicLinkRequest>({
+      query: (body) => ({ url: '/api/v1/auth/magic-link/request', method: 'POST', body }),
+      transformResponse: (
+        response: ApiSuccessEnvelope<MagicLinkRequestResponse> | MagicLinkRequestResponse,
+      ) => unwrapEnvelope(response),
+    }),
+    consumeMagicLink: builder.mutation<ConsumeMagicLinkResponse, { token: string }>({
+      query: (body) => ({ url: '/api/v1/auth/magic-link/consume', method: 'POST', body }),
+      transformResponse: (
+        response: ApiSuccessEnvelope<ConsumeMagicLinkResponse> | ConsumeMagicLinkResponse,
+      ) => unwrapEnvelope(response),
+      invalidatesTags: [{ type: 'AuthUser', id: 'ME' }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -145,4 +179,6 @@ export const {
   useRequestCodeMutation,
   useVerifyCodeMutation,
   useResetPasswordMutation,
+  useRequestMagicLinkMutation,
+  useConsumeMagicLinkMutation,
 } = authApi;

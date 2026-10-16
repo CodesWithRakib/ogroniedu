@@ -4,6 +4,8 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { NotificationsModule } from './modules/notifications/notifications.module';
 import { HealthModule } from './modules/health/health.module';
 import { AuthModule } from './modules/auth/auth.module';
+import { AuthSecurityModule } from './modules/auth/auth-security.module';
+import { OnboardingModule } from './modules/onboarding/onboarding.module';
 import { RequestIdMiddleware } from './common/middleware/request-id.middleware';
 import { SecurityHeadersMiddleware } from './common/middleware/security-headers.middleware';
 import { StructuredLoggerService } from './common/logger/structured-logger.service';
@@ -55,7 +57,9 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
     }),
     HealthModule,
     AuditModule,
+    AuthSecurityModule,
     AuthModule,
+    OnboardingModule,
     UsersModule,
     GuardiansModule,
     FilesModule,

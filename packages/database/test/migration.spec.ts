@@ -94,6 +94,8 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       'system_settings',
       'feature_flags',
       'schema_migrations',
+      'user_onboarding',
+      'auth_magic_links',
     ];
 
     for (const table of mandatoryTables) {
@@ -381,6 +383,60 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       const viewRes = await client.query('SELECT * FROM v_operational_daily_metrics LIMIT 1;');
       expect(viewRes).toBeDefined();
       expect(Array.isArray(viewRes.rows)).toBe(true);
+    });
+
+    it('POSITIVE TEST: should verify Phase 01 auth columns and indexes from 013 exist', async () => {
+      const columnRes = await client.query<{ column_name: string }>(`
+        SELECT column_name FROM information_schema.columns
+        WHERE table_schema = 'public' AND table_name = 'users' AND column_name = 'auth_epoch';
+      `);
+      expect(columnRes.rows.map((r) => r.column_name)).toContain('auth_epoch');
+
+      const indexRes = await client.query<{ indexname: string }>(`
+        SELECT indexname FROM pg_indexes
+        WHERE indexname IN (
+          'ix_user_onboarding_user',
+          'ix_user_onboarding_incomplete',
+          'ix_auth_magic_links_active'
+        );
+      `);
+      const names = indexRes.rows.map((r) => r.indexname);
+      expect(names).toContain('ix_user_onboarding_user');
+      expect(names).toContain('ix_user_onboarding_incomplete');
+      expect(names).toContain('ix_auth_magic_links_active');
+    });
+
+    it('NEGATIVE TEST: should reject a duplicate onboarding track for the same user and role', async () => {
+      const userId = crypto.randomUUID();
+      await client.query(`
+        INSERT INTO users (id, display_name, email)
+        VALUES ('${userId}', 'Onboarding Tester', 'onboarding-${Date.now()}@example.com');
+      `);
+
+      await client.query(`
+        INSERT INTO user_onboarding (user_id, role_code) VALUES ('${userId}', 'student');
+      `);
+
+      await expect(
+        client.query(`
+          INSERT INTO user_onboarding (user_id, role_code) VALUES ('${userId}', 'student');
+        `),
+      ).rejects.toThrow(/user_onboarding_user_id_role_code_key/);
+    });
+
+    it('NEGATIVE TEST: should reject an invalid onboarding status value', async () => {
+      const userId = crypto.randomUUID();
+      await client.query(`
+        INSERT INTO users (id, display_name, email)
+        VALUES ('${userId}', 'Status Tester', 'status-${Date.now()}@example.com');
+      `);
+
+      await expect(
+        client.query(`
+          INSERT INTO user_onboarding (user_id, role_code, status)
+          VALUES ('${userId}', 'tutor', 'approved');
+        `),
+      ).rejects.toThrow(/user_onboarding_status_check/);
     });
 
     it('POSITIVE TEST: should verify security and privacy hardening indexes from 009 exist', async () => {

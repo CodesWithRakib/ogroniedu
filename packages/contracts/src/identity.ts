@@ -82,6 +82,67 @@ export const RefreshTokenSchema = z.object({
 });
 export type RefreshTokenInput = z.infer<typeof RefreshTokenSchema>;
 
+/** Passwordless single-use login link. */
+export const MagicLinkPurpose = ['login'] as const;
+
+export const RequestMagicLinkSchema = z.object({
+  email: z.string().email().max(254),
+  /** Internal destination preserved after sign-in; external URLs are rejected. */
+  redirectPath: z.string().max(256).optional(),
+  locale: z.enum(SupportedLocales).optional(),
+});
+export type RequestMagicLinkInput = z.infer<typeof RequestMagicLinkSchema>;
+
+export const ConsumeMagicLinkSchema = z.object({
+  token: z.string().min(16).max(512),
+});
+export type ConsumeMagicLinkInput = z.infer<typeof ConsumeMagicLinkSchema>;
+
+/**
+ * Role-based onboarding tracks. Steps are owned by the backend
+ * (`apps/api/src/modules/onboarding/onboarding.config.ts`); this enum is the
+ * cross-stack key list used by the web onboarding UI.
+ */
+export const OnboardingTrackStatus = [
+  'not_started',
+  'in_progress',
+  'pending_review',
+  'completed',
+] as const;
+export type OnboardingTrackStatusValue = (typeof OnboardingTrackStatus)[number];
+
+export const OnboardingStepStatusSchema = z.object({
+  key: z.string(),
+  titleEn: z.string(),
+  titleBn: z.string(),
+  required: z.boolean(),
+  submittable: z.boolean(),
+  approvalGated: z.boolean(),
+  status: z.enum(['pending', 'completed', 'pending_review']),
+});
+export type OnboardingStepStatusValue = z.infer<typeof OnboardingStepStatusSchema>;
+
+export const OnboardingStatusSchema = z.object({
+  role: z.string().nullable(),
+  roleLabelEn: z.string().nullable(),
+  roleLabelBn: z.string().nullable(),
+  status: z.enum(OnboardingTrackStatus),
+  isComplete: z.boolean(),
+  requiresApproval: z.boolean(),
+  completedSteps: z.array(z.string()),
+  pendingSteps: z.array(z.string()),
+  steps: z.array(OnboardingStepStatusSchema),
+  nextStep: z.string().nullable(),
+  verificationStatus: z.string().nullable(),
+  updatedAt: z.string().nullable(),
+});
+export type OnboardingStatusValue = z.infer<typeof OnboardingStatusSchema>;
+
+export const CompleteOnboardingStepSchema = z.object({
+  payload: z.record(z.string(), z.unknown()).optional(),
+});
+export type CompleteOnboardingStepInput = z.infer<typeof CompleteOnboardingStepSchema>;
+
 export const UpdateProfileSchema = z.object({
   displayName: z.string().min(2).max(100).optional(),
   preferredLocale: z.enum(SupportedLocales).optional(),

@@ -22,6 +22,11 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
     isBn,
     handleQuickFill,
     handleSubmit,
+    magicEmail,
+    setMagicEmail,
+    magicNotice,
+    isRequestingMagicLink,
+    handleMagicLinkRequest,
   } = useLoginForm(locale);
 
   const t = dict.auth;
@@ -98,7 +103,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
               {t.passwordLabel}
             </label>
             <Link
-              href={withLocale('/contact', locale)}
+              href={withLocale('/forgot-password', locale)}
               className="text-[11px] font-semibold text-primary hover:underline"
             >
               {isBn ? 'পাসওয়ার্ড ভুলে গেছেন?' : 'Forgot password?'}
@@ -147,7 +152,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
           )}
         </button>
 
-        {/* Social Login Divider */}
+        {/* Passwordless sign-in (single-use email link) */}
         <div className="relative my-4 flex items-center justify-center">
           <div className="absolute inset-0 flex items-center">
             <span className="w-full border-t border-border" />
@@ -157,34 +162,47 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
           </span>
         </div>
 
-        {/* Social Login Button (Google) */}
-        <button
-          type="button"
-          onClick={() => {
-            handleQuickFill('student.demo@ogroniedu.com', 'OgroniDev#2026');
-          }}
-          className="w-full h-11 rounded-full border border-border bg-surface hover:bg-surface-hover text-foreground font-semibold text-xs transition-all flex items-center justify-center gap-2.5 shadow-2xs"
-        >
-          <svg className="h-4 w-4" viewBox="0 0 24 24">
-            <path
-              fill="#EA4335"
-              d="M12 5c1.6 0 3 .6 4.1 1.6l3.1-3.1C17.3 1.7 14.8 1 12 1 7.5 1 3.7 3.6 1.9 7.3l3.7 2.9C6.5 7.4 9 5 12 5z"
+        <div className="space-y-2">
+          <label htmlFor="login-magic-email" className="text-xs font-bold text-foreground">
+            {isBn ? 'ইমেইলে সাইন-ইন লিংক পাঠান' : 'Email me a sign-in link'}
+          </label>
+          <div className="flex gap-2">
+            <input
+              id="login-magic-email"
+              type="email"
+              value={magicEmail}
+              onChange={(e) => setMagicEmail(e.target.value)}
+              placeholder="you@mail.com"
+              autoComplete="email"
+              className="h-11 flex-1 rounded-2xl border border-border bg-surface px-3 text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/25"
+              data-testid="login-magic-email-input"
             />
-            <path
-              fill="#4285F4"
-              d="M23.5 12.3c0-.8-.1-1.6-.2-2.3H12v4.5h6.5c-.3 1.5-1.1 2.8-2.4 3.7l3.7 2.9c2.2-2 3.7-5 3.7-8.8z"
-            />
-            <path
-              fill="#FBBC05"
-              d="M5.6 14.8c-.2-.7-.4-1.5-.4-2.8s.2-2.1.4-2.8L1.9 6.3C.7 8.7 0 10.3 0 12s.7 3.3 1.9 5.7l3.7-2.9z"
-            />
-            <path
-              fill="#34A853"
-              d="M12 23c3.2 0 6-1.1 8-3l-3.7-2.9c-1.1.7-2.5 1.2-4.3 1.2-3 0-5.5-2.4-6.4-5.2L1.9 16C3.7 19.7 7.5 23 12 23z"
-            />
-          </svg>
-          <span>{isBn ? 'Google অ্যাকাউন্ট দিয়ে প্রবেশ' : 'Sign in with Google'}</span>
-        </button>
+            <button
+              type="button"
+              onClick={handleMagicLinkRequest}
+              disabled={isRequestingMagicLink}
+              className="h-11 shrink-0 rounded-full border border-border bg-surface px-4 text-xs font-bold text-foreground hover:bg-surface-hover disabled:opacity-60"
+              data-testid="login-magic-submit-btn"
+            >
+              {isRequestingMagicLink
+                ? isBn
+                  ? 'পাঠানো হচ্ছে...'
+                  : 'Sending...'
+                : isBn
+                  ? 'লিংক পাঠান'
+                  : 'Send link'}
+            </button>
+          </div>
+          {magicNotice && (
+            <p
+              role="status"
+              className="text-[11px] text-emerald-600 dark:text-emerald-400"
+              data-testid="login-magic-notice"
+            >
+              {magicNotice}
+            </p>
+          )}
+        </div>
 
         {/* Switch to Register */}
         <p className="text-center text-xs text-muted-foreground pt-2">

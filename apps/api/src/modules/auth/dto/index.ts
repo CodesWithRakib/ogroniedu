@@ -4,3 +4,4 @@ export * from './refresh-token.dto';
 export * from './request-code.dto';
 export * from './verify-code.dto';
 export * from './reset-password.dto';
+export * from './magic-link.dto';

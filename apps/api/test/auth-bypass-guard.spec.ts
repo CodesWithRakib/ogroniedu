@@ -22,10 +22,19 @@ describe('Auth bypass hardening (test/development only)', () => {
     expect(isTestAuthBypassEnabled({ NODE_ENV: 'test' })).toBe(true);
     expect(isTestAuthBypassEnabled({ NODE_ENV: 'development' })).toBe(true);
     expect(isTestAuthBypassEnabled({ NODE_ENV: 'production' })).toBe(false);
+    expect(isTestAuthBypassEnabled({})).toBe(false);
+  });
+
+  it('SEC-1: ALLOW_TEST_AUTH_BYPASS cannot re-enable impersonation in production', () => {
+    // A mis-set opt-in flag in a deployed environment must never turn the
+    // x-user-id / mock-token escape hatches back on.
     expect(
       isTestAuthBypassEnabled({ NODE_ENV: 'production', ALLOW_TEST_AUTH_BYPASS: 'true' }),
-    ).toBe(true);
-    expect(isTestAuthBypassEnabled({})).toBe(false);
+    ).toBe(false);
+    // The opt-in remains available for isolated non-production harnesses.
+    expect(isTestAuthBypassEnabled({ NODE_ENV: 'staging', ALLOW_TEST_AUTH_BYPASS: 'true' })).toBe(
+      true,
+    );
   });
 
   it('rejects an x-user-id impersonation header in production', () => {
