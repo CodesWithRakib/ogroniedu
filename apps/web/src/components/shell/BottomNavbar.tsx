@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, GraduationCap, PlusCircle, Bell, User, LayoutDashboard } from 'lucide-react';
@@ -17,18 +17,26 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
   const pathname = usePathname();
   const { user, isAuthenticated } = useAppSelector((s) => s.auth);
   const { unreadCount } = useNotifications();
+  const [mounted, setMounted] = useState(false);
   const isBn = locale === 'bn';
+
+  // Auth state is restored from localStorage when the auth slice module loads,
+  // so the first client render can already be signed in while the server
+  // rendered the signed-out variant. Read auth state only after mount to keep
+  // hydration stable (same pattern as Navbar).
+  React.useEffect(() => {
+    setMounted(true);
+  }, []);
+  const authedUser = mounted && isAuthenticated ? user : null;
 
   // Do not render bottom navbar on admin routes or if on full-screen editor
   if (pathname?.includes('/admin')) {
     return null;
   }
 
-  const dashboardHref = user
-    ? dashboardPathForRoles(user.roles, locale)
-    : withLocale('/dashboard', locale);
-
-  const accountHref = isAuthenticated && user ? dashboardHref : withLocale('/login', locale);
+  const accountHref = authedUser
+    ? dashboardPathForRoles(authedUser.roles, locale)
+    : withLocale('/login', locale);
 
   function isActive(href: string, exact: boolean = false) {
     if (!pathname) return false;
@@ -40,7 +48,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
   const isTutorsActive = isActive(`/${locale}/tutors`);
   const isRequestsActive = isActive(`/${locale}/requests`);
   const isNotificationsActive = isActive(`/${locale}/notifications`);
-  const isAccountActive = isAuthenticated
+  const isAccountActive = authedUser
     ? pathname.includes('/dashboard') || pathname.includes('/profile')
     : pathname.includes('/login') || pathname.includes('/register');
 
@@ -135,7 +143,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           }`}
         >
           <div className="relative">
-            {isAuthenticated && user ? (
+            {authedUser ? (
               <LayoutDashboard className="h-5 w-5 stroke-[2.2]" />
             ) : (
               <User className="h-5 w-5 stroke-[2.2]" />
@@ -145,13 +153,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
             )}
           </div>
           <span className="text-[10px] tracking-tight mt-1 truncate max-w-[54px]">
-            {isAuthenticated && user
-              ? isBn
-                ? 'ড্যাশবোর্ড'
-                : 'Dashboard'
-              : isBn
-                ? 'প্রোফাইল'
-                : 'Account'}
+            {authedUser ? (isBn ? 'ড্যাশবোর্ড' : 'Dashboard') : isBn ? 'প্রোফাইল' : 'Account'}
           </span>
         </Link>
       </div>
