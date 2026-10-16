@@ -48,12 +48,12 @@ Phase 12 successfully delivered the notification preferences, asynchronous outbo
 
 ## 2. Requirement Traceability Matrix (Phase 12 Scope)
 
-| Requirement ID | Requirement Name | Implementation Files | Test Suite | Verification Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-008** | **Centralized Real-Time Notifications & Communication** | `apps/api/src/modules/notifications/notification.service.ts`<br>`apps/api/src/modules/notifications/outbox-worker.service.ts`<br>`apps/api/src/modules/notifications/booking-messages.service.ts`<br>`apps/api/src/modules/notifications/notification.controller.ts`<br>`apps/api/src/modules/notifications/booking-messages.controller.ts`<br>`apps/web/src/components/notifications/NotificationPreferencesView.tsx`<br>`apps/web/src/components/notifications/BookingChatView.tsx` | `notification.service.spec.ts`<br>`notification.authorization.spec.ts`<br>`notification.socket.spec.ts`<br>`notification-preferences.spec.ts`<br>`outbox-worker.spec.ts`<br>`booking-messages.spec.ts`<br>`booking-messages.controller.spec.ts`<br>`communication.spec.ts`<br>`migration.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-001** | **No Cross-User Data Access (ABAC Scoping)** | `booking-messages.service.ts` (Participant scoping check: `studentUserId`, `requesterUserId`, `tutorUserId`) | `booking-messages.spec.ts`<br>`booking-messages.controller.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-002** | **Concurrency & Idempotency** | `OutboxWorkerService` exponential retry & transactional processing | `outbox-worker.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-004** | **Bilingual Bengali & English** | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json` | `i18n.spec.ts`<br>`communication.spec.ts` | **COMPLETED & VERIFIED (100% Key Parity)** |
+| Requirement ID | Requirement Name                                        | Implementation Files                                                                                                                                                                                                                                                                                                                                                                                                                                                                  | Test Suite                                                                                                                                                                                                                                                                                        | Verification Status                        |
+| :------------- | :------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :----------------------------------------- |
+| **FR-008**     | **Centralized Real-Time Notifications & Communication** | `apps/api/src/modules/notifications/notification.service.ts`<br>`apps/api/src/modules/notifications/outbox-worker.service.ts`<br>`apps/api/src/modules/notifications/booking-messages.service.ts`<br>`apps/api/src/modules/notifications/notification.controller.ts`<br>`apps/api/src/modules/notifications/booking-messages.controller.ts`<br>`apps/web/src/components/notifications/NotificationPreferencesView.tsx`<br>`apps/web/src/components/notifications/BookingChatView.tsx` | `notification.service.spec.ts`<br>`notification.authorization.spec.ts`<br>`notification.socket.spec.ts`<br>`notification-preferences.spec.ts`<br>`outbox-worker.spec.ts`<br>`booking-messages.spec.ts`<br>`booking-messages.controller.spec.ts`<br>`communication.spec.ts`<br>`migration.spec.ts` | **COMPLETED & VERIFIED**                   |
+| **NFR-001**    | **No Cross-User Data Access (ABAC Scoping)**            | `booking-messages.service.ts` (Participant scoping check: `studentUserId`, `requesterUserId`, `tutorUserId`)                                                                                                                                                                                                                                                                                                                                                                          | `booking-messages.spec.ts`<br>`booking-messages.controller.spec.ts`                                                                                                                                                                                                                               | **COMPLETED & VERIFIED**                   |
+| **NFR-002**    | **Concurrency & Idempotency**                           | `OutboxWorkerService` exponential retry & transactional processing                                                                                                                                                                                                                                                                                                                                                                                                                    | `outbox-worker.spec.ts`                                                                                                                                                                                                                                                                           | **COMPLETED & VERIFIED**                   |
+| **NFR-004**    | **Bilingual Bengali & English**                         | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json`                                                                                                                                                                                                                                                                                                                                                                                                                            | `i18n.spec.ts`<br>`communication.spec.ts`                                                                                                                                                                                                                                                         | **COMPLETED & VERIFIED (100% Key Parity)** |
 
 ---
 
@@ -122,6 +122,7 @@ CREATE TABLE IF NOT EXISTS booking_messages (
 ```
 
 Unit test assertion from [`apps/api/test/outbox-worker.spec.ts`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/test/outbox-worker.spec.ts):
+
 - Upstream network errors and credential secrets are redacted from error logs.
 - Event status advances to `retrying` with exponential backoff timestamp.
 - Verified that committed transaction state is unaffected by notification delivery errors.
@@ -141,13 +142,13 @@ To preserve child welfare, protect escrow guarantees, and prevent disintermediat
 
 ## 6. Monorepo Test Results Summary
 
-| Package | Test Files Passed | Tests Passed | Failures | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| `@ogroniedu/database` | 2 | 11 | 0 | **PASSED** |
-| `@ogroniedu/contracts` | Built clean | Built clean | 0 | **PASSED** |
-| `@ogroniedu/api` | 30 | 250 | 0 | **PASSED** |
-| `@ogroniedu/web` | 11 | 44 | 0 | **PASSED** |
-| **Total Monorepo Suite** | **43** | **305** | **0** | **100% GREEN** |
+| Package                  | Test Files Passed | Tests Passed | Failures | Status         |
+| :----------------------- | :---------------- | :----------- | :------- | :------------- |
+| `@ogroniedu/database`    | 2                 | 11           | 0        | **PASSED**     |
+| `@ogroniedu/contracts`   | Built clean       | Built clean  | 0        | **PASSED**     |
+| `@ogroniedu/api`         | 30                | 250          | 0        | **PASSED**     |
+| `@ogroniedu/web`         | 11                | 44           | 0        | **PASSED**     |
+| **Total Monorepo Suite** | **43**            | **305**      | **0**    | **100% GREEN** |
 
 ---
 

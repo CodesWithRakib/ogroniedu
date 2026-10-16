@@ -14,7 +14,6 @@ vi.mock('next/navigation', () => ({
 
 import { UserNavDropdown } from '../src/features/dashboard/components/UserNavDropdown';
 import { DashboardSidebar } from '../src/features/dashboard/components/DashboardSidebar';
-import { DashboardTopbar } from '../src/features/dashboard/components/DashboardTopbar';
 import { DashboardShell } from '../src/features/dashboard/components/DashboardShell';
 import { navForRole } from '../src/lib/navigation';
 import { Provider } from 'react-redux';
@@ -120,19 +119,18 @@ describe('Role Dashboard Architecture & Layout Tests', () => {
       const html = renderToStaticMarkup(
         React.createElement(DashboardSidebar, {
           items: [
-            { href: '/dashboard/tutor', labelBn: 'ওভারভিউ', labelEn: 'Overview', icon: DummyIcon, testId: 'nav-overview' },
+            {
+              href: '/dashboard/tutor',
+              labelBn: 'ওভারভিউ',
+              labelEn: 'Overview',
+              icon: DummyIcon,
+              testId: 'nav-overview',
+            },
           ],
           locale: 'bn',
           isBn: true,
           pathname: '/bn/dashboard/tutor',
           roleKey: 'tutor',
-          rolePreset: {
-            badgeBn: 'শিক্ষক',
-            badgeEn: 'Tutor',
-            badgeClasses: '',
-            portalTitleBn: 'টিচার পোর্টাল',
-            portalTitleEn: 'Tutor Portal',
-          },
           authUser: mockUser,
           userInitials: 'TA',
         }),

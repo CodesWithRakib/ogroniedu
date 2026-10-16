@@ -62,34 +62,35 @@ Phase 15 successfully implemented the comprehensive Operational Analytics & Repo
 
 ## 2. Requirement Traceability Matrix (Phase 15 Scope)
 
-| Requirement ID | Requirement Name | Implementation Files | Test Suite | Verification Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-013** | **Operational Analytics & Source-of-Truth Reporting** | `apps/api/src/modules/analytics/analytics.service.ts`<br>`apps/api/src/modules/analytics/analytics.controller.ts`<br>`apps/api/src/modules/analytics/analytics.module.ts`<br>`packages/database/src/migrations/008_analytics_and_reporting.sql`<br>`apps/web/src/components/analytics/AnalyticsDashboardView.tsx`<br>`apps/web/src/app/[locale]/analytics/page.tsx` | `analytics.service.spec.ts`<br>`analytics.controller.spec.ts`<br>`analytics.spec.ts` (web)<br>`migration.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-001** | **No Cross-User Data Access (Server RBAC & ABAC Scope)** | `apps/api/src/common/guards/roles.guard.ts`<br>`analytics.controller.ts`<br>`analytics.service.ts` | `analytics.controller.spec.ts`<br>`analytics.service.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-004** | **Bilingual Bengali & English Localization** | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json`<br>`AnalyticsDashboardView.tsx` | `analytics.spec.ts` (web)<br>`i18n.spec.ts` (web) | **COMPLETED & VERIFIED (34/34 Key Parity)** |
+| Requirement ID | Requirement Name                                         | Implementation Files                                                                                                                                                                                                                                                                                                                                                | Test Suite                                                                                                        | Verification Status                         |
+| :------------- | :------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------- | :------------------------------------------ |
+| **FR-013**     | **Operational Analytics & Source-of-Truth Reporting**    | `apps/api/src/modules/analytics/analytics.service.ts`<br>`apps/api/src/modules/analytics/analytics.controller.ts`<br>`apps/api/src/modules/analytics/analytics.module.ts`<br>`packages/database/src/migrations/008_analytics_and_reporting.sql`<br>`apps/web/src/components/analytics/AnalyticsDashboardView.tsx`<br>`apps/web/src/app/[locale]/analytics/page.tsx` | `analytics.service.spec.ts`<br>`analytics.controller.spec.ts`<br>`analytics.spec.ts` (web)<br>`migration.spec.ts` | **COMPLETED & VERIFIED**                    |
+| **NFR-001**    | **No Cross-User Data Access (Server RBAC & ABAC Scope)** | `apps/api/src/common/guards/roles.guard.ts`<br>`analytics.controller.ts`<br>`analytics.service.ts`                                                                                                                                                                                                                                                                  | `analytics.controller.spec.ts`<br>`analytics.service.spec.ts`                                                     | **COMPLETED & VERIFIED**                    |
+| **NFR-004**    | **Bilingual Bengali & English Localization**             | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json`<br>`AnalyticsDashboardView.tsx`                                                                                                                                                                                                                                                                          | `analytics.spec.ts` (web)<br>`i18n.spec.ts` (web)                                                                 | **COMPLETED & VERIFIED (34/34 Key Parity)** |
 
 ---
 
 ## 3. Mathematical Metric Definitions & Invariant Verification
 
-| Metric Category | Canonical Formula | Source Anchor | Invariant & Defense |
-| :--- | :--- | :--- | :--- |
-| **Booking Conversion Rate** | $\text{Rate} = \left(\frac{N_{\text{confirmed}}}{N_{\text{total\_requests}}}\right) \times 100$ | `bookings.created_at` | Defensive zero denominator check; requests in window only count once. |
-| **Session Completion Rate** | $\text{Rate} = \left(\frac{N_{\text{completed}}}{N_{\text{total\_sessions}}}\right) \times 100$ | `booking_sessions.starts_at` | Session level granularity; unaffected by multi-session bookings. |
-| **Session Cancellation Rate** | $\text{Rate} = \left(\frac{N_{\text{cancelled}}}{N_{\text{total\_sessions}}}\right) \times 100$ | `booking_sessions.starts_at` | Only counts sessions cancelled after confirmation. |
-| **Session No-Show Rate** | $\text{Rate} = \left(\frac{N_{\text{no\_show}}}{N_{\text{total\_sessions}}}\right) \times 100$ | `booking_sessions.starts_at` | Validated by attendance logs. |
-| **Gross Merchandise Value (GMV)** | $\sum \text{amount\_poisha}$ where $\text{status} = \text{'succeeded'}$ | `payment_orders.created_at` | Zero double counting; failed or pending orders excluded. |
-| **Platform Commission Revenue** | $\text{GMV} \times 0.08$ | Source GMV | Strictly 8% platform fee; reconciles with double-entry revenue account `4010_PLATFORM_FEE_REVENUE`. |
-| **Refund Volume & Rate** | $\sum \text{amount\_poisha}$ where $\text{status} = \text{'succeeded'}$ | `payment_refunds.created_at` | $\text{Net} = \text{GMV} - \text{Refunds}$. Refund rate strictly $\le 100\%$. |
-| **Replacement Guarantee Rate** | $\left(\frac{N_{\text{cases}}}{N_{\text{confirmed\_bookings}}}\right) \times 100$ | `tutor_replacement_cases.created_at` | Tracks satisfaction failures needing replacement under the guarantee. |
-| **Learner Cohort Retention Rate** | $\left(\frac{N_{\text{learners with } \ge 2 \text{ bookings}}}{N_{\text{total unique learners}}}\right) \times 100$ | `bookings.student_user_id` | Distinct grouping per learner; multi-session bookings do not artificially inflate cohort. |
-| **Tutor Personal Earnings** | $\sum (\text{hourly\_rate} \times \text{hours}) \times 0.92$ | `booking_sessions.starts_at` | ABAC isolated; 92% net tutor payout after 8% platform fee. |
+| Metric Category                   | Canonical Formula                                                                                                   | Source Anchor                        | Invariant & Defense                                                                                 |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------ | :----------------------------------- | :-------------------------------------------------------------------------------------------------- |
+| **Booking Conversion Rate**       | $\text{Rate} = \left(\frac{N_{\text{confirmed}}}{N_{\text{total\_requests}}}\right) \times 100$                     | `bookings.created_at`                | Defensive zero denominator check; requests in window only count once.                               |
+| **Session Completion Rate**       | $\text{Rate} = \left(\frac{N_{\text{completed}}}{N_{\text{total\_sessions}}}\right) \times 100$                     | `booking_sessions.starts_at`         | Session level granularity; unaffected by multi-session bookings.                                    |
+| **Session Cancellation Rate**     | $\text{Rate} = \left(\frac{N_{\text{cancelled}}}{N_{\text{total\_sessions}}}\right) \times 100$                     | `booking_sessions.starts_at`         | Only counts sessions cancelled after confirmation.                                                  |
+| **Session No-Show Rate**          | $\text{Rate} = \left(\frac{N_{\text{no\_show}}}{N_{\text{total\_sessions}}}\right) \times 100$                      | `booking_sessions.starts_at`         | Validated by attendance logs.                                                                       |
+| **Gross Merchandise Value (GMV)** | $\sum \text{amount\_poisha}$ where $\text{status} = \text{'succeeded'}$                                             | `payment_orders.created_at`          | Zero double counting; failed or pending orders excluded.                                            |
+| **Platform Commission Revenue**   | $\text{GMV} \times 0.08$                                                                                            | Source GMV                           | Strictly 8% platform fee; reconciles with double-entry revenue account `4010_PLATFORM_FEE_REVENUE`. |
+| **Refund Volume & Rate**          | $\sum \text{amount\_poisha}$ where $\text{status} = \text{'succeeded'}$                                             | `payment_refunds.created_at`         | $\text{Net} = \text{GMV} - \text{Refunds}$. Refund rate strictly $\le 100\%$.                       |
+| **Replacement Guarantee Rate**    | $\left(\frac{N_{\text{cases}}}{N_{\text{confirmed\_bookings}}}\right) \times 100$                                   | `tutor_replacement_cases.created_at` | Tracks satisfaction failures needing replacement under the guarantee.                               |
+| **Learner Cohort Retention Rate** | $\left(\frac{N_{\text{learners with } \ge 2 \text{ bookings}}}{N_{\text{total unique learners}}}\right) \times 100$ | `bookings.student_user_id`           | Distinct grouping per learner; multi-session bookings do not artificially inflate cohort.           |
+| **Tutor Personal Earnings**       | $\sum (\text{hourly\_rate} \times \text{hours}) \times 0.92$                                                        | `booking_sessions.starts_at`         | ABAC isolated; 92% net tutor payout after 8% platform fee.                                          |
 
 ---
 
 ## 4. Test Verification Suite Details
 
 ### 4.1 Backend Service Tests (`apps/api/test/analytics.service.spec.ts`)
+
 - **Query Time Bounds:** Correctly computes and validates ISO date range boundaries.
 - **Temporal Inversion:** Rejects `startDate > endDate` with `BadRequestException`.
 - **Operational Overview:** Correctly aggregates booking conversion, session completion, GMV, platform revenue, and trust metrics.
@@ -101,6 +102,7 @@ Phase 15 successfully implemented the comprehensive Operational Analytics & Repo
 - **Anti-Double-Counting:** Validates that multiple sessions under a single booking are aggregated on session tables without duplicating booking totals.
 
 ### 4.2 Backend Authorization & Controller Tests (`apps/api/test/analytics.controller.spec.ts`)
+
 - **Admin Access Granted:** Allows `admin` and `super_admin` to access operational overview, financials, tutor metrics, and retention.
 - **Student Forbidden:** Rejects student access to `/api/v1/analytics/overview` with `403 ForbiddenException`.
 - **Guardian Forbidden:** Rejects guardian access to `/api/v1/analytics/financials` with `403 ForbiddenException`.
@@ -110,11 +112,13 @@ Phase 15 successfully implemented the comprehensive Operational Analytics & Repo
 - **Temporal Validation in Controller:** Rejects inverted date ranges at controller level with `BadRequestException`.
 
 ### 4.3 Database Migration Tests (`packages/database/test/migration.spec.ts`)
+
 - **Migration 008 Execution:** Applies `008_analytics_and_reporting.sql` successfully and records state in `schema_migrations`.
 - **Compound Temporal Indexes:** Verifies indexes on `bookings`, `booking_sessions`, `payment_orders`, `payment_refunds`, `tutor_replacement_cases`, and `safety_reports`.
 - **Analytical View:** Verifies creation and querying of `v_operational_daily_metrics`.
 
 ### 4.4 Frontend Component & Dictionary Tests (`apps/web/test/analytics.spec.ts`)
+
 - **Component Instantiation:** Instantiates `AnalyticsDashboardView` with custom operational props and default props without errors.
 - **Bilingual Parity:** Verifies 100% key parity for the 34 keys in the `"analytics"` namespace between English and Bengali dictionaries.
 - **Mathematical Invariant Assertions:** Confirms formula definitions and roundings (conversion rate, session completion rate, net volume, platform commission, retention rate).
@@ -137,11 +141,11 @@ Phase 15 successfully implemented the comprehensive Operational Analytics & Repo
 ## 6. Risks, Limitations & Future Mitigations
 
 1. **High Data Growth & Aggregation Latency:**
-   - *Current State:* Direct SQL aggregations with compound temporal B-tree indexes provide sub-second query responses for current dataset sizes.
-   - *Mitigation for Scale:* In future high-volume phases, daily rollup materialization tables can be populated via nightly scheduled batch workers to further accelerate multi-year trend queries.
+   - _Current State:_ Direct SQL aggregations with compound temporal B-tree indexes provide sub-second query responses for current dataset sizes.
+   - _Mitigation for Scale:_ In future high-volume phases, daily rollup materialization tables can be populated via nightly scheduled batch workers to further accelerate multi-year trend queries.
 2. **Multi-Currency Considerations:**
-   - *Current State:* All monetary calculations are performed in Bangladesh Poisha (BDT integer cents) preventing floating-point precision loss.
-   - *Mitigation for Scale:* Cross-currency conversions (e.g. international diaspora guardians paying in USD) should be normalized to BDT at the time of gateway transaction settlement.
+   - _Current State:_ All monetary calculations are performed in Bangladesh Poisha (BDT integer cents) preventing floating-point precision loss.
+   - _Mitigation for Scale:_ Cross-currency conversions (e.g. international diaspora guardians paying in USD) should be normalized to BDT at the time of gateway transaction settlement.
 
 ---
 

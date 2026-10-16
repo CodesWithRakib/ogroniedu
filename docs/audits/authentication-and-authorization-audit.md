@@ -25,17 +25,18 @@ Phase 05 has successfully engineered, verified, and audited the complete authent
 
 ## 2. Requirement Traceability Matrix (Phase 05 Scope)
 
-| Requirement ID | Requirement Name | Implementation Files | Test Suite | Verification Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-003** | Multi-Factor Auth & Sessions | `apps/api/src/modules/auth/` | `auth.service.spec.ts`, `auth.controller.spec.ts` | **COMPLETED & VERIFIED** (Password hashing, token rotation, replay attack invalidation, OTP lifecycle) |
-| **FR-004** | Guardian-Child Linkage & ABAC | `apps/api/src/common/guards/guardian-student.guard.ts` | `auth.authorization.spec.ts` | **COMPLETED & VERIFIED** (Server-side DB lookup in `guardian_student_links`) |
-| **NFR-001** | No Cross-User Data Access | `apps/api/src/common/guards/` (`AuthGuard`, `RolesGuard`, `GuardianStudentGuard`) | `auth.authorization.spec.ts`, `notification.authorization.spec.ts` | **COMPLETED & VERIFIED** (Zero trust server-side guards prevent IDOR and cross-tenant leakage) |
+| Requirement ID | Requirement Name              | Implementation Files                                                              | Test Suite                                                         | Verification Status                                                                                    |
+| :------------- | :---------------------------- | :-------------------------------------------------------------------------------- | :----------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------- |
+| **FR-003**     | Multi-Factor Auth & Sessions  | `apps/api/src/modules/auth/`                                                      | `auth.service.spec.ts`, `auth.controller.spec.ts`                  | **COMPLETED & VERIFIED** (Password hashing, token rotation, replay attack invalidation, OTP lifecycle) |
+| **FR-004**     | Guardian-Child Linkage & ABAC | `apps/api/src/common/guards/guardian-student.guard.ts`                            | `auth.authorization.spec.ts`                                       | **COMPLETED & VERIFIED** (Server-side DB lookup in `guardian_student_links`)                           |
+| **NFR-001**    | No Cross-User Data Access     | `apps/api/src/common/guards/` (`AuthGuard`, `RolesGuard`, `GuardianStudentGuard`) | `auth.authorization.spec.ts`, `notification.authorization.spec.ts` | **COMPLETED & VERIFIED** (Zero trust server-side guards prevent IDOR and cross-tenant leakage)         |
 
 ---
 
 ## 3. Database Schema Changes
 
 ### Migration `002_auth_verification_codes.sql`
+
 - **Table:** `auth_verification_codes`
 - **Columns:**
   - `id` (UUIDv7 primary key)
@@ -58,6 +59,7 @@ Schema documentation in `docs/database/schema.sql` was synchronized.
 ## 4. Architecture & Security Mechanisms
 
 ### 4.1 Token Lifecycle & Replay Detection
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -86,13 +88,15 @@ sequenceDiagram
 ```
 
 ### 4.2 Attribute-Based Access Control (ABAC)
+
 `GuardianStudentGuard` intercepts requests targeting student routes:
+
 1. Resolves `req.user.id` from validated JWT token.
 2. Resolves target `:studentId` from route parameters or query parameters.
 3. If user is accessing their own data (`userId === targetId`), permission is granted.
 4. If user is a guardian, executes parametrized SQL lookup:
    ```sql
-   SELECT 1 FROM guardian_student_links 
+   SELECT 1 FROM guardian_student_links
    WHERE guardian_user_id = $1 AND student_user_id = $2 AND status = 'active'
    LIMIT 1;
    ```
@@ -103,6 +107,7 @@ sequenceDiagram
 ## 5. Verification Test Evidence
 
 ### 5.1 `@ogroniedu/api` Test Suite (60/60 Tests Passed)
+
 ```bash
 $ pnpm --filter @ogroniedu/api test
 
@@ -161,12 +166,14 @@ $ pnpm --filter @ogroniedu/api test
 ```
 
 ### 5.2 Full Monorepo Test Summary
+
 - `@ogroniedu/database`: 8 tests passed (migration, idempotency, GiST exclusion, seed repetition)
 - `@ogroniedu/api`: 60 tests passed (auth, authorization, notifications, health, filters)
 - `@ogroniedu/web`: 20 tests passed (i18n, store, notifications bell, shell components)
 - **Total Monorepo Tests: 88 passed, 0 failed, 0 skipped**
 
 ### 5.3 Build & Documentation Checks
+
 - `pnpm build`: Executed cleanly across all 5 packages with Turborepo and `tsc`.
 - `pnpm format:check`: Verified 100% compliant with Prettier formatting rules.
 - `pnpm docs:validate`: Verified all 115 Markdown, Mermaid, and SQL documentation files.
@@ -175,14 +182,14 @@ $ pnpm --filter @ogroniedu/api test
 
 ## 6. Definition of Done Checklist
 
-| Criterion | Status | Evidence |
-| :--- | :--- | :--- |
+| Criterion                         | Status        | Evidence                                                                                                                    |
+| :-------------------------------- | :------------ | :-------------------------------------------------------------------------------------------------------------------------- |
 | Zero reliance on UI-only security | **CONFIRMED** | All auth, role, and guardian ownership checks enforced in NestJS guards (`AuthGuard`, `RolesGuard`, `GuardianStudentGuard`) |
-| Strict TypeScript (`zero any`) | **CONFIRMED** | `pnpm build` passed under strict TypeScript compiler settings |
-| Multi-device session revocation | **CONFIRMED** | `/revoke-all` route and automated blanket revocation on replay attack verified |
-| Password strength and hashing | **CONFIRMED** | Bcrypt cost 12; regex validation requiring upper, lower, and numbers |
-| Rate limiting and anti-abuse | **CONFIRMED** | Sliding-window limiter on login and OTP generation returns 429 |
-| Zero test regressions | **CONFIRMED** | All 61 prior tests intact; test count expanded to 88 |
+| Strict TypeScript (`zero any`)    | **CONFIRMED** | `pnpm build` passed under strict TypeScript compiler settings                                                               |
+| Multi-device session revocation   | **CONFIRMED** | `/revoke-all` route and automated blanket revocation on replay attack verified                                              |
+| Password strength and hashing     | **CONFIRMED** | Bcrypt cost 12; regex validation requiring upper, lower, and numbers                                                        |
+| Rate limiting and anti-abuse      | **CONFIRMED** | Sliding-window limiter on login and OTP generation returns 429                                                              |
+| Zero test regressions             | **CONFIRMED** | All 61 prior tests intact; test count expanded to 88                                                                        |
 
 ---
 

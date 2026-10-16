@@ -57,7 +57,7 @@ prettier checks. No reliance on changelogs or prior agent reports.
    extracted** (§3.3); full service splits are backlog P1 (behavior-preserving, need per-domain tests).
 6. **Mixed co-location (types + logic in one file).**
    `env.validation.ts` (enum+class+fn), `auth.service.ts` (2 interfaces), `users/analytics/learning/
-   public/audit/outbox/files/support` (interfaces/constants inline), `api-error.ts`/`api-response.ts`/
+public/audit/outbox/files/support` (interfaces/constants inline), `api-error.ts`/`api-response.ts`/
    `pagination.ts` (types+builders), `current-user.decorator.ts` (`AuthenticatedUser`),
    `structured-logger.service.ts`. **Extracted the highest-value 6** (§3.3); remainder is backlog P2.
 7. **Web: duplicated types/formatters.**
@@ -71,8 +71,8 @@ prettier checks. No reliance on changelogs or prior agent reports.
 8. **Web: `as never` error casts (20+ sites) + `as unknown as Record` narrowings.**
    Root cause: `normalizeApiError` typed as `FetchBaseQueryError | SerializedError | undefined`
    while catch variables are `unknown`. **Fixed at boundary**: new `normalizeUnknownError(unknown)`
-   + canonical-envelope-aware `messageFromData`; migrated `use-sessions-calendar.ts` (2 sites) as
-   pattern. Remaining 18+ sites are backlog P2 (mechanical migration).
+   - canonical-envelope-aware `messageFromData`; migrated `use-sessions-calendar.ts` (2 sites) as
+     pattern. Remaining 18+ sites are backlog P2 (mechanical migration).
 9. **Web: 563-line `DashboardShell` (nav map + presets + shell).**
    **Fixed**: nav/presets extracted to `lib/navigation.ts`; shell keeps compat re-exports (§3.6).
    Remaining shell (~450 lines post-extract) still mixes topbar/sidebar/drawer/bottom-bar — P2 split
@@ -129,7 +129,7 @@ prettier checks. No reliance on changelogs or prior agent reports.
 - New `config/environment.enum.ts` (re-exported from `env.validation.ts` for compat).
 - New `modules/files/constants/file-validation.constants.ts` (service re-exports for compat).
 - New `modules/auth/interfaces/auth-response.interface.ts` (`TokenPayload/AuthUserSummary/
-  AuthResponse/AuthMeta`; service re-exports types).
+AuthResponse/AuthMeta`; service re-exports types).
 - New `modules/support/constants/support-ticket-limits.constants.ts` (service re-exports cap).
 
 ### 3.4 Web envelope/type dedup (MED #7)
@@ -145,7 +145,7 @@ prettier checks. No reliance on changelogs or prior agent reports.
 ### 3.5 Central formatters (MED #7)
 
 - New `apps/web/src/lib/format.ts`: `formatDate/formatDateTime/formatLocalizedNumber/
-  formatBDTMinor` (null/NaN-safe, locale-aware). Adoption beyond tests is backlog P2.
+formatBDTMinor` (null/NaN-safe, locale-aware). Adoption beyond tests is backlog P2.
 
 ### 3.6 Navigation extraction (MED #9)
 
@@ -163,19 +163,20 @@ prettier checks. No reliance on changelogs or prior agent reports.
 
 ## 4. Verification results (actual)
 
-| Check | Command | Result |
-|---|---|---|
-| API typecheck | `pnpm --filter @ogroniedu/api exec tsc --noEmit -p tsconfig.json` | PASS (after fixing 1 test-typed regression during phase) |
-| Web typecheck | `pnpm --filter @ogroniedu/web exec tsc --noEmit -p tsconfig.json` | PASS (2 errors found+fixed: missing `Search` icon import, `toQueryString` index-signature) |
-| API tests | `pnpm --filter @ogroniedu/api exec vitest run` | **47 files / 414 tests PASS** |
-| Web tests | `pnpm --filter @ogroniedu/web exec vitest run` | **23 files / 109 tests PASS** |
-| API build | `pnpm --filter @ogroniedu/api build` (`tsc -p tsconfig.build.json`) | PASS |
-| Web build | `pnpm --filter @ogroniedu/web build` (`next build`) | PASS — 26 routes |
-| Prettier | `prettier --check/--write` on 17 touched files | PASS after write (2 reformatted) |
-| Lint | — | N/A — no eslint config/script in repo (gap, backlog P3) |
-| E2E | `playwright test` | NOT RUN — needs live staging + seeded creds (environmental blocker) |
+| Check         | Command                                                             | Result                                                                                     |
+| ------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| API typecheck | `pnpm --filter @ogroniedu/api exec tsc --noEmit -p tsconfig.json`   | PASS (after fixing 1 test-typed regression during phase)                                   |
+| Web typecheck | `pnpm --filter @ogroniedu/web exec tsc --noEmit -p tsconfig.json`   | PASS (2 errors found+fixed: missing `Search` icon import, `toQueryString` index-signature) |
+| API tests     | `pnpm --filter @ogroniedu/api exec vitest run`                      | **47 files / 414 tests PASS**                                                              |
+| Web tests     | `pnpm --filter @ogroniedu/web exec vitest run`                      | **23 files / 109 tests PASS**                                                              |
+| API build     | `pnpm --filter @ogroniedu/api build` (`tsc -p tsconfig.build.json`) | PASS                                                                                       |
+| Web build     | `pnpm --filter @ogroniedu/web build` (`next build`)                 | PASS — 26 routes                                                                           |
+| Prettier      | `prettier --check/--write` on 17 touched files                      | PASS after write (2 reformatted)                                                           |
+| Lint          | —                                                                   | N/A — no eslint config/script in repo (gap, backlog P3)                                    |
+| E2E           | `playwright test`                                                   | NOT RUN — needs live staging + seeded creds (environmental blocker)                        |
 
 Regressions caught by verification (proves the loop works):
+
 1. `test/sessions.controller.spec.ts` failed typecheck after controller fix (asserted old
    `data.status`/`assessment` shape) → test updated to canonical shape.
 2. Web typecheck caught `Search` icon removal overreach + `SearchTutorsParams` vs
@@ -184,7 +185,7 @@ Regressions caught by verification (proves the loop works):
 ## 5. Role & feature integrity
 
 - Layouts/routes/nav per role (`student/guardian/tutor/admin/super_admin/support_agent/
-  compliance_reviewer`) verified in centralized `lib/navigation.ts` + `RoleLayout`/`RequireAuth`/
+compliance_reviewer`) verified in centralized `lib/navigation.ts` + `RoleLayout`/`RequireAuth`/
   `RequireRole` wrappers; dashboards (`student/guardian/tutor/admin/analytics` pages) consume real
   RTK Query hooks (no mock datasets found).
 - No feature disconnected by this phase: changed surfaces are `cancelSession` (hook updated with
@@ -205,6 +206,7 @@ Executed the backlog in dependency order. All changes behavior-preserving except
 documented consistency fixes (role bypass alignment, bn-digit grouping on analytics figures).
 
 **Fixed:**
+
 - P1-1: `fromOffsetLimit()` + adopted in 4 controllers; `pageSize` alias on tutor search +
   notifications with shared precedence resolvers; web `pageSize`/`meta` types.
 - P1-2 slice: `packages/contracts/src/pagination.ts` (offset/cursor/messages/search zod
@@ -247,6 +249,7 @@ explicitly-deferred slices. All changes behavior-preserving except two documente
 normalizations (analytics bn-digit grouping, dashboard date ordering via `lib/format`).
 
 **Fixed:**
+
 - P2-6: new `GuardianAccessService` (+`guardian-access.spec.ts`, 3 tests) adopted in 9
   services; orphaned link-entity registrations removed from learning/notifications/payments
   modules; shared `isMinor` age gate in users + guardians.
@@ -285,6 +288,7 @@ Closed all remaining code items. E2E now runs green against a local stack
 "environmental blocker" is lifted for local runs.
 
 **Fixed:**
+
 - Contracts: all DTO shapes incl. secondary (refresh-token, recurring-sessions with
   nested slots, settle-milestone, admin-cancel-booking, verify/revoke-link,
   request/verify-code, reset-password, delete-account, moderate-review, tutor-reply,
@@ -292,7 +296,7 @@ Closed all remaining code items. E2E now runs green against a local stack
   exactly matches backend `IsDateString` date-only acceptance (caught by parity test).
 - Splits: users → StudentProfile + UserLifecycle facades; guardians →
   GuardianProvisioning (+ policy const); analytics → AnalyticsTutorService (ledger-free)
-  + `analytics-sql.util.ts`; notifications → NotificationPreferencesService.
+  - `analytics-sql.util.ts`; notifications → NotificationPreferencesService.
 - **DI correctness (caught by live boot, not unit tests):** tsx/esbuild does not emit
   decorator metadata, so all cross-module injections now carry explicit `@Inject(...)`
   — the codebase convention. Unit tests + tsc passed without it; the running container

@@ -90,12 +90,7 @@ export function DashboardTopbar({
         <NotificationBell locale={locale} />
 
         {/* User Dropdown with Profile & Sign Out */}
-        <UserNavDropdown
-          authUser={authUser}
-          locale={locale}
-          role={role}
-          onLogout={onLogout}
-        />
+        <UserNavDropdown authUser={authUser} locale={locale} role={role} onLogout={onLogout} />
       </div>
     </header>
   );

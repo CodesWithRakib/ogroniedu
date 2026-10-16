@@ -107,7 +107,7 @@ Work done this session, all executed:
   diag 1), re-run green. Unit: API 413/413, web 102/102. Web typecheck + production
   build pass.
 - Remaining: live provider settlement (BLOCKED: no credentials — sandbox verified),
-  external email/SMS (future), files upload *browse* for other roles (tutor flow done).
+  external email/SMS (future), files upload _browse_ for other roles (tutor flow done).
 
 ## 1. Initial audit findings (Stage A)
 
@@ -122,20 +122,20 @@ See `docs/audits/end-to-end-product-completion-audit.md`. Summary:
 
 ## 2. Confirmed API↔frontend gaps (all closed except noted)
 
-| Gap | Fix | Evidence |
-|---|---|---|
-| Auth forms/session/role routing | `auth-api.ts`, persisted `auth-slice`, `AuthBootstrap` (RTK `getSessionUser`), `RequireAuth/RequireRole`, `LoginForm/RegisterForm`, `/login`, `/register`, `/dashboard` router, `/dashboard/student|guardian|tutor`, `DashboardShell` + mobile bottom nav, real-user Navbar + logout | web typecheck/build/test pass; live register/login/me |
-| 12 missing RTK Query domains | `tutors, bookings, sessions, learning, payments, guardians, trust, admin, analytics, taxonomy, users, booking-messages` APIs; `normalizeApiError`, idempotency keys | endpoint-definition spec in `store.spec.ts` |
-| Discovery + booking request | `tutors/page.tsx` container: server search/filters/pagination, taxonomy levels, real student options, real `createBookingRequest` | live search total=1, request created `d73157c6` |
-| Requests inbox | `requests/page.tsx` withdraw + accept/decline | live accept → `accepted`, visible to both parties |
-| Sessions | `sessions/page.tsx` real schedule/reschedule/cancel | live schedule/attendance/reschedule; overlap rejected |
-| Learning | `learning/page.tsx` booking-scoped records, create/submit/grade/report | live attendance/assignment/submit/grade/report/records/summary |
-| Payments | `payments/page.tsx` real order (idempotency) → sandbox webhook → server receipt; refunds with bounds-checked contract | live order `2201df8a`, receipt `succeeded 800.00`, refund `dcaf6e92`, ledger 80000=80000, idempotent replay same id |
-| Guardians | guardian dashboard wired link-request/verify/revoke + child switcher; `GuardianChildrenManager` mock fallback removed | live link→approve→active→scoped list |
-| Tutor verification | tutor dashboard wired profile/submit/publication; nested `{profile,user}` envelope handled | live profile update/subject/availability/submit/approve/publish |
-| Trust | review/reply/safety/replacement contracts aligned to backend DTOs; raw `fetch('/api/...')` removed from all 4 trust components; demo chat messages removed | live review/reply/safety/replacement; self-review 403 |
-| Admin + analytics | `admin/page.tsx`, `analytics/page.tsx` containers on real endpoints; hardcoded defaults emptied; action errors surfaced | typecheck/build pass (live admin ops need admin creds; mutations share tested service paths) |
-| Notifications | Bearer socket + Bearer REST, reconnect resync from history, id dedupe, test-dispatch UI removed from homepage | live notifications + unread + mark-read |
+| Gap                             | Fix                                                                                                                                                                                                 | Evidence                                                                                                            |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Auth forms/session/role routing | `auth-api.ts`, persisted `auth-slice`, `AuthBootstrap` (RTK `getSessionUser`), `RequireAuth/RequireRole`, `LoginForm/RegisterForm`, `/login`, `/register`, `/dashboard` router, `/dashboard/student | guardian                                                                                                            | tutor`, `DashboardShell` + mobile bottom nav, real-user Navbar + logout | web typecheck/build/test pass; live register/login/me |
+| 12 missing RTK Query domains    | `tutors, bookings, sessions, learning, payments, guardians, trust, admin, analytics, taxonomy, users, booking-messages` APIs; `normalizeApiError`, idempotency keys                                 | endpoint-definition spec in `store.spec.ts`                                                                         |
+| Discovery + booking request     | `tutors/page.tsx` container: server search/filters/pagination, taxonomy levels, real student options, real `createBookingRequest`                                                                   | live search total=1, request created `d73157c6`                                                                     |
+| Requests inbox                  | `requests/page.tsx` withdraw + accept/decline                                                                                                                                                       | live accept → `accepted`, visible to both parties                                                                   |
+| Sessions                        | `sessions/page.tsx` real schedule/reschedule/cancel                                                                                                                                                 | live schedule/attendance/reschedule; overlap rejected                                                               |
+| Learning                        | `learning/page.tsx` booking-scoped records, create/submit/grade/report                                                                                                                              | live attendance/assignment/submit/grade/report/records/summary                                                      |
+| Payments                        | `payments/page.tsx` real order (idempotency) → sandbox webhook → server receipt; refunds with bounds-checked contract                                                                               | live order `2201df8a`, receipt `succeeded 800.00`, refund `dcaf6e92`, ledger 80000=80000, idempotent replay same id |
+| Guardians                       | guardian dashboard wired link-request/verify/revoke + child switcher; `GuardianChildrenManager` mock fallback removed                                                                               | live link→approve→active→scoped list                                                                                |
+| Tutor verification              | tutor dashboard wired profile/submit/publication; nested `{profile,user}` envelope handled                                                                                                          | live profile update/subject/availability/submit/approve/publish                                                     |
+| Trust                           | review/reply/safety/replacement contracts aligned to backend DTOs; raw `fetch('/api/...')` removed from all 4 trust components; demo chat messages removed                                          | live review/reply/safety/replacement; self-review 403                                                               |
+| Admin + analytics               | `admin/page.tsx`, `analytics/page.tsx` containers on real endpoints; hardcoded defaults emptied; action errors surfaced                                                                             | typecheck/build pass (live admin ops need admin creds; mutations share tested service paths)                        |
+| Notifications                   | Bearer socket + Bearer REST, reconnect resync from history, id dedupe, test-dispatch UI removed from homepage                                                                                       | live notifications + unread + mark-read                                                                             |
 
 Contract mismatches fixed (frontend was sending wrong shapes): respond `{decision}→{action}`, messages `{body}→{content}`, refund `{orderId}→{paymentOrderId,amountMinor}`, review/reply/moderate shapes, `useLazyGetSessionUserQuery` export.
 

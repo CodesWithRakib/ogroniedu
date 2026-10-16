@@ -6,15 +6,15 @@ magic — when in doubt, follow the existing feature modules below.
 
 ## Layers
 
-| Directory | Owns | Must never |
-|---|---|---|
-| `app/` | Thin route composers only: locale resolve → guard → feature page inside `<main id="main-content">`. No data fetching, no business logic. | Fetch data, duplicate a route URL (route groups share URLs; flat segments must stay unique). |
-| `features/<domain>/` | One business domain: `pages/` (composition), `components/` (presentational), `hooks/` (state + data boundaries), `types/`, `utils/`, `index.ts` barrel. | Import from another feature except via its barrel; keep fake/demo data. |
-| `components/` | Cross-domain shared UI: `ui/` primitives, `shared/` (tables, filters, states), `shell` (navbar/footer), `auth`, `dashboard`, plus legacy domain views still mounted by features pages/tests. | Add new domain views here — they belong in `features/`. |
-| `layouts/` | Role shells (`TutorLayout`, …) used by feature pages. | Fetch data (receive everything via props). |
-| `store/services/` | One RTK Query module per backend module, typed envelopes, tag invalidation. Single data-fetching system. | Raw `fetch()` to the API in components/pages (use the hooks). |
-| `lib/` | Pure helpers (`i18n`, `api-error`, `api/*` parsers, `auth` routing, theme). | Import store or components (no cycles). |
-| `hooks/` | Cross-domain client hooks. | Domain logic (belongs in the feature). |
+| Directory            | Owns                                                                                                                                                                                         | Must never                                                                                   |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `app/`               | Thin route composers only: locale resolve → guard → feature page inside `<main id="main-content">`. No data fetching, no business logic.                                                     | Fetch data, duplicate a route URL (route groups share URLs; flat segments must stay unique). |
+| `features/<domain>/` | One business domain: `pages/` (composition), `components/` (presentational), `hooks/` (state + data boundaries), `types/`, `utils/`, `index.ts` barrel.                                      | Import from another feature except via its barrel; keep fake/demo data.                      |
+| `components/`        | Cross-domain shared UI: `ui/` primitives, `shared/` (tables, filters, states), `shell` (navbar/footer), `auth`, `dashboard`, plus legacy domain views still mounted by features pages/tests. | Add new domain views here — they belong in `features/`.                                      |
+| `layouts/`           | Role shells (`TutorLayout`, …) used by feature pages.                                                                                                                                        | Fetch data (receive everything via props).                                                   |
+| `store/services/`    | One RTK Query module per backend module, typed envelopes, tag invalidation. Single data-fetching system.                                                                                     | Raw `fetch()` to the API in components/pages (use the hooks).                                |
+| `lib/`               | Pure helpers (`i18n`, `api-error`, `api/*` parsers, `auth` routing, theme).                                                                                                                  | Import store or components (no cycles).                                                      |
+| `hooks/`             | Cross-domain client hooks.                                                                                                                                                                   | Domain logic (belongs in the feature).                                                       |
 
 ## Data rules (non-negotiable)
 
@@ -42,8 +42,8 @@ magic — when in doubt, follow the existing feature modules below.
 
 - One `<main id="main-content">` per page; skip link in the root layout.
 - Every icon-only control has an `aria-label`; dialogs use `role="dialog"`
-  + `aria-modal`; form inputs have `<label>`s; focus-visible ring and
-  `prefers-reduced-motion` handling live in `globals.css`.
+  - `aria-modal`; form inputs have `<label>`s; focus-visible ring and
+    `prefers-reduced-motion` handling live in `globals.css`.
 - Responsive matrix (`e2e/responsive.matrix.spec.ts`): 360 / 390 / 768 / 1280 /
   1440 must render with zero horizontal overflow. Decorative fixed-width
   layers must be viewport-capped (`max-w-[100vw]`) or clipped.

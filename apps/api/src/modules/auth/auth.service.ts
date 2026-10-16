@@ -468,7 +468,9 @@ export class AuthService {
     const contact = dto.contact.trim();
     const codeHash = hashToken(dto.code.trim());
     const isEmail = contact.includes('@');
-    const candidates = isEmail ? [contact.toLowerCase(), contact] : getPhoneSearchCandidates(contact);
+    const candidates = isEmail
+      ? [contact.toLowerCase(), contact]
+      : getPhoneSearchCandidates(contact);
 
     const records = await this.dataSource.query(
       `SELECT id, user_id, code_hash, attempts, expires_at
@@ -527,7 +529,9 @@ export class AuthService {
     const contact = dto.contact.trim();
     const codeHash = hashToken(dto.code.trim());
     const isEmail = contact.includes('@');
-    const candidates = isEmail ? [contact.toLowerCase(), contact] : getPhoneSearchCandidates(contact);
+    const candidates = isEmail
+      ? [contact.toLowerCase(), contact]
+      : getPhoneSearchCandidates(contact);
 
     const records = await this.dataSource.query(
       `SELECT id, user_id

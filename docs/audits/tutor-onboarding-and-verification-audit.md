@@ -4,7 +4,7 @@
 **Auditor:** Principal Security Architect & Lead Backend Engineer (AI Pair Programmer)  
 **Project:** OgroniEdu — Enterprise Tutoring and Educational Management Platform (Bangladesh)  
 **Repository Working Directory:** `c:\Sofof_tech_2026\ogroniedu`  
-**Phase Objective:** Implement tutor profile, qualifications, private evidence upload integration, and administrative verification workflow with strict self-approval denial and dynamic badge computation.  
+**Phase Objective:** Implement tutor profile, qualifications, private evidence upload integration, and administrative verification workflow with strict self-approval denial and dynamic badge computation.
 
 ---
 
@@ -31,7 +31,7 @@ Phase 07 successfully implemented the complete tutor onboarding, credential revi
      - At least one recurring weekly availability slot is configured in `tutor_availability`
    - If an approved tutor is suspended or rejected, the system automatically transitions `publication_status` to `unpublished`.
 5. **Dynamic Verification Badges (Definition of Done):**
-   - *Requirement:* Badge reflects only checks actually performed.
+   - _Requirement:_ Badge reflects only checks actually performed.
    - Public profile endpoint (`GET /api/v1/tutors/public/:id`) dynamically calculates badges based on verified evidence:
      - `verified_identity`: Earned ONLY if NID/Passport evidence has been reviewed and approved.
      - `verified_academic`: Earned ONLY if academic degree/certificate evidence has been reviewed and approved.
@@ -48,18 +48,19 @@ Phase 07 successfully implemented the complete tutor onboarding, credential revi
 
 ## 2. Requirement Traceability Matrix (Phase 07 Scope)
 
-| Requirement ID | Requirement Name | Implementation Files | Test Suite | Verification Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-005** | Tutor Credential Verification | `apps/api/src/modules/tutors/`, `apps/api/src/modules/files/`, `docs/policies/` | `tutors.service.spec.ts`, `files.service.spec.ts`, `tutors.controller.spec.ts` | **COMPLETED & VERIFIED** (Self-approval denial, private evidence uploads, admin review flow, audit logging) |
-| **FR-002** | Tutor Profile Badge & Details | `apps/api/src/modules/tutors/`, `apps/web/src/components/tutor/` | `tutors.service.spec.ts`, `tutor-verification.spec.ts` | **COMPLETED & VERIFIED** (Dynamic badges reflecting only performed checks, publication eligibility gate, public sanitization) |
-| **NFR-001** | Data Isolation & Document Privacy | `apps/api/src/modules/files/files.service.ts` | `files.service.spec.ts` | **COMPLETED & VERIFIED** (Private evidence files inaccessible to unrelated users) |
-| **NFR-004** | Bilingual English & Bengali Parity | `apps/web/messages/en.json`, `apps/web/messages/bn.json` | `i18n.spec.ts`, `tutor-verification.spec.ts` | **COMPLETED & VERIFIED** (100% key parity, zero missing translations) |
+| Requirement ID | Requirement Name                   | Implementation Files                                                            | Test Suite                                                                     | Verification Status                                                                                                           |
+| :------------- | :--------------------------------- | :------------------------------------------------------------------------------ | :----------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------- |
+| **FR-005**     | Tutor Credential Verification      | `apps/api/src/modules/tutors/`, `apps/api/src/modules/files/`, `docs/policies/` | `tutors.service.spec.ts`, `files.service.spec.ts`, `tutors.controller.spec.ts` | **COMPLETED & VERIFIED** (Self-approval denial, private evidence uploads, admin review flow, audit logging)                   |
+| **FR-002**     | Tutor Profile Badge & Details      | `apps/api/src/modules/tutors/`, `apps/web/src/components/tutor/`                | `tutors.service.spec.ts`, `tutor-verification.spec.ts`                         | **COMPLETED & VERIFIED** (Dynamic badges reflecting only performed checks, publication eligibility gate, public sanitization) |
+| **NFR-001**    | Data Isolation & Document Privacy  | `apps/api/src/modules/files/files.service.ts`                                   | `files.service.spec.ts`                                                        | **COMPLETED & VERIFIED** (Private evidence files inaccessible to unrelated users)                                             |
+| **NFR-004**    | Bilingual English & Bengali Parity | `apps/web/messages/en.json`, `apps/web/messages/bn.json`                        | `i18n.spec.ts`, `tutor-verification.spec.ts`                                   | **COMPLETED & VERIFIED** (100% key parity, zero missing translations)                                                         |
 
 ---
 
 ## 3. Architecture & Security Invariants
 
 ### 3.1 Verification Review State Machine
+
 ```mermaid
 stateDiagram-v2
     [*] --> NotSubmitted: Tutor Profile Created
@@ -74,6 +75,7 @@ stateDiagram-v2
 ```
 
 ### 3.2 Security Guard & Self-Approval Denial Flow
+
 ```mermaid
 sequenceDiagram
     actor Tutor as Authenticated Tutor (User A)

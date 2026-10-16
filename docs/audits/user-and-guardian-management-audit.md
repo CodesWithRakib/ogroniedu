@@ -41,20 +41,21 @@ Phase 06 successfully established the entire student, guardian, and consent mana
 
 ## 2. Requirement Traceability Matrix (Phase 06 Scope)
 
-| Requirement ID | Requirement Name | Implementation Files | Test Suite | Verification Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-004** | Guardian-Child Linkage & ABAC | `apps/api/src/modules/guardians/` | `guardians.service.spec.ts`, `guardians.controller.spec.ts` | **COMPLETED & VERIFIED** (Link request, approval, revocation, and guardian-scoped isolation) |
-| **FR-012** | Guardian-Child Consent & Audit | `apps/api/src/modules/audit/`, `docs/policies/` | `guardians.service.spec.ts` | **COMPLETED & VERIFIED** (Consent version `v1.0-bd-minor-consent` and audit logging) |
-| **FR-014** | Account Export & Retention Policy | `apps/api/src/modules/users/users.service.ts` | `users.service.spec.ts` | **COMPLETED & VERIFIED** (Complete JSON data export and `deletion_pending` transition) |
-| **FR-020** | Multi-Child Guardian Management | `apps/api/src/modules/guardians/`, `apps/web/src/components/guardian/` | `guardians.service.spec.ts`, `guardian-children.spec.ts` | **COMPLETED & VERIFIED** (Multi-child listing, profile card rendering, bilingual UI) |
-| **FR-021** | Scoped Guardian Child Records | `apps/api/src/common/guards/guardian-student.guard.ts` | `guardians.service.spec.ts`, `auth.authorization.spec.ts` | **COMPLETED & VERIFIED** (Negative test: Unlinked child access blocked with 403 Forbidden) |
-| **FR-022** | Independent Learner Age Policy | `apps/api/src/modules/users/users.service.ts` | `users.service.spec.ts` | **COMPLETED & VERIFIED** (Minor status calculated from DOB; 18+ classified as independent) |
+| Requirement ID | Requirement Name                  | Implementation Files                                                   | Test Suite                                                  | Verification Status                                                                          |
+| :------------- | :-------------------------------- | :--------------------------------------------------------------------- | :---------------------------------------------------------- | :------------------------------------------------------------------------------------------- |
+| **FR-004**     | Guardian-Child Linkage & ABAC     | `apps/api/src/modules/guardians/`                                      | `guardians.service.spec.ts`, `guardians.controller.spec.ts` | **COMPLETED & VERIFIED** (Link request, approval, revocation, and guardian-scoped isolation) |
+| **FR-012**     | Guardian-Child Consent & Audit    | `apps/api/src/modules/audit/`, `docs/policies/`                        | `guardians.service.spec.ts`                                 | **COMPLETED & VERIFIED** (Consent version `v1.0-bd-minor-consent` and audit logging)         |
+| **FR-014**     | Account Export & Retention Policy | `apps/api/src/modules/users/users.service.ts`                          | `users.service.spec.ts`                                     | **COMPLETED & VERIFIED** (Complete JSON data export and `deletion_pending` transition)       |
+| **FR-020**     | Multi-Child Guardian Management   | `apps/api/src/modules/guardians/`, `apps/web/src/components/guardian/` | `guardians.service.spec.ts`, `guardian-children.spec.ts`    | **COMPLETED & VERIFIED** (Multi-child listing, profile card rendering, bilingual UI)         |
+| **FR-021**     | Scoped Guardian Child Records     | `apps/api/src/common/guards/guardian-student.guard.ts`                 | `guardians.service.spec.ts`, `auth.authorization.spec.ts`   | **COMPLETED & VERIFIED** (Negative test: Unlinked child access blocked with 403 Forbidden)   |
+| **FR-022**     | Independent Learner Age Policy    | `apps/api/src/modules/users/users.service.ts`                          | `users.service.spec.ts`                                     | **COMPLETED & VERIFIED** (Minor status calculated from DOB; 18+ classified as independent)   |
 
 ---
 
 ## 3. Architecture & Security Mechanisms
 
 ### 3.1 Guardian-Child Lifecycle State Machine
+
 ```mermaid
 stateDiagram-v2
     [*] --> Pending: Guardian Link Request (Consent v1.0-bd-minor-consent)
@@ -68,6 +69,7 @@ stateDiagram-v2
 ```
 
 ### 3.2 ABAC Guardian Verification Flow
+
 ```mermaid
 sequenceDiagram
     autonumber
@@ -93,6 +95,7 @@ sequenceDiagram
 ## 4. Verification Test Evidence
 
 ### 4.1 `@ogroniedu/api` Test Suite (83/83 Tests Passed)
+
 ```bash
 $ pnpm --filter @ogroniedu/api test
 
@@ -144,6 +147,7 @@ $ pnpm --filter @ogroniedu/api test
 ```
 
 ### 4.2 `@ogroniedu/web` Test Suite (23/23 Tests Passed)
+
 ```bash
 $ pnpm --filter @ogroniedu/web test
 
@@ -165,6 +169,7 @@ $ pnpm --filter @ogroniedu/web test
 ```
 
 ### 4.3 Full Monorepo Summary (114/114 Tests Passed)
+
 - `@ogroniedu/database`: 8 tests passed
 - `@ogroniedu/api`: 83 tests passed
 - `@ogroniedu/web`: 23 tests passed
@@ -174,11 +179,11 @@ $ pnpm --filter @ogroniedu/web test
 
 ## 5. Definition of Done Checklist
 
-| Acceptance Criterion | Status | Evidence |
-| :--- | :--- | :--- |
+| Acceptance Criterion                       | Status        | Evidence                                                                                                                                                         |
+| :----------------------------------------- | :------------ | :--------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | All guardian access is relationship-scoped | **CONFIRMED** | `GuardianStudentGuard` and `GuardiansService.getChildDetails` strictly query `guardian_student_links` for active status; non-linked calls return `403 Forbidden` |
-| Policy-dependent consent | **CONFIRMED** | `v1.0-bd-minor-consent` strictly required for all minor link and registration requests |
-| Minimal Child PII | **CONFIRMED** | Child phone/email shielded from unlinked parties; only educational profile exposed |
-| Data Export & Account Deletion | **CONFIRMED** | `exportUserData` exports full history; `deleteAccount` sets `deletion_pending` and revokes all sessions |
-| Bilingual key parity | **CONFIRMED** | `messages/en.json` and `messages/bn.json` verified with zero missing keys in `i18n.spec.ts` |
-| Zero test regressions | **CONFIRMED** | All 88 pre-existing tests preserved; total test count expanded to 114 |
+| Policy-dependent consent                   | **CONFIRMED** | `v1.0-bd-minor-consent` strictly required for all minor link and registration requests                                                                           |
+| Minimal Child PII                          | **CONFIRMED** | Child phone/email shielded from unlinked parties; only educational profile exposed                                                                               |
+| Data Export & Account Deletion             | **CONFIRMED** | `exportUserData` exports full history; `deleteAccount` sets `deletion_pending` and revokes all sessions                                                          |
+| Bilingual key parity                       | **CONFIRMED** | `messages/en.json` and `messages/bn.json` verified with zero missing keys in `i18n.spec.ts`                                                                      |
+| Zero test regressions                      | **CONFIRMED** | All 88 pre-existing tests preserved; total test count expanded to 114                                                                                            |

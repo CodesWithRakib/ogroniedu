@@ -7,7 +7,7 @@ import { withLocale } from '@/lib/auth';
 import { primaryRole, logout, type UserRole } from '@/store/slices/auth-slice';
 import { useLogoutMutation } from '@/store/services/auth-api';
 import type { Locale } from '@/lib/i18n';
-import { navForRole, ROLE_PRESETS, type NavItem, type RoleConfig } from '@/lib/navigation';
+import { navForRole, ROLE_PRESETS } from '@/lib/navigation';
 import { DashboardSidebar } from './DashboardSidebar';
 import { DashboardTopbar } from './DashboardTopbar';
 import { DashboardMobileNav } from '@/components/dashboard/DashboardMobileNav';
@@ -90,9 +90,7 @@ export function DashboardShell({
                 </h1>
               )}
               {subtitle && (
-                <p className="text-xs sm:text-sm text-teal-300/90 font-medium mt-1">
-                  {subtitle}
-                </p>
+                <p className="text-xs sm:text-sm text-teal-300/90 font-medium mt-1">{subtitle}</p>
               )}
             </div>
             {actions && <div className="flex items-center gap-2">{actions}</div>}
@@ -116,7 +114,6 @@ export function DashboardShell({
           isBn={isBn}
           pathname={pathname}
           roleKey={roleKey}
-          rolePreset={rolePreset}
           authUser={authUser}
           userInitials={userInitials}
         />

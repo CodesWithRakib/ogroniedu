@@ -3,7 +3,12 @@
 ## 1. Success — single resource
 
 ```json
-{ "success": true, "data": { "id": "uuid" }, "message": "Optional human message.", "meta": { "requestId": "req-..." } }
+{
+  "success": true,
+  "data": { "id": "uuid" },
+  "message": "Optional human message.",
+  "meta": { "requestId": "req-..." }
+}
 ```
 
 `message` is optional and never parsed programmatically. `data` may be `null` for void mutations (prefer returning the mutated resource when cheap).
@@ -12,10 +17,19 @@
 
 ```json
 {
-  "success": true, "data": [],
+  "success": true,
+  "data": [],
   "meta": {
     "requestId": "req-...",
-    "pagination": { "strategy": "offset", "page": 1, "pageSize": 20, "totalItems": 145, "totalPages": 8, "hasNextPage": true, "hasPreviousPage": false }
+    "pagination": {
+      "strategy": "offset",
+      "page": 1,
+      "pageSize": 20,
+      "totalItems": 145,
+      "totalPages": 8,
+      "hasNextPage": true,
+      "hasPreviousPage": false
+    }
   }
 }
 ```
@@ -28,10 +42,17 @@ Migration: legacy top-level `total`, `page`, `limit`, `totalPages` are still sen
 
 ```json
 {
-  "success": true, "data": [],
+  "success": true,
+  "data": [],
   "meta": {
     "requestId": "req-...",
-    "pagination": { "strategy": "cursor", "nextCursor": "opaque-or-null", "previousCursor": null, "hasNextPage": true, "pageSize": 20 }
+    "pagination": {
+      "strategy": "cursor",
+      "nextCursor": "opaque-or-null",
+      "previousCursor": null,
+      "hasNextPage": true,
+      "pageSize": 20
+    }
   }
 }
 ```
@@ -43,7 +64,13 @@ Query params: `cursor` (opaque, base64url of `[lastCreatedAt, lastId]`), `pageSi
 ```json
 {
   "success": false,
-  "error": { "code": "VALIDATION_ERROR", "message": "The request contains invalid fields.", "details": [{ "field": "email", "code": "INVALID_FORMAT", "message": "Enter a valid email address." }] },
+  "error": {
+    "code": "VALIDATION_ERROR",
+    "message": "The request contains invalid fields.",
+    "details": [
+      { "field": "email", "code": "INVALID_FORMAT", "message": "Enter a valid email address." }
+    ]
+  },
   "meta": { "requestId": "req-..." }
 }
 ```
@@ -72,6 +99,7 @@ exactly once at the HTTP layer (never double-wraps; skips error envelopes, which
 `AllExceptionsFilter` stamps instead).
 
 Consequences:
+
 - Web types keep `meta?` optional (`contract.ts`): service-level unit payloads and
   optimistic shapes legitimately lack `meta`. `meta` being present is an HTTP-layer
   guarantee, not a type-level one.

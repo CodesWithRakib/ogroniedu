@@ -20,12 +20,12 @@ It applies to all engineers, operations personnel, compliance reviewers, and exe
 
 ## 2. Severity Classification Matrix
 
-| Level | Name | Description | SLA Response | Escalation Path |
-| :--- | :--- | :--- | :--- | :--- |
-| **SEV-1** | **Critical Breach / Active Exploitation** | Active database compromise, unauthorized administrative privilege escalation, leakage of plain NIDs or child records, payment gateway key leakage, or ransomware. | **< 15 minutes** | VP Engineering, CTO, Legal Counsel, CEO |
-| **SEV-2** | **High Risk Defect / Potential Exposure** | Broken Object-Level Authorization (BOLA) allowing cross-user reads, bypassed minor consent controls, webhook signature validation failure, or persistent denial of service. | **< 1 hour** | Lead Security Engineer, Engineering Manager, Compliance Lead |
-| **SEV-3** | **Medium Risk Vulnerability** | Flaws in rate limiting, non-sensitive PII leaks in debug logs, dependency CVEs without known active exploitation, or minor CORS misconfigurations. | **< 8 hours** | Security Engineer, On-Call Backend Engineer |
-| **SEV-4** | **Low / Informational** | Informational security scanner findings, minor documentation discrepancies, or benign credential stuffing blocked by existing rate limiters. | **< 24 hours** | Development Team backlog triage |
+| Level     | Name                                      | Description                                                                                                                                                                 | SLA Response     | Escalation Path                                              |
+| :-------- | :---------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :--------------- | :----------------------------------------------------------- |
+| **SEV-1** | **Critical Breach / Active Exploitation** | Active database compromise, unauthorized administrative privilege escalation, leakage of plain NIDs or child records, payment gateway key leakage, or ransomware.           | **< 15 minutes** | VP Engineering, CTO, Legal Counsel, CEO                      |
+| **SEV-2** | **High Risk Defect / Potential Exposure** | Broken Object-Level Authorization (BOLA) allowing cross-user reads, bypassed minor consent controls, webhook signature validation failure, or persistent denial of service. | **< 1 hour**     | Lead Security Engineer, Engineering Manager, Compliance Lead |
+| **SEV-3** | **Medium Risk Vulnerability**             | Flaws in rate limiting, non-sensitive PII leaks in debug logs, dependency CVEs without known active exploitation, or minor CORS misconfigurations.                          | **< 8 hours**    | Security Engineer, On-Call Backend Engineer                  |
+| **SEV-4** | **Low / Informational**                   | Informational security scanner findings, minor documentation discrepancies, or benign credential stuffing blocked by existing rate limiters.                                | **< 24 hours**   | Development Team backlog triage                              |
 
 ---
 
@@ -39,8 +39,8 @@ It applies to all engineers, operations personnel, compliance reviewers, and exe
    - Locate the canonical Request ID (`x-request-id`) in `AllExceptionsFilter` logs.
    - Query `audit_logs` using:
      ```sql
-     SELECT * FROM audit_logs 
-     WHERE request_id = 'incoming-request-id' 
+     SELECT * FROM audit_logs
+     WHERE request_id = 'incoming-request-id'
      ORDER BY created_at DESC;
      ```
 3. **Determine Scope:**
@@ -51,15 +51,15 @@ It applies to all engineers, operations personnel, compliance reviewers, and exe
 1. **Revoke Compromised Sessions:**
    - Execute instant session revocation via `AuthSessionEntity`:
      ```sql
-     UPDATE auth_sessions 
-     SET revoked_at = NOW(), revoke_reason = 'security_containment' 
+     UPDATE auth_sessions
+     SET revoked_at = NOW(), revoke_reason = 'security_containment'
      WHERE user_id = 'compromised-user-uuid' AND revoked_at IS NULL;
      ```
 2. **Activate Emergency Feature Flags:**
    - If an ongoing automated attack targets bookings or payments, enable platform-wide protection via `feature_flags`:
      ```sql
-     UPDATE feature_flags 
-     SET enabled = true 
+     UPDATE feature_flags
+     SET enabled = true
      WHERE key = 'emergency_maintenance_mode';
      ```
 3. **Isolate Vulnerable Endpoints:**

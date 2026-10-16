@@ -4,7 +4,7 @@
 **Auditor:** Principal Security Architect & Lead Backend Engineer (AI Pair Programmer)  
 **Project:** OgroniEdu — Enterprise Tutoring and Educational Management Platform (Bangladesh)  
 **Repository Working Directory:** `c:\Sofof_tech_2026\ogroniedu`  
-**Phase Objective:** Implement booking state machine and conflict-safe sessions with timezone intent, one-off/recurring model, PostgreSQL GiST exclusion lock, outbox events, and Bangladesh cancellation refund policy.  
+**Phase Objective:** Implement booking state machine and conflict-safe sessions with timezone intent, one-off/recurring model, PostgreSQL GiST exclusion lock, outbox events, and Bangladesh cancellation refund policy.
 
 ---
 
@@ -13,13 +13,13 @@
 Phase 09 successfully implemented the complete session scheduling, calendar conflict protection, and booking lifecycle state machine for OgroniEdu in compliance with `prompts/09-booking-and-scheduling.md`:
 
 1. **Strict Definition of Done Enforced — Zero Double-Booking:**
-   - *Requirement:* At most one overlapping active session per tutor under approved rule.
+   - _Requirement:_ At most one overlapping active session per tutor under approved rule.
    - Enforced at both application query layer and database engine layer:
      - Application check in [`SchedulingService`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/src/modules/bookings/scheduling.service.ts) queries active sessions (`status IN ('scheduled', 'in_progress')`) and throws `409 Conflict`.
      - Database engine GiST constraint `ex_tutor_session_overlap` on `booking_sessions`:
        ```sql
        EXCLUDE USING gist (
-           tutor_user_id WITH =, 
+           tutor_user_id WITH =,
            tstzrange(starts_at, ends_at, '[)') WITH &&
        ) WHERE (status IN ('scheduled', 'in_progress'));
        ```
@@ -44,7 +44,7 @@ Phase 09 successfully implemented the complete session scheduling, calendar conf
 6. **Transactional Outbox & Non-Blocking Notifications:**
    - Outbox pattern implemented via `OutboxEventEntity` (`outbox_events` table).
    - Events emitted: `session.scheduled`, `session.rescheduled`, `session.cancelled`.
-   - *Invariant:* Zero slow external network calls inside critical database transaction. Notifications are dispatched asynchronously outside transaction locks.
+   - _Invariant:_ Zero slow external network calls inside critical database transaction. Notifications are dispatched asynchronously outside transaction locks.
 7. **Frontend Calendar UI Component:**
    - Built [`SessionScheduleCalendar`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/scheduling/SessionScheduleCalendar.tsx) and routed at `/[locale]/sessions`.
    - Features class cards, status badges, meeting links, cancellation refund preview modal, reschedule modal, and 100% bilingual dictionary parity.
@@ -56,18 +56,19 @@ Phase 09 successfully implemented the complete session scheduling, calendar conf
 
 ## 2. Requirement Traceability Matrix (Phase 09 Scope)
 
-| Requirement ID | Requirement Name | Implementation Files | Test Suite | Verification Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-006** | Availability & Exclusion Lock | `apps/api/src/modules/bookings/`, `packages/database/src/migrations/001_initial_schema.sql` | `scheduling.service.spec.ts`, `sessions.controller.spec.ts`, `scheduling.spec.ts` | **COMPLETED & VERIFIED** (GiST `ex_tutor_session_overlap`, zero overlap invariant, cancelled slot reuse) |
-| **FR-007** | Booking State Machine & Sessions | `apps/api/src/modules/bookings/`, `apps/web/src/components/scheduling/` | `scheduling.service.spec.ts`, `bookings.service.spec.ts` | **COMPLETED & VERIFIED** (One-off/recurring scheduling, reschedule, cancellation matrix, outbox events) |
-| **NFR-001** | Participant Authorization & ABAC | `apps/api/src/modules/bookings/scheduling.service.ts` | `scheduling.service.spec.ts` | **COMPLETED & VERIFIED** (Ownership guards, active guardian checks, third-party denial) |
-| **NFR-004** | Bilingual English & Bengali Parity | `apps/web/messages/en.json`, `apps/web/messages/bn.json` | `i18n.spec.ts`, `scheduling.spec.ts` | **COMPLETED & VERIFIED** (100% key parity across `scheduling` namespace) |
+| Requirement ID | Requirement Name                   | Implementation Files                                                                        | Test Suite                                                                        | Verification Status                                                                                      |
+| :------------- | :--------------------------------- | :------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- |
+| **FR-006**     | Availability & Exclusion Lock      | `apps/api/src/modules/bookings/`, `packages/database/src/migrations/001_initial_schema.sql` | `scheduling.service.spec.ts`, `sessions.controller.spec.ts`, `scheduling.spec.ts` | **COMPLETED & VERIFIED** (GiST `ex_tutor_session_overlap`, zero overlap invariant, cancelled slot reuse) |
+| **FR-007**     | Booking State Machine & Sessions   | `apps/api/src/modules/bookings/`, `apps/web/src/components/scheduling/`                     | `scheduling.service.spec.ts`, `bookings.service.spec.ts`                          | **COMPLETED & VERIFIED** (One-off/recurring scheduling, reschedule, cancellation matrix, outbox events)  |
+| **NFR-001**    | Participant Authorization & ABAC   | `apps/api/src/modules/bookings/scheduling.service.ts`                                       | `scheduling.service.spec.ts`                                                      | **COMPLETED & VERIFIED** (Ownership guards, active guardian checks, third-party denial)                  |
+| **NFR-004**    | Bilingual English & Bengali Parity | `apps/web/messages/en.json`, `apps/web/messages/bn.json`                                    | `i18n.spec.ts`, `scheduling.spec.ts`                                              | **COMPLETED & VERIFIED** (100% key parity across `scheduling` namespace)                                 |
 
 ---
 
 ## 3. Database Schema & Migration Verification
 
 PostgreSQL schema verification in `packages/database/src/migrations/001_initial_schema.sql`:
+
 - Table `booking_sessions`:
   - `id UUID PRIMARY KEY`, `booking_id UUID`, `tutor_user_id UUID`, `student_user_id UUID`
   - `starts_at TIMESTAMPTZ NOT NULL`, `ends_at TIMESTAMPTZ NOT NULL`, `timezone TEXT DEFAULT 'Asia/Dhaka'`
@@ -81,12 +82,14 @@ PostgreSQL schema verification in `packages/database/src/migrations/001_initial_
 ## 4. Test Suite Execution & Verification Logs
 
 ### Test Summary
+
 - `@ogroniedu/api`: 20 test files, 167 passed tests.
 - `@ogroniedu/web`: 8 test files, 34 passed tests.
 - `@ogroniedu/database`: 2 test files, 5 passed tests (cached/passed).
 - **Total Test Count: 206 passed tests, 0 failures, 0 skipped.**
 
 ### Execution Commands & Actual Outcomes:
+
 ```bash
 # 1. API tests including scheduling service and sessions controller suites
 pnpm --filter @ogroniedu/api test
@@ -131,6 +134,7 @@ node scripts/validate-documentation.js
 ## 6. Audit Conclusion
 
 Phase 09 meets 100% of the acceptance criteria set forth in `prompts/09-booking-and-scheduling.md`:
+
 - State machine and conflict-safe session scheduling.
 - PostgreSQL GiST double-booking exclusion constraint active.
 - One-off and recurring weekly generation models.

@@ -82,10 +82,12 @@ To achieve 99.9% platform availability without service interruption, production 
 When post-deployment smoke tests detect a critical defect or error rates breach 0.5%:
 
 ### 5.1 Code Rollback
+
 - Revert traffic at reverse proxy level to the previously healthy container tag (`vX.Y.(Z-1)`).
 - Because database changes adhere to the Expand pattern, previous application code remains 100% compatible with the expanded database schema.
 
 ### 5.2 Database Forward-Fix Rule
+
 - **Never rollback database migrations in production using `DROP COLUMN` or destructive scripts** if live transactions have occurred, as this causes catastrophic data loss.
 - Always apply an immediate forward-fix migration script (`011_forward_fix_*.sql`) that repairs corrupted constraints or schema definitions while preserving audit trails and financial ledger consistency.
 

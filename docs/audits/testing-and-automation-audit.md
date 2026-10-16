@@ -44,15 +44,15 @@ Phase 18 successfully achieved complete test coverage and automation closure in 
 
 ## 2. Requirement Traceability Matrix (Phase 18 Coverage)
 
-| Requirement ID | Requirement Name | Implementation Target | Test References | Phase 18 Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-007** | **Booking Lifecycle State Machine** | `apps/api/src/modules/bookings` | `bookings.service.spec.ts`<br>`bookings.controller.spec.ts`<br>`e2e-tutoring-lifecycle.spec.ts` | **COMPLETED & VERIFIED (E2E 5-Stage Lifecycle)** |
-| **FR-010** | **Gateway Checkout & Double-Entry Ledger** | `apps/api/src/modules/payments` | `ledger.service.spec.ts`<br>`payments.service.spec.ts`<br>`idempotency.spec.ts`<br>`migration.spec.ts` | **COMPLETED & VERIFIED (Zero Double-Billing, Idempotent Webhook)** |
-| **FR-011** | **Trust, Reviews & Safety Guarantee** | `apps/api/src/modules/trust` | `reviews.service.spec.ts`<br>`safety-reports.service.spec.ts`<br>`e2e-tutoring-lifecycle.spec.ts` | **COMPLETED & VERIFIED (Verified Review & Anti-Self-Review)** |
-| **NFR-002** | **Concurrency & Idempotency** | `apps/api/src/common/interceptors/idempotency.interceptor.ts`<br>`PaymentsService`<br>`LedgerService` | `idempotency.spec.ts` | **COMPLETED & VERIFIED (Replay Cache & Conflict Detection)** |
-| **NFR-004** | **Bilingual Bengali & English** | `next-intl`, `Hind Siliguri` font | `notification-bell.spec.ts`<br>`public-website-and-seo.spec.ts`<br>`accessibility-and-a11y.spec.ts` | **COMPLETED & VERIFIED (Bengali Numerals & Unicode Glyphs)** |
-| **NFR-006** | **Disaster Recovery & WAL Archiving** | `packages/database/src/migration-runner.ts`<br>`docs/BACKUP_AND_DISASTER_RECOVERY.md` | `bcdr-recovery.spec.ts` | **COMPLETED & VERIFIED (Cold Wipe Replay, Catalog Invariants & PITR)** |
-| **NFR-008** | **Accessibility & WCAG 2.1 AA Compliance** | `apps/web/src/components/ui/*` | `accessibility-and-a11y.spec.ts`<br>`components.spec.ts` | **COMPLETED & VERIFIED (ARIA Roles, AA Contrast & Focus Rings)** |
+| Requirement ID | Requirement Name                           | Implementation Target                                                                                 | Test References                                                                                        | Phase 18 Status                                                        |
+| :------------- | :----------------------------------------- | :---------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------- | :--------------------------------------------------------------------- |
+| **FR-007**     | **Booking Lifecycle State Machine**        | `apps/api/src/modules/bookings`                                                                       | `bookings.service.spec.ts`<br>`bookings.controller.spec.ts`<br>`e2e-tutoring-lifecycle.spec.ts`        | **COMPLETED & VERIFIED (E2E 5-Stage Lifecycle)**                       |
+| **FR-010**     | **Gateway Checkout & Double-Entry Ledger** | `apps/api/src/modules/payments`                                                                       | `ledger.service.spec.ts`<br>`payments.service.spec.ts`<br>`idempotency.spec.ts`<br>`migration.spec.ts` | **COMPLETED & VERIFIED (Zero Double-Billing, Idempotent Webhook)**     |
+| **FR-011**     | **Trust, Reviews & Safety Guarantee**      | `apps/api/src/modules/trust`                                                                          | `reviews.service.spec.ts`<br>`safety-reports.service.spec.ts`<br>`e2e-tutoring-lifecycle.spec.ts`      | **COMPLETED & VERIFIED (Verified Review & Anti-Self-Review)**          |
+| **NFR-002**    | **Concurrency & Idempotency**              | `apps/api/src/common/interceptors/idempotency.interceptor.ts`<br>`PaymentsService`<br>`LedgerService` | `idempotency.spec.ts`                                                                                  | **COMPLETED & VERIFIED (Replay Cache & Conflict Detection)**           |
+| **NFR-004**    | **Bilingual Bengali & English**            | `next-intl`, `Hind Siliguri` font                                                                     | `notification-bell.spec.ts`<br>`public-website-and-seo.spec.ts`<br>`accessibility-and-a11y.spec.ts`    | **COMPLETED & VERIFIED (Bengali Numerals & Unicode Glyphs)**           |
+| **NFR-006**    | **Disaster Recovery & WAL Archiving**      | `packages/database/src/migration-runner.ts`<br>`docs/BACKUP_AND_DISASTER_RECOVERY.md`                 | `bcdr-recovery.spec.ts`                                                                                | **COMPLETED & VERIFIED (Cold Wipe Replay, Catalog Invariants & PITR)** |
+| **NFR-008**    | **Accessibility & WCAG 2.1 AA Compliance** | `apps/web/src/components/ui/*`                                                                        | `accessibility-and-a11y.spec.ts`<br>`components.spec.ts`                                               | **COMPLETED & VERIFIED (ARIA Roles, AA Contrast & Focus Rings)**       |
 
 ---
 
@@ -68,12 +68,12 @@ Time:     37.757s
 
 ### Breakdown by Package
 
-| Package | Test Files | Passed Tests | Failed | Skipped | Key Test Suites |
-| :--- | :--- | :--- | :--- | :--- | :--- |
-| **`@ogroniedu/api`** | 41 | 360 | 0 | 0 | `e2e-tutoring-lifecycle.spec.ts`, `idempotency.spec.ts`, `security-and-privacy-hardening.spec.ts`, `auth.authorization.spec.ts`, `ledger.service.spec.ts`, `discovery.search.spec.ts` |
-| **`@ogroniedu/web`** | 16 | 70 | 0 | 0 | `accessibility-and-a11y.spec.ts`, `public-website-and-seo.spec.ts`, `admin-operations.spec.ts`, `trust-and-reviews.spec.ts`, `i18n.spec.ts`, `components.spec.ts` |
-| **`@ogroniedu/database`** | 3 | 21 | 0 | 0 | `bcdr-recovery.spec.ts`, `migration.spec.ts`, `seed.spec.ts` |
-| **Total Monorepo** | **60** | **451** | **0** | **0** | **100% Green, Zero Weakening, Zero Flakiness** |
+| Package                   | Test Files | Passed Tests | Failed | Skipped | Key Test Suites                                                                                                                                                                       |
+| :------------------------ | :--------- | :----------- | :----- | :------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **`@ogroniedu/api`**      | 41         | 360          | 0      | 0       | `e2e-tutoring-lifecycle.spec.ts`, `idempotency.spec.ts`, `security-and-privacy-hardening.spec.ts`, `auth.authorization.spec.ts`, `ledger.service.spec.ts`, `discovery.search.spec.ts` |
+| **`@ogroniedu/web`**      | 16         | 70           | 0      | 0       | `accessibility-and-a11y.spec.ts`, `public-website-and-seo.spec.ts`, `admin-operations.spec.ts`, `trust-and-reviews.spec.ts`, `i18n.spec.ts`, `components.spec.ts`                     |
+| **`@ogroniedu/database`** | 3          | 21           | 0      | 0       | `bcdr-recovery.spec.ts`, `migration.spec.ts`, `seed.spec.ts`                                                                                                                          |
+| **Total Monorepo**        | **60**     | **451**      | **0**  | **0**   | **100% Green, Zero Weakening, Zero Flakiness**                                                                                                                                        |
 
 ---
 

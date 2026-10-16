@@ -3,17 +3,10 @@
 import React from 'react';
 import Link from 'next/link';
 import { cn } from 'cn';
-import {
-  Sparkles,
-  ChevronRight,
-  ShieldCheck,
-  GraduationCap,
-  Users,
-  User,
-} from 'lucide-react';
+import { ChevronRight } from 'lucide-react';
 import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
-import type { NavItem, RoleConfig } from '@/lib/navigation';
+import type { NavItem } from '@/lib/navigation';
 import type { AuthUser } from '@/store/slices/auth-slice';
 import { SidebarPromoCard } from '@/components/dashboard/SidebarPromoCard';
 
@@ -23,7 +16,6 @@ export interface DashboardSidebarProps {
   isBn: boolean;
   pathname: string | null;
   roleKey: string;
-  rolePreset: RoleConfig;
   authUser: AuthUser | null;
   userInitials: string;
 }
@@ -42,7 +34,6 @@ export function DashboardSidebar({
   isBn,
   pathname,
   roleKey,
-  rolePreset,
   authUser,
   userInitials,
 }: DashboardSidebarProps) {
@@ -56,10 +47,7 @@ export function DashboardSidebar({
       <div className="p-4 space-y-6">
         {/* Brand & Role Header */}
         <div className="space-y-3 pt-1">
-          <Link
-            href={withLocale('/', locale)}
-            className="flex items-center gap-3 px-2 group"
-          >
+          <Link href={withLocale('/', locale)} className="flex items-center gap-3 px-2 group">
             <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-[#0df5c4] to-[#00b38c] text-[#031317] font-black text-lg flex items-center justify-center shadow-[0_0_20px_rgba(13,245,196,0.35)] group-hover:scale-105 transition-transform shrink-0">
               অ
             </div>
@@ -90,7 +78,8 @@ export function DashboardSidebar({
             const Icon = item.icon;
             const targetHref = withLocale(item.href, locale);
             const active =
-              pathname === targetHref || (item.href !== '/dashboard' && pathname?.startsWith(targetHref));
+              pathname === targetHref ||
+              (item.href !== '/dashboard' && pathname?.startsWith(targetHref));
 
             return (
               <Link
@@ -176,7 +165,9 @@ export function DashboardSidebar({
                 {authUser?.displayName || authUser?.phone || (isBn ? 'ব্যবহারকারী' : 'User')}
               </p>
               <p className="text-[10px] text-teal-300/80 truncate mt-0.5">
-                {authUser?.email || authUser?.phone || (isBn ? 'সক্রিয় প্রোফাইল' : 'Active Account')}
+                {authUser?.email ||
+                  authUser?.phone ||
+                  (isBn ? 'সক্রিয় প্রোফাইল' : 'Active Account')}
               </p>
             </div>
           </div>

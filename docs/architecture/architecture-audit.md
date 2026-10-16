@@ -11,6 +11,7 @@ Date: 2026-10-11. Source: direct inspection of `apps/api/src`, `apps/web/src`, `
 ## 2. Oversized files (measured)
 
 Backend (`apps/api/src`, 190 files):
+
 - `modules/tutors/tutors.service.ts` — 915 lines (profile CRUD + qualifications + subjects + areas + availability + public profile + search + admin verification). Highest risk.
 - `modules/learning/learning.service.ts` — 748 lines.
 - `modules/payments/payments.service.ts` — 689 lines.
@@ -18,6 +19,7 @@ Backend (`apps/api/src`, 190 files):
 - `modules/bookings/scheduling.service.ts` — 628 lines; `auth.service.ts` — 547; `analytics.service.ts` — 430; `guardians.service.ts` — 419; `bookings.service.ts` — 381; `notifications/notification.service.ts` — 372.
 
 Frontend (`apps/web/src`, 112 files):
+
 - `components/admin/AdminDashboardView.tsx` — 1077 lines (7 tabs + 4 modals + metrics + tables in one client component; uses `Record<string, any>` twice).
 - `components/discovery/TutorSearchCatalog.tsx` — 918 lines.
 - `components/learning/LearningManagementView.tsx` — 762 lines.

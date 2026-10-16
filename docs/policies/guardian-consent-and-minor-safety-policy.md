@@ -4,7 +4,7 @@
 **Current Approved Version:** `v1.0-bd-minor-consent`  
 **Effective Date:** 2026-10-10  
 **Jurisdiction:** People's Republic of Bangladesh  
-**Status:** Approved Operational Policy  
+**Status:** Approved Operational Policy
 
 ---
 
@@ -25,6 +25,7 @@ In accordance with the statutory framework of Bangladesh:
 ## 2. Policy-Dependent Consent (`v1.0-bd-minor-consent`)
 
 ### 2.1 Explicit Guardian Consent Requirement
+
 - Any learner under 18 years of age is classified as a **Minor Student**.
 - A Minor Student cannot independently enter into paid tutoring arrangements, confirm booking sessions, or authorize escrow payments.
 - When an account for a minor is created or linked by a guardian, the platform requires an explicit affirmation of legal guardianship:
@@ -37,6 +38,7 @@ In accordance with the statutory framework of Bangladesh:
   - `relationship_type`: Allowed values: `father`, `mother`, `legal_guardian`.
 
 ### 2.2 Independent Learner Exception
+
 - Learners who are **18 years of age or older** (verified via date of birth or National ID verification) are classified as **Independent Learners**.
 - Independent Learners may self-manage profile visibility, select subjects, book tutors directly, and execute checkout transactions without guardian mediation.
 

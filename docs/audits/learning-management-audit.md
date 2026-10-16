@@ -35,7 +35,7 @@ Phase 10 successfully implemented the authorized, attributable, and auditable Le
    - Preserved initial `session_attendance` table and added negative database integrity tests.
 6. **Frontend UI & Localization:**
    - Created [`LearningManagementView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/features/learning/components/learningManagementView.tsx) with attendance cards, homework submission modal, grading modal with score revision reason prompt, and progress reports dashboard.
-   - Routed at `/[locale]/learning` in [`apps/web/src/app/[locale]/(dashboard)/learning/page.tsx`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/app/[locale]/(dashboard)/learning/page.tsx).
+   - Routed at `/[locale]/learning` in [`apps/web/src/app/[locale]/(dashboard)/learning/page.tsx`](<file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/app/[locale]/(dashboard)/learning/page.tsx>).
    - Added `"learning"` namespace with 36 keys to both `en.json` and `bn.json` with 100% key parity and Bengali digit formatting.
 7. **Automated Verification:**
    - 34 new automated unit, negative, and security tests added.
@@ -45,11 +45,11 @@ Phase 10 successfully implemented the authorized, attributable, and auditable Le
 
 ## 2. Requirement Traceability Matrix (Phase 10 Scope)
 
-| Requirement ID | Requirement Name | Implementation Files | Test Suite | Verification Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-009** | **Attendance & Homework LMS** | `apps/api/src/modules/learning/learning.service.ts`<br>`apps/api/src/modules/learning/learning.controller.ts`<br>`apps/web/src/features/learning/components/learningManagementView.tsx` | `learning.service.spec.ts`<br>`learning.controller.spec.ts`<br>`learning.spec.ts`<br>`migration.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-001** | **No Cross-User Data Access (ABAC)** | `learning.service.ts` (`assertCanAccessStudentRecords`) | `learning.service.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-004** | **Bilingual Bengali & English** | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json` | `learning.spec.ts` | **COMPLETED & VERIFIED (36/36 Keys)** |
+| Requirement ID | Requirement Name                     | Implementation Files                                                                                                                                                                    | Test Suite                                                                                               | Verification Status                   |
+| :------------- | :----------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------- | :------------------------------------ |
+| **FR-009**     | **Attendance & Homework LMS**        | `apps/api/src/modules/learning/learning.service.ts`<br>`apps/api/src/modules/learning/learning.controller.ts`<br>`apps/web/src/features/learning/components/learningManagementView.tsx` | `learning.service.spec.ts`<br>`learning.controller.spec.ts`<br>`learning.spec.ts`<br>`migration.spec.ts` | **COMPLETED & VERIFIED**              |
+| **NFR-001**    | **No Cross-User Data Access (ABAC)** | `learning.service.ts` (`assertCanAccessStudentRecords`)                                                                                                                                 | `learning.service.spec.ts`                                                                               | **COMPLETED & VERIFIED**              |
+| **NFR-004**    | **Bilingual Bengali & English**      | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json`                                                                                                                              | `learning.spec.ts`                                                                                       | **COMPLETED & VERIFIED (36/36 Keys)** |
 
 ---
 
@@ -115,6 +115,7 @@ CREATE TABLE IF NOT EXISTS progress_reports (
 ## 4. Test Verification Outcomes
 
 ### Command: `pnpm test`
+
 - **Total Test Files:** 33 passed (0 failed, 0 skipped)
 - **Total Tests:** 240 passed (0 failed, 0 skipped)
 - **Breakdown:**
@@ -123,9 +124,11 @@ CREATE TABLE IF NOT EXISTS progress_reports (
   - `@ogroniedu/web`: 37 passed tests across 9 test files (including 3 tests in `learning.spec.ts`).
 
 ### Command: `node scripts/validate-documentation.js`
+
 - **Outcome:** PASSED on 123 Markdown, Mermaid, and SQL files.
 
 ### Command: `pnpm typecheck`
+
 - **Outcome:** Clean exit code 0 across all 5 packages.
 
 ---

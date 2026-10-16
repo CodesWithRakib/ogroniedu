@@ -45,14 +45,14 @@ Phase 19 successfully executed the performance benchmarking and query optimizati
 
 The following measurements were captured live via `node scripts/run-load-benchmarks.mjs` against PostgreSQL 16:
 
-| Workload Name | Iterations | Throughput (ops/sec) | Error Rate | Min (ms) | Max (ms) | Avg (ms) | p50 (ms) | p90 (ms) | p95 (ms) | p99 (ms) |
-| :--- | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Tutor Discovery Multi-Dimensional Search** | 150 | 398.9 | 0.0% | 2.04 | 3.55 | 2.50 | **2.42** | 3.02 | **3.31** | **3.47** |
-| **Booking GiST Overlap Conflict Verification** | 150 | 2,631.6 | 0.0% | 0.24 | 1.04 | 0.38 | **0.34** | 0.57 | **0.65** | **0.75** |
-| **Active Auth Session Validation** | 200 | 2,857.1 | 0.0% | 0.21 | 1.33 | 0.35 | **0.29** | 0.54 | **0.62** | **1.21** |
-| **Admin Audit Log Global Timeline Pagination** | 150 | 3,947.4 | 0.0% | 0.14 | 0.87 | 0.25 | **0.18** | 0.41 | **0.73** | **0.84** |
-| **Booking Sessions Foreign Key Retrieval** | 150 | 4,166.7 | 0.0% | 0.16 | 0.96 | 0.23 | **0.18** | 0.41 | **0.50** | **0.61** |
-| **Transactional Outbox Queue Polling** | 200 | 5,000.0 | 0.0% | 0.15 | 1.13 | 0.20 | **0.16** | 0.29 | **0.36** | **0.87** |
+| Workload Name                                  | Iterations | Throughput (ops/sec) | Error Rate | Min (ms) | Max (ms) | Avg (ms) | p50 (ms) | p90 (ms) | p95 (ms) | p99 (ms) |
+| :--------------------------------------------- | :--------: | :------------------: | :--------: | :------: | :------: | :------: | :------: | :------: | :------: | :------: |
+| **Tutor Discovery Multi-Dimensional Search**   |    150     |        398.9         |    0.0%    |   2.04   |   3.55   |   2.50   | **2.42** |   3.02   | **3.31** | **3.47** |
+| **Booking GiST Overlap Conflict Verification** |    150     |       2,631.6        |    0.0%    |   0.24   |   1.04   |   0.38   | **0.34** |   0.57   | **0.65** | **0.75** |
+| **Active Auth Session Validation**             |    200     |       2,857.1        |    0.0%    |   0.21   |   1.33   |   0.35   | **0.29** |   0.54   | **0.62** | **1.21** |
+| **Admin Audit Log Global Timeline Pagination** |    150     |       3,947.4        |    0.0%    |   0.14   |   0.87   |   0.25   | **0.18** |   0.41   | **0.73** | **0.84** |
+| **Booking Sessions Foreign Key Retrieval**     |    150     |       4,166.7        |    0.0%    |   0.16   |   0.96   |   0.23   | **0.18** |   0.41   | **0.50** | **0.61** |
+| **Transactional Outbox Queue Polling**         |    200     |       5,000.0        |    0.0%    |   0.15   |   1.13   |   0.20   | **0.16** |   0.29   | **0.36** | **0.87** |
 
 ---
 
@@ -67,24 +67,24 @@ ORDER BY created_at DESC
 LIMIT 50;
 ```
 
-| Metric | Before Optimization (Migration 009) | After Optimization (Migration 010) | Improvement Factor |
-| :--- | :---: | :---: | :---: |
-| **Root Plan Node** | `Limit` (on Top-N `Sort`) | `Limit` (direct `Index Scan Backward`) | Eliminates sort overhead |
-| **Planner Estimated Total Cost** | **23.52** | **7.99** | **66.0% Cost Reduction** |
-| **Actual Startup Time** | **0.032 ms** | **0.005 ms** | **6.4x Faster Startup** |
-| **Actual Execution Time** | **0.050 ms** | **0.027 ms** | **46.0% Faster Execution** |
-| **Buffer Access Mode** | Heap scan + sort memory buffer | Index block direct read | Zero temp buffer sort spills |
+| Metric                           | Before Optimization (Migration 009) |   After Optimization (Migration 010)   |      Improvement Factor      |
+| :------------------------------- | :---------------------------------: | :------------------------------------: | :--------------------------: |
+| **Root Plan Node**               |      `Limit` (on Top-N `Sort`)      | `Limit` (direct `Index Scan Backward`) |   Eliminates sort overhead   |
+| **Planner Estimated Total Cost** |              **23.52**              |                **7.99**                |   **66.0% Cost Reduction**   |
+| **Actual Startup Time**          |            **0.032 ms**             |              **0.005 ms**              |   **6.4x Faster Startup**    |
+| **Actual Execution Time**        |            **0.050 ms**             |              **0.027 ms**              |  **46.0% Faster Execution**  |
+| **Buffer Access Mode**           |   Heap scan + sort memory buffer    |        Index block direct read         | Zero temp buffer sort spills |
 
 ### Query Plan Summary Table Post-Optimization
 
-| Label | Node Type | Total Cost | Actual Startup (ms) | Actual Total (ms) | Rows | Planning Time (ms) | Execution Time (ms) |
-| :--- | :--- | :---: | :---: | :---: | :---: | :---: | :---: |
-| **Tutor Discovery Search** | `Limit` | 54.53 | 0.802 | 0.807 | 20 | 15.027 | 0.932 |
-| **GiST Session Conflict Check** | `Bitmap Heap Scan` | 9.52 | 0.014 | 0.015 | 0 | 7.477 | 0.031 |
-| **Auth Active Session Lookup** | `Limit` | 8.17 | 0.010 | 0.011 | 1 | 0.189 | 0.025 |
-| **Global Audit Logs Timeline** | `Limit` | **7.99** | **0.005** | **0.006** | 0 | 1.767 | **0.027** |
-| **Booking Sessions FK Lookup** | `Sort` | 0.02 | 0.004 | 0.004 | 0 | 0.119 | 0.014 |
-| **Outbox Queue Polling** | `Limit` | 9.48 | 0.019 | 0.019 | 0 | 2.134 | 0.043 |
+| Label                           | Node Type          | Total Cost | Actual Startup (ms) | Actual Total (ms) | Rows | Planning Time (ms) | Execution Time (ms) |
+| :------------------------------ | :----------------- | :--------: | :-----------------: | :---------------: | :--: | :----------------: | :-----------------: |
+| **Tutor Discovery Search**      | `Limit`            |   54.53    |        0.802        |       0.807       |  20  |       15.027       |        0.932        |
+| **GiST Session Conflict Check** | `Bitmap Heap Scan` |    9.52    |        0.014        |       0.015       |  0   |       7.477        |        0.031        |
+| **Auth Active Session Lookup**  | `Limit`            |    8.17    |        0.010        |       0.011       |  1   |       0.189        |        0.025        |
+| **Global Audit Logs Timeline**  | `Limit`            |  **7.99**  |      **0.005**      |     **0.006**     |  0   |       1.767        |      **0.027**      |
+| **Booking Sessions FK Lookup**  | `Sort`             |    0.02    |        0.004        |       0.004       |  0   |       0.119        |        0.014        |
+| **Outbox Queue Polling**        | `Limit`            |    9.48    |        0.019        |       0.019       |  0   |       2.134        |        0.043        |
 
 ---
 
@@ -94,21 +94,21 @@ LIMIT 50;
 
 ```sql
 -- 1. Optimize Booking Sessions retrieval by booking_id with ordered timeline
-CREATE INDEX IF NOT EXISTS ix_booking_sessions_booking_start 
+CREATE INDEX IF NOT EXISTS ix_booking_sessions_booking_start
 ON booking_sessions(booking_id, starts_at ASC);
 
 -- 2. Optimize Global Administrative Audit Log Streams (eliminates Sort node)
-CREATE INDEX IF NOT EXISTS ix_audit_logs_created_desc 
+CREATE INDEX IF NOT EXISTS ix_audit_logs_created_desc
 ON audit_logs(created_at DESC);
 
 -- 3. Optimize Multi-Dimensional Tutor Search price-range ordering on published profiles
-CREATE INDEX IF NOT EXISTS ix_tutor_profiles_price_search 
-ON tutor_profiles(hourly_rate_minor, verification_status, publication_status) 
+CREATE INDEX IF NOT EXISTS ix_tutor_profiles_price_search
+ON tutor_profiles(hourly_rate_minor, verification_status, publication_status)
 WHERE publication_status = 'published';
 
 -- 4. Optimize Transactional Outbox Worker polling with retry count awareness
-CREATE INDEX IF NOT EXISTS ix_outbox_events_pending_batch 
-ON outbox_events(created_at ASC, attempts) 
+CREATE INDEX IF NOT EXISTS ix_outbox_events_pending_batch
+ON outbox_events(created_at ASC, attempts)
 WHERE published_at IS NULL;
 ```
 
@@ -116,10 +116,10 @@ WHERE published_at IS NULL;
 
 ## 5. Requirement Traceability Matrix (Phase 19 Scope)
 
-| Requirement ID | Requirement Name | Implementation Target | Test References | Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **NFR-003** | **High Performance & Low Latency** | `packages/database/src/migrations/010_performance_and_load_indexes.sql` | `performance-benchmarks.spec.ts`<br>`scripts/run-load-benchmarks.mjs` | **COMPLETED & VERIFIED (Synthetic Load 5 Workloads, p95 < 25ms SLA, GiST Overlap Lock Check, Query Plan Optimization & 66% Cost Reduction on Audit Stream)** |
-| **NFR-006** | **Disaster Recovery & WAL Archiving** | `packages/database/src/migration-runner.ts` | `bcdr-recovery.spec.ts` | **COMPLETED & VERIFIED (Cold Wipe Replay with 10 Migrations)** |
+| Requirement ID | Requirement Name                      | Implementation Target                                                   | Test References                                                       | Status                                                                                                                                                       |
+| :------------- | :------------------------------------ | :---------------------------------------------------------------------- | :-------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **NFR-003**    | **High Performance & Low Latency**    | `packages/database/src/migrations/010_performance_and_load_indexes.sql` | `performance-benchmarks.spec.ts`<br>`scripts/run-load-benchmarks.mjs` | **COMPLETED & VERIFIED (Synthetic Load 5 Workloads, p95 < 25ms SLA, GiST Overlap Lock Check, Query Plan Optimization & 66% Cost Reduction on Audit Stream)** |
+| **NFR-006**    | **Disaster Recovery & WAL Archiving** | `packages/database/src/migration-runner.ts`                             | `bcdr-recovery.spec.ts`                                               | **COMPLETED & VERIFIED (Cold Wipe Replay with 10 Migrations)**                                                                                               |
 
 ---
 

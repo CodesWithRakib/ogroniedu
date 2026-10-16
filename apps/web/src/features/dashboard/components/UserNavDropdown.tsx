@@ -5,7 +5,6 @@ import Link from 'next/link';
 import {
   User,
   LogOut,
-  Settings,
   Bell,
   CreditCard,
   ChevronDown,
@@ -13,7 +12,6 @@ import {
   GraduationCap,
   Users,
   ShieldCheck,
-  Sparkles,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -25,7 +23,6 @@ import {
   Avatar,
   AvatarFallback,
   AvatarImage,
-  Badge,
 } from '@/components/ui';
 import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
@@ -39,19 +36,34 @@ export interface UserNavDropdownProps {
 }
 
 const ROLE_LABELS: Record<string, { bn: string; en: string; color: string }> = {
-  student: { bn: 'শিক্ষার্থী', en: 'Student', color: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30' },
-  tutor: { bn: 'গৃহশিক্ষক', en: 'Verified Tutor', color: 'bg-[#0df5c4]/15 text-[#0df5c4] border-[#0df5c4]/35' },
-  guardian: { bn: 'অভিভাবক', en: 'Guardian', color: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30' },
-  admin: { bn: 'অ্যাডমিন', en: 'Admin', color: 'bg-purple-500/15 text-purple-300 border-purple-500/30' },
-  super_admin: { bn: 'সুপার অ্যাডমিন', en: 'Super Admin', color: 'bg-amber-500/15 text-amber-300 border-amber-500/30' },
+  student: {
+    bn: 'শিক্ষার্থী',
+    en: 'Student',
+    color: 'bg-cyan-500/15 text-cyan-300 border-cyan-500/30',
+  },
+  tutor: {
+    bn: 'গৃহশিক্ষক',
+    en: 'Verified Tutor',
+    color: 'bg-[#0df5c4]/15 text-[#0df5c4] border-[#0df5c4]/35',
+  },
+  guardian: {
+    bn: 'অভিভাবক',
+    en: 'Guardian',
+    color: 'bg-emerald-500/15 text-emerald-300 border-emerald-500/30',
+  },
+  admin: {
+    bn: 'অ্যাডমিন',
+    en: 'Admin',
+    color: 'bg-purple-500/15 text-purple-300 border-purple-500/30',
+  },
+  super_admin: {
+    bn: 'সুপার অ্যাডমিন',
+    en: 'Super Admin',
+    color: 'bg-amber-500/15 text-amber-300 border-amber-500/30',
+  },
 };
 
-export function UserNavDropdown({
-  authUser,
-  locale,
-  role,
-  onLogout,
-}: UserNavDropdownProps) {
+export function UserNavDropdown({ authUser, locale, role, onLogout }: UserNavDropdownProps) {
   const isBn = locale === 'bn';
   const roleKey = (role as string) || authUser?.roles?.[0] || 'student';
   const roleMeta = ROLE_LABELS[roleKey] || ROLE_LABELS.student;
@@ -116,7 +128,9 @@ export function UserNavDropdown({
                 {authUser?.email || authUser?.phone || (isBn ? 'আইডি সক্রিয়' : 'Active Account')}
               </p>
               <div className="mt-1">
-                <span className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border ${roleMeta.color}`}>
+                <span
+                  className={`inline-flex items-center px-2 py-0.5 rounded-md text-[10px] font-semibold border ${roleMeta.color}`}
+                >
                   {isBn ? roleMeta.bn : roleMeta.en}
                 </span>
               </div>

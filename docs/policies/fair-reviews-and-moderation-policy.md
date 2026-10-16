@@ -16,6 +16,7 @@ OgroniEdu is committed to establishing the most trustworthy educational ecosyste
 ## 2. Fundamental Review Invariants
 
 ### 2.1 Zero Self-Reviews (Anti-Self Review)
+
 - Under no circumstances may a tutor submit a rating, testimonial, or review for themselves or their own courses.
 - Enforced at database schema level via table constraint:
   ```sql
@@ -24,11 +25,13 @@ OgroniEdu is committed to establishing the most trustworthy educational ecosyste
 - Enforced at backend service layer with immediate `403 ForbiddenException`.
 
 ### 2.2 Zero Unverified Reviews (Anti-Fake Reviews)
+
 - Only learners or authorized guardians with a confirmed or completed booking (`status IN ('confirmed', 'completed', 'in_progress')`) are eligible to submit a review.
 - General public visitors, unverified accounts, or unrelated users cannot submit ratings or commentary.
 - Every review displays a verified badge: **"Verified Booking"** (`is_verified_booking = true`).
 
 ### 2.3 Single Review per Agreement
+
 - Exactly one review is permitted per booking agreement (`UNIQUE (booking_id, reviewer_user_id)`). Learners may update their review if academic circumstances change, but duplicate reviews cannot be created.
 
 ---
@@ -55,6 +58,7 @@ Feedback is captured across four objective dimensions using a standard 1–5 sta
 ## 5. Prohibited Content and Automated Flagging
 
 Reviews are automatically screened and flagged for moderator review if they contain:
+
 - Vulgarity, slurs, obscene remarks, or abusive language.
 - Private personal details (phone numbers, physical addresses, bank accounts, or national ID numbers).
 - Off-platform payment solicitations or commercial advertising.

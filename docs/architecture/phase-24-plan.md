@@ -58,6 +58,7 @@ contract: `GET /api/v1/sessions`, `GET /api/v1/requests` (bookings), all
 clients must over-fetch, and future growth turns them into full-table scans.
 
 **Tasks.**
+
 1. Inventory every array-returning GET; classify: bounded-by-parent (e.g. messages
    in one booking — keep as-is, document) vs unbounded (needs paging).
 2. Adopt `OffsetPaginationQueryDto` (+ `pageSize` alias per Phase 23 P1-1) and
@@ -81,6 +82,7 @@ evidence, ledger hot paths (`verifySystemLedgerIntegrity`), and the public-stats
 query the code itself calls "safe to cache aggressively" — but nothing caches it.
 
 **Tasks.**
+
 1. `EXPLAIN (ANALYZE, BUFFERS)` the top-10 heaviest queries (tutor search, session
    lists, booking lists, analytics ×5, ledger verification, admin lists) on
    seed-scale ×10 data; record plans in `docs/database/` before changing anything.
@@ -106,6 +108,7 @@ reviews? replacement cases?) is undocumented, and webhook replay/duplicate drill
 run only as unit tests.
 
 **Tasks.**
+
 1. Outbox audit matrix: every state-changing domain event → outbox row? Close gaps
    or record explicit why-nots (e.g. synchronous-only flows).
 2. Failure-injection tests (test doubles, no staging needed): DB save throws
@@ -127,6 +130,7 @@ extraction, role-helper rollout incl. super_admin in single-`admin` checks) and
 added file-upload + impersonation-adjacent flows that deserve re-verification.
 
 **Tasks.**
+
 1. Re-run the threat-model checklist (`docs/17-security-and-threat-model.md`)
    against the Phase 23 diff: token issuance path, role-bypass alignment,
    consent-gate extraction, guardian-access fan-out (notification recipient
@@ -151,6 +155,7 @@ stdout. No SLOs, no dashboards, no alerting; `requestId` propagation ends at the
 API boundary (web `requestIdOf` parses but nothing correlates).
 
 **Tasks.**
+
 1. Define SLOs: availability (target 99.9%), p95 latency per route class, error
    budget on `5xx` + `UPSTREAM_ERROR`, E2E journey success rate.
 2. Log pipeline: ship structured logs (requestId, user/role, route, code,
@@ -172,6 +177,7 @@ requestId traceable browser→API→logs in a recorded demo.
 credentials so 3 journey specs skip silently in CI.
 
 **Tasks.**
+
 1. Add `pnpm lint` to `ci.yml` between typecheck and test (turbo task exists).
 2. Seed E2E credentials as CI secrets (`E2E_STUDENT_*`, `E2E_TUTOR_*`,
    `E2E_ADMIN_*`) and assert in `e2e.yml` that zero specs skip
@@ -193,6 +199,7 @@ route-level splitting audit, hero images unmeasured, `next dev` compile latency
 (55s+ cold E2E starts observed) hints at heavy first-load modules.
 
 **Tasks.**
+
 1. Bundle budget: `next build` analyzer report per route; set budgets
    (first-load JS per route class) and fail CI on regression.
 2. Audit `next/dynamic` candidates: modals (booking/score/replacement), charts,
@@ -209,6 +216,7 @@ regressions; cold-start E2E time reduced or explained.
 ### WS8 — Product & UX follow-ups (needs product sign-off)
 
 Explicitly deferred in Phase 23, now scoped for decisions:
+
 1. Marketing fallback numbers on the home stats strip (`10,000+`/`2,500+` when
    the stats API is down) vs the E2E contract "never fabricated numbers" —
    decide: real-only with skeleton, or labeled estimates.
@@ -253,13 +261,13 @@ without a failing-then-passing test or a before/after measurement.
 
 ## 7. Risks & mitigations
 
-| Risk | Mitigation |
-|---|---|
-| Perf work changes ranking/pricing behavior | Fixture parity tests first (as WS2.3 mandates); E2E journey as backstop |
-| Cache staleness shows wrong counts/fees | Short TTL + documented invalidation; never cache money paths |
+| Risk                                                 | Mitigation                                                                                      |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Perf work changes ranking/pricing behavior           | Fixture parity tests first (as WS2.3 mandates); E2E journey as backstop                         |
+| Cache staleness shows wrong counts/fees              | Short TTL + documented invalidation; never cache money paths                                    |
 | E2E in CI flakes (dev-compile cold starts seen: 55s) | Build-then-`next start` in CI instead of `next dev`; keep generous timeouts only where measured |
-| Alert fatigue | Alerts only on SLO burn + ledger/outbox integrity; everything else dashboards |
-| Scope creep into features | Non-goals enforced at batch planning; product items need sign-off (WS8) |
+| Alert fatigue                                        | Alerts only on SLO burn + ledger/outbox integrity; everything else dashboards                   |
+| Scope creep into features                            | Non-goals enforced at batch planning; product items need sign-off (WS8)                         |
 
 ## 8. Traceability
 

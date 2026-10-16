@@ -49,20 +49,20 @@ Phase 16 successfully implemented the public website and SEO subsystems in stric
 
 ## 2. Requirement Traceability Matrix (Phase 16 Scope)
 
-| Requirement ID | Requirement Name | Implementation Files | Test Suite | Verification Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-014** | **Public Web Portal & Search Engine Optimization** | `apps/web/src/app/[locale]/(public)/*`<br>`apps/web/src/app/[locale]/(admin)/*`<br>`apps/web/src/app/[locale]/(dashboard)/*`<br>`apps/web/src/app/sitemap.ts`<br>`apps/web/src/app/robots.ts` | `public-website-and-seo.spec.ts`<br>`i18n.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-001** | **No Cross-User Data Access (Private Field Exclusion)** | `apps/api/src/modules/tutors/tutors.service.ts`<br>`apps/api/src/modules/tutors/dto/tutor-public-profile.dto.ts` | `public-website-and-seo.spec.ts`<br>`tutors.service.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-004** | **Bilingual Bengali & English Localization** | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json` | `i18n.spec.ts`<br>`public-website-and-seo.spec.ts` | **COMPLETED & VERIFIED (100% Parity across 8 new namespaces)** |
+| Requirement ID | Requirement Name                                        | Implementation Files                                                                                                                                                                          | Test Suite                                                   | Verification Status                                            |
+| :------------- | :------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------- | :------------------------------------------------------------- |
+| **FR-014**     | **Public Web Portal & Search Engine Optimization**      | `apps/web/src/app/[locale]/(public)/*`<br>`apps/web/src/app/[locale]/(admin)/*`<br>`apps/web/src/app/[locale]/(dashboard)/*`<br>`apps/web/src/app/sitemap.ts`<br>`apps/web/src/app/robots.ts` | `public-website-and-seo.spec.ts`<br>`i18n.spec.ts`           | **COMPLETED & VERIFIED**                                       |
+| **NFR-001**    | **No Cross-User Data Access (Private Field Exclusion)** | `apps/api/src/modules/tutors/tutors.service.ts`<br>`apps/api/src/modules/tutors/dto/tutor-public-profile.dto.ts`                                                                              | `public-website-and-seo.spec.ts`<br>`tutors.service.spec.ts` | **COMPLETED & VERIFIED**                                       |
+| **NFR-004**    | **Bilingual Bengali & English Localization**            | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json`                                                                                                                                    | `i18n.spec.ts`<br>`public-website-and-seo.spec.ts`           | **COMPLETED & VERIFIED (100% Parity across 8 new namespaces)** |
 
 ---
 
 ## 3. Route Group & Layout Architecture Matrix
 
-| Route Group | Path Template | Layout Component | Rendered Shell Elements | Purpose |
-| :--- | :--- | :--- | :--- | :--- |
-| **`(public)`** | `/[locale]/[page]` | `(public)/layout.tsx` | Main `Navbar` + Page Content + Main `Footer` | Public marketing, tutor search, pricing, guidelines, policies |
-| **`(admin)`** | `/[locale]/admin`<br>`/[locale]/analytics` | `(admin)/layout.tsx` | Main `Navbar` + Admin Operations Sub-bar + Content + Main `Footer` | Super-admin control center, queues, audits, and operational analytics |
+| Route Group       | Path Template                                                        | Layout Component         | Rendered Shell Elements                                            | Purpose                                                                     |
+| :---------------- | :------------------------------------------------------------------- | :----------------------- | :----------------------------------------------------------------- | :-------------------------------------------------------------------------- |
+| **`(public)`**    | `/[locale]/[page]`                                                   | `(public)/layout.tsx`    | Main `Navbar` + Page Content + Main `Footer`                       | Public marketing, tutor search, pricing, guidelines, policies               |
+| **`(admin)`**     | `/[locale]/admin`<br>`/[locale]/analytics`                           | `(admin)/layout.tsx`     | Main `Navbar` + Admin Operations Sub-bar + Content + Main `Footer` | Super-admin control center, queues, audits, and operational analytics       |
 | **`(dashboard)`** | `/[locale]/learning`<br>`/[locale]/payments`<br>`/[locale]/sessions` | `(dashboard)/layout.tsx` | Main `Navbar` + Education Portal Sub-bar + Content + Main `Footer` | Authenticated student, guardian, and tutor study room, schedule, and ledger |
 
 ---
@@ -70,6 +70,7 @@ Phase 16 successfully implemented the public website and SEO subsystems in stric
 ## 4. Test Verification Suite Details
 
 ### 4.1 Frontend Public Website & SEO Tests (`apps/web/test/public-website-and-seo.spec.ts`)
+
 - **Sitemap Generation**: Confirms all 9 public routes are generated across both `bn` and `en` (18 URLs) with alternate language links.
 - **Robots.txt Rules**: Confirms `User-agent: *` allows public crawling of `/` and disallows sensitive paths (`/admin`, `/analytics`, `/payments`, `/api/*`).
 - **Dictionary Key Parity**: Confirms 100% key parity across all Phase 16 namespaces (`howItWorksPage`, `pricingPage`, `safetyPage`, `faqPage`, `contactPage`, `legalTermsPage`, `privacyPolicyPage`, `seo`).
@@ -78,6 +79,7 @@ Phase 16 successfully implemented the public website and SEO subsystems in stric
 - **Private Field Exclusion**: Confirms public tutor profile DTOs strictly exclude NID numbers, reviewer logs, and personal contact details.
 
 ### 4.2 Comprehensive Dictionary Key Parity Tests (`apps/web/test/i18n.spec.ts`)
+
 - Recursively traverses all keys in `bn.json` and `en.json`.
 - Confirms zero missing keys in either dictionary.
 

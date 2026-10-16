@@ -25,33 +25,33 @@ Phase 04 successfully established the production database foundation for OgroniE
 
 ## 2. Table Catalog Inventory (23 Tables Verified)
 
-| Domain | Table Name | Purpose & Key Constraints |
-| :--- | :--- | :--- |
-| **IAM & Auth** | `users` | User identities with `chk_user_contact_present` check constraint |
-| | `roles` | System roles (`student`, `guardian`, `tutor`, `admin`, `super_admin`) |
-| | `permissions` | Granular permission nodes (e.g., `tutor:verify`, `booking:create`) |
-| | `user_roles` | Many-to-many role assignments with foreign key cascading |
-| **Academic Hierarchy** | `curricula` | National & international curricula (NCTB, Cambridge, Madrasah) |
-| | `education_levels` | Classes 1–12, SSC, HSC, University Admission |
-| | `subjects` | Bangla, English, Mathematics, Physics, Chemistry, Biology, etc. |
-| **Relationships** | `guardian_student_links` | Multi-child management and guardian authorization |
-| **Tutors** | `tutor_profiles` | Verified credentials, bio, rate, status, badges |
-| | `tutor_subjects` | Subjects taught by verified tutors |
-| | `tutor_availabilities` | Weekly recurring availability windows |
-| **Bookings & Lessons** | `bookings` | Booking contracts between student/guardian and tutor |
-| | `booking_sessions` | Individual scheduled lessons with GiST `ex_tutor_session_overlap` |
-| | `session_attendance` | Verified attendance tracking with timestamps and dispute flags |
-| **Ledger & Accounting** | `ledger_accounts` | Double-entry asset, liability, equity, revenue, expense accounts |
-| | `ledger_journals` | Transaction journal headers with idempotency keys |
-| | `ledger_entries` | Individual debit and credit legs |
-| **Payments** | `payment_orders` | Orders created for bKash, Nagad, cards in minor units (Poisha) |
-| | `payment_transactions` | Gateway transaction records with provider reference numbers |
-| **Realtime & Outbox** | `notifications` | Notification records matching contracts schema |
-| | `notification_deliveries` | Channel delivery records (in-app, SMS, email) |
-| | `outbox_events` | Transactional outbox pattern for guaranteed messaging |
-| | `idempotency_keys` | API request deduplication cache |
-| | `audit_logs` | Immutable audit trail for administrative and sensitive operations |
-| **Versioning** | `schema_migrations` | Recorded executed schema migrations |
+| Domain                  | Table Name                | Purpose & Key Constraints                                             |
+| :---------------------- | :------------------------ | :-------------------------------------------------------------------- |
+| **IAM & Auth**          | `users`                   | User identities with `chk_user_contact_present` check constraint      |
+|                         | `roles`                   | System roles (`student`, `guardian`, `tutor`, `admin`, `super_admin`) |
+|                         | `permissions`             | Granular permission nodes (e.g., `tutor:verify`, `booking:create`)    |
+|                         | `user_roles`              | Many-to-many role assignments with foreign key cascading              |
+| **Academic Hierarchy**  | `curricula`               | National & international curricula (NCTB, Cambridge, Madrasah)        |
+|                         | `education_levels`        | Classes 1–12, SSC, HSC, University Admission                          |
+|                         | `subjects`                | Bangla, English, Mathematics, Physics, Chemistry, Biology, etc.       |
+| **Relationships**       | `guardian_student_links`  | Multi-child management and guardian authorization                     |
+| **Tutors**              | `tutor_profiles`          | Verified credentials, bio, rate, status, badges                       |
+|                         | `tutor_subjects`          | Subjects taught by verified tutors                                    |
+|                         | `tutor_availabilities`    | Weekly recurring availability windows                                 |
+| **Bookings & Lessons**  | `bookings`                | Booking contracts between student/guardian and tutor                  |
+|                         | `booking_sessions`        | Individual scheduled lessons with GiST `ex_tutor_session_overlap`     |
+|                         | `session_attendance`      | Verified attendance tracking with timestamps and dispute flags        |
+| **Ledger & Accounting** | `ledger_accounts`         | Double-entry asset, liability, equity, revenue, expense accounts      |
+|                         | `ledger_journals`         | Transaction journal headers with idempotency keys                     |
+|                         | `ledger_entries`          | Individual debit and credit legs                                      |
+| **Payments**            | `payment_orders`          | Orders created for bKash, Nagad, cards in minor units (Poisha)        |
+|                         | `payment_transactions`    | Gateway transaction records with provider reference numbers           |
+| **Realtime & Outbox**   | `notifications`           | Notification records matching contracts schema                        |
+|                         | `notification_deliveries` | Channel delivery records (in-app, SMS, email)                         |
+|                         | `outbox_events`           | Transactional outbox pattern for guaranteed messaging                 |
+|                         | `idempotency_keys`        | API request deduplication cache                                       |
+|                         | `audit_logs`              | Immutable audit trail for administrative and sensitive operations     |
+| **Versioning**          | `schema_migrations`       | Recorded executed schema migrations                                   |
 
 ---
 
@@ -81,6 +81,7 @@ $ pnpm --filter @ogroniedu/database test
 ```
 
 Full Monorepo Test Suite Result:
+
 - `@ogroniedu/database`: 8 tests passed
 - `@ogroniedu/api`: 33 tests passed
 - `@ogroniedu/web`: 20 tests passed

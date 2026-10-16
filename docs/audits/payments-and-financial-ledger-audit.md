@@ -38,7 +38,7 @@ Phase 11 successfully implemented the financial core and payment processing infr
    - Flags any order marked `succeeded` that lacks a verified transaction record, and flags any unbalance in system ledger accounts.
 7. **Frontend UI & Localization:**
    - Built [`PaymentCheckoutView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/payments/PaymentCheckoutView.tsx) with order summary, MFS gateway selectors (bKash, Nagad, SSLCOMMERZ), escrow accounting breakdown, sandbox disclaimer banner, and printable receipts.
-   - Routed at `/[locale]/payments` in [`apps/web/src/app/[locale]/(dashboard)/payments/page.tsx`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/app/[locale]/(dashboard)/payments/page.tsx).
+   - Routed at `/[locale]/payments` in [`apps/web/src/app/[locale]/(dashboard)/payments/page.tsx`](<file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/app/[locale]/(dashboard)/payments/page.tsx>).
    - Added `"payments"` namespace with 25 keys to both `messages/en.json` and `messages/bn.json` with 100% key parity and Bengali digit support.
 8. **Automated Verification:**
    - 34 new tests added across API, database, and web packages.
@@ -48,12 +48,12 @@ Phase 11 successfully implemented the financial core and payment processing infr
 
 ## 2. Requirement Traceability Matrix (Phase 11 Scope)
 
-| Requirement ID | Requirement Name | Implementation Files | Test Suite | Verification Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-010** | **Gateway Checkout & Double-Entry Ledger** | `apps/api/src/modules/payments/payments.service.ts`<br>`apps/api/src/modules/payments/ledger.service.ts`<br>`apps/api/src/modules/payments/payments.controller.ts`<br>`apps/web/src/components/payments/PaymentCheckoutView.tsx`<br>`apps/web/src/app/[locale]/(dashboard)/payments/page.tsx` | `ledger.service.spec.ts`<br>`payments.service.spec.ts`<br>`payments.controller.spec.ts`<br>`payments.spec.ts`<br>`migration.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-001** | **No Cross-User Data Access (Ownership Checks)** | `payments.service.ts` (`payerUserId`, `guardianUserId` validation) | `payments.service.spec.ts`<br>`payments.controller.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-002** | **Concurrency & Idempotency** | `PaymentOrderEntity.idempotencyKey`<br>`LedgerJournalEntity.idempotencyKey`<br>`PaymentTransactionEntity.providerEventId` | `ledger.service.spec.ts`<br>`payments.service.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-004** | **Bilingual Bengali & English** | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json` | `i18n.spec.ts`<br>`payments.spec.ts` | **COMPLETED & VERIFIED (100% Key Parity)** |
+| Requirement ID | Requirement Name                                 | Implementation Files                                                                                                                                                                                                                                                                          | Test Suite                                                                                                                           | Verification Status                        |
+| :------------- | :----------------------------------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------- |
+| **FR-010**     | **Gateway Checkout & Double-Entry Ledger**       | `apps/api/src/modules/payments/payments.service.ts`<br>`apps/api/src/modules/payments/ledger.service.ts`<br>`apps/api/src/modules/payments/payments.controller.ts`<br>`apps/web/src/components/payments/PaymentCheckoutView.tsx`<br>`apps/web/src/app/[locale]/(dashboard)/payments/page.tsx` | `ledger.service.spec.ts`<br>`payments.service.spec.ts`<br>`payments.controller.spec.ts`<br>`payments.spec.ts`<br>`migration.spec.ts` | **COMPLETED & VERIFIED**                   |
+| **NFR-001**    | **No Cross-User Data Access (Ownership Checks)** | `payments.service.ts` (`payerUserId`, `guardianUserId` validation)                                                                                                                                                                                                                            | `payments.service.spec.ts`<br>`payments.controller.spec.ts`                                                                          | **COMPLETED & VERIFIED**                   |
+| **NFR-002**    | **Concurrency & Idempotency**                    | `PaymentOrderEntity.idempotencyKey`<br>`LedgerJournalEntity.idempotencyKey`<br>`PaymentTransactionEntity.providerEventId`                                                                                                                                                                     | `ledger.service.spec.ts`<br>`payments.service.spec.ts`                                                                               | **COMPLETED & VERIFIED**                   |
+| **NFR-004**    | **Bilingual Bengali & English**                  | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json`                                                                                                                                                                                                                                    | `i18n.spec.ts`<br>`payments.spec.ts`                                                                                                 | **COMPLETED & VERIFIED (100% Key Parity)** |
 
 ---
 
@@ -113,25 +113,28 @@ $$ LANGUAGE plpgsql;
 
 The chart of accounts in `ledger_accounts` follows standard double-entry bookkeeping:
 
-| Account Code | Account Name | Type | Normal Balance | Purpose |
-| :--- | :--- | :--- | :--- | :--- |
-| **1000** | Escrow Holding Pool | Asset | Debit | Digital wallet funds held in trust with payment provider / bank |
-| **2000** | Tutor Earnings Payable | Liability | Credit | Accrued balance owed to tutors upon milestone completion |
-| **2100** | Student Advance Escrow Deposit | Liability | Credit | Advance tuition funds collected from students awaiting lesson delivery |
-| **4000** | Tutoring Platform Service Fee | Revenue | Credit | 8% non-refundable platform commission on completed tutoring sessions |
+| Account Code | Account Name                   | Type      | Normal Balance | Purpose                                                                |
+| :----------- | :----------------------------- | :-------- | :------------- | :--------------------------------------------------------------------- |
+| **1000**     | Escrow Holding Pool            | Asset     | Debit          | Digital wallet funds held in trust with payment provider / bank        |
+| **2000**     | Tutor Earnings Payable         | Liability | Credit         | Accrued balance owed to tutors upon milestone completion               |
+| **2100**     | Student Advance Escrow Deposit | Liability | Credit         | Advance tuition funds collected from students awaiting lesson delivery |
+| **4000**     | Tutoring Platform Service Fee  | Revenue   | Credit         | 8% non-refundable platform commission on completed tutoring sessions   |
 
 ### Journal Posting 1: Initial Payment Succeeded (Advance Escrow Deposit)
+
 - `Debit 1000 (Escrow Holding Pool)`: +100,000 poisha (৳1,000.00)
 - `Credit 2100 (Student Advance Escrow Deposit)`: +100,000 poisha (৳1,000.00)
 - **Net Invariant Check:** 100,000 Debits = 100,000 Credits. Difference: 0.
 
 ### Journal Posting 2: Session Milestone Settlement (Lesson Delivered)
+
 - `Debit 2100 (Student Advance Escrow Deposit)`: -100,000 poisha (Escrow liability cleared)
 - `Credit 2000 (Tutor Earnings Payable)`: +92,000 poisha (৳920.00 - 92% tutor payout liability)
 - `Credit 4000 (Tutoring Platform Service Fee)`: +8,000 poisha (৳80.00 - 8% platform revenue)
 - **Net Invariant Check:** 100,000 Debits = 92,000 + 8,000 Credits. Difference: 0.
 
 ### Journal Posting 3: Operational Refund
+
 - `Debit 2100 (Student Advance Escrow Deposit)`: -100,000 poisha (Liability reduced)
 - `Credit 1000 (Escrow Holding Pool)`: -100,000 poisha (Asset reduced)
 - **Net Invariant Check:** 100,000 Debits = 100,000 Credits. Difference: 0.
@@ -141,6 +144,7 @@ The chart of accounts in `ledger_accounts` follows standard double-entry bookkee
 ## 5. Automated Verification Results
 
 ### Test Suite Execution Summary
+
 - **Database Package:** 10 passed, 0 failed (`pnpm --filter @ogroniedu/database test`)
 - **API Package:** 223 passed, 0 failed across 25 test files (`pnpm --filter @ogroniedu/api test`)
 - **Web Package:** 41 passed, 0 failed across 10 test files (`pnpm --filter @ogroniedu/web test`)

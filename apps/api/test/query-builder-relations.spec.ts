@@ -46,9 +46,10 @@ function relationMap(): Map<string, { props: Set<string>; targets: Map<string, E
     const entry = out.get(target.name);
     if (!entry) continue;
     entry.props.add(rel.propertyName);
-    const type = typeof rel.type === 'function' && !('name' in rel.type && (rel.type as EntityCtor).name)
-      ? (rel.type as () => EntityCtor)()
-      : (rel.type as EntityCtor);
+    const type =
+      typeof rel.type === 'function' && !('name' in rel.type && (rel.type as EntityCtor).name)
+        ? (rel.type as () => EntityCtor)()
+        : (rel.type as EntityCtor);
     entry.targets.set(rel.propertyName, type);
   }
   return out;
@@ -127,7 +128,13 @@ describe('query-builder join paths reference real relations', () => {
     const relations = relationMap();
     const booking = relations.get('BookingEntity');
     expect(booking).toBeDefined();
-    for (const rel of ['requesterUser', 'studentUser', 'tutorProfile', 'subject', 'educationLevel']) {
+    for (const rel of [
+      'requesterUser',
+      'studentUser',
+      'tutorProfile',
+      'subject',
+      'educationLevel',
+    ]) {
       expect(booking!.props.has(rel), `BookingEntity must expose '${rel}'`).toBe(true);
     }
   });

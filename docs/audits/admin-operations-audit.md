@@ -70,11 +70,11 @@ Phase 14 successfully implemented the Admin Operations and Privileged Governance
 
 ## 2. Requirement Traceability Matrix (Phase 14 Scope)
 
-| Requirement ID | Requirement Name | Implementation Files | Test Suite | Verification Status |
-| :--- | :--- | :--- | :--- | :--- |
-| **FR-012** | **Permission-Gated Admin Operations & Auditing** | `apps/api/src/modules/admin/admin-operations.service.ts`<br>`apps/api/src/modules/admin/admin-operations.controller.ts`<br>`apps/api/src/modules/admin/admin.module.ts`<br>`apps/api/src/modules/admin/entities/*`<br>`apps/api/src/modules/admin/dto/*`<br>`apps/web/src/components/admin/AdminDashboardView.tsx`<br>`apps/web/src/app/[locale]/admin/page.tsx` | `admin-operations.spec.ts`<br>`admin-operations.controller.spec.ts`<br>`admin-operations.spec.ts` (web)<br>`migration.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-001** | **No Cross-User Data Access (Least-Privilege RBAC & RolesGuard)** | `apps/api/src/common/guards/roles.guard.ts`<br>`apps/api/src/common/guards/auth.guard.ts`<br>`admin-operations.controller.ts` | `admin-operations.controller.spec.ts`<br>`admin-operations.spec.ts` | **COMPLETED & VERIFIED** |
-| **NFR-004** | **Bilingual Bengali & English** | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json` | `admin-operations.spec.ts` (web) | **COMPLETED & VERIFIED (47/47 Key Parity)** |
+| Requirement ID | Requirement Name                                                  | Implementation Files                                                                                                                                                                                                                                                                                                                                             | Test Suite                                                                                                                     | Verification Status                         |
+| :------------- | :---------------------------------------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------ |
+| **FR-012**     | **Permission-Gated Admin Operations & Auditing**                  | `apps/api/src/modules/admin/admin-operations.service.ts`<br>`apps/api/src/modules/admin/admin-operations.controller.ts`<br>`apps/api/src/modules/admin/admin.module.ts`<br>`apps/api/src/modules/admin/entities/*`<br>`apps/api/src/modules/admin/dto/*`<br>`apps/web/src/components/admin/AdminDashboardView.tsx`<br>`apps/web/src/app/[locale]/admin/page.tsx` | `admin-operations.spec.ts`<br>`admin-operations.controller.spec.ts`<br>`admin-operations.spec.ts` (web)<br>`migration.spec.ts` | **COMPLETED & VERIFIED**                    |
+| **NFR-001**    | **No Cross-User Data Access (Least-Privilege RBAC & RolesGuard)** | `apps/api/src/common/guards/roles.guard.ts`<br>`apps/api/src/common/guards/auth.guard.ts`<br>`admin-operations.controller.ts`                                                                                                                                                                                                                                    | `admin-operations.controller.spec.ts`<br>`admin-operations.spec.ts`                                                            | **COMPLETED & VERIFIED**                    |
+| **NFR-004**    | **Bilingual Bengali & English**                                   | `apps/web/messages/en.json`<br>`apps/web/messages/bn.json`                                                                                                                                                                                                                                                                                                       | `admin-operations.spec.ts` (web)                                                                                               | **COMPLETED & VERIFIED (47/47 Key Parity)** |
 
 ---
 
@@ -103,7 +103,7 @@ CREATE TABLE IF NOT EXISTS feature_flags (
 
 -- 3. Default Operational Settings Seed
 INSERT INTO system_settings (key, value, description)
-VALUES 
+VALUES
     ('platform_fee_percent', '{"percent": 8}'::jsonb, 'Platform commission fee percentage deducted upon session milestone completion'),
     ('cancellation_window_hours', '{"hours": 24}'::jsonb, 'Minimum hours before session for 100% guardian cancellation refund'),
     ('replacement_guarantee_trial_hours', '{"hours": 48}'::jsonb, 'Time window after trial session to invoke 100% tutor replacement guarantee'),
@@ -112,7 +112,7 @@ ON CONFLICT (key) DO NOTHING;
 
 -- 4. Default Feature Flags Seed
 INSERT INTO feature_flags (key, enabled, rules)
-VALUES 
+VALUES
     ('emergency_maintenance_mode', false, '{"allowRoles": ["admin", "super_admin"]}'::jsonb),
     ('instant_replacement_matching', true, '{}'::jsonb),
     ('strict_pnr_verification', true, '{}'::jsonb)
@@ -123,25 +123,26 @@ ON CONFLICT (key) DO NOTHING;
 
 ## 4. Security, Least Privilege & Impersonation Verification
 
-| Privileged Action | Minimum Allowed Role | Denied Roles | Audit Action Emitted | Invariant Enforced |
-| :--- | :--- | :--- | :--- | :--- |
-| **View Operational Dashboard** | `admin`, `super_admin` | `student`, `guardian`, `tutor`, `support_agent` | None (Read-only aggregate) | Aggregated queue counts; zero private PII leakage |
-| **View User Dossier** | `admin`, `super_admin` | `student`, `guardian`, `tutor` | None (Direct query) | Password hashes omitted, audit history secrets redacted |
-| **Suspend User Account** | `admin`, `super_admin` | `student`, `guardian`, `tutor`, `support_agent` | `admin.user.suspended` | Cannot suspend self; admin cannot suspend super_admin |
-| **Reactivate User Account** | `admin`, `super_admin` | `student`, `guardian`, `tutor` | `admin.user.reactivated` | Target must exist; status set to active |
-| **Update User Roles** | `super_admin` | `admin`, `support_agent`, `tutor`, `guardian`, `student` | `admin.user_roles.updated` | Least-privilege super_admin only; protects sole remaining super_admin |
-| **Emergency Cancel Booking** | `admin`, `super_admin` | `student`, `guardian`, `tutor` | `admin.booking.emergency_cancelled` | Booking cancelled; optional ledger escrow reversal issued |
-| **Inspect Financial Reconciliation** | `admin`, `super_admin` | `student`, `guardian`, `tutor` | `admin.ledger.reconciliation_inspected` | Double-entry balance invariant checked; discrepancy alerting |
-| **Update System Settings** | `super_admin` | `admin`, all non-admins | `admin.system_setting.updated` | Super-admin only; JSON value validated and audited |
-| **Update Feature Flags** | `super_admin` | `admin`, all non-admins | `admin.feature_flag.updated` | Super-admin only; enables maintenance mode / canaries |
-| **Start User Impersonation** | `super_admin` | `admin`, all non-admins | `admin.impersonation_started` | Max 15 minutes limit; cannot impersonate super_admin; mandatory justification; signed token carries impersonator ID |
-| **Query Audit Logs** | `admin`, `super_admin` | `student`, `guardian`, `tutor` | None (Audit inspection) | Recursive redaction masks all tokens, passwords, card PANs, secrets |
+| Privileged Action                    | Minimum Allowed Role   | Denied Roles                                             | Audit Action Emitted                    | Invariant Enforced                                                                                                  |
+| :----------------------------------- | :--------------------- | :------------------------------------------------------- | :-------------------------------------- | :------------------------------------------------------------------------------------------------------------------ |
+| **View Operational Dashboard**       | `admin`, `super_admin` | `student`, `guardian`, `tutor`, `support_agent`          | None (Read-only aggregate)              | Aggregated queue counts; zero private PII leakage                                                                   |
+| **View User Dossier**                | `admin`, `super_admin` | `student`, `guardian`, `tutor`                           | None (Direct query)                     | Password hashes omitted, audit history secrets redacted                                                             |
+| **Suspend User Account**             | `admin`, `super_admin` | `student`, `guardian`, `tutor`, `support_agent`          | `admin.user.suspended`                  | Cannot suspend self; admin cannot suspend super_admin                                                               |
+| **Reactivate User Account**          | `admin`, `super_admin` | `student`, `guardian`, `tutor`                           | `admin.user.reactivated`                | Target must exist; status set to active                                                                             |
+| **Update User Roles**                | `super_admin`          | `admin`, `support_agent`, `tutor`, `guardian`, `student` | `admin.user_roles.updated`              | Least-privilege super_admin only; protects sole remaining super_admin                                               |
+| **Emergency Cancel Booking**         | `admin`, `super_admin` | `student`, `guardian`, `tutor`                           | `admin.booking.emergency_cancelled`     | Booking cancelled; optional ledger escrow reversal issued                                                           |
+| **Inspect Financial Reconciliation** | `admin`, `super_admin` | `student`, `guardian`, `tutor`                           | `admin.ledger.reconciliation_inspected` | Double-entry balance invariant checked; discrepancy alerting                                                        |
+| **Update System Settings**           | `super_admin`          | `admin`, all non-admins                                  | `admin.system_setting.updated`          | Super-admin only; JSON value validated and audited                                                                  |
+| **Update Feature Flags**             | `super_admin`          | `admin`, all non-admins                                  | `admin.feature_flag.updated`            | Super-admin only; enables maintenance mode / canaries                                                               |
+| **Start User Impersonation**         | `super_admin`          | `admin`, all non-admins                                  | `admin.impersonation_started`           | Max 15 minutes limit; cannot impersonate super_admin; mandatory justification; signed token carries impersonator ID |
+| **Query Audit Logs**                 | `admin`, `super_admin` | `student`, `guardian`, `tutor`                           | None (Audit inspection)                 | Recursive redaction masks all tokens, passwords, card PANs, secrets                                                 |
 
 ---
 
 ## 5. Test Execution & Verification Evidence
 
 ### Commands Executed & Real Outcomes:
+
 ```bash
 # 1. Database Package Test & Migration Run
 $ pnpm --filter @ogroniedu/database test

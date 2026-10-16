@@ -8,7 +8,7 @@
  */
 export function normalizePhone(rawPhone?: string | null): string | null {
   if (!rawPhone) return null;
-  const cleaned = rawPhone.trim().replace(/[\s\-\(\)]/g, '');
+  const cleaned = rawPhone.trim().replace(/[\s\-()]/g, '');
   if (!cleaned) return null;
 
   // Bangladeshi standard: 01[3-9]XXXXXXXX (11 digits)
@@ -35,7 +35,7 @@ export function normalizePhone(rawPhone?: string | null): string | null {
  * e.g. for "01711000003": returns ["+8801711000003", "01711000003", "8801711000003"]
  */
 export function getPhoneSearchCandidates(rawPhone: string): string[] {
-  const cleaned = rawPhone.trim().replace(/[\s\-\(\)]/g, '');
+  const cleaned = rawPhone.trim().replace(/[\s\-()]/g, '');
   const candidates = new Set<string>();
   candidates.add(rawPhone.trim());
   candidates.add(cleaned);

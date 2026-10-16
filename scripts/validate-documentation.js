@@ -43,7 +43,13 @@ for (const filePath of docsFiles) {
   const linkRegex = /\]\(((?:[^()]+|\([^()]*\))+)\)/g;
   let match;
   while ((match = linkRegex.exec(text)) !== null) {
-    const target = match[1];
+    // CommonMark allows wrapping a destination in angle brackets; Prettier
+    // emits that form when the target itself contains parentheses (e.g.
+    // Next.js route-group paths). Unwrap before resolving.
+    let target = match[1].trim();
+    if (target.length > 2 && target.startsWith('<') && target.endsWith('>')) {
+      target = target.slice(1, -1);
+    }
     if (target.startsWith('http://') || target.startsWith('https://') || target.startsWith('mailto:') || target.startsWith('#')) {
       continue;
     }
