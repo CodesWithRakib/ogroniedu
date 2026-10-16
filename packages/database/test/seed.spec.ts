@@ -97,8 +97,25 @@ describe('Database Seed Runner & Idempotency Tests', () => {
   });
 
   it('PRODUCTION SAFETY INVARIANT: should never seed demo users when isProduction is true', async () => {
-    // Delete demo users in test db to verify isolated production seed execution
-    await client.query("DELETE FROM users WHERE email LIKE '%@ogroniedu.com';");
+    // Clean up dependent child tables before deleting demo users to satisfy foreign key constraints
+    await client.query(`
+      DELETE FROM session_attendance;
+      DELETE FROM booking_messages;
+      DELETE FROM safety_reports;
+      DELETE FROM reviews;
+      DELETE FROM support_tickets;
+      DELETE FROM tutor_replacement_cases;
+      DELETE FROM payment_refunds;
+      DELETE FROM payment_transactions;
+      DELETE FROM payment_orders;
+      DELETE FROM booking_sessions;
+      DELETE FROM bookings;
+      DELETE FROM guardian_student_links;
+      DELETE FROM tutor_profiles;
+      DELETE FROM student_profiles;
+      DELETE FROM user_roles;
+      DELETE FROM users WHERE email LIKE '%@ogroniedu.com';
+    `);
 
     await seedRunner.runSeeds({ isProduction: true });
 
