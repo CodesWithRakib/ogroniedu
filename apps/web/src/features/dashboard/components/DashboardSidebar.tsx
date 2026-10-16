@@ -26,6 +26,8 @@ const ROLE_HEADER_TITLES: Record<string, { bn: string; en: string }> = {
   guardian: { bn: 'অভিভাবক পোর্টাল', en: 'Guardian Portal' },
   admin: { bn: 'অ্যাডমিন পোর্টাল', en: 'Admin Portal' },
   super_admin: { bn: 'সুপার অ্যাডমিন', en: 'Super Admin Portal' },
+  support_agent: { bn: 'সাপোর্ট কনসোল', en: 'Support Console' },
+  compliance_reviewer: { bn: 'কমপ্লায়েন্স কনসোল', en: 'Compliance Console' },
 };
 
 export function DashboardSidebar({

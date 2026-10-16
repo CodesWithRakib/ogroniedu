@@ -9,6 +9,8 @@ import type { Locale } from '@/lib/i18n';
 export interface RoleDashboardLayoutProps {
   children: React.ReactNode;
   role: UserRole;
+  /** Roles allowed past the route gate; defaults to the nominal `role`. */
+  allow?: UserRole[];
   locale: Locale;
   title?: string;
   subtitle?: string;
@@ -18,13 +20,14 @@ export interface RoleDashboardLayoutProps {
 export function RoleDashboardLayout({
   children,
   role,
+  allow,
   locale,
   title,
   subtitle,
   actions,
 }: RoleDashboardLayoutProps) {
   return (
-    <RequireRole locale={locale} allow={[role]}>
+    <RequireRole locale={locale} allow={allow ?? [role]}>
       <DashboardShell
         locale={locale}
         role={role}

@@ -48,7 +48,13 @@ export function DashboardShell({
   const authUser = useAppSelector((s) => s.auth.user);
   const refreshToken = useAppSelector((s) => s.auth.refreshToken);
 
-  const activeRole: UserRole | null = roleOverride ?? primaryRole(authUser?.roles);
+  // The layout's nominal role is only used for nav selection when the signed-in
+  // user actually holds it; shared surfaces (e.g. the admin console, which also
+  // admits support/compliance staff) must not inherit unrelated nav items (F-7).
+  const activeRole: UserRole | null =
+    roleOverride && authUser?.roles?.includes(roleOverride)
+      ? roleOverride
+      : primaryRole(authUser?.roles);
   const items = navForRole(activeRole);
   const isBn = locale === 'bn';
 

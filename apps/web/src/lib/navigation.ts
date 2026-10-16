@@ -263,12 +263,7 @@ export function navForRole(role: UserRole | null): NavItem[] {
       },
     ];
   }
-  if (
-    role === 'admin' ||
-    role === 'super_admin' ||
-    role === 'support_agent' ||
-    role === 'compliance_reviewer'
-  ) {
+  if (role === 'admin' || role === 'super_admin') {
     return [
       {
         href: '/dashboard/admin',
@@ -318,6 +313,21 @@ export function navForRole(role: UserRole | null): NavItem[] {
         labelEn: 'Settings',
         icon: UserCog,
         testId: 'nav-settings',
+      },
+    ];
+  }
+  // Support & compliance staff can open the /admin console (they hold a role in
+  // its gate) but none of the /dashboard/admin/* sub-routes, whose gate they
+  // would fail and bounce back through /dashboard (F-7). Keep their nav to the
+  // one surface they can open.
+  if (role === 'support_agent' || role === 'compliance_reviewer') {
+    return [
+      {
+        href: '/admin',
+        labelBn: role === 'support_agent' ? 'সাপোর্ট কনসোল' : 'কমপ্লায়েন্স কনসোল',
+        labelEn: role === 'support_agent' ? 'Support Console' : 'Compliance Console',
+        icon: ShieldCheck,
+        testId: 'nav-admin',
       },
     ];
   }
@@ -392,6 +402,36 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
       descEn: '⚡ 99.99% uptime & secure',
       icon: ShieldCheck,
       accentColor: 'text-violet-500',
+    },
+  },
+  support_agent: {
+    badgeBn: 'সাপোর্ট কনসোল',
+    badgeEn: 'Support Console',
+    badgeClasses: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/25',
+    portalTitleBn: 'সাপোর্ট কনসোল',
+    portalTitleEn: 'Support Console',
+    widget: {
+      titleBn: 'সাপোর্ট কিউ',
+      titleEn: 'Support Queue',
+      descBn: 'টিকিট ট্রায়াজ ও এসএলএ ট্র্যাকিং',
+      descEn: 'Ticket triage & SLA tracking',
+      icon: MessageSquare,
+      accentColor: 'text-sky-500',
+    },
+  },
+  compliance_reviewer: {
+    badgeBn: 'কমপ্লায়েন্স কনসোল',
+    badgeEn: 'Compliance Console',
+    badgeClasses: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25',
+    portalTitleBn: 'কমপ্লায়েন্স কনসোল',
+    portalTitleEn: 'Compliance Console',
+    widget: {
+      titleBn: 'কমপ্লায়েন্স রিভিউ',
+      titleEn: 'Compliance Review',
+      descBn: 'নীতিমালা ও ডেটা-রিটেনশন পর্যবেক্ষণ',
+      descEn: 'Policy & data-retention oversight',
+      icon: ShieldCheck,
+      accentColor: 'text-rose-500',
     },
   },
 };

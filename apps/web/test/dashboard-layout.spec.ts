@@ -235,5 +235,21 @@ describe('Role Dashboard Architecture & Layout Tests', () => {
       expect(hrefs).toContain('/dashboard/admin/disputes');
       expect(hrefs).toContain('/dashboard/admin/users');
     });
+
+    it('splits admin-family nav by the routes each role can actually open (F-7)', () => {
+      // super_admin shares every /dashboard/admin/* gate with admin.
+      const superAdminHrefs = navForRole('super_admin').map((i) => i.href);
+      expect(superAdminHrefs).toContain('/dashboard/admin');
+      expect(superAdminHrefs).toContain('/dashboard/admin/users');
+      expect(superAdminHrefs).toContain('/admin?tab=audit');
+
+      // support_agent / compliance_reviewer fail the /dashboard/admin/* gate
+      // (admin + super_admin only), so their nav must not offer those routes —
+      // only the /admin console surface they can open.
+      for (const role of ['support_agent', 'compliance_reviewer'] as const) {
+        const items = navForRole(role);
+        expect(items.map((i) => i.href)).toEqual(['/admin']);
+      }
+    });
   });
 });

@@ -15,7 +15,7 @@ export default function AdminDashboardLayout({
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
 
   return (
-    <RoleDashboardLayout role="admin" locale={locale}>
+    <RoleDashboardLayout role="admin" allow={['admin', 'super_admin']} locale={locale}>
       {children}
     </RoleDashboardLayout>
   );
