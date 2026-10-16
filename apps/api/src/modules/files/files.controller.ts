@@ -60,6 +60,9 @@ export class FilesController {
         storageProvider: file.storageProvider,
         // Secure access granted
         accessGranted: true,
+        signedAccessUrl: file.signedAccessUrl,
+        signedAccessToken: file.signedAccessToken,
+        expiresAt: file.expiresAt,
       },
     };
   }

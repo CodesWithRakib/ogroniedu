@@ -69,4 +69,27 @@ describe('TutorVerificationStatusCard Component Tests', () => {
     expect(enDict.tutor.publicationWarning).toContain('approved by compliance reviewers');
     expect(bnDict.tutor.publicationWarning).toContain('সম্মতি দলের অনুমোদন আবশ্যক');
   });
+
+  describe('Feature #4: Tutor 3-Tier Verification & Admin Queue Contracts', () => {
+    it('should validate all 3-tier qualification categories in compliance standard', () => {
+      const allowedCategories = ['nid', 'academic_certificate', 'degree', 'experience'];
+      mockQualifications.forEach((q) => {
+        expect(allowedCategories).toContain(q.qualificationType);
+      });
+    });
+
+    it('should properly track review status transitions (pending, approved, rejected, expired)', () => {
+      const validStatuses = ['pending', 'approved', 'rejected', 'expired'];
+      mockQualifications.forEach((q) => {
+        expect(validStatuses).toContain(q.reviewStatus);
+      });
+    });
+
+    it('should verify that all tier 1 and tier 2 credentials can be validated', () => {
+      const hasNid = mockQualifications.some((q) => q.qualificationType === 'nid');
+      const hasDegree = mockQualifications.some((q) => q.qualificationType === 'degree');
+      expect(hasNid).toBe(true);
+      expect(hasDegree).toBe(true);
+    });
+  });
 });

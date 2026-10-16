@@ -72,7 +72,12 @@ export class TutorVerificationService {
   async getReviewDossier(tutorId: string) {
     const profile = await this.profileRepo.findOne({
       where: { userId: tutorId },
-      relations: { qualifications: true, subjects: true, serviceAreas: true, availabilities: true },
+      relations: {
+        qualifications: { evidenceAsset: true },
+        subjects: true,
+        serviceAreas: true,
+        availabilities: true,
+      },
     });
     if (!profile) {
       throw new NotFoundException(`Tutor profile not found for user: ${tutorId}`);

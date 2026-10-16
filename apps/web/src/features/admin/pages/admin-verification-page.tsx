@@ -88,6 +88,7 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
             queryError={admin.pendingTutorsError}
             onRetry={admin.refetchPendingTutors}
             onReview={admin.onReviewTutor}
+            onVerifyQualification={admin.onVerifyQualification}
           />
         </div>
       </div>

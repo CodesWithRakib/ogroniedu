@@ -33,6 +33,7 @@ import { ErrorState } from '@/components/shared/ErrorState';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
 import { withLocale } from '@/lib/auth';
+import { playAudioTone } from '@/lib/audio/notification-sound';
 import {
   useGetOwnTutorProfileQuery,
   useSubmitTutorVerificationMutation,
@@ -107,6 +108,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
     setSuccessMessage(null);
     try {
       await submitVerification().unwrap();
+      playAudioTone('chime');
       setSuccessMessage(
         isBn
           ? 'আপনার প্রোফাইল পর্যালোচনার জন্য জমা দেওয়া হয়েছে। আমাদের কমপ্লায়েন্স টিম ২৪ ঘণ্টার মধ্যে যাচাই সম্পন্ন করবে।'
@@ -124,6 +126,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
     const targetStatus = publicationStatus === 'published' ? 'draft' : 'published';
     try {
       await setPublication({ publicationStatus: targetStatus }).unwrap();
+      playAudioTone(targetStatus === 'published' ? 'success' : 'chime');
       setSuccessMessage(
         targetStatus === 'published'
           ? isBn
@@ -153,6 +156,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
     setSuccessMessage(null);
     try {
       await deleteQualification(id).unwrap();
+      playAudioTone('alert');
       setSuccessMessage(
         isBn ? 'সনদ সফলভাবে মুছে ফেলা হয়েছে।' : 'Qualification deleted successfully.',
       );

@@ -11,3 +11,4 @@ export * from './trust.js';
 export * from './support.js';
 export * from './admin.js';
 export * from './analytics-files.js';
+export * from './tutors.js';

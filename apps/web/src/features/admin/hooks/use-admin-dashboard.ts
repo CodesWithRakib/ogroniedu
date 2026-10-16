@@ -21,6 +21,7 @@ import {
   useUpdateSupportTicketMutation,
   useGetPendingTutorsQuery,
   useReviewTutorMutation,
+  useVerifyTutorQualificationMutation,
   type TutorReviewDecision,
 } from '@/store/services/admin-api';
 import {
@@ -72,6 +73,7 @@ export function useAdminDashboard(locale: Locale) {
   const [startImpersonation] = useStartImpersonationMutation();
   const [updateTicket] = useUpdateSupportTicketMutation();
   const [reviewTutor] = useReviewTutorMutation();
+  const [verifyQualification] = useVerifyTutorQualificationMutation();
 
   const loading = dashboard.isLoading || usersQuery.isLoading || bookingsQuery.isLoading;
   const queryError = dashboard.isError
@@ -165,6 +167,16 @@ export function useAdminDashboard(locale: Locale) {
         internalNotes?: string;
       }) => {
         await reviewTutor(input).unwrap();
+        pendingTutorsQuery.refetch();
+      },
+    ),
+    onVerifyQualification: wrap(
+      async (input: {
+        tutorId: string;
+        qualificationId: string;
+        reviewStatus: 'approved' | 'rejected';
+      }) => {
+        await verifyQualification(input).unwrap();
         pendingTutorsQuery.refetch();
       },
     ),

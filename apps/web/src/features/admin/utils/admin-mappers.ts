@@ -100,13 +100,23 @@ export function mapDossierQualifications(value: unknown): TutorDossierQualificat
   if (!Array.isArray(value)) return [];
   return (value as UnknownRecord[])
     .filter((q) => typeof q === 'object' && q !== null)
-    .map((q) => ({
-      id: String(q.id ?? ''),
-      title: str(q.title),
-      qualificationType: str(q.qualificationType, 'other'),
-      institution: strOrNull(q.institution),
-      reviewStatus: str(q.reviewStatus, 'pending'),
-    }))
+    .map((q) => {
+      const evidence =
+        typeof q.evidenceAsset === 'object' && q.evidenceAsset !== null
+          ? (q.evidenceAsset as UnknownRecord)
+          : null;
+      return {
+        id: String(q.id ?? ''),
+        title: str(q.title),
+        qualificationType: str(q.qualificationType, 'other'),
+        institution: strOrNull(q.institution),
+        reviewStatus: str(q.reviewStatus, 'pending'),
+        issuedYear: typeof q.issuedYear === 'number' ? q.issuedYear : null,
+        evidenceAssetId: strOrNull(q.evidenceAssetId),
+        evidenceFilename: evidence ? strOrNull(evidence.originalFilename) : null,
+        evidenceMediaType: evidence ? strOrNull(evidence.mediaType) : null,
+      };
+    })
     .filter((q) => q.id);
 }
 

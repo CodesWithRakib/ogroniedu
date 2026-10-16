@@ -36,6 +36,10 @@ export interface TutorDossierQualification {
   qualificationType: string;
   institution: string | null;
   reviewStatus: string;
+  issuedYear?: number | null;
+  evidenceAssetId?: string | null;
+  evidenceFilename?: string | null;
+  evidenceMediaType?: string | null;
 }
 
 export interface TutorReviewHistoryEntry {

@@ -21,6 +21,20 @@ export interface EvidenceFile {
   createdAt: string;
 }
 
+export interface FileAccessRecord {
+  id: string;
+  originalFilename: string;
+  mediaType: string;
+  sizeBytes: number;
+  purpose: string;
+  visibility: string;
+  storageProvider?: string;
+  accessGranted: boolean;
+  signedAccessUrl?: string;
+  signedAccessToken?: string;
+  expiresAt?: string;
+}
+
 export const filesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     uploadEvidence: builder.mutation<
@@ -30,7 +44,7 @@ export const filesApi = baseApi.injectEndpoints({
       query: (body) => ({ url: '/api/v1/files/upload-evidence', method: 'POST', body }),
       invalidatesTags: [{ type: 'FileAsset', id: 'LIST' }],
     }),
-    getFileAccess: builder.query<ApiSuccessEnvelope<unknown>, string>({
+    getFileAccess: builder.query<{ success: boolean; file: FileAccessRecord }, string>({
       query: (fileId) => `/api/v1/files/${fileId}/access`,
       providesTags: (_r, _e, fileId) => [{ type: 'FileAsset', id: fileId }],
     }),
@@ -38,4 +52,4 @@ export const filesApi = baseApi.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useUploadEvidenceMutation, useGetFileAccessQuery } = filesApi;
+export const { useUploadEvidenceMutation, useGetFileAccessQuery, useLazyGetFileAccessQuery } = filesApi;

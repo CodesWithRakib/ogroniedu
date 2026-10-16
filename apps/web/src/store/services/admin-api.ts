@@ -227,6 +227,20 @@ export const adminApi = baseApi.injectEndpoints({
         { type: 'AdminDashboard', id: 'SUMMARY' },
       ],
     }),
+    verifyTutorQualification: builder.mutation<
+      ApiSuccessEnvelope<unknown>,
+      { tutorId: string; qualificationId: string; reviewStatus: 'approved' | 'rejected' }
+    >({
+      query: ({ tutorId, qualificationId, reviewStatus }) => ({
+        url: `/api/v1/admin/tutors/${tutorId}/qualifications/${qualificationId}/verify`,
+        method: 'PATCH',
+        body: { reviewStatus },
+      }),
+      invalidatesTags: (_r, _e, { tutorId }) => [
+        { type: 'TutorVerification', id: tutorId },
+        { type: 'TutorVerification', id: 'LIST' },
+      ],
+    }),
   }),
   overrideExisting: false,
 });
@@ -253,4 +267,5 @@ export const {
   useGetPendingTutorsQuery,
   useLazyGetTutorReviewDossierQuery,
   useReviewTutorMutation,
+  useVerifyTutorQualificationMutation,
 } = adminApi;

@@ -6,6 +6,7 @@ import { type Locale } from '@/lib/i18n';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { useUploadEvidenceMutation, type EvidencePurpose } from '@/store/services/files-api';
 import { useAddTutorQualificationMutation } from '@/store/services/tutors-api';
+import { playAudioTone } from '@/lib/audio/notification-sound';
 
 const ACCEPTED_MIME = ['application/pdf', 'image/jpeg', 'image/png', 'image/webp'] as const;
 const MAX_BYTES = 10 * 1024 * 1024;
@@ -95,6 +96,7 @@ export function QualificationUploadCard({
         institution: institution.trim() || undefined,
         evidenceAssetId: uploaded.file.id,
       }).unwrap();
+      playAudioTone('chime');
       setSaved(
         isBn
           ? 'সনদ আপলোড হয়েছে এবং যাচাইয়ের জন্য জমা হয়েছে।'
