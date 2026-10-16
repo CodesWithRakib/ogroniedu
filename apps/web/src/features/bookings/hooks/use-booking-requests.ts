@@ -43,9 +43,14 @@ export function useBookingRequests(locale: Locale) {
 
   const queryError = isError ? normalizeApiError(error, locale).message : null;
 
+  const isGuardian = user?.roles?.includes('guardian');
+  const isStudent = user?.roles?.includes('student');
+
   return {
     items,
     isTutor,
+    isGuardian,
+    isStudent,
     isLoading,
     withdrawing,
     responding,

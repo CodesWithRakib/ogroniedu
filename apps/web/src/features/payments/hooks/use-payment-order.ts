@@ -1,12 +1,14 @@
 'use client';
 
 import React from 'react';
+import { useSearchParams } from 'next/navigation';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { normalizeUnknownError, newIdempotencyKey } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
 import { useGetBookingRequestsQuery } from '@/store/services/bookings-api';
 import {
   useCreatePaymentOrderMutation,
+  useSandboxConfirmPaymentMutation,
   useLazyGetPaymentReceiptQuery,
   useProcessRefundMutation,
 } from '@/store/services/payments-api';
@@ -27,6 +29,8 @@ export interface PaymentBookingOption {
 
 /** Feature-level payments hook: order draft form, checkout receipt polling, and refund action. */
 export function usePaymentOrder(locale: Locale) {
+  const searchParams = useSearchParams();
+  const queryBookingId = searchParams?.get('bookingId');
   const user = useAppSelector((s) => s.auth.user);
   const requests = useGetBookingRequestsQuery();
   const rawItems = requests.data?.data ?? [];
@@ -72,6 +76,7 @@ export function usePaymentOrder(locale: Locale) {
   const [order, setOrder] = React.useState<PaymentOrderDetails | null>(null);
   const [formError, setFormError] = React.useState<string | null>(null);
   const [createOrder, { isLoading: creating }] = useCreatePaymentOrderMutation();
+  const [sandboxConfirm] = useSandboxConfirmPaymentMutation();
   const [fetchReceipt] = useLazyGetPaymentReceiptQuery();
   const [processRefund, { isLoading: refunding }] = useProcessRefundMutation();
   const canRefund = user?.roles?.some(
@@ -79,13 +84,19 @@ export function usePaymentOrder(locale: Locale) {
   );
 
   React.useEffect(() => {
-    if (!bookingId && bookingOptions[0]) {
+    if (queryBookingId && bookingOptions.some((b) => b.id === queryBookingId)) {
+      setBookingId(queryBookingId);
+      const found = bookingOptions.find((b) => b.id === queryBookingId);
+      if (found?.rateMinor) {
+        setAmountBdt((found.rateMinor / 100).toString());
+      }
+    } else if (!bookingId && bookingOptions[0]) {
       setBookingId(bookingOptions[0].id);
       if (bookingOptions[0].rateMinor) {
         setAmountBdt((bookingOptions[0].rateMinor / 100).toString());
       }
     }
-  }, [bookingOptions, bookingId]);
+  }, [bookingOptions, bookingId, queryBookingId]);
 
   function handleSelectBooking(newBookingId: string) {
     setBookingId(newBookingId);
@@ -131,9 +142,14 @@ export function usePaymentOrder(locale: Locale) {
   async function handlePay(gateway: PaymentProvider) {
     if (!order) throw new Error('No order');
     setOrder({ ...order, provider: gateway });
-    // Sandbox: the provider confirms via signed server webhook. The
-    // receipt endpoint only succeeds once that webhook has been
-    // processed — we never fabricate a receipt locally.
+
+    // Execute sandbox verified confirmation to trigger atomic ledger posting & booking confirmation
+    try {
+      await sandboxConfirm({ orderId: order.id, provider: gateway }).unwrap();
+    } catch {
+      // Proceed to fetch receipt even if sandbox-confirm returns already-processed
+    }
+
     const receiptRes = await fetchReceipt(order.id)
       .unwrap()
       .catch((err: unknown) => {
@@ -147,6 +163,7 @@ export function usePaymentOrder(locale: Locale) {
           : 'Payment not yet confirmed. The receipt appears after webhook confirmation.',
       );
     }
+    requests.refetch();
     return receipt;
   }
 

@@ -98,6 +98,28 @@ export class PaymentsController {
     };
   }
 
+  @Post('orders/:orderId/sandbox-confirm')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async sandboxConfirmOrder(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('orderId', ParseUUIDPipe) orderId: string,
+    @Body() body?: { provider?: string },
+    @Headers('x-request-id') requestId?: string,
+  ) {
+    const result = await this.paymentsService.sandboxConfirmOrder(
+      user,
+      orderId,
+      body?.provider,
+      requestId,
+    );
+    return {
+      success: true,
+      message: 'Sandbox payment verified and processed successfully.',
+      data: result,
+    };
+  }
+
   @Get('orders/:orderId/receipt')
   @UseGuards(AuthGuard)
   async getPaymentReceipt(

@@ -388,7 +388,14 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                               {locale === 'bn' ? 'ক্লাস সময়সূচি' : 'Classes'}
                             </Button>
                           </Link>
-                          <Link href={withLocale('/dashboard/student/payments', locale)}>
+                          <Link
+                            href={withLocale(
+                              req.isGuardian
+                                ? `/dashboard/guardian/payments?bookingId=${r.id}`
+                                : `/dashboard/student/payments?bookingId=${r.id}`,
+                              locale,
+                            )}
+                          >
                             <Button
                               size="sm"
                               className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs"

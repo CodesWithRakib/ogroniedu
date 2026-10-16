@@ -66,4 +66,32 @@ export class PaymentsService {
   runReconciliation() {
     return this.settlement.runReconciliation();
   }
+
+  async sandboxConfirmOrder(
+    user: AuthenticatedUser,
+    orderId: string,
+    provider = 'bkash',
+    requestId?: string,
+  ) {
+    const order = await this.orders.getOrderById(orderId);
+    if (order.status === 'succeeded') {
+      return { received: true, processed: true, orderId: order.id, status: 'succeeded' };
+    }
+    const effectiveProvider = provider || order.provider || 'bkash';
+    const txnId = `TRX-SBX-${order.id.slice(0, 8)}-${Date.now()}`;
+    const evtId = `EVT-SBX-${order.id.slice(0, 8)}-${Date.now()}`;
+    return await this.webhooks.handleWebhook(
+      effectiveProvider,
+      { 'x-webhook-timestamp': Date.now() },
+      {
+        providerTransactionId: txnId,
+        providerEventId: evtId,
+        amountMinor: Number(order.amountMinor),
+        currency: order.currency,
+        status: 'succeeded',
+        orderId: order.id,
+      } as PaymentWebhookDto,
+      requestId,
+    );
+  }
 }

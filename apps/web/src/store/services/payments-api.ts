@@ -40,6 +40,22 @@ export const paymentsApi = baseApi.injectEndpoints({
         { type: 'Notification', id: 'LIST' },
       ],
     }),
+    sandboxConfirmPayment: builder.mutation<
+      ApiSuccessEnvelope<unknown>,
+      { orderId: string; provider?: PaymentProvider }
+    >({
+      query: ({ orderId, provider }) => ({
+        url: `/api/v1/payments/orders/${orderId}/sandbox-confirm`,
+        method: 'POST',
+        body: { provider },
+      }),
+      invalidatesTags: [
+        { type: 'PaymentOrder', id: 'LIST' },
+        { type: 'PaymentReceipt', id: 'LIST' },
+        { type: 'BookingRequest', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
     getPaymentReceipt: builder.query<ApiSuccessEnvelope<PaymentReceipt>, string>({
       query: (orderId) => `/api/v1/payments/orders/${orderId}/receipt`,
       providesTags: (_r, _e, orderId) => [{ type: 'PaymentReceipt', id: orderId }],
@@ -79,6 +95,7 @@ export const paymentsApi = baseApi.injectEndpoints({
 
 export const {
   useCreatePaymentOrderMutation,
+  useSandboxConfirmPaymentMutation,
   useGetPaymentReceiptQuery,
   useLazyGetPaymentReceiptQuery,
   useProcessRefundMutation,

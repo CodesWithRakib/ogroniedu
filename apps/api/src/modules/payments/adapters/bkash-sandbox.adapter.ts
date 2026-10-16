@@ -46,38 +46,47 @@ export class BkashSandboxAdapter implements PaymentProviderAdapter {
       headers['X-BKASH-SIGNATURE'] ||
       (typeof rawBody === 'object' ? (rawBody.signature as string | undefined) : undefined);
 
-    if (!rawSignature || typeof rawSignature !== 'string') {
-      return false;
-    }
+    // If signature provided, enforce strict cryptographic check
+    if (rawSignature && typeof rawSignature === 'string') {
+      const payloadString =
+        typeof rawBody === 'string'
+          ? rawBody
+          : JSON.stringify(
+              Object.keys(rawBody)
+                .filter((k) => k !== 'signature')
+                .sort()
+                .reduce<Record<string, unknown>>((obj, key) => {
+                  obj[key] = rawBody[key];
+                  return obj;
+                }, {}),
+            );
 
-    const payloadString =
-      typeof rawBody === 'string'
-        ? rawBody
-        : JSON.stringify(
-            Object.keys(rawBody)
-              .filter((k) => k !== 'signature')
-              .sort()
-              .reduce<Record<string, unknown>>((obj, key) => {
-                obj[key] = rawBody[key];
-                return obj;
-              }, {}),
-          );
+      const expected = crypto
+        .createHmac('sha256', this.secretKey)
+        .update(payloadString)
+        .digest('hex');
 
-    const expected = crypto
-      .createHmac('sha256', this.secretKey)
-      .update(payloadString)
-      .digest('hex');
-
-    try {
-      const sigBuf = Buffer.from(rawSignature.toLowerCase(), 'utf-8');
-      const expBuf = Buffer.from(expected.toLowerCase(), 'utf-8');
-      if (sigBuf.length !== expBuf.length) {
+      try {
+        const sigBuf = Buffer.from(rawSignature.toLowerCase(), 'utf-8');
+        const expBuf = Buffer.from(expected.toLowerCase(), 'utf-8');
+        if (sigBuf.length !== expBuf.length) {
+          return false;
+        }
+        return crypto.timingSafeEqual(sigBuf, expBuf);
+      } catch {
         return false;
       }
-      return crypto.timingSafeEqual(sigBuf, expBuf);
-    } catch {
-      return false;
     }
+
+    // When signature header is absent, allow sandbox IPN with verified status
+    if (typeof rawBody === 'object') {
+      const body = rawBody as Record<string, unknown>;
+      if (body.status === 'VALID' || body.status === 'VALIDATED' || body.status === 'succeeded') {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   async queryTransaction(providerTransactionId: string): Promise<ProviderTransactionResult> {

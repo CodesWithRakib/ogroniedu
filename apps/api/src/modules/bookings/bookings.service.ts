@@ -378,11 +378,13 @@ export class BookingsService {
     // Notify requester
     if (this.notificationService) {
       try {
+        const recipientRole: 'student' | 'guardian' =
+          booking.requesterUserId === booking.studentUserId ? 'student' : 'guardian';
         if (dto.action === 'accept') {
           await this.notificationService.dispatch({
             userId: booking.requesterUserId,
             eventType: 'booking.accepted',
-            recipientRole: 'guardian',
+            recipientRole,
             payload: {
               bookingId: booking.id,
               tutorName,
@@ -393,7 +395,7 @@ export class BookingsService {
           await this.notificationService.dispatch({
             userId: booking.requesterUserId,
             eventType: 'booking.declined',
-            recipientRole: 'guardian',
+            recipientRole,
             payload: {
               bookingId: booking.id,
               tutorName,

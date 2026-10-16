@@ -14,7 +14,7 @@ import { usePaymentOrder, type PaymentProvider } from '../hooks/use-payment-orde
  * Payments entry: order creation form, sandbox checkout view, and guardian/admin refund action.
  * Features human-friendly tuition selector, escrow security badges, and graceful empty states.
  */
-export function PaymentsPage({ locale }: { locale: Locale }) {
+function PaymentsContent({ locale }: { locale: Locale }) {
   const pay = usePaymentOrder(locale);
   const { dict, order, bookingOptions } = pay;
 
@@ -186,5 +186,19 @@ export function PaymentsPage({ locale }: { locale: Locale }) {
         </div>
       )}
     </DashboardShell>
+  );
+}
+
+export function PaymentsPage({ locale }: { locale: Locale }) {
+  return (
+    <React.Suspense
+      fallback={
+        <div className="py-16 flex justify-center">
+          <LoadingSpinner />
+        </div>
+      }
+    >
+      <PaymentsContent locale={locale} />
+    </React.Suspense>
   );
 }

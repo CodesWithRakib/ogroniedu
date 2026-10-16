@@ -125,13 +125,19 @@ export class PaymentWebhooksService {
       return { received: true, processed: false, status: 'succeeded' };
     }
 
-    // 3. Find matching pending order (most recent pending order; sandbox
-    // providers correlate via server-to-server query + amount checks below)
-    const order = await this.orderRepo.findOne({
-      where: { status: 'pending' },
-      order: { createdAt: 'DESC' },
-      relations: { booking: { subject: true, studentUser: true } },
-    });
+    // 3. Find matching pending order (by orderId/paymentOrderId if provided, or most recent pending order)
+    const rawRecord = rawBody as unknown as Record<string, unknown>;
+    const orderIdToFind = rawRecord.orderId || rawRecord.paymentOrderId;
+    const order = orderIdToFind
+      ? await this.orderRepo.findOne({
+          where: { id: String(orderIdToFind), status: 'pending' },
+          relations: { booking: { subject: true, studentUser: true, requesterUser: true, tutorProfile: { user: true } } },
+        })
+      : await this.orderRepo.findOne({
+          where: { status: 'pending' },
+          order: { createdAt: 'DESC' },
+          relations: { booking: { subject: true, studentUser: true, requesterUser: true, tutorProfile: { user: true } } },
+        });
 
     if (!order) {
       throw new NotFoundException('Matching pending payment order not found');
@@ -187,6 +193,7 @@ export class PaymentWebhooksService {
     }
 
     // 5. Atomic PostgreSQL Execution: Payment + Ledger Journal + Outbox + Booking
+    let confirmedBooking: BookingEntity | null = null;
     await this.dataSource.transaction(async (manager) => {
       // a. Mark order succeeded
       order.status = 'succeeded';
@@ -226,10 +233,14 @@ export class PaymentWebhooksService {
       });
 
       // d. Transition Booking to Confirmed
-      const booking = await manager.findOne(BookingEntity, { where: { id: order.bookingId } });
+      const booking = await manager.findOne(BookingEntity, {
+        where: { id: order.bookingId },
+        relations: { subject: true, studentUser: true, requesterUser: true },
+      });
       if (booking) {
         booking.status = 'confirmed';
         await manager.save(booking);
+        confirmedBooking = booking;
       }
 
       // e. Transactional Outbox Event
@@ -264,10 +275,18 @@ export class PaymentWebhooksService {
 
     if (this.notificationService) {
       const amountBdt = (Number(order.amountMinor) / 100).toFixed(2);
+      const booking: BookingEntity | undefined | null = confirmedBooking || order.booking;
+
+      const isStudentPayer = booking
+        ? order.payerUserId === booking.studentUserId &&
+          booking.requesterUserId === booking.studentUserId
+        : true;
+      const payerRole = isStudentPayer ? 'student' : 'guardian';
+
       await this.notificationService
         .dispatch({
           userId: order.payerUserId,
-          recipientRole: 'student',
+          recipientRole: payerRole,
           eventType: 'payment.succeeded',
           payload: {
             paymentId: order.id,
@@ -276,26 +295,84 @@ export class PaymentWebhooksService {
           },
         })
         .catch((err) =>
-          this.logger.warn(`Failed to dispatch student payment notification: ${err}`),
+          this.logger.warn(`Failed to dispatch payer payment notification: ${err}`),
         );
 
       // Linked guardians
       const guardianIds = await this.guardianAccess.findActiveGuardianIds(order.payerUserId);
       for (const guardianId of guardianIds) {
+        if (guardianId !== order.payerUserId) {
+          await this.notificationService
+            .dispatch({
+              userId: guardianId,
+              recipientRole: 'guardian',
+              eventType: 'payment.succeeded',
+              payload: {
+                paymentId: order.id,
+                bookingId: order.bookingId,
+                amount: amountBdt,
+              },
+            })
+            .catch((err) =>
+              this.logger.warn(`Failed to dispatch guardian payment notification: ${err}`),
+            );
+        }
+      }
+
+      // Dispatch booking.confirmed to Tutor, Requester, and Student
+      if (booking) {
+        const subjectName = booking.subject?.nameEn || 'Tuition Subject';
+        // 1. To Tutor
         await this.notificationService
           .dispatch({
-            userId: guardianId,
-            recipientRole: 'guardian',
-            eventType: 'payment.succeeded',
+            userId: booking.tutorUserId,
+            recipientRole: 'tutor',
+            eventType: 'booking.confirmed',
             payload: {
-              paymentId: order.id,
-              bookingId: order.bookingId,
-              amount: amountBdt,
+              bookingId: booking.id,
+              subjectName,
+              nextSessionTime: 'As scheduled in calendar',
             },
           })
           .catch((err) =>
-            this.logger.warn(`Failed to dispatch guardian payment notification: ${err}`),
+            this.logger.warn(`Failed to dispatch tutor booking.confirmed notification: ${err}`),
           );
+
+        // 2. To Requester (Guardian or Student)
+        const requesterRole =
+          booking.requesterUserId === booking.studentUserId ? 'student' : 'guardian';
+        await this.notificationService
+          .dispatch({
+            userId: booking.requesterUserId,
+            recipientRole: requesterRole,
+            eventType: 'booking.confirmed',
+            payload: {
+              bookingId: booking.id,
+              subjectName,
+              nextSessionTime: 'As scheduled in calendar',
+            },
+          })
+          .catch((err) =>
+            this.logger.warn(`Failed to dispatch requester booking.confirmed notification: ${err}`),
+          );
+
+        // 3. To Student (if requester was guardian and student is distinct)
+        if (booking.studentUserId !== booking.requesterUserId) {
+          await this.notificationService
+            .dispatch({
+              userId: booking.studentUserId,
+              recipientRole: 'student',
+              eventType: 'booking.confirmed',
+              payload: {
+                bookingId: booking.id,
+                subjectName,
+                nextSessionTime: 'As scheduled in calendar',
+              },
+            })
+            .catch((err) =>
+              this.logger.warn(`Failed to dispatch student booking.confirmed notification: ${err}`),
+            );
+        }
       }
     }
 

@@ -246,4 +246,15 @@ export class PaymentOrdersService {
       paidAt: order.updatedAt.toISOString(),
     };
   }
+
+  async getOrderById(orderId: string): Promise<PaymentOrderEntity> {
+    const order = await this.orderRepo.findOne({
+      where: { id: orderId },
+      relations: { booking: true },
+    });
+    if (!order) {
+      throw new NotFoundException(`Payment order not found: ${orderId}`);
+    }
+    return order;
+  }
 }
