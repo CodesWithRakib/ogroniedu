@@ -62,21 +62,25 @@ export function useRegisterForm(locale: Locale) {
         role,
         preferredLocale: locale,
       }).unwrap();
+      const payload = (res as any)?.data ?? res;
+      if (!payload?.accessToken || !payload?.user) {
+        throw new Error(isBn ? 'নিবন্ধন প্রতিক্রিয়া অসম্পূর্ণ।' : 'Registration response missing credentials.');
+      }
       dispatch(
         setCredentials({
-          user: toAuthUser(res.user),
-          token: res.accessToken,
-          refreshToken: res.refreshToken,
+          user: toAuthUser(payload.user),
+          token: payload.accessToken,
+          refreshToken: payload.refreshToken,
         }),
       );
       dispatch(
         enqueueToast({
           title: isBn ? 'নিবন্ধন সফল হয়েছে' : 'Account created successfully',
-          message: res.user.displayName,
+          message: payload.user.displayName,
           type: 'success',
         }),
       );
-      router.replace(withLocale(dashboardPathForRoles(res.user.roles, locale), locale));
+      router.replace(withLocale(dashboardPathForRoles(payload.user.roles, locale), locale));
     } catch (err) {
       setFormError(normalizeUnknownError(err, locale).message);
     }

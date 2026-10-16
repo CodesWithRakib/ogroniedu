@@ -40,21 +40,25 @@ export function useLoginForm(locale: Locale) {
     }
     try {
       const res = await login({ identifier: identifier.trim(), password }).unwrap();
+      const payload = (res as any)?.data ?? res;
+      if (!payload?.accessToken || !payload?.user) {
+        throw new Error(isBn ? 'লগইন প্রতিক্রিয়া অসম্পূর্ণ।' : 'Authentication response missing credentials.');
+      }
       dispatch(
         setCredentials({
-          user: toAuthUser(res.user),
-          token: res.accessToken,
-          refreshToken: res.refreshToken,
+          user: toAuthUser(payload.user),
+          token: payload.accessToken,
+          refreshToken: payload.refreshToken,
         }),
       );
       dispatch(
         enqueueToast({
           title: isBn ? 'সফলভাবে লগইন হয়েছে' : 'Signed in successfully',
-          message: res.user.displayName,
+          message: payload.user.displayName,
           type: 'success',
         }),
       );
-      router.replace(withLocale(dashboardPathForRoles(res.user.roles, locale), locale));
+      router.replace(withLocale(dashboardPathForRoles(payload.user.roles, locale), locale));
     } catch (err) {
       setFormError(normalizeUnknownError(err, locale).message);
     }

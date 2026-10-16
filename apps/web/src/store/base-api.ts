@@ -22,9 +22,16 @@ const rawBaseQuery = fetchBaseQuery({
     }
 
     const state = getState() as RootState;
-    const token = state?.auth?.token;
+    let token = state?.auth?.token;
+    if (!token && typeof window !== 'undefined') {
+      try {
+        token = localStorage.getItem('ogroniedu.accessToken');
+      } catch {
+        // ignore
+      }
+    }
     if (token) {
-      headers.set('authorization', `Bearer ${token}`);
+      headers.set('authorization', `Bearer ${token.trim()}`);
     }
 
     const locale = state?.ui?.activeLocale || state?.auth?.user?.preferredLocale || 'bn';
@@ -36,23 +43,82 @@ const rawBaseQuery = fetchBaseQuery({
 
 /**
  * Base query with automatic 401 handling.
- * On Unauthorized, reset auth so guards redirect to login instead of
- * silently operating with a stale token.
+ * On Unauthorized:
+ * - If login/register attempt, return error directly without side effects.
+ * - If authenticated request, attempt token refresh via /api/v1/auth/refresh.
+ * - On successful refresh, update credentials and retry the failed request.
+ * - Only logout if refresh fails or no refresh token exists.
  */
 const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
   args,
   api,
   extraOptions,
 ) => {
-  const result = await rawBaseQuery(args, api, extraOptions);
+  let result = await rawBaseQuery(args, api, extraOptions);
+
   if (result.error && result.error.status === 401) {
-    try {
-      const { logout } = await import('./slices/auth-slice');
-      api.dispatch(logout());
-    } catch {
-      // Slice import is best-effort; 401 still surfaces to the caller.
+    const requestUrl = typeof args === 'string' ? args : args.url;
+    const isAuthRoute =
+      requestUrl.includes('/api/v1/auth/login') ||
+      requestUrl.includes('/api/v1/auth/register');
+
+    if (!isAuthRoute) {
+      const state = api.getState() as RootState;
+      let refreshToken = state?.auth?.refreshToken;
+      if (!refreshToken && typeof window !== 'undefined') {
+        try {
+          refreshToken = localStorage.getItem('ogroniedu.refreshToken');
+        } catch {
+          // ignore
+        }
+      }
+
+      if (refreshToken && !requestUrl.includes('/api/v1/auth/refresh')) {
+        const refreshResult = await rawBaseQuery(
+          {
+            url: '/api/v1/auth/refresh',
+            method: 'POST',
+            body: { refreshToken },
+          },
+          api,
+          extraOptions,
+        );
+
+        if (refreshResult.data) {
+          const refreshPayload = (refreshResult.data as any)?.data ?? refreshResult.data;
+          const newAccessToken = refreshPayload?.accessToken;
+          const newRefreshToken = refreshPayload?.refreshToken ?? refreshToken;
+
+          if (newAccessToken && state?.auth?.user) {
+            try {
+              const { setCredentials } = await import('./slices/auth-slice');
+              api.dispatch(
+                setCredentials({
+                  user: state.auth.user,
+                  token: newAccessToken,
+                  refreshToken: newRefreshToken,
+                }),
+              );
+              // Retry the original failed query with the refreshed token
+              result = await rawBaseQuery(args, api, extraOptions);
+              return result;
+            } catch {
+              // Failed to update credentials
+            }
+          }
+        }
+      }
+
+      // If refresh was not possible or refresh failed, reset auth session
+      try {
+        const { logout } = await import('./slices/auth-slice');
+        api.dispatch(logout());
+      } catch {
+        // Slice import is best-effort
+      }
     }
   }
+
   return result;
 };
 

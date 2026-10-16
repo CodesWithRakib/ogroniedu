@@ -33,21 +33,47 @@ export class AuthController {
     private readonly authService: AuthService,
   ) {}
 
-  private setRefreshTokenCookie(res: Response, refreshToken: string): void {
-    res.cookie('refresh_token', refreshToken, {
-      httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
-      maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
-      path: '/api/v1/auth',
-    });
+  private setAuthCookies(res: Response, accessToken?: string, refreshToken?: string): void {
+    const isProd = process.env.NODE_ENV === 'production';
+    if (accessToken) {
+      res.cookie('access_token', accessToken, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: 'lax',
+        maxAge: 15 * 60 * 1000, // 15 mins
+        path: '/',
+      });
+    }
+    if (refreshToken) {
+      res.cookie('refresh_token', refreshToken, {
+        httpOnly: true,
+        secure: isProd,
+        sameSite: 'lax',
+        maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+        path: '/',
+      });
+    }
   }
 
-  private clearRefreshTokenCookie(res: Response): void {
+  private clearAuthCookies(res: Response): void {
+    const isProd = process.env.NODE_ENV === 'production';
+    res.clearCookie('access_token', {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+    });
     res.clearCookie('refresh_token', {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'strict',
+      secure: isProd,
+      sameSite: 'lax',
+      path: '/',
+    });
+    // Legacy path cleanup compat
+    res.clearCookie('refresh_token', {
+      httpOnly: true,
+      secure: isProd,
+      sameSite: 'lax',
       path: '/api/v1/auth',
     });
   }
@@ -65,7 +91,7 @@ export class AuthController {
     };
 
     const result = await this.authService.register(dto, meta);
-    this.setRefreshTokenCookie(res, result.refreshToken);
+    this.setAuthCookies(res, result.accessToken, result.refreshToken);
     return result;
   }
 
@@ -82,7 +108,7 @@ export class AuthController {
     };
 
     const result = await this.authService.login(dto, meta);
-    this.setRefreshTokenCookie(res, result.refreshToken);
+    this.setAuthCookies(res, result.accessToken, result.refreshToken);
     return result;
   }
 
@@ -101,7 +127,7 @@ export class AuthController {
     };
 
     const result = await this.authService.refresh(token, meta);
-    this.setRefreshTokenCookie(res, result.refreshToken);
+    this.setAuthCookies(res, result.accessToken, result.refreshToken);
     return result;
   }
 
@@ -114,7 +140,7 @@ export class AuthController {
   ) {
     const token = req.cookies?.refresh_token || dto.refreshToken;
     const result = await this.authService.logout(token);
-    this.clearRefreshTokenCookie(res);
+    this.clearAuthCookies(res);
     return result;
   }
 
@@ -126,7 +152,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const result = await this.authService.revokeAllSessions(user.id, 'user_requested');
-    this.clearRefreshTokenCookie(res);
+    this.clearAuthCookies(res);
     return result;
   }
 

@@ -38,7 +38,7 @@ function isBrowser(): boolean {
   return typeof window !== 'undefined' && typeof localStorage !== 'undefined';
 }
 
-function readPersistedAuth(): Pick<AuthState, 'user' | 'token' | 'refreshToken'> {
+export function readPersistedAuth(): Pick<AuthState, 'user' | 'token' | 'refreshToken'> {
   if (!isBrowser()) return { user: null, token: null, refreshToken: null };
   try {
     const token = localStorage.getItem(STORAGE_KEYS.token);
@@ -63,10 +63,20 @@ function persistAuth(state: Pick<AuthState, 'user' | 'token' | 'refreshToken'>):
       } else {
         localStorage.removeItem(STORAGE_KEYS.refreshToken);
       }
+      try {
+        document.cookie = `access_token=${state.token}; path=/; max-age=900; SameSite=Lax`;
+      } catch {
+        // Ignore cookie write failure in restricted environments
+      }
     } else {
       localStorage.removeItem(STORAGE_KEYS.token);
       localStorage.removeItem(STORAGE_KEYS.refreshToken);
       localStorage.removeItem(STORAGE_KEYS.user);
+      try {
+        document.cookie = 'access_token=; path=/; max-age=0; SameSite=Lax';
+      } catch {
+        // Ignore
+      }
     }
   } catch {
     // Storage quota / privacy mode: session continues in memory only.
@@ -87,6 +97,16 @@ export const authSlice = createSlice({
   name: 'auth',
   initialState,
   reducers: {
+    rehydrateAuth: (state) => {
+      const stored = readPersistedAuth();
+      if (stored.token && stored.user) {
+        state.user = stored.user;
+        state.token = stored.token;
+        state.refreshToken = stored.refreshToken;
+        state.isAuthenticated = true;
+      }
+      state.isLoading = false;
+    },
     setCredentials: (
       state,
       action: PayloadAction<{ user: AuthUser; token: string; refreshToken?: string | null }>,
@@ -124,8 +144,14 @@ export const authSlice = createSlice({
   },
 });
 
-export const { setCredentials, setSessionUser, setLoading, logout, setPreferredLocale } =
-  authSlice.actions;
+export const {
+  rehydrateAuth,
+  setCredentials,
+  setSessionUser,
+  setLoading,
+  logout,
+  setPreferredLocale,
+} = authSlice.actions;
 export const authReducer = authSlice.reducer;
 
 /** Primary role used for dashboard routing (highest privilege first). */

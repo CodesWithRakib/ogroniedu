@@ -2,7 +2,7 @@ import { configureStore, combineReducers } from '@reduxjs/toolkit';
 import { useDispatch, useSelector, useStore } from 'react-redux';
 import type { TypedUseSelectorHook } from 'react-redux';
 import { baseApi } from './base-api';
-import { authReducer } from './slices/auth-slice';
+import { authReducer, readPersistedAuth } from './slices/auth-slice';
 import { uiReducer } from './slices/ui-slice';
 
 const rootReducer = combineReducers({
@@ -12,8 +12,29 @@ const rootReducer = combineReducers({
 });
 
 export const makeStore = () => {
+  let preloadedState: Partial<RootState> | undefined = undefined;
+  if (typeof window !== 'undefined') {
+    try {
+      const persisted = readPersistedAuth();
+      if (persisted.token && persisted.user) {
+        preloadedState = {
+          auth: {
+            user: persisted.user,
+            token: persisted.token,
+            refreshToken: persisted.refreshToken,
+            isAuthenticated: true,
+            isLoading: false,
+          },
+        };
+      }
+    } catch {
+      // Storage unavailable / private mode
+    }
+  }
+
   return configureStore({
     reducer: rootReducer,
+    preloadedState,
     middleware: (getDefaultMiddleware) => getDefaultMiddleware().concat(baseApi.middleware),
     devTools: process.env.NODE_ENV !== 'production',
   });

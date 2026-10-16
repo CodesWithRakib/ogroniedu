@@ -12,6 +12,7 @@ export const usersApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getMyProfile: builder.query<UserProfile, void>({
       query: () => '/api/v1/users/me',
+      transformResponse: (response: any) => response?.data ?? response,
       providesTags: [{ type: 'User', id: 'ME' }],
     }),
     updateMyProfile: builder.mutation<
@@ -19,6 +20,7 @@ export const usersApi = baseApi.injectEndpoints({
       { displayName?: string; preferredLocale?: 'bn' | 'en' }
     >({
       query: (body) => ({ url: '/api/v1/users/me', method: 'PATCH', body }),
+      transformResponse: (response: any) => response?.data ?? response,
       invalidatesTags: [
         { type: 'User', id: 'ME' },
         { type: 'AuthUser', id: 'ME' },
@@ -26,6 +28,7 @@ export const usersApi = baseApi.injectEndpoints({
     }),
     upsertStudentProfile: builder.mutation<unknown, Record<string, unknown>>({
       query: (body) => ({ url: '/api/v1/users/me/student-profile', method: 'PUT', body }),
+      transformResponse: (response: any) => response?.data ?? response,
       invalidatesTags: [
         { type: 'StudentProfile', id: 'ME' },
         { type: 'User', id: 'ME' },
@@ -33,9 +36,11 @@ export const usersApi = baseApi.injectEndpoints({
     }),
     exportMyData: builder.query<unknown, void>({
       query: () => '/api/v1/users/me/export',
+      transformResponse: (response: any) => response?.data ?? response,
     }),
     deleteMyAccount: builder.mutation<unknown, { reason: string }>({
       query: (body) => ({ url: '/api/v1/users/me/delete-account', method: 'POST', body }),
+      transformResponse: (response: any) => response?.data ?? response,
       invalidatesTags: [
         { type: 'User', id: 'ME' },
         { type: 'AuthUser', id: 'ME' },

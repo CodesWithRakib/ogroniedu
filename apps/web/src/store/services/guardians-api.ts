@@ -17,6 +17,7 @@ export const guardiansApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getLinkedChildren: builder.query<LinkedChild[], void>({
       query: () => '/api/v1/guardians/children',
+      transformResponse: (response: any) => (Array.isArray(response) ? response : response?.data ?? []),
       providesTags: (result) =>
         result
           ? [
@@ -38,6 +39,7 @@ export const guardiansApi = baseApi.injectEndpoints({
       }
     >({
       query: (body) => ({ url: '/api/v1/guardians/children', method: 'POST', body }),
+      transformResponse: (response: any) => response?.data ?? response,
       invalidatesTags: [{ type: 'GuardianChild', id: 'LIST' }],
     }),
     linkChildRequest: builder.mutation<
@@ -50,10 +52,12 @@ export const guardiansApi = baseApi.injectEndpoints({
       }
     >({
       query: (body) => ({ url: '/api/v1/guardians/children/link-request', method: 'POST', body }),
+      transformResponse: (response: any) => response?.data ?? response,
       invalidatesTags: [{ type: 'GuardianChild', id: 'LIST' }],
     }),
     getChildDetails: builder.query<LinkedChild, string>({
       query: (studentId) => `/api/v1/guardians/children/${studentId}`,
+      transformResponse: (response: any) => response?.data ?? response,
       providesTags: (_r, _e, id) => [{ type: 'GuardianChild', id }],
     }),
     revokeChildLink: builder.mutation<unknown, { studentId: string; reason: string }>({

@@ -141,10 +141,23 @@ export function NotificationProvider({
         credentials: 'include',
       });
       if (res.ok) {
-        const data = await res.json();
-        const items: NotificationItemDto[] = data.items || data.data || [];
+        const json = await res.json();
+        const payload = json?.data ?? json;
+        const items: NotificationItemDto[] = Array.isArray(payload)
+          ? payload
+          : Array.isArray(payload?.items)
+            ? payload.items
+            : Array.isArray(json?.items)
+              ? json.items
+              : [];
         setNotifications(items);
-        setUnreadCount(data.unreadCount ?? items.filter((n) => !n.isRead).length ?? 0);
+        const count =
+          typeof payload?.unreadCount === 'number'
+            ? payload.unreadCount
+            : typeof json?.unreadCount === 'number'
+              ? json.unreadCount
+              : items.filter((n) => !n.isRead).length;
+        setUnreadCount(count);
       }
     } catch {
       // Offline: keep last known state; socket reconnect will resync.

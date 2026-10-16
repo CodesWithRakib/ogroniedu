@@ -81,10 +81,26 @@ export class AuthGuard implements CanActivate {
       return true;
     }
 
-    // 2. Bearer Token Verification
-    if (authHeader && authHeader.startsWith('Bearer ')) {
-      const token = authHeader.substring(7);
+    // 2. Token Extraction: Bearer Header or HTTP-only Cookie fallback
+    let token: string | undefined;
+    if (typeof authHeader === 'string') {
+      const match = authHeader.trim().match(/^bearer\s+(.+)$/i);
+      if (match && match[1]) {
+        token = match[1].trim();
+      }
+    }
 
+    if (!token && request.cookies) {
+      const cookieCandidate =
+        request.cookies.access_token ||
+        request.cookies.accessToken ||
+        request.cookies.token;
+      if (typeof cookieCandidate === 'string' && cookieCandidate.trim()) {
+        token = cookieCandidate.trim();
+      }
+    }
+
+    if (token) {
       // Mock test tokens are honoured only when the bypass is explicitly enabled.
       if (allowBypass && token.startsWith('mock:')) {
         const parts = token.split(':');
