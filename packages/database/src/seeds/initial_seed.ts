@@ -293,6 +293,44 @@ export async function runInitialSeed(
     ],
   );
 
+  // Seed verified tutor qualifications for Rashed Karim
+  const demoQualifications = [
+    {
+      id: 'aaaa1111-1111-4aaa-baaa-111111111101',
+      type: 'nid',
+      title: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
+      institution: 'EC Bangladesh',
+      year: 2020,
+      status: 'approved',
+    },
+    {
+      id: 'aaaa1111-1111-4aaa-baaa-111111111102',
+      type: 'degree',
+      title: 'বি.এস.সি. ইন সিভিল ইঞ্জিনিয়ারিং (B.Sc. in Civil Engineering)',
+      institution: 'বাংলাদেশ প্রকৌশল বিশ্ববিদ্যালয় (BUET)',
+      year: 2023,
+      status: 'approved',
+    },
+    {
+      id: 'aaaa1111-1111-4aaa-baaa-111111111103',
+      type: 'academic_certificate',
+      title: 'এইচএসসি বিজ্ঞান বিভাগ (HSC Science)',
+      institution: 'নটর ডেম কলেজ, ঢাকা',
+      year: 2018,
+      status: 'approved',
+    },
+  ];
+
+  for (const q of demoQualifications) {
+    await client.query(
+      `INSERT INTO tutor_qualifications (id, tutor_user_id, qualification_type, title, institution, issued_year, review_status)
+       VALUES ($1, '22222222-2222-4222-b222-222222222222', $2, $3, $4, $5, $6)
+       ON CONFLICT (id) DO UPDATE
+       SET title = EXCLUDED.title, institution = EXCLUDED.institution, review_status = EXCLUDED.review_status;`,
+      [q.id, q.type, q.title, q.institution, q.year, q.status],
+    );
+  }
+
   // Demo teaching subject so discovery + booking-request flows work end to end.
   // NOT EXISTS guard (not ON CONFLICT DO NOTHING: the table has no unique
   // constraint covering these columns, so a bare ON CONFLICT would insert
@@ -308,5 +346,102 @@ export async function runInitialSeed(
            AND ts.subject_id = s.id
            AND ts.education_level_id = l.id
        );`,
+  );
+
+  // Student Profile for Abrar Ahmed (Demo Student)
+  await client.query(
+    `INSERT INTO student_profiles (user_id, institution_name, stream, learning_goals, education_level_id, curriculum_id, profile_visibility)
+     SELECT 
+       '33333333-3333-4333-b333-333333333333',
+       'ঢাকা রেসিডেনসিয়াল মডেল কলেজ',
+       'science',
+       'পদার্থবিজ্ঞান ও উচ্চতর গণিতে বেসিক স্ট্রং করা এবং এইচএসসিতে জিপিএ-৫ অর্জন।',
+       l.id,
+       c.id,
+       'limited'
+     FROM education_levels l, curricula c
+     WHERE l.code = 'higher_hsc' AND c.code = 'bangla_medium'
+     ON CONFLICT (user_id) DO UPDATE
+     SET institution_name = EXCLUDED.institution_name,
+         stream = EXCLUDED.stream,
+         learning_goals = EXCLUDED.learning_goals;`,
+  );
+
+  // Active Accepted Booking between Tutor Rashed Karim & Student Abrar Ahmed
+  const BOOKING_ID = 'bbbbbbbb-bbbb-4bbb-abbb-bbbbbbbbbb01';
+  await client.query(
+    `INSERT INTO bookings (
+       id, requester_user_id, student_user_id, tutor_user_id, subject_id, education_level_id,
+       mode, status, price_per_session_minor, currency, duration_minutes, cancellation_policy_version, service_agreement_snapshot
+     )
+     SELECT 
+       $1, '33333333-3333-4333-b333-333333333333', '33333333-3333-4333-b333-333333333333', '22222222-2222-4222-b222-222222222222',
+       s.id, l.id, 'online', 'accepted', 120000, 'BDT', 60, 'v1.0-standard-cancellation', '{}'::JSONB
+     FROM subjects s, education_levels l
+     WHERE s.code = 'physics' AND l.code = 'higher_hsc'
+     ON CONFLICT (id) DO UPDATE
+     SET status = 'accepted', price_per_session_minor = 120000;`,
+    [BOOKING_ID],
+  );
+
+  // Completed Session from 3 days ago
+  const PAST_SESSION_ID = 'cccccccc-cccc-4ccc-accc-cccccccccc02';
+  await client.query(
+    `INSERT INTO booking_sessions (
+       id, booking_id, tutor_user_id, student_user_id, starts_at, ends_at, timezone, status, meeting_url, completed_at
+     )
+     VALUES (
+       $1, $2, '22222222-2222-4222-b222-222222222222', '33333333-3333-4333-b333-333333333333',
+       now() - INTERVAL '3 days', now() - INTERVAL '3 days' + INTERVAL '1 hour', 'Asia/Dhaka',
+       'completed', 'https://meet.google.com/ogr-phys-hsc', now() - INTERVAL '3 days' + INTERVAL '1 hour'
+     )
+     ON CONFLICT (id) DO UPDATE
+     SET status = 'completed';`,
+    [PAST_SESSION_ID, BOOKING_ID],
+  );
+
+  // Attendance Record for Past Session
+  await client.query(
+    `INSERT INTO session_attendance (session_id, participant_user_id, attendance_status, recorded_by, notes)
+     VALUES (
+       $1, '33333333-3333-4333-b333-333333333333', 'present', '22222222-2222-4222-b222-222222222222',
+       'স্থির তড়িৎ অধ্যায় ও গাউস সূত্র বিশদ আলোচনা সম্পন্ন হয়েছে। ক্লাসে পূর্ণ মনোযোগ ছিল।'
+     )
+     ON CONFLICT (session_id, participant_user_id) DO UPDATE
+     SET attendance_status = 'present';`,
+    [PAST_SESSION_ID],
+  );
+
+  // Upcoming Live Session for Tomorrow at 18:00
+  const UPCOMING_SESSION_ID = 'cccccccc-cccc-4ccc-accc-cccccccccc01';
+  await client.query(
+    `INSERT INTO booking_sessions (
+       id, booking_id, tutor_user_id, student_user_id, starts_at, ends_at, timezone, status, meeting_url
+     )
+     VALUES (
+       $1, $2, '22222222-2222-4222-b222-222222222222', '33333333-3333-4333-b333-333333333333',
+       now() + INTERVAL '1 day', now() + INTERVAL '1 day' + INTERVAL '1 hour', 'Asia/Dhaka',
+       'scheduled', 'https://meet.google.com/ogr-phys-hsc'
+     )
+     ON CONFLICT (id) DO UPDATE
+     SET status = 'scheduled', meeting_url = 'https://meet.google.com/ogr-phys-hsc';`,
+    [UPCOMING_SESSION_ID, BOOKING_ID],
+  );
+
+  // Pending Assignment for Student
+  const ASSIGNMENT_ID = 'dddddddd-dddd-4ddd-addd-dddddddddd01';
+  await client.query(
+    `INSERT INTO assignments (
+       id, booking_id, session_id, tutor_user_id, student_user_id, title, instructions, due_at, max_score, status
+     )
+     VALUES (
+       $1, $2, $3, '22222222-2222-4222-b222-222222222222', '33333333-3333-4333-b333-333333333333',
+       'স্থির তড়িৎ — কুলম্বের সূত্র ও তড়িৎ ক্ষেত্রের প্রাবল্যের ৫টি গাণিতিক সমস্যা',
+       'অনুশীলনী ২.১ এর উদাহরণ ৩ ও ৪ এবং সমস্যা ৫-৭ খাতায় সমাধান করে ছবি বা টেক্সট এখানে সাবমিট করবে।',
+       now() + INTERVAL '3 days', 100.00, 'published'
+     )
+     ON CONFLICT (id) DO UPDATE
+     SET title = EXCLUDED.title, instructions = EXCLUDED.instructions;`,
+    [ASSIGNMENT_ID, BOOKING_ID, PAST_SESSION_ID],
   );
 }

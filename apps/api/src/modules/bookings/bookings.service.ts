@@ -220,6 +220,8 @@ export class BookingsService {
       .leftJoinAndSelect('booking.educationLevel', 'educationLevel')
       .leftJoinAndSelect('booking.requesterUser', 'requester')
       .leftJoinAndSelect('booking.studentUser', 'student')
+      .leftJoinAndSelect('booking.tutorProfile', 'tutorProfile')
+      .leftJoinAndSelect('tutorProfile.user', 'tutorUser')
       .where('booking.requesterUserId = :userId', { userId: user.id })
       .orWhere('booking.tutorUserId = :userId', { userId: user.id })
       .orWhere('booking.studentUserId IN (:...studentIds)', {
@@ -240,6 +242,9 @@ export class BookingsService {
         educationLevel: true,
         requesterUser: true,
         studentUser: true,
+        tutorProfile: {
+          user: true,
+        },
       },
     });
 

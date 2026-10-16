@@ -1,4 +1,19 @@
-import { baseApi } from '../base-api';
+import { baseApi, type ApiSuccessEnvelope } from '../base-api';
+
+function unwrapEnvelope<T>(response: ApiSuccessEnvelope<T> | T): T {
+  if (response && typeof response === 'object' && 'data' in response && response.data !== undefined) {
+    return response.data as T;
+  }
+  return response as T;
+}
+
+function unwrapArray<T>(response: ApiSuccessEnvelope<T[]> | T[]): T[] {
+  if (Array.isArray(response)) return response;
+  if (response && typeof response === 'object' && 'data' in response && Array.isArray(response.data)) {
+    return response.data;
+  }
+  return [];
+}
 
 export interface LinkedChild {
   linkId: string;
@@ -13,11 +28,24 @@ export interface LinkedChild {
   educationLevelName?: string | null;
 }
 
+export interface LinkedGuardian {
+  linkId: string;
+  guardianId: string;
+  displayName: string;
+  email: string | null;
+  phoneE164: string | null;
+  relationshipType: string;
+  status: 'pending' | 'active' | 'rejected' | 'revoked';
+  consentPolicyVersion: string | null;
+  consentRecordedAt: string | null;
+}
+
 export const guardiansApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getLinkedChildren: builder.query<LinkedChild[], void>({
       query: () => '/api/v1/guardians/children',
-      transformResponse: (response: any) => (Array.isArray(response) ? response : response?.data ?? []),
+      transformResponse: (response: ApiSuccessEnvelope<LinkedChild[]> | LinkedChild[]) =>
+        unwrapArray(response),
       providesTags: (result) =>
         result
           ? [
@@ -25,6 +53,12 @@ export const guardiansApi = baseApi.injectEndpoints({
               ...result.map((c) => ({ type: 'GuardianChild' as const, id: c.studentId })),
             ]
           : [{ type: 'GuardianChild', id: 'LIST' }],
+    }),
+    getMyGuardians: builder.query<LinkedGuardian[], void>({
+      query: () => '/api/v1/guardians/my-guardians',
+      transformResponse: (response: ApiSuccessEnvelope<LinkedGuardian[]> | LinkedGuardian[]) =>
+        unwrapArray(response),
+      providesTags: [{ type: 'GuardianChild', id: 'MY_GUARDIANS' }],
     }),
     registerChild: builder.mutation<
       LinkedChild,
@@ -39,7 +73,8 @@ export const guardiansApi = baseApi.injectEndpoints({
       }
     >({
       query: (body) => ({ url: '/api/v1/guardians/children', method: 'POST', body }),
-      transformResponse: (response: any) => response?.data ?? response,
+      transformResponse: (response: ApiSuccessEnvelope<LinkedChild> | LinkedChild) =>
+        unwrapEnvelope(response),
       invalidatesTags: [{ type: 'GuardianChild', id: 'LIST' }],
     }),
     linkChildRequest: builder.mutation<
@@ -52,23 +87,51 @@ export const guardiansApi = baseApi.injectEndpoints({
       }
     >({
       query: (body) => ({ url: '/api/v1/guardians/children/link-request', method: 'POST', body }),
-      transformResponse: (response: any) => response?.data ?? response,
+      transformResponse: (response: ApiSuccessEnvelope<LinkedChild> | LinkedChild) =>
+        unwrapEnvelope(response),
       invalidatesTags: [{ type: 'GuardianChild', id: 'LIST' }],
     }),
     getChildDetails: builder.query<LinkedChild, string>({
       query: (studentId) => `/api/v1/guardians/children/${studentId}`,
-      transformResponse: (response: any) => response?.data ?? response,
+      transformResponse: (response: ApiSuccessEnvelope<LinkedChild> | LinkedChild) =>
+        unwrapEnvelope(response),
       providesTags: (_r, _e, id) => [{ type: 'GuardianChild', id }],
     }),
-    revokeChildLink: builder.mutation<unknown, { studentId: string; reason: string }>({
+    verifyChildLink: builder.mutation<
+      { success: boolean; message?: string },
+      { linkId: string; decision: 'approve' | 'reject' }
+    >({
+      query: ({ linkId, ...body }) => ({
+        url: `/api/v1/guardians/children/${linkId}/verify`,
+        method: 'POST',
+        body,
+      }),
+      transformResponse: (
+        response:
+          | ApiSuccessEnvelope<{ success: boolean; message?: string }>
+          | { success: boolean; message?: string },
+      ) => unwrapEnvelope(response),
+      invalidatesTags: [
+        { type: 'GuardianChild', id: 'MY_GUARDIANS' },
+        { type: 'GuardianChild', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
+    revokeChildLink: builder.mutation<{ success: boolean; message: string }, { studentId: string; reason: string }>({
       query: ({ studentId, ...body }) => ({
         url: `/api/v1/guardians/children/${studentId}`,
         method: 'DELETE',
         body,
       }),
+      transformResponse: (
+        response:
+          | ApiSuccessEnvelope<{ success: boolean; message: string }>
+          | { success: boolean; message: string },
+      ) => unwrapEnvelope(response),
       invalidatesTags: (_r, _e, { studentId }) => [
         { type: 'GuardianChild', id: studentId },
         { type: 'GuardianChild', id: 'LIST' },
+        { type: 'GuardianChild', id: 'MY_GUARDIANS' },
       ],
     }),
   }),
@@ -77,8 +140,10 @@ export const guardiansApi = baseApi.injectEndpoints({
 
 export const {
   useGetLinkedChildrenQuery,
+  useGetMyGuardiansQuery,
   useRegisterChildMutation,
   useLinkChildRequestMutation,
   useGetChildDetailsQuery,
+  useVerifyChildLinkMutation,
   useRevokeChildLinkMutation,
 } = guardiansApi;

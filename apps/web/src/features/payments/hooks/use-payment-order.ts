@@ -17,11 +17,55 @@ import type {
 
 export type { PaymentProvider };
 
+export interface PaymentBookingOption {
+  id: string;
+  label: string;
+  subjectName: string;
+  tutorName: string;
+  rateMinor?: number;
+}
+
 /** Feature-level payments hook: order draft form, checkout receipt polling, and refund action. */
 export function usePaymentOrder(locale: Locale) {
   const user = useAppSelector((s) => s.auth.user);
   const requests = useGetBookingRequestsQuery();
-  const bookingIds = (requests.data?.data ?? []).map((r) => r.id);
+  const rawItems = requests.data?.data ?? [];
+  const eligibleItems = React.useMemo(() => {
+    return rawItems.filter(
+      (r) =>
+        r.status === 'accepted' ||
+        r.status === 'confirmed' ||
+        r.status === 'awaiting_payment' ||
+        r.status === 'in_progress',
+    );
+  }, [rawItems]);
+
+  const pendingCount = React.useMemo(() => {
+    return rawItems.filter((r) => r.status === 'requested').length;
+  }, [rawItems]);
+
+  const bookingIds = React.useMemo(() => eligibleItems.map((r) => r.id), [eligibleItems]);
+
+  const bookingOptions = React.useMemo<PaymentBookingOption[]>(() => {
+    return eligibleItems.map((r) => {
+      const tutorName =
+        r.tutorProfile?.user?.displayName ||
+        r.tutorProfile?.user?.fullName ||
+        (locale === 'bn' ? 'শিক্ষক' : 'Tutor');
+      const subjectName =
+        locale === 'bn' && r.subject?.nameBn
+          ? r.subject.nameBn
+          : r.subject?.name || (locale === 'bn' ? 'বিষয়' : 'Subject');
+      return {
+        id: r.id,
+        label: `${subjectName} — ${tutorName} (#${r.id.slice(0, 6)})`,
+        subjectName,
+        tutorName,
+        rateMinor: Number(r.pricePerSessionMinor) || undefined,
+      };
+    });
+  }, [eligibleItems, locale]);
+
   const [bookingId, setBookingId] = React.useState('');
   const [amountBdt, setAmountBdt] = React.useState('1000');
   const [provider, setProvider] = React.useState<PaymentProvider>('bkash');
@@ -35,8 +79,21 @@ export function usePaymentOrder(locale: Locale) {
   );
 
   React.useEffect(() => {
-    if (!bookingId && bookingIds[0]) setBookingId(bookingIds[0]);
-  }, [bookingIds, bookingId]);
+    if (!bookingId && bookingOptions[0]) {
+      setBookingId(bookingOptions[0].id);
+      if (bookingOptions[0].rateMinor) {
+        setAmountBdt((bookingOptions[0].rateMinor / 100).toString());
+      }
+    }
+  }, [bookingOptions, bookingId]);
+
+  function handleSelectBooking(newBookingId: string) {
+    setBookingId(newBookingId);
+    const found = bookingOptions.find((b) => b.id === newBookingId);
+    if (found?.rateMinor) {
+      setAmountBdt((found.rateMinor / 100).toString());
+    }
+  }
 
   async function handleCreateOrder(e: React.FormEvent) {
     e.preventDefault();
@@ -110,8 +167,11 @@ export function usePaymentOrder(locale: Locale) {
     dict: getDictionary(locale),
     requests,
     bookingIds,
+    bookingOptions,
+    pendingCount,
     bookingId,
     setBookingId,
+    handleSelectBooking,
     amountBdt,
     setAmountBdt,
     provider,

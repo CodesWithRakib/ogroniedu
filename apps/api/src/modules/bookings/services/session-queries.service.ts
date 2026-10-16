@@ -54,7 +54,10 @@ export class SessionQueriesService {
       .createQueryBuilder('session')
       .leftJoinAndSelect('session.booking', 'booking')
       .leftJoinAndSelect('booking.subject', 'subject')
-      .leftJoinAndSelect('booking.educationLevel', 'educationLevel');
+      .leftJoinAndSelect('booking.educationLevel', 'educationLevel')
+      .leftJoinAndSelect('session.tutorProfile', 'tutorProfile')
+      .leftJoinAndSelect('tutorProfile.user', 'tutorUser')
+      .leftJoinAndSelect('session.studentUser', 'studentUser');
 
     // Scoped ownership check
     if (!isAdminRole(user)) {
@@ -97,7 +100,9 @@ export class SessionQueriesService {
           subject: true,
           educationLevel: true,
         },
-        tutorProfile: true,
+        tutorProfile: {
+          user: true,
+        },
         studentUser: true,
       },
     });

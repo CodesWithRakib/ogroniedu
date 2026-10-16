@@ -84,8 +84,11 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
           extraOptions,
         );
 
-        if (refreshResult.data) {
-          const refreshPayload = (refreshResult.data as any)?.data ?? refreshResult.data;
+        if (refreshResult.data && typeof refreshResult.data === 'object') {
+          const rawData = refreshResult.data as Record<string, unknown>;
+          const refreshPayload = (
+            rawData.data && typeof rawData.data === 'object' ? rawData.data : rawData
+          ) as { accessToken?: string; refreshToken?: string };
           const newAccessToken = refreshPayload?.accessToken;
           const newRefreshToken = refreshPayload?.refreshToken ?? refreshToken;
 

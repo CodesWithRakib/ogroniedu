@@ -199,6 +199,47 @@ export class GuardiansService {
     return results;
   }
 
+  async getStudentGuardians(studentUserId: string): Promise<
+    Array<{
+      linkId: string;
+      guardianId: string;
+      displayName: string;
+      email: string | null;
+      phoneE164: string | null;
+      relationshipType: string;
+      status: 'pending' | 'active' | 'rejected' | 'revoked';
+      consentPolicyVersion: string | null;
+      consentRecordedAt: Date | null;
+    }>
+  > {
+    const links = await this.linkRepository.find({
+      where: { studentUserId },
+      order: { createdAt: 'DESC' },
+    });
+
+    const results = [];
+    for (const link of links) {
+      const guardian = await this.userRepository.findOne({
+        where: { id: link.guardianUserId },
+      });
+      if (!guardian) continue;
+
+      results.push({
+        linkId: link.id,
+        guardianId: guardian.id,
+        displayName: guardian.displayName,
+        email: guardian.email,
+        phoneE164: guardian.phoneE164,
+        relationshipType: link.relationshipType,
+        status: link.status,
+        consentPolicyVersion: link.consentPolicyVersion,
+        consentRecordedAt: link.consentRecordedAt,
+      });
+    }
+
+    return results;
+  }
+
   async getChildDetails(guardianUserId: string, studentId: string): Promise<LinkedChildSummary> {
     const link = await this.linkRepository.findOne({
       where: {

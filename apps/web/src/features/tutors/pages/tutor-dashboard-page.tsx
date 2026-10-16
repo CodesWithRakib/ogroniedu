@@ -2,7 +2,21 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Inbox, Calendar, ShieldCheck, BarChart3, Plus, Sparkles } from 'lucide-react';
+import {
+  Inbox,
+  Calendar,
+  ShieldCheck,
+  BarChart3,
+  Plus,
+  Sparkles,
+  CreditCard,
+  BookOpen,
+  DollarSign,
+  Award,
+  Clock,
+  ArrowRight,
+  TrendingUp,
+} from 'lucide-react';
 import { TutorLayout } from '@/layouts/tutor/TutorLayout';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
 import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart';
@@ -46,7 +60,10 @@ function toVerificationStatus(raw: unknown): VerificationStatus {
     : 'not_submitted';
 }
 
-/** Tutor dashboard entry: Donezo/Shopeers aesthetic with real tutor API data. */
+/**
+ * Tutor dashboard entry: Donezo/Shopeers aesthetic with real tutor API data,
+ * executive analytics cards, Quick Actions bar, and verification workflow.
+ */
 export function TutorDashboardPage({ locale }: { locale: Locale }) {
   const user = useAppSelector((s) => s.auth.user);
   const profile = useGetOwnTutorProfileQuery();
@@ -98,6 +115,16 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
 
   const upcomingSession = sessions.data?.data?.[0];
 
+  const aData = analytics.data?.data;
+  const earningsVal =
+    typeof aData?.earnings === 'number'
+      ? aData.earnings
+      : typeof aData?.earnings === 'object' &&
+          aData?.earnings !== null &&
+          'totalEarningsBdt' in aData.earnings
+        ? (aData.earnings.totalEarningsBdt ?? 0)
+        : 0;
+
   return (
     <TutorLayout
       locale={locale}
@@ -110,14 +137,14 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       actions={
         <div className="flex items-center gap-2">
           <Link
-            href={withLocale('/sessions', locale)}
+            href={withLocale('/dashboard/tutor/sessions', locale)}
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-bold shadow-sm shadow-primary/25 transition-transform hover:scale-[1.02] active:scale-[0.98]"
           >
             <Plus className="h-3.5 w-3.5" />
             <span>{isBn ? 'নতুন ক্লাস' : 'Schedule Class'}</span>
           </Link>
           <Link
-            href={withLocale('/payments', locale)}
+            href={withLocale('/dashboard/tutor/payments', locale)}
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover text-foreground text-xs font-semibold shadow-2xs transition-colors"
           >
             <BarChart3 className="h-3.5 w-3.5 text-muted-foreground" />
@@ -127,7 +154,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       }
     >
       {/* ======================================================== */}
-      {/* DONEZO 4-CARD HERO KPI GRID                              */}
+      {/* 1. DONEZO 4-CARD HERO KPI GRID                           */}
       {/* ======================================================== */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5">
         {/* Card 1: Featured Hero Solid Card (Incoming Requests) */}
@@ -141,7 +168,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
               ? `${formatLocalizedNumber(incoming.length, locale)}টি নতুন টিউশন অনুরোধ`
               : `${incoming.length} new tuition requests`
           }
-          href={withLocale('/requests', locale)}
+          href={withLocale('/dashboard/tutor/requests', locale)}
           testId="tutor-requests-card"
         />
 
@@ -156,7 +183,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
               : formatLocalizedNumber(sessions.data?.data?.length ?? 0, locale)
           }
           changeText={isBn ? 'আসন্ন লাইভ ক্লাস শিডিউল' : 'Live classes scheduled'}
-          href={withLocale('/sessions', locale)}
+          href={withLocale('/dashboard/tutor/sessions', locale)}
           testId="tutor-sessions-card"
         />
 
@@ -187,7 +214,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                 ? '⚪ খসড়া মোড'
                 : '⚪ Draft Mode'
           }
-          href={withLocale('/profile', locale)}
+          href={withLocale('/dashboard/tutor/verification', locale)}
         />
 
         {/* Card 4: Teaching Rating / Consistency */}
@@ -197,12 +224,57 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
           title={isBn ? 'টিচিং রেটিং' : 'Teaching Rating'}
           value={isBn ? '৫.০ ★' : '5.0 ★'}
           changeText={isBn ? '১০০% বিশ্বস্ততা স্কোর' : '100% Trust score'}
-          href={withLocale('/learning', locale)}
+          href={withLocale('/dashboard/tutor/learning', locale)}
         />
       </div>
 
       {/* ======================================================== */}
-      {/* DONEZO VISUAL ANALYTICS & REMINDER ROW                    */}
+      {/* 2. QUICK ACTIONS BAR                                     */}
+      {/* ======================================================== */}
+      <div className="flex flex-wrap items-center gap-2.5 p-3.5 rounded-2xl bg-[#062127]/90 border border-teal-500/20 shadow-xs">
+        <span className="text-xs font-bold text-teal-300 mr-1.5 flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+          {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
+        </span>
+        <Link
+          href={withLocale('/dashboard/tutor/requests', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-semibold transition-colors"
+        >
+          <Inbox className="w-3.5 h-3.5 text-cyan-400" />
+          <span>{isBn ? 'টিউশন অনুরোধসমূহ' : 'Requests'}</span>
+        </Link>
+        <Link
+          href={withLocale('/dashboard/tutor/sessions', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-semibold transition-colors"
+        >
+          <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+          <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
+        </Link>
+        <Link
+          href={withLocale('/dashboard/tutor/learning', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-semibold transition-colors"
+        >
+          <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+          <span>{isBn ? 'স্টাডি রুম ও টিচিং' : 'Teaching Hub'}</span>
+        </Link>
+        <Link
+          href={withLocale('/dashboard/tutor/verification', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-semibold transition-colors"
+        >
+          <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
+          <span>{isBn ? 'সনদ ও ভেরিফিকেশন' : 'Verification'}</span>
+        </Link>
+        <Link
+          href={withLocale('/dashboard/tutor/payments', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-semibold transition-colors sm:ml-auto"
+        >
+          <CreditCard className="w-3.5 h-3.5 text-rose-400" />
+          <span>{isBn ? 'আয় ও উত্তোলন' : 'Earnings'}</span>
+        </Link>
+      </div>
+
+      {/* ======================================================== */}
+      {/* 3. DONEZO VISUAL ANALYTICS & REMINDER ROW                */}
       {/* ======================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Weekly Activity Bar Chart (2 Cols on lg) */}
@@ -238,7 +310,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* ======================================================== */}
-      {/* VERIFICATION, QUALIFICATION & PERFORMANCE SECTION        */}
+      {/* 4. VERIFICATION, QUALIFICATION & PERFORMANCE SECTION    */}
       {/* ======================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Left Col: Verification Status & Upload Cards */}
@@ -295,11 +367,14 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
           {/* Performance & Analytics Details Card */}
           <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs">
             <div className="flex items-center justify-between pb-3 border-b border-border/60">
-              <h3 className="text-base font-bold text-foreground">
-                {isBn ? 'অপারেশনাল পারফরম্যান্স' : 'Teaching Analytics & Insights'}
-              </h3>
+              <div className="flex items-center gap-2">
+                <TrendingUp className="w-4 h-4 text-primary" />
+                <h3 className="text-base font-bold text-foreground">
+                  {isBn ? 'অপারেশনাল পারফরম্যান্স ও আয়' : 'Teaching Analytics & Insights'}
+                </h3>
+              </div>
               <span className="text-xs font-semibold text-primary">
-                {isBn ? 'রিয়েল-টাইম' : 'Live Data'}
+                {isBn ? 'রিয়েল-টাইম মেট্রিক্স' : 'Live Metrics'}
               </span>
             </div>
 
@@ -308,17 +383,41 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                 <div className="py-6 flex justify-center">
                   <LoadingSpinner />
                 </div>
-              ) : analytics.isError ? (
-                <p className="text-xs text-muted-foreground" data-testid="tutor-analytics-empty">
-                  {isBn ? 'এখনও পর্যাপ্ত তথ্য নেই।' : 'Not enough activity yet.'}
-                </p>
               ) : (
-                <pre
-                  className="max-h-44 overflow-auto rounded-xl bg-surface/75 p-3 text-[11px] font-mono text-muted-foreground border border-border/60"
-                  data-testid="tutor-analytics-data"
-                >
-                  {JSON.stringify(analytics.data?.data ?? {}, null, 2)}
-                </pre>
+                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" data-testid="tutor-analytics-data">
+                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                      {isBn ? 'মোট আয়' : 'Total Earnings'}
+                    </span>
+                    <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400 mt-1 block">
+                      ৳{formatLocalizedNumber(earningsVal, locale)}
+                    </span>
+                  </div>
+                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                      {isBn ? 'অনুরোধ গ্রহণ হার' : 'Acceptance'}
+                    </span>
+                    <span className="text-lg font-bold text-cyan-600 dark:text-cyan-400 mt-1 block">
+                      {formatLocalizedNumber(aData?.inquiries?.acceptanceRate ?? 100, locale)}%
+                    </span>
+                  </div>
+                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                      {isBn ? 'ক্লাস সমাপ্তি হার' : 'Completion'}
+                    </span>
+                    <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 mt-1 block">
+                      {formatLocalizedNumber(aData?.sessions?.completionRate ?? 100, locale)}%
+                    </span>
+                  </div>
+                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                    <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                      {isBn ? 'শিক্ষার্থী রেটিং' : 'Rating'}
+                    </span>
+                    <span className="text-lg font-bold text-amber-500 mt-1 block">
+                      {formatLocalizedNumber(aData?.rating?.averageRating ?? 5.0, locale)} ★
+                    </span>
+                  </div>
+                </div>
               )}
             </div>
           </div>

@@ -16,6 +16,33 @@ function toQuery(params: AnalyticsTimeParams | void): string {
   return qs ? `?${qs}` : '';
 }
 
+export interface MyTutorAnalyticsData {
+  tutorUserId: string;
+  timeWindow: {
+    startDate: string;
+    endDate: string;
+  };
+  inquiries: {
+    totalInquiries: number;
+    acceptedInquiries: number;
+    declinedInquiries: number;
+    acceptanceRate: number;
+  };
+  sessions: {
+    totalSessions: number;
+    completedSessions: number;
+    noShowSessions: number;
+    completionRate: number;
+  };
+  earnings: {
+    totalEarningsBdt?: number;
+  } | number;
+  rating: {
+    reviewsCount: number;
+    averageRating: number;
+  };
+}
+
 export const analyticsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getAnalyticsOverview: builder.query<ApiSuccessEnvelope<unknown>, AnalyticsTimeParams | void>({
@@ -37,7 +64,10 @@ export const analyticsApi = baseApi.injectEndpoints({
       query: (params) => `/api/v1/analytics/retention${toQuery(params)}`,
       providesTags: [{ type: 'Analytics', id: 'RETENTION' }],
     }),
-    getMyTutorAnalytics: builder.query<ApiSuccessEnvelope<unknown>, AnalyticsTimeParams | void>({
+    getMyTutorAnalytics: builder.query<
+      ApiSuccessEnvelope<MyTutorAnalyticsData>,
+      AnalyticsTimeParams | void
+    >({
       query: (params) => `/api/v1/analytics/tutors/me${toQuery(params)}`,
       providesTags: [{ type: 'Analytics', id: 'ME' }],
     }),

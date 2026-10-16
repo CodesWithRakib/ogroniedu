@@ -35,21 +35,48 @@ export function schedulableBookings(
   const allowed = ['requested', 'accepted', 'awaiting_payment', 'confirmed', 'in_progress'];
   return rows.filter((row) => allowed.includes(row.status));
 }
-/** Map API session rows to calendar display items (single home for the mapping). */
 export function mapSessionItems(rows: SessionItem[], locale: Locale): CalendarSessionItem[] {
-  return rows.map((s) => ({
-    id: s.id,
-    bookingId: s.bookingId,
-    subjectName: s.subjectName ?? (locale === 'bn' ? 'টিউটরিং ক্লাস' : 'Tutoring class'),
-    tutorName: s.tutorName ?? '—',
-    studentName: s.studentName ?? '—',
-    startsAt: s.startsAt,
-    endsAt: s.endsAt,
-    timezone: s.timezone ?? 'Asia/Dhaka',
-    status: s.status,
-    meetingUrl: s.meetingUrl ?? null,
-    locationInstructions:
-      typeof s.locationInstructions === 'string' ? s.locationInstructions : null,
-    cancellationAssessment: toCancelAssessment(s.cancellationAssessment ?? null),
-  }));
+  return rows.map((s) => {
+    const b = isRecord(s.booking) ? s.booking : null;
+    const subj = b && isRecord(b.subject) ? b.subject : null;
+    const tp = isRecord(s.tutorProfile) ? s.tutorProfile : null;
+    const tu = tp && isRecord(tp.user) ? tp.user : null;
+    const stu = isRecord(s.studentUser) ? s.studentUser : null;
+
+    const subjectName =
+      s.subjectName ??
+      (typeof subj?.nameBn === 'string' && locale === 'bn'
+        ? subj.nameBn
+        : typeof subj?.nameEn === 'string'
+          ? subj.nameEn
+          : typeof subj?.nameBn === 'string'
+            ? subj.nameBn
+            : locale === 'bn'
+              ? 'টিউটরিং ক্লাস'
+              : 'Tutoring class');
+
+    const tutorName =
+      s.tutorName ??
+      (typeof tu?.displayName === 'string' ? tu.displayName : '—');
+
+    const studentName =
+      s.studentName ??
+      (typeof stu?.displayName === 'string' ? stu.displayName : '—');
+
+    return {
+      id: s.id,
+      bookingId: s.bookingId,
+      subjectName,
+      tutorName,
+      studentName,
+      startsAt: s.startsAt,
+      endsAt: s.endsAt,
+      timezone: s.timezone ?? 'Asia/Dhaka',
+      status: s.status,
+      meetingUrl: s.meetingUrl ?? null,
+      locationInstructions:
+        typeof s.locationInstructions === 'string' ? s.locationInstructions : null,
+      cancellationAssessment: toCancelAssessment(s.cancellationAssessment ?? null),
+    };
+  });
 }

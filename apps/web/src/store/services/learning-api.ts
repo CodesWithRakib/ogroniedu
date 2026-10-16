@@ -45,6 +45,38 @@ export interface ProgressReportRecord {
   generatedAt: string;
 }
 
+export interface StudentLearningMetrics {
+  totalSessionsRecorded: number;
+  sessionsAttended: number;
+  attendanceRate: number;
+  assignmentsAssigned: number;
+  assignmentsCompleted: number;
+  averageScore: number | null;
+}
+
+export interface StudentSubmissionItem {
+  id: string;
+  studentUserId: string;
+  assignmentId: string;
+  submissionText?: string | null;
+  status: string;
+  score?: number | null;
+  maxScore?: number | null;
+  tutorFeedback?: string | null;
+  submittedAt: string;
+  reviewedAt?: string | null;
+  assignment?: AssignmentRecord;
+}
+
+export interface StudentLearningSummary {
+  studentUserId: string;
+  metrics: StudentLearningMetrics;
+  attendance: AttendanceRecord[];
+  assignments: AssignmentRecord[];
+  submissions: StudentSubmissionItem[];
+  progressReports: ProgressReportRecord[];
+}
+
 export const learningApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     markAttendance: builder.mutation<
@@ -140,7 +172,7 @@ export const learningApi = baseApi.injectEndpoints({
         { type: 'ProgressReport', id: bookingId },
       ],
     }),
-    getStudentLearningSummary: builder.query<ApiSuccessEnvelope<unknown>, string>({
+    getStudentLearningSummary: builder.query<ApiSuccessEnvelope<StudentLearningSummary>, string>({
       query: (studentUserId) => `/api/v1/learning/students/${studentUserId}/summary`,
       providesTags: (_r, _e, id) => [{ type: 'LearningSummary', id }],
     }),

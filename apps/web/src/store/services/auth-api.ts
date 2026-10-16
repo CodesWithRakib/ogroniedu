@@ -1,5 +1,12 @@
-import { baseApi } from '../base-api';
+import { baseApi, type ApiSuccessEnvelope } from '../base-api';
 import type { AuthUser } from '../slices/auth-slice';
+
+function unwrapEnvelope<T>(response: ApiSuccessEnvelope<T> | T): T {
+  if (response && typeof response === 'object' && 'data' in response && response.data !== undefined) {
+    return response.data as T;
+  }
+  return response as T;
+}
 
 export type RegisterRole = 'student' | 'guardian' | 'tutor';
 
@@ -66,31 +73,43 @@ export const authApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     register: builder.mutation<AuthResponse, RegisterRequest>({
       query: (body) => ({ url: '/api/v1/auth/register', method: 'POST', body }),
-      transformResponse: (response: any) => response?.data ?? response,
+      transformResponse: (response: ApiSuccessEnvelope<AuthResponse> | AuthResponse) =>
+        unwrapEnvelope(response),
       invalidatesTags: [{ type: 'AuthUser', id: 'ME' }],
     }),
     login: builder.mutation<AuthResponse, LoginRequest>({
       query: (body) => ({ url: '/api/v1/auth/login', method: 'POST', body }),
-      transformResponse: (response: any) => response?.data ?? response,
+      transformResponse: (response: ApiSuccessEnvelope<AuthResponse> | AuthResponse) =>
+        unwrapEnvelope(response),
       invalidatesTags: [{ type: 'AuthUser', id: 'ME' }],
     }),
     refresh: builder.mutation<RefreshResponse, { refreshToken: string }>({
       query: (body) => ({ url: '/api/v1/auth/refresh', method: 'POST', body }),
-      transformResponse: (response: any) => response?.data ?? response,
+      transformResponse: (response: ApiSuccessEnvelope<RefreshResponse> | RefreshResponse) =>
+        unwrapEnvelope(response),
     }),
     logout: builder.mutation<{ success: boolean; message: string }, { refreshToken?: string }>({
       query: (body) => ({ url: '/api/v1/auth/logout', method: 'POST', body }),
-      transformResponse: (response: any) => response?.data ?? response,
+      transformResponse: (
+        response:
+          | ApiSuccessEnvelope<{ success: boolean; message: string }>
+          | { success: boolean; message: string },
+      ) => unwrapEnvelope(response),
       invalidatesTags: [{ type: 'AuthUser', id: 'ME' }],
     }),
     revokeAllSessions: builder.mutation<{ success: boolean; message: string }, void>({
       query: () => ({ url: '/api/v1/auth/revoke-all', method: 'POST', body: {} }),
-      transformResponse: (response: any) => response?.data ?? response,
+      transformResponse: (
+        response:
+          | ApiSuccessEnvelope<{ success: boolean; message: string }>
+          | { success: boolean; message: string },
+      ) => unwrapEnvelope(response),
       invalidatesTags: [{ type: 'AuthUser', id: 'ME' }],
     }),
     getSessionUser: builder.query<MeResponse, void>({
       query: () => '/api/v1/auth/me',
-      transformResponse: (response: any) => response?.data ?? response,
+      transformResponse: (response: ApiSuccessEnvelope<MeResponse> | MeResponse) =>
+        unwrapEnvelope(response),
       providesTags: [{ type: 'AuthUser', id: 'ME' }],
     }),
     requestCode: builder.mutation<

@@ -50,6 +50,12 @@ export class GuardiansController {
     return this.guardiansService.getLinkedChildren(user.id);
   }
 
+  @Get('my-guardians')
+  @Roles('student', ...ADMIN_ROLES)
+  async getMyGuardians(@CurrentUser() user: AuthenticatedUser) {
+    return this.guardiansService.getStudentGuardians(user.id);
+  }
+
   @Get('children/:studentId')
   @UseGuards(GuardianStudentGuard)
   async getChildDetails(

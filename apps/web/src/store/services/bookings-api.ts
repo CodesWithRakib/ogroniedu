@@ -14,15 +14,54 @@ export interface CreateBookingRequest {
 
 export interface BookingRequestItem {
   id: string;
-  tutorId: string;
-  studentId: string;
-  subjectId: string;
-  educationLevelId: string;
+  tutorId?: string;
+  studentId?: string;
+  tutorUserId?: string;
+  studentUserId?: string;
+  subjectId?: string;
+  educationLevelId?: string;
   mode: TutoringMode;
   status: 'requested' | 'accepted' | 'declined' | 'withdrawn' | 'cancelled' | string;
   messageNotes?: string | null;
+  pricePerSessionMinor?: number | string | null;
+  rateNegotiated?: number | null;
+  preferredDays?: number[] | null;
   createdAt: string;
   updatedAt?: string;
+  subject?: {
+    id?: string;
+    name?: string;
+    nameBn?: string;
+    code?: string;
+  } | null;
+  educationLevel?: {
+    id?: string;
+    name?: string;
+    nameBn?: string;
+  } | null;
+  tutorProfile?: {
+    id?: string;
+    headline?: string | null;
+    user?: {
+      id?: string;
+      fullName?: string | null;
+      displayName?: string | null;
+      email?: string | null;
+      avatarUrl?: string | null;
+    } | null;
+  } | null;
+  studentUser?: {
+    id?: string;
+    fullName?: string | null;
+    displayName?: string | null;
+    email?: string | null;
+    avatarUrl?: string | null;
+  } | null;
+  requesterUser?: {
+    id?: string;
+    fullName?: string | null;
+    displayName?: string | null;
+  } | null;
   [key: string]: unknown;
 }
 

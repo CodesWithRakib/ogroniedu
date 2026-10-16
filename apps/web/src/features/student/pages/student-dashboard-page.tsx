@@ -2,26 +2,56 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Inbox, Calendar, Bell, BookOpen, Search, Sparkles, ArrowRight } from 'lucide-react';
+import {
+  Inbox,
+  Calendar,
+  Bell,
+  BookOpen,
+  Search,
+  Sparkles,
+  ArrowRight,
+  CreditCard,
+  UserCheck,
+} from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
 import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart';
-import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard';
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
 import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
 import { EmptyState, LoadingSpinner } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
-import { formatDate, formatDateTime } from '@/lib/format';
+import { formatDate } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
 import { useStudentDashboard } from '../hooks/use-student-dashboard';
+import {
+  StudentAcademicProfileCard,
+  StudentUpcomingClassesCard,
+  StudentMyTutorsCard,
+  StudentPendingAssignmentsCard,
+} from '../components';
 
-/** Student dashboard entry: Donezo/Shopeers-inspired aesthetic with real student API data. */
+/** Production-ready Student dashboard: Donezo/Shopeers-inspired aesthetic with full real student API data. */
 export function StudentDashboardPage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
-  const { user, requests, sessions, unread, myRequests } = useStudentDashboard();
+  const {
+    user,
+    studentProfile,
+    isMinor,
+    myGuardians,
+    requests,
+    sessions,
+    unread,
+    myRequests,
+    upcomingSessions,
+    activeTutors,
+    metrics,
+    assignments,
+    pendingAssignments,
+    isLoading,
+  } = useStudentDashboard(locale);
   const isBn = locale === 'bn';
 
-  const upcomingSession = sessions.data?.data?.[0];
+  const attendancePercentage = metrics?.attendanceRate ?? 100;
 
   return (
     <DashboardShell
@@ -36,7 +66,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
       actions={
         <div className="flex items-center gap-2">
           <Link
-            href={withLocale('/learning', locale)}
+            href={withLocale('/dashboard/student/learning', locale)}
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-bold shadow-sm shadow-primary/25 transition-transform hover:scale-[1.02] active:scale-[0.98]"
           >
             <BookOpen className="h-3.5 w-3.5" />
@@ -53,24 +83,32 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
       }
     >
       {/* ======================================================== */}
-      {/* DONEZO 4-CARD HERO KPI GRID                              */}
+      {/* 1. DONEZO 4-CARD HERO KPI GRID                           */}
       {/* ======================================================== */}
       <div
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
         data-testid="student-overview-grid"
       >
-        {/* Card 1: Featured Hero Solid Card (Donezo Style) */}
+        {/* Card 1: Featured Hero Solid Card (Sessions) */}
         <HeroKpiCard
           variant="hero"
           icon={Calendar}
-          title={isBn ? 'আসন্ন ক্লাস' : 'Sessions'}
+          title={isBn ? 'আসন্ন ক্লাস' : 'Upcoming Classes'}
           value={
             sessions.isLoading
               ? '...'
-              : formatLocalizedNumber(sessions.data?.data?.length ?? 0, locale)
+              : formatLocalizedNumber(upcomingSessions.length, locale)
           }
-          changeText={isBn ? 'সক্রিয় লার্নিং শিডিউল' : 'Active learning schedule'}
-          href={withLocale('/sessions', locale)}
+          changeText={
+            upcomingSessions.length > 0
+              ? isBn
+                ? 'সক্রিয় লার্নিং শিডিউল চালু'
+                : 'Active scheduled sessions'
+              : isBn
+                ? 'কোনো আসন্ন ক্লাস নেই'
+                : 'No upcoming sessions'
+          }
+          href={withLocale('/dashboard/student/sessions', locale)}
           testId="student-sessions-count"
         />
 
@@ -78,14 +116,18 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
         <HeroKpiCard
           variant="secondary"
           icon={Inbox}
-          title={isBn ? 'বুকিং অনুরোধ' : 'Requests'}
+          title={isBn ? 'বুকিং অনুরোধ' : 'Tutoring Requests'}
           value={
             requests.isLoading
               ? '...'
-              : formatLocalizedNumber(requests.data?.data?.length ?? 0, locale)
+              : formatLocalizedNumber(myRequests.length, locale)
           }
-          changeText={isBn ? 'টিউটরিং অনুরোধ তালিকা' : 'Tutoring requests sent'}
-          href={withLocale('/requests', locale)}
+          changeText={
+            isBn
+              ? `${formatLocalizedNumber(activeTutors.length, locale)} জন গৃহীত শিক্ষক`
+              : `${activeTutors.length} Active tutor(s)`
+          }
+          href={withLocale('/dashboard/student/requests', locale)}
           testId="student-requests-count"
         />
 
@@ -100,58 +142,133 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
           testId="student-unread-count"
         />
 
-        {/* Card 4: Study Pass / Focus Status */}
+        {/* Card 4: Study Streak & Attendance */}
         <HeroKpiCard
           variant="secondary"
           icon={Sparkles}
-          title={isBn ? 'স্টাডি স্ট্রিক' : 'Study Streak'}
-          value={isBn ? '৫ দিন 🔥' : '5 Days 🔥'}
-          changeText={isBn ? 'ধারাবাহিক লার্নিং সক্রিয়' : 'Consistent learning tracker'}
-          href={withLocale('/learning', locale)}
+          title={isBn ? 'ক্লাস উপস্থিতি' : 'Attendance Rate'}
+          value={`${formatLocalizedNumber(Math.round(attendancePercentage), locale)}%`}
+          changeText={
+            metrics?.averageScore !== null && metrics?.averageScore !== undefined
+              ? isBn
+                ? `গড় নম্বর: ${formatLocalizedNumber(metrics.averageScore, locale)}%`
+                : `Avg Score: ${metrics.averageScore}%`
+              : isBn
+                ? 'ধারাবাহিক লার্নিং সক্রিয় 🔥'
+                : 'Active study track 🔥'
+          }
+          href={withLocale('/dashboard/student/learning', locale)}
         />
       </div>
 
       {/* ======================================================== */}
-      {/* DONEZO VISUAL ANALYTICS & REMINDER ROW                    */}
+      {/* QUICK ACTIONS ROW                                        */}
       {/* ======================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-        {/* Weekly Activity Bar Chart (2 Cols on lg) */}
-        <div className="lg:col-span-2">
-          <WeeklyActivityChart
-            locale={locale}
-            title={isBn ? 'সাপ্তাহিক পড়াশোনার সময়' : 'Weekly Study Analytics'}
-            subtitle={
-              isBn
-                ? 'সপ্তাহের বিভিন্ন দিনে সম্পন্ন করা ক্লাস ও টাস্ক'
-                : 'Study and session volume across the week'
-            }
-          />
-        </div>
-
-        {/* Live Meeting Reminder Card (1 Col on lg) */}
-        <div className="lg:col-span-1">
-          <SessionReminderCard
-            locale={locale}
-            title={upcomingSession?.subject ? String(upcomingSession.subject) : undefined}
-            timeRange={
-              upcomingSession?.scheduledAt
-                ? formatDateTime(String(upcomingSession.scheduledAt), locale)
-                : undefined
-            }
-            roomUrl={upcomingSession?.meetingUrl ?? undefined}
-          />
-        </div>
+      <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-2xl bg-card border border-border/70 shadow-xs">
+        <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1">
+          <Sparkles className="w-3.5 h-3.5 text-primary" />
+          {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
+        </span>
+        <Link
+          href={withLocale('/dashboard/student/learning', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+        >
+          <BookOpen className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+          <span>{isBn ? 'লার্নিং হাব' : 'Learning Hub'}</span>
+        </Link>
+        <Link
+          href={withLocale('/dashboard/student/sessions', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+        >
+          <Calendar className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+          <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
+        </Link>
+        <Link
+          href={withLocale('/dashboard/student/requests', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+        >
+          <Inbox className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+          <span>{isBn ? 'টিউশন অনুরোধ' : 'Tuition Requests'}</span>
+        </Link>
+        <Link
+          href={withLocale('/dashboard/student/payments', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+        >
+          <CreditCard className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+          <span>{isBn ? 'টিউশন ফি ও পেমেন্ট' : 'Tuition Payments'}</span>
+        </Link>
+        <Link
+          href={withLocale('/tutors', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors sm:ml-auto"
+        >
+          <Search className="w-3.5 h-3.5" />
+          <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
+        </Link>
       </div>
 
       {/* ======================================================== */}
-      {/* DONEZO PROGRESS GAUGE & STUDY TRACKER ROW                */}
+      {/* 2. ACADEMIC PROFILE & UPCOMING CLASSES ROW (2 COLS)      */}
+      {/* ======================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <StudentAcademicProfileCard
+          locale={locale}
+          studentProfile={studentProfile}
+          isMinor={isMinor}
+          guardians={myGuardians}
+          studentName={user?.displayName}
+        />
+
+        <StudentUpcomingClassesCard
+          locale={locale}
+          sessions={upcomingSessions}
+          isLoading={sessions.isLoading}
+        />
+      </div>
+
+      {/* ======================================================== */}
+      {/* 3. MY TUTORS & PENDING HOMEWORK ROW (2 COLS)             */}
+      {/* ======================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <StudentMyTutorsCard
+          locale={locale}
+          tutors={activeTutors}
+          isLoading={requests.isLoading}
+        />
+
+        <StudentPendingAssignmentsCard
+          locale={locale}
+          assignments={assignments}
+          isLoading={isLoading}
+        />
+      </div>
+
+      {/* ======================================================== */}
+      {/* 4. VISUAL ANALYTICS & TIMERS ROW                         */}
       {/* ======================================================== */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+        <WeeklyActivityChart
+          locale={locale}
+          title={isBn ? 'সাপ্তাহিক পড়াশোনার সময়' : 'Weekly Study Analytics'}
+          subtitle={
+            isBn
+              ? 'সপ্তাহের বিভিন্ন দিনে সম্পন্ন করা ক্লাস ও টাস্ক'
+              : 'Study and session volume across the week'
+          }
+        />
+
         <ProgressGaugeCard
           locale={locale}
-          percentage={82}
-          title={isBn ? 'পাঠ্যক্রম কভারেজ' : 'Syllabus Progress'}
-          subtitle={isBn ? 'অধ্যায় ও অ্যাসাইনমেন্ট সম্পন্ন' : 'Chapters & assignments finished'}
+          percentage={Math.round(attendancePercentage)}
+          title={isBn ? 'উপস্থিতি ও সিলেবাস অগ্রগতি' : 'Attendance & Progress'}
+          subtitle={
+            metrics
+              ? isBn
+                ? `${formatLocalizedNumber(metrics.assignmentsCompleted, locale)}/${formatLocalizedNumber(metrics.assignmentsAssigned, locale)} অ্যাসাইনমেন্ট সম্পন্ন`
+                : `${metrics.assignmentsCompleted}/${metrics.assignmentsAssigned} assignments done`
+              : isBn
+                ? 'অধ্যায় ও অ্যাসাইনমেন্ট সম্পন্ন'
+                : 'Chapters & assignments finished'
+          }
         />
 
         <StudyTimeTrackerCard
@@ -159,46 +276,10 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
           title={isBn ? 'ফোকাস সেশন টাইমার' : 'Study Time Tracker'}
           subtitle={isBn ? 'ধারাবাহিক মনোযোগ ও রিভিশন' : 'Continuous focus timer'}
         />
-
-        {/* Next Steps Card */}
-        <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
-          <div>
-            <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
-              {isBn ? 'পরবর্তী পদক্ষেপ' : 'Next Steps'}
-            </span>
-            <h3 className="text-base font-bold text-foreground mt-1">
-              {isBn ? 'দ্রুত নেভিগেশন' : 'Quick Actions'}
-            </h3>
-            <p className="text-xs text-muted-foreground mt-1">
-              {isBn
-                ? 'প্রিয় শিক্ষক খুঁজুন অথবা ক্লাসের স্টাডি রুমে নোট রিভিশন করুন।'
-                : 'Find trusted tutors or review class notes in your study room.'}
-            </p>
-          </div>
-
-          <div className="mt-4 pt-3 border-t border-border/60 flex flex-col gap-2 text-sm">
-            <Link
-              href={withLocale('/tutors', locale)}
-              data-testid="student-find-tutors-link"
-              className="w-full py-2.5 px-4 rounded-xl bg-primary text-primary-foreground font-bold text-xs text-center hover:bg-primary-hover shadow-xs transition-colors flex items-center justify-center gap-1.5"
-            >
-              <Search className="h-3.5 w-3.5" />
-              <span>{dict.nav.findTutors}</span>
-            </Link>
-            <Link
-              href={withLocale('/requests', locale)}
-              data-testid="student-requests-link"
-              className="w-full py-2.5 px-4 rounded-xl border border-border bg-surface text-foreground font-semibold text-xs text-center hover:bg-surface-hover transition-colors flex items-center justify-center gap-1.5"
-            >
-              <Inbox className="h-3.5 w-3.5 text-primary" />
-              <span>{isBn ? 'আমার অনুরোধ দেখুন' : 'View My Requests'}</span>
-            </Link>
-          </div>
-        </div>
       </div>
 
       {/* ======================================================== */}
-      {/* RECENT REQUESTS SECTION (Donezo Team/Project List Style) */}
+      {/* 5. RECENT REQUESTS SECTION                               */}
       {/* ======================================================== */}
       <div className="mt-2">
         {requests.isLoading ? (
@@ -230,7 +311,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                 </p>
               </div>
               <Link
-                href={withLocale('/requests', locale)}
+                href={withLocale('/dashboard/student/requests', locale)}
                 className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
               >
                 <span>{isBn ? 'সব দেখুন' : 'View All'}</span>
@@ -239,38 +320,61 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
             </div>
 
             <div className="divide-y divide-border/50" data-testid="student-recent-requests">
-              {myRequests.slice(0, 5).map((r) => (
-                <div
-                  key={r.id}
-                  className="py-3.5 flex items-center justify-between gap-3 hover:bg-surface/50 px-2 rounded-xl transition-colors"
-                >
-                  <div className="flex items-center gap-3 min-w-0">
-                    <div className="h-9 w-9 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0 font-bold text-xs">
-                      #{r.id.slice(0, 3)}
-                    </div>
-                    <div className="min-w-0 flex-1">
-                      <p className="text-xs sm:text-sm font-bold text-foreground truncate">
-                        {r.id.slice(0, 12)}…
-                      </p>
-                      <p className="text-[11px] text-muted-foreground truncate">
-                        {r.createdAt ? formatDate(r.createdAt, locale) : '—'}
-                      </p>
-                    </div>
-                  </div>
+              {myRequests.slice(0, 5).map((r) => {
+                const tp = r.tutorProfile && typeof r.tutorProfile === 'object' ? r.tutorProfile : null;
+                const tu =
+                  tp && 'user' in tp && typeof tp.user === 'object' && tp.user !== null
+                    ? (tp.user as { displayName?: string })
+                    : null;
+                const tutorName: string =
+                  tu?.displayName ??
+                  (typeof r.tutorName === 'string' ? r.tutorName : null) ??
+                  (isBn ? 'শিক্ষক' : 'Tutor');
 
-                  <span
-                    className={`px-3 py-1 text-[11px] font-bold rounded-full border ${
-                      r.status === 'accepted'
-                        ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25'
-                        : r.status === 'rejected'
-                          ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25'
-                          : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25'
-                    }`}
+                const subj =
+                  r.subject && typeof r.subject === 'object'
+                    ? (r.subject as { nameBn?: string; nameEn?: string })
+                    : null;
+                const subjectName: string =
+                  (isBn ? subj?.nameBn : subj?.nameEn) ??
+                  subj?.nameBn ??
+                  subj?.nameEn ??
+                  (typeof r.subjectName === 'string' ? r.subjectName : null) ??
+                  (isBn ? 'সাধারণ পাঠ্যক্রম' : 'General Tutoring');
+
+                return (
+                  <div
+                    key={r.id}
+                    className="py-3.5 flex items-center justify-between gap-3 hover:bg-surface/50 px-2 rounded-xl transition-colors"
                   >
-                    {String(r.status)}
-                  </span>
-                </div>
-              ))}
+                    <div className="flex items-center gap-3 min-w-0">
+                      <div className="h-9 w-9 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0 font-bold text-xs">
+                        #{r.id.slice(0, 3)}
+                      </div>
+                      <div className="min-w-0 flex-1">
+                        <p className="text-xs sm:text-sm font-bold text-foreground truncate">
+                          {tutorName} • <span className="font-medium text-muted-foreground">{subjectName}</span>
+                        </p>
+                        <p className="text-[11px] text-muted-foreground truncate">
+                          {r.createdAt ? formatDate(r.createdAt, locale) : '—'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <span
+                      className={`px-3 py-1 text-[11px] font-bold rounded-full border ${
+                        r.status === 'accepted'
+                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25'
+                          : r.status === 'rejected'
+                            ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25'
+                            : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25'
+                      }`}
+                    >
+                      {String(r.status)}
+                    </span>
+                  </div>
+                );
+              })}
             </div>
           </div>
         )}

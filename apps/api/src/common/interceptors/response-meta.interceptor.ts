@@ -51,7 +51,13 @@ export class ResponseMetaInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((body: unknown) => {
         // Leave streams / Buffers untouched (e.g. file downloads)
-        if (Buffer.isBuffer(body) || (body && typeof (body as any).pipe === 'function')) {
+        if (
+          Buffer.isBuffer(body) ||
+          (typeof body === 'object' &&
+            body !== null &&
+            'pipe' in body &&
+            typeof (body as { pipe: unknown }).pipe === 'function')
+        ) {
           return body;
         }
 

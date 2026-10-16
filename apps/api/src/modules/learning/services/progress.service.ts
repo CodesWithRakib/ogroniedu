@@ -217,6 +217,7 @@ export class LearningProgressService {
       bookingId,
       assignments,
       attendance,
+      reports: progressReports,
       progressReports,
     };
   }

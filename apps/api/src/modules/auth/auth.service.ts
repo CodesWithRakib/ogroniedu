@@ -171,7 +171,16 @@ export class AuthService {
     const identifier = dto.identifier.trim();
     const isEmail = identifier.includes('@');
 
-    let userRows: any[] = [];
+    interface LoginUserRow {
+      id: string;
+      email: string | null;
+      phone_e164: string | null;
+      password_hash: string;
+      display_name: string;
+      preferred_locale: 'bn' | 'en' | null;
+      status: string;
+    }
+    let userRows: LoginUserRow[] = [];
     if (isEmail) {
       userRows = await this.dataSource.query(
         `SELECT u.id, u.email, u.phone_e164, u.password_hash, u.display_name, u.preferred_locale, u.status
@@ -236,7 +245,7 @@ export class AuthService {
         email: user.email,
         phone: user.phone_e164,
         roles: roles.length > 0 ? roles : ['student'],
-        preferredLocale: user.preferred_locale,
+        preferredLocale: user.preferred_locale === 'en' ? 'en' : 'bn',
       },
     });
 
@@ -265,7 +274,7 @@ export class AuthService {
         phone: user.phone_e164,
         roles,
         status: user.status,
-        preferredLocale: user.preferred_locale,
+        preferredLocale: user.preferred_locale === 'en' ? 'en' : 'bn',
       },
       accessToken,
       refreshToken,

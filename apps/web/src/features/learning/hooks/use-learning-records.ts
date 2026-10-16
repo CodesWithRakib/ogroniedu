@@ -29,16 +29,27 @@ import {
   mapProgressReports,
 } from '../utils/learning-mappers';
 
+export interface BookingOption {
+  id: string;
+  label: string;
+  subjectName: string;
+  tutorName: string;
+  studentName: string;
+  status: string;
+}
+
 interface BookingLearningPayload {
   attendance: AttendanceRecord[];
   assignments: AssignmentRecord[];
-  reports: ProgressReportRecord[];
+  reports?: ProgressReportRecord[];
+  progressReports?: ProgressReportRecord[];
 }
 
 const EMPTY_PAYLOAD: BookingLearningPayload = { attendance: [], assignments: [], reports: [] };
 
 export interface LearningRecordsState {
   bookingIds: string[];
+  bookingOptions: BookingOption[];
   activeBookingId: string;
   setActiveBookingId: (id: string) => void;
   attendance: AttendanceRecordItem[];
@@ -66,12 +77,43 @@ export interface LearningRecordsState {
  */
 export function useLearningRecords(locale: Locale): LearningRecordsState {
   const requests = useGetBookingRequestsQuery();
-  const bookingIds = React.useMemo<string[]>(
+  const rawItems = React.useMemo<BookingRequestItem[]>(
     () =>
       requests.data
-        ? parseOffsetCollection<BookingRequestItem>(requests.data).items.map((r) => r.id)
+        ? parseOffsetCollection<BookingRequestItem>(requests.data).items
         : [],
     [requests.data],
+  );
+
+  const bookingOptions = React.useMemo<BookingOption[]>(() => {
+    return rawItems.map((r) => {
+      const tutorName =
+        r.tutorProfile?.user?.displayName ||
+        r.tutorProfile?.user?.fullName ||
+        (locale === 'bn' ? 'শিক্ষক' : 'Tutor');
+      const studentName =
+        r.studentUser?.displayName ||
+        r.studentUser?.fullName ||
+        (locale === 'bn' ? 'শিক্ষার্থী' : 'Student');
+      const subjectName =
+        locale === 'bn' && r.subject?.nameBn
+          ? r.subject.nameBn
+          : r.subject?.name || (locale === 'bn' ? 'সাধারণ বিষয়' : 'General');
+      const label = `${subjectName} — ${tutorName} (#${r.id.slice(0, 6)})`;
+      return {
+        id: r.id,
+        label,
+        subjectName,
+        tutorName,
+        studentName,
+        status: r.status,
+      };
+    });
+  }, [rawItems, locale]);
+
+  const bookingIds = React.useMemo<string[]>(
+    () => rawItems.map((r) => r.id),
+    [rawItems],
   );
 
   const [activeBookingId, setActiveBookingId] = React.useState<string>('');
@@ -100,7 +142,10 @@ export function useLearningRecords(locale: Locale): LearningRecordsState {
     () => mapAssignmentRecords(payload.assignments),
     [payload.assignments],
   );
-  const reports = React.useMemo(() => mapProgressReports(payload.reports), [payload.reports]);
+  const reports = React.useMemo(
+    () => mapProgressReports(payload.reports ?? payload.progressReports ?? []),
+    [payload.reports, payload.progressReports],
+  );
 
   const [createAssignment, { isLoading: creating }] = useCreateAssignmentMutation();
   const [submitAssignment] = useSubmitAssignmentMutation();
@@ -125,6 +170,7 @@ export function useLearningRecords(locale: Locale): LearningRecordsState {
 
   return {
     bookingIds,
+    bookingOptions,
     activeBookingId,
     setActiveBookingId,
     attendance,

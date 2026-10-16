@@ -191,7 +191,7 @@ export function SessionScheduleCalendar({
         <div className="flex items-center justify-between gap-2">
           <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
             <CalendarIcon className="w-5 h-5 text-emerald-600" />
-            <span>Scheduled Classes</span>
+            <span>{locale === 'bn' ? 'নির্ধারিত ক্লাসসমূহ' : 'Scheduled Classes'}</span>
           </h2>
           {onScheduleOneOff && (
             <Button size="sm" onClick={() => setScheduleOpen(true)} data-testid="schedule-open-btn">

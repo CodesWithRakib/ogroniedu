@@ -7,7 +7,12 @@ import { dashboardPathForRoles, withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
 import { useAppDispatch } from '@/store';
 import { setCredentials } from '@/store/slices/auth-slice';
-import { useRegisterMutation, toAuthUser, type RegisterRole } from '@/store/services/auth-api';
+import {
+  useRegisterMutation,
+  toAuthUser,
+  type RegisterRole,
+  type AuthResponse,
+} from '@/store/services/auth-api';
 import { enqueueToast } from '@/store/slices/ui-slice';
 import { validateRegisterFields, type RegisterFieldError } from './auth-validation';
 
@@ -62,7 +67,10 @@ export function useRegisterForm(locale: Locale) {
         role,
         preferredLocale: locale,
       }).unwrap();
-      const payload = (res as any)?.data ?? res;
+      const payload: AuthResponse =
+        typeof res === 'object' && res !== null && 'user' in res
+          ? (res as AuthResponse)
+          : ((res as { data?: AuthResponse }).data as AuthResponse);
       if (!payload?.accessToken || !payload?.user) {
         throw new Error(isBn ? 'নিবন্ধন প্রতিক্রিয়া অসম্পূর্ণ।' : 'Registration response missing credentials.');
       }
