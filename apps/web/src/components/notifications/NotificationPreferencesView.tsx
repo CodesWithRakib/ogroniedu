@@ -22,6 +22,7 @@ import {
   Badge,
 } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
+import { useNotifications } from './NotificationProvider';
 
 export interface UserNotificationPreference {
   category: 'booking' | 'schedule' | 'payment' | 'learning' | 'system' | 'marketing';
@@ -42,6 +43,7 @@ export function NotificationPreferencesView({
 }: NotificationPreferencesViewProps) {
   const dict = getDictionary(locale);
   const n = dict.notifications;
+  const { soundEnabled, toggleSound, soundVolume, setSoundVolume, testSound } = useNotifications();
 
   const categories: Array<{
     id: UserNotificationPreference['category'];
@@ -168,6 +170,88 @@ export function NotificationPreferencesView({
           </div>
         </div>
       </div>
+
+      {/* Audio Sound Settings Card */}
+      <Card className="border border-border/70 shadow-xs bg-card/60 backdrop-blur-xs">
+        <CardHeader className="pb-3 border-b border-border/50">
+          <CardTitle className="text-base font-semibold flex items-center justify-between">
+            <div className="flex items-center gap-2">
+              <span className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400">
+                <Bell className="w-4 h-4" />
+              </span>
+              <span>{locale === 'bn' ? 'অডিও ধ্বনি ও রিয়েলটাইম সাউন্ড' : 'Audio Notifications & Sound Effects'}</span>
+            </div>
+            <Badge variant="outline" className="text-xs font-mono">
+              Web Audio Synthesizer
+            </Badge>
+          </CardTitle>
+          <CardDescription className="text-xs">
+            {locale === 'bn'
+              ? 'নতুন বুকিং, ক্লাস রিমাইন্ডার এবং পেমেন্ট সংক্রান্ত নোটিফিকেশনে উচ্চ-স্পষ্টতার মিষ্টি চাইম ও অ্যালার্ট বাজবে।'
+              : 'Crisp, high-fidelity chimes and alerting tones trigger on incoming bookings, reminders, and payments.'}
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="pt-4 space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <p className="text-sm font-semibold text-foreground">
+                {locale === 'bn' ? 'বিজ্ঞপ্তি সাউন্ড চালু রাখুন' : 'Notification Sound Enabled'}
+              </p>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {locale === 'bn' ? 'রিয়েলটাইম বার্তা ও নোটিফিকেশনে মিষ্টি ধ্বনি সংকেত' : 'Play audio tone when real-time notifications arrive'}
+              </p>
+            </div>
+            <div className="flex items-center gap-3">
+              <Button
+                type="button"
+                variant={soundEnabled ? 'default' : 'outline'}
+                size="sm"
+                onClick={toggleSound}
+                className={soundEnabled ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold' : ''}
+              >
+                {soundEnabled ? (locale === 'bn' ? '🔊 সাউন্ড চালু' : '🔊 Sound On') : (locale === 'bn' ? '🔇 সাউন্ড বন্ধ' : '🔇 Muted')}
+              </Button>
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => testSound('chime')}
+                className="flex items-center gap-1.5 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10"
+              >
+                <span>{locale === 'bn' ? '🔔 টেস্ট সাউন্ড' : '🔔 Test Chime'}</span>
+              </Button>
+            </div>
+          </div>
+
+          {soundEnabled && (
+            <div className="pt-3 border-t border-border/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+              <span className="text-muted-foreground font-medium">
+                {locale === 'bn' ? 'শব্দের মাত্রা (Loudness Volume):' : 'Volume Level:'} {Math.round(soundVolume * 100)}%
+              </span>
+              <div className="flex items-center gap-3 w-full sm:w-64">
+                <input
+                  type="range"
+                  min="0"
+                  max="1"
+                  step="0.05"
+                  value={soundVolume}
+                  onChange={(e) => setSoundVolume(parseFloat(e.target.value))}
+                  className="w-full accent-cyan-400 cursor-pointer h-2 bg-surface rounded-lg"
+                />
+                <Button
+                  type="button"
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => testSound('urgent')}
+                  className="text-xs text-rose-400 hover:text-rose-300 shrink-0 h-7 px-2"
+                >
+                  {locale === 'bn' ? 'জরুরি টেস্ট' : 'Urgent Alert'}
+                </Button>
+              </div>
+            </div>
+          )}
+        </CardContent>
+      </Card>
 
       {/* Preferences Matrix Card */}
       <Card className="border border-border shadow-sm">

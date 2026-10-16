@@ -4,12 +4,22 @@ import React, { createContext, useContext, useEffect, useState, useCallback, use
 import { io, type Socket } from 'socket.io-client';
 import { useAppSelector } from '@/store';
 import type { NotificationItemDto, UnreadCountResponseDto } from '@ogroniedu/contracts';
+import {
+  playNotificationSound,
+  forcePlayNotificationSound,
+  isSoundEnabled,
+  setSoundEnabled,
+  getSoundVolume,
+  setSoundVolume as saveSoundVolume,
+  unlockAudioContext,
+  type NotificationSoundType,
+} from '@/lib/audio/notification-sound';
 
-interface NotificationToastItem extends NotificationItemDto {
+export interface NotificationToastItem extends NotificationItemDto {
   toastId: string;
 }
 
-interface NotificationContextType {
+export interface NotificationContextType {
   socket: Socket | null;
   isConnected: boolean;
   unreadCount: number;
@@ -21,6 +31,12 @@ interface NotificationContextType {
   refreshNotifications: () => Promise<void>;
   isCenterOpen: boolean;
   setIsCenterOpen: (open: boolean) => void;
+  // Audio notification controls
+  soundEnabled: boolean;
+  toggleSound: () => void;
+  soundVolume: number;
+  setSoundVolume: (volume: number) => void;
+  testSound: (type?: NotificationSoundType) => void;
 }
 
 const NotificationContext = createContext<NotificationContextType | undefined>(undefined);
@@ -51,7 +67,34 @@ export function NotificationProvider({
   const [notifications, setNotifications] = useState<NotificationItemDto[]>([]);
   const [toasts, setToasts] = useState<NotificationToastItem[]>([]);
   const [isCenterOpen, setIsCenterOpen] = useState(false);
+  const [soundEnabled, setSoundEnabledState] = useState(true);
+  const [soundVolume, setSoundVolumeState] = useState(0.9);
   const socketRef = useRef<Socket | null>(null);
+
+  // Sync sound settings with localStorage
+  useEffect(() => {
+    setSoundEnabledState(isSoundEnabled());
+    setSoundVolumeState(getSoundVolume());
+  }, []);
+
+  const toggleSound = useCallback(() => {
+    setSoundEnabledState((prev) => {
+      const next = !prev;
+      setSoundEnabled(next);
+      if (next) forcePlayNotificationSound('chime');
+      return next;
+    });
+  }, []);
+
+  const updateSoundVolume = useCallback((vol: number) => {
+    setSoundVolumeState(vol);
+    saveSoundVolume(vol);
+  }, []);
+
+  const testSound = useCallback((type?: NotificationSoundType) => {
+    unlockAudioContext();
+    forcePlayNotificationSound(type ?? 'chime');
+  }, []);
 
   const pushToast = useCallback((item: NotificationItemDto) => {
     const dedupeKey = item.id || `${item.title}-${item.createdAt}`;
@@ -96,6 +139,16 @@ export function NotificationProvider({
         if (prev.some((n) => n.id === item.id)) return prev;
         return [item, ...prev];
       });
+
+      // Play synthesized audio tone based on category and urgency
+      if (item.priority === 'urgent' || item.category === 'trust') {
+        playNotificationSound('urgent');
+      } else if (item.category === 'payment' || item.eventType === 'tutor.verified') {
+        playNotificationSound('success');
+      } else {
+        playNotificationSound('chime');
+      }
+
       pushToast(item);
     });
     socketInstance.on('unread_count', (data: UnreadCountResponseDto) => {
@@ -234,6 +287,11 @@ export function NotificationProvider({
         refreshNotifications,
         isCenterOpen,
         setIsCenterOpen,
+        soundEnabled,
+        toggleSound,
+        soundVolume,
+        setSoundVolume: updateSoundVolume,
+        testSound,
       }}
     >
       {children}

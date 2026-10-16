@@ -171,6 +171,13 @@ export class TutorVerificationService {
             recipientRole: 'tutor',
             payload: { notes: dto.internalNotes || dto.reasonCode },
           });
+        } else if (dto.decision === 'rejected') {
+          await this.notificationService.dispatch({
+            userId: tutorId,
+            eventType: 'tutor.rejected',
+            recipientRole: 'tutor',
+            payload: { notes: dto.internalNotes || dto.reasonCode },
+          });
         }
       } catch (err) {
         this.logger.warn(

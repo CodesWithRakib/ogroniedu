@@ -205,11 +205,11 @@ export class BookingMessagesService {
       .dispatch({
         userId: recipientUserId,
         recipientRole: isTutor ? 'student' : 'tutor',
-        eventType: 'system.announcement',
+        eventType: 'chat.message',
         payload: {
           bookingId: booking.id,
           senderName: resolveParticipantDisplayName(user, 'Participant'),
-          snippet: sanitizedContent.slice(0, 50),
+          preview: sanitizedContent.slice(0, 50),
         },
       })
       .catch((err) => this.logger.warn(`Failed to dispatch message notification: ${err}`));

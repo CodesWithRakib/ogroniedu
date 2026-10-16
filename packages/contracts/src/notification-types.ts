@@ -33,6 +33,11 @@ export const NotificationEventTypes = [
   'progress.published',
   'tutor.verified',
   'tutor.needs_information',
+  'tutor.rejected',
+  'safety.alert',
+  'tutor.replacement',
+  'dispute.opened',
+  'chat.message',
   'system.announcement',
 ] as const;
 export type NotificationEventType = (typeof NotificationEventTypes)[number];

@@ -46,9 +46,16 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
       let userId: string | null = null;
 
       // 1. Verify a real JWT signature; never trust an unsigned/decoded token.
-      if (typeof auth.token === 'string' && auth.token.includes('.')) {
+      const rawToken =
+        typeof auth.token === 'string'
+          ? auth.token.replace(/^Bearer\s+/i, '')
+          : typeof headers.authorization === 'string'
+            ? headers.authorization.replace(/^Bearer\s+/i, '')
+            : null;
+
+      if (rawToken && rawToken.includes('.')) {
         try {
-          const claims = jwt.verify(auth.token, this.jwtSecret);
+          const claims = jwt.verify(rawToken, this.jwtSecret);
           if (typeof claims !== 'string') {
             userId = readString(claims.sub) ?? readString(claims.id) ?? null;
           }
