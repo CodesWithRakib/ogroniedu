@@ -95,6 +95,23 @@ export class SafetyReportsService {
       );
     }
 
+    // Dispatch safety.alert notification to reporter if guardian
+    if (user.roles?.includes('guardian')) {
+      await this.notificationService
+        .dispatch({
+          userId: user.id,
+          recipientRole: 'guardian',
+          eventType: 'safety.alert',
+          payload: {
+            reportId: savedReport.id,
+            severity: dto.severity || 'medium',
+          },
+        })
+        .catch((err) =>
+          this.logger.warn(`Failed to dispatch safety alert notification to reporter: ${err}`),
+        );
+    }
+
     return savedReport;
   }
 

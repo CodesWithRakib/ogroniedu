@@ -1,4 +1,7 @@
 import { baseApi } from '../base-api';
+import type { SafetyReportRecord, ReplacementCaseRecord } from '@ogroniedu/contracts';
+
+export type { SafetyReportRecord, ReplacementCaseRecord };
 
 export interface CreateReviewRequest {
   bookingId: string;
@@ -57,34 +60,56 @@ export const trustApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [{ type: 'Review', id: 'LIST' }],
     }),
-    createSafetyReport: builder.mutation<unknown, CreateSafetyReportRequest>({
+    createSafetyReport: builder.mutation<SafetyReportRecord, CreateSafetyReportRequest>({
       query: (body) => ({ url: '/api/v1/safety-reports', method: 'POST', body }),
-      invalidatesTags: [{ type: 'SafetyReport', id: 'LIST' }],
+      invalidatesTags: [
+        { type: 'SafetyReport', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
     }),
-    getSafetyReports: builder.query<unknown, void>({
+    getSafetyReports: builder.query<SafetyReportRecord[], void>({
       query: () => '/api/v1/safety-reports',
       providesTags: [{ type: 'SafetyReport', id: 'LIST' }],
     }),
-    updateSafetyReport: builder.mutation<unknown, { id: string; body: Record<string, unknown> }>({
+    getSafetyReportById: builder.query<SafetyReportRecord, string>({
+      query: (id) => `/api/v1/safety-reports/${id}`,
+      providesTags: (_r, _e, id) => [{ type: 'SafetyReport', id }],
+    }),
+    updateSafetyReport: builder.mutation<SafetyReportRecord, { id: string; body: Record<string, unknown> }>({
       query: ({ id, body }) => ({ url: `/api/v1/safety-reports/${id}`, method: 'PATCH', body }),
-      invalidatesTags: [{ type: 'SafetyReport', id: 'LIST' }],
+      invalidatesTags: [
+        { type: 'SafetyReport', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
     }),
-    createReplacementCase: builder.mutation<unknown, CreateReplacementRequest>({
+    createReplacementCase: builder.mutation<ReplacementCaseRecord, CreateReplacementRequest>({
       query: (body) => ({ url: '/api/v1/tutor-replacements', method: 'POST', body }),
-      invalidatesTags: [{ type: 'ReplacementCase', id: 'LIST' }],
+      invalidatesTags: [
+        { type: 'ReplacementCase', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+        { type: 'BookingRequest', id: 'LIST' },
+      ],
     }),
-    getReplacementCases: builder.query<unknown, void>({
+    getReplacementCases: builder.query<ReplacementCaseRecord[], void>({
       query: () => '/api/v1/tutor-replacements',
       providesTags: [{ type: 'ReplacementCase', id: 'LIST' }],
     }),
-    updateReplacementCase: builder.mutation<unknown, { id: string; body: Record<string, unknown> }>(
+    getReplacementCaseById: builder.query<ReplacementCaseRecord, string>({
+      query: (id) => `/api/v1/tutor-replacements/${id}`,
+      providesTags: (_r, _e, id) => [{ type: 'ReplacementCase', id }],
+    }),
+    updateReplacementCase: builder.mutation<ReplacementCaseRecord, { id: string; body: Record<string, unknown> }>(
       {
         query: ({ id, body }) => ({
           url: `/api/v1/tutor-replacements/${id}`,
           method: 'PATCH',
           body,
         }),
-        invalidatesTags: [{ type: 'ReplacementCase', id: 'LIST' }],
+        invalidatesTags: [
+          { type: 'ReplacementCase', id: 'LIST' },
+          { type: 'BookingRequest', id: 'LIST' },
+          { type: 'Notification', id: 'LIST' },
+        ],
       },
     ),
   }),
@@ -98,8 +123,10 @@ export const {
   useModerateReviewMutation,
   useCreateSafetyReportMutation,
   useGetSafetyReportsQuery,
+  useGetSafetyReportByIdQuery,
   useUpdateSafetyReportMutation,
   useCreateReplacementCaseMutation,
   useGetReplacementCasesQuery,
+  useGetReplacementCaseByIdQuery,
   useUpdateReplacementCaseMutation,
 } = trustApi;

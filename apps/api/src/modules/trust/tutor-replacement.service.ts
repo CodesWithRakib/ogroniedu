@@ -128,6 +128,22 @@ export class TutorReplacementService {
         this.logger.warn(`Failed to emit outbox event for replacement request: ${err}`),
       );
 
+    // Notify requester (guardian or student) with tutor.replacement event
+    const requesterRole = user.roles?.includes('guardian') ? 'guardian' : 'student';
+    await this.notificationService
+      .dispatch({
+        userId: user.id,
+        recipientRole: requesterRole,
+        eventType: 'tutor.replacement',
+        payload: {
+          bookingId: booking.id,
+          status: 'requested',
+        },
+      })
+      .catch((err) =>
+        this.logger.warn(`Failed to dispatch tutor replacement request notification: ${err}`),
+      );
+
     // Notify Operations / Support
     this.logger.log(
       `TUTOR REPLACEMENT GUARANTEE CASE FILED: ${savedCase.id} for Booking: ${booking.id}`,
@@ -230,15 +246,29 @@ export class TutorReplacementService {
         .dispatch({
           userId: booking.studentUserId,
           recipientRole: 'student',
-          eventType: 'system.announcement',
+          eventType: 'tutor.replacement',
           payload: {
             bookingId: booking.id,
-            message: 'A verified replacement tutor has been matched and assigned to your course.',
+            status: 'accepted',
           },
         })
         .catch((err) =>
           this.logger.warn(`Failed to dispatch replacement notification to student: ${err}`),
         );
+
+      if (booking.requesterUserId && booking.requesterUserId !== booking.studentUserId) {
+        await this.notificationService
+          .dispatch({
+            userId: booking.requesterUserId,
+            recipientRole: 'guardian',
+            eventType: 'tutor.replacement',
+            payload: {
+              bookingId: booking.id,
+              status: 'accepted',
+            },
+          })
+          .catch(() => {});
+      }
     }
 
     // Audit log

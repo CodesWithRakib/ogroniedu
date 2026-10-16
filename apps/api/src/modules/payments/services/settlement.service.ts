@@ -2,8 +2,10 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
   Inject,
   forwardRef,
+  Optional,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -11,8 +13,10 @@ import { PaymentOrderEntity, PaymentTransactionEntity, LedgerJournalEntity } fro
 import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
 import { LedgerService } from '../ledger.service';
 import { AuditService } from '../../audit/audit.service';
+import { NotificationService } from '../../notifications/notification.service';
 import { SettleMilestoneDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
+import { isAdminRole } from '../../../common/auth/role.utils';
 
 export interface ReconciliationReport {
   reconciledAt: string;
@@ -43,10 +47,14 @@ export class SettlementService {
     private readonly ledgerService: LedgerService,
     @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
+    @Optional()
+    @Inject(forwardRef(() => NotificationService))
+    private readonly notificationService?: NotificationService,
   ) {}
 
   /**
    * 4. Settle Session Milestone (Escrow -> Tutor Payable 92% + Platform 8% Commission)
+   * Invariant: Only the student, guardian, or admin can approve escrow milestone settlement.
    */
   async settleMilestone(
     user: AuthenticatedUser,
@@ -69,6 +77,17 @@ export class SettlementService {
     const booking = session.booking;
     if (!booking) {
       throw new NotFoundException('Associated booking not found');
+    }
+
+    // ABAC Verification: user must be student, requester guardian, or admin
+    const isParticipant =
+      user.id === booking.studentUserId ||
+      user.id === booking.requesterUserId ||
+      isAdminRole(user);
+    if (!isParticipant) {
+      throw new ForbiddenException(
+        'Access denied: Only the student, guardian, or an administrator can approve session milestone settlement',
+      );
     }
 
     const totalMinor = BigInt(booking.pricePerSessionMinor);
@@ -106,6 +125,21 @@ export class SettlementService {
         platformCommissionMinor: platformCommissionMinor.toString(),
       },
     });
+
+    // Notify tutor of credited milestone payout
+    if (booking.tutorUserId && this.notificationService) {
+      await this.notificationService
+        .dispatch({
+          userId: booking.tutorUserId,
+          recipientRole: 'tutor',
+          eventType: 'payment.succeeded',
+          payload: {
+            bookingId: booking.id,
+            amount: `${(Number(tutorPayableMinor) / 100).toFixed(2)} BDT`,
+          },
+        })
+        .catch(() => {});
+    }
 
     return journal;
   }

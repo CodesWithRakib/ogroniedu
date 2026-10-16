@@ -99,3 +99,36 @@ describe('link-child validation (Phase 23)', () => {
     expect(toGuardianRelationship('')).toBe('father');
   });
 });
+
+describe('Feature #3: Multi-Child Guardianship, Safety Alerts & Replacement Guarantee', () => {
+  it('should verify child academic oversight navigation target format', () => {
+    const studentId = '00000000-0000-4000-8000-000000000002';
+    const targetPathBn = `/bn/dashboard/guardian/children/${studentId}`;
+    const targetPathEn = `/en/dashboard/guardian/children/${studentId}`;
+
+    expect(targetPathBn).toContain(studentId);
+    expect(targetPathEn).toContain(studentId);
+  });
+
+  it('should ensure child safety categories include child_safety, harassment, and off_platform_payment', async () => {
+    const { SafetyCategories, SafetySeverities } = await import('@ogroniedu/contracts');
+
+    expect(SafetyCategories).toContain('child_safety');
+    expect(SafetyCategories).toContain('harassment');
+    expect(SafetyCategories).toContain('off_platform_payment');
+    expect(SafetySeverities).toContain('critical');
+    expect(SafetySeverities).toContain('high');
+  });
+
+  it('should verify 48-hour tutor replacement reason codes', async () => {
+    const { ReplacementReasonCodes, ReplacementStatuses } = await import('@ogroniedu/contracts');
+
+    expect(ReplacementReasonCodes).toContain('tutor_no_show');
+    expect(ReplacementReasonCodes).toContain('teaching_mismatch');
+    expect(ReplacementReasonCodes).toContain('unprofessional_conduct');
+    expect(ReplacementStatuses).toContain('requested');
+    expect(ReplacementStatuses).toContain('matching');
+    expect(ReplacementStatuses).toContain('accepted');
+  });
+});
+

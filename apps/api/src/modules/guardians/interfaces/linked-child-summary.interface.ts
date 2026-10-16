@@ -7,6 +7,8 @@ export interface LinkedChildSummary {
   consentPolicyVersion: string | null;
   consentRecordedAt: Date | null;
   isMinor: boolean;
+  institutionName?: string | null;
+  educationLevelName?: string | null;
   studentProfile: {
     dateOfBirth: string | null;
     educationLevelId: string | null;

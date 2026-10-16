@@ -73,12 +73,13 @@ export const paymentsApi = baseApi.injectEndpoints({
     }),
     settleMilestone: builder.mutation<
       ApiSuccessEnvelope<unknown>,
-      { bookingId: string; sessionId?: string }
+      { sessionId: string }
     >({
       query: (body) => ({ url: '/api/v1/payments/milestones/settle', method: 'POST', body }),
       invalidatesTags: [
         { type: 'Reconciliation', id: 'SUMMARY' },
         { type: 'Notification', id: 'LIST' },
+        { type: 'Session', id: 'LIST' },
       ],
     }),
     getReconciliation: builder.query<ApiSuccessEnvelope<unknown>, void>({

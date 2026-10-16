@@ -93,3 +93,56 @@ export const UpdateReplacementCaseSchema = z.object({
   outcomeNotes: z.string().min(1).optional(),
 });
 export type UpdateReplacementCaseInput = z.infer<typeof UpdateReplacementCaseSchema>;
+
+export interface SafetyReportRecord {
+  id: string;
+  reporterUserId: string;
+  reportedUserId: string | null;
+  bookingId: string | null;
+  category: (typeof SafetyCategories)[number];
+  severity: (typeof SafetySeverities)[number];
+  description: string;
+  evidenceAssetIds: string[];
+  status: (typeof SafetyStatuses)[number];
+  escalationLevel: (typeof EscalationLevels)[number];
+  policyVersion: string;
+  resolutionNotes?: string | null;
+  resolvedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  reporter?: {
+    id: string;
+    displayName: string;
+  };
+  reportedUser?: {
+    id: string;
+    displayName: string;
+  };
+}
+
+export interface ReplacementCaseRecord {
+  id: string;
+  bookingId: string;
+  requestedBy: string;
+  reasonCode: (typeof ReplacementReasonCodes)[number];
+  explanation: string;
+  status: (typeof ReplacementStatuses)[number];
+  replacementTutorUserId?: string | null;
+  outcomeNotes?: string | null;
+  resolvedAt?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  booking?: {
+    id: string;
+    studentUserId: string;
+    requesterUserId?: string;
+    tutorUserId: string;
+    status: string;
+    subject?: { name: string; code: string };
+  };
+  replacementTutor?: {
+    id: string;
+    displayName: string;
+  };
+}
+

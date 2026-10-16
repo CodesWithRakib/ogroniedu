@@ -3,3 +3,6 @@ export * from './hooks/use-modal-submit';
 export * from './components/trustModalShell';
 export * from './components/starSelector';
 export * from './components/reviewCard';
+export * from './components/safetyReportModal';
+export * from './components/tutorReplacementModal';
+

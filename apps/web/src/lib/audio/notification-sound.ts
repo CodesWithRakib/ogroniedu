@@ -280,3 +280,8 @@ export function forcePlayNotificationSound(type: NotificationSoundType = 'chime'
     play();
   }
 }
+
+/** Convenience alias for playing audio feedback */
+export function playAudioTone(type: 'chime' | 'urgent' | 'alert' | 'success' = 'chime'): void {
+  playNotificationSound(type === 'alert' ? 'urgent' : type);
+}

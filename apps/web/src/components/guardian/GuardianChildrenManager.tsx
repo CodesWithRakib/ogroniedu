@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
 import {
   Users,
   UserPlus,
@@ -9,6 +10,7 @@ import {
   AlertCircle,
   Trash2,
   Lock,
+  ArrowRight,
 } from 'lucide-react';
 import {
   Button,
@@ -21,6 +23,7 @@ import {
   Input,
 } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
+import { withLocale } from '@/lib/auth';
 import { useGuardianChildren } from './use-guardian-children';
 
 export type GuardianRelationship = 'father' | 'mother' | 'legal_guardian';
@@ -152,7 +155,15 @@ export function GuardianChildrenManager({
                   </span>
                 </div>
 
-                <div className="flex justify-end pt-2">
+                <div className="flex items-center justify-between pt-2 border-t border-border/60">
+                  <Link
+                    href={withLocale(`/dashboard/guardian/children/${child.studentId}`, locale)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors"
+                    data-testid={`link-child-detail-${child.studentId}`}
+                  >
+                    <span>{locale === 'bn' ? 'একাডেমিক প্রোফাইল ও তদারকি' : 'Academic Oversight'}</span>
+                    <ArrowRight className="h-3.5 w-3.5" />
+                  </Link>
                   <Button
                     variant="ghost"
                     size="sm"

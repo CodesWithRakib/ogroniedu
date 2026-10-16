@@ -7,6 +7,8 @@ import {
   Calendar,
   Inbox,
   ShieldCheck,
+  ShieldAlert,
+  RefreshCw,
   Search,
   Plus,
   CreditCard,
@@ -178,6 +180,22 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         >
           <CreditCard className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
           <span>{isBn ? 'টিউশন ফি ও এসক্রো' : 'Fees & Payments'}</span>
+        </Link>
+        <Link
+          href={withLocale('/safety-reports', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 text-xs font-semibold transition-colors"
+          id="link-safety-hub"
+        >
+          <ShieldAlert className="w-3.5 h-3.5 text-red-500" />
+          <span>{isBn ? 'শিশু সুরক্ষা হাব' : 'Safety Hub'}</span>
+        </Link>
+        <Link
+          href={withLocale('/tutor-replacements', locale)}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 text-xs font-semibold transition-colors"
+          id="link-replacement-hub"
+        >
+          <RefreshCw className="w-3.5 h-3.5 text-amber-500" />
+          <span>{isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacements'}</span>
         </Link>
         <Link
           href={withLocale('/tutors', locale)}

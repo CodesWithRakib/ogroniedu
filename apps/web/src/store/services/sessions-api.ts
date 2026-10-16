@@ -21,6 +21,8 @@ export interface SessionItem {
 
 export interface GetSessionsParams {
   bookingId?: string;
+  studentId?: string;
+  tutorId?: string;
   from?: string;
   to?: string;
   status?: SessionStatus;
@@ -32,6 +34,8 @@ export const sessionsApi = baseApi.injectEndpoints({
       query: (params) =>
         `/api/v1/sessions${toQueryString({
           bookingId: params?.bookingId,
+          studentId: params?.studentId,
+          tutorId: params?.tutorId,
           from: params?.from,
           to: params?.to,
           status: params?.status,

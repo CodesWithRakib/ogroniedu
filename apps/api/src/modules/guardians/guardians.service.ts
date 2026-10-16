@@ -275,6 +275,8 @@ export class GuardiansService {
       consentPolicyVersion: link.consentPolicyVersion,
       consentRecordedAt: link.consentRecordedAt,
       isMinor: this.isMinor(profile?.dateOfBirth),
+      institutionName: profile?.institutionName ?? null,
+      educationLevelName: null,
       studentProfile: profile
         ? {
             dateOfBirth: profile.dateOfBirth,
