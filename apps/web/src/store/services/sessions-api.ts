@@ -103,6 +103,46 @@ export const sessionsApi = baseApi.injectEndpoints({
         { type: 'Notification', id: 'LIST' },
       ],
     }),
+    startSession: builder.mutation<ApiSuccessEnvelope<SessionItem>, string>({
+      query: (id) => ({
+        url: `/api/v1/sessions/${id}/start`,
+        method: 'POST',
+      }),
+      invalidatesTags: (_r, _e, id) => [
+        { type: 'Session', id },
+        { type: 'Session', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
+    completeSession: builder.mutation<
+      ApiSuccessEnvelope<SessionItem>,
+      { id: string; notes?: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/api/v1/sessions/${id}/complete`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [
+        { type: 'Session', id },
+        { type: 'Session', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
+    updateMeetingUrl: builder.mutation<
+      ApiSuccessEnvelope<SessionItem>,
+      { id: string; meetingUrl: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/api/v1/sessions/${id}/meeting-url`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [
+        { type: 'Session', id },
+        { type: 'Session', id: 'LIST' },
+      ],
+    }),
     getTutorCalendar: builder.query<
       ApiSuccessEnvelope<Array<Record<string, unknown>>>,
       { tutorId: string; from?: string; to?: string }
@@ -137,6 +177,9 @@ export const {
   useScheduleRecurringSessionsMutation,
   useRescheduleSessionMutation,
   useCancelSessionMutation,
+  useStartSessionMutation,
+  useCompleteSessionMutation,
+  useUpdateMeetingUrlMutation,
   useGetTutorCalendarQuery,
   useGetIcsCalendarQuery,
   useLazyGetIcsCalendarQuery,

@@ -5,3 +5,5 @@ export * from './create-recurring-sessions.dto';
 export * from './reschedule-session.dto';
 export * from './cancel-session.dto';
 export * from './get-sessions-query.dto';
+export * from './complete-session.dto';
+export * from './update-meeting-url.dto';

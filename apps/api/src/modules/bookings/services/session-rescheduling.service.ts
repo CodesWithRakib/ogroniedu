@@ -275,4 +275,140 @@ export class SessionReschedulingService {
 
     return { session: saved, policyAssessment: assessment };
   }
+
+  /**
+   * Start a session (scheduled -> in_progress)
+   */
+  async startSession(sessionId: string, user: AuthenticatedUser): Promise<BookingSessionEntity> {
+    const session = await this.sessionRepo.findOne({
+      where: { id: sessionId },
+      relations: { booking: true },
+    });
+    if (!session) {
+      throw new NotFoundException(`Session ${sessionId} not found`);
+    }
+
+    const isTutor = user.id === session.tutorUserId;
+    const isStudent = user.id === session.studentUserId;
+    const isAdmin = user.roles.some((r) => ['admin', 'super_admin'].includes(r));
+    if (!isTutor && !isStudent && !isAdmin) {
+      throw new BadRequestException('Not authorized to start this session.');
+    }
+
+    if (session.status !== 'scheduled' && session.status !== 'in_progress') {
+      throw new BadRequestException(`Cannot start session with current status '${session.status}'.`);
+    }
+
+    session.status = 'in_progress';
+    const saved = await this.sessionRepo.save(session);
+
+    await this.auditService.record({
+      actorUserId: user.id,
+      action: 'session.started',
+      resourceType: 'booking_session',
+      resourceId: saved.id,
+    });
+
+    const notifyRecipientId = isTutor ? session.studentUserId : session.tutorUserId;
+    const recipientRole = isTutor ? 'student' : 'tutor';
+    dispatchNotificationSafe(
+      this.logger,
+      this.notificationService,
+      notifyRecipientId,
+      'session.reminder',
+      recipientRole,
+      {
+        sessionId: saved.id,
+        bookingId: session.bookingId,
+        message: 'Live session has started. Please join the classroom.',
+      },
+    );
+
+    return saved;
+  }
+
+  /**
+   * Mark a session as completed
+   */
+  async completeSession(
+    sessionId: string,
+    user: AuthenticatedUser,
+    notes?: string,
+  ): Promise<BookingSessionEntity> {
+    const session = await this.sessionRepo.findOne({
+      where: { id: sessionId },
+      relations: { booking: true },
+    });
+    if (!session) {
+      throw new NotFoundException(`Session ${sessionId} not found`);
+    }
+
+    const isTutor = user.id === session.tutorUserId;
+    const isAdmin = user.roles.some((r) => ['admin', 'super_admin'].includes(r));
+    if (!isTutor && !isAdmin) {
+      throw new BadRequestException('Only the assigned tutor or admin can mark a session as completed.');
+    }
+
+    session.status = 'completed';
+    session.completedAt = new Date();
+    const saved = await this.sessionRepo.save(session);
+
+    await this.auditService.record({
+      actorUserId: user.id,
+      action: 'session.completed',
+      resourceType: 'booking_session',
+      resourceId: saved.id,
+      reason: notes,
+    });
+
+    dispatchNotificationSafe(
+      this.logger,
+      this.notificationService,
+      session.studentUserId,
+      'attendance.marked',
+      'student',
+      {
+        sessionId: saved.id,
+        bookingId: session.bookingId,
+        message: 'Class session completed successfully.',
+      },
+    );
+
+    return saved;
+  }
+
+  /**
+   * Update meeting URL for a session
+   */
+  async updateMeetingUrl(
+    sessionId: string,
+    user: AuthenticatedUser,
+    meetingUrl: string,
+  ): Promise<BookingSessionEntity> {
+    const session = await this.sessionRepo.findOne({
+      where: { id: sessionId },
+    });
+    if (!session) {
+      throw new NotFoundException(`Session ${sessionId} not found`);
+    }
+
+    const isTutor = user.id === session.tutorUserId;
+    const isAdmin = user.roles.some((r) => ['admin', 'super_admin'].includes(r));
+    if (!isTutor && !isAdmin) {
+      throw new BadRequestException('Only the assigned tutor or admin can set the meeting URL.');
+    }
+
+    session.meetingUrl = meetingUrl;
+    const saved = await this.sessionRepo.save(session);
+
+    await this.auditService.record({
+      actorUserId: user.id,
+      action: 'session.meeting_url_updated',
+      resourceType: 'booking_session',
+      resourceId: saved.id,
+      safeMetadata: { meetingUrl },
+    });
+
+    return saved;
+  }
 }

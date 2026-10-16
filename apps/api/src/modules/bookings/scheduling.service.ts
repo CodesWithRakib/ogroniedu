@@ -54,4 +54,13 @@ export class SchedulingService {
   generateIcsCalendar(user: AuthenticatedUser, query: GetSessionsQueryDto) {
     return this.queries.generateIcsCalendar(user, query);
   }
+  startSession(sessionId: string, user: AuthenticatedUser) {
+    return this.rescheduling.startSession(sessionId, user);
+  }
+  completeSession(sessionId: string, user: AuthenticatedUser, notes?: string) {
+    return this.rescheduling.completeSession(sessionId, user, notes);
+  }
+  updateMeetingUrl(sessionId: string, user: AuthenticatedUser, meetingUrl: string) {
+    return this.rescheduling.updateMeetingUrl(sessionId, user, meetingUrl);
+  }
 }

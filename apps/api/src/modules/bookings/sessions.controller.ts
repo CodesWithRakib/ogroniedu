@@ -2,6 +2,7 @@ import {
   Controller,
   Post,
   Get,
+  Patch,
   Param,
   Body,
   Query,
@@ -20,6 +21,8 @@ import {
   RescheduleSessionDto,
   CancelSessionDto,
   GetSessionsQueryDto,
+  CompleteSessionDto,
+  UpdateMeetingUrlDto,
 } from './dto';
 
 @Controller('api/v1')
@@ -128,6 +131,53 @@ export class SessionsController {
         session: result.session,
         policyAssessment: result.policyAssessment,
       },
+    };
+  }
+
+  @Post('sessions/:id/start')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async startSession(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const session = await this.schedulingService.startSession(id, user);
+    return {
+      success: true,
+      message: 'Tutoring session started successfully.',
+      data: session,
+    };
+  }
+
+  @Post('sessions/:id/complete')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async completeSession(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: CompleteSessionDto,
+  ) {
+    const session = await this.schedulingService.completeSession(id, user, dto.notes);
+    return {
+      success: true,
+      message: 'Tutoring session marked as completed.',
+      data: session,
+    };
+  }
+
+  @Patch('sessions/:id/meeting-url')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async updateMeetingUrl(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: UpdateMeetingUrlDto,
+  ) {
+    const session = await this.schedulingService.updateMeetingUrl(id, user, dto.meetingUrl);
+    return {
+      success: true,
+      message: 'Classroom meeting URL updated successfully.',
+      data: session,
     };
   }
 

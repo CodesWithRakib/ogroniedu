@@ -41,9 +41,52 @@ describe('SessionsController Unit Tests', () => {
         .mockResolvedValue([
           { startsAt: '2026-10-15T10:00:00Z', endsAt: '2026-10-15T11:00:00Z', type: 'busy' },
         ]),
+      startSession: vi.fn().mockResolvedValue({
+        id: 'session-1',
+        status: 'in_progress',
+      }),
+      completeSession: vi.fn().mockResolvedValue({
+        id: 'session-1',
+        status: 'completed',
+      }),
+      updateMeetingUrl: vi.fn().mockResolvedValue({
+        id: 'session-1',
+        meetingUrl: 'https://meet.google.com/abc-defg-hij',
+      }),
     };
 
     controller = new SessionsController(mockService as unknown as SchedulingService);
+  });
+
+  it('should start session and update status to in_progress', async () => {
+    const res = await controller.startSession(mockUser, 'session-1');
+    expect(res.success).toBe(true);
+    expect(res.data.status).toBe('in_progress');
+    expect(mockService.startSession).toHaveBeenCalledWith('session-1', mockUser);
+  });
+
+  it('should mark session as completed with notes', async () => {
+    const dto = { notes: 'Excellent discussion on Newton mechanics.' };
+    const res = await controller.completeSession(mockUser, 'session-1', dto);
+    expect(res.success).toBe(true);
+    expect(res.data.status).toBe('completed');
+    expect(mockService.completeSession).toHaveBeenCalledWith(
+      'session-1',
+      mockUser,
+      dto.notes,
+    );
+  });
+
+  it('should update meeting url for classroom', async () => {
+    const dto = { meetingUrl: 'https://meet.google.com/abc-defg-hij' };
+    const res = await controller.updateMeetingUrl(mockUser, 'session-1', dto);
+    expect(res.success).toBe(true);
+    expect(res.data.meetingUrl).toBe('https://meet.google.com/abc-defg-hij');
+    expect(mockService.updateMeetingUrl).toHaveBeenCalledWith(
+      'session-1',
+      mockUser,
+      dto.meetingUrl,
+    );
   });
 
   it('should schedule single session and return 201 wrapped response', async () => {

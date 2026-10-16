@@ -14,9 +14,12 @@ import {
   BookOpen,
   User,
   ShieldCheck,
+  Sparkles,
+  Radio,
 } from 'lucide-react';
 import { RequireAuth } from '@/components/auth/RequireAuth';
-import { Button, Card, CardContent, CardHeader, CardTitle, Badge, LoadingSpinner } from '@/components/ui';
+import { DashboardShell } from '@/components/dashboard/DashboardShell';
+import { Button, Card, CardContent, CardHeader, CardTitle, Badge, LoadingSpinner, EmptyState } from '@/components/ui';
 import { useGetSessionByIdQuery } from '@/store/services/sessions-api';
 import {
   useGetSessionAttendanceQuery,
@@ -64,7 +67,9 @@ export default function SessionDetailRoute({
 
   return (
     <RequireAuth locale={locale}>
-      <SessionDetailPage locale={locale} sessionId={sessionId} />
+      <DashboardShell locale={locale}>
+        <SessionDetailPage locale={locale} sessionId={sessionId} />
+      </DashboardShell>
     </RequireAuth>
   );
 }
@@ -250,6 +255,32 @@ function SessionDetailPage({
         </div>
       </div>
 
+      {/* Live Interactive Classroom Workspace Launch Banner */}
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-cyan-950 via-slate-900 to-teal-950 border border-cyan-400/40 p-6 shadow-2xl flex flex-col md:flex-row items-center justify-between gap-6">
+        <div className="space-y-1 text-center md:text-left">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-300 text-xs font-bold border border-cyan-400/30">
+            <Radio className="w-3.5 h-3.5 text-cyan-400 animate-pulse" />
+            <span>{locale === 'bn' ? 'স্মার্ট ক্লাসরুম হাব' : 'Smart Classroom Hub'}</span>
+          </div>
+          <h2 className="text-xl md:text-2xl font-black text-white">
+            {locale === 'bn' ? 'ইন্টারেক্টিভ ডিজিটাল হোয়াইটবোর্ড ও লাইভ স্টাডি রুম' : 'Interactive Whiteboard & Live Study Room'}
+          </h2>
+          <p className="text-xs text-slate-300 max-w-xl">
+            {locale === 'bn'
+              ? 'ইন-ব্রাউজার ডিজিটাল হোয়াইটবোর্ড, পদার্থ ও গণিতের ফর্মুলা চিটশিট এবং লাইভ সেশন টাইমার সহ সরাসরি ক্লাসরুমে প্রবেশ করুন।'
+              : 'Enter collaborative whiteboard with NCTB formula sheets, drawing tools, and real-time session controls.'}
+          </p>
+        </div>
+        <Link
+          href={withLocale(`/classroom/${sessionId}`, locale)}
+          className="shrink-0 flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-cyan-500 to-teal-500 hover:from-cyan-400 hover:to-teal-400 text-slate-950 text-xs font-black rounded-2xl shadow-xl shadow-cyan-500/25 transition-all transform hover:scale-105"
+          data-testid="enter-live-classroom-btn"
+        >
+          <Sparkles className="w-4 h-4 fill-current" />
+          <span>{locale === 'bn' ? 'লাইভ ক্লাসরুমে প্রবেশ করুন' : 'Enter Live Classroom'}</span>
+        </Link>
+      </div>
+
       {/* Main Session Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-slate-900 to-[#062127] border border-emerald-500/20 p-8 shadow-2xl">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
@@ -323,15 +354,31 @@ function SessionDetailPage({
                   <ExternalLink className="w-4 h-4" />
                   {locale === 'bn' ? 'ক্লাসরুমে যোগ দিন (গুগল মিট)' : 'Join Live Classroom'}
                 </a>
+
+                <Link
+                  href={withLocale(`/classroom/${sessionId}`, locale)}
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-400/30 text-xs font-bold rounded-xl transition-all"
+                  data-testid="open-whiteboard-card-btn"
+                >
+                  <Sparkles className="w-4 h-4 text-cyan-400" />
+                  {locale === 'bn' ? 'হোয়াইটবোর্ড ও স্টাডি রুম খুলুন' : 'Open Whiteboard & Study Room'}
+                </Link>
               </div>
             ) : (
-              <div className="p-5 bg-slate-800/40 border border-slate-700/50 rounded-2xl text-center space-y-2">
+              <div className="p-5 bg-slate-800/40 border border-slate-700/50 rounded-2xl text-center space-y-3">
                 <Video className="w-8 h-8 mx-auto text-slate-500" />
                 <p className="text-xs text-slate-400">
                   {locale === 'bn'
                     ? 'ক্লাসের মিটিং লিংক শিক্ষক কর্তৃক নির্ধারিত হবে।'
                     : 'Meeting link has not been attached yet. The tutor will provide it before class.'}
                 </p>
+                <Link
+                  href={withLocale(`/classroom/${sessionId}`, locale)}
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-400/30 text-xs font-bold rounded-xl transition-all"
+                >
+                  <Sparkles className="w-4 h-4 text-cyan-400" />
+                  {locale === 'bn' ? 'ইন-ব্রাউজার হোয়াইটবোর্ড ব্যবহার করুন' : 'Use In-Browser Whiteboard'}
+                </Link>
               </div>
             )}
           </CardContent>
