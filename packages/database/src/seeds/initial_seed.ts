@@ -225,7 +225,7 @@ export async function runInitialSeed(
       status: 'active',
     },
     {
-      id: '33333333-3333-4333-c333-333333333333',
+      id: '33333333-3333-4333-b333-333333333333',
       email: 'student.demo@ogroniedu.com',
       phone: '+8801711000003',
       name: 'আবরার আহমেদ (Abrar Ahmed)',
@@ -250,7 +250,7 @@ export async function runInitialSeed(
     { userId: '00000000-0000-4000-a000-000000000000', roleCode: 'admin' },
     { userId: '11111111-1111-4111-a111-111111111111', roleCode: 'guardian' },
     { userId: '22222222-2222-4222-b222-222222222222', roleCode: 'tutor' },
-    { userId: '33333333-3333-4333-c333-333333333333', roleCode: 'student' },
+    { userId: '33333333-3333-4333-b333-333333333333', roleCode: 'student' },
   ];
 
   for (const a of userRoleAssignments) {
@@ -269,7 +269,7 @@ export async function runInitialSeed(
   // Link Guardian to Student
   await client.query(
     `INSERT INTO guardian_student_links (guardian_user_id, student_user_id, relationship_type, status)
-     VALUES ('11111111-1111-4111-a111-111111111111', '33333333-3333-4333-c333-333333333333', 'father', 'active')
+     VALUES ('11111111-1111-4111-a111-111111111111', '33333333-3333-4333-b333-333333333333', 'father', 'active')
      ON CONFLICT (guardian_user_id, student_user_id) DO UPDATE
      SET status = 'active';`,
   );

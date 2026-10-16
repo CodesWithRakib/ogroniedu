@@ -270,6 +270,7 @@ export function TutorSearchCatalog({
       <TutorResultsGrid
         tutors={results.data}
         locale={locale}
+        isLoading={isLoading}
         currentPage={currentPage}
         totalPages={results.totalPages}
         onShowScore={setActiveScoreTutor}

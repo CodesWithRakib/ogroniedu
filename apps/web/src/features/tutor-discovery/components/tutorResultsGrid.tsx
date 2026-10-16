@@ -9,6 +9,7 @@ import { TutorCard } from './tutorCard';
 export function TutorResultsGrid({
   tutors,
   locale,
+  isLoading = false,
   currentPage,
   totalPages,
   onShowScore,
@@ -18,6 +19,7 @@ export function TutorResultsGrid({
 }: {
   tutors: TutorCardData[];
   locale: Locale;
+  isLoading?: boolean;
   currentPage: number;
   totalPages: number;
   onShowScore: (tutor: TutorCardData) => void;
@@ -27,6 +29,26 @@ export function TutorResultsGrid({
 }) {
   const dict = getDictionary(locale);
   const _isBn = locale === 'bn';
+
+  // While the first search is in flight render placeholders, never fabricated
+  // or clickable cards (audit F-4/S-1: real results or nothing).
+  if (isLoading && tutors.length === 0) {
+    return (
+      <div
+        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        data-testid="tutors-grid-loading"
+        aria-hidden="true"
+      >
+        {Array.from({ length: 6 }, (_, index) => (
+          <div
+            key={index}
+            data-testid="tutor-skeleton-card"
+            className="h-80 animate-pulse rounded-2xl bg-[#061f26]/70 border border-[#0df5c4]/20 shadow-[0_10px_30px_rgba(0,0,0,0.4)]"
+          />
+        ))}
+      </div>
+    );
+  }
 
   if (tutors.length === 0) {
     return (
