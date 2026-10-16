@@ -1,0 +1,8 @@
+flowchart TD
+ G[Guardian] --> L{Active verified link?}
+ L -->|No| D[Reject] 
+ L -->|Yes| S[Apply child and record policy]
+ S --> A{Data permitted?}
+ A -->|No| D
+ A -->|Yes| R[Return minimal authorized data]
+ R --> U[Audit sensitive access where required]

@@ -1,0 +1,44 @@
+# 01 — Product Discovery: Feature Inventory & Gap Analysis
+
+Derived from code structure (executed inventory: 17 API modules, 22 controllers, 15 web features, 17 RTK services) and verified behaviors observed in the E2E run and live probes. Status legend: **Verified** = exercised live in this audit; **Implemented** = code + unit tests present; **Partial** = code exists with known gaps.
+
+## 1. Capability map
+
+| # | Capability (bilingual: bn/en) | API module(s) | Web feature(s) | Status 2026-10-16 |
+|---|------------------------------|---------------|----------------|-------------------|
+| 1 | Auth & sessions (login/register/OTP codes/reset/revoke-all, JWT + refresh cookies) | `auth` (10 routes) | `public` (login/register), `profile` | **Verified** — login, bad-credential rejection, revoke-all E2E green; guards redirect unauthenticated users |
+| 2 | Users & profiles (me, update, student-profile, data export, delete-account) | `users` (5 routes) | `profile`, `student` | Implemented |
+| 3 | Guardian management (children list, link requests, verify, unlink) | `guardians` (6 routes) | `guardian` | Implemented; `/dashboard/guardian/*` E2E-redirect verified |
+| 4 | Tutor discovery (search w/ ranking, public profile, taxonomy filters) | `tutors` (search/public), `taxonomy` | `tutor-discovery` | **Verified w/ defect F-4** — search returns real data (live probe), but curated fake cards flash pre-resolution |
+| 5 | Tutor onboarding & verification (profile, subjects, service areas, availability, evidence upload, verification queue, qualification verify) | `tutors/me/*`, `admin/tutors`, `files` | `tutors`, `dashboard/tutor/verification`, `admin` | **Verified** — E2E: tutor uploads NID evidence + links qualification; admin approves from queue |
+| 6 | Booking requests (create/list/get/withdraw/respond) | `bookings` (`/requests` 5 routes) | `bookings` (requests pages ×3 roles) | **Verified w/ defect** — happy path blocked in dev by F-3+F-4 (fake id → 500); real-id flow works via UI (live probe) |
+| 7 | Sessions & scheduling (create, recurring, list, get, reschedule, cancel, tutor calendar) | `bookings` (sessions 7 routes) | `bookings` | Implemented (unit-tested); not E2E-exercised this run |
+| 8 | Learning management (attendance, assignments, submissions, grading, progress reports, summaries) | `learning` (8 routes) | `learning` | Implemented; `/dashboard/*/learning` pages exist |
+| 9 | Payments & ledger (orders, webhook, refunds, milestone settle, receipts, reconciliation, ledger balance) | `payments` (7 routes) | `payments` | Implemented (escrow/milestone logic unit-tested); no live provider E2E |
+| 10 | Notifications & messaging (notifications CRUD, preferences, unread websocket, booking messages) | `notifications` (7) + `booking-messages` (3) | `notifications`, `messaging` | Implemented; websocket auth-reject behavior verified in logs |
+| 11 | Reviews & trust (create review, tutor reviews, reply, moderate) | `trust/reviews` (4) | `trust` | Implemented; tutor-details page has fake-review fallback (F-5) |
+| 12 | Safety reports & tutor replacement cases | `trust` (8 routes) | `trust` | Implemented |
+| 13 | Support tickets (public create, mine, admin list/update) | `support` (2) + `admin/support-tickets` (2) | `public` (contact), `admin` | **Verified** — E2E contact form creates real ticket; per-email daily rate limit observed (429) |
+| 14 | Admin operations (dashboard, users, suspend/reactivate, roles, bookings, cases, settings, flags, impersonation, audit logs) | `admin` (15 routes) | `admin` | **Verified** — E2E: suspend/reactivate disposable user via UI |
+| 15 | Analytics & reporting (overview, financials, tutors, retention, tutor self-analytics) | `analytics` (5 routes) | `analytics` | Implemented; UI gated to `admin`+`super_admin` only |
+| 16 | Public site (stats band, landing, static pages: pricing/faq/safety/terms/privacy/how-it-works) | `public` (stats) | `public` | **Verified** — home/tutors/pricing/login pages render in bn+en; `/public/stats` 200 |
+| 17 | Platform plumbing (health probes, audit trail, files) | `health` (2), `audit`, `files` (2) | — | Verified via health checks |
+
+## 2. Feature inventory counts (executed)
+
+- **API:** 22 controllers → 120 mapped routes (enumerated from boot route map). 17 modules: admin, analytics, audit, auth, bookings, files, guardians, health, learning, notifications, payments, public, support, taxonomy, trust, tutors, users.
+- **Web:** 15 feature folders: admin, analytics, bookings, dashboard, guardian, learning, messaging, notifications, payments, profile, public, student, trust, tutor-discovery, tutors. 17 RTK Query services in `apps/web/src/store/services/`.
+- **DB:** 41 TypeORM entities across those modules; 12 migrations.
+
+## 3. Gap analysis (top gaps only; details in later docs)
+
+| Gap | Where | Impact |
+|-----|-------|--------|
+| Curated sample tutors are actionable (request button) and rendered before real search resolves | `apps/web/src/features/tutor-discovery/pages/tutors-page.tsx:30,372`; `tutorSearchCatalog.tsx:60,81-83` | Users can fire booking requests at non-existent tutors; dev API 500s; breaks E2E booking journey |
+| Tutor details page fabricates profile fields, IDs and **always-fake reviews** when API data is missing | `apps/web/src/features/tutors/pages/tutor-details-page.tsx:40,338-386,833` | Trust risk on the highest-stakes page |
+| Dashboards show invented activity data (weekly chart, study timer, streak, reminders, progress gauges) | dashboard components (see `05-static-data-audit.md`) | Users see fiction as personal data |
+| Locations taxonomy: only 12 hardcoded districts (docs claim nationwide 64) | `taxonomy/locations` + web constants | Filter mismatch vs product promise |
+| Admin-family roles (`super_admin`, `support_agent`, `compliance_reviewer`) get `/dashboard/admin/*` nav that gates on `admin` only | `navigation.ts:266-323` vs `RoleDashboardLayout.tsx:27` | Dead links / redirect loops for those roles |
+| Login demo quick-fill strip + fake Google button in production auth shell | `authShell.tsx:39-70,223-250`, `LoginForm.tsx:161-187` | Security/UX confusion if ever shipped beyond dev |
+| Home page advertises static claims (10,000+ students, 2,500+ tutors, 95%, 4.8/5) | `home-page.tsx:87,195,212,227,101` | Marketing numbers not wired to `/public/stats` |
+| Dev-runtime DTO validation disabled under `tsx` | see `03-backend-and-api.md` F-3 | Malformed input 500s in dev; QA/E2E diverge from prod |

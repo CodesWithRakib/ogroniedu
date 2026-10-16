@@ -1,0 +1,17 @@
+sequenceDiagram
+ participant U as User
+ participant A as API
+ participant P as Provider
+ participant D as PostgreSQL
+ participant Q as Worker/Outbox
+ U->>A: Create order + idempotency key
+ A->>D: Persist pending order
+ A-->>U: Checkout instructions
+ U->>P: Checkout
+ P->>A: Signed webhook
+ A->>A: Verify signature/replay
+ A->>P: Verify transaction if required
+ A->>D: Transaction: payment + ledger + outbox
+ A-->>P: Acknowledge
+ Q->>D: Read outbox
+ Q-->>U: Receipt/notification

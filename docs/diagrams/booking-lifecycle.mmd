@@ -1,0 +1,16 @@
+stateDiagram-v2
+ [*] --> Requested
+ Requested --> Accepted
+ Requested --> Declined
+ Requested --> Expired
+ Accepted --> AwaitingPayment: payment required
+ Accepted --> Confirmed: no upfront payment
+ AwaitingPayment --> Confirmed: verified payment
+ AwaitingPayment --> Expired
+ Confirmed --> InProgress
+ Confirmed --> Cancelled
+ InProgress --> Completed
+ Completed --> Disputed
+ Confirmed --> ReplacementRequested
+ ReplacementRequested --> Confirmed
+ ReplacementRequested --> Cancelled

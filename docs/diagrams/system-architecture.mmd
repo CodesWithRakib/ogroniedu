@@ -1,0 +1,12 @@
+flowchart TB
+ Browser[Mobile/Desktop Browser] --> Web[Next.js Web]
+ Web --> API[NestJS Modular Monolith]
+ API --> DB[(PostgreSQL)]
+ API --> Redis[(Redis/Queue)]
+ API --> Storage[Private Object Storage]
+ API --> Providers[Payment/Email/SMS Providers]
+ Redis --> Worker[Background Worker]
+ Worker --> DB
+ Worker --> Providers
+ API --> Obs[Logs/Metrics/Error Tracking]
+ Worker --> Obs
