@@ -1,6 +1,8 @@
 import { baseApi, type ApiSuccessEnvelope } from '../base-api';
 
 export interface AnalyticsTimeParams {
+  startDate?: string;
+  endDate?: string;
   from?: string;
   to?: string;
   days?: number;
@@ -9,6 +11,8 @@ export interface AnalyticsTimeParams {
 function toQuery(params: AnalyticsTimeParams | void): string {
   if (!params) return '';
   const search = new URLSearchParams();
+  if (params.startDate) search.append('startDate', params.startDate);
+  if (params.endDate) search.append('endDate', params.endDate);
   if (params.from) search.append('from', params.from);
   if (params.to) search.append('to', params.to);
   if (params.days !== undefined) search.append('days', String(params.days));

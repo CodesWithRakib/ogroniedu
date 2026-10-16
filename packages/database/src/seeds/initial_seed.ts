@@ -36,6 +36,30 @@ export async function runInitialSeed(
       name_bn: 'সুপার অ্যাডমিন',
       desc: 'Executive security root admin',
     },
+    {
+      code: 'support_agent',
+      name_en: 'Support Agent',
+      name_bn: 'সাপোর্ট এজেন্ট',
+      desc: 'Customer dispute and ticket support specialist',
+    },
+    {
+      code: 'compliance_reviewer',
+      name_en: 'Compliance Reviewer',
+      name_bn: 'কমপ্লায়েন্স পর্যালোচক',
+      desc: 'Tutor document verification and compliance auditor',
+    },
+    {
+      code: 'organization_owner',
+      name_en: 'Organization Owner',
+      name_bn: 'প্রতিষ্ঠান মালিক',
+      desc: 'Institutional coaching center / academy owner',
+    },
+    {
+      code: 'organization_staff',
+      name_en: 'Organization Staff',
+      name_bn: 'প্রতিষ্ঠান কর্মী',
+      desc: 'Institutional administrative staff',
+    },
   ];
 
   for (const role of roles) {

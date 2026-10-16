@@ -72,6 +72,7 @@ export interface AdminDashboardProps extends AdminActionHandlers {
   onUserStatusChange: (value: 'all' | 'active' | 'suspended') => void;
   isLoading?: boolean;
   queryError?: string | null;
+  initialTab?: import('@/features/admin').AdminTabKey;
 }
 
 export function AdminDashboardView({
@@ -93,6 +94,7 @@ export function AdminDashboardView({
   onUserStatusChange,
   isLoading = false,
   queryError = null,
+  initialTab = 'overview',
   onSuspendUser,
   onReactivateUser,
   onUpdateRoles,
@@ -104,6 +106,7 @@ export function AdminDashboardView({
   onReviewTutor,
   onRefetchPendingTutors,
 }: AdminDashboardProps & {
+  initialTab?: import('@/features/admin').AdminTabKey;
   onReviewTutor: (input: {
     tutorId: string;
     decision: TutorReviewDecision;
@@ -115,7 +118,7 @@ export function AdminDashboardView({
   const t = useTranslations('admin');
 
   // Local UI state (active tab, modal selection, transient form values).
-  const view = useAdminViewState();
+  const view = useAdminViewState(initialTab);
 
   const actions = useAdminActions({
     initialUsers,

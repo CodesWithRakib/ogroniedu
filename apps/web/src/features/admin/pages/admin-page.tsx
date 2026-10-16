@@ -1,77 +1,62 @@
 'use client';
 
 import React from 'react';
-import { AdminLayout } from '@/layouts/admin/AdminLayout';
-import {
-  AdminDashboardView,
-  type AdminReconciliationData,
-  type AdminSystemSettingItem,
-  type AdminFeatureFlagItem,
-} from '@/components/admin/AdminDashboardView';
-import { LoadingSpinner, Card, CardContent } from '@/components/ui';
+import { useSearchParams } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
-import { useAppSelector } from '@/store';
-import { useAdminDashboard } from '../hooks/use-admin-dashboard';
+import type { AdminTabKey } from '../components/adminTabsBar';
+import { AdminOverviewPage } from './admin-overview-page';
+import { AdminUsersPage } from './admin-users-page';
+import { AdminVerificationPage } from './admin-verification-page';
+import { AdminDisputesPage } from './admin-disputes-page';
+import { AdminAuditLogsPage } from './admin-audit-logs-page';
+import { AdminSettingsPage } from './admin-settings-page';
+import { AdminBookingsPage } from './admin-bookings-page';
 
-/** Admin console entry: layout + guard + dashboard view composed from the feature hook. */
-export function AdminPage({ locale }: { locale: Locale }) {
-  const user = useAppSelector((s) => s.auth.user);
-  const admin = useAdminDashboard(locale);
+function resolveTab(param: string | null, fallback?: AdminTabKey): AdminTabKey {
+  if (!param) return fallback ?? 'overview';
+  const clean = param.toLowerCase().trim();
+  if (clean === 'audit' || clean === 'auditlogs' || clean === 'audit-logs') return 'auditLogs';
+  if (clean === 'settings') return 'settings';
+  if (clean === 'flags' || clean === 'featureflags' || clean === 'feature-flags') return 'featureFlags';
+  if (clean === 'users') return 'users';
+  if (clean === 'verification' || clean === 'tutors') return 'verification';
+  if (clean === 'reconciliation') return 'reconciliation';
+  if (clean === 'support' || clean === 'disputes' || clean === 'tickets') return 'support';
+  if (clean === 'bookings') return 'bookings';
+  if (clean === 'overview') return 'overview';
+  return fallback ?? 'overview';
+}
 
-  return (
-    <AdminLayout locale={locale} title={locale === 'bn' ? 'অ্যাডমিন' : 'Admin'}>
-      {admin.loading && !admin.users.length ? (
-        <div className="py-10">
-          <LoadingSpinner />
-        </div>
-      ) : (
-        <div className="py-6">
-          <AdminDashboardView
-            currentUser={{
-              id: user?.id ?? '',
-              displayName: user?.displayName ?? '',
-              roles: (user?.roles ?? []) as string[],
-            }}
-            metrics={admin.metrics}
-            initialUsers={admin.users}
-            initialBookings={admin.bookings}
-            initialReconciliation={
-              (admin.reconciliation as AdminReconciliationData | undefined) ?? undefined
-            }
-            initialSettings={(admin.settings as AdminSystemSettingItem[] | undefined) ?? []}
-            initialFeatureFlags={(admin.flags as AdminFeatureFlagItem[] | undefined) ?? []}
-            initialAuditLogs={admin.logs}
-            initialTickets={admin.tickets}
-            initialPendingTutors={admin.pendingTutors}
-            pendingTutorsLoading={admin.pendingTutorsLoading}
-            pendingTutorsError={admin.pendingTutorsError}
-            userSearch={admin.userSearch}
-            onUserSearchChange={admin.setUserSearch}
-            userStatus={admin.userStatus}
-            onUserStatusChange={admin.setUserStatus}
-            isLoading={admin.loading}
-            queryError={admin.queryError}
-            onSuspendUser={admin.onSuspendUser}
-            onReactivateUser={admin.onReactivateUser}
-            onUpdateRoles={admin.onUpdateRoles}
-            onCancelBooking={admin.onCancelBooking}
-            onStartImpersonation={admin.onStartImpersonation}
-            onUpdateFeatureFlag={admin.onUpdateFeatureFlag}
-            onUpdateTicketStatus={admin.onUpdateTicketStatus}
-            onReviewTutor={admin.onReviewTutor}
-            onRefetchPendingTutors={admin.refetchPendingTutors}
-          />
-          {admin.secondaryError && (
-            <Card className="mx-6 mb-6">
-              <CardContent className="py-4 text-xs text-slate-500">
-                {locale === 'bn'
-                  ? 'কিছু প্রশাসনিক তথ্য লোড করা যায়নি; পুনরায় চেষ্টা করুন।'
-                  : 'Some admin data failed to load; retry.'}
-              </CardContent>
-            </Card>
-          )}
-        </div>
-      )}
-    </AdminLayout>
-  );
+/** Admin console entry: delegates cleanly to dedicated, modular role pages. */
+export function AdminPage({
+  locale,
+  initialTab,
+}: {
+  locale: Locale;
+  initialTab?: AdminTabKey;
+}) {
+  const searchParams = useSearchParams();
+  const tabParam = searchParams?.get('tab') ?? null;
+  const activeTab = resolveTab(tabParam, initialTab);
+
+  if (activeTab === 'users') {
+    return <AdminUsersPage locale={locale} />;
+  }
+  if (activeTab === 'verification') {
+    return <AdminVerificationPage locale={locale} />;
+  }
+  if (activeTab === 'reconciliation' || activeTab === 'support') {
+    return <AdminDisputesPage locale={locale} />;
+  }
+  if (activeTab === 'auditLogs') {
+    return <AdminAuditLogsPage locale={locale} />;
+  }
+  if (activeTab === 'settings' || activeTab === 'featureFlags') {
+    return <AdminSettingsPage locale={locale} />;
+  }
+  if (activeTab === 'bookings') {
+    return <AdminBookingsPage locale={locale} />;
+  }
+
+  return <AdminOverviewPage locale={locale} />;
 }

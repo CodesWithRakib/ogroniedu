@@ -47,13 +47,13 @@ export interface ActiveImpersonation {
 }
 
 export interface UseAdminActionsParams extends AdminActionHandlers {
-  initialUsers: AdminUserItem[];
-  initialBookings: AdminBookingItem[];
-  initialSettings: AdminSystemSettingItem[];
-  initialFeatureFlags: AdminFeatureFlagItem[];
-  initialReconciliation: AdminReconciliationData;
-  initialAuditLogs: AdminAuditLogItem[];
-  initialTickets: AdminSupportTicketItem[];
+  initialUsers?: AdminUserItem[];
+  initialBookings?: AdminBookingItem[];
+  initialSettings?: AdminSystemSettingItem[];
+  initialFeatureFlags?: AdminFeatureFlagItem[];
+  initialReconciliation?: AdminReconciliationData;
+  initialAuditLogs?: AdminAuditLogItem[];
+  initialTickets?: AdminSupportTicketItem[];
 }
 
 export interface UseAdminActionsResult {
@@ -94,13 +94,13 @@ export interface UseAdminActionsResult {
  */
 export function useAdminActions(params: UseAdminActionsParams): UseAdminActionsResult {
   const {
-    initialUsers,
-    initialBookings,
-    initialSettings,
-    initialFeatureFlags,
-    initialReconciliation,
-    initialAuditLogs,
-    initialTickets,
+    initialUsers = [],
+    initialBookings = [],
+    initialSettings = [],
+    initialFeatureFlags = [],
+    initialReconciliation = EMPTY_RECONCILIATION,
+    initialAuditLogs = [],
+    initialTickets = [],
   } = params;
 
   const [users, setUsers] = React.useState<AdminUserItem[]>(initialUsers);

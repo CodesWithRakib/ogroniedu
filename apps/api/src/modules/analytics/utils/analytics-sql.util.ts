@@ -19,10 +19,13 @@ export function toNumber(value: unknown, fallback = 0): number {
  * Shared by platform and tutor analytics (single date-math home).
  */
 export function resolveTimeBounds(query: AnalyticsTimeQueryDto): TimeBounds {
-  const end = query.endDate ? new Date(query.endDate) : new Date();
-  // Default to last 30 days if startDate is omitted
-  const defaultStart = new Date(end.getTime() - 30 * 24 * 60 * 60 * 1000);
-  const start = query.startDate ? new Date(query.startDate) : defaultStart;
+  const rawEnd = query.endDate || query.to;
+  const end = rawEnd ? new Date(rawEnd) : new Date();
+
+  const days = typeof query.days === 'number' && query.days > 0 ? query.days : 30;
+  const defaultStart = new Date(end.getTime() - days * 24 * 60 * 60 * 1000);
+  const rawStart = query.startDate || query.from;
+  const start = rawStart ? new Date(rawStart) : defaultStart;
 
   if (isNaN(start.getTime()) || isNaN(end.getTime())) {
     throw new BadRequestException('Invalid date format provided for temporal analytics');

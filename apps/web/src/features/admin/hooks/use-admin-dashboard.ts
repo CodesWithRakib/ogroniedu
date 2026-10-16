@@ -23,7 +23,14 @@ import {
   useReviewTutorMutation,
   type TutorReviewDecision,
 } from '@/store/services/admin-api';
-import { EMPTY_METRICS, type AdminDashboardMetrics } from '../types/admin.types';
+import {
+  EMPTY_METRICS,
+  type AdminDashboardMetrics,
+  type AdminReconciliationData,
+  type AdminSystemSettingItem,
+  type AdminFeatureFlagItem,
+} from '../types/admin.types';
+import { EMPTY_RECONCILIATION } from './use-admin-actions';
 import {
   mapAdminBookings,
   mapAdminUsers,
@@ -108,9 +115,10 @@ export function useAdminDashboard(locale: Locale) {
       ? normalizeApiError(pendingTutorsQuery.error, locale).message
       : null,
     refetchPendingTutors: pendingTutorsQuery.refetch,
-    reconciliation: reconciliation.data?.data,
-    settings: (settings.data?.data as unknown[] | undefined) ?? [],
-    flags: (flags.data?.data as unknown[] | undefined) ?? [],
+    reconciliation:
+      (reconciliation.data?.data as AdminReconciliationData | undefined) ?? EMPTY_RECONCILIATION,
+    settings: (settings.data?.data as AdminSystemSettingItem[] | undefined) ?? [],
+    flags: (flags.data?.data as AdminFeatureFlagItem[] | undefined) ?? [],
     loading,
     queryError,
     secondaryError: reconciliation.isError || settings.isError || flags.isError,

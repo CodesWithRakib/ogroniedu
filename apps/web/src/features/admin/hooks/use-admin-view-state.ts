@@ -38,8 +38,12 @@ export interface AdminViewState {
   resetImpersonateForm: () => void;
 }
 
-export function useAdminViewState(): AdminViewState {
-  const [activeTab, setActiveTab] = React.useState<AdminTabKey>('overview');
+export function useAdminViewState(initialTab: AdminTabKey = 'overview'): AdminViewState {
+  const [activeTab, setActiveTab] = React.useState<AdminTabKey>(initialTab);
+
+  React.useEffect(() => {
+    setActiveTab(initialTab);
+  }, [initialTab]);
 
   const [selectedUserForSuspend, setSelectedUserForSuspend] = React.useState<AdminUserItem | null>(
     null,
