@@ -72,6 +72,12 @@ export class LearningService {
   ) {
     return this.progress.generateProgressReport(user, dto, requestId);
   }
+  getAssignmentById(user: AuthenticatedUser, assignmentId: string) {
+    return this.assignments.getAssignmentById(user, assignmentId);
+  }
+  getProgressReportById(user: AuthenticatedUser, reportId: string) {
+    return this.progress.getProgressReportById(user, reportId);
+  }
   getBookingLearningRecords(user: AuthenticatedUser, bookingId: string) {
     return this.progress.getBookingLearningRecords(user, bookingId);
   }

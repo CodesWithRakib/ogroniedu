@@ -1,8 +1,10 @@
 'use client';
 
-import { Award, TrendingUp } from 'lucide-react';
+import Link from 'next/link';
+import { Award, TrendingUp, ExternalLink } from 'lucide-react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { withLocale } from '@/lib/auth';
 import type { ProgressReportItem } from '../../types/learning.types';
 
 export function ProgressTab({
@@ -96,6 +98,16 @@ export function ProgressTab({
                 <p className="text-emerald-950 dark:text-emerald-200">{rep.tutorRemarks}</p>
               </div>
             )}
+
+            <div className="pt-2 flex justify-end">
+              <Link
+                href={withLocale(`/progress/${rep.id}`, locale)}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400 hover:underline"
+              >
+                <span>{locale === 'bn' ? 'পূর্ণাঙ্গ রিপোর্ট দেখুন' : 'View Full Report'}</span>
+                <ExternalLink className="w-3.5 h-3.5" />
+              </Link>
+            </div>
           </CardContent>
         </Card>
       ))}

@@ -178,6 +178,7 @@ describe('LearningService Unit & Security Invariant Tests', () => {
       new GuardianAccessService(mockGuardianLinkRepo),
       mockAuditService,
       mockNotificationService,
+      access as never,
     ) as never;
     const progress = new LearningProgressService(
       mockProgressReportRepo,

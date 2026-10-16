@@ -27,6 +27,7 @@ export interface AssignmentRecord {
     score?: number | null;
     maxScore?: number | null;
     tutorFeedback?: string | null;
+    submittedAt?: string | null;
     reviewedAt?: string | null;
   } | null;
 }
@@ -172,6 +173,14 @@ export const learningApi = baseApi.injectEndpoints({
         { type: 'ProgressReport', id: bookingId },
       ],
     }),
+    getAssignmentById: builder.query<ApiSuccessEnvelope<AssignmentRecord>, string>({
+      query: (assignmentId) => `/api/v1/learning/assignments/${assignmentId}`,
+      providesTags: (_r, _e, id) => [{ type: 'Assignment', id }],
+    }),
+    getProgressReportById: builder.query<ApiSuccessEnvelope<ProgressReportRecord>, string>({
+      query: (reportId) => `/api/v1/learning/progress-reports/${reportId}`,
+      providesTags: (_r, _e, id) => [{ type: 'ProgressReport', id }],
+    }),
     getStudentLearningSummary: builder.query<ApiSuccessEnvelope<StudentLearningSummary>, string>({
       query: (studentUserId) => `/api/v1/learning/students/${studentUserId}/summary`,
       providesTags: (_r, _e, id) => [{ type: 'LearningSummary', id }],
@@ -188,5 +197,7 @@ export const {
   useGradeSubmissionMutation,
   useGenerateProgressReportMutation,
   useGetBookingLearningRecordsQuery,
+  useGetAssignmentByIdQuery,
+  useGetProgressReportByIdQuery,
   useGetStudentLearningSummaryQuery,
 } = learningApi;

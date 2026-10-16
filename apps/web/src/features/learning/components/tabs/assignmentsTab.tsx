@@ -1,6 +1,7 @@
 'use client';
 
-import { Award, BookOpen, Clock, Edit3, Send } from 'lucide-react';
+import Link from 'next/link';
+import { Award, BookOpen, Clock, Edit3, Send, ExternalLink } from 'lucide-react';
 import {
   Badge,
   Button,
@@ -12,6 +13,7 @@ import {
   CardTitle,
 } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { withLocale } from '@/lib/auth';
 import type {
   AssignmentItem,
   LearningRole,
@@ -124,29 +126,38 @@ export function AssignmentsTab({
               )}
             </CardContent>
 
-            <CardFooter className="pt-0 flex justify-end gap-2">
-              {userRole === 'student' && !sub && (
-                <Button
-                  size="sm"
-                  onClick={() => onSubmit(asgn)}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
-                >
-                  <Send className="w-3.5 h-3.5 mr-1.5" />
-                  {t.submitHomework}
-                </Button>
-              )}
+            <CardFooter className="pt-0 flex items-center justify-between gap-2">
+              <Link
+                href={withLocale(`/assignments/${asgn.id}`, locale)}
+                className="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline"
+              >
+                <span>{locale === 'bn' ? 'বিস্তারিত দেখুন' : 'View Details'}</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
+              <div className="flex items-center gap-2">
+                {userRole === 'student' && !sub && (
+                  <Button
+                    size="sm"
+                    onClick={() => onSubmit(asgn)}
+                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                  >
+                    <Send className="w-3.5 h-3.5 mr-1.5" />
+                    {t.submitHomework}
+                  </Button>
+                )}
 
-              {(userRole === 'tutor' || userRole === 'admin') && sub && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => onGrade(asgn)}
-                  className="border-emerald-600 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950"
-                >
-                  <Edit3 className="w-3.5 h-3.5 mr-1.5" />
-                  {hasScore ? t.reviseScore : t.gradeAction}
-                </Button>
-              )}
+                {(userRole === 'tutor' || userRole === 'admin') && sub && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => onGrade(asgn)}
+                    className="border-emerald-600 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950"
+                  >
+                    <Edit3 className="w-3.5 h-3.5 mr-1.5" />
+                    {hasScore ? t.reviseScore : t.gradeAction}
+                  </Button>
+                )}
+              </div>
             </CardFooter>
           </Card>
         );

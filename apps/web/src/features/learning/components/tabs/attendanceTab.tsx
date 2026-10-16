@@ -1,9 +1,9 @@
-'use client';
-
-import { CalendarCheck } from 'lucide-react';
+import Link from 'next/link';
+import { CalendarCheck, ExternalLink } from 'lucide-react';
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
-import type { AttendanceItemStatus, AttendanceRecordItem } from '../../types/learning.types';
+import { withLocale } from '@/lib/auth';
+import type { AttendanceItemStatus, AttendanceRecordItem, LearningRole } from '../../types/learning.types';
 
 function attendanceBadgeClass(status: AttendanceItemStatus): string {
   switch (status) {
@@ -21,9 +21,11 @@ function attendanceBadgeClass(status: AttendanceItemStatus): string {
 export function AttendanceTab({
   locale,
   attendance,
+  userRole,
 }: {
   locale: Locale;
   attendance: AttendanceRecordItem[];
+  userRole?: LearningRole;
 }) {
   const t = getDictionary(locale).learning;
   const dateLocale = locale === 'bn' ? 'bn-BD' : 'en-US';
@@ -70,6 +72,17 @@ export function AttendanceTab({
             <CardContent className="text-sm text-muted-foreground pt-0">
               <p className="bg-muted/50 p-2 rounded-lg text-xs italic">&quot;{rec.notes}&quot;</p>
             </CardContent>
+          )}
+          {rec.sessionId && (
+            <div className="px-6 pb-4 pt-1 flex justify-end">
+              <Link
+                href={withLocale(`/sessions/${rec.sessionId}`, locale)}
+                className="inline-flex items-center gap-1 text-[11px] font-semibold text-teal-600 dark:text-teal-400 hover:underline"
+              >
+                <span>{locale === 'bn' ? 'সেশনের বিস্তারিত দেখুন' : 'View Session Details'}</span>
+                <ExternalLink className="w-3 h-3" />
+              </Link>
+            </div>
           )}
         </Card>
       ))}

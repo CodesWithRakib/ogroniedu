@@ -74,6 +74,19 @@ export class LearningController {
     };
   }
 
+  @Get('assignments/:assignmentId')
+  @UseGuards(AuthGuard)
+  async getAssignmentById(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('assignmentId', ParseUUIDPipe) assignmentId: string,
+  ) {
+    const assignment = await this.learningService.getAssignmentById(user, assignmentId);
+    return {
+      success: true,
+      data: assignment,
+    };
+  }
+
   @Post('assignments/:assignmentId/submissions')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
@@ -125,6 +138,19 @@ export class LearningController {
     return {
       success: true,
       message: 'Progress report generated successfully.',
+      data: report,
+    };
+  }
+
+  @Get('progress-reports/:reportId')
+  @UseGuards(AuthGuard)
+  async getProgressReportById(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('reportId', ParseUUIDPipe) reportId: string,
+  ) {
+    const report = await this.learningService.getProgressReportById(user, reportId);
+    return {
+      success: true,
       data: report,
     };
   }

@@ -20,6 +20,7 @@ import { BookingSessionEntity } from '../../bookings/entities/booking-session.en
 import { AuditService } from '../../audit/audit.service';
 import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { NotificationService } from '../../notifications/notification.service';
+import { LearningAccessService } from './learning-access.service';
 import { CreateAssignmentDto, SubmitAssignmentDto, GradeSubmissionDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { isAdminRole } from '../../../common/auth/role.utils';
@@ -48,6 +49,9 @@ export class LearningAssignmentsService {
     @Optional()
     @Inject(NotificationService)
     private readonly notificationService?: NotificationService,
+    @Optional()
+    @Inject(forwardRef(() => LearningAccessService))
+    private readonly access?: LearningAccessService,
   ) {}
 
   /**
@@ -379,5 +383,33 @@ export class LearningAssignmentsService {
     }
 
     return saved;
+  }
+
+  async getAssignmentById(
+    user: AuthenticatedUser,
+    assignmentId: string,
+  ): Promise<AssignmentEntity> {
+    const assignment = await this.assignmentRepo.findOne({
+      where: { id: assignmentId },
+      relations: {
+        booking: { subject: true },
+        studentUser: true,
+        submissions: { studentUser: true },
+      },
+    });
+
+    if (!assignment) {
+      throw new NotFoundException(`Assignment ${assignmentId} not found`);
+    }
+
+    if (this.access) {
+      await this.access.assertCanAccessStudentRecords(
+        user,
+        assignment.studentUserId,
+        assignment.bookingId,
+      );
+    }
+
+    return assignment;
   }
 }

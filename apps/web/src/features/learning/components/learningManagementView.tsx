@@ -51,7 +51,7 @@ export function LearningManagementView({
       />
 
       {activeTab === 'attendance' && (
-        <AttendanceTab locale={locale} attendance={state.attendanceList} />
+        <AttendanceTab locale={locale} attendance={state.attendanceList} userRole={userRole} />
       )}
       {activeTab === 'assignments' && (
         <AssignmentsTab

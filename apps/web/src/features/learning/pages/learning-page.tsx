@@ -157,6 +157,14 @@ export function LearningPage({ locale }: { locale: Locale }) {
           initialAttendance={records.attendance}
           initialAssignments={records.assignments}
           initialReports={records.reports}
+          onMarkAttendance={(data) =>
+            records.markAttendance(
+              data.sessionId,
+              data.participantUserId,
+              data.attendanceStatus,
+              data.notes,
+            )
+          }
           onSubmitAssignment={records.submitAssignment}
           onGradeSubmission={records.gradeSubmission}
           onGenerateReport={records.generateReport}

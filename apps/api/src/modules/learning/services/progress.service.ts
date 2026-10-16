@@ -290,4 +290,29 @@ export class LearningProgressService {
       progressReports,
     };
   }
+
+  async getProgressReportById(
+    user: AuthenticatedUser,
+    reportId: string,
+  ): Promise<ProgressReportEntity> {
+    const report = await this.progressReportRepo.findOne({
+      where: { id: reportId },
+      relations: {
+        booking: { subject: true },
+        studentUser: true,
+      },
+    });
+
+    if (!report) {
+      throw new NotFoundException(`Progress report ${reportId} not found`);
+    }
+
+    await this.access.assertCanAccessStudentRecords(
+      user,
+      report.studentUserId,
+      report.bookingId,
+    );
+
+    return report;
+  }
 }

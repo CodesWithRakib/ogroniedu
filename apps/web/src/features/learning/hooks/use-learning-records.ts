@@ -6,10 +6,12 @@ import { parseItem, parseOffsetCollection } from '@/lib/api/parse';
 import type { Locale } from '@/lib/i18n';
 import { useGetBookingRequestsQuery, type BookingRequestItem } from '@/store/services/bookings-api';
 import {
+  AttendanceStatus,
   useCreateAssignmentMutation,
   useGenerateProgressReportMutation,
   useGetBookingLearningRecordsQuery,
   useGradeSubmissionMutation,
+  useMarkAttendanceMutation,
   useSubmitAssignmentMutation,
   type AssignmentRecord,
   type AttendanceRecord,
@@ -67,6 +69,12 @@ export interface LearningRecordsState {
   submitAssignment: (assignmentId: string, data: { submissionText: string }) => Promise<void>;
   gradeSubmission: (submissionId: string, data: GradeSubmissionInput) => Promise<void>;
   generateReport: (data: GenerateReportInput) => Promise<void>;
+  markAttendance: (
+    sessionId: string,
+    participantUserId: string,
+    attendanceStatus: AttendanceStatus,
+    notes?: string,
+  ) => Promise<void>;
 }
 
 /**
@@ -78,10 +86,7 @@ export interface LearningRecordsState {
 export function useLearningRecords(locale: Locale): LearningRecordsState {
   const requests = useGetBookingRequestsQuery();
   const rawItems = React.useMemo<BookingRequestItem[]>(
-    () =>
-      requests.data
-        ? parseOffsetCollection<BookingRequestItem>(requests.data).items
-        : [],
+    () => (requests.data ? parseOffsetCollection<BookingRequestItem>(requests.data).items : []),
     [requests.data],
   );
 
@@ -111,10 +116,7 @@ export function useLearningRecords(locale: Locale): LearningRecordsState {
     });
   }, [rawItems, locale]);
 
-  const bookingIds = React.useMemo<string[]>(
-    () => rawItems.map((r) => r.id),
-    [rawItems],
-  );
+  const bookingIds = React.useMemo<string[]>(() => rawItems.map((r) => r.id), [rawItems]);
 
   const [activeBookingId, setActiveBookingId] = React.useState<string>('');
   React.useEffect(() => {
@@ -151,6 +153,7 @@ export function useLearningRecords(locale: Locale): LearningRecordsState {
   const [submitAssignment] = useSubmitAssignmentMutation();
   const [gradeSubmission] = useGradeSubmissionMutation();
   const [generateReport, { isLoading: generating }] = useGenerateProgressReportMutation();
+  const [markAttendanceMutation] = useMarkAttendanceMutation();
   const [fieldErrors, setFieldErrors] = React.useState<Record<string, string>>({});
 
   const fail = (err: unknown): never => {
@@ -199,5 +202,14 @@ export function useLearningRecords(locale: Locale): LearningRecordsState {
     gradeSubmission: (submissionId, data) =>
       runMutation(() => gradeSubmission({ submissionId, ...data }).unwrap()),
     generateReport: (data) => runMutation(() => generateReport(data).unwrap()),
+    markAttendance: (sessionId, participantUserId, attendanceStatus, notes) =>
+      runMutation(() =>
+        markAttendanceMutation({
+          sessionId,
+          participantUserId,
+          attendanceStatus,
+          notes,
+        }).unwrap(),
+      ),
   };
 }

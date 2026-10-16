@@ -46,6 +46,15 @@ describe('LearningController Unit Tests', () => {
         attendanceRate: 100,
         averageScore: 95,
       }),
+      getAssignmentById: vi.fn().mockResolvedValue({
+        id: 'asgn-1',
+        title: 'Homework 1',
+      }),
+      getProgressReportById: vi.fn().mockResolvedValue({
+        id: 'rep-1',
+        attendanceRate: 100,
+        averageScore: 95,
+      }),
       getBookingLearningRecords: vi.fn().mockResolvedValue({
         bookingId: 'book-1',
         assignments: [],
@@ -127,6 +136,26 @@ describe('LearningController Unit Tests', () => {
     expect(res.success).toBe(true);
     expect(res.data.id).toBe('rep-1');
     expect(mockService.generateProgressReport).toHaveBeenCalledWith(mockTutor, dto, 'req-5');
+  });
+
+  it('should get assignment by id and return wrapped 200 response', async () => {
+    const res = await controller.getAssignmentById(mockStudent, '11111111-1111-4111-8111-111111111111');
+    expect(res.success).toBe(true);
+    expect(res.data.id).toBe('asgn-1');
+    expect(mockService.getAssignmentById).toHaveBeenCalledWith(
+      mockStudent,
+      '11111111-1111-4111-8111-111111111111',
+    );
+  });
+
+  it('should get progress report by id and return wrapped 200 response', async () => {
+    const res = await controller.getProgressReportById(mockTutor, '22222222-2222-4222-8222-222222222222');
+    expect(res.success).toBe(true);
+    expect(res.data.id).toBe('rep-1');
+    expect(mockService.getProgressReportById).toHaveBeenCalledWith(
+      mockTutor,
+      '22222222-2222-4222-8222-222222222222',
+    );
   });
 
   it('should get booking learning records', async () => {
