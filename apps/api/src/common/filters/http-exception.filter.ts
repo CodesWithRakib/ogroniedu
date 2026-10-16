@@ -6,6 +6,7 @@ import {
   HttpStatus,
   Logger,
 } from '@nestjs/common';
+import { randomUUID } from 'node:crypto';
 import type { Request, Response } from 'express';
 import {
   codeForStatus,
@@ -13,6 +14,22 @@ import {
   toErrorDetails,
   type ApiErrorCode,
 } from '../api-error/api-error';
+
+/**
+ * Middleware-level failures raised before Nest's exception layer (e.g. the
+ * express body-parser SyntaxError for a malformed JSON body) are not
+ * HttpExceptions but still carry a truthful 4xx `status`/`statusCode`.
+ * Honor it so client mistakes are never reported as sanitized 500s.
+ */
+function resolveHttpStatus(exception: unknown): number {
+  if (exception instanceof HttpException) return exception.getStatus();
+  if (typeof exception === 'object' && exception !== null) {
+    const err = exception as { status?: unknown; statusCode?: unknown };
+    const candidate = typeof err.status === 'number' ? err.status : err.statusCode;
+    if (typeof candidate === 'number' && candidate >= 400 && candidate < 500) return candidate;
+  }
+  return HttpStatus.INTERNAL_SERVER_ERROR;
+}
 
 /**
  * Canonical error envelope: { success:false, error:{code,message,details?}, meta:{requestId} }.
@@ -28,10 +45,14 @@ export class AllExceptionsFilter implements ExceptionFilter {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
-    const requestId = request.requestId;
+    // Middleware-level errors (body parser) can precede RequestIdMiddleware;
+    // generate a fallback so every error envelope stays traceable.
+    const requestId = request.requestId ?? randomUUID();
+    if (!request.requestId && typeof response.setHeader === 'function') {
+      response.setHeader('x-request-id', requestId);
+    }
 
-    const status =
-      exception instanceof HttpException ? exception.getStatus() : HttpStatus.INTERNAL_SERVER_ERROR;
+    const status = resolveHttpStatus(exception);
 
     let code: ApiErrorCode = codeForStatus(status);
     let message = 'The request could not be processed.';
@@ -64,6 +85,15 @@ export class AllExceptionsFilter implements ExceptionFilter {
       if (status === 403 && code === 'VALIDATION_ERROR') code = 'FORBIDDEN';
       if (status === 404 && code === 'VALIDATION_ERROR') code = 'NOT_FOUND';
       if (status === 409 && code === 'VALIDATION_ERROR') code = 'CONFLICT';
+    } else if (status < 500) {
+      // Client-correctable middleware error (e.g. body-parser SyntaxError):
+      // keep the canonical envelope but never report it as an internal error.
+      const type = (exception as { type?: unknown }).type;
+      code = codeForStatus(status);
+      message =
+        type === 'entity.parse.failed'
+          ? 'The request body is not valid JSON.'
+          : 'The request could not be processed.';
     } else {
       code = 'INTERNAL_ERROR';
       message = 'Internal server error. Please contact support with request ID.';

@@ -132,5 +132,144 @@ describe('RequestIdMiddleware and AllExceptionsFilter Tests', () => {
       // Sanitized: internal detail must not leak to clients
       expect(JSON.stringify(responseBody)).not.toContain('Database socket dropped');
     });
+
+    it('maps a body-parser malformed-JSON error to 400 with a generated requestId', () => {
+      let responseStatus = 0;
+      let responseBody: any = null;
+      const headersSet: Record<string, string> = {};
+
+      const mockRes: Partial<Response> = {
+        setHeader: (k: string, v: string) => {
+          headersSet[k] = v;
+          return mockRes as Response;
+        },
+        status: (code: number) => {
+          responseStatus = code;
+          return {
+            json: (body: any) => {
+              responseBody = body;
+            },
+          } as any;
+        },
+      };
+
+      // Simulates the express body-parser failure for malformed JSON,
+      // which fires before RequestIdMiddleware (no request.requestId).
+      const parseError = Object.assign(
+        new SyntaxError('Unexpected token } in JSON at position 1'),
+        {
+          status: 400,
+          statusCode: 400,
+          type: 'entity.parse.failed',
+        },
+      );
+
+      const mockReq: Partial<Request> = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+      };
+
+      const mockHost = {
+        switchToHttp: () => ({
+          getRequest: () => mockReq as Request,
+          getResponse: () => mockRes as Response,
+        }),
+      } as any;
+
+      filter.catch(parseError, mockHost);
+
+      expect(responseStatus).toBe(400);
+      expect(responseBody.success).toBe(false);
+      expect(responseBody.error.code).toBe('VALIDATION_ERROR');
+      expect(responseBody.error.message).toBe('The request body is not valid JSON.');
+      expect(responseBody.meta.requestId).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+      );
+      expect(headersSet['x-request-id']).toBe(responseBody.meta.requestId);
+      // Sanitized: parser internals must not leak to clients
+      expect(JSON.stringify(responseBody)).not.toContain('Unexpected token');
+    });
+
+    it('reports the Nest-mapped parse error (BadRequestException, no requestId) with a generated requestId', () => {
+      let responseStatus = 0;
+      let responseBody: any = null;
+      const headersSet: Record<string, string> = {};
+
+      const mockRes: Partial<Response> = {
+        setHeader: (k: string, v: string) => {
+          headersSet[k] = v;
+          return mockRes as Response;
+        },
+        status: (code: number) => {
+          responseStatus = code;
+          return {
+            json: (body: any) => {
+              responseBody = body;
+            },
+          } as any;
+        },
+      };
+
+      // Built runtime: ExpressAdapter.mapException maps the body-parser
+      // SyntaxError to BadRequestException(error.message) before filters run
+      // (verified live against the dev server + @nestjs/platform-express 12).
+      const mockReq: Partial<Request> = {
+        url: '/api/v1/auth/login',
+        method: 'POST',
+      };
+
+      const mockHost = {
+        switchToHttp: () => ({
+          getRequest: () => mockReq as Request,
+          getResponse: () => mockRes as Response,
+        }),
+      } as any;
+
+      filter.catch(new BadRequestException('Unexpected end of JSON input'), mockHost);
+
+      expect(responseStatus).toBe(400);
+      expect(responseBody.error.code).toBe('VALIDATION_ERROR');
+      expect(responseBody.error.message).toBe('Unexpected end of JSON input');
+      expect(responseBody.meta.requestId).toMatch(
+        /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i,
+      );
+      expect(headersSet['x-request-id']).toBe(responseBody.meta.requestId);
+    });
+
+    it('keeps non-HttpException server-side failures sanitized even with a 5xx status field', () => {
+      let responseStatus = 0;
+      let responseBody: any = null;
+
+      const mockRes: Partial<Response> = {
+        status: (code: number) => {
+          responseStatus = code;
+          return {
+            json: (body: any) => {
+              responseBody = body;
+            },
+          } as any;
+        },
+      };
+
+      const upstreamError = Object.assign(new Error('connection reset by peer'), { status: 502 });
+      const mockReq: Partial<Request> = {
+        url: '/api/v1/tutors/search',
+        method: 'GET',
+        requestId: 'req-err-502',
+      };
+
+      const mockHost = {
+        switchToHttp: () => ({
+          getRequest: () => mockReq as Request,
+          getResponse: () => mockRes as Response,
+        }),
+      } as any;
+
+      filter.catch(upstreamError, mockHost);
+
+      expect(responseStatus).toBe(500);
+      expect(responseBody.error.code).toBe('INTERNAL_ERROR');
+      expect(JSON.stringify(responseBody)).not.toContain('connection reset by peer');
+    });
   });
 });
