@@ -1,29 +1,30 @@
 # 00 — Project Baseline & Verification Methodology
 
-**Date:** 2026-10-16 · **Commit:** `c58d026` ("feat: add role-based dashboard layouts and auth service implementation", 2026-10-15) · **Working tree:** clean at start and end of audit (test artifacts created by the E2E run were restored/removed).
+**Date:** 2026-10-16 · **Code baseline:** `c58d026` ("feat: add role-based dashboard layouts and auth service implementation", 2026-10-15) · **Working tree:** clean at audit start (test artifacts created by the E2E run were restored/removed). Mid-session the owner committed `a90fd06` (2026-10-16 09:44) — docs + `.gitignore` only, **zero code diff** (`git diff --stat c58d026 a90fd06 -- "*.ts" "*.tsx"` empty) — so all findings remain attributable to code state `c58d026`.
 
 ## 1. Environment
 
-| Item | Value |
-|------|-------|
-| OS | Windows 11 (win32), PowerShell 7 |
-| Node | v26.8.1 |
-| pnpm / Turbo | 12.10.1 / 2.11.7 |
-| API | NestJS 12.1.2, TypeORM 1.1.2 (`pg` 8.23.1), runs via `tsx watch src/main.ts` in dev; `tsc` build → `node dist/main.js` for prod |
-| Web | Next.js 16.4.0 (Turbopack dev), React 19.3.0, RTK Query 2.13, next-intl 4.14, Tailwind 4.3 |
-| DB | PostgreSQL 18 (local service), dev DB `ogroniedu_dev`, migrations 001–012 applied |
-| Test runners | API: Vitest; Web: Vitest + Playwright (e2e, separate); DB: Vitest |
-| Credentials | repo-root `.env` (not printed); seeded demo accounts use dev-only password `OgroniDev#2026` (documented in `apps/web/e2e/README.md`) |
+| Item         | Value                                                                                                                                |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| OS           | Windows 11 (win32), PowerShell 7                                                                                                     |
+| Node         | v26.8.1                                                                                                                              |
+| pnpm / Turbo | 12.10.1 / 2.11.7                                                                                                                     |
+| API          | NestJS 12.1.2, TypeORM 1.1.2 (`pg` 8.23.1), runs via `tsx watch src/main.ts` in dev; `tsc` build → `node dist/main.js` for prod      |
+| Web          | Next.js 16.4.0 (Turbopack dev), React 19.3.0, RTK Query 2.13, next-intl 4.14, Tailwind 4.3                                           |
+| DB           | PostgreSQL 18 (local service), dev DB `ogroniedu_dev`, migrations 001–012 applied                                                    |
+| Test runners | API: Vitest; Web: Vitest + Playwright (e2e, separate); DB: Vitest                                                                    |
+| Credentials  | repo-root `.env` (not printed); seeded demo accounts use dev-only password `OgroniDev#2026` (documented in `apps/web/e2e/README.md`) |
 
 ## 2. What was verified vs. what was inspected
 
 **Executed with evidence (this session):**
+
 - `pnpm typecheck` → PASS (6 tasks)
 - `pnpm test` → PASS (API 53 files / 496 tests; Web 26 files / 134 tests; Database 4 files / 28 tests = 658 total)
 - `pnpm build` → PASS (4 tasks; 27+ routes compiled)
 - `pnpm docs:validate` → PASS (162 files)
 - `pnpm lint` → **FAIL, exit 1** (4 API + 12 web warnings; both apps use `--deny-warnings`)
-- `pnpm format:check` (prettier) → **FAIL, exit 1** (14 files)
+- `pnpm format:check` (prettier, repo-root script) → **FAIL, exit 1** (**52 files**: 14 app/tooling + 37 pre-existing docs + `turbo.json`; see `06-quality-baseline.md` §3 for the scope note — the first pass counted only app-level files, i.e. 14)
 - Playwright E2E against live dev stack (API :4000, web :5000), all `E2E_*` creds provided → **45 tests: 43 passed, 1 failed, 1 did not run**
 - Live API probes (Node `fetch` scripts): login shapes, tutor search, booking-request POST → 500 root cause
 - tsx metadata probes: `Reflect.getMetadata('design:paramtypes', …)` → `undefined` under tsx; built `dist/` contains `__metadata("design:paramtypes", …)` → prod builds have metadata
@@ -36,17 +37,17 @@
 
 ## 3. Frozen baseline metrics (append to future audits)
 
-| Metric | Value |
-|--------|-------|
-| API controllers / mapped routes | 22 / 120 |
+| Metric                                    | Value                                                             |
+| ----------------------------------------- | ----------------------------------------------------------------- |
+| API controllers / mapped routes           | 22 / 120                                                          |
 | DB tables / views / indexes / constraints | 45 / 1 / 122 / 515 (78 FK, 21 unique, 69 check, 1 GiST exclusion) |
-| TypeORM entities | 41 (`apps/api/src/modules/**/entities`) |
-| Migrations | 12 SQL files (`packages/database/src/migrations/001…012`) |
-| Web pages (`page.tsx`) | 44 (43 localized + root redirect) |
-| RTK Query services | 17 (`apps/web/src/store/services/`) |
-| Web feature modules | 15 (`apps/web/src/features/`) |
-| E2E specs | 8 (`apps/web/e2e/*.spec.ts`) |
-| Total automated tests | 658 passing |
+| TypeORM entities                          | 41 (`apps/api/src/modules/**/entities`)                           |
+| Migrations                                | 12 SQL files (`packages/database/src/migrations/001…012`)         |
+| Web pages (`page.tsx`)                    | 44 (43 localized + root redirect)                                 |
+| RTK Query services                        | 17 (`apps/web/src/store/services/`)                               |
+| Web feature modules                       | 15 (`apps/web/src/features/`)                                     |
+| E2E specs                                 | 8 (`apps/web/e2e/*.spec.ts`)                                      |
+| Total automated tests                     | 658 passing                                                       |
 
 ## 4. Evidence rules applied
 
