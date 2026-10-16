@@ -21,6 +21,7 @@ import {
   MessageSquare,
   Sparkles,
   Share2,
+  Star,
 } from 'lucide-react';
 import { useAppSelector } from '@/store';
 import { Button, LoadingSpinner, EmptyState } from '@/components/ui';
@@ -31,7 +32,7 @@ import {
   useWithdrawBookingRequestMutation,
 } from '@/store/services/bookings-api';
 import { useGetSessionsQuery, useLazyGetIcsCalendarQuery } from '@/store/services/sessions-api';
-import { SafetyReportModal, TutorReplacementModal } from '@/features/trust';
+import { SafetyReportModal, TutorReplacementModal, ReviewModal } from '@/features/trust';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDate } from '@/lib/format';
@@ -66,6 +67,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
 
   const [safetyModalOpen, setSafetyModalOpen] = useState(false);
   const [replacementModalOpen, setReplacementModalOpen] = useState(false);
+  const [reviewModalOpen, setReviewModalOpen] = useState(false);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -399,6 +401,19 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-400" />
                 {isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacement'}
               </Button>
+
+              {!isTutor && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setReviewModalOpen(true)}
+                  className="border-amber-500/40 text-amber-300 hover:bg-amber-500/10 text-xs"
+                  data-testid="open-review-modal-btn"
+                >
+                  <Star className="w-3.5 h-3.5 mr-1.5 text-amber-400 fill-current" />
+                  {isBn ? 'শিক্ষককে রিভিউ দিন' : 'Rate Tutor'}
+                </Button>
+              )}
             </div>
           </div>
         </div>
@@ -708,6 +723,15 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
         <TutorReplacementModal
           isOpen={replacementModalOpen}
           onClose={() => setReplacementModalOpen(false)}
+          bookingId={bookingId}
+          tutorName={tutorName}
+          subjectName={subjectName}
+          locale={locale}
+        />
+
+        <ReviewModal
+          isOpen={reviewModalOpen}
+          onClose={() => setReviewModalOpen(false)}
           bookingId={bookingId}
           tutorName={tutorName}
           subjectName={subjectName}

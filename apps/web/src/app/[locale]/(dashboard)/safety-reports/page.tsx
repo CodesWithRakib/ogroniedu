@@ -18,6 +18,7 @@ import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { Card, CardHeader, CardTitle, CardContent, Button, Badge } from '@/components/ui';
 import { useGetSafetyReportsQuery } from '@/store/services/trust-api';
 import { SafetyReportModal } from '@/features/trust/components/safetyReportModal';
+import { EmergencySosModal } from '@/features/trust/components/EmergencySosModal';
 import { formatDateTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
@@ -33,6 +34,7 @@ export default function SafetyReportsPage({
 
   const { data: reportsData, isLoading, refetch } = useGetSafetyReportsQuery();
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isSosOpen, setIsSosOpen] = useState(false);
   const [filterCategory, setFilterCategory] = useState<string>('all');
 
   const rawReports = Array.isArray(reportsData)
@@ -119,6 +121,15 @@ export default function SafetyReportsPage({
                 <span className="text-[10px] font-bold block">{isBn ? 'অগ্রণী এডু সিকিউরিটি ডেস্ক' : 'OgroniEdu Triage'}</span>
                 <span className="text-base font-bold">+৮৮০ ৯৬১২-৩৪৫৬৭৮</span>
               </div>
+              <button
+                type="button"
+                onClick={() => setIsSosOpen(true)}
+                className="w-full mt-2 py-2 px-3 rounded-xl bg-red-600/20 hover:bg-red-600/30 text-red-400 border border-red-500/30 text-xs font-bold transition-all flex items-center justify-center gap-1.5 cursor-pointer"
+                data-testid="open-sos-dialog-btn"
+              >
+                <PhoneCall className="w-3.5 h-3.5" />
+                <span>{isBn ? 'সব হেল্পলাইন ও এসওএস ডায়াল' : 'View All SOS Fast-Dial'}</span>
+              </button>
             </div>
           </div>
         </div>
@@ -225,6 +236,13 @@ export default function SafetyReportsPage({
           setIsModalOpen(false);
           refetch();
         }}
+        locale={locale}
+      />
+
+      <EmergencySosModal
+        isOpen={isSosOpen}
+        onClose={() => setIsSosOpen(false)}
+        onOpenFileReport={() => setIsModalOpen(true)}
         locale={locale}
       />
     </DashboardShell>

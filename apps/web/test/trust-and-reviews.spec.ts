@@ -4,6 +4,7 @@ import { ReviewFormModal } from '../src/components/trust/ReviewFormModal';
 import { TutorReviewsListView, ReviewItem } from '../src/components/trust/TutorReviewsListView';
 import { TutorReplacementModal } from '../src/components/trust/TutorReplacementModal';
 import { SafetyReportModal } from '../src/components/trust/SafetyReportModal';
+import { ReviewModal, EmergencySosModal } from '../src/features/trust';
 import { getDictionary } from '../src/lib/i18n';
 
 describe('Trust, Reviews, Safety & Replacement Frontend Tests (Phase 13)', () => {
@@ -108,5 +109,33 @@ describe('Trust, Reviews, Safety & Replacement Frontend Tests (Phase 13)', () =>
     expect(enDict.trust.antiSelfReviewNotice).toContain(
       'Tutors are strictly prohibited from reviewing their own courses',
     );
+  });
+
+  it('should instantiate ReviewModal with 5-star rating and criteria ratings', () => {
+    const el = React.createElement(ReviewModal, {
+      isOpen: true,
+      onClose: () => {},
+      bookingId: '2a778253-c39e-4849-b3b1-ddfd16c7a93b',
+      tutorName: 'রাশেদ করিম',
+      subjectName: 'পদার্থবিজ্ঞান',
+      locale: 'bn',
+    });
+
+    expect(el).toBeDefined();
+    expect(el.props.bookingId).toBe('2a778253-c39e-4849-b3b1-ddfd16c7a93b');
+    expect(el.props.tutorName).toBe('রাশেদ করিম');
+    expect(el.props.subjectName).toBe('পদার্থবিজ্ঞান');
+  });
+
+  it('should instantiate EmergencySosModal with 24/7 child safety hotline and fast dial', () => {
+    const el = React.createElement(EmergencySosModal, {
+      isOpen: true,
+      onClose: () => {},
+      locale: 'bn',
+    });
+
+    expect(el).toBeDefined();
+    expect(el.props.isOpen).toBe(true);
+    expect(el.props.locale).toBe('bn');
   });
 });

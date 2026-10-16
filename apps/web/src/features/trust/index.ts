@@ -5,4 +5,6 @@ export * from './components/starSelector';
 export * from './components/reviewCard';
 export * from './components/safetyReportModal';
 export * from './components/tutorReplacementModal';
+export * from './components/ReviewModal';
+export * from './components/EmergencySosModal';
 
