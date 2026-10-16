@@ -23,7 +23,8 @@ import {
   Share2,
 } from 'lucide-react';
 import { useAppSelector } from '@/store';
-import { Button, LoadingSpinner } from '@/components/ui';
+import { Button, LoadingSpinner, EmptyState } from '@/components/ui';
+import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import {
   useGetBookingRequestByIdQuery,
   useRespondBookingRequestMutation,
@@ -172,17 +173,61 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
 
   if (loadingBooking) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3">
-        <LoadingSpinner />
-        <p className="text-xs text-muted-foreground">
-          {isBn ? 'বুকিং ডসিয়ার লোড হচ্ছে...' : 'Loading booking dossier...'}
-        </p>
-      </div>
+      <DashboardShell
+        locale={locale}
+        title={isBn ? 'বুকিং ডসিয়ার' : 'Booking Dossier'}
+        subtitle={isBn ? 'তথ্য প্রস্তুত করা হচ্ছে...' : 'Loading booking details...'}
+      >
+        <div className="py-20 flex flex-col items-center justify-center gap-3">
+          <LoadingSpinner />
+          <p className="text-xs text-muted-foreground">
+            {isBn ? 'বুকিং ডসিয়ার লোড হচ্ছে...' : 'Loading booking dossier...'}
+          </p>
+        </div>
+      </DashboardShell>
+    );
+  }
+
+  if (!booking) {
+    return (
+      <DashboardShell
+        locale={locale}
+        title={isBn ? 'বুকিং ডসিয়ার' : 'Booking Dossier'}
+        subtitle={isBn ? 'বুকিং সংক্রান্ত তথ্য' : 'Booking Information'}
+      >
+        <div className="py-12 max-w-xl mx-auto">
+          <EmptyState
+            title={isBn ? 'বুকিং পাওয়া যায়নি' : 'Booking Not Found'}
+            description={
+              isBn
+                ? `বুকিং আইডি #${bookingId.slice(0, 8)} পাওয়া যায়নি অথবা আপনার এই বুকিং দেখার অনুমতি নেই। অনুগ্রহ করে আপনার অনুরোধ তালিকা থেকে একটি সক্রিয় বুকিং নির্বাচন করুন।`
+                : `Booking #${bookingId.slice(0, 8)} was not found or has been removed. Please select an active booking from your requests list.`
+            }
+            actionLabel={isBn ? 'অনুরোধ তালিকায় ফিরে যান' : 'Back to Requests Overview'}
+            actionHref={withLocale(
+              isTutor
+                ? '/dashboard/tutor/requests'
+                : isGuardian
+                  ? '/dashboard/guardian/requests'
+                  : '/dashboard/student/requests',
+              locale,
+            )}
+          />
+        </div>
+      </DashboardShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-8 px-4 sm:px-6 lg:px-8">
+    <DashboardShell
+      locale={locale}
+      title={isBn ? `টিউটরিং বুকিং: ${subjectName}` : `Tutoring Booking: ${subjectName}`}
+      subtitle={
+        isBn
+          ? `আইডি: #${bookingId.slice(0, 8)} | স্ট্যাটাস: ${status === 'accepted' ? 'অনুমোদিত — পেমেন্ট করুন' : status === 'confirmed' ? 'নিশ্চিতকৃত' : 'বিবেচনাধীন'}`
+          : `ID: #${bookingId.slice(0, 8)} | Status: ${status}`
+      }
+    >
       <div className="max-w-6xl mx-auto space-y-6" data-testid="booking-dossier-page">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between">
@@ -287,7 +332,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             <div className="flex flex-wrap items-center gap-3">
               {status === 'accepted' && (
                 <Link
-                  href={withLocale(`/bookings/${bookingId}/pay`, locale)}
+                  href={withLocale(`/dashboard/bookings/${bookingId}/pay`, locale)}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/20 transition-all hover:scale-102"
                   data-testid="pay-escrow-cta-btn"
                 >
@@ -669,6 +714,6 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
           locale={locale}
         />
       </div>
-    </div>
+    </DashboardShell>
   );
 }

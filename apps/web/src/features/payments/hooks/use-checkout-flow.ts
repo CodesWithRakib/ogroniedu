@@ -42,7 +42,7 @@ export function useCheckoutFlow({
 }: UseCheckoutFlowOptions) {
   const [order, setOrder] = React.useState<PaymentOrderDetails | null>(initialOrder ?? null);
   const [selectedGateway, setSelectedGateway] = React.useState<PaymentProvider>(
-    initialOrder?.provider ?? 'bkash',
+    initialOrder?.provider ?? 'sslcommerz',
   );
   const [isProcessing, setIsProcessing] = React.useState(false);
   const [receipt, setReceipt] = React.useState<PaymentReceiptData | null>(receiptProp ?? null);

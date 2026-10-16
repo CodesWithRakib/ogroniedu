@@ -72,7 +72,7 @@ export function usePaymentOrder(locale: Locale) {
 
   const [bookingId, setBookingId] = React.useState('');
   const [amountBdt, setAmountBdt] = React.useState('1000');
-  const [provider, setProvider] = React.useState<PaymentProvider>('bkash');
+  const [provider, setProvider] = React.useState<PaymentProvider>('sslcommerz');
   const [order, setOrder] = React.useState<PaymentOrderDetails | null>(null);
   const [formError, setFormError] = React.useState<string | null>(null);
   const [createOrder, { isLoading: creating }] = useCreatePaymentOrderMutation();

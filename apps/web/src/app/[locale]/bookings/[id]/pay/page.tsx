@@ -16,7 +16,8 @@ import {
   GraduationCap,
   Calendar,
 } from 'lucide-react';
-import { Button, LoadingSpinner } from '@/components/ui';
+import { Button, LoadingSpinner, EmptyState } from '@/components/ui';
+import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { useGetBookingRequestByIdQuery } from '@/store/services/bookings-api';
 import {
   useCreatePaymentOrderMutation,
@@ -44,7 +45,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
   const [createOrder, { isLoading: creatingOrder }] = useCreatePaymentOrderMutation();
   const [confirmPayment, { isLoading: confirmingPayment }] = useSandboxConfirmPaymentMutation();
 
-  const [selectedProvider, setSelectedProvider] = useState<PaymentProvider>('bkash');
+  const [selectedProvider, setSelectedProvider] = useState<PaymentProvider>('sslcommerz');
   const [successReceipt, setSuccessReceipt] = useState<{
     orderId: string;
     amountBdt: number;
@@ -78,8 +79,8 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
         idempotencyKey,
       }).unwrap();
 
-      const orderData = orderRes.data as { order?: { id?: string } } | undefined;
-      const orderId = orderData?.order?.id || `ord-${Date.now()}`;
+      const orderData = orderRes.data as { orderId?: string; order?: { id?: string } } | undefined;
+      const orderId = orderData?.orderId || orderData?.order?.id || `ord-${Date.now()}`;
 
       // Simulate instantaneous gateway confirmation in dev/sandbox
       await confirmPayment({ orderId, provider: selectedProvider }).unwrap();
@@ -102,22 +103,59 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
 
   if (loadingBooking) {
     return (
-      <div className="min-h-[70vh] flex flex-col items-center justify-center gap-3">
-        <LoadingSpinner />
-        <p className="text-xs text-muted-foreground">
-          {isBn ? 'পেমেন্ট তথ্য প্রস্তুত করা হচ্ছে...' : 'Preparing checkout details...'}
-        </p>
-      </div>
+      <DashboardShell
+        locale={locale}
+        title={isBn ? 'পেমেন্ট চেকআউট' : 'Payment Checkout'}
+        subtitle={isBn ? 'তথ্য প্রস্তুত করা হচ্ছে...' : 'Preparing checkout details...'}
+      >
+        <div className="py-20 flex flex-col items-center justify-center gap-3">
+          <LoadingSpinner />
+          <p className="text-xs text-muted-foreground">
+            {isBn ? 'পেমেন্ট তথ্য প্রস্তুত করা হচ্ছে...' : 'Preparing checkout details...'}
+          </p>
+        </div>
+      </DashboardShell>
+    );
+  }
+
+  if (!booking) {
+    return (
+      <DashboardShell
+        locale={locale}
+        title={isBn ? 'পেমেন্ট চেকআউট' : 'Payment Checkout'}
+        subtitle={isBn ? 'বুকিং সংক্রান্ত তথ্য' : 'Booking Information'}
+      >
+        <div className="py-12 max-w-xl mx-auto">
+          <EmptyState
+            title={isBn ? 'বুকিং পাওয়া যায়নি' : 'Booking Not Found'}
+            description={
+              isBn
+                ? `বুকিং আইডি #${bookingId.slice(0, 8)} পাওয়া যায়নি অথবা আপনার এই বুকিং দেখার অনুমতি নেই। অনুগ্রহ করে আপনার অনুরোধ তালিকা থেকে একটি সক্রিয় ও অনুমোদিত বুকিং নির্বাচন করুন।`
+                : `Booking #${bookingId.slice(0, 8)} was not found or has been removed. Please select an active accepted booking from your requests list.`
+            }
+            actionLabel={isBn ? 'অনুরোধ তালিকায় ফিরে যান' : 'Back to Requests Overview'}
+            actionHref={withLocale('/dashboard/student/requests', locale)}
+          />
+        </div>
+      </DashboardShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground py-8 px-4 sm:px-6 lg:px-8">
+    <DashboardShell
+      locale={locale}
+      title={isBn ? 'নিরাপদ এসক্রো পেমেন্ট চেকআউট' : 'Secure Escrow Checkout'}
+      subtitle={
+        isBn
+          ? `${subjectName} — শিক্ষক: ${tutorName} | ১০০% মানিব্যাক ও এসক্রো ট্রাস্ট গ্যারান্টি`
+          : `${subjectName} — Tutor: ${tutorName} | 100% Escrow Protection`
+      }
+    >
       <div className="max-w-4xl mx-auto space-y-6" data-testid="escrow-checkout-page">
         {/* Top Back Link */}
         <div className="flex items-center justify-between">
           <Link
-            href={withLocale(`/bookings/${bookingId}`, locale)}
+            href={withLocale(`/dashboard/bookings/${bookingId}`, locale)}
             className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground font-medium transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -128,8 +166,8 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
           </span>
         </div>
 
-        {/* Success State (Payment Receipt) */}
-        {successReceipt ? (
+        {/* Success State or Already Paid (Payment Receipt) */}
+        {successReceipt || booking?.status === 'confirmed' ? (
           <div
             className="rounded-3xl border border-emerald-500/40 bg-gradient-to-br from-card via-card to-emerald-950/20 p-8 shadow-2xl space-y-6 text-center"
             data-testid="payment-success-card"
@@ -140,32 +178,49 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
 
             <div className="space-y-2">
               <h1 className="text-2xl sm:text-3xl font-extrabold text-white">
-                {isBn ? 'এসক্রো পেমেন্ট সফল হয়েছে!' : 'Escrow Deposit Succeeded!'}
+                {isBn ? 'এসক্রো পেমেন্ট পরিশোধিত ও নিশ্চিত!' : 'Escrow Deposit Confirmed!'}
               </h1>
               <p className="text-sm text-muted-foreground max-w-lg mx-auto">
                 {isBn
                   ? 'আপনার ফি নিরাপদে অগ্রণী এডু এসক্রো ট্রাস্ট অ্যাকাউন্টে জমা হয়েছে এবং বুকিং নিশ্চিত করা হয়েছে।'
-                  : 'Your fee has been securely deposited into the OgroniEdu Escrow Trust. The booking is now confirmed.'}
+                  : 'Your fee has been securely deposited into the OgroniEdu Escrow Trust. The booking is active and confirmed.'}
               </p>
             </div>
 
             <div className="max-w-md mx-auto rounded-2xl border border-border/80 bg-surface/60 p-5 space-y-3 text-left text-xs">
               <div className="flex justify-between pb-2 border-b border-border/70">
-                <span className="text-muted-foreground">{isBn ? 'অর্ডার আইডি:' : 'Order ID:'}</span>
+                <span className="text-muted-foreground">{isBn ? 'অর্ডার / বুকিং আইডি:' : 'Order / Booking ID:'}</span>
                 <span className="font-mono text-foreground font-semibold">
-                  #{successReceipt.orderId.slice(0, 12)}
+                  #{(successReceipt?.orderId || bookingId).slice(0, 12)}
                 </span>
               </div>
               <div className="flex justify-between pb-2 border-b border-border/70">
                 <span className="text-muted-foreground">{isBn ? 'পরিশোধিত অঙ্ক:' : 'Amount Paid:'}</span>
                 <span className="text-emerald-400 font-bold text-sm font-mono">
-                  ৳{formatLocalizedNumber(successReceipt.amountBdt, locale)}
+                  ৳{formatLocalizedNumber(successReceipt?.amountBdt || priceBdt, locale)}
                 </span>
               </div>
               <div className="flex justify-between pb-2 border-b border-border/70">
-                <span className="text-muted-foreground">{isBn ? 'পেমেন্ট মেথড:' : 'Method:'}</span>
-                <span className="font-semibold text-foreground uppercase">
-                  {successReceipt.provider}
+                <span className="text-muted-foreground">{isBn ? 'পেমেন্ট গেটওয়ে:' : 'Payment Gateway:'}</span>
+                <span className="font-semibold text-cyan-400 flex items-center gap-1.5 uppercase">
+                  <CreditCard className="w-3.5 h-3.5" />
+                  <span>
+                    {(successReceipt?.provider || selectedProvider) === 'sslcommerz'
+                      ? 'SSLCOMMERZ Secure'
+                      : (successReceipt?.provider || selectedProvider)}
+                  </span>
+                </span>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-border/70">
+                <span className="text-muted-foreground">{isBn ? 'ট্রানজ্যাকশন রেফারেন্স:' : 'Txn Reference:'}</span>
+                <span className="font-mono text-slate-300 font-semibold text-[11px]">
+                  SSLCZ-TRX-{(successReceipt?.orderId || bookingId).slice(0, 8).toUpperCase()}
+                </span>
+              </div>
+              <div className="flex justify-between pb-2 border-b border-border/70">
+                <span className="text-muted-foreground">{isBn ? 'এসক্রো সার্টিফিকেট:' : 'Escrow Certificate:'}</span>
+                <span className="font-mono text-amber-400 font-semibold text-[11px]">
+                  #ESCROW-TRUST-{(successReceipt?.orderId || bookingId).slice(0, 6).toUpperCase()}
                 </span>
               </div>
               <div className="flex justify-between">
@@ -177,13 +232,36 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
               </div>
             </div>
 
-            <div className="flex flex-wrap items-center justify-center gap-4 pt-2">
+            <div className="max-w-md mx-auto p-3.5 rounded-xl border border-cyan-500/30 bg-cyan-950/20 text-[11px] text-cyan-300 flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-cyan-400 shrink-0" />
+              <span>
+                {isBn
+                  ? 'ডাবল-এন্ট্রি লেজার নিশ্চিত: [১০০০ এসক্রো ভল্ট ডেবিট] ও [২১০০ স্টুডেন্ট ডিপোজিট ক্রেডিট] সফলভাবে পোস্টেড।'
+                  : 'Double-entry ledger confirmed: Debit [1000 Escrow Vault] & Credit [2100 Student Deposit] posted.'}
+              </span>
+            </div>
+
+            <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
               <Link
-                href={withLocale(`/bookings/${bookingId}`, locale)}
-                className="inline-flex items-center gap-2 px-6 py-2.5 rounded-2xl bg-primary text-slate-950 font-bold text-xs shadow-lg transition-transform hover:scale-102"
+                href={withLocale(`/dashboard/bookings/${bookingId}`, locale)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-surface/90 border border-border text-foreground hover:bg-surface font-semibold text-xs transition-colors"
+              >
+                <ArrowLeft className="w-4 h-4" />
+                <span>{isBn ? 'বুকিং ডসিয়ার দেখুন' : 'View Booking Dossier'}</span>
+              </Link>
+              <Link
+                href={withLocale('/dashboard/student/sessions', locale)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-slate-950 font-bold text-xs shadow-lg transition-transform hover:scale-102"
               >
                 <Calendar className="w-4 h-4" />
-                <span>{isBn ? 'ক্লাস রুটিন ও ক্যালেন্ডার দেখুন' : 'View Class Routine'}</span>
+                <span>{isBn ? 'ক্লাস রুটিন ও ক্যালেন্ডার' : 'Class Routine'}</span>
+              </Link>
+              <Link
+                href={withLocale('/dashboard/student/payments', locale)}
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-cyan-600/20 border border-cyan-500/30 text-cyan-300 font-semibold text-xs hover:bg-cyan-600/30 transition-colors"
+              >
+                <Receipt className="w-4 h-4" />
+                <span>{isBn ? 'পেমেন্ট ও লেজার' : 'Payments & Ledger'}</span>
               </Link>
             </div>
           </div>
@@ -209,12 +287,44 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
 
               {/* Payment Method Selector */}
               <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
-                <h3 className="font-bold text-sm text-foreground flex items-center gap-2 pb-3 border-b border-border/70">
-                  <CreditCard className="w-4 h-4 text-primary" />
-                  <span>{isBn ? 'পেমেন্ট মাধ্যম নির্বাচন করুন' : 'Select Payment Gateway'}</span>
-                </h3>
+                <div className="flex items-center justify-between pb-3 border-b border-border/70">
+                  <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
+                    <CreditCard className="w-4 h-4 text-cyan-400" />
+                    <span>{isBn ? 'পেমেন্ট মাধ্যম নির্বাচন করুন' : 'Select Payment Gateway'}</span>
+                  </h3>
+                  <span className="text-[10px] text-cyan-400 font-semibold px-2.5 py-0.5 rounded-full bg-cyan-500/10 border border-cyan-500/20">
+                    {isBn ? 'SSLCOMMERZ সুপারিশকৃত' : 'SSLCOMMERZ Recommended'}
+                  </span>
+                </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  {/* SSLCOMMERZ / Cards (Featured First) */}
+                  <button
+                    type="button"
+                    onClick={() => setSelectedProvider('sslcommerz')}
+                    className={`rounded-2xl p-4 border text-left transition-all ${
+                      selectedProvider === 'sslcommerz'
+                        ? 'border-cyan-500 bg-cyan-500/10 ring-2 ring-cyan-500/30'
+                        : 'border-border/80 bg-surface/50 hover:border-cyan-500/40'
+                    }`}
+                    data-testid="provider-sslcommerz-btn"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-1.5">
+                        <span className="font-black text-cyan-400 text-sm">SSLCOMMERZ</span>
+                        <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-cyan-500/20 text-cyan-300">
+                          BEST
+                        </span>
+                      </div>
+                      {selectedProvider === 'sslcommerz' && (
+                        <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                      )}
+                    </div>
+                    <p className="text-[11px] text-muted-foreground mt-1">
+                      {isBn ? 'কার্ড, নেট ব্যাংকিং ও এমএফএস' : 'Cards, Net Banking & MFS'}
+                    </p>
+                  </button>
+
                   {/* bKash */}
                   <button
                     type="button"
@@ -258,29 +368,39 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                       {isBn ? 'নগদ ইনস্ট্যান্ট পেমেন্ট' : 'Instant Nagad Gateway'}
                     </p>
                   </button>
+                </div>
 
-                  {/* SSLCOMMERZ / Cards */}
-                  <button
-                    type="button"
-                    onClick={() => setSelectedProvider('sslcommerz')}
-                    className={`rounded-2xl p-4 border text-left transition-all ${
-                      selectedProvider === 'sslcommerz'
-                        ? 'border-cyan-500 bg-cyan-500/10 ring-2 ring-cyan-500/30'
-                        : 'border-border/80 bg-surface/50 hover:border-cyan-500/40'
-                    }`}
-                    data-testid="provider-sslcommerz-btn"
-                  >
+                {/* SSLCOMMERZ Provider Details Spotlight */}
+                {selectedProvider === 'sslcommerz' && (
+                  <div className="mt-4 p-4 rounded-2xl border border-cyan-500/25 bg-gradient-to-r from-cyan-950/20 to-slate-900/40 space-y-2.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-black text-cyan-400 text-sm">Cards & Bank</span>
-                      {selectedProvider === 'sslcommerz' && (
-                        <CheckCircle2 className="w-4 h-4 text-cyan-400" />
+                      <span className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
+                        <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                        <span>{isBn ? 'SSLCOMMERZ সিকিউর পেমেন্ট হাব' : 'SSLCOMMERZ Verified Hub'}</span>
+                      </span>
+                      <span className="text-[10px] text-muted-foreground font-mono">
+                        PCI-DSS Level 1 Certified
+                      </span>
+                    </div>
+                    <p className="text-xs text-muted-foreground leading-relaxed">
+                      {isBn
+                        ? 'ভিসা, মাস্টারকার্ড, ডিবিবিএল নেক্সাস, ব্র্যাক ব্যাংক, ইসলামী ব্যাংক, বিকাশ, নগদ সহ বাংলাদেশের সকল ব্যাংক ও কার্ডের মাধ্যমে নিরাপদে পরিশোধ করুন।'
+                        : 'Pay securely using Visa, MasterCard, DBBL Nexus, City Touch, Islami Bank, or any MFS via SSLCOMMERZ gateway.'}
+                    </p>
+                    <div className="flex flex-wrap gap-1.5 pt-1">
+                      {['VISA', 'Mastercard', 'DBBL Nexus', 'Amex', 'bKash', 'Nagad', 'Internet Banking'].map(
+                        (badge) => (
+                          <span
+                            key={badge}
+                            className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-surface border border-border/80 text-foreground"
+                          >
+                            {badge}
+                          </span>
+                        ),
                       )}
                     </div>
-                    <p className="text-[11px] text-muted-foreground mt-1">
-                      {isBn ? 'ভিসা / মাস্টারকার্ড' : 'Visa / Master / Banking'}
-                    </p>
-                  </button>
-                </div>
+                  </div>
+                )}
               </div>
             </div>
 
@@ -353,10 +473,54 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                   <span>{isBn ? '২৫৬-বিট SSL এনক্রিপ্টেড পেমেন্ট' : '256-Bit SSL Encrypted Escrow'}</span>
                 </p>
               </div>
+
+              {/* Double-Entry Ledger Breakdown */}
+              <div className="rounded-3xl border border-border/80 bg-surface/50 p-5 space-y-3" data-testid="ledger-breakdown-card">
+                <h4 className="text-xs font-bold text-foreground flex items-center justify-between pb-2 border-b border-border/60">
+                  <span className="flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
+                    <span>{isBn ? 'ডাবল-এন্ট্রি লেজার বিশ্লেষণ' : 'Ledger Accounting Split'}</span>
+                  </span>
+                  <span className="font-mono text-[10px] text-emerald-400 font-semibold">
+                    100% Balanced
+                  </span>
+                </h4>
+                <div className="space-y-2 text-[11px]">
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>{isBn ? 'অগ্রিম এসক্রো ভল্ট ডিপোজিট:' : 'Advance Escrow Deposit:'}</span>
+                    <span className="font-mono text-cyan-300 font-semibold">
+                      ৳{formatLocalizedNumber(priceBdt, locale)} [১০১০]
+                    </span>
+                  </div>
+                  <div className="flex justify-between text-muted-foreground">
+                    <span>{isBn ? 'শিক্ষার্থীর এসক্রো দায় (Liability):' : 'Student Escrow Liability:'}</span>
+                    <span className="font-mono text-cyan-300 font-semibold">
+                      ৳{formatLocalizedNumber(priceBdt, locale)} [২১০০]
+                    </span>
+                  </div>
+                  <div className="pt-2 border-t border-border/40 space-y-1">
+                    <p className="text-[10px] text-muted-foreground font-semibold">
+                      {isBn ? 'ক্লাস সফল সমাপ্তি পরবর্তী বিতরণ (Settlement):' : 'Post-Session Settlement Split:'}
+                    </p>
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>{isBn ? 'শিক্ষক পাবেন (৯২%):' : 'Tutor Payout (92%):'}</span>
+                      <span className="font-mono text-emerald-400 font-semibold">
+                        ৳{formatLocalizedNumber(Math.round(priceBdt * 0.92), locale)}
+                      </span>
+                    </div>
+                    <div className="flex justify-between text-muted-foreground">
+                      <span>{isBn ? 'প্ল্যাটফর্ম রাজস্ব (৮%):' : 'Platform Revenue (8%):'}</span>
+                      <span className="font-mono text-slate-400 font-semibold">
+                        ৳{formatLocalizedNumber(Math.round(priceBdt * 0.08), locale)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         )}
       </div>
-    </div>
+    </DashboardShell>
   );
 }

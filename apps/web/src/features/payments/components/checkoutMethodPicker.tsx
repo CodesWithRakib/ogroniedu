@@ -44,6 +44,40 @@ export function CheckoutMethodPicker({
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
+        {/* SSLCOMMERZ (Recommended) */}
+        <div
+          onClick={() => onSelectGateway('sslcommerz')}
+          className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
+            selectedGateway === 'sslcommerz'
+              ? 'border-cyan-500 bg-cyan-500/10 ring-2 ring-cyan-500/30'
+              : 'border-border hover:border-slate-300 dark:hover:border-slate-700'
+          }`}
+          data-testid="gateway-picker-sslcommerz"
+        >
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-600 to-blue-700 text-white font-black flex items-center justify-center text-[10px] tracking-tight shadow-sm">
+              SSL
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <span className="font-semibold text-slate-900 dark:text-white">{p.sslTitle}</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                  {locale === 'bn' ? 'সুপারিশকৃত' : 'Recommended'}
+                </span>
+              </div>
+              <div className="text-xs text-muted-foreground mt-0.5">{p.sslDesc}</div>
+            </div>
+          </div>
+          <input
+            type="radio"
+            name="gateway"
+            checked={selectedGateway === 'sslcommerz'}
+            onChange={() => onSelectGateway('sslcommerz')}
+            className="w-4 h-4 text-cyan-600"
+          />
+        </div>
+
+        {/* bKash */}
         <div
           onClick={() => onSelectGateway('bkash')}
           className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
@@ -51,6 +85,7 @@ export function CheckoutMethodPicker({
               ? 'border-pink-500 bg-pink-500/5 ring-2 ring-pink-500/30'
               : 'border-border hover:border-slate-300 dark:hover:border-slate-700'
           }`}
+          data-testid="gateway-picker-bkash"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-pink-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
@@ -69,6 +104,8 @@ export function CheckoutMethodPicker({
             className="w-4 h-4 text-pink-600"
           />
         </div>
+
+        {/* Nagad */}
         <div
           onClick={() => onSelectGateway('nagad')}
           className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
@@ -76,6 +113,7 @@ export function CheckoutMethodPicker({
               ? 'border-orange-500 bg-orange-500/5 ring-2 ring-orange-500/30'
               : 'border-border hover:border-slate-300 dark:hover:border-slate-700'
           }`}
+          data-testid="gateway-picker-nagad"
         >
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-lg bg-orange-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
@@ -92,31 +130,6 @@ export function CheckoutMethodPicker({
             checked={selectedGateway === 'nagad'}
             onChange={() => onSelectGateway('nagad')}
             className="w-4 h-4 text-orange-600"
-          />
-        </div>
-        <div
-          onClick={() => onSelectGateway('sslcommerz')}
-          className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
-            selectedGateway === 'sslcommerz'
-              ? 'border-blue-500 bg-blue-500/5 ring-2 ring-blue-500/30'
-              : 'border-border hover:border-slate-300 dark:hover:border-slate-700'
-          }`}
-        >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-blue-600 text-white font-bold flex items-center justify-center text-xs shadow-sm">
-              CARDS
-            </div>
-            <div>
-              <div className="font-semibold text-slate-900 dark:text-white">{p.sslTitle}</div>
-              <div className="text-xs text-muted-foreground">{p.sslDesc}</div>
-            </div>
-          </div>
-          <input
-            type="radio"
-            name="gateway"
-            checked={selectedGateway === 'sslcommerz'}
-            onChange={() => onSelectGateway('sslcommerz')}
-            className="w-4 h-4 text-blue-600"
           />
         </div>
       </CardContent>

@@ -128,7 +128,11 @@ export class PaymentOrdersService {
       },
     });
 
-    const providerName = dto.provider || 'bkash';
+    const providerName =
+      dto.provider ||
+      (dto.paymentMethod && ['bkash', 'nagad'].includes(dto.paymentMethod)
+        ? dto.paymentMethod
+        : 'sslcommerz');
     const adapter = this.adapterFactory.getAdapter(providerName);
     const amountMinor = Number(booking.pricePerSessionMinor);
 

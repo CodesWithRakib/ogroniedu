@@ -382,6 +382,11 @@ export function RequestsPage({ locale }: { locale: Locale }) {
 
                       {r.status === 'accepted' && (
                         <div className="flex flex-wrap items-center gap-2 w-full justify-end">
+                          <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
+                            <Button size="sm" variant="ghost" className="text-xs text-teal-300 hover:text-white">
+                              {locale === 'bn' ? 'বিস্তারিত' : 'Details'}
+                            </Button>
+                          </Link>
                           <Link href={withLocale('/dashboard/student/sessions', locale)}>
                             <Button size="sm" variant="outline" className="text-xs">
                               <Video className="w-3.5 h-3.5 mr-1" />
@@ -390,9 +395,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                           </Link>
                           <Link
                             href={withLocale(
-                              req.isGuardian
-                                ? `/dashboard/guardian/payments?bookingId=${r.id}`
-                                : `/dashboard/student/payments?bookingId=${r.id}`,
+                              `/dashboard/bookings/${r.id}/pay`,
                               locale,
                             )}
                           >

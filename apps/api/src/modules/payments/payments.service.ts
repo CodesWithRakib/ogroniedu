@@ -70,14 +70,14 @@ export class PaymentsService {
   async sandboxConfirmOrder(
     user: AuthenticatedUser,
     orderId: string,
-    provider = 'bkash',
+    provider?: string,
     requestId?: string,
   ) {
     const order = await this.orders.getOrderById(orderId);
     if (order.status === 'succeeded') {
       return { received: true, processed: true, orderId: order.id, status: 'succeeded' };
     }
-    const effectiveProvider = provider || order.provider || 'bkash';
+    const effectiveProvider = provider || order.provider || 'sslcommerz';
     const txnId = `TRX-SBX-${order.id.slice(0, 8)}-${Date.now()}`;
     const evtId = `EVT-SBX-${order.id.slice(0, 8)}-${Date.now()}`;
     return await this.webhooks.handleWebhook(
