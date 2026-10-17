@@ -17,13 +17,7 @@ import {
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import type { RegisterRole } from '@/store/services/auth-api';
-import {
-  Button,
-  Input,
-  Label,
-  Alert,
-  AlertDescription,
-} from '@/components/ui';
+import { Button, Input, Label, Alert, AlertDescription } from '@/components/ui';
 import { AuthShell } from './authShell';
 import { cn } from '@/lib/utils';
 import { useRegisterForm } from './use-register-form';
@@ -73,11 +67,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
       <form onSubmit={handleSubmit} className="space-y-4" data-testid="register-form">
         {/* Error Alert */}
         {formError && (
-          <Alert
-            variant="destructive"
-            className="rounded-xl"
-            data-testid="register-error"
-          >
+          <Alert variant="destructive" className="rounded-xl" data-testid="register-error">
             <AlertDescription>{formError}</AlertDescription>
           </Alert>
         )}

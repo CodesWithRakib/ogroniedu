@@ -7,11 +7,7 @@ import { dashboardPathForRoles, withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
 import { useAppDispatch } from '@/store';
 import { setCredentials } from '@/store/slices/auth-slice';
-import {
-  useLoginMutation,
-  toAuthUser,
-  type AuthResponse,
-} from '@/store/services/auth-api';
+import { useLoginMutation, toAuthUser, type AuthResponse } from '@/store/services/auth-api';
 import { enqueueToast } from '@/store/slices/ui-slice';
 import { validateLoginFields } from './auth-validation';
 

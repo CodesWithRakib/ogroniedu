@@ -78,7 +78,9 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
         <Link
           href={`/${locale}/tutors`}
           className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-all active:scale-90 ${
-            isTutorsActive ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+            isTutorsActive
+              ? 'text-primary font-bold'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <div className="relative">
@@ -139,7 +141,9 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
         <Link
           href={accountHref}
           className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-all active:scale-90 ${
-            isAccountActive ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
+            isAccountActive
+              ? 'text-primary font-bold'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <div className="relative">

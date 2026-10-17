@@ -14,8 +14,7 @@ const alertVariants = cva(
           'bg-card text-success-soft-foreground border-primary/30 *:data-[slot=alert-description]:text-success-soft-foreground [&>svg]:text-current',
         warning:
           'bg-card text-warning-soft-foreground border-warning/30 *:data-[slot=alert-description]:text-warning-soft-foreground [&>svg]:text-current',
-        info:
-          'bg-card text-info-soft-foreground border-info/30 *:data-[slot=alert-description]:text-info-soft-foreground [&>svg]:text-current',
+        info: 'bg-card text-info-soft-foreground border-info/30 *:data-[slot=alert-description]:text-info-soft-foreground [&>svg]:text-current',
       },
     },
     defaultVariants: {

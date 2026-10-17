@@ -5,29 +5,29 @@
 
 ## 1. Inventory by area
 
-| Area | Files | Owns | Refactor status |
-| :--- | --: | :--- | :--- |
-| `components/ui` | 28 | Primitives: Button, Badge, Card, Input, Textarea, Select, Checkbox, Switch, Slider, Dialog, AlertDialog, Sheet, DropdownMenu, Popover, Tooltip, Tabs, Accordion, Avatar, Progress, ScrollArea, Separator, Skeleton, Table, Label, EmptyState, LoadingSpinner, sonner, `index.ts` | Tokenised (Radix + shadcn bridge tokens); `Button` + `sonner` hand-fixed |
-| `components/shell` | 3 | `Navbar`, `Footer`, `authShell` | Converted to light tokens |
-| `components/dashboard` | 10 | Topbar, sidebars, `UserNavDropdown`, role chrome | Converted; sidebar tokens |
-| `components/shared` | 13 | Stat cards, section headers, empty/error states, pagination | Converted |
-| `components/auth` | 7 | Auth cards, role selector, OTP input, guards (`RequireAuth`/`RequireRole`/`OnboardingGate`) | Converted |
-| `components/notifications` | 6 | `NotificationBell`, list items, toasts | Converted |
-| `components/trust` | 4 | Legacy trust modals (**duplicate of `features/trust`**) | De-hexed, kept — tech debt (see `KNOWN_ISSUES.md`) |
-| `components/{admin,analytics,brand,guardian,payments,pwa,scheduling,tutor}` | 9 | Single-purpose widgets + `PWARegister`, `OgroniEduBrand` | Converted |
-| `features/**` | 105 | Domain features: bookings, classroom, learning, messaging, payments, tutor-discovery, onboarding, profile, student, guardian, analytics, trust, notifications | Converted in the three codemod passes |
+| Area                                                                        | Files | Owns                                                                                                                                                                                                                                                                             | Refactor status                                                          |
+| :-------------------------------------------------------------------------- | ----: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------------------------------------------------------------------- |
+| `components/ui`                                                             |    28 | Primitives: Button, Badge, Card, Input, Textarea, Select, Checkbox, Switch, Slider, Dialog, AlertDialog, Sheet, DropdownMenu, Popover, Tooltip, Tabs, Accordion, Avatar, Progress, ScrollArea, Separator, Skeleton, Table, Label, EmptyState, LoadingSpinner, sonner, `index.ts` | Tokenised (Radix + shadcn bridge tokens); `Button` + `sonner` hand-fixed |
+| `components/shell`                                                          |     3 | `Navbar`, `Footer`, `authShell`                                                                                                                                                                                                                                                  | Converted to light tokens                                                |
+| `components/dashboard`                                                      |    10 | Topbar, sidebars, `UserNavDropdown`, role chrome                                                                                                                                                                                                                                 | Converted; sidebar tokens                                                |
+| `components/shared`                                                         |    13 | Stat cards, section headers, empty/error states, pagination                                                                                                                                                                                                                      | Converted                                                                |
+| `components/auth`                                                           |     7 | Auth cards, role selector, OTP input, guards (`RequireAuth`/`RequireRole`/`OnboardingGate`)                                                                                                                                                                                      | Converted                                                                |
+| `components/notifications`                                                  |     6 | `NotificationBell`, list items, toasts                                                                                                                                                                                                                                           | Converted                                                                |
+| `components/trust`                                                          |     4 | Legacy trust modals (**duplicate of `features/trust`**)                                                                                                                                                                                                                          | De-hexed, kept — tech debt (see `KNOWN_ISSUES.md`)                       |
+| `components/{admin,analytics,brand,guardian,payments,pwa,scheduling,tutor}` |     9 | Single-purpose widgets + `PWARegister`, `OgroniEduBrand`                                                                                                                                                                                                                         | Converted                                                                |
+| `features/**`                                                               |   105 | Domain features: bookings, classroom, learning, messaging, payments, tutor-discovery, onboarding, profile, student, guardian, analytics, trust, notifications                                                                                                                    | Converted in the three codemod passes                                    |
 
 ## 2. Findings before the refactor
 
-| # | Finding | Measured evidence |
-| :-: | :--- | :--- |
-| 1 | Five selectable palettes + dark mode driven by `data-theme`/`data-mode` attributes with localStorage persistence | `src/lib/theme/themes.ts`, `ThemeProvider`, `ThemePicker`, `ThemeSwitcher` |
-| 2 | `dark:` Tailwind variants across 74 files | ripgrep inventory: **349** occurrences |
-| 3 | Hard-coded hex literals (mint/ink panels, glass, glows) | **~718** across 37 files |
-| 4 | Dark-first markup mixed with light-first markup (`bg-slate-900`, `text-white`, `bg-white/10`, `border-white/10`) | pass-1 leftover inventory |
-| 5 | `bg-surface` used **117×** but `--color-surface` was never defined | token scan — the utility rendered nothing |
-| 6 | Gradient panels hardcoded `from-[#0df5c4] to-[#00e1b2]` etc. | hex scan |
-| 7 | Theme picker duplicated in Navbar + dashboard chrome | component scan |
+|  #  | Finding                                                                                                          | Measured evidence                                                          |
+| :-: | :--------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------- |
+|  1  | Five selectable palettes + dark mode driven by `data-theme`/`data-mode` attributes with localStorage persistence | `src/lib/theme/themes.ts`, `ThemeProvider`, `ThemePicker`, `ThemeSwitcher` |
+|  2  | `dark:` Tailwind variants across 74 files                                                                        | ripgrep inventory: **349** occurrences                                     |
+|  3  | Hard-coded hex literals (mint/ink panels, glass, glows)                                                          | **~718** across 37 files                                                   |
+|  4  | Dark-first markup mixed with light-first markup (`bg-slate-900`, `text-white`, `bg-white/10`, `border-white/10`) | pass-1 leftover inventory                                                  |
+|  5  | `bg-surface` used **117×** but `--color-surface` was never defined                                               | token scan — the utility rendered nothing                                  |
+|  6  | Gradient panels hardcoded `from-[#0df5c4] to-[#00e1b2]` etc.                                                     | hex scan                                                                   |
+|  7  | Theme picker duplicated in Navbar + dashboard chrome                                                             | component scan                                                             |
 
 ## 3. Component-level changes applied
 

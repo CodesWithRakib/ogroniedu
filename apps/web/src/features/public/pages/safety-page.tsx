@@ -84,7 +84,10 @@ export function SafetyPage({ locale }: { locale: Locale }) {
                 <div className="h-12 w-12 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
                   <Icon className="h-6 w-6" />
                 </div>
-                <Badge variant="outline" className="text-xs rounded-full px-2.5 py-0.5 border-border/80 text-muted-foreground">
+                <Badge
+                  variant="outline"
+                  className="text-xs rounded-full px-2.5 py-0.5 border-border/80 text-muted-foreground"
+                >
                   {pillar.badge}
                 </Badge>
               </CardHeader>

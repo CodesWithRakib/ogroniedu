@@ -299,7 +299,9 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                           ({rec.method})
                         </span>
                       </div>
-                      <p className="text-[11px] text-primary-soft-foreground">{rec.accountNumber}</p>
+                      <p className="text-[11px] text-primary-soft-foreground">
+                        {rec.accountNumber}
+                      </p>
                     </div>
 
                     <div className="text-right space-y-1">
@@ -333,9 +335,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
             <CardContent className="pt-4 space-y-2 text-xs">
               <div className="flex items-center justify-between p-3 rounded-2xl bg-primary-soft  border border-primary/20 ">
                 <div className="space-y-0.5">
-                  <span className="font-bold text-primary-soft-foreground ">
-                    bKash Personal
-                  </span>
+                  <span className="font-bold text-primary-soft-foreground ">bKash Personal</span>
                   <span className="block font-mono text-success-soft-foreground ">
                     01711-234567
                   </span>

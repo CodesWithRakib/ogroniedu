@@ -129,7 +129,9 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
             <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
             <input
               type="text"
-              placeholder={isBn ? 'নাম, ইমেইল অথবা ফোন দিয়ে খুঁজুন...' : 'Search by name, email or phone...'}
+              placeholder={
+                isBn ? 'নাম, ইমেইল অথবা ফোন দিয়ে খুঁজুন...' : 'Search by name, email or phone...'
+              }
               value={search}
               onChange={(e) => {
                 setSearch(e.target.value);
@@ -166,13 +168,27 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
             <table className="w-full text-left text-xs text-foreground">
               <thead className="bg-muted/40 uppercase tracking-wider text-[10px] font-bold text-muted-foreground border-b border-border/60">
                 <tr>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'নাম' : 'NAME'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'ইমেইল ও যোগাযোগ' : 'EMAIL'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'রোল' : 'ROLE'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'অনুমতি' : 'PERMISSIONS'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'স্ট্যাটাস' : 'STATUS'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'সর্বশেষ লগইন' : 'LAST LOGIN'}</th>
-                  <th scope="col" className="px-5 py-3.5 text-right">{isBn ? 'অ্যাকশন' : 'ACTIONS'}</th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'নাম' : 'NAME'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'ইমেইল ও যোগাযোগ' : 'EMAIL'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'রোল' : 'ROLE'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'অনুমতি' : 'PERMISSIONS'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'স্ট্যাটাস' : 'STATUS'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'সর্বশেষ লগইন' : 'LAST LOGIN'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5 text-right">
+                    {isBn ? 'অ্যাকশন' : 'ACTIONS'}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
@@ -185,7 +201,9 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
                 ) : paginated.length === 0 ? (
                   <tr>
                     <td colSpan={7} className="px-5 py-10 text-center text-muted-foreground">
-                      {isBn ? 'কোন অ্যাডমিন কর্মী পাওয়া যায়নি' : 'No administrative staff members found'}
+                      {isBn
+                        ? 'কোন অ্যাডমিন কর্মী পাওয়া যায়নি'
+                        : 'No administrative staff members found'}
                     </td>
                   </tr>
                 ) : (
@@ -202,15 +220,21 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
                             </div>
                             <div>
                               <p className="font-bold text-foreground">{member.displayName}</p>
-                              <p className="text-[10px] text-muted-foreground">{member.id.slice(0, 10)}</p>
+                              <p className="text-[10px] text-muted-foreground">
+                                {member.id.slice(0, 10)}
+                              </p>
                             </div>
                           </div>
                         </td>
 
                         <td className="px-5 py-4">
-                          <p className="font-mono text-foreground text-[11px]">{member.email || '—'}</p>
+                          <p className="font-mono text-foreground text-[11px]">
+                            {member.email || '—'}
+                          </p>
                           {member.phoneE164 && (
-                            <p className="text-[10px] text-muted-foreground mt-0.5">{member.phoneE164}</p>
+                            <p className="text-[10px] text-muted-foreground mt-0.5">
+                              {member.phoneE164}
+                            </p>
                           )}
                         </td>
 
@@ -222,7 +246,7 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
                                 : 'bg-primary/10 text-primary border border-primary/20'
                             }`}
                           >
-                            {isSuper ? 'SUPER ADMIN' : member.roles[0]?.toUpperCase() ?? 'ADMIN'}
+                            {isSuper ? 'SUPER ADMIN' : (member.roles[0]?.toUpperCase() ?? 'ADMIN')}
                           </span>
                         </td>
 

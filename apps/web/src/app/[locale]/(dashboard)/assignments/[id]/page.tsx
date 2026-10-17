@@ -454,7 +454,10 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
             {isTutor && submission && (!hasScore || isEditingGrade) && (
               <form onSubmit={handleGrade} className="space-y-3" data-testid="tutor-grading-form">
                 <div className="space-y-1">
-                  <Label htmlFor="score-input" className="text-xs font-semibold text-muted-foreground">
+                  <Label
+                    htmlFor="score-input"
+                    className="text-xs font-semibold text-muted-foreground"
+                  >
                     {locale === 'bn' ? 'স্কোর (সর্বোচ্চ ' : 'Score (Max '}
                     {formatLocalizedNumber(assignment.maxScore, locale)}):
                   </Label>
@@ -470,7 +473,10 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="feedback-input" className="text-xs font-semibold text-muted-foreground">
+                  <Label
+                    htmlFor="feedback-input"
+                    className="text-xs font-semibold text-muted-foreground"
+                  >
                     {locale === 'bn' ? 'শিক্ষকের পরামর্শ / ফিডব্যাক:' : 'Feedback / Remarks:'}
                   </Label>
                   <Textarea

@@ -34,7 +34,10 @@ export default function GuardianChildrenRoute({ params }: { params: Promise<{ lo
   const educationLevels = React.useMemo(() => levelsEnvelope?.data || [], [levelsEnvelope]);
   const curricula = React.useMemo(() => curriculaEnvelope?.data || [], [curriculaEnvelope]);
   const streams = React.useMemo(() => streamsEnvelope?.data || [], [streamsEnvelope]);
-  const institutions = React.useMemo(() => institutionsEnvelope?.data || [], [institutionsEnvelope]);
+  const institutions = React.useMemo(
+    () => institutionsEnvelope?.data || [],
+    [institutionsEnvelope],
+  );
 
   const mappedChildren = React.useMemo(() => {
     if (!childrenData) return [];

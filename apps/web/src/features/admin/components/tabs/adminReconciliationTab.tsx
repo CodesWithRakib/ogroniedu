@@ -45,9 +45,7 @@ export function AdminReconciliationTab({
                 </span>
               </div>
               <div className="text-right">
-                <p className="text-base font-mono font-bold text-primary ">
-                  {acc.balance} BDT
-                </p>
+                <p className="text-base font-mono font-bold text-primary ">{acc.balance} BDT</p>
               </div>
             </div>
           ))}

@@ -72,10 +72,7 @@ export function TutorReplacementModal({
 
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="space-y-1.5">
-          <Label
-            htmlFor="reason-code"
-            className="text-xs font-semibold text-muted-foreground"
-          >
+          <Label htmlFor="reason-code" className="text-xs font-semibold text-muted-foreground">
             {t('reasonCode')}
           </Label>
           <Select value={reasonCode} onValueChange={setReasonCode}>
@@ -119,12 +116,7 @@ export function TutorReplacementModal({
           >
             Cancel
           </Button>
-          <Button
-            type="submit"
-            variant="primary"
-            size="sm"
-            isLoading={submit.isSubmitting}
-          >
+          <Button type="submit" variant="primary" size="sm" isLoading={submit.isSubmitting}>
             {submit.isSubmitting ? 'Submitting...' : t('submitReplacement')}
           </Button>
         </div>

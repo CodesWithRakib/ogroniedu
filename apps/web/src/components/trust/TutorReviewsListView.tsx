@@ -50,7 +50,14 @@ export function TutorReviewsListView({
 
   return (
     <div style={{ marginTop: '24px' }}>
-      <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '16px', color: 'var(--foreground)' }}>
+      <h3
+        style={{
+          fontSize: '1.2rem',
+          fontWeight: 800,
+          marginBottom: '16px',
+          color: 'var(--foreground)',
+        }}
+      >
         {t('reviewsTitle')} ({localReviews.length})
       </h3>
 

@@ -20,7 +20,10 @@ export type StatusTone =
   | 'cancelled'
   | 'suspended';
 
-const STATUS_CONFIG: Record<string, { variant: NonNullable<BadgeProps['variant']>; label: string }> = {
+const STATUS_CONFIG: Record<
+  string,
+  { variant: NonNullable<BadgeProps['variant']>; label: string }
+> = {
   draft: { variant: 'draft', label: 'Draft' },
   pending: { variant: 'pending', label: 'Pending' },
   submitted: { variant: 'info', label: 'Submitted' },

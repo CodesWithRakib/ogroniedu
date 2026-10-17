@@ -64,9 +64,7 @@ export function CheckoutSummary({ order, locale }: CheckoutSummaryProps) {
         </div>
 
         <div className="border-t border-border pt-4 flex items-baseline justify-between">
-          <span className="text-base font-semibold text-foreground ">
-            {p.totalAmount}
-          </span>
+          <span className="text-base font-semibold text-foreground ">{p.totalAmount}</span>
           <span className="text-2xl font-black text-primary ">
             ৳ {formatLocalizedNumber(amountBdt, locale)} {order.currency}
           </span>

@@ -78,7 +78,9 @@ export function ProgressTab({
               <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide block mb-1">
                 {t.observableProgressLabel}
               </span>
-              <p className="text-foreground leading-relaxed font-medium">{rep.observableProgress}</p>
+              <p className="text-foreground leading-relaxed font-medium">
+                {rep.observableProgress}
+              </p>
             </div>
 
             {rep.areasForGrowth && (

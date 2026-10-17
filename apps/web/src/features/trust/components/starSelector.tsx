@@ -17,9 +17,7 @@ export function StarSelector({
   return (
     <div style={{ marginBottom: '12px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
-        <span
-          style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--muted-foreground)' }}
-        >
+        <span style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--muted-foreground)' }}>
           {label}
         </span>
         <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--warning)' }}>
@@ -42,8 +40,7 @@ export function StarSelector({
             style={{
               flex: 1,
               padding: '6px',
-              border:
-                star <= value ? '1px solid #f59e0b' : '1px solid var(--border)',
+              border: star <= value ? '1px solid #f59e0b' : '1px solid var(--border)',
               backgroundColor: star <= value ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
               borderRadius: '6px',
               cursor: 'pointer',

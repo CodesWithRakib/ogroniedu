@@ -5,13 +5,7 @@ import Link from 'next/link';
 import { Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
-import {
-  Button,
-  Input,
-  Label,
-  Alert,
-  AlertDescription,
-} from '@/components/ui';
+import { Button, Input, Label, Alert, AlertDescription } from '@/components/ui';
 import { AuthShell } from './authShell';
 import { useLoginForm } from './use-login-form';
 
@@ -60,11 +54,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
 
         {/* Error Alert */}
         {formError && (
-          <Alert
-            variant="destructive"
-            className="rounded-xl"
-            data-testid="login-error"
-          >
+          <Alert variant="destructive" className="rounded-xl" data-testid="login-error">
             <AlertDescription>{formError}</AlertDescription>
           </Alert>
         )}

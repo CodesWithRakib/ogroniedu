@@ -176,7 +176,9 @@ export function Navbar({ locale }: NavbarProps) {
                 <div className="p-3 rounded-2xl bg-surface border border-border/80 flex items-center justify-between">
                   <div className="space-y-0.5">
                     <p className="text-xs font-bold text-foreground">{user.displayName}</p>
-                    <p className="text-[11px] text-muted-foreground capitalize">{user.roles?.[0] || 'Member'}</p>
+                    <p className="text-[11px] text-muted-foreground capitalize">
+                      {user.roles?.[0] || 'Member'}
+                    </p>
                   </div>
                   <Link
                     href={withLocale('/profile', locale)}
@@ -197,7 +199,11 @@ export function Navbar({ locale }: NavbarProps) {
               </div>
             ) : (
               <Link href={withLocale('/login', locale)} onClick={() => setMobileMenuOpen(false)}>
-                <Button variant="primary" size="sm" className="w-full justify-center rounded-xl shadow-xs font-bold">
+                <Button
+                  variant="primary"
+                  size="sm"
+                  className="w-full justify-center rounded-xl shadow-xs font-bold"
+                >
                   {dict.nav.login}
                 </Button>
               </Link>

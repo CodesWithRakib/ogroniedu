@@ -39,9 +39,7 @@ export function AdminOverviewTab({ reconciliation }: { reconciliation: AdminReco
             <p className="text-xs text-muted-foreground font-medium">{t('discrepancy')}</p>
             <p
               className={`text-sm font-mono font-bold mt-1 ${
-                reconciliation.discrepancy === '0'
-                  ? 'text-primary '
-                  : 'text-destructive '
+                reconciliation.discrepancy === '0' ? 'text-primary ' : 'text-destructive '
               }`}
             >
               {reconciliation.discrepancy}

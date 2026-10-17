@@ -52,7 +52,10 @@ export function AttendanceTab({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {attendance.map((rec) => (
-        <Card key={rec.id} className="border-border hover:border-primary/40 hover:shadow-md transition-all rounded-2xl bg-card shadow-xs">
+        <Card
+          key={rec.id}
+          className="border-border hover:border-primary/40 hover:shadow-md transition-all rounded-2xl bg-card shadow-xs"
+        >
           <CardHeader className="pb-3 flex flex-row items-center justify-between">
             <div>
               <CardTitle className="text-base font-extrabold text-foreground">
@@ -73,7 +76,9 @@ export function AttendanceTab({
           </CardHeader>
           {rec.notes && (
             <CardContent className="text-xs text-foreground pt-0">
-              <p className="bg-surface p-3 rounded-xl border border-border text-xs italic">&quot;{rec.notes}&quot;</p>
+              <p className="bg-surface p-3 rounded-xl border border-border text-xs italic">
+                &quot;{rec.notes}&quot;
+              </p>
             </CardContent>
           )}
           {rec.sessionId && (

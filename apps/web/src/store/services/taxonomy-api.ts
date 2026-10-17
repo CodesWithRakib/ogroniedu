@@ -65,20 +65,25 @@ export const taxonomyApi = baseApi.injectEndpoints({
       }),
       providesTags: [{ type: 'Taxonomy', id: 'SUBJECTS' }],
     }),
-    getEducationLevels: builder.query<ApiSuccessEnvelope<TaxonomyEducationLevel[]>, { all?: boolean } | void>({
+    getEducationLevels: builder.query<
+      ApiSuccessEnvelope<TaxonomyEducationLevel[]>,
+      { all?: boolean } | void
+    >({
       query: (params) => ({
         url: '/api/v1/taxonomy/education-levels',
         params: params?.all ? { all: 'true' } : undefined,
       }),
       providesTags: [{ type: 'Taxonomy', id: 'LEVELS' }],
     }),
-    getCurricula: builder.query<ApiSuccessEnvelope<TaxonomyCurriculum[]>, { all?: boolean } | void>({
-      query: (params) => ({
-        url: '/api/v1/taxonomy/curricula',
-        params: params?.all ? { all: 'true' } : undefined,
-      }),
-      providesTags: [{ type: 'Taxonomy', id: 'CURRICULA' }],
-    }),
+    getCurricula: builder.query<ApiSuccessEnvelope<TaxonomyCurriculum[]>, { all?: boolean } | void>(
+      {
+        query: (params) => ({
+          url: '/api/v1/taxonomy/curricula',
+          params: params?.all ? { all: 'true' } : undefined,
+        }),
+        providesTags: [{ type: 'Taxonomy', id: 'CURRICULA' }],
+      },
+    ),
     getStreams: builder.query<ApiSuccessEnvelope<TaxonomyStream[]>, { all?: boolean } | void>({
       query: (params) => ({
         url: '/api/v1/taxonomy/streams',
@@ -157,14 +162,28 @@ export const taxonomyApi = baseApi.injectEndpoints({
 
     createStream: builder.mutation<
       ApiSuccessEnvelope<TaxonomyStream>,
-      { code: string; nameEn: string; nameBn: string; description?: string; sortOrder?: number; isActive?: boolean }
+      {
+        code: string;
+        nameEn: string;
+        nameBn: string;
+        description?: string;
+        sortOrder?: number;
+        isActive?: boolean;
+      }
     >({
       query: (body) => ({ url: '/api/v1/taxonomy/streams', method: 'POST', body }),
       invalidatesTags: [{ type: 'Taxonomy', id: 'STREAMS' }],
     }),
     updateStream: builder.mutation<
       ApiSuccessEnvelope<TaxonomyStream>,
-      { id: string; nameEn?: string; nameBn?: string; description?: string; sortOrder?: number; isActive?: boolean }
+      {
+        id: string;
+        nameEn?: string;
+        nameBn?: string;
+        description?: string;
+        sortOrder?: number;
+        isActive?: boolean;
+      }
     >({
       query: ({ id, ...body }) => ({
         url: `/api/v1/taxonomy/streams/${id}`,
@@ -221,14 +240,28 @@ export const taxonomyApi = baseApi.injectEndpoints({
 
     createSubject: builder.mutation<
       ApiSuccessEnvelope<TaxonomySubject>,
-      { code: string; nameEn: string; nameBn: string; category?: string; sortOrder?: number; isActive?: boolean }
+      {
+        code: string;
+        nameEn: string;
+        nameBn: string;
+        category?: string;
+        sortOrder?: number;
+        isActive?: boolean;
+      }
     >({
       query: (body) => ({ url: '/api/v1/taxonomy/subjects', method: 'POST', body }),
       invalidatesTags: [{ type: 'Taxonomy', id: 'SUBJECTS' }],
     }),
     updateSubject: builder.mutation<
       ApiSuccessEnvelope<TaxonomySubject>,
-      { id: string; nameEn?: string; nameBn?: string; category?: string; sortOrder?: number; isActive?: boolean }
+      {
+        id: string;
+        nameEn?: string;
+        nameBn?: string;
+        category?: string;
+        sortOrder?: number;
+        isActive?: boolean;
+      }
     >({
       query: ({ id, ...body }) => ({
         url: `/api/v1/taxonomy/subjects/${id}`,

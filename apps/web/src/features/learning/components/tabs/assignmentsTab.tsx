@@ -21,7 +21,8 @@ import type {
 } from '../../types/learning.types';
 
 function submissionBadgeClass(status: SubmissionItemStatus): string {
-  if (status === 'reviewed') return 'bg-success-soft text-success border border-success/30 font-bold';
+  if (status === 'reviewed')
+    return 'bg-success-soft text-success border border-success/30 font-bold';
   if (status === 'late') return 'bg-warning-soft text-warning border border-warning/30 font-bold';
   return 'bg-interactive-soft text-interactive border border-interactive/30 font-bold';
 }

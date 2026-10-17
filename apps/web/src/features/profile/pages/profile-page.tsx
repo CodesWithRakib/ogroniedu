@@ -51,10 +51,7 @@ import { withLocale } from '@/lib/auth';
 import { useAppDispatch } from '@/store';
 import { logout } from '@/store/slices/auth-slice';
 import { useLogoutMutation, useRevokeAllSessionsMutation } from '@/store/services/auth-api';
-import {
-  useGetEducationLevelsQuery,
-  useGetCurriculaQuery,
-} from '@/store/services/taxonomy-api';
+import { useGetEducationLevelsQuery, useGetCurriculaQuery } from '@/store/services/taxonomy-api';
 import { useProfileForm } from '../hooks/use-profile-form';
 
 /**
@@ -171,7 +168,9 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
       <div className="space-y-1">
         <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
           <Layers className="h-5 w-5 text-primary" />
-          {isBn ? 'প্ল্যাটফর্ম সক্ষমতা ও অধিকার ম্যাট্রিক্স' : 'Platform Capabilities & Rights Matrix'}
+          {isBn
+            ? 'প্ল্যাটফর্ম সক্ষমতা ও অধিকার ম্যাট্রিক্স'
+            : 'Platform Capabilities & Rights Matrix'}
         </h3>
         <p className="text-xs text-muted-foreground">
           {isBn
@@ -205,19 +204,35 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               <ul className="space-y-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
-                  <span>{isBn ? 'ডিজিটাল ক্লাসরুমে প্রবেশ ও লাইভ ক্লাসে অংশ নেওয়া' : 'Join live video classrooms & study sessions'}</span>
+                  <span>
+                    {isBn
+                      ? 'ডিজিটাল ক্লাসরুমে প্রবেশ ও লাইভ ক্লাসে অংশ নেওয়া'
+                      : 'Join live video classrooms & study sessions'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
-                  <span>{isBn ? 'হোমওয়ার্ক, অ্যাসাইনমেন্ট ও কুইজ জমা দেওয়া' : 'Submit assignments, homework & take quizzes'}</span>
+                  <span>
+                    {isBn
+                      ? 'হোমওয়ার্ক, অ্যাসাইনমেন্ট ও কুইজ জমা দেওয়া'
+                      : 'Submit assignments, homework & take quizzes'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
-                  <span>{isBn ? 'নিজস্ব ক্লাসের রুটিন, উপস্থিতি ও পড়ার প্রগ্রেস দেখা' : 'View session schedules, attendance & analytics'}</span>
+                  <span>
+                    {isBn
+                      ? 'নিজস্ব ক্লাসের রুটিন, উপস্থিতি ও পড়ার প্রগ্রেস দেখা'
+                      : 'View session schedules, attendance & analytics'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
-                  <span>{isBn ? 'শিক্ষকের সাথে ক্লাসরুমে সরাসরি মেসেজিং' : 'Communicate with assigned tutor in classroom chat'}</span>
+                  <span>
+                    {isBn
+                      ? 'শিক্ষকের সাথে ক্লাসরুমে সরাসরি মেসেজিং'
+                      : 'Communicate with assigned tutor in classroom chat'}
+                  </span>
                 </li>
               </ul>
             </div>
@@ -229,21 +244,36 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               <ul className="space-y-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <Lock className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
-                  <span>{isBn ? 'সরাসরি আর্থিক লেনদেন ও পেমেন্ট নিষিদ্ধ' : 'Direct financial payment execution restricted'}</span>
+                  <span>
+                    {isBn
+                      ? 'সরাসরি আর্থিক লেনদেন ও পেমেন্ট নিষিদ্ধ'
+                      : 'Direct financial payment execution restricted'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Lock className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
-                  <span>{isBn ? 'টিউটর হায়ার ও বুকিং চুক্তি অভিভাবকের অনুমোদনসাপেক্ষ' : 'Tutor hiring & booking requires guardian approval'}</span>
+                  <span>
+                    {isBn
+                      ? 'টিউটর হায়ার ও বুকিং চুক্তি অভিভাবকের অনুমোদনসাপেক্ষ'
+                      : 'Tutor hiring & booking requires guardian approval'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <Lock className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
-                  <span>{isBn ? 'জরুরি এসওএস সেফটি রিপোর্ট স্বয়ংক্রিয়ভাবে অভিভাবককে পাঠায়' : 'Safety SOS alerts directly escalate to linked guardian'}</span>
+                  <span>
+                    {isBn
+                      ? 'জরুরি এসওএস সেফটি রিপোর্ট স্বয়ংক্রিয়ভাবে অভিভাবককে পাঠায়'
+                      : 'Safety SOS alerts directly escalate to linked guardian'}
+                  </span>
                 </li>
               </ul>
             </div>
           </div>
 
-          <Badge variant="outline" className="w-full justify-center py-1 bg-amber-500/10 text-amber-700 border-amber-500/30 text-[11px]">
+          <Badge
+            variant="outline"
+            className="w-full justify-center py-1 bg-amber-500/10 text-amber-700 border-amber-500/30 text-[11px]"
+          >
             {isBn ? '🛡️ অভিভাবক সুরক্ষায় পরিচালিত' : '🛡️ Guardian Protected'}
           </Badge>
         </Card>
@@ -272,23 +302,43 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               <ul className="space-y-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
-                  <span>{isBn ? 'স্বাধীনভাবে টিউটরদের প্রোফাইল, ফি ও রিভিউ দেখা' : 'Explore verified tutor profiles, ratings & credentials'}</span>
+                  <span>
+                    {isBn
+                      ? 'স্বাধীনভাবে টিউটরদের প্রোফাইল, ফি ও রিভিউ দেখা'
+                      : 'Explore verified tutor profiles, ratings & credentials'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
-                  <span>{isBn ? 'সরাসরি টিউটরকে বুকিং ও ইন্টারভিউ অফার পাঠানো' : 'Send booking requests & interview requests directly'}</span>
+                  <span>
+                    {isBn
+                      ? 'সরাসরি টিউটরকে বুকিং ও ইন্টারভিউ অফার পাঠানো'
+                      : 'Send booking requests & interview requests directly'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
-                  <span>{isBn ? 'বিকাশ, নগদ ও কার্ড দিয়ে সরাসরি ফি পরিশোধ' : 'Direct tuition payment via bKash, Nagad & Cards'}</span>
+                  <span>
+                    {isBn
+                      ? 'বিকাশ, নগদ ও কার্ড দিয়ে সরাসরি ফি পরিশোধ'
+                      : 'Direct tuition payment via bKash, Nagad & Cards'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
-                  <span>{isBn ? 'ক্লাস রিশিডিউল ও ক্যান্সেলেশন পরিচালনা' : 'Manage session rescheduling and cancellations'}</span>
+                  <span>
+                    {isBn
+                      ? 'ক্লাস রিশিডিউল ও ক্যান্সেলেশন পরিচালনা'
+                      : 'Manage session rescheduling and cancellations'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
-                  <span>{isBn ? 'টিউটরদের রেটিং ও পাবলিক রিভিউ প্রদান' : 'Submit tutor ratings and verified public reviews'}</span>
+                  <span>
+                    {isBn
+                      ? 'টিউটরদের রেটিং ও পাবলিক রিভিউ প্রদান'
+                      : 'Submit tutor ratings and verified public reviews'}
+                  </span>
                 </li>
               </ul>
             </div>
@@ -300,13 +350,20 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               <ul className="space-y-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <Info className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
-                  <span>{isBn ? 'অভিভাবক বা স্পন্সরকে একাডেমিক পর্যবেক্ষক হিসেবে লিঙ্ক করা' : 'Optionally link a guardian/sponsor as academic viewer'}</span>
+                  <span>
+                    {isBn
+                      ? 'অভিভাবক বা স্পন্সরকে একাডেমিক পর্যবেক্ষক হিসেবে লিঙ্ক করা'
+                      : 'Optionally link a guardian/sponsor as academic viewer'}
+                  </span>
                 </li>
               </ul>
             </div>
           </div>
 
-          <Badge variant="outline" className="w-full justify-center py-1 bg-primary/10 text-primary border-primary/30 text-[11px]">
+          <Badge
+            variant="outline"
+            className="w-full justify-center py-1 bg-primary/10 text-primary border-primary/30 text-[11px]"
+          >
             {isBn ? '🎓 সম্পূর্ণ স্বাধীন শিক্ষার্থী' : '🎓 Full Autonomy'}
           </Badge>
         </Card>
@@ -335,29 +392,52 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               <ul className="space-y-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>{isBn ? 'একাধিক সন্তানের বিস্তারিত প্রোফাইল নিবন্ধন ও তদারকি' : 'Register and manage multiple children profiles'}</span>
+                  <span>
+                    {isBn
+                      ? 'একাধিক সন্তানের বিস্তারিত প্রোফাইল নিবন্ধন ও তদারকি'
+                      : 'Register and manage multiple children profiles'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>{isBn ? 'সন্তানদের জন্য যাচাইকৃত শিক্ষক নির্বাচন ও বুকিং' : 'Hire and contract verified tutors for children'}</span>
+                  <span>
+                    {isBn
+                      ? 'সন্তানদের জন্য যাচাইকৃত শিক্ষক নির্বাচন ও বুকিং'
+                      : 'Hire and contract verified tutors for children'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>{isBn ? 'এসক্রো সিস্টেমে সুরক্ষিত ফি পরিশোধ ও অর্থ ছাড়' : 'Secure escrow payments and milestone releases'}</span>
+                  <span>
+                    {isBn
+                      ? 'এসক্রো সিস্টেমে সুরক্ষিত ফি পরিশোধ ও অর্থ ছাড়'
+                      : 'Secure escrow payments and milestone releases'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>{isBn ? 'সন্তানের প্রতিদিনের ক্লাসের উপস্থিতি ও রিপোর্ট দেখা' : 'Track daily session attendance, grades & progress'}</span>
+                  <span>
+                    {isBn
+                      ? 'সন্তানের প্রতিদিনের ক্লাসের উপস্থিতি ও রিপোর্ট দেখা'
+                      : 'Track daily session attendance, grades & progress'}
+                  </span>
                 </li>
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
-                  <span>{isBn ? '৪৮ ঘণ্টার মধ্যে ফ্রি শিক্ষক প্রতিস্থাপনের গ্যারান্টি দাবি' : 'Claim 48-hour tutor replacement guarantee'}</span>
+                  <span>
+                    {isBn
+                      ? '৪৮ ঘণ্টার মধ্যে ফ্রি শিক্ষক প্রতিস্থাপনের গ্যারান্টি দাবি'
+                      : 'Claim 48-hour tutor replacement guarantee'}
+                  </span>
                 </li>
               </ul>
             </div>
           </div>
 
-          <Badge variant="outline" className="w-full justify-center py-1 bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-[11px]">
+          <Badge
+            variant="outline"
+            className="w-full justify-center py-1 bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-[11px]"
+          >
             {isBn ? '👨‍👩‍👧 অভিভাবক ও এসক্রো নিয়ন্ত্রক' : '👨‍👩‍👧 Family Guardian'}
           </Badge>
         </Card>
@@ -371,7 +451,9 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
  */
 export function ProfilePage({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
-  const [activeTab, setActiveTab] = useState<'personal' | 'academic' | 'matrix' | 'security'>('personal');
+  const [activeTab, setActiveTab] = useState<'personal' | 'academic' | 'matrix' | 'security'>(
+    'personal',
+  );
 
   const profile = useProfileForm(locale);
 
@@ -445,11 +527,17 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                         className="text-[11px] font-semibold capitalize px-2.5 py-0.5 rounded-full bg-primary/10 text-primary border-primary/20"
                       >
                         {role === 'student'
-                          ? isBn ? 'শিক্ষার্থী' : 'Student'
+                          ? isBn
+                            ? 'শিক্ষার্থী'
+                            : 'Student'
                           : role === 'guardian'
-                            ? isBn ? 'অভিভাবক' : 'Guardian'
+                            ? isBn
+                              ? 'অভিভাবক'
+                              : 'Guardian'
                             : role === 'tutor'
-                              ? isBn ? 'শিক্ষক' : 'Tutor'
+                              ? isBn
+                                ? 'শিক্ষক'
+                                : 'Tutor'
                               : role}
                       </Badge>
                     ))}
@@ -480,10 +568,14 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       <ShieldAlert className="h-5 w-5 text-amber-600 shrink-0" />
                       <div>
                         <span className="text-xs font-bold text-amber-700 block">
-                          {isBn ? '🛡️ অপ্রাপ্তবয়স্ক শিক্ষার্থী (Minor Learner)' : '🛡️ Protected Minor Learner'}
+                          {isBn
+                            ? '🛡️ অপ্রাপ্তবয়স্ক শিক্ষার্থী (Minor Learner)'
+                            : '🛡️ Protected Minor Learner'}
                         </span>
                         <span className="text-[11px] text-muted-foreground block">
-                          {isBn ? 'অভিভাবক সুরক্ষা ও এসক্রো দ্বারা নিয়ন্ত্রিত' : 'Supervised via Guardian Escrow'}
+                          {isBn
+                            ? 'অভিভাবক সুরক্ষা ও এসক্রো দ্বারা নিয়ন্ত্রিত'
+                            : 'Supervised via Guardian Escrow'}
                         </span>
                       </div>
                     </div>
@@ -492,10 +584,14 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       <GraduationCap className="h-5 w-5 text-primary shrink-0" />
                       <div>
                         <span className="text-xs font-bold text-primary block">
-                          {isBn ? '🎓 স্বতন্ত্র শিক্ষার্থী (Independent Learner)' : '🎓 Independent Adult Learner'}
+                          {isBn
+                            ? '🎓 স্বতন্ত্র শিক্ষার্থী (Independent Learner)'
+                            : '🎓 Independent Adult Learner'}
                         </span>
                         <span className="text-[11px] text-muted-foreground block">
-                          {isBn ? 'সরাসরি বুকিং ও নিজস্ব পেমেন্ট ক্ষমতা' : 'Direct Booking & Autonomous Payments'}
+                          {isBn
+                            ? 'সরাসরি বুকিং ও নিজস্ব পেমেন্ট ক্ষমতা'
+                            : 'Direct Booking & Autonomous Payments'}
                         </span>
                       </div>
                     </div>
@@ -508,7 +604,9 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                         {isBn ? '👨‍👩‍👧 অভিভাবক একাউন্ট' : '👨‍👩‍👧 Family Guardian'}
                       </span>
                       <span className="text-[11px] text-muted-foreground block">
-                        {isBn ? 'সন্তানের একাডেমিক তদারকি ও এসক্রো সুরক্ষা' : 'Academic Oversight & Escrow Manager'}
+                        {isBn
+                          ? 'সন্তানের একাডেমিক তদারকি ও এসক্রো সুরক্ষা'
+                          : 'Academic Oversight & Escrow Manager'}
                       </span>
                     </div>
                   </div>
@@ -620,7 +718,10 @@ export function ProfilePage({ locale }: { locale: Locale }) {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5 sm:col-span-2">
-                      <Label htmlFor="profile-name" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="profile-name"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {isBn ? 'পুরো নাম' : 'Full name'}
                       </Label>
                       <Input
@@ -634,7 +735,10 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label htmlFor="profile-email" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="profile-email"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {isBn ? 'ইমেইল ঠিকানা' : 'Email Address'}
                       </Label>
                       <Input
@@ -650,7 +754,10 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label htmlFor="profile-phone" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="profile-phone"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {isBn ? 'মোবাইল নম্বর' : 'Phone Number'}
                       </Label>
                       <Input
@@ -666,14 +773,20 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label htmlFor="profile-locale" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="profile-locale"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {isBn ? 'পছন্দের ভাষা' : 'Preferred Language'}
                       </Label>
                       <Select
                         value={profile.preferredLocale}
                         onValueChange={(val) => profile.setPreferredLocale(val as 'bn' | 'en')}
                       >
-                        <SelectTrigger id="profile-locale" className="rounded-2xl bg-card border-border text-sm">
+                        <SelectTrigger
+                          id="profile-locale"
+                          className="rounded-2xl bg-card border-border text-sm"
+                        >
                           <SelectValue placeholder="Language" />
                         </SelectTrigger>
                         <SelectContent>
@@ -688,7 +801,9 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                         {isBn ? 'নিবন্ধনের তারিখ' : 'Member Since'}
                       </Label>
                       <div className="h-10 px-3 rounded-2xl bg-surface-muted border border-border flex items-center text-xs font-mono text-muted-foreground">
-                        {user?.createdAt ? new Date(user.createdAt).toLocaleDateString() : 'Active Member'}
+                        {user?.createdAt
+                          ? new Date(user.createdAt).toLocaleDateString()
+                          : 'Active Member'}
                       </div>
                     </div>
                   </div>
@@ -714,7 +829,9 @@ export function ProfilePage({ locale }: { locale: Locale }) {
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <School className="h-4 w-4 text-primary" />
-                  {isBn ? 'শিক্ষার্থী একাডেমিক প্রোফাইল ও লক্ষ্য' : 'Student Academic Profile & Goals'}
+                  {isBn
+                    ? 'শিক্ষার্থী একাডেমিক প্রোফাইল ও লক্ষ্য'
+                    : 'Student Academic Profile & Goals'}
                 </CardTitle>
                 <CardDescription className="text-xs">
                   {isBn
@@ -738,7 +855,10 @@ export function ProfilePage({ locale }: { locale: Locale }) {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <Label htmlFor="academic-dob" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="academic-dob"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {isBn ? 'জন্ম তারিখ (বয়স ও স্বায়ত্তশাসন নির্ধারণ)' : 'Date of Birth'}
                       </Label>
                       <Input
@@ -755,27 +875,40 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label htmlFor="academic-institution" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="academic-institution"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {isBn ? 'শিক্ষা প্রতিষ্ঠান / স্কুলের নাম' : 'Institution / College Name'}
                       </Label>
                       <Input
                         id="academic-institution"
                         value={profile.institutionName}
                         onChange={(e) => profile.setInstitutionName(e.target.value)}
-                        placeholder={isBn ? 'যেমন: ঢাকা কলেজ, ভিকারুননিসা নূন' : 'e.g. Dhaka College'}
+                        placeholder={
+                          isBn ? 'যেমন: ঢাকা কলেজ, ভিকারুননিসা নূন' : 'e.g. Dhaka College'
+                        }
                       />
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label htmlFor="academic-level" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="academic-level"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {isBn ? 'শ্রেণি / গ্রেড' : 'Education Level'}
                       </Label>
                       <Select
                         value={profile.educationLevelId}
                         onValueChange={(val) => profile.setEducationLevelId(val)}
                       >
-                        <SelectTrigger id="academic-level" className="rounded-2xl bg-card border-border text-sm">
-                          <SelectValue placeholder={isBn ? 'শ্রেণি নির্বাচন করুন' : 'Select Grade'} />
+                        <SelectTrigger
+                          id="academic-level"
+                          className="rounded-2xl bg-card border-border text-sm"
+                        >
+                          <SelectValue
+                            placeholder={isBn ? 'শ্রেণি নির্বাচন করুন' : 'Select Grade'}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {educationLevels.map((lvl) => (
@@ -788,15 +921,23 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label htmlFor="academic-curriculum" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="academic-curriculum"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {isBn ? 'কারিকুলাম / মাধ্যম' : 'Curriculum'}
                       </Label>
                       <Select
                         value={profile.curriculumId}
                         onValueChange={(val) => profile.setCurriculumId(val)}
                       >
-                        <SelectTrigger id="academic-curriculum" className="rounded-2xl bg-card border-border text-sm">
-                          <SelectValue placeholder={isBn ? 'কারিকুলাম নির্বাচন করুন' : 'Select Curriculum'} />
+                        <SelectTrigger
+                          id="academic-curriculum"
+                          className="rounded-2xl bg-card border-border text-sm"
+                        >
+                          <SelectValue
+                            placeholder={isBn ? 'কারিকুলাম নির্বাচন করুন' : 'Select Curriculum'}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {curricula.map((curr) => (
@@ -809,20 +950,32 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </div>
 
                     <div className="space-y-1.5 sm:col-span-2">
-                      <Label htmlFor="academic-stream" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="academic-stream"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {isBn ? 'বিভাগ / শাখা' : 'Stream / Group'}
                       </Label>
                       <Input
                         id="academic-stream"
                         value={profile.stream}
                         onChange={(e) => profile.setStream(e.target.value)}
-                        placeholder={isBn ? 'যেমন: বিজ্ঞান, ব্যবসায় শিক্ষা, মানবিক' : 'e.g. Science, Commerce, Arts'}
+                        placeholder={
+                          isBn
+                            ? 'যেমন: বিজ্ঞান, ব্যবসায় শিক্ষা, মানবিক'
+                            : 'e.g. Science, Commerce, Arts'
+                        }
                       />
                     </div>
 
                     <div className="space-y-1.5 sm:col-span-2">
-                      <Label htmlFor="academic-goals" className="text-xs font-semibold text-foreground">
-                        {isBn ? 'শেখার লক্ষ্য ও বিশেষ দুর্বল বিষয়সমূহ' : 'Learning Goals & Weak Areas'}
+                      <Label
+                        htmlFor="academic-goals"
+                        className="text-xs font-semibold text-foreground"
+                      >
+                        {isBn
+                          ? 'শেখার লক্ষ্য ও বিশেষ দুর্বল বিষয়সমূহ'
+                          : 'Learning Goals & Weak Areas'}
                       </Label>
                       <textarea
                         id="academic-goals"
@@ -839,19 +992,33 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label htmlFor="academic-visibility" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="academic-visibility"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {isBn ? 'প্রোফাইলের দৃশ্যমানতা' : 'Profile Visibility'}
                       </Label>
                       <Select
                         value={profile.profileVisibility}
-                        onValueChange={(val) => profile.setProfileVisibility(val as 'private' | 'limited')}
+                        onValueChange={(val) =>
+                          profile.setProfileVisibility(val as 'private' | 'limited')
+                        }
                       >
-                        <SelectTrigger id="academic-visibility" className="rounded-2xl bg-card border-border text-sm">
+                        <SelectTrigger
+                          id="academic-visibility"
+                          className="rounded-2xl bg-card border-border text-sm"
+                        >
                           <SelectValue placeholder="Visibility" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="private">{isBn ? 'ব্যক্তিগত (Private)' : 'Private'}</SelectItem>
-                          <SelectItem value="limited">{isBn ? 'শুধুমাত্র শিক্ষকদের জন্য (Limited to Tutors)' : 'Limited to Tutors'}</SelectItem>
+                          <SelectItem value="private">
+                            {isBn ? 'ব্যক্তিগত (Private)' : 'Private'}
+                          </SelectItem>
+                          <SelectItem value="limited">
+                            {isBn
+                              ? 'শুধুমাত্র শিক্ষকদের জন্য (Limited to Tutors)'
+                              : 'Limited to Tutors'}
+                          </SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
@@ -872,14 +1039,10 @@ export function ProfilePage({ locale }: { locale: Locale }) {
           )}
 
           {/* TAB 3: Rights & Autonomy Matrix */}
-          {activeTab === 'matrix' && (
-            <AutonomyMatrixCard locale={locale} />
-          )}
+          {activeTab === 'matrix' && <AutonomyMatrixCard locale={locale} />}
 
           {/* TAB 4: Sessions & Security */}
-          {activeTab === 'security' && (
-            <SessionSecurityCard locale={locale} />
-          )}
+          {activeTab === 'security' && <SessionSecurityCard locale={locale} />}
         </div>
       )}
     </DashboardShell>

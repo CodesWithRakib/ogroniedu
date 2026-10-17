@@ -68,7 +68,10 @@ export function SessionCard({
               className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg font-bold text-xs shadow-xs transition-colors flex items-center gap-1.5 shrink-0"
             >
               <Video className="w-3.5 h-3.5" />
-              <span>{dict.scheduling?.joinMeeting || (locale === 'bn' ? 'ক্লাসে যোগ দিন' : 'Join Class')}</span>
+              <span>
+                {dict.scheduling?.joinMeeting ||
+                  (locale === 'bn' ? 'ক্লাসে যোগ দিন' : 'Join Class')}
+              </span>
             </a>
           </div>
         )}
@@ -83,7 +86,9 @@ export function SessionCard({
               {formatLocalizedNumber(session.cancellationAssessment.refundPercentage, locale)}%
             </p>
             {session.cancellationAssessment.reason && (
-              <p className="italic text-muted-foreground">"{session.cancellationAssessment.reason}"</p>
+              <p className="italic text-muted-foreground">
+                "{session.cancellationAssessment.reason}"
+              </p>
             )}
           </div>
         )}

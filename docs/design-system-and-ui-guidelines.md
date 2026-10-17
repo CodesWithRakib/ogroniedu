@@ -22,14 +22,14 @@ OgroniEdu is engineered for the educational ecosystem of Bangladesh. The platfor
 
 ## 2. Approved brand palette (do not change)
 
-These hex values were approved by the product owner and are **preserved verbatim**. They are bright accents, so all readable component colours are validated *derivations* of them:
+These hex values were approved by the product owner and are **preserved verbatim**. They are bright accents, so all readable component colours are validated _derivations_ of them:
 
-| Approved value | Hex | Where it is allowed |
-| :--- | :--- | :--- |
-| Ocean Teal `primaryColor` | `#0df5c4` | Mint fills, selected states, progress, decorative washes, brand moments |
-| Ocean Teal `accentColor` | `#00e1b2` | Gradient step of the mint fill, chart fill accents |
-| Sapphire Blue `primaryColor` | `#2563eb` | Links, focus rings, secondary interactive emphasis |
-| Sapphire Blue `accentColor` | `#3b82f6` | Gradient step of the sapphire fill, informational accents |
+| Approved value               | Hex       | Where it is allowed                                                     |
+| :--------------------------- | :-------- | :---------------------------------------------------------------------- |
+| Ocean Teal `primaryColor`    | `#0df5c4` | Mint fills, selected states, progress, decorative washes, brand moments |
+| Ocean Teal `accentColor`     | `#00e1b2` | Gradient step of the mint fill, chart fill accents                      |
+| Sapphire Blue `primaryColor` | `#2563eb` | Links, focus rings, secondary interactive emphasis                      |
+| Sapphire Blue `accentColor`  | `#3b82f6` | Gradient step of the sapphire fill, informational accents               |
 
 **Hard rules**
 
@@ -41,28 +41,28 @@ These hex values were approved by the product owner and are **preserved verbatim
 
 The approved accents fail WCAG as foreground text on white, so the design system derives accessible shades. All ratios below are computed with the WCAG relative-luminance formula (verified by `apps/web/test/api-contract.spec.ts`):
 
-| Token | Hex | Contrast | Use |
-| :--- | :--- | :--- | :--- |
-| `--brand` | `#0df5c4` | 1.41:1 on white | Mint fills / indicators only (never text on white) |
-| `--brand-foreground` | `#042426` | 11.57:1 on mint | Ink placed **on** mint fills |
-| `--primary` | `#0f766e` | 5.47:1 on white | Primary buttons, brand text, key actions |
-| `--primary-hover` | `#115e59` | 7.01:1 on white | Primary hover/active |
-| `--primary-soft` | `#ecfdf5` | – | Mint-tinted wash behind featured cards |
-| `--primary-soft-foreground` | `#115e59` | 7.8:1 on soft | Text/icons inside mint washes |
-| `--interactive` | `#2563eb` | 5.17:1 on white | Links, focus rings, secondary emphasis |
-| `--interactive-hover` | `#1d4ed8` | 6.70:1 on white | Interactive hover |
-| `--interactive-soft` / `-foreground` | `#dbeafe` / `#1e40af` | 7.15:1 | Info chips/tiles |
-| `--foreground` | `#0f172a` | 17.9:1 on white | Body text and headings |
-| `--muted-foreground` | `#475569` | 7.6:1 on white | Secondary captions, timestamps |
-| `--background` | `#f6f8fa` | – | Page canvas |
-| `--card` | `#ffffff` | – | Cards, modals, sheets |
-| `--border` | `#e2e8f0` | – | Dividers, input borders |
-| `--success` | `#15803d` | 5.02:1 on white | Verified, paid, completed |
-| `--warning` | `#b45309` | 5.02:1 on white | Pending review, deadlines |
-| `--info` | `#1d4ed8` | 6.70:1 on white | Informational |
-| `--destructive` | `#dc2626` | 4.83:1 on white | Errors, destructive actions |
-| `--sidebar-active` / `-foreground` | `#e6fffa` / `#115e59` | 7.8:1 | Selected navigation item (mint wash + deep teal) |
-| `--ring` | `#2563eb` | 5.17:1 | Global focus ring |
+| Token                                | Hex                   | Contrast        | Use                                                |
+| :----------------------------------- | :-------------------- | :-------------- | :------------------------------------------------- |
+| `--brand`                            | `#0df5c4`             | 1.41:1 on white | Mint fills / indicators only (never text on white) |
+| `--brand-foreground`                 | `#042426`             | 11.57:1 on mint | Ink placed **on** mint fills                       |
+| `--primary`                          | `#0f766e`             | 5.47:1 on white | Primary buttons, brand text, key actions           |
+| `--primary-hover`                    | `#115e59`             | 7.01:1 on white | Primary hover/active                               |
+| `--primary-soft`                     | `#ecfdf5`             | –               | Mint-tinted wash behind featured cards             |
+| `--primary-soft-foreground`          | `#115e59`             | 7.8:1 on soft   | Text/icons inside mint washes                      |
+| `--interactive`                      | `#2563eb`             | 5.17:1 on white | Links, focus rings, secondary emphasis             |
+| `--interactive-hover`                | `#1d4ed8`             | 6.70:1 on white | Interactive hover                                  |
+| `--interactive-soft` / `-foreground` | `#dbeafe` / `#1e40af` | 7.15:1          | Info chips/tiles                                   |
+| `--foreground`                       | `#0f172a`             | 17.9:1 on white | Body text and headings                             |
+| `--muted-foreground`                 | `#475569`             | 7.6:1 on white  | Secondary captions, timestamps                     |
+| `--background`                       | `#f6f8fa`             | –               | Page canvas                                        |
+| `--card`                             | `#ffffff`             | –               | Cards, modals, sheets                              |
+| `--border`                           | `#e2e8f0`             | –               | Dividers, input borders                            |
+| `--success`                          | `#15803d`             | 5.02:1 on white | Verified, paid, completed                          |
+| `--warning`                          | `#b45309`             | 5.02:1 on white | Pending review, deadlines                          |
+| `--info`                             | `#1d4ed8`             | 6.70:1 on white | Informational                                      |
+| `--destructive`                      | `#dc2626`             | 4.83:1 on white | Errors, destructive actions                        |
+| `--sidebar-active` / `-foreground`   | `#e6fffa` / `#115e59` | 7.8:1           | Selected navigation item (mint wash + deep teal)   |
+| `--ring`                             | `#2563eb`             | 5.17:1          | Global focus ring                                  |
 
 Status tokens ship in triples: `--success` (text/solid), `--success-soft` (wash), `--success-soft-foreground` (text on wash). The same shape applies to warning, info and destructive.
 
@@ -76,15 +76,15 @@ All tokens live in `apps/web/src/app/globals.css` under `@theme` (Tailwind v4 br
 
 ### 3.1 Surfaces
 
-| Token | Value | Use |
-| :--- | :--- | :--- |
-| `--background` | `#f6f8fa` | Page canvas |
-| `--card` | `#ffffff` | Elevated content surfaces |
-| `--surface` | `#f8fafc` | Inputs, table headers, chips on white cards |
-| `--surface-muted` | `#f1f5f9` | Nested wells, muted chips |
-| `--surface-hover` | `#e8eef5` | Neutral hover step |
-| `--muted` | `#f1f5f9` | Muted wash |
-| `--sidebar` | `#ffffff` | Dashboard navigation surface |
+| Token             | Value     | Use                                         |
+| :---------------- | :-------- | :------------------------------------------ |
+| `--background`    | `#f6f8fa` | Page canvas                                 |
+| `--card`          | `#ffffff` | Elevated content surfaces                   |
+| `--surface`       | `#f8fafc` | Inputs, table headers, chips on white cards |
+| `--surface-muted` | `#f1f5f9` | Nested wells, muted chips                   |
+| `--surface-hover` | `#e8eef5` | Neutral hover step                          |
+| `--muted`         | `#f1f5f9` | Muted wash                                  |
+| `--sidebar`       | `#ffffff` | Dashboard navigation surface                |
 
 ### 3.2 Geometry, motion, elevation
 
@@ -114,19 +114,19 @@ All tokens live in `apps/web/src/app/globals.css` under `@theme` (Tailwind v4 br
 
 ## 4. Component rules
 
-| Component | Rule |
-| :--- | :--- |
-| **Buttons** | `primary` = teal-700 fill + white text; `secondary` = white/neutral; `outline` = border + ink; `ghost` = transparent; `destructive` = red-600. Mint fill + ink is only for marquee CTAs (one per screen). |
-| **Cards** | White surface, `--border` hairline, `--elevation-card`, radius `2xl`/`3xl` for hero panels. |
-| **Nav (public)** | Sticky translucent white; selected link = `--primary` text + mint underline; no moon/dark toggle exists. |
-| **Dashboard sidebar** | White surface; selected item = `--sidebar-active` mint wash + `--sidebar-active-foreground`; hover = `--sidebar-hover`. |
-| **Badges/status** | Semantic triples (`-soft` wash + `-soft-foreground` text); icons `w-3.5/4`. |
-| **Inputs** | `bg-surface`, `border-border`, `focus-visible:ring-2 ring-ring`, inline error text in `--destructive`; errors never rely on colour alone (icon + text). |
-| **Tables** | Header on `bg-surface`, rows separated by `divide-border`, tabular numerals for numbers. |
-| **Modals/sheets** | White panel, radius `3xl`, `--elevation-popover`; backdrop stays `bg-black/60-80` (a scrim, not a dark theme). |
-| **Toasts** | White card, semantic left border, ink text. |
-| **Charts** | Brand mint/sapphire fills with neutral grid lines; tooltips on white cards. |
-| **Canvas (whiteboard)** | Canvas 2D cannot resolve CSS `var()`; colours are explicit hex literals in the tool palette (documented exception). |
+| Component               | Rule                                                                                                                                                                                                      |
+| :---------------------- | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Buttons**             | `primary` = teal-700 fill + white text; `secondary` = white/neutral; `outline` = border + ink; `ghost` = transparent; `destructive` = red-600. Mint fill + ink is only for marquee CTAs (one per screen). |
+| **Cards**               | White surface, `--border` hairline, `--elevation-card`, radius `2xl`/`3xl` for hero panels.                                                                                                               |
+| **Nav (public)**        | Sticky translucent white; selected link = `--primary` text + mint underline; no moon/dark toggle exists.                                                                                                  |
+| **Dashboard sidebar**   | White surface; selected item = `--sidebar-active` mint wash + `--sidebar-active-foreground`; hover = `--sidebar-hover`.                                                                                   |
+| **Badges/status**       | Semantic triples (`-soft` wash + `-soft-foreground` text); icons `w-3.5/4`.                                                                                                                               |
+| **Inputs**              | `bg-surface`, `border-border`, `focus-visible:ring-2 ring-ring`, inline error text in `--destructive`; errors never rely on colour alone (icon + text).                                                   |
+| **Tables**              | Header on `bg-surface`, rows separated by `divide-border`, tabular numerals for numbers.                                                                                                                  |
+| **Modals/sheets**       | White panel, radius `3xl`, `--elevation-popover`; backdrop stays `bg-black/60-80` (a scrim, not a dark theme).                                                                                            |
+| **Toasts**              | White card, semantic left border, ink text.                                                                                                                                                               |
+| **Charts**              | Brand mint/sapphire fills with neutral grid lines; tooltips on white cards.                                                                                                                               |
+| **Canvas (whiteboard)** | Canvas 2D cannot resolve CSS `var()`; colours are explicit hex literals in the tool palette (documented exception).                                                                                       |
 
 ---
 
@@ -163,21 +163,21 @@ All tokens live in `apps/web/src/app/globals.css` under `@theme` (Tailwind v4 br
 
 ## 7. Token → utility quick reference
 
-| Need | Utility |
-| :--- | :--- |
-| Page canvas | `bg-background` |
-| Card / modal | `bg-card` |
-| Input / table header | `bg-surface` |
-| Nested well | `bg-surface-muted` |
-| Hover step | `hover:bg-surface-hover` |
-| Headings/body | `text-foreground` |
-| Secondary text | `text-muted-foreground` |
-| Hairline | `border-border` |
-| Primary action | `bg-primary text-primary-foreground hover:bg-primary-hover` |
-| Mint CTA (marquee) | `bg-brand text-brand-foreground hover:bg-brand-accent` |
-| Link / focus | `text-interactive`, `ring-ring` |
-| Selected nav | `bg-sidebar-active text-sidebar-active-foreground` |
-| Status washes | `bg-{success,warning,info,destructive}-soft` + `-soft-foreground` |
+| Need                 | Utility                                                           |
+| :------------------- | :---------------------------------------------------------------- |
+| Page canvas          | `bg-background`                                                   |
+| Card / modal         | `bg-card`                                                         |
+| Input / table header | `bg-surface`                                                      |
+| Nested well          | `bg-surface-muted`                                                |
+| Hover step           | `hover:bg-surface-hover`                                          |
+| Headings/body        | `text-foreground`                                                 |
+| Secondary text       | `text-muted-foreground`                                           |
+| Hairline             | `border-border`                                                   |
+| Primary action       | `bg-primary text-primary-foreground hover:bg-primary-hover`       |
+| Mint CTA (marquee)   | `bg-brand text-brand-foreground hover:bg-brand-accent`            |
+| Link / focus         | `text-interactive`, `ring-ring`                                   |
+| Selected nav         | `bg-sidebar-active text-sidebar-active-foreground`                |
+| Status washes        | `bg-{success,warning,info,destructive}-soft` + `-soft-foreground` |
 
 ---
 

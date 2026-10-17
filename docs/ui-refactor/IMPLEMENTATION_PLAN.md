@@ -22,11 +22,11 @@
 
 Three review-gated passes:
 
-| Pass | Scope | Result |
-| :--- | :--- | :--- |
-| `light-pass1` (dark→light mapping) | dark-first markup | palette → semantic tokens |
+| Pass                               | Scope                | Result                                                                                                                          |
+| :--------------------------------- | :------------------- | :------------------------------------------------------------------------------------------------------------------------------ |
+| `light-pass1` (dark→light mapping) | dark-first markup    | palette → semantic tokens                                                                                                       |
 | `light-pass2` (full normalisation) | 83 files, 1304 lines | `bg-slate-900→bg-card`, safe `text-white→text-foreground`, status washes, gradient panels → light brand cards, hover/focus maps |
-| `light-pass3` + cleanup | 114 + 15 files | remaining Tailwind palette utilities → semantic tokens |
+| `light-pass3` + cleanup            | 114 + 15 files       | remaining Tailwind palette utilities → semantic tokens                                                                          |
 
 Codemod scripts retained in the session temp dir with `--dry` mode; leftover scanners confirmed only intentional literals remain.
 

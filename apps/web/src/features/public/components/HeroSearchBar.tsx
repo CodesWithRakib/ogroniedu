@@ -2,14 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import {
-  Search,
-  GraduationCap,
-  BookOpen,
-  MapPin,
-  SlidersHorizontal,
-  Sparkles,
-} from 'lucide-react';
+import { Search, GraduationCap, BookOpen, MapPin, SlidersHorizontal, Sparkles } from 'lucide-react';
 import type { Locale } from '@/lib/i18n';
 import {
   Select,
@@ -182,9 +175,14 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                   className="w-full border-0 bg-transparent p-0 h-7 text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-0 gap-1"
                   aria-label={isBn ? 'শ্রেণি / মাধ্যম নির্বাচন করুন' : 'Select Class or Level'}
                 >
-                  <SelectValue placeholder={isBn ? 'সকল শ্রেণি ও মাধ্যম' : 'All Classes & Curriculums'} />
+                  <SelectValue
+                    placeholder={isBn ? 'সকল শ্রেণি ও মাধ্যম' : 'All Classes & Curriculums'}
+                  />
                 </SelectTrigger>
-                <SelectContent position="popper" className="max-h-64 rounded-2xl border-border bg-popover shadow-popover">
+                <SelectContent
+                  position="popper"
+                  className="max-h-64 rounded-2xl border-border bg-popover shadow-popover"
+                >
                   <SelectItem value="all">
                     {isBn ? 'সকল শ্রেণি ও মাধ্যম' : 'All Classes & Curriculums'}
                   </SelectItem>
@@ -213,10 +211,11 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 >
                   <SelectValue placeholder={isBn ? 'সকল বিষয়' : 'All Subjects'} />
                 </SelectTrigger>
-                <SelectContent position="popper" className="max-h-64 rounded-2xl border-border bg-popover shadow-popover">
-                  <SelectItem value="all">
-                    {isBn ? 'সকল বিষয়' : 'All Subjects'}
-                  </SelectItem>
+                <SelectContent
+                  position="popper"
+                  className="max-h-64 rounded-2xl border-border bg-popover shadow-popover"
+                >
+                  <SelectItem value="all">{isBn ? 'সকল বিষয়' : 'All Subjects'}</SelectItem>
                   {subjects.map((sub) => (
                     <SelectItem key={String(sub.id)} value={String(sub.id)}>
                       {String(isBn ? sub.nameBn || sub.nameEn : sub.nameEn)}
@@ -242,7 +241,10 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 >
                   <SelectValue placeholder={isBn ? 'সারাদেশে বা অনলাইন' : 'Anywhere / Online'} />
                 </SelectTrigger>
-                <SelectContent position="popper" className="max-h-64 rounded-2xl border-border bg-popover shadow-popover">
+                <SelectContent
+                  position="popper"
+                  className="max-h-64 rounded-2xl border-border bg-popover shadow-popover"
+                >
                   <SelectItem value="all">
                     {isBn ? 'সারাদেশে বা অনলাইন' : 'Anywhere / Online'}
                   </SelectItem>

@@ -34,18 +34,14 @@ export function CheckoutLedger({ order, locale }: CheckoutLedgerProps) {
         <CardContent className="pt-4 space-y-4">
           <div className="space-y-2 text-sm">
             <div className="flex justify-between items-center bg-muted  p-2.5 rounded-lg">
-              <span className="text-xs font-medium text-foreground ">
-                {p.tutorShare}
-              </span>
+              <span className="text-xs font-medium text-foreground ">{p.tutorShare}</span>
               <span className="font-semibold text-foreground ">
                 ৳ {formatLocalizedNumber(tutorShare, locale)}
               </span>
             </div>
 
             <div className="flex justify-between items-center bg-muted  p-2.5 rounded-lg">
-              <span className="text-xs font-medium text-foreground ">
-                {p.platformShare}
-              </span>
+              <span className="text-xs font-medium text-foreground ">{p.platformShare}</span>
               <span className="font-semibold text-foreground ">
                 ৳ {formatLocalizedNumber(platformShare, locale)}
               </span>
@@ -57,7 +53,9 @@ export function CheckoutLedger({ order, locale }: CheckoutLedgerProps) {
               <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
               {p.ledgerBalanced}
             </div>
-            <div className="text-muted-foreground text-xs leading-relaxed">{p.ledgerInvariantNote}</div>
+            <div className="text-muted-foreground text-xs leading-relaxed">
+              {p.ledgerInvariantNote}
+            </div>
           </div>
 
           <div className="text-xs text-muted-foreground bg-muted  p-3 rounded-lg border border-border flex items-start gap-2">

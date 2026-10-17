@@ -128,7 +128,9 @@ describe('Brand configuration (light theme only)', () => {
     expect(SEMANTIC_COLORS.brandAccent).toBe('#00e1b2');
     expect(contrastRatio(SEMANTIC_COLORS.brand, '#ffffff')).toBeLessThan(3);
     // Ink on a mint fill stays readable.
-    expect(contrastRatio(SEMANTIC_COLORS.brandForeground, SEMANTIC_COLORS.brand)).toBeGreaterThanOrEqual(4.5);
+    expect(
+      contrastRatio(SEMANTIC_COLORS.brandForeground, SEMANTIC_COLORS.brand),
+    ).toBeGreaterThanOrEqual(4.5);
     // Derived action/interactive/status colours clear WCAG AA on white.
     expect(contrastRatio(SEMANTIC_COLORS.primary, '#ffffff')).toBeGreaterThanOrEqual(4.5);
     expect(contrastRatio(SEMANTIC_COLORS.interactive, '#ffffff')).toBeGreaterThanOrEqual(4.5);
@@ -138,8 +140,12 @@ describe('Brand configuration (light theme only)', () => {
     expect(contrastRatio(SEMANTIC_COLORS.info, '#ffffff')).toBeGreaterThanOrEqual(4.5);
     expect(contrastRatio(SEMANTIC_COLORS.destructive, '#ffffff')).toBeGreaterThanOrEqual(4.5);
     // Body text on the light canvas.
-    expect(contrastRatio(SEMANTIC_COLORS.foreground, SEMANTIC_COLORS.background)).toBeGreaterThanOrEqual(7);
-    expect(contrastRatio(SEMANTIC_COLORS.mutedForeground, SEMANTIC_COLORS.card)).toBeGreaterThanOrEqual(4.5);
+    expect(
+      contrastRatio(SEMANTIC_COLORS.foreground, SEMANTIC_COLORS.background),
+    ).toBeGreaterThanOrEqual(7);
+    expect(
+      contrastRatio(SEMANTIC_COLORS.mutedForeground, SEMANTIC_COLORS.card),
+    ).toBeGreaterThanOrEqual(4.5);
   });
 
   it('computes WCAG relative luminance and contrast ratios correctly', () => {

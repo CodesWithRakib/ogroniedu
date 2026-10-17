@@ -23,14 +23,7 @@ import {
 import { useNotifications } from './NotificationProvider';
 import { cn } from '@/lib/utils';
 import type { NotificationCategory } from '@ogroniedu/contracts';
-import {
-  Sheet,
-  SheetContent,
-  SheetDescription,
-  Slider,
-  Badge,
-  ScrollArea,
-} from '@/components/ui';
+import { Sheet, SheetContent, SheetDescription, Slider, Badge, ScrollArea } from '@/components/ui';
 
 interface NotificationCenterProps {
   locale?: 'bn' | 'en';
@@ -324,7 +317,9 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
                   key={item.id}
                   className={cn(
                     'flex items-start gap-3 p-4 transition-colors relative group',
-                    !item.isRead ? 'bg-interactive/5 hover:bg-interactive/10' : 'hover:bg-surface-hover',
+                    !item.isRead
+                      ? 'bg-interactive/5 hover:bg-interactive/10'
+                      : 'hover:bg-surface-hover',
                   )}
                 >
                   <div
@@ -356,7 +351,9 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
                     <h4 className="text-sm font-semibold text-foreground mt-1 leading-snug">
                       {item.title}
                     </h4>
-                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{item.body}</p>
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
+                      {item.body}
+                    </p>
 
                     <div className="mt-2.5 flex items-center justify-between pt-1">
                       {item.navigationTarget ? (

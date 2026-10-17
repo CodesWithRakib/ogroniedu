@@ -54,14 +54,16 @@ export const CardDescription = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn('text-xs sm:text-sm text-muted-foreground leading-relaxed', className)} {...props} />
+  <p
+    ref={ref}
+    className={cn('text-xs sm:text-sm text-muted-foreground leading-relaxed', className)}
+    {...props}
+  />
 ));
 CardDescription.displayName = 'CardDescription';
 
 export const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn('pt-0', className)} {...props} />
-  ),
+  ({ className, ...props }, ref) => <div ref={ref} className={cn('pt-0', className)} {...props} />,
 );
 CardContent.displayName = 'CardContent';
 

@@ -107,7 +107,10 @@ export function TutorResultsGrid({
             <ChevronLeft className="w-4 h-4 mr-0.5" />
             <span>{dict.discovery?.paginationPrevious || 'Previous'}</span>
           </button>
-          <span className="text-xs font-semibold text-muted-foreground px-2" data-testid="page-indicator">
+          <span
+            className="text-xs font-semibold text-muted-foreground px-2"
+            data-testid="page-indicator"
+          >
             {dict.discovery?.pageIndicator
               ? dict.discovery.pageIndicator
                   .replace('{page}', formatLocalizedNumber(currentPage, locale))

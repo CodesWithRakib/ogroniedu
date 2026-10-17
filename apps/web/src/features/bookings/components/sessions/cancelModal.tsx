@@ -50,7 +50,10 @@ export function CancelSessionModal({
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
-          <Alert variant="destructive" className="p-3 text-xs leading-relaxed bg-destructive/10 border-destructive/30">
+          <Alert
+            variant="destructive"
+            className="p-3 text-xs leading-relaxed bg-destructive/10 border-destructive/30"
+          >
             <AlertDescription>
               Cancelling this session will evaluate the standard cancellation policy window. If
               cancelled more than 24h in advance, full 100% refund is processed.
@@ -73,7 +76,13 @@ export function CancelSessionModal({
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" size="sm" onClick={onClose} className="rounded-xl">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onClose}
+              className="rounded-xl"
+            >
               {dict.common?.cancel || 'Close'}
             </Button>
             <Button

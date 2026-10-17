@@ -14,7 +14,9 @@ export function AdminUsersStudentsPage({ locale }: { locale: Locale }) {
   const admin = useAdminDashboard(locale);
   const [search, setSearch] = useState('');
 
-  const learners = admin.users.filter((u) => u.roles.includes('student') || u.roles.includes('guardian'));
+  const learners = admin.users.filter(
+    (u) => u.roles.includes('student') || u.roles.includes('guardian'),
+  );
   const filtered = learners.filter((l) => {
     if (!search.trim()) return true;
     const q = search.toLowerCase();
@@ -66,7 +68,11 @@ export function AdminUsersStudentsPage({ locale }: { locale: Locale }) {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder={isBn ? 'শিক্ষার্থী বা অভিভাবকের নাম বা ইমেইল দিয়ে খুঁজুন...' : 'Search student or guardian...'}
+            placeholder={
+              isBn
+                ? 'শিক্ষার্থী বা অভিভাবকের নাম বা ইমেইল দিয়ে খুঁজুন...'
+                : 'Search student or guardian...'
+            }
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-xl bg-card border border-border/80 text-foreground text-xs shadow-2xs"
@@ -79,11 +85,21 @@ export function AdminUsersStudentsPage({ locale }: { locale: Locale }) {
             <table className="w-full text-left text-xs text-foreground">
               <thead className="bg-muted/40 uppercase tracking-wider text-[10px] font-bold text-muted-foreground border-b border-border/60">
                 <tr>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'অ্যাকাউন্ট' : 'ACCOUNT'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'যোগাযোগ' : 'EMAIL / PHONE'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'ভূমিকা' : 'ROLE'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'স্ট্যাটাস' : 'STATUS'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'নিবন্ধনের তারিখ' : 'REGISTERED'}</th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'অ্যাকাউন্ট' : 'ACCOUNT'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'যোগাযোগ' : 'EMAIL / PHONE'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'ভূমিকা' : 'ROLE'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'স্ট্যাটাস' : 'STATUS'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'নিবন্ধনের তারিখ' : 'REGISTERED'}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
@@ -96,7 +112,9 @@ export function AdminUsersStudentsPage({ locale }: { locale: Locale }) {
                 ) : filtered.length === 0 ? (
                   <tr>
                     <td colSpan={5} className="px-5 py-10 text-center text-muted-foreground">
-                      {isBn ? 'কোন শিক্ষার্থী বা অভিভাবক পাওয়া যায়নি' : 'No students or guardians found'}
+                      {isBn
+                        ? 'কোন শিক্ষার্থী বা অভিভাবক পাওয়া যায়নি'
+                        : 'No students or guardians found'}
                     </td>
                   </tr>
                 ) : (
@@ -107,11 +125,17 @@ export function AdminUsersStudentsPage({ locale }: { locale: Locale }) {
                         <td className="px-5 py-4 font-semibold text-foreground">
                           <div className="flex items-center gap-2.5">
                             <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center text-xs">
-                              {isGuardian ? <Users className="w-4 h-4" /> : <BookOpen className="w-4 h-4" />}
+                              {isGuardian ? (
+                                <Users className="w-4 h-4" />
+                              ) : (
+                                <BookOpen className="w-4 h-4" />
+                              )}
                             </div>
                             <div>
                               <p className="font-bold text-foreground">{item.displayName}</p>
-                              <p className="text-[10px] text-muted-foreground font-mono">{item.id.slice(0, 8)}</p>
+                              <p className="text-[10px] text-muted-foreground font-mono">
+                                {item.id.slice(0, 8)}
+                              </p>
                             </div>
                           </div>
                         </td>

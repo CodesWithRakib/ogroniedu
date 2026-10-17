@@ -160,7 +160,10 @@ export function RequestsPage({ locale }: { locale: Locale }) {
         </div>
         {!req.isTutor && (
           <Link href={withLocale('/tutors', locale)}>
-            <Button size="sm" className="bg-primary hover:bg-primary-hover text-white shadow-xs rounded-xl font-semibold shrink-0">
+            <Button
+              size="sm"
+              className="bg-primary hover:bg-primary-hover text-white shadow-xs rounded-xl font-semibold shrink-0"
+            >
               <Search className="w-4 h-4 mr-1.5" />
               {locale === 'bn' ? 'নতুন শিক্ষক খুঁজুন' : 'Find a Tutor'}
             </Button>
@@ -198,7 +201,9 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           <span>{locale === 'bn' ? 'বিবেচনাধীন' : 'Pending'}</span>
           <span
             className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-              activeFilter === 'requested' ? 'bg-white/20 text-white' : 'bg-surface-muted text-foreground'
+              activeFilter === 'requested'
+                ? 'bg-white/20 text-white'
+                : 'bg-surface-muted text-foreground'
             }`}
           >
             {counts.requested}
@@ -215,7 +220,9 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           <span>{locale === 'bn' ? 'অনুমোদিত' : 'Accepted'}</span>
           <span
             className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-              activeFilter === 'accepted' ? 'bg-white/20 text-white' : 'bg-surface-muted text-foreground'
+              activeFilter === 'accepted'
+                ? 'bg-white/20 text-white'
+                : 'bg-surface-muted text-foreground'
             }`}
           >
             {counts.accepted}
@@ -232,7 +239,9 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           <span>{locale === 'bn' ? 'বাতিল / শেষ' : 'Closed'}</span>
           <span
             className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
-              activeFilter === 'closed' ? 'bg-surface text-foreground' : 'bg-surface-muted text-foreground'
+              activeFilter === 'closed'
+                ? 'bg-surface text-foreground'
+                : 'bg-surface-muted text-foreground'
             }`}
           >
             {counts.closed}
@@ -337,7 +346,9 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                     </div>
                     {rateFormatted && (
                       <div className="text-right shrink-0">
-                        <span className="text-base font-black text-foreground">{rateFormatted}</span>
+                        <span className="text-base font-black text-foreground">
+                          {rateFormatted}
+                        </span>
                         <span className="block text-[10px] font-semibold text-muted-foreground">
                           {locale === 'bn' ? '/সেশন' : '/session'}
                         </span>
@@ -396,11 +407,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                       {r.status === 'accepted' && (
                         <div className="flex flex-wrap items-center gap-2 w-full justify-end">
                           <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
-                            <Button
-                              size="sm"
-                              variant="outline"
-                              className="text-xs font-semibold"
-                            >
+                            <Button size="sm" variant="outline" className="text-xs font-semibold">
                               {locale === 'bn' ? 'বিস্তারিত' : 'Details'}
                             </Button>
                           </Link>
@@ -424,7 +431,11 @@ export function RequestsPage({ locale }: { locale: Locale }) {
 
                       {['declined', 'withdrawn', 'cancelled'].includes(r.status) && (
                         <Link href={withLocale('/tutors', locale)} className="ml-auto">
-                          <Button size="sm" variant="ghost" className="text-xs font-semibold text-primary hover:text-primary hover:bg-primary-soft">
+                          <Button
+                            size="sm"
+                            variant="ghost"
+                            className="text-xs font-semibold text-primary hover:text-primary hover:bg-primary-soft"
+                          >
                             {locale === 'bn' ? 'অন্য শিক্ষক খুঁজুন' : 'Search Other Tutors'}
                             <ArrowRight className="w-3.5 h-3.5 ml-1" />
                           </Button>

@@ -41,8 +41,10 @@ const SETTINGS_CARDS: SettingHubCard[] = [
     href: '/dashboard/admin/settings/flags',
     titleBn: 'ক্যানারি ফিচার ফ্ল্যাগ',
     titleEn: 'Canary Feature Flags',
-    descBn: 'রিয়েলটাইম বেটা ফিচার, সিস্টেম-ওয়াইড ক্যানারি ফ্ল্যাগ এবং এক্সপেরিমেন্টাল অপশন পরিচালনা করুন।',
-    descEn: 'Safely toggle runtime beta features, system-wide canary releases, and experimental capabilities without redeployment.',
+    descBn:
+      'রিয়েলটাইম বেটা ফিচার, সিস্টেম-ওয়াইড ক্যানারি ফ্ল্যাগ এবং এক্সপেরিমেন্টাল অপশন পরিচালনা করুন।',
+    descEn:
+      'Safely toggle runtime beta features, system-wide canary releases, and experimental capabilities without redeployment.',
     badgeBn: 'সুপার অ্যাডমিন',
     badgeEn: 'Super Admin',
     badgeClass: 'bg-primary/10 text-primary border-primary/20',
@@ -57,8 +59,10 @@ const SETTINGS_CARDS: SettingHubCard[] = [
     href: '/dashboard/admin/settings/general',
     titleBn: 'সিস্টেম রেফারেন্স কনফিগারেশন',
     titleEn: 'System Reference Settings',
-    descBn: 'সার্বিক প্ল্যাটফর্মের মৌলিক সেটিংস, ক্যাশিং টাইমআউট, ডিফল্ট লিমিট ও কনফিগারেশন ভ্যারিয়েবল।',
-    descEn: 'Configure global platform parameters, maintenance mode, timeouts, cache policies, and default operational limits.',
+    descBn:
+      'সার্বিক প্ল্যাটফর্মের মৌলিক সেটিংস, ক্যাশিং টাইমআউট, ডিফল্ট লিমিট ও কনফিগারেশন ভ্যারিয়েবল।',
+    descEn:
+      'Configure global platform parameters, maintenance mode, timeouts, cache policies, and default operational limits.',
     badgeBn: 'কোর কনফিগ',
     badgeEn: 'Core Config',
     badgeClass: 'bg-info-soft text-info-soft-foreground border-info/30',
@@ -74,7 +78,8 @@ const SETTINGS_CARDS: SettingHubCard[] = [
     titleBn: 'আর্থিক ও কমিশন পলিসি',
     titleEn: 'Financial & Commission Policy',
     descBn: 'প্ল্যাটফর্ম কমিশন শতাংশ, এসক্রো হোল্ড সময়সীমা, ন্যূনতম উত্তোলন এবং রিফান্ড মার্জিন।',
-    descEn: 'Manage platform fee percentages, escrow hold durations, payout minimums, and dispute refund margins.',
+    descEn:
+      'Manage platform fee percentages, escrow hold durations, payout minimums, and dispute refund margins.',
     badgeBn: 'আর্থিক পলিসি',
     badgeEn: 'Finance & Escrow',
     badgeClass: 'bg-success-soft text-success-soft-foreground border-success/30',
@@ -90,7 +95,8 @@ const SETTINGS_CARDS: SettingHubCard[] = [
     titleBn: 'নিরাপত্তা ও অ্যাক্সেস পলিসি',
     titleEn: 'Security & Access Control',
     descBn: 'রেট লিমিটেশন, সেশন টাইমআউট সীমা, ২-স্টেপ ভেরিফিকেশন ও আইপি অ্যাক্সেস নিয়ন্ত্রণ।',
-    descEn: 'Set rate limits, session expiry thresholds, multi-factor authentication policies, and IP whitelist rules.',
+    descEn:
+      'Set rate limits, session expiry thresholds, multi-factor authentication policies, and IP whitelist rules.',
     badgeBn: 'নিরাপত্তা',
     badgeEn: 'Security & Access',
     badgeClass: 'bg-warning-soft text-warning-soft-foreground border-warning/30',
@@ -106,7 +112,8 @@ const SETTINGS_CARDS: SettingHubCard[] = [
     titleBn: 'নোটিফিকেশন ও এসএমএস গেটওয়ে',
     titleEn: 'Notification & SMS Gateways',
     descBn: 'এসএমএস প্রোভাইডার (SSL Wireless, Twilio), ইমেইল SMTP এবং পুশ নোটিফিকেশন টেমপ্লেট।',
-    descEn: 'Setup SMS gateways (SSL Wireless, Twilio), email SMTP providers, and automated notification triggers.',
+    descEn:
+      'Setup SMS gateways (SSL Wireless, Twilio), email SMTP providers, and automated notification triggers.',
     badgeBn: 'মেসেজিং',
     badgeEn: 'Communication',
     badgeClass: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20',
@@ -121,8 +128,10 @@ const SETTINGS_CARDS: SettingHubCard[] = [
     href: '/dashboard/admin/taxonomy',
     titleBn: 'একাডেমিক ট্যাক্সোনমি ও পাঠ্যক্রম',
     titleEn: 'Academic Taxonomy Hub',
-    descBn: 'কারিকুলাম, এডুকেশন লেভেল, বোর্ড, ক্লাস, গ্রেড, বিষয় এবং প্রাতিষ্ঠানিক ক্যাটাগরি ব্যবস্থাপনা।',
-    descEn: 'Manage curriculum education levels, boards, classes, grades, subjects, and institutional categories.',
+    descBn:
+      'কারিকুলাম, এডুকেশন লেভেল, বোর্ড, ক্লাস, গ্রেড, বিষয় এবং প্রাতিষ্ঠানিক ক্যাটাগরি ব্যবস্থাপনা।',
+    descEn:
+      'Manage curriculum education levels, boards, classes, grades, subjects, and institutional categories.',
     badgeBn: 'পাঠ্যক্রম হাব',
     badgeEn: 'Education Hub',
     badgeClass: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20',
@@ -140,10 +149,7 @@ export function AdminSettingsHubPage({ locale }: { locale: Locale }) {
   const isSuperAdmin = user?.roles?.includes('super_admin') ?? false;
 
   return (
-    <AdminLayout
-      locale={locale}
-      title={isBn ? 'প্ল্যাটফর্ম সেটিংস হাব' : 'Platform Settings Hub'}
-    >
+    <AdminLayout locale={locale} title={isBn ? 'প্ল্যাটফর্ম সেটিংস হাব' : 'Platform Settings Hub'}>
       <div className="space-y-6 py-6" data-testid="admin-settings-hub">
         {/* Eyebrow & Hero Header (Matching Reference Screenshot Image 1) */}
         <div className="space-y-2">

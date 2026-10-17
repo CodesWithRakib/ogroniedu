@@ -16,8 +16,12 @@ export function LearningBanner({ locale }: { locale: Locale }) {
               {t.auditedNotice}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">{t.title}</h1>
-          <p className="text-muted-foreground text-sm mt-1 max-w-2xl font-normal leading-relaxed">{t.subtitle}</p>
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+            {t.title}
+          </h1>
+          <p className="text-muted-foreground text-sm mt-1 max-w-2xl font-normal leading-relaxed">
+            {t.subtitle}
+          </p>
         </div>
 
         <div className="bg-surface p-3.5 rounded-2xl border border-border text-xs text-foreground font-semibold flex items-center gap-2.5 shrink-0 shadow-2xs">

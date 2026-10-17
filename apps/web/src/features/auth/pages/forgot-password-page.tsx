@@ -8,13 +8,7 @@ import { withLocale } from '@/lib/auth';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { useRequestCodeMutation, useResetPasswordMutation } from '@/store/services/auth-api';
 import { validatePassword } from '@/components/auth/auth-validation';
-import {
-  Button,
-  Input,
-  Label,
-  Alert,
-  AlertDescription,
-} from '@/components/ui';
+import { Button, Input, Label, Alert, AlertDescription } from '@/components/ui';
 
 type Stage = 'request' | 'reset' | 'done';
 

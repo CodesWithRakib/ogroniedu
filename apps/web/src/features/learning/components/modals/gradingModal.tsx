@@ -85,9 +85,7 @@ export function GradingModal({
           </div>
 
           <div className="space-y-1.5">
-            <Label className="text-xs font-semibold text-foreground block">
-              {t.feedbackLabel}
-            </Label>
+            <Label className="text-xs font-semibold text-foreground block">{t.feedbackLabel}</Label>
             <Textarea
               value={feedback}
               onChange={(e) => onFeedbackChange(e.target.value)}

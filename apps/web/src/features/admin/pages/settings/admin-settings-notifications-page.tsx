@@ -10,7 +10,9 @@ import type { Locale } from '@/lib/i18n';
 
 export function AdminSettingsNotificationsPage({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
-  const [smsGateway, setSmsGateway] = useState<'ssl_wireless' | 'twilio' | 'mim_sms'>('ssl_wireless');
+  const [smsGateway, setSmsGateway] = useState<'ssl_wireless' | 'twilio' | 'mim_sms'>(
+    'ssl_wireless',
+  );
   const [smsSenderId, setSmsSenderId] = useState<string>('OgroniEdu');
   const [emailProvider, setEmailProvider] = useState<'resend' | 'sendgrid' | 'smtp'>('resend');
   const [supportEmail, setSupportEmail] = useState<string>('support@ogroniedu.com');
@@ -64,7 +66,15 @@ export function AdminSettingsNotificationsPage({ locale }: { locale: Locale }) {
 
           <Button onClick={handleSave} className="flex items-center gap-2">
             {saved ? <Check className="w-4 h-4" /> : <RefreshCw className="w-4 h-4" />}
-            <span>{saved ? (isBn ? 'সংরক্ষিত হয়েছে!' : 'Saved!') : isBn ? 'পরিবর্তন সংরক্ষণ করুন' : 'Save Changes'}</span>
+            <span>
+              {saved
+                ? isBn
+                  ? 'সংরক্ষিত হয়েছে!'
+                  : 'Saved!'
+                : isBn
+                  ? 'পরিবর্তন সংরক্ষণ করুন'
+                  : 'Save Changes'}
+            </span>
           </Button>
         </div>
 
@@ -101,7 +111,9 @@ export function AdminSettingsNotificationsPage({ locale }: { locale: Locale }) {
                   {isBn ? 'এসএমএস গেটওয়ে প্রোভাইডার' : 'SMS Gateway Provider'}
                 </h3>
                 <p className="text-xs text-muted-foreground">
-                  {isBn ? 'বাংলাদেশে দ্রুত ওটিপি ডেলিভারির জন্য গেটওয়ে নির্বাচন' : 'Primary carrier gateway for OTPs and booking SMS in BD'}
+                  {isBn
+                    ? 'বাংলাদেশে দ্রুত ওটিপি ডেলিভারির জন্য গেটওয়ে নির্বাচন'
+                    : 'Primary carrier gateway for OTPs and booking SMS in BD'}
                 </p>
               </div>
             </div>
@@ -135,7 +147,12 @@ export function AdminSettingsNotificationsPage({ locale }: { locale: Locale }) {
               </div>
 
               <div className="pt-2">
-                <Button variant="outline" size="sm" onClick={handleSendTestSms} className="w-full flex items-center justify-center gap-2">
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={handleSendTestSms}
+                  className="w-full flex items-center justify-center gap-2"
+                >
                   <Send className="w-3.5 h-3.5" />
                   <span>{isBn ? 'টেস্ট ওটিপি এসএমএস পাঠান' : 'Send Test Verification SMS'}</span>
                 </Button>
@@ -154,7 +171,9 @@ export function AdminSettingsNotificationsPage({ locale }: { locale: Locale }) {
                   {isBn ? 'ইমেইল ডেলিভারি সার্ভিস' : 'Transactional Email Service'}
                 </h3>
                 <p className="text-xs text-muted-foreground">
-                  {isBn ? 'ইনভয়েস, নোটিশ ও বুকিং আপডেটের ইমেইল রাউটিং' : 'SMTP or API delivery for tuition receipts and alerts'}
+                  {isBn
+                    ? 'ইনভয়েস, নোটিশ ও বুকিং আপডেটের ইমেইল রাউটিং'
+                    : 'SMTP or API delivery for tuition receipts and alerts'}
                 </p>
               </div>
             </div>

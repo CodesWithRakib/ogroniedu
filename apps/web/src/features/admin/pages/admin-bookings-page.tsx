@@ -77,7 +77,9 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'চলমান নিশ্চিত বুকিং' : 'Active Confirmed'}
                 </p>
-                <p className="text-2xl font-black text-info-soft-foreground mt-1 font-mono">{activeCount}</p>
+                <p className="text-2xl font-black text-info-soft-foreground mt-1 font-mono">
+                  {activeCount}
+                </p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-interactive/10 border border-info/40 flex items-center justify-center text-info-soft-foreground">
                 <Clock className="w-5 h-5" />
@@ -103,7 +105,9 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'মোট বুকিং রেকর্ড' : 'Total Bookings'}
                 </p>
-                <p className="text-2xl font-black text-foreground mt-1 font-mono">{totalBookings}</p>
+                <p className="text-2xl font-black text-foreground mt-1 font-mono">
+                  {totalBookings}
+                </p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-interactive/10 border border-interactive/30 flex items-center justify-center text-interactive">
                 <Calendar className="w-5 h-5" />

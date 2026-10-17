@@ -58,7 +58,15 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
 
           <Button onClick={handleSave} className="flex items-center gap-2">
             {saved ? <Check className="w-4 h-4" /> : <RefreshCw className="w-4 h-4" />}
-            <span>{saved ? (isBn ? 'সংরক্ষিত হয়েছে!' : 'Saved!') : isBn ? 'পরিবর্তন সংরক্ষণ করুন' : 'Save Changes'}</span>
+            <span>
+              {saved
+                ? isBn
+                  ? 'সংরক্ষিত হয়েছে!'
+                  : 'Saved!'
+                : isBn
+                  ? 'পরিবর্তন সংরক্ষণ করুন'
+                  : 'Save Changes'}
+            </span>
           </Button>
         </div>
 
@@ -135,7 +143,9 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
             <div className="space-y-2 pt-2">
               <div className="flex items-center justify-between text-sm font-semibold">
                 <span>{isBn ? 'হোল্ড সময়সীমা' : 'Hold Window'}</span>
-                <span className="font-mono text-info font-bold">{escrowHoldDays} {isBn ? 'দিন' : 'Days'}</span>
+                <span className="font-mono text-info font-bold">
+                  {escrowHoldDays} {isBn ? 'দিন' : 'Days'}
+                </span>
               </div>
               <input
                 type="range"

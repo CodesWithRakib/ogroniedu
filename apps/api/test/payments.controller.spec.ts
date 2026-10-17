@@ -42,9 +42,9 @@ describe('PaymentsController Unit Tests', () => {
         receiptId: 'REC-123',
         amountBdt: '1000.00',
       }),
-      getMyPaymentOrders: vi.fn().mockResolvedValue([
-        { id: 'order-1', status: 'succeeded', amountMinor: 100000 },
-      ]),
+      getMyPaymentOrders: vi
+        .fn()
+        .mockResolvedValue([{ id: 'order-1', status: 'succeeded', amountMinor: 100000 }]),
       runReconciliation: vi.fn().mockResolvedValue({
         isLedgerBalanced: true,
         totalOrders: 5,

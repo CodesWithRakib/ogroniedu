@@ -12,19 +12,19 @@
 
 ## Changed
 
-| Area | Change |
-| :--- | :--- |
-| `globals.css` | Rewritten as the single light-only source of truth (tokens, focus ring, reduced motion, scrollbars, selection, typography incl. Bengali rules). |
-| Brand usage | Brand accents consume exact approved hexes as fills/indicators; readable derivations (`--primary` teal-700, `--interactive` sapphire) carry text/actions/links. |
-| Markup (167 `src` files) | Three codemod passes converted dark-first and palette utilities to semantic tokens: `bg-slate-900→bg-card`, safe `text-white→text-foreground`, soft status washes, gradient panels → light brand cards, hover/focus maps. |
-| `Button` | `asChild` path now renders `<Slottable>` (fixes crash with radix-slot ≥1.4; see Fixed). |
-| `sonner` toaster | Forced light; `next-themes` import removed. |
-| `Navbar` / `Topbar` / `authShell` / `BottomNavbar` | Tokenised; contrast-safe ink on mint/avatar/FAB. |
-| `checkoutMethodPicker` | Interactive gradient → light brand card; bKash/Nagad brand colours intentionally kept. |
-| `StudyTimeTrackerCard` | Play button mint fill + `brand-foreground` ink. |
-| `src/lib/navigation.ts` | Role badge/accent classes tokenised. |
-| PWA assets | `manifest.json` theme/background `#f6f8fa`; `offline.html` rewritten light (ink text, mint/ink button, sapphire focus). |
-| Tests | `test/api-contract.spec.ts`: theme-registry test replaced by brand-config & contrast assertions. |
+| Area                                               | Change                                                                                                                                                                                                                    |
+| :------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `globals.css`                                      | Rewritten as the single light-only source of truth (tokens, focus ring, reduced motion, scrollbars, selection, typography incl. Bengali rules).                                                                           |
+| Brand usage                                        | Brand accents consume exact approved hexes as fills/indicators; readable derivations (`--primary` teal-700, `--interactive` sapphire) carry text/actions/links.                                                           |
+| Markup (167 `src` files)                           | Three codemod passes converted dark-first and palette utilities to semantic tokens: `bg-slate-900→bg-card`, safe `text-white→text-foreground`, soft status washes, gradient panels → light brand cards, hover/focus maps. |
+| `Button`                                           | `asChild` path now renders `<Slottable>` (fixes crash with radix-slot ≥1.4; see Fixed).                                                                                                                                   |
+| `sonner` toaster                                   | Forced light; `next-themes` import removed.                                                                                                                                                                               |
+| `Navbar` / `Topbar` / `authShell` / `BottomNavbar` | Tokenised; contrast-safe ink on mint/avatar/FAB.                                                                                                                                                                          |
+| `checkoutMethodPicker`                             | Interactive gradient → light brand card; bKash/Nagad brand colours intentionally kept.                                                                                                                                    |
+| `StudyTimeTrackerCard`                             | Play button mint fill + `brand-foreground` ink.                                                                                                                                                                           |
+| `src/lib/navigation.ts`                            | Role badge/accent classes tokenised.                                                                                                                                                                                      |
+| PWA assets                                         | `manifest.json` theme/background `#f6f8fa`; `offline.html` rewritten light (ink text, mint/ink button, sapphire focus).                                                                                                   |
+| Tests                                              | `test/api-contract.spec.ts`: theme-registry test replaced by brand-config & contrast assertions.                                                                                                                          |
 
 ## Removed
 

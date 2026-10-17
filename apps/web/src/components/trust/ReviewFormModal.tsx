@@ -105,10 +105,7 @@ export function ReviewFormModal({
         />
 
         <div className="space-y-1.5 pt-2">
-          <Label
-            htmlFor="review-comment"
-            className="text-xs font-semibold text-muted-foreground"
-          >
+          <Label htmlFor="review-comment" className="text-xs font-semibold text-muted-foreground">
             {t('writeReview')}
           </Label>
           <Textarea
@@ -134,11 +131,7 @@ export function ReviewFormModal({
           >
             Cancel
           </Button>
-          <Button
-            type="submit"
-            size="sm"
-            isLoading={submit.isSubmitting}
-          >
+          <Button type="submit" size="sm" isLoading={submit.isSubmitting}>
             {submit.isSubmitting ? 'Submitting...' : t('submitReview')}
           </Button>
         </div>

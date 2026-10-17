@@ -30,7 +30,9 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
           __html: `document.documentElement.lang = ${JSON.stringify(locale)};`,
         }}
       />
-      <div className={`${fontVariables} ${locale === 'bn' ? 'font-bengali' : 'font-sans'} min-h-screen text-foreground antialiased`}>
+      <div
+        className={`${fontVariables} ${locale === 'bn' ? 'font-bengali' : 'font-sans'} min-h-screen text-foreground antialiased`}
+      >
         <StoreProvider>
           <AuthBootstrap>
             <NextIntlClientProvider locale={locale} messages={messages}>

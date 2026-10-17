@@ -213,7 +213,12 @@ export function SessionScheduleCalendar({
             <span>{locale === 'bn' ? 'নির্ধারিত ক্লাসসমূহ' : 'Scheduled Classes'}</span>
           </h2>
           {onScheduleOneOff && (
-            <Button size="sm" onClick={() => setScheduleOpen(true)} data-testid="schedule-open-btn" className="bg-primary hover:bg-primary-hover text-white shadow-xs">
+            <Button
+              size="sm"
+              onClick={() => setScheduleOpen(true)}
+              data-testid="schedule-open-btn"
+              className="bg-primary hover:bg-primary-hover text-white shadow-xs"
+            >
               <Plus className="w-4 h-4 mr-1" />
               {dict.scheduling.scheduleSession}
             </Button>
@@ -241,7 +246,8 @@ export function SessionScheduleCalendar({
             <CardContent className="space-y-3 text-muted-foreground py-8">
               <CalendarIcon className="w-10 h-10 mx-auto text-muted-foreground/60" />
               <p className="text-sm font-semibold text-foreground">
-                {dict.scheduling?.noSessions || (locale === 'bn' ? 'কোনো নির্ধারিত ক্লাস নেই।' : 'No sessions scheduled.')}
+                {dict.scheduling?.noSessions ||
+                  (locale === 'bn' ? 'কোনো নির্ধারিত ক্লাস নেই।' : 'No sessions scheduled.')}
               </p>
               <p className="text-xs text-muted-foreground max-w-sm mx-auto">
                 {locale === 'bn'

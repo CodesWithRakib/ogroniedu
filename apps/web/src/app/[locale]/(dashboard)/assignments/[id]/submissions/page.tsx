@@ -302,8 +302,8 @@ function AssignmentSubmissionsPage({
                       onChange={(e) => setFeedback(e.target.value)}
                       placeholder={
                         locale === 'bn'
-                           ? 'শিক্ষার্থীর উন্নতির জন্য গঠনমূলক মতামত দিন...'
-                           : 'Write encouraging feedback...'
+                          ? 'শিক্ষার্থীর উন্নতির জন্য গঠনমূলক মতামত দিন...'
+                          : 'Write encouraging feedback...'
                       }
                       data-testid="submissions-feedback-input"
                     />

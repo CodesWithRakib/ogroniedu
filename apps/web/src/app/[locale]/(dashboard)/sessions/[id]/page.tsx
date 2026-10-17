@@ -249,9 +249,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
         );
       default:
         return (
-          <Badge className="bg-muted/10 text-muted-foreground border border-border">
-            {status}
-          </Badge>
+          <Badge className="bg-muted/10 text-muted-foreground border border-border">{status}</Badge>
         );
     }
   };

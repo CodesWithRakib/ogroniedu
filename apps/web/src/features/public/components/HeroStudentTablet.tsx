@@ -42,7 +42,9 @@ export function HeroStudentTablet() {
               <div className="flex h-3.5 w-3.5 items-center justify-center rounded-full bg-gradient-to-tr from-brand to-primary shadow-xs">
                 <span className="text-[8px] font-black text-brand-foreground">O</span>
               </div>
-              <span className="font-bold tracking-tight text-foreground text-[9.5px]">OgroniEdu</span>
+              <span className="font-bold tracking-tight text-foreground text-[9.5px]">
+                OgroniEdu
+              </span>
             </div>
 
             <div className="flex items-center gap-1.5">

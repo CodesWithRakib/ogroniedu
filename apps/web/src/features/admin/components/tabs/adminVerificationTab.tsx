@@ -480,7 +480,9 @@ export function AdminVerificationTab() {
             data-testid="verification-dossier-modal"
           >
             <DialogHeader className="border-b border-border/70 pb-3 text-left">
-              <DialogTitle className="text-lg font-bold text-foreground">{selected.displayName}</DialogTitle>
+              <DialogTitle className="text-lg font-bold text-foreground">
+                {selected.displayName}
+              </DialogTitle>
               <DialogDescription className="text-xs text-muted-foreground mt-0.5">
                 {selected.email || selected.phoneE164 || '—'}
                 {selected.headline ? ` · ${selected.headline}` : ''}
@@ -739,7 +741,9 @@ export function AdminVerificationTab() {
                       </select>
                     </div>
                     <div className="space-y-1.5">
-                      <Label className="text-xs font-medium">{isBn ? 'সিদ্ধান্ত' : 'Decision'}</Label>
+                      <Label className="text-xs font-medium">
+                        {isBn ? 'সিদ্ধান্ত' : 'Decision'}
+                      </Label>
                       <select
                         value={decision}
                         onChange={(e) => setDecision(e.target.value as TutorReviewDecision)}

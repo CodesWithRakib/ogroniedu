@@ -42,7 +42,8 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       titleBn: 'একাডেমিক ট্যাক্সোনমি ও ডেটা',
       titleEn: 'Academic Taxonomy Management',
       descBn: 'শ্রেণি, কারিকুলাম, গ্রুপ/শাখা, শিক্ষা প্রতিষ্ঠান ও বিষয় ডায়নামিক নিয়ন্ত্রণ',
-      descEn: 'Dynamically configure education levels, curricula, streams, institutions and subjects',
+      descEn:
+        'Dynamically configure education levels, curricula, streams, institutions and subjects',
       href: `/${locale}/dashboard/admin/taxonomy`,
       icon: GraduationCap,
       accent: 'bg-accent-soft border-accent/30 text-accent-soft-foreground',
@@ -288,7 +289,9 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">{t('discrepancy')}</p>
                 <p
                   className={`text-lg font-mono font-bold mt-1 ${
-                    admin.reconciliation?.discrepancy === '0' ? 'text-success-soft-foreground' : 'text-destructive-soft-foreground'
+                    admin.reconciliation?.discrepancy === '0'
+                      ? 'text-success-soft-foreground'
+                      : 'text-destructive-soft-foreground'
                   }`}
                 >
                   {admin.reconciliation?.discrepancy || '0'}

@@ -85,7 +85,10 @@ export function AdminUsersTab({
           value={statusFilter}
           onValueChange={(val) => onStatusFilterChange(val as StatusFilter)}
         >
-          <SelectTrigger className="w-full sm:w-48 rounded-2xl bg-card border-border/80 text-xs" data-testid="users-status-filter">
+          <SelectTrigger
+            className="w-full sm:w-48 rounded-2xl bg-card border-border/80 text-xs"
+            data-testid="users-status-filter"
+          >
             <SelectValue placeholder={t('allStatuses')} />
           </SelectTrigger>
           <SelectContent>

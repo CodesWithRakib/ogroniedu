@@ -26,7 +26,10 @@ export function FormField({
 
   return (
     <div className={cn('space-y-1.5 w-full', className)}>
-      <Label htmlFor={htmlFor} className="text-xs sm:text-sm font-medium text-foreground flex items-center">
+      <Label
+        htmlFor={htmlFor}
+        className="text-xs sm:text-sm font-medium text-foreground flex items-center"
+      >
         {label}
         {required && (
           <span className="ml-1 text-destructive font-bold" aria-hidden>
@@ -54,7 +57,11 @@ export function FormField({
         </p>
       )}
       {error && (
-        <p id={errorId} role="alert" className="text-xs text-destructive font-medium leading-normal">
+        <p
+          id={errorId}
+          role="alert"
+          className="text-xs text-destructive font-medium leading-normal"
+        >
           {error}
         </p>
       )}

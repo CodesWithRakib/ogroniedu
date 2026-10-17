@@ -317,7 +317,9 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                   >
                     <div className="flex items-center justify-between">
                       <div className="flex items-center gap-1.5">
-                        <span className="font-black text-info-soft-foreground text-sm">SSLCOMMERZ</span>
+                        <span className="font-black text-info-soft-foreground text-sm">
+                          SSLCOMMERZ
+                        </span>
                         <span className="px-1.5 py-0.2 rounded text-[9px] font-bold bg-interactive/20 text-info-soft-foreground">
                           BEST
                         </span>

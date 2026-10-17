@@ -38,7 +38,9 @@ export function useProfileForm(locale: Locale) {
   const [districtCode, setDistrictCode] = React.useState('');
   const [upazilaCode, setUpazilaCode] = React.useState('');
   const [learningGoals, setLearningGoals] = React.useState('');
-  const [profileVisibility, setProfileVisibility] = React.useState<'private' | 'limited'>('private');
+  const [profileVisibility, setProfileVisibility] = React.useState<'private' | 'limited'>(
+    'private',
+  );
 
   const [academicSaved, setAcademicSaved] = React.useState<string | null>(null);
   const [academicError, setAcademicError] = React.useState<string | null>(null);
@@ -65,7 +67,18 @@ export function useProfileForm(locale: Locale) {
         if (sp.profileVisibility) setProfileVisibility(sp.profileVisibility);
       }
     }
-  }, [data, displayName, dateOfBirth, institutionName, educationLevelId, curriculumId, stream, districtCode, upazilaCode, learningGoals]);
+  }, [
+    data,
+    displayName,
+    dateOfBirth,
+    institutionName,
+    educationLevelId,
+    curriculumId,
+    stream,
+    districtCode,
+    upazilaCode,
+    learningGoals,
+  ]);
 
   // Handle saving personal info
   async function handleSave(e: React.FormEvent) {
@@ -86,7 +99,11 @@ export function useProfileForm(locale: Locale) {
           // Session display name sync is best-effort.
         }
       }
-      setSaved(locale === 'bn' ? 'ব্যক্তিগত তথ্য সফলভাবে সংরক্ষিত হয়েছে।' : 'Personal profile saved successfully.');
+      setSaved(
+        locale === 'bn'
+          ? 'ব্যক্তিগত তথ্য সফলভাবে সংরক্ষিত হয়েছে।'
+          : 'Personal profile saved successfully.',
+      );
     } catch (err) {
       setFormError(normalizeUnknownError(err, locale).message);
     }

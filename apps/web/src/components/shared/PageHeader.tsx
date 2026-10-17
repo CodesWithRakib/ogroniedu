@@ -17,7 +17,12 @@ export function PageHeader({
   className?: string;
 }) {
   return (
-    <div className={cn('mb-6 sm:mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between', className)}>
+    <div
+      className={cn(
+        'mb-6 sm:mb-8 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between',
+        className,
+      )}
+    >
       <div>
         {breadcrumbs && <div className="mb-2">{breadcrumbs}</div>}
         <div className="flex items-center gap-3">

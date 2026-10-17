@@ -300,7 +300,9 @@ export function ClassroomWorkspace({
             </h1>
             <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <span className="text-muted-foreground">{locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'}</span>
+                <span className="text-muted-foreground">
+                  {locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'}
+                </span>
                 <strong className="text-foreground font-bold">{tutorName}</strong>
               </span>
               <span>•</span>
@@ -677,7 +679,9 @@ export function ClassroomWorkspace({
                 </div>
                 <div className="flex items-center justify-between text-muted-foreground">
                   <span>{locale === 'bn' ? 'ক্লাস আইডি:' : 'Session ID:'}</span>
-                  <span className="font-mono text-info-soft-foreground">{session.id.substring(0, 8)}...</span>
+                  <span className="font-mono text-info-soft-foreground">
+                    {session.id.substring(0, 8)}...
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-muted-foreground">
                   <span>{locale === 'bn' ? 'টাইমজোন:' : 'Timezone:'}</span>

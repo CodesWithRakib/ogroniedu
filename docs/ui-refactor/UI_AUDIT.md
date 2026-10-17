@@ -2,7 +2,7 @@
 
 **Date:** 2026-10-17  
 **Scope:** `apps/web` (Next.js 16 App Router, React 19, Tailwind CSS v4, shadcn/ui)  
-**Auditor:** Senior UI/UX Engineer, Staff Frontend Engineer, Design-System Architect & QA  
+**Auditor:** Senior UI/UX Engineer, Staff Frontend Engineer, Design-System Architect & QA
 
 ---
 
@@ -43,24 +43,24 @@ While a light theme conversion was executed previously (removing dark mode token
 
 ## 2. Categorized Defect Inventory
 
-| ID | Category | Defect Description | Affected Files / Routes | Severity |
-| :--- | :--- | :--- | :--- | :--- |
-| **DEF-01** | Color Hierarchy | `border-primary/40` used indiscriminately on 56+ components | Homepage, Pricing, Safety, FAQ, Student/Tutor/Guardian/Admin Dashboards | High |
-| **DEF-02** | Color Hierarchy | `StatusBadge` & `Badge` `success` variant mapped to `primary` instead of semantic green | `components/ui/Badge.tsx`, `components/shared/StatusBadge.tsx` | High |
-| **DEF-03** | Color Hierarchy | Multi-color clashing in Admin cards (`from-brand to-primary/10 border-info/40 text-info-soft-foreground`) | `features/admin/pages/admin-overview-page.tsx` | Medium |
-| **DEF-04** | Elevation/Borders | Nested cards inside cards (e.g., Academic Profile 4-box grid inside Card) | `StudentAcademicProfileCard.tsx`, `HeroStudentTablet.tsx` | High |
-| **DEF-05** | Elevation/Borders | Inconsistent StatCard styling (1 dark teal gradient card vs 3 white bordered cards) | `HeroKpiCard.tsx`, Student/Tutor/Guardian Dashboards | High |
-| **DEF-06** | Elevation/Borders | Unnecessary container cards wrapping action button bars | `student-dashboard-page.tsx`, `tutor-dashboard-page.tsx` | Medium |
-| **DEF-07** | Typography/Contrast | Step numbers (01, 02, 03) rendered in `text-primary/30` failing WCAG contrast | `home-page.tsx`, `how-it-works-page.tsx` | High |
-| **DEF-08** | Typography/Contrast | Dashboard page subtitles styled with `text-primary-soft-foreground` instead of neutral ink | `DashboardShell.tsx`, all role dashboards | Medium |
-| **DEF-09** | Typography/Contrast | Input placeholder text in gray washes hard to read | `Input.tsx`, `HeroSearchBar.tsx`, auth forms | Medium |
-| **DEF-10** | Component Architecture | Direct HTML `<button>`, `<select>`, `<input>` in feature pages | `HeroSearchBar.tsx`, `home-page.tsx`, `student-dashboard-page.tsx` | High |
-| **DEF-11** | Component Architecture | Nested `<Link><button>` interactive elements | `home-page.tsx` CTA, student/tutor header actions | High |
-| **DEF-12** | Component Architecture | `FormField` cloning `id` onto wrapper `div` of `Input.tsx` breaking label association | `components/ui/Input.tsx`, `components/shared/FormField.tsx` | High |
-| **DEF-13** | Visual Consistency | Inconsistent border-radius scale (`rounded-3xl` vs `rounded-2xl` vs `rounded-full`) | Dashboard cards, inputs, buttons, sidebars | Medium |
-| **DEF-14** | Brand & Imagery | Sci-Fi space-station theme image on Auth shell (`auth-showcase.jpg`) | `components/auth/authShell.tsx` | High |
-| **DEF-15** | Layout & Chrome | Sidebar promo card taking excessive vertical real estate | `features/dashboard/components/DashboardSidebar.tsx` | Medium |
-| **DEF-16** | Layout & Chrome | Floating PWA install prompt colliding with bottom content & drawer | `components/pwa/PWARegister.tsx` | Low |
+| ID         | Category               | Defect Description                                                                                        | Affected Files / Routes                                                 | Severity |
+| :--------- | :--------------------- | :-------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------- | :------- |
+| **DEF-01** | Color Hierarchy        | `border-primary/40` used indiscriminately on 56+ components                                               | Homepage, Pricing, Safety, FAQ, Student/Tutor/Guardian/Admin Dashboards | High     |
+| **DEF-02** | Color Hierarchy        | `StatusBadge` & `Badge` `success` variant mapped to `primary` instead of semantic green                   | `components/ui/Badge.tsx`, `components/shared/StatusBadge.tsx`          | High     |
+| **DEF-03** | Color Hierarchy        | Multi-color clashing in Admin cards (`from-brand to-primary/10 border-info/40 text-info-soft-foreground`) | `features/admin/pages/admin-overview-page.tsx`                          | Medium   |
+| **DEF-04** | Elevation/Borders      | Nested cards inside cards (e.g., Academic Profile 4-box grid inside Card)                                 | `StudentAcademicProfileCard.tsx`, `HeroStudentTablet.tsx`               | High     |
+| **DEF-05** | Elevation/Borders      | Inconsistent StatCard styling (1 dark teal gradient card vs 3 white bordered cards)                       | `HeroKpiCard.tsx`, Student/Tutor/Guardian Dashboards                    | High     |
+| **DEF-06** | Elevation/Borders      | Unnecessary container cards wrapping action button bars                                                   | `student-dashboard-page.tsx`, `tutor-dashboard-page.tsx`                | Medium   |
+| **DEF-07** | Typography/Contrast    | Step numbers (01, 02, 03) rendered in `text-primary/30` failing WCAG contrast                             | `home-page.tsx`, `how-it-works-page.tsx`                                | High     |
+| **DEF-08** | Typography/Contrast    | Dashboard page subtitles styled with `text-primary-soft-foreground` instead of neutral ink                | `DashboardShell.tsx`, all role dashboards                               | Medium   |
+| **DEF-09** | Typography/Contrast    | Input placeholder text in gray washes hard to read                                                        | `Input.tsx`, `HeroSearchBar.tsx`, auth forms                            | Medium   |
+| **DEF-10** | Component Architecture | Direct HTML `<button>`, `<select>`, `<input>` in feature pages                                            | `HeroSearchBar.tsx`, `home-page.tsx`, `student-dashboard-page.tsx`      | High     |
+| **DEF-11** | Component Architecture | Nested `<Link><button>` interactive elements                                                              | `home-page.tsx` CTA, student/tutor header actions                       | High     |
+| **DEF-12** | Component Architecture | `FormField` cloning `id` onto wrapper `div` of `Input.tsx` breaking label association                     | `components/ui/Input.tsx`, `components/shared/FormField.tsx`            | High     |
+| **DEF-13** | Visual Consistency     | Inconsistent border-radius scale (`rounded-3xl` vs `rounded-2xl` vs `rounded-full`)                       | Dashboard cards, inputs, buttons, sidebars                              | Medium   |
+| **DEF-14** | Brand & Imagery        | Sci-Fi space-station theme image on Auth shell (`auth-showcase.jpg`)                                      | `components/auth/authShell.tsx`                                         | High     |
+| **DEF-15** | Layout & Chrome        | Sidebar promo card taking excessive vertical real estate                                                  | `features/dashboard/components/DashboardSidebar.tsx`                    | Medium   |
+| **DEF-16** | Layout & Chrome        | Floating PWA install prompt colliding with bottom content & drawer                                        | `components/pwa/PWARegister.tsx`                                        | Low      |
 
 ---
 

@@ -79,11 +79,7 @@ export function MagicLinkPage({ locale }: { locale: Locale }) {
       </header>
 
       {error && (
-        <Alert
-          variant="destructive"
-          className="mb-4 rounded-xl"
-          data-testid="magic-link-error"
-        >
+        <Alert variant="destructive" className="mb-4 rounded-xl" data-testid="magic-link-error">
           <AlertDescription>{error}</AlertDescription>
         </Alert>
       )}
@@ -97,9 +93,7 @@ export function MagicLinkPage({ locale }: { locale: Locale }) {
         data-testid="magic-link-confirm-btn"
       >
         <ShieldCheck className="h-4 w-4 mr-2" />
-        <span>
-          {isBn ? 'নিশ্চিত করে লগইন করুন' : 'Confirm and sign in'}
-        </span>
+        <span>{isBn ? 'নিশ্চিত করে লগইন করুন' : 'Confirm and sign in'}</span>
         <ArrowRight className="h-4 w-4 ml-2" />
       </Button>
 

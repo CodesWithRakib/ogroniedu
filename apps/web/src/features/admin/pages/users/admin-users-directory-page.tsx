@@ -58,14 +58,13 @@ export function AdminUsersDirectoryPage({ locale }: { locale: Locale }) {
   const activeCount = admin.users.filter((u) => u.status === 'active').length;
   const suspendedCount = admin.users.filter((u) => u.status === 'suspended').length;
   const staffCount = admin.users.filter((u) =>
-    u.roles.some((r) => ['super_admin', 'admin', 'support_agent', 'compliance_reviewer'].includes(r)),
+    u.roles.some((r) =>
+      ['super_admin', 'admin', 'support_agent', 'compliance_reviewer'].includes(r),
+    ),
   ).length;
 
   return (
-    <AdminLayout
-      locale={locale}
-      title={isBn ? 'সকল নিবন্ধিত ইউজার' : 'All Registered Users'}
-    >
+    <AdminLayout locale={locale} title={isBn ? 'সকল নিবন্ধিত ইউজার' : 'All Registered Users'}>
       <div className="space-y-6 py-6" data-testid="admin-users-directory-page">
         {/* Back Link to Hub (Image 2 Pattern) */}
         <div>

@@ -8,14 +8,14 @@
 
 ## 1. Monorepo layout
 
-| Path | Purpose |
-| :--- | :--- |
-| `apps/web` | Next.js 16 App Router frontend (all 64 pages, 9 layouts) — **primary scope of this refactor** |
-| `apps/api` | NestJS-style API (`http://localhost:4000` by default via `NEXT_PUBLIC_API_URL`) |
-| `packages/contracts` | Shared API contracts / zod schemas |
-| `packages/database` | Prisma schema + migrations + seeds |
-| `packages/tsconfig` | Shared TypeScript config |
-| `scripts/`, `prompts/`, `docs/` | Tooling, prompts and the documentation set |
+| Path                            | Purpose                                                                                       |
+| :------------------------------ | :-------------------------------------------------------------------------------------------- |
+| `apps/web`                      | Next.js 16 App Router frontend (all 64 pages, 9 layouts) — **primary scope of this refactor** |
+| `apps/api`                      | NestJS-style API (`http://localhost:4000` by default via `NEXT_PUBLIC_API_URL`)               |
+| `packages/contracts`            | Shared API contracts / zod schemas                                                            |
+| `packages/database`             | Prisma schema + migrations + seeds                                                            |
+| `packages/tsconfig`             | Shared TypeScript config                                                                      |
+| `scripts/`, `prompts/`, `docs/` | Tooling, prompts and the documentation set                                                    |
 
 ## 2. Web app architecture
 
@@ -36,14 +36,14 @@
 
 ## 4. Design-system facts before the refactor
 
-| Finding | Evidence |
-| :--- | :--- |
-| 5 selectable themes + dark mode with `data-theme`/`data-mode` attributes and localStorage persistence | `src/lib/theme/themes.ts`, `ThemeProvider`, `ThemePicker`, `ThemeSwitcher` (all removed in this refactor) |
-| 349 `dark:` variant usages across 74 files | ripgrep inventory |
-| ~718 hard-coded hex literals in 37 files (mint/ink panels, glass, glows) | ripgrep inventory |
-| Large amount of dark-first markup (`bg-slate-900`, `text-white`, `bg-white/10`) mixed with light-first markup | leftover inventory after first codemod |
-| `bg-surface` used 117× but the token was never defined | token scan (`--color-surface` missing in the old `globals.css`) |
-| Canvas 2D colours must stay literal | `InteractiveWhiteboard.tsx` |
+| Finding                                                                                                       | Evidence                                                                                                  |
+| :------------------------------------------------------------------------------------------------------------ | :-------------------------------------------------------------------------------------------------------- |
+| 5 selectable themes + dark mode with `data-theme`/`data-mode` attributes and localStorage persistence         | `src/lib/theme/themes.ts`, `ThemeProvider`, `ThemePicker`, `ThemeSwitcher` (all removed in this refactor) |
+| 349 `dark:` variant usages across 74 files                                                                    | ripgrep inventory                                                                                         |
+| ~718 hard-coded hex literals in 37 files (mint/ink panels, glass, glows)                                      | ripgrep inventory                                                                                         |
+| Large amount of dark-first markup (`bg-slate-900`, `text-white`, `bg-white/10`) mixed with light-first markup | leftover inventory after first codemod                                                                    |
+| `bg-surface` used 117× but the token was never defined                                                        | token scan (`--color-surface` missing in the old `globals.css`)                                           |
+| Canvas 2D colours must stay literal                                                                           | `InteractiveWhiteboard.tsx`                                                                               |
 
 ## 5. What the refactor changed (high level)
 

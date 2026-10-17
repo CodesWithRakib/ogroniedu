@@ -225,7 +225,9 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
                       ? '⚡ এক ক্লিকে ডেমো অ্যাকাউন্ট নির্বাচন করুন:'
                       : '⚡ 1-Click Demo Quick Fill:'}
                   </span>
-                  <span className="text-[10px] text-primary font-mono font-bold">OgroniDev#2026</span>
+                  <span className="text-[10px] text-primary font-mono font-bold">
+                    OgroniDev#2026
+                  </span>
                 </div>
                 <div className="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                   {demoAccounts.map((acc) => (

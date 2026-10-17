@@ -25,7 +25,8 @@ export function SidebarPromoCard({
   const isBn = locale === 'bn';
 
   const heading = title ?? (isBn ? 'মোবাইল অ্যাপ নামিয়ে নিন' : 'Download Mobile App');
-  const sub = subtitle ?? (isBn ? 'যেকোনো সময় লাইভ ক্লাস ও নোট' : 'Live classes & verified tutors');
+  const sub =
+    subtitle ?? (isBn ? 'যেকোনো সময় লাইভ ক্লাস ও নোট' : 'Live classes & verified tutors');
   const btnLabel = actionLabel ?? (isBn ? 'ডাউনলোড' : 'Download');
 
   return (
@@ -42,7 +43,9 @@ export function SidebarPromoCard({
 
       {/* Content */}
       <div className="mb-3">
-        <p className="text-xs font-semibold text-foreground tracking-tight leading-snug">{heading}</p>
+        <p className="text-xs font-semibold text-foreground tracking-tight leading-snug">
+          {heading}
+        </p>
         <p className="text-[11px] text-muted-foreground mt-0.5 leading-normal">{sub}</p>
       </div>
 

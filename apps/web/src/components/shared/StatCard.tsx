@@ -18,7 +18,9 @@ export function StatCard({
   return (
     <Card data-testid={testId} className="p-4 sm:p-5">
       <CardHeader className="p-0 pb-2">
-        <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">{label}</CardTitle>
+        <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">
+          {label}
+        </CardTitle>
       </CardHeader>
       <CardContent className="p-0 pt-1">
         {isLoading ? (

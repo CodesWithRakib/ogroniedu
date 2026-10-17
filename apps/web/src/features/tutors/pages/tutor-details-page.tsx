@@ -507,7 +507,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             {isCopied ? (
               <>
                 <Check className="w-3.5 h-3.5 text-success-soft-foreground" />
-                <span className="text-success-soft-foreground">{isBn ? 'কপি হয়েছে!' : 'Copied!'}</span>
+                <span className="text-success-soft-foreground">
+                  {isBn ? 'কপি হয়েছে!' : 'Copied!'}
+                </span>
               </>
             ) : (
               <>
@@ -549,7 +551,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
               </div>
 
               {headline && (
-                <p className="text-sm sm:text-base font-semibold text-primary-soft-foreground">{headline}</p>
+                <p className="text-sm sm:text-base font-semibold text-primary-soft-foreground">
+                  {headline}
+                </p>
               )}
 
               {/* Rating & Reviews */}
@@ -689,7 +693,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                     </div>
                     <div>
                       <h4 className="text-sm font-bold text-foreground">{qual.title}</h4>
-                      <p className="text-xs text-primary-soft-foreground font-medium mt-0.5">{qual.institution}</p>
+                      <p className="text-xs text-primary-soft-foreground font-medium mt-0.5">
+                        {qual.institution}
+                      </p>
                       <span className="text-[11px] text-muted-foreground mt-1 block">
                         {isBn ? 'পাসের সাল / মেয়াদ:' : 'Session / Year:'} {qual.year}
                       </span>
@@ -925,7 +931,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 <h4 className="text-sm font-bold text-foreground">
                   {isBn ? 'অনুরোধ পাঠানো হয়েছে!' : 'Request Sent!'}
                 </h4>
-                <p className="text-xs text-primary-soft-foreground leading-relaxed">{bookingSuccess}</p>
+                <p className="text-xs text-primary-soft-foreground leading-relaxed">
+                  {bookingSuccess}
+                </p>
                 <button
                   type="button"
                   onClick={() => setBookingSuccess(null)}
@@ -955,7 +963,11 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                       className="w-full h-10 px-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-brand transition-colors"
                     >
                       {studentOptions.map((opt) => (
-                        <option key={opt.id} value={opt.id} className="bg-background text-foreground">
+                        <option
+                          key={opt.id}
+                          value={opt.id}
+                          className="bg-background text-foreground"
+                        >
                           {opt.label}
                         </option>
                       ))}
@@ -1057,7 +1069,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
                 {/* Additional Notes */}
                 <div className="space-y-1.5">
-                  <Label htmlFor="tutor-booking-notes" className="font-semibold text-foreground text-xs block">
+                  <Label
+                    htmlFor="tutor-booking-notes"
+                    className="font-semibold text-foreground text-xs block"
+                  >
                     {isBn
                       ? 'বিশেষ কোনো বার্তা বা চাহিদা (ঐচ্ছিক):'
                       : 'Notes / Special Requests (Optional):'}
@@ -1082,9 +1097,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   className="w-full font-bold text-xs"
                 >
                   <Send className="w-4 h-4 mr-2" />
-                  <span>
-                    {isBn ? 'টিউশন অনুরোধ পাঠান' : 'Submit Tutoring Request'}
-                  </span>
+                  <span>{isBn ? 'টিউশন অনুরোধ পাঠান' : 'Submit Tutoring Request'}</span>
                 </Button>
               </form>
             )}

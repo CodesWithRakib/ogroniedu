@@ -90,18 +90,10 @@ export function TutorFiltersForm({
                 <SelectValue placeholder={dict.discovery?.filterAllModes || 'All Modes'} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">
-                  {dict.discovery?.filterAllModes || 'All Modes'}
-                </SelectItem>
-                <SelectItem value="in_person">
-                  {dict.tutor?.modeInPerson || 'In-person'}
-                </SelectItem>
-                <SelectItem value="online">
-                  {dict.tutor?.modeOnline || 'Online'}
-                </SelectItem>
-                <SelectItem value="hybrid">
-                  {dict.tutor?.modeHybrid || 'Hybrid'}
-                </SelectItem>
+                <SelectItem value="all">{dict.discovery?.filterAllModes || 'All Modes'}</SelectItem>
+                <SelectItem value="in_person">{dict.tutor?.modeInPerson || 'In-person'}</SelectItem>
+                <SelectItem value="online">{dict.tutor?.modeOnline || 'Online'}</SelectItem>
+                <SelectItem value="hybrid">{dict.tutor?.modeHybrid || 'Hybrid'}</SelectItem>
               </SelectContent>
             </Select>
           </div>
@@ -117,7 +109,9 @@ export function TutorFiltersForm({
                 data-testid="sort-by-select"
                 aria-label={isBn ? 'সাজানোর নিয়ম' : 'Sort by'}
               >
-                <SelectValue placeholder={dict.discovery?.sortRecommended || 'Recommended (Match Score)'} />
+                <SelectValue
+                  placeholder={dict.discovery?.sortRecommended || 'Recommended (Match Score)'}
+                />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="recommended">

@@ -19,7 +19,9 @@ import {
 } from '@/components/ui/select';
 import type { AdminSupportTicketItem } from '../../types/admin.types';
 
-function supportStatusVariant(status: AdminSupportTicketItem['status']): 'info' | 'warning' | 'success' | 'outline' {
+function supportStatusVariant(
+  status: AdminSupportTicketItem['status'],
+): 'info' | 'warning' | 'success' | 'outline' {
   if (status === 'submitted') return 'info';
   if (status === 'in_review') return 'warning';
   if (status === 'resolved') return 'success';
@@ -58,10 +60,7 @@ export function AdminSupportTab({
   return (
     <div className="space-y-4" data-testid="support-tab-content">
       <div className="flex items-center gap-2">
-        <Select
-          value={statusFilter}
-          onValueChange={(val) => setStatusFilter(val)}
-        >
+        <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val)}>
           <SelectTrigger
             className="w-44 h-10 rounded-xl bg-card border-border text-xs"
             data-testid="support-status-filter"
@@ -155,7 +154,9 @@ export function AdminSupportTab({
                         className="w-32 h-8 rounded-xl bg-card border-border text-[11px] ml-auto"
                         data-testid={`support-status-${row.id}`}
                         aria-label={
-                          isBn ? `${row.name}-এর টিকিট যাচাই করুন` : `Triage ticket from ${row.name}`
+                          isBn
+                            ? `${row.name}-এর টিকিট যাচাই করুন`
+                            : `Triage ticket from ${row.name}`
                         }
                       >
                         <SelectValue />

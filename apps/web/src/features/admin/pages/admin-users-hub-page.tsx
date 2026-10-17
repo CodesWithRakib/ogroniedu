@@ -43,8 +43,10 @@ const USER_HUB_CARDS: UserHubCard[] = [
     href: '/dashboard/admin/users/admins',
     titleBn: 'অ্যাডমিনিস্ট্রেটর রোস্টার',
     titleEn: 'Administrator Roster',
-    descBn: 'সিস্টেম অ্যাডমিনিস্ট্রেটরদের তালিকা, অর্পিত রোল পর্যবেক্ষণ, অ্যাডমিন অ্যাক্সেস ও অনুমতি ব্যবস্থাপনা।',
-    descEn: 'Manage system administrators, oversee assigned roles, monitor administrative access, and view permissions.',
+    descBn:
+      'সিস্টেম অ্যাডমিনিস্ট্রেটরদের তালিকা, অর্পিত রোল পর্যবেক্ষণ, অ্যাডমিন অ্যাক্সেস ও অনুমতি ব্যবস্থাপনা।',
+    descEn:
+      'Manage system administrators, oversee assigned roles, monitor administrative access, and view permissions.',
     badgeBn: 'সুপার অ্যাডমিন',
     badgeEn: 'Super Admin',
     badgeClass: 'bg-primary/10 text-primary border-primary/20',
@@ -59,8 +61,10 @@ const USER_HUB_CARDS: UserHubCard[] = [
     href: '/dashboard/admin/users/admins?action=create',
     titleBn: 'স্টাফ অ্যাকাউন্ট তৈরি',
     titleEn: 'Create Staff Member',
-    descBn: 'নতুন সিস্টেম অ্যাডমিন, সাপোর্ট অপারেটর বা কমপ্লায়েন্স রিভিউর যুক্ত করুন এবং সুনির্দিষ্ট রোল অর্পণ করুন।',
-    descEn: 'Quickly onboard a new system administrator, staff operator, or regional support manager with direct role assignment.',
+    descBn:
+      'নতুন সিস্টেম অ্যাডমিন, সাপোর্ট অপারেটর বা কমপ্লায়েন্স রিভিউর যুক্ত করুন এবং সুনির্দিষ্ট রোল অর্পণ করুন।',
+    descEn:
+      'Quickly onboard a new system administrator, staff operator, or regional support manager with direct role assignment.',
     badgeBn: 'স্টাফ প্রভিশনিং',
     badgeEn: 'Staff Provisioning',
     badgeClass: 'bg-info-soft text-info-soft-foreground border-info/30',
@@ -75,8 +79,10 @@ const USER_HUB_CARDS: UserHubCard[] = [
     href: '/dashboard/admin/users/directory',
     titleBn: 'সকল নিবন্ধিত ইউজার',
     titleEn: 'All Registered Users',
-    descBn: 'শিক্ষার্থী, শিক্ষক, অভিভাবক ও স্টাফসহ প্ল্যাটফর্মের সকল অ্যাকাউন্টের বিস্তারিত তালিকা এবং অবস্থা।',
-    descEn: 'Browse, search, and manage all accounts across students, tutors, guardians, and platform participants.',
+    descBn:
+      'শিক্ষার্থী, শিক্ষক, অভিভাবক ও স্টাফসহ প্ল্যাটফর্মের সকল অ্যাকাউন্টের বিস্তারিত তালিকা এবং অবস্থা।',
+    descEn:
+      'Browse, search, and manage all accounts across students, tutors, guardians, and platform participants.',
     badgeBn: 'ডিরেক্টরি',
     badgeEn: 'All Accounts',
     badgeClass: 'bg-surface text-foreground border-border',
@@ -91,8 +97,10 @@ const USER_HUB_CARDS: UserHubCard[] = [
     href: '/dashboard/admin/users/tutors',
     titleBn: 'শিক্ষক ও টিউটর ডিরেক্টরি',
     titleEn: 'Tutor & Teacher Directory',
-    descBn: 'যাচাইকৃত শিক্ষকদের প্রোফাইল, বিষয়ভিত্তিক পারদর্শিতা, রেটিং এবং সক্রিয় টিচিং কার্যক্রম তদারকি।',
-    descEn: 'Oversee verified tutors, inspect teaching performance, review ratings, and manage instructor profiles.',
+    descBn:
+      'যাচাইকৃত শিক্ষকদের প্রোফাইল, বিষয়ভিত্তিক পারদর্শিতা, রেটিং এবং সক্রিয় টিচিং কার্যক্রম তদারকি।',
+    descEn:
+      'Oversee verified tutors, inspect teaching performance, review ratings, and manage instructor profiles.',
     badgeBn: 'শিক্ষকবৃন্দ',
     badgeEn: 'Educators',
     badgeClass: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20',
@@ -107,8 +115,10 @@ const USER_HUB_CARDS: UserHubCard[] = [
     href: '/dashboard/admin/verification',
     titleBn: 'টিউটর কেওয়াইসি ও ভেরিফিকেশন',
     titleEn: 'Tutor KYC Applications',
-    descBn: 'নতুন শিক্ষকদের জাতীয় পরিচয়পত্র, সনদপত্র ও শিক্ষাগত যোগ্যতার আবেদন যাচাই এবং অনুমোদন।',
-    descEn: 'Review pending tutor registration applications, verify certificates and NID, and approve new educators.',
+    descBn:
+      'নতুন শিক্ষকদের জাতীয় পরিচয়পত্র, সনদপত্র ও শিক্ষাগত যোগ্যতার আবেদন যাচাই এবং অনুমোদন।',
+    descEn:
+      'Review pending tutor registration applications, verify certificates and NID, and approve new educators.',
     badgeBn: 'কেওয়াইসি যাচাই',
     badgeEn: 'KYC Verification',
     badgeClass: 'bg-warning-soft text-warning-soft-foreground border-warning/30',
@@ -123,8 +133,10 @@ const USER_HUB_CARDS: UserHubCard[] = [
     href: '/dashboard/admin/users/students',
     titleBn: 'শিক্ষার্থী ও অভিভাবকবৃন্দ',
     titleEn: 'Students & Guardians',
-    descBn: 'সক্রিয় শিক্ষার্থী ও অভিভাবক অ্যাকাউন্ট, টিউশন এনরোলমেন্ট এবং পারিবারিক প্রোফাইল পর্যবেক্ষণ।',
-    descEn: 'Monitor active student enrollments, guardian accounts, assigned tuition sessions, and family profiles.',
+    descBn:
+      'সক্রিয় শিক্ষার্থী ও অভিভাবক অ্যাকাউন্ট, টিউশন এনরোলমেন্ট এবং পারিবারিক প্রোফাইল পর্যবেক্ষণ।',
+    descEn:
+      'Monitor active student enrollments, guardian accounts, assigned tuition sessions, and family profiles.',
     badgeBn: 'শিক্ষার্থীবৃন্দ',
     badgeEn: 'Learners',
     badgeClass: 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20',
@@ -140,7 +152,8 @@ const USER_HUB_CARDS: UserHubCard[] = [
     titleBn: 'ইমপারসোনেশন ও নিরাপত্তা অডিট',
     titleEn: 'Security & Access Audit',
     descBn: 'প্রশাসনিক অ্যাকশন, রোল পরিবর্তন, ইউজার ইমপারসোনেশন সেশন ও নিরাপত্তা লগ পরীক্ষা করুন।',
-    descEn: 'Inspect comprehensive audit trails, admin actions, role modifications, and login sessions.',
+    descEn:
+      'Inspect comprehensive audit trails, admin actions, role modifications, and login sessions.',
     badgeBn: 'অডিট লগ',
     badgeEn: 'Audit Trail',
     badgeClass: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20',
@@ -160,7 +173,9 @@ export function AdminUsersHubPage({ locale }: { locale: Locale }) {
 
   const totalUsers = admin.users.length;
   const adminCount = admin.users.filter((u) =>
-    u.roles.some((r) => ['super_admin', 'admin', 'support_agent', 'compliance_reviewer'].includes(r)),
+    u.roles.some((r) =>
+      ['super_admin', 'admin', 'support_agent', 'compliance_reviewer'].includes(r),
+    ),
   ).length;
 
   return (
@@ -196,7 +211,9 @@ export function AdminUsersHubPage({ locale }: { locale: Locale }) {
             <div className="flex items-center gap-2 shrink-0">
               <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/25">
                 <Users className="w-3.5 h-3.5" />
-                <span>{totalUsers} {isBn ? 'টি অ্যাকাউন্ট' : 'Total Accounts'}</span>
+                <span>
+                  {totalUsers} {isBn ? 'টি অ্যাকাউন্ট' : 'Total Accounts'}
+                </span>
               </span>
             </div>
           </div>

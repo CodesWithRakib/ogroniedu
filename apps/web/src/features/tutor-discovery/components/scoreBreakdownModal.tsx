@@ -40,9 +40,7 @@ export function ScoreBreakdownModal({
         </DialogHeader>
 
         <div>
-          <p className="text-sm font-semibold text-foreground">
-            {tutor.displayName}
-          </p>
+          <p className="text-sm font-semibold text-foreground">{tutor.displayName}</p>
           <p className="text-xs text-primary font-bold mt-0.5">
             Total Score: {formatLocalizedNumber(tutor.matchScore, locale)} Points
           </p>

@@ -1,7 +1,7 @@
 # OgroniEdu — Design Rules & Design System Specification
 
 **Version:** 2.0 (Premium Light-Only System)  
-**Status:** Mandatory Engineering & Design Rules  
+**Status:** Mandatory Engineering & Design Rules
 
 ---
 
@@ -27,6 +27,7 @@
 The approved brand palette hex codes must be preserved verbatim in centralized theme definitions:
 
 ### Approved Brand Values
+
 - **Ocean Teal:**
   - `primaryColor`: `#0df5c4` (signature brand glow, accent fills, progress indicators)
   - `accentColor`: `#00e1b2` (gradient step, active navigation accents)
@@ -35,14 +36,18 @@ The approved brand palette hex codes must be preserved verbatim in centralized t
   - `accentColor`: `#3b82f6` (informational accents)
 
 ### Derived Accessible Component Colors
+
 Because `#0df5c4` and `#00e1b2` have insufficient contrast as text on white (1.41:1 and 1.69:1 respectively), the system uses derived, accessible shades for text and solid buttons:
+
 - **`--primary` (`#0f766e` / Teal-700):** 5.47:1 contrast on white. Used for primary solid buttons, key brand headings, and active indicators.
 - **`--primary-hover` (`#115e59` / Teal-800):** Hover state for primary buttons.
 - **`--primary-soft` (`#ecfdf5` / Mint-50):** Background wash for active states and badges.
 - **`--primary-soft-foreground` (`#0f766e`):** Text inside mint washes (5.47:1 contrast).
 
 ### Semantic Status Tokens
+
 Brand colors must **never** be substituted for status colors:
+
 - **Success:** `--success` (`#15803d` / Green-700), `--success-soft` (`#f0fdf4`), text 5.02:1 on white.
 - **Warning:** `--warning` (`#b45309` / Amber-700), `--warning-soft` (`#fffbeb`), text 5.02:1 on white.
 - **Destructive / Error:** `--destructive` (`#dc2626` / Red-600), `--destructive-soft` (`#fef2f2`), text 4.83:1 on white.
@@ -53,6 +58,7 @@ Brand colors must **never** be substituted for status colors:
 ## 3. Borders and Elevation Scale
 
 ### The "No Excessive Borders & Shadows" Rule:
+
 - **Never** apply `border-primary/40` or heavy colored borders to cards, dividers, and widgets indiscriminately.
 - Standard borders use `--border` (`#e2e8f0` / Slate-200), delicate and restrained.
 - Dividers use `--border/60` or `--border/80`.
@@ -62,6 +68,7 @@ Brand colors must **never** be substituted for status colors:
   - `box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04)`
 
 ### Card Nesting Policy:
+
 - Cards inside cards are prohibited unless functionally separating independent sub-documents (e.g. multi-step forms).
 - Content within cards must be structured using **padding, typography, and clean horizontal or vertical list dividers**, never nested bordered boxes.
 
@@ -70,10 +77,12 @@ Brand colors must **never** be substituted for status colors:
 ## 4. Typography Hierarchy & Contrast (WCAG 2.2 AA)
 
 All text must pass minimum WCAG 2.2 AA contrast ratios:
+
 - **Normal Text (< 18px / < 14px bold):** Minimum **4.5:1** contrast.
 - **Large Text (≥ 18px / ≥ 14px bold):** Minimum **3.0:1** contrast.
 
 ### Typography Scale:
+
 - **Display / Hero H1:** `text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight text-foreground` (`#0f172a`).
 - **Page Title H1:** `text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground`.
 - **Section Title H2:** `text-xl sm:text-2xl font-bold tracking-tight text-foreground`.
@@ -84,6 +93,7 @@ All text must pass minimum WCAG 2.2 AA contrast ratios:
 - **Captions / Timestamps:** `text-xs text-muted-foreground font-medium`.
 
 ### Bengali Font Optical Rules:
+
 - When `:lang(bn)` or `.font-bengali` is active, line-height must be relaxed (`line-height: 1.625`) to prevent broken conjuncts and subscript vowels from clipping.
 - `letter-spacing: 0` is strictly enforced for Bengali text to avoid rendering broken grapheme clusters.
 
@@ -92,6 +102,7 @@ All text must pass minimum WCAG 2.2 AA contrast ratios:
 ## 5. Normalized Radius Scale
 
 To eliminate visual chaos, every component must adhere to this scale:
+
 - `rounded-md` (`0.375rem` / 6px): Small chips, tooltips, nested status dots.
 - `rounded-lg` (`0.5rem` / 8px): Dropdown items, small badges, table rows.
 - `rounded-xl` (`0.75rem` / 12px): Standard buttons, inputs, selects, form fields.

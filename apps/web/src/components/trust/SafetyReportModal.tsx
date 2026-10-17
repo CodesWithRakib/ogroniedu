@@ -78,7 +78,10 @@ export function SafetyReportModal({
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5">
-            <Label htmlFor="incident-category" className="text-xs font-semibold text-muted-foreground">
+            <Label
+              htmlFor="incident-category"
+              className="text-xs font-semibold text-muted-foreground"
+            >
               {t('category')}
             </Label>
             <Select value={category} onValueChange={setCategory}>
@@ -96,7 +99,10 @@ export function SafetyReportModal({
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="incident-severity" className="text-xs font-semibold text-muted-foreground">
+            <Label
+              htmlFor="incident-severity"
+              className="text-xs font-semibold text-muted-foreground"
+            >
               {t('severity')}
             </Label>
             <Select value={severity} onValueChange={setSeverity}>
@@ -114,7 +120,10 @@ export function SafetyReportModal({
         </div>
 
         <div className="space-y-1.5">
-          <Label htmlFor="incident-description" className="text-xs font-semibold text-muted-foreground">
+          <Label
+            htmlFor="incident-description"
+            className="text-xs font-semibold text-muted-foreground"
+          >
             Description of Incident
           </Label>
           <Textarea

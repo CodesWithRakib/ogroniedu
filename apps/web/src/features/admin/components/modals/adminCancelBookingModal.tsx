@@ -35,10 +35,7 @@ export function AdminCancelBookingModal({
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent
-        className="max-w-md w-full space-y-4"
-        data-testid="cancel-booking-modal"
-      >
+      <DialogContent className="max-w-md w-full space-y-4" data-testid="cancel-booking-modal">
         <DialogHeader className="text-left space-y-1">
           <DialogTitle className="text-lg font-bold text-destructive">
             {t('cancelIntervention')}

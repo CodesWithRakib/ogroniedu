@@ -109,7 +109,10 @@ export function ContactPage({ locale }: { locale: Locale }) {
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div className="space-y-1.5">
-                      <Label htmlFor="contact-email" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="contact-email"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {p.emailLabel} *
                       </Label>
                       <Input
@@ -123,7 +126,10 @@ export function ContactPage({ locale }: { locale: Locale }) {
                       />
                     </div>
                     <div className="space-y-1.5">
-                      <Label htmlFor="contact-phone" className="text-xs font-semibold text-foreground">
+                      <Label
+                        htmlFor="contact-phone"
+                        className="text-xs font-semibold text-foreground"
+                      >
                         {p.phoneLabel}
                       </Label>
                       <Input
@@ -159,7 +165,10 @@ export function ContactPage({ locale }: { locale: Locale }) {
                   </div>
 
                   <div className="space-y-1.5">
-                    <Label htmlFor="contact-message" className="text-xs font-semibold text-foreground">
+                    <Label
+                      htmlFor="contact-message"
+                      className="text-xs font-semibold text-foreground"
+                    >
                       {p.messageLabel} *
                     </Label>
                     <Textarea

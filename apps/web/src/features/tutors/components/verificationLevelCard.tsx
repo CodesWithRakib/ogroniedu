@@ -13,7 +13,16 @@ import {
   Upload,
 } from 'lucide-react';
 import type { VerificationDocumentType } from '@ogroniedu/contracts';
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Label, Input } from '@/components/ui';
+import {
+  Badge,
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Label,
+  Input,
+} from '@/components/ui';
 import { formatDate } from '@/lib/format';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { normalizeUnknownError } from '@/lib/api-error';
@@ -340,7 +349,10 @@ export function VerificationLevelCard({
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
               <div className="space-y-1">
-                <Label htmlFor={`document-type-${record.level}`} className="text-muted-foreground font-medium text-[11px]">
+                <Label
+                  htmlFor={`document-type-${record.level}`}
+                  className="text-muted-foreground font-medium text-[11px]"
+                >
                   {isBn ? 'নথির ধরন' : 'Document type'}
                 </Label>
                 <select
@@ -358,7 +370,10 @@ export function VerificationLevelCard({
                 </select>
               </div>
               <div className="space-y-1">
-                <Label htmlFor={`document-file-${record.level}`} className="text-muted-foreground font-medium text-[11px]">
+                <Label
+                  htmlFor={`document-file-${record.level}`}
+                  className="text-muted-foreground font-medium text-[11px]"
+                >
                   {isBn ? 'ফাইল (সর্বোচ্চ ১০MB)' : 'File (max 10MB)'}
                 </Label>
                 <Input

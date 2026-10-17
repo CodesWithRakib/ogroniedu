@@ -101,7 +101,13 @@ export function ScheduleSessionModal({
           </div>
 
           <div className="flex justify-end gap-2 pt-2">
-            <Button type="button" variant="outline" size="sm" onClick={onClose} className="rounded-xl">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onClose}
+              className="rounded-xl"
+            >
               {dict.common?.cancel || 'Cancel'}
             </Button>
             <Button

@@ -6,68 +6,68 @@
 
 ## Public marketing
 
-| Route | HTTP | Dark | Notes |
-| :--- | :-: | :-: | :--- |
-| `/bn` | 200 | none | Landing |
-| `/en` | 200 | none | English locale |
-| `/bn/tutors` | 200 | none | Discovery |
-| `/en/tutors` | 200 | none | |
-| `/bn/tutors/demo-1` | 200 | none | Profile (dummy id) |
-| `/bn/how-it-works` | 200 | none | |
-| `/bn/pricing` | 200 | none | |
-| `/bn/safety` | 200 | none | |
-| `/bn/faq` | 200 | none | |
-| `/bn/contact` | 200 | none | E2E also posts a real ticket |
-| `/bn/privacy` | 200 | none | |
-| `/bn/terms` | 200 | none | |
-| `/` | 307 | none | Locale redirect by design |
+| Route               | HTTP | Dark | Notes                        |
+| :------------------ | :--: | :--: | :--------------------------- |
+| `/bn`               | 200  | none | Landing                      |
+| `/en`               | 200  | none | English locale               |
+| `/bn/tutors`        | 200  | none | Discovery                    |
+| `/en/tutors`        | 200  | none |                              |
+| `/bn/tutors/demo-1` | 200  | none | Profile (dummy id)           |
+| `/bn/how-it-works`  | 200  | none |                              |
+| `/bn/pricing`       | 200  | none |                              |
+| `/bn/safety`        | 200  | none |                              |
+| `/bn/faq`           | 200  | none |                              |
+| `/bn/contact`       | 200  | none | E2E also posts a real ticket |
+| `/bn/privacy`       | 200  | none |                              |
+| `/bn/terms`         | 200  | none |                              |
+| `/`                 | 307  | none | Locale redirect by design    |
 
 ## Auth / onboarding / account
 
-| Route | HTTP | Dark | Notes |
-| :--- | :-: | :-: | :--- |
-| `/bn/login` · `/en/login` | 200 | none | |
-| `/bn/register` | 200 | none | |
-| `/bn/forgot-password` | 200 | none | |
-| `/bn/magic-link` | 200 | none | |
-| `/bn/onboarding` | 200 | none | Auth shell |
-| `/bn/profile` | 200 | none | |
-| `/bn/notifications` | 200 | none | |
+| Route                     | HTTP | Dark | Notes      |
+| :------------------------ | :--: | :--: | :--------- |
+| `/bn/login` · `/en/login` | 200  | none |            |
+| `/bn/register`            | 200  | none |            |
+| `/bn/forgot-password`     | 200  | none |            |
+| `/bn/magic-link`          | 200  | none |            |
+| `/bn/onboarding`          | 200  | none | Auth shell |
+| `/bn/profile`             | 200  | none |            |
+| `/bn/notifications`       | 200  | none |            |
 
 ## Dashboards (role areas + shared features)
 
-| Route | HTTP | Dark | Notes |
-| :--- | :-: | :-: | :--- |
-| `/bn/dashboard` · `/en/dashboard` | 200 | none | |
-| `/bn/dashboard/student` (+`/sessions`,`/requests`,`/payments`,`/learning`) | 200 ×5 | none | |
-| `/bn/dashboard/guardian` (+`/children`,`/children/demo-1`,`/sessions`,`/requests`,`/payments`,`/learning`) | 200 ×7 | none | |
-| `/bn/dashboard/tutor` (+`/sessions`,`/requests`,`/payments`,`/learning`,`/verification`) | 200 ×6 | none | |
-| `/bn/dashboard/admin` (+`/users`,`/bookings`,`/disputes`,`/verification`,`/analytics`,`/audit-logs`,`/settings`) | 200 ×8 | none | |
-| `/bn/sessions` · `/bn/sessions/demo-1` | 200 | none | |
-| `/bn/requests` | 200 | none | |
-| `/bn/learning` | 200 | none | |
-| `/bn/payments` · `/bn/payments/demo-1` | 200 | none | |
-| `/bn/progress/demo-1` | 200 | none | |
-| `/bn/safety-reports` | 200 | none | |
-| `/bn/tutor-replacements` | 200 | none | |
-| `/bn/bookings/demo-1` · `/bn/bookings/demo-1/pay` | 200 | none | |
-| `/bn/dashboard/bookings/demo-1` · `/bn/dashboard/bookings/demo-1/pay` | 200 | none | |
-| `/bn/tutor/bookings/demo-1` | 200 | none | |
-| `/bn/assignments/demo-1` · `…/submissions` | 200 | none | |
-| `/bn/classroom/demo-1` | 200 | none | Whiteboard canvas colours intentional |
+| Route                                                                                                            |  HTTP  | Dark | Notes                                 |
+| :--------------------------------------------------------------------------------------------------------------- | :----: | :--: | :------------------------------------ |
+| `/bn/dashboard` · `/en/dashboard`                                                                                |  200   | none |                                       |
+| `/bn/dashboard/student` (+`/sessions`,`/requests`,`/payments`,`/learning`)                                       | 200 ×5 | none |                                       |
+| `/bn/dashboard/guardian` (+`/children`,`/children/demo-1`,`/sessions`,`/requests`,`/payments`,`/learning`)       | 200 ×7 | none |                                       |
+| `/bn/dashboard/tutor` (+`/sessions`,`/requests`,`/payments`,`/learning`,`/verification`)                         | 200 ×6 | none |                                       |
+| `/bn/dashboard/admin` (+`/users`,`/bookings`,`/disputes`,`/verification`,`/analytics`,`/audit-logs`,`/settings`) | 200 ×8 | none |                                       |
+| `/bn/sessions` · `/bn/sessions/demo-1`                                                                           |  200   | none |                                       |
+| `/bn/requests`                                                                                                   |  200   | none |                                       |
+| `/bn/learning`                                                                                                   |  200   | none |                                       |
+| `/bn/payments` · `/bn/payments/demo-1`                                                                           |  200   | none |                                       |
+| `/bn/progress/demo-1`                                                                                            |  200   | none |                                       |
+| `/bn/safety-reports`                                                                                             |  200   | none |                                       |
+| `/bn/tutor-replacements`                                                                                         |  200   | none |                                       |
+| `/bn/bookings/demo-1` · `/bn/bookings/demo-1/pay`                                                                |  200   | none |                                       |
+| `/bn/dashboard/bookings/demo-1` · `/bn/dashboard/bookings/demo-1/pay`                                            |  200   | none |                                       |
+| `/bn/tutor/bookings/demo-1`                                                                                      |  200   | none |                                       |
+| `/bn/assignments/demo-1` · `…/submissions`                                                                       |  200   | none |                                       |
+| `/bn/classroom/demo-1`                                                                                           |  200   | none | Whiteboard canvas colours intentional |
 
 ## Admin console
 
-| Route | HTTP | Dark | Notes |
-| :--- | :-: | :-: | :--- |
-| `/bn/admin` | 200 | none | |
-| `/bn/analytics` | 200 | none | Renders explicit empty state (no fabricated data) |
+| Route           | HTTP | Dark | Notes                                             |
+| :-------------- | :--: | :--: | :------------------------------------------------ |
+| `/bn/admin`     | 200  | none |                                                   |
+| `/bn/analytics` | 200  | none | Renders explicit empty state (no fabricated data) |
 
 ## Excluded / by-design non-200
 
-| Route | HTTP | Reason |
-| :--- | :-: | :--- |
-| `/bn/bookings` (no id) | 404 | No such route; booking detail requires `[id]` — verified as a real Next.js 404 (not an error page) |
+| Route                  | HTTP | Reason                                                                                             |
+| :--------------------- | :--: | :------------------------------------------------------------------------------------------------- |
+| `/bn/bookings` (no id) | 404  | No such route; booking detail requires `[id]` — verified as a real Next.js 404 (not an error page) |
 
 ## Dynamic-segment caveat
 

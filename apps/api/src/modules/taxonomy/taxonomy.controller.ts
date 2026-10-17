@@ -14,7 +14,7 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, ILike } from 'typeorm';
+import { Repository } from 'typeorm';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -119,9 +119,12 @@ export class TaxonomyController {
     }
 
     if (search && search.trim()) {
-      qb.andWhere('(inst.nameEn ILIKE :search OR inst.nameBn ILIKE :search OR inst.code ILIKE :search)', {
-        search: `%${search.trim()}%`,
-      });
+      qb.andWhere(
+        '(inst.nameEn ILIKE :search OR inst.nameBn ILIKE :search OR inst.code ILIKE :search)',
+        {
+          search: `%${search.trim()}%`,
+        },
+      );
     }
 
     qb.orderBy('inst.sortOrder', 'ASC').addOrderBy('inst.nameEn', 'ASC').take(limit);

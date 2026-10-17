@@ -31,11 +31,7 @@ export function OgroniEduBrand({
           className="h-5 w-5 text-white drop-shadow-xs"
         >
           {/* Mortarboard / Graduation Cap Top */}
-          <path
-            d="M12 3L2 8L12 13L22 8L12 3Z"
-            fill="currentColor"
-            fillOpacity="0.95"
-          />
+          <path d="M12 3L2 8L12 13L22 8L12 3Z" fill="currentColor" fillOpacity="0.95" />
           {/* Mortarboard Arch Underneath */}
           <path
             d="M6 10.5V16C6 17.8 8.7 19.5 12 19.5C15.3 19.5 18 17.8 18 16V10.5"

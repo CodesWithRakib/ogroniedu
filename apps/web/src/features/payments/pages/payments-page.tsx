@@ -31,12 +31,7 @@ import {
   LoadingSpinner,
   EmptyState,
 } from '@/components/ui';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDate } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
@@ -52,9 +47,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
 
   const paidCount =
-    (pay.paidOrders?.length ?? 0) > 0
-      ? pay.paidOrders.length
-      : (pay.paidBookings?.length ?? 0);
+    (pay.paidOrders?.length ?? 0) > 0 ? pay.paidOrders.length : (pay.paidBookings?.length ?? 0);
   const dueCount = pay.dueBookings?.length ?? 0;
 
   const [receiptModalOpen, setReceiptModalOpen] = React.useState(false);
@@ -110,7 +103,8 @@ function PaymentsContent({ locale }: { locale: Locale }) {
           </div>
           <div className="mt-3">
             <h4 className="text-xl sm:text-2xl font-black text-foreground">
-              ৳ {formatLocalizedNumber(Math.round(pay.totalDueMinor / 100).toLocaleString(), locale)}
+              ৳{' '}
+              {formatLocalizedNumber(Math.round(pay.totalDueMinor / 100).toLocaleString(), locale)}
             </h4>
             <p className="text-xs text-muted-foreground mt-1 font-medium flex items-center gap-1.5">
               <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
@@ -142,7 +136,8 @@ function PaymentsContent({ locale }: { locale: Locale }) {
           </div>
           <div className="mt-3">
             <h4 className="text-xl sm:text-2xl font-black text-foreground">
-              ৳ {formatLocalizedNumber(Math.round(pay.totalPaidMinor / 100).toLocaleString(), locale)}
+              ৳{' '}
+              {formatLocalizedNumber(Math.round(pay.totalPaidMinor / 100).toLocaleString(), locale)}
             </h4>
             <p className="text-xs text-muted-foreground mt-1 font-medium flex items-center gap-1.5">
               <span className="inline-block w-2 h-2 rounded-full bg-emerald-500" />
@@ -170,9 +165,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
               {isBn ? '১০০% সুরক্ষিত' : '100% Protected'}
             </h4>
             <p className="text-xs text-muted-foreground mt-1 font-medium">
-              {isBn
-                ? 'বাংলাদেশ ব্যাংক ও দ্বৈত লেজার জামানত'
-                : 'Double-entry ledger verified'}
+              {isBn ? 'বাংলাদেশ ব্যাংক ও দ্বৈত লেজার জামানত' : 'Double-entry ledger verified'}
             </p>
           </div>
         </div>
@@ -332,9 +325,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                             {formatDate(b.createdAt, locale)}
                           </span>
                         </span>
-                        <span className="font-mono text-muted-foreground">
-                          #{b.id.slice(0, 8)}
-                        </span>
+                        <span className="font-mono text-muted-foreground">#{b.id.slice(0, 8)}</span>
                       </div>
                     </div>
 
@@ -598,10 +589,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                     data-testid="create-order-form"
                   >
                     <div className="space-y-1.5 md:col-span-1">
-                      <Label
-                        htmlFor="pay-booking"
-                        className="text-xs font-bold text-foreground"
-                      >
+                      <Label htmlFor="pay-booking" className="text-xs font-bold text-foreground">
                         {isBn ? 'টিউশন / কোর্স নির্বাচন করুন' : 'Select Tuition / Course'}
                       </Label>
                       <select
@@ -620,10 +608,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label
-                        htmlFor="pay-amount"
-                        className="text-xs font-bold text-foreground"
-                      >
+                      <Label htmlFor="pay-amount" className="text-xs font-bold text-foreground">
                         {dict.payments.totalAmount} (BDT ৳)
                       </Label>
                       <Input
@@ -638,10 +623,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label
-                        htmlFor="pay-provider"
-                        className="text-xs font-bold text-foreground"
-                      >
+                      <Label htmlFor="pay-provider" className="text-xs font-bold text-foreground">
                         {dict.payments.selectGateway}
                       </Label>
                       <select

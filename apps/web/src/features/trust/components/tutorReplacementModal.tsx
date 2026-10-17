@@ -155,7 +155,10 @@ export function TutorReplacementModal({
 
             {/* Reason Code Select */}
             <div className="space-y-1.5">
-              <Label htmlFor="replacement-reason-select" className="text-xs font-semibold text-foreground">
+              <Label
+                htmlFor="replacement-reason-select"
+                className="text-xs font-semibold text-foreground"
+              >
                 {isBn ? 'পরিবর্তন চাওয়ার কারণ:' : 'Reason for Replacement:'}
               </Label>
               <select
@@ -195,7 +198,10 @@ export function TutorReplacementModal({
 
             {/* Explanation Textarea */}
             <div className="space-y-1.5">
-              <Label htmlFor="replacement-explanation-input" className="text-xs font-semibold text-foreground">
+              <Label
+                htmlFor="replacement-explanation-input"
+                className="text-xs font-semibold text-foreground"
+              >
                 {isBn
                   ? 'বিস্তারিত প্রত্যাশা ও বিবরণ (কী ধরণের শিক্ষক চাচ্ছেন?):'
                   : 'Requirements for New Tutor:'}
@@ -215,7 +221,10 @@ export function TutorReplacementModal({
             </div>
 
             {errorMessage && (
-              <Alert variant="destructive" className="flex items-center gap-2 p-3 rounded-xl text-xs">
+              <Alert
+                variant="destructive"
+                className="flex items-center gap-2 p-3 rounded-xl text-xs"
+              >
                 <AlertTriangle className="w-4 h-4 shrink-0" />
                 <AlertDescription>{errorMessage}</AlertDescription>
               </Alert>

@@ -74,10 +74,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
             </Link>
           </Button>
           <Button asChild variant="outline" size="sm" className="rounded-full">
-            <Link
-              href={withLocale('/tutors', locale)}
-              className="flex items-center gap-1.5"
-            >
+            <Link href={withLocale('/tutors', locale)} className="flex items-center gap-1.5">
               <Search className="h-3.5 w-3.5 text-muted-foreground" />
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
             </Link>

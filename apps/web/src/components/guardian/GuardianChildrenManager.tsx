@@ -117,8 +117,16 @@ const DEFAULT_EDUCATION_LEVELS: TaxonomyOption[] = [
 ];
 
 const DEFAULT_CURRICULA: TaxonomyOption[] = [
-  { id: 'curr-nctb-bn', nameEn: 'NCTB (Bengali Medium)', nameBn: 'জাতীয় শিক্ষাক্রম (বাংলা ভার্সন)' },
-  { id: 'curr-nctb-en', nameEn: 'NCTB (English Version)', nameBn: 'জাতীয় শিক্ষাক্রম (ইংলিশ ভার্সন)' },
+  {
+    id: 'curr-nctb-bn',
+    nameEn: 'NCTB (Bengali Medium)',
+    nameBn: 'জাতীয় শিক্ষাক্রম (বাংলা ভার্সন)',
+  },
+  {
+    id: 'curr-nctb-en',
+    nameEn: 'NCTB (English Version)',
+    nameBn: 'জাতীয় শিক্ষাক্রম (ইংলিশ ভার্সন)',
+  },
   { id: 'curr-cambridge', nameEn: 'Cambridge International', nameBn: 'ক্যামব্রিজ কারিকুলাম' },
   { id: 'curr-edexcel', nameEn: 'Edexcel Pearson', nameBn: 'এডেক্সেল কারিকুলাম' },
   { id: 'curr-madrasah', nameEn: 'Madrasah Education Board', nameBn: 'মাদ্রাসা শিক্ষাক্রম' },
@@ -135,24 +143,56 @@ const DEFAULT_STREAMS: TaxonomyOption[] = [
 
 const DEFAULT_INSTITUTIONS: TaxonomyOption[] = [
   { id: 'inst-notre-dame', nameEn: 'Notre Dame College, Dhaka', nameBn: 'নটর ডেম কলেজ, ঢাকা' },
-  { id: 'inst-viqarunnisa', nameEn: 'Viqarunnisa Noon School and College', nameBn: 'ভিকারুননিসা নূন স্কুল অ্যান্ড কলেজ' },
+  {
+    id: 'inst-viqarunnisa',
+    nameEn: 'Viqarunnisa Noon School and College',
+    nameBn: 'ভিকারুননিসা নূন স্কুল অ্যান্ড কলেজ',
+  },
   { id: 'inst-rajuk', nameEn: 'Rajuk Uttara Model College', nameBn: 'রাজউক উত্তরা মডেল কলেজ' },
-  { id: 'inst-drmc', nameEn: 'Dhaka Residential Model College', nameBn: 'ঢাকা রেসিডেনসিয়াল মডেল কলেজ' },
+  {
+    id: 'inst-drmc',
+    nameEn: 'Dhaka Residential Model College',
+    nameBn: 'ঢাকা রেসিডেনসিয়াল মডেল কলেজ',
+  },
   { id: 'inst-holy-cross', nameEn: 'Holy Cross College, Dhaka', nameBn: 'হলি ক্রস কলেজ, ঢাকা' },
-  { id: 'inst-st-joseph', nameEn: 'St. Joseph Higher Secondary School', nameBn: 'সেন্ট জোসেফ উচ্চ মাধ্যমিক বিদ্যালয়' },
-  { id: 'inst-ideal', nameEn: 'Ideal School and College, Motijheel', nameBn: 'আইডিয়াল স্কুল অ্যান্ড কলেজ, মতিঝিল' },
+  {
+    id: 'inst-st-joseph',
+    nameEn: 'St. Joseph Higher Secondary School',
+    nameBn: 'সেন্ট জোসেফ উচ্চ মাধ্যমিক বিদ্যালয়',
+  },
+  {
+    id: 'inst-ideal',
+    nameEn: 'Ideal School and College, Motijheel',
+    nameBn: 'আইডিয়াল স্কুল অ্যান্ড কলেজ, মতিঝিল',
+  },
   { id: 'inst-dhaka-college', nameEn: 'Dhaka College', nameBn: 'ঢাকা কলেজ' },
   { id: 'inst-adamjee', nameEn: 'Adamjee Cantonment College', nameBn: 'আদমজী ক্যান্টনমেন্ট কলেজ' },
   { id: 'inst-city-college', nameEn: 'Dhaka City College', nameBn: 'ঢাকা সিটি কলেজ' },
-  { id: 'inst-govt-lab', nameEn: 'Government Laboratory High School', nameBn: 'গভর্নমেন্ট ল্যাবরেটরি হাই স্কুল' },
+  {
+    id: 'inst-govt-lab',
+    nameEn: 'Government Laboratory High School',
+    nameBn: 'গভর্নমেন্ট ল্যাবরেটরি হাই স্কুল',
+  },
   { id: 'inst-chittagong-college', nameEn: 'Chittagong College', nameBn: 'চট্টগ্রাম কলেজ' },
   { id: 'inst-rajshahi-college', nameEn: 'Rajshahi College', nameBn: 'রাজশাহী কলেজ' },
   { id: 'inst-milestone', nameEn: 'Milestone College, Uttara', nameBn: 'মাইলস্টোন কলেজ, উত্তরা' },
   { id: 'inst-baf-shaheen', nameEn: 'BAF Shaheen College Dhaka', nameBn: 'বিএএফ শাহীন কলেজ ঢাকা' },
-  { id: 'inst-sylhet-mc', nameEn: 'Murari Chand (MC) College, Sylhet', nameBn: 'মুরারিচাঁদ (এমসি) কলেজ, সিলেট' },
-  { id: 'inst-barishal-bm', nameEn: 'Govt. Brajamohan (BM) College, Barishal', nameBn: 'সরকারি ব্রজমোহন (বিএম) কলেজ, বরিশাল' },
+  {
+    id: 'inst-sylhet-mc',
+    nameEn: 'Murari Chand (MC) College, Sylhet',
+    nameBn: 'মুরারিচাঁদ (এমসি) কলেজ, সিলেট',
+  },
+  {
+    id: 'inst-barishal-bm',
+    nameEn: 'Govt. Brajamohan (BM) College, Barishal',
+    nameBn: 'সরকারি ব্রজমোহন (বিএম) কলেজ, বরিশাল',
+  },
   { id: 'inst-du', nameEn: 'University of Dhaka', nameBn: 'ঢাকা বিশ্ববিদ্যালয়' },
-  { id: 'inst-buet', nameEn: 'Bangladesh University of Engineering and Technology (BUET)', nameBn: 'বাংলাদেশ প্রকৌশল বিশ্ববিদ্যালয় (বুয়েট)' },
+  {
+    id: 'inst-buet',
+    nameEn: 'Bangladesh University of Engineering and Technology (BUET)',
+    nameBn: 'বাংলাদেশ প্রকৌশল বিশ্ববিদ্যালয় (বুয়েট)',
+  },
   { id: 'inst-dmc', nameEn: 'Dhaka Medical College', nameBn: 'ঢাকা মেডিকেল কলেজ' },
 ];
 
@@ -260,8 +300,15 @@ export function GuardianChildrenManager({
           </div>
           <div className="space-y-1">
             <h4 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <span>{isBn ? 'অভিভাবক সুরক্ষা ও শিক্ষার্থী সক্ষমতা নীতি' : 'Minor Student Protection & Guardian Escrow'}</span>
-              <Badge variant="outline" className="text-[10px] bg-primary/10 text-primary border-primary/30">
+              <span>
+                {isBn
+                  ? 'অভিভাবক সুরক্ষা ও শিক্ষার্থী সক্ষমতা নীতি'
+                  : 'Minor Student Protection & Guardian Escrow'}
+              </span>
+              <Badge
+                variant="outline"
+                className="text-[10px] bg-primary/10 text-primary border-primary/30"
+              >
                 BD Minor Safe
               </Badge>
             </h4>
@@ -364,8 +411,7 @@ export function GuardianChildrenManager({
                           </span>
                           <span>•</span>
                           <span>
-                            {child.educationLevelName ||
-                              (isBn ? 'শ্রেণি স্তর' : 'Grade Level')}
+                            {child.educationLevelName || (isBn ? 'শ্রেণি স্তর' : 'Grade Level')}
                           </span>
                           {child.stream && (
                             <>
@@ -387,7 +433,9 @@ export function GuardianChildrenManager({
                     <div className="p-2.5 rounded-xl bg-surface-muted border border-border/60 text-xs text-muted-foreground flex items-start gap-2">
                       <Sparkles className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
                       <span className="line-clamp-2">
-                        <strong className="text-foreground">{isBn ? 'শেখার লক্ষ্য: ' : 'Goal: '}</strong>
+                        <strong className="text-foreground">
+                          {isBn ? 'শেখার লক্ষ্য: ' : 'Goal: '}
+                        </strong>
                         {child.learningGoals}
                       </span>
                     </div>
@@ -397,7 +445,9 @@ export function GuardianChildrenManager({
                     <span className="flex items-center gap-1.5">
                       <ShieldCheck className="h-4 w-4 text-success-soft-foreground" />
                       {isBn ? 'সম্পর্ক:' : 'Relation:'}{' '}
-                      <strong className="text-foreground capitalize">{child.relationshipType}</strong>
+                      <strong className="text-foreground capitalize">
+                        {child.relationshipType}
+                      </strong>
                     </span>
                     <span className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground bg-surface-muted px-2 py-0.5 rounded-lg border border-border/60">
                       <Lock className="h-3 w-3" />
@@ -412,9 +462,7 @@ export function GuardianChildrenManager({
                     className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors"
                     data-testid={`link-child-detail-${child.studentId}`}
                   >
-                    <span>
-                      {isBn ? 'একাডেমিক প্রোফাইল ও তদারকি' : 'Academic Oversight'}
-                    </span>
+                    <span>{isBn ? 'একাডেমিক প্রোফাইল ও তদারকি' : 'Academic Oversight'}</span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                   <Button
@@ -492,7 +540,11 @@ export function GuardianChildrenManager({
             <form onSubmit={handleRegisterChild} className="space-y-4 pt-1">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
                 <div className="space-y-1.5 sm:col-span-2">
-                  <Label htmlFor="reg-child-name" required className="text-xs font-semibold text-foreground">
+                  <Label
+                    htmlFor="reg-child-name"
+                    required
+                    className="text-xs font-semibold text-foreground"
+                  >
                     {isBn ? 'সন্তানের পুরো নাম' : "Child's Full Name"}
                   </Label>
                   <Input
@@ -517,14 +569,20 @@ export function GuardianChildrenManager({
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="reg-child-gender" className="text-xs font-semibold text-foreground">
+                  <Label
+                    htmlFor="reg-child-gender"
+                    className="text-xs font-semibold text-foreground"
+                  >
                     {isBn ? 'লিঙ্গ' : 'Gender'}
                   </Label>
                   <Select
                     value={regGender}
                     onValueChange={(val) => setRegGender(val as 'male' | 'female')}
                   >
-                    <SelectTrigger id="reg-child-gender" className="rounded-2xl bg-card border-border text-sm">
+                    <SelectTrigger
+                      id="reg-child-gender"
+                      className="rounded-2xl bg-card border-border text-sm"
+                    >
                       <SelectValue placeholder={isBn ? 'লিঙ্গ নির্বাচন করুন' : 'Select gender'} />
                     </SelectTrigger>
                     <SelectContent>
@@ -536,7 +594,10 @@ export function GuardianChildrenManager({
 
                 <div className="space-y-1.5 sm:col-span-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="reg-child-institution" className="text-xs font-semibold text-foreground">
+                    <Label
+                      htmlFor="reg-child-institution"
+                      className="text-xs font-semibold text-foreground"
+                    >
                       {isBn ? 'শিক্ষা প্রতিষ্ঠান / স্কুলের নাম' : 'School / Institution Name'}
                     </Label>
                     <button
@@ -558,7 +619,11 @@ export function GuardianChildrenManager({
                       id="reg-child-institution"
                       value={regInstitution}
                       onChange={(e) => setRegInstitution(e.target.value)}
-                      placeholder={isBn ? 'প্রতিষ্ঠানের নাম লিখুন (যেমন: রাজউক উত্তরা মডেল কলেজ)' : 'Enter school or college name'}
+                      placeholder={
+                        isBn
+                          ? 'প্রতিষ্ঠানের নাম লিখুন (যেমন: রাজউক উত্তরা মডেল কলেজ)'
+                          : 'Enter school or college name'
+                      }
                     />
                   ) : (
                     <Select
@@ -572,8 +637,15 @@ export function GuardianChildrenManager({
                         }
                       }}
                     >
-                      <SelectTrigger id="reg-child-institution" className="rounded-2xl bg-card border-border text-sm">
-                        <SelectValue placeholder={isBn ? 'শিক্ষা প্রতিষ্ঠান নির্বাচন করুন' : 'Select Institution / School'} />
+                      <SelectTrigger
+                        id="reg-child-institution"
+                        className="rounded-2xl bg-card border-border text-sm"
+                      >
+                        <SelectValue
+                          placeholder={
+                            isBn ? 'শিক্ষা প্রতিষ্ঠান নির্বাচন করুন' : 'Select Institution / School'
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent className="max-h-60">
                         {institutions.map((inst) => (
@@ -582,7 +654,9 @@ export function GuardianChildrenManager({
                           </SelectItem>
                         ))}
                         <SelectItem value="__custom__" className="font-semibold text-primary">
-                          {isBn ? '➕ অন্য কোনো প্রতিষ্ঠান লিখুন...' : '➕ Enter other institution...'}
+                          {isBn
+                            ? '➕ অন্য কোনো প্রতিষ্ঠান লিখুন...'
+                            : '➕ Enter other institution...'}
                         </SelectItem>
                       </SelectContent>
                     </Select>
@@ -590,14 +664,20 @@ export function GuardianChildrenManager({
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="reg-child-level" className="text-xs font-semibold text-foreground">
+                  <Label
+                    htmlFor="reg-child-level"
+                    className="text-xs font-semibold text-foreground"
+                  >
                     {isBn ? 'শ্রেণি / গ্রেড' : 'Grade / Education Level'}
                   </Label>
                   <Select
                     value={regEducationLevelId}
                     onValueChange={(val) => setRegEducationLevelId(val)}
                   >
-                    <SelectTrigger id="reg-child-level" className="rounded-2xl bg-card border-border text-sm">
+                    <SelectTrigger
+                      id="reg-child-level"
+                      className="rounded-2xl bg-card border-border text-sm"
+                    >
                       <SelectValue placeholder={isBn ? 'শ্রেণি নির্বাচন করুন' : 'Select Grade'} />
                     </SelectTrigger>
                     <SelectContent>
@@ -611,15 +691,20 @@ export function GuardianChildrenManager({
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="reg-child-curriculum" className="text-xs font-semibold text-foreground">
+                  <Label
+                    htmlFor="reg-child-curriculum"
+                    className="text-xs font-semibold text-foreground"
+                  >
                     {isBn ? 'কারিকুলাম / মাধ্যম' : 'Curriculum'}
                   </Label>
-                  <Select
-                    value={regCurriculumId}
-                    onValueChange={(val) => setRegCurriculumId(val)}
-                  >
-                    <SelectTrigger id="reg-child-curriculum" className="rounded-2xl bg-card border-border text-sm">
-                      <SelectValue placeholder={isBn ? 'কারিকুলাম নির্বাচন করুন' : 'Select Curriculum'} />
+                  <Select value={regCurriculumId} onValueChange={(val) => setRegCurriculumId(val)}>
+                    <SelectTrigger
+                      id="reg-child-curriculum"
+                      className="rounded-2xl bg-card border-border text-sm"
+                    >
+                      <SelectValue
+                        placeholder={isBn ? 'কারিকুলাম নির্বাচন করুন' : 'Select Curriculum'}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {curricula.map((curr) => (
@@ -633,7 +718,10 @@ export function GuardianChildrenManager({
 
                 <div className="space-y-1.5 sm:col-span-2">
                   <div className="flex items-center justify-between">
-                    <Label htmlFor="reg-child-stream" className="text-xs font-semibold text-foreground">
+                    <Label
+                      htmlFor="reg-child-stream"
+                      className="text-xs font-semibold text-foreground"
+                    >
                       {isBn ? 'শাখা / বিভাগ (ঐচ্ছিক)' : 'Stream / Group (Optional)'}
                     </Label>
                     <button
@@ -655,7 +743,11 @@ export function GuardianChildrenManager({
                       id="reg-child-stream"
                       value={regStream}
                       onChange={(e) => setRegStream(e.target.value)}
-                      placeholder={isBn ? 'যেমন: বিজ্ঞান, মানবিক, ব্যবসায় শিক্ষা' : 'e.g. Science, Arts, Commerce'}
+                      placeholder={
+                        isBn
+                          ? 'যেমন: বিজ্ঞান, মানবিক, ব্যবসায় শিক্ষা'
+                          : 'e.g. Science, Arts, Commerce'
+                      }
                     />
                   ) : (
                     <Select
@@ -669,8 +761,15 @@ export function GuardianChildrenManager({
                         }
                       }}
                     >
-                      <SelectTrigger id="reg-child-stream" className="rounded-2xl bg-card border-border text-sm">
-                        <SelectValue placeholder={isBn ? 'শাখা / বিভাগ নির্বাচন করুন' : 'Select Stream / Group'} />
+                      <SelectTrigger
+                        id="reg-child-stream"
+                        className="rounded-2xl bg-card border-border text-sm"
+                      >
+                        <SelectValue
+                          placeholder={
+                            isBn ? 'শাখা / বিভাগ নির্বাচন করুন' : 'Select Stream / Group'
+                          }
+                        />
                       </SelectTrigger>
                       <SelectContent>
                         {streams.map((st) => (
@@ -687,7 +786,10 @@ export function GuardianChildrenManager({
                 </div>
 
                 <div className="space-y-1.5 sm:col-span-2">
-                  <Label htmlFor="reg-child-goals" className="text-xs font-semibold text-foreground">
+                  <Label
+                    htmlFor="reg-child-goals"
+                    className="text-xs font-semibold text-foreground"
+                  >
                     {isBn ? 'শেখার লক্ষ্য ও বিশেষ দুর্বলতা' : 'Learning Goals & Specific Needs'}
                   </Label>
                   <textarea
@@ -705,7 +807,10 @@ export function GuardianChildrenManager({
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="reg-child-phone" className="text-xs font-semibold text-foreground">
+                  <Label
+                    htmlFor="reg-child-phone"
+                    className="text-xs font-semibold text-foreground"
+                  >
                     {isBn ? 'সন্তানের মোবাইল নম্বর (যদি থাকে)' : "Child's Mobile (Optional)"}
                   </Label>
                   <Input
@@ -717,7 +822,10 @@ export function GuardianChildrenManager({
                 </div>
 
                 <div className="space-y-1.5">
-                  <Label htmlFor="reg-child-email" className="text-xs font-semibold text-foreground">
+                  <Label
+                    htmlFor="reg-child-email"
+                    className="text-xs font-semibold text-foreground"
+                  >
                     {isBn ? 'সন্তানের ইমেইল (যদি থাকে)' : "Child's Email (Optional)"}
                   </Label>
                   <Input
@@ -730,14 +838,21 @@ export function GuardianChildrenManager({
                 </div>
 
                 <div className="space-y-1.5 sm:col-span-2">
-                  <Label htmlFor="reg-select-relationship" required className="text-xs font-semibold text-foreground">
+                  <Label
+                    htmlFor="reg-select-relationship"
+                    required
+                    className="text-xs font-semibold text-foreground"
+                  >
                     {dict.guardian.relationship}
                   </Label>
                   <Select
                     value={relationship}
                     onValueChange={(val) => setRelationship(toGuardianRelationship(val))}
                   >
-                    <SelectTrigger id="reg-select-relationship" className="w-full rounded-2xl bg-card border-border text-sm">
+                    <SelectTrigger
+                      id="reg-select-relationship"
+                      className="w-full rounded-2xl bg-card border-border text-sm"
+                    >
                       <SelectValue placeholder={dict.guardian.relationship} />
                     </SelectTrigger>
                     <SelectContent>
@@ -771,10 +886,21 @@ export function GuardianChildrenManager({
               </div>
 
               <div className="pt-2 flex justify-end gap-3">
-                <Button type="button" variant="outline" onClick={closeModal} disabled={loading} className="rounded-full px-5">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={closeModal}
+                  disabled={loading}
+                  className="rounded-full px-5"
+                >
                   {dict.common.cancel}
                 </Button>
-                <Button type="submit" disabled={loading} isLoading={loading} className="rounded-full px-6 shadow-xs font-semibold">
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  isLoading={loading}
+                  className="rounded-full px-6 shadow-xs font-semibold"
+                >
                   {isBn ? 'সন্তান নিবন্ধন সম্পন্ন করুন' : 'Complete Registration'}
                 </Button>
               </div>
@@ -783,7 +909,11 @@ export function GuardianChildrenManager({
             /* TAB 2: Link Existing Student Account */
             <form onSubmit={handleLinkChild} className="space-y-4 pt-1">
               <div className="space-y-1.5">
-                <Label htmlFor="input-student-identifier" required className="text-xs font-semibold text-foreground">
+                <Label
+                  htmlFor="input-student-identifier"
+                  required
+                  className="text-xs font-semibold text-foreground"
+                >
                   {dict.guardian.studentIdentifier}
                 </Label>
                 <Input
@@ -796,14 +926,21 @@ export function GuardianChildrenManager({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="select-relationship" required className="text-xs font-semibold text-foreground">
+                <Label
+                  htmlFor="select-relationship"
+                  required
+                  className="text-xs font-semibold text-foreground"
+                >
                   {dict.guardian.relationship}
                 </Label>
                 <Select
                   value={relationship}
                   onValueChange={(val) => setRelationship(toGuardianRelationship(val))}
                 >
-                  <SelectTrigger id="select-relationship" className="w-full rounded-2xl bg-card border-border text-sm">
+                  <SelectTrigger
+                    id="select-relationship"
+                    className="w-full rounded-2xl bg-card border-border text-sm"
+                  >
                     <SelectValue placeholder={dict.guardian.relationship} />
                   </SelectTrigger>
                   <SelectContent>
@@ -835,10 +972,21 @@ export function GuardianChildrenManager({
               </div>
 
               <div className="pt-2 flex justify-end gap-3">
-                <Button type="button" variant="outline" onClick={closeModal} disabled={loading} className="rounded-full px-5">
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={closeModal}
+                  disabled={loading}
+                  className="rounded-full px-5"
+                >
                   {dict.common.cancel}
                 </Button>
-                <Button type="submit" disabled={loading} isLoading={loading} className="rounded-full px-6 shadow-xs font-semibold">
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  isLoading={loading}
+                  className="rounded-full px-6 shadow-xs font-semibold"
+                >
                   {isBn ? 'অ্যাকাউন্ট লিঙ্ক করুন' : 'Link Student Account'}
                 </Button>
               </div>

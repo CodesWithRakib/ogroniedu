@@ -97,7 +97,10 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
                   ? '৪৮ ঘণ্টার মধ্যে শিক্ষক নিশ্চিতকরণ বা সম্পূর্ণ রিফান্ড'
                   : '48-Hour Matching Guarantee (FR-011)'}
               </h3>
-              <Badge variant="outline" className="text-xs border-primary/40 text-success-soft-foreground">
+              <Badge
+                variant="outline"
+                className="text-xs border-primary/40 text-success-soft-foreground"
+              >
                 {isBn ? '১০০% মানি-ব্যাক' : '100% Refundable'}
               </Badge>
             </div>

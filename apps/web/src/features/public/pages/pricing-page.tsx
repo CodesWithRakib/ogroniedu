@@ -67,7 +67,10 @@ export function PricingPage({ locale }: { locale: Locale }) {
             {p.studentFreeNotice}
           </p>
         </div>
-        <Button asChild className="rounded-full px-7 font-semibold shadow-xs font-bengali whitespace-nowrap">
+        <Button
+          asChild
+          className="rounded-full px-7 font-semibold shadow-xs font-bengali whitespace-nowrap"
+        >
           <Link href={`/${locale}/tutors`} className="flex items-center gap-2">
             <span>{dict.nav.findTutors}</span>
             <ArrowRight className="h-4 w-4" />
@@ -196,7 +199,9 @@ export function PricingPage({ locale }: { locale: Locale }) {
               <span className="font-bengali">
                 {locale === 'bn' ? 'প্ল্যাটফর্ম সার্ভিস ফি (৮%):' : 'Platform Fee (8%):'}
               </span>
-              <span className="font-semibold text-foreground">৳{formatGroupedNumber(platformFee, locale)}</span>
+              <span className="font-semibold text-foreground">
+                ৳{formatGroupedNumber(platformFee, locale)}
+              </span>
             </div>
           </div>
         </div>

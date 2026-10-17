@@ -58,7 +58,15 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
 
           <Button onClick={handleSave} className="flex items-center gap-2">
             {saved ? <Check className="w-4 h-4" /> : <RefreshCw className="w-4 h-4" />}
-            <span>{saved ? (isBn ? 'সংরক্ষিত হয়েছে!' : 'Saved!') : isBn ? 'পরিবর্তন সংরক্ষণ করুন' : 'Save Changes'}</span>
+            <span>
+              {saved
+                ? isBn
+                  ? 'সংরক্ষিত হয়েছে!'
+                  : 'Saved!'
+                : isBn
+                  ? 'পরিবর্তন সংরক্ষণ করুন'
+                  : 'Save Changes'}
+            </span>
           </Button>
         </div>
 
@@ -78,10 +86,14 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-foreground">
-                  {isBn ? 'সুপার অ্যাডমিনদের জন্য ২-ফ্যাক্টর (2FA)' : 'Mandatory 2FA for Super Admins'}
+                  {isBn
+                    ? 'সুপার অ্যাডমিনদের জন্য ২-ফ্যাক্টর (2FA)'
+                    : 'Mandatory 2FA for Super Admins'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {isBn ? 'সকল প্রশাসনিক অ্যাকাউন্টের জন্য ওটিপি বাধ্যতামূলক করা' : 'Enforce TOTP authenticator or SMS OTP for admin roles'}
+                  {isBn
+                    ? 'সকল প্রশাসনিক অ্যাকাউন্টের জন্য ওটিপি বাধ্যতামূলক করা'
+                    : 'Enforce TOTP authenticator or SMS OTP for admin roles'}
                 </p>
               </div>
               <button
@@ -89,7 +101,9 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
                 onClick={() => setEnforce2FA(!enforce2FA)}
                 className={`w-12 h-6 rounded-full transition-colors relative p-0.5 ${enforce2FA ? 'bg-primary' : 'bg-muted'}`}
               >
-                <div className={`w-5 h-5 rounded-full bg-white transition-transform ${enforce2FA ? 'translate-x-6' : 'translate-x-0'}`} />
+                <div
+                  className={`w-5 h-5 rounded-full bg-white transition-transform ${enforce2FA ? 'translate-x-6' : 'translate-x-0'}`}
+                />
               </button>
             </div>
           </div>
@@ -101,7 +115,9 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
                   {isBn ? 'স্ট্রিক্ট আইপি লোকেশন ভ্যালিডেশন' : 'Strict IP Whitelisting for Admins'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
-                  {isBn ? 'অজ্ঞাত আইপি থেকে অ্যাডমিন কনসোল অ্যাক্সেস ব্লক করা' : 'Block admin sign-ins outside configured office IP subnets'}
+                  {isBn
+                    ? 'অজ্ঞাত আইপি থেকে অ্যাডমিন কনসোল অ্যাক্সেস ব্লক করা'
+                    : 'Block admin sign-ins outside configured office IP subnets'}
                 </p>
               </div>
               <button
@@ -109,7 +125,9 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
                 onClick={() => setStrictIPCheck(!strictIPCheck)}
                 className={`w-12 h-6 rounded-full transition-colors relative p-0.5 ${strictIPCheck ? 'bg-primary' : 'bg-muted'}`}
               >
-                <div className={`w-5 h-5 rounded-full bg-white transition-transform ${strictIPCheck ? 'translate-x-6' : 'translate-x-0'}`} />
+                <div
+                  className={`w-5 h-5 rounded-full bg-white transition-transform ${strictIPCheck ? 'translate-x-6' : 'translate-x-0'}`}
+                />
               </button>
             </div>
           </div>
@@ -120,7 +138,9 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
                 {isBn ? 'অ্যাডমিন সেশন টাইমআউট (মিনিট)' : 'Admin Session Expiry Window (Minutes)'}
               </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {isBn ? 'নিষ্ক্রিয় থাকার পর অটো-লগআউট সময়সীমা' : 'Idle duration before administrator session token expires'}
+                {isBn
+                  ? 'নিষ্ক্রিয় থাকার পর অটো-লগআউট সময়সীমা'
+                  : 'Idle duration before administrator session token expires'}
               </p>
             </div>
             <input
@@ -140,7 +160,9 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
                 {isBn ? 'সর্বোচ্চ ব্যর্থ লগইন প্রচেষ্টা' : 'Max Failed Login Attempts'}
               </h3>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {isBn ? 'অ্যাকাউন্ট সাময়িক লকআউটের পূর্বের ব্যর্থ পাসওয়ার্ড সীমা' : 'Lockout trigger count before enforcing 15-minute cool-off'}
+                {isBn
+                  ? 'অ্যাকাউন্ট সাময়িক লকআউটের পূর্বের ব্যর্থ পাসওয়ার্ড সীমা'
+                  : 'Lockout trigger count before enforcing 15-minute cool-off'}
               </p>
             </div>
             <input

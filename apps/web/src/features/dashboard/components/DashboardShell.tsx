@@ -97,7 +97,9 @@ export function DashboardShell({
                 </h1>
               )}
               {subtitle && (
-                  <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">{subtitle}</p>
+                <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+                  {subtitle}
+                </p>
               )}
             </div>
             {actions && <div className="flex items-center gap-2">{actions}</div>}
@@ -168,7 +170,9 @@ export function DashboardShell({
                   </h1>
                 )}
                 {subtitle && (
-                    <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">{subtitle}</p>
+                  <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed">
+                    {subtitle}
+                  </p>
                 )}
               </div>
             )}

@@ -116,8 +116,13 @@ export function BookingRequestModal({
                   value={value.studentId}
                   onValueChange={(val) => onChange({ studentId: val })}
                 >
-                  <SelectTrigger className="w-full rounded-2xl bg-card border-border text-xs" data-testid="booking-student-select">
-                    <SelectValue placeholder={dict.bookingRequest?.selectStudent || 'Select Student'} />
+                  <SelectTrigger
+                    className="w-full rounded-2xl bg-card border-border text-xs"
+                    data-testid="booking-student-select"
+                  >
+                    <SelectValue
+                      placeholder={dict.bookingRequest?.selectStudent || 'Select Student'}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {studentOptions.map((s) => (
@@ -134,11 +139,11 @@ export function BookingRequestModal({
                 <Label className="font-semibold text-foreground text-xs">
                   {dict.bookingRequest?.selectLevel || 'Select Level'}
                 </Label>
-                <Select
-                  value={value.levelId}
-                  onValueChange={(val) => onChange({ levelId: val })}
-                >
-                  <SelectTrigger className="w-full rounded-2xl bg-card border-border text-xs" data-testid="booking-level-select">
+                <Select value={value.levelId} onValueChange={(val) => onChange({ levelId: val })}>
+                  <SelectTrigger
+                    className="w-full rounded-2xl bg-card border-border text-xs"
+                    data-testid="booking-level-select"
+                  >
                     <SelectValue placeholder={dict.bookingRequest?.selectLevel || 'Select Level'} />
                   </SelectTrigger>
                   <SelectContent>
@@ -155,12 +160,14 @@ export function BookingRequestModal({
               <Label className="font-semibold text-foreground text-xs">
                 {dict.bookingRequest?.selectSubject || 'Select Subject'}
               </Label>
-              <Select
-                value={value.subjectId}
-                onValueChange={(val) => onChange({ subjectId: val })}
-              >
-                <SelectTrigger className="w-full rounded-2xl bg-card border-border text-xs" data-testid="booking-subject-select">
-                  <SelectValue placeholder={dict.bookingRequest?.selectSubject || 'Select Subject'} />
+              <Select value={value.subjectId} onValueChange={(val) => onChange({ subjectId: val })}>
+                <SelectTrigger
+                  className="w-full rounded-2xl bg-card border-border text-xs"
+                  data-testid="booking-subject-select"
+                >
+                  <SelectValue
+                    placeholder={dict.bookingRequest?.selectSubject || 'Select Subject'}
+                  />
                 </SelectTrigger>
                 <SelectContent>
                   {tutor.subjects.map((sub) => (
@@ -181,12 +188,17 @@ export function BookingRequestModal({
                 value={value.mode}
                 onValueChange={(val) => onChange({ mode: val as BookingFormValue['mode'] })}
               >
-                <SelectTrigger className="w-full rounded-2xl bg-card border-border text-xs" data-testid="booking-mode-select">
+                <SelectTrigger
+                  className="w-full rounded-2xl bg-card border-border text-xs"
+                  data-testid="booking-mode-select"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="online">{dict.tutor?.modeOnline || 'Online'}</SelectItem>
-                  <SelectItem value="in_person">{dict.tutor?.modeInPerson || 'In-person'}</SelectItem>
+                  <SelectItem value="in_person">
+                    {dict.tutor?.modeInPerson || 'In-person'}
+                  </SelectItem>
                   <SelectItem value="hybrid">{dict.tutor?.modeHybrid || 'Hybrid'}</SelectItem>
                 </SelectContent>
               </Select>
@@ -233,7 +245,13 @@ export function BookingRequestModal({
             </div>
 
             <div className="flex justify-end gap-3 pt-2">
-              <Button type="button" variant="outline" size="sm" onClick={onClose} className="rounded-full px-5">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={onClose}
+                className="rounded-full px-5"
+              >
                 {dict.common?.cancel || 'Cancel'}
               </Button>
               <Button

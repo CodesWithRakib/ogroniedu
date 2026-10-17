@@ -66,7 +66,9 @@ export function AdminUsersTutorsPage({ locale }: { locale: Locale }) {
           <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
           <input
             type="text"
-            placeholder={isBn ? 'শিক্ষকের নাম বা ইমেইল দিয়ে খুঁজুন...' : 'Search tutor by name or email...'}
+            placeholder={
+              isBn ? 'শিক্ষকের নাম বা ইমেইল দিয়ে খুঁজুন...' : 'Search tutor by name or email...'
+            }
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             className="w-full pl-10 pr-4 py-2 rounded-xl bg-card border border-border/80 text-foreground text-xs shadow-2xs"
@@ -79,11 +81,21 @@ export function AdminUsersTutorsPage({ locale }: { locale: Locale }) {
             <table className="w-full text-left text-xs text-foreground">
               <thead className="bg-muted/40 uppercase tracking-wider text-[10px] font-bold text-muted-foreground border-b border-border/60">
                 <tr>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'শিক্ষক' : 'TUTOR'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'যোগাযোগ' : 'CONTACT'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'ভেরিফিকেশন' : 'VERIFICATION'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'স্ট্যাটাস' : 'STATUS'}</th>
-                  <th scope="col" className="px-5 py-3.5">{isBn ? 'যোগদানের তারিখ' : 'JOINED'}</th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'শিক্ষক' : 'TUTOR'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'যোগাযোগ' : 'CONTACT'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'ভেরিফিকেশন' : 'VERIFICATION'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'স্ট্যাটাস' : 'STATUS'}
+                  </th>
+                  <th scope="col" className="px-5 py-3.5">
+                    {isBn ? 'যোগদানের তারিখ' : 'JOINED'}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
@@ -109,7 +121,9 @@ export function AdminUsersTutorsPage({ locale }: { locale: Locale }) {
                           </div>
                           <div>
                             <p className="font-bold text-foreground">{tutor.displayName}</p>
-                            <p className="text-[10px] text-muted-foreground font-mono">{tutor.id.slice(0, 8)}</p>
+                            <p className="text-[10px] text-muted-foreground font-mono">
+                              {tutor.id.slice(0, 8)}
+                            </p>
                           </div>
                         </div>
                       </td>

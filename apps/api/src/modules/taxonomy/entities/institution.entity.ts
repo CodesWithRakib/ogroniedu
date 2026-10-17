@@ -1,11 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, Index } from 'typeorm';
 
 export type InstitutionType =
-  | 'school'
-  | 'college'
-  | 'school_and_college'
-  | 'university'
-  | 'madrasah';
+  'school' | 'college' | 'school_and_college' | 'university' | 'madrasah';
 
 @Entity('academic_institutions')
 @Index('ix_academic_institutions_type', ['type'])

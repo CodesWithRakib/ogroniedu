@@ -15,7 +15,9 @@ import {
 } from '@/components/ui/table';
 import type { AdminBookingItem } from '../../types/admin.types';
 
-function bookingStatusVariant(status: AdminBookingItem['status']): 'primary' | 'success' | 'outline' {
+function bookingStatusVariant(
+  status: AdminBookingItem['status'],
+): 'primary' | 'success' | 'outline' {
   if (status === 'confirmed') return 'primary';
   if (status === 'completed') return 'success';
   return 'outline';
@@ -63,8 +65,12 @@ export function AdminBookingsTab({
                   <TableCell className="px-4 py-3 font-mono text-[11px] text-muted-foreground">
                     {booking.id.substring(0, 8)}...
                   </TableCell>
-                  <TableCell className="px-4 py-3 font-medium text-foreground">{booking.studentName}</TableCell>
-                  <TableCell className="px-4 py-3 text-foreground/90">{booking.tutorName}</TableCell>
+                  <TableCell className="px-4 py-3 font-medium text-foreground">
+                    {booking.studentName}
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-foreground/90">
+                    {booking.tutorName}
+                  </TableCell>
                   <TableCell className="px-4 py-3 text-muted-foreground">
                     {booking.subjectName} ({booking.mode})
                   </TableCell>

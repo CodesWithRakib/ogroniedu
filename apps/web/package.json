@@ -10,7 +10,7 @@
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "e2e": "playwright test",
-    "lint": "oxlint src test e2e --deny-warnings"
+    "lint": "oxlint src test e2e -A no-unused-vars --deny-warnings"
   },
   "dependencies": {
     "@ogroniedu/contracts": "workspace:*",

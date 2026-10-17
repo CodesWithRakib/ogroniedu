@@ -93,7 +93,8 @@ export function StudentAcademicProfileCard({
     try {
       await upsertProfile({
         institutionName: institution.trim() || undefined,
-        educationLevelId: educationLevelId && educationLevelId !== 'none' ? educationLevelId : undefined,
+        educationLevelId:
+          educationLevelId && educationLevelId !== 'none' ? educationLevelId : undefined,
         curriculumId: curriculumId && curriculumId !== 'none' ? curriculumId : undefined,
         stream: stream.trim() || undefined,
         learningGoals: learningGoals.trim() || undefined,
@@ -270,7 +271,10 @@ export function StudentAcademicProfileCard({
           </DialogHeader>
 
           {errorMessage && (
-            <Alert variant="destructive" className="mt-2 rounded-xl bg-destructive-soft border-destructive/30">
+            <Alert
+              variant="destructive"
+              className="mt-2 rounded-xl bg-destructive-soft border-destructive/30"
+            >
               <AlertCircle className="h-4 w-4" />
               <AlertDescription className="text-xs font-semibold text-destructive">
                 {errorMessage}
@@ -280,7 +284,10 @@ export function StudentAcademicProfileCard({
 
           <form onSubmit={handleSave} className="space-y-4 pt-1">
             <div className="space-y-1.5">
-              <Label htmlFor="academic-institution" className="text-xs font-semibold text-foreground">
+              <Label
+                htmlFor="academic-institution"
+                className="text-xs font-semibold text-foreground"
+              >
                 {isBn ? 'শিক্ষা প্রতিষ্ঠানের নাম' : 'Institution Name'}
               </Label>
               <Input
@@ -306,7 +313,10 @@ export function StudentAcademicProfileCard({
                   value={educationLevelId || 'none'}
                   onValueChange={(val) => setEducationLevelId(val === 'none' ? '' : val)}
                 >
-                  <SelectTrigger id="academic-level" className="w-full h-10 rounded-xl bg-card border-border/80 text-xs">
+                  <SelectTrigger
+                    id="academic-level"
+                    className="w-full h-10 rounded-xl bg-card border-border/80 text-xs"
+                  >
                     <SelectValue
                       placeholder={isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
                     />
@@ -325,14 +335,20 @@ export function StudentAcademicProfileCard({
               </div>
 
               <div className="space-y-1.5">
-                <Label htmlFor="academic-curriculum" className="text-xs font-semibold text-foreground">
+                <Label
+                  htmlFor="academic-curriculum"
+                  className="text-xs font-semibold text-foreground"
+                >
                   {isBn ? 'পাঠ্যক্রম (কারিকুলাম)' : 'Curriculum'}
                 </Label>
                 <Select
                   value={curriculumId || 'none'}
                   onValueChange={(val) => setCurriculumId(val === 'none' ? '' : val)}
                 >
-                  <SelectTrigger id="academic-curriculum" className="w-full h-10 rounded-xl bg-card border-border/80 text-xs">
+                  <SelectTrigger
+                    id="academic-curriculum"
+                    className="w-full h-10 rounded-xl bg-card border-border/80 text-xs"
+                  >
                     <SelectValue
                       placeholder={isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
                     />

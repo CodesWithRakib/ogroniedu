@@ -144,7 +144,9 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'স্থগিত অ্যাকাউন্ট' : 'Suspended Accounts'}
                 </p>
-                <p className="text-2xl font-bold text-foreground mt-1 font-mono">{suspendedCount}</p>
+                <p className="text-2xl font-bold text-foreground mt-1 font-mono">
+                  {suspendedCount}
+                </p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-destructive-soft border border-destructive/30 flex items-center justify-center text-destructive-soft-foreground">
                 <ShieldAlert className="w-5 h-5 text-destructive" />

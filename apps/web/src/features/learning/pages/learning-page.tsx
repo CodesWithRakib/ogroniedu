@@ -59,10 +59,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
           data-testid="learning-booking-picker"
         >
           <div className="flex items-center gap-2">
-            <Label
-              htmlFor="learning-booking-select"
-              className="text-xs font-bold text-foreground"
-            >
+            <Label htmlFor="learning-booking-select" className="text-xs font-bold text-foreground">
               {locale === 'bn' ? 'সক্রিয় কোর্স / বুকিং নির্বাচন:' : 'Select Tuition / Course:'}
             </Label>
             <select

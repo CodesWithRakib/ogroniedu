@@ -25,10 +25,7 @@ export function AdminSettingsFlagsPage({ locale }: { locale: Locale }) {
   });
 
   return (
-    <AdminLayout
-      locale={locale}
-      title={isBn ? 'ক্যানারি ফিচার ফ্ল্যাগ' : 'Canary Feature Flags'}
-    >
+    <AdminLayout locale={locale} title={isBn ? 'ক্যানারি ফিচার ফ্ল্যাগ' : 'Canary Feature Flags'}>
       <div className="space-y-6 py-6" data-testid="admin-settings-flags-page">
         {/* Back Link to Hub (Image 2 Pattern) */}
         <div>

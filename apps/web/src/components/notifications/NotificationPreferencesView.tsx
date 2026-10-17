@@ -90,7 +90,11 @@ export function NotificationPreferencesView({
     label: string;
     icon: React.ReactNode;
   }> = [
-    { id: 'in_app', label: n.channelInApp, icon: <Bell className="w-4 h-4 text-success-soft-foreground" /> },
+    {
+      id: 'in_app',
+      label: n.channelInApp,
+      icon: <Bell className="w-4 h-4 text-success-soft-foreground" />,
+    },
     { id: 'email', label: n.channelEmail, icon: <Mail className="w-4 h-4 text-interactive" /> },
     { id: 'sms', label: n.channelSms, icon: <MessageSquare className="w-4 h-4 text-warning" /> },
     { id: 'push', label: n.channelPush, icon: <Smartphone className="w-4 h-4 text-interactive" /> },
@@ -294,9 +298,7 @@ export function NotificationPreferencesView({
               className="py-4 first:pt-0 last:pb-0 flex flex-col md:flex-row md:items-center justify-between gap-4"
             >
               <div className="md:max-w-xs">
-                <div className="font-semibold text-sm text-foreground ">
-                  {cat.label}
-                </div>
+                <div className="font-semibold text-sm text-foreground ">{cat.label}</div>
                 <div className="text-xs text-muted-foreground mt-0.5">{cat.description}</div>
               </div>
 

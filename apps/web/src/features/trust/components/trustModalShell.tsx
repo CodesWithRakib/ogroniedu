@@ -43,9 +43,7 @@ export function TrustModalShell({
         <DialogHeader className="border-b border-border/70 pb-3 text-left space-y-1">
           <div className="flex items-center gap-2">
             <span className="text-xl">{icon}</span>
-            <DialogTitle className="text-lg font-bold text-foreground">
-              {title}
-            </DialogTitle>
+            <DialogTitle className="text-lg font-bold text-foreground">{title}</DialogTitle>
           </div>
           {subtitle && (
             <DialogDescription className="text-xs text-muted-foreground">
@@ -69,10 +67,7 @@ export function TrustFormAlert({
 }) {
   if (tone === 'error') {
     return (
-      <Alert
-        variant="destructive"
-        className="mb-3.5 p-3 text-xs font-medium"
-      >
+      <Alert variant="destructive" className="mb-3.5 p-3 text-xs font-medium">
         <AlertDescription className="flex items-center gap-1.5">
           <span>⚠️</span>
           <span>{children}</span>
@@ -82,9 +77,7 @@ export function TrustFormAlert({
   }
 
   return (
-    <Alert
-      className="mb-3.5 p-3 text-xs font-medium bg-primary-soft border border-primary/25 text-primary-soft-foreground"
-    >
+    <Alert className="mb-3.5 p-3 text-xs font-medium bg-primary-soft border border-primary/25 text-primary-soft-foreground">
       <AlertDescription className="flex items-center gap-1.5">
         <span>✓</span>
         <span>{children}</span>

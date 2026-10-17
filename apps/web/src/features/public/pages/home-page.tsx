@@ -100,7 +100,9 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <div className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-amber-500">
                   <span className="tracking-tighter">★★★★★</span>
                   <span className="text-foreground font-semibold ml-0.5">4.8/5</span>
-                  <span className="text-muted-foreground font-normal text-[10px]">(2.5k+ reviews)</span>
+                  <span className="text-muted-foreground font-normal text-[10px]">
+                    (2.5k+ reviews)
+                  </span>
                 </div>
               </div>
 

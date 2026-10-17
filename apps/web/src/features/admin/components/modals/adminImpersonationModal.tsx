@@ -37,16 +37,14 @@ export function AdminImpersonationModal({
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent
-        className="max-w-md w-full space-y-4"
-        data-testid="impersonate-modal"
-      >
+      <DialogContent className="max-w-md w-full space-y-4" data-testid="impersonate-modal">
         <DialogHeader className="text-left space-y-1">
           <DialogTitle className="text-lg font-bold text-warning-soft-foreground">
             {t('impersonationBadge')}
           </DialogTitle>
           <DialogDescription className="text-xs text-muted-foreground">
-            Target User: <span className="font-semibold text-foreground">{user.displayName}</span> ({user.id})
+            Target User: <span className="font-semibold text-foreground">{user.displayName}</span> (
+            {user.id})
           </DialogDescription>
         </DialogHeader>
 

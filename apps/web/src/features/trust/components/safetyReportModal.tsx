@@ -139,7 +139,10 @@ export function SafetyReportModal({
             </DialogHeader>
 
             {/* Emergency Hotline Notice */}
-            <Alert variant="destructive" className="flex items-center justify-between p-3 rounded-xl border border-destructive/30 text-xs">
+            <Alert
+              variant="destructive"
+              className="flex items-center justify-between p-3 rounded-xl border border-destructive/30 text-xs"
+            >
               <div className="flex items-center gap-2">
                 <PhoneCall className="w-4 h-4 shrink-0" />
                 <AlertDescription className="text-xs">
@@ -153,7 +156,10 @@ export function SafetyReportModal({
 
             {/* Category Select */}
             <div className="space-y-1.5">
-              <Label htmlFor="safety-category-select" className="text-xs font-semibold text-foreground">
+              <Label
+                htmlFor="safety-category-select"
+                className="text-xs font-semibold text-foreground"
+              >
                 {isBn ? 'ঘটনার শ্রেণি / ক্যাটাগরি:' : 'Incident Category:'}
               </Label>
               <select
@@ -202,7 +208,8 @@ export function SafetyReportModal({
                     id: 'critical',
                     bn: 'জরুরি (Critical)',
                     en: 'Critical',
-                    color: 'border-destructive/40 bg-destructive-soft text-destructive-soft-foreground',
+                    color:
+                      'border-destructive/40 bg-destructive-soft text-destructive-soft-foreground',
                   },
                   {
                     id: 'high',
@@ -241,7 +248,10 @@ export function SafetyReportModal({
 
             {/* Description Textarea */}
             <div className="space-y-1.5">
-              <Label htmlFor="safety-description-input" className="text-xs font-semibold text-foreground">
+              <Label
+                htmlFor="safety-description-input"
+                className="text-xs font-semibold text-foreground"
+              >
                 {isBn
                   ? 'ঘটনার বিস্তারিত বিবরণ (কমপক্ষে ১০ অক্ষর):'
                   : 'Detailed Incident Description:'}
@@ -261,7 +271,10 @@ export function SafetyReportModal({
             </div>
 
             {errorMessage && (
-              <Alert variant="destructive" className="flex items-center gap-2 p-3 rounded-xl text-xs">
+              <Alert
+                variant="destructive"
+                className="flex items-center gap-2 p-3 rounded-xl text-xs"
+              >
                 <AlertTriangle className="w-4 h-4 shrink-0" />
                 <AlertDescription>{errorMessage}</AlertDescription>
               </Alert>

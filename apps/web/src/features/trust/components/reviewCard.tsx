@@ -74,9 +74,7 @@ export function ReviewCard({
         )}
       </div>
 
-      <p className="text-xs text-foreground/90 leading-relaxed">
-        {rev.comment}
-      </p>
+      <p className="text-xs text-foreground/90 leading-relaxed">{rev.comment}</p>
 
       {rev.tutorResponse && (
         <div className="p-3.5 bg-muted/60 border-l-4 border-primary rounded-r-xl text-xs space-y-1">
@@ -106,12 +104,7 @@ export function ReviewCard({
                 className="text-xs"
               />
               <div className="flex justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={onCancelReply}
-                >
+                <Button type="button" variant="outline" size="sm" onClick={onCancelReply}>
                   Cancel
                 </Button>
                 <Button

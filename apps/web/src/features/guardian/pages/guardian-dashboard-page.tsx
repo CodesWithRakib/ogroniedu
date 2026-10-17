@@ -319,7 +319,10 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                     </span>
                   </div>
                   <Link
-                    href={withLocale(`/dashboard/guardian/children/${activeChild.studentId}`, locale)}
+                    href={withLocale(
+                      `/dashboard/guardian/children/${activeChild.studentId}`,
+                      locale,
+                    )}
                     className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
                   >
                     <span>{isBn ? 'একাডেমিক তদারকি' : 'Full Dossier & Oversight'}</span>

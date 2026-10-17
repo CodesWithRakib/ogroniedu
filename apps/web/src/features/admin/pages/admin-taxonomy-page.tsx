@@ -18,13 +18,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
-import {
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-} from '@/components/ui/Card';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Button, Input, LoadingSpinner } from '@/components/ui';
 import {
   Dialog,
@@ -81,14 +75,36 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [selectedType, setSelectedType] = useState('all');
-  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
+  const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(
+    null,
+  );
 
   // Queries (fetch all records including inactive for admin management)
-  const { data: levelsData, isLoading: levelsLoading, refetch: refetchLevels } = useGetEducationLevelsQuery({ all: true });
-  const { data: curriculaData, isLoading: curriculaLoading, refetch: refetchCurricula } = useGetCurriculaQuery({ all: true });
-  const { data: streamsData, isLoading: streamsLoading, refetch: refetchStreams } = useGetStreamsQuery({ all: true });
-  const { data: institutionsData, isLoading: institutionsLoading, refetch: refetchInstitutions } = useGetInstitutionsQuery({ all: true });
-  const { data: subjectsData, isLoading: subjectsLoading, refetch: refetchSubjects } = useGetSubjectsQuery({ all: true });
+  const {
+    data: levelsData,
+    isLoading: levelsLoading,
+    refetch: refetchLevels,
+  } = useGetEducationLevelsQuery({ all: true });
+  const {
+    data: curriculaData,
+    isLoading: curriculaLoading,
+    refetch: refetchCurricula,
+  } = useGetCurriculaQuery({ all: true });
+  const {
+    data: streamsData,
+    isLoading: streamsLoading,
+    refetch: refetchStreams,
+  } = useGetStreamsQuery({ all: true });
+  const {
+    data: institutionsData,
+    isLoading: institutionsLoading,
+    refetch: refetchInstitutions,
+  } = useGetInstitutionsQuery({ all: true });
+  const {
+    data: subjectsData,
+    isLoading: subjectsLoading,
+    refetch: refetchSubjects,
+  } = useGetSubjectsQuery({ all: true });
 
   // Mutations
   const [createLevel, { isLoading: creatingLevel }] = useCreateEducationLevelMutation();
@@ -175,7 +191,10 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             sortOrder: Number(formSortOrder),
             isActive: formIsActive,
           }).unwrap();
-          setFeedback({ type: 'success', message: isBn ? 'শ্রেণি সফলভাবে যোগ করা হয়েছে' : 'Education level created successfully' });
+          setFeedback({
+            type: 'success',
+            message: isBn ? 'শ্রেণি সফলভাবে যোগ করা হয়েছে' : 'Education level created successfully',
+          });
         } else if (editingItem) {
           await updateLevel({
             id: editingItem.id,
@@ -184,7 +203,12 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             sortOrder: Number(formSortOrder),
             isActive: formIsActive,
           }).unwrap();
-          setFeedback({ type: 'success', message: isBn ? 'শ্রেণি সফলভাবে আপডেট করা হয়েছে' : 'Education level updated successfully' });
+          setFeedback({
+            type: 'success',
+            message: isBn
+              ? 'শ্রেণি সফলভাবে আপডেট করা হয়েছে'
+              : 'Education level updated successfully',
+          });
         }
       } else if (activeTab === 'curricula') {
         if (modalMode === 'create') {
@@ -195,7 +219,10 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             boardName: formExtra.trim() || undefined,
             isActive: formIsActive,
           }).unwrap();
-          setFeedback({ type: 'success', message: isBn ? 'কারিকুলাম সফলভাবে যোগ করা হয়েছে' : 'Curriculum created successfully' });
+          setFeedback({
+            type: 'success',
+            message: isBn ? 'কারিকুলাম সফলভাবে যোগ করা হয়েছে' : 'Curriculum created successfully',
+          });
         } else if (editingItem) {
           await updateCurriculum({
             id: editingItem.id,
@@ -204,7 +231,10 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             boardName: formExtra.trim() || undefined,
             isActive: formIsActive,
           }).unwrap();
-          setFeedback({ type: 'success', message: isBn ? 'কারিকুলাম সফলভাবে আপডেট করা হয়েছে' : 'Curriculum updated successfully' });
+          setFeedback({
+            type: 'success',
+            message: isBn ? 'কারিকুলাম সফলভাবে আপডেট করা হয়েছে' : 'Curriculum updated successfully',
+          });
         }
       } else if (activeTab === 'streams') {
         if (modalMode === 'create') {
@@ -216,7 +246,10 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             sortOrder: Number(formSortOrder),
             isActive: formIsActive,
           }).unwrap();
-          setFeedback({ type: 'success', message: isBn ? 'শাখা/বিভাগ সফলভাবে যোগ করা হয়েছে' : 'Stream created successfully' });
+          setFeedback({
+            type: 'success',
+            message: isBn ? 'শাখা/বিভাগ সফলভাবে যোগ করা হয়েছে' : 'Stream created successfully',
+          });
         } else if (editingItem) {
           await updateStream({
             id: editingItem.id,
@@ -226,7 +259,10 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             sortOrder: Number(formSortOrder),
             isActive: formIsActive,
           }).unwrap();
-          setFeedback({ type: 'success', message: isBn ? 'শাখা/বিভাগ সফলভাবে আপডেট করা হয়েছে' : 'Stream updated successfully' });
+          setFeedback({
+            type: 'success',
+            message: isBn ? 'শাখা/বিভাগ সফলভাবে আপডেট করা হয়েছে' : 'Stream updated successfully',
+          });
         }
       } else if (activeTab === 'institutions') {
         const instType = (formExtra as any) || 'school';
@@ -240,7 +276,12 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             sortOrder: Number(formSortOrder),
             isActive: formIsActive,
           }).unwrap();
-          setFeedback({ type: 'success', message: isBn ? 'শিক্ষা প্রতিষ্ঠান সফলভাবে যোগ করা হয়েছে' : 'Institution created successfully' });
+          setFeedback({
+            type: 'success',
+            message: isBn
+              ? 'শিক্ষা প্রতিষ্ঠান সফলভাবে যোগ করা হয়েছে'
+              : 'Institution created successfully',
+          });
         } else if (editingItem) {
           await updateInstitution({
             id: editingItem.id,
@@ -251,7 +292,12 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             sortOrder: Number(formSortOrder),
             isActive: formIsActive,
           }).unwrap();
-          setFeedback({ type: 'success', message: isBn ? 'শিক্ষা প্রতিষ্ঠান সফলভাবে আপডেট করা হয়েছে' : 'Institution updated successfully' });
+          setFeedback({
+            type: 'success',
+            message: isBn
+              ? 'শিক্ষা প্রতিষ্ঠান সফলভাবে আপডেট করা হয়েছে'
+              : 'Institution updated successfully',
+          });
         }
       } else if (activeTab === 'subjects') {
         if (modalMode === 'create') {
@@ -263,7 +309,10 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             sortOrder: Number(formSortOrder),
             isActive: formIsActive,
           }).unwrap();
-          setFeedback({ type: 'success', message: isBn ? 'বিষয় সফলভাবে যোগ করা হয়েছে' : 'Subject created successfully' });
+          setFeedback({
+            type: 'success',
+            message: isBn ? 'বিষয় সফলভাবে যোগ করা হয়েছে' : 'Subject created successfully',
+          });
         } else if (editingItem) {
           await updateSubject({
             id: editingItem.id,
@@ -273,7 +322,10 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             sortOrder: Number(formSortOrder),
             isActive: formIsActive,
           }).unwrap();
-          setFeedback({ type: 'success', message: isBn ? 'বিষয় সফলভাবে আপডেট করা হয়েছে' : 'Subject updated successfully' });
+          setFeedback({
+            type: 'success',
+            message: isBn ? 'বিষয় সফলভাবে আপডেট করা হয়েছে' : 'Subject updated successfully',
+          });
         }
       }
       resetForm();
@@ -286,7 +338,13 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
   };
 
   const handleDelete = async (id: string, name: string) => {
-    if (!confirm(isBn ? `আপনি কি নিশ্চিতভাবে "${name}" মুছে ফেলতে চান?` : `Are you sure you want to delete "${name}"?`)) {
+    if (
+      !confirm(
+        isBn
+          ? `আপনি কি নিশ্চিতভাবে "${name}" মুছে ফেলতে চান?`
+          : `Are you sure you want to delete "${name}"?`,
+      )
+    ) {
       return;
     }
     setFeedback(null);
@@ -302,7 +360,10 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
       } else if (activeTab === 'subjects') {
         await deleteSubject(id).unwrap();
       }
-      setFeedback({ type: 'success', message: isBn ? 'আইটেম সফলভাবে মুছে ফেলা হয়েছে' : 'Item removed successfully' });
+      setFeedback({
+        type: 'success',
+        message: isBn ? 'আইটেম সফলভাবে মুছে ফেলা হয়েছে' : 'Item removed successfully',
+      });
     } catch (err: any) {
       setFeedback({
         type: 'error',
@@ -329,8 +390,12 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
       setFeedback({
         type: 'success',
         message: nextActive
-          ? (isBn ? `"${item.nameBn || item.nameEn}" সফলভাবে সক্রিয় করা হয়েছে` : `"${item.nameEn}" activated successfully`)
-          : (isBn ? `"${item.nameBn || item.nameEn}" সফলভাবে নিষ্ক্রিয় করা হয়েছে` : `"${item.nameEn}" set to inactive`),
+          ? isBn
+            ? `"${item.nameBn || item.nameEn}" সফলভাবে সক্রিয় করা হয়েছে`
+            : `"${item.nameEn}" activated successfully`
+          : isBn
+            ? `"${item.nameBn || item.nameEn}" সফলভাবে নিষ্ক্রিয় করা হয়েছে`
+            : `"${item.nameEn}" set to inactive`,
       });
     } catch (err: any) {
       setFeedback({
@@ -461,7 +526,11 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
         {feedback && (
           <Alert
             variant={feedback.type === 'error' ? 'destructive' : 'default'}
-            className={feedback.type === 'success' ? 'border-success/30 bg-success-soft text-success-soft-foreground' : ''}
+            className={
+              feedback.type === 'success'
+                ? 'border-success/30 bg-success-soft text-success-soft-foreground'
+                : ''
+            }
           >
             <AlertDescription className="flex items-center justify-between">
               <span>{feedback.message}</span>
@@ -581,9 +650,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
               placeholder={
-                isBn
-                  ? 'নাম, কোড অথবা জেলা দিয়ে খুঁজুন...'
-                  : 'Search by name, code or district...'
+                isBn ? 'নাম, কোড অথবা জেলা দিয়ে খুঁজুন...' : 'Search by name, code or district...'
               }
               className="pl-10 rounded-2xl bg-card border-border"
             />
@@ -592,13 +659,18 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
           <div className="flex items-center gap-2.5">
             <div className="w-36">
               <Select value={statusFilter} onValueChange={(val: any) => setStatusFilter(val)}>
-                <SelectTrigger className="rounded-2xl bg-card border-border text-xs" data-testid="taxonomy-status-filter">
+                <SelectTrigger
+                  className="rounded-2xl bg-card border-border text-xs"
+                  data-testid="taxonomy-status-filter"
+                >
                   <SelectValue placeholder={isBn ? 'স্ট্যাটাস' : 'Status'} />
                 </SelectTrigger>
                 <SelectContent>
                   <SelectItem value="all">{isBn ? 'সকল স্ট্যাটাস' : 'All Status'}</SelectItem>
                   <SelectItem value="active">{isBn ? 'শুধু সক্রিয়' : 'Active Only'}</SelectItem>
-                  <SelectItem value="inactive">{isBn ? 'শুধু নিষ্ক্রিয়' : 'Inactive Only'}</SelectItem>
+                  <SelectItem value="inactive">
+                    {isBn ? 'শুধু নিষ্ক্রিয়' : 'Inactive Only'}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
@@ -613,9 +685,15 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                     <SelectItem value="all">{isBn ? 'সকল ধরন' : 'All Types'}</SelectItem>
                     <SelectItem value="college">{isBn ? 'কলেজ (College)' : 'College'}</SelectItem>
                     <SelectItem value="school">{isBn ? 'স্কুল (School)' : 'School'}</SelectItem>
-                    <SelectItem value="school_and_college">{isBn ? 'স্কুল অ্যান্ড কলেজ' : 'School & College'}</SelectItem>
-                    <SelectItem value="university">{isBn ? 'বিশ্ববিদ্যালয়' : 'University'}</SelectItem>
-                    <SelectItem value="madrasah">{isBn ? 'মাদ্রাসা (Madrasah)' : 'Madrasah'}</SelectItem>
+                    <SelectItem value="school_and_college">
+                      {isBn ? 'স্কুল অ্যান্ড কলেজ' : 'School & College'}
+                    </SelectItem>
+                    <SelectItem value="university">
+                      {isBn ? 'বিশ্ববিদ্যালয়' : 'University'}
+                    </SelectItem>
+                    <SelectItem value="madrasah">
+                      {isBn ? 'মাদ্রাসা (Madrasah)' : 'Madrasah'}
+                    </SelectItem>
                   </SelectContent>
                 </Select>
               </div>
@@ -637,15 +715,21 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                   <th className="py-3 px-4">{isBn ? 'কোড' : 'Code'}</th>
                   <th className="py-3 px-4">{isBn ? 'ইংরেজি নাম' : 'Name (English)'}</th>
                   <th className="py-3 px-4">{isBn ? 'বাংলা নাম' : 'Name (Bangla)'}</th>
-                  {activeTab === 'curricula' && <th className="py-3 px-4">{isBn ? 'বোর্ড / অধিভুক্তি' : 'Board Name'}</th>}
-                  {activeTab === 'streams' && <th className="py-3 px-4">{isBn ? 'বিবরণ' : 'Description'}</th>}
+                  {activeTab === 'curricula' && (
+                    <th className="py-3 px-4">{isBn ? 'বোর্ড / অধিভুক্তি' : 'Board Name'}</th>
+                  )}
+                  {activeTab === 'streams' && (
+                    <th className="py-3 px-4">{isBn ? 'বিবরণ' : 'Description'}</th>
+                  )}
                   {activeTab === 'institutions' && (
                     <>
                       <th className="py-3 px-4">{isBn ? 'ধরন' : 'Type'}</th>
                       <th className="py-3 px-4">{isBn ? 'জেলা' : 'District'}</th>
                     </>
                   )}
-                  {activeTab === 'subjects' && <th className="py-3 px-4">{isBn ? 'ক্যাটাগরি' : 'Category'}</th>}
+                  {activeTab === 'subjects' && (
+                    <th className="py-3 px-4">{isBn ? 'ক্যাটাগরি' : 'Category'}</th>
+                  )}
                   <th className="py-3 px-4 text-center">{isBn ? 'স্ট্যাটাস' : 'Status'}</th>
                   <th className="py-3 px-4 text-right">{isBn ? 'অ্যাকশন' : 'Actions'}</th>
                 </tr>
@@ -675,7 +759,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                         }`}
                       >
                         <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
-                        <td className="py-3 px-4 font-mono font-medium text-foreground">{lvl.code}</td>
+                        <td className="py-3 px-4 font-mono font-medium text-foreground">
+                          {lvl.code}
+                        </td>
                         <td className="py-3 px-4 font-semibold text-foreground">
                           {lvl.nameEn}
                           {lvl.isActive === false && (
@@ -691,8 +777,12 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                             onClick={() => handleToggleActive(lvl)}
                             title={
                               lvl.isActive !== false
-                                ? (isBn ? 'ক্লিক করে নিষ্ক্রিয় করুন' : 'Click to deactivate')
-                                : (isBn ? 'ক্লিক করে সক্রিয় করুন' : 'Click to activate')
+                                ? isBn
+                                  ? 'ক্লিক করে নিষ্ক্রিয় করুন'
+                                  : 'Click to deactivate'
+                                : isBn
+                                  ? 'ক্লিক করে সক্রিয় করুন'
+                                  : 'Click to activate'
                             }
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
                               lvl.isActive !== false
@@ -705,7 +795,15 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                             ) : (
                               <XCircle className="h-3.5 w-3.5 text-destructive" />
                             )}
-                            <span>{lvl.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : (isBn ? 'নিষ্ক্রিয়' : 'Inactive')}</span>
+                            <span>
+                              {lvl.isActive !== false
+                                ? isBn
+                                  ? 'সক্রিয়'
+                                  : 'Active'
+                                : isBn
+                                  ? 'নিষ্ক্রিয়'
+                                  : 'Inactive'}
+                            </span>
                           </button>
                         </td>
                         <td className="py-3 px-4 text-right">
@@ -756,7 +854,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                         }`}
                       >
                         <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
-                        <td className="py-3 px-4 font-mono font-medium text-foreground">{curr.code}</td>
+                        <td className="py-3 px-4 font-mono font-medium text-foreground">
+                          {curr.code}
+                        </td>
                         <td className="py-3 px-4 font-semibold text-foreground">
                           {curr.nameEn}
                           {curr.isActive === false && (
@@ -766,15 +866,21 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                           )}
                         </td>
                         <td className="py-3 px-4 text-muted-foreground">{curr.nameBn}</td>
-                        <td className="py-3 px-4 text-xs text-muted-foreground">{curr.boardName || '—'}</td>
+                        <td className="py-3 px-4 text-xs text-muted-foreground">
+                          {curr.boardName || '—'}
+                        </td>
                         <td className="py-3 px-4 text-center">
                           <button
                             type="button"
                             onClick={() => handleToggleActive(curr)}
                             title={
                               curr.isActive !== false
-                                ? (isBn ? 'ক্লিক করে নিষ্ক্রিয় করুন' : 'Click to deactivate')
-                                : (isBn ? 'ক্লিক করে সক্রিয় করুন' : 'Click to activate')
+                                ? isBn
+                                  ? 'ক্লিক করে নিষ্ক্রিয় করুন'
+                                  : 'Click to deactivate'
+                                : isBn
+                                  ? 'ক্লিক করে সক্রিয় করুন'
+                                  : 'Click to activate'
                             }
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
                               curr.isActive !== false
@@ -787,7 +893,15 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                             ) : (
                               <XCircle className="h-3.5 w-3.5 text-destructive" />
                             )}
-                            <span>{curr.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : (isBn ? 'নিষ্ক্রিয়' : 'Inactive')}</span>
+                            <span>
+                              {curr.isActive !== false
+                                ? isBn
+                                  ? 'সক্রিয়'
+                                  : 'Active'
+                                : isBn
+                                  ? 'নিষ্ক্রিয়'
+                                  : 'Inactive'}
+                            </span>
                           </button>
                         </td>
                         <td className="py-3 px-4 text-right">
@@ -838,7 +952,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                         }`}
                       >
                         <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
-                        <td className="py-3 px-4 font-mono font-medium text-foreground">{st.code}</td>
+                        <td className="py-3 px-4 font-mono font-medium text-foreground">
+                          {st.code}
+                        </td>
                         <td className="py-3 px-4 font-semibold text-foreground">
                           {st.nameEn}
                           {st.isActive === false && (
@@ -848,15 +964,21 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                           )}
                         </td>
                         <td className="py-3 px-4 text-muted-foreground">{st.nameBn}</td>
-                        <td className="py-3 px-4 text-xs text-muted-foreground">{st.description || '—'}</td>
+                        <td className="py-3 px-4 text-xs text-muted-foreground">
+                          {st.description || '—'}
+                        </td>
                         <td className="py-3 px-4 text-center">
                           <button
                             type="button"
                             onClick={() => handleToggleActive(st)}
                             title={
                               st.isActive !== false
-                                ? (isBn ? 'ক্লিক করে নিষ্ক্রিয় করুন' : 'Click to deactivate')
-                                : (isBn ? 'ক্লিক করে সক্রিয় করুন' : 'Click to activate')
+                                ? isBn
+                                  ? 'ক্লিক করে নিষ্ক্রিয় করুন'
+                                  : 'Click to deactivate'
+                                : isBn
+                                  ? 'ক্লিক করে সক্রিয় করুন'
+                                  : 'Click to activate'
                             }
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
                               st.isActive !== false
@@ -869,7 +991,15 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                             ) : (
                               <XCircle className="h-3.5 w-3.5 text-destructive" />
                             )}
-                            <span>{st.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : (isBn ? 'নিষ্ক্রিয়' : 'Inactive')}</span>
+                            <span>
+                              {st.isActive !== false
+                                ? isBn
+                                  ? 'সক্রিয়'
+                                  : 'Active'
+                                : isBn
+                                  ? 'নিষ্ক্রিয়'
+                                  : 'Inactive'}
+                            </span>
                           </button>
                         </td>
                         <td className="py-3 px-4 text-right">
@@ -920,7 +1050,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                         }`}
                       >
                         <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
-                        <td className="py-3 px-4 font-mono font-medium text-foreground">{inst.code}</td>
+                        <td className="py-3 px-4 font-mono font-medium text-foreground">
+                          {inst.code}
+                        </td>
                         <td className="py-3 px-4 font-semibold text-foreground">
                           {inst.nameEn}
                           {inst.isActive === false && (
@@ -935,15 +1067,21 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                             {inst.type.replace(/_/g, ' ')}
                           </span>
                         </td>
-                        <td className="py-3 px-4 text-xs text-muted-foreground">{inst.district || '—'}</td>
+                        <td className="py-3 px-4 text-xs text-muted-foreground">
+                          {inst.district || '—'}
+                        </td>
                         <td className="py-3 px-4 text-center">
                           <button
                             type="button"
                             onClick={() => handleToggleActive(inst)}
                             title={
                               inst.isActive !== false
-                                ? (isBn ? 'ক্লিক করে নিষ্ক্রিয় করুন' : 'Click to deactivate')
-                                : (isBn ? 'ক্লিক করে সক্রিয় করুন' : 'Click to activate')
+                                ? isBn
+                                  ? 'ক্লিক করে নিষ্ক্রিয় করুন'
+                                  : 'Click to deactivate'
+                                : isBn
+                                  ? 'ক্লিক করে সক্রিয় করুন'
+                                  : 'Click to activate'
                             }
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
                               inst.isActive !== false
@@ -956,7 +1094,15 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                             ) : (
                               <XCircle className="h-3.5 w-3.5 text-destructive" />
                             )}
-                            <span>{inst.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : (isBn ? 'নিষ্ক্রিয়' : 'Inactive')}</span>
+                            <span>
+                              {inst.isActive !== false
+                                ? isBn
+                                  ? 'সক্রিয়'
+                                  : 'Active'
+                                : isBn
+                                  ? 'নিষ্ক্রিয়'
+                                  : 'Inactive'}
+                            </span>
                           </button>
                         </td>
                         <td className="py-3 px-4 text-right">
@@ -1007,7 +1153,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                         }`}
                       >
                         <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
-                        <td className="py-3 px-4 font-mono font-medium text-foreground">{subj.code}</td>
+                        <td className="py-3 px-4 font-mono font-medium text-foreground">
+                          {subj.code}
+                        </td>
                         <td className="py-3 px-4 font-semibold text-foreground">
                           {subj.nameEn}
                           {subj.isActive === false && (
@@ -1017,15 +1165,21 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                           )}
                         </td>
                         <td className="py-3 px-4 text-muted-foreground">{subj.nameBn}</td>
-                        <td className="py-3 px-4 text-xs text-muted-foreground">{subj.category || '—'}</td>
+                        <td className="py-3 px-4 text-xs text-muted-foreground">
+                          {subj.category || '—'}
+                        </td>
                         <td className="py-3 px-4 text-center">
                           <button
                             type="button"
                             onClick={() => handleToggleActive(subj)}
                             title={
                               subj.isActive !== false
-                                ? (isBn ? 'ক্লিক করে নিষ্ক্রিয় করুন' : 'Click to deactivate')
-                                : (isBn ? 'ক্লিক করে সক্রিয় করুন' : 'Click to activate')
+                                ? isBn
+                                  ? 'ক্লিক করে নিষ্ক্রিয় করুন'
+                                  : 'Click to deactivate'
+                                : isBn
+                                  ? 'ক্লিক করে সক্রিয় করুন'
+                                  : 'Click to activate'
                             }
                             className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
                               subj.isActive !== false
@@ -1038,7 +1192,15 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                             ) : (
                               <XCircle className="h-3.5 w-3.5 text-destructive" />
                             )}
-                            <span>{subj.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : (isBn ? 'নিষ্ক্রিয়' : 'Inactive')}</span>
+                            <span>
+                              {subj.isActive !== false
+                                ? isBn
+                                  ? 'সক্রিয়'
+                                  : 'Active'
+                                : isBn
+                                  ? 'নিষ্ক্রিয়'
+                                  : 'Inactive'}
+                            </span>
                           </button>
                         </td>
                         <td className="py-3 px-4 text-right">
@@ -1165,16 +1327,30 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                     <Label htmlFor="form-extra" className="text-xs font-semibold">
                       {isBn ? 'প্রতিষ্ঠানের ধরন' : 'Institution Type'}
                     </Label>
-                    <Select value={formExtra || 'school'} onValueChange={(val) => setFormExtra(val)}>
-                      <SelectTrigger id="form-extra" className="rounded-2xl bg-card border-border text-sm">
+                    <Select
+                      value={formExtra || 'school'}
+                      onValueChange={(val) => setFormExtra(val)}
+                    >
+                      <SelectTrigger
+                        id="form-extra"
+                        className="rounded-2xl bg-card border-border text-sm"
+                      >
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
                         <SelectItem value="school">{isBn ? 'স্কুল (School)' : 'School'}</SelectItem>
-                        <SelectItem value="college">{isBn ? 'কলেজ (College)' : 'College'}</SelectItem>
-                        <SelectItem value="school_and_college">{isBn ? 'স্কুল অ্যান্ড কলেজ' : 'School & College'}</SelectItem>
-                        <SelectItem value="university">{isBn ? 'বিশ্ববিদ্যালয় (University)' : 'University'}</SelectItem>
-                        <SelectItem value="madrasah">{isBn ? 'মাদ্রাসা (Madrasah)' : 'Madrasah'}</SelectItem>
+                        <SelectItem value="college">
+                          {isBn ? 'কলেজ (College)' : 'College'}
+                        </SelectItem>
+                        <SelectItem value="school_and_college">
+                          {isBn ? 'স্কুল অ্যান্ড কলেজ' : 'School & College'}
+                        </SelectItem>
+                        <SelectItem value="university">
+                          {isBn ? 'বিশ্ববিদ্যালয় (University)' : 'University'}
+                        </SelectItem>
+                        <SelectItem value="madrasah">
+                          {isBn ? 'মাদ্রাসা (Madrasah)' : 'Madrasah'}
+                        </SelectItem>
                       </SelectContent>
                     </Select>
                   </div>
@@ -1214,7 +1390,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                     onCheckedChange={(checked) => setFormIsActive(Boolean(checked))}
                   />
                   <Label htmlFor="form-is-active" className="text-xs font-semibold cursor-pointer">
-                    {isBn ? 'সক্রিয় থাকবে (শিক্ষার্থী ও শিক্ষকরা নির্বাচন করতে পারবেন)' : 'Is Active'}
+                    {isBn
+                      ? 'সক্রিয় থাকবে (শিক্ষার্থী ও শিক্ষকরা নির্বাচন করতে পারবেন)'
+                      : 'Is Active'}
                   </Label>
                 </div>
               </div>

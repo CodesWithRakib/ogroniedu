@@ -46,9 +46,7 @@ export function HomeworkSubmitModal({
         </DialogHeader>
 
         <div className="space-y-2">
-          <Label className="text-xs font-semibold text-foreground">
-            {t.submissionTextLabel}
-          </Label>
+          <Label className="text-xs font-semibold text-foreground">{t.submissionTextLabel}</Label>
           <Textarea
             value={text}
             onChange={(e) => onTextChange(e.target.value)}

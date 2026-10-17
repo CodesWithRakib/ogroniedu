@@ -54,7 +54,9 @@ export function AdminAuditLogsTab({ auditLogs }: { auditLogs: AdminAuditLogItem[
                   <TableCell className="px-4 py-3 text-muted-foreground">
                     {log.resourceType}:{log.resourceId || '—'}
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-foreground/90">{log.reason || '—'}</TableCell>
+                  <TableCell className="px-4 py-3 text-foreground/90">
+                    {log.reason || '—'}
+                  </TableCell>
                 </TableRow>
               ))
             )}
