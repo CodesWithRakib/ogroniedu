@@ -2,7 +2,15 @@
 
 import React from 'react';
 import { CheckCircle2, X } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import type { OptionItem, TutorCardData } from '../types/tutor-discovery.types';
 
@@ -53,9 +61,6 @@ export function BookingRequestModal({
     { key: 'saturday', label: dict.bookingRequest?.daysSaturday || 'Saturday' },
   ];
 
-  const selectClass =
-    'w-full h-10 px-3 text-xs rounded-xl border border-border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors';
-
   return (
     <div
       role="dialog"
@@ -74,7 +79,7 @@ export function BookingRequestModal({
           <button
             type="button"
             onClick={onClose}
-            className="text-muted-foreground hover:text-foreground rounded-xl p-1 transition-colors"
+            className="text-muted-foreground hover:text-foreground rounded-xl p-1 transition-colors cursor-pointer"
             aria-label={locale === 'bn' ? 'মোডাল বন্ধ করুন' : 'Close modal'}
           >
             <X className="w-5 h-5" />
@@ -95,7 +100,7 @@ export function BookingRequestModal({
             {error && (
               <div
                 role="alert"
-                className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive font-medium"
+                className="rounded-xl border border-destructive/30 bg-destructive-soft p-3 text-xs text-destructive font-medium"
                 data-testid="booking-request-error"
               >
                 {error}
@@ -106,19 +111,21 @@ export function BookingRequestModal({
                 <label className="font-semibold text-foreground">
                   {dict.bookingRequest?.selectStudent || 'Select Student'}
                 </label>
-                <select
+                <Select
                   value={value.studentId}
-                  onChange={(e) => onChange({ studentId: e.target.value })}
-                  required
-                  data-testid="booking-student-select"
-                  className={selectClass}
+                  onValueChange={(val) => onChange({ studentId: val })}
                 >
-                  {studentOptions.map((s) => (
-                    <option key={s.id} value={s.id}>
-                      {s.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-full h-10 rounded-xl bg-card border-border text-xs" data-testid="booking-student-select">
+                    <SelectValue placeholder={dict.bookingRequest?.selectStudent || 'Select Student'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {studentOptions.map((s) => (
+                      <SelectItem key={s.id} value={s.id}>
+                        {s.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
             {levelOptions.length > 0 && (
@@ -126,55 +133,62 @@ export function BookingRequestModal({
                 <label className="font-semibold text-foreground">
                   {dict.bookingRequest?.selectLevel || 'Select Level'}
                 </label>
-                <select
+                <Select
                   value={value.levelId}
-                  onChange={(e) => onChange({ levelId: e.target.value })}
-                  required
-                  data-testid="booking-level-select"
-                  className={selectClass}
+                  onValueChange={(val) => onChange({ levelId: val })}
                 >
-                  {levelOptions.map((l) => (
-                    <option key={l.id} value={l.id}>
-                      {l.label}
-                    </option>
-                  ))}
-                </select>
+                  <SelectTrigger className="w-full h-10 rounded-xl bg-card border-border text-xs" data-testid="booking-level-select">
+                    <SelectValue placeholder={dict.bookingRequest?.selectLevel || 'Select Level'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {levelOptions.map((l) => (
+                      <SelectItem key={l.id} value={l.id}>
+                        {l.label}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             )}
             <div className="space-y-1">
               <label className="font-semibold text-foreground">
                 {dict.bookingRequest?.selectSubject || 'Select Subject'}
               </label>
-              <select
+              <Select
                 value={value.subjectId}
-                onChange={(e) => onChange({ subjectId: e.target.value })}
-                required
-                data-testid="booking-subject-select"
-                className={selectClass}
+                onValueChange={(val) => onChange({ subjectId: val })}
               >
-                {tutor.subjects.map((sub) => (
-                  <option key={sub.id || sub.subjectId} value={sub.subjectId}>
-                    {locale === 'bn' ? sub.subjectNameBn : sub.subjectNameEn} (
-                    {sub.educationLevelNameEn || 'General'})
-                  </option>
-                ))}
-              </select>
+                <SelectTrigger className="w-full h-10 rounded-xl bg-card border-border text-xs" data-testid="booking-subject-select">
+                  <SelectValue placeholder={dict.bookingRequest?.selectSubject || 'Select Subject'} />
+                </SelectTrigger>
+                <SelectContent>
+                  {tutor.subjects.map((sub) => (
+                    <SelectItem key={sub.id || sub.subjectId} value={sub.subjectId}>
+                      {locale === 'bn' ? sub.subjectNameBn : sub.subjectNameEn} (
+                      {sub.educationLevelNameEn || 'General'})
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-1">
               <label className="font-semibold text-foreground">
                 {dict.bookingRequest?.selectMode || 'Preferred Mode'}
               </label>
-              <select
+              <Select
                 value={value.mode}
-                onChange={(e) => onChange({ mode: e.target.value as BookingFormValue['mode'] })}
-                data-testid="booking-mode-select"
-                className={selectClass}
+                onValueChange={(val) => onChange({ mode: val as BookingFormValue['mode'] })}
               >
-                <option value="online">{dict.tutor?.modeOnline || 'Online'}</option>
-                <option value="in_person">{dict.tutor?.modeInPerson || 'In-person'}</option>
-                <option value="hybrid">{dict.tutor?.modeHybrid || 'Hybrid'}</option>
-              </select>
+                <SelectTrigger className="w-full h-10 rounded-xl bg-card border-border text-xs" data-testid="booking-mode-select">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="online">{dict.tutor?.modeOnline || 'Online'}</SelectItem>
+                  <SelectItem value="in_person">{dict.tutor?.modeInPerson || 'In-person'}</SelectItem>
+                  <SelectItem value="hybrid">{dict.tutor?.modeHybrid || 'Hybrid'}</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-1">
@@ -185,19 +199,17 @@ export function BookingRequestModal({
                 {daysList.map((d) => {
                   const isSelected = value.days.includes(d.key);
                   return (
-                    <button
+                    <Button
                       key={d.key}
                       type="button"
+                      variant={isSelected ? 'primary' : 'outline'}
+                      size="xs"
                       onClick={() => onToggleDay(d.key)}
                       data-testid={`day-toggle-${d.key}`}
-                      className={`px-2.5 py-1 rounded-xl border text-[11px] font-semibold transition-all cursor-pointer ${
-                        isSelected
-                          ? 'bg-primary text-primary-foreground border-primary shadow-xs'
-                          : 'bg-surface-muted text-foreground border-border hover:bg-surface-hover'
-                      }`}
+                      className="rounded-xl text-[11px] h-7 font-semibold"
                     >
                       {d.label}
-                    </button>
+                    </Button>
                   );
                 })}
               </div>
@@ -207,7 +219,7 @@ export function BookingRequestModal({
               <label className="font-semibold text-foreground">
                 {dict.bookingRequest?.notesLabel || 'Notes / Learning Goals'}
               </label>
-              <textarea
+              <Textarea
                 rows={3}
                 value={value.notes}
                 onChange={(e) => onChange({ notes: e.target.value })}
@@ -215,12 +227,12 @@ export function BookingRequestModal({
                   dict.bookingRequest?.notesPlaceholder || 'Describe syllabus chapters or goals...'
                 }
                 data-testid="booking-notes-input"
-                className="w-full p-2.5 text-xs rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring transition-colors"
+                className="rounded-xl border-border bg-card text-xs resize-none"
               />
             </div>
 
             <div className="flex justify-end gap-2 pt-2">
-              <Button type="button" variant="outline" size="sm" onClick={onClose}>
+              <Button type="button" variant="outline" size="sm" onClick={onClose} className="rounded-xl">
                 {dict.common?.cancel || 'Cancel'}
               </Button>
               <Button
@@ -229,6 +241,7 @@ export function BookingRequestModal({
                 size="sm"
                 isLoading={isSubmitting}
                 data-testid="submit-booking-request"
+                className="rounded-xl font-semibold shadow-xs"
               >
                 {dict.bookingRequest?.submitButton || 'Send Request'}
               </Button>

@@ -19,6 +19,7 @@ import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import type { RegisterRole } from '@/store/services/auth-api';
 import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import { AuthShell } from './authShell';
 import { cn } from '@/lib/utils';
 import { useRegisterForm } from './use-register-form';
@@ -126,19 +127,16 @@ export function RegisterForm({ locale }: { locale: Locale }) {
           <label htmlFor="register-name" className="text-xs font-semibold text-foreground">
             {isBn ? 'পুরো নাম' : 'Full Name'}
           </label>
-          <div className="relative">
-            <User className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <input
-              id="register-name"
-              type="text"
-              value={displayName}
-              onChange={(e) => setDisplayName(e.target.value)}
-              placeholder={isBn ? 'উদা: আবরার আহমেদ' : 'e.g. Abrar Ahmed'}
-              autoComplete="name"
-              className="w-full h-10 pl-10 pr-4 rounded-xl border border-border bg-card text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
-              data-testid="register-name-input"
-            />
-          </div>
+          <Input
+            id="register-name"
+            type="text"
+            value={displayName}
+            onChange={(e) => setDisplayName(e.target.value)}
+            placeholder={isBn ? 'উদা: আবরার আহমেদ' : 'e.g. Abrar Ahmed'}
+            autoComplete="name"
+            leadingIcon={<User className="h-4 w-4" />}
+            data-testid="register-name-input"
+          />
         </div>
 
         {/* Email & Phone Grid */}
@@ -147,38 +145,32 @@ export function RegisterForm({ locale }: { locale: Locale }) {
             <label htmlFor="register-email" className="text-xs font-semibold text-foreground">
               {isBn ? 'ইমেইল (ঐচ্ছিক)' : 'Email (optional)'}
             </label>
-            <div className="relative">
-              <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-              <input
-                id="register-email"
-                type="email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                placeholder="you@mail.com"
-                autoComplete="email"
-                className="w-full h-10 pl-10 pr-3 rounded-xl border border-border bg-card text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
-                data-testid="register-email-input"
-              />
-            </div>
+            <Input
+              id="register-email"
+              type="email"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="you@mail.com"
+              autoComplete="email"
+              leadingIcon={<Mail className="h-4 w-4" />}
+              data-testid="register-email-input"
+            />
           </div>
 
           <div className="space-y-1.5 text-left">
             <label htmlFor="register-phone" className="text-xs font-semibold text-foreground">
               {isBn ? 'মোবাইল (ঐচ্ছিক)' : 'Mobile (optional)'}
             </label>
-            <div className="relative">
-              <Phone className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-              <input
-                id="register-phone"
-                type="text"
-                value={phone}
-                onChange={(e) => setPhone(e.target.value)}
-                placeholder="+8801XXXXXXXXX"
-                autoComplete="tel"
-                className="w-full h-10 pl-10 pr-3 rounded-xl border border-border bg-card text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
-                data-testid="register-phone-input"
-              />
-            </div>
+            <Input
+              id="register-phone"
+              type="text"
+              value={phone}
+              onChange={(e) => setPhone(e.target.value)}
+              placeholder="+8801XXXXXXXXX"
+              autoComplete="tel"
+              leadingIcon={<Phone className="h-4 w-4" />}
+              data-testid="register-phone-input"
+            />
           </div>
         </div>
 
@@ -188,21 +180,21 @@ export function RegisterForm({ locale }: { locale: Locale }) {
             {dict.auth.passwordLabel}
           </label>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <input
+            <Input
               id="register-password"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               autoComplete="new-password"
-              className="w-full h-10 pl-10 pr-11 rounded-xl border border-border bg-card text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
+              leadingIcon={<Lock className="h-4 w-4" />}
+              className="pr-11"
               data-testid="register-password-input"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-lg transition-colors cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-lg transition-colors cursor-pointer z-10"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}

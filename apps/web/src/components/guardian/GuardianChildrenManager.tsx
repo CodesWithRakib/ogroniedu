@@ -22,6 +22,14 @@ import {
   Badge,
   Input,
 } from '@/components/ui';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { useGuardianChildren } from './use-guardian-children';
@@ -219,27 +227,28 @@ export function GuardianChildrenManager({
                   <label className="text-sm font-medium" htmlFor="select-relationship">
                     {dict.guardian.relationship}
                   </label>
-                  <select
-                    id="select-relationship"
+                  <Select
                     value={relationship}
-                    onChange={(e) => setRelationship(toGuardianRelationship(e.target.value))}
-                    className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    onValueChange={(val) => setRelationship(toGuardianRelationship(val))}
                   >
-                    <option value="father">{dict.guardian.father}</option>
-                    <option value="mother">{dict.guardian.mother}</option>
-                    <option value="legal_guardian">{dict.guardian.legalGuardian}</option>
-                  </select>
+                    <SelectTrigger id="select-relationship" className="w-full h-10 rounded-xl bg-card border-border text-sm">
+                      <SelectValue placeholder={dict.guardian.relationship} />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="father">{dict.guardian.father}</SelectItem>
+                      <SelectItem value="mother">{dict.guardian.mother}</SelectItem>
+                      <SelectItem value="legal_guardian">{dict.guardian.legalGuardian}</SelectItem>
+                    </SelectContent>
+                  </Select>
                 </div>
 
-                <div className="p-3 bg-muted/50 rounded-lg border border-border space-y-2">
+                <div className="p-3 bg-muted/50 rounded-xl border border-border space-y-2">
                   <div className="flex items-start gap-2.5">
-                    <input
-                      type="checkbox"
+                    <Checkbox
                       id="checkbox-consent"
                       checked={consentAgreed}
-                      onChange={(e) => setConsentAgreed(e.target.checked)}
-                      className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
-                      required
+                      onCheckedChange={(checked) => setConsentAgreed(Boolean(checked))}
+                      className="mt-0.5 cursor-pointer"
                     />
                     <label
                       htmlFor="checkbox-consent"

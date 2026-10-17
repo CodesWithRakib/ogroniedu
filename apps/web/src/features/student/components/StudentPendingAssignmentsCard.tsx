@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { FileText, Clock, CheckCircle2, ArrowRight, Send, Award, X } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { Textarea } from '@/components/ui/textarea';
 import { useSubmitAssignmentMutation, type AssignmentRecord } from '@/store/services/learning-api';
 import { useAppDispatch } from '@/store';
 import { enqueueToast } from '@/store/slices/ui-slice';
@@ -69,7 +70,7 @@ export function StudentPendingAssignmentsCard({
         {/* Header */}
         <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+            <div className="h-9 w-9 rounded-xl bg-warning-soft text-warning flex items-center justify-center shrink-0">
               <FileText className="h-5 w-5" />
             </div>
             <div>
@@ -123,7 +124,7 @@ export function StudentPendingAssignmentsCard({
                     className="p-3.5 rounded-xl bg-muted/20 border border-border/60 hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                   >
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
+                      <div className="h-10 w-10 rounded-xl bg-warning-soft text-warning flex items-center justify-center shrink-0">
                         <FileText className="h-5 w-5" />
                       </div>
 
@@ -135,10 +136,10 @@ export function StudentPendingAssignmentsCard({
                           <span
                             className={`px-2 py-0.5 text-[10px] font-semibold rounded-full border ${
                               isReviewed
-                                ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20'
+                                ? 'bg-success-soft text-success-soft-foreground border-success/30'
                                 : isSubmitted
-                                  ? 'bg-blue-500/10 text-blue-700 border-blue-500/20'
-                                  : 'bg-amber-500/10 text-amber-700 border-amber-500/20'
+                                  ? 'bg-info-soft text-info-soft-foreground border-info/30'
+                                  : 'bg-warning-soft text-warning-soft-foreground border-warning/30'
                             }`}
                           >
                             {isReviewed
@@ -227,7 +228,7 @@ export function StudentPendingAssignmentsCard({
             </button>
 
             <div className="flex items-center gap-3 pb-4 border-b border-border/60">
-              <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
+              <div className="h-10 w-10 rounded-xl bg-warning-soft text-warning flex items-center justify-center">
                 <FileText className="h-5 w-5" />
               </div>
               <div>
@@ -258,7 +259,7 @@ export function StudentPendingAssignmentsCard({
                 <label className="block text-xs font-semibold text-foreground mb-1">
                   {isBn ? 'আপনার উত্তর / নোটস' : 'Your Answer / Notes'}
                 </label>
-                <textarea
+                <Textarea
                   rows={5}
                   required
                   value={submissionText}
@@ -268,7 +269,7 @@ export function StudentPendingAssignmentsCard({
                       ? 'অ্যাসাইনমেন্টের সমাধান বা Google Drive / GitHub লিংক এখানে লিখুন...'
                       : 'Type your solution or paste reference links here...'
                   }
-                  className="w-full p-3 rounded-xl bg-card border border-border/80 text-foreground text-xs focus:border-primary focus:outline-none transition-colors resize-none"
+                  className="w-full text-xs"
                 />
               </div>
 

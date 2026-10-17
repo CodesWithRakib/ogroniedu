@@ -409,7 +409,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             <div className="rounded-2xl border border-border/80 bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono">03</span>
-                <div className="h-9 w-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 font-bold">
+                <div className="h-9 w-9 rounded-xl bg-success-soft flex items-center justify-center text-success font-bold">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
               </div>

@@ -13,6 +13,14 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import {
   useUpsertStudentProfileMutation,
   type StudentProfileData,
@@ -75,8 +83,8 @@ export function StudentAcademicProfileCard({
     try {
       await upsertProfile({
         institutionName: institution.trim() || undefined,
-        educationLevelId: educationLevelId || undefined,
-        curriculumId: curriculumId || undefined,
+        educationLevelId: educationLevelId && educationLevelId !== 'none' ? educationLevelId : undefined,
+        curriculumId: curriculumId && curriculumId !== 'none' ? curriculumId : undefined,
         stream: stream.trim() || undefined,
         learningGoals: learningGoals.trim() || undefined,
       }).unwrap();
@@ -165,7 +173,7 @@ export function StudentAcademicProfileCard({
             </div>
 
             <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
-              <BookOpen className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
+              <BookOpen className="h-4 w-4 text-success shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-muted-foreground font-medium">
                   {isBn ? 'শ্রেণী ও কারিকুলাম' : 'Class & Curriculum'}
@@ -178,7 +186,7 @@ export function StudentAcademicProfileCard({
 
             {studentProfile?.stream && (
               <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
-                <Sparkles className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                <Sparkles className="h-4 w-4 text-warning shrink-0 mt-0.5" />
                 <div className="min-w-0">
                   <p className="text-[11px] text-muted-foreground font-medium">
                     {isBn ? 'বিভাগ / শাখা' : 'Stream / Group'}
@@ -191,7 +199,7 @@ export function StudentAcademicProfileCard({
             )}
 
             <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
-              <ShieldCheck className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
+              <ShieldCheck className="h-4 w-4 text-info shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-muted-foreground font-medium">
                   {isBn ? 'অভিভাবক স্থিতি' : 'Guardian Status'}
@@ -262,7 +270,7 @@ export function StudentAcademicProfileCard({
             </div>
 
             {errorMessage && (
-              <div className="mt-4 p-3 rounded-xl bg-destructive/10 border border-destructive/30 text-xs text-destructive font-semibold">
+              <div className="mt-4 p-3 rounded-xl bg-destructive-soft text-destructive font-semibold border border-destructive/30 text-xs">
                 {errorMessage}
               </div>
             )}
@@ -290,46 +298,58 @@ export function StudentAcademicProfileCard({
                   <label className="block text-xs font-semibold text-foreground mb-1">
                     {isBn ? 'শ্রেণী / পর্যায়' : 'Education Level'}
                   </label>
-                  <select
-                    value={educationLevelId}
-                    onChange={(e) => setEducationLevelId(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl bg-card border border-border/80 text-foreground text-xs focus:border-primary focus:outline-none transition-colors"
+                  <Select
+                    value={educationLevelId || 'none'}
+                    onValueChange={(val) => setEducationLevelId(val === 'none' ? '' : val)}
                   >
-                    <option value="">
-                      {isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
-                    </option>
-                    {educationLevels.map((lvl) => (
-                      <option key={lvl.id} value={lvl.id}>
-                        {isBn ? lvl.nameBn : lvl.nameEn}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="w-full h-10 rounded-xl bg-card border-border/80 text-xs">
+                      <SelectValue
+                        placeholder={isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">
+                        {isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
+                      </SelectItem>
+                      {educationLevels.map((lvl) => (
+                        <SelectItem key={lvl.id} value={lvl.id}>
+                          {isBn ? lvl.nameBn : lvl.nameEn}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
 
                 <div>
                   <label className="block text-xs font-semibold text-foreground mb-1">
                     {isBn ? 'পাঠ্যক্রম (কারিকুলাম)' : 'Curriculum'}
                   </label>
-                  <select
-                    value={curriculumId}
-                    onChange={(e) => setCurriculumId(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl bg-card border border-border/80 text-foreground text-xs focus:border-primary focus:outline-none transition-colors"
+                  <Select
+                    value={curriculumId || 'none'}
+                    onValueChange={(val) => setCurriculumId(val === 'none' ? '' : val)}
                   >
-                    <option value="">
-                      {isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
-                    </option>
-                    {curricula.map((cur) => (
-                      <option key={cur.id} value={cur.id}>
-                        {isBn ? cur.nameBn : cur.nameEn}
-                      </option>
-                    ))}
-                  </select>
+                    <SelectTrigger className="w-full h-10 rounded-xl bg-card border-border/80 text-xs">
+                      <SelectValue
+                        placeholder={isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
+                      />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="none">
+                        {isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
+                      </SelectItem>
+                      {curricula.map((cur) => (
+                        <SelectItem key={cur.id} value={cur.id}>
+                          {isBn ? cur.nameBn : cur.nameEn}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                 </div>
               </div>
 
               <div>
                 <label className="block text-xs font-semibold text-foreground mb-1">
-                  {isBn ? 'শাখা / বিভাগ' : 'Stream / Group'}
+                  {isBn ? ' শাখা / বিভাগ' : 'Stream / Group'}
                 </label>
                 <Input
                   type="text"
@@ -348,7 +368,7 @@ export function StudentAcademicProfileCard({
                 <label className="block text-xs font-semibold text-foreground mb-1">
                   {isBn ? 'পড়ার লক্ষ্য ও প্রস্তুতি' : 'Learning Goals'}
                 </label>
-                <textarea
+                <Textarea
                   rows={3}
                   value={learningGoals}
                   onChange={(e) => setLearningGoals(e.target.value)}
@@ -357,7 +377,7 @@ export function StudentAcademicProfileCard({
                       ? 'উদা: এইচএসসি পরীক্ষায় গোল্ডেন জিপিএ ৫ এবং ইঞ্জিনিয়ারিং ভর্তি প্রস্তুতি।'
                       : 'e.g. Aiming for GPA 5.0 in Board exams and Engineering admission.'
                   }
-                  className="w-full p-3 rounded-xl bg-card border border-border/80 text-foreground text-xs focus:border-primary focus:outline-none transition-colors resize-none"
+                  className="rounded-xl bg-card border-border/80 text-xs resize-none"
                 />
               </div>
 

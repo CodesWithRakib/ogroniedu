@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Users, UserCheck, ShieldAlert } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
-import { LoadingSpinner } from '@/components/ui';
+import { LoadingSpinner, Button } from '@/components/ui';
 import type { Locale } from '@/lib/i18n';
 import { useAppSelector } from '@/store';
 import { useAdminDashboard } from '../hooks/use-admin-dashboard';
@@ -73,7 +73,7 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
           {actions.actionError && (
             <div
               role="alert"
-              className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-soft-foreground"
+              className="rounded-xl border border-destructive/30 bg-destructive-soft p-3 text-sm text-destructive-soft-foreground"
               data-testid="admin-action-error"
             >
               {actions.actionError}
@@ -82,30 +82,31 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
 
           {actions.activeImpersonation && (
             <div
-              className="bg-amber-50 border border-amber-300 rounded-2xl p-4 flex items-center justify-between shadow-xs animate-pulse"
+              className="bg-warning-soft border border-warning/30 rounded-2xl p-4 flex items-center justify-between shadow-xs animate-pulse"
               data-testid="active-impersonation-banner"
             >
               <div className="flex items-center space-x-3">
                 <span className="text-2xl">⚠️</span>
                 <div>
-                  <p className="font-bold text-amber-900 text-sm tracking-wide">
+                  <p className="font-bold text-warning-soft-foreground text-sm tracking-wide">
                     {t('activeImpersonationBanner')}:{' '}
                     <span className="underline">{actions.activeImpersonation.targetName}</span> (
                     {actions.activeImpersonation.targetId})
                   </p>
-                  <p className="text-xs text-amber-700">
+                  <p className="text-xs text-warning">
                     {t('impersonationWarning')} (Session window:{' '}
                     {actions.activeImpersonation.expiresIn} min)
                   </p>
                 </div>
               </div>
-              <button
+              <Button
+                variant="destructive"
+                size="sm"
                 onClick={actions.terminateImpersonation}
-                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-medium text-xs shadow-xs transition"
                 data-testid="terminate-impersonation-btn"
               >
                 {t('terminateImpersonation')}
-              </button>
+              </Button>
             </div>
           )}
 
@@ -116,7 +117,7 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn' ? 'ব্যবহারকারী ও রোল ব্যবস্থাপনা' : 'User & Access Management'}
                 </h1>
-                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-info-soft text-info-soft-foreground border border-info/30">
                   {totalUsers} {locale === 'bn' ? 'অ্যাকাউন্ট' : 'Accounts'}
                 </span>
               </div>
@@ -137,8 +138,8 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
                 </p>
                 <p className="text-2xl font-bold text-foreground mt-1 font-mono">{activeCount}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
-                <UserCheck className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-xl bg-success-soft border border-success/30 flex items-center justify-center text-success-soft-foreground">
+                <UserCheck className="w-5 h-5 text-success" />
               </div>
             </div>
 
@@ -149,8 +150,8 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
                 </p>
                 <p className="text-2xl font-bold text-foreground mt-1 font-mono">{suspendedCount}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center text-red-700">
-                <ShieldAlert className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-xl bg-destructive-soft border border-destructive/30 flex items-center justify-center text-destructive-soft-foreground">
+                <ShieldAlert className="w-5 h-5 text-destructive" />
               </div>
             </div>
 
@@ -161,8 +162,8 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
                 </p>
                 <p className="text-2xl font-bold text-foreground mt-1 font-mono">{staffCount}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700">
-                <Users className="w-5 h-5" />
+              <div className="w-10 h-10 rounded-xl bg-info-soft border border-info/30 flex items-center justify-center text-info-soft-foreground">
+                <Users className="w-5 h-5 text-info" />
               </div>
             </div>
           </div>

@@ -9,6 +9,7 @@ import {
   Star,
   ArrowRight,
 } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import type { TutorCardData } from '../types/tutor-discovery.types';
 
@@ -62,7 +63,7 @@ export function TutorCard({
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-soft text-primary font-bold text-sm ring-1 ring-border">
                 {initials}
               </div>
-              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-card" />
+              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-success ring-2 ring-card" />
             </div>
 
             {/* Name, Headline & Rating */}
@@ -78,8 +79,8 @@ export function TutorCard({
                 </p>
               )}
               {/* Star Rating Demonstration */}
-              <div className="flex items-center gap-1 mt-1 text-[11px] text-amber-600 font-semibold">
-                <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
+              <div className="flex items-center gap-1 mt-1 text-[11px] text-warning font-semibold">
+                <Star className="h-3 w-3 fill-warning text-warning" />
                 <span className="text-foreground">4.9</span>
                 <span className="text-muted-foreground font-normal">
                   ({locale === 'bn' ? '৪৮টি রিভিউ' : '48 reviews'})
@@ -89,10 +90,12 @@ export function TutorCard({
           </Link>
 
           {/* Explainable Match Score Badge */}
-          <button
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => onShowScore(tutor)}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary-soft text-primary border border-border/80 hover:border-primary/40 transition-colors cursor-pointer shadow-xs shrink-0"
+            className="rounded-full text-xs font-semibold bg-primary-soft text-primary border-border/80 hover:border-primary/40 h-7 px-2.5 gap-1 shadow-2xs shrink-0"
             title={
               locale === 'bn'
                 ? 'ম্যাচ স্কোরের ব্যাখ্যা দেখুন'
@@ -104,13 +107,13 @@ export function TutorCard({
             <span className="tabular-nums">
               {formatLocalizedNumber(tutor.matchScore, locale)} pts
             </span>
-          </button>
+          </Button>
         </div>
 
         {/* Verification Badges */}
         <div className="flex flex-wrap gap-1.5 pt-0.5">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
-            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-success-soft text-success-soft-foreground border border-success/30">
+            <CheckCircle2 className="w-3 h-3 text-success" />
             {dict.tutor?.badgeVerifiedTutor || 'Verified Tutor'}
           </span>
           {tutor.badges.includes('verified_identity') && (
@@ -120,8 +123,8 @@ export function TutorCard({
             </span>
           )}
           {tutor.badges.includes('verified_degree') && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-700 border border-blue-500/20">
-              <GraduationCap className="w-3 h-3 text-blue-600" />
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-info-soft text-info-soft-foreground border border-info/30">
+              <GraduationCap className="w-3 h-3 text-info" />
               {dict.tutor?.badgeVerifiedAcademic || 'Degree Verified'}
             </span>
           )}

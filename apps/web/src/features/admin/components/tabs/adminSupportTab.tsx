@@ -1,14 +1,20 @@
-'use client';
-
 import React from 'react';
 import { useTranslations, useLocale } from 'next-intl';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import type { AdminSupportTicketItem } from '../../types/admin.types';
 
 const STATUS_TONE: Record<AdminSupportTicketItem['status'], string> = {
-  submitted: 'bg-interactive/20 text-info-soft-foreground',
-  in_review: 'bg-warning/20 text-warning-soft-foreground',
-  resolved: 'bg-primary/20 text-success-soft-foreground',
-  spam: 'bg-muted text-muted-foreground',
+  submitted: 'bg-info-soft text-info-soft-foreground border border-info/20',
+  in_review: 'bg-warning-soft text-warning-soft-foreground border border-warning/20',
+  resolved: 'bg-success-soft text-success-soft-foreground border border-success/20',
+  spam: 'bg-muted text-muted-foreground border border-border/60',
 };
 
 const NEXT_STATUS: readonly AdminSupportTicketItem['status'][] = [
@@ -43,24 +49,30 @@ export function AdminSupportTab({
   return (
     <div className="space-y-4" data-testid="support-tab-content">
       <div className="flex items-center gap-2">
-        <select
+        <Select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="px-3 py-2 bg-surface/80 border border-border/80 rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25"
-          data-testid="support-status-filter"
-          aria-label={t('supportTab')}
+          onValueChange={(val) => setStatusFilter(val)}
         >
-          <option value="all">{t('allStatuses')}</option>
-          {NEXT_STATUS.map((s) => (
-            <option key={s} value={s}>
-              {s}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger
+            className="w-44 h-10 rounded-xl bg-card border-border text-xs"
+            data-testid="support-status-filter"
+            aria-label={t('supportTab')}
+          >
+            <SelectValue placeholder={t('allStatuses')} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t('allStatuses')}</SelectItem>
+            {NEXT_STATUS.map((s) => (
+              <SelectItem key={s} value={s}>
+                {s}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
       <div className="border border-border/70 rounded-2xl overflow-hidden bg-card shadow-xs">
         <table className="w-full text-left text-xs" data-testid="support-table">
-          <thead className="bg-surface text-muted-foreground border-b border-border uppercase tracking-wider text-[11px] font-semibold">
+          <thead className="bg-muted/40 text-muted-foreground border-b border-border uppercase tracking-wider text-[11px] font-semibold">
             <tr>
               <th className="px-4 py-3">Contact</th>
               <th className="px-4 py-3">Category</th>
@@ -81,7 +93,7 @@ export function AdminSupportTab({
               visible.map((row) => (
                 <tr
                   key={row.id}
-                  className="hover:bg-surface-hover/50 align-top transition-colors"
+                  className="hover:bg-muted/30 align-top transition-colors"
                   data-testid={`support-row-${row.id}`}
                 >
                   <td className="px-4 py-3">
@@ -102,43 +114,49 @@ export function AdminSupportTab({
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className={`px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${STATUS_TONE[row.status]}`}
+                      className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${STATUS_TONE[row.status]}`}
                     >
                       {row.status}
                     </span>
                   </td>
                   <td className="px-4 py-3 min-w-40">
-                    <textarea
+                    <Textarea
                       rows={2}
                       value={notes[row.id] ?? row.resolutionNotes ?? ''}
                       onChange={(e) => setNotes((prev) => ({ ...prev, [row.id]: e.target.value }))}
                       placeholder={isBn ? 'সমাধান নোট…' : 'Resolution notes…'}
-                      className="w-full px-2.5 py-1.5 bg-surface border border-border/80 rounded-xl text-[11px] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25"
+                      className="rounded-xl text-[11px] min-h-[50px] resize-none"
                       data-testid={`support-notes-${row.id}`}
                     />
                   </td>
                   <td className="px-4 py-3 text-right">
-                    <select
+                    <Select
                       value={row.status}
-                      onChange={(e) =>
+                      onValueChange={(val) =>
                         onUpdateStatus(
                           row.id,
-                          e.target.value as AdminSupportTicketItem['status'],
+                          val as AdminSupportTicketItem['status'],
                           notes[row.id],
                         )
                       }
-                      className="px-2.5 py-1.5 bg-surface border border-border/80 rounded-xl text-[11px] text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25"
-                      data-testid={`support-status-${row.id}`}
-                      aria-label={
-                        isBn ? `${row.name}-এর টিকিট যাচাই করুন` : `Triage ticket from ${row.name}`
-                      }
                     >
-                      {NEXT_STATUS.map((s) => (
-                        <option key={s} value={s}>
-                          {s}
-                        </option>
-                      ))}
-                    </select>
+                      <SelectTrigger
+                        className="w-32 h-8 rounded-xl bg-card border-border text-[11px] ml-auto"
+                        data-testid={`support-status-${row.id}`}
+                        aria-label={
+                          isBn ? `${row.name}-এর টিকিট যাচাই করুন` : `Triage ticket from ${row.name}`
+                        }
+                      >
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        {NEXT_STATUS.map((s) => (
+                          <SelectItem key={s} value={s}>
+                            {s}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
                   </td>
                 </tr>
               ))

@@ -6,6 +6,7 @@ import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, CheckCircle2 } from '
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import { AuthShell } from './authShell';
 import { useLoginForm } from './use-login-form';
 
@@ -80,21 +81,18 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
               {isBn ? 'বাধ্যতামূলক' : 'Required'}
             </span>
           </label>
-          <div className="relative">
-            <Mail className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <input
-              id="login-identifier"
-              type="text"
-              value={identifier}
-              onChange={(e) => setIdentifier(e.target.value)}
-              placeholder={
-                isBn ? '+8801XXXXXXXXX অথবা you@mail.com' : '+8801XXXXXXXXX or you@mail.com'
-              }
-              autoComplete="username"
-              className="w-full h-10 pl-10 pr-4 rounded-xl border border-border bg-card text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
-              data-testid="login-identifier-input"
-            />
-          </div>
+          <Input
+            id="login-identifier"
+            type="text"
+            value={identifier}
+            onChange={(e) => setIdentifier(e.target.value)}
+            placeholder={
+              isBn ? '+8801XXXXXXXXX অথবা you@mail.com' : '+8801XXXXXXXXX or you@mail.com'
+            }
+            autoComplete="username"
+            leadingIcon={<Mail className="h-4 w-4" />}
+            data-testid="login-identifier-input"
+          />
         </div>
 
         {/* Password Input */}
@@ -111,21 +109,21 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
             </Link>
           </div>
           <div className="relative">
-            <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-muted-foreground pointer-events-none" />
-            <input
+            <Input
               id="login-password"
               type={showPassword ? 'text' : 'password'}
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               autoComplete="current-password"
-              className="w-full h-10 pl-10 pr-11 rounded-xl border border-border bg-card text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
+              leadingIcon={<Lock className="h-4 w-4" />}
+              className="pr-11"
               data-testid="login-password-input"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-lg transition-colors cursor-pointer"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-lg transition-colors cursor-pointer z-10"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -164,14 +162,14 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
             {isBn ? 'ইমেইলে সাইন-ইন লিংক পাঠান' : 'Email me a sign-in link'}
           </label>
           <div className="flex gap-2">
-            <input
+            <Input
               id="login-magic-email"
               type="email"
               value={magicEmail}
               onChange={(e) => setMagicEmail(e.target.value)}
               placeholder="you@mail.com"
               autoComplete="email"
-              className="h-9 flex-1 rounded-xl border border-border bg-card px-3.5 text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
+              className="h-9 flex-1"
               data-testid="login-magic-email-input"
             />
             <Button

@@ -1,8 +1,17 @@
 'use client';
 
 import React from 'react';
-import { Search, ChevronDown, Sparkles, Filter, RotateCcw } from 'lucide-react';
+import { Search, Sparkles, Filter, RotateCcw } from 'lucide-react';
 import { getDictionary, type Locale } from '@/lib/i18n';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import type { TutorSortKey } from '../types/tutor-discovery.types';
 
 export interface TutorFiltersValue {
@@ -47,102 +56,108 @@ export function TutorFiltersForm({
   };
 
   return (
-    <div className="bg-card/90 border border-border rounded-2xl p-5 sm:p-6 shadow-sm backdrop-blur-xl space-y-4 text-foreground transition-colors">
+    <div className="bg-card/90 border border-border rounded-2xl p-5 sm:p-6 shadow-xs backdrop-blur-xl space-y-4 text-foreground transition-colors">
       <form onSubmit={handleSubmit} className="space-y-4" data-testid="discovery-filters-form">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3">
+        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
           {/* Main Search Input */}
           <div className="md:col-span-5 relative">
-            <div className="relative flex items-center">
-              <Search className="w-4 h-4 text-primary absolute left-3.5 pointer-events-none" />
-              <input
-                type="text"
-                placeholder={
-                  dict.discovery?.searchPlaceholder ||
-                  'Search by tutor name, subject or university...'
-                }
-                value={value.query}
-                onChange={(e) => onChange({ query: e.target.value })}
-                aria-label={isBn ? 'শিক্ষক খুঁজুন' : 'Search tutors'}
-                data-testid="search-query-input"
-                className="w-full h-11 pl-10 pr-3 text-xs sm:text-sm rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all"
-              />
-            </div>
+            <Input
+              type="text"
+              placeholder={
+                dict.discovery?.searchPlaceholder ||
+                'Search by tutor name, subject or university...'
+              }
+              value={value.query}
+              onChange={(e) => onChange({ query: e.target.value })}
+              aria-label={isBn ? 'শিক্ষক খুঁজুন' : 'Search tutors'}
+              data-testid="search-query-input"
+              leadingIcon={<Search className="w-4 h-4 text-primary" />}
+              className="h-11 rounded-xl"
+            />
           </div>
 
           {/* Mode Select */}
           <div className="md:col-span-2 relative">
-            <div className="relative flex items-center">
-              <select
-                aria-label={isBn ? 'পাঠদানের পদ্ধতি অনুযায়ী ছাঁকুন' : 'Filter mode'}
-                value={value.modeFilter}
-                onChange={(e) => onChange({ modeFilter: e.target.value })}
+            <Select
+              value={value.modeFilter || 'all'}
+              onValueChange={(val) => onChange({ modeFilter: val === 'all' ? '' : val })}
+            >
+              <SelectTrigger
+                className="w-full h-11 rounded-xl bg-card border-border text-xs sm:text-sm"
                 data-testid="mode-select"
-                className="w-full h-11 px-3 pr-8 text-xs sm:text-sm rounded-xl border border-border bg-card text-foreground focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all appearance-none cursor-pointer"
+                aria-label={isBn ? 'পাঠদানের পদ্ধতি অনুযায়ী ছাঁকুন' : 'Filter mode'}
               >
-                <option value="" className="bg-card text-muted-foreground">
+                <SelectValue placeholder={dict.discovery?.filterAllModes || 'All Modes'} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">
                   {dict.discovery?.filterAllModes || 'All Modes'}
-                </option>
-                <option value="in_person" className="bg-card text-foreground">
+                </SelectItem>
+                <SelectItem value="in_person">
                   {dict.tutor?.modeInPerson || 'In-person'}
-                </option>
-                <option value="online" className="bg-card text-foreground">
+                </SelectItem>
+                <SelectItem value="online">
                   {dict.tutor?.modeOnline || 'Online'}
-                </option>
-                <option value="hybrid" className="bg-card text-foreground">
+                </SelectItem>
+                <SelectItem value="hybrid">
                   {dict.tutor?.modeHybrid || 'Hybrid'}
-                </option>
-              </select>
-              <ChevronDown className="h-4 w-4 text-muted-foreground absolute right-3 pointer-events-none" />
-            </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Sort By Select */}
           <div className="md:col-span-3 relative">
-            <div className="relative flex items-center">
-              <select
-                aria-label={isBn ? 'সাজানোর নিয়ম' : 'Sort by'}
-                value={value.sortBy}
-                onChange={(e) => onChange({ sortBy: e.target.value as TutorSortKey })}
+            <Select
+              value={value.sortBy || 'recommended'}
+              onValueChange={(val) => onChange({ sortBy: val as TutorSortKey })}
+            >
+              <SelectTrigger
+                className="w-full h-11 rounded-xl bg-card border-border text-xs sm:text-sm"
                 data-testid="sort-by-select"
-                className="w-full h-11 px-3 pr-8 text-xs sm:text-sm rounded-xl border border-border bg-card text-foreground focus:outline-none focus:border-brand focus:ring-1 focus:ring-brand transition-all appearance-none cursor-pointer"
+                aria-label={isBn ? 'সাজানোর নিয়ম' : 'Sort by'}
               >
-                <option value="recommended" className="bg-card text-foreground">
+                <SelectValue placeholder={dict.discovery?.sortRecommended || 'Recommended (Match Score)'} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="recommended">
                   {dict.discovery?.sortRecommended || 'Recommended (Match Score)'}
-                </option>
-                <option value="price_asc" className="bg-card text-foreground">
+                </SelectItem>
+                <SelectItem value="price_asc">
                   {dict.discovery?.sortPriceAsc || 'Price: Low to High'}
-                </option>
-                <option value="price_desc" className="bg-card text-foreground">
+                </SelectItem>
+                <SelectItem value="price_desc">
                   {dict.discovery?.sortPriceDesc || 'Price: High to Low'}
-                </option>
-                <option value="experience_desc" className="bg-card text-foreground">
+                </SelectItem>
+                <SelectItem value="experience_desc">
                   {dict.discovery?.sortExpDesc || 'Experience: Most to Least'}
-                </option>
-              </select>
-              <ChevronDown className="h-4 w-4 text-muted-foreground absolute right-3 pointer-events-none" />
-            </div>
+                </SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
           {/* Action Buttons */}
           <div className="md:col-span-2 flex gap-2">
-            <button
+            <Button
               type="submit"
               disabled={isPending}
               data-testid="apply-filters-button"
-              className="flex-1 h-11 inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-extrabold text-xs shadow-sm hover:shadow-sm transition-all cursor-pointer disabled:opacity-50"
+              className="flex-1 h-11 rounded-xl font-bold text-xs gap-1.5"
             >
-              <Filter className="w-3.5 h-3.5 stroke-[2.5]" />
+              <Filter className="w-3.5 h-3.5" />
               <span>{dict.discovery?.applyFilters || 'Filter'}</span>
-            </button>
-            <button
+            </Button>
+            <Button
               type="button"
+              variant="outline"
+              size="icon"
               onClick={onReset}
               data-testid="reset-filters-button"
-              className="h-11 px-3 inline-flex items-center justify-center rounded-xl border border-border bg-card hover:bg-surface-hover text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
+              className="h-11 w-11 rounded-xl shrink-0"
               title={dict.discovery?.resetFilters || 'Reset'}
             >
               <RotateCcw className="w-3.5 h-3.5" />
-            </button>
+            </Button>
           </div>
         </div>
 
@@ -153,18 +168,16 @@ export function TutorFiltersForm({
             {isBn ? 'জনপ্রিয় বিষয়:' : 'Popular:'}
           </span>
           {popularSubjects.map((subject) => (
-            <button
+            <Button
               key={subject}
               type="button"
+              variant={value.query === subject ? 'primary' : 'outline'}
+              size="xs"
               onClick={() => handleSubjectClick(subject)}
-              className={`rounded-full px-2.5 py-0.5 text-[11px] font-semibold border transition-all cursor-pointer ${
-                value.query === subject
-                  ? 'bg-brand text-brand-foreground border-brand shadow-sm'
-                  : 'bg-card text-muted-foreground border-border hover:border-brand/60 hover:text-primary'
-              }`}
+              className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold h-7"
             >
               {subject}
-            </button>
+            </Button>
           ))}
         </div>
 
@@ -175,23 +188,23 @@ export function TutorFiltersForm({
             {dict.discovery?.priceRange || 'Hourly Rate (BDT)'}:
           </span>
           <div className="w-28">
-            <input
+            <Input
               type="number"
               placeholder={dict.discovery?.minPrice || 'Min BDT'}
               value={value.minPrice}
               onChange={(e) => onChange({ minPrice: e.target.value })}
-              className="w-full px-3 py-1.5 text-xs rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand"
+              className="h-8 text-xs rounded-xl"
               data-testid="min-price-input"
             />
           </div>
           <span className="text-muted-foreground">—</span>
           <div className="w-28">
-            <input
+            <Input
               type="number"
               placeholder={dict.discovery?.maxPrice || 'Max BDT'}
               value={value.maxPrice}
               onChange={(e) => onChange({ maxPrice: e.target.value })}
-              className="w-full px-3 py-1.5 text-xs rounded-xl border border-border bg-card text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand"
+              className="h-8 text-xs rounded-xl"
               data-testid="max-price-input"
             />
           </div>

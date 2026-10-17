@@ -173,23 +173,23 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
           href={withLocale('/dashboard/guardian/payments', locale)}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/60 bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
         >
-          <CreditCard className="w-3.5 h-3.5 text-rose-600" />
+          <CreditCard className="w-3.5 h-3.5 text-destructive" />
           <span>{isBn ? 'টিউশন ফি ও এসক্রো' : 'Fees & Payments'}</span>
         </Link>
         <Link
           href={withLocale('/safety-reports', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-red-200 bg-red-50/60 hover:bg-red-50 text-red-700 text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-destructive/20 bg-destructive-soft hover:bg-destructive/15 text-destructive-soft-foreground text-xs font-medium transition-colors"
           id="link-safety-hub"
         >
-          <ShieldAlert className="w-3.5 h-3.5 text-red-600" />
+          <ShieldAlert className="w-3.5 h-3.5 text-destructive" />
           <span>{isBn ? 'শিশু সুরক্ষা হাব' : 'Safety Hub'}</span>
         </Link>
         <Link
           href={withLocale('/tutor-replacements', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-amber-200 bg-amber-50/60 hover:bg-amber-50 text-amber-700 text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-warning/20 bg-warning-soft hover:bg-warning/15 text-warning-soft-foreground text-xs font-medium transition-colors"
           id="link-replacement-hub"
         >
-          <RefreshCw className="w-3.5 h-3.5 text-amber-600" />
+          <RefreshCw className="w-3.5 h-3.5 text-warning" />
           <span>{isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacements'}</span>
         </Link>
         <Link
@@ -213,20 +213,18 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
             {isBn ? 'শিক্ষার্থী নির্বাচন:' : 'Switch Child:'}
           </span>
           {children.map((c) => (
-            <button
+            <Button
               key={c.studentId}
               role="tab"
+              variant={activeChild?.studentId === c.studentId ? 'primary' : 'outline'}
+              size="sm"
               aria-selected={activeChild?.studentId === c.studentId}
               onClick={() => dashboard.setActiveChildId(c.studentId)}
-              className={`rounded-xl border px-3.5 py-1.5 text-xs font-semibold transition-all cursor-pointer ${
-                activeChild?.studentId === c.studentId
-                  ? 'border-primary bg-primary text-primary-foreground shadow-2xs'
-                  : 'border-border/80 bg-card text-muted-foreground hover:bg-surface-hover hover:text-foreground'
-              }`}
+              className="rounded-xl text-xs font-semibold h-8 px-3.5"
               data-testid={`child-tab-${c.studentId}`}
             >
               {c.displayName}
-            </button>
+            </Button>
           ))}
         </div>
       )}
@@ -254,7 +252,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                       </h3>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 text-xs font-semibold">
+                  <span className="px-3 py-1 rounded-full bg-success-soft text-success-soft-foreground border border-success/20 text-xs font-semibold">
                     {activeChild.relationshipType === 'father'
                       ? isBn
                         ? 'পিতা'
@@ -292,7 +290,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
 
                 <div className="flex items-center justify-between pt-1">
                   <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                    <ShieldCheck className="w-4 h-4 text-success shrink-0" />
                     <span>
                       {isBn
                         ? 'অভিভাবক সম্মতি ও নিরাপত্তা নজরদারি সক্রিয়'

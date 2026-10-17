@@ -2,6 +2,15 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import type { AdminUserItem } from '../../types/admin.types';
 
 const STATUS_FILTERS = ['all', 'active', 'suspended'] as const;
@@ -9,9 +18,9 @@ type StatusFilter = (typeof STATUS_FILTERS)[number];
 
 function roleBadgeClass(role: string): string {
   if (role === 'super_admin')
-    return 'bg-destructive/15 text-destructive  border border-destructive/30';
-  if (role === 'admin') return 'bg-primary/15 text-primary border border-primary/30';
-  return 'bg-surface-muted text-muted-foreground border border-border/60';
+    return 'bg-destructive-soft text-destructive border border-destructive/30';
+  if (role === 'admin') return 'bg-primary-soft text-primary border border-primary/30';
+  return 'bg-muted text-muted-foreground border border-border/60';
 }
 
 export function AdminUsersTab({
@@ -55,24 +64,27 @@ export function AdminUsersTab({
   return (
     <div className="space-y-4" data-testid="users-tab-content">
       <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
-        <input
+        <Input
           type="text"
           placeholder={t('searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full sm:w-80 px-4 py-2 bg-surface/80 border border-border/80 rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all"
+          className="w-full sm:w-80 h-10 rounded-xl"
           data-testid="users-search-input"
         />
-        <select
+        <Select
           value={statusFilter}
-          onChange={(e) => onStatusFilterChange(e.target.value as StatusFilter)}
-          className="px-3 py-2 bg-surface/80 border border-border/80 rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25"
-          data-testid="users-status-filter"
+          onValueChange={(val) => onStatusFilterChange(val as StatusFilter)}
         >
-          <option value="all">{t('allStatuses')}</option>
-          <option value="active">{t('statusActive')}</option>
-          <option value="suspended">{t('statusSuspended')}</option>
-        </select>
+          <SelectTrigger className="w-full sm:w-44 h-10 rounded-xl bg-card border-border text-xs" data-testid="users-status-filter">
+            <SelectValue placeholder={t('allStatuses')} />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value="all">{t('allStatuses')}</SelectItem>
+            <SelectItem value="active">{t('statusActive')}</SelectItem>
+            <SelectItem value="suspended">{t('statusSuspended')}</SelectItem>
+          </SelectContent>
+        </Select>
       </div>
 
       <div className="border border-border/70 rounded-2xl overflow-hidden bg-card shadow-xs">
@@ -123,12 +135,12 @@ export function AdminUsersTab({
                   </td>
                   <td className="px-4 py-3">
                     <span
-                      className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
+                      className={`inline-flex px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                         user.status === 'active'
-                          ? 'bg-primary/15 text-primary  border border-primary/25'
+                          ? 'bg-success-soft text-success-soft-foreground border border-success/25'
                           : user.status === 'suspended'
-                            ? 'bg-destructive/15 text-destructive  border border-destructive/25'
-                            : 'bg-warning/15 text-warning  border border-warning/25'
+                            ? 'bg-destructive-soft text-destructive border border-destructive/25'
+                            : 'bg-warning-soft text-warning-soft-foreground border border-warning/25'
                       }`}
                     >
                       {user.status === 'active'
@@ -140,40 +152,48 @@ export function AdminUsersTab({
                   </td>
                   <td className="px-4 py-3 text-right space-x-2">
                     {user.status !== 'suspended' ? (
-                      <button
+                      <Button
+                        variant="destructive"
+                        size="xs"
                         onClick={() => onRequestSuspend(user)}
-                        className="px-2.5 py-1 bg-destructive/10 hover:bg-destructive/20 text-destructive  rounded-lg border border-destructive/30 transition text-[11px] font-medium"
+                        className="rounded-lg text-[11px] font-medium"
                         data-testid={`suspend-user-btn-${user.id}`}
                       >
                         {t('suspendBtn')}
-                      </button>
+                      </Button>
                     ) : (
-                      <button
+                      <Button
+                        variant="outline"
+                        size="xs"
                         onClick={() => onReactivate(user.id)}
-                        className="px-2.5 py-1 bg-primary/10 hover:bg-primary/20 text-primary  rounded-lg border border-primary/30 transition text-[11px] font-medium"
+                        className="rounded-lg text-[11px] font-medium"
                         data-testid={`reactivate-user-btn-${user.id}`}
                       >
                         {t('reactivateBtn')}
-                      </button>
+                      </Button>
                     )}
 
                     {isSuperAdmin && (
                       <>
-                        <button
+                        <Button
+                          variant="outline"
+                          size="xs"
                           onClick={() => onRequestRoles(user)}
-                          className="px-2.5 py-1 bg-surface hover:bg-surface-hover text-foreground border border-border rounded-lg transition text-[11px] font-medium"
+                          className="rounded-lg text-[11px] font-medium"
                           data-testid={`manage-roles-btn-${user.id}`}
                         >
                           {t('rolesBtn')}
-                        </button>
+                        </Button>
                         {!user.roles.includes('super_admin') && (
-                          <button
+                          <Button
+                            variant="secondary"
+                            size="xs"
                             onClick={() => onRequestImpersonate(user)}
-                            className="px-2.5 py-1 bg-warning/10 hover:bg-warning/20 text-warning  rounded-lg border border-warning/30 transition text-[11px] font-medium"
+                            className="rounded-lg text-[11px] font-medium"
                             data-testid={`impersonate-btn-${user.id}`}
                           >
                             {t('triggerImpersonation')}
-                          </button>
+                          </Button>
                         )}
                       </>
                     )}

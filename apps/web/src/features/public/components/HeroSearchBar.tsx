@@ -7,11 +7,19 @@ import {
   GraduationCap,
   BookOpen,
   MapPin,
-  ChevronDown,
   SlidersHorizontal,
   Sparkles,
 } from 'lucide-react';
 import type { Locale } from '@/lib/i18n';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import {
   useGetEducationLevelsQuery,
   useGetSubjectsQuery,
@@ -125,39 +133,35 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
   }
 
   return (
-    <div className="w-full space-y-2.5">
+    <div className="w-full space-y-3">
       {/* Top Tab Switcher: Direct Filter vs Quick Search */}
       <div className="flex items-center gap-2">
-        <button
+        <Button
           type="button"
           data-testid="hero-tab-filter"
+          variant={activeTab === 'filter' ? 'primary' : 'outline'}
+          size="sm"
           onClick={() => setActiveTab('filter')}
-          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-            activeTab === 'filter'
-              ? 'bg-primary text-primary-foreground shadow-xs'
-              : 'text-muted-foreground hover:text-foreground bg-card hover:bg-muted/50 border border-border/70'
-          }`}
+          className="rounded-full text-xs font-semibold gap-1.5 h-8 px-4 transition-all"
         >
-          <SlidersHorizontal className="h-3 w-3" />
+          <SlidersHorizontal className="h-3.5 w-3.5" />
           <span>{isBn ? 'শ্রেণি ও বিষয় দিয়ে খুঁজুন' : 'Filter by Class & Subject'}</span>
-        </button>
+        </Button>
 
-        <button
+        <Button
           type="button"
           data-testid="hero-tab-search"
+          variant={activeTab === 'search' ? 'primary' : 'outline'}
+          size="sm"
           onClick={() => setActiveTab('search')}
-          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
-            activeTab === 'search'
-              ? 'bg-primary text-primary-foreground shadow-xs'
-              : 'text-muted-foreground hover:text-foreground bg-card hover:bg-muted/50 border border-border/70'
-          }`}
+          className="rounded-full text-xs font-semibold gap-1.5 h-8 px-4 transition-all"
         >
-          <Search className="h-3 w-3" />
+          <Search className="h-3.5 w-3.5" />
           <span>{isBn ? 'নাম বা কি-ওয়ার্ড দিয়ে খুঁজুন' : 'Search by Name / Keyword'}</span>
-        </button>
+        </Button>
       </div>
 
-      {/* Main Glass Search Card */}
+      {/* Main Search Card */}
       <form onSubmit={handleSubmit} className="w-full">
         {activeTab === 'filter' ? (
           /* ========================================================
@@ -165,96 +169,101 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
            * ======================================================== */
           <div className="rounded-2xl lg:rounded-full bg-card border border-border/80 shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all">
             {/* Segment 1: Class / Education Level */}
-            <div className="relative flex-1 px-3 py-1.5 rounded-xl lg:rounded-l-full hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border/60">
-              <div className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                <GraduationCap className="h-3 w-3 text-primary" />
+            <div className="flex-1 px-3.5 py-1.5 rounded-xl lg:rounded-l-full hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border/60">
+              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
+                <GraduationCap className="h-3.5 w-3.5 text-primary" />
                 <span>{isBn ? 'শ্রেণি / মাধ্যম' : 'Class / Level'}</span>
               </div>
-              <div className="relative flex items-center">
-                <select
-                  value={selectedLevel}
-                  onChange={(e) => setSelectedLevel(e.target.value)}
-                  className="w-full appearance-none bg-transparent text-xs font-semibold text-foreground focus:outline-none cursor-pointer pr-5"
+              <Select
+                value={selectedLevel || 'all'}
+                onValueChange={(val) => setSelectedLevel(val === 'all' ? '' : val)}
+              >
+                <SelectTrigger
+                  className="w-full border-0 bg-transparent p-0 h-7 text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-0 gap-1"
+                  aria-label={isBn ? 'শ্রেণি / মাধ্যম নির্বাচন করুন' : 'Select Class or Level'}
                 >
-                  <option value="" className="bg-card text-muted-foreground">
+                  <SelectValue placeholder={isBn ? 'সকল শ্রেণি ও মাধ্যম' : 'All Classes & Curriculums'} />
+                </SelectTrigger>
+                <SelectContent position="popper" className="max-h-64 rounded-2xl border-border bg-popover shadow-popover">
+                  <SelectItem value="all">
                     {isBn ? 'সকল শ্রেণি ও মাধ্যম' : 'All Classes & Curriculums'}
-                  </option>
+                  </SelectItem>
                   {levels.map((lvl) => (
-                    <option
-                      key={String(lvl.id)}
-                      value={String(lvl.id)}
-                      className="bg-card text-foreground"
-                    >
+                    <SelectItem key={String(lvl.id)} value={String(lvl.id)}>
                       {String(isBn ? lvl.nameBn || lvl.nameEn : lvl.nameEn)}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
-                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground absolute right-0 pointer-events-none" />
-              </div>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Segment 2: Subject */}
-            <div className="relative flex-1 px-3 py-1.5 rounded-xl hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border/60">
-              <div className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                <BookOpen className="h-3 w-3 text-primary" />
+            <div className="flex-1 px-3.5 py-1.5 rounded-xl hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border/60">
+              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
+                <BookOpen className="h-3.5 w-3.5 text-primary" />
                 <span>{isBn ? 'পড়ার বিষয়' : 'Subject'}</span>
               </div>
-              <div className="relative flex items-center">
-                <select
-                  value={selectedSubject}
-                  onChange={(e) => setSelectedSubject(e.target.value)}
-                  className="w-full appearance-none bg-transparent text-xs font-semibold text-foreground focus:outline-none cursor-pointer pr-5"
+              <Select
+                value={selectedSubject || 'all'}
+                onValueChange={(val) => setSelectedSubject(val === 'all' ? '' : val)}
+              >
+                <SelectTrigger
+                  className="w-full border-0 bg-transparent p-0 h-7 text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-0 gap-1"
+                  aria-label={isBn ? 'পড়ার বিষয় নির্বাচন করুন' : 'Select Subject'}
                 >
-                  <option value="" className="bg-card text-muted-foreground">
+                  <SelectValue placeholder={isBn ? 'সকল বিষয়' : 'All Subjects'} />
+                </SelectTrigger>
+                <SelectContent position="popper" className="max-h-64 rounded-2xl border-border bg-popover shadow-popover">
+                  <SelectItem value="all">
                     {isBn ? 'সকল বিষয়' : 'All Subjects'}
-                  </option>
+                  </SelectItem>
                   {subjects.map((sub) => (
-                    <option
-                      key={String(sub.id)}
-                      value={String(sub.id)}
-                      className="bg-card text-foreground"
-                    >
+                    <SelectItem key={String(sub.id)} value={String(sub.id)}>
                       {String(isBn ? sub.nameBn || sub.nameEn : sub.nameEn)}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
-                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground absolute right-0 pointer-events-none" />
-              </div>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Segment 3: Location / Tuition Mode */}
-            <div className="relative flex-1 px-3 py-1.5 rounded-xl hover:bg-muted/40 transition-colors">
-              <div className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                <MapPin className="h-3 w-3 text-primary" />
+            <div className="flex-1 px-3.5 py-1.5 rounded-xl hover:bg-muted/40 transition-colors">
+              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
+                <MapPin className="h-3.5 w-3.5 text-primary" />
                 <span>{isBn ? 'এলাকা বা মাধ্যম' : 'Location / Mode'}</span>
               </div>
-              <div className="relative flex items-center">
-                <select
-                  value={selectedLocation}
-                  onChange={(e) => setSelectedLocation(e.target.value)}
-                  className="w-full appearance-none bg-transparent text-xs font-semibold text-foreground focus:outline-none cursor-pointer pr-5"
+              <Select
+                value={selectedLocation || 'all'}
+                onValueChange={(val) => setSelectedLocation(val === 'all' ? '' : val)}
+              >
+                <SelectTrigger
+                  className="w-full border-0 bg-transparent p-0 h-7 text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-0 gap-1"
+                  aria-label={isBn ? 'এলাকা বা মাধ্যম নির্বাচন করুন' : 'Select Location or Mode'}
                 >
-                  <option value="" className="bg-card text-muted-foreground">
+                  <SelectValue placeholder={isBn ? 'সারাদেশে বা অনলাইন' : 'Anywhere / Online'} />
+                </SelectTrigger>
+                <SelectContent position="popper" className="max-h-64 rounded-2xl border-border bg-popover shadow-popover">
+                  <SelectItem value="all">
                     {isBn ? 'সারাদেশে বা অনলাইন' : 'Anywhere / Online'}
-                  </option>
+                  </SelectItem>
                   {locations.map((loc) => (
-                    <option key={loc.code} value={loc.code} className="bg-card text-foreground">
+                    <SelectItem key={loc.code} value={loc.code}>
                       {isBn ? loc.nameBn : loc.nameEn}
-                    </option>
+                    </SelectItem>
                   ))}
-                </select>
-                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground absolute right-0 pointer-events-none" />
-              </div>
+                </SelectContent>
+              </Select>
             </div>
 
             {/* Action Button */}
-            <button
+            <Button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-xl lg:rounded-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs px-6 py-3 shadow-xs whitespace-nowrap cursor-pointer shrink-0 transition-colors"
+              size="lg"
+              className="rounded-xl lg:rounded-full px-7 py-3 h-auto text-xs font-semibold gap-2 shadow-xs shrink-0"
             >
               <Search className="h-4 w-4 stroke-[2.5]" />
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
-            </button>
+            </Button>
           </div>
         ) : (
           /* ========================================================
@@ -263,7 +272,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           <div className="rounded-2xl lg:rounded-full bg-card border border-border/80 shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all">
             <div className="flex items-center flex-1 w-full px-3 py-1.5">
               <Search className="h-4 w-4 text-primary mr-2.5 shrink-0" />
-              <input
+              <Input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
@@ -272,37 +281,40 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                     ? 'শিক্ষকের নাম, বিশ্ববিদ্যালয় বা বিশেষ কি-ওয়ার্ড লিখে খুঁজুন (যেমন: বুয়েট, আয়েশা)...'
                     : 'Search by tutor name, university, or keyword (e.g. BUET, Ayesha)...'
                 }
-                className="w-full bg-transparent text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
+                className="w-full border-0 bg-transparent text-xs text-foreground placeholder:text-muted-foreground focus-visible:ring-0 shadow-none h-8 p-0"
                 autoFocus
               />
             </div>
 
-            <button
+            <Button
               type="submit"
-              className="w-full lg:w-auto inline-flex items-center justify-center gap-2 rounded-xl lg:rounded-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs px-7 py-3 shadow-xs whitespace-nowrap cursor-pointer shrink-0 transition-colors"
+              size="lg"
+              className="w-full lg:w-auto rounded-xl lg:rounded-full px-7 py-3 h-auto text-xs font-semibold gap-2 shadow-xs shrink-0"
             >
               <Search className="h-4 w-4 stroke-[2.5]" />
               <span>{isBn ? 'অনুসন্ধান' : 'Search'}</span>
-            </button>
+            </Button>
           </div>
         )}
       </form>
 
       {/* Popular Tags Row */}
       <div className="flex items-center gap-1.5 text-xs pt-0.5 overflow-x-auto lg:overflow-visible flex-nowrap scrollbar-none">
-        <span className="font-semibold text-muted-foreground shrink-0 mr-0.5 text-xs flex items-center gap-1">
+        <span className="font-semibold text-muted-foreground shrink-0 mr-1 text-xs flex items-center gap-1">
           <Sparkles className="h-3 w-3 text-primary" />
           <span>{isBn ? 'জনপ্রিয়:' : 'Popular:'}</span>
         </span>
         {popularTags.map((tag) => (
-          <button
+          <Button
             key={tag.query}
             type="button"
+            variant="outline"
+            size="sm"
             onClick={() => handleTagClick(tag.query)}
-            className="rounded-full border border-border/80 bg-card px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-muted/40 transition-colors cursor-pointer shadow-xs whitespace-nowrap shrink-0"
+            className="rounded-full h-6 px-2.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors whitespace-nowrap shrink-0"
           >
             {tag.label}
-          </button>
+          </Button>
         ))}
       </div>
     </div>

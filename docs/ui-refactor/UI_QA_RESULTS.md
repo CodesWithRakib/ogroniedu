@@ -54,3 +54,20 @@
 | **Admin Overview (`/en/dashboard/admin`)** | Clashing multi-color gradients (`from-brand to-primary/10 border-info/40`), raw link buttons | Clean solid icon backgrounds, high-contrast KPI cards, `Button asChild` for audit inspection | **VERIFIED** |
 | **Admin Verification (`/en/dashboard/admin/verification`)** | `border-info/40` and `border-primary/40` on metric icons | Harmonious blue, emerald, and teal metric icons with clean borders | **VERIFIED** |
 | **Admin Users (`/en/dashboard/admin/users`)** | Loud drop shadows, clashing metric border colors | Minimal shadows, crisp metric cards, clear impersonation alert banner | **VERIFIED** |
+| **Hero Section (`/en`)** | Browser default `<select>` dropdowns, dated search UI, hardcoded styling | Upgraded to Radix UI Select components, custom triggers, popular subject filter tags, and shadcn buttons | **VERIFIED** |
+| **Academic Profile Modal** | Raw HTML `<select>` and `<textarea>` elements | Upgraded to shadcn `Select`, `Textarea`, and semantic status tokens | **VERIFIED** |
+| **Tutor Discovery Filters** | Native browser selects and inputs | Standardized with custom `Select`, `Input`, and `Button` components | **VERIFIED** |
+| **Contact Form** | Raw `<select>` and `<textarea>` controls | Refactored with shadcn `Select`, `Textarea`, and semantic alert tokens | **VERIFIED** |
+
+---
+
+## 5. Multi-Role Live Browser QA Verification Log
+
+| User Role | Credentials / Method | Target Dashboard | Checked Components & Interactions | Result |
+| :--- | :--- | :--- | :--- | :---: |
+| **Student** | `student.demo@ogroniedu.com` (1-click quick-fill) | `/en/dashboard/student` | KPI stat strip, Academic Profile card, Edit modal (shadcn Select & Textarea), upcoming sessions card, avatar menu logout. | **VERIFIED (Pass)** |
+| **Tutor** | `tutor.demo@ogroniedu.com` (1-click quick-fill) | `/en/dashboard/tutor` | Incoming requests, scheduled sessions, verification status badge, weekly teaching hours chart, header logout. | **VERIFIED (Pass)** |
+| **Guardian** | `guardian.demo@ogroniedu.com` (1-click quick-fill) | `/en/dashboard/guardian` | Child switcher tabs, child academic profile, parental consent badge, safety monitor, live class card, header logout. | **VERIFIED (Pass)** |
+| **Admin** | `admin.demo@ogroniedu.com` (1-click quick-fill) | `/en/dashboard/admin` | Operations & Control Center KPIs, Administrative Control Hub, User Manager tab (shadcn Select & Input), Support triage queue, logout. | **VERIFIED (Pass)** |
+| **Public Visitor** | Direct URL Navigation | `/en` | Hero section, upgraded `HeroSearchBar` with Radix custom selects, subject pill tags, CTA buttons, responsive layout. | **VERIFIED (Pass)** |
+

@@ -24,7 +24,7 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
                   ? 'শিক্ষক যাচাই ও সনদ পর্যালোচনা'
                   : 'Tutor Verification & Compliance'}
               </h1>
-              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-700 border border-blue-200">
+              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-info-soft text-info-soft-foreground border border-info/30">
                 {pendingCount} {locale === 'bn' ? 'অপেক্ষমান' : 'Pending'}
               </span>
             </div>
@@ -45,8 +45,8 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
               </p>
               <p className="text-2xl font-bold text-foreground mt-1 font-mono">{pendingCount}</p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700">
-              <Clock className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-info-soft border border-info/30 flex items-center justify-center text-info-soft-foreground">
+              <Clock className="w-5 h-5 text-info" />
             </div>
           </div>
 
@@ -55,12 +55,12 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
               <p className="text-xs text-muted-foreground font-medium">
                 {locale === 'bn' ? '৩-স্তর ভেরিফিকেশন' : '3-Tier Verification'}
               </p>
-              <p className="text-sm font-semibold text-emerald-700 mt-1">
+              <p className="text-sm font-semibold text-success-soft-foreground mt-1">
                 {locale === 'bn' ? 'NID • ডিগ্রি • অভিজ্ঞতা' : 'NID • Degree • Experience'}
               </p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
-              <ShieldCheck className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-success-soft border border-success/30 flex items-center justify-center text-success-soft-foreground">
+              <ShieldCheck className="w-5 h-5 text-success" />
             </div>
           </div>
 
@@ -73,7 +73,7 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
                 {locale === 'bn' ? 'রিজন কোড ও অভ্যন্তরীণ নোট' : 'Reason Codes & Internal Notes'}
               </p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
+            <div className="w-10 h-10 rounded-xl bg-primary-soft border border-primary/20 flex items-center justify-center text-primary">
               <FileCheck2 className="w-5 h-5" />
             </div>
           </div>

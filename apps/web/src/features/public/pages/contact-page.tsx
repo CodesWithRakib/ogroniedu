@@ -4,6 +4,14 @@ import { MapPin, Mail, Phone, Clock, Send, CheckCircle2, AlertCircle } from 'luc
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
 import { Input } from '@/components/ui/Input';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui/select';
 import { Badge } from '@/components/ui/Badge';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { useContactForm } from '../hooks/use-contact-form';
@@ -123,27 +131,31 @@ export function ContactPage({ locale }: { locale: Locale }) {
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
                       {p.categoryLabel}
                     </label>
-                    <select
-                      className="w-full rounded-xl border border-border/80 bg-card px-3.5 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none transition-colors"
+                    <Select
                       value={formData.category}
-                      onChange={(e) => updateField('category', e.target.value)}
+                      onValueChange={(val) => updateField('category', val)}
                     >
-                      <option value="general">{p.catGeneral}</option>
-                      <option value="tutorHelp">{p.catTutorHelp}</option>
-                      <option value="tutorVerification">{p.catTutorVerification}</option>
-                      <option value="paymentSupport">{p.catPaymentSupport}</option>
-                      <option value="safetyIncident">{p.catSafetyIncident}</option>
-                    </select>
+                      <SelectTrigger className="w-full h-11 rounded-xl bg-card border-border/80 text-sm">
+                        <SelectValue placeholder={p.catGeneral} />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="general">{p.catGeneral}</SelectItem>
+                        <SelectItem value="tutorHelp">{p.catTutorHelp}</SelectItem>
+                        <SelectItem value="tutorVerification">{p.catTutorVerification}</SelectItem>
+                        <SelectItem value="paymentSupport">{p.catPaymentSupport}</SelectItem>
+                        <SelectItem value="safetyIncident">{p.catSafetyIncident}</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-foreground mb-1.5">
                       {p.messageLabel} *
                     </label>
-                    <textarea
+                    <Textarea
                       required
                       rows={4}
-                      className="w-full rounded-xl border border-border/80 bg-card p-3.5 text-sm text-foreground resize-none focus:border-primary focus:outline-none transition-colors"
+                      className="rounded-xl border-border/80 bg-card p-3.5 text-sm resize-none"
                       placeholder={p.messagePlaceholder}
                       value={formData.message}
                       onChange={(e) => updateField('message', e.target.value)}
@@ -154,7 +166,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                     <div
                       role="alert"
                       data-testid="contact-submit-error"
-                      className="flex items-start gap-2 rounded-xl border border-destructive/20 bg-destructive/10 p-3 text-xs text-destructive"
+                      className="flex items-start gap-2 rounded-xl border border-destructive/20 bg-destructive-soft p-3 text-xs text-destructive"
                     >
                       <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                       <span>{submitError}</span>

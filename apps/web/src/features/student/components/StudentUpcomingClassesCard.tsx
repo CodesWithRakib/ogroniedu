@@ -100,7 +100,7 @@ export function StudentUpcomingClassesCard({
                     <div
                       className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs ${
                         isLive
-                          ? 'bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 animate-pulse'
+                          ? 'bg-success-soft text-success-soft-foreground border border-success/30 animate-pulse'
                           : 'bg-primary-soft text-primary'
                       }`}
                     >
@@ -115,7 +115,7 @@ export function StudentUpcomingClassesCard({
                         <span
                           className={`px-2 py-0.5 text-[10px] font-semibold rounded-full border ${
                             isLive
-                              ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20'
+                              ? 'bg-success-soft text-success-soft-foreground border-success/30'
                               : 'bg-primary-soft text-primary border-primary/20'
                           }`}
                         >

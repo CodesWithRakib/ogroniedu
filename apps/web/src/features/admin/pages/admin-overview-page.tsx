@@ -33,7 +33,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       descEn: 'Manage accounts, staff roles, suspensions and security access',
       href: `/${locale}/dashboard/admin/users`,
       icon: Users,
-      accent: 'bg-blue-50 border-blue-200 text-blue-700',
+      accent: 'bg-info-soft border-info/30 text-info-soft-foreground',
       actionTextBn: 'ইউজার ম্যানেজার খুলুন',
       actionTextEn: 'Open User Manager',
     },
@@ -44,7 +44,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       descEn: 'Inspect NID, degree certificates and approve tutor credentials',
       href: `/${locale}/dashboard/admin/verification`,
       icon: Search,
-      accent: 'bg-teal-50 border-teal-200 text-teal-700',
+      accent: 'bg-primary-soft border-primary/30 text-primary',
       actionTextBn: 'ভেরিফিকেশন কিউ খুলুন',
       actionTextEn: 'Open Verification Queue',
     },
@@ -55,7 +55,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       descEn: 'Continuous ledger audit and customer dispute resolution',
       href: `/${locale}/dashboard/admin/disputes`,
       icon: CreditCard,
-      accent: 'bg-amber-50 border-amber-200 text-amber-700',
+      accent: 'bg-warning-soft border-warning/30 text-warning-soft-foreground',
       actionTextBn: 'লেজার ও বিরোধ খুলুন',
       actionTextEn: 'Open Disputes & Ledger',
     },
@@ -66,7 +66,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       descEn: 'Conversion funnel, GMV, and operational reporting',
       href: `/${locale}/dashboard/admin/analytics`,
       icon: BarChart3,
-      accent: 'bg-indigo-50 border-indigo-200 text-indigo-700',
+      accent: 'bg-interactive-soft border-interactive/30 text-interactive-soft-foreground',
       actionTextBn: 'অ্যানালিটিক্স ড্যাশবোর্ড',
       actionTextEn: 'Open Analytics',
     },
@@ -87,11 +87,11 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {t('title')}
                 </h1>
-                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs">
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-info-soft text-info-soft-foreground border border-info/30 shadow-2xs">
                   {isSuperAdmin ? 'SUPER ADMIN' : 'ADMIN'}
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-success-soft text-success-soft-foreground border border-success/30">
+                  <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
                   {locale === 'bn' ? 'সিস্টেম সক্রিয়' : 'System Active'}
                 </span>
               </div>
@@ -231,7 +231,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-emerald-600" />
+                  <CreditCard className="w-5 h-5 text-success" />
                   <span>{t('reconciliationTitle')}</span>
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -244,8 +244,8 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                 <span
                   className={`px-3 py-1 text-xs font-semibold rounded-full border ${
                     admin.reconciliation?.isBalanced
-                      ? 'bg-emerald-50 text-emerald-700 border-emerald-200'
-                      : 'bg-red-50 text-red-700 border-red-200'
+                      ? 'bg-success-soft text-success-soft-foreground border-success/30'
+                      : 'bg-destructive-soft text-destructive-soft-foreground border-destructive/30'
                   }`}
                 >
                   {admin.reconciliation?.isBalanced ? t('statusBalanced') : t('statusDiscrepancy')}
@@ -276,7 +276,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">{t('discrepancy')}</p>
                 <p
                   className={`text-lg font-mono font-bold mt-1 ${
-                    admin.reconciliation?.discrepancy === '0' ? 'text-emerald-700' : 'text-red-700'
+                    admin.reconciliation?.discrepancy === '0' ? 'text-success-soft-foreground' : 'text-destructive-soft-foreground'
                   }`}
                 >
                   {admin.reconciliation?.discrepancy || '0'}
@@ -288,8 +288,8 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           {/* Security & Audit Policy Card */}
           <div className="bg-card border border-border/70 rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs">
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-emerald-700 text-sm font-semibold">
-                <CheckCircle2 className="w-4 h-4" />
+              <div className="flex items-center gap-2 text-success-soft-foreground text-sm font-semibold">
+                <CheckCircle2 className="w-4 h-4 text-success" />
                 <span>{t('auditRedactedNotice')}</span>
               </div>
               <p className="text-xs text-muted-foreground max-w-2xl leading-relaxed">
