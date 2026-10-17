@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { Users, UserCheck, ShieldAlert, Search } from 'lucide-react';
+import { Users, UserCheck, ShieldAlert } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner } from '@/components/ui';
 import type { Locale } from '@/lib/i18n';
@@ -57,7 +57,9 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
   const activeCount = admin.users.filter((u) => u.status === 'active').length;
   const suspendedCount = admin.users.filter((u) => u.status === 'suspended').length;
   const staffCount = admin.users.filter((u) =>
-    u.roles.some((r) => ['super_admin', 'admin', 'support_agent', 'compliance_reviewer'].includes(r)),
+    u.roles.some((r) =>
+      ['super_admin', 'admin', 'support_agent', 'compliance_reviewer'].includes(r),
+    ),
   ).length;
 
   return (
@@ -92,8 +94,8 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
                     {actions.activeImpersonation.targetId})
                   </p>
                   <p className="text-xs text-amber-600/80 dark:text-amber-300/80">
-                    {t('impersonationWarning')} (Session window: {actions.activeImpersonation.expiresIn}{' '}
-                    min)
+                    {t('impersonationWarning')} (Session window:{' '}
+                    {actions.activeImpersonation.expiresIn} min)
                   </p>
                 </div>
               </div>

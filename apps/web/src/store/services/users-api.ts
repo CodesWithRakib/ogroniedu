@@ -2,7 +2,12 @@ import { baseApi, type ApiSuccessEnvelope } from '../base-api';
 import type { AuthUser } from '../slices/auth-slice';
 
 function unwrapEnvelope<T>(response: ApiSuccessEnvelope<T> | T): T {
-  if (response && typeof response === 'object' && 'data' in response && response.data !== undefined) {
+  if (
+    response &&
+    typeof response === 'object' &&
+    'data' in response &&
+    response.data !== undefined
+  ) {
     return response.data as T;
   }
   return response as T;
@@ -82,10 +87,7 @@ export const usersApi = baseApi.injectEndpoints({
         response: ApiSuccessEnvelope<Record<string, unknown>> | Record<string, unknown>,
       ) => unwrapEnvelope(response),
     }),
-    deleteMyAccount: builder.mutation<
-      { success: boolean; message: string },
-      { reason: string }
-    >({
+    deleteMyAccount: builder.mutation<{ success: boolean; message: string }, { reason: string }>({
       query: (body) => ({ url: '/api/v1/users/me/delete-account', method: 'POST', body }),
       transformResponse: (
         response:

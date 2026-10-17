@@ -38,9 +38,11 @@ export interface MyTutorAnalyticsData {
     noShowSessions: number;
     completionRate: number;
   };
-  earnings: {
-    totalEarningsBdt?: number;
-  } | number;
+  earnings:
+    | {
+        totalEarningsBdt?: number;
+      }
+    | number;
   rating: {
     reviewsCount: number;
     averageRating: number;

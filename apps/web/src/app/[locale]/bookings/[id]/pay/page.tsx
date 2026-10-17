@@ -2,18 +2,14 @@
 
 import React, { use, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   ShieldCheck,
   CreditCard,
   CheckCircle2,
-  AlertTriangle,
   ArrowLeft,
   Lock,
   Sparkles,
-  ExternalLink,
   Receipt,
-  GraduationCap,
   Calendar,
 } from 'lucide-react';
 import { Button, LoadingSpinner, EmptyState } from '@/components/ui';
@@ -33,14 +29,12 @@ interface BookingPayPageProps {
 }
 
 export default function BookingPayPage({ params }: BookingPayPageProps) {
-  const router = useRouter();
   const resolved = use(params);
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   const isBn = locale === 'bn';
   const bookingId = resolved.id;
 
-  const { data: bookingData, isLoading: loadingBooking } =
-    useGetBookingRequestByIdQuery(bookingId);
+  const { data: bookingData, isLoading: loadingBooking } = useGetBookingRequestByIdQuery(bookingId);
 
   const [createOrder, { isLoading: creatingOrder }] = useCreatePaymentOrderMutation();
   const [confirmPayment, { isLoading: confirmingPayment }] = useSandboxConfirmPaymentMutation();
@@ -189,42 +183,54 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
 
             <div className="max-w-md mx-auto rounded-2xl border border-border/80 bg-surface/60 p-5 space-y-3 text-left text-xs">
               <div className="flex justify-between pb-2 border-b border-border/70">
-                <span className="text-muted-foreground">{isBn ? 'অর্ডার / বুকিং আইডি:' : 'Order / Booking ID:'}</span>
+                <span className="text-muted-foreground">
+                  {isBn ? 'অর্ডার / বুকিং আইডি:' : 'Order / Booking ID:'}
+                </span>
                 <span className="font-mono text-foreground font-semibold">
                   #{(successReceipt?.orderId || bookingId).slice(0, 12)}
                 </span>
               </div>
               <div className="flex justify-between pb-2 border-b border-border/70">
-                <span className="text-muted-foreground">{isBn ? 'পরিশোধিত অঙ্ক:' : 'Amount Paid:'}</span>
+                <span className="text-muted-foreground">
+                  {isBn ? 'পরিশোধিত অঙ্ক:' : 'Amount Paid:'}
+                </span>
                 <span className="text-emerald-400 font-bold text-sm font-mono">
                   ৳{formatLocalizedNumber(successReceipt?.amountBdt || priceBdt, locale)}
                 </span>
               </div>
               <div className="flex justify-between pb-2 border-b border-border/70">
-                <span className="text-muted-foreground">{isBn ? 'পেমেন্ট গেটওয়ে:' : 'Payment Gateway:'}</span>
+                <span className="text-muted-foreground">
+                  {isBn ? 'পেমেন্ট গেটওয়ে:' : 'Payment Gateway:'}
+                </span>
                 <span className="font-semibold text-cyan-400 flex items-center gap-1.5 uppercase">
                   <CreditCard className="w-3.5 h-3.5" />
                   <span>
                     {(successReceipt?.provider || selectedProvider) === 'sslcommerz'
                       ? 'SSLCOMMERZ Secure'
-                      : (successReceipt?.provider || selectedProvider)}
+                      : successReceipt?.provider || selectedProvider}
                   </span>
                 </span>
               </div>
               <div className="flex justify-between pb-2 border-b border-border/70">
-                <span className="text-muted-foreground">{isBn ? 'ট্রানজ্যাকশন রেফারেন্স:' : 'Txn Reference:'}</span>
+                <span className="text-muted-foreground">
+                  {isBn ? 'ট্রানজ্যাকশন রেফারেন্স:' : 'Txn Reference:'}
+                </span>
                 <span className="font-mono text-slate-300 font-semibold text-[11px]">
                   SSLCZ-TRX-{(successReceipt?.orderId || bookingId).slice(0, 8).toUpperCase()}
                 </span>
               </div>
               <div className="flex justify-between pb-2 border-b border-border/70">
-                <span className="text-muted-foreground">{isBn ? 'এসক্রো সার্টিফিকেট:' : 'Escrow Certificate:'}</span>
+                <span className="text-muted-foreground">
+                  {isBn ? 'এসক্রো সার্টিফিকেট:' : 'Escrow Certificate:'}
+                </span>
                 <span className="font-mono text-amber-400 font-semibold text-[11px]">
                   #ESCROW-TRUST-{(successReceipt?.orderId || bookingId).slice(0, 6).toUpperCase()}
                 </span>
               </div>
               <div className="flex justify-between">
-                <span className="text-muted-foreground">{isBn ? 'সুরক্ষা স্ট্যাটাস:' : 'Trust Status:'}</span>
+                <span className="text-muted-foreground">
+                  {isBn ? 'সুরক্ষা স্ট্যাটাস:' : 'Trust Status:'}
+                </span>
                 <span className="text-teal-400 font-semibold flex items-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5" />
                   {isBn ? '১০০% এসক্রো প্রটেক্টেড' : '100% Escrow Protected'}
@@ -376,7 +382,9 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                     <div className="flex items-center justify-between">
                       <span className="text-xs font-bold text-cyan-300 flex items-center gap-1.5">
                         <ShieldCheck className="w-4 h-4 text-cyan-400" />
-                        <span>{isBn ? 'SSLCOMMERZ সিকিউর পেমেন্ট হাব' : 'SSLCOMMERZ Verified Hub'}</span>
+                        <span>
+                          {isBn ? 'SSLCOMMERZ সিকিউর পেমেন্ট হাব' : 'SSLCOMMERZ Verified Hub'}
+                        </span>
                       </span>
                       <span className="text-[10px] text-muted-foreground font-mono">
                         PCI-DSS Level 1 Certified
@@ -388,16 +396,22 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                         : 'Pay securely using Visa, MasterCard, DBBL Nexus, City Touch, Islami Bank, or any MFS via SSLCOMMERZ gateway.'}
                     </p>
                     <div className="flex flex-wrap gap-1.5 pt-1">
-                      {['VISA', 'Mastercard', 'DBBL Nexus', 'Amex', 'bKash', 'Nagad', 'Internet Banking'].map(
-                        (badge) => (
-                          <span
-                            key={badge}
-                            className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-surface border border-border/80 text-foreground"
-                          >
-                            {badge}
-                          </span>
-                        ),
-                      )}
+                      {[
+                        'VISA',
+                        'Mastercard',
+                        'DBBL Nexus',
+                        'Amex',
+                        'bKash',
+                        'Nagad',
+                        'Internet Banking',
+                      ].map((badge) => (
+                        <span
+                          key={badge}
+                          className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-surface border border-border/80 text-foreground"
+                        >
+                          {badge}
+                        </span>
+                      ))}
                     </div>
                   </div>
                 )}
@@ -422,21 +436,31 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                     <span className="text-foreground">{tutorName}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{isBn ? 'শিক্ষার্থী:' : 'Student:'}</span>
+                    <span className="text-muted-foreground">
+                      {isBn ? 'শিক্ষার্থী:' : 'Student:'}
+                    </span>
                     <span className="text-foreground">{studentName}</span>
                   </div>
                   <div className="flex justify-between pt-2 border-t border-border/60">
-                    <span className="text-muted-foreground">{isBn ? 'সেশন ফি:' : 'Session Fee:'}</span>
+                    <span className="text-muted-foreground">
+                      {isBn ? 'সেশন ফি:' : 'Session Fee:'}
+                    </span>
                     <span className="font-mono text-foreground font-semibold">
                       ৳{formatLocalizedNumber(priceBdt, locale)}
                     </span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-muted-foreground">{isBn ? 'প্ল্যাটফর্ম ফি:' : 'Platform Fee:'}</span>
-                    <span className="text-emerald-400 font-semibold">{isBn ? '৳০ (ফ্রি)' : '৳0 (Free)'}</span>
+                    <span className="text-muted-foreground">
+                      {isBn ? 'প্ল্যাটফর্ম ফি:' : 'Platform Fee:'}
+                    </span>
+                    <span className="text-emerald-400 font-semibold">
+                      {isBn ? '৳০ (ফ্রি)' : '৳0 (Free)'}
+                    </span>
                   </div>
                   <div className="flex justify-between pt-3 border-t border-border text-sm">
-                    <strong className="text-foreground">{isBn ? 'সর্বমোট প্রদেয়:' : 'Total Payable:'}</strong>
+                    <strong className="text-foreground">
+                      {isBn ? 'সর্বমোট প্রদেয়:' : 'Total Payable:'}
+                    </strong>
                     <strong className="text-emerald-400 font-mono text-base font-black">
                       ৳{formatLocalizedNumber(priceBdt, locale)}
                     </strong>
@@ -470,12 +494,17 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
 
                 <p className="text-[11px] text-center text-muted-foreground flex items-center justify-center gap-1">
                   <ShieldCheck className="w-3.5 h-3.5 text-teal-400" />
-                  <span>{isBn ? '২৫৬-বিট SSL এনক্রিপ্টেড পেমেন্ট' : '256-Bit SSL Encrypted Escrow'}</span>
+                  <span>
+                    {isBn ? '২৫৬-বিট SSL এনক্রিপ্টেড পেমেন্ট' : '256-Bit SSL Encrypted Escrow'}
+                  </span>
                 </p>
               </div>
 
               {/* Double-Entry Ledger Breakdown */}
-              <div className="rounded-3xl border border-border/80 bg-surface/50 p-5 space-y-3" data-testid="ledger-breakdown-card">
+              <div
+                className="rounded-3xl border border-border/80 bg-surface/50 p-5 space-y-3"
+                data-testid="ledger-breakdown-card"
+              >
                 <h4 className="text-xs font-bold text-foreground flex items-center justify-between pb-2 border-b border-border/60">
                   <span className="flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-cyan-400" />
@@ -493,14 +522,18 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                     </span>
                   </div>
                   <div className="flex justify-between text-muted-foreground">
-                    <span>{isBn ? 'শিক্ষার্থীর এসক্রো দায় (Liability):' : 'Student Escrow Liability:'}</span>
+                    <span>
+                      {isBn ? 'শিক্ষার্থীর এসক্রো দায় (Liability):' : 'Student Escrow Liability:'}
+                    </span>
                     <span className="font-mono text-cyan-300 font-semibold">
                       ৳{formatLocalizedNumber(priceBdt, locale)} [২১০০]
                     </span>
                   </div>
                   <div className="pt-2 border-t border-border/40 space-y-1">
                     <p className="text-[10px] text-muted-foreground font-semibold">
-                      {isBn ? 'ক্লাস সফল সমাপ্তি পরবর্তী বিতরণ (Settlement):' : 'Post-Session Settlement Split:'}
+                      {isBn
+                        ? 'ক্লাস সফল সমাপ্তি পরবর্তী বিতরণ (Settlement):'
+                        : 'Post-Session Settlement Split:'}
                     </p>
                     <div className="flex justify-between text-muted-foreground">
                       <span>{isBn ? 'শিক্ষক পাবেন (৯২%):' : 'Tutor Payout (92%):'}</span>

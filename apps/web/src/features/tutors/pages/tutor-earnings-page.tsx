@@ -1,7 +1,6 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import {
   DollarSign,
   CreditCard,
@@ -9,16 +8,12 @@ import {
   ShieldCheck,
   CheckCircle2,
   Clock,
-  AlertTriangle,
-  Building2,
   Smartphone,
   Calendar,
   Sparkles,
-  ArrowRight,
   TrendingUp,
   Receipt,
   FileText,
-  Lock,
 } from 'lucide-react';
 import { TutorLayout } from '@/layouts/tutor/TutorLayout';
 import {
@@ -358,7 +353,9 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                 <div>
                   <CardTitle className="text-base font-bold flex items-center gap-2">
                     <FileText className="w-4 h-4 text-primary" />
-                    <span>{isBn ? 'ক্লাস ও সেশনভিত্তিক আয় বিবরণী' : 'Session Earnings Ledger'}</span>
+                    <span>
+                      {isBn ? 'ক্লাস ও সেশনভিত্তিক আয় বিবরণী' : 'Session Earnings Ledger'}
+                    </span>
                   </CardTitle>
                   <CardDescription className="text-xs mt-0.5">
                     {isBn
@@ -377,9 +374,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                 <div className="py-12 text-center text-muted-foreground space-y-2">
                   <Calendar className="w-10 h-10 mx-auto text-muted-foreground/40" />
                   <p className="text-xs">
-                    {isBn
-                      ? 'এখনও কোনো সেশন সম্পন্ন হয়নি।'
-                      : 'No session records found yet.'}
+                    {isBn ? 'এখনও কোনো সেশন সম্পন্ন হয়নি।' : 'No session records found yet.'}
                   </p>
                 </div>
               ) : (
@@ -397,7 +392,8 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                         <div className="space-y-1">
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-bold text-foreground">
-                              {sess.subjectName || (isBn ? 'পদার্থবিজ্ঞান ১ম পত্র' : 'Physics Paper 1')}
+                              {sess.subjectName ||
+                                (isBn ? 'পদার্থবিজ্ঞান ১ম পত্র' : 'Physics Paper 1')}
                             </span>
                             <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
                               #{sess.id.slice(0, 8)}
@@ -540,7 +536,8 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                     {isBn ? 'উত্তোলনের পরিমাণ (টাকা)' : 'Withdrawal Amount (BDT)'}
                   </label>
                   <span className="text-muted-foreground text-[11px]">
-                    {isBn ? 'সর্বোচ্চ:' : 'Available:'} ৳{formatLocalizedNumber(withdrawableBalanceBdt, locale)}
+                    {isBn ? 'সর্বোচ্চ:' : 'Available:'} ৳
+                    {formatLocalizedNumber(withdrawableBalanceBdt, locale)}
                   </span>
                 </div>
                 <Input

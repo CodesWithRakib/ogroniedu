@@ -1,7 +1,12 @@
 import { baseApi, type ApiSuccessEnvelope } from '../base-api';
 
 function unwrapEnvelope<T>(response: ApiSuccessEnvelope<T> | T): T {
-  if (response && typeof response === 'object' && 'data' in response && response.data !== undefined) {
+  if (
+    response &&
+    typeof response === 'object' &&
+    'data' in response &&
+    response.data !== undefined
+  ) {
     return response.data as T;
   }
   return response as T;
@@ -9,7 +14,12 @@ function unwrapEnvelope<T>(response: ApiSuccessEnvelope<T> | T): T {
 
 function unwrapArray<T>(response: ApiSuccessEnvelope<T[]> | T[]): T[] {
   if (Array.isArray(response)) return response;
-  if (response && typeof response === 'object' && 'data' in response && Array.isArray(response.data)) {
+  if (
+    response &&
+    typeof response === 'object' &&
+    'data' in response &&
+    Array.isArray(response.data)
+  ) {
     return response.data;
   }
   return [];
@@ -117,7 +127,10 @@ export const guardiansApi = baseApi.injectEndpoints({
         { type: 'Notification', id: 'LIST' },
       ],
     }),
-    revokeChildLink: builder.mutation<{ success: boolean; message: string }, { studentId: string; reason: string }>({
+    revokeChildLink: builder.mutation<
+      { success: boolean; message: string },
+      { studentId: string; reason: string }
+    >({
       query: ({ studentId, ...body }) => ({
         url: `/api/v1/guardians/children/${studentId}`,
         method: 'DELETE',

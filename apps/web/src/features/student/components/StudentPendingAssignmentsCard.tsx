@@ -2,15 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import {
-  FileText,
-  Clock,
-  CheckCircle2,
-  ArrowRight,
-  Send,
-  Award,
-  X,
-} from 'lucide-react';
+import { FileText, Clock, CheckCircle2, ArrowRight, Send, Award, X } from 'lucide-react';
 import { useSubmitAssignmentMutation, type AssignmentRecord } from '@/store/services/learning-api';
 import { useAppDispatch } from '@/store';
 import { enqueueToast } from '@/store/slices/ui-slice';
@@ -170,16 +162,19 @@ export function StudentPendingAssignmentsCard({
                             </span>
                           )}
                           <span className="font-semibold text-primary">
-                            {isBn ? 'পূর্ণমান' : 'Max Score'}: {formatLocalizedNumber(asgn.maxScore, locale)}
+                            {isBn ? 'পূর্ণমান' : 'Max Score'}:{' '}
+                            {formatLocalizedNumber(asgn.maxScore, locale)}
                           </span>
-                          {asgn.submission?.score !== null && asgn.submission?.score !== undefined && (
-                            <span className="font-bold text-emerald-500 flex items-center gap-0.5">
-                              <Award className="h-3.5 w-3.5" />
-                              <span>
-                                {formatLocalizedNumber(asgn.submission.score, locale)} / {formatLocalizedNumber(asgn.maxScore, locale)}
+                          {asgn.submission?.score !== null &&
+                            asgn.submission?.score !== undefined && (
+                              <span className="font-bold text-emerald-500 flex items-center gap-0.5">
+                                <Award className="h-3.5 w-3.5" />
+                                <span>
+                                  {formatLocalizedNumber(asgn.submission.score, locale)} /{' '}
+                                  {formatLocalizedNumber(asgn.maxScore, locale)}
+                                </span>
                               </span>
-                            </span>
-                          )}
+                            )}
                         </div>
                       </div>
                     </div>

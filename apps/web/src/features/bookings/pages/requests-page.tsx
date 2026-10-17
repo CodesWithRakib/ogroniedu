@@ -22,7 +22,6 @@ import {
   Button,
   Card,
   CardHeader,
-  CardTitle,
   CardContent,
   CardFooter,
   EmptyState,
@@ -178,9 +177,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           }`}
         >
           <span>{locale === 'bn' ? 'সকল অনুরোধ' : 'All Requests'}</span>
-          <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/20">
-            {counts.all}
-          </span>
+          <span className="px-1.5 py-0.2 rounded-full text-[10px] bg-black/20">{counts.all}</span>
         </button>
         <button
           onClick={() => setActiveFilter('requested')}
@@ -267,7 +264,9 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           {filteredItems.map((r: BookingRequestItem) => {
             const tutorUser = r.tutorProfile?.user;
             const tutorName =
-              tutorUser?.displayName || tutorUser?.fullName || (locale === 'bn' ? 'শিক্ষক' : 'Tutor');
+              tutorUser?.displayName ||
+              tutorUser?.fullName ||
+              (locale === 'bn' ? 'শিক্ষক' : 'Tutor');
             const studentUser = r.studentUser;
             const studentName =
               studentUser?.displayName ||
@@ -322,9 +321,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                     </div>
                     {rateFormatted && (
                       <div className="text-right shrink-0">
-                        <span className="text-sm font-bold text-emerald-400">
-                          {rateFormatted}
-                        </span>
+                        <span className="text-sm font-bold text-emerald-400">{rateFormatted}</span>
                         <span className="block text-[10px] text-teal-300/70">
                           {locale === 'bn' ? '/সেশন' : '/session'}
                         </span>
@@ -383,7 +380,11 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                       {r.status === 'accepted' && (
                         <div className="flex flex-wrap items-center gap-2 w-full justify-end">
                           <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
-                            <Button size="sm" variant="ghost" className="text-xs text-teal-300 hover:text-white">
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="text-xs text-teal-300 hover:text-white"
+                            >
                               {locale === 'bn' ? 'বিস্তারিত' : 'Details'}
                             </Button>
                           </Link>
@@ -393,12 +394,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                               {locale === 'bn' ? 'ক্লাস সময়সূচি' : 'Classes'}
                             </Button>
                           </Link>
-                          <Link
-                            href={withLocale(
-                              `/dashboard/bookings/${r.id}/pay`,
-                              locale,
-                            )}
-                          >
+                          <Link href={withLocale(`/dashboard/bookings/${r.id}/pay`, locale)}>
                             <Button
                               size="sm"
                               className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs"

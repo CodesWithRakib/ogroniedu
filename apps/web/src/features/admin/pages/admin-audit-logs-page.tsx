@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { FileText, ShieldCheck, Lock, Activity } from 'lucide-react';
+import { ShieldCheck, Lock } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner } from '@/components/ui';
 import type { Locale } from '@/lib/i18n';
@@ -28,7 +28,9 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-                  {locale === 'bn' ? 'প্ল্যাটফর্ম সিকিউরিটি ও অডিট লগ' : 'Platform Security & Audit Trail'}
+                  {locale === 'bn'
+                    ? 'প্ল্যাটফর্ম সিকিউরিটি ও অডিট লগ'
+                    : 'Platform Security & Audit Trail'}
                 </h1>
                 <span className="px-3 py-1 text-xs font-bold rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
                   {totalLogs} {locale === 'bn' ? 'ইভেন্ট রেকর্ড' : 'Events'}
@@ -53,9 +55,24 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
               <span>{t('auditRedactedNotice')}</span>
             </p>
             <div className="text-xs text-muted-foreground space-y-1.5">
-              <p>• {locale === 'bn' ? 'সকল মিউটেশন অপরিবর্তনীয়ভাবে PostgreSQL `audit_logs` টেবিলে সংরক্ষিত হয়।' : 'All mutations are recorded to PostgreSQL `audit_logs` table.'}</p>
-              <p>• {locale === 'bn' ? 'ক্রেডেনশিয়াল, পাসওয়ার্ড, কার্ড নম্বর ও সেশন টোকেন স্বয়ংক্রিয়ভাবে মাস্ক করা হয়।' : 'Credentials, passwords, card PANs, and session tokens are strictly sanitized.'}</p>
-              <p>• {locale === 'bn' ? 'কন্ট্রোলার লেভেলে NestJS `RolesGuard` দ্বারা লিস্ট-প্রিভিলেজ কার্যকর।' : 'Least-privilege role boundaries enforced at NestJS `RolesGuard` controller level.'}</p>
+              <p>
+                •{' '}
+                {locale === 'bn'
+                  ? 'সকল মিউটেশন অপরিবর্তনীয়ভাবে PostgreSQL `audit_logs` টেবিলে সংরক্ষিত হয়।'
+                  : 'All mutations are recorded to PostgreSQL `audit_logs` table.'}
+              </p>
+              <p>
+                •{' '}
+                {locale === 'bn'
+                  ? 'ক্রেডেনশিয়াল, পাসওয়ার্ড, কার্ড নম্বর ও সেশন টোকেন স্বয়ংক্রিয়ভাবে মাস্ক করা হয়।'
+                  : 'Credentials, passwords, card PANs, and session tokens are strictly sanitized.'}
+              </p>
+              <p>
+                •{' '}
+                {locale === 'bn'
+                  ? 'কন্ট্রোলার লেভেলে NestJS `RolesGuard` দ্বারা লিস্ট-প্রিভিলেজ কার্যকর।'
+                  : 'Least-privilege role boundaries enforced at NestJS `RolesGuard` controller level.'}
+              </p>
             </div>
           </div>
 

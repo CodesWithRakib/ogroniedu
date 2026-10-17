@@ -140,10 +140,7 @@ export class SessionQueriesService {
   /**
    * RFC 5545 iCalendar format generator for calendar sync (Google, Apple, Outlook)
    */
-  async generateIcsCalendar(
-    user: AuthenticatedUser,
-    query: GetSessionsQueryDto,
-  ): Promise<string> {
+  async generateIcsCalendar(user: AuthenticatedUser, query: GetSessionsQueryDto): Promise<string> {
     const sessions = await this.getSessions(user, query);
 
     const formatIcsDate = (d: Date): string => {

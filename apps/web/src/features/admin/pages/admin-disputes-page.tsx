@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { CreditCard, LifeBuoy, CheckCircle2, AlertTriangle, ArrowUpDown } from 'lucide-react';
+import { CreditCard, LifeBuoy, CheckCircle2, ArrowUpDown } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner } from '@/components/ui';
 import type { Locale } from '@/lib/i18n';
@@ -14,7 +14,9 @@ import { AdminSupportTab } from '../components/tabs/adminSupportTab';
 export function AdminDisputesPage({ locale }: { locale: Locale }) {
   const t = useTranslations('admin');
   const admin = useAdminDashboard(locale);
-  const [subSection, setSubSection] = React.useState<'reconciliation' | 'support'>('reconciliation');
+  const [subSection, setSubSection] = React.useState<'reconciliation' | 'support'>(
+    'reconciliation',
+  );
 
   const actions = useAdminActions({
     initialReconciliation: admin.reconciliation,
@@ -23,8 +25,9 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
   });
 
   const isBalanced = admin.reconciliation?.isBalanced ?? true;
-  const ticketsCount = admin.tickets.length;
-  const openTicketsCount = admin.tickets.filter((tk) => tk.status === 'submitted' || tk.status === 'in_review').length;
+  const openTicketsCount = admin.tickets.filter(
+    (tk) => tk.status === 'submitted' || tk.status === 'in_review',
+  ).length;
 
   return (
     <AdminLayout locale={locale} title={locale === 'bn' ? 'লেজার ও বিরোধ' : 'Ledger & Disputes'}>
@@ -49,7 +52,9 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-                  {locale === 'bn' ? 'আর্থিক রিকনসিলিয়েশন ও বিরোধ নিষ্পত্তি' : 'Financial Reconciliation & Disputes'}
+                  {locale === 'bn'
+                    ? 'আর্থিক রিকনসিলিয়েশন ও বিরোধ নিষ্পত্তি'
+                    : 'Financial Reconciliation & Disputes'}
                 </h1>
                 <span
                   className={`px-3 py-1 text-xs font-semibold rounded-full border ${
@@ -91,9 +96,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
               >
                 <LifeBuoy className="w-3.5 h-3.5" />
                 {locale === 'bn' ? 'বিরোধ ও সাপোর্ট টিকেট' : 'Dispute Tickets'}
-                {openTicketsCount > 0 && (
-                  <span className="w-2 h-2 rounded-full bg-amber-400" />
-                )}
+                {openTicketsCount > 0 && <span className="w-2 h-2 rounded-full bg-amber-400" />}
               </button>
             </div>
           </div>

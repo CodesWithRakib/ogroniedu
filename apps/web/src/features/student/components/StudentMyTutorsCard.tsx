@@ -2,9 +2,8 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Users, BookOpen, ArrowRight, Sparkles, MessageSquare } from 'lucide-react';
+import { Users, BookOpen, ArrowRight } from 'lucide-react';
 import { formatBDTMinor } from '@/lib/format';
-import { formatLocalizedNumber } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import type { ActiveTutorInfo } from '../hooks/use-student-dashboard';
 import type { Locale } from '@/lib/i18n';
@@ -15,11 +14,7 @@ interface StudentMyTutorsCardProps {
   isLoading?: boolean;
 }
 
-export function StudentMyTutorsCard({
-  locale,
-  tutors,
-  isLoading,
-}: StudentMyTutorsCardProps) {
+export function StudentMyTutorsCard({ locale, tutors, isLoading }: StudentMyTutorsCardProps) {
   const isBn = locale === 'bn';
 
   return (
@@ -77,7 +72,10 @@ export function StudentMyTutorsCard({
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3" data-testid="student-active-tutors-list">
+          <div
+            className="grid grid-cols-1 sm:grid-cols-2 gap-3"
+            data-testid="student-active-tutors-list"
+          >
             {tutors.slice(0, 4).map((t) => {
               const initials = t.displayName
                 .split(' ')

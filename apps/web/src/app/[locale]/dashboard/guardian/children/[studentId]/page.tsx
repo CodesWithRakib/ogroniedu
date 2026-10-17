@@ -12,15 +12,11 @@ import {
   CreditCard,
   RefreshCw,
   Clock,
-  CheckCircle2,
-  AlertCircle,
   Video,
   FileText,
-  UserCheck,
-  Lock,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
-import { Card, CardHeader, CardTitle, CardContent, Button, Badge } from '@/components/ui';
+import { Card, CardContent, Button, Badge } from '@/components/ui';
 import { useGetChildDetailsQuery } from '@/store/services/guardians-api';
 import { useGetStudentLearningSummaryQuery } from '@/store/services/learning-api';
 import { useGetBookingRequestsQuery } from '@/store/services/bookings-api';
@@ -45,8 +41,8 @@ export default function GuardianChildDetailPage({
   const isBn = locale === 'bn';
 
   // API Queries
-  const { data: child, isLoading: isChildLoading } = useGetChildDetailsQuery(studentId);
-  const { data: learningSummaryData, isLoading: isSummaryLoading } = useGetStudentLearningSummaryQuery(studentId);
+  const { data: child } = useGetChildDetailsQuery(studentId);
+  const { data: learningSummaryData } = useGetStudentLearningSummaryQuery(studentId);
   const { data: requestsData } = useGetBookingRequestsQuery();
   const { data: sessionsData, refetch: refetchSessions } = useGetSessionsQuery({ studentId });
   const [settleMilestone, { isLoading: isSettling }] = useSettleMilestoneMutation();
@@ -61,9 +57,12 @@ export default function GuardianChildDetailPage({
   } | null>(null);
 
   // Active section tab
-  const [activeTab, setActiveTab] = useState<'tutors' | 'sessions' | 'homework' | 'safety'>('tutors');
+  const [activeTab, setActiveTab] = useState<'tutors' | 'sessions' | 'homework' | 'safety'>(
+    'tutors',
+  );
 
-  const learningSummary = learningSummaryData && 'data' in learningSummaryData ? learningSummaryData.data : undefined;
+  const learningSummary =
+    learningSummaryData && 'data' in learningSummaryData ? learningSummaryData.data : undefined;
   const rawRequests = requestsData?.data || [];
   const childBookings = Array.isArray(rawRequests)
     ? rawRequests.filter((b) => b.studentUserId === studentId)
@@ -77,32 +76,32 @@ export default function GuardianChildDetailPage({
     try {
       await settleMilestone({ sessionId }).unwrap();
       playAudioTone('success');
-      toast.success(
-        isBn ? 'ক্লাস পারিশ্রমিক অনুমোদন সম্পন্ন' : 'Milestone Payout Released',
-        {
-          description: isBn
-            ? 'এসক্রো অ্যাকাউন্ট থেকে শিক্ষকের ওয়ালেটে সফলভাবে পারিশ্রমিক স্থানান্তর হয়েছে।'
-            : 'Escrow milestone has been credited to tutor payable ledger.',
-        },
-      );
+      toast.success(isBn ? 'ক্লাস পারিশ্রমিক অনুমোদন সম্পন্ন' : 'Milestone Payout Released', {
+        description: isBn
+          ? 'এসক্রো অ্যাকাউন্ট থেকে শিক্ষকের ওয়ালেটে সফলভাবে পারিশ্রমিক স্থানান্তর হয়েছে।'
+          : 'Escrow milestone has been credited to tutor payable ledger.',
+      });
       refetchSessions();
-    } catch (err: unknown) {
+    } catch {
       playAudioTone('alert');
-      toast.error(
-        isBn ? 'পারিশ্রমিক অনুমোদন ব্যর্থ হয়েছে' : 'Failed to release milestone',
-        {
-          description: isBn
-            ? 'শুধুমাত্র সম্পন্ন ক্লাসের পারিশ্রমিক ছাড় করা সম্ভব।'
-            : 'Only completed sessions can be settled.',
-        },
-      );
+      toast.error(isBn ? 'পারিশ্রমিক অনুমোদন ব্যর্থ হয়েছে' : 'Failed to release milestone', {
+        description: isBn
+          ? 'শুধুমাত্র সম্পন্ন ক্লাসের পারিশ্রমিক ছাড় করা সম্ভব।'
+          : 'Only completed sessions can be settled.',
+      });
     }
   };
 
   return (
     <DashboardShell
       locale={locale}
-      title={child?.displayName ? `${child.displayName} — ${isBn ? 'একাডেমিক প্রোফাইল' : 'Academic Dossier'}` : isBn ? 'সন্তান প্রোফাইল' : 'Child Profile'}
+      title={
+        child?.displayName
+          ? `${child.displayName} — ${isBn ? 'একাডেমিক প্রোফাইল' : 'Academic Dossier'}`
+          : isBn
+            ? 'সন্তান প্রোফাইল'
+            : 'Child Profile'
+      }
       subtitle={
         isBn
           ? 'সন্তানের ক্লাস উপস্থিতি, এসক্রো সুরক্ষা, হোমওয়ার্ক মূল্যায়ন ও শিক্ষক তদারকি'
@@ -132,7 +131,10 @@ export default function GuardianChildDetailPage({
       }
     >
       {/* 1. CHILD HERO DOSSIER CARD */}
-      <div className="p-5 rounded-3xl bg-card border border-border/80 shadow-xs relative overflow-hidden" data-testid="child-dossier-hero">
+      <div
+        className="p-5 rounded-3xl bg-card border border-border/80 shadow-xs relative overflow-hidden"
+        data-testid="child-dossier-hero"
+      >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start gap-4">
             <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-cyan-500/20 border border-primary/30 flex items-center justify-center text-primary font-black text-2xl shadow-inner">
@@ -140,25 +142,45 @@ export default function GuardianChildDetailPage({
             </div>
             <div className="space-y-1">
               <div className="flex flex-wrap items-center gap-2">
-                <h2 className="text-xl font-bold text-foreground">{child?.displayName || (isBn ? 'শিক্ষার্থী' : 'Student')}</h2>
+                <h2 className="text-xl font-bold text-foreground">
+                  {child?.displayName || (isBn ? 'শিক্ষার্থী' : 'Student')}
+                </h2>
                 {child?.isMinor && (
-                  <Badge variant="outline" className="text-xs bg-amber-500/10 text-amber-500 border-amber-500/20">
+                  <Badge
+                    variant="outline"
+                    className="text-xs bg-amber-500/10 text-amber-500 border-amber-500/20"
+                  >
                     {isBn ? 'অপ্রাপ্তবয়স্ক (Minor < 18)' : 'Minor (<18)'}
                   </Badge>
                 )}
                 <Badge variant={child?.status === 'active' ? 'success' : 'warning'}>
-                  {child?.status === 'active' ? (isBn ? 'সক্রিয় অভিভাবকত্ব' : 'Active Guardianship') : (isBn ? 'অনুমোদন অপেক্ষমাণ' : 'Pending Consent')}
+                  {child?.status === 'active'
+                    ? isBn
+                      ? 'সক্রিয় অভিভাবকত্ব'
+                      : 'Active Guardianship'
+                    : isBn
+                      ? 'অনুমোদন অপেক্ষমাণ'
+                      : 'Pending Consent'}
                 </Badge>
               </div>
               <p className="text-xs text-muted-foreground flex items-center gap-2">
-                <span>{child?.institutionName || (isBn ? 'ঢাকা রেসিডেনসিয়াল মডেল কলেজ' : 'General Institution')}</span>
+                <span>
+                  {child?.institutionName ||
+                    (isBn ? 'ঢাকা রেসিডেনসিয়াল মডেল কলেজ' : 'General Institution')}
+                </span>
                 <span>•</span>
                 <span className="capitalize text-foreground font-semibold">
                   {child?.relationshipType === 'father'
-                    ? (isBn ? 'পিতা' : 'Father')
+                    ? isBn
+                      ? 'পিতা'
+                      : 'Father'
                     : child?.relationshipType === 'mother'
-                      ? (isBn ? 'মাতা' : 'Mother')
-                      : (isBn ? 'আইনগত অভিভাবক' : 'Legal Guardian')}
+                      ? isBn
+                        ? 'মাতা'
+                        : 'Mother'
+                      : isBn
+                        ? 'আইনগত অভিভাবক'
+                        : 'Legal Guardian'}
                 </span>
               </p>
               <div className="flex items-center gap-2 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium pt-1">
@@ -175,18 +197,25 @@ export default function GuardianChildDetailPage({
           {/* Quick Action Badges */}
           <div className="flex flex-wrap md:flex-col items-start md:items-end gap-2 shrink-0">
             <span className="text-[11px] text-muted-foreground">
-              {isBn ? 'স্টুডেন্ট আইডি:' : 'Student ID:'} <span className="font-mono text-foreground font-semibold">{studentId.slice(0, 8)}...</span>
+              {isBn ? 'স্টুডেন্ট আইডি:' : 'Student ID:'}{' '}
+              <span className="font-mono text-foreground font-semibold">
+                {studentId.slice(0, 8)}...
+              </span>
             </span>
             <Button
               size="sm"
               variant="outline"
               onClick={() => {
                 const firstBooking = childBookings[0];
-                setSelectedBookingForReplacement(firstBooking ? {
-                  id: firstBooking.id,
-                  tutorName: firstBooking.tutorProfile?.user?.displayName,
-                  subjectName: firstBooking.subject?.name,
-                } : null);
+                setSelectedBookingForReplacement(
+                  firstBooking
+                    ? {
+                        id: firstBooking.id,
+                        tutorName: firstBooking.tutorProfile?.user?.displayName,
+                        subjectName: firstBooking.subject?.name,
+                      }
+                    : null,
+                );
                 setIsReplacementModalOpen(true);
               }}
               className="gap-1.5 text-xs rounded-xl border-primary/30 text-primary hover:bg-primary/10"
@@ -200,37 +229,58 @@ export default function GuardianChildDetailPage({
       </div>
 
       {/* 2. 4-METRIC KPI GRID */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4" data-testid="child-kpi-grid">
+      <div
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
+        data-testid="child-kpi-grid"
+      >
         <Card className="rounded-2xl border-border bg-card p-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">{isBn ? 'সক্রিয় শিক্ষক ও কোর্স' : 'Active Tutors'}</span>
-            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600"><GraduationCap className="w-4 h-4" /></div>
+            <span className="text-xs font-semibold text-muted-foreground">
+              {isBn ? 'সক্রিয় শিক্ষক ও কোর্স' : 'Active Tutors'}
+            </span>
+            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600">
+              <GraduationCap className="w-4 h-4" />
+            </div>
           </div>
           <div className="mt-2">
             <span className="text-2xl font-black text-foreground">{childBookings.length}</span>
-            <p className="text-[11px] text-muted-foreground mt-0.5">{isBn ? 'চলমান টিউটরিং বুকিং' : 'Enrolled courses'}</p>
-          </div>
-        </Card>
-
-        <Card className="rounded-2xl border-border bg-card p-4">
-          <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">{isBn ? 'ক্লাস উপস্থিতি হার' : 'Attendance Rate'}</span>
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600"><Calendar className="w-4 h-4" /></div>
-          </div>
-          <div className="mt-2">
-            <span className="text-2xl font-black text-foreground">
-              {metrics?.attendanceRate !== undefined ? `${metrics.attendanceRate}%` : '100%'}
-            </span>
             <p className="text-[11px] text-muted-foreground mt-0.5">
-              {metrics ? `${metrics.sessionsAttended}/${metrics.totalSessionsRecorded} ${isBn ? 'ক্লাসে উপস্থিত' : 'sessions attended'}` : (isBn ? 'সকল ক্লাসে উপস্থিত' : 'Full attendance')}
+              {isBn ? 'চলমান টিউটরিং বুকিং' : 'Enrolled courses'}
             </p>
           </div>
         </Card>
 
         <Card className="rounded-2xl border-border bg-card p-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">{isBn ? 'হোমওয়ার্ক সম্পন্ন' : 'Assignments'}</span>
-            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600"><BookOpen className="w-4 h-4" /></div>
+            <span className="text-xs font-semibold text-muted-foreground">
+              {isBn ? 'ক্লাস উপস্থিতি হার' : 'Attendance Rate'}
+            </span>
+            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600">
+              <Calendar className="w-4 h-4" />
+            </div>
+          </div>
+          <div className="mt-2">
+            <span className="text-2xl font-black text-foreground">
+              {metrics?.attendanceRate !== undefined ? `${metrics.attendanceRate}%` : '100%'}
+            </span>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {metrics
+                ? `${metrics.sessionsAttended}/${metrics.totalSessionsRecorded} ${isBn ? 'ক্লাসে উপস্থিত' : 'sessions attended'}`
+                : isBn
+                  ? 'সকল ক্লাসে উপস্থিত'
+                  : 'Full attendance'}
+            </p>
+          </div>
+        </Card>
+
+        <Card className="rounded-2xl border-border bg-card p-4">
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-semibold text-muted-foreground">
+              {isBn ? 'হোমওয়ার্ক সম্পন্ন' : 'Assignments'}
+            </span>
+            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600">
+              <BookOpen className="w-4 h-4" />
+            </div>
           </div>
           <div className="mt-2">
             <span className="text-2xl font-black text-foreground">
@@ -239,19 +289,27 @@ export default function GuardianChildDetailPage({
             <p className="text-[11px] text-muted-foreground mt-0.5">
               {metrics?.averageScore !== null && metrics?.averageScore !== undefined
                 ? `${isBn ? 'গড় নম্বর:' : 'Avg Score:'} ${metrics.averageScore}%`
-                : (isBn ? 'মূল্যায়ন প্রক্রিয়াধীন' : 'Awaiting grades')}
+                : isBn
+                  ? 'মূল্যায়ন প্রক্রিয়াধীন'
+                  : 'Awaiting grades'}
             </p>
           </div>
         </Card>
 
         <Card className="rounded-2xl border-border bg-card p-4">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-semibold text-muted-foreground">{isBn ? 'আর্থিক এসক্রো সুরক্ষা' : 'Escrow Protected'}</span>
-            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600"><CreditCard className="w-4 h-4" /></div>
+            <span className="text-xs font-semibold text-muted-foreground">
+              {isBn ? 'আর্থিক এসক্রো সুরক্ষা' : 'Escrow Protected'}
+            </span>
+            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600">
+              <CreditCard className="w-4 h-4" />
+            </div>
           </div>
           <div className="mt-2">
             <span className="text-2xl font-black text-emerald-500">১০০%</span>
-            <p className="text-[11px] text-muted-foreground mt-0.5">{isBn ? 'ক্লাস যাচাইয়ের পর ফান্ড ছাড়' : 'Milestone payout control'}</p>
+            <p className="text-[11px] text-muted-foreground mt-0.5">
+              {isBn ? 'ক্লাস যাচাইয়ের পর ফান্ড ছাড়' : 'Milestone payout control'}
+            </p>
           </div>
         </Card>
       </div>
@@ -269,7 +327,9 @@ export default function GuardianChildDetailPage({
           }`}
           id="tab-tutors"
         >
-          {isBn ? `শিক্ষক ও বুকিং (${childBookings.length})` : `Tutors & Bookings (${childBookings.length})`}
+          {isBn
+            ? `শিক্ষক ও বুকিং (${childBookings.length})`
+            : `Tutors & Bookings (${childBookings.length})`}
         </button>
         <button
           role="tab"
@@ -282,7 +342,9 @@ export default function GuardianChildDetailPage({
           }`}
           id="tab-sessions"
         >
-          {isBn ? `ক্লাস শিডিউল ও হাজিরা (${childSessions.length})` : `Sessions & Attendance (${childSessions.length})`}
+          {isBn
+            ? `ক্লাস শিডিউল ও হাজিরা (${childSessions.length})`
+            : `Sessions & Attendance (${childSessions.length})`}
         </button>
         <button
           role="tab"
@@ -321,7 +383,9 @@ export default function GuardianChildDetailPage({
               <CardContent className="space-y-3">
                 <GraduationCap className="w-12 h-12 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
-                  {isBn ? 'এই সন্তানের জন্য কোনো শিক্ষক বুকিং নেই' : 'No active bookings for this child'}
+                  {isBn
+                    ? 'এই সন্তানের জন্য কোনো শিক্ষক বুকিং নেই'
+                    : 'No active bookings for this child'}
                 </h4>
                 <p className="text-xs text-muted-foreground max-w-sm mx-auto">
                   {isBn
@@ -339,29 +403,44 @@ export default function GuardianChildDetailPage({
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {childBookings.map((b) => (
-                <Card key={b.id} className="rounded-3xl border-border bg-card hover:border-primary/40 transition-all p-5">
+                <Card
+                  key={b.id}
+                  className="rounded-3xl border-border bg-card hover:border-primary/40 transition-all p-5"
+                >
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1">
                       <div className="flex items-center gap-2">
                         <h4 className="font-bold text-foreground text-base">
-                          {b.tutorProfile?.user?.displayName || (isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor')}
+                          {b.tutorProfile?.user?.displayName ||
+                            (isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor')}
                         </h4>
                         <Badge variant="outline" className="text-xs border-primary/30 text-primary">
                           {b.subject?.name || (isBn ? 'সাধারণ বিষয়' : 'Subject')}
                         </Badge>
                       </div>
                       <p className="text-xs text-muted-foreground">
-                        {b.educationLevel?.name || (isBn ? 'মাধ্যমিক/উচ্চমাধ্যমিক' : 'Curriculum Level')}
+                        {b.educationLevel?.name ||
+                          (isBn ? 'মাধ্যমিক/উচ্চমাধ্যমিক' : 'Curriculum Level')}
                       </p>
                     </div>
-                    <Badge variant={b.status === 'confirmed' ? 'success' : b.status === 'pending' ? 'warning' : 'outline'}>
+                    <Badge
+                      variant={
+                        b.status === 'confirmed'
+                          ? 'success'
+                          : b.status === 'pending'
+                            ? 'warning'
+                            : 'outline'
+                      }
+                    >
                       {b.status}
                     </Badge>
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs">
                     <span className="font-bold text-emerald-600 dark:text-emerald-400">
-                      {isBn ? 'ফি:' : 'Rate:'} {((Number(b.pricePerSessionMinor) || 0) / 100).toFixed(0)} BDT / {isBn ? 'ক্লাস' : 'session'}
+                      {isBn ? 'ফি:' : 'Rate:'}{' '}
+                      {((Number(b.pricePerSessionMinor) || 0) / 100).toFixed(0)} BDT /{' '}
+                      {isBn ? 'ক্লাস' : 'session'}
                     </span>
                     <div className="flex items-center gap-2">
                       <Button
@@ -402,26 +481,44 @@ export default function GuardianChildDetailPage({
             <Card className="py-12 text-center rounded-3xl">
               <CardContent className="space-y-2">
                 <Calendar className="w-10 h-10 text-muted-foreground mx-auto" />
-                <h4 className="font-bold text-foreground">{isBn ? 'কোনো ক্লাস শিডিউল নেই' : 'No sessions scheduled yet'}</h4>
-                <p className="text-xs text-muted-foreground">{isBn ? 'শিক্ষক বুকিং নিশ্চিত হলে ক্লাসের সময়সূচি এখানে প্রদর্শিত হবে।' : 'Upcoming class timetable will appear here.'}</p>
+                <h4 className="font-bold text-foreground">
+                  {isBn ? 'কোনো ক্লাস শিডিউল নেই' : 'No sessions scheduled yet'}
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  {isBn
+                    ? 'শিক্ষক বুকিং নিশ্চিত হলে ক্লাসের সময়সূচি এখানে প্রদর্শিত হবে।'
+                    : 'Upcoming class timetable will appear here.'}
+                </p>
               </CardContent>
             </Card>
           ) : (
             <div className="space-y-3">
               {childSessions.map((s) => (
-                <Card key={s.id} className="rounded-2xl border-border bg-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <Card
+                  key={s.id}
+                  className="rounded-2xl border-border bg-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                >
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-primary" />
                       <span className="font-bold text-foreground text-sm">
                         {formatDateTime(String(s.startsAt), locale)}
                       </span>
-                      <Badge variant={s.status === 'completed' ? 'success' : s.status === 'cancelled' ? 'destructive' : 'outline'}>
+                      <Badge
+                        variant={
+                          s.status === 'completed'
+                            ? 'success'
+                            : s.status === 'cancelled'
+                              ? 'destructive'
+                              : 'outline'
+                        }
+                      >
                         {s.status === 'completed' ? (isBn ? 'সম্পন্ন' : 'Completed') : s.status}
                       </Badge>
                     </div>
                     <p className="text-xs text-muted-foreground">
-                      {s.subjectName || (isBn ? 'পাঠদান বিষয়' : 'Lesson')} • {s.tutorName || (isBn ? 'শিক্ষক' : 'Tutor')}
+                      {s.subjectName || (isBn ? 'পাঠদান বিষয়' : 'Lesson')} •{' '}
+                      {s.tutorName || (isBn ? 'শিক্ষক' : 'Tutor')}
                     </p>
                   </div>
 
@@ -446,7 +543,9 @@ export default function GuardianChildDetailPage({
                         id={`btn-settle-${s.id}`}
                       >
                         <CreditCard className="w-3.5 h-3.5" />
-                        <span>{isSettling ? '...' : (isBn ? 'পারিশ্রমিক অনুমোদন' : 'Release Escrow')}</span>
+                        <span>
+                          {isSettling ? '...' : isBn ? 'পারিশ্রমিক অনুমোদন' : 'Release Escrow'}
+                        </span>
                       </Button>
                     )}
                   </div>
@@ -460,22 +559,33 @@ export default function GuardianChildDetailPage({
       {/* TAB C: HOMEWORK & PROGRESS */}
       {activeTab === 'homework' && (
         <div className="space-y-4" data-testid="child-homework-list">
-          {(!learningSummary?.assignments || learningSummary.assignments.length === 0) ? (
+          {!learningSummary?.assignments || learningSummary.assignments.length === 0 ? (
             <Card className="py-12 text-center rounded-3xl">
               <CardContent className="space-y-2">
                 <BookOpen className="w-10 h-10 text-muted-foreground mx-auto" />
-                <h4 className="font-bold text-foreground">{isBn ? 'কোনো বাড়ির কাজ দেওয়া হয়নি' : 'No homework records yet'}</h4>
-                <p className="text-xs text-muted-foreground">{isBn ? 'শিক্ষক বাড়ির কাজ দিলে তা এখানে গ্রেড ও ফিডব্যাক সহ দেখা যাবে।' : 'Homework assignments and teacher feedback will be listed here.'}</p>
+                <h4 className="font-bold text-foreground">
+                  {isBn ? 'কোনো বাড়ির কাজ দেওয়া হয়নি' : 'No homework records yet'}
+                </h4>
+                <p className="text-xs text-muted-foreground">
+                  {isBn
+                    ? 'শিক্ষক বাড়ির কাজ দিলে তা এখানে গ্রেড ও ফিডব্যাক সহ দেখা যাবে।'
+                    : 'Homework assignments and teacher feedback will be listed here.'}
+                </p>
               </CardContent>
             </Card>
           ) : (
             <div className="space-y-3">
               {learningSummary.assignments.map((a) => (
-                <Card key={a.id} className="rounded-2xl border-border bg-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                <Card
+                  key={a.id}
+                  className="rounded-2xl border-border bg-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                >
                   <div className="space-y-1">
                     <h4 className="font-bold text-foreground text-sm">{a.title}</h4>
                     <p className="text-xs text-muted-foreground">
-                      {isBn ? 'সর্বোচ্চ নম্বর:' : 'Max Score:'} {a.maxScore} {a.dueAt && `• ${isBn ? 'জমার শেষ সময়:' : 'Due:'} ${formatDateTime(String(a.dueAt), locale)}`}
+                      {isBn ? 'সর্বোচ্চ নম্বর:' : 'Max Score:'} {a.maxScore}{' '}
+                      {a.dueAt &&
+                        `• ${isBn ? 'জমার শেষ সময়:' : 'Due:'} ${formatDateTime(String(a.dueAt), locale)}`}
                     </p>
                   </div>
                   <Link
@@ -502,7 +612,9 @@ export default function GuardianChildDetailPage({
               </div>
               <div className="space-y-2">
                 <h3 className="text-lg font-bold text-white">
-                  {isBn ? 'শিশু সুরক্ষা ও নীতি পর্যবেক্ষণ (Child Safeguarding Center)' : 'Child Safeguarding & Incident Center'}
+                  {isBn
+                    ? 'শিশু সুরক্ষা ও নীতি পর্যবেক্ষণ (Child Safeguarding Center)'
+                    : 'Child Safeguarding & Incident Center'}
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
                   {isBn
@@ -517,24 +629,34 @@ export default function GuardianChildDetailPage({
                     className="gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-4 rounded-xl"
                   >
                     <ShieldAlert className="w-4 h-4" />
-                    <span>{isBn ? 'জরুরি শিশু সুরক্ষা রিপোর্ট দায়ের করুন' : 'File Immediate Child Safety Alert'}</span>
+                    <span>
+                      {isBn
+                        ? 'জরুরি শিশু সুরক্ষা রিপোর্ট দায়ের করুন'
+                        : 'File Immediate Child Safety Alert'}
+                    </span>
                   </Button>
                   <Button
                     variant="outline"
                     size="sm"
                     onClick={() => {
                       const firstBooking = childBookings[0];
-                      setSelectedBookingForReplacement(firstBooking ? {
-                        id: firstBooking.id,
-                        tutorName: firstBooking.tutorProfile?.user?.displayName,
-                        subjectName: firstBooking.subject?.name,
-                      } : null);
+                      setSelectedBookingForReplacement(
+                        firstBooking
+                          ? {
+                              id: firstBooking.id,
+                              tutorName: firstBooking.tutorProfile?.user?.displayName,
+                              subjectName: firstBooking.subject?.name,
+                            }
+                          : null,
+                      );
                       setIsReplacementModalOpen(true);
                     }}
                     className="gap-2 border-slate-700 hover:bg-slate-800 text-slate-200 rounded-xl"
                   >
                     <RefreshCw className="w-4 h-4 text-primary" />
-                    <span>{isBn ? '৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট দাবি' : 'Claim 48-Hour Replacement'}</span>
+                    <span>
+                      {isBn ? '৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট দাবি' : 'Claim 48-Hour Replacement'}
+                    </span>
                   </Button>
                 </div>
               </div>
@@ -549,7 +671,11 @@ export default function GuardianChildDetailPage({
                   {isBn ? 'জাতীয় জরুরি হটলাইন' : 'National Emergency Hotline'}
                 </span>
                 <h4 className="text-xl font-black text-white mt-0.5">১০৯৮ / ৯৯৯</h4>
-                <p className="text-xs text-slate-400">{isBn ? 'বাংলাদেশ সরকার শিশু ও জরুরি সহায়তা ডেস্ক' : 'Government of Bangladesh 24/7 Helpline'}</p>
+                <p className="text-xs text-slate-400">
+                  {isBn
+                    ? 'বাংলাদেশ সরকার শিশু ও জরুরি সহায়তা ডেস্ক'
+                    : 'Government of Bangladesh 24/7 Helpline'}
+                </p>
               </div>
               <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/30">
                 ২৪/৭ ফ্রি কল
@@ -562,7 +688,11 @@ export default function GuardianChildDetailPage({
                   {isBn ? 'অগ্রণী এডু ট্রাস্ট ও নিরাপত্তা টিম' : 'OgroniEdu Trust & Safety'}
                 </span>
                 <h4 className="text-xl font-black text-foreground mt-0.5">+৮৮০ ৯৬১২-৩৪৫৬৭৮</h4>
-                <p className="text-xs text-muted-foreground">{isBn ? 'অভিভাবক সহায়তা ও এসক্রো ট্রায়াজ' : 'Parental Support & Escrow Dispute Desk'}</p>
+                <p className="text-xs text-muted-foreground">
+                  {isBn
+                    ? 'অভিভাবক সহায়তা ও এসক্রো ট্রায়াজ'
+                    : 'Parental Support & Escrow Dispute Desk'}
+                </p>
               </div>
               <span className="px-3 py-1 rounded-full bg-primary/20 text-primary text-xs font-bold border border-primary/30">
                 তাৎক্ষণিক ট্রায়াজ
@@ -587,7 +717,10 @@ export default function GuardianChildDetailPage({
         onClose={() => setIsReplacementModalOpen(false)}
         locale={locale}
         bookingId={selectedBookingForReplacement?.id || childBookings[0]?.id || ''}
-        tutorName={selectedBookingForReplacement?.tutorName || childBookings[0]?.tutorProfile?.user?.displayName}
+        tutorName={
+          selectedBookingForReplacement?.tutorName ||
+          childBookings[0]?.tutorProfile?.user?.displayName
+        }
         subjectName={selectedBookingForReplacement?.subjectName || childBookings[0]?.subject?.name}
       />
     </DashboardShell>

@@ -11,7 +11,7 @@ import {
   BookOpen,
   UserCheck,
 } from 'lucide-react';
-import { formatDateTime, formatDate } from '@/lib/format';
+import { formatDateTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
 import type { CalendarSessionItem } from '@/features/bookings/types/session.types';
 import type { Locale } from '@/lib/i18n';

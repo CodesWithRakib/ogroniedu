@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { UserCheck, RefreshCw, X, Send, Clock, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react';
+import { RefreshCw, X, Send, Clock, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { useCreateReplacementCaseMutation } from '@/store/services/trust-api';
 import { playAudioTone } from '@/lib/audio/notification-sound';
@@ -58,14 +58,11 @@ export function TutorReplacementModal({
       // Play chime tone
       playAudioTone('chime');
 
-      toast.success(
-        isBn ? 'রিপ্লেসমেন্ট কেস নিবন্ধিত হয়েছে' : 'Replacement Case Filed',
-        {
-          description: isBn
-            ? 'আমাদের অপারেশন টিম ৪৮ ঘণ্টার মধ্যে বিকল্প শিক্ষক ম্যাচ করবে।'
-            : 'Matching team will offer alternative verified tutor within 48h.',
-        },
-      );
+      toast.success(isBn ? 'রিপ্লেসমেন্ট কেস নিবন্ধিত হয়েছে' : 'Replacement Case Filed', {
+        description: isBn
+          ? 'আমাদের অপারেশন টিম ৪৮ ঘণ্টার মধ্যে বিকল্প শিক্ষক ম্যাচ করবে।'
+          : 'Matching team will offer alternative verified tutor within 48h.',
+      });
 
       setIsSuccess(true);
       setTimeout(() => {
@@ -74,7 +71,10 @@ export function TutorReplacementModal({
       }, 2000);
     } catch (err: unknown) {
       const msg =
-        err && typeof err === 'object' && 'data' in err && typeof (err as { data?: { message?: string } }).data?.message === 'string'
+        err &&
+        typeof err === 'object' &&
+        'data' in err &&
+        typeof (err as { data?: { message?: string } }).data?.message === 'string'
           ? (err as { data: { message: string } }).data.message
           : isBn
             ? 'রিপ্লেসমেন্ট অনুরোধ ব্যর্থ হয়েছে। পুনরায় চেষ্টা করুন।'
@@ -119,7 +119,9 @@ export function TutorReplacementModal({
               </div>
               <div>
                 <h3 className="text-lg font-bold text-white">
-                  {isBn ? '৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি' : '48-Hour Tutor Replacement Guarantee'}
+                  {isBn
+                    ? '৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি'
+                    : '48-Hour Tutor Replacement Guarantee'}
                 </h3>
                 <p className="text-xs text-muted-foreground">
                   {tutorName && subjectName
@@ -166,7 +168,9 @@ export function TutorReplacementModal({
                     : 'Teaching Style Mismatch'}
                 </option>
                 <option value="tutor_no_show">
-                  {isBn ? 'শিক্ষক নির্ধারিত ক্লাসে অনুপস্থিত ছিলেন (Tutor No-Show)' : 'Tutor No-Show'}
+                  {isBn
+                    ? 'শিক্ষক নির্ধারিত ক্লাসে অনুপস্থিত ছিলেন (Tutor No-Show)'
+                    : 'Tutor No-Show'}
                 </option>
                 <option value="frequent_tutor_cancellation">
                   {isBn
@@ -233,7 +237,15 @@ export function TutorReplacementModal({
                 id="btn-submit-replacement-request"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>{isLoading ? (isBn ? 'জমা হচ্ছে...' : 'Submitting...') : isBn ? 'রিপ্লেসমেন্ট ক্লেইম করুন' : 'Claim Replacement'}</span>
+                <span>
+                  {isLoading
+                    ? isBn
+                      ? 'জমা হচ্ছে...'
+                      : 'Submitting...'
+                    : isBn
+                      ? 'রিপ্লেসমেন্ট ক্লেইম করুন'
+                      : 'Claim Replacement'}
+                </span>
               </Button>
             </div>
           </form>

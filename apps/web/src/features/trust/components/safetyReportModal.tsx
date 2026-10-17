@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { ShieldAlert, AlertTriangle, X, Send, PhoneCall, CheckCircle2 } from 'lucide-react';
-import { Button, Input } from '@/components/ui';
+import { Button } from '@/components/ui';
 import { useCreateSafetyReportMutation } from '@/store/services/trust-api';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { toast } from 'sonner';
@@ -61,14 +61,11 @@ export function SafetyReportModal({
       // Play high-priority alert chime
       playAudioTone('alert');
 
-      toast.error(
-        isBn ? 'শিশু সুরক্ষা সতর্কতা গ্রহণ করা হয়েছে' : 'Safety Alert Registered',
-        {
-          description: isBn
-            ? 'রিপোর্টটি জরুরি কমপ্লায়েন্স ও নিরাপত্তা ট্রায়াজে প্রেরণ করা হয়েছে।'
-            : 'Escalated to 24/7 Security & Compliance triage.',
-        },
-      );
+      toast.error(isBn ? 'শিশু সুরক্ষা সতর্কতা গ্রহণ করা হয়েছে' : 'Safety Alert Registered', {
+        description: isBn
+          ? 'রিপোর্টটি জরুরি কমপ্লায়েন্স ও নিরাপত্তা ট্রায়াজে প্রেরণ করা হয়েছে।'
+          : 'Escalated to 24/7 Security & Compliance triage.',
+      });
 
       setIsSuccess(true);
       setTimeout(() => {
@@ -77,7 +74,10 @@ export function SafetyReportModal({
       }, 2000);
     } catch (err: unknown) {
       const msg =
-        err && typeof err === 'object' && 'data' in err && typeof (err as { data?: { message?: string } }).data?.message === 'string'
+        err &&
+        typeof err === 'object' &&
+        'data' in err &&
+        typeof (err as { data?: { message?: string } }).data?.message === 'string'
           ? (err as { data: { message: string } }).data.message
           : isBn
             ? 'রিপোর্ট প্রেরণে ব্যর্থ হয়েছে। পুনরায় চেষ্টা করুন।'
@@ -166,7 +166,9 @@ export function SafetyReportModal({
                     : 'Child Safety & Well-being (Priority)'}
                 </option>
                 <option value="harassment">
-                  {isBn ? 'অনুপযুক্ত আচরণ বা হয়রানি (Harassment)' : 'Harassment & Inappropriate Behavior'}
+                  {isBn
+                    ? 'অনুপযুক্ত আচরণ বা হয়রানি (Harassment)'
+                    : 'Harassment & Inappropriate Behavior'}
                 </option>
                 <option value="off_platform_payment">
                   {isBn
@@ -174,10 +176,14 @@ export function SafetyReportModal({
                     : 'Off-Platform Direct Payment Solicitation'}
                 </option>
                 <option value="academic_dishonesty">
-                  {isBn ? 'পরীক্ষায় প্রতারণা বা অসদুপায় (Academic Dishonesty)' : 'Academic Dishonesty'}
+                  {isBn
+                    ? 'পরীক্ষায় প্রতারণা বা অসদুপায় (Academic Dishonesty)'
+                    : 'Academic Dishonesty'}
                 </option>
                 <option value="fraud_billing">
-                  {isBn ? 'ক্লাস বা উপস্থিতি জালিয়াতি (Fraud / Absenteeism)' : 'Fraud / Billing Discrepancy'}
+                  {isBn
+                    ? 'ক্লাস বা উপস্থিতি জালিয়াতি (Fraud / Absenteeism)'
+                    : 'Fraud / Billing Discrepancy'}
                 </option>
                 <option value="other">{isBn ? 'অন্যান্য অভিযোগ (Other)' : 'Other Concern'}</option>
               </select>
@@ -190,10 +196,30 @@ export function SafetyReportModal({
               </label>
               <div className="grid grid-cols-4 gap-2">
                 {[
-                  { id: 'critical', bn: 'জরুরি (Critical)', en: 'Critical', color: 'border-red-600 bg-red-950/40 text-red-300' },
-                  { id: 'high', bn: 'উচ্চ (High)', en: 'High', color: 'border-amber-600 bg-amber-950/40 text-amber-300' },
-                  { id: 'medium', bn: 'মাঝারি (Med)', en: 'Medium', color: 'border-yellow-600 bg-yellow-950/40 text-yellow-300' },
-                  { id: 'low', bn: 'সাধারণ (Low)', en: 'Low', color: 'border-slate-700 bg-slate-900 text-slate-300' },
+                  {
+                    id: 'critical',
+                    bn: 'জরুরি (Critical)',
+                    en: 'Critical',
+                    color: 'border-red-600 bg-red-950/40 text-red-300',
+                  },
+                  {
+                    id: 'high',
+                    bn: 'উচ্চ (High)',
+                    en: 'High',
+                    color: 'border-amber-600 bg-amber-950/40 text-amber-300',
+                  },
+                  {
+                    id: 'medium',
+                    bn: 'মাঝারি (Med)',
+                    en: 'Medium',
+                    color: 'border-yellow-600 bg-yellow-950/40 text-yellow-300',
+                  },
+                  {
+                    id: 'low',
+                    bn: 'সাধারণ (Low)',
+                    en: 'Low',
+                    color: 'border-slate-700 bg-slate-900 text-slate-300',
+                  },
                 ].map((s) => (
                   <button
                     key={s.id}
@@ -214,7 +240,9 @@ export function SafetyReportModal({
             {/* Description Textarea */}
             <div className="space-y-1.5">
               <label className="text-xs font-semibold text-slate-300">
-                {isBn ? 'ঘটনার বিস্তারিত বিবরণ (কমপক্ষে ১০ অক্ষর):' : 'Detailed Incident Description:'}
+                {isBn
+                  ? 'ঘটনার বিস্তারিত বিবরণ (কমপক্ষে ১০ অক্ষর):'
+                  : 'Detailed Incident Description:'}
               </label>
               <textarea
                 value={description}
@@ -255,7 +283,15 @@ export function SafetyReportModal({
                 id="btn-submit-safety-report"
               >
                 <Send className="w-3.5 h-3.5" />
-                <span>{isLoading ? (isBn ? 'প্রেরণ হচ্ছে...' : 'Submitting...') : isBn ? 'জরুরি রিপোর্ট দায়ের করুন' : 'Submit Safety Report'}</span>
+                <span>
+                  {isLoading
+                    ? isBn
+                      ? 'প্রেরণ হচ্ছে...'
+                      : 'Submitting...'
+                    : isBn
+                      ? 'জরুরি রিপোর্ট দায়ের করুন'
+                      : 'Submit Safety Report'}
+                </span>
               </Button>
             </div>
           </form>

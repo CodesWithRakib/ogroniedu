@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import Link from 'next/link';
-import { ShieldCheck, CreditCard, Search, ArrowRight, Lock } from 'lucide-react';
+import { ShieldCheck, CreditCard, Lock } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { PaymentCheckoutView } from '@/components/payments/PaymentCheckoutView';
 import { Button, Card, CardContent, Input, LoadingSpinner, EmptyState } from '@/components/ui';
@@ -94,7 +93,10 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 data-testid="create-order-form"
               >
                 <div className="space-y-1.5 sm:col-span-2">
-                  <label htmlFor="pay-booking" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  <label
+                    htmlFor="pay-booking"
+                    className="text-xs font-bold text-slate-700 dark:text-slate-300"
+                  >
                     {locale === 'bn' ? 'টিউশন / কোর্স নির্বাচন করুন' : 'Select Tuition / Course'}
                   </label>
                   <select
@@ -113,7 +115,10 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="pay-amount" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  <label
+                    htmlFor="pay-amount"
+                    className="text-xs font-bold text-slate-700 dark:text-slate-300"
+                  >
                     {dict.payments.totalAmount} (BDT ৳)
                   </label>
                   <Input
@@ -128,7 +133,10 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label htmlFor="pay-provider" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+                  <label
+                    htmlFor="pay-provider"
+                    className="text-xs font-bold text-slate-700 dark:text-slate-300"
+                  >
                     {dict.payments.selectGateway}
                   </label>
                   <select

@@ -72,7 +72,9 @@ export function useRegisterForm(locale: Locale) {
           ? (res as AuthResponse)
           : ((res as { data?: AuthResponse }).data as AuthResponse);
       if (!payload?.accessToken || !payload?.user) {
-        throw new Error(isBn ? 'নিবন্ধন প্রতিক্রিয়া অসম্পূর্ণ।' : 'Registration response missing credentials.');
+        throw new Error(
+          isBn ? 'নিবন্ধন প্রতিক্রিয়া অসম্পূর্ণ।' : 'Registration response missing credentials.',
+        );
       }
       dispatch(
         setCredentials({

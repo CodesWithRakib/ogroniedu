@@ -44,9 +44,15 @@ export function LearningPage({ locale }: { locale: Locale }) {
   return (
     <DashboardShell locale={locale} title={dict.learning.title} subtitle={dict.learning.subtitle}>
       {records.bookingOptions.length > 0 && (
-        <div className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm" data-testid="learning-booking-picker">
+        <div
+          className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm"
+          data-testid="learning-booking-picker"
+        >
           <div className="flex items-center gap-2">
-            <label htmlFor="learning-booking-select" className="text-xs font-bold text-slate-700 dark:text-slate-300">
+            <label
+              htmlFor="learning-booking-select"
+              className="text-xs font-bold text-slate-700 dark:text-slate-300"
+            >
               {locale === 'bn' ? 'সক্রিয় কোর্স / বুকিং নির্বাচন:' : 'Select Tuition / Course:'}
             </label>
             <select
@@ -147,7 +153,9 @@ export function LearningPage({ locale }: { locale: Locale }) {
               ? 'শিক্ষকের সাথে ক্লাস শুরু হলে এখানে ক্লাসের উপস্থিতি, বাড়ির কাজ ও প্রগ্রেস রিপোর্ট দেখতে পাবেন।'
               : 'Once you book a tutor and start sessions, your attendance, homework and progress reports will appear here.'
           }
-          actionLabel={role === 'tutor' ? undefined : (locale === 'bn' ? 'টিউটর খুঁজুন' : 'Find a Tutor')}
+          actionLabel={
+            role === 'tutor' ? undefined : locale === 'bn' ? 'টিউটর খুঁজুন' : 'Find a Tutor'
+          }
           actionHref={role === 'tutor' ? undefined : withLocale('/tutors', locale)}
         />
       ) : (

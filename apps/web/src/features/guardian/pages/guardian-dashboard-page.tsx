@@ -16,17 +16,14 @@ import {
   Sparkles,
   GraduationCap,
   ArrowRight,
-  Clock,
-  Video,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
 import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart';
 import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard';
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
-import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
 import { GuardianChildrenManager } from '@/components/guardian/GuardianChildrenManager';
-import { LoadingSpinner, Button, Card, CardHeader, CardTitle, CardContent } from '@/components/ui';
+import { LoadingSpinner, Card, CardHeader, CardContent } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDateTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';

@@ -18,9 +18,8 @@ import {
   ArrowLeft,
   ShieldCheck,
   Radio,
-  FileText,
 } from 'lucide-react';
-import { Button, Badge, Card, CardContent } from '@/components/ui';
+import { Button, Badge, Card } from '@/components/ui';
 import {
   SessionItem,
   useStartSessionMutation,
@@ -49,7 +48,9 @@ export function ClassroomWorkspace({
   locale = 'bn',
   isTutor = false,
 }: ClassroomWorkspaceProps) {
-  const [activeTab, setActiveTab] = useState<'whiteboard' | 'formulas' | 'attendance'>('whiteboard');
+  const [activeTab, setActiveTab] = useState<'whiteboard' | 'formulas' | 'attendance'>(
+    'whiteboard',
+  );
 
   // Mutations
   const [startSession, { isLoading: isStarting }] = useStartSessionMutation();
@@ -73,23 +74,27 @@ export function ClassroomWorkspace({
   const [secondsElapsed, setSecondsElapsed] = useState(0);
 
   // Attendance
-  const { data: attendanceData, refetch: refetchAttendance } =
-    useGetSessionAttendanceQuery(session.id);
+  const { data: attendanceData, refetch: refetchAttendance } = useGetSessionAttendanceQuery(
+    session.id,
+  );
   const [markAttendance, { isLoading: isMarkingAttendance }] = useMarkAttendanceMutation();
-  const [selectedAttendanceStatus, setSelectedAttendanceStatus] = useState<AttendanceStatus>('present');
+  const [selectedAttendanceStatus, setSelectedAttendanceStatus] =
+    useState<AttendanceStatus>('present');
   const [attendanceNotes, setAttendanceNotes] = useState('');
   const [attendanceSuccess, setAttendanceSuccess] = useState(false);
 
   const existingAttendance = React.useMemo(() => {
     if (!attendanceData) return [];
     try {
-      const parsed = parseItem<Array<{
-        id: string;
-        attendanceStatus: AttendanceStatus;
-        recordedAt: string;
-        notes?: string | null;
-        participantUserId: string;
-      }>>(attendanceData);
+      const parsed = parseItem<
+        Array<{
+          id: string;
+          attendanceStatus: AttendanceStatus;
+          recordedAt: string;
+          notes?: string | null;
+          participantUserId: string;
+        }>
+      >(attendanceData);
       return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
@@ -177,7 +182,8 @@ export function ClassroomWorkspace({
     } catch (err: unknown) {
       const msg =
         err && typeof err === 'object' && 'data' in err
-          ? ((err as { data?: { message?: string } }).data?.message ?? 'Failed to update meeting URL')
+          ? ((err as { data?: { message?: string } }).data?.message ??
+            'Failed to update meeting URL')
           : 'Failed to update meeting URL';
       setActionError(msg);
     }
@@ -195,8 +201,7 @@ export function ClassroomWorkspace({
   const handleMarkAttendance = async (e: React.FormEvent) => {
     e.preventDefault();
     const participantUserId =
-      (session.studentUserId as string) ||
-      ((session.studentUser as { id?: string } | undefined)?.id);
+      (session.studentUserId as string) || (session.studentUser as { id?: string } | undefined)?.id;
 
     if (!participantUserId) return;
 
@@ -272,7 +277,11 @@ export function ClassroomWorkspace({
           <div className="space-y-3">
             <div className="flex items-center gap-2 text-xs text-cyan-300 font-semibold">
               <Sparkles className="w-4 h-4 text-cyan-400" />
-              <span>{locale === 'bn' ? 'অগ্রণী এডু ইন্টারেক্টিভ লাইভ ক্লাসরুম' : 'OgroniEdu Live Interactive Classroom'}</span>
+              <span>
+                {locale === 'bn'
+                  ? 'অগ্রণী এডু ইন্টারেক্টিভ লাইভ ক্লাসরুম'
+                  : 'OgroniEdu Live Interactive Classroom'}
+              </span>
             </div>
             <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
               {subjectTitle}
@@ -284,13 +293,18 @@ export function ClassroomWorkspace({
               </span>
               <span>•</span>
               <span className="flex items-center gap-1.5">
-                <span className="text-slate-400">{locale === 'bn' ? 'শিক্ষার্থী:' : 'Student:'}</span>
+                <span className="text-slate-400">
+                  {locale === 'bn' ? 'শিক্ষার্থী:' : 'Student:'}
+                </span>
                 <strong className="text-white font-bold">{studentName}</strong>
               </span>
               <span>•</span>
               <span className="flex items-center gap-1 text-cyan-400">
                 <Clock className="w-3.5 h-3.5" />
-                <span>{formatWeekdayDate(session.startsAt, locale)} ({formatTime(session.startsAt, locale)})</span>
+                <span>
+                  {formatWeekdayDate(session.startsAt, locale)} (
+                  {formatTime(session.startsAt, locale)})
+                </span>
               </span>
             </div>
           </div>
@@ -334,8 +348,20 @@ export function ClassroomWorkspace({
                   title={locale === 'bn' ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
                   data-testid="copy-meeting-link-btn"
                 >
-                  {copiedLink ? <Check className="w-4 h-4 text-emerald-400" /> : <Copy className="w-4 h-4" />}
-                  <span className="hidden sm:inline">{copiedLink ? (locale === 'bn' ? 'কপি হয়েছে' : 'Copied') : (locale === 'bn' ? 'লিংক কপি' : 'Copy')}</span>
+                  {copiedLink ? (
+                    <Check className="w-4 h-4 text-emerald-400" />
+                  ) : (
+                    <Copy className="w-4 h-4" />
+                  )}
+                  <span className="hidden sm:inline">
+                    {copiedLink
+                      ? locale === 'bn'
+                        ? 'কপি হয়েছে'
+                        : 'Copied'
+                      : locale === 'bn'
+                        ? 'লিংক কপি'
+                        : 'Copy'}
+                  </span>
                 </button>
 
                 <a
@@ -494,9 +520,7 @@ export function ClassroomWorkspace({
         <InteractiveWhiteboard locale={locale} sessionTitle={subjectTitle} />
       )}
 
-      {activeTab === 'formulas' && (
-        <ClassroomFormulasDrawer locale={locale} />
-      )}
+      {activeTab === 'formulas' && <ClassroomFormulasDrawer locale={locale} />}
 
       {activeTab === 'attendance' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -504,7 +528,9 @@ export function ClassroomWorkspace({
           <Card className="bg-slate-900/90 border border-slate-800 text-slate-100 rounded-3xl p-6 shadow-xl">
             <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
               <UserCheck className="w-5 h-5 text-cyan-400" />
-              <span>{locale === 'bn' ? 'শিক্ষার্থীর হাজিরা / উপস্থিতি' : 'Student Attendance'}</span>
+              <span>
+                {locale === 'bn' ? 'শিক্ষার্থীর হাজিরা / উপস্থিতি' : 'Student Attendance'}
+              </span>
             </h3>
             <p className="text-xs text-slate-400 mb-4">
               {locale === 'bn'
@@ -515,7 +541,9 @@ export function ClassroomWorkspace({
             {latestAttendance && (
               <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 mb-4 space-y-2 text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">{locale === 'bn' ? 'রেকর্ডকৃত স্ট্যাটাস:' : 'Recorded Status:'}</span>
+                  <span className="text-slate-400">
+                    {locale === 'bn' ? 'রেকর্ডকৃত স্ট্যাটাস:' : 'Recorded Status:'}
+                  </span>
                   <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase font-bold">
                     {latestAttendance.attendanceStatus}
                   </Badge>
@@ -524,13 +552,19 @@ export function ClassroomWorkspace({
                   <p className="text-slate-300 italic">"{latestAttendance.notes}"</p>
                 )}
                 <div className="text-[10px] text-slate-500 text-right">
-                  {new Date(latestAttendance.recordedAt).toLocaleString(locale === 'bn' ? 'bn-BD' : 'en-US')}
+                  {new Date(latestAttendance.recordedAt).toLocaleString(
+                    locale === 'bn' ? 'bn-BD' : 'en-US',
+                  )}
                 </div>
               </div>
             )}
 
             {isTutor && (
-              <form onSubmit={handleMarkAttendance} className="space-y-3" data-testid="classroom-mark-attendance-form">
+              <form
+                onSubmit={handleMarkAttendance}
+                className="space-y-3"
+                data-testid="classroom-mark-attendance-form"
+              >
                 <label className="text-xs font-semibold text-slate-300 block">
                   {locale === 'bn' ? 'উপস্থিতি নির্ধারণ করুন:' : 'Mark Attendance:'}
                 </label>
@@ -548,12 +582,20 @@ export function ClassroomWorkspace({
                       data-testid={`classroom-attendance-${st}`}
                     >
                       {st === 'present'
-                        ? (locale === 'bn' ? 'উপস্থিত' : 'Present')
+                        ? locale === 'bn'
+                          ? 'উপস্থিত'
+                          : 'Present'
                         : st === 'late'
-                          ? (locale === 'bn' ? 'দেরি' : 'Late')
+                          ? locale === 'bn'
+                            ? 'দেরি'
+                            : 'Late'
                           : st === 'absent'
-                            ? (locale === 'bn' ? 'অনুপস্থিত' : 'Absent')
-                            : (locale === 'bn' ? 'ছুটি' : 'Excused')}
+                            ? locale === 'bn'
+                              ? 'অনুপস্থিত'
+                              : 'Absent'
+                            : locale === 'bn'
+                              ? 'ছুটি'
+                              : 'Excused'}
                     </button>
                   ))}
                 </div>
@@ -567,7 +609,9 @@ export function ClassroomWorkspace({
                     type="text"
                     value={attendanceNotes}
                     onChange={(e) => setAttendanceNotes(e.target.value)}
-                    placeholder={locale === 'bn' ? 'যেমন: পাঠে মনোযোগ ছিল...' : 'e.g. Participated actively...'}
+                    placeholder={
+                      locale === 'bn' ? 'যেমন: পাঠে মনোযোগ ছিল...' : 'e.g. Participated actively...'
+                    }
                     className="w-full h-9 rounded-xl border border-slate-700 bg-slate-950 px-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
                     data-testid="attendance-notes-input"
                   />
@@ -576,7 +620,9 @@ export function ClassroomWorkspace({
                 {attendanceSuccess && (
                   <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400" />
-                    <span>{locale === 'bn' ? 'উপস্থিতি সফলভাবে সংরক্ষিত!' : 'Attendance marked!'}</span>
+                    <span>
+                      {locale === 'bn' ? 'উপস্থিতি সফলভাবে সংরক্ষিত!' : 'Attendance marked!'}
+                    </span>
                   </div>
                 )}
 
@@ -598,7 +644,11 @@ export function ClassroomWorkspace({
             <div className="space-y-4">
               <h3 className="text-base font-bold text-white flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-emerald-400" />
-                <span>{locale === 'bn' ? 'নিরাপত্তা ও এস্ক্রো প্রতিশ্রুতি' : 'Safety & Escrow Protection'}</span>
+                <span>
+                  {locale === 'bn'
+                    ? 'নিরাপত্তা ও এস্ক্রো প্রতিশ্রুতি'
+                    : 'Safety & Escrow Protection'}
+                </span>
               </h3>
               <p className="text-xs text-slate-400 leading-relaxed">
                 {locale === 'bn'
@@ -609,7 +659,9 @@ export function ClassroomWorkspace({
               <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 text-xs">
                 <div className="flex items-center justify-between text-slate-300">
                   <span>{locale === 'bn' ? 'বুকিং আইডি:' : 'Booking ID:'}</span>
-                  <span className="font-mono text-cyan-300">{session.bookingId?.substring(0, 8)}...</span>
+                  <span className="font-mono text-cyan-300">
+                    {session.bookingId?.substring(0, 8)}...
+                  </span>
                 </div>
                 <div className="flex items-center justify-between text-slate-300">
                   <span>{locale === 'bn' ? 'ক্লাস আইডি:' : 'Session ID:'}</span>
@@ -627,7 +679,9 @@ export function ClassroomWorkspace({
                 href={withLocale('/safety-reports', locale)}
                 className="text-xs text-rose-400 hover:text-rose-300 font-semibold inline-flex items-center gap-1"
               >
-                {locale === 'bn' ? 'জরুরি রিপোর্ট বা সহায়তা প্রয়োজন?' : 'Need to file a safety report?'}
+                {locale === 'bn'
+                  ? 'জরুরি রিপোর্ট বা সহায়তা প্রয়োজন?'
+                  : 'Need to file a safety report?'}
               </Link>
             </div>
           </Card>
@@ -651,7 +705,10 @@ export function ClassroomWorkspace({
             </p>
 
             <div className="space-y-1">
-              <label htmlFor="completion-notes-modal" className="text-xs text-slate-300 font-medium">
+              <label
+                htmlFor="completion-notes-modal"
+                className="text-xs text-slate-300 font-medium"
+              >
                 {locale === 'bn' ? 'ক্লাস রিভিউ ও মন্তব্য (ঐচ্ছিক):' : 'Session Notes (Optional):'}
               </label>
               <textarea

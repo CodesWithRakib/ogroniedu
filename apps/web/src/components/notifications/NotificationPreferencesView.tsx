@@ -179,7 +179,11 @@ export function NotificationPreferencesView({
               <span className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400">
                 <Bell className="w-4 h-4" />
               </span>
-              <span>{locale === 'bn' ? 'অডিও ধ্বনি ও রিয়েলটাইম সাউন্ড' : 'Audio Notifications & Sound Effects'}</span>
+              <span>
+                {locale === 'bn'
+                  ? 'অডিও ধ্বনি ও রিয়েলটাইম সাউন্ড'
+                  : 'Audio Notifications & Sound Effects'}
+              </span>
             </div>
             <Badge variant="outline" className="text-xs font-mono">
               Web Audio Synthesizer
@@ -198,7 +202,9 @@ export function NotificationPreferencesView({
                 {locale === 'bn' ? 'বিজ্ঞপ্তি সাউন্ড চালু রাখুন' : 'Notification Sound Enabled'}
               </p>
               <p className="text-xs text-muted-foreground mt-0.5">
-                {locale === 'bn' ? 'রিয়েলটাইম বার্তা ও নোটিফিকেশনে মিষ্টি ধ্বনি সংকেত' : 'Play audio tone when real-time notifications arrive'}
+                {locale === 'bn'
+                  ? 'রিয়েলটাইম বার্তা ও নোটিফিকেশনে মিষ্টি ধ্বনি সংকেত'
+                  : 'Play audio tone when real-time notifications arrive'}
               </p>
             </div>
             <div className="flex items-center gap-3">
@@ -207,9 +213,17 @@ export function NotificationPreferencesView({
                 variant={soundEnabled ? 'default' : 'outline'}
                 size="sm"
                 onClick={toggleSound}
-                className={soundEnabled ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold' : ''}
+                className={
+                  soundEnabled ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold' : ''
+                }
               >
-                {soundEnabled ? (locale === 'bn' ? '🔊 সাউন্ড চালু' : '🔊 Sound On') : (locale === 'bn' ? '🔇 সাউন্ড বন্ধ' : '🔇 Muted')}
+                {soundEnabled
+                  ? locale === 'bn'
+                    ? '🔊 সাউন্ড চালু'
+                    : '🔊 Sound On'
+                  : locale === 'bn'
+                    ? '🔇 সাউন্ড বন্ধ'
+                    : '🔇 Muted'}
               </Button>
               <Button
                 type="button"
@@ -226,7 +240,8 @@ export function NotificationPreferencesView({
           {soundEnabled && (
             <div className="pt-3 border-t border-border/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
               <span className="text-muted-foreground font-medium">
-                {locale === 'bn' ? 'শব্দের মাত্রা (Loudness Volume):' : 'Volume Level:'} {Math.round(soundVolume * 100)}%
+                {locale === 'bn' ? 'শব্দের মাত্রা (Loudness Volume):' : 'Volume Level:'}{' '}
+                {Math.round(soundVolume * 100)}%
               </span>
               <div className="flex items-center gap-3 w-full sm:w-64">
                 <input

@@ -81,9 +81,7 @@ export class SettlementService {
 
     // ABAC Verification: user must be student, requester guardian, or admin
     const isParticipant =
-      user.id === booking.studentUserId ||
-      user.id === booking.requesterUserId ||
-      isAdminRole(user);
+      user.id === booking.studentUserId || user.id === booking.requesterUserId || isAdminRole(user);
     if (!isParticipant) {
       throw new ForbiddenException(
         'Access denied: Only the student, guardian, or an administrator can approve session milestone settlement',

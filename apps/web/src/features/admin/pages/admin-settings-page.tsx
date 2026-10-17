@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useTranslations } from 'next-intl';
-import { UserCog, Sliders, ToggleLeft, ShieldAlert } from 'lucide-react';
+import { Sliders, ToggleLeft } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner } from '@/components/ui';
 import type { Locale } from '@/lib/i18n';
@@ -14,7 +13,6 @@ import { AdminFeatureFlagsTab } from '../components/tabs/adminFeatureFlagsTab';
 import type { AdminFeatureFlagItem, AdminSystemSettingItem } from '../types/admin.types';
 
 export function AdminSettingsPage({ locale }: { locale: Locale }) {
-  const t = useTranslations('admin');
   const user = useAppSelector((s) => s.auth.user);
   const admin = useAdminDashboard(locale);
   const isSuperAdmin = user?.roles?.includes('super_admin') ?? false;
@@ -48,7 +46,9 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-                  {locale === 'bn' ? 'প্ল্যাটফর্ম সেটিংস ও ফিচার ফ্ল্যাগ' : 'Platform Settings & Feature Flags'}
+                  {locale === 'bn'
+                    ? 'প্ল্যাটফর্ম সেটিংস ও ফিচার ফ্ল্যাগ'
+                    : 'Platform Settings & Feature Flags'}
                 </h1>
                 <span className="px-3 py-1 text-xs font-bold rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
                   {isSuperAdmin ? 'SUPER ADMIN ACCESS' : 'READ ONLY'}
@@ -79,7 +79,11 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
           <div className="space-y-3">
             <h2 className="text-base font-bold text-white flex items-center gap-2">
               <Sliders className="w-5 h-5 text-cyan-400" />
-              <span>{locale === 'bn' ? 'সিস্টেম রেফারেন্স কনফিগারেশন' : 'System Reference Configuration'}</span>
+              <span>
+                {locale === 'bn'
+                  ? 'সিস্টেম রেফারেন্স কনফিগারেশন'
+                  : 'System Reference Configuration'}
+              </span>
             </h2>
             <AdminSettingsTab settings={actions.settings} />
           </div>

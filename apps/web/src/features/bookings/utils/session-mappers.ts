@@ -55,13 +55,10 @@ export function mapSessionItems(rows: SessionItem[], locale: Locale): CalendarSe
               ? 'টিউটরিং ক্লাস'
               : 'Tutoring class');
 
-    const tutorName =
-      s.tutorName ??
-      (typeof tu?.displayName === 'string' ? tu.displayName : '—');
+    const tutorName = s.tutorName ?? (typeof tu?.displayName === 'string' ? tu.displayName : '—');
 
     const studentName =
-      s.studentName ??
-      (typeof stu?.displayName === 'string' ? stu.displayName : '—');
+      s.studentName ?? (typeof stu?.displayName === 'string' ? stu.displayName : '—');
 
     return {
       id: s.id,

@@ -89,7 +89,9 @@ export function useStudentDashboard(locale: Locale = 'bn') {
       const rateMinor: string | number | null =
         typeof req.pricePerSessionMinor === 'string' || typeof req.pricePerSessionMinor === 'number'
           ? req.pricePerSessionMinor
-          : tp && 'hourlyRateMinor' in tp && (typeof tp.hourlyRateMinor === 'string' || typeof tp.hourlyRateMinor === 'number')
+          : tp &&
+              'hourlyRateMinor' in tp &&
+              (typeof tp.hourlyRateMinor === 'string' || typeof tp.hourlyRateMinor === 'number')
             ? tp.hourlyRateMinor
             : null;
 

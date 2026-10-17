@@ -50,7 +50,9 @@ if (typeof window !== 'undefined') {
     unlockAudioContext();
     unlockEvents.forEach((evt) => window.removeEventListener(evt, onUserGesture));
   };
-  unlockEvents.forEach((evt) => window.addEventListener(evt, onUserGesture, { once: true, passive: true }));
+  unlockEvents.forEach((evt) =>
+    window.addEventListener(evt, onUserGesture, { once: true, passive: true }),
+  );
 }
 
 /** Check if notification sound is enabled in user settings. */
@@ -225,10 +227,10 @@ function playSuccess(ctx: AudioContext, masterVolume: number): void {
   masterGain.connect(ctx.destination);
 
   const notes = [
-    { freq: 523.25, time: 0 },      // C5
-    { freq: 659.25, time: 0.08 },   // E5
-    { freq: 783.99, time: 0.16 },   // G5
-    { freq: 1046.5, time: 0.24 },   // C6
+    { freq: 523.25, time: 0 }, // C5
+    { freq: 659.25, time: 0.08 }, // E5
+    { freq: 783.99, time: 0.16 }, // G5
+    { freq: 1046.5, time: 0.24 }, // C6
   ];
 
   notes.forEach(({ freq, time }) => {
@@ -275,7 +277,10 @@ export function forcePlayNotificationSound(type: NotificationSoundType = 'chime'
   };
 
   if (ctx.state === 'suspended') {
-    void ctx.resume().then(play).catch(() => {});
+    void ctx
+      .resume()
+      .then(play)
+      .catch(() => {});
   } else {
     play();
   }

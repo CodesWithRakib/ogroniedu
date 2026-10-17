@@ -17,7 +17,8 @@ function resolveTab(param: string | null, fallback?: AdminTabKey): AdminTabKey {
   const clean = param.toLowerCase().trim();
   if (clean === 'audit' || clean === 'auditlogs' || clean === 'audit-logs') return 'auditLogs';
   if (clean === 'settings') return 'settings';
-  if (clean === 'flags' || clean === 'featureflags' || clean === 'feature-flags') return 'featureFlags';
+  if (clean === 'flags' || clean === 'featureflags' || clean === 'feature-flags')
+    return 'featureFlags';
   if (clean === 'users') return 'users';
   if (clean === 'verification' || clean === 'tutors') return 'verification';
   if (clean === 'reconciliation') return 'reconciliation';
@@ -28,13 +29,7 @@ function resolveTab(param: string | null, fallback?: AdminTabKey): AdminTabKey {
 }
 
 /** Admin console entry: delegates cleanly to dedicated, modular role pages. */
-export function AdminPage({
-  locale,
-  initialTab,
-}: {
-  locale: Locale;
-  initialTab?: AdminTabKey;
-}) {
+export function AdminPage({ locale, initialTab }: { locale: Locale; initialTab?: AdminTabKey }) {
   const searchParams = useSearchParams();
   const tabParam = searchParams?.get('tab') ?? null;
   const activeTab = resolveTab(tabParam, initialTab);

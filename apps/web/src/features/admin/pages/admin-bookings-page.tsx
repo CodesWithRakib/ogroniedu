@@ -1,8 +1,7 @@
 'use client';
 
 import React from 'react';
-import { useTranslations } from 'next-intl';
-import { Calendar, AlertCircle, CheckCircle2, Clock } from 'lucide-react';
+import { Calendar, CheckCircle2, Clock } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner } from '@/components/ui';
 import type { Locale } from '@/lib/i18n';
@@ -13,7 +12,6 @@ import { AdminBookingsTab } from '../components/tabs/adminBookingsTab';
 import { AdminCancelBookingModal } from '../components/modals/adminCancelBookingModal';
 
 export function AdminBookingsPage({ locale }: { locale: Locale }) {
-  const t = useTranslations('admin');
   const admin = useAdminDashboard(locale);
 
   const view = useAdminViewState('bookings');
@@ -37,7 +35,10 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
   const completedCount = admin.bookings.filter((b) => b.status === 'completed').length;
 
   return (
-    <AdminLayout locale={locale} title={locale === 'bn' ? 'বুকিং ও হস্তক্ষেপ' : 'Bookings & Interventions'}>
+    <AdminLayout
+      locale={locale}
+      title={locale === 'bn' ? 'বুকিং ও হস্তক্ষেপ' : 'Bookings & Interventions'}
+    >
       {admin.loading && !admin.bookings.length ? (
         <div className="py-12 flex justify-center">
           <LoadingSpinner />
@@ -92,7 +93,9 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'সম্পন্ন সেশন' : 'Completed Sessions'}
                 </p>
-                <p className="text-2xl font-black text-emerald-400 mt-1 font-mono">{completedCount}</p>
+                <p className="text-2xl font-black text-emerald-400 mt-1 font-mono">
+                  {completedCount}
+                </p>
               </div>
               <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
                 <CheckCircle2 className="w-5 h-5" />

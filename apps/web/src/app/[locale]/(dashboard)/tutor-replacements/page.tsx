@@ -1,31 +1,28 @@
 'use client';
 
-import React, { use, useState } from 'react';
+import React, { use } from 'react';
 import Link from 'next/link';
 import {
   RefreshCw,
   ShieldCheck,
   Clock,
   CheckCircle2,
-  AlertCircle,
-  ArrowRight,
   UserCheck,
   GraduationCap,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
-import { Card, CardHeader, CardTitle, CardContent, Button, Badge } from '@/components/ui';
-import { useGetReplacementCasesQuery, useUpdateReplacementCaseMutation } from '@/store/services/trust-api';
+import { Card, CardContent, Button, Badge } from '@/components/ui';
+import {
+  useGetReplacementCasesQuery,
+  useUpdateReplacementCaseMutation,
+} from '@/store/services/trust-api';
 import { formatDateTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { toast } from 'sonner';
 import type { Locale } from '@/lib/i18n';
 
-export default function TutorReplacementsPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default function TutorReplacementsPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolved = use(params);
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   const isBn = locale === 'bn';
@@ -35,7 +32,10 @@ export default function TutorReplacementsPage({
 
   const rawCases = Array.isArray(casesData)
     ? casesData
-    : (casesData && typeof casesData === 'object' && 'data' in casesData && Array.isArray((casesData as { data: unknown[] }).data))
+    : casesData &&
+        typeof casesData === 'object' &&
+        'data' in casesData &&
+        Array.isArray((casesData as { data: unknown[] }).data)
       ? (casesData as { data: typeof casesData }).data
       : [];
 
@@ -53,14 +53,11 @@ export default function TutorReplacementsPage({
       }).unwrap();
 
       playAudioTone('success');
-      toast.success(
-        isBn ? 'নতুন শিক্ষক সফলভাবে যুক্ত করা হয়েছে' : 'Replacement Tutor Accepted',
-        {
-          description: isBn
-            ? 'বুকিংটি নতুন শিক্ষকের সাথে পুনর্নির্ধারণ করা হয়েছে।'
-            : 'Booking successfully rebound with the new verified tutor.',
-        },
-      );
+      toast.success(isBn ? 'নতুন শিক্ষক সফলভাবে যুক্ত করা হয়েছে' : 'Replacement Tutor Accepted', {
+        description: isBn
+          ? 'বুকিংটি নতুন শিক্ষকের সাথে পুনর্নির্ধারণ করা হয়েছে।'
+          : 'Booking successfully rebound with the new verified tutor.',
+      });
       refetch();
     } catch {
       toast.error(isBn ? 'অনুমোদন ব্যর্থ হয়েছে' : 'Failed to accept replacement');
@@ -96,7 +93,9 @@ export default function TutorReplacementsPage({
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <h3 className="text-lg font-bold text-foreground">
-                {isBn ? '৪৮ ঘণ্টার মধ্যে শিক্ষক নিশ্চিতকরণ বা সম্পূর্ণ রিফান্ড' : '48-Hour Matching Guarantee (FR-011)'}
+                {isBn
+                  ? '৪৮ ঘণ্টার মধ্যে শিক্ষক নিশ্চিতকরণ বা সম্পূর্ণ রিফান্ড'
+                  : '48-Hour Matching Guarantee (FR-011)'}
               </h3>
               <Badge variant="outline" className="text-xs border-emerald-500/40 text-emerald-500">
                 {isBn ? '১০০% মানি-ব্যাক' : '100% Refundable'}
@@ -119,12 +118,16 @@ export default function TutorReplacementsPage({
       <div className="space-y-4">
         <div className="flex items-center justify-between border-b border-border pb-2">
           <h4 className="text-sm font-bold text-foreground">
-            {isBn ? `সক্রিয় ও অতীতের রিপ্লেসমেন্ট কেস (${cases.length})` : `Replacement Requests (${cases.length})`}
+            {isBn
+              ? `সক্রিয় ও অতীতের রিপ্লেসমেন্ট কেস (${cases.length})`
+              : `Replacement Requests (${cases.length})`}
           </h4>
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center text-sm text-muted-foreground">{isBn ? 'লোড হচ্ছে...' : 'Loading replacement cases...'}</div>
+          <div className="py-12 text-center text-sm text-muted-foreground">
+            {isBn ? 'লোড হচ্ছে...' : 'Loading replacement cases...'}
+          </div>
         ) : cases.length === 0 ? (
           <Card className="py-16 text-center rounded-3xl">
             <CardContent className="space-y-3">
@@ -146,40 +149,68 @@ export default function TutorReplacementsPage({
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-muted-foreground">Case #{c.id.slice(0, 8)}</span>
-                      <Badge variant="outline" className="text-xs border-primary/30 text-primary capitalize">
+                      <span className="font-mono text-xs font-bold text-muted-foreground">
+                        Case #{c.id.slice(0, 8)}
+                      </span>
+                      <Badge
+                        variant="outline"
+                        className="text-xs border-primary/30 text-primary capitalize"
+                      >
                         {c.reasonCode.replace(/_/g, ' ')}
                       </Badge>
                     </div>
                     <span className="text-[11px] text-muted-foreground">
-                      {isBn ? 'দায়ের সময়:' : 'Filed:'} {formatDateTime(String(c.createdAt), locale)}
+                      {isBn ? 'দায়ের সময়:' : 'Filed:'}{' '}
+                      {formatDateTime(String(c.createdAt), locale)}
                     </span>
                   </div>
-                  <Badge variant={c.status === 'accepted' ? 'success' : c.status === 'requested' || c.status === 'matching' ? 'warning' : 'outline'}>
+                  <Badge
+                    variant={
+                      c.status === 'accepted'
+                        ? 'success'
+                        : c.status === 'requested' || c.status === 'matching'
+                          ? 'warning'
+                          : 'outline'
+                    }
+                  >
                     {c.status.toUpperCase()}
                   </Badge>
                 </div>
 
                 <div className="text-xs text-foreground space-y-1">
-                  <span className="font-bold text-muted-foreground block">{isBn ? 'অভিযোগ / প্রত্যাশা:' : 'Reason & Explanation:'}</span>
-                  <p className="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-slate-200">{c.explanation}</p>
+                  <span className="font-bold text-muted-foreground block">
+                    {isBn ? 'অভিযোগ / প্রত্যাশা:' : 'Reason & Explanation:'}
+                  </span>
+                  <p className="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-slate-200">
+                    {c.explanation}
+                  </p>
                 </div>
 
                 {/* Progress Stepper */}
                 <div className="p-3.5 rounded-2xl bg-surface/50 border border-border flex items-center justify-between text-[11px]">
                   <div className="flex items-center gap-2">
                     <CheckCircle2 className="w-4 h-4 text-emerald-500" />
-                    <span className="font-bold text-foreground">{isBn ? '১. অনুরোধ গৃহীত' : '1. Requested'}</span>
+                    <span className="font-bold text-foreground">
+                      {isBn ? '১. অনুরোধ গৃহীত' : '1. Requested'}
+                    </span>
                   </div>
                   <div className="w-8 h-0.5 bg-border" />
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className={`w-4 h-4 ${['matching', 'offered', 'accepted'].includes(c.status) ? 'text-emerald-500' : 'text-muted-foreground'}`} />
-                    <span className="font-bold text-foreground">{isBn ? '২. শিক্ষক ম্যাচিং' : '2. Matching'}</span>
+                    <CheckCircle2
+                      className={`w-4 h-4 ${['matching', 'offered', 'accepted'].includes(c.status) ? 'text-emerald-500' : 'text-muted-foreground'}`}
+                    />
+                    <span className="font-bold text-foreground">
+                      {isBn ? '২. শিক্ষক ম্যাচিং' : '2. Matching'}
+                    </span>
                   </div>
                   <div className="w-8 h-0.5 bg-border" />
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className={`w-4 h-4 ${c.status === 'accepted' ? 'text-emerald-500' : 'text-muted-foreground'}`} />
-                    <span className="font-bold text-foreground">{isBn ? '৩. ক্লাস চালু' : '3. Rebound'}</span>
+                    <CheckCircle2
+                      className={`w-4 h-4 ${c.status === 'accepted' ? 'text-emerald-500' : 'text-muted-foreground'}`}
+                    />
+                    <span className="font-bold text-foreground">
+                      {isBn ? '৩. ক্লাস চালু' : '3. Rebound'}
+                    </span>
                   </div>
                 </div>
 
@@ -190,10 +221,13 @@ export default function TutorReplacementsPage({
                       <GraduationCap className="w-6 h-6 text-primary" />
                       <div>
                         <h5 className="font-bold text-foreground text-xs">
-                          {isBn ? 'নতুন বিকল্প শিক্ষক প্রস্তাব করা হয়েছে' : 'Replacement Tutor Offered'}
+                          {isBn
+                            ? 'নতুন বিকল্প শিক্ষক প্রস্তাব করা হয়েছে'
+                            : 'Replacement Tutor Offered'}
                         </h5>
                         <p className="text-[11px] text-muted-foreground">
-                          {c.replacementTutor?.displayName || (isBn ? 'যাচাইকৃত বিকল্প শিক্ষক' : 'Verified Alternate Tutor')}
+                          {c.replacementTutor?.displayName ||
+                            (isBn ? 'যাচাইকৃত বিকল্প শিক্ষক' : 'Verified Alternate Tutor')}
                         </p>
                       </div>
                     </div>

@@ -11,10 +11,6 @@ import {
   Sparkles,
   CreditCard,
   BookOpen,
-  DollarSign,
-  Award,
-  Clock,
-  ArrowRight,
   TrendingUp,
 } from 'lucide-react';
 import { TutorLayout } from '@/layouts/tutor/TutorLayout';
@@ -384,7 +380,10 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                   <LoadingSpinner />
                 </div>
               ) : (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-3" data-testid="tutor-analytics-data">
+                <div
+                  className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+                  data-testid="tutor-analytics-data"
+                >
                   <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold block">
                       {isBn ? 'মোট আয়' : 'Total Earnings'}

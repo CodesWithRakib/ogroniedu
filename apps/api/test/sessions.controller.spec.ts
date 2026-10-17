@@ -70,11 +70,7 @@ describe('SessionsController Unit Tests', () => {
     const res = await controller.completeSession(mockUser, 'session-1', dto);
     expect(res.success).toBe(true);
     expect(res.data.status).toBe('completed');
-    expect(mockService.completeSession).toHaveBeenCalledWith(
-      'session-1',
-      mockUser,
-      dto.notes,
-    );
+    expect(mockService.completeSession).toHaveBeenCalledWith('session-1', mockUser, dto.notes);
   });
 
   it('should update meeting url for classroom', async () => {

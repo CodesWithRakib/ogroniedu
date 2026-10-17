@@ -5,11 +5,7 @@ import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { GuardianChildrenManager } from '@/components/guardian/GuardianChildrenManager';
 import type { Locale } from '@/lib/i18n';
 
-export default function GuardianChildrenRoute({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default function GuardianChildrenRoute({ params }: { params: Promise<{ locale: string }> }) {
   const resolved = use(params);
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
 

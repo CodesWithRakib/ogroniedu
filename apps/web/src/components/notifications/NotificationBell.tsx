@@ -11,7 +11,8 @@ interface NotificationBellProps {
 }
 
 export function NotificationBell({ className, locale = 'bn' }: NotificationBellProps) {
-  const { unreadCount, isCenterOpen, setIsCenterOpen, isConnected, soundEnabled } = useNotifications();
+  const { unreadCount, isCenterOpen, setIsCenterOpen, isConnected, soundEnabled } =
+    useNotifications();
 
   // Convert digits to Bengali when in Bengali locale
   const formatCount = (count: number): string => {
@@ -37,7 +38,11 @@ export function NotificationBell({ className, locale = 'bn' }: NotificationBellP
       onClick={() => setIsCenterOpen(!isCenterOpen)}
       aria-label={ariaLabel}
       aria-expanded={isCenterOpen}
-      title={locale === 'bn' ? `বিজ্ঞপ্তি সমূহ (${unreadCount} নতুন) — অডিও ধ্বনি: ${soundEnabled ? 'চালু' : 'বন্ধ'}` : `Notifications (${unreadCount} unread) — Audio: ${soundEnabled ? 'Enabled' : 'Muted'}`}
+      title={
+        locale === 'bn'
+          ? `বিজ্ঞপ্তি সমূহ (${unreadCount} নতুন) — অডিও ধ্বনি: ${soundEnabled ? 'চালু' : 'বন্ধ'}`
+          : `Notifications (${unreadCount} unread) — Audio: ${soundEnabled ? 'Enabled' : 'Muted'}`
+      }
       className={cn(
         'relative inline-flex items-center justify-center p-2.5 rounded-xl transition-all duration-200 cursor-pointer',
         'hover:bg-cyan-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500',

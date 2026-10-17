@@ -26,4 +26,3 @@ export function StoreProvider({ children }: StoreProviderProps) {
 
   return React.createElement(Provider, { store: storeRef.current, children });
 }
-

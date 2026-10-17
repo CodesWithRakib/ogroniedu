@@ -1,33 +1,16 @@
 'use client';
 
 import React, { use, useState } from 'react';
-import Link from 'next/link';
-import {
-  ShieldAlert,
-  ShieldCheck,
-  AlertTriangle,
-  Plus,
-  Clock,
-  PhoneCall,
-  CheckCircle2,
-  Lock,
-  ArrowRight,
-  Filter,
-} from 'lucide-react';
+import { ShieldAlert, ShieldCheck, Plus, PhoneCall, Lock, Filter } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
-import { Card, CardHeader, CardTitle, CardContent, Button, Badge } from '@/components/ui';
+import { Card, CardContent, Button, Badge } from '@/components/ui';
 import { useGetSafetyReportsQuery } from '@/store/services/trust-api';
 import { SafetyReportModal } from '@/features/trust/components/safetyReportModal';
 import { EmergencySosModal } from '@/features/trust/components/EmergencySosModal';
 import { formatDateTime } from '@/lib/format';
-import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
 
-export default function SafetyReportsPage({
-  params,
-}: {
-  params: Promise<{ locale: string }>;
-}) {
+export default function SafetyReportsPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolved = use(params);
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   const isBn = locale === 'bn';
@@ -39,14 +22,16 @@ export default function SafetyReportsPage({
 
   const rawReports = Array.isArray(reportsData)
     ? reportsData
-    : (reportsData && typeof reportsData === 'object' && 'data' in reportsData && Array.isArray((reportsData as { data: unknown[] }).data))
+    : reportsData &&
+        typeof reportsData === 'object' &&
+        'data' in reportsData &&
+        Array.isArray((reportsData as { data: unknown[] }).data)
       ? (reportsData as { data: typeof reportsData }).data
       : [];
 
   const reports = Array.isArray(rawReports) ? rawReports : [];
-  const filteredReports = filterCategory === 'all'
-    ? reports
-    : reports.filter((r) => r.category === filterCategory);
+  const filteredReports =
+    filterCategory === 'all' ? reports : reports.filter((r) => r.category === filterCategory);
 
   return (
     <DashboardShell
@@ -82,7 +67,9 @@ export default function SafetyReportsPage({
               </span>
             </div>
             <h3 className="text-lg font-bold text-white">
-              {isBn ? 'শিক্ষার্থীর নিরাপত্তা আমাদের প্ল্যাটফর্মের সর্বোচ্চ দায়িত্ব' : 'Student Safety is Our Highest Commitment'}
+              {isBn
+                ? 'শিক্ষার্থীর নিরাপত্তা আমাদের প্ল্যাটফর্মের সর্বোচ্চ দায়িত্ব'
+                : 'Student Safety is Our Highest Commitment'}
             </h3>
             <p className="text-xs text-slate-300 leading-relaxed">
               {isBn
@@ -114,11 +101,15 @@ export default function SafetyReportsPage({
             </span>
             <div className="mt-2 space-y-2">
               <div className="p-3 rounded-2xl bg-red-500/10 border border-red-500/20 text-red-500">
-                <span className="text-[10px] font-bold block">{isBn ? 'জাতীয় শিশু হেল্পলাইন' : 'National Child Helpline'}</span>
+                <span className="text-[10px] font-bold block">
+                  {isBn ? 'জাতীয় শিশু হেল্পলাইন' : 'National Child Helpline'}
+                </span>
                 <span className="text-xl font-black">১০৯৮</span>
               </div>
               <div className="p-3 rounded-2xl bg-primary/10 border border-primary/20 text-primary">
-                <span className="text-[10px] font-bold block">{isBn ? 'অগ্রণী এডু সিকিউরিটি ডেস্ক' : 'OgroniEdu Triage'}</span>
+                <span className="text-[10px] font-bold block">
+                  {isBn ? 'অগ্রণী এডু সিকিউরিটি ডেস্ক' : 'OgroniEdu Triage'}
+                </span>
                 <span className="text-base font-bold">+৮৮০ ৯৬১২-৩৪৫৬৭৮</span>
               </div>
               <button
@@ -140,7 +131,9 @@ export default function SafetyReportsPage({
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
           <div className="flex items-center gap-2">
             <Filter className="w-4 h-4 text-muted-foreground" />
-            <span className="text-xs font-bold text-foreground">{isBn ? 'ক্যাটাগরি ফিল্টার:' : 'Filter Incidents:'}</span>
+            <span className="text-xs font-bold text-foreground">
+              {isBn ? 'ক্যাটাগরি ফিল্টার:' : 'Filter Incidents:'}
+            </span>
             <div className="flex flex-wrap items-center gap-1.5">
               {[
                 { id: 'all', bn: 'সকল', en: 'All' },
@@ -164,12 +157,16 @@ export default function SafetyReportsPage({
             </div>
           </div>
           <span className="text-xs text-muted-foreground">
-            {isBn ? `মোট রেকর্ড: ${filteredReports.length}` : `Total Reports: ${filteredReports.length}`}
+            {isBn
+              ? `মোট রেকর্ড: ${filteredReports.length}`
+              : `Total Reports: ${filteredReports.length}`}
           </span>
         </div>
 
         {isLoading ? (
-          <div className="py-12 text-center text-sm text-muted-foreground">{isBn ? 'লোড হচ্ছে...' : 'Loading safety reports...'}</div>
+          <div className="py-12 text-center text-sm text-muted-foreground">
+            {isBn ? 'লোড হচ্ছে...' : 'Loading safety reports...'}
+          </div>
         ) : filteredReports.length === 0 ? (
           <Card className="py-16 text-center rounded-3xl">
             <CardContent className="space-y-3">
@@ -195,11 +192,24 @@ export default function SafetyReportsPage({
         ) : (
           <div className="space-y-3" data-testid="safety-reports-list">
             {filteredReports.map((report) => (
-              <Card key={report.id} className="rounded-2xl border-border bg-card p-5 space-y-3 hover:border-red-500/40 transition-all">
+              <Card
+                key={report.id}
+                className="rounded-2xl border-border bg-card p-5 space-y-3 hover:border-red-500/40 transition-all"
+              >
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
                   <div className="flex items-center gap-2">
-                    <span className="text-xs font-mono font-bold text-muted-foreground">#{report.id.slice(0, 8)}</span>
-                    <Badge variant={report.severity === 'critical' ? 'destructive' : report.severity === 'high' ? 'warning' : 'outline'}>
+                    <span className="text-xs font-mono font-bold text-muted-foreground">
+                      #{report.id.slice(0, 8)}
+                    </span>
+                    <Badge
+                      variant={
+                        report.severity === 'critical'
+                          ? 'destructive'
+                          : report.severity === 'high'
+                            ? 'warning'
+                            : 'outline'
+                      }
+                    >
                       {report.severity.toUpperCase()}
                     </Badge>
                     <Badge variant="outline" className="text-xs capitalize border-border">
@@ -207,7 +217,15 @@ export default function SafetyReportsPage({
                     </Badge>
                   </div>
                   <div className="flex items-center gap-2 text-xs">
-                    <Badge variant={report.status === 'action_taken' ? 'success' : report.status === 'escalated' ? 'destructive' : 'warning'}>
+                    <Badge
+                      variant={
+                        report.status === 'action_taken'
+                          ? 'success'
+                          : report.status === 'escalated'
+                            ? 'destructive'
+                            : 'warning'
+                      }
+                    >
                       {report.status}
                     </Badge>
                     <span className="text-muted-foreground text-[11px]">
@@ -220,7 +238,9 @@ export default function SafetyReportsPage({
 
                 {report.resolutionNotes && (
                   <div className="p-3 rounded-xl bg-slate-900 border border-slate-800 text-xs text-slate-300 space-y-1">
-                    <span className="font-bold text-emerald-400 block">{isBn ? 'নিরাপত্তা টিমের নিষ্পত্তি নোট:' : 'Investigation Outcome:'}</span>
+                    <span className="font-bold text-emerald-400 block">
+                      {isBn ? 'নিরাপত্তা টিমের নিষ্পত্তি নোট:' : 'Investigation Outcome:'}
+                    </span>
                     <p>{report.resolutionNotes}</p>
                   </div>
                 )}

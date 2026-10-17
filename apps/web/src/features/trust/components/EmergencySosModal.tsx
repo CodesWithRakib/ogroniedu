@@ -1,16 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import {
-  PhoneCall,
-  ShieldAlert,
-  AlertTriangle,
-  X,
-  Lock,
-  ExternalLink,
-  LifeBuoy,
-  HeartPulse,
-} from 'lucide-react';
+import { PhoneCall, ShieldAlert, AlertTriangle, X, Lock } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 
@@ -47,7 +38,8 @@ export function EmergencySosModal({
       telNumber: '1098',
       titleBn: 'জাতীয় শিশু হেল্পলাইন (Child Helpline)',
       titleEn: 'National Child Helpline',
-      subtitleBn: '২৪/৭ শিশুদের সুরক্ষা, নির্যাতন প্রতিরোধ ও জরুরি সহায়তা সেল (বিনামূল্যে টোল-ফ্রি)',
+      subtitleBn:
+        '২৪/৭ শিশুদের সুরক্ষা, নির্যাতন প্রতিরোধ ও জরুরি সহায়তা সেল (বিনামূল্যে টোল-ফ্রি)',
       subtitleEn: '24/7 Child Protection & Anti-abuse Helpline (Toll-Free)',
       color: 'border-red-500/40 bg-red-950/40 text-red-400',
       badge: isBn ? 'সর্বোচ্চ অগ্রাধিকার' : 'Highest Priority',
@@ -98,7 +90,9 @@ export function EmergencySosModal({
             </div>
             <div>
               <h3 className="text-xl font-black text-white flex items-center gap-2">
-                <span>{isBn ? 'জরুরি নিরাপত্তা ও এসওএস হেল্পলাইন' : 'Emergency SOS & Safety Hub'}</span>
+                <span>
+                  {isBn ? 'জরুরি নিরাপত্তা ও এসওএস হেল্পলাইন' : 'Emergency SOS & Safety Hub'}
+                </span>
               </h3>
               <p className="text-xs text-red-300 font-medium">
                 {isBn
@@ -159,7 +153,11 @@ export function EmergencySosModal({
           <div className="space-y-0.5">
             <span className="text-xs font-bold text-white flex items-center gap-1.5">
               <AlertTriangle className="w-4 h-4 text-amber-400" />
-              <span>{isBn ? 'প্ল্যাটফর্মে আনুষ্ঠানিক নিরাপত্তা অভিযোগ' : 'Formal Safety Incident Report'}</span>
+              <span>
+                {isBn
+                  ? 'প্ল্যাটফর্মে আনুষ্ঠানিক নিরাপত্তা অভিযোগ'
+                  : 'Formal Safety Incident Report'}
+              </span>
             </span>
             <p className="text-[11px] text-slate-400">
               {isBn
@@ -186,7 +184,11 @@ export function EmergencySosModal({
         <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-900">
           <span className="flex items-center gap-1">
             <Lock className="w-3.5 h-3.5 text-emerald-400" />
-            <span>{isBn ? 'সকল অভিযোগ ১০০% কঠোর গোপনীয়তায় সংরক্ষিত' : 'Confidentiality & Privacy Guaranteed'}</span>
+            <span>
+              {isBn
+                ? 'সকল অভিযোগ ১০০% কঠোর গোপনীয়তায় সংরক্ষিত'
+                : 'Confidentiality & Privacy Guaranteed'}
+            </span>
           </span>
           <Button
             type="button"

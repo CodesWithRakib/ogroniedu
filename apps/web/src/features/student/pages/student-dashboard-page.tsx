@@ -11,7 +11,6 @@ import {
   Sparkles,
   ArrowRight,
   CreditCard,
-  UserCheck,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
@@ -46,7 +45,6 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
     activeTutors,
     metrics,
     assignments,
-    pendingAssignments,
     isLoading,
   } = useStudentDashboard(locale);
   const isBn = locale === 'bn';
@@ -95,9 +93,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
           icon={Calendar}
           title={isBn ? 'আসন্ন ক্লাস' : 'Upcoming Classes'}
           value={
-            sessions.isLoading
-              ? '...'
-              : formatLocalizedNumber(upcomingSessions.length, locale)
+            sessions.isLoading ? '...' : formatLocalizedNumber(upcomingSessions.length, locale)
           }
           changeText={
             upcomingSessions.length > 0
@@ -117,11 +113,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
           variant="secondary"
           icon={Inbox}
           title={isBn ? 'বুকিং অনুরোধ' : 'Tutoring Requests'}
-          value={
-            requests.isLoading
-              ? '...'
-              : formatLocalizedNumber(myRequests.length, locale)
-          }
+          value={requests.isLoading ? '...' : formatLocalizedNumber(myRequests.length, locale)}
           changeText={
             isBn
               ? `${formatLocalizedNumber(activeTutors.length, locale)} জন গৃহীত শিক্ষক`
@@ -229,11 +221,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
       {/* 3. MY TUTORS & PENDING HOMEWORK ROW (2 COLS)             */}
       {/* ======================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <StudentMyTutorsCard
-          locale={locale}
-          tutors={activeTutors}
-          isLoading={requests.isLoading}
-        />
+        <StudentMyTutorsCard locale={locale} tutors={activeTutors} isLoading={requests.isLoading} />
 
         <StudentPendingAssignmentsCard
           locale={locale}
@@ -321,7 +309,8 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
 
             <div className="divide-y divide-border/50" data-testid="student-recent-requests">
               {myRequests.slice(0, 5).map((r) => {
-                const tp = r.tutorProfile && typeof r.tutorProfile === 'object' ? r.tutorProfile : null;
+                const tp =
+                  r.tutorProfile && typeof r.tutorProfile === 'object' ? r.tutorProfile : null;
                 const tu =
                   tp && 'user' in tp && typeof tp.user === 'object' && tp.user !== null
                     ? (tp.user as { displayName?: string })
@@ -353,7 +342,8 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                       </div>
                       <div className="min-w-0 flex-1">
                         <p className="text-xs sm:text-sm font-bold text-foreground truncate">
-                          {tutorName} • <span className="font-medium text-muted-foreground">{subjectName}</span>
+                          {tutorName} •{' '}
+                          <span className="font-medium text-muted-foreground">{subjectName}</span>
                         </p>
                         <p className="text-[11px] text-muted-foreground truncate">
                           {r.createdAt ? formatDate(r.createdAt, locale) : '—'}

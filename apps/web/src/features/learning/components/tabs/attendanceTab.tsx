@@ -3,7 +3,11 @@ import { CalendarCheck, ExternalLink } from 'lucide-react';
 import { Badge, Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
-import type { AttendanceItemStatus, AttendanceRecordItem, LearningRole } from '../../types/learning.types';
+import type {
+  AttendanceItemStatus,
+  AttendanceRecordItem,
+  LearningRole,
+} from '../../types/learning.types';
 
 function attendanceBadgeClass(status: AttendanceItemStatus): string {
   switch (status) {
@@ -21,7 +25,6 @@ function attendanceBadgeClass(status: AttendanceItemStatus): string {
 export function AttendanceTab({
   locale,
   attendance,
-  userRole,
 }: {
   locale: Locale;
   attendance: AttendanceRecordItem[];

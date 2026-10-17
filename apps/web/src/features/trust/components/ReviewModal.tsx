@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Star, ShieldCheck, CheckCircle2, AlertCircle, X, Sparkles } from 'lucide-react';
+import { Star, ShieldCheck, AlertCircle, X, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui';
 import { useCreateReviewMutation } from '@/store/services/trust-api';
 import { StarSelector } from './starSelector';
@@ -62,14 +62,11 @@ export function ReviewModal({
       }).unwrap();
 
       playAudioTone('success');
-      toast.success(
-        isBn ? 'রিভিউ সফলভাবে জমা দেওয়া হয়েছে!' : 'Review Submitted Successfully!',
-        {
-          description: isBn
-            ? 'আপনার মতামত প্ল্যাটফর্মে প্রকাশিত হবে এবং শিক্ষক রেটিংয়ে যুক্ত হবে।'
-            : 'Your feedback has been verified and added to the tutor profile.',
-        },
-      );
+      toast.success(isBn ? 'রিভিউ সফলভাবে জমা দেওয়া হয়েছে!' : 'Review Submitted Successfully!', {
+        description: isBn
+          ? 'আপনার মতামত প্ল্যাটফর্মে প্রকাশিত হবে এবং শিক্ষক রেটিংয়ে যুক্ত হবে।'
+          : 'Your feedback has been verified and added to the tutor profile.',
+      });
       onClose();
     } catch (err: unknown) {
       const msg =
@@ -166,7 +163,9 @@ export function ReviewModal({
           {/* Comment / Remarks */}
           <div className="space-y-1.5">
             <label htmlFor="review-comment" className="text-xs font-bold text-slate-300 block">
-              {isBn ? 'আপনার বিস্তারিত অভিজ্ঞতা ও মন্তব্য (ন্যূনতম ১০ অক্ষর):' : 'Written Review (Min 10 chars):'}
+              {isBn
+                ? 'আপনার বিস্তারিত অভিজ্ঞতা ও মন্তব্য (ন্যূনতম ১০ অক্ষর):'
+                : 'Written Review (Min 10 chars):'}
             </label>
             <textarea
               id="review-comment"

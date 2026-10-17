@@ -131,12 +131,26 @@ export class PaymentWebhooksService {
     const order = orderIdToFind
       ? await this.orderRepo.findOne({
           where: { id: String(orderIdToFind), status: 'pending' },
-          relations: { booking: { subject: true, studentUser: true, requesterUser: true, tutorProfile: { user: true } } },
+          relations: {
+            booking: {
+              subject: true,
+              studentUser: true,
+              requesterUser: true,
+              tutorProfile: { user: true },
+            },
+          },
         })
       : await this.orderRepo.findOne({
           where: { status: 'pending' },
           order: { createdAt: 'DESC' },
-          relations: { booking: { subject: true, studentUser: true, requesterUser: true, tutorProfile: { user: true } } },
+          relations: {
+            booking: {
+              subject: true,
+              studentUser: true,
+              requesterUser: true,
+              tutorProfile: { user: true },
+            },
+          },
         });
 
     if (!order) {
@@ -294,9 +308,7 @@ export class PaymentWebhooksService {
             amount: amountBdt,
           },
         })
-        .catch((err) =>
-          this.logger.warn(`Failed to dispatch payer payment notification: ${err}`),
-        );
+        .catch((err) => this.logger.warn(`Failed to dispatch payer payment notification: ${err}`));
 
       // Linked guardians
       const guardianIds = await this.guardianAccess.findActiveGuardianIds(order.payerUserId);

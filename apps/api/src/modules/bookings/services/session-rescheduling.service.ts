@@ -296,7 +296,9 @@ export class SessionReschedulingService {
     }
 
     if (session.status !== 'scheduled' && session.status !== 'in_progress') {
-      throw new BadRequestException(`Cannot start session with current status '${session.status}'.`);
+      throw new BadRequestException(
+        `Cannot start session with current status '${session.status}'.`,
+      );
     }
 
     session.status = 'in_progress';
@@ -346,7 +348,9 @@ export class SessionReschedulingService {
     const isTutor = user.id === session.tutorUserId;
     const isAdmin = user.roles.some((r) => ['admin', 'super_admin'].includes(r));
     if (!isTutor && !isAdmin) {
-      throw new BadRequestException('Only the assigned tutor or admin can mark a session as completed.');
+      throw new BadRequestException(
+        'Only the assigned tutor or admin can mark a session as completed.',
+      );
     }
 
     session.status = 'completed';

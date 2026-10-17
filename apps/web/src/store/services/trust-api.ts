@@ -75,7 +75,10 @@ export const trustApi = baseApi.injectEndpoints({
       query: (id) => `/api/v1/safety-reports/${id}`,
       providesTags: (_r, _e, id) => [{ type: 'SafetyReport', id }],
     }),
-    updateSafetyReport: builder.mutation<SafetyReportRecord, { id: string; body: Record<string, unknown> }>({
+    updateSafetyReport: builder.mutation<
+      SafetyReportRecord,
+      { id: string; body: Record<string, unknown> }
+    >({
       query: ({ id, body }) => ({ url: `/api/v1/safety-reports/${id}`, method: 'PATCH', body }),
       invalidatesTags: [
         { type: 'SafetyReport', id: 'LIST' },
@@ -98,20 +101,21 @@ export const trustApi = baseApi.injectEndpoints({
       query: (id) => `/api/v1/tutor-replacements/${id}`,
       providesTags: (_r, _e, id) => [{ type: 'ReplacementCase', id }],
     }),
-    updateReplacementCase: builder.mutation<ReplacementCaseRecord, { id: string; body: Record<string, unknown> }>(
-      {
-        query: ({ id, body }) => ({
-          url: `/api/v1/tutor-replacements/${id}`,
-          method: 'PATCH',
-          body,
-        }),
-        invalidatesTags: [
-          { type: 'ReplacementCase', id: 'LIST' },
-          { type: 'BookingRequest', id: 'LIST' },
-          { type: 'Notification', id: 'LIST' },
-        ],
-      },
-    ),
+    updateReplacementCase: builder.mutation<
+      ReplacementCaseRecord,
+      { id: string; body: Record<string, unknown> }
+    >({
+      query: ({ id, body }) => ({
+        url: `/api/v1/tutor-replacements/${id}`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: [
+        { type: 'ReplacementCase', id: 'LIST' },
+        { type: 'BookingRequest', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
   }),
   overrideExisting: false,
 });

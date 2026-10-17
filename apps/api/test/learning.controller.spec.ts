@@ -139,7 +139,10 @@ describe('LearningController Unit Tests', () => {
   });
 
   it('should get assignment by id and return wrapped 200 response', async () => {
-    const res = await controller.getAssignmentById(mockStudent, '11111111-1111-4111-8111-111111111111');
+    const res = await controller.getAssignmentById(
+      mockStudent,
+      '11111111-1111-4111-8111-111111111111',
+    );
     expect(res.success).toBe(true);
     expect(res.data.id).toBe('asgn-1');
     expect(mockService.getAssignmentById).toHaveBeenCalledWith(
@@ -149,7 +152,10 @@ describe('LearningController Unit Tests', () => {
   });
 
   it('should get progress report by id and return wrapped 200 response', async () => {
-    const res = await controller.getProgressReportById(mockTutor, '22222222-2222-4222-8222-222222222222');
+    const res = await controller.getProgressReportById(
+      mockTutor,
+      '22222222-2222-4222-8222-222222222222',
+    );
     expect(res.success).toBe(true);
     expect(res.data.id).toBe('rep-1');
     expect(mockService.getProgressReportById).toHaveBeenCalledWith(

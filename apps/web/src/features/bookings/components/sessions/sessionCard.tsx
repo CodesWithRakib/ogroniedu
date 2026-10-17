@@ -47,7 +47,8 @@ export function SessionCard({
           {session.subjectName || (locale === 'bn' ? 'পদার্থবিজ্ঞান ১ম পত্র' : 'Physics Paper 1')}
         </CardTitle>
         <CardDescription className="text-xs text-teal-300/80">
-          {locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'} {session.tutorName} | {locale === 'bn' ? 'শিক্ষার্থী:' : 'Learner:'} {session.studentName}
+          {locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'} {session.tutorName} |{' '}
+          {locale === 'bn' ? 'শিক্ষার্থী:' : 'Learner:'} {session.studentName}
         </CardDescription>
       </CardHeader>
 
@@ -73,7 +74,9 @@ export function SessionCard({
 
         {session.cancellationAssessment && (
           <div className="p-2 bg-rose-50 dark:bg-rose-950/40 rounded-xl border border-rose-100 dark:border-rose-900 text-[11px] text-rose-800 dark:text-rose-300 space-y-0.5">
-            <span className="font-semibold block">{locale === 'bn' ? 'বাতিলকৃত' : 'Cancelled'}</span>
+            <span className="font-semibold block">
+              {locale === 'bn' ? 'বাতিলকৃত' : 'Cancelled'}
+            </span>
             <p>
               {locale === 'bn' ? 'রিফান্ড হার:' : 'Refund:'}{' '}
               {formatLocalizedNumber(session.cancellationAssessment.refundPercentage, locale)}%

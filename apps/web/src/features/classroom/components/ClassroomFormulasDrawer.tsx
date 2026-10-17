@@ -1,16 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import {
-  BookOpen,
-  Search,
-  Copy,
-  Check,
-  Atom,
-  Binary,
-  FlaskConical,
-  Sparkles,
-} from 'lucide-react';
+import { BookOpen, Search, Copy, Check, Atom, Binary, FlaskConical, Sparkles } from 'lucide-react';
 
 interface FormulaItem {
   id: string;
@@ -152,7 +143,9 @@ interface ClassroomFormulasDrawerProps {
 }
 
 export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDrawerProps) {
-  const [activeCategory, setActiveCategory] = useState<'all' | 'physics' | 'math' | 'chemistry'>('all');
+  const [activeCategory, setActiveCategory] = useState<'all' | 'physics' | 'math' | 'chemistry'>(
+    'all',
+  );
   const [searchQuery, setSearchQuery] = useState('');
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -312,7 +305,9 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
                   {isCopied ? (
                     <>
                       <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-emerald-400 font-bold">{locale === 'bn' ? 'কপি হয়েছে' : 'Copied'}</span>
+                      <span className="text-emerald-400 font-bold">
+                        {locale === 'bn' ? 'কপি হয়েছে' : 'Copied'}
+                      </span>
                     </>
                   ) : (
                     <>
@@ -328,9 +323,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
 
         {filteredFormulas.length === 0 && (
           <div className="col-span-2 text-center py-8 text-xs text-slate-500">
-            {locale === 'bn'
-              ? 'কোনো ফর্মুলা খুঁজে পাওয়া যায়নি।'
-              : 'No matching formulas found.'}
+            {locale === 'bn' ? 'কোনো ফর্মুলা খুঁজে পাওয়া যায়নি।' : 'No matching formulas found.'}
           </div>
         )}
       </div>

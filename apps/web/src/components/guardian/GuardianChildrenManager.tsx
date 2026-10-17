@@ -161,7 +161,9 @@ export function GuardianChildrenManager({
                     className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors"
                     data-testid={`link-child-detail-${child.studentId}`}
                   >
-                    <span>{locale === 'bn' ? 'একাডেমিক প্রোফাইল ও তদারকি' : 'Academic Oversight'}</span>
+                    <span>
+                      {locale === 'bn' ? 'একাডেমিক প্রোফাইল ও তদারকি' : 'Academic Oversight'}
+                    </span>
                     <ArrowRight className="h-3.5 w-3.5" />
                   </Link>
                   <Button

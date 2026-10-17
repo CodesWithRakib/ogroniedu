@@ -71,10 +71,7 @@ export const paymentsApi = baseApi.injectEndpoints({
         { type: 'Reconciliation', id: 'SUMMARY' },
       ],
     }),
-    settleMilestone: builder.mutation<
-      ApiSuccessEnvelope<unknown>,
-      { sessionId: string }
-    >({
+    settleMilestone: builder.mutation<ApiSuccessEnvelope<unknown>, { sessionId: string }>({
       query: (body) => ({ url: '/api/v1/payments/milestones/settle', method: 'POST', body }),
       invalidatesTags: [
         { type: 'Reconciliation', id: 'SUMMARY' },

@@ -111,11 +111,7 @@ export function DashboardTopbar({
       </header>
 
       {/* Emergency SOS Hotline Modal */}
-      <EmergencySosModal
-        isOpen={isSosOpen}
-        onClose={() => setIsSosOpen(false)}
-        locale={locale}
-      />
+      <EmergencySosModal isOpen={isSosOpen} onClose={() => setIsSosOpen(false)} locale={locale} />
     </>
   );
 }

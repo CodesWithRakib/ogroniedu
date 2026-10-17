@@ -3,7 +3,6 @@
 import React, { use, useState } from 'react';
 import Link from 'next/link';
 import {
-  Calendar,
   Clock,
   Video,
   ArrowLeft,
@@ -12,14 +11,21 @@ import {
   CheckCircle2,
   ExternalLink,
   BookOpen,
-  User,
   ShieldCheck,
   Sparkles,
   Radio,
 } from 'lucide-react';
 import { RequireAuth } from '@/components/auth/RequireAuth';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
-import { Button, Card, CardContent, CardHeader, CardTitle, Badge, LoadingSpinner, EmptyState } from '@/components/ui';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardHeader,
+  CardTitle,
+  Badge,
+  LoadingSpinner,
+} from '@/components/ui';
 import { useGetSessionByIdQuery } from '@/store/services/sessions-api';
 import {
   useGetSessionAttendanceQuery,
@@ -27,7 +33,7 @@ import {
   type AttendanceStatus,
 } from '@/store/services/learning-api';
 import { useAppSelector } from '@/store';
-import { getDictionary, type Locale } from '@/lib/i18n';
+import { type Locale } from '@/lib/i18n';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
 import { parseItem } from '@/lib/api/parse';
 import { withLocale } from '@/lib/auth';
@@ -56,11 +62,7 @@ interface SessionDetailData {
   };
 }
 
-export default function SessionDetailRoute({
-  params,
-}: {
-  params: Promise<SessionDetailParams>;
-}) {
+export default function SessionDetailRoute({ params }: { params: Promise<SessionDetailParams> }) {
   const resolved = use(params);
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   const sessionId = resolved.id;
@@ -74,22 +76,21 @@ export default function SessionDetailRoute({
   );
 }
 
-function SessionDetailPage({
-  locale,
-  sessionId,
-}: {
-  locale: Locale;
-  sessionId: string;
-}) {
-  const dict = getDictionary(locale);
+function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: string }) {
   const currentUser = useAppSelector((s) => s.auth.user);
   const isTutor = currentUser?.roles?.includes('tutor');
 
-  const { data: sessionData, isLoading: sessionLoading, error: sessionError } =
-    useGetSessionByIdQuery(sessionId);
+  const {
+    data: sessionData,
+    isLoading: sessionLoading,
+    error: sessionError,
+  } = useGetSessionByIdQuery(sessionId);
 
-  const { data: attendanceData, isLoading: attendanceLoading, refetch: refetchAttendance } =
-    useGetSessionAttendanceQuery(sessionId);
+  const {
+    data: attendanceData,
+    isLoading: attendanceLoading,
+    refetch: refetchAttendance,
+  } = useGetSessionAttendanceQuery(sessionId);
 
   const [markAttendance, { isLoading: isMarking }] = useMarkAttendanceMutation();
 
@@ -110,13 +111,15 @@ function SessionDetailPage({
   const existingAttendance = React.useMemo(() => {
     if (!attendanceData) return [];
     try {
-      const parsed = parseItem<Array<{
-        id: string;
-        attendanceStatus: AttendanceStatus;
-        recordedAt: string;
-        notes?: string | null;
-        participantUserId: string;
-      }>>(attendanceData);
+      const parsed = parseItem<
+        Array<{
+          id: string;
+          attendanceStatus: AttendanceStatus;
+          recordedAt: string;
+          notes?: string | null;
+          participantUserId: string;
+        }>
+      >(attendanceData);
       return Array.isArray(parsed) ? parsed : [];
     } catch {
       return [];
@@ -132,8 +135,7 @@ function SessionDetailPage({
     setMarkSuccess(false);
 
     const participantUserId =
-      (session.studentUserId as string) ||
-      ((session.studentUser as { id?: string } | undefined)?.id);
+      (session.studentUserId as string) || (session.studentUser as { id?: string } | undefined)?.id;
 
     if (!participantUserId) {
       setMarkError(
@@ -156,7 +158,8 @@ function SessionDetailPage({
     } catch (err: unknown) {
       const message =
         err && typeof err === 'object' && 'data' in err
-          ? ((err as { data?: { message?: string } }).data?.message ?? 'Failed to record attendance')
+          ? ((err as { data?: { message?: string } }).data?.message ??
+            'Failed to record attendance')
           : 'Failed to record attendance';
       setMarkError(message);
     }
@@ -219,15 +222,35 @@ function SessionDetailPage({
   const statusBadge = () => {
     switch (status) {
       case 'scheduled':
-        return <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">{locale === 'bn' ? 'নির্ধারিত' : 'Scheduled'}</Badge>;
+        return (
+          <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
+            {locale === 'bn' ? 'নির্ধারিত' : 'Scheduled'}
+          </Badge>
+        );
       case 'in_progress':
-        return <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">{locale === 'bn' ? 'চলমান' : 'In Progress'}</Badge>;
+        return (
+          <Badge className="bg-cyan-500/10 text-cyan-400 border border-cyan-500/30">
+            {locale === 'bn' ? 'চলমান' : 'In Progress'}
+          </Badge>
+        );
       case 'completed':
-        return <Badge className="bg-blue-500/10 text-blue-400 border border-blue-500/30">{locale === 'bn' ? 'সম্পন্ন' : 'Completed'}</Badge>;
+        return (
+          <Badge className="bg-blue-500/10 text-blue-400 border border-blue-500/30">
+            {locale === 'bn' ? 'সম্পন্ন' : 'Completed'}
+          </Badge>
+        );
       case 'cancelled':
-        return <Badge className="bg-rose-500/10 text-rose-400 border border-rose-500/30">{locale === 'bn' ? 'বাতিলকৃত' : 'Cancelled'}</Badge>;
+        return (
+          <Badge className="bg-rose-500/10 text-rose-400 border border-rose-500/30">
+            {locale === 'bn' ? 'বাতিলকৃত' : 'Cancelled'}
+          </Badge>
+        );
       default:
-        return <Badge className="bg-slate-500/10 text-slate-400 border border-slate-500/30">{status}</Badge>;
+        return (
+          <Badge className="bg-slate-500/10 text-slate-400 border border-slate-500/30">
+            {status}
+          </Badge>
+        );
     }
   };
 
@@ -263,7 +286,9 @@ function SessionDetailPage({
             <span>{locale === 'bn' ? 'স্মার্ট ক্লাসরুম হাব' : 'Smart Classroom Hub'}</span>
           </div>
           <h2 className="text-xl md:text-2xl font-black text-white">
-            {locale === 'bn' ? 'ইন্টারেক্টিভ ডিজিটাল হোয়াইটবোর্ড ও লাইভ স্টাডি রুম' : 'Interactive Whiteboard & Live Study Room'}
+            {locale === 'bn'
+              ? 'ইন্টারেক্টিভ ডিজিটাল হোয়াইটবোর্ড ও লাইভ স্টাডি রুম'
+              : 'Interactive Whiteboard & Live Study Room'}
           </h2>
           <p className="text-xs text-slate-300 max-w-xl">
             {locale === 'bn'
@@ -284,7 +309,7 @@ function SessionDetailPage({
       {/* Main Session Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-emerald-950 via-slate-900 to-[#062127] border border-emerald-500/20 p-8 shadow-2xl">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-emerald-500/10 rounded-full blur-3xl pointer-events-none" />
-        
+
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
@@ -299,9 +324,15 @@ function SessionDetailPage({
               <span>{subjectName}</span>
             </h1>
             <p className="text-sm text-emerald-100/80 flex items-center gap-4">
-              <span>{locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'} <strong className="text-white">{tutorName}</strong></span>
+              <span>
+                {locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'}{' '}
+                <strong className="text-white">{tutorName}</strong>
+              </span>
               <span>•</span>
-              <span>{locale === 'bn' ? 'শিক্ষার্থী:' : 'Student:'} <strong className="text-white">{studentName}</strong></span>
+              <span>
+                {locale === 'bn' ? 'শিক্ষার্থী:' : 'Student:'}{' '}
+                <strong className="text-white">{studentName}</strong>
+              </span>
             </p>
           </div>
 
@@ -339,7 +370,11 @@ function SessionDetailPage({
               <div className="p-4 bg-emerald-950/40 border border-emerald-500/30 rounded-2xl space-y-3">
                 <div className="flex items-center gap-2 text-xs text-emerald-300">
                   <ShieldCheck className="w-4 h-4 text-emerald-400" />
-                  <span>{locale === 'bn' ? 'অনুমোদিত নিরাপদ ক্লাসরুম লিংক' : 'Verified Secure Classroom Link'}</span>
+                  <span>
+                    {locale === 'bn'
+                      ? 'অনুমোদিত নিরাপদ ক্লাসরুম লিংক'
+                      : 'Verified Secure Classroom Link'}
+                  </span>
                 </div>
                 <div className="text-xs text-slate-300 font-mono break-all truncate">
                   {meetingUrl}
@@ -361,7 +396,9 @@ function SessionDetailPage({
                   data-testid="open-whiteboard-card-btn"
                 >
                   <Sparkles className="w-4 h-4 text-cyan-400" />
-                  {locale === 'bn' ? 'হোয়াইটবোর্ড ও স্টাডি রুম খুলুন' : 'Open Whiteboard & Study Room'}
+                  {locale === 'bn'
+                    ? 'হোয়াইটবোর্ড ও স্টাডি রুম খুলুন'
+                    : 'Open Whiteboard & Study Room'}
                 </Link>
               </div>
             ) : (
@@ -377,7 +414,9 @@ function SessionDetailPage({
                   className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-cyan-600/20 hover:bg-cyan-600/30 text-cyan-300 border border-cyan-400/30 text-xs font-bold rounded-xl transition-all"
                 >
                   <Sparkles className="w-4 h-4 text-cyan-400" />
-                  {locale === 'bn' ? 'ইন-ব্রাউজার হোয়াইটবোর্ড ব্যবহার করুন' : 'Use In-Browser Whiteboard'}
+                  {locale === 'bn'
+                    ? 'ইন-ব্রাউজার হোয়াইটবোর্ড ব্যবহার করুন'
+                    : 'Use In-Browser Whiteboard'}
                 </Link>
               </div>
             )}
@@ -420,19 +459,27 @@ function SessionDetailPage({
               <div className="p-3 bg-slate-800/60 rounded-xl border border-slate-700/60 text-xs space-y-1">
                 <div className="flex items-center justify-between text-slate-300 font-medium">
                   <span>{locale === 'bn' ? 'রেকর্ডকৃত অবস্থা:' : 'Recorded Status:'}</span>
-                  <span className="font-bold text-white capitalize">{latestRecord.attendanceStatus}</span>
+                  <span className="font-bold text-white capitalize">
+                    {latestRecord.attendanceStatus}
+                  </span>
                 </div>
                 {latestRecord.notes && (
                   <p className="text-slate-400 italic">"{latestRecord.notes}"</p>
                 )}
                 <div className="text-[10px] text-slate-500 text-right">
-                  {new Date(latestRecord.recordedAt).toLocaleString(locale === 'bn' ? 'bn-BD' : 'en-US')}
+                  {new Date(latestRecord.recordedAt).toLocaleString(
+                    locale === 'bn' ? 'bn-BD' : 'en-US',
+                  )}
                 </div>
               </div>
             )}
 
             {isTutor ? (
-              <form onSubmit={handleMarkAttendance} className="space-y-3" data-testid="tutor-mark-attendance-form">
+              <form
+                onSubmit={handleMarkAttendance}
+                className="space-y-3"
+                data-testid="tutor-mark-attendance-form"
+              >
                 <label className="text-xs font-semibold text-slate-300 block">
                   {locale === 'bn' ? 'উপস্থিতি নির্ধারণ করুন:' : 'Mark Attendance Status:'}
                 </label>
@@ -450,12 +497,20 @@ function SessionDetailPage({
                       data-testid={`attendance-status-${st}`}
                     >
                       {st === 'present'
-                        ? (locale === 'bn' ? 'উপস্থিত' : 'Present')
+                        ? locale === 'bn'
+                          ? 'উপস্থিত'
+                          : 'Present'
                         : st === 'late'
-                          ? (locale === 'bn' ? 'দেরি' : 'Late')
+                          ? locale === 'bn'
+                            ? 'দেরি'
+                            : 'Late'
                           : st === 'absent'
-                            ? (locale === 'bn' ? 'অনুপস্থিত' : 'Absent')
-                            : (locale === 'bn' ? 'ছুটি' : 'Excused')}
+                            ? locale === 'bn'
+                              ? 'অনুপস্থিত'
+                              : 'Absent'
+                            : locale === 'bn'
+                              ? 'ছুটি'
+                              : 'Excused'}
                     </button>
                   ))}
                 </div>
@@ -469,7 +524,11 @@ function SessionDetailPage({
                     type="text"
                     value={attendanceNotes}
                     onChange={(e) => setAttendanceNotes(e.target.value)}
-                    placeholder={locale === 'bn' ? 'ক্লাসের সক্রিয়তা বা মন্তব্য লিখুন...' : 'Add session notes or observations...'}
+                    placeholder={
+                      locale === 'bn'
+                        ? 'ক্লাসের সক্রিয়তা বা মন্তব্য লিখুন...'
+                        : 'Add session notes or observations...'
+                    }
                     className="w-full h-9 rounded-xl border border-slate-700 bg-slate-800 px-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     data-testid="attendance-notes-input"
                   />
@@ -483,7 +542,11 @@ function SessionDetailPage({
                 {markSuccess && (
                   <div className="p-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-300 flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>{locale === 'bn' ? 'উপস্থিতি সফলভাবে রেকর্ড করা হয়েছে!' : 'Attendance marked successfully!'}</span>
+                    <span>
+                      {locale === 'bn'
+                        ? 'উপস্থিতি সফলভাবে রেকর্ড করা হয়েছে!'
+                        : 'Attendance marked successfully!'}
+                    </span>
                   </div>
                 )}
 
@@ -495,15 +558,23 @@ function SessionDetailPage({
                   data-testid="submit-attendance-btn"
                 >
                   {latestRecord
-                    ? (locale === 'bn' ? 'উপস্থিতি হালনাগাদ করুন' : 'Update Attendance')
-                    : (locale === 'bn' ? 'উপস্থিতি নিশ্চিত করুন' : 'Confirm Attendance')}
+                    ? locale === 'bn'
+                      ? 'উপস্থিতি হালনাগাদ করুন'
+                      : 'Update Attendance'
+                    : locale === 'bn'
+                      ? 'উপস্থিতি নিশ্চিত করুন'
+                      : 'Confirm Attendance'}
                 </Button>
               </form>
             ) : (
               <div className="text-xs text-slate-400 text-center py-2">
                 {latestRecord
-                  ? (locale === 'bn' ? 'শিক্ষক এই ক্লাসের উপস্থিতি নথিভুক্ত করেছেন।' : 'Tutor has recorded attendance for this class.')
-                  : (locale === 'bn' ? 'শিক্ষক এখনো উপস্থিতি নথিভুক্ত করেননি।' : 'Attendance has not been recorded by tutor yet.')}
+                  ? locale === 'bn'
+                    ? 'শিক্ষক এই ক্লাসের উপস্থিতি নথিভুক্ত করেছেন।'
+                    : 'Tutor has recorded attendance for this class.'
+                  : locale === 'bn'
+                    ? 'শিক্ষক এখনো উপস্থিতি নথিভুক্ত করেননি।'
+                    : 'Attendance has not been recorded by tutor yet.'}
               </div>
             )}
           </CardContent>

@@ -13,17 +13,11 @@ import {
   Percent,
 } from 'lucide-react';
 import { RequireAuth } from '@/components/auth/RequireAuth';
+import { Card, Badge, LoadingSpinner } from '@/components/ui';
 import {
-  Button,
-  Card,
-  CardContent,
-  CardHeader,
-  CardTitle,
-  CardDescription,
-  Badge,
-  LoadingSpinner,
-} from '@/components/ui';
-import { useGetProgressReportByIdQuery, type ProgressReportRecord } from '@/store/services/learning-api';
+  useGetProgressReportByIdQuery,
+  type ProgressReportRecord,
+} from '@/store/services/learning-api';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { parseItem } from '@/lib/api/parse';
 import { withLocale } from '@/lib/auth';
@@ -49,13 +43,7 @@ export default function ProgressReportDetailRoute({
   );
 }
 
-function ProgressReportDetailPage({
-  locale,
-  reportId,
-}: {
-  locale: Locale;
-  reportId: string;
-}) {
+function ProgressReportDetailPage({ locale, reportId }: { locale: Locale; reportId: string }) {
   const { data: reportData, isLoading, error } = useGetProgressReportByIdQuery(reportId);
 
   const report = React.useMemo<ProgressReportRecord | null>(() => {
@@ -121,7 +109,9 @@ function ProgressReportDetailPage({
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-indigo-500/20 border border-indigo-400/30 rounded-full text-xs font-medium text-indigo-300">
             <TrendingUp className="w-3.5 h-3.5" />
-            <span>{locale === 'bn' ? 'মাসিক অগ্রগতি মূল্যায়ন' : 'Periodic Progress Evaluation'}</span>
+            <span>
+              {locale === 'bn' ? 'মাসিক অগ্রগতি মূল্যায়ন' : 'Periodic Progress Evaluation'}
+            </span>
           </span>
           <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30">
             {locale === 'bn' ? 'প্রকাশিত' : 'Published'}
@@ -129,7 +119,9 @@ function ProgressReportDetailPage({
         </div>
 
         <h1 className="text-2xl md:text-3xl font-extrabold text-white">
-          {locale === 'bn' ? 'শিক্ষার্থীর পূর্ণাঙ্গ অগ্রগতি রিপোর্ট' : 'Comprehensive Learner Progress Report'}
+          {locale === 'bn'
+            ? 'শিক্ষার্থীর পূর্ণাঙ্গ অগ্রগতি রিপোর্ট'
+            : 'Comprehensive Learner Progress Report'}
         </h1>
 
         <div className="flex items-center gap-2 text-xs text-indigo-200/80">
@@ -185,7 +177,9 @@ function ProgressReportDetailPage({
         <Card className="bg-slate-900/90 border border-slate-800 text-slate-100 rounded-2xl p-6 shadow-md space-y-2">
           <div className="flex items-center gap-2 text-emerald-400 text-sm font-bold">
             <CheckCircle2 className="w-4 h-4" />
-            <span>{locale === 'bn' ? 'দৃশ্যমান অগ্রগতি ও অর্জন' : 'Observable Progress & Achievements'}</span>
+            <span>
+              {locale === 'bn' ? 'দৃশ্যমান অগ্রগতি ও অর্জন' : 'Observable Progress & Achievements'}
+            </span>
           </div>
           <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">
             {report.observableProgress}
@@ -197,7 +191,11 @@ function ProgressReportDetailPage({
           <Card className="bg-slate-900/90 border border-slate-800 text-slate-100 rounded-2xl p-6 shadow-md space-y-2">
             <div className="flex items-center gap-2 text-cyan-400 text-sm font-bold">
               <TrendingUp className="w-4 h-4" />
-              <span>{locale === 'bn' ? 'উন্নতির জায়গা ও ভবিষ্যৎ লক্ষ্য' : 'Areas for Growth & Recommendations'}</span>
+              <span>
+                {locale === 'bn'
+                  ? 'উন্নতির জায়গা ও ভবিষ্যৎ লক্ষ্য'
+                  : 'Areas for Growth & Recommendations'}
+              </span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed whitespace-pre-wrap">
               {report.areasForGrowth}
@@ -210,7 +208,9 @@ function ProgressReportDetailPage({
           <Card className="bg-slate-900/90 border border-slate-800 text-slate-100 rounded-2xl p-6 shadow-md space-y-2">
             <div className="flex items-center gap-2 text-amber-400 text-sm font-bold">
               <Award className="w-4 h-4" />
-              <span>{locale === 'bn' ? 'শিক্ষকের সামগ্রিক পর্যালোচনা' : 'Tutor Overall Assessment'}</span>
+              <span>
+                {locale === 'bn' ? 'শিক্ষকের সামগ্রিক পর্যালোচনা' : 'Tutor Overall Assessment'}
+              </span>
             </div>
             <p className="text-xs text-slate-300 leading-relaxed italic bg-slate-800/40 p-3 rounded-xl border border-slate-700/50">
               "{report.tutorRemarks}"

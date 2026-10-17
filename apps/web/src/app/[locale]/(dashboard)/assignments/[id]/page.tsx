@@ -4,7 +4,6 @@ import React, { use, useState } from 'react';
 import Link from 'next/link';
 import {
   BookOpen,
-  Calendar,
   Clock,
   ArrowLeft,
   Send,
@@ -13,7 +12,6 @@ import {
   CheckCircle2,
   AlertCircle,
   FileText,
-  User,
 } from 'lucide-react';
 import { RequireAuth } from '@/components/auth/RequireAuth';
 import {
@@ -34,7 +32,7 @@ import {
   type AssignmentRecord,
 } from '@/store/services/learning-api';
 import { useAppSelector } from '@/store';
-import { formatLocalizedNumber, getDictionary, type Locale } from '@/lib/i18n';
+import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { parseItem } from '@/lib/api/parse';
 import { withLocale } from '@/lib/auth';
 
@@ -59,13 +57,7 @@ export default function AssignmentDetailRoute({
   );
 }
 
-function AssignmentDetailPage({
-  locale,
-  assignmentId,
-}: {
-  locale: Locale;
-  assignmentId: string;
-}) {
+function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assignmentId: string }) {
   const currentUser = useAppSelector((s) => s.auth.user);
   const isTutor = currentUser?.roles?.includes('tutor');
   const isStudent = currentUser?.roles?.includes('student');
@@ -204,7 +196,6 @@ function AssignmentDetailPage({
   }
 
   const submission = assignment.submission;
-  const isReviewed = submission?.status === 'reviewed';
   const hasScore = submission?.score !== null && submission?.score !== undefined;
   const dateLocale = locale === 'bn' ? 'bn-BD' : 'en-US';
 
@@ -309,8 +300,12 @@ function AssignmentDetailPage({
             </CardTitle>
             <CardDescription className="text-xs text-slate-400">
               {submission
-                ? (locale === 'bn' ? 'শিক্ষার্থী কাজ সম্পন্ন করে জমা দিয়েছে।' : 'Solution has been submitted by student.')
-                : (locale === 'bn' ? 'এখনো কোনো সমাধান জমা দেওয়া হয়নি।' : 'No solution submitted yet.')}
+                ? locale === 'bn'
+                  ? 'শিক্ষার্থী কাজ সম্পন্ন করে জমা দিয়েছে।'
+                  : 'Solution has been submitted by student.'
+                : locale === 'bn'
+                  ? 'এখনো কোনো সমাধান জমা দেওয়া হয়নি।'
+                  : 'No solution submitted yet.'}
             </CardDescription>
           </CardHeader>
 
@@ -332,16 +327,29 @@ function AssignmentDetailPage({
                 )}
               </div>
             ) : isStudent ? (
-              <form onSubmit={handleSubmitSolution} className="space-y-3" data-testid="student-solution-form">
-                <label htmlFor="solution-text" className="text-xs font-semibold text-slate-300 block">
-                  {locale === 'bn' ? 'আপনার উত্তর বা সমাধান লিখুন:' : 'Write your solution or notes:'}
+              <form
+                onSubmit={handleSubmitSolution}
+                className="space-y-3"
+                data-testid="student-solution-form"
+              >
+                <label
+                  htmlFor="solution-text"
+                  className="text-xs font-semibold text-slate-300 block"
+                >
+                  {locale === 'bn'
+                    ? 'আপনার উত্তর বা সমাধান লিখুন:'
+                    : 'Write your solution or notes:'}
                 </label>
                 <textarea
                   id="solution-text"
                   rows={4}
                   value={submissionText}
                   onChange={(e) => setSubmissionText(e.target.value)}
-                  placeholder={locale === 'bn' ? 'অংক বা সমাধান বিস্তারিতভাবে লিখুন...' : 'Type your answer or solution details...'}
+                  placeholder={
+                    locale === 'bn'
+                      ? 'অংক বা সমাধান বিস্তারিতভাবে লিখুন...'
+                      : 'Type your answer or solution details...'
+                  }
                   className="w-full rounded-xl border border-slate-700 bg-slate-800 p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed"
                   data-testid="solution-textarea"
                 />
@@ -353,7 +361,11 @@ function AssignmentDetailPage({
                 {submitSuccess && (
                   <div className="p-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-300 flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>{locale === 'bn' ? 'সমাধান সফলভাবে জমা দেওয়া হয়েছে!' : 'Homework submitted successfully!'}</span>
+                    <span>
+                      {locale === 'bn'
+                        ? 'সমাধান সফলভাবে জমা দেওয়া হয়েছে!'
+                        : 'Homework submitted successfully!'}
+                    </span>
                   </div>
                 )}
                 <Button
@@ -369,7 +381,9 @@ function AssignmentDetailPage({
               </form>
             ) : (
               <div className="p-4 bg-slate-800/30 rounded-xl border border-slate-800 text-center text-xs text-slate-400">
-                {locale === 'bn' ? 'শিক্ষার্থী এখনো কাজ জমা দেননি।' : 'Student has not submitted yet.'}
+                {locale === 'bn'
+                  ? 'শিক্ষার্থী এখনো কাজ জমা দেননি।'
+                  : 'Student has not submitted yet.'}
               </div>
             )}
           </CardContent>
@@ -384,8 +398,12 @@ function AssignmentDetailPage({
             </CardTitle>
             <CardDescription className="text-xs text-slate-400">
               {hasScore
-                ? (locale === 'bn' ? 'শিক্ষক খাতা মূল্যায়ন সম্পন্ন করেছেন।' : 'Tutor has evaluated this submission.')
-                : (locale === 'bn' ? 'মূল্যায়ন প্রক্রিয়াধীন।' : 'Pending evaluation.')}
+                ? locale === 'bn'
+                  ? 'শিক্ষক খাতা মূল্যায়ন সম্পন্ন করেছেন।'
+                  : 'Tutor has evaluated this submission.'
+                : locale === 'bn'
+                  ? 'মূল্যায়ন প্রক্রিয়াধীন।'
+                  : 'Pending evaluation.'}
             </CardDescription>
           </CardHeader>
 
@@ -455,7 +473,11 @@ function AssignmentDetailPage({
                     rows={2}
                     value={gradingFeedback}
                     onChange={(e) => setGradingFeedback(e.target.value)}
-                    placeholder={locale === 'bn' ? 'ভুলত্রুটি বা উন্নতির জায়গা উল্লেখ করুন...' : 'Provide positive feedback or guidance...'}
+                    placeholder={
+                      locale === 'bn'
+                        ? 'ভুলত্রুটি বা উন্নতির জায়গা উল্লেখ করুন...'
+                        : 'Provide positive feedback or guidance...'
+                    }
                     className="w-full rounded-xl border border-slate-700 bg-slate-800 p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                     data-testid="grading-feedback-input"
                   />
@@ -463,14 +485,23 @@ function AssignmentDetailPage({
 
                 {hasScore && isEditingGrade && (
                   <div className="space-y-1">
-                    <label htmlFor="revision-reason" className="text-xs font-semibold text-amber-300">
-                      {locale === 'bn' ? 'সংশোধনের কারণ (বাধ্যতামূলক):' : 'Revision Reason (Required):'}
+                    <label
+                      htmlFor="revision-reason"
+                      className="text-xs font-semibold text-amber-300"
+                    >
+                      {locale === 'bn'
+                        ? 'সংশোধনের কারণ (বাধ্যতামূলক):'
+                        : 'Revision Reason (Required):'}
                     </label>
                     <Input
                       id="revision-reason"
                       value={revisionReason}
                       onChange={(e) => setRevisionReason(e.target.value)}
-                      placeholder={locale === 'bn' ? 'স্কোর পরিবর্তনের সুনির্দিষ্ট কারণ লিখুন...' : 'Audit reason for modifying score...'}
+                      placeholder={
+                        locale === 'bn'
+                          ? 'স্কোর পরিবর্তনের সুনির্দিষ্ট কারণ লিখুন...'
+                          : 'Audit reason for modifying score...'
+                      }
                       data-testid="grading-revision-reason-input"
                     />
                   </div>
@@ -484,7 +515,9 @@ function AssignmentDetailPage({
                 {gradeSuccess && (
                   <div className="p-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-300 flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                    <span>{locale === 'bn' ? 'মূল্যায়ন সম্পন্ন হয়েছে!' : 'Grading saved successfully!'}</span>
+                    <span>
+                      {locale === 'bn' ? 'মূল্যায়ন সম্পন্ন হয়েছে!' : 'Grading saved successfully!'}
+                    </span>
                   </div>
                 )}
 
@@ -497,8 +530,12 @@ function AssignmentDetailPage({
                     data-testid="submit-grade-btn"
                   >
                     {hasScore
-                      ? (locale === 'bn' ? 'সংশোধন নিশ্চিত করুন' : 'Confirm Score Revision')
-                      : (locale === 'bn' ? 'গ্রেড নিশ্চিত করুন' : 'Submit Grade')}
+                      ? locale === 'bn'
+                        ? 'সংশোধন নিশ্চিত করুন'
+                        : 'Confirm Score Revision'
+                      : locale === 'bn'
+                        ? 'গ্রেড নিশ্চিত করুন'
+                        : 'Submit Grade'}
                   </Button>
                   {isEditingGrade && (
                     <Button

@@ -8,7 +8,6 @@ import {
   Clock,
   Edit3,
   FileText,
-  User,
   Award,
   AlertCircle,
   BookOpen,
@@ -186,9 +185,7 @@ function AssignmentSubmissionsPage({
           <BookOpen className="w-4 h-4" />
           <span>{locale === 'bn' ? 'জমা দেওয়া খাতা মূল্যায়ন' : 'Submission Evaluation'}</span>
         </div>
-        <h1 className="text-2xl md:text-3xl font-extrabold text-white">
-          {assignment.title}
-        </h1>
+        <h1 className="text-2xl md:text-3xl font-extrabold text-white">{assignment.title}</h1>
         <p className="text-xs text-slate-300">
           {locale === 'bn' ? 'সর্বোচ্চ স্কোর:' : 'Max Score:'}{' '}
           <strong className="text-emerald-400 font-bold">
@@ -237,7 +234,8 @@ function AssignmentSubmissionsPage({
 
             <CardContent className="p-0">
               <div className="p-4 bg-slate-800/80 rounded-2xl border border-slate-700/60 text-xs text-slate-200 whitespace-pre-wrap leading-relaxed min-h-[160px]">
-                {submission.submissionText || (locale === 'bn' ? 'কোনো লিখিত বিবরণ নেই।' : 'No written text provided.')}
+                {submission.submissionText ||
+                  (locale === 'bn' ? 'কোনো লিখিত বিবরণ নেই।' : 'No written text provided.')}
               </div>
             </CardContent>
           </Card>
@@ -251,16 +249,27 @@ function AssignmentSubmissionsPage({
               </CardTitle>
               <CardDescription className="text-xs text-slate-400">
                 {hasScore
-                  ? (locale === 'bn' ? 'বর্তমানে স্কোর দেওয়া আছে, প্রয়োজনে পরিবর্তন করুন।' : 'Score already recorded. Update if needed.')
-                  : (locale === 'bn' ? 'শিক্ষার্থীর খাতা দেখে স্কোর নির্ধারণ করুন।' : 'Review the solution and assign score.')}
+                  ? locale === 'bn'
+                    ? 'বর্তমানে স্কোর দেওয়া আছে, প্রয়োজনে পরিবর্তন করুন।'
+                    : 'Score already recorded. Update if needed.'
+                  : locale === 'bn'
+                    ? 'শিক্ষার্থীর খাতা দেখে স্কোর নির্ধারণ করুন।'
+                    : 'Review the solution and assign score.'}
               </CardDescription>
             </CardHeader>
 
             <CardContent className="p-0">
               {isTutor ? (
-                <form onSubmit={handleGrade} className="space-y-3" data-testid="submissions-grading-form">
+                <form
+                  onSubmit={handleGrade}
+                  className="space-y-3"
+                  data-testid="submissions-grading-form"
+                >
                   <div className="space-y-1">
-                    <label htmlFor="submission-score" className="text-xs font-semibold text-slate-300">
+                    <label
+                      htmlFor="submission-score"
+                      className="text-xs font-semibold text-slate-300"
+                    >
                       {locale === 'bn' ? 'প্রাপ্ত স্কোর (সর্বোচ্চ ' : 'Score (Max '}
                       {formatLocalizedNumber(assignment.maxScore, locale)}):
                     </label>
@@ -276,7 +285,10 @@ function AssignmentSubmissionsPage({
                   </div>
 
                   <div className="space-y-1">
-                    <label htmlFor="submission-feedback" className="text-xs font-semibold text-slate-300">
+                    <label
+                      htmlFor="submission-feedback"
+                      className="text-xs font-semibold text-slate-300"
+                    >
                       {locale === 'bn' ? 'পরামর্শ ও মন্তব্য:' : 'Feedback & Remarks:'}
                     </label>
                     <textarea
@@ -284,7 +296,11 @@ function AssignmentSubmissionsPage({
                       rows={3}
                       value={feedback}
                       onChange={(e) => setFeedback(e.target.value)}
-                      placeholder={locale === 'bn' ? 'শিক্ষার্থীর উন্নতির জন্য গঠনমূলক মতামত দিন...' : 'Write encouraging feedback...'}
+                      placeholder={
+                        locale === 'bn'
+                          ? 'শিক্ষার্থীর উন্নতির জন্য গঠনমূলক মতামত দিন...'
+                          : 'Write encouraging feedback...'
+                      }
                       className="w-full rounded-xl border border-slate-700 bg-slate-800 p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
                       data-testid="submissions-feedback-input"
                     />
@@ -292,14 +308,23 @@ function AssignmentSubmissionsPage({
 
                   {hasScore && (
                     <div className="space-y-1">
-                      <label htmlFor="submission-revision" className="text-xs font-semibold text-amber-300">
-                        {locale === 'bn' ? 'স্কোর পরিবর্তনের কারণ (বাধ্যতামূলক):' : 'Revision Reason (Required):'}
+                      <label
+                        htmlFor="submission-revision"
+                        className="text-xs font-semibold text-amber-300"
+                      >
+                        {locale === 'bn'
+                          ? 'স্কোর পরিবর্তনের কারণ (বাধ্যতামূলক):'
+                          : 'Revision Reason (Required):'}
                       </label>
                       <Input
                         id="submission-revision"
                         value={revisionReason}
                         onChange={(e) => setRevisionReason(e.target.value)}
-                        placeholder={locale === 'bn' ? 'স্কোর পরিবর্তনের সুনির্দিষ্ট কারণ লিখুন...' : 'Audit reason for modifying score...'}
+                        placeholder={
+                          locale === 'bn'
+                            ? 'স্কোর পরিবর্তনের সুনির্দিষ্ট কারণ লিখুন...'
+                            : 'Audit reason for modifying score...'
+                        }
                         data-testid="submissions-revision-reason-input"
                       />
                     </div>
@@ -313,7 +338,11 @@ function AssignmentSubmissionsPage({
                   {gradeSuccess && (
                     <div className="p-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-300 flex items-center gap-1.5">
                       <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
-                      <span>{locale === 'bn' ? 'মূল্যায়ন সফলভাবে সংরক্ষিত হয়েছে!' : 'Evaluation saved successfully!'}</span>
+                      <span>
+                        {locale === 'bn'
+                          ? 'মূল্যায়ন সফলভাবে সংরক্ষিত হয়েছে!'
+                          : 'Evaluation saved successfully!'}
+                      </span>
                     </div>
                   )}
 
@@ -326,8 +355,12 @@ function AssignmentSubmissionsPage({
                   >
                     <Edit3 className="w-3.5 h-3.5 mr-1.5" />
                     {hasScore
-                      ? (locale === 'bn' ? 'স্কোর সংশোধন সংরক্ষণ করুন' : 'Save Score Revision')
-                      : (locale === 'bn' ? 'মূল্যায়ন নিশ্চিত করুন' : 'Confirm Grade')}
+                      ? locale === 'bn'
+                        ? 'স্কোর সংশোধন সংরক্ষণ করুন'
+                        : 'Save Score Revision'
+                      : locale === 'bn'
+                        ? 'মূল্যায়ন নিশ্চিত করুন'
+                        : 'Confirm Grade'}
                   </Button>
                 </form>
               ) : (

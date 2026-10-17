@@ -84,7 +84,11 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
               'pointer-events-auto relative overflow-hidden flex flex-col rounded-2xl shadow-2xl transition-all duration-300',
               'bg-slate-900/95 dark:bg-[#04151b]/95 backdrop-blur-xl border border-slate-700/60 dark:border-cyan-500/30 text-white',
               'border-l-4 animate-in slide-in-from-bottom-5',
-              isUrgent ? 'border-l-rose-500 shadow-rose-950/30' : isHigh ? 'border-l-amber-500' : meta.accent.split(' ')[0],
+              isUrgent
+                ? 'border-l-rose-500 shadow-rose-950/30'
+                : isHigh
+                  ? 'border-l-amber-500'
+                  : meta.accent.split(' ')[0],
             )}
           >
             <div className="p-4 flex items-start gap-3.5">

@@ -150,8 +150,12 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
               </div>
               <p className="text-[11px] text-slate-400">
                 {isConnected
-                  ? (locale === 'bn' ? 'সার্ভারের সাথে সার্বক্ষণিক যুক্ত' : 'Real-time connected')
-                  : (locale === 'bn' ? 'সংযোগ বিচ্ছিন্ন' : 'Offline')}
+                  ? locale === 'bn'
+                    ? 'সার্ভারের সাথে সার্বক্ষণিক যুক্ত'
+                    : 'Real-time connected'
+                  : locale === 'bn'
+                    ? 'সংযোগ বিচ্ছিন্ন'
+                    : 'Offline'}
               </p>
             </div>
           </div>
@@ -161,7 +165,15 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
             <button
               type="button"
               onClick={toggleSound}
-              title={soundEnabled ? (locale === 'bn' ? 'সাউন্ড সক্রিয় (মিউট করতে ক্লিক করুন)' : 'Sound enabled') : (locale === 'bn' ? 'সাউন্ড বন্ধ' : 'Sound muted')}
+              title={
+                soundEnabled
+                  ? locale === 'bn'
+                    ? 'সাউন্ড সক্রিয় (মিউট করতে ক্লিক করুন)'
+                    : 'Sound enabled'
+                  : locale === 'bn'
+                    ? 'সাউন্ড বন্ধ'
+                    : 'Sound muted'
+              }
               className={cn(
                 'p-2 rounded-xl border transition-all text-xs flex items-center gap-1.5',
                 soundEnabled
@@ -313,9 +325,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
                   key={item.id}
                   className={cn(
                     'flex items-start gap-3 p-4 transition-colors relative group',
-                    !item.isRead
-                      ? 'bg-cyan-500/5 hover:bg-cyan-500/10'
-                      : 'hover:bg-white/5',
+                    !item.isRead ? 'bg-cyan-500/5 hover:bg-cyan-500/10' : 'hover:bg-white/5',
                   )}
                 >
                   <div
@@ -347,9 +357,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
                     <h4 className="text-sm font-semibold text-white mt-1 leading-snug">
                       {item.title}
                     </h4>
-                    <p className="mt-1 text-xs text-slate-300 leading-relaxed">
-                      {item.body}
-                    </p>
+                    <p className="mt-1 text-xs text-slate-300 leading-relaxed">{item.body}</p>
 
                     <div className="mt-2.5 flex items-center justify-between pt-1">
                       {item.navigationTarget ? (

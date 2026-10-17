@@ -307,11 +307,7 @@ export class LearningProgressService {
       throw new NotFoundException(`Progress report ${reportId} not found`);
     }
 
-    await this.access.assertCanAccessStudentRecords(
-      user,
-      report.studentUserId,
-      report.bookingId,
-    );
+    await this.access.assertCanAccessStudentRecords(user, report.studentUserId, report.bookingId);
 
     return report;
   }

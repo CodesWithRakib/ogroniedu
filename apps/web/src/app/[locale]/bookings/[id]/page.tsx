@@ -2,13 +2,11 @@
 
 import React, { use, useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
 import {
   Calendar,
   Clock,
   ShieldCheck,
   Video,
-  MapPin,
   CheckCircle2,
   XCircle,
   AlertTriangle,
@@ -18,9 +16,7 @@ import {
   CreditCard,
   User,
   GraduationCap,
-  MessageSquare,
   Sparkles,
-  Share2,
   Star,
 } from 'lucide-react';
 import { useAppSelector } from '@/store';
@@ -42,11 +38,26 @@ interface BookingDetailPageProps {
   params: Promise<{ locale: string; id: string }>;
 }
 
-const WEEKDAY_NAMES_BN = ['রবিবার', 'সোমবার', 'মঙ্গলবার', 'বুধবার', 'বৃহস্পতিবার', 'শুক্রবার', 'শনিবার'];
-const WEEKDAY_NAMES_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+const WEEKDAY_NAMES_BN = [
+  'রবিবার',
+  'সোমবার',
+  'মঙ্গলবার',
+  'বুধবার',
+  'বৃহস্পতিবার',
+  'শুক্রবার',
+  'শনিবার',
+];
+const WEEKDAY_NAMES_EN = [
+  'Sunday',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+];
 
 export default function BookingDetailPage({ params }: BookingDetailPageProps) {
-  const router = useRouter();
   const resolved = use(params);
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   const isBn = locale === 'bn';
@@ -56,10 +67,12 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
   const isTutor = currentUser?.roles?.includes('tutor');
   const isGuardian = currentUser?.roles?.includes('guardian');
 
-  const { data: bookingData, isLoading: loadingBooking, refetch: refetchBooking } =
-    useGetBookingRequestByIdQuery(bookingId);
-  const { data: sessionsData, isLoading: loadingSessions, refetch: refetchSessions } =
-    useGetSessionsQuery({ bookingId });
+  const {
+    data: bookingData,
+    isLoading: loadingBooking,
+    refetch: refetchBooking,
+  } = useGetBookingRequestByIdQuery(bookingId);
+  const { data: sessionsData } = useGetSessionsQuery({ bookingId });
 
   const [respondBooking, { isLoading: responding }] = useRespondBookingRequestMutation();
   const [withdrawBooking, { isLoading: withdrawing }] = useWithdrawBookingRequestMutation();
@@ -314,7 +327,8 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
               <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
                   <User className="w-3.5 h-3.5 text-cyan-400" />
-                  {isBn ? 'শিক্ষক:' : 'Tutor:'} <strong className="text-foreground">{tutorName}</strong>
+                  {isBn ? 'শিক্ষক:' : 'Tutor:'}{' '}
+                  <strong className="text-foreground">{tutorName}</strong>
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1.5">
@@ -510,8 +524,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
               {/* Instructions / Learning Goals */}
               {Boolean(
                 booking?.messageNotes ||
-                  (booking?.serviceAgreementSnapshot as Record<string, unknown> | undefined)
-                    ?.message,
+                (booking?.serviceAgreementSnapshot as Record<string, unknown> | undefined)?.message,
               ) && (
                 <div className="rounded-2xl border border-border/60 bg-surface/60 p-4 space-y-1.5">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">

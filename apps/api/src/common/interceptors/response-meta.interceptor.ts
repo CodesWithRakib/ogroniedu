@@ -33,9 +33,7 @@ export class ResponseMetaInterceptor implements NestInterceptor {
     const response = ctx.getResponse<Response>();
 
     const requestId =
-      request.requestId ||
-      (request.headers['x-request-id'] as string) ||
-      randomUUID();
+      request.requestId || (request.headers['x-request-id'] as string) || randomUUID();
 
     if (!request.requestId) {
       request.requestId = requestId;
@@ -124,4 +122,3 @@ export class ResponseMetaInterceptor implements NestInterceptor {
     );
   }
 }
-

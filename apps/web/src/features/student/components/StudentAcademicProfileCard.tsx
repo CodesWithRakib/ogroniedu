@@ -8,11 +8,13 @@ import {
   Target,
   Edit3,
   ShieldCheck,
-  CheckCircle2,
   X,
   Sparkles,
 } from 'lucide-react';
-import { useUpsertStudentProfileMutation, type StudentProfileData } from '@/store/services/users-api';
+import {
+  useUpsertStudentProfileMutation,
+  type StudentProfileData,
+} from '@/store/services/users-api';
 import { useGetEducationLevelsQuery, useGetCurriculaQuery } from '@/store/services/taxonomy-api';
 import { useAppDispatch } from '@/store';
 import { enqueueToast } from '@/store/slices/ui-slice';
@@ -292,7 +294,9 @@ export function StudentAcademicProfileCard({
                     onChange={(e) => setEducationLevelId(e.target.value)}
                     className="w-full h-10 px-3 rounded-xl bg-surface border border-border text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-primary/40"
                   >
-                    <option value="">{isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}</option>
+                    <option value="">
+                      {isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
+                    </option>
                     {educationLevels.map((lvl) => (
                       <option key={lvl.id} value={lvl.id}>
                         {isBn ? lvl.nameBn : lvl.nameEn}
@@ -310,7 +314,9 @@ export function StudentAcademicProfileCard({
                     onChange={(e) => setCurriculumId(e.target.value)}
                     className="w-full h-10 px-3 rounded-xl bg-surface border border-border text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-primary/40"
                   >
-                    <option value="">{isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}</option>
+                    <option value="">
+                      {isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
+                    </option>
                     {curricula.map((cur) => (
                       <option key={cur.id} value={cur.id}>
                         {isBn ? cur.nameBn : cur.nameEn}
@@ -329,7 +335,9 @@ export function StudentAcademicProfileCard({
                   value={stream}
                   onChange={(e) => setStream(e.target.value)}
                   placeholder={
-                    isBn ? 'উদা: বিজ্ঞান (Science) / ব্যবসায় শিক্ষা' : 'e.g. Science / Business Studies'
+                    isBn
+                      ? 'উদা: বিজ্ঞান (Science) / ব্যবসায় শিক্ষা'
+                      : 'e.g. Science / Business Studies'
                   }
                   className="w-full h-10 px-3.5 rounded-xl bg-surface border border-border text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-primary/40"
                 />

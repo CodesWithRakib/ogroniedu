@@ -1,8 +1,7 @@
 'use client';
 
 import React, { use } from 'react';
-import Link from 'next/link';
-import { ArrowLeft, AlertCircle } from 'lucide-react';
+import { AlertCircle } from 'lucide-react';
 import { RequireAuth } from '@/components/auth/RequireAuth';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { LoadingSpinner, EmptyState } from '@/components/ui';
@@ -18,11 +17,7 @@ interface ClassroomPageParams {
   id: string;
 }
 
-export default function ClassroomPageRoute({
-  params,
-}: {
-  params: Promise<ClassroomPageParams>;
-}) {
+export default function ClassroomPageRoute({ params }: { params: Promise<ClassroomPageParams> }) {
   const resolved = use(params);
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   const sessionId = resolved.id;
@@ -36,13 +31,7 @@ export default function ClassroomPageRoute({
   );
 }
 
-function ClassroomPageContent({
-  locale,
-  sessionId,
-}: {
-  locale: Locale;
-  sessionId: string;
-}) {
+function ClassroomPageContent({ locale, sessionId }: { locale: Locale; sessionId: string }) {
   const currentUser = useAppSelector((s) => s.auth.user);
   const isTutor = currentUser?.roles?.includes('tutor');
 
@@ -86,11 +75,5 @@ function ClassroomPageContent({
     );
   }
 
-  return (
-    <ClassroomWorkspace
-      session={session}
-      locale={locale}
-      isTutor={Boolean(isTutor)}
-    />
-  );
+  return <ClassroomWorkspace session={session} locale={locale} isTutor={Boolean(isTutor)} />;
 }

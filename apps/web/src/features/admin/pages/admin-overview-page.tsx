@@ -99,7 +99,9 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
             </div>
             <div className="text-left md:text-right bg-surface/60 border border-border/60 p-3 rounded-2xl">
               <p className="text-xs text-muted-foreground">Authenticated Operator</p>
-              <p className="text-sm font-semibold text-foreground">{user?.displayName || 'Admin'}</p>
+              <p className="text-sm font-semibold text-foreground">
+                {user?.displayName || 'Admin'}
+              </p>
             </div>
           </div>
 
@@ -126,9 +128,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-amber-500/50 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
-                <p className="text-xs text-muted-foreground font-medium">
-                  {t('replacementQueue')}
-                </p>
+                <p className="text-xs text-muted-foreground font-medium">{t('replacementQueue')}</p>
                 <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-amber-400 transition-transform group-hover:translate-x-0.5" />
               </div>
               <p className="text-2xl font-black text-amber-400 mt-2 font-mono">

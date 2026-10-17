@@ -23,14 +23,7 @@ import {
 import { Button } from '@/components/ui';
 
 export type WhiteboardTool =
-  | 'pen'
-  | 'highlighter'
-  | 'eraser'
-  | 'rect'
-  | 'circle'
-  | 'line'
-  | 'arrow'
-  | 'text';
+  'pen' | 'highlighter' | 'eraser' | 'rect' | 'circle' | 'line' | 'arrow' | 'text';
 
 export type BackgroundMode = 'blackboard' | 'grid' | 'ruled';
 
@@ -230,7 +223,9 @@ export function InteractiveWhiteboard({
   };
 
   // Coordinates helper
-  const getCoordinates = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const getCoordinates = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     const canvas = canvasRef.current;
     if (!canvas) return { x: 0, y: 0 };
     const rect = canvas.getBoundingClientRect();
@@ -271,7 +266,13 @@ export function InteractiveWhiteboard({
   };
 
   // Draw Arrow Helper
-  const drawArrow = (ctx: CanvasRenderingContext2D, fromX: number, fromY: number, toX: number, toY: number) => {
+  const drawArrow = (
+    ctx: CanvasRenderingContext2D,
+    fromX: number,
+    fromY: number,
+    toX: number,
+    toY: number,
+  ) => {
     const headlen = 14;
     const angle = Math.atan2(toY - fromY, toX - fromX);
 
@@ -282,14 +283,22 @@ export function InteractiveWhiteboard({
 
     ctx.beginPath();
     ctx.moveTo(toX, toY);
-    ctx.lineTo(toX - headlen * Math.cos(angle - Math.PI / 6), toY - headlen * Math.sin(angle - Math.PI / 6));
-    ctx.lineTo(toX - headlen * Math.cos(angle + Math.PI / 6), toY - headlen * Math.sin(angle + Math.PI / 6));
+    ctx.lineTo(
+      toX - headlen * Math.cos(angle - Math.PI / 6),
+      toY - headlen * Math.sin(angle - Math.PI / 6),
+    );
+    ctx.lineTo(
+      toX - headlen * Math.cos(angle + Math.PI / 6),
+      toY - headlen * Math.sin(angle + Math.PI / 6),
+    );
     ctx.closePath();
     ctx.fill();
   };
 
   // Start Drawing
-  const handleStart = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const handleStart = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     if (activeTool === 'text') {
       const pos = getCoordinates(e);
       setTextInputPos(pos);
@@ -318,7 +327,9 @@ export function InteractiveWhiteboard({
   };
 
   // Move Drawing
-  const handleMove = (e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>) => {
+  const handleMove = (
+    e: React.MouseEvent<HTMLCanvasElement> | React.TouchEvent<HTMLCanvasElement>,
+  ) => {
     if (!isDrawingRef.current) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
@@ -602,7 +613,9 @@ export function InteractiveWhiteboard({
               data-testid={`wb-color-${color.name.toLowerCase()}`}
             >
               {strokeColor === color.value && (
-                <Check className={`w-3 h-3 ${color.value === '#FFFFFF' ? 'text-black' : 'text-white'}`} />
+                <Check
+                  className={`w-3 h-3 ${color.value === '#FFFFFF' ? 'text-black' : 'text-white'}`}
+                />
               )}
             </button>
           ))}
