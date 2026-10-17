@@ -5,12 +5,13 @@ import Link from 'next/link';
 import { cn } from 'cn';
 import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
-import type { NavItem } from '@/lib/navigation';
-import type { AuthUser } from '@/store/slices/auth-slice';
+import { navSectionsForRole, type NavItem, type NavSection } from '@/lib/navigation';
+import type { AuthUser, UserRole } from '@/store/slices/auth-slice';
 import { SidebarPromoCard } from '@/components/dashboard/SidebarPromoCard';
 
 export interface DashboardSidebarProps {
   items: NavItem[];
+  sections?: NavSection[];
   locale: Locale;
   isBn: boolean;
   pathname: string | null;
@@ -31,12 +32,18 @@ const ROLE_HEADER_TITLES: Record<string, { bn: string; en: string }> = {
 
 export function DashboardSidebar({
   items,
+  sections,
   locale,
   isBn,
   pathname,
   roleKey,
 }: DashboardSidebarProps) {
   const roleTitle = ROLE_HEADER_TITLES[roleKey] || ROLE_HEADER_TITLES.student;
+  const activeSections: NavSection[] =
+    sections ??
+    (items && items.length > 0 && items.length <= 2
+      ? [{ id: 'menu', titleBn: 'মেনু', titleEn: 'Menu', items }]
+      : navSectionsForRole(roleKey as UserRole));
 
   return (
     <aside
@@ -98,38 +105,55 @@ export function DashboardSidebar({
           </div>
         </div>
 
-        {/* Main Navigation Items (No active ball as requested) */}
-        <nav className="space-y-1 px-0.5" aria-label="Sidebar navigation">
-          {items.map((item) => {
-            const Icon = item.icon;
-            const targetHref = withLocale(item.href, locale);
-            const active =
-              pathname === targetHref ||
-              (item.href !== '/dashboard' && pathname?.startsWith(targetHref));
+        {/* Categorized Navigation Sections (Matching User Hierarchy) */}
+        <nav className="space-y-4 px-0.5" aria-label="Sidebar navigation">
+          {activeSections.map((section) => (
+            <div key={section.id} className="space-y-1">
+              <div className="px-3 pt-1 text-[10px] font-black uppercase tracking-wider text-muted-foreground/70 select-none">
+                {isBn ? section.titleBn : section.titleEn}
+              </div>
+              <div className="space-y-0.5">
+                {section.items.map((item) => {
+                  const Icon = item.icon;
+                  const targetHref = withLocale(item.href, locale);
+                  const active =
+                    pathname === targetHref ||
+                    (item.href !== '/dashboard' &&
+                      item.href !== '/dashboard/admin' &&
+                      item.href !== '/dashboard/student' &&
+                      item.href !== '/dashboard/tutor' &&
+                      item.href !== '/dashboard/guardian' &&
+                      pathname?.startsWith(targetHref));
 
-            return (
-              <Link
-                key={item.href}
-                href={targetHref}
-                className={cn(
-                  'group flex items-center px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-150',
-                  active
-                    ? 'bg-primary-soft text-primary font-bold shadow-2xs'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover',
-                )}
-              >
-                <div className="flex items-center gap-3 min-w-0">
-                  <Icon
-                    className={cn(
-                      'h-4 w-4 shrink-0 transition-transform group-hover:scale-105',
-                      active ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground',
-                    )}
-                  />
-                  <span className="truncate">{isBn ? item.labelBn : item.labelEn}</span>
-                </div>
-              </Link>
-            );
-          })}
+                  return (
+                    <Link
+                      key={item.href}
+                      href={targetHref}
+                      data-testid={item.testId}
+                      className={cn(
+                        'group flex items-center px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150',
+                        active
+                          ? 'bg-primary-soft text-primary font-bold shadow-2xs'
+                          : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover',
+                      )}
+                    >
+                      <div className="flex items-center gap-3 min-w-0">
+                        <Icon
+                          className={cn(
+                            'h-4 w-4 shrink-0 transition-transform group-hover:scale-105',
+                            active
+                              ? 'text-primary'
+                              : 'text-muted-foreground group-hover:text-foreground',
+                          )}
+                        />
+                        <span className="truncate">{isBn ? item.labelBn : item.labelEn}</span>
+                      </div>
+                    </Link>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
         </nav>
       </div>
 

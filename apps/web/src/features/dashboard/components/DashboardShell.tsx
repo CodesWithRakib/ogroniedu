@@ -7,7 +7,7 @@ import { withLocale } from '@/lib/auth';
 import { primaryRole, logout, type UserRole } from '@/store/slices/auth-slice';
 import { useLogoutMutation } from '@/store/services/auth-api';
 import type { Locale } from '@/lib/i18n';
-import { navForRole, ROLE_PRESETS } from '@/lib/navigation';
+import { navForRole, navSectionsForRole, ROLE_PRESETS } from '@/lib/navigation';
 import { DashboardSidebar } from './DashboardSidebar';
 import { DashboardTopbar } from './DashboardTopbar';
 import { DashboardMobileNav } from '@/components/dashboard/DashboardMobileNav';
@@ -56,6 +56,7 @@ export function DashboardShell({
       ? roleOverride
       : primaryRole(authUser?.roles);
   const items = navForRole(activeRole);
+  const sections = navSectionsForRole(activeRole);
   const isBn = locale === 'bn';
 
   const roleKey = activeRole === 'super_admin' ? 'admin' : (activeRole ?? 'student');
@@ -116,6 +117,7 @@ export function DashboardShell({
         {/* 1. Desktop Fixed Sidebar */}
         <DashboardSidebar
           items={items}
+          sections={sections}
           locale={locale}
           isBn={isBn}
           pathname={pathname}
@@ -127,6 +129,7 @@ export function DashboardShell({
         {/* 2. Mobile Drawer Navigation */}
         <DashboardMobileNav
           items={items}
+          sections={sections}
           locale={locale}
           isBn={isBn}
           pathname={pathname}

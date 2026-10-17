@@ -7,6 +7,22 @@ export * from './pages/admin-bookings-page';
 export * from './pages/admin-audit-logs-page';
 export * from './pages/admin-settings-page';
 export * from './pages/admin-taxonomy-page';
+
+// Modular Settings Hub & Sub-pages
+export * from './pages/admin-settings-hub-page';
+export * from './pages/settings/admin-settings-flags-page';
+export * from './pages/settings/admin-settings-general-page';
+export * from './pages/settings/admin-settings-finance-page';
+export * from './pages/settings/admin-settings-security-page';
+export * from './pages/settings/admin-settings-notifications-page';
+
+// Modular Users Hub & Sub-pages
+export * from './pages/admin-users-hub-page';
+export * from './pages/users/admin-users-admins-page';
+export * from './pages/users/admin-users-directory-page';
+export * from './pages/users/admin-users-tutors-page';
+export * from './pages/users/admin-users-students-page';
+
 export * from './types/admin.types';
 export * from './utils/admin-mappers';
 export * from './hooks/use-admin-dashboard';

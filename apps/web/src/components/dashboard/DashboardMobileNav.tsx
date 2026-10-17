@@ -5,10 +5,11 @@ import { GraduationCap, LogOut, X } from 'lucide-react';
 import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
-import { isNavActive, type NavItem, type RoleConfig } from '@/lib/navigation';
+import { isNavActive, type NavItem, type NavSection, type RoleConfig } from '@/lib/navigation';
 
 export interface DashboardMobileNavProps {
   items: NavItem[];
+  sections?: NavSection[];
   locale: Locale;
   isBn: boolean;
   pathname: string | null;
@@ -21,6 +22,7 @@ export interface DashboardMobileNavProps {
 /** Mobile drawer sidebar + bottom tab bar (first 5 items). */
 export function DashboardMobileNav({
   items,
+  sections,
   locale,
   isBn,
   pathname,
@@ -64,29 +66,65 @@ export function DashboardMobileNav({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-4 space-y-1">
-              {items.map((item) => {
-                const href = withLocale(item.href, locale);
-                const active = isNavActive(pathname, href);
-                const Icon = item.icon;
+            <div className="flex-1 overflow-y-auto py-4 space-y-4">
+              {sections && sections.length > 0 ? (
+                sections.map((section) => (
+                  <div key={section.id} className="space-y-1">
+                    <div className="px-3 pt-1 text-[10px] font-black uppercase tracking-wider text-muted-foreground/70 select-none">
+                      {isBn ? section.titleBn : section.titleEn}
+                    </div>
+                    <div className="space-y-0.5">
+                      {section.items.map((item) => {
+                        const href = withLocale(item.href, locale);
+                        const active = isNavActive(pathname, href);
+                        const Icon = item.icon;
 
-                return (
-                  <Link
-                    key={item.testId}
-                    href={href}
-                    onClick={onCloseDrawer}
-                    className={cn(
-                      'flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors',
-                      active
-                        ? 'bg-primary text-primary-foreground shadow-xs'
-                        : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground',
-                    )}
-                  >
-                    <Icon className="h-4 w-4 shrink-0" />
-                    <span>{isBn ? item.labelBn : item.labelEn}</span>
-                  </Link>
-                );
-              })}
+                        return (
+                          <Link
+                            key={item.testId}
+                            href={href}
+                            onClick={onCloseDrawer}
+                            className={cn(
+                              'flex items-center gap-3 rounded-xl px-3 py-2 text-xs font-semibold transition-colors',
+                              active
+                                ? 'bg-primary text-primary-foreground shadow-xs'
+                                : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground',
+                            )}
+                          >
+                            <Icon className="h-4 w-4 shrink-0" />
+                            <span>{isBn ? item.labelBn : item.labelEn}</span>
+                          </Link>
+                        );
+                      })}
+                    </div>
+                  </div>
+                ))
+              ) : (
+                <div className="space-y-1">
+                  {items.map((item) => {
+                    const href = withLocale(item.href, locale);
+                    const active = isNavActive(pathname, href);
+                    const Icon = item.icon;
+
+                    return (
+                      <Link
+                        key={item.testId}
+                        href={href}
+                        onClick={onCloseDrawer}
+                        className={cn(
+                          'flex items-center gap-3 rounded-xl px-3 py-2.5 text-xs font-semibold transition-colors',
+                          active
+                            ? 'bg-primary text-primary-foreground shadow-xs'
+                            : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground',
+                        )}
+                      >
+                        <Icon className="h-4 w-4 shrink-0" />
+                        <span>{isBn ? item.labelBn : item.labelEn}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
             </div>
 
             <div className="pt-3 border-t border-border flex items-center justify-between">

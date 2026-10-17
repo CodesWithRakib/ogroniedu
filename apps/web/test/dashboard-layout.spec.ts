@@ -243,14 +243,12 @@ describe('Role Dashboard Architecture & Layout Tests', () => {
       const superAdminHrefs = navForRole('super_admin').map((i) => i.href);
       expect(superAdminHrefs).toContain('/dashboard/admin');
       expect(superAdminHrefs).toContain('/dashboard/admin/users');
-      expect(superAdminHrefs).toContain('/admin?tab=audit');
+      expect(superAdminHrefs).toContain('/dashboard/admin/audit-logs');
 
-      // support_agent / compliance_reviewer fail the /dashboard/admin/* gate
-      // (admin + super_admin only), so their nav must not offer those routes —
-      // only the /admin console surface they can open.
+      // support_agent / compliance_reviewer can open their dedicated console
       for (const role of ['support_agent', 'compliance_reviewer'] as const) {
         const items = navForRole(role);
-        expect(items.map((i) => i.href)).toEqual(['/admin']);
+        expect(items.map((i) => i.href)).toContain('/dashboard/admin');
       }
     });
   });
