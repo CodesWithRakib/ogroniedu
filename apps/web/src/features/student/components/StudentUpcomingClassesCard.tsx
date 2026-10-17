@@ -30,11 +30,11 @@ export function StudentUpcomingClassesCard({
   const isBn = locale === 'bn';
 
   return (
-    <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+    <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3 border-b border-border/50">
+      <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
         <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-primary/10 border border-primary/40 text-primary-soft-foreground flex items-center justify-center shrink-0">
+          <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
             <Calendar className="h-5 w-5" />
           </div>
           <div>
@@ -49,7 +49,7 @@ export function StudentUpcomingClassesCard({
 
         <Link
           href={withLocale('/dashboard/student/sessions', locale)}
-          className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+          className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
         >
           <span>{isBn ? 'সব দেখুন' : 'Full Schedule'}</span>
           <ArrowRight className="h-3.5 w-3.5" />
@@ -64,7 +64,7 @@ export function StudentUpcomingClassesCard({
           </div>
         ) : sessions.length === 0 ? (
           <div className="py-8 px-4 text-center">
-            <div className="h-12 w-12 rounded-2xl bg-surface/80 border border-border/60 mx-auto flex items-center justify-center text-muted-foreground mb-3">
+            <div className="h-12 w-12 rounded-xl bg-muted/40 border border-border/60 mx-auto flex items-center justify-center text-muted-foreground mb-3">
               <Calendar className="h-6 w-6" />
             </div>
             <p className="text-xs font-bold text-foreground">
@@ -77,7 +77,7 @@ export function StudentUpcomingClassesCard({
             </p>
             <Link
               href={withLocale('/tutors', locale)}
-              className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-bold text-xs shadow-xs hover:bg-primary-hover transition-colors"
+              className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground font-semibold text-xs shadow-xs hover:bg-primary-hover transition-colors"
             >
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
               <ArrowRight className="h-3.5 w-3.5" />
@@ -90,18 +90,18 @@ export function StudentUpcomingClassesCard({
               return (
                 <div
                   key={s.id}
-                  className={`p-3.5 rounded-2xl border transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
+                  className={`p-3.5 rounded-xl border transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                     isLive
-                      ? 'bg-primary/5 border-primary/40'
-                      : 'bg-surface/50 border-border/50 hover:bg-surface/80'
+                      ? 'bg-primary-soft/40 border-primary/30'
+                      : 'bg-muted/20 border-border/60 hover:bg-muted/30'
                   }`}
                 >
                   <div className="flex items-start gap-3 min-w-0">
                     <div
                       className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs ${
                         isLive
-                          ? 'bg-primary/20 text-success-soft-foreground border border-primary/40 animate-pulse'
-                          : 'bg-primary/10 text-primary border border-primary/20'
+                          ? 'bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 animate-pulse'
+                          : 'bg-primary-soft text-primary'
                       }`}
                     >
                       {isLive ? <Video className="h-5 w-5" /> : <BookOpen className="h-5 w-5" />}
@@ -113,10 +113,10 @@ export function StudentUpcomingClassesCard({
                           {s.subjectName}
                         </h4>
                         <span
-                          className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
+                          className={`px-2 py-0.5 text-[10px] font-semibold rounded-full border ${
                             isLive
-                              ? 'bg-primary/20 text-success-soft-foreground border border-primary/40'
-                              : 'bg-primary/10 text-primary border border-primary/20'
+                              ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20'
+                              : 'bg-primary-soft text-primary border-primary/20'
                           }`}
                         >
                           {isLive
@@ -131,11 +131,11 @@ export function StudentUpcomingClassesCard({
 
                       <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
                         <span className="flex items-center gap-1 font-medium">
-                          <UserCheck className="h-3.5 w-3.5 text-primary-soft-foreground" />
+                          <UserCheck className="h-3.5 w-3.5 text-muted-foreground" />
                           <span>{s.tutorName}</span>
                         </span>
                         <span className="flex items-center gap-1 font-medium">
-                          <Clock className="h-3.5 w-3.5 text-warning-soft-foreground" />
+                          <Clock className="h-3.5 w-3.5 text-muted-foreground" />
                           <span>{formatDateTime(s.startsAt, locale)}</span>
                         </span>
                       </div>
@@ -149,7 +149,7 @@ export function StudentUpcomingClassesCard({
                         href={s.meetingUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-xs shadow-xs transition-transform active:scale-95"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs shadow-xs transition-colors"
                       >
                         <Video className="h-3.5 w-3.5" />
                         <span>{isBn ? 'ক্লাসে যোগ দিন' : 'Join Class'}</span>

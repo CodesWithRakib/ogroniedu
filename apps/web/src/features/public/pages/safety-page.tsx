@@ -58,8 +58,8 @@ export function SafetyPage({ locale }: { locale: Locale }) {
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <Badge
-          variant="outline"
-          className="text-primary border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
+          variant="secondary"
+          className="text-primary border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full"
         >
           {p.badge}
         </Badge>
@@ -78,13 +78,13 @@ export function SafetyPage({ locale }: { locale: Locale }) {
           return (
             <Card
               key={idx}
-              className="bg-card/85 backdrop-blur-sm border-border/80 rounded-3xl shadow-sm hover:shadow-xl hover:border-primary/40 transition-all relative overflow-hidden"
+              className="bg-card border-border/80 rounded-2xl shadow-xs hover:shadow-card hover:border-primary/40 transition-all relative overflow-hidden"
             >
               <CardHeader className="flex flex-row items-start justify-between gap-4 p-6 pb-2">
-                <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/20">
+                <div className="h-12 w-12 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
                   <Icon className="h-6 w-6" />
                 </div>
-                <Badge variant="outline" className="text-xs rounded-full px-2.5 py-0.5">
+                <Badge variant="outline" className="text-xs rounded-full px-2.5 py-0.5 border-border/80 text-muted-foreground">
                   {pillar.badge}
                 </Badge>
               </CardHeader>
@@ -102,7 +102,7 @@ export function SafetyPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Emergency Reporting Guidance */}
-      <div className="rounded-3xl border border-destructive/30 bg-destructive/5 p-6 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl shadow-destructive/5">
+      <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
         <div className="space-y-2 text-center sm:text-left">
           <div className="flex items-center justify-center sm:justify-start gap-2 text-destructive font-bold text-sm">
             <ShieldAlert className="h-5 w-5" />
@@ -116,15 +116,16 @@ export function SafetyPage({ locale }: { locale: Locale }) {
               : 'If you encounter any inappropriate conduct or safety violation, file a report immediately. Our Dhaka compliance team prioritizes incident reviews.'}
           </p>
         </div>
-        <Link href={`/${locale}/contact`}>
-          <Button
-            variant="outline"
-            className="rounded-full px-6 font-bold font-bengali whitespace-nowrap border-destructive/40 text-destructive hover:bg-destructive/10"
-          >
-            {dict.nav.contact}
-            <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
-        </Link>
+        <Button
+          asChild
+          variant="outline"
+          className="rounded-full px-6 font-semibold font-bengali whitespace-nowrap border-destructive/30 text-destructive hover:bg-destructive/10"
+        >
+          <Link href={`/${locale}/contact`} className="flex items-center gap-2">
+            <span>{dict.nav.contact}</span>
+            <ArrowRight className="h-4 w-4 ml-1" />
+          </Link>
+        </Button>
       </div>
     </div>
   );

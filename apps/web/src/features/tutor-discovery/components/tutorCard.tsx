@@ -43,11 +43,11 @@ export function TutorCard({
 
   return (
     <div
-      className="group relative flex flex-col justify-between rounded-2xl bg-card/90 hover:bg-card border border-border hover:border-brand/60 shadow-card hover:shadow-sm transition-all duration-300 overflow-hidden"
+      className="group relative flex flex-col justify-between rounded-2xl bg-card border border-border/80 hover:border-primary/40 shadow-xs hover:shadow-card transition-all duration-300 overflow-hidden"
       data-testid={`tutor-card-${tutor.id}`}
     >
       {/* Subtle Glowing Top Edge */}
-      <div className="absolute top-0 inset-x-0 h-1 bg-gradient-to-r from-transparent via-brand/50 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+      <div className="absolute top-0 inset-x-0 h-0.5 bg-gradient-to-r from-transparent via-primary/30 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
 
       {/* Card Header & Bio */}
       <div className="p-5 space-y-3.5">
@@ -59,10 +59,10 @@ export function TutorCard({
           >
             {/* Avatar with status indicator */}
             <div className="relative shrink-0">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-brand-soft text-primary font-bold text-sm ring-2 ring-brand/30 group-hover:ring-brand/60 transition-all shadow-inner">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-soft text-primary font-bold text-sm ring-1 ring-border">
                 {initials}
               </div>
-              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-brand ring-2 ring-border" />
+              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-emerald-500 ring-2 ring-card" />
             </div>
 
             {/* Name, Headline & Rating */}
@@ -73,13 +73,13 @@ export function TutorCard({
                 </h3>
               </div>
               {tutor.headline && (
-                <p className="text-xs font-medium text-primary-soft-foreground line-clamp-1 mt-0.5">
+                <p className="text-xs font-medium text-muted-foreground line-clamp-1 mt-0.5">
                   {tutor.headline}
                 </p>
               )}
               {/* Star Rating Demonstration */}
-              <div className="flex items-center gap-1 mt-1 text-[11px] text-warning-soft-foreground font-semibold">
-                <Star className="h-3 w-3 fill-warning" />
+              <div className="flex items-center gap-1 mt-1 text-[11px] text-amber-600 font-semibold">
+                <Star className="h-3 w-3 fill-amber-500 text-amber-500" />
                 <span className="text-foreground">4.9</span>
                 <span className="text-muted-foreground font-normal">
                   ({locale === 'bn' ? '৪৮টি রিভিউ' : '48 reviews'})
@@ -92,7 +92,7 @@ export function TutorCard({
           <button
             type="button"
             onClick={() => onShowScore(tutor)}
-            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-bold bg-brand-soft text-primary border border-border hover:bg-brand-soft transition-all cursor-pointer shadow-sm shrink-0 active:scale-95"
+            className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-primary-soft text-primary border border-border/80 hover:border-primary/40 transition-colors cursor-pointer shadow-xs shrink-0"
             title={
               locale === 'bn'
                 ? 'ম্যাচ স্কোরের ব্যাখ্যা দেখুন'
@@ -109,19 +109,19 @@ export function TutorCard({
 
         {/* Verification Badges */}
         <div className="flex flex-wrap gap-1.5 pt-0.5">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-primary/15 text-success-soft-foreground border border-primary/40">
-            <CheckCircle2 className="w-3 h-3 text-success-soft-foreground" />
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-500/10 text-emerald-700 border border-emerald-500/20">
+            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
             {dict.tutor?.badgeVerifiedTutor || 'Verified Tutor'}
           </span>
           {tutor.badges.includes('verified_identity') && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-brand-soft text-primary border border-border">
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-primary-soft text-primary border border-border/80">
               <Award className="w-3 h-3 text-primary" />
               {dict.tutor?.badgeVerifiedIdentity || 'NID Verified'}
             </span>
           )}
           {tutor.badges.includes('verified_degree') && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-interactive/10 text-info-soft-foreground border border-info/40">
-              <GraduationCap className="w-3 h-3 text-info-soft-foreground" />
+            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-blue-500/10 text-blue-700 border border-blue-500/20">
+              <GraduationCap className="w-3 h-3 text-blue-600" />
               {dict.tutor?.badgeVerifiedAcademic || 'Degree Verified'}
             </span>
           )}
@@ -133,15 +133,15 @@ export function TutorCard({
         )}
 
         {/* Teaching Subjects Box */}
-        <div className="space-y-1.5 bg-card/90 p-3 rounded-xl border border-border">
-          <span className="text-[11px] font-bold text-primary-soft-foreground block uppercase tracking-wider">
+        <div className="space-y-1.5 bg-muted/20 p-3 rounded-xl border border-border/60">
+          <span className="text-[10px] font-bold text-muted-foreground block uppercase tracking-wider">
             {dict.tutor?.subjectsTitle || 'Teaching Subjects'}:
           </span>
           <div className="flex flex-wrap gap-1.5">
             {tutor.subjects.slice(0, 3).map((sub) => (
               <span
                 key={sub.id}
-                className="bg-card px-2.5 py-0.5 rounded-lg border border-border text-primary text-[11px] font-semibold shadow-xs"
+                className="bg-card px-2.5 py-0.5 rounded-md border border-border/80 text-foreground text-[11px] font-medium shadow-xs"
               >
                 {locale === 'bn' ? sub.subjectNameBn : sub.subjectNameEn}
               </span>
@@ -175,13 +175,13 @@ export function TutorCard({
             </div>
           )}
           <div className="col-span-2 flex items-center gap-1.5 flex-wrap pt-0.5">
-            <span className="font-semibold text-primary-soft-foreground">
+            <span className="font-semibold text-muted-foreground">
               {locale === 'bn' ? 'পদ্ধতি:' : 'Modes:'}
             </span>
             {tutor.teachingModes.map((m) => (
               <span
                 key={m}
-                className="inline-flex items-center px-1.5 py-0.5 rounded-md bg-muted text-[11px] text-muted-foreground capitalize"
+                className="inline-flex items-center px-2 py-0.5 rounded-md bg-muted text-[11px] text-muted-foreground capitalize"
               >
                 {m.replace('_', ' ')}
               </span>
@@ -191,7 +191,7 @@ export function TutorCard({
       </div>
 
       {/* Card Footer: Hourly Rate & Booking CTA */}
-      <div className="p-5 pt-3.5 border-t border-border bg-card/60 flex items-center justify-between gap-3">
+      <div className="p-4 sm:p-5 pt-3.5 border-t border-border/70 bg-muted/10 flex items-center justify-between gap-3">
         <div>
           {hourlyRate ? (
             <div className="flex flex-col">
@@ -214,7 +214,7 @@ export function TutorCard({
         <div className="flex items-center gap-2 shrink-0">
           <Link
             href={`/${locale}/tutors/${tutor.id}`}
-            className="inline-flex items-center justify-center gap-1 rounded-xl bg-card hover:bg-card border border-border hover:border-brand/60 text-primary font-bold text-xs px-3 py-2.5 transition-all"
+            className="inline-flex items-center justify-center gap-1 rounded-xl bg-card hover:bg-muted/50 border border-border/80 text-foreground hover:text-primary font-semibold text-xs px-3 py-2 transition-colors"
             title={
               locale === 'bn'
                 ? 'সম্পূর্ণ প্রোফাইল ও যোগ্যতা দেখুন'
@@ -228,7 +228,7 @@ export function TutorCard({
             type="button"
             onClick={() => onRequestBooking(tutor)}
             data-testid={`request-tutoring-btn-${tutor.id}`}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-extrabold text-xs px-3.5 py-2.5 shadow-sm hover:shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer shrink-0"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs px-3.5 py-2 shadow-xs transition-colors cursor-pointer shrink-0"
           >
             <span>{dict.discovery?.requestSession || 'Request Tutoring'}</span>
           </button>

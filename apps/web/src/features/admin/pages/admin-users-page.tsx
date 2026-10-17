@@ -82,18 +82,18 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
 
           {actions.activeImpersonation && (
             <div
-              className="bg-warning/10 border-2 border-warning/40 rounded-2xl p-4 flex items-center justify-between shadow-lg shadow-sm animate-pulse"
+              className="bg-amber-50 border border-amber-300 rounded-2xl p-4 flex items-center justify-between shadow-xs animate-pulse"
               data-testid="active-impersonation-banner"
             >
               <div className="flex items-center space-x-3">
                 <span className="text-2xl">⚠️</span>
                 <div>
-                  <p className="font-bold text-warning  text-sm tracking-wide">
+                  <p className="font-bold text-amber-900 text-sm tracking-wide">
                     {t('activeImpersonationBanner')}:{' '}
                     <span className="underline">{actions.activeImpersonation.targetName}</span> (
                     {actions.activeImpersonation.targetId})
                   </p>
-                  <p className="text-xs text-warning/80 ">
+                  <p className="text-xs text-amber-700">
                     {t('impersonationWarning')} (Session window:{' '}
                     {actions.activeImpersonation.expiresIn} min)
                   </p>
@@ -101,7 +101,7 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
               </div>
               <button
                 onClick={actions.terminateImpersonation}
-                className="px-4 py-2 bg-warning hover:bg-warning/90 text-white rounded-xl font-medium text-xs shadow-xs transition"
+                className="px-4 py-2 bg-amber-600 hover:bg-amber-700 text-white rounded-xl font-medium text-xs shadow-xs transition"
                 data-testid="terminate-impersonation-btn"
               >
                 {t('terminateImpersonation')}
@@ -116,7 +116,7 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn' ? 'ব্যবহারকারী ও রোল ব্যবস্থাপনা' : 'User & Access Management'}
                 </h1>
-                <span className="px-3 py-1 text-xs font-bold rounded-full bg-interactive/15 text-info-soft-foreground border border-info/40">
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-50 text-blue-700 border border-blue-200">
                   {totalUsers} {locale === 'bn' ? 'অ্যাকাউন্ট' : 'Accounts'}
                 </span>
               </div>
@@ -130,38 +130,38 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
 
           {/* 3 Metric Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between shadow-2xs">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'সক্রিয় অ্যাকাউন্ট' : 'Active Accounts'}
                 </p>
-                <p className="text-2xl font-black text-success-soft-foreground mt-1 font-mono">{activeCount}</p>
+                <p className="text-2xl font-bold text-foreground mt-1 font-mono">{activeCount}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/40 flex items-center justify-center text-success-soft-foreground">
+              <div className="w-10 h-10 rounded-xl bg-emerald-50 border border-emerald-200 flex items-center justify-center text-emerald-700">
                 <UserCheck className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between shadow-2xs">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'স্থগিত অ্যাকাউন্ট' : 'Suspended Accounts'}
                 </p>
-                <p className="text-2xl font-black text-destructive-soft-foreground mt-1 font-mono">{suspendedCount}</p>
+                <p className="text-2xl font-bold text-foreground mt-1 font-mono">{suspendedCount}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-destructive/10 border border-destructive/40 flex items-center justify-center text-destructive-soft-foreground">
+              <div className="w-10 h-10 rounded-xl bg-red-50 border border-red-200 flex items-center justify-center text-red-700">
                 <ShieldAlert className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between shadow-2xs">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'স্টাফ ও অপারেটর' : 'Staff & Operators'}
                 </p>
-                <p className="text-2xl font-black text-info-soft-foreground mt-1 font-mono">{staffCount}</p>
+                <p className="text-2xl font-bold text-foreground mt-1 font-mono">{staffCount}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-interactive/10 border border-info/40 flex items-center justify-center text-info-soft-foreground">
+              <div className="w-10 h-10 rounded-xl bg-blue-50 border border-blue-200 flex items-center justify-center text-blue-700">
                 <Users className="w-5 h-5" />
               </div>
             </div>

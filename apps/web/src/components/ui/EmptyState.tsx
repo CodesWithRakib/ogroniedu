@@ -1,7 +1,8 @@
 import React from 'react';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@/lib/utils';
 import { Inbox } from 'lucide-react';
 import Link from 'next/link';
+import { Button } from './Button';
 
 export interface EmptyStateProps {
   icon?: React.ReactNode;
@@ -25,26 +26,25 @@ export function EmptyState({
   return (
     <div
       role="status"
-      className={twMerge(
-        'flex flex-col items-center justify-center rounded-2xl border border-dashed border-border p-8 text-center bg-card/40 backdrop-blur-xs',
+      className={cn(
+        'flex flex-col items-center justify-center rounded-2xl border border-dashed border-border/80 p-8 sm:p-12 text-center bg-card/50',
         className,
       )}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface-muted text-muted-foreground ring-1 ring-border/50 shadow-xs">
+      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface-muted text-muted-foreground border border-border/60 shadow-2xs">
         {icon || <Inbox className="h-6 w-6" />}
       </div>
-      <h3 className="mt-4 text-base font-semibold text-foreground">{title}</h3>
-      <p className="mt-1.5 max-w-sm text-sm text-muted-foreground">{description}</p>
+      <h3 className="mt-4 text-base font-semibold text-foreground tracking-tight">{title}</h3>
+      <p className="mt-1.5 max-w-sm text-xs sm:text-sm text-muted-foreground leading-relaxed">
+        {description}
+      </p>
       {action ? (
         <div className="mt-5">{action}</div>
       ) : actionLabel && actionHref ? (
         <div className="mt-5">
-          <Link
-            href={actionHref}
-            className="inline-flex items-center justify-center rounded-xl bg-primary px-4 py-2.5 text-sm font-semibold text-primary-foreground shadow-sm shadow-primary/25 hover:bg-primary-hover transition-colors"
-          >
-            {actionLabel}
-          </Link>
+          <Button asChild variant="primary" size="sm">
+            <Link href={actionHref}>{actionLabel}</Link>
+          </Button>
         </div>
       ) : null}
     </div>

@@ -87,9 +87,9 @@ export function Navbar({ locale }: NavbarProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-3.5 py-1.5 rounded-full transition-colors duration-200 ${
+                className={`relative px-3.5 py-1.5 rounded-full text-xs font-medium transition-colors ${
                   active
-                    ? 'bg-primary-soft text-primary-soft-foreground font-bold'
+                    ? 'bg-primary-soft text-primary font-semibold'
                     : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
                 }`}
               >
@@ -105,10 +105,10 @@ export function Navbar({ locale }: NavbarProps) {
           <Link
             href={targetPath}
             aria-label={`Switch language to ${isBn ? 'English' : 'বাংলা'}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-surface-hover hover:border-interactive/40 transition-colors shadow-xs"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-surface-hover transition-colors"
           >
             <Globe className="h-3.5 w-3.5 text-interactive" />
-            <span className="font-bold">{isBn ? 'বাং' : 'EN'}</span>
+            <span className="font-semibold">{isBn ? 'বাং' : 'EN'}</span>
           </Link>
 
           {showAuthed && <NotificationBell locale={locale} />}

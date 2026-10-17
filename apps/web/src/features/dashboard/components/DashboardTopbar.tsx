@@ -80,7 +80,7 @@ export function DashboardTopbar({
           <button
             type="button"
             onClick={() => setIsSosOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-destructive/30 bg-destructive-soft hover:bg-destructive/10 text-xs font-black text-destructive-soft-foreground transition-all shadow-xs cursor-pointer"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-destructive/30 bg-destructive-soft hover:bg-destructive/15 text-xs font-bold text-destructive transition-colors cursor-pointer"
             title={isBn ? 'জরুরি এসওএস ও শিশু সুরক্ষা' : 'Emergency SOS & Child Safeguarding'}
             data-testid="sos-emergency-trigger-btn"
           >
@@ -91,7 +91,7 @@ export function DashboardTopbar({
           {/* Language Switcher */}
           <Link
             href={targetPath}
-            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover text-xs font-semibold text-foreground transition-colors shadow-xs"
+            className="flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-border/80 bg-card hover:bg-surface-hover text-xs font-semibold text-foreground transition-colors"
             title={isBn ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
             aria-label={isBn ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
           >

@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { FileText, Clock, CheckCircle2, ArrowRight, Send, Award, X } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
 import { useSubmitAssignmentMutation, type AssignmentRecord } from '@/store/services/learning-api';
 import { useAppDispatch } from '@/store';
 import { enqueueToast } from '@/store/slices/ui-slice';
@@ -64,11 +65,11 @@ export function StudentPendingAssignmentsCard({
 
   return (
     <>
-      <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+      <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3 border-b border-border/50">
+        <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-warning/10 border border-warning/40 text-warning flex items-center justify-center shrink-0">
+            <div className="h-9 w-9 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
               <FileText className="h-5 w-5" />
             </div>
             <div>
@@ -83,7 +84,7 @@ export function StudentPendingAssignmentsCard({
 
           <Link
             href={withLocale('/dashboard/student/learning', locale)}
-            className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+            className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
           >
             <span>{isBn ? 'স্টাডি রুমে দেখুন' : 'Study Room'}</span>
             <ArrowRight className="h-3.5 w-3.5" />
@@ -98,8 +99,8 @@ export function StudentPendingAssignmentsCard({
             </div>
           ) : assignments.length === 0 ? (
             <div className="py-8 px-4 text-center">
-              <div className="h-12 w-12 rounded-2xl bg-surface/80 border border-border/60 mx-auto flex items-center justify-center text-muted-foreground mb-3">
-                <CheckCircle2 className="h-6 w-6 text-success-soft-foreground" />
+              <div className="h-12 w-12 rounded-xl bg-muted/40 border border-border/60 mx-auto flex items-center justify-center text-muted-foreground mb-3">
+                <CheckCircle2 className="h-6 w-6 text-emerald-600" />
               </div>
               <p className="text-xs font-bold text-foreground">
                 {isBn ? 'কোনো বকেয়া হোমওয়ার্ক নেই!' : 'All Caught Up!'}
@@ -119,10 +120,10 @@ export function StudentPendingAssignmentsCard({
                 return (
                   <div
                     key={asgn.id}
-                    className="p-3.5 rounded-2xl bg-surface/50 border border-border/50 hover:bg-surface/80 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    className="p-3.5 rounded-xl bg-muted/20 border border-border/60 hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                   >
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="h-10 w-10 rounded-xl bg-warning/10 border border-warning/40 text-warning flex items-center justify-center shrink-0">
+                      <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center shrink-0">
                         <FileText className="h-5 w-5" />
                       </div>
 
@@ -132,12 +133,12 @@ export function StudentPendingAssignmentsCard({
                             {asgn.title}
                           </h4>
                           <span
-                            className={`px-2 py-0.5 text-[10px] font-bold rounded-full border ${
+                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-full border ${
                               isReviewed
-                                ? 'bg-primary/10 text-success-soft-foreground  border-primary/40'
+                                ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20'
                                 : isSubmitted
-                                  ? 'bg-interactive/10 text-interactive  border-interactive/40'
-                                  : 'bg-warning/10 text-warning  border-warning/40'
+                                  ? 'bg-blue-500/10 text-blue-700 border-blue-500/20'
+                                  : 'bg-amber-500/10 text-amber-700 border-amber-500/20'
                             }`}
                           >
                             {isReviewed
@@ -182,24 +183,24 @@ export function StudentPendingAssignmentsCard({
                     {/* Actions */}
                     <div className="flex items-center gap-2 shrink-0 self-end sm:self-center">
                       {!isSubmitted ? (
-                        <button
+                        <Button
+                          size="xs"
                           onClick={() => {
                             setActiveAssignment(asgn);
                             setSubmissionText('');
                             setErrorMessage(null);
                           }}
-                          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs shadow-xs transition-transform active:scale-95"
+                          className="font-semibold"
                         >
-                          <Send className="h-3.5 w-3.5" />
+                          <Send className="h-3.5 w-3.5 mr-1" />
                           <span>{isBn ? 'উত্তর জমা দিন' : 'Submit'}</span>
-                        </button>
+                        </Button>
                       ) : (
-                        <Link
-                          href={withLocale('/dashboard/student/learning', locale)}
-                          className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl border border-border bg-card hover:bg-surface text-foreground font-semibold text-xs transition-colors"
-                        >
-                          <span>{isBn ? 'রিভিউ দেখুন' : 'View Feedback'}</span>
-                        </Link>
+                        <Button asChild variant="outline" size="xs">
+                          <Link href={withLocale('/dashboard/student/learning', locale)}>
+                            <span>{isBn ? 'রিভিউ দেখুন' : 'View Feedback'}</span>
+                          </Link>
+                        </Button>
                       )}
                     </div>
                   </div>
@@ -215,22 +216,22 @@ export function StudentPendingAssignmentsCard({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
         >
-          <div className="bg-card border border-border/80 w-full max-w-lg rounded-3xl p-6 shadow-2xl relative text-foreground">
+          <div className="bg-card border border-border/80 w-full max-w-lg rounded-2xl p-6 shadow-xl relative text-foreground">
             <button
               onClick={() => setActiveAssignment(null)}
-              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-surface text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               <X className="h-5 w-5" />
             </button>
 
-            <div className="flex items-center gap-3 pb-4 border-b border-border/50">
-              <div className="h-10 w-10 rounded-2xl bg-primary/10 border border-primary/25 text-primary flex items-center justify-center">
+            <div className="flex items-center gap-3 pb-4 border-b border-border/60">
+              <div className="h-10 w-10 rounded-xl bg-amber-500/10 text-amber-600 flex items-center justify-center">
                 <FileText className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-base font-extrabold">{activeAssignment.title}</h3>
+                <h3 className="text-base font-bold">{activeAssignment.title}</h3>
                 <p className="text-xs text-muted-foreground">
                   {isBn ? 'আপনার শিক্ষকের জন্য উত্তর লিখুন' : 'Submit your answer for review'}
                 </p>
@@ -238,23 +239,23 @@ export function StudentPendingAssignmentsCard({
             </div>
 
             {activeAssignment.instructions && (
-              <div className="mt-3 p-3 rounded-xl bg-surface/70 border border-border/50 text-xs text-foreground/80">
-                <span className="font-bold text-foreground block mb-0.5">
+              <div className="mt-3 p-3 rounded-xl bg-muted/30 border border-border/60 text-xs text-foreground/80">
+                <span className="font-semibold text-foreground block mb-0.5">
                   {isBn ? 'নির্দেশনা:' : 'Instructions:'}
                 </span>
-                <p>{activeAssignment.instructions}</p>
+                <p className="leading-relaxed">{activeAssignment.instructions}</p>
               </div>
             )}
 
             {errorMessage && (
-              <div className="mt-3 p-3 rounded-xl bg-destructive/10 border border-destructive/40 text-xs text-destructive font-semibold">
+              <div className="mt-3 p-3 rounded-xl bg-destructive/10 border border-destructive/30 text-xs text-destructive font-semibold">
                 {errorMessage}
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="mt-4 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-foreground mb-1">
+                <label className="block text-xs font-semibold text-foreground mb-1">
                   {isBn ? 'আপনার উত্তর / নোটস' : 'Your Answer / Notes'}
                 </label>
                 <textarea
@@ -267,22 +268,25 @@ export function StudentPendingAssignmentsCard({
                       ? 'অ্যাসাইনমেন্টের সমাধান বা Google Drive / GitHub লিংক এখানে লিখুন...'
                       : 'Type your solution or paste reference links here...'
                   }
-                  className="w-full p-3 rounded-xl bg-surface border border-border text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-primary/40 resize-none"
+                  className="w-full p-3 rounded-xl bg-card border border-border/80 text-foreground text-xs focus:border-primary focus:outline-none transition-colors resize-none"
                 />
               </div>
 
               <div className="pt-3 border-t border-border/60 flex items-center justify-end gap-2.5">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => setActiveAssignment(null)}
-                  className="px-4 py-2 rounded-xl border border-border text-xs font-semibold hover:bg-surface transition-colors"
+                  className="rounded-xl"
                 >
                   {isBn ? 'বাতিল' : 'Cancel'}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
+                  size="sm"
                   disabled={isSubmitting || !submissionText.trim()}
-                  className="px-5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs shadow-sm shadow-primary/25 transition-transform active:scale-95 disabled:opacity-50"
+                  className="rounded-xl shadow-xs font-semibold"
                 >
                   {isSubmitting
                     ? isBn
@@ -291,7 +295,7 @@ export function StudentPendingAssignmentsCard({
                     : isBn
                       ? 'জমা দিন'
                       : 'Submit Answer'}
-                </button>
+                </Button>
               </div>
             </form>
           </div>

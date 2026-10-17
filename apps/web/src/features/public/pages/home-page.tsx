@@ -17,6 +17,7 @@ import {
   Sparkles,
 } from 'lucide-react';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { Button } from '@/components/ui/Button';
 import { usePlatformStats } from '../hooks/use-platform-stats';
 import { HeroSearchBar } from '../components/HeroSearchBar';
 import { BetterLearningDoodle, YourSuccessDoodle } from '../components/HeroDoodles';
@@ -78,8 +79,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             {/* Left Column: Trust Badge, Bold Headlines, Subtitle & Search */}
             <div className="lg:col-span-6 space-y-4 sm:space-y-5 text-left z-10">
               {/* Trust Pill Badge */}
-              <div className="inline-flex flex-nowrap items-center gap-2.5 rounded-full border border-primary/40 bg-card/90 py-1.5 px-3.5 backdrop-blur-md shadow-sm whitespace-nowrap">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-primary-soft-foreground">
+              <div className="inline-flex flex-nowrap items-center gap-2.5 rounded-full border border-border/80 bg-card py-1.5 px-3.5 shadow-xs whitespace-nowrap">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
                   <ShieldCheck className="h-4 w-4 text-primary" />
                   <span>
                     {isBn
@@ -96,7 +97,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </div>
 
                 {/* Star Ratings */}
-                <div className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-warning-soft-foreground">
+                <div className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-amber-500">
                   <span className="tracking-tighter">★★★★★</span>
                   <span className="text-foreground font-semibold ml-0.5">4.8/5</span>
                   <span className="text-muted-foreground font-normal text-[10px]">(2.5k+ reviews)</span>
@@ -176,7 +177,7 @@ export function HomePage({ locale }: { locale: Locale }) {
        * STATS & SOCIAL PROOF STRIP (Directly Below Hero)
        * ==================================================================== */}
       <section
-        className="relative py-6 sm:py-7 border-y border-primary/40 bg-card/95 backdrop-blur-xl"
+        className="relative py-6 sm:py-7 border-y border-border/60 bg-muted/20"
         data-testid="platform-metrics-band"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -185,7 +186,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-10 w-full lg:w-auto">
               {/* Stat 1: Happy Students */}
               <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
                   <Users className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div>
@@ -202,7 +203,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
               {/* Stat 2: Verified Tutors */}
               <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
                   <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div>
@@ -219,7 +220,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
               {/* Stat 3: Satisfaction Rate */}
               <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
                   <Heart className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div>
@@ -234,7 +235,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
               {/* Stat 4: 24/7 Support */}
               <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
                   <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div>
@@ -258,7 +259,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                   <StudentAvatar index={2} size="md" />
                   <StudentAvatar index={3} size="md" />
                   <StudentAvatar index={4} size="md" className="ring-2 ring-brand" />
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-card border border-primary/40 text-primary text-[10px] font-black shadow-xs">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-soft text-primary text-[10px] font-bold border border-border/80">
                     +10k
                   </div>
                 </div>
@@ -291,8 +292,8 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1: Verified & Experienced Tutors */}
-            <div className="rounded-2xl border border-primary/40 bg-card/90 p-6 backdrop-blur-xl hover:border-primary hover:shadow-sm hover:scale-[1.02] transition-all duration-300 space-y-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
+            <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <Award className="h-6 w-6" />
               </div>
               <h3 className="text-base font-bold text-foreground">
@@ -306,8 +307,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 2: Flexible Learning Options */}
-            <div className="rounded-2xl border border-primary/40 bg-card/90 p-6 backdrop-blur-xl hover:border-primary hover:shadow-sm hover:scale-[1.02] transition-all duration-300 space-y-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
+            <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <CalendarDays className="h-6 w-6" />
               </div>
               <h3 className="text-base font-bold text-foreground">
@@ -321,8 +322,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 3: Wide Subject Coverage */}
-            <div className="rounded-2xl border border-primary/40 bg-card/90 p-6 backdrop-blur-xl hover:border-primary hover:shadow-sm hover:scale-[1.02] transition-all duration-300 space-y-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
+            <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <BookOpen className="h-6 w-6" />
               </div>
               <h3 className="text-base font-bold text-foreground">
@@ -336,8 +337,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 4: Track Progress */}
-            <div className="rounded-2xl border border-primary/40 bg-card/90 p-6 backdrop-blur-xl hover:border-primary hover:shadow-sm hover:scale-[1.02] transition-all duration-300 space-y-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
+            <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <TrendingUp className="h-6 w-6" />
               </div>
               <h3 className="text-base font-bold text-foreground">
@@ -356,7 +357,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       {/* ====================================================================
        * 3-STEP JOURNEY SECTION
        * ==================================================================== */}
-      <section className="py-16 sm:py-20 border-t border-primary/40 bg-card/50">
+      <section className="py-16 sm:py-20 border-t border-border/60 bg-muted/10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14 space-y-2.5">
             <span className="text-xs font-bold uppercase tracking-wider text-primary">
@@ -369,10 +370,10 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
-            <div className="rounded-2xl border border-primary/40 bg-card/80 p-7 backdrop-blur-md space-y-3.5 hover:border-primary transition-all">
+            <div className="rounded-2xl border border-border/80 bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-black text-primary/30 font-mono">01</span>
-                <div className="h-9 w-9 rounded-xl bg-brand-soft flex items-center justify-center text-primary font-bold">
+                <span className="text-3xl font-black text-muted-foreground/30 font-mono">01</span>
+                <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary font-bold">
                   <Search className="w-4 h-4" />
                 </div>
               </div>
@@ -387,10 +388,10 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-2xl border border-primary/40 bg-card/80 p-7 backdrop-blur-md space-y-3.5 hover:border-primary transition-all">
+            <div className="rounded-2xl border border-border/80 bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-black text-primary/30 font-mono">02</span>
-                <div className="h-9 w-9 rounded-xl bg-brand-soft flex items-center justify-center text-primary font-bold">
+                <span className="text-3xl font-black text-muted-foreground/30 font-mono">02</span>
+                <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary font-bold">
                   <CalendarDays className="w-4 h-4" />
                 </div>
               </div>
@@ -405,10 +406,10 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-2xl border border-primary/40 bg-card/80 p-7 backdrop-blur-md space-y-3.5 hover:border-primary transition-all">
+            <div className="rounded-2xl border border-border/80 bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-black text-primary/30 font-mono">03</span>
-                <div className="h-9 w-9 rounded-xl bg-primary/15 flex items-center justify-center text-success-soft-foreground font-bold">
+                <span className="text-3xl font-black text-muted-foreground/30 font-mono">03</span>
+                <div className="h-9 w-9 rounded-xl bg-emerald-500/10 flex items-center justify-center text-emerald-600 font-bold">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
               </div>
@@ -430,11 +431,11 @@ export function HomePage({ locale }: { locale: Locale }) {
        * ==================================================================== */}
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl border border-primary/40 bg-gradient-to-br from-card via-card to-background p-8 sm:p-12 shadow-2xl">
+          <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 sm:p-12 shadow-card">
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-soft rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="space-y-3.5 max-w-xl">
-                <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold text-primary">
                   <Sparkles className="h-3.5 w-3.5" />
                   <span>{isBn ? 'অগ্রণী এডু প্ল্যাটফর্ম' : 'OgroniEdu Platform'}</span>
                 </div>
@@ -451,24 +452,18 @@ export function HomePage({ locale }: { locale: Locale }) {
               </div>
 
               <div className="flex flex-wrap items-center gap-3">
-                <Link href={`/${locale}/register`}>
-                  <button
-                    type="button"
-                    className="rounded-full bg-brand hover:bg-brand-accent text-brand-foreground font-bold text-xs sm:text-sm px-7 py-3 shadow-sm hover:shadow-sm hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
-                  >
+                <Button asChild size="lg" className="rounded-full shadow-xs">
+                  <Link href={`/${locale}/register`} className="flex items-center gap-2">
                     <span>{isBn ? 'নিবন্ধন করুন' : 'Get Started'}</span>
                     <ArrowRight className="w-4 h-4" />
-                  </button>
-                </Link>
-                <Link href={`/${locale}/tutors`}>
-                  <button
-                    type="button"
-                    className="rounded-full border border-primary/40 bg-card hover:bg-primary/20 text-foreground font-bold text-xs sm:text-sm px-6 py-3 transition-all flex items-center gap-2 cursor-pointer"
-                  >
+                  </Link>
+                </Button>
+                <Button asChild variant="outline" size="lg" className="rounded-full">
+                  <Link href={`/${locale}/tutors`} className="flex items-center gap-2">
                     <Search className="w-4 h-4 text-primary" />
                     <span>{isBn ? 'সকল শিক্ষক দেখুন' : 'Browse All Tutors'}</span>
-                  </button>
-                </Link>
+                  </Link>
+                </Button>
               </div>
             </div>
           </div>

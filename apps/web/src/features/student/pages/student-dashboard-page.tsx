@@ -18,6 +18,7 @@ import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart'
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
 import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
 import { EmptyState, LoadingSpinner } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDate } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
@@ -63,20 +64,24 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
       role="student"
       actions={
         <div className="flex items-center gap-2">
-          <Link
-            href={withLocale('/dashboard/student/learning', locale)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-bold shadow-sm shadow-primary/25 transition-transform hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <BookOpen className="h-3.5 w-3.5" />
-            <span>{isBn ? 'স্টাডি রুম' : 'Study Room'}</span>
-          </Link>
-          <Link
-            href={withLocale('/tutors', locale)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover text-foreground text-xs font-semibold shadow-2xs transition-colors"
-          >
-            <Search className="h-3.5 w-3.5 text-muted-foreground" />
-            <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
-          </Link>
+          <Button asChild size="sm" className="rounded-full shadow-xs">
+            <Link
+              href={withLocale('/dashboard/student/learning', locale)}
+              className="flex items-center gap-1.5"
+            >
+              <BookOpen className="h-3.5 w-3.5" />
+              <span>{isBn ? 'স্টাডি রুম' : 'Study Room'}</span>
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Link
+              href={withLocale('/tutors', locale)}
+              className="flex items-center gap-1.5"
+            >
+              <Search className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
+            </Link>
+          </Button>
         </div>
       }
     >
@@ -156,42 +161,42 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* QUICK ACTIONS ROW                                        */}
       {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-2xl bg-card border border-border/70 shadow-xs">
+      <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-2xl bg-card border border-border/80 shadow-xs">
         <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
         </span>
         <Link
           href={withLocale('/dashboard/student/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
         >
-          <BookOpen className="w-3.5 h-3.5 text-info-soft-foreground " />
+          <BookOpen className="w-3.5 h-3.5 text-blue-600" />
           <span>{isBn ? 'লার্নিং হাব' : 'Learning Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
         >
-          <Calendar className="w-3.5 h-3.5 text-success-soft-foreground " />
+          <Calendar className="w-3.5 h-3.5 text-emerald-600" />
           <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
         >
-          <Inbox className="w-3.5 h-3.5 text-warning " />
+          <Inbox className="w-3.5 h-3.5 text-amber-600" />
           <span>{isBn ? 'টিউশন অনুরোধ' : 'Tuition Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
         >
-          <CreditCard className="w-3.5 h-3.5 text-interactive " />
+          <CreditCard className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'টিউশন ফি ও পেমেন্ট' : 'Tuition Payments'}</span>
         </Link>
         <Link
           href={withLocale('/tutors', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors sm:ml-auto"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary-soft hover:bg-primary/20 text-primary text-xs font-semibold transition-colors sm:ml-auto"
         >
           <Search className="w-3.5 h-3.5" />
           <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
@@ -286,7 +291,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
             actionHref={withLocale('/tutors', locale)}
           />
         ) : (
-          <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs">
+          <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs">
             <div className="flex items-center justify-between pb-4 border-b border-border/60">
               <div>
                 <h3 className="text-base font-bold text-foreground">
@@ -300,7 +305,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
               </div>
               <Link
                 href={withLocale('/dashboard/student/requests', locale)}
-                className="text-xs font-bold text-primary hover:underline flex items-center gap-1"
+                className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
               >
                 <span>{isBn ? 'সব দেখুন' : 'View All'}</span>
                 <ArrowRight className="h-3.5 w-3.5" />
@@ -334,10 +339,10 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                 return (
                   <div
                     key={r.id}
-                    className="py-3.5 flex items-center justify-between gap-3 hover:bg-surface/50 px-2 rounded-xl transition-colors"
+                    className="py-3.5 flex items-center justify-between gap-3 hover:bg-muted/30 px-2 rounded-xl transition-colors"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="h-9 w-9 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0 font-bold text-xs">
+                      <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0 font-bold text-xs ring-1 ring-border">
                         #{r.id.slice(0, 3)}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -352,12 +357,12 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                     </div>
 
                     <span
-                      className={`px-3 py-1 text-[11px] font-bold rounded-full border ${
+                      className={`px-2.5 py-0.5 text-[11px] font-semibold rounded-full border ${
                         r.status === 'accepted'
-                          ? 'bg-primary/10 text-success-soft-foreground  border-primary/40'
+                          ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20'
                           : r.status === 'rejected'
-                            ? 'bg-destructive/10 text-destructive  border-destructive/40'
-                            : 'bg-warning/10 text-warning  border-warning/40'
+                            ? 'bg-rose-500/10 text-rose-700 border-rose-500/20'
+                            : 'bg-amber-500/10 text-amber-700 border-amber-500/20'
                       }`}
                     >
                       {String(r.status)}

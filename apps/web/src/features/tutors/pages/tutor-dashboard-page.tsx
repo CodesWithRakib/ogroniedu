@@ -20,6 +20,7 @@ import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard'
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
 import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
 import { LoadingSpinner } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
 import { TutorVerificationStatusCard } from '@/components/tutor/TutorVerificationStatusCard';
 import { QualificationUploadCard } from '../components/qualificationUploadCard';
 import { ErrorState } from '@/components/shared/ErrorState';
@@ -132,20 +133,24 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       }
       actions={
         <div className="flex items-center gap-2">
-          <Link
-            href={withLocale('/dashboard/tutor/sessions', locale)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-bold shadow-sm shadow-primary/25 transition-transform hover:scale-[1.02] active:scale-[0.98]"
-          >
-            <Plus className="h-3.5 w-3.5" />
-            <span>{isBn ? 'নতুন ক্লাস' : 'Schedule Class'}</span>
-          </Link>
-          <Link
-            href={withLocale('/dashboard/tutor/payments', locale)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover text-foreground text-xs font-semibold shadow-2xs transition-colors"
-          >
-            <BarChart3 className="h-3.5 w-3.5 text-muted-foreground" />
-            <span>{isBn ? 'আয় ও পে-আউট' : 'Earnings & Payouts'}</span>
-          </Link>
+          <Button asChild size="sm" className="rounded-full shadow-xs">
+            <Link
+              href={withLocale('/dashboard/tutor/sessions', locale)}
+              className="flex items-center gap-1.5"
+            >
+              <Plus className="h-3.5 w-3.5" />
+              <span>{isBn ? 'নতুন ক্লাস' : 'Schedule Class'}</span>
+            </Link>
+          </Button>
+          <Button asChild variant="outline" size="sm" className="rounded-full">
+            <Link
+              href={withLocale('/dashboard/tutor/payments', locale)}
+              className="flex items-center gap-1.5"
+            >
+              <BarChart3 className="h-3.5 w-3.5 text-muted-foreground" />
+              <span>{isBn ? 'আয় ও পে-আউট' : 'Earnings & Payouts'}</span>
+            </Link>
+          </Button>
         </div>
       }
     >
@@ -227,44 +232,44 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 2. QUICK ACTIONS BAR                                     */}
       {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2.5 p-3.5 rounded-2xl bg-card/90 border border-primary/40 shadow-xs">
-        <span className="text-xs font-bold text-primary-soft-foreground mr-1.5 flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-primary-soft-foreground" />
+      <div className="flex flex-wrap items-center gap-2.5 p-3.5 rounded-2xl bg-card border border-border/80 shadow-xs">
+        <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-primary" />
           {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
         </span>
         <Link
           href={withLocale('/dashboard/tutor/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-surface-hover border border-border text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
         >
-          <Inbox className="w-3.5 h-3.5 text-info-soft-foreground" />
+          <Inbox className="w-3.5 h-3.5 text-blue-600" />
           <span>{isBn ? 'টিউশন অনুরোধসমূহ' : 'Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-surface-hover border border-border text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
         >
-          <Calendar className="w-3.5 h-3.5 text-success-soft-foreground" />
+          <Calendar className="w-3.5 h-3.5 text-emerald-600" />
           <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-surface-hover border border-border text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
         >
-          <BookOpen className="w-3.5 h-3.5 text-warning-soft-foreground" />
+          <BookOpen className="w-3.5 h-3.5 text-amber-600" />
           <span>{isBn ? 'স্টাডি রুম ও টিচিং' : 'Teaching Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/verification', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-surface-hover border border-border text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
         >
-          <ShieldCheck className="w-3.5 h-3.5 text-interactive-soft-foreground" />
+          <ShieldCheck className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'সনদ ও ভেরিফিকেশন' : 'Verification'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-surface-hover border border-border text-foreground text-xs font-semibold transition-colors sm:ml-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors sm:ml-auto"
         >
-          <CreditCard className="w-3.5 h-3.5 text-destructive-soft-foreground" />
+          <CreditCard className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'আয় ও উত্তোলন' : 'Earnings'}</span>
         </Link>
       </div>

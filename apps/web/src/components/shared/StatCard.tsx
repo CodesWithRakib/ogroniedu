@@ -16,17 +16,19 @@ export function StatCard({
   testId?: string;
 }) {
   return (
-    <Card data-testid={testId}>
-      <CardHeader>
-        <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
+    <Card data-testid={testId} className="p-4 sm:p-5">
+      <CardHeader className="p-0 pb-2">
+        <CardTitle className="text-xs sm:text-sm font-medium text-muted-foreground">{label}</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="p-0 pt-1">
         {isLoading ? (
-          <Skeleton className="h-8 w-20" />
+          <Skeleton className="h-8 w-24 rounded-lg" />
         ) : (
-          <p className="text-2xl font-bold">{value}</p>
+          <p className="text-2xl sm:text-3xl font-extrabold text-foreground tabular-nums tracking-tight">
+            {value}
+          </p>
         )}
-        {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
+        {hint && <p className="mt-1.5 text-xs text-muted-foreground">{hint}</p>}
       </CardContent>
     </Card>
   );

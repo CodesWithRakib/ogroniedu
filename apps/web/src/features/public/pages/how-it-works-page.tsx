@@ -114,8 +114,8 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <Badge
-          variant="outline"
-          className="text-primary border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
+          variant="secondary"
+          className="text-primary border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full"
         >
           {p.badge}
         </Badge>
@@ -131,7 +131,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
       <section className="space-y-8">
         <div className="border-b border-border/70 pb-4">
           <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-soft text-primary">
               <CheckCircle2 className="h-4 w-4" />
             </div>
             <span>{p.forStudentsHeading}</span>
@@ -147,15 +147,15 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card/85 backdrop-blur-sm border-border/80 rounded-3xl shadow-sm hover:shadow-xl hover:border-primary/40 transition-all relative overflow-hidden"
+                className="bg-card border-border/80 rounded-2xl shadow-xs hover:shadow-card hover:border-primary/40 transition-all relative overflow-hidden"
               >
                 <div className="absolute top-4 right-4">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary-soft text-primary font-mono">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary-soft text-primary font-mono">
                     {step.tag}
                   </span>
                 </div>
                 <CardHeader className="p-6">
-                  <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/20 mb-3">
+                  <div className="h-12 w-12 rounded-xl bg-primary-soft flex items-center justify-center text-primary mb-3">
                     <Icon className="h-6 w-6" />
                   </div>
                   <CardTitle className="text-base font-bold font-bengali text-foreground">
@@ -173,15 +173,16 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
         </div>
 
         <div className="text-center pt-4">
-          <Link href={`/${locale}/tutors`}>
-            <Button
-              size="lg"
-              className="rounded-full px-8 font-bold shadow-md shadow-primary/25 font-bengali"
-            >
-              {dict.nav.findTutors}
-              <ArrowRight className="h-4 w-4 ml-2" />
-            </Button>
-          </Link>
+          <Button
+            asChild
+            size="lg"
+            className="rounded-full px-8 font-semibold shadow-xs font-bengali"
+          >
+            <Link href={`/${locale}/tutors`} className="flex items-center gap-2">
+              <span>{dict.nav.findTutors}</span>
+              <ArrowRight className="h-4 w-4 ml-1" />
+            </Link>
+          </Button>
         </div>
       </section>
 
@@ -189,7 +190,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
       <section className="space-y-8 pt-8">
         <div className="border-b border-border/70 pb-4">
           <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
-            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
+            <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-soft text-primary">
               <GraduationCap className="h-4 w-4" />
             </div>
             <span>{p.forTutorsHeading}</span>
@@ -203,15 +204,15 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card/85 backdrop-blur-sm border-border/80 rounded-3xl shadow-sm hover:shadow-xl hover:border-primary/40 transition-all relative overflow-hidden"
+                className="bg-card border-border/80 rounded-2xl shadow-xs hover:shadow-card hover:border-primary/40 transition-all relative overflow-hidden"
               >
                 <div className="absolute top-4 right-4">
-                  <span className="text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full bg-surface-muted text-muted-foreground font-mono">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-mono">
                     {step.tag}
                   </span>
                 </div>
                 <CardHeader className="p-6">
-                  <div className="h-12 w-12 rounded-2xl bg-primary/10 flex items-center justify-center text-primary ring-1 ring-primary/20 mb-3">
+                  <div className="h-12 w-12 rounded-xl bg-primary-soft flex items-center justify-center text-primary mb-3">
                     <Icon className="h-6 w-6" />
                   </div>
                   <CardTitle className="text-base font-bold font-bengali text-foreground">

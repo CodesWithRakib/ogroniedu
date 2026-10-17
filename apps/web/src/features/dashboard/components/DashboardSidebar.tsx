@@ -57,25 +57,25 @@ export function DashboardSidebar({
               <span className="font-extrabold text-base tracking-tight text-foreground block group-hover:text-primary transition-colors">
                 OgroniEdu
               </span>
-              <span className="text-[11px] font-semibold text-primary-soft-foreground block -mt-0.5">
+              <span className="text-[11px] font-medium text-muted-foreground block -mt-0.5">
                 {isBn ? 'অগ্রণী এডু প্ল্যাটফর্ম' : 'Trusted Learning'}
               </span>
             </div>
           </Link>
 
           {/* Role Badge Indicator */}
-          <div className="mx-2 px-3 py-1.5 rounded-xl bg-card border border-border flex items-center justify-between shadow-inner">
-            <span className="text-xs font-bold text-primary">
+          <div className="mx-2 px-3 py-1.5 rounded-xl bg-surface border border-border/70 flex items-center justify-between">
+            <span className="text-xs font-semibold text-foreground">
               {isBn ? roleTitle.bn : roleTitle.en}
             </span>
-            <span className="text-[10px] font-extrabold px-1.5 py-0.5 rounded-md bg-brand-soft text-primary border border-border">
+            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-primary-soft text-primary border border-primary/20">
               v1.0 Pro
             </span>
           </div>
         </div>
 
         {/* Main Navigation Items */}
-        <nav className="space-y-1.5 px-1" aria-label="Sidebar navigation">
+        <nav className="space-y-1 px-1" aria-label="Sidebar navigation">
           {items.map((item) => {
             const Icon = item.icon;
             const targetHref = withLocale(item.href, locale);
@@ -88,23 +88,23 @@ export function DashboardSidebar({
                 key={item.href}
                 href={targetHref}
                 className={cn(
-                  'group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-semibold transition-all duration-200',
+                  'group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors',
                   active
-                    ? 'bg-brand-soft text-primary border border-border shadow-sm font-bold'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-card/70 hover:border-border border border-transparent',
+                    ? 'bg-primary-soft text-primary font-semibold'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover',
                 )}
               >
                 <div className="flex items-center gap-3 min-w-0">
                   <Icon
                     className={cn(
-                      'h-4 w-4 shrink-0 transition-transform group-hover:scale-110',
-                      active ? 'text-primary' : 'text-muted-foreground group-hover:text-primary',
+                      'h-4 w-4 shrink-0 transition-transform group-hover:scale-105',
+                      active ? 'text-primary' : 'text-muted-foreground group-hover:text-foreground',
                     )}
                   />
                   <span className="truncate">{isBn ? item.labelBn : item.labelEn}</span>
                 </div>
                 {active && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-brand shrink-0" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
                 )}
               </Link>
             );
@@ -152,28 +152,28 @@ export function DashboardSidebar({
       </div>
 
       {/* Clean User Account Card (NO LOGOUT BUTTON as requested) */}
-      <div className="p-3.5 border-t border-border bg-card/80">
+      <div className="p-3.5 border-t border-border/80 bg-card">
         <Link
           href={withLocale('/profile', locale)}
-          className="group rounded-2xl border border-border hover:border-border bg-card/70 hover:bg-card p-2.5 flex items-center justify-between gap-3 transition-all cursor-pointer shadow-sm"
+          className="group rounded-xl border border-border/70 hover:border-border bg-surface/50 hover:bg-surface p-2.5 flex items-center justify-between gap-3 transition-colors cursor-pointer"
           title={isBn ? 'প্রোফাইল সেটিংস দেখুন' : 'View Profile Settings'}
         >
           <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <div className="h-9 w-9 rounded-xl bg-brand-soft border border-border text-primary font-extrabold text-xs flex items-center justify-center shrink-0 shadow-inner group-hover:scale-105 transition-transform">
+            <div className="h-8 w-8 rounded-lg bg-primary-soft border border-primary/20 text-primary font-bold text-xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
               {userInitials}
             </div>
             <div className="min-w-0 flex-1 leading-tight">
-              <p className="text-xs font-bold text-foreground group-hover:text-primary transition-colors truncate">
+              <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors truncate">
                 {authUser?.displayName || authUser?.phone || (isBn ? 'ব্যবহারকারী' : 'User')}
               </p>
-              <p className="text-[10px] text-primary-soft-foreground truncate mt-0.5">
+              <p className="text-[10px] text-muted-foreground truncate mt-0.5">
                 {authUser?.email ||
                   authUser?.phone ||
                   (isBn ? 'সক্রিয় প্রোফাইল' : 'Active Account')}
               </p>
             </div>
           </div>
-          <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-primary group-hover:translate-x-0.5 transition-all shrink-0" />
+          <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all shrink-0" />
         </Link>
       </div>
     </aside>

@@ -1,23 +1,38 @@
 import React, { forwardRef, type HTMLAttributes } from 'react';
-import { twMerge } from 'tailwind-merge';
+import { cn } from '@/lib/utils';
 
-export const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
-    <div
-      ref={ref}
-      className={twMerge(
-        'rounded-2xl border border-border bg-card text-card-foreground p-6 shadow-sm shadow-black/5 transition-all',
-        className,
-      )}
-      {...props}
-    />
-  ),
+export interface CardProps extends HTMLAttributes<HTMLDivElement> {
+  variant?: 'default' | 'elevated' | 'subtle' | 'interactive';
+}
+
+export const Card = forwardRef<HTMLDivElement, CardProps>(
+  ({ className, variant = 'default', ...props }, ref) => {
+    const variantStyles = {
+      default: 'border border-border/80 bg-card text-card-foreground shadow-2xs',
+      elevated: 'border border-border/70 bg-card text-card-foreground shadow-sm',
+      subtle: 'border border-border/60 bg-surface/50 text-card-foreground',
+      interactive:
+        'border border-border/80 bg-card text-card-foreground shadow-2xs hover:border-border hover:shadow-xs hover:-translate-y-0.5 transition-all cursor-pointer',
+    };
+
+    return (
+      <div
+        ref={ref}
+        className={cn(
+          'rounded-2xl p-5 sm:p-6 transition-colors',
+          variantStyles[variant],
+          className,
+        )}
+        {...props}
+      />
+    );
+  },
 );
 Card.displayName = 'Card';
 
 export const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={twMerge('flex flex-col space-y-1.5 pb-4', className)} {...props} />
+    <div ref={ref} className={cn('flex flex-col space-y-1.5 pb-3', className)} {...props} />
   ),
 );
 CardHeader.displayName = 'CardHeader';
@@ -26,7 +41,7 @@ export const CardTitle = forwardRef<HTMLHeadingElement, HTMLAttributes<HTMLHeadi
   ({ className, children, ...props }, ref) => (
     <h3
       ref={ref}
-      className={twMerge('text-lg font-semibold tracking-tight text-foreground', className)}
+      className={cn('text-base sm:text-lg font-semibold tracking-tight text-foreground', className)}
       {...props}
     >
       {children}
@@ -39,13 +54,13 @@ export const CardDescription = forwardRef<
   HTMLParagraphElement,
   HTMLAttributes<HTMLParagraphElement>
 >(({ className, ...props }, ref) => (
-  <p ref={ref} className={twMerge('text-sm text-muted-foreground', className)} {...props} />
+  <p ref={ref} className={cn('text-xs sm:text-sm text-muted-foreground leading-relaxed', className)} {...props} />
 ));
 CardDescription.displayName = 'CardDescription';
 
 export const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={twMerge('pt-0', className)} {...props} />
+    <div ref={ref} className={cn('pt-0', className)} {...props} />
   ),
 );
 CardContent.displayName = 'CardContent';
@@ -54,7 +69,7 @@ export const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEleme
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={twMerge('flex items-center pt-4 border-t border-border/70', className)}
+      className={cn('flex items-center pt-3 border-t border-border/60 mt-3', className)}
       {...props}
     />
   ),

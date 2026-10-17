@@ -46,8 +46,8 @@ export function FaqPage({ locale }: { locale: Locale }) {
       {/* Header Banner */}
       <div className="text-center space-y-4">
         <Badge
-          variant="outline"
-          className="text-primary border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
+          variant="secondary"
+          className="text-primary border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full"
         >
           {p.badge}
         </Badge>
@@ -66,10 +66,10 @@ export function FaqPage({ locale }: { locale: Locale }) {
             key={cat.id}
             type="button"
             onClick={() => setActiveCategory(cat.id)}
-            className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all font-bengali ${
+            className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all font-bengali cursor-pointer ${
               activeCategory === cat.id
-                ? 'bg-primary text-primary-foreground shadow-md shadow-primary/25 scale-105'
-                : 'bg-card text-muted-foreground border border-border/80 hover:bg-surface-hover hover:text-foreground'
+                ? 'bg-primary text-primary-foreground shadow-xs'
+                : 'bg-card text-muted-foreground border border-border/80 hover:bg-muted/50 hover:text-foreground'
             }`}
           >
             {cat.label}
@@ -84,16 +84,16 @@ export function FaqPage({ locale }: { locale: Locale }) {
           return (
             <Card
               key={idx}
-              className="bg-card/85 backdrop-blur-sm border-border/80 rounded-2xl sm:rounded-3xl shadow-sm transition-all overflow-hidden hover:border-primary/40"
+              className="bg-card border-border/80 rounded-2xl shadow-xs transition-all overflow-hidden hover:border-primary/40"
             >
               <button
                 type="button"
                 onClick={() => setOpenIndex(isOpen ? null : idx)}
-                className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 font-bengali"
+                className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 font-bengali cursor-pointer"
                 aria-expanded={isOpen}
               >
                 <span className="text-base sm:text-lg font-bold text-foreground">{faq.q}</span>
-                <span className="text-muted-foreground">
+                <span className="text-muted-foreground shrink-0">
                   {isOpen ? (
                     <ChevronUp className="h-5 w-5 text-primary" />
                   ) : (
@@ -116,7 +116,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Still Have Questions CTA */}
-      <div className="rounded-3xl border border-border/80 bg-card/90 backdrop-blur-xl p-8 sm:p-10 text-center space-y-4 shadow-xl">
+      <div className="rounded-2xl border border-border/80 bg-card p-8 sm:p-10 text-center space-y-4 shadow-card">
         <h3 className="text-xl font-bold text-foreground font-bengali">
           {locale === 'bn' ? 'আরও কোনো প্রশ্ন আছে?' : 'Still have questions?'}
         </h3>
@@ -125,15 +125,16 @@ export function FaqPage({ locale }: { locale: Locale }) {
             ? 'আমাদের কাস্টমার কেয়ার টিম সপ্তাহের প্রতিদিন আপনাকে সহায়তা করতে প্রস্তুত।'
             : 'Our customer support team is available 7 days a week to assist you.'}
         </p>
-        <Link href={`/${locale}/contact`}>
-          <Button
-            size="lg"
-            className="rounded-full px-8 font-bold shadow-md shadow-primary/25 font-bengali"
-          >
-            {dict.nav.contact}
-            <ArrowRight className="h-4 w-4 ml-2" />
-          </Button>
-        </Link>
+        <Button
+          asChild
+          size="lg"
+          className="rounded-full px-8 font-semibold shadow-xs font-bengali"
+        >
+          <Link href={`/${locale}/contact`} className="flex items-center gap-2">
+            <span>{dict.nav.contact}</span>
+            <ArrowRight className="h-4 w-4 ml-1" />
+          </Link>
+        </Button>
       </div>
     </div>
   );

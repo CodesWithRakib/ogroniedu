@@ -132,10 +132,10 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           type="button"
           data-testid="hero-tab-filter"
           onClick={() => setActiveTab('filter')}
-          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
             activeTab === 'filter'
-              ? 'bg-brand text-brand-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground bg-card/80 hover:bg-card border border-primary/40'
+              ? 'bg-primary text-primary-foreground shadow-xs'
+              : 'text-muted-foreground hover:text-foreground bg-card hover:bg-muted/50 border border-border/70'
           }`}
         >
           <SlidersHorizontal className="h-3 w-3" />
@@ -146,10 +146,10 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           type="button"
           data-testid="hero-tab-search"
           onClick={() => setActiveTab('search')}
-          className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
+          className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all cursor-pointer ${
             activeTab === 'search'
-              ? 'bg-brand text-brand-foreground shadow-sm'
-              : 'text-muted-foreground hover:text-foreground bg-card/80 hover:bg-card border border-primary/40'
+              ? 'bg-primary text-primary-foreground shadow-xs'
+              : 'text-muted-foreground hover:text-foreground bg-card hover:bg-muted/50 border border-border/70'
           }`}
         >
           <Search className="h-3 w-3" />
@@ -163,10 +163,10 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           /* ========================================================
            * MODE 1: DIRECT FILTER (Class + Subject + Location)
            * ======================================================== */
-          <div className="rounded-2xl lg:rounded-full bg-card/95 border border-border backdrop-blur-xl shadow-sm p-2 lg:p-1.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all">
+          <div className="rounded-2xl lg:rounded-full bg-card border border-border/80 shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all">
             {/* Segment 1: Class / Education Level */}
-            <div className="relative flex-1 px-3 py-1.5 rounded-xl lg:rounded-l-full hover:bg-surface-hover transition-colors border-b lg:border-b-0 lg:border-r border-primary/40">
-              <div className="flex items-center gap-1 text-[9px] font-bold text-primary-soft-foreground uppercase tracking-wider mb-0.5">
+            <div className="relative flex-1 px-3 py-1.5 rounded-xl lg:rounded-l-full hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border/60">
+              <div className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <GraduationCap className="h-3 w-3 text-primary" />
                 <span>{isBn ? 'শ্রেণি / মাধ্যম' : 'Class / Level'}</span>
               </div>
@@ -194,8 +194,8 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             </div>
 
             {/* Segment 2: Subject */}
-            <div className="relative flex-1 px-3 py-1.5 rounded-xl hover:bg-surface-hover transition-colors border-b lg:border-b-0 lg:border-r border-primary/40">
-              <div className="flex items-center gap-1 text-[9px] font-bold text-primary-soft-foreground uppercase tracking-wider mb-0.5">
+            <div className="relative flex-1 px-3 py-1.5 rounded-xl hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border/60">
+              <div className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <BookOpen className="h-3 w-3 text-primary" />
                 <span>{isBn ? 'পড়ার বিষয়' : 'Subject'}</span>
               </div>
@@ -223,8 +223,8 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             </div>
 
             {/* Segment 3: Location / Tuition Mode */}
-            <div className="relative flex-1 px-3 py-1.5 rounded-xl hover:bg-surface-hover transition-colors">
-              <div className="flex items-center gap-1 text-[9px] font-bold text-primary-soft-foreground uppercase tracking-wider mb-0.5">
+            <div className="relative flex-1 px-3 py-1.5 rounded-xl hover:bg-muted/40 transition-colors">
+              <div className="flex items-center gap-1 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <MapPin className="h-3 w-3 text-primary" />
                 <span>{isBn ? 'এলাকা বা মাধ্যম' : 'Location / Mode'}</span>
               </div>
@@ -250,7 +250,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             {/* Action Button */}
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-xl lg:rounded-full bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-extrabold text-xs px-6 py-3 shadow-sm whitespace-nowrap cursor-pointer shrink-0 transition-transform hover:scale-105 active:scale-95"
+              className="inline-flex items-center justify-center gap-2 rounded-xl lg:rounded-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs px-6 py-3 shadow-xs whitespace-nowrap cursor-pointer shrink-0 transition-colors"
             >
               <Search className="h-4 w-4 stroke-[2.5]" />
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
@@ -260,7 +260,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           /* ========================================================
            * MODE 2: QUICK KEYWORD SEARCH (Name, University, Topic)
            * ======================================================== */
-          <div className="rounded-2xl lg:rounded-full bg-card/95 border border-border backdrop-blur-xl shadow-sm p-2 lg:p-1.5 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all">
+          <div className="rounded-2xl lg:rounded-full bg-card border border-border/80 shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all">
             <div className="flex items-center flex-1 w-full px-3 py-1.5">
               <Search className="h-4 w-4 text-primary mr-2.5 shrink-0" />
               <input
@@ -279,7 +279,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
 
             <button
               type="submit"
-              className="w-full lg:w-auto inline-flex items-center justify-center gap-2 rounded-xl lg:rounded-full bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-extrabold text-xs px-7 py-3 shadow-sm whitespace-nowrap cursor-pointer shrink-0 transition-transform hover:scale-105 active:scale-95"
+              className="w-full lg:w-auto inline-flex items-center justify-center gap-2 rounded-xl lg:rounded-full bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs px-7 py-3 shadow-xs whitespace-nowrap cursor-pointer shrink-0 transition-colors"
             >
               <Search className="h-4 w-4 stroke-[2.5]" />
               <span>{isBn ? 'অনুসন্ধান' : 'Search'}</span>
@@ -291,7 +291,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
       {/* Popular Tags Row */}
       <div className="flex items-center gap-1.5 text-xs pt-0.5 overflow-x-auto lg:overflow-visible flex-nowrap scrollbar-none">
         <span className="font-semibold text-muted-foreground shrink-0 mr-0.5 text-xs flex items-center gap-1">
-          <Sparkles className="h-3 w-3 text-primary-soft-foreground" />
+          <Sparkles className="h-3 w-3 text-primary" />
           <span>{isBn ? 'জনপ্রিয়:' : 'Popular:'}</span>
         </span>
         {popularTags.map((tag) => (
@@ -299,7 +299,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             key={tag.query}
             type="button"
             onClick={() => handleTagClick(tag.query)}
-            className="rounded-full border border-primary/40 bg-card/80 px-2.5 py-0.5 text-[11px] font-medium text-primary-soft-foreground hover:border-brand hover:bg-brand hover:text-brand-foreground transition-all cursor-pointer shadow-xs whitespace-nowrap shrink-0"
+            className="rounded-full border border-border/80 bg-card px-2.5 py-0.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 hover:bg-muted/40 transition-colors cursor-pointer shadow-xs whitespace-nowrap shrink-0"
           >
             {tag.label}
           </button>

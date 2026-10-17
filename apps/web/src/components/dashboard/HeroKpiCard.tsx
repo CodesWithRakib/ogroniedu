@@ -30,71 +30,51 @@ export function HeroKpiCard({
     <div
       data-testid={testId}
       className={cn(
-        'group relative flex flex-col justify-between rounded-3xl p-5 sm:p-6 transition-all duration-200 select-none overflow-hidden',
-        isHero
-          ? 'bg-gradient-to-br from-primary via-primary/95 to-primary-hover text-primary-foreground shadow-lg shadow-primary/20 hover:shadow-xl hover:shadow-primary/25 hover:-translate-y-0.5'
-          : 'bg-card border border-border/70 text-card-foreground shadow-xs hover:shadow-md hover:border-border hover:-translate-y-0.5',
+        'group relative flex flex-col justify-between rounded-2xl p-5 sm:p-6 transition-all duration-200 select-none bg-card border border-border/80 shadow-2xs hover:shadow-xs hover:border-border hover:-translate-y-0.5',
+        isHero && 'ring-1 ring-primary/20 bg-gradient-to-b from-primary-soft/30 via-card to-card',
       )}
     >
-      {/* Decorative ambient glow for hero card */}
-      {isHero && (
-        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-muted blur-2xl pointer-events-none" />
-      )}
-
-      {/* Top row: Title + Action Arrow Button */}
-      <div className="flex items-center justify-between gap-2 relative z-10">
-        <div className="flex items-center gap-2 min-w-0">
+      {/* Top row: Title + Icon + Arrow indicator */}
+      <div className="flex items-center justify-between gap-2">
+        <div className="flex items-center gap-2.5 min-w-0">
           {Icon && (
-            <Icon
+            <div
               className={cn(
-                'h-4 w-4 shrink-0',
-                isHero ? 'text-primary-foreground/90' : 'text-primary',
+                'h-8 w-8 rounded-xl flex items-center justify-center shrink-0 border transition-colors',
+                isHero
+                  ? 'bg-primary-soft border-primary/25 text-primary'
+                  : 'bg-surface border-border/70 text-muted-foreground group-hover:text-foreground',
               )}
-            />
+            >
+              <Icon className="h-4 w-4" />
+            </div>
           )}
-          <span
-            className={cn(
-              'text-xs sm:text-sm font-semibold truncate',
-              isHero ? 'text-primary-foreground/90' : 'text-muted-foreground',
-            )}
-          >
+          <span className="text-xs sm:text-sm font-medium text-muted-foreground truncate">
             {title}
           </span>
         </div>
 
-        <div
-          className={cn(
-            'h-8 w-8 sm:h-9 sm:w-9 rounded-full flex items-center justify-center transition-all duration-200 shrink-0 group-hover:scale-105',
-            isHero
-              ? 'bg-muted text-primary-foreground group-hover:bg-white/30 backdrop-blur-xs'
-              : 'border border-border/80 bg-surface/75 text-foreground group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary shadow-2xs',
-          )}
-        >
+        <div className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0 text-muted-foreground/70 group-hover:text-foreground group-hover:bg-surface-hover transition-colors">
           <ArrowUpRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
         </div>
       </div>
 
       {/* Center: Stat value */}
-      <div className="my-4 relative z-10">
-        <p
-          className={cn(
-            'text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight font-sans leading-none',
-            isHero ? 'text-primary-foreground' : 'text-foreground',
-          )}
-        >
+      <div className="my-3 sm:my-4">
+        <p className="text-2xl sm:text-3xl lg:text-4xl font-extrabold tracking-tight text-foreground font-sans tabular-nums leading-none">
           {value}
         </p>
       </div>
 
       {/* Bottom: Trend / Status badge */}
       {changeText && (
-        <div className="relative z-10">
+        <div>
           <div
             className={cn(
-              'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold w-fit tracking-tight',
+              'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium w-fit tracking-tight border',
               isHero
-                ? 'bg-muted text-muted-foreground border border-border backdrop-blur-xs'
-                : 'bg-surface border border-border/80 text-muted-foreground',
+                ? 'bg-primary-soft text-primary border-primary/25'
+                : 'bg-surface text-muted-foreground border-border/70',
             )}
           >
             <TrendingUp className="h-3 w-3 shrink-0" />
@@ -109,7 +89,7 @@ export function HeroKpiCard({
     return (
       <Link
         href={href}
-        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-primary rounded-3xl"
+        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-2xl"
       >
         {content}
       </Link>

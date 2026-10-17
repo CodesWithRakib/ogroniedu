@@ -28,8 +28,8 @@ export function ContactPage({ locale }: { locale: Locale }) {
       {/* Header Banner */}
       <div className="text-center max-w-3xl mx-auto space-y-4">
         <Badge
-          variant="outline"
-          className="text-primary border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
+          variant="secondary"
+          className="text-primary border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full"
         >
           {p.badge}
         </Badge>
@@ -44,7 +44,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Contact Form */}
         <div className="lg:col-span-7">
-          <Card className="bg-card/90 backdrop-blur-xl border-border/80 rounded-3xl shadow-xl p-6 sm:p-10">
+          <Card className="bg-card border-border/80 rounded-2xl shadow-card p-6 sm:p-8">
             <CardHeader className="px-0 pt-0 pb-6">
               <CardTitle className="text-xl sm:text-2xl font-bold font-bengali text-foreground">
                 {p.formHeading}
@@ -52,8 +52,8 @@ export function ContactPage({ locale }: { locale: Locale }) {
             </CardHeader>
             <CardContent className="px-0 pb-0">
               {submitted ? (
-                <div className="rounded-2xl bg-primary/10 border border-primary/30 p-8 text-center space-y-4">
-                  <CheckCircle2 className="h-12 w-12 text-primary  mx-auto" />
+                <div className="rounded-xl bg-primary-soft/50 border border-primary/20 p-8 text-center space-y-4">
+                  <CheckCircle2 className="h-12 w-12 text-primary mx-auto" />
                   <p className="text-lg font-bold text-foreground font-bengali">
                     {p.submitSuccess}
                   </p>
@@ -124,7 +124,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                       {p.categoryLabel}
                     </label>
                     <select
-                      className="w-full rounded-xl border border-border/80 bg-card px-3.5 py-2.5 text-sm text-foreground focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                      className="w-full rounded-xl border border-border/80 bg-card px-3.5 py-2.5 text-sm text-foreground focus:border-primary focus:outline-none transition-colors"
                       value={formData.category}
                       onChange={(e) => updateField('category', e.target.value)}
                     >
@@ -143,7 +143,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                     <textarea
                       required
                       rows={4}
-                      className="w-full rounded-xl border border-border/80 bg-card p-3.5 text-sm text-foreground resize-none focus:ring-2 focus:ring-primary/20 focus:outline-none"
+                      className="w-full rounded-xl border border-border/80 bg-card p-3.5 text-sm text-foreground resize-none focus:border-primary focus:outline-none transition-colors"
                       placeholder={p.messagePlaceholder}
                       value={formData.message}
                       onChange={(e) => updateField('message', e.target.value)}
@@ -154,7 +154,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                     <div
                       role="alert"
                       data-testid="contact-submit-error"
-                      className="flex items-start gap-2 rounded-xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive"
+                      className="flex items-start gap-2 rounded-xl border border-destructive/20 bg-destructive/10 p-3 text-xs text-destructive"
                     >
                       <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
                       <span>{submitError}</span>
@@ -164,7 +164,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                   <Button
                     type="submit"
                     disabled={isSubmitting}
-                    className="w-full rounded-xl h-11 font-bold shadow-md shadow-primary/25"
+                    className="w-full rounded-xl h-11 font-semibold shadow-xs"
                   >
                     <Send className="h-4 w-4 mr-2" />
                     {isSubmitting ? (locale === 'bn' ? 'পাঠানো হচ্ছে…' : 'Sending…') : p.submitBtn}
@@ -177,7 +177,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
 
         {/* Office Details */}
         <div className="lg:col-span-5 space-y-6">
-          <Card className="bg-card/85 backdrop-blur-sm border-border/80 rounded-3xl shadow-sm p-6 sm:p-8">
+          <Card className="bg-card border-border/80 rounded-2xl shadow-xs p-6 sm:p-8">
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-lg font-bold font-bengali text-foreground">
                 {p.officeHeading}
@@ -185,7 +185,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
             </CardHeader>
             <CardContent className="px-0 pb-0 space-y-5 text-sm text-muted-foreground font-bengali">
               <div className="flex items-start gap-3">
-                <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary shrink-0">
                   <MapPin className="h-4 w-4" />
                 </div>
                 <div>
@@ -195,7 +195,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary shrink-0">
                   <Mail className="h-4 w-4" />
                 </div>
                 <a
@@ -207,7 +207,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="h-9 w-9 rounded-xl bg-primary/10 flex items-center justify-center text-primary shrink-0">
+                <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary shrink-0">
                   <Phone className="h-4 w-4" />
                 </div>
                 <span className="font-bold text-foreground">{p.officialPhone}</span>

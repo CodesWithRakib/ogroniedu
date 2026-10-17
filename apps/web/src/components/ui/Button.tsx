@@ -5,30 +5,30 @@ import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 export const buttonVariants = cva(
-  'inline-flex items-center justify-center font-medium transition-all duration-200 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] rounded-xl cursor-pointer',
+  'inline-flex items-center justify-center font-medium transition-all duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:opacity-50 disabled:pointer-events-none select-none active:scale-[0.98] rounded-xl cursor-pointer text-sm',
   {
     variants: {
       variant: {
         primary:
-          'bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm shadow-primary/25 active:opacity-95',
+          'bg-primary text-primary-foreground hover:bg-primary-hover shadow-xs active:opacity-95',
         default:
-          'bg-primary text-primary-foreground hover:bg-primary-hover shadow-sm shadow-primary/25 active:opacity-95',
+          'bg-primary text-primary-foreground hover:bg-primary-hover shadow-xs active:opacity-95',
         secondary:
-          'bg-surface-muted text-foreground hover:bg-surface-hover border border-border/50 active:bg-surface-muted',
+          'bg-surface-muted text-foreground hover:bg-surface-hover border border-border/80 active:bg-surface-muted',
         outline:
-          'border border-border bg-card/60 text-foreground hover:bg-surface-hover hover:border-primary/40 backdrop-blur-xs',
-        ghost: 'bg-transparent text-foreground hover:bg-surface-hover',
+          'border border-border bg-card text-foreground hover:bg-surface-hover hover:border-border active:bg-surface-muted shadow-2xs',
+        ghost: 'bg-transparent text-foreground hover:bg-surface-hover hover:text-foreground',
         destructive:
-          'bg-destructive text-white hover:opacity-90 shadow-sm shadow-destructive/20 active:opacity-95',
-        link: 'text-primary underline-offset-4 hover:underline',
+          'bg-destructive text-white hover:bg-destructive/90 shadow-xs active:opacity-95',
+        link: 'text-interactive underline-offset-4 hover:underline p-0 h-auto font-medium',
       },
       size: {
-        sm: 'text-xs px-3 py-1.5 gap-1.5',
-        md: 'text-sm px-4 py-2.5 gap-2',
-        default: 'text-sm px-4 py-2.5 gap-2',
-        lg: 'text-base px-6 py-3.5 gap-2.5',
-        icon: 'h-9 w-9 p-0',
-        xs: 'text-xs px-2.5 py-1 gap-1',
+        xs: 'h-7 text-xs px-2.5 gap-1 rounded-lg',
+        sm: 'h-8 text-xs px-3 gap-1.5',
+        md: 'h-9 text-xs sm:text-sm px-3.5 sm:px-4 gap-2',
+        default: 'h-9 text-xs sm:text-sm px-3.5 sm:px-4 gap-2',
+        lg: 'h-11 text-sm sm:text-base px-5 sm:px-6 gap-2.5 font-semibold',
+        icon: 'h-9 w-9 p-0 rounded-xl',
       },
     },
     defaultVariants: {
@@ -39,7 +39,8 @@ export const buttonVariants = cva(
 );
 
 export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
+  extends ButtonHTMLAttributes<HTMLButtonElement>,
+    VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isLoading?: boolean;
 }

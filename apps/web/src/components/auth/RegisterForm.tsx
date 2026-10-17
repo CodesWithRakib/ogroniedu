@@ -18,6 +18,7 @@ import {
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import type { RegisterRole } from '@/store/services/auth-api';
+import { Button } from '@/components/ui/Button';
 import { AuthShell } from './authShell';
 import { cn } from '@/lib/utils';
 import { useRegisterForm } from './use-register-form';
@@ -69,7 +70,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
         {formError && (
           <div
             role="alert"
-            className="flex items-start gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-3 text-xs font-medium text-destructive  animate-in fade-in"
+            className="flex items-start gap-2.5 rounded-xl border border-destructive/25 bg-destructive-soft p-3 text-xs font-medium text-destructive animate-in fade-in"
             data-testid="register-error"
           >
             <AlertCircle className="h-4 w-4 shrink-0 text-destructive mt-0.5" />
@@ -79,7 +80,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
 
         {/* Role Picker (Visual Segmented Pills + synced select for test compatibility) */}
         <div className="space-y-1.5 text-left">
-          <label htmlFor="register-role" className="text-xs font-bold text-foreground">
+          <label htmlFor="register-role" className="text-xs font-semibold text-foreground">
             {isBn ? 'আপনার ভূমিকা নির্বাচন করুন' : 'Select Account Type'}
           </label>
           <div className="grid grid-cols-3 gap-2">
@@ -92,14 +93,14 @@ export function RegisterForm({ locale }: { locale: Locale }) {
                   type="button"
                   onClick={() => setRole(opt.value)}
                   className={cn(
-                    'flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-2xl border text-xs font-bold transition-all shadow-2xs cursor-pointer',
+                    'flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer',
                     active
-                      ? 'border-primary bg-primary text-primary-foreground shadow-xs shadow-primary/20 scale-[1.02]'
-                      : 'border-border bg-surface hover:bg-surface-hover text-muted-foreground hover:text-foreground',
+                      ? 'border-primary bg-primary-soft text-primary shadow-xs font-bold'
+                      : 'border-border/80 bg-surface/50 hover:bg-surface text-muted-foreground hover:text-foreground',
                   )}
                 >
                   <Icon
-                    className={cn('h-4 w-4', active ? 'text-primary-foreground' : 'text-primary')}
+                    className={cn('h-4 w-4', active ? 'text-primary' : 'text-muted-foreground')}
                   />
                   <span>{opt.label}</span>
                 </button>
@@ -122,7 +123,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
 
         {/* Full Name Input */}
         <div className="space-y-1.5 text-left">
-          <label htmlFor="register-name" className="text-xs font-bold text-foreground">
+          <label htmlFor="register-name" className="text-xs font-semibold text-foreground">
             {isBn ? 'পুরো নাম' : 'Full Name'}
           </label>
           <div className="relative">
@@ -134,7 +135,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
               onChange={(e) => setDisplayName(e.target.value)}
               placeholder={isBn ? 'উদা: আবরার আহমেদ' : 'e.g. Abrar Ahmed'}
               autoComplete="name"
-              className="w-full h-11 pl-10 pr-4 rounded-2xl border border-border bg-surface hover:bg-surface-hover focus:bg-background text-xs sm:text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all"
+              className="w-full h-10 pl-10 pr-4 rounded-xl border border-border bg-card text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
               data-testid="register-name-input"
             />
           </div>
@@ -143,7 +144,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
         {/* Email & Phone Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5 text-left">
-            <label htmlFor="register-email" className="text-xs font-bold text-foreground">
+            <label htmlFor="register-email" className="text-xs font-semibold text-foreground">
               {isBn ? 'ইমেইল (ঐচ্ছিক)' : 'Email (optional)'}
             </label>
             <div className="relative">
@@ -155,14 +156,14 @@ export function RegisterForm({ locale }: { locale: Locale }) {
                 onChange={(e) => setEmail(e.target.value)}
                 placeholder="you@mail.com"
                 autoComplete="email"
-                className="w-full h-11 pl-10 pr-3 rounded-2xl border border-border bg-surface hover:bg-surface-hover focus:bg-background text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all"
+                className="w-full h-10 pl-10 pr-3 rounded-xl border border-border bg-card text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
                 data-testid="register-email-input"
               />
             </div>
           </div>
 
           <div className="space-y-1.5 text-left">
-            <label htmlFor="register-phone" className="text-xs font-bold text-foreground">
+            <label htmlFor="register-phone" className="text-xs font-semibold text-foreground">
               {isBn ? 'মোবাইল (ঐচ্ছিক)' : 'Mobile (optional)'}
             </label>
             <div className="relative">
@@ -174,7 +175,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
                 onChange={(e) => setPhone(e.target.value)}
                 placeholder="+8801XXXXXXXXX"
                 autoComplete="tel"
-                className="w-full h-11 pl-10 pr-3 rounded-2xl border border-border bg-surface hover:bg-surface-hover focus:bg-background text-xs text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all"
+                className="w-full h-10 pl-10 pr-3 rounded-xl border border-border bg-card text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
                 data-testid="register-phone-input"
               />
             </div>
@@ -183,7 +184,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
 
         {/* Password Input */}
         <div className="space-y-1.5 text-left">
-          <label htmlFor="register-password" className="text-xs font-bold text-foreground">
+          <label htmlFor="register-password" className="text-xs font-semibold text-foreground">
             {dict.auth.passwordLabel}
           </label>
           <div className="relative">
@@ -195,19 +196,19 @@ export function RegisterForm({ locale }: { locale: Locale }) {
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               autoComplete="new-password"
-              className="w-full h-11 pl-10 pr-11 rounded-2xl border border-border bg-surface hover:bg-surface-hover focus:bg-background text-xs sm:text-sm text-foreground placeholder:text-muted-foreground/70 focus:outline-none focus:ring-2 focus:ring-primary/25 transition-all"
+              className="w-full h-10 pl-10 pr-11 rounded-xl border border-border bg-card text-xs sm:text-sm text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring focus:border-transparent transition-colors shadow-2xs"
               data-testid="register-password-input"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3.5 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-lg"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-lg transition-colors cursor-pointer"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
-          <p className="text-[10px] text-muted-foreground">
+          <p className="text-[11px] text-muted-foreground">
             {isBn
               ? 'কমপক্ষে ৮ অক্ষর (বড় হাতের, ছোট হাতের অক্ষর ও সংখ্যা)'
               : 'At least 8 characters with upper, lowercase and number'}
@@ -215,31 +216,26 @@ export function RegisterForm({ locale }: { locale: Locale }) {
         </div>
 
         {/* Submit Button */}
-        <button
-          type="submit"
-          disabled={isLoading}
-          className="w-full h-11 rounded-full bg-gradient-to-r from-primary via-primary to-primary-hover hover:opacity-95 text-primary-foreground font-bold text-xs sm:text-sm shadow-md shadow-primary/25 transition-all hover:scale-[1.01] active:scale-[0.99] flex items-center justify-center gap-2 cursor-pointer disabled:opacity-60"
-          data-testid="register-submit-btn"
-        >
-          {isLoading ? (
-            <span className="inline-flex items-center gap-2">
-              <span className="h-4 w-4 animate-spin rounded-full border-2 border-primary-foreground border-t-transparent" />
-              <span>{isBn ? 'নিবন্ধন তৈরি হচ্ছে...' : 'Creating Account...'}</span>
-            </span>
-          ) : (
-            <>
-              <span>{dict.nav.register}</span>
-              <ArrowRight className="h-4 w-4" />
-            </>
-          )}
-        </button>
+        <div className="pt-1">
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            isLoading={isLoading}
+            className="w-full font-semibold"
+            data-testid="register-submit-btn"
+          >
+            <span>{dict.nav.register}</span>
+            <ArrowRight className="h-4 w-4 ml-1" />
+          </Button>
+        </div>
 
         {/* Switch to Login */}
-        <p className="text-center text-xs text-muted-foreground pt-2">
+        <p className="text-center text-xs text-muted-foreground pt-3">
           <span>{isBn ? 'ইতিমধ্যে অ্যাকাউন্ট আছে? ' : 'Already have an account? '}</span>
           <Link
             href={withLocale('/login', locale)}
-            className="font-bold text-primary hover:underline ml-1"
+            className="font-semibold text-primary hover:underline ml-1"
           >
             {dict.nav.login}
           </Link>

@@ -11,6 +11,8 @@ import {
   X,
   Sparkles,
 } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Input } from '@/components/ui/Input';
 import {
   useUpsertStudentProfileMutation,
   type StudentProfileData,
@@ -118,15 +120,12 @@ export function StudentAcademicProfileCard({
 
   return (
     <>
-      <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs relative overflow-hidden flex flex-col justify-between">
-        {/* Ambient Top Glow */}
-        <div className="absolute top-0 right-0 -mr-8 -mt-8 w-32 h-32 bg-primary/10 rounded-full blur-2xl pointer-events-none" />
-
+      <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs relative overflow-hidden flex flex-col justify-between">
         <div>
           {/* Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-border/50">
+          <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
             <div className="flex items-center gap-2.5">
-              <div className="h-9 w-9 rounded-xl bg-primary/10 border border-primary/25 text-primary flex items-center justify-center shrink-0">
+              <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
                 <GraduationCap className="h-5 w-5" />
               </div>
               <div>
@@ -139,19 +138,21 @@ export function StudentAcademicProfileCard({
               </div>
             </div>
 
-            <button
+            <Button
+              variant="outline"
+              size="xs"
               onClick={openModal}
               data-testid="edit-student-profile-btn"
-              className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold text-primary hover:text-primary-foreground hover:bg-primary border border-primary/30 transition-all duration-200"
+              className="rounded-full gap-1.5 font-semibold"
             >
-              <Edit3 className="h-3.5 w-3.5" />
+              <Edit3 className="h-3.5 w-3.5 text-primary" />
               <span>{isBn ? 'সম্পাদনা' : 'Edit'}</span>
-            </button>
+            </Button>
           </div>
 
           {/* Academic Details Grid */}
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-surface/50 border border-border/40">
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
               <Building2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-muted-foreground font-medium">
@@ -163,8 +164,8 @@ export function StudentAcademicProfileCard({
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-surface/50 border border-border/40">
-              <BookOpen className="h-4 w-4 text-success-soft-foreground shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
+              <BookOpen className="h-4 w-4 text-emerald-600 shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-muted-foreground font-medium">
                   {isBn ? 'শ্রেণী ও কারিকুলাম' : 'Class & Curriculum'}
@@ -176,8 +177,8 @@ export function StudentAcademicProfileCard({
             </div>
 
             {studentProfile?.stream && (
-              <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-surface/50 border border-border/40">
-                <Sparkles className="h-4 w-4 text-warning shrink-0 mt-0.5" />
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
+                <Sparkles className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
                 <div className="min-w-0">
                   <p className="text-[11px] text-muted-foreground font-medium">
                     {isBn ? 'বিভাগ / শাখা' : 'Stream / Group'}
@@ -189,8 +190,8 @@ export function StudentAcademicProfileCard({
               </div>
             )}
 
-            <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-surface/50 border border-border/40">
-              <ShieldCheck className="h-4 w-4 text-info-soft-foreground shrink-0 mt-0.5" />
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
+              <ShieldCheck className="h-4 w-4 text-blue-600 shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-muted-foreground font-medium">
                   {isBn ? 'অভিভাবক স্থিতি' : 'Guardian Status'}
@@ -214,13 +215,13 @@ export function StudentAcademicProfileCard({
 
           {/* Learning Goals Banner */}
           {studentProfile?.learningGoals && (
-            <div className="mt-3 p-3 rounded-xl bg-primary/5 border border-primary/20 text-xs flex items-start gap-2">
+            <div className="mt-3.5 p-3 rounded-xl bg-primary-soft/50 border border-primary/20 text-xs flex items-start gap-2.5">
               <Target className="h-4 w-4 text-primary shrink-0 mt-0.5" />
               <div>
                 <span className="font-bold text-primary block text-[11px]">
                   {isBn ? 'লক্ষ্য ও প্রস্তুতি' : 'Learning Goals'}
                 </span>
-                <p className="text-foreground/90 mt-0.5 line-clamp-2">
+                <p className="text-foreground/90 mt-0.5 line-clamp-2 leading-relaxed">
                   {studentProfile.learningGoals}
                 </p>
               </div>
@@ -234,22 +235,22 @@ export function StudentAcademicProfileCard({
         <div
           role="dialog"
           aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-xs animate-in fade-in duration-200"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
         >
-          <div className="bg-card border border-border/80 w-full max-w-lg rounded-3xl p-6 shadow-2xl relative text-foreground">
+          <div className="bg-card border border-border/80 w-full max-w-lg rounded-2xl p-6 shadow-xl relative text-foreground">
             <button
               onClick={() => setIsModalOpen(false)}
-              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-surface text-muted-foreground hover:text-foreground transition-colors"
+              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
             >
               <X className="h-5 w-5" />
             </button>
 
-            <div className="flex items-center gap-3 pb-4 border-b border-border/50">
-              <div className="h-10 w-10 rounded-2xl bg-primary/10 border border-primary/25 text-primary flex items-center justify-center">
+            <div className="flex items-center gap-3 pb-4 border-b border-border/60">
+              <div className="h-10 w-10 rounded-xl bg-primary-soft text-primary flex items-center justify-center">
                 <GraduationCap className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-base font-extrabold">
+                <h3 className="text-base font-bold">
                   {isBn ? 'একাডেমিক প্রোফাইল আপডেট' : 'Update Academic Profile'}
                 </h3>
                 <p className="text-xs text-muted-foreground">
@@ -261,17 +262,17 @@ export function StudentAcademicProfileCard({
             </div>
 
             {errorMessage && (
-              <div className="mt-4 p-3 rounded-xl bg-destructive/10 border border-destructive/40 text-xs text-destructive font-semibold">
+              <div className="mt-4 p-3 rounded-xl bg-destructive/10 border border-destructive/30 text-xs text-destructive font-semibold">
                 {errorMessage}
               </div>
             )}
 
             <form onSubmit={handleSave} className="mt-4 space-y-4">
               <div>
-                <label className="block text-xs font-bold text-foreground mb-1">
+                <label className="block text-xs font-semibold text-foreground mb-1">
                   {isBn ? 'শিক্ষা প্রতিষ্ঠানের নাম' : 'Institution Name'}
                 </label>
-                <input
+                <Input
                   type="text"
                   value={institution}
                   onChange={(e) => setInstitution(e.target.value)}
@@ -280,19 +281,19 @@ export function StudentAcademicProfileCard({
                       ? 'উদা: ঢাকা কলেজ / ভিকারুননিসা নূন'
                       : 'e.g. Dhaka College / Notre Dame College'
                   }
-                  className="w-full h-10 px-3.5 rounded-xl bg-surface border border-border text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-primary/40"
+                  className="rounded-xl h-10"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 <div>
-                  <label className="block text-xs font-bold text-foreground mb-1">
+                  <label className="block text-xs font-semibold text-foreground mb-1">
                     {isBn ? 'শ্রেণী / পর্যায়' : 'Education Level'}
                   </label>
                   <select
                     value={educationLevelId}
                     onChange={(e) => setEducationLevelId(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl bg-surface border border-border text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-primary/40"
+                    className="w-full h-10 px-3 rounded-xl bg-card border border-border/80 text-foreground text-xs focus:border-primary focus:outline-none transition-colors"
                   >
                     <option value="">
                       {isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
@@ -306,13 +307,13 @@ export function StudentAcademicProfileCard({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-bold text-foreground mb-1">
+                  <label className="block text-xs font-semibold text-foreground mb-1">
                     {isBn ? 'পাঠ্যক্রম (কারিকুলাম)' : 'Curriculum'}
                   </label>
                   <select
                     value={curriculumId}
                     onChange={(e) => setCurriculumId(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl bg-surface border border-border text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-primary/40"
+                    className="w-full h-10 px-3 rounded-xl bg-card border border-border/80 text-foreground text-xs focus:border-primary focus:outline-none transition-colors"
                   >
                     <option value="">
                       {isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
@@ -327,10 +328,10 @@ export function StudentAcademicProfileCard({
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-foreground mb-1">
+                <label className="block text-xs font-semibold text-foreground mb-1">
                   {isBn ? 'শাখা / বিভাগ' : 'Stream / Group'}
                 </label>
-                <input
+                <Input
                   type="text"
                   value={stream}
                   onChange={(e) => setStream(e.target.value)}
@@ -339,12 +340,12 @@ export function StudentAcademicProfileCard({
                       ? 'উদা: বিজ্ঞান (Science) / ব্যবসায় শিক্ষা'
                       : 'e.g. Science / Business Studies'
                   }
-                  className="w-full h-10 px-3.5 rounded-xl bg-surface border border-border text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-primary/40"
+                  className="rounded-xl h-10"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-bold text-foreground mb-1">
+                <label className="block text-xs font-semibold text-foreground mb-1">
                   {isBn ? 'পড়ার লক্ষ্য ও প্রস্তুতি' : 'Learning Goals'}
                 </label>
                 <textarea
@@ -356,22 +357,25 @@ export function StudentAcademicProfileCard({
                       ? 'উদা: এইচএসসি পরীক্ষায় গোল্ডেন জিপিএ ৫ এবং ইঞ্জিনিয়ারিং ভর্তি প্রস্তুতি।'
                       : 'e.g. Aiming for GPA 5.0 in Board exams and Engineering admission.'
                   }
-                  className="w-full p-3 rounded-xl bg-surface border border-border text-foreground text-xs focus:outline-hidden focus:ring-2 focus:ring-primary/40 resize-none"
+                  className="w-full p-3 rounded-xl bg-card border border-border/80 text-foreground text-xs focus:border-primary focus:outline-none transition-colors resize-none"
                 />
               </div>
 
               <div className="pt-3 border-t border-border/60 flex items-center justify-end gap-2.5">
-                <button
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-xl border border-border text-xs font-semibold hover:bg-surface transition-colors"
+                  className="rounded-xl"
                 >
                   {isBn ? 'বাতিল' : 'Cancel'}
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
+                  size="sm"
                   disabled={isSaving}
-                  className="px-5 py-2 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs shadow-sm shadow-primary/25 transition-transform active:scale-95 disabled:opacity-50"
+                  className="rounded-xl shadow-xs font-semibold"
                 >
                   {isSaving
                     ? isBn
@@ -380,7 +384,7 @@ export function StudentAcademicProfileCard({
                     : isBn
                       ? 'সংরক্ষণ করুন'
                       : 'Save Profile'}
-                </button>
+                </Button>
               </div>
             </form>
           </div>

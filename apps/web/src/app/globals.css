@@ -121,11 +121,11 @@
   color-scheme: light;
 
   /* --- Geometry ------------------------------------------------------------- */
-  --radius: 0.875rem;
-  --radius-sm: 0.5rem;
-  --radius-md: 0.75rem;
-  --radius-lg: 1rem;
-  --radius-xl: 1.25rem;
+  --radius: 0.75rem;
+  --radius-sm: 0.375rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
 
   /* --- Motion --------------------------------------------------------------- */
   --motion-fast: 120ms;
@@ -223,11 +223,11 @@
   --sidebar-active-foreground: #115e59;
   --sidebar-hover: #f1f5f9;
 
-  /* --- Elevation (restrained) ---------------------------------------------- */
-  --elevation-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
-  --elevation-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
-  --elevation-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 28px -18px rgba(15, 23, 42, 0.18);
-  --elevation-popover: 0 12px 32px -8px rgba(15, 23, 42, 0.18);
+  /* --- Elevation (restrained, modern SaaS) -------------------------------- */
+  --elevation-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
+  --elevation-sm: 0 1px 3px 0 rgba(15, 23, 42, 0.05), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
+  --elevation-card: 0 1px 3px 0 rgba(15, 23, 42, 0.04), 0 1px 2px -1px rgba(15, 23, 42, 0.03);
+  --elevation-popover: 0 10px 25px -5px rgba(15, 23, 42, 0.08), 0 8px 10px -6px rgba(15, 23, 42, 0.04);
 
   /* --- Decorative gradients (light, calm) ---------------------------------- */
   --gradient-hero: radial-gradient(
