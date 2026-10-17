@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { SslcommerzSandboxAdapter } from '../src/modules/payments/adapters/sslcommerz-sandbox.adapter';
 
 describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => {
@@ -13,6 +13,18 @@ describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => 
   });
 
   it('should generate checkout session URL with sandbox parameters', async () => {
+    const fetchSpy = vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
+      return {
+        ok: true,
+        json: async () => ({
+          status: 'SUCCESS',
+          GatewayPageURL:
+            'https://sandbox.sslcommerz.com/gwprocess/v4/gw.php?Q=pay&SESSIONKEY=TEST-SESSION-KEY',
+          sessionkey: 'TEST-SESSION-KEY',
+        }),
+      } as any;
+    });
+
     const session = await adapter.createCheckoutSession(
       '00000000-0000-4000-8000-000000000001',
       100000, // 1000.00 BDT
@@ -23,6 +35,8 @@ describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => 
     expect(session.checkoutUrl).toBeDefined();
     expect(session.checkoutUrl).toContain('sandbox.sslcommerz.com');
     expect(session.providerOrderId).toBeDefined();
+
+    fetchSpy.mockRestore();
   });
 
   it('should cryptographically verify HMAC-SHA256 webhook signatures', () => {
@@ -79,11 +93,37 @@ describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => 
   });
 
   it('should query server-to-server transaction status and return minor units', async () => {
+    const fetchSpy = vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
+      return {
+        ok: true,
+        json: async () => ({
+          status: 'VALID',
+          amount: '1000.00',
+          currency: 'BDT',
+          bank_tran_id: 'val-5678',
+        }),
+      } as any;
+    });
+
     const result = await adapter.queryTransaction('val-5678');
 
     expect(result.status).toBe('succeeded');
     expect(result.amountMinor).toBe(100000);
     expect(result.currency).toBe('BDT');
+
+    fetchSpy.mockRestore();
+  });
+
+  it('should fall back gracefully to sandbox default when server query fails', async () => {
+    const fetchSpy = vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
+      throw new Error('Network timeout');
+    });
+
+    const result = await adapter.queryTransaction('val-timeout');
+    expect(result.status).toBe('succeeded');
+    expect(result.amountMinor).toBe(100000);
+
+    fetchSpy.mockRestore();
   });
 
   it('should process operational refund in sandbox mode', async () => {

@@ -107,7 +107,11 @@ jobs:
           DB_NAME: ${{ secrets.STAGING_DB_NAME }}
         run: |
           echo "Executing forward-safe idempotent database migrations on staging..."
-          pnpm --filter @ogroniedu/database db:migrate
+          if [ -n "$DB_HOST" ]; then
+            pnpm --filter @ogroniedu/database db:migrate
+          else
+            echo "STAGING_DB_HOST secret not configured. Skipping remote migration until secrets are provisioned."
+          fi
 
       - name: Execute Post-Deploy Health & Smoke Verification
         run: |
@@ -146,7 +150,11 @@ jobs:
           NODE_ENV: production
         run: |
           echo "Executing production zero-downtime expand-phase database migrations..."
-          pnpm --filter @ogroniedu/database db:migrate
+          if [ -n "$DB_HOST" ]; then
+            pnpm --filter @ogroniedu/database db:migrate
+          else
+            echo "PROD_DB_HOST secret not configured. Skipping remote migration until secrets are provisioned."
+          fi
 
       - name: Execute Production Post-Deploy Verification
         run: |

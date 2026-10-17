@@ -88,7 +88,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       );
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 8000);
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
 
       const response = await fetch(this.sessionApiUrl, {
         method: 'POST',
@@ -189,7 +189,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       const validationUrl = `${this.validationApiUrl}?val_id=${encodeURIComponent(providerTransactionId)}&store_id=${encodeURIComponent(this.storeId)}&store_passwd=${encodeURIComponent(this.storePasswd)}&format=json`;
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      const timeoutId = setTimeout(() => controller.abort(), 2000);
 
       const response = await fetch(validationUrl, {
         method: 'GET',
