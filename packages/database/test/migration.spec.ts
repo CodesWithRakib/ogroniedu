@@ -6,11 +6,11 @@ const { Client } = pg;
 
 describe('Database Migration Runner & Integrity Constraint Tests', () => {
   const dbConfig = {
-    host: 'localhost',
-    port: 5432,
-    user: 'postgres',
+    host: process.env.DB_HOST || 'localhost',
+    port: Number(process.env.DB_PORT) || 5432,
+    user: process.env.DB_USERNAME || process.env.DB_USER || 'postgres',
     password: process.env.DB_PASSWORD || 'password',
-    database: 'ogroniedu_test',
+    database: process.env.DB_NAME || 'ogroniedu_test',
   };
 
   const runner = new MigrationRunner(dbConfig);
