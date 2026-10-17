@@ -57,36 +57,40 @@ export class TaxonomyController {
    * ========================================================================= */
 
   @Get('subjects')
-  async getSubjects() {
+  async getSubjects(@Query('all') all?: string) {
+    const where = all === 'true' ? {} : { isActive: true };
     const data = await this.subjectRepo.find({
-      where: { isActive: true },
+      where,
       order: { nameEn: 'ASC' },
     });
     return { success: true, data };
   }
 
   @Get('education-levels')
-  async getEducationLevels() {
+  async getEducationLevels(@Query('all') all?: string) {
+    const where = all === 'true' ? {} : { isActive: true };
     const data = await this.levelRepo.find({
-      where: { isActive: true },
+      where,
       order: { sortOrder: 'ASC' },
     });
     return { success: true, data };
   }
 
   @Get('curricula')
-  async getCurricula() {
+  async getCurricula(@Query('all') all?: string) {
+    const where = all === 'true' ? {} : { isActive: true };
     const data = await this.curriculumRepo.find({
-      where: { isActive: true },
+      where,
       order: { code: 'ASC' },
     });
     return { success: true, data };
   }
 
   @Get('streams')
-  async getStreams() {
+  async getStreams(@Query('all') all?: string) {
+    const where = all === 'true' ? {} : { isActive: true };
     const data = await this.streamRepo.find({
-      where: { isActive: true },
+      where,
       order: { sortOrder: 'ASC' },
     });
     return { success: true, data };
@@ -94,14 +98,17 @@ export class TaxonomyController {
 
   @Get('institutions')
   async getInstitutions(
+    @Query('all') all?: string,
     @Query('search') search?: string,
     @Query('type') type?: string,
     @Query('district') district?: string,
     @Query('limit') limitStr?: string,
   ) {
     const limit = Math.min(Number(limitStr) || 100, 200);
-    const qb = this.institutionRepo.createQueryBuilder('inst')
-      .where('inst.isActive = :active', { active: true });
+    const qb = this.institutionRepo.createQueryBuilder('inst');
+    if (all !== 'true') {
+      qb.where('inst.isActive = :active', { active: true });
+    }
 
     if (type) {
       qb.andWhere('inst.type = :type', { type });

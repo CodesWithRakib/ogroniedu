@@ -58,29 +58,48 @@ export interface TaxonomyLocation extends Record<string, unknown> {
 
 export const taxonomyApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getSubjects: builder.query<ApiSuccessEnvelope<TaxonomySubject[]>, void>({
-      query: () => '/api/v1/taxonomy/subjects',
+    getSubjects: builder.query<ApiSuccessEnvelope<TaxonomySubject[]>, { all?: boolean } | void>({
+      query: (params) => ({
+        url: '/api/v1/taxonomy/subjects',
+        params: params?.all ? { all: 'true' } : undefined,
+      }),
       providesTags: [{ type: 'Taxonomy', id: 'SUBJECTS' }],
     }),
-    getEducationLevels: builder.query<ApiSuccessEnvelope<TaxonomyEducationLevel[]>, void>({
-      query: () => '/api/v1/taxonomy/education-levels',
+    getEducationLevels: builder.query<ApiSuccessEnvelope<TaxonomyEducationLevel[]>, { all?: boolean } | void>({
+      query: (params) => ({
+        url: '/api/v1/taxonomy/education-levels',
+        params: params?.all ? { all: 'true' } : undefined,
+      }),
       providesTags: [{ type: 'Taxonomy', id: 'LEVELS' }],
     }),
-    getCurricula: builder.query<ApiSuccessEnvelope<TaxonomyCurriculum[]>, void>({
-      query: () => '/api/v1/taxonomy/curricula',
+    getCurricula: builder.query<ApiSuccessEnvelope<TaxonomyCurriculum[]>, { all?: boolean } | void>({
+      query: (params) => ({
+        url: '/api/v1/taxonomy/curricula',
+        params: params?.all ? { all: 'true' } : undefined,
+      }),
       providesTags: [{ type: 'Taxonomy', id: 'CURRICULA' }],
     }),
-    getStreams: builder.query<ApiSuccessEnvelope<TaxonomyStream[]>, void>({
-      query: () => '/api/v1/taxonomy/streams',
+    getStreams: builder.query<ApiSuccessEnvelope<TaxonomyStream[]>, { all?: boolean } | void>({
+      query: (params) => ({
+        url: '/api/v1/taxonomy/streams',
+        params: params?.all ? { all: 'true' } : undefined,
+      }),
       providesTags: [{ type: 'Taxonomy', id: 'STREAMS' }],
     }),
     getInstitutions: builder.query<
       ApiSuccessEnvelope<TaxonomyInstitution[]>,
-      { search?: string; type?: string; district?: string } | void
+      { search?: string; type?: string; district?: string; all?: boolean } | void
     >({
       query: (params) => ({
         url: '/api/v1/taxonomy/institutions',
-        params: params ? { ...params } : undefined,
+        params: params
+          ? {
+              search: params.search,
+              type: params.type,
+              district: params.district,
+              all: params.all ? 'true' : undefined,
+            }
+          : undefined,
       }),
       providesTags: [{ type: 'Taxonomy', id: 'INSTITUTIONS' }],
     }),

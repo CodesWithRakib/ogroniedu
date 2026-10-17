@@ -104,9 +104,9 @@
   --color-sidebar-hover: var(--sidebar-hover);
 
   /* --- Typography ----------------------------------------------------------- */
-  --font-sans: var(--font-plus-jakarta), var(--font-inter), system-ui, -apple-system, sans-serif;
-  --font-bengali: var(--font-noto-bengali), var(--font-hind-siliguri), var(--font-plus-jakarta), system-ui, sans-serif;
-  --font-serif: var(--font-instrument-serif), Georgia, serif;
+  --font-sans: 'Plus Jakarta Sans', var(--font-plus-jakarta), 'Inter', var(--font-inter), 'Noto Sans Bengali', var(--font-noto-bengali), 'Hind Siliguri', var(--font-hind-siliguri), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-bengali: 'Noto Sans Bengali', var(--font-noto-bengali), 'Hind Siliguri', var(--font-hind-siliguri), 'Plus Jakarta Sans', var(--font-plus-jakarta), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-serif: 'Instrument Serif', var(--font-instrument-serif), Georgia, serif;
 
   /* --- Elevation ------------------------------------------------------------ */
   --shadow-xs: var(--elevation-xs);
@@ -243,6 +243,19 @@
  * Base typography & layout
  * ========================================================================== */
 
+*,
+::before,
+::after {
+  font-family: inherit;
+}
+
+html {
+  font-family: var(--font-sans);
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
 body {
   background-color: var(--background);
   color: var(--foreground);
@@ -253,10 +266,65 @@ body {
   text-rendering: optimizeLegibility;
 }
 
-/* English mode prioritizes Plus Jakarta Sans */
+/* ==========================================================================
+ * Font Face Declarations with swap display strategy
+ * ========================================================================== */
+@font-face {
+  font-family: 'Noto Sans Bengali';
+  src: local('Noto Sans Bengali'), local('Hind Siliguri'), local('Kalpurush');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Hind Siliguri';
+  src: local('Hind Siliguri'), local('Noto Sans Bengali');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Plus Jakarta Sans';
+  src: local('Plus Jakarta Sans'), local('Inter');
+  font-display: swap;
+}
+
+/* Ensure ALL UI controls, buttons, inputs, selects, dialogs and modals inherit system fonts */
+button,
+input,
+optgroup,
+select,
+textarea {
+  font-family: inherit;
+  font-feature-settings: inherit;
+}
+
+/* English mode prioritizes Plus Jakarta Sans & Inter */
 html[lang="en"],
-html[lang="en"] body {
-  font-family: var(--font-plus-jakarta), var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+html[lang="en"] body,
+html[lang="en"] button,
+html[lang="en"] input,
+html[lang="en"] select,
+html[lang="en"] textarea,
+:lang(en),
+[lang="en"] {
+  font-family: var(--font-plus-jakarta), 'Plus Jakarta Sans', var(--font-inter), 'Inter', var(--font-noto-bengali), 'Noto Sans Bengali', var(--font-hind-siliguri), 'Hind Siliguri', ui-sans-serif, system-ui, sans-serif;
+}
+
+/* ==========================================================================
+ * Bengali Mode: Pure CSS enforcement across ALL elements, inputs and portals
+ * ========================================================================== */
+html[lang="bn"],
+html[lang="bn"] body,
+html[lang="bn"] *,
+html[lang="bn"] *::before,
+html[lang="bn"] *::after,
+:lang(bn),
+:lang(bn) body,
+:lang(bn) *,
+[lang="bn"],
+[lang="bn"] *,
+.font-bengali,
+.font-bengali * {
+  font-family: var(--font-noto-bengali), 'Noto Sans Bengali', var(--font-hind-siliguri), 'Hind Siliguri', var(--font-plus-jakarta), 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif !important;
 }
 
 /* Bengali optical alignment: prevent broken conjuncts */
@@ -265,10 +333,74 @@ html[lang="bn"] body,
 :lang(bn),
 [lang="bn"],
 .font-bengali {
-  font-family: var(--font-noto-bengali), var(--font-hind-siliguri), var(--font-plus-jakarta), ui-sans-serif, system-ui, sans-serif;
   text-rendering: optimizeLegibility;
   letter-spacing: 0 !important;
   line-height: 1.625;
+}
+
+/* Force .font-sans inside Bengali to also respect Bengali typography */
+html[lang="bn"] .font-sans,
+:lang(bn) .font-sans,
+[lang="bn"] .font-sans {
+  font-family: var(--font-noto-bengali), 'Noto Sans Bengali', var(--font-hind-siliguri), 'Hind Siliguri', var(--font-plus-jakarta), 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* Form controls and interactive elements in Bengali */
+html[lang="bn"] button,
+html[lang="bn"] input,
+html[lang="bn"] select,
+html[lang="bn"] textarea,
+html[lang="bn"] optgroup,
+html[lang="bn"] label,
+:lang(bn) button,
+:lang(bn) input,
+:lang(bn) select,
+:lang(bn) textarea,
+:lang(bn) label {
+  font-family: var(--font-noto-bengali), 'Noto Sans Bengali', var(--font-hind-siliguri), 'Hind Siliguri', var(--font-plus-jakarta), 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif !important;
+}
+
+/* Radix UI Portals: Dialogs, Selects, Popovers, Dropdowns, Sheets, Tooltips, Toaster */
+[data-radix-portal],
+[data-slot="dialog-content"],
+[data-slot="alert-dialog-content"],
+[data-slot="popover-content"],
+[data-slot="select-content"],
+[data-slot="select-item"],
+[data-slot="select-trigger"],
+[data-slot="dropdown-menu-content"],
+[data-slot="dropdown-menu-item"],
+[data-slot="sheet-content"],
+[data-slot="tooltip-content"],
+.toaster {
+  font-family: var(--font-sans);
+}
+
+html[lang="bn"] [data-radix-portal],
+html[lang="bn"] [data-slot="dialog-content"],
+html[lang="bn"] [data-slot="dialog-content"] *,
+html[lang="bn"] [data-slot="alert-dialog-content"],
+html[lang="bn"] [data-slot="alert-dialog-content"] *,
+html[lang="bn"] [data-slot="popover-content"],
+html[lang="bn"] [data-slot="popover-content"] *,
+html[lang="bn"] [data-slot="select-content"],
+html[lang="bn"] [data-slot="select-content"] *,
+html[lang="bn"] [data-slot="select-item"],
+html[lang="bn"] [data-slot="select-trigger"],
+html[lang="bn"] [data-slot="dropdown-menu-content"],
+html[lang="bn"] [data-slot="dropdown-menu-item"],
+html[lang="bn"] [data-slot="sheet-content"],
+html[lang="bn"] [data-slot="sheet-content"] *,
+html[lang="bn"] [data-slot="tooltip-content"],
+html[lang="bn"] .toaster,
+:lang(bn) [data-radix-portal],
+:lang(bn) [data-slot="dialog-content"],
+:lang(bn) [data-slot="dialog-content"] *,
+:lang(bn) [data-slot="select-content"],
+:lang(bn) [data-slot="select-content"] *,
+:lang(bn) [data-slot="select-item"],
+:lang(bn) [data-slot="select-trigger"] {
+  font-family: var(--font-noto-bengali), 'Noto Sans Bengali', var(--font-hind-siliguri), 'Hind Siliguri', var(--font-plus-jakarta), 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif !important;
 }
 
 :lang(bn) h1,

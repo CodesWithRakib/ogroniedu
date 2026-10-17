@@ -79,15 +79,16 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
   const [activeTab, setActiveTab] = useState<TaxonomyTab>('levels');
   const [searchQuery, setSearchQuery] = useState('');
+  const [statusFilter, setStatusFilter] = useState<'all' | 'active' | 'inactive'>('all');
   const [selectedType, setSelectedType] = useState('all');
   const [feedback, setFeedback] = useState<{ type: 'success' | 'error'; message: string } | null>(null);
 
-  // Queries
-  const { data: levelsData, isLoading: levelsLoading, refetch: refetchLevels } = useGetEducationLevelsQuery();
-  const { data: curriculaData, isLoading: curriculaLoading, refetch: refetchCurricula } = useGetCurriculaQuery();
-  const { data: streamsData, isLoading: streamsLoading, refetch: refetchStreams } = useGetStreamsQuery();
-  const { data: institutionsData, isLoading: institutionsLoading, refetch: refetchInstitutions } = useGetInstitutionsQuery();
-  const { data: subjectsData, isLoading: subjectsLoading, refetch: refetchSubjects } = useGetSubjectsQuery();
+  // Queries (fetch all records including inactive for admin management)
+  const { data: levelsData, isLoading: levelsLoading, refetch: refetchLevels } = useGetEducationLevelsQuery({ all: true });
+  const { data: curriculaData, isLoading: curriculaLoading, refetch: refetchCurricula } = useGetCurriculaQuery({ all: true });
+  const { data: streamsData, isLoading: streamsLoading, refetch: refetchStreams } = useGetStreamsQuery({ all: true });
+  const { data: institutionsData, isLoading: institutionsLoading, refetch: refetchInstitutions } = useGetInstitutionsQuery({ all: true });
+  const { data: subjectsData, isLoading: subjectsLoading, refetch: refetchSubjects } = useGetSubjectsQuery({ all: true });
 
   // Mutations
   const [createLevel, { isLoading: creatingLevel }] = useCreateEducationLevelMutation();
@@ -325,6 +326,12 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
       } else if (activeTab === 'subjects') {
         await updateSubject({ id: item.id, isActive: nextActive }).unwrap();
       }
+      setFeedback({
+        type: 'success',
+        message: nextActive
+          ? (isBn ? `"${item.nameBn || item.nameEn}" সফলভাবে সক্রিয় করা হয়েছে` : `"${item.nameEn}" activated successfully`)
+          : (isBn ? `"${item.nameBn || item.nameEn}" সফলভাবে নিষ্ক্রিয় করা হয়েছে` : `"${item.nameEn}" set to inactive`),
+      });
     } catch (err: any) {
       setFeedback({
         type: 'error',
@@ -333,29 +340,39 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
     }
   };
 
+  const matchesStatus = (isActive: boolean | undefined) => {
+    if (statusFilter === 'all') return true;
+    if (statusFilter === 'active') return isActive !== false;
+    if (statusFilter === 'inactive') return isActive === false;
+    return true;
+  };
+
   // Filtered lists
   const levels = (levelsData?.data || []).filter(
     (l) =>
-      !searchQuery ||
-      l.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      l.nameBn.includes(searchQuery) ||
-      l.code.toLowerCase().includes(searchQuery.toLowerCase()),
+      (!searchQuery ||
+        l.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        l.nameBn.includes(searchQuery) ||
+        l.code.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      matchesStatus(l.isActive),
   );
 
   const curricula = (curriculaData?.data || []).filter(
     (c) =>
-      !searchQuery ||
-      c.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      c.nameBn.includes(searchQuery) ||
-      c.code.toLowerCase().includes(searchQuery.toLowerCase()),
+      (!searchQuery ||
+        c.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        c.nameBn.includes(searchQuery) ||
+        c.code.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      matchesStatus(c.isActive),
   );
 
   const streams = (streamsData?.data || []).filter(
     (s) =>
-      !searchQuery ||
-      s.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.nameBn.includes(searchQuery) ||
-      s.code.toLowerCase().includes(searchQuery.toLowerCase()),
+      (!searchQuery ||
+        s.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.nameBn.includes(searchQuery) ||
+        s.code.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      matchesStatus(s.isActive),
   );
 
   const institutions = (institutionsData?.data || []).filter((i) => {
@@ -366,15 +383,16 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
       (i.district && i.district.toLowerCase().includes(searchQuery.toLowerCase())) ||
       i.code.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesType = selectedType === 'all' || i.type === selectedType;
-    return matchesSearch && matchesType;
+    return matchesSearch && matchesType && matchesStatus(i.isActive);
   });
 
   const subjects = (subjectsData?.data || []).filter(
     (s) =>
-      !searchQuery ||
-      s.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      s.nameBn.includes(searchQuery) ||
-      s.code.toLowerCase().includes(searchQuery.toLowerCase()),
+      (!searchQuery ||
+        s.nameEn.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        s.nameBn.includes(searchQuery) ||
+        s.code.toLowerCase().includes(searchQuery.toLowerCase())) &&
+      matchesStatus(s.isActive),
   );
 
   const isSaving =
@@ -571,26 +589,41 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             />
           </div>
 
-          {activeTab === 'institutions' && (
-            <div className="w-48">
-              <Select value={selectedType} onValueChange={(val) => setSelectedType(val)}>
-                <SelectTrigger className="rounded-2xl bg-card border-border text-xs">
-                  <SelectValue placeholder="সব প্রতিষ্ঠান ধরন" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-36">
+              <Select value={statusFilter} onValueChange={(val: any) => setStatusFilter(val)}>
+                <SelectTrigger className="rounded-2xl bg-card border-border text-xs" data-testid="taxonomy-status-filter">
+                  <SelectValue placeholder={isBn ? 'স্ট্যাটাস' : 'Status'} />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="all">{isBn ? 'সকল ধরন' : 'All Types'}</SelectItem>
-                  <SelectItem value="college">{isBn ? 'কলেজ (College)' : 'College'}</SelectItem>
-                  <SelectItem value="school">{isBn ? 'স্কুল (School)' : 'School'}</SelectItem>
-                  <SelectItem value="school_and_college">{isBn ? 'স্কুল অ্যান্ড কলেজ' : 'School & College'}</SelectItem>
-                  <SelectItem value="university">{isBn ? 'বিশ্ববিদ্যালয় (University)' : 'University'}</SelectItem>
-                  <SelectItem value="madrasah">{isBn ? 'মাদ্রাসা (Madrasah)' : 'Madrasah'}</SelectItem>
+                  <SelectItem value="all">{isBn ? 'সকল স্ট্যাটাস' : 'All Status'}</SelectItem>
+                  <SelectItem value="active">{isBn ? 'শুধু সক্রিয়' : 'Active Only'}</SelectItem>
+                  <SelectItem value="inactive">{isBn ? 'শুধু নিষ্ক্রিয়' : 'Inactive Only'}</SelectItem>
                 </SelectContent>
               </Select>
             </div>
-          )}
 
-          <div className="text-xs text-muted-foreground self-center">
-            {isBn ? `মোট পাওয়া গেছে: ${currentCount} টি` : `Showing: ${currentCount} items`}
+            {activeTab === 'institutions' && (
+              <div className="w-44">
+                <Select value={selectedType} onValueChange={(val) => setSelectedType(val)}>
+                  <SelectTrigger className="rounded-2xl bg-card border-border text-xs">
+                    <SelectValue placeholder="সব ধরন" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="all">{isBn ? 'সকল ধরন' : 'All Types'}</SelectItem>
+                    <SelectItem value="college">{isBn ? 'কলেজ (College)' : 'College'}</SelectItem>
+                    <SelectItem value="school">{isBn ? 'স্কুল (School)' : 'School'}</SelectItem>
+                    <SelectItem value="school_and_college">{isBn ? 'স্কুল অ্যান্ড কলেজ' : 'School & College'}</SelectItem>
+                    <SelectItem value="university">{isBn ? 'বিশ্ববিদ্যালয়' : 'University'}</SelectItem>
+                    <SelectItem value="madrasah">{isBn ? 'মাদ্রাসা (Madrasah)' : 'Madrasah'}</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            )}
+
+            <div className="text-xs text-muted-foreground whitespace-nowrap self-center">
+              {isBn ? `মোট: ${currentCount} টি` : `Total: ${currentCount}`}
+            </div>
           </div>
         </div>
 
@@ -633,22 +666,46 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                     </tr>
                   ) : (
                     levels.map((lvl, index) => (
-                      <tr key={lvl.id} className="hover:bg-surface-hover/50 transition-colors">
+                      <tr
+                        key={lvl.id}
+                        className={`transition-colors ${
+                          lvl.isActive !== false
+                            ? 'hover:bg-surface-hover/50'
+                            : 'bg-muted/15 opacity-75 hover:opacity-100 hover:bg-muted/30'
+                        }`}
+                      >
                         <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
                         <td className="py-3 px-4 font-mono font-medium text-foreground">{lvl.code}</td>
-                        <td className="py-3 px-4 font-semibold text-foreground">{lvl.nameEn}</td>
+                        <td className="py-3 px-4 font-semibold text-foreground">
+                          {lvl.nameEn}
+                          {lvl.isActive === false && (
+                            <span className="ml-2 text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-normal">
+                              {isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                            </span>
+                          )}
+                        </td>
                         <td className="py-3 px-4 text-muted-foreground">{lvl.nameBn}</td>
                         <td className="py-3 px-4 text-center">
                           <button
+                            type="button"
                             onClick={() => handleToggleActive(lvl)}
-                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                              lvl.isActive
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30'
-                                : 'bg-surface text-muted-foreground border-border'
+                            title={
+                              lvl.isActive !== false
+                                ? (isBn ? 'ক্লিক করে নিষ্ক্রিয় করুন' : 'Click to deactivate')
+                                : (isBn ? 'ক্লিক করে সক্রিয় করুন' : 'Click to activate')
+                            }
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
+                              lvl.isActive !== false
+                                ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
+                                : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
                             }`}
                           >
-                            {lvl.isActive ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
-                            {lvl.isActive ? (isBn ? 'সক্রিয়' : 'Active') : isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                            {lvl.isActive !== false ? (
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                            ) : (
+                              <XCircle className="h-3.5 w-3.5 text-destructive" />
+                            )}
+                            <span>{lvl.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : (isBn ? 'নিষ্ক্রিয়' : 'Inactive')}</span>
                           </button>
                         </td>
                         <td className="py-3 px-4 text-right">
@@ -690,23 +747,47 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                     </tr>
                   ) : (
                     curricula.map((curr, index) => (
-                      <tr key={curr.id} className="hover:bg-surface-hover/50 transition-colors">
+                      <tr
+                        key={curr.id}
+                        className={`transition-colors ${
+                          curr.isActive !== false
+                            ? 'hover:bg-surface-hover/50'
+                            : 'bg-muted/15 opacity-75 hover:opacity-100 hover:bg-muted/30'
+                        }`}
+                      >
                         <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
                         <td className="py-3 px-4 font-mono font-medium text-foreground">{curr.code}</td>
-                        <td className="py-3 px-4 font-semibold text-foreground">{curr.nameEn}</td>
+                        <td className="py-3 px-4 font-semibold text-foreground">
+                          {curr.nameEn}
+                          {curr.isActive === false && (
+                            <span className="ml-2 text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-normal">
+                              {isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                            </span>
+                          )}
+                        </td>
                         <td className="py-3 px-4 text-muted-foreground">{curr.nameBn}</td>
                         <td className="py-3 px-4 text-xs text-muted-foreground">{curr.boardName || '—'}</td>
                         <td className="py-3 px-4 text-center">
                           <button
+                            type="button"
                             onClick={() => handleToggleActive(curr)}
-                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                              curr.isActive
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30'
-                                : 'bg-surface text-muted-foreground border-border'
+                            title={
+                              curr.isActive !== false
+                                ? (isBn ? 'ক্লিক করে নিষ্ক্রিয় করুন' : 'Click to deactivate')
+                                : (isBn ? 'ক্লিক করে সক্রিয় করুন' : 'Click to activate')
+                            }
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
+                              curr.isActive !== false
+                                ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
+                                : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
                             }`}
                           >
-                            {curr.isActive ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
-                            {curr.isActive ? (isBn ? 'সক্রিয়' : 'Active') : isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                            {curr.isActive !== false ? (
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                            ) : (
+                              <XCircle className="h-3.5 w-3.5 text-destructive" />
+                            )}
+                            <span>{curr.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : (isBn ? 'নিষ্ক্রিয়' : 'Inactive')}</span>
                           </button>
                         </td>
                         <td className="py-3 px-4 text-right">
@@ -748,23 +829,47 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                     </tr>
                   ) : (
                     streams.map((st, index) => (
-                      <tr key={st.id} className="hover:bg-surface-hover/50 transition-colors">
+                      <tr
+                        key={st.id}
+                        className={`transition-colors ${
+                          st.isActive !== false
+                            ? 'hover:bg-surface-hover/50'
+                            : 'bg-muted/15 opacity-75 hover:opacity-100 hover:bg-muted/30'
+                        }`}
+                      >
                         <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
                         <td className="py-3 px-4 font-mono font-medium text-foreground">{st.code}</td>
-                        <td className="py-3 px-4 font-semibold text-foreground">{st.nameEn}</td>
+                        <td className="py-3 px-4 font-semibold text-foreground">
+                          {st.nameEn}
+                          {st.isActive === false && (
+                            <span className="ml-2 text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-normal">
+                              {isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                            </span>
+                          )}
+                        </td>
                         <td className="py-3 px-4 text-muted-foreground">{st.nameBn}</td>
                         <td className="py-3 px-4 text-xs text-muted-foreground">{st.description || '—'}</td>
                         <td className="py-3 px-4 text-center">
                           <button
+                            type="button"
                             onClick={() => handleToggleActive(st)}
-                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                              st.isActive
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30'
-                                : 'bg-surface text-muted-foreground border-border'
+                            title={
+                              st.isActive !== false
+                                ? (isBn ? 'ক্লিক করে নিষ্ক্রিয় করুন' : 'Click to deactivate')
+                                : (isBn ? 'ক্লিক করে সক্রিয় করুন' : 'Click to activate')
+                            }
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
+                              st.isActive !== false
+                                ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
+                                : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
                             }`}
                           >
-                            {st.isActive ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
-                            {st.isActive ? (isBn ? 'সক্রিয়' : 'Active') : isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                            {st.isActive !== false ? (
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                            ) : (
+                              <XCircle className="h-3.5 w-3.5 text-destructive" />
+                            )}
+                            <span>{st.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : (isBn ? 'নিষ্ক্রিয়' : 'Inactive')}</span>
                           </button>
                         </td>
                         <td className="py-3 px-4 text-right">
@@ -806,10 +911,24 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                     </tr>
                   ) : (
                     institutions.map((inst, index) => (
-                      <tr key={inst.id} className="hover:bg-surface-hover/50 transition-colors">
+                      <tr
+                        key={inst.id}
+                        className={`transition-colors ${
+                          inst.isActive !== false
+                            ? 'hover:bg-surface-hover/50'
+                            : 'bg-muted/15 opacity-75 hover:opacity-100 hover:bg-muted/30'
+                        }`}
+                      >
                         <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
                         <td className="py-3 px-4 font-mono font-medium text-foreground">{inst.code}</td>
-                        <td className="py-3 px-4 font-semibold text-foreground">{inst.nameEn}</td>
+                        <td className="py-3 px-4 font-semibold text-foreground">
+                          {inst.nameEn}
+                          {inst.isActive === false && (
+                            <span className="ml-2 text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-normal">
+                              {isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                            </span>
+                          )}
+                        </td>
                         <td className="py-3 px-4 text-muted-foreground">{inst.nameBn}</td>
                         <td className="py-3 px-4">
                           <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-info-soft text-info-soft-foreground border border-info/30 capitalize">
@@ -819,15 +938,25 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                         <td className="py-3 px-4 text-xs text-muted-foreground">{inst.district || '—'}</td>
                         <td className="py-3 px-4 text-center">
                           <button
+                            type="button"
                             onClick={() => handleToggleActive(inst)}
-                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                              inst.isActive
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30'
-                                : 'bg-surface text-muted-foreground border-border'
+                            title={
+                              inst.isActive !== false
+                                ? (isBn ? 'ক্লিক করে নিষ্ক্রিয় করুন' : 'Click to deactivate')
+                                : (isBn ? 'ক্লিক করে সক্রিয় করুন' : 'Click to activate')
+                            }
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
+                              inst.isActive !== false
+                                ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
+                                : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
                             }`}
                           >
-                            {inst.isActive ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
-                            {inst.isActive ? (isBn ? 'সক্রিয়' : 'Active') : isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                            {inst.isActive !== false ? (
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                            ) : (
+                              <XCircle className="h-3.5 w-3.5 text-destructive" />
+                            )}
+                            <span>{inst.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : (isBn ? 'নিষ্ক্রিয়' : 'Inactive')}</span>
                           </button>
                         </td>
                         <td className="py-3 px-4 text-right">
@@ -869,23 +998,47 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                     </tr>
                   ) : (
                     subjects.map((subj, index) => (
-                      <tr key={subj.id} className="hover:bg-surface-hover/50 transition-colors">
+                      <tr
+                        key={subj.id}
+                        className={`transition-colors ${
+                          subj.isActive !== false
+                            ? 'hover:bg-surface-hover/50'
+                            : 'bg-muted/15 opacity-75 hover:opacity-100 hover:bg-muted/30'
+                        }`}
+                      >
                         <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
                         <td className="py-3 px-4 font-mono font-medium text-foreground">{subj.code}</td>
-                        <td className="py-3 px-4 font-semibold text-foreground">{subj.nameEn}</td>
+                        <td className="py-3 px-4 font-semibold text-foreground">
+                          {subj.nameEn}
+                          {subj.isActive === false && (
+                            <span className="ml-2 text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-normal">
+                              {isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                            </span>
+                          )}
+                        </td>
                         <td className="py-3 px-4 text-muted-foreground">{subj.nameBn}</td>
                         <td className="py-3 px-4 text-xs text-muted-foreground">{subj.category || '—'}</td>
                         <td className="py-3 px-4 text-center">
                           <button
+                            type="button"
                             onClick={() => handleToggleActive(subj)}
-                            className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-medium border ${
-                              subj.isActive
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30'
-                                : 'bg-surface text-muted-foreground border-border'
+                            title={
+                              subj.isActive !== false
+                                ? (isBn ? 'ক্লিক করে নিষ্ক্রিয় করুন' : 'Click to deactivate')
+                                : (isBn ? 'ক্লিক করে সক্রিয় করুন' : 'Click to activate')
+                            }
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
+                              subj.isActive !== false
+                                ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
+                                : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
                             }`}
                           >
-                            {subj.isActive ? <CheckCircle2 className="h-3 w-3" /> : <XCircle className="h-3 w-3" />}
-                            {subj.isActive ? (isBn ? 'সক্রিয়' : 'Active') : isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                            {subj.isActive !== false ? (
+                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
+                            ) : (
+                              <XCircle className="h-3.5 w-3.5 text-destructive" />
+                            )}
+                            <span>{subj.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : (isBn ? 'নিষ্ক্রিয়' : 'Inactive')}</span>
                           </button>
                         </td>
                         <td className="py-3 px-4 text-right">
