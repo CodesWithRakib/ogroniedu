@@ -1,10 +1,10 @@
-'use client';
-
 import React from 'react';
 import { useTranslations } from 'next-intl';
+import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
 import { Badge } from '@/components/ui/Badge';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 import {
   Table,
   TableHeader,
@@ -77,14 +77,15 @@ export function AdminUsersTab({
           placeholder={t('searchPlaceholder')}
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="w-full sm:w-80 h-10 rounded-xl"
+          leadingIcon={<Search className="w-4 h-4 text-muted-foreground/70" />}
+          className="w-full sm:w-80 rounded-2xl"
           data-testid="users-search-input"
         />
         <Select
           value={statusFilter}
           onValueChange={(val) => onStatusFilterChange(val as StatusFilter)}
         >
-          <SelectTrigger className="w-full sm:w-44 h-10 rounded-xl bg-card border-border text-xs" data-testid="users-status-filter">
+          <SelectTrigger className="w-full sm:w-48 rounded-2xl bg-card border-border/80 text-xs" data-testid="users-status-filter">
             <SelectValue placeholder={t('allStatuses')} />
           </SelectTrigger>
           <SelectContent>
@@ -98,12 +99,12 @@ export function AdminUsersTab({
       <div className="border border-border/70 rounded-2xl overflow-hidden bg-card shadow-xs">
         <Table data-testid="users-table">
           <TableHeader>
-            <TableRow className="bg-muted/30 text-muted-foreground uppercase tracking-wider text-[11px] font-semibold">
-              <TableHead className="px-4 py-3">User</TableHead>
-              <TableHead className="px-4 py-3">Contact</TableHead>
-              <TableHead className="px-4 py-3">Roles</TableHead>
-              <TableHead className="px-4 py-3">Status</TableHead>
-              <TableHead className="px-4 py-3 text-right">Actions</TableHead>
+            <TableRow className="uppercase tracking-wider text-[11px] font-bold">
+              <TableHead className="px-4 py-3.5">User</TableHead>
+              <TableHead className="px-4 py-3.5">Contact</TableHead>
+              <TableHead className="px-4 py-3.5">Roles</TableHead>
+              <TableHead className="px-4 py-3.5">Status</TableHead>
+              <TableHead className="px-4 py-3.5 text-right">Actions</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-foreground text-xs">
@@ -144,23 +145,13 @@ export function AdminUsersTab({
                     </div>
                   </TableCell>
                   <TableCell className="px-4 py-3">
-                    <Badge
-                      variant={
-                        user.status === 'active'
-                          ? 'success'
-                          : user.status === 'suspended'
-                            ? 'destructive'
-                            : 'warning'
-                      }
-                      size="sm"
-                      className="text-[10px] font-semibold"
-                    >
+                    <StatusBadge status={user.status} size="sm">
                       {user.status === 'active'
                         ? t('statusActive')
                         : user.status === 'suspended'
                           ? t('statusSuspended')
                           : user.status}
-                    </Badge>
+                    </StatusBadge>
                   </TableCell>
                   <TableCell className="px-4 py-3 text-right space-x-2">
                     {user.status !== 'suspended' ? (

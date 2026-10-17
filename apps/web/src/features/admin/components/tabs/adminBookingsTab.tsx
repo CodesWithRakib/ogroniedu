@@ -4,6 +4,7 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
+import { StatusBadge } from '@/components/ui/StatusBadge';
 import {
   Table,
   TableHeader,
@@ -35,14 +36,14 @@ export function AdminBookingsTab({
       <div className="border border-border/70 rounded-2xl overflow-hidden bg-card shadow-xs">
         <Table data-testid="bookings-table">
           <TableHeader>
-            <TableRow className="bg-muted/30 text-muted-foreground uppercase tracking-wider text-[11px] font-semibold">
-              <TableHead className="px-4 py-3">Booking ID</TableHead>
-              <TableHead className="px-4 py-3">Student</TableHead>
-              <TableHead className="px-4 py-3">Tutor</TableHead>
-              <TableHead className="px-4 py-3">Subject / Mode</TableHead>
-              <TableHead className="px-4 py-3">Amount</TableHead>
-              <TableHead className="px-4 py-3">Status</TableHead>
-              <TableHead className="px-4 py-3 text-right">Action</TableHead>
+            <TableRow className="uppercase tracking-wider text-[11px] font-bold">
+              <TableHead className="px-4 py-3.5">Booking ID</TableHead>
+              <TableHead className="px-4 py-3.5">Student</TableHead>
+              <TableHead className="px-4 py-3.5">Tutor</TableHead>
+              <TableHead className="px-4 py-3.5">Subject / Mode</TableHead>
+              <TableHead className="px-4 py-3.5">Amount</TableHead>
+              <TableHead className="px-4 py-3.5">Status</TableHead>
+              <TableHead className="px-4 py-3.5 text-right">Action</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-foreground text-xs">
@@ -71,13 +72,7 @@ export function AdminBookingsTab({
                     {booking.priceBdt} BDT
                   </TableCell>
                   <TableCell className="px-4 py-3">
-                    <Badge
-                      variant={bookingStatusVariant(booking.status)}
-                      size="sm"
-                      className="text-[10px] font-semibold"
-                    >
-                      {booking.status}
-                    </Badge>
+                    <StatusBadge status={booking.status} size="sm" />
                   </TableCell>
                   <TableCell className="px-4 py-3 text-right">
                     {booking.status !== 'cancelled' && (

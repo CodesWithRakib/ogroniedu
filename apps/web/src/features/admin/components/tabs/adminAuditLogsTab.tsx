@@ -20,12 +20,12 @@ export function AdminAuditLogsTab({ auditLogs }: { auditLogs: AdminAuditLogItem[
       <div className="border border-border/70 rounded-2xl overflow-hidden bg-card shadow-xs">
         <Table data-testid="audit-logs-table">
           <TableHeader>
-            <TableRow className="bg-muted/30 text-muted-foreground uppercase tracking-wider text-[11px] font-semibold">
-              <TableHead className="px-4 py-3">{t('auditTimestamp')}</TableHead>
-              <TableHead className="px-4 py-3">{t('auditActor')}</TableHead>
-              <TableHead className="px-4 py-3">{t('auditAction')}</TableHead>
-              <TableHead className="px-4 py-3">{t('auditResource')}</TableHead>
-              <TableHead className="px-4 py-3">{t('auditReason')}</TableHead>
+            <TableRow className="uppercase tracking-wider text-[11px] font-bold">
+              <TableHead className="px-4 py-3.5">{t('auditTimestamp')}</TableHead>
+              <TableHead className="px-4 py-3.5">{t('auditActor')}</TableHead>
+              <TableHead className="px-4 py-3.5">{t('auditAction')}</TableHead>
+              <TableHead className="px-4 py-3.5">{t('auditResource')}</TableHead>
+              <TableHead className="px-4 py-3.5">{t('auditReason')}</TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-foreground text-xs">

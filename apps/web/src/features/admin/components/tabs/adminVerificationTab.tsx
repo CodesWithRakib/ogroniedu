@@ -13,10 +13,12 @@ import {
   UserCheck,
   ArrowLeft,
   ArrowRight,
+  Search,
 } from 'lucide-react';
 import type { TutorVerificationLevel } from '@ogroniedu/contracts';
 import {
   Badge,
+  StatusBadge,
   Button,
   Input,
   Textarea,
@@ -137,13 +139,13 @@ export function VerificationQueueTable({
     <div className="border border-border/70 rounded-2xl overflow-x-auto bg-card shadow-xs">
       <Table data-testid="verification-table">
         <TableHeader>
-          <TableRow className="bg-muted/30 text-muted-foreground uppercase tracking-wider text-[11px] font-semibold">
-            <TableHead className="px-4 py-3">{isBn ? 'টিউটর' : 'Tutor'}</TableHead>
-            <TableHead className="px-4 py-3">{isBn ? 'স্তর' : 'Level'}</TableHead>
-            <TableHead className="px-4 py-3">{isBn ? 'অবস্থা' : 'Status'}</TableHead>
-            <TableHead className="px-4 py-3">{isBn ? 'নথি' : 'Docs'}</TableHead>
-            <TableHead className="px-4 py-3">{isBn ? 'জমা' : 'Submitted'}</TableHead>
-            <TableHead className="px-4 py-3 text-right">{isBn ? 'পদক্ষেপ' : 'Actions'}</TableHead>
+          <TableRow className="uppercase tracking-wider text-[11px] font-bold">
+            <TableHead className="px-4 py-3.5">{isBn ? 'টিউটর' : 'Tutor'}</TableHead>
+            <TableHead className="px-4 py-3.5">{isBn ? 'স্তর' : 'Level'}</TableHead>
+            <TableHead className="px-4 py-3.5">{isBn ? 'অবস্থা' : 'Status'}</TableHead>
+            <TableHead className="px-4 py-3.5">{isBn ? 'নথি' : 'Docs'}</TableHead>
+            <TableHead className="px-4 py-3.5">{isBn ? 'জমা' : 'Submitted'}</TableHead>
+            <TableHead className="px-4 py-3.5 text-right">{isBn ? 'পদক্ষেপ' : 'Actions'}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="text-foreground text-xs">
@@ -161,9 +163,9 @@ export function VerificationQueueTable({
               </TableCell>
               <TableCell className="px-4 py-3">{levelLabel(row.level, locale)}</TableCell>
               <TableCell className="px-4 py-3">
-                <Badge variant={levelStatusTone(row.levelStatus)} className="text-[11px]">
+                <StatusBadge status={row.levelStatus} size="sm">
                   {levelStatusLabel(row.levelStatus, locale)}
-                </Badge>
+                </StatusBadge>
               </TableCell>
               <TableCell className="px-4 py-3 text-muted-foreground">
                 {formatLocalizedNumber(row.pendingDocuments, locale)}{' '}
@@ -372,14 +374,15 @@ export function AdminVerificationTab() {
   return (
     <div className="space-y-4" data-testid="verification-tab-content">
       {/* Filters */}
-      <div className="flex flex-col lg:flex-row gap-2 lg:items-center lg:justify-between">
-        <div className="flex flex-col sm:flex-row gap-2 w-full lg:w-auto">
-          <input
+      <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
+        <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
+          <Input
             type="text"
             value={searchInput}
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder={isBn ? 'নাম, ইমেইল বা হেডলাইন খুঁজুন' : 'Search name, email or headline'}
-            className="w-full sm:w-72 px-4 py-2 bg-surface/80 border border-border/80 rounded-xl text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-primary/25"
+            leadingIcon={<Search className="w-4 h-4 text-muted-foreground/70" />}
+            className="w-full sm:w-72 rounded-2xl"
             data-testid="verification-search-input"
           />
           <select
@@ -388,7 +391,7 @@ export function AdminVerificationTab() {
               setStatusFilter(e.target.value as typeof statusFilter);
               setPage(1);
             }}
-            className="px-3 py-2 bg-surface/80 border border-border/80 rounded-xl text-xs"
+            className="h-11 px-4 py-2.5 bg-card border border-border/80 rounded-2xl text-xs text-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/60 cursor-pointer shadow-2xs"
             aria-label={isBn ? 'অবস্থা অনুযায়ী ছাঁকুন' : 'Filter by status'}
             data-testid="verification-status-filter"
           >
@@ -403,14 +406,14 @@ export function AdminVerificationTab() {
             ))}
           </select>
         </div>
-        <div className="flex flex-col sm:flex-row gap-2">
+        <div className="flex flex-col sm:flex-row gap-3">
           <select
             value={levelFilter}
             onChange={(e) => {
               setLevelFilter(e.target.value as TutorVerificationLevel | 'all');
               setPage(1);
             }}
-            className="px-3 py-2 bg-surface/80 border border-border/80 rounded-xl text-xs"
+            className="h-11 px-4 py-2.5 bg-card border border-border/80 rounded-2xl text-xs text-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/60 cursor-pointer shadow-2xs"
             aria-label={isBn ? 'স্তর অনুযায়ী ছাঁকুন' : 'Filter by level'}
             data-testid="verification-level-filter"
           >
@@ -427,7 +430,7 @@ export function AdminVerificationTab() {
               setAssignment(e.target.value as typeof assignment);
               setPage(1);
             }}
-            className="px-3 py-2 bg-surface/80 border border-border/80 rounded-xl text-xs"
+            className="h-11 px-4 py-2.5 bg-card border border-border/80 rounded-2xl text-xs text-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/60 cursor-pointer shadow-2xs"
             aria-label={isBn ? 'অ্যাসাইনমেন্ট অনুযায়ী ছাঁকুন' : 'Filter by assignment'}
             data-testid="verification-assignment-filter"
           >

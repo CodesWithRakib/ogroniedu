@@ -72,7 +72,7 @@ export function TutorFiltersForm({
               aria-label={isBn ? 'শিক্ষক খুঁজুন' : 'Search tutors'}
               data-testid="search-query-input"
               leadingIcon={<Search className="w-4 h-4 text-primary" />}
-              className="h-11 rounded-xl"
+              className="rounded-2xl"
             />
           </div>
 
@@ -83,7 +83,7 @@ export function TutorFiltersForm({
               onValueChange={(val) => onChange({ modeFilter: val === 'all' ? '' : val })}
             >
               <SelectTrigger
-                className="w-full h-11 rounded-xl bg-card border-border text-xs sm:text-sm"
+                className="w-full rounded-2xl bg-card border-border/80 text-xs sm:text-sm"
                 data-testid="mode-select"
                 aria-label={isBn ? 'পাঠদানের পদ্ধতি অনুযায়ী ছাঁকুন' : 'Filter mode'}
               >
@@ -113,7 +113,7 @@ export function TutorFiltersForm({
               onValueChange={(val) => onChange({ sortBy: val as TutorSortKey })}
             >
               <SelectTrigger
-                className="w-full h-11 rounded-xl bg-card border-border text-xs sm:text-sm"
+                className="w-full rounded-2xl bg-card border-border/80 text-xs sm:text-sm"
                 data-testid="sort-by-select"
                 aria-label={isBn ? 'সাজানোর নিয়ম' : 'Sort by'}
               >
@@ -142,7 +142,7 @@ export function TutorFiltersForm({
               type="submit"
               disabled={isPending}
               data-testid="apply-filters-button"
-              className="flex-1 h-11 rounded-xl font-bold text-xs gap-1.5"
+              className="flex-1 rounded-2xl font-bold text-xs gap-1.5"
             >
               <Filter className="w-3.5 h-3.5" />
               <span>{dict.discovery?.applyFilters || 'Filter'}</span>
@@ -153,7 +153,7 @@ export function TutorFiltersForm({
               size="icon"
               onClick={onReset}
               data-testid="reset-filters-button"
-              className="h-11 w-11 rounded-xl shrink-0"
+              className="h-11 w-11 rounded-2xl shrink-0"
               title={dict.discovery?.resetFilters || 'Reset'}
             >
               <RotateCcw className="w-3.5 h-3.5" />

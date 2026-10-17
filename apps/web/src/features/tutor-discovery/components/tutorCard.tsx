@@ -10,6 +10,7 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
+import { Badge } from '@/components/ui/Badge';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import type { TutorCardData } from '../types/tutor-discovery.types';
 
@@ -112,21 +113,21 @@ export function TutorCard({
 
         {/* Verification Badges */}
         <div className="flex flex-wrap gap-1.5 pt-0.5">
-          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-success-soft text-success-soft-foreground border border-success/30">
+          <Badge variant="success" size="sm" className="gap-1">
             <CheckCircle2 className="w-3 h-3 text-success" />
             {dict.tutor?.badgeVerifiedTutor || 'Verified Tutor'}
-          </span>
+          </Badge>
           {tutor.badges.includes('verified_identity') && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-primary-soft text-primary border border-border/80">
+            <Badge variant="primary" size="sm" className="gap-1">
               <Award className="w-3 h-3 text-primary" />
               {dict.tutor?.badgeVerifiedIdentity || 'NID Verified'}
-            </span>
+            </Badge>
           )}
           {tutor.badges.includes('verified_degree') && (
-            <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-info-soft text-info-soft-foreground border border-info/30">
+            <Badge variant="info" size="sm" className="gap-1">
               <GraduationCap className="w-3 h-3 text-info" />
               {dict.tutor?.badgeVerifiedAcademic || 'Degree Verified'}
-            </span>
+            </Badge>
           )}
         </div>
 

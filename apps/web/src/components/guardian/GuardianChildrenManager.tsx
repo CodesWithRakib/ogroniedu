@@ -20,6 +20,7 @@ import {
   CardDescription,
   CardContent,
   Badge,
+  StatusBadge,
   Input,
 } from '@/components/ui';
 import {
@@ -153,11 +154,11 @@ export function GuardianChildrenManager({
                       <span>{child.educationLevelName || 'Class Level'}</span>
                     </CardDescription>
                   </div>
-                  <Badge variant={child.status === 'active' ? 'success' : 'warning'}>
+                  <StatusBadge status={child.status}>
                     {child.status === 'active'
                       ? dict.guardian.activeBadge
                       : dict.guardian.pendingBadge}
-                  </Badge>
+                  </StatusBadge>
                 </div>
               </CardHeader>
               <CardContent className="space-y-3 text-sm">
@@ -224,7 +225,7 @@ export function GuardianChildrenManager({
             )}
 
             <div className="space-y-1.5">
-              <Label htmlFor="input-student-identifier" className="text-xs font-semibold text-foreground">
+              <Label htmlFor="input-student-identifier" required className="text-xs font-semibold text-foreground">
                 {dict.guardian.studentIdentifier}
               </Label>
               <Input
@@ -237,14 +238,14 @@ export function GuardianChildrenManager({
             </div>
 
             <div className="space-y-1.5">
-              <Label htmlFor="select-relationship" className="text-xs font-semibold text-foreground">
+              <Label htmlFor="select-relationship" required className="text-xs font-semibold text-foreground">
                 {dict.guardian.relationship}
               </Label>
               <Select
                 value={relationship}
                 onValueChange={(val) => setRelationship(toGuardianRelationship(val))}
               >
-                <SelectTrigger id="select-relationship" className="w-full h-10 rounded-xl bg-card border-border text-sm">
+                <SelectTrigger id="select-relationship" className="w-full rounded-2xl bg-card border-border text-sm">
                   <SelectValue placeholder={dict.guardian.relationship} />
                 </SelectTrigger>
                 <SelectContent>
@@ -255,7 +256,7 @@ export function GuardianChildrenManager({
               </Select>
             </div>
 
-            <div className="p-3 bg-muted/50 rounded-xl border border-border space-y-2">
+            <div className="p-3 bg-muted/50 rounded-2xl border border-border space-y-2">
               <div className="flex items-start gap-2.5">
                 <Checkbox
                   id="checkbox-consent"
@@ -275,11 +276,11 @@ export function GuardianChildrenManager({
               </div>
             </div>
 
-            <div className="pt-2 flex justify-end gap-2">
-              <Button type="button" variant="outline" onClick={closeModal} disabled={loading} className="rounded-xl">
+            <div className="pt-2 flex justify-end gap-3">
+              <Button type="button" variant="outline" onClick={closeModal} disabled={loading} className="rounded-full px-5">
                 {dict.common.cancel}
               </Button>
-              <Button type="submit" disabled={loading} isLoading={loading} className="rounded-xl shadow-xs font-semibold">
+              <Button type="submit" disabled={loading} isLoading={loading} className="rounded-full px-6 shadow-xs font-semibold">
                 {dict.common.confirm}
               </Button>
             </div>

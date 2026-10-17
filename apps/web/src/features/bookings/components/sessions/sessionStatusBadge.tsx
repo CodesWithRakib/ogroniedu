@@ -17,35 +17,35 @@ export function SessionStatusBadge({
   switch (status) {
     case 'scheduled':
       return (
-        <Badge variant="success" className="gap-1">
+        <Badge variant="success" className="gap-1.5">
           <CheckCircle2 className="w-3 h-3" />
           {dict.scheduling?.statusScheduled || 'Scheduled'}
         </Badge>
       );
     case 'in_progress':
       return (
-        <Badge variant="warning" className="gap-1 animate-pulse">
+        <Badge variant="info" className="gap-1.5 animate-pulse">
           <Clock className="w-3 h-3" />
           {dict.scheduling?.statusInProgress || 'In Progress'}
         </Badge>
       );
     case 'completed':
       return (
-        <Badge variant="default" className="gap-1 bg-muted text-foreground">
-          <CheckCircle2 className="w-3 h-3 text-muted-foreground" />
+        <Badge variant="completed" className="gap-1.5">
+          <CheckCircle2 className="w-3 h-3" />
           {dict.scheduling?.statusCompleted || 'Completed'}
         </Badge>
       );
     case 'cancelled':
       return (
-        <Badge variant="destructive" className="gap-1">
+        <Badge variant="cancelled" className="gap-1.5">
           <XCircle className="w-3 h-3" />
           {dict.scheduling?.statusCancelled || 'Cancelled'}
         </Badge>
       );
     case 'reschedule_pending':
       return (
-        <Badge variant="warning" className="gap-1">
+        <Badge variant="pending" className="gap-1.5">
           <RotateCcw className="w-3 h-3" />
           {dict.scheduling?.statusReschedulePending || 'Reschedule Pending'}
         </Badge>
