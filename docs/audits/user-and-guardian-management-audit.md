@@ -13,16 +13,16 @@
 Phase 06 successfully established the entire student, guardian, and consent management foundation for OgroniEdu:
 
 1. **Approved Legal & Consent Policy (`v1.0-bd-minor-consent`):**
-   - Formalized in [`docs/policies/guardian-consent-and-minor-safety-policy.md`](file:///c:/Sofof_tech_2026/ogroniedu/docs/policies/guardian-consent-and-minor-safety-policy.md).
+   - Formalized in [`docs/policies/guardian-consent-and-minor-safety-policy.md`](../policies/guardian-consent-and-minor-safety-policy.md).
    - Grounded in the statutory legal framework of Bangladesh (The Children Act 2013 and Contract Act 1872).
    - Any learner under 18 is classified as a Minor Student requiring explicit legal guardian affirmation before tutoring access.
 2. **Guardian-Child Relationship Lifecycle:**
-   - Link requests, verification, and revocation implemented in [`GuardiansService`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/src/modules/guardians/guardians.service.ts) and [`GuardiansController`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/src/modules/guardians/guardians.controller.ts).
+   - Link requests, verification, and revocation implemented in [`GuardiansService`](../../apps/api/src/modules/guardians/guardians.service.ts) and [`GuardiansController`](../../apps/api/src/modules/guardians/guardians.controller.ts).
    - States supported: `pending` -> `active` -> `revoked` (or `rejected`).
    - Self-linking prevented via backend validation and database check constraint `chk_guardian_student_different`.
 3. **Multi-Child Management & Attribute-Based Access Control (ABAC):**
    - Guardians can link and manage multiple learners concurrently (`/api/v1/guardians/children`).
-   - Unrelated-child denial enforced via [`GuardianStudentGuard`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/src/common/guards/guardian-student.guard.ts), preventing IDOR and unauthorized child data inspection.
+   - Unrelated-child denial enforced via [`GuardianStudentGuard`](../../apps/api/src/common/guards/guardian-student.guard.ts), preventing IDOR and unauthorized child data inspection.
 4. **Student Academic Profiles & Minimal Child PII:**
    - Student academic metadata (curriculum, education level, institution, stream, learning goals, visibility) modeled in `StudentProfileEntity` (`student_profiles`).
    - Child phone numbers and email addresses are shielded and redacted from unauthorized parties.
@@ -30,9 +30,9 @@ Phase 06 successfully established the entire student, guardian, and consent mana
    - Self-service data export (`GET /api/v1/users/me/export`) exports profile, active sessions, family relationships, and audit history.
    - Account deletion request (`POST /api/v1/users/me/delete-account`) transitions user account to `deletion_pending` (30-day compliance hold) and immediately revokes all active login sessions.
 6. **Immutable Audit Logging:**
-   - Global [`AuditService`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/src/modules/audit/audit.service.ts) and [`AuditLogEntity`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/src/modules/audit/entities/audit-log.entity.ts) record all link requests, approvals, revocations, and privacy actions into `audit_logs`.
+   - Global [`AuditService`](../../apps/api/src/modules/audit/audit.service.ts) and [`AuditLogEntity`](../../apps/api/src/modules/audit/entities/audit-log.entity.ts) record all link requests, approvals, revocations, and privacy actions into `audit_logs`.
 7. **Bilingual Frontend UI:**
-   - [`GuardianChildrenManager`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/guardian/GuardianChildrenManager.tsx) built with full WCAG 2.1 AA accessibility, minor status badges, relationship tags, interactive link modal with consent affirmation, and bilingual dictionaries (`bn.json` / `en.json`).
+   - [`GuardianChildrenManager`](../../apps/web/src/components/guardian/GuardianChildrenManager.tsx) built with full WCAG 2.1 AA accessibility, minor status badges, relationship tags, interactive link modal with consent affirmation, and bilingual dictionaries (`bn.json` / `en.json`).
 8. **Automated Verification:**
    - 26 new automated unit tests added across `@ogroniedu/api` and `@ogroniedu/web`.
    - Total monorepo test suite stands at **114 passing tests, 0 failures, 0 skipped**.

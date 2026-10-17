@@ -15,7 +15,7 @@ Phase 09 successfully implemented the complete session scheduling, calendar conf
 1. **Strict Definition of Done Enforced — Zero Double-Booking:**
    - _Requirement:_ At most one overlapping active session per tutor under approved rule.
    - Enforced at both application query layer and database engine layer:
-     - Application check in [`SchedulingService`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/src/modules/bookings/scheduling.service.ts) queries active sessions (`status IN ('scheduled', 'in_progress')`) and throws `409 Conflict`.
+     - Application check in [`SchedulingService`](../../apps/api/src/modules/bookings/scheduling.service.ts) queries active sessions (`status IN ('scheduled', 'in_progress')`) and throws `409 Conflict`.
      - Database engine GiST constraint `ex_tutor_session_overlap` on `booking_sessions`:
        ```sql
        EXCLUDE USING gist (
@@ -46,7 +46,7 @@ Phase 09 successfully implemented the complete session scheduling, calendar conf
    - Events emitted: `session.scheduled`, `session.rescheduled`, `session.cancelled`.
    - _Invariant:_ Zero slow external network calls inside critical database transaction. Notifications are dispatched asynchronously outside transaction locks.
 7. **Frontend Calendar UI Component:**
-   - Built [`SessionScheduleCalendar`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/scheduling/SessionScheduleCalendar.tsx) and routed at `/[locale]/sessions`.
+   - Built [`SessionScheduleCalendar`](../../apps/web/src/components/scheduling/SessionScheduleCalendar.tsx) and routed at `/[locale]/sessions`.
    - Features class cards, status badges, meeting links, cancellation refund preview modal, reschedule modal, and 100% bilingual dictionary parity.
 8. **Automated Verification:**
    - 33 new automated unit and invariant tests added.

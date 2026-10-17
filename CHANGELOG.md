@@ -317,7 +317,7 @@
   - Unrelated Case Denial: Only affected booking participants and Trust & Safety staff have access (`403 Forbidden`).
   - On accepted replacement: booking is re-assigned to alternate verified tutor, restored to `confirmed`, and escrow transfers seamlessly.
 - **Frontend Views & Bilingual Parity:**
-  - Created [`ReviewFormModal`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/ReviewFormModal.tsx), [`TutorReviewsListView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/TutorReviewsListView.tsx), [`TutorReplacementModal`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/TutorReplacementModal.tsx), and [`SafetyReportModal`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/SafetyReportModal.tsx).
+  - Created [`ReviewFormModal`](apps/web/src/components/trust/ReviewFormModal.tsx), [`TutorReviewsListView`](apps/web/src/components/trust/TutorReviewsListView.tsx), [`TutorReplacementModal`](apps/web/src/components/trust/TutorReplacementModal.tsx), and [`SafetyReportModal`](apps/web/src/components/trust/SafetyReportModal.tsx).
   - 100% Bilingual Parity: Added `"trust"` namespace (41 keys) to both `messages/en.json` and `messages/bn.json` with Bengali translations.
 - **Test Suite:**
   - Authored 44 new tests across database migration, API, and web packages.
@@ -343,7 +343,7 @@
   - Asynchronous Outbox Worker (`OutboxWorkerService`): Processes transactional `outbox_events` out-of-band with exponential backoff (`2^attempts * 1000ms`), max attempt limit (5), error log secret redaction, and verified isolation from committed business transactions.
   - Participant-Scoped ABAC Booking Chat (`GET/POST /api/v1/bookings/:bookingId/messages`): Only student, requester guardian, assigned tutor, and platform admin can participate; external callers receive `403 Forbidden`.
   - Minor Safety & Escrow Protection Filter: Automated redaction of Bangladeshi phone numbers (`[REDACTED CONTACT NUMBER]`), off-platform payment solicitations (`[REDACTED PAYMENT SOLICITATION]`), and suspicious external links (`[REDACTED EXTERNAL LINK]`), with security audit logging and proactive guardian alerts.
-  - Frontend UI: Built [`NotificationPreferencesView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/notifications/NotificationPreferencesView.tsx) and [`BookingChatView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/notifications/BookingChatView.tsx).
+  - Frontend UI: Built [`NotificationPreferencesView`](apps/web/src/components/notifications/NotificationPreferencesView.tsx) and [`BookingChatView`](apps/web/src/components/notifications/BookingChatView.tsx).
   - 100% Bilingual Parity: Added 28 new localization keys across `apps/web/messages/en.json` and `apps/web/messages/bn.json` with full Bengali translations.
   - Test Suite: Authored 31 new tests across API, database, and web packages; monorepo suite expanded to **305 total passed tests, 0 failures, 0 skipped**.
   - Published audit report `docs/audits/notifications-and-communication-audit.md` and updated canonical RTM in `docs/traceability-matrix.md`.
@@ -362,7 +362,7 @@
   - Operational Refund bounds checking: Cannot refund more than total paid order amount; posts balanced reversal journal (`Debit 2100`, `Credit 1000`) and emits `refund.processed` outbox event.
   - Financial Reconciliation Audit (`runReconciliation()`): Audits all payment orders against verified transaction records and validates double-entry ledger balance integrity.
   - Printable Receipts (`getPaymentReceipt()`): Formats official payment receipts with BDT currency, transaction IDs, payer/student/tutor details, and BST timestamps.
-  - Frontend UI: Built [`PaymentCheckoutView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/payments/PaymentCheckoutView.tsx) and page at `apps/web/src/app/[locale]/payments/page.tsx` with MFS gateway selectors (bKash, Nagad, Cards), escrow breakdown card, live ledger balance status, and printable receipts.
+  - Frontend UI: Built [`PaymentCheckoutView`](apps/web/src/components/payments/PaymentCheckoutView.tsx) and page at `apps/web/src/app/[locale]/payments/page.tsx` with MFS gateway selectors (bKash, Nagad, Cards), escrow breakdown card, live ledger balance status, and printable receipts.
   - Added bilingual namespace `"payments"` (25 keys) to `messages/en.json` and `messages/bn.json` with 100% key parity and Bengali digit formatting.
   - Added 34 new tests across `ledger.service.spec.ts`, `payments.service.spec.ts`, `payments.controller.spec.ts`, `payments.spec.ts`, and `migration.spec.ts`.
   - Expanded monorepo test suite from 240 to **274 passing tests, 0 failures, 0 skipped**.
@@ -379,7 +379,7 @@
   - Grading & Score Revision Auditing (`POST /api/v1/learning/submissions/:id/grade`): tutors review submissions with max score validation; revising an already graded score strictly requires a `revisionReason` and logs previous score, new score, actor ID, and reason in `audit_logs`.
   - Auditable Progress Reports (`POST /api/v1/learning/progress-reports`): computes observable metrics (attendance %, assignments completed, average score) directly from database records, preventing unsupported mastery claims.
   - Guardian oversight: only active linked guardians (`guardian_student_links`) can access student learning records and progress reports; unlinked/revoked users receive `403 Forbidden`.
-  - Built frontend UI [`LearningManagementView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/features/learning/components/learningManagementView.tsx) and page at `apps/web/src/app/[locale]/learning/page.tsx` with attendance cards, homework submission modal, grading modal, and progress reports dashboard.
+  - Built frontend UI [`LearningManagementView`](apps/web/src/features/learning/components/learningManagementView.tsx) and page at `apps/web/src/app/[locale]/learning/page.tsx` with attendance cards, homework submission modal, grading modal, and progress reports dashboard.
   - Added bilingual namespace `"learning"` (36 keys) to `messages/en.json` and `messages/bn.json` with 100% key parity and Bengali digit localization.
   - Added 34 new tests across `learning.service.spec.ts`, `learning.controller.spec.ts`, `learning.spec.ts`, and `migration.spec.ts`.
   - Expanded monorepo test suite from 206 to **240 passing tests, 0 failures, 0 skipped**.

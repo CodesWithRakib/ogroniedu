@@ -14,8 +14,8 @@ Phase 13 successfully implemented the Trust, Reviews, Safety, and Replacement Gu
 
 1. **Definition of Done Enforced — "Policies are transparent and enforceable":**
    - Published canonical policies:
-     - [`docs/policies/fair-reviews-and-moderation-policy.md`](file:///c:/Sofof_tech_2026/ogroniedu/docs/policies/fair-reviews-and-moderation-policy.md) (`v1.0-fair-reviews`).
-     - [`docs/policies/tutor-replacement-guarantee-and-dispute-policy.md`](file:///c:/Sofof_tech_2026/ogroniedu/docs/policies/tutor-replacement-guarantee-and-dispute-policy.md) (`v1.0-tutor-replacement-guarantee`).
+     - [`docs/policies/fair-reviews-and-moderation-policy.md`](../policies/fair-reviews-and-moderation-policy.md) (`v1.0-fair-reviews`).
+     - [`docs/policies/tutor-replacement-guarantee-and-dispute-policy.md`](../policies/tutor-replacement-guarantee-and-dispute-policy.md) (`v1.0-tutor-replacement-guarantee`).
    - Every policy rule is backed by database check constraints, unique indexes, server-side ABAC authorization guards, and automated regression tests.
 2. **Anti-Self Review & Anti-Fake Review Invariants:**
    - **Anti-Self Review Invariant:** Tutors can never submit reviews for their own courses. Enforced at DB level (`CONSTRAINT chk_review_no_self_review CHECK (reviewer_user_id <> tutor_user_id)`) and application service level (`403 ForbiddenException`).
@@ -39,7 +39,7 @@ Phase 13 successfully implemented the Trust, Reviews, Safety, and Replacement Gu
    - State machine: `requested` &rarr; `under_review` &rarr; `matching` &rarr; `offered` &rarr; `accepted` / `rejected` / `closed`.
    - Upon acceptance of an offered replacement tutor: the booking is re-assigned, restored to `confirmed`, escrow transfers seamlessly, and notifications are emitted.
 6. **Bilingual Frontend UI & 100% Localization Parity:**
-   - Created [`ReviewFormModal`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/ReviewFormModal.tsx), [`TutorReviewsListView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/TutorReviewsListView.tsx), [`TutorReplacementModal`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/TutorReplacementModal.tsx), and [`SafetyReportModal`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/trust/SafetyReportModal.tsx).
+   - Created [`ReviewFormModal`](../../apps/web/src/components/trust/ReviewFormModal.tsx), [`TutorReviewsListView`](../../apps/web/src/components/trust/TutorReviewsListView.tsx), [`TutorReplacementModal`](../../apps/web/src/components/trust/TutorReplacementModal.tsx), and [`SafetyReportModal`](../../apps/web/src/components/trust/SafetyReportModal.tsx).
    - Added `"trust"` namespace with 41 keys to `messages/en.json` and `messages/bn.json` with 100% key parity.
 7. **Automated Verification:**
    - 44 new tests authored across database migration, API, and web packages.

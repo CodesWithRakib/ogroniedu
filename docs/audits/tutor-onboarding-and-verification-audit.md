@@ -13,15 +13,15 @@
 Phase 07 successfully implemented the complete tutor onboarding, credential review, and trust verification architecture for OgroniEdu:
 
 1. **Approved Credential Policy (`v1.0-bd-tutor-verification`):**
-   - Established in [`docs/policies/tutor-verification-and-credential-policy.md`](file:///c:/Sofof_tech_2026/ogroniedu/docs/policies/tutor-verification-and-credential-policy.md).
+   - Established in [`docs/policies/tutor-verification-and-credential-policy.md`](../policies/tutor-verification-and-credential-policy.md).
    - Grounded in statutory Bangladesh law (National Identity Registration Act 2010, Penal Code 1860, Cyber Security Act 2023).
    - Tutors submit Government NID/Passport and academic certificates (Class 10 to university graduation).
 2. **Strict Separation of Duties & Self-Approval Denial:**
    - Server-side guard prevents tutors from altering or approving their own verification status.
-   - Enforced in [`TutorsService.submitReviewDecision`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/src/modules/tutors/tutors.service.ts) and [`AdminTutorsController`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/src/modules/tutors/admin-tutors.controller.ts) via `reviewer.id === tutorId` denial check throwing `ForbiddenException`.
+   - Enforced in [`TutorsService.submitReviewDecision`](../../apps/api/src/modules/tutors/tutors.service.ts) and [`AdminTutorsController`](../../apps/api/src/modules/tutors/admin-tutors.controller.ts) via `reviewer.id === tutorId` denial check throwing `ForbiddenException`.
    - Admin routes strictly restricted to `@Roles('admin', 'super_admin')` via `RolesGuard`.
 3. **Private Evidence Uploads & Access Control:**
-   - [`FilesService`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/src/modules/files/files.service.ts) enforces upload limits: max 10MB (`10,485,760` bytes) and allowed media types (`application/pdf`, `image/jpeg`, `image/png`, `image/webp`).
+   - [`FilesService`](../../apps/api/src/modules/files/files.service.ts) enforces upload limits: max 10MB (`10,485,760` bytes) and allowed media types (`application/pdf`, `image/jpeg`, `image/png`, `image/webp`).
    - All uploaded evidence is stored with `visibility = 'private'`.
    - Ownership guard prevents unauthorized users from inspecting or downloading private credential documents (unrelated users denied with `403 Forbidden`).
 4. **Publication Eligibility State Machine:**
@@ -39,7 +39,7 @@ Phase 07 successfully implemented the complete tutor onboarding, credential revi
 6. **Sanitized Public DTOs & PII Protection:**
    - Public tutor view completely redacts private phone numbers, email addresses, NID numbers, raw evidence file keys, and internal reviewer notes.
 7. **Bilingual Frontend UI Component:**
-   - [`TutorVerificationStatusCard`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/tutor/TutorVerificationStatusCard.tsx) built with full WCAG 2.1 AA accessibility, dynamic badges, publication controls, and 100% key parity across `bn.json` and `en.json`.
+   - [`TutorVerificationStatusCard`](../../apps/web/src/components/tutor/TutorVerificationStatusCard.tsx) built with full WCAG 2.1 AA accessibility, dynamic badges, publication controls, and 100% key parity across `bn.json` and `en.json`.
 8. **Automated Verification:**
    - 32 new unit and security tests added across `@ogroniedu/api` and `@ogroniedu/web`.
    - Full monorepo test suite stands at **146 passing tests, 0 failures, 0 skipped**.

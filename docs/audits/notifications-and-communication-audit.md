@@ -37,8 +37,8 @@ Phase 12 successfully delivered the notification preferences, asynchronous outbo
      - IPN Webhook: `https://undone-unsure-twisting.ngrok-free.dev/api/v1/payments/webhook/sslcommerz`
    - Added `scripts/tunnel.js` and `pnpm run tunnel` execution command.
 6. **Frontend UI & 100% Bilingual Parity:**
-   - Created [`NotificationPreferencesView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/notifications/NotificationPreferencesView.tsx) for managing channel/category preferences.
-   - Created [`BookingChatView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/notifications/BookingChatView.tsx) with safety warning banner, real-time message bubble display, read status indicators, and redaction alerts.
+   - Created [`NotificationPreferencesView`](../../apps/web/src/components/notifications/NotificationPreferencesView.tsx) for managing channel/category preferences.
+   - Created [`BookingChatView`](../../apps/web/src/components/notifications/BookingChatView.tsx) with safety warning banner, real-time message bubble display, read status indicators, and redaction alerts.
    - Added 28 new localization keys across `apps/web/messages/en.json` and `apps/web/messages/bn.json` with 100% key parity.
 7. **Automated Verification:**
    - 31 new tests authored across API, database, and web packages.
@@ -121,7 +121,7 @@ CREATE TABLE IF NOT EXISTS booking_messages (
                                                                            * Committed State NEVER Rolled Back
 ```
 
-Unit test assertion from [`apps/api/test/outbox-worker.spec.ts`](file:///c:/Sofof_tech_2026/ogroniedu/apps/api/test/outbox-worker.spec.ts):
+Unit test assertion from [`apps/api/test/outbox-worker.spec.ts`](../../apps/api/test/outbox-worker.spec.ts):
 
 - Upstream network errors and credential secrets are redacted from error logs.
 - Event status advances to `retrying` with exponential backoff timestamp.

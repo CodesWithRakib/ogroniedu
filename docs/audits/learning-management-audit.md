@@ -34,8 +34,8 @@ Phase 10 successfully implemented the authorized, attributable, and auditable Le
    - Created `packages/database/src/migrations/003_learning_management.sql` introducing `assignments`, `assignment_submissions`, and `progress_reports` tables with indexes and constraints.
    - Preserved initial `session_attendance` table and added negative database integrity tests.
 6. **Frontend UI & Localization:**
-   - Created [`LearningManagementView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/features/learning/components/learningManagementView.tsx) with attendance cards, homework submission modal, grading modal with score revision reason prompt, and progress reports dashboard.
-   - Routed at `/[locale]/learning` in [`apps/web/src/app/[locale]/(dashboard)/learning/page.tsx`](<file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/app/[locale]/(dashboard)/learning/page.tsx>).
+   - Created [`LearningManagementView`](../../apps/web/src/features/learning/components/learningManagementView.tsx) with attendance cards, homework submission modal, grading modal with score revision reason prompt, and progress reports dashboard.
+   - Routed at `/[locale]/learning` in [`apps/web/src/app/[locale]/(dashboard)/learning/page.tsx`](<../../apps/web/src/app/[locale]/(dashboard)/learning/page.tsx>).
    - Added `"learning"` namespace with 36 keys to both `en.json` and `bn.json` with 100% key parity and Bengali digit formatting.
 7. **Automated Verification:**
    - 34 new automated unit, negative, and security tests added.

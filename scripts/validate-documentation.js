@@ -57,11 +57,23 @@ for (const filePath of docsFiles) {
     if (cleanTarget) {
       let resolved;
       if (cleanTarget.startsWith('file://')) {
-        try {
-          resolved = fileURLToPath(cleanTarget);
-        } catch {
-          resolved = cleanTarget.replace(/^file:\/\/\/?/, '');
+        const normalized = cleanTarget.replace(/\\/g, '/');
+        const repoName = path.basename(root).toLowerCase();
+        const marker = `/${repoName}/`;
+        const markerIdx = normalized.toLowerCase().indexOf(marker);
+        if (markerIdx !== -1) {
+          const relativeWithinRepo = normalized.slice(markerIdx + marker.length);
+          resolved = path.resolve(root, relativeWithinRepo);
+        } else {
+          try {
+            resolved = fileURLToPath(cleanTarget);
+          } catch {
+            resolved = cleanTarget.replace(/^file:\/\/\/?/, '');
+          }
         }
+      } else if (cleanTarget.startsWith('/')) {
+        const fromRoot = path.resolve(root, cleanTarget.slice(1));
+        resolved = fs.existsSync(fromRoot) ? fromRoot : cleanTarget;
       } else {
         resolved = path.resolve(path.dirname(filePath), cleanTarget);
       }

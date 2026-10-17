@@ -37,8 +37,8 @@ Phase 11 successfully implemented the financial core and payment processing infr
    - Implemented `runReconciliation()` comparing all payment orders, provider transactions, and ledger balances.
    - Flags any order marked `succeeded` that lacks a verified transaction record, and flags any unbalance in system ledger accounts.
 7. **Frontend UI & Localization:**
-   - Built [`PaymentCheckoutView`](file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/components/payments/PaymentCheckoutView.tsx) with order summary, MFS gateway selectors (bKash, Nagad, SSLCOMMERZ), escrow accounting breakdown, sandbox disclaimer banner, and printable receipts.
-   - Routed at `/[locale]/payments` in [`apps/web/src/app/[locale]/(dashboard)/payments/page.tsx`](<file:///c:/Sofof_tech_2026/ogroniedu/apps/web/src/app/[locale]/(dashboard)/payments/page.tsx>).
+   - Built [`PaymentCheckoutView`](../../apps/web/src/components/payments/PaymentCheckoutView.tsx) with order summary, MFS gateway selectors (bKash, Nagad, SSLCOMMERZ), escrow accounting breakdown, sandbox disclaimer banner, and printable receipts.
+   - Routed at `/[locale]/payments` in [`apps/web/src/app/[locale]/(dashboard)/payments/page.tsx`](<../../apps/web/src/app/[locale]/(dashboard)/payments/page.tsx>).
    - Added `"payments"` namespace with 25 keys to both `messages/en.json` and `messages/bn.json` with 100% key parity and Bengali digit support.
 8. **Automated Verification:**
    - 34 new tests added across API, database, and web packages.

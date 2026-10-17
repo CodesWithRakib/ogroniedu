@@ -13,7 +13,7 @@
 Phase 15 successfully implemented the comprehensive Operational Analytics & Reporting subsystem in strict adherence to `prompts/15-analytics-and-reporting.md`:
 
 1. **Definition of Done Enforced — "Every metric has a precise definition and reconciles":**
-   - Authored the canonical metric specification [`docs/analytics-metric-definitions.md`](file:///c:/Sofof_tech_2026/ogroniedu/docs/analytics-metric-definitions.md), defining every mathematical equation, numerator, denominator, time-window anchor, and anti-double-counting invariant across:
+   - Authored the canonical metric specification [`docs/analytics-metric-definitions.md`](../analytics-metric-definitions.md), defining every mathematical equation, numerator, denominator, time-window anchor, and anti-double-counting invariant across:
      - **Conversion Funnel**: Request volume $\to$ Confirmed bookings $\to$ Cancellation / Decline rates.
      - **Session Reliability**: Scheduled sessions $\to$ Completed $\to$ Cancelled $\to$ No-show rates.
      - **Financial Volume**: Gross Merchandise Value (GMV) $\to$ 8% platform fee commission $\to$ Refunds $\to$ Net processed volume.
