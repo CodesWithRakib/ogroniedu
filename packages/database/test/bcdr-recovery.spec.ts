@@ -42,8 +42,8 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
     // 2. Execute full cold recovery via MigrationRunner
     const executed = await runner.runMigrations();
 
-    // Verify all 14 ordered migrations were replayed from WAL / migration log
-    expect(executed).toHaveLength(14);
+    // Verify all 15 ordered migrations were replayed from WAL / migration log
+    expect(executed).toHaveLength(15);
     expect(executed).toEqual([
       '001_initial_schema.sql',
       '002_auth_verification_codes.sql',
@@ -59,15 +59,16 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
       '012_support_tickets.sql',
       '013_auth_onboarding_and_magic_links.sql',
       '014_tutor_verification_dossier.sql',
+      '015_academic_streams_and_institutions.sql',
     ]);
 
-    // Verify schema_migrations ledger records all 14 entries
+    // Verify schema_migrations ledger records all 15 entries
     const migrationRecords = await client.query<{ name: string; id: number }>(
       'SELECT id, name FROM schema_migrations ORDER BY id ASC;',
     );
-    expect(migrationRecords.rows).toHaveLength(14);
+    expect(migrationRecords.rows).toHaveLength(15);
     expect(migrationRecords.rows[0].name).toBe('001_initial_schema.sql');
-    expect(migrationRecords.rows[13].name).toBe('014_tutor_verification_dossier.sql');
+    expect(migrationRecords.rows[14].name).toBe('015_academic_streams_and_institutions.sql');
   });
 
   it('STAGE 2: Verify post-recovery schema completeness and catalog invariants', async () => {
@@ -161,7 +162,7 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
 
     const status = await runner.getStatus();
     expect(status.pending).toHaveLength(0);
-    expect(status.applied).toHaveLength(14);
+    expect(status.applied).toHaveLength(15);
   });
 
   it('STAGE 5: Double-entry ledger balance conservation invariant drill', async () => {
