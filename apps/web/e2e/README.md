@@ -44,6 +44,11 @@ Logins are rate-limited by the API (5 attempts/min per IP + account) and the
 seeded accounts are shared across parallel specs, so the helpers wait out a
 reported 429 window and retry instead of failing the journey.
 
+In CI the same accounts come from repository secrets, and
+`scripts/check-e2e-skips.mjs` fails the job when the Playwright JSON report
+shows any skipped test — a missing credential cannot silently turn journeys
+green.
+
 Smoke (`smoke.public.spec.ts`) and guard (`auth.guards.spec.ts`) specs need
 no credentials. The contact-form smoke proves backend wiring: it passes on
 either a ticket reference (API up) or a visible submit error (API down).

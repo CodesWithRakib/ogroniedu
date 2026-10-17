@@ -2,6 +2,9 @@ name: Browser E2E
 
 on:
   workflow_dispatch:
+  schedule:
+    # Nightly at 19:00 UTC (01:00 Asia/Dhaka), independent of pushes.
+    - cron: '0 19 * * *'
   push:
     branches: [main]
     paths:
@@ -41,8 +44,29 @@ jobs:
           version: 12.10.1
           run_install: false
 
+      - name: Get pnpm store directory
+        shell: bash
+        run: |
+          echo "STORE_PATH=$(pnpm store path --silent)" >> $GITHUB_ENV
+
+      - name: Setup pnpm Cache
+        uses: actions/cache@v4
+        with:
+          path: ${{ env.STORE_PATH }}
+          key: ${{ runner.os }}-pnpm-store-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-pnpm-store-
+
       - name: Frozen Dependency Installation
         run: pnpm install --frozen-lockfile
+
+      - name: Cache Playwright Browsers
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/ms-playwright
+          key: ${{ runner.os }}-playwright-${{ hashFiles('**/pnpm-lock.yaml') }}
+          restore-keys: |
+            ${{ runner.os }}-playwright-
 
       - name: Install Playwright Chromium
         run: pnpm --filter @ogroniedu/web exec playwright install chromium --with-deps
@@ -60,6 +84,11 @@ jobs:
           E2E_STUDENT_PASSWORD: ${{ secrets.E2E_STUDENT_PASSWORD }}
           E2E_TUTOR_EMAIL: ${{ secrets.E2E_TUTOR_EMAIL }}
           E2E_TUTOR_PASSWORD: ${{ secrets.E2E_TUTOR_PASSWORD }}
+          E2E_ADMIN_EMAIL: ${{ secrets.E2E_ADMIN_EMAIL }}
+          E2E_ADMIN_PASSWORD: ${{ secrets.E2E_ADMIN_PASSWORD }}
+
+      - name: Assert seeded journeys ran (no silent skips)
+        run: node scripts/check-e2e-skips.mjs
 
       - name: Upload Playwright report
         if: failure()

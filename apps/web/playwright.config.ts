@@ -12,7 +12,14 @@ export default defineConfig({
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 2 : undefined,
-  reporter: process.env.CI ? [['github'], ['html', { open: 'never' }]] : 'list',
+  reporter: process.env.CI
+    ? [
+        ['github'],
+        ['html', { open: 'never' }],
+        // Machine-readable report consumed by scripts/check-e2e-skips.mjs.
+        ['json', { outputFile: 'test-results/e2e-results.json' }],
+      ]
+    : 'list',
   timeout: 60_000,
   expect: { timeout: 15_000 },
   use: {
