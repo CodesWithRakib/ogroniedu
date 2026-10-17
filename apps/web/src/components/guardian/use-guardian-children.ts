@@ -35,14 +35,29 @@ function messageFor(code: LinkChildFieldError, locale: Locale): string {
  */
 export function useGuardianChildren(
   locale: Locale,
-  initialChildren: ChildItem[],
-  callbacks: GuardianChildrenCallbacks,
+  initialChildren: ChildItem[] = [],
+  callbacks: GuardianChildrenCallbacks = {},
 ) {
   const dict = getDictionary(locale);
-  const [children, setChildren] = useState<ChildItem[]>(initialChildren);
+  const [children, setChildren] = useState<ChildItem[]>(initialChildren || []);
 
   React.useEffect(() => {
-    setChildren(initialChildren);
+    const next = initialChildren || [];
+    setChildren((prev) => {
+      if (
+        prev.length === next.length &&
+        prev.every(
+          (p, i) =>
+            p.linkId === next[i]?.linkId &&
+            p.status === next[i]?.status &&
+            p.displayName === next[i]?.displayName &&
+            p.studentId === next[i]?.studentId,
+        )
+      ) {
+        return prev;
+      }
+      return next;
+    });
   }, [initialChildren]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);

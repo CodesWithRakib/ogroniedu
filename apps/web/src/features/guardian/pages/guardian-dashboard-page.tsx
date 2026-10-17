@@ -40,6 +40,23 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
   const { user, children, activeChild, childrenQuery, requests, sessions } = dashboard;
   const isBn = locale === 'bn';
 
+  const mappedChildren = React.useMemo(
+    () =>
+      children.map((c) => ({
+        linkId: c.linkId,
+        studentId: c.studentId,
+        displayName: c.displayName,
+        relationshipType: c.relationshipType,
+        status: c.status,
+        consentPolicyVersion: c.consentPolicyVersion,
+        consentRecordedAt: c.consentRecordedAt,
+        isMinor: c.isMinor,
+        institutionName: c.institutionName,
+        educationLevelName: c.educationLevelName,
+      })),
+    [children],
+  );
+
   const upcomingSession = sessions.data?.data?.[0];
 
   return (
@@ -128,7 +145,11 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
           title={isBn ? 'সক্রিয় শিক্ষার্থী' : 'Active Child'}
           value={activeChild?.displayName ?? (isBn ? '—' : '—')}
           changeText={isBn ? 'এসক্রো সুরক্ষিত পর্যবেক্ষণ' : '100% Escrow Protected'}
-          href={withLocale('/dashboard/guardian/learning', locale)}
+          href={
+            activeChild
+              ? withLocale(`/dashboard/guardian/children/${activeChild.studentId}`, locale)
+              : withLocale('/dashboard/guardian/children', locale)
+          }
           testId="guardian-active-child"
         />
       </div>
@@ -145,21 +166,21 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
           href={withLocale('/dashboard/guardian/children', locale)}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/60 bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
         >
-          <Users className="w-3.5 h-3.5 text-blue-600" />
+          <Users className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'সন্তান প্রোফাইল' : 'Children'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/learning', locale)}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/60 bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
         >
-          <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
+          <BookOpen className="w-3.5 h-3.5 text-success-soft-foreground" />
           <span>{isBn ? 'লার্নিং অগ্রগতি' : 'Learning Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/sessions', locale)}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/60 bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
         >
-          <Calendar className="w-3.5 h-3.5 text-amber-600" />
+          <Calendar className="w-3.5 h-3.5 text-warning" />
           <span>{isBn ? 'ক্লাস সময়সূচি' : 'Class Schedule'}</span>
         </Link>
         <Link
@@ -298,10 +319,10 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                     </span>
                   </div>
                   <Link
-                    href={withLocale('/dashboard/guardian/learning', locale)}
+                    href={withLocale(`/dashboard/guardian/children/${activeChild.studentId}`, locale)}
                     className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
                   >
-                    <span>{isBn ? 'লার্নিং হিস্ট্রি' : 'Full Records'}</span>
+                    <span>{isBn ? 'একাডেমিক তদারকি' : 'Full Dossier & Oversight'}</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                 </div>
@@ -376,18 +397,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         ) : (
           <GuardianChildrenManager
             locale={locale}
-            initialChildren={children.map((c) => ({
-              linkId: c.linkId,
-              studentId: c.studentId,
-              displayName: c.displayName,
-              relationshipType: c.relationshipType,
-              status: c.status,
-              consentPolicyVersion: c.consentPolicyVersion,
-              consentRecordedAt: c.consentRecordedAt,
-              isMinor: c.isMinor,
-              institutionName: c.institutionName,
-              educationLevelName: c.educationLevelName,
-            }))}
+            initialChildren={mappedChildren}
             onAddChild={dashboard.handleAddChild}
             onRevokeLink={dashboard.handleRevokeLink}
           />

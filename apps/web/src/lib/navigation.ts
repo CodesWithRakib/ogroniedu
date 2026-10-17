@@ -152,6 +152,13 @@ export function navForRole(role: UserRole | null): NavItem[] {
     return [
       DASHBOARD.guardian,
       {
+        href: '/dashboard/guardian/children',
+        labelBn: 'সন্তান ও শিক্ষার্থী',
+        labelEn: 'My Children',
+        icon: Users,
+        testId: 'nav-children',
+      },
+      {
         href: '/tutors',
         labelBn: 'শিক্ষক খুঁজুন',
         labelEn: 'Find Tutors',
@@ -160,38 +167,31 @@ export function navForRole(role: UserRole | null): NavItem[] {
       },
       {
         href: '/dashboard/guardian/requests',
-        labelBn: 'অনুরোধ ও বুকিং',
+        labelBn: 'বুকিং অনুরোধ',
         labelEn: 'Requests',
         icon: Inbox,
         testId: 'nav-requests',
       },
       {
         href: '/dashboard/guardian/sessions',
-        labelBn: 'ক্লাস শিডিউল',
-        labelEn: 'Sessions',
+        labelBn: 'ক্লাস শিডিউল ও হাজিরা',
+        labelEn: 'Class Schedule',
         icon: Calendar,
         testId: 'nav-sessions',
       },
       {
         href: '/dashboard/guardian/learning',
         labelBn: 'পড়াশোনার অগ্রগতি',
-        labelEn: 'Learning',
+        labelEn: 'Academic Progress',
         icon: BookOpen,
         testId: 'nav-learning',
       },
       {
         href: '/dashboard/guardian/payments',
-        labelBn: 'ফি ও এসক্রো',
-        labelEn: 'Payments',
+        labelBn: 'টিউশন ফি ও এসক্রো',
+        labelEn: 'Tuition & Escrow',
         icon: CreditCard,
         testId: 'nav-payments',
-      },
-      {
-        href: '/dashboard/guardian/children',
-        labelBn: 'সন্তান তালিকা',
-        labelEn: 'Children',
-        icon: Users,
-        testId: 'nav-children',
       },
       {
         href: '/notifications',

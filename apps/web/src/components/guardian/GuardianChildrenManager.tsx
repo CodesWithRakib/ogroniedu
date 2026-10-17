@@ -80,13 +80,16 @@ interface GuardianChildrenManagerProps extends GuardianChildrenCallbacks {
   initialChildren?: ChildItem[];
 }
 
+const EMPTY_CHILDREN: ChildItem[] = [];
+
 export function GuardianChildrenManager({
   locale,
-  initialChildren = [],
+  initialChildren = EMPTY_CHILDREN,
   onAddChild,
   onRevokeLink,
 }: GuardianChildrenManagerProps) {
   const dict = getDictionary(locale);
+
   const {
     children,
     isModalOpen,
@@ -102,7 +105,10 @@ export function GuardianChildrenManager({
     handleLinkChild,
     handleRevoke,
     closeModal,
-  } = useGuardianChildren(locale, initialChildren, { onAddChild, onRevokeLink });
+  } = useGuardianChildren(locale, initialChildren, {
+    onAddChild,
+    onRevokeLink,
+  });
 
   return (
     <div className="space-y-6" data-testid="guardian-children-manager">
@@ -121,63 +127,98 @@ export function GuardianChildrenManager({
       </div>
 
       {children.length === 0 ? (
-        <Card className="text-center py-12">
-          <CardContent className="space-y-3">
-            <GraduationCap className="h-12 w-12 text-muted-foreground mx-auto" />
-            <p className="text-base text-muted-foreground">{dict.guardian.noChildren}</p>
-            <Button variant="outline" onClick={() => setIsModalOpen(true)}>
+        <Card className="text-center py-16 rounded-3xl border-dashed border-2 border-border/80 bg-card/60">
+          <CardContent className="space-y-4 max-w-md mx-auto">
+            <div className="h-16 w-16 rounded-3xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto shadow-inner">
+              <GraduationCap className="h-8 w-8" />
+            </div>
+            <div className="space-y-1">
+              <h3 className="text-base font-bold text-foreground">
+                {locale === 'bn' ? 'এখনো কোনো সন্তান যুক্ত করা হয়নি' : 'No children profiles linked yet'}
+              </h3>
+              <p className="text-xs text-muted-foreground leading-relaxed">
+                {locale === 'bn'
+                  ? 'আপনার শিক্ষার্থীর ফোন নম্বর বা ইমেইল দিয়ে সন্তান প্রোফাইল যুক্ত করুন এবং তাদের পড়াশোনা ও নিরাপত্তা পর্যবেক্ষণ করুন।'
+                  : 'Link your student using their registered phone or email to track academic progress, session attendance, and escrow security.'}
+              </p>
+            </div>
+            <Button onClick={() => setIsModalOpen(true)} className="rounded-full px-6 gap-2 shadow-xs">
+              <UserPlus className="h-4 w-4" />
               {dict.guardian.addChild}
             </Button>
           </CardContent>
         </Card>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {children.map((child) => (
-            <Card key={child.linkId} className="hover:border-primary/50 transition-colors">
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between gap-2">
-                  <div className="space-y-1">
-                    <CardTitle className="text-lg font-semibold flex items-center gap-2">
-                      {child.displayName}
-                      {child.isMinor && (
-                        <Badge
-                          variant="outline"
-                          className="text-xs bg-warning/10 text-warning border-warning/20"
-                        >
-                          {locale === 'bn' ? 'অপ্রাপ্তবয়স্ক (Minor)' : 'Minor (<18)'}
-                        </Badge>
-                      )}
-                    </CardTitle>
-                    <CardDescription className="flex items-center gap-2 text-xs">
-                      <span>{child.institutionName || 'General Student'}</span>
-                      <span>•</span>
-                      <span>{child.educationLevelName || 'Class Level'}</span>
-                    </CardDescription>
+          {children.map((child) => {
+            const initials = child.displayName
+              .split(' ')
+              .map((n) => n[0])
+              .slice(0, 2)
+              .join('')
+              .toUpperCase();
+            return (
+              <Card
+                key={child.linkId}
+                className="rounded-3xl border-border bg-card hover:border-primary/40 hover:shadow-md transition-all p-5 flex flex-col justify-between"
+              >
+                <div className="space-y-3">
+                  <div className="flex items-start justify-between gap-3">
+                    <div className="flex items-center gap-3">
+                      <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 text-primary font-black text-sm flex items-center justify-center shrink-0 shadow-inner">
+                        {initials || 'ST'}
+                      </div>
+                      <div className="space-y-1">
+                        <div className="flex flex-wrap items-center gap-2">
+                          <CardTitle className="text-base font-bold text-foreground">
+                            {child.displayName}
+                          </CardTitle>
+                          {child.isMinor && (
+                            <Badge
+                              variant="outline"
+                              className="text-[10px] px-2 py-0.5 rounded-full bg-warning/10 text-warning border-warning/30 font-medium"
+                            >
+                              {locale === 'bn' ? 'অপ্রাপ্তবয়স্ক (Minor)' : 'Minor (<18)'}
+                            </Badge>
+                          )}
+                        </div>
+                        <CardDescription className="flex items-center gap-2 text-xs">
+                          <span>
+                            {child.institutionName ||
+                              (locale === 'bn' ? 'সাধারণ শিক্ষা প্রতিষ্ঠান' : 'Institution')}
+                          </span>
+                          <span>•</span>
+                          <span>
+                            {child.educationLevelName ||
+                              (locale === 'bn' ? 'শ্রেণি স্তর' : 'Grade Level')}
+                          </span>
+                        </CardDescription>
+                      </div>
+                    </div>
+                    <StatusBadge status={child.status}>
+                      {child.status === 'active'
+                        ? dict.guardian.activeBadge
+                        : dict.guardian.pendingBadge}
+                    </StatusBadge>
                   </div>
-                  <StatusBadge status={child.status}>
-                    {child.status === 'active'
-                      ? dict.guardian.activeBadge
-                      : dict.guardian.pendingBadge}
-                  </StatusBadge>
-                </div>
-              </CardHeader>
-              <CardContent className="space-y-3 text-sm">
-                <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-2">
-                  <span className="flex items-center gap-1.5">
-                    <ShieldCheck className="h-4 w-4 text-success-soft-foreground" />
-                    {locale === 'bn' ? 'সম্পর্ক:' : 'Relation:'}{' '}
-                    <strong className="text-foreground capitalize">{child.relationshipType}</strong>
-                  </span>
-                  <span className="flex items-center gap-1 text-[11px]">
-                    <Lock className="h-3 w-3 text-muted-foreground" />
-                    {child.consentPolicyVersion || 'v1.0-bd-minor-consent'}
-                  </span>
+
+                  <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border/80 pt-3">
+                    <span className="flex items-center gap-1.5">
+                      <ShieldCheck className="h-4 w-4 text-success-soft-foreground" />
+                      {locale === 'bn' ? 'সম্পর্ক:' : 'Relation:'}{' '}
+                      <strong className="text-foreground capitalize">{child.relationshipType}</strong>
+                    </span>
+                    <span className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground bg-surface-muted px-2 py-0.5 rounded-lg border border-border/60">
+                      <Lock className="h-3 w-3" />
+                      {child.consentPolicyVersion || 'v1.0-bd-minor-consent'}
+                    </span>
+                  </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-2 border-t border-border/60">
+                <div className="flex items-center justify-between pt-3 mt-3 border-t border-border/60">
                   <Link
                     href={withLocale(`/dashboard/guardian/children/${child.studentId}`, locale)}
-                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors"
                     data-testid={`link-child-detail-${child.studentId}`}
                   >
                     <span>
@@ -188,16 +229,16 @@ export function GuardianChildrenManager({
                   <Button
                     variant="ghost"
                     size="sm"
-                    className="text-destructive hover:text-destructive/90 hover:bg-destructive/10 text-xs gap-1.5 h-8"
+                    className="text-destructive hover:text-destructive/90 hover:bg-destructive/10 text-xs gap-1.5 h-8 rounded-full px-3"
                     onClick={() => handleRevoke(child.studentId)}
                   >
                     <Trash2 className="h-3.5 w-3.5" />
                     {dict.guardian.unlink}
                   </Button>
                 </div>
-              </CardContent>
-            </Card>
-          ))}
+              </Card>
+            );
+          })}
         </div>
       )}
 
