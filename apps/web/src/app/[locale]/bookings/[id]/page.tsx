@@ -269,7 +269,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
         {actionMessage && (
           <div
             role="status"
-            className="rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-xs text-emerald-400 flex items-center gap-2.5"
+            className="rounded-2xl border border-primary/40 bg-primary/10 p-4 text-xs text-success-soft-foreground flex items-center gap-2.5"
             data-testid="booking-success-banner"
           >
             <CheckCircle2 className="w-4 h-4 shrink-0" />
@@ -279,7 +279,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
         {errorMessage && (
           <div
             role="alert"
-            className="rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-400 flex items-center gap-2.5"
+            className="rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-xs text-destructive-soft-foreground flex items-center gap-2.5"
             data-testid="booking-error-banner"
           >
             <AlertTriangle className="w-4 h-4 shrink-0" />
@@ -296,49 +296,49 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                   {educationLevelName}
                 </span>
                 {status === 'requested' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-amber-500/15 text-amber-400 border border-amber-500/30 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-amber-400 animate-pulse" />
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-warning/15 text-warning-soft-foreground border border-warning/40 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-warning animate-pulse" />
                     {isBn ? 'অনুরোধ অপেক্ষমান' : 'Pending Response'}
                   </span>
                 )}
                 {status === 'accepted' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-cyan-400 animate-pulse" />
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-interactive/15 text-info-soft-foreground border border-info/40 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-info animate-pulse" />
                     {isBn ? 'গৃহীত — এসক্রো ফি জমা দিন' : 'Accepted — Escrow Deposit Required'}
                   </span>
                 )}
                 {status === 'confirmed' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/15 text-emerald-400 border border-emerald-500/30 flex items-center gap-1.5">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/15 text-success-soft-foreground border border-primary/40 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     {isBn ? 'নিশ্চিতকৃত বুকিং' : 'Confirmed & Active'}
                   </span>
                 )}
                 {status === 'cancelled' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-rose-500/15 text-rose-400 border border-rose-500/30">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-destructive/15 text-destructive-soft-foreground border border-destructive/40">
                     {isBn ? 'বাতিলকৃত' : 'Cancelled'}
                   </span>
                 )}
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                 {subjectName}
               </h1>
 
               <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-cyan-400" />
+                  <User className="w-3.5 h-3.5 text-info-soft-foreground" />
                   {isBn ? 'শিক্ষক:' : 'Tutor:'}{' '}
                   <strong className="text-foreground">{tutorName}</strong>
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1.5">
-                  <GraduationCap className="w-3.5 h-3.5 text-emerald-400" />
+                  <GraduationCap className="w-3.5 h-3.5 text-success-soft-foreground" />
                   {isBn ? 'শিক্ষার্থী:' : 'Student:'}{' '}
                   <strong className="text-foreground">{studentName}</strong>
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-purple-400" />
+                  <Calendar className="w-3.5 h-3.5 text-interactive" />
                   {formatDate(booking?.createdAt || new Date(), locale)}
                 </span>
               </div>
@@ -349,7 +349,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
               {status === 'accepted' && (
                 <Link
                   href={withLocale(`/dashboard/bookings/${bookingId}/pay`, locale)}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-emerald-500 to-teal-500 hover:from-emerald-600 hover:to-teal-600 text-slate-950 font-bold text-sm shadow-lg shadow-emerald-500/20 transition-all hover:scale-102"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm shadow-lg shadow-sm transition-all hover:scale-102"
                   data-testid="pay-escrow-cta-btn"
                 >
                   <CreditCard className="w-4 h-4" />
@@ -363,7 +363,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     size="sm"
                     disabled={responding}
                     onClick={() => handleTutorResponse('accept')}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white font-semibold text-xs"
+                    className="bg-primary hover:bg-primary-hover text-white font-semibold text-xs"
                     data-testid="tutor-accept-booking-btn"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
@@ -374,7 +374,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     variant="outline"
                     disabled={responding}
                     onClick={() => handleTutorResponse('decline')}
-                    className="border-rose-500/30 text-rose-400 hover:bg-rose-500/10 text-xs"
+                    className="border-destructive/40 text-destructive-soft-foreground hover:bg-destructive/10 text-xs"
                     data-testid="tutor-decline-booking-btn"
                   >
                     <XCircle className="w-3.5 h-3.5 mr-1.5" />
@@ -389,7 +389,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                   variant="outline"
                   disabled={withdrawing}
                   onClick={handleWithdraw}
-                  className="border-rose-500/30 text-rose-400 hover:bg-rose-500/10 text-xs"
+                  className="border-destructive/40 text-destructive-soft-foreground hover:bg-destructive/10 text-xs"
                   data-testid="withdraw-booking-btn"
                 >
                   {isBn ? 'অনুরোধ প্রত্যাহার' : 'Withdraw Request'}
@@ -402,7 +402,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 onClick={() => setSafetyModalOpen(true)}
                 className="border-border text-xs"
               >
-                <ShieldCheck className="w-3.5 h-3.5 mr-1.5 text-rose-400" />
+                <ShieldCheck className="w-3.5 h-3.5 mr-1.5 text-destructive-soft-foreground" />
                 {isBn ? 'সুরক্ষা রিপোর্ট' : 'Report Issue'}
               </Button>
 
@@ -412,7 +412,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 onClick={() => setReplacementModalOpen(true)}
                 className="border-border text-xs"
               >
-                <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-400" />
+                <Sparkles className="w-3.5 h-3.5 mr-1.5 text-warning-soft-foreground" />
                 {isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacement'}
               </Button>
 
@@ -421,10 +421,10 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                   size="sm"
                   variant="outline"
                   onClick={() => setReviewModalOpen(true)}
-                  className="border-amber-500/40 text-amber-300 hover:bg-amber-500/10 text-xs"
+                  className="border-warning/40 text-warning-soft-foreground hover:bg-warning/10 text-xs"
                   data-testid="open-review-modal-btn"
                 >
-                  <Star className="w-3.5 h-3.5 mr-1.5 text-amber-400 fill-current" />
+                  <Star className="w-3.5 h-3.5 mr-1.5 text-warning-soft-foreground fill-current" />
                   {isBn ? 'শিক্ষককে রিভিউ দিন' : 'Rate Tutor'}
                 </Button>
               )}
@@ -438,7 +438,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             <p className="text-xs text-muted-foreground font-medium">
               {isBn ? 'সেশন ফি (প্রতি ক্লাস)' : 'Fee Per Session'}
             </p>
-            <p className="text-xl sm:text-2xl font-black text-white font-mono">
+            <p className="text-xl sm:text-2xl font-black text-foreground font-mono">
               ৳{formatLocalizedNumber(priceBdt, locale)}
             </p>
           </div>
@@ -447,7 +447,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             <p className="text-xs text-muted-foreground font-medium">
               {isBn ? 'ক্লাসের মাধ্যম' : 'Tutoring Mode'}
             </p>
-            <p className="text-base font-bold text-cyan-400 capitalize">
+            <p className="text-base font-bold text-info-soft-foreground capitalize">
               {booking?.mode === 'in_person'
                 ? isBn
                   ? 'বাসায় গিয়ে (In-Person)'
@@ -462,7 +462,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             <p className="text-xs text-muted-foreground font-medium">
               {isBn ? 'সেশন ব্যাপ্তি' : 'Duration'}
             </p>
-            <p className="text-base font-bold text-emerald-400 font-mono">
+            <p className="text-base font-bold text-success-soft-foreground font-mono">
               {formatLocalizedNumber(Number(booking?.durationMinutes) || 60, locale)}{' '}
               {isBn ? 'মিনিট' : 'Mins'}
             </p>
@@ -472,7 +472,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             <p className="text-xs text-muted-foreground font-medium">
               {isBn ? 'এসক্রো নিরাপত্তা' : 'Escrow Protection'}
             </p>
-            <p className="text-base font-bold text-teal-400 flex items-center gap-1.5">
+            <p className="text-base font-bold text-primary-soft-foreground flex items-center gap-1.5">
               <ShieldCheck className="w-4 h-4 shrink-0" />
               <span>{isBn ? '১০০% সুরক্ষিত' : '100% Guaranteed'}</span>
             </p>
@@ -548,7 +548,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
               <div className="flex items-center justify-between pb-3 border-b border-border/70">
                 <div className="flex items-center gap-2">
-                  <Video className="w-4 h-4 text-cyan-400" />
+                  <Video className="w-4 h-4 text-info-soft-foreground" />
                   <h3 className="font-bold text-sm text-foreground">
                     {isBn ? 'নির্ধারিত ক্লাস সেশনসমূহ' : 'Scheduled Class Sessions'}
                   </h3>
@@ -586,12 +586,12 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                         </div>
                         <p className="text-[11px] text-muted-foreground flex items-center gap-2">
                           <span className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3 text-purple-400" />
+                            <Calendar className="w-3 h-3 text-interactive" />
                             {formatDate(session.startsAt, locale)}
                           </span>
                           <span>•</span>
                           <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3 text-cyan-400" />
+                            <Clock className="w-3 h-3 text-info-soft-foreground" />
                             {new Date(session.startsAt).toLocaleTimeString(
                               locale === 'bn' ? 'bn-BD' : 'en-US',
                               { hour: '2-digit', minute: '2-digit' },
@@ -606,7 +606,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                             href={session.meetingUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-cyan-500/15 text-cyan-400 hover:bg-cyan-500/25 border border-cyan-500/30 font-medium text-xs transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-interactive/15 text-info-soft-foreground hover:bg-interactive/25 border border-info/40 font-medium text-xs transition-colors"
                           >
                             <Video className="w-3.5 h-3.5" />
                             <span>{isBn ? 'ক্লাসে যোগ দিন' : 'Join Class'}</span>
@@ -636,7 +636,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             {/* Calendar Synchronization Hub */}
             <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
               <div className="flex items-center gap-2 pb-3 border-b border-border/70">
-                <Calendar className="w-4 h-4 text-purple-400" />
+                <Calendar className="w-4 h-4 text-interactive" />
                 <h3 className="font-bold text-sm text-foreground">
                   {isBn ? 'ক্যালেন্ডার সিঙ্ক ও রুটিন' : 'Calendar Synchronization'}
                 </h3>
@@ -657,7 +657,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-surface/80 hover:bg-surface border border-border/80 text-foreground font-semibold text-xs transition-all hover:border-primary/40"
                     data-testid="google-calendar-sync-btn"
                   >
-                    <ExternalLink className="w-3.5 h-3.5 text-cyan-400" />
+                    <ExternalLink className="w-3.5 h-3.5 text-info-soft-foreground" />
                     <span>{isBn ? 'Google Calendar-এ যোগ করুন' : 'Add to Google Calendar'}</span>
                   </a>
                 )}
@@ -670,7 +670,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                   className="w-full justify-center text-xs h-10 border-border/80 hover:bg-surface"
                   data-testid="download-ics-calendar-btn"
                 >
-                  <Download className="w-3.5 h-3.5 mr-1.5 text-purple-400" />
+                  <Download className="w-3.5 h-3.5 mr-1.5 text-interactive" />
                   <span>
                     {downloadingIcs
                       ? isBn
@@ -687,7 +687,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             {/* Escrow Guarantee & Trust Seal */}
             <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
               <div className="flex items-center gap-2 pb-3 border-b border-border/70">
-                <ShieldCheck className="w-4 h-4 text-emerald-400" />
+                <ShieldCheck className="w-4 h-4 text-success-soft-foreground" />
                 <h3 className="font-bold text-sm text-foreground">
                   {isBn ? 'অগ্রণী এডু আর্থিক ট্রাস্ট নিশ্চয়তা' : 'OgroniEdu Escrow Protection'}
                 </h3>
@@ -695,7 +695,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
 
               <ul className="space-y-2.5 text-xs text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? 'ক্লাস সন্তোষজনকভাবে সম্পন্ন না হওয়া পর্যন্ত শিক্ষকের কাছে টাকা ছাড় করা হয় না।'
@@ -703,7 +703,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? '৪৮ ঘণ্টার ফ্রি টিউটর রিপ্লেসমেন্ট নিশ্চয়তা কার্যকর।'
@@ -711,7 +711,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? '২৪/৭ জাতীয় হেল্পলাইন ১০৯৮ ও প্ল্যাটফর্ম সাপোর্ট টিম সংযুক্ত।'

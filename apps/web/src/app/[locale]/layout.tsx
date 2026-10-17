@@ -13,7 +13,6 @@ import { AuthBootstrap } from '@/components/auth/AuthBootstrap';
 import { NotificationProvider } from '@/components/notifications/NotificationProvider';
 import { NotificationToastContainer } from '@/components/notifications/NotificationToast';
 import { NotificationCenter } from '@/components/notifications/NotificationCenter';
-import { AppThemeProvider } from '@/lib/theme/ThemeProvider';
 import { Toaster } from '@/components/ui/sonner';
 import { BottomNavbar } from '@/components/shell/BottomNavbar';
 import { PWARegister } from '@/components/pwa/PWARegister';
@@ -85,18 +84,16 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
     <div className={fontVariables}>
       <StoreProvider>
         <AuthBootstrap>
-          <AppThemeProvider>
-            <NextIntlClientProvider locale={locale} messages={messages}>
-              <NotificationProvider locale={locale}>
-                {children}
-                <NotificationToastContainer locale={locale} />
-                <NotificationCenter locale={locale} />
-                <Toaster />
-                <BottomNavbar locale={locale} />
-                <PWARegister locale={locale} />
-              </NotificationProvider>
-            </NextIntlClientProvider>
-          </AppThemeProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            <NotificationProvider locale={locale}>
+              {children}
+              <NotificationToastContainer locale={locale} />
+              <NotificationCenter locale={locale} />
+              <Toaster />
+              <BottomNavbar locale={locale} />
+              <PWARegister locale={locale} />
+            </NotificationProvider>
+          </NextIntlClientProvider>
         </AuthBootstrap>
       </StoreProvider>
     </div>

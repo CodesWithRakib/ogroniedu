@@ -27,12 +27,12 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn'
                     ? 'প্ল্যাটফর্ম সিকিউরিটি ও অডিট লগ'
                     : 'Platform Security & Audit Trail'}
                 </h1>
-                <span className="px-3 py-1 text-xs font-bold rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                <span className="px-3 py-1 text-xs font-bold rounded-full bg-interactive/15 text-info-soft-foreground border border-info/40">
                   {totalLogs} {locale === 'bn' ? 'ইভেন্ট রেকর্ড' : 'Events'}
                 </span>
               </div>
@@ -46,11 +46,11 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
 
           {/* Security & Sanitization Card */}
           <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-3">
-            <h3 className="text-base font-bold text-white flex items-center gap-2">
-              <ShieldCheck className="w-5 h-5 text-emerald-400" />
+            <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+              <ShieldCheck className="w-5 h-5 text-success-soft-foreground" />
               <span>{t('auditTrailTitle')}</span>
             </h3>
-            <p className="text-xs text-emerald-400 font-semibold flex items-center space-x-1.5">
+            <p className="text-xs text-success-soft-foreground font-semibold flex items-center space-x-1.5">
               <Lock className="w-4 h-4" />
               <span>{t('auditRedactedNotice')}</span>
             </p>

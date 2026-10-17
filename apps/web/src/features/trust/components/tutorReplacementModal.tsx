@@ -90,10 +90,10 @@ export function TutorReplacementModal({
       aria-modal="true"
       data-testid="tutor-replacement-modal"
     >
-      <div className="w-full max-w-xl rounded-3xl border border-primary/30 bg-slate-950 p-6 text-slate-100 shadow-2xl relative">
+      <div className="w-full max-w-xl rounded-3xl border border-primary/30 bg-surface-muted p-6 text-foreground shadow-sm relative">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800 transition-colors cursor-pointer"
+          className="absolute top-5 right-5 text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-surface-hover transition-colors cursor-pointer"
           aria-label={isBn ? 'বন্ধ করুন' : 'Close'}
         >
           <X className="w-5 h-5" />
@@ -101,11 +101,11 @@ export function TutorReplacementModal({
 
         {isSuccess ? (
           <div className="py-10 text-center space-y-4">
-            <CheckCircle2 className="w-16 h-16 text-emerald-400 mx-auto animate-bounce" />
-            <h3 className="text-xl font-bold text-white">
+            <CheckCircle2 className="w-16 h-16 text-success-soft-foreground mx-auto animate-bounce" />
+            <h3 className="text-xl font-bold text-foreground">
               {isBn ? 'রিপ্লেসমেন্ট দাবি সফলভাবে গৃহীত হয়েছে' : 'Guarantee Request Active'}
             </h3>
-            <p className="text-sm text-slate-300 max-w-md mx-auto">
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
               {isBn
                 ? '৪৮ ঘণ্টার কাউন্টডাউন শুরু হয়েছে। আমাদের ম্যাচিং টিম আপনার সাথে যোগাযোগ করবে।'
                 : 'The 48-hour guarantee clock has started. Our team is curating matching replacement tutors.'}
@@ -118,7 +118,7 @@ export function TutorReplacementModal({
                 <RefreshCw className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">
+                <h3 className="text-lg font-bold text-foreground">
                   {isBn
                     ? '৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি'
                     : '48-Hour Tutor Replacement Guarantee'}
@@ -136,16 +136,16 @@ export function TutorReplacementModal({
             </div>
 
             {/* SLA Guarantee Banner */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-emerald-950/40 border border-emerald-800/40 text-xs">
-              <div className="flex items-center gap-2 text-emerald-200">
-                <ShieldCheck className="w-4 h-4 text-emerald-400 shrink-0" />
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-primary-soft border border-primary/30 text-xs">
+              <div className="flex items-center gap-2 text-primary-soft-foreground">
+                <ShieldCheck className="w-4 h-4 text-success-soft-foreground shrink-0" />
                 <span>
                   {isBn
                     ? '১০০% অভিভাবক সুরক্ষা: ৪৮ ঘণ্টার মধ্যে নতুন যাচাইকৃত শিক্ষক অথবা সম্পূর্ণ ফান্ড ফেরত।'
                     : '100% Trust Guarantee: New verified tutor within 48h or full escrow refund.'}
                 </span>
               </div>
-              <div className="flex items-center gap-1 font-bold text-emerald-400">
+              <div className="flex items-center gap-1 font-bold text-success-soft-foreground">
                 <Clock className="w-3.5 h-3.5" />
                 <span>৪৮ ঘণ্টা</span>
               </div>
@@ -153,13 +153,13 @@ export function TutorReplacementModal({
 
             {/* Reason Code Select */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-muted-foreground">
                 {isBn ? 'পরিবর্তন চাওয়ার কারণ:' : 'Reason for Replacement:'}
               </label>
               <select
                 value={reasonCode}
                 onChange={(e) => setReasonCode(e.target.value)}
-                className="w-full rounded-xl bg-slate-900 border border-slate-700 p-2.5 text-xs text-slate-100 focus:outline-none focus:border-primary"
+                className="w-full rounded-xl bg-card border border-border p-2.5 text-xs text-foreground focus:outline-none focus:border-primary"
                 id="replacement-reason-select"
               >
                 <option value="teaching_mismatch">
@@ -193,7 +193,7 @@ export function TutorReplacementModal({
 
             {/* Explanation Textarea */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-muted-foreground">
                 {isBn
                   ? 'বিস্তারিত প্রত্যাশা ও বিবরণ (কী ধরণের শিক্ষক চাচ্ছেন?):'
                   : 'Requirements for New Tutor:'}
@@ -207,25 +207,25 @@ export function TutorReplacementModal({
                     ? 'নতুন শিক্ষকের কাছ থেকে আপনার নির্দিষ্ট প্রত্যাশা, সময়সূচি বা কোনো অগ্রাধিকার উল্লেখ করুন...'
                     : 'Specify preferred background, schedule adjustments, or pedagogical style...'
                 }
-                className="w-full rounded-2xl bg-slate-900 border border-slate-700 p-3 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-primary"
+                className="w-full rounded-2xl bg-card border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
                 id="replacement-explanation-input"
               />
             </div>
 
             {errorMessage && (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-red-950/60 border border-red-500/30 text-xs text-red-300">
-                <AlertTriangle className="w-4 h-4 shrink-0 text-red-400" />
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-destructive-soft border border-destructive/40 text-xs text-destructive-soft-foreground">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-destructive-soft-foreground" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={onClose}
-                className="text-xs border-slate-700 hover:bg-slate-800"
+                className="text-xs border-border hover:bg-surface-hover"
               >
                 {isBn ? 'বাতিল' : 'Cancel'}
               </Button>

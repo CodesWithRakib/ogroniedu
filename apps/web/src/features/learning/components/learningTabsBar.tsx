@@ -47,7 +47,7 @@ export function LearningTabsBar({
           onClick={() => onSelect(key)}
           className={`pb-3 px-4 text-sm font-semibold transition-colors flex items-center gap-2 border-b-2 -mb-px ${
             activeTab === key
-              ? 'border-emerald-600 text-emerald-600 dark:text-emerald-400 dark:border-emerald-400'
+              ? 'border-primary/40 text-primary  '
               : 'border-transparent text-muted-foreground hover:text-foreground'
           }`}
         >

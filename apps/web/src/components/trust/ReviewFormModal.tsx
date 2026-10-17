@@ -62,14 +62,14 @@ export function ReviewFormModal({
       closeLabel={locale === 'bn' ? 'বন্ধ করুন' : 'Close'}
       headerExtra={
         <span style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-          <span style={{ fontSize: '0.85rem', color: '#64748b' }}>{tutorName}</span>
+          <span style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>{tutorName}</span>
           <span
             style={{
               fontSize: '0.75rem',
               padding: '2px 8px',
               borderRadius: '12px',
-              backgroundColor: '#ecfdf5',
-              color: '#059669',
+              backgroundColor: 'var(--success-soft)',
+              color: 'var(--primary)',
               fontWeight: 600,
               border: '1px solid #a7f3d0',
             }}
@@ -82,13 +82,13 @@ export function ReviewFormModal({
     >
       <div
         style={{
-          backgroundColor: '#eff6ff',
+          backgroundColor: 'var(--info-soft)',
           border: '1px solid #bfdbfe',
           borderRadius: '8px',
           padding: '10px 14px',
           marginBottom: '16px',
           fontSize: '0.8rem',
-          color: '#1e40af',
+          color: 'var(--interactive-soft-foreground)',
           lineHeight: 1.4,
         }}
       >
@@ -132,7 +132,7 @@ export function ReviewFormModal({
               fontSize: '0.85rem',
               fontWeight: 600,
               marginBottom: '6px',
-              color: '#334155',
+              color: 'var(--muted-foreground)',
             }}
           >
             {t('writeReview')}
@@ -160,7 +160,7 @@ export function ReviewFormModal({
               display: 'flex',
               justifyContent: 'flex-end',
               fontSize: '0.75rem',
-              color: '#94a3b8',
+              color: 'var(--muted-foreground)',
               marginTop: '4px',
             }}
           >
@@ -177,8 +177,8 @@ export function ReviewFormModal({
               padding: '8px 16px',
               borderRadius: '8px',
               border: '1px solid #cbd5e1',
-              backgroundColor: '#ffffff',
-              color: '#475569',
+              backgroundColor: 'var(--card)',
+              color: 'var(--muted-foreground)',
               fontWeight: 600,
               cursor: 'pointer',
             }}
@@ -193,7 +193,7 @@ export function ReviewFormModal({
               borderRadius: '8px',
               border: 'none',
               background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-              color: '#ffffff',
+              color: 'var(--card)',
               fontWeight: 700,
               cursor: submit.isSubmitting ? 'not-allowed' : 'pointer',
               opacity: submit.isSubmitting ? 0.7 : 1,

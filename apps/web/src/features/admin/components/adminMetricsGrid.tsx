@@ -34,7 +34,7 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
       label: t('replacementQueue'),
       value: metrics.activeReplacementCases,
       caption: 'Active Cases',
-      valueClass: 'text-amber-500',
+      valueClass: 'text-warning',
       testId: 'metric-replacement-cases',
     },
     {
@@ -42,7 +42,7 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
       label: t('safetyQueue'),
       value: metrics.openSafetyReports,
       caption: 'Open Reports',
-      valueClass: 'text-rose-500',
+      valueClass: 'text-destructive',
       testId: 'metric-safety-reports',
     },
     {
@@ -50,7 +50,7 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
       label: t('activeBookings'),
       value: metrics.activeBookingsCount,
       caption: 'In Progress',
-      valueClass: 'text-teal-500',
+      valueClass: 'text-primary',
       testId: 'metric-active-bookings',
     },
     {
@@ -76,17 +76,17 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
                 <p className="text-xs font-semibold text-primary-foreground/90 truncate">
                   {card.label}
                 </p>
-                <div className="h-7 w-7 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0">
+                <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-foreground shrink-0">
                   <ArrowUpRight className="h-3.5 w-3.5" />
                 </div>
               </div>
               <p
-                className="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight font-sans leading-none text-white"
+                className="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight font-sans leading-none text-foreground"
                 data-testid={card.testId}
               >
                 {card.value}
               </p>
-              <span className="text-[10px] text-white/80 font-semibold mt-2 inline-block px-2 py-0.5 rounded-full bg-white/15">
+              <span className="text-[10px] text-muted-foreground font-semibold mt-2 inline-block px-2 py-0.5 rounded-full bg-muted">
                 {card.caption}
               </span>
             </div>

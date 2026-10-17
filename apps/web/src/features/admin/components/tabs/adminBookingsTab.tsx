@@ -6,9 +6,9 @@ import type { AdminBookingItem } from '../../types/admin.types';
 
 function bookingStatusClass(status: AdminBookingItem['status']): string {
   if (status === 'confirmed')
-    return 'bg-teal-500/15 text-teal-600 dark:text-teal-400 border border-teal-500/30';
+    return 'bg-primary/15 text-primary  border border-primary/30';
   if (status === 'completed')
-    return 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30';
+    return 'bg-primary/15 text-primary  border border-primary/30';
   return 'bg-surface-muted text-muted-foreground border border-border/60';
 }
 
@@ -73,7 +73,7 @@ export function AdminBookingsTab({
                     {booking.status !== 'cancelled' && (
                       <button
                         onClick={() => onRequestCancel(booking)}
-                        className="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 rounded-lg border border-rose-500/30 transition text-[11px] font-medium"
+                        className="px-2.5 py-1 bg-destructive/10 hover:bg-destructive/20 text-destructive  rounded-lg border border-destructive/30 transition text-[11px] font-medium"
                         data-testid={`admin-cancel-booking-btn-${booking.id}`}
                       >
                         {t('cancelIntervention')}

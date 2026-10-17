@@ -86,7 +86,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
       {error && (
         <div
           role="alert"
-          className="mb-4 flex items-start gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-700 dark:text-rose-300"
+          className="mb-4 flex items-start gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive "
           data-testid="forgot-password-error"
         >
           <AlertCircle className="h-4 w-4 shrink-0" />
@@ -97,7 +97,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
       {notice && stage === 'reset' && (
         <div
           role="status"
-          className="mb-4 flex items-start gap-2.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs text-emerald-700 dark:text-emerald-300"
+          className="mb-4 flex items-start gap-2.5 rounded-2xl border border-primary/30 bg-primary/10 p-3 text-xs text-primary "
         >
           <ShieldCheck className="h-4 w-4 shrink-0" />
           <span>
@@ -198,7 +198,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
 
       {stage === 'done' && (
         <div
-          className="flex items-start gap-2.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-xs text-emerald-700 dark:text-emerald-300"
+          className="flex items-start gap-2.5 rounded-2xl border border-primary/30 bg-primary/10 p-4 text-xs text-primary "
           data-testid="forgot-password-done"
         >
           <CheckCircle2 className="h-4 w-4 shrink-0" />

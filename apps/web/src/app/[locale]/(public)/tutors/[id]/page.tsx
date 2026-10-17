@@ -17,7 +17,7 @@ export default function TutorDetailsRoute({ params }: TutorDetailsRouteProps) {
   return (
     <Suspense
       fallback={
-        <div className="py-20 flex justify-center items-center bg-[#031317]">
+        <div className="py-20 flex justify-center items-center bg-brand-foreground">
           <LoadingSpinner />
         </div>
       }

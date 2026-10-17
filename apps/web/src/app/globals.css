@@ -1,462 +1,247 @@
 @import "tailwindcss";
 
+/*
+ * ============================================================================
+ * OgroniEdu — Centralized Design System (LIGHT THEME ONLY)
+ * ----------------------------------------------------------------------------
+ * Single source of truth for every token used across every route and role.
+ *
+ * Product-owner approved brand palette (do NOT change these hex values):
+ *   Ocean Teal   primaryColor #0df5c4   accentColor #00e1b2   (signature)
+ *   Sapphire Blue primaryColor #2563eb  accentColor #3b82f6   (complementary)
+ *
+ * The approved values above are bright accents. They are preserved verbatim in
+ * `src/lib/theme/brand.ts` and consumed here through `--brand` / `--brand-accent`
+ * and `--interactive`/`--interactive-accent`. Accessible *component* colours are
+ * derived from them (see `--primary`, `--primary-hover`, `--interactive-hover`)
+ * because the bright accents fail WCAG contrast as text on white
+ * (#0df5c4 on #ffffff = 1.41:1, #00e1b2 on #ffffff = 1.69:1).
+ *
+ * Usage rules:
+ *   Ocean Teal  → signature brand moments: selected navigation, progress
+ *                 highlights, decorative indicators, mint accent fills.
+ *   Sapphire    → interactive elements: links, focus rings, secondary CTAs.
+ *   Teal-700    → readable primary actions and brand text on light surfaces.
+ *
+ * This application has NO dark mode, NO theme switcher and NO dark tokens.
+ * ============================================================================
+ */
+
 @theme {
+  /* --- Core surfaces & text ------------------------------------------------- */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --color-card: var(--card);
   --color-card-foreground: var(--card-foreground);
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  /* --- Primary (accessible Ocean Teal action colour) ------------------------ */
   --color-primary: var(--primary);
   --color-primary-hover: var(--primary-hover);
   --color-primary-foreground: var(--primary-foreground);
   --color-primary-soft: var(--primary-soft);
   --color-primary-soft-foreground: var(--primary-soft-foreground);
+
+  /* --- Brand accents (exact approved hex values — fills & indicators only) -- */
+  --color-brand: var(--brand);
+  --color-brand-accent: var(--brand-accent);
+  --color-brand-foreground: var(--brand-foreground);
+  --color-brand-soft: var(--brand-soft);
+  --color-brand-soft-foreground: var(--brand-soft-foreground);
+
+  /* --- Interactive secondary emphasis (Sapphire Blue) ----------------------- */
+  --color-interactive: var(--interactive);
+  --color-interactive-hover: var(--interactive-hover);
+  --color-interactive-foreground: var(--interactive-foreground);
+  --color-interactive-accent: var(--interactive-accent);
+  --color-interactive-soft: var(--interactive-soft);
+  --color-interactive-soft-foreground: var(--interactive-soft-foreground);
+  --color-link: var(--link);
+
+  /* --- Surfaces ------------------------------------------------------------- */
   --color-secondary: var(--secondary);
   --color-secondary-foreground: var(--secondary-foreground);
+  --color-surface: var(--surface);
   --color-surface-muted: var(--surface-muted);
   --color-surface-elevated: var(--surface-elevated);
   --color-surface-hover: var(--surface-hover);
-  --color-muted: var(--muted);
-  --color-muted-foreground: var(--muted-foreground);
+
+  /* --- shadcn/ui bridge tokens --------------------------------------------- */
   --color-accent: var(--accent);
   --color-accent-foreground: var(--accent-foreground);
   --color-border: var(--border);
   --color-input: var(--input);
   --color-ring: var(--ring);
-  --color-success: var(--success);
-  --color-destructive: var(--destructive);
 
+  /* --- Semantic status ------------------------------------------------------ */
+  --color-success: var(--success);
+  --color-success-foreground: var(--success-foreground);
+  --color-success-soft: var(--success-soft);
+  --color-success-soft-foreground: var(--success-soft-foreground);
+  --color-warning: var(--warning);
+  --color-warning-foreground: var(--warning-foreground);
+  --color-warning-soft: var(--warning-soft);
+  --color-warning-soft-foreground: var(--warning-soft-foreground);
+  --color-info: var(--info);
+  --color-info-foreground: var(--info-foreground);
+  --color-info-soft: var(--info-soft);
+  --color-info-soft-foreground: var(--info-soft-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-destructive-soft: var(--destructive-soft);
+  --color-destructive-soft-foreground: var(--destructive-soft-foreground);
+
+  /* --- Sidebar / dashboard navigation -------------------------------------- */
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-muted: var(--sidebar-muted);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-active: var(--sidebar-active);
+  --color-sidebar-active-foreground: var(--sidebar-active-foreground);
+  --color-sidebar-hover: var(--sidebar-hover);
+
+  /* --- Typography ----------------------------------------------------------- */
   --font-sans: var(--font-plus-jakarta), var(--font-inter), system-ui, -apple-system, sans-serif;
   --font-bengali: var(--font-noto-bengali), var(--font-hind-siliguri), var(--font-plus-jakarta), system-ui, sans-serif;
   --font-serif: var(--font-instrument-serif), Georgia, serif;
+
+  /* --- Elevation ------------------------------------------------------------ */
+  --shadow-xs: var(--elevation-xs);
+  --shadow-sm: var(--elevation-sm);
+  --shadow-card: var(--elevation-card);
+  --shadow-popover: var(--elevation-popover);
 }
 
-/*
- * OgroniEdu Centralized Design Tokens
- * ------------------------------------------------------------------
- * Supports 5 switchable presets with both Light and Dark modes.
- * Changing theme or mode updates the entire UI immediately.
- */
-
 :root {
-  --radius: 0.875rem;
+  /* Light theme only. Declared explicitly so browser chrome, form controls and
+   * scrollbars stay light even when the operating system prefers dark. */
+  color-scheme: light;
 
-  /* Motion */
+  /* --- Geometry ------------------------------------------------------------- */
+  --radius: 0.875rem;
+  --radius-sm: 0.5rem;
+  --radius-md: 0.75rem;
+  --radius-lg: 1rem;
+  --radius-xl: 1.25rem;
+
+  /* --- Motion --------------------------------------------------------------- */
   --motion-fast: 120ms;
   --motion-base: 200ms;
   --motion-slow: 320ms;
   --motion-ease-out: cubic-bezier(0.16, 1, 0.3, 1);
   --motion-ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
-  /* Typography scale */
+  /* --- Typography scale ----------------------------------------------------- */
   --text-display: 2.25rem;
   --text-title: 1.5rem;
   --text-subtitle: 1.125rem;
   --text-body: 0.9375rem;
   --text-caption: 0.8125rem;
-}
 
-/* ==================================================================
- * 1. EMERALD SLATE (Default — Clean Academic Authority)
- * ================================================================== */
+  /* --- Core surfaces & text ------------------------------------------------- */
+  --background: #f6f8fa; /* soft neutral page canvas */
+  --foreground: #0f172a; /* deep readable text (17.9:1 on white) */
 
-/* Emerald Slate — Light */
-:root,
-[data-theme="emerald-slate"] {
-  color-scheme: light;
-  --background: #f8fafc;
-  --foreground: #0f172a;
-  --card: #ffffff;
+  --card: #ffffff; /* white card surface */
   --card-foreground: #0f172a;
   --popover: #ffffff;
   --popover-foreground: #0f172a;
-  --surface-muted: #f1f5f9;
-  --surface-elevated: #ffffff;
-  --surface-hover: #e2e8f0;
 
-  --primary: #059669;
-  --primary-hover: #047857;
-  --primary-foreground: #ffffff;
-  --primary-soft: #ecfdf5;
-  --primary-soft-foreground: #065f46;
+  --surface: #f8fafc; /* subtle secondary surface (inputs, table headers, chips) */
+  --surface-muted: #f1f5f9; /* nested wells, muted chips */
+  --surface-elevated: #ffffff; /* elevated popovers/menus */
+  --surface-hover: #e8eef5; /* neutral hover step */
 
   --secondary: #f1f5f9;
   --secondary-foreground: #1e293b;
+
   --muted: #f1f5f9;
-  --muted-foreground: #64748b;
-  --accent: #10b981;
-  --accent-foreground: #ffffff;
+  --muted-foreground: #475569; /* 7.6:1 on white */
 
-  --border: #e2e8f0;
-  --input: #e2e8f0;
-  --ring: #059669;
-  --success: #10b981;
-  --destructive: #ef4444;
-
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(5, 150, 105, 0.12) 0%, rgba(248, 250, 252, 0) 70%);
-  --gradient-card: linear-gradient(180deg, rgba(5, 150, 105, 0.04) 0%, rgba(255, 255, 255, 0) 100%);
-  --shadow-card: 0 4px 20px -2px rgba(15, 23, 42, 0.06);
-}
-
-/* Emerald Slate — Dark */
-html.dark[data-theme="emerald-slate"],
-[data-theme="emerald-slate"][data-mode="dark"] {
-  color-scheme: dark;
-  --background: #09120f;
-  --foreground: #ecfdf5;
-  --card: #111d19;
-  --card-foreground: #ecfdf5;
-  --popover: #15241f;
-  --popover-foreground: #ecfdf5;
-  --surface-muted: #162820;
-  --surface-elevated: #1a2f26;
-  --surface-hover: #1f372d;
-
-  --primary: #10b981;
-  --primary-hover: #059669;
-  --primary-foreground: #052e22;
-  --primary-soft: rgba(16, 185, 129, 0.18);
-  --primary-soft-foreground: #6ee7b7;
-
-  --secondary: #16281f;
-  --secondary-foreground: #d3efe2;
-  --muted: #152420;
-  --muted-foreground: #8fb3a4;
-  --accent: #34d399;
-  --accent-foreground: #052e22;
-
-  --border: #1e332c;
-  --input: #1e332c;
-  --ring: #34d399;
-  --success: #34d399;
-  --destructive: #f87171;
-
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(16, 185, 129, 0.22) 0%, rgba(9, 18, 15, 0) 70%);
-  --gradient-card: linear-gradient(180deg, rgba(16, 185, 129, 0.14) 0%, rgba(17, 29, 25, 0) 100%);
-  --shadow-card: 0 8px 30px rgba(4, 120, 87, 0.25);
-}
-
-/* ==================================================================
- * 2. MIDNIGHT VIOLET (High-tech Royal Amethyst)
- * ================================================================== */
-
-/* Midnight Violet — Light */
-[data-theme="midnight-violet"] {
-  color-scheme: light;
-  --background: #faf8ff;
-  --foreground: #1c1435;
-  --card: #ffffff;
-  --card-foreground: #1c1435;
-  --popover: #ffffff;
-  --popover-foreground: #1c1435;
-  --surface-muted: #f3effc;
-  --surface-elevated: #ffffff;
-  --surface-hover: #e8e0f9;
-
-  --primary: #7c3aed;
-  --primary-hover: #6d28d9;
+  /* --- Primary: accessible derivation of the Ocean Teal signature ----------- */
+  /* #0f766e is teal-700 — 5.47:1 with white, so it is safe for buttons and
+   * brand text. The approved bright mint (#0df5c4) remains a fill token. */
+  --primary: #0f766e;
+  --primary-hover: #115e59;
   --primary-foreground: #ffffff;
-  --primary-soft: #f3e8ff;
-  --primary-soft-foreground: #581c87;
-
-  --secondary: #f3effc;
-  --secondary-foreground: #2e1065;
-  --muted: #f3effc;
-  --muted-foreground: #7c6f9e;
-  --accent: #8b5cf6;
-  --accent-foreground: #ffffff;
-
-  --border: #e9e0f8;
-  --input: #e9e0f8;
-  --ring: #7c3aed;
-  --success: #10b981;
-  --destructive: #ef4444;
-
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(124, 58, 237, 0.12) 0%, rgba(250, 248, 255, 0) 70%);
-  --gradient-card: linear-gradient(180deg, rgba(124, 58, 237, 0.04) 0%, rgba(255, 255, 255, 0) 100%);
-  --shadow-card: 0 4px 20px -2px rgba(46, 16, 101, 0.08);
-}
-
-/* Midnight Violet — Dark */
-html.dark[data-theme="midnight-violet"],
-[data-theme="midnight-violet"][data-mode="dark"] {
-  color-scheme: dark;
-  --background: #0d0a1f;
-  --foreground: #f1edfd;
-  --card: #171233;
-  --card-foreground: #f1edfd;
-  --popover: #1c1640;
-  --popover-foreground: #f1edfd;
-  --surface-muted: #221b47;
-  --surface-elevated: #281f54;
-  --surface-hover: #312666;
-
-  --primary: #8b5cf6;
-  --primary-hover: #7c3aed;
-  --primary-foreground: #ffffff;
-  --primary-soft: rgba(139, 92, 246, 0.18);
-  --primary-soft-foreground: #c084fc;
-
-  --secondary: #251d4d;
-  --secondary-foreground: #e9e2fb;
-  --muted: #221b47;
-  --muted-foreground: #a89ccf;
-  --accent: #c084fc;
-  --accent-foreground: #1a1038;
-
-  --border: #2d2358;
-  --input: #2d2358;
-  --ring: #a78bfa;
-  --success: #34d399;
-  --destructive: #f87171;
-
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(139, 92, 246, 0.22) 0%, rgba(13, 10, 31, 0) 70%);
-  --gradient-card: linear-gradient(180deg, rgba(139, 92, 246, 0.14) 0%, rgba(23, 18, 51, 0) 100%);
-  --shadow-card: 0 8px 30px rgba(109, 40, 217, 0.25);
-}
-
-/* ==================================================================
- * 3. OCEAN TEAL (Clean Coastal Cyan)
- * ================================================================== */
-
-/* Ocean Teal — Light */
-[data-theme="ocean-teal"] {
-  color-scheme: light;
-  --background: #f6fbfa;
-  --foreground: #09232b;
-  --card: #ffffff;
-  --card-foreground: #09232b;
-  --popover: #ffffff;
-  --popover-foreground: #09232b;
-  --surface-muted: #eaf5f4;
-  --surface-elevated: #ffffff;
-  --surface-hover: #dbeeed;
-
-  --primary: #0d9488;
-  --primary-hover: #0f766e;
-  --primary-foreground: #ffffff;
-  --primary-soft: #ccfbf1;
+  --primary-soft: #ecfdf5; /* mint tint wash */
   --primary-soft-foreground: #115e59;
 
-  --secondary: #eaf5f4;
-  --secondary-foreground: #134e4a;
-  --muted: #eaf5f4;
-  --muted-foreground: #5e8a8e;
-  --accent: #14b8a6;
-  --accent-foreground: #ffffff;
+  /* --- Brand accents (EXACT approved values — never approximated) ----------- */
+  --brand: #0df5c4; /* Ocean Teal primaryColor — fills, indicators, progress */
+  --brand-accent: #00e1b2; /* Ocean Teal accentColor — gradient step, chart fill */
+  --brand-foreground: #042426; /* ink placed on brand fills (11.6:1 on #0df5c4) */
+  --brand-soft: #e6fffa; /* whisper-mint decorative wash */
+  --brand-soft-foreground: #115e59;
 
-  --border: #d2ebe8;
-  --input: #d2ebe8;
-  --ring: #0d9488;
-  --success: #10b981;
-  --destructive: #ef4444;
+  /* --- Interactive: Sapphire Blue (links, focus, secondary emphasis) -------- */
+  --interactive: #2563eb; /* EXACT approved sapphire primary — 5.17:1 on white */
+  --interactive-hover: #1d4ed8; /* 6.70:1 on white */
+  --interactive-foreground: #ffffff;
+  --interactive-accent: #3b82f6; /* EXACT approved sapphire accent */
+  --interactive-soft: #dbeafe;
+  --interactive-soft-foreground: #1e40af; /* 7.15:1 on interactive-soft */
+  --link: #2563eb;
 
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(13, 148, 136, 0.12) 0%, rgba(246, 251, 250, 0) 70%);
-  --gradient-card: linear-gradient(180deg, rgba(13, 148, 136, 0.04) 0%, rgba(255, 255, 255, 0) 100%);
-  --shadow-card: 0 4px 20px -2px rgba(9, 35, 43, 0.08);
+  /* --- shadcn/ui bridge tokens --------------------------------------------- */
+  --accent: #f1f5f9; /* subtle neutral hover surface (shadcn convention) */
+  --accent-foreground: #134e4a; /* deep teal ink for brand-tinted hovers */
+  --border: #e2e8f0; /* subtle neutral border */
+  --input: #cbd5e1; /* input outline, one step stronger than --border */
+  --ring: #2563eb; /* sapphire focus ring (5.17:1) */
+
+  /* --- Status --------------------------------------------------------------- */
+  --success: #15803d; /* 5.02:1 on white */
+  --success-foreground: #ffffff;
+  --success-soft: #ecfdf5;
+  --success-soft-foreground: #15803d;
+
+  --warning: #b45309; /* 5.02:1 on white */
+  --warning-foreground: #ffffff;
+  --warning-soft: #fffbeb;
+  --warning-soft-foreground: #b45309;
+
+  --info: #1d4ed8; /* 6.70:1 on white */
+  --info-foreground: #ffffff;
+  --info-soft: #eff6ff;
+  --info-soft-foreground: #1e40af;
+
+  --destructive: #dc2626; /* 4.83:1 on white */
+  --destructive-foreground: #ffffff;
+  --destructive-soft: #fef2f2;
+  --destructive-soft-foreground: #b91c1c; /* 6.47:1 on white */
+
+  /* --- Sidebar / dashboard navigation -------------------------------------- */
+  --sidebar: #ffffff;
+  --sidebar-foreground: #0f172a;
+  --sidebar-muted: #64748b;
+  --sidebar-border: #e2e8f0;
+  --sidebar-active: #e6fffa; /* mint wash marks the selected item */
+  --sidebar-active-foreground: #115e59;
+  --sidebar-hover: #f1f5f9;
+
+  /* --- Elevation (restrained) ---------------------------------------------- */
+  --elevation-xs: 0 1px 2px rgba(15, 23, 42, 0.04);
+  --elevation-sm: 0 1px 3px rgba(15, 23, 42, 0.06), 0 1px 2px rgba(15, 23, 42, 0.04);
+  --elevation-card: 0 1px 2px rgba(15, 23, 42, 0.04), 0 12px 28px -18px rgba(15, 23, 42, 0.18);
+  --elevation-popover: 0 12px 32px -8px rgba(15, 23, 42, 0.18);
+
+  /* --- Decorative gradients (light, calm) ---------------------------------- */
+  --gradient-hero: radial-gradient(
+    60% 55% at 50% 0%,
+    rgba(13, 245, 196, 0.16) 0%,
+    rgba(246, 248, 250, 0) 72%
+  );
+  --gradient-card: linear-gradient(180deg, rgba(13, 245, 196, 0.07) 0%, rgba(255, 255, 255, 0) 100%);
+  --shadow-card: var(--elevation-card);
 }
 
-/* Ocean Teal — Dark (OgroniEdu Hero Signature Palette) */
-html.dark[data-theme="ocean-teal"],
-html.dark:not([data-theme]),
-[data-theme="ocean-teal"][data-mode="dark"] {
-  color-scheme: dark;
-  --background: #031317;
-  --foreground: #f1fbf8;
-  --card: #061f26;
-  --card-foreground: #f1fbf8;
-  --popover: #061f26;
-  --popover-foreground: #f1fbf8;
-  --surface-muted: #07252d;
-  --surface-elevated: #0a313b;
-  --surface-hover: #0e3f4c;
-
-  --primary: #0df5c4;
-  --primary-hover: #00e1b2;
-  --primary-foreground: #042426;
-  --primary-soft: rgba(13, 245, 196, 0.16);
-  --primary-soft-foreground: #0df5c4;
-
-  --secondary: #082832;
-  --secondary-foreground: #e2f8f4;
-  --muted: #082832;
-  --muted-foreground: #8faeb4;
-  --accent: #0df5c4;
-  --accent-foreground: #042426;
-
-  --border: rgba(13, 245, 196, 0.22);
-  --input: rgba(13, 245, 196, 0.25);
-  --ring: #0df5c4;
-  --success: #0df5c4;
-  --destructive: #f87171;
-
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(13, 245, 196, 0.25) 0%, rgba(3, 19, 23, 0) 75%);
-  --gradient-card: linear-gradient(180deg, rgba(13, 245, 196, 0.12) 0%, rgba(6, 31, 38, 0) 100%);
-  --shadow-card: 0 10px 35px -5px rgba(0, 0, 0, 0.6), 0 0 25px rgba(13, 245, 196, 0.08);
-}
-
-/* ==================================================================
- * 4. SAPPHIRE BLUE (Executive Corporate Tech)
- * ================================================================== */
-
-/* Sapphire Blue — Light */
-[data-theme="sapphire-blue"] {
-  color-scheme: light;
-  --background: #f8faff;
-  --foreground: #0f1c3f;
-  --card: #ffffff;
-  --card-foreground: #0f1c3f;
-  --popover: #ffffff;
-  --popover-foreground: #0f1c3f;
-  --surface-muted: #eef3ff;
-  --surface-elevated: #ffffff;
-  --surface-hover: #e0ebff;
-
-  --primary: #2563eb;
-  --primary-hover: #1d4ed8;
-  --primary-foreground: #ffffff;
-  --primary-soft: #dbeafe;
-  --primary-soft-foreground: #1e40af;
-
-  --secondary: #eef3ff;
-  --secondary-foreground: #1e3a8a;
-  --muted: #eef3ff;
-  --muted-foreground: #64748b;
-  --accent: #3b82f6;
-  --accent-foreground: #ffffff;
-
-  --border: #dbe4f5;
-  --input: #dbe4f5;
-  --ring: #2563eb;
-  --success: #10b981;
-  --destructive: #ef4444;
-
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.12) 0%, rgba(248, 250, 255, 0) 70%);
-  --gradient-card: linear-gradient(180deg, rgba(37, 99, 235, 0.04) 0%, rgba(255, 255, 255, 0) 100%);
-  --shadow-card: 0 4px 20px -2px rgba(15, 28, 63, 0.08);
-}
-
-/* Sapphire Blue — Dark */
-html.dark[data-theme="sapphire-blue"],
-[data-theme="sapphire-blue"][data-mode="dark"] {
-  color-scheme: dark;
-  --background: #081120;
-  --foreground: #eff6ff;
-  --card: #0f1e38;
-  --card-foreground: #eff6ff;
-  --popover: #132545;
-  --popover-foreground: #eff6ff;
-  --surface-muted: #14284b;
-  --surface-elevated: #1a335f;
-  --surface-hover: #213f73;
-
-  --primary: #3b82f6;
-  --primary-hover: #2563eb;
-  --primary-foreground: #ffffff;
-  --primary-soft: rgba(59, 130, 246, 0.18);
-  --primary-soft-foreground: #93c5fd;
-
-  --secondary: #172c54;
-  --secondary-foreground: #dbeafe;
-  --muted: #15284b;
-  --muted-foreground: #8aa4c8;
-  --accent: #60a5fa;
-  --accent-foreground: #081120;
-
-  --border: #1e3966;
-  --input: #1e3966;
-  --ring: #60a5fa;
-  --success: #34d399;
-  --destructive: #f87171;
-
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.22) 0%, rgba(8, 17, 32, 0) 70%);
-  --gradient-card: linear-gradient(180deg, rgba(59, 130, 246, 0.14) 0%, rgba(15, 30, 56, 0) 100%);
-  --shadow-card: 0 8px 30px rgba(37, 99, 235, 0.25);
-}
-
-/* ==================================================================
- * 5. AMBER LUXE (Warm Golden Obsidian)
- * ================================================================== */
-
-/* Amber Luxe — Light */
-[data-theme="amber-luxe"] {
-  color-scheme: light;
-  --background: #fdfbf7;
-  --foreground: #291804;
-  --card: #ffffff;
-  --card-foreground: #291804;
-  --popover: #ffffff;
-  --popover-foreground: #291804;
-  --surface-muted: #f7f1e6;
-  --surface-elevated: #ffffff;
-  --surface-hover: #f0e6d5;
-
-  --primary: #d97706;
-  --primary-hover: #b45309;
-  --primary-foreground: #ffffff;
-  --primary-soft: #fef3c7;
-  --primary-soft-foreground: #78350f;
-
-  --secondary: #f7f1e6;
-  --secondary-foreground: #451a03;
-  --muted: #f7f1e6;
-  --muted-foreground: #8c735d;
-  --accent: #f59e0b;
-  --accent-foreground: #ffffff;
-
-  --border: #ebdec9;
-  --input: #ebdec9;
-  --ring: #d97706;
-  --success: #10b981;
-  --destructive: #ef4444;
-
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(217, 119, 6, 0.12) 0%, rgba(253, 251, 247, 0) 70%);
-  --gradient-card: linear-gradient(180deg, rgba(217, 119, 6, 0.04) 0%, rgba(255, 255, 255, 0) 100%);
-  --shadow-card: 0 4px 20px -2px rgba(41, 24, 4, 0.08);
-}
-
-/* Amber Luxe — Dark */
-html.dark[data-theme="amber-luxe"],
-[data-theme="amber-luxe"][data-mode="dark"] {
-  color-scheme: dark;
-  --background: #140e07;
-  --foreground: #fef3c7;
-  --card: #20170d;
-  --card-foreground: #fef3c7;
-  --popover: #261c10;
-  --popover-foreground: #fef3c7;
-  --surface-muted: #2c2014;
-  --surface-elevated: #362719;
-  --surface-hover: #433120;
-
-  --primary: #f59e0b;
-  --primary-hover: #d97706;
-  --primary-foreground: #291804;
-  --primary-soft: rgba(245, 158, 11, 0.18);
-  --primary-soft-foreground: #fde68a;
-
-  --secondary: #2c2014;
-  --secondary-foreground: #fef3c7;
-  --muted: #2c2014;
-  --muted-foreground: #b39b82;
-  --accent: #fbbf24;
-  --accent-foreground: #291804;
-
-  --border: #3d2c1c;
-  --input: #3d2c1c;
-  --ring: #f59e0b;
-  --success: #34d399;
-  --destructive: #f87171;
-
-  --gradient-hero: radial-gradient(circle at 50% 0%, rgba(245, 158, 11, 0.22) 0%, rgba(20, 14, 7, 0) 70%);
-  --gradient-card: linear-gradient(180deg, rgba(245, 158, 11, 0.14) 0%, rgba(32, 23, 13, 0) 100%);
-  --shadow-card: 0 8px 30px rgba(180, 83, 9, 0.25);
-}
-
-/* ==================================================================
- * Base Typography & Layout Styling
- * ================================================================== */
+/* ==========================================================================
+ * Base typography & layout
+ * ========================================================================== */
 
 body {
   background-color: var(--background);
@@ -466,9 +251,6 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
-  transition:
-    background-color var(--motion-base) var(--motion-ease-out),
-    color var(--motion-base) var(--motion-ease-out);
 }
 
 /* English mode prioritizes Plus Jakarta Sans */
@@ -511,9 +293,18 @@ h3 em {
   font-variant-numeric: tabular-nums;
 }
 
-/* Glass & Hero helper utilities */
+/* Brand text selection: mint wash with deep teal ink keeps contrast readable */
+::selection {
+  background-color: color-mix(in srgb, var(--brand) 35%, white);
+  color: var(--brand-foreground);
+}
+
+/* ==========================================================================
+ * Reusable surface utilities
+ * ========================================================================== */
+
 .glass-panel {
-  background: color-mix(in srgb, var(--card) 85%, transparent);
+  background: color-mix(in srgb, var(--card) 88%, transparent);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   border: 1px solid var(--border);
@@ -527,20 +318,26 @@ h3 em {
   background: var(--gradient-card);
 }
 
-/* Interactive card elevation */
+/* Interactive card elevation — subtle lift, neutral border by default */
 .card-hover-elevate {
-  transition: transform var(--motion-base) var(--motion-ease-out),
-              box-shadow var(--motion-base) var(--motion-ease-out),
-              border-color var(--motion-base) var(--motion-ease-out);
+  transition:
+    transform var(--motion-base) var(--motion-ease-out),
+    box-shadow var(--motion-base) var(--motion-ease-out),
+    border-color var(--motion-base) var(--motion-ease-out);
 }
 
 .card-hover-elevate:hover {
   transform: translateY(-2px);
-  box-shadow: var(--shadow-card);
-  border-color: color-mix(in srgb, var(--primary) 35%, var(--border));
+  box-shadow: var(--elevation-card);
+  border-color: color-mix(in srgb, var(--primary) 30%, var(--border));
 }
 
-/* Entrance Animations */
+/* Brand ribbon: signature mint indicator strip */
+.brand-ribbon {
+  background: linear-gradient(90deg, var(--brand) 0%, var(--brand-accent) 55%, var(--interactive) 100%);
+}
+
+/* Entrance animation */
 @keyframes rise-in {
   from {
     opacity: 0;
@@ -556,7 +353,11 @@ h3 em {
   animation: rise-in var(--motion-slow) var(--motion-ease-out) both;
 }
 
-/* Accessibility focus ring */
+/* ==========================================================================
+ * Accessibility
+ * ========================================================================== */
+
+/* Consistent visible focus indicator (sapphire, WCAG 2.2 AA) */
 *:focus-visible {
   outline: 2px solid var(--ring);
   outline-offset: 2px;
@@ -572,4 +373,32 @@ h3 em {
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+}
+
+/* ==========================================================================
+ * Slim, neutral scrollbars (light)
+ * ========================================================================== */
+
+* {
+  scrollbar-width: thin;
+  scrollbar-color: #cbd5e1 transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+*::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+*::-webkit-scrollbar-thumb {
+  background-color: #cbd5e1;
+  border-radius: 9999px;
+  border: 2px solid var(--background);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background-color: #94a3b8;
 }

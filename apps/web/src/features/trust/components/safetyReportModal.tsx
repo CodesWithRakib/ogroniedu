@@ -93,10 +93,10 @@ export function SafetyReportModal({
       aria-modal="true"
       data-testid="safety-report-modal"
     >
-      <div className="w-full max-w-xl rounded-3xl border border-red-500/30 bg-slate-950 p-6 text-slate-100 shadow-2xl relative">
+      <div className="w-full max-w-xl rounded-3xl border border-destructive/40 bg-surface-muted p-6 text-foreground shadow-sm relative">
         <button
           onClick={onClose}
-          className="absolute top-5 right-5 text-slate-400 hover:text-white p-1 rounded-full hover:bg-slate-800 transition-colors cursor-pointer"
+          className="absolute top-5 right-5 text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-surface-hover transition-colors cursor-pointer"
           aria-label={isBn ? 'বন্ধ করুন' : 'Close'}
         >
           <X className="w-5 h-5" />
@@ -104,11 +104,11 @@ export function SafetyReportModal({
 
         {isSuccess ? (
           <div className="py-10 text-center space-y-4">
-            <CheckCircle2 className="w-16 h-16 text-emerald-400 mx-auto animate-bounce" />
-            <h3 className="text-xl font-bold text-white">
+            <CheckCircle2 className="w-16 h-16 text-success-soft-foreground mx-auto animate-bounce" />
+            <h3 className="text-xl font-bold text-foreground">
               {isBn ? 'রিপোর্ট সফলভাবে গৃহীত হয়েছে' : 'Report Filed Successfully'}
             </h3>
-            <p className="text-sm text-slate-300 max-w-md mx-auto">
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
               {isBn
                 ? 'আমাদের নিরাপত্তা টিম অবিলম্বে ব্যবস্থা নিচ্ছে। আপনার যেকোনো প্রয়োজনে ২৪/৭ হটলাইনে যোগাযোগ করুন।'
                 : 'Our security ops team is taking immediate action. We will contact you shortly.'}
@@ -116,15 +116,15 @@ export function SafetyReportModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex items-center gap-3 border-b border-red-500/20 pb-4">
-              <div className="h-10 w-10 rounded-2xl bg-red-500/20 border border-red-500/30 text-red-400 flex items-center justify-center shrink-0">
+            <div className="flex items-center gap-3 border-b border-destructive/40 pb-4">
+              <div className="h-10 w-10 rounded-2xl bg-destructive/20 border border-destructive/40 text-destructive-soft-foreground flex items-center justify-center shrink-0">
                 <ShieldAlert className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg font-bold text-white">
+                <h3 className="text-lg font-bold text-foreground">
                   {isBn ? 'শিশু সুরক্ষা ও নিরাপত্তা সতর্কতা' : 'Child Safety & Protection Alert'}
                 </h3>
-                <p className="text-xs text-red-300">
+                <p className="text-xs text-destructive-soft-foreground">
                   {reportedUserName
                     ? isBn
                       ? `${reportedUserName}-এর বিরুদ্ধে জরুরি রিপোর্ট`
@@ -137,27 +137,27 @@ export function SafetyReportModal({
             </div>
 
             {/* Emergency Hotline Notice */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-red-950/40 border border-red-800/40 text-xs">
-              <div className="flex items-center gap-2 text-red-200">
-                <PhoneCall className="w-4 h-4 text-red-400 shrink-0" />
+            <div className="flex items-center justify-between p-3 rounded-2xl bg-destructive-soft border border-destructive/30 text-xs">
+              <div className="flex items-center gap-2 text-destructive-soft-foreground">
+                <PhoneCall className="w-4 h-4 text-destructive-soft-foreground shrink-0" />
                 <span>
                   {isBn
                     ? 'জরুরি বিপদ? জাতীয় শিশু হেল্পলাইন ১০৯৮ বা ৯৯৯ এ কল করুন।'
                     : 'Immediate danger? Call National Child Helpline 1098 or 999.'}
                 </span>
               </div>
-              <span className="font-bold text-red-400 text-xs">২৪/৭ সক্রিয়</span>
+              <span className="font-bold text-destructive-soft-foreground text-xs">২৪/৭ সক্রিয়</span>
             </div>
 
             {/* Category Select */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-muted-foreground">
                 {isBn ? 'ঘটনার শ্রেণি / ক্যাটাগরি:' : 'Incident Category:'}
               </label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full rounded-xl bg-slate-900 border border-slate-700 p-2.5 text-xs text-slate-100 focus:outline-none focus:border-red-500"
+                className="w-full rounded-xl bg-card border border-border p-2.5 text-xs text-foreground focus:outline-none focus:border-destructive/40"
                 id="safety-category-select"
               >
                 <option value="child_safety">
@@ -191,7 +191,7 @@ export function SafetyReportModal({
 
             {/* Severity Radio */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-muted-foreground">
                 {isBn ? 'বিপদের মাত্রা (Severity):' : 'Urgency Level:'}
               </label>
               <div className="grid grid-cols-4 gap-2">
@@ -200,25 +200,25 @@ export function SafetyReportModal({
                     id: 'critical',
                     bn: 'জরুরি (Critical)',
                     en: 'Critical',
-                    color: 'border-red-600 bg-red-950/40 text-red-300',
+                    color: 'border-destructive/40 bg-destructive-soft text-destructive-soft-foreground',
                   },
                   {
                     id: 'high',
                     bn: 'উচ্চ (High)',
                     en: 'High',
-                    color: 'border-amber-600 bg-amber-950/40 text-amber-300',
+                    color: 'border-warning/40 bg-warning-soft text-warning-soft-foreground',
                   },
                   {
                     id: 'medium',
                     bn: 'মাঝারি (Med)',
                     en: 'Medium',
-                    color: 'border-yellow-600 bg-yellow-950/40 text-yellow-300',
+                    color: 'border-warning/40 bg-warning-soft text-warning-soft-foreground',
                   },
                   {
                     id: 'low',
                     bn: 'সাধারণ (Low)',
                     en: 'Low',
-                    color: 'border-slate-700 bg-slate-900 text-slate-300',
+                    color: 'border-border bg-card text-muted-foreground',
                   },
                 ].map((s) => (
                   <button
@@ -227,8 +227,8 @@ export function SafetyReportModal({
                     onClick={() => setSeverity(s.id)}
                     className={`py-2 px-1 text-center rounded-xl border text-[11px] font-bold cursor-pointer transition-all ${
                       severity === s.id
-                        ? `${s.color} ring-2 ring-red-500/50 shadow-sm`
-                        : 'border-slate-800 bg-slate-900/60 text-slate-400 hover:border-slate-700'
+                        ? `${s.color} ring-2 ring-destructive/50 shadow-sm`
+                        : 'border-border bg-card text-muted-foreground hover:border-border'
                     }`}
                   >
                     {isBn ? s.bn : s.en}
@@ -239,7 +239,7 @@ export function SafetyReportModal({
 
             {/* Description Textarea */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-slate-300">
+              <label className="text-xs font-semibold text-muted-foreground">
                 {isBn
                   ? 'ঘটনার বিস্তারিত বিবরণ (কমপক্ষে ১০ অক্ষর):'
                   : 'Detailed Incident Description:'}
@@ -253,25 +253,25 @@ export function SafetyReportModal({
                     ? 'কী ঘটেছে, কখন ঘটেছে এবং শিক্ষার্থীর উপর কী প্রভাব পড়েছে তা স্পষ্টভাবে লিখুন...'
                     : 'Describe what happened, timestamp, and any safety impact on the student...'
                 }
-                className="w-full rounded-2xl bg-slate-900 border border-slate-700 p-3 text-xs text-slate-100 placeholder:text-slate-500 focus:outline-none focus:border-red-500"
+                className="w-full rounded-2xl bg-card border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-destructive/40"
                 id="safety-description-input"
               />
             </div>
 
             {errorMessage && (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-red-950/60 border border-red-500/30 text-xs text-red-300">
-                <AlertTriangle className="w-4 h-4 shrink-0 text-red-400" />
+              <div className="flex items-center gap-2 p-3 rounded-xl bg-destructive-soft border border-destructive/40 text-xs text-destructive-soft-foreground">
+                <AlertTriangle className="w-4 h-4 shrink-0 text-destructive-soft-foreground" />
                 <span>{errorMessage}</span>
               </div>
             )}
 
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-800">
+            <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={onClose}
-                className="text-xs border-slate-700 hover:bg-slate-800"
+                className="text-xs border-border hover:bg-surface-hover"
               >
                 {isBn ? 'বাতিল' : 'Cancel'}
               </Button>
@@ -279,7 +279,7 @@ export function SafetyReportModal({
                 type="submit"
                 size="sm"
                 disabled={isLoading}
-                className="gap-1.5 text-xs bg-red-600 hover:bg-red-700 text-white font-bold px-4"
+                className="gap-1.5 text-xs bg-destructive hover:bg-destructive/90 text-white font-bold px-4"
                 id="btn-submit-safety-report"
               >
                 <Send className="w-3.5 h-3.5" />

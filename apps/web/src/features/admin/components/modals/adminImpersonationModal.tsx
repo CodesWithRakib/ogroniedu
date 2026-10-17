@@ -30,10 +30,10 @@ export function AdminImpersonationModal({
       data-testid="impersonate-modal"
     >
       <div className="bg-card border border-border rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-        <h3 className="text-lg font-bold text-amber-600 dark:text-amber-400">
+        <h3 className="text-lg font-bold text-warning ">
           {t('impersonationBadge')}
         </h3>
-        <p className="text-xs text-amber-700 dark:text-amber-300 bg-amber-500/10 border border-amber-500/25 p-3 rounded-xl font-medium">
+        <p className="text-xs text-warning  bg-warning/10 border border-warning/40 p-3 rounded-xl font-medium">
           {t('impersonationWarning')}
         </p>
         <p className="text-xs text-muted-foreground">
@@ -49,7 +49,7 @@ export function AdminImpersonationModal({
             value={reason}
             onChange={(e) => onReasonChange(e.target.value)}
             placeholder="State explicit customer support ticket or bug reference..."
-            className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-amber-500/25"
+            className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-warning/25"
             data-testid="impersonate-reason-textarea"
           />
         </div>
@@ -77,7 +77,7 @@ export function AdminImpersonationModal({
           <button
             disabled={!reason.trim()}
             onClick={onConfirm}
-            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition"
+            className="px-4 py-2 bg-warning hover:bg-warning/90 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition"
             data-testid="confirm-impersonation-btn"
           >
             {t('triggerImpersonation')}

@@ -129,7 +129,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
       {actionError && (
         <div
           role="alert"
-          className="mb-4 rounded-xl border border-rose-200 bg-rose-50 p-4 text-xs text-rose-700 dark:border-rose-900/50 dark:bg-rose-950/40 dark:text-rose-300 flex items-start gap-2"
+          className="mb-4 rounded-xl border border-destructive/20 bg-destructive-soft p-4 text-xs text-destructive    flex items-start gap-2"
           data-testid="verification-action-error"
         >
           <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
@@ -139,7 +139,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
       {successMessage && (
         <div
           role="status"
-          className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-xs text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300 flex items-start gap-2"
+          className="mb-4 rounded-xl border border-primary/20 bg-primary-soft p-4 text-xs text-success-soft-foreground    flex items-start gap-2"
           data-testid="verification-success-message"
         >
           <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
@@ -160,12 +160,12 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
         <div className="space-y-6">
           {/* Status hero */}
           <div
-            className={`rounded-3xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden ${
+            className={`rounded-3xl p-6 sm:p-8 text-foreground shadow-xl relative overflow-hidden ${
               isApproved
-                ? 'bg-gradient-to-r from-emerald-950 via-teal-900 to-slate-900 border border-emerald-500/40'
+                ? 'bg-card border border-brand/25 '
                 : isUnderReview
-                  ? 'bg-gradient-to-r from-cyan-950 via-blue-950 to-slate-900 border border-cyan-500/40'
-                  : 'bg-gradient-to-r from-amber-950 via-slate-900 to-slate-900 border border-amber-500/40'
+                  ? 'bg-card border border-interactive/25 '
+                  : 'bg-warning-soft border border-warning/25 '
             }`}
             data-testid="verification-status-hero"
           >
@@ -189,7 +189,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
                     </Badge>
                   )}
 
-                  <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-white/10 text-white/90 border border-white/20 font-medium">
+                  <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-muted text-muted-foreground border border-border font-medium">
                     <Layers className="w-3.5 h-3.5" />
                     {formatLocalizedNumber(approvedLevels, locale)} /{' '}
                     {formatLocalizedNumber(levels.length || 3, locale)}{' '}
@@ -197,12 +197,12 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
                   </span>
 
                   {publicationStatus === 'published' ? (
-                    <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-emerald-500/20 text-emerald-300 border border-emerald-500/30 font-medium">
-                      <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                    <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-primary/20 text-success-soft-foreground border border-primary/40 font-medium">
+                      <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
                       {isBn ? 'প্রোফাইল লাইভ' : 'Profile Live'}
                     </span>
                   ) : (
-                    <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-slate-500/20 text-slate-300 border border-slate-500/30 font-medium">
+                    <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-muted/20 text-muted-foreground border border-border font-medium">
                       {isBn ? 'খসড়া মোড' : 'Draft Mode'}
                     </span>
                   )}
@@ -222,7 +222,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
                         : 'Complete all three levels to earn 3x more tuition requests.'}
                 </h2>
 
-                <p className="text-slate-300 text-xs sm:text-sm leading-relaxed">
+                <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
                   {isApproved
                     ? isBn
                       ? 'আপনার তিনটি যাচাই স্তরই অনুমোদিত। অভিভাবক ও শিক্ষার্থীরা সার্চে আপনার ভেরিফাইড ব্যাজ দেখতে পাচ্ছেন।'
@@ -237,7 +237,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
                 </p>
 
                 {overallExpiry && isApproved && (
-                  <p className="text-[11px] text-slate-400">
+                  <p className="text-[11px] text-muted-foreground">
                     {isBn ? 'পুনঃযাচাই প্রয়োজন' : 'Re-verification due'}:{' '}
                     {overallExpiry.slice(0, 10)}
                   </p>
@@ -247,7 +247,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
               <div className="flex flex-col gap-2 shrink-0">
                 <Link
                   href={withLocale('/dashboard/tutor', locale)}
-                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-white/10 hover:bg-white/20 text-white text-xs font-semibold backdrop-blur-sm transition-colors"
+                  className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-muted hover:bg-surface-hover text-foreground text-xs font-semibold backdrop-blur-sm transition-colors"
                 >
                   <span>{isBn ? 'ড্যাশবোর্ডে ফিরুন' : 'Back to Dashboard'}</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -256,7 +256,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
                   <Link
                     href={withLocale(`/tutors/${prof?.id ?? ''}`, locale)}
                     target="_blank"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition-colors shadow-sm"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold transition-colors shadow-sm"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                     <span>{isBn ? 'পাবলিক প্রোফাইল দেখুন' : 'View Public Profile'}</span>
@@ -312,15 +312,15 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
           </Card>
 
           {/* Data safety & encryption guarantee */}
-          <div className="p-4 rounded-2xl bg-cyan-950/20 border border-cyan-500/30 flex items-start gap-3 text-xs text-cyan-200">
-            <Lock className="w-4 h-4 text-cyan-400 shrink-0 mt-0.5" />
+          <div className="p-4 rounded-2xl bg-info-soft border border-info/40 flex items-start gap-3 text-xs text-info-soft-foreground">
+            <Lock className="w-4 h-4 text-info-soft-foreground shrink-0 mt-0.5" />
             <div className="space-y-1">
-              <span className="font-bold block text-cyan-100">
+              <span className="font-bold block text-info-soft-foreground">
                 {isBn
                   ? '২৫৬-বিট এনক্রিপশন ও তথ্যের গোপনীয়তা সুরক্ষা'
                   : '256-Bit Bank Grade Encryption & Privacy Assurance'}
               </span>
-              <p className="text-cyan-300/90 leading-relaxed">
+              <p className="text-info-soft-foreground leading-relaxed">
                 {isBn
                   ? 'আপনার জাতীয় পরিচয়পত্র ও অ্যাকাডেমিক সনদপত্র শুধুমাত্র অগ্রণী এডুর অভ্যন্তরীণ ভেরিফিকেশনের জন্য ব্যবহৃত হয়। এই নথিগুলো কখনোই শিক্ষার্থী বা তৃতীয় পক্ষের কাছে উন্মুক্ত করা হয় না।'
                   : 'Your NID and academic certificates are strictly used for internal verification by our compliance officers and are never disclosed to students or third parties.'}

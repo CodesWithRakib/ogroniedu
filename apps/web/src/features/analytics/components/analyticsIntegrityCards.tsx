@@ -26,13 +26,13 @@ export function AnalyticsIntegrityCards({ data }: { data: AnalyticsOperationalDa
           </div>
           <div className="flex justify-between py-1.5 border-b border-border/60">
             <span className="text-muted-foreground">{t('totalRefunded')}</span>
-            <span className="font-mono font-bold text-rose-500">
+            <span className="font-mono font-bold text-destructive">
               - {formatGroupedNumber(data.financials.totalRefundedBdt, locale)} BDT
             </span>
           </div>
           <div className="flex justify-between py-1.5 border-b border-border/60">
             <span className="text-muted-foreground">{t('netVolume')}</span>
-            <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+            <span className="font-mono font-bold text-primary ">
               {formatGroupedNumber(data.financials.netProcessedVolumeBdt, locale)} BDT
             </span>
           </div>
@@ -51,7 +51,7 @@ export function AnalyticsIntegrityCards({ data }: { data: AnalyticsOperationalDa
         <div className="space-y-3 text-xs">
           <div className="flex justify-between py-1.5 border-b border-border/60">
             <span className="text-muted-foreground">{t('averageRating')}</span>
-            <span className="font-bold text-amber-500">
+            <span className="font-bold text-warning">
               ★ {data.trustAndQuality.averageRating} / 5.0
             </span>
           </div>
@@ -64,7 +64,7 @@ export function AnalyticsIntegrityCards({ data }: { data: AnalyticsOperationalDa
           </div>
           <div className="flex justify-between py-1.5 border-b border-border/60">
             <span className="text-muted-foreground">{t('criticalSafetyIncidents')}</span>
-            <span className="font-bold text-rose-500">
+            <span className="font-bold text-destructive">
               {data.trustAndQuality.criticalSafetyCount} critical alerts
             </span>
           </div>

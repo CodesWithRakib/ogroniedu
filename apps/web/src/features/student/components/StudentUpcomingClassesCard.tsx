@@ -34,7 +34,7 @@ export function StudentUpcomingClassesCard({
       {/* Header */}
       <div className="flex items-center justify-between pb-3 border-b border-border/50">
         <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-teal-500/10 border border-teal-500/25 text-teal-400 flex items-center justify-center shrink-0">
+          <div className="h-9 w-9 rounded-xl bg-primary/10 border border-primary/40 text-primary-soft-foreground flex items-center justify-center shrink-0">
             <Calendar className="h-5 w-5" />
           </div>
           <div>
@@ -92,7 +92,7 @@ export function StudentUpcomingClassesCard({
                   key={s.id}
                   className={`p-3.5 rounded-2xl border transition-all duration-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                     isLive
-                      ? 'bg-emerald-500/5 border-emerald-500/30'
+                      ? 'bg-primary/5 border-primary/40'
                       : 'bg-surface/50 border-border/50 hover:bg-surface/80'
                   }`}
                 >
@@ -100,7 +100,7 @@ export function StudentUpcomingClassesCard({
                     <div
                       className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs ${
                         isLive
-                          ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40 animate-pulse'
+                          ? 'bg-primary/20 text-success-soft-foreground border border-primary/40 animate-pulse'
                           : 'bg-primary/10 text-primary border border-primary/20'
                       }`}
                     >
@@ -115,7 +115,7 @@ export function StudentUpcomingClassesCard({
                         <span
                           className={`px-2 py-0.5 text-[10px] font-bold rounded-full ${
                             isLive
-                              ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/40'
+                              ? 'bg-primary/20 text-success-soft-foreground border border-primary/40'
                               : 'bg-primary/10 text-primary border border-primary/20'
                           }`}
                         >
@@ -131,11 +131,11 @@ export function StudentUpcomingClassesCard({
 
                       <div className="mt-1 flex flex-wrap items-center gap-3 text-[11px] text-muted-foreground">
                         <span className="flex items-center gap-1 font-medium">
-                          <UserCheck className="h-3.5 w-3.5 text-teal-400" />
+                          <UserCheck className="h-3.5 w-3.5 text-primary-soft-foreground" />
                           <span>{s.tutorName}</span>
                         </span>
                         <span className="flex items-center gap-1 font-medium">
-                          <Clock className="h-3.5 w-3.5 text-amber-400" />
+                          <Clock className="h-3.5 w-3.5 text-warning-soft-foreground" />
                           <span>{formatDateTime(s.startsAt, locale)}</span>
                         </span>
                       </div>
@@ -149,7 +149,7 @@ export function StudentUpcomingClassesCard({
                         href={s.meetingUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs shadow-xs transition-transform active:scale-95"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-xs shadow-xs transition-transform active:scale-95"
                       >
                         <Video className="h-3.5 w-3.5" />
                         <span>{isBn ? 'ক্লাসে যোগ দিন' : 'Join Class'}</span>

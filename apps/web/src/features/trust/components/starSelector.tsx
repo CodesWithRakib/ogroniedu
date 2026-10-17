@@ -18,11 +18,11 @@ export function StarSelector({
     <div style={{ marginBottom: '12px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '4px' }}>
         <span
-          style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--text-secondary, #475569)' }}
+          style={{ fontSize: '0.85rem', fontWeight: 600, color: 'var(--muted-foreground)' }}
         >
           {label}
         </span>
-        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#f59e0b' }}>
+        <span style={{ fontSize: '0.85rem', fontWeight: 700, color: 'var(--warning)' }}>
           {'★'.repeat(value)}
           {'☆'.repeat(5 - value)} ({value}/5)
         </span>
@@ -43,11 +43,11 @@ export function StarSelector({
               flex: 1,
               padding: '6px',
               border:
-                star <= value ? '1px solid #f59e0b' : '1px solid var(--border-color, #e2e8f0)',
+                star <= value ? '1px solid #f59e0b' : '1px solid var(--border)',
               backgroundColor: star <= value ? 'rgba(245, 158, 11, 0.1)' : 'transparent',
               borderRadius: '6px',
               cursor: 'pointer',
-              color: star <= value ? '#f59e0b' : 'var(--text-muted, #94a3b8)',
+              color: star <= value ? 'var(--warning)' : 'var(--text-muted, #94a3b8)',
               fontSize: '1rem',
               fontWeight: 700,
               transition: 'all 0.15s ease',

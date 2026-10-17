@@ -68,7 +68,7 @@ export function NotificationsPage({ locale }: { locale: Locale }) {
                 <CardContent className="flex items-start justify-between gap-3 py-4">
                   <div className="min-w-0">
                     <p className="truncate text-sm font-semibold">{n.title}</p>
-                    <p className="mt-1 text-xs text-slate-500">{n.body}</p>
+                    <p className="mt-1 text-xs text-muted-foreground">{n.body}</p>
                   </div>
                   <div className="flex shrink-0 items-center gap-2">
                     {!n.isRead && <Badge variant="warning">{dict.notifications.newBadge}</Badge>}

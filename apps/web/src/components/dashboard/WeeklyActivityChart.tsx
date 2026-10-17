@@ -89,7 +89,7 @@ export function WeeklyActivityChart({
                   /* Striped / soft pill bar (Donezo pattern style) */
                   <div className="w-full h-full rounded-full bg-surface border border-border/70 flex items-center justify-center overflow-hidden group-hover:border-primary/50 transition-colors">
                     <div
-                      className="w-full h-full opacity-35 dark:opacity-20"
+                      className="w-full h-full opacity-35 "
                       style={{
                         backgroundImage: `repeating-linear-gradient(45deg, currentColor, currentColor 2px, transparent 2px, transparent 6px)`,
                       }}

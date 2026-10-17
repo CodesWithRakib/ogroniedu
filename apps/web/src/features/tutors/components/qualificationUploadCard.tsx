@@ -123,7 +123,7 @@ export function QualificationUploadCard({
           {formError && (
             <p
               role="alert"
-              className="text-xs text-rose-600"
+              className="text-xs text-destructive"
               data-testid="qualification-upload-error"
             >
               {formError}
@@ -132,7 +132,7 @@ export function QualificationUploadCard({
           {saved && (
             <p
               role="status"
-              className="text-xs text-emerald-600"
+              className="text-xs text-primary"
               data-testid="qualification-upload-saved"
             >
               {saved}
@@ -146,7 +146,7 @@ export function QualificationUploadCard({
               id="qual-doc-type"
               value={docType}
               onChange={(e) => setDocType(e.target.value as typeof docType)}
-              className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-sm dark:border-slate-700 dark:bg-slate-900"
+              className="h-10 w-full rounded-xl border border-border bg-white px-3 text-sm  "
               data-testid="qualification-type-select"
             >
               <option value="nid">{isBn ? 'জাতীয় পরিচয়পত্র (NID)' : 'National ID (NID)'}</option>

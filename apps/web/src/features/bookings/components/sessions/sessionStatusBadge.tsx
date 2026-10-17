@@ -31,8 +31,8 @@ export function SessionStatusBadge({
       );
     case 'completed':
       return (
-        <Badge variant="default" className="gap-1 bg-slate-100 text-slate-700">
-          <CheckCircle2 className="w-3 h-3 text-slate-500" />
+        <Badge variant="default" className="gap-1 bg-muted text-foreground">
+          <CheckCircle2 className="w-3 h-3 text-muted-foreground" />
           {dict.scheduling?.statusCompleted || 'Completed'}
         </Badge>
       );

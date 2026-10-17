@@ -203,33 +203,33 @@ export function TutorSearchCatalog({
       className="w-full max-w-7xl mx-auto px-4 py-8 space-y-8"
       data-testid="tutor-discovery-container"
     >
-      <div className="rounded-3xl p-6 sm:p-10 bg-[#061f26]/90 border border-[#0df5c4]/30 text-white shadow-[0_20px_50px_rgba(0,0,0,0.6),0_0_35px_rgba(13,245,196,0.12)] relative overflow-hidden backdrop-blur-xl">
-        <div className="absolute top-0 right-0 w-96 h-96 bg-[#0df5c4]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+      <div className="rounded-3xl p-6 sm:p-10 bg-card/90 border border-border text-foreground shadow-sm relative overflow-hidden backdrop-blur-xl">
+        <div className="absolute top-0 right-0 w-96 h-96 bg-brand-soft rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
         <div className="relative z-10 max-w-3xl space-y-3">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-[#0df5c4]/15 border border-[#0df5c4]/35 rounded-full text-xs font-semibold text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-soft border border-border rounded-full text-xs font-semibold text-primary shadow-sm">
             <Sparkles className="w-3.5 h-3.5" />
             <span>
               {isBn ? '১০০% এনআইডি ও ডিগ্রি যাচাইকৃত শিক্ষক' : 'NID & Academic Verified Educators'}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-white">
+          <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">
             {dict.discovery?.searchHeading || 'Find Verified Qualified Tutors'}
           </h1>
-          <p className="text-slate-300 text-xs sm:text-sm leading-relaxed max-w-2xl">
+          <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed max-w-2xl">
             {dict.discovery?.searchSubheading ||
               'Browse vetted educators across Bangladesh with transparent pricing and credential breakdown'}
           </p>
-          <div className="flex flex-wrap gap-2.5 pt-2 text-xs text-slate-300">
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#041a21] border border-[#0df5c4]/20 px-2.5 py-1 text-[11px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#0df5c4]" />
+          <div className="flex flex-wrap gap-2.5 pt-2 text-xs text-muted-foreground">
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-card border border-border px-2.5 py-1 text-[11px]">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand" />
               <span>{isBn ? 'বুয়েট, ঢাবি ও মেডিকেল টিউটর' : 'BUET, DU & Medical Tutors'}</span>
             </div>
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#041a21] border border-[#0df5c4]/20 px-2.5 py-1 text-[11px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#0df5c4]" />
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-card border border-border px-2.5 py-1 text-[11px]">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand" />
               <span>{isBn ? '১০০% এসক্রো ফি সুরক্ষা' : '100% Escrow Protection'}</span>
             </div>
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-[#041a21] border border-[#0df5c4]/20 px-2.5 py-1 text-[11px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-[#0df5c4]" />
+            <div className="inline-flex items-center gap-1.5 rounded-lg bg-card border border-border px-2.5 py-1 text-[11px]">
+              <span className="h-1.5 w-1.5 rounded-full bg-brand" />
               <span>{isBn ? 'ফ্রি ট্রায়াল সেশন' : 'Free Trial Sessions'}</span>
             </div>
           </div>
@@ -245,8 +245,8 @@ export function TutorSearchCatalog({
         onReset={handleResetFilters}
       />
 
-      <div className="flex items-center justify-between text-sm text-slate-300">
-        <span data-testid="results-count-text" className="font-semibold text-slate-200">
+      <div className="flex items-center justify-between text-sm text-muted-foreground">
+        <span data-testid="results-count-text" className="font-semibold text-foreground">
           {isLoading
             ? dict.common?.loading || 'Loading...'
             : dict.discovery?.resultsCount
@@ -260,7 +260,7 @@ export function TutorSearchCatalog({
       {(queryError || searchError) && (
         <div
           role="alert"
-          className="rounded-2xl border border-rose-500/30 bg-rose-950/40 p-4 text-sm text-rose-300 backdrop-blur-md shadow-lg"
+          className="rounded-2xl border border-destructive/40 bg-destructive-soft p-4 text-sm text-destructive-soft-foreground backdrop-blur-md shadow-lg"
           data-testid="discovery-error"
         >
           {queryError || searchError}

@@ -87,10 +87,10 @@ export function NotificationPreferencesView({
     label: string;
     icon: React.ReactNode;
   }> = [
-    { id: 'in_app', label: n.channelInApp, icon: <Bell className="w-4 h-4 text-emerald-600" /> },
-    { id: 'email', label: n.channelEmail, icon: <Mail className="w-4 h-4 text-indigo-600" /> },
-    { id: 'sms', label: n.channelSms, icon: <MessageSquare className="w-4 h-4 text-amber-600" /> },
-    { id: 'push', label: n.channelPush, icon: <Smartphone className="w-4 h-4 text-purple-600" /> },
+    { id: 'in_app', label: n.channelInApp, icon: <Bell className="w-4 h-4 text-success-soft-foreground" /> },
+    { id: 'email', label: n.channelEmail, icon: <Mail className="w-4 h-4 text-interactive" /> },
+    { id: 'sms', label: n.channelSms, icon: <MessageSquare className="w-4 h-4 text-warning" /> },
+    { id: 'push', label: n.channelPush, icon: <Smartphone className="w-4 h-4 text-interactive" /> },
   ];
 
   // Initialize preference state with defaults (all true except marketing on SMS/push)
@@ -150,15 +150,15 @@ export function NotificationPreferencesView({
     <div className="max-w-4xl mx-auto space-y-6 py-6 px-4 sm:px-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-2xl sm:text-3xl font-bold tracking-tight text-foreground ">
           {n.preferencesTitle}
         </h1>
         <p className="text-muted-foreground mt-1 text-sm sm:text-base">{n.preferencesSubtitle}</p>
       </div>
 
       {/* Safety Notice & Delivery Failure Invariant Banner */}
-      <div className="bg-emerald-500/10 border border-emerald-500/20 rounded-xl p-4 text-xs text-emerald-900 dark:text-emerald-200 flex items-start gap-3">
-        <ShieldCheck className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" />
+      <div className="bg-primary/10 border border-primary/40 rounded-xl p-4 text-xs text-primary-soft-foreground  flex items-start gap-3">
+        <ShieldCheck className="w-5 h-5 text-success-soft-foreground shrink-0 mt-0.5" />
         <div className="space-y-1">
           <div className="font-semibold text-sm">
             High Reliability Standard: Delivery Failure Isolation
@@ -176,7 +176,7 @@ export function NotificationPreferencesView({
         <CardHeader className="pb-3 border-b border-border/50">
           <CardTitle className="text-base font-semibold flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <span className="p-1.5 rounded-lg bg-cyan-500/10 text-cyan-400">
+              <span className="p-1.5 rounded-lg bg-interactive/10 text-info-soft-foreground">
                 <Bell className="w-4 h-4" />
               </span>
               <span>
@@ -214,7 +214,7 @@ export function NotificationPreferencesView({
                 size="sm"
                 onClick={toggleSound}
                 className={
-                  soundEnabled ? 'bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold' : ''
+                  soundEnabled ? 'bg-interactive hover:bg-info text-foreground font-bold' : ''
                 }
               >
                 {soundEnabled
@@ -230,7 +230,7 @@ export function NotificationPreferencesView({
                 variant="outline"
                 size="sm"
                 onClick={() => testSound('chime')}
-                className="flex items-center gap-1.5 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/10"
+                className="flex items-center gap-1.5 border-info/40 text-info-soft-foreground hover:bg-interactive/10"
               >
                 <span>{locale === 'bn' ? '🔔 টেস্ট সাউন্ড' : '🔔 Test Chime'}</span>
               </Button>
@@ -251,14 +251,14 @@ export function NotificationPreferencesView({
                   step="0.05"
                   value={soundVolume}
                   onChange={(e) => setSoundVolume(parseFloat(e.target.value))}
-                  className="w-full accent-cyan-400 cursor-pointer h-2 bg-surface rounded-lg"
+                  className="w-full accent-interactive cursor-pointer h-2 bg-surface rounded-lg"
                 />
                 <Button
                   type="button"
                   variant="ghost"
                   size="sm"
                   onClick={() => testSound('urgent')}
-                  className="text-xs text-rose-400 hover:text-rose-300 shrink-0 h-7 px-2"
+                  className="text-xs text-destructive-soft-foreground hover:text-destructive-soft-foreground shrink-0 h-7 px-2"
                 >
                   {locale === 'bn' ? 'জরুরি টেস্ট' : 'Urgent Alert'}
                 </Button>
@@ -292,7 +292,7 @@ export function NotificationPreferencesView({
               className="py-4 first:pt-0 last:pb-0 flex flex-col md:flex-row md:items-center justify-between gap-4"
             >
               <div className="md:max-w-xs">
-                <div className="font-semibold text-sm text-slate-900 dark:text-white">
+                <div className="font-semibold text-sm text-foreground ">
                   {cat.label}
                 </div>
                 <div className="text-xs text-muted-foreground mt-0.5">{cat.description}</div>
@@ -308,15 +308,15 @@ export function NotificationPreferencesView({
                       onClick={() => togglePreference(cat.id, ch.id)}
                       className={`cursor-pointer border rounded-lg p-2.5 flex items-center gap-2 transition-all select-none ${
                         isChecked
-                          ? 'border-emerald-500 bg-emerald-500/5 ring-1 ring-emerald-500/20'
-                          : 'border-border bg-slate-50/50 dark:bg-slate-900/50 opacity-60'
+                          ? 'border-primary/40 bg-primary/5 ring-1 ring-primary/20'
+                          : 'border-border bg-muted/50  opacity-60'
                       }`}
                     >
                       <input
                         type="checkbox"
                         checked={isChecked}
                         onChange={() => {}}
-                        className="rounded text-emerald-600 focus:ring-emerald-500 w-4 h-4 cursor-pointer"
+                        className="rounded text-success-soft-foreground focus:ring-ring w-4 h-4 cursor-pointer"
                       />
                       <div className="flex items-center gap-1.5 text-xs font-medium">
                         {ch.icon}
@@ -332,14 +332,14 @@ export function NotificationPreferencesView({
 
         <CardFooter className="border-t border-border/50 pt-4 flex items-center justify-between">
           <div className="text-xs text-muted-foreground flex items-center gap-1.5">
-            <Info className="w-4 h-4 text-slate-400" />
+            <Info className="w-4 h-4 text-muted-foreground" />
             <span>{n.guardianOversightNote}</span>
           </div>
 
           <Button
             onClick={handleSave}
             disabled={isSaving}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white font-medium flex items-center gap-2"
+            className="bg-primary hover:bg-primary-hover text-white font-medium flex items-center gap-2"
           >
             <Save className="w-4 h-4" />
             <span>{isSaving ? dict.common.loading : dict.common.save}</span>

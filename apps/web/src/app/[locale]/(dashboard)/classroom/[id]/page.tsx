@@ -50,7 +50,7 @@ function ClassroomPageContent({ locale, sessionId }: { locale: Locale; sessionId
     return (
       <div className="py-28 flex flex-col items-center justify-center space-y-3">
         <LoadingSpinner />
-        <p className="text-xs text-slate-400 font-medium">
+        <p className="text-xs text-muted-foreground font-medium">
           {locale === 'bn' ? 'লাইভ ক্লাসরুম লোড হচ্ছে...' : 'Loading live interactive classroom...'}
         </p>
       </div>

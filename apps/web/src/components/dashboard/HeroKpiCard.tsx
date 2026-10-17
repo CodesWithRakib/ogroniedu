@@ -38,7 +38,7 @@ export function HeroKpiCard({
     >
       {/* Decorative ambient glow for hero card */}
       {isHero && (
-        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-white/10 blur-2xl pointer-events-none" />
+        <div className="absolute -top-12 -right-12 h-32 w-32 rounded-full bg-muted blur-2xl pointer-events-none" />
       )}
 
       {/* Top row: Title + Action Arrow Button */}
@@ -66,7 +66,7 @@ export function HeroKpiCard({
           className={cn(
             'h-8 w-8 sm:h-9 sm:w-9 rounded-full flex items-center justify-center transition-all duration-200 shrink-0 group-hover:scale-105',
             isHero
-              ? 'bg-white/20 text-primary-foreground group-hover:bg-white/30 backdrop-blur-xs'
+              ? 'bg-muted text-primary-foreground group-hover:bg-white/30 backdrop-blur-xs'
               : 'border border-border/80 bg-surface/75 text-foreground group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary shadow-2xs',
           )}
         >
@@ -93,7 +93,7 @@ export function HeroKpiCard({
             className={cn(
               'inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold w-fit tracking-tight',
               isHero
-                ? 'bg-white/15 text-white/95 border border-white/20 backdrop-blur-xs'
+                ? 'bg-muted text-muted-foreground border border-border backdrop-blur-xs'
                 : 'bg-surface border border-border/80 text-muted-foreground',
             )}
           >

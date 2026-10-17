@@ -40,7 +40,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
           {actions.actionError && (
             <div
               role="alert"
-              className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-sm text-rose-300"
+              className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-soft-foreground"
               data-testid="admin-action-error"
             >
               {actions.actionError}
@@ -51,7 +51,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn'
                     ? 'আর্থিক রিকনসিলিয়েশন ও বিরোধ নিষ্পত্তি'
                     : 'Financial Reconciliation & Disputes'}
@@ -59,8 +59,8 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
                 <span
                   className={`px-3 py-1 text-xs font-semibold rounded-full border ${
                     isBalanced
-                      ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
-                      : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                      ? 'bg-primary/15 text-success-soft-foreground border-primary/40'
+                      : 'bg-destructive/15 text-destructive-soft-foreground border-destructive/40'
                   }`}
                 >
                   {isBalanced ? t('statusBalanced') : t('statusDiscrepancy')}
@@ -80,7 +80,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                   subSection === 'reconciliation'
                     ? 'bg-primary text-primary-foreground shadow-xs'
-                    : 'text-muted-foreground hover:text-white'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <CreditCard className="w-3.5 h-3.5" />
@@ -91,12 +91,12 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                   subSection === 'support'
                     ? 'bg-primary text-primary-foreground shadow-xs'
-                    : 'text-muted-foreground hover:text-white'
+                    : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
                 <LifeBuoy className="w-3.5 h-3.5" />
                 {locale === 'bn' ? 'বিরোধ ও সাপোর্ট টিকেট' : 'Dispute Tickets'}
-                {openTicketsCount > 0 && <span className="w-2 h-2 rounded-full bg-amber-400" />}
+                {openTicketsCount > 0 && <span className="w-2 h-2 rounded-full bg-warning" />}
               </button>
             </div>
           </div>
@@ -106,11 +106,11 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
             <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">{t('totalDebits')}</p>
-                <p className="text-2xl font-black text-white mt-1 font-mono">
+                <p className="text-2xl font-black text-foreground mt-1 font-mono">
                   {admin.reconciliation?.totalDebits || '0'} BDT
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+              <div className="w-10 h-10 rounded-xl bg-interactive/10 border border-info/40 flex items-center justify-center text-info-soft-foreground">
                 <ArrowUpDown className="w-5 h-5" />
               </div>
             </div>
@@ -118,11 +118,11 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
             <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">{t('totalCredits')}</p>
-                <p className="text-2xl font-black text-white mt-1 font-mono">
+                <p className="text-2xl font-black text-foreground mt-1 font-mono">
                   {admin.reconciliation?.totalCredits || '0'} BDT
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/40 flex items-center justify-center text-success-soft-foreground">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
             </div>
@@ -132,11 +132,11 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'উন্মুক্ত সাপোর্ট টিকিট' : 'Open Dispute Tickets'}
                 </p>
-                <p className="text-2xl font-black text-amber-400 mt-1 font-mono">
+                <p className="text-2xl font-black text-warning-soft-foreground mt-1 font-mono">
                   {openTicketsCount}
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 flex items-center justify-center text-amber-400">
+              <div className="w-10 h-10 rounded-xl bg-warning/10 border border-warning/40 flex items-center justify-center text-warning-soft-foreground">
                 <LifeBuoy className="w-5 h-5" />
               </div>
             </div>

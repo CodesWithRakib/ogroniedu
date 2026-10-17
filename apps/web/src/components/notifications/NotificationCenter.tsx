@@ -61,36 +61,36 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
     switch (category) {
       case 'booking':
         return {
-          icon: <Calendar className="w-4 h-4 text-emerald-400" />,
-          bg: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
+          icon: <Calendar className="w-4 h-4 text-success-soft-foreground" />,
+          bg: 'bg-primary/10 text-success-soft-foreground border-primary/40',
           badgeBn: 'বুকিং',
           badgeEn: 'Booking',
         };
       case 'learning':
         return {
-          icon: <CheckCircle className="w-4 h-4 text-teal-400" />,
-          bg: 'bg-teal-500/10 text-teal-400 border-teal-500/20',
+          icon: <CheckCircle className="w-4 h-4 text-primary-soft-foreground" />,
+          bg: 'bg-primary/10 text-primary-soft-foreground border-primary/40',
           badgeBn: 'শিক্ষা',
           badgeEn: 'Learning',
         };
       case 'payment':
         return {
-          icon: <CreditCard className="w-4 h-4 text-amber-400" />,
-          bg: 'bg-amber-500/10 text-amber-400 border-amber-500/20',
+          icon: <CreditCard className="w-4 h-4 text-warning-soft-foreground" />,
+          bg: 'bg-warning/10 text-warning-soft-foreground border-warning/40',
           badgeBn: 'পেমেন্ট',
           badgeEn: 'Payment',
         };
       case 'trust':
         return {
-          icon: <ShieldCheck className="w-4 h-4 text-cyan-400" />,
-          bg: 'bg-cyan-500/10 text-cyan-400 border-cyan-500/20',
+          icon: <ShieldCheck className="w-4 h-4 text-info-soft-foreground" />,
+          bg: 'bg-interactive/10 text-info-soft-foreground border-info/40',
           badgeBn: 'নিরাপত্তা',
           badgeEn: 'Trust',
         };
       default:
         return {
-          icon: <Bell className="w-4 h-4 text-indigo-400" />,
-          bg: 'bg-indigo-500/10 text-indigo-400 border-indigo-500/20',
+          icon: <Bell className="w-4 h-4 text-interactive-soft-foreground" />,
+          bg: 'bg-interactive/10 text-interactive-soft-foreground border-interactive/40',
           badgeBn: 'সিস্টেম',
           badgeEn: 'System',
         };
@@ -127,28 +127,28 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
         aria-label={locale === 'bn' ? 'বিজ্ঞপ্তি কেন্দ্র' : 'Notification Center'}
         className={cn(
           'absolute inset-y-0 right-0 max-w-md w-full shadow-2xl flex flex-col',
-          'bg-slate-900/95 dark:bg-[#031317]/95 backdrop-blur-2xl border-l border-slate-700/60 dark:border-cyan-500/30 text-white',
+          'bg-card  backdrop-blur-2xl border-l border-border  text-foreground',
           'animate-in slide-in-from-right duration-300',
         )}
       >
         {/* Header */}
-        <div className="p-4 border-b border-white/10 flex items-center justify-between">
+        <div className="p-4 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-400">
+            <div className="p-2 rounded-xl bg-interactive/10 border border-info/40 text-info-soft-foreground">
               <Bell className="w-5 h-5" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 className="text-base font-bold text-white tracking-tight">
+                <h2 className="text-base font-bold text-foreground tracking-tight">
                   {locale === 'bn' ? 'বিজ্ঞপ্তি কেন্দ্র' : 'Notifications'}
                 </h2>
                 {unreadCount > 0 && (
-                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">
+                  <span className="px-2 py-0.5 text-xs font-semibold rounded-full bg-interactive/20 text-info-soft-foreground border border-info/40">
                     {unreadCount} {locale === 'bn' ? 'নতুন' : 'new'}
                   </span>
                 )}
               </div>
-              <p className="text-[11px] text-slate-400">
+              <p className="text-[11px] text-muted-foreground">
                 {isConnected
                   ? locale === 'bn'
                     ? 'সার্ভারের সাথে সার্বক্ষণিক যুক্ত'
@@ -177,8 +177,8 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
               className={cn(
                 'p-2 rounded-xl border transition-all text-xs flex items-center gap-1.5',
                 soundEnabled
-                  ? 'bg-cyan-500/15 border-cyan-500/30 text-cyan-400 hover:bg-cyan-500/25'
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:text-white',
+                  ? 'bg-interactive/15 border-info/40 text-info-soft-foreground hover:bg-interactive/25'
+                  : 'bg-muted border-border text-muted-foreground hover:text-foreground',
               )}
             >
               {soundEnabled ? <Volume2 className="w-4 h-4" /> : <VolumeX className="w-4 h-4" />}
@@ -189,9 +189,9 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
               type="button"
               onClick={() => testSound('chime')}
               title={locale === 'bn' ? 'সাউন্ড টেস্ট করুন' : 'Test Sound'}
-              className="px-2.5 py-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs font-medium flex items-center gap-1 transition-all"
+              className="px-2.5 py-1.5 rounded-xl border border-border bg-muted hover:bg-surface-hover text-muted-foreground hover:text-foreground text-xs font-medium flex items-center gap-1 transition-all"
             >
-              <Play className="w-3 h-3 text-cyan-400 fill-cyan-400" />
+              <Play className="w-3 h-3 text-info-soft-foreground fill-info" />
               <span>{locale === 'bn' ? 'টেস্ট' : 'Test'}</span>
             </button>
 
@@ -203,8 +203,8 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
               className={cn(
                 'p-2 rounded-xl border transition-all text-xs',
                 showVolumeSlider
-                  ? 'bg-cyan-500/20 border-cyan-500/40 text-cyan-300'
-                  : 'bg-white/5 border-white/10 text-slate-400 hover:text-white',
+                  ? 'bg-interactive/20 border-info/40 text-info-soft-foreground'
+                  : 'bg-muted border-border text-muted-foreground hover:text-foreground',
               )}
             >
               <Sliders className="w-4 h-4" />
@@ -214,7 +214,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
             <button
               type="button"
               onClick={() => setIsCenterOpen(false)}
-              className="p-2 rounded-xl text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+              className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
               aria-label={locale === 'bn' ? 'বন্ধ করুন' : 'Close'}
             >
               <X className="w-5 h-5" />
@@ -224,8 +224,8 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
 
         {/* Volume Slider Panel */}
         {showVolumeSlider && (
-          <div className="px-4 py-2.5 bg-slate-800/80 dark:bg-[#051c22] border-b border-white/10 flex items-center justify-between gap-3 text-xs">
-            <span className="text-slate-300 shrink-0 font-medium">
+          <div className="px-4 py-2.5 bg-muted  border-b border-border flex items-center justify-between gap-3 text-xs">
+            <span className="text-muted-foreground shrink-0 font-medium">
               {locale === 'bn' ? 'শব্দের মাত্রা:' : 'Volume:'} {Math.round(soundVolume * 100)}%
             </span>
             <input
@@ -235,12 +235,12 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
               step="0.05"
               value={soundVolume}
               onChange={(e) => setSoundVolume(parseFloat(e.target.value))}
-              className="w-full accent-cyan-400 cursor-pointer h-1.5 bg-white/10 rounded-lg"
+              className="w-full accent-interactive cursor-pointer h-1.5 bg-muted rounded-lg"
             />
             <button
               type="button"
               onClick={() => testSound('urgent')}
-              className="text-[11px] text-cyan-400 hover:underline shrink-0"
+              className="text-[11px] text-info-soft-foreground hover:underline shrink-0"
             >
               {locale === 'bn' ? 'অ্যালার্ট' : 'Alert'}
             </button>
@@ -249,8 +249,8 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
 
         {/* Offline Status Warning */}
         {!isConnected && (
-          <div className="flex items-center gap-2 px-4 py-2.5 bg-rose-500/10 text-rose-300 text-xs border-b border-rose-500/20">
-            <WifiOff className="w-4 h-4 shrink-0 text-rose-400" />
+          <div className="flex items-center gap-2 px-4 py-2.5 bg-destructive/10 text-destructive-soft-foreground text-xs border-b border-destructive/40">
+            <WifiOff className="w-4 h-4 shrink-0 text-destructive-soft-foreground" />
             <span>
               {locale === 'bn'
                 ? 'রিয়েলটাইম সংযোগ বিচ্ছিন্ন। পুনরায় সংযুক্ত হওয়ার চেষ্টা করা হচ্ছে...'
@@ -260,7 +260,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
         )}
 
         {/* Filter Navigation Tabs */}
-        <div className="px-4 py-2 bg-black/20 border-b border-white/10 flex items-center gap-1.5 overflow-x-auto text-xs no-scrollbar">
+        <div className="px-4 py-2 bg-surface-muted border-b border-border flex items-center gap-1.5 overflow-x-auto text-xs no-scrollbar">
           {[
             { id: 'all', labelBn: 'সব', labelEn: 'All' },
             { id: 'unread', labelBn: `অপঠিত (${unreadCount})`, labelEn: `Unread (${unreadCount})` },
@@ -276,8 +276,8 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
               className={cn(
                 'px-3 py-1.5 rounded-lg font-medium transition-all shrink-0',
                 filter === tab.id
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-500/40 shadow-xs'
-                  : 'text-slate-400 hover:text-white hover:bg-white/5',
+                  ? 'bg-interactive/20 text-info-soft-foreground border border-info/40 shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover',
               )}
             >
               {locale === 'bn' ? tab.labelBn : tab.labelEn}
@@ -287,11 +287,11 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
 
         {/* Quick Actions (Mark all read) */}
         {unreadCount > 0 && (
-          <div className="px-4 py-2 bg-slate-900/60 dark:bg-black/30 border-b border-white/5 flex justify-end">
+          <div className="px-4 py-2 bg-card  border-b border-white/5 flex justify-end">
             <button
               type="button"
               onClick={() => markAllAsRead()}
-              className="flex items-center gap-1.5 text-xs text-cyan-400 hover:text-cyan-300 font-semibold transition-colors"
+              className="flex items-center gap-1.5 text-xs text-info-soft-foreground hover:text-info-soft-foreground font-semibold transition-colors"
             >
               <CheckCheck className="w-3.5 h-3.5" />
               <span>{locale === 'bn' ? 'সব বিজ্ঞপ্তি পঠিত করুন' : 'Mark all as read'}</span>
@@ -300,16 +300,16 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
         )}
 
         {/* Notification Items Feed */}
-        <div className="flex-1 overflow-y-auto divide-y divide-white/5">
+        <div className="flex-1 overflow-y-auto divide-y divide-border">
           {filteredItems.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-12 text-center text-slate-400">
-              <div className="p-4 rounded-2xl bg-white/5 border border-white/10 mb-3">
-                <Inbox className="w-10 h-10 text-slate-500 stroke-1" />
+            <div className="flex flex-col items-center justify-center p-12 text-center text-muted-foreground">
+              <div className="p-4 rounded-2xl bg-muted border border-border mb-3">
+                <Inbox className="w-10 h-10 text-muted-foreground stroke-1" />
               </div>
-              <p className="text-sm font-semibold text-white">
+              <p className="text-sm font-semibold text-foreground">
                 {locale === 'bn' ? 'কোনো বিজ্ঞপ্তি পাওয়া যায়নি' : 'No notifications'}
               </p>
-              <p className="mt-1 text-xs text-slate-400 max-w-xs">
+              <p className="mt-1 text-xs text-muted-foreground max-w-xs">
                 {locale === 'bn'
                   ? 'নতুন ক্লাস রিমাইন্ডার, পেমেন্ট বা আপডেট আসলে তাৎক্ষণিক এখানে যুক্ত হবে।'
                   : 'New reminders, payments, or booking updates will appear here.'}
@@ -325,7 +325,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
                   key={item.id}
                   className={cn(
                     'flex items-start gap-3 p-4 transition-colors relative group',
-                    !item.isRead ? 'bg-cyan-500/5 hover:bg-cyan-500/10' : 'hover:bg-white/5',
+                    !item.isRead ? 'bg-interactive/5 hover:bg-interactive/10' : 'hover:bg-surface-hover',
                   )}
                 >
                   <div
@@ -340,24 +340,24 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center justify-between gap-2">
                       <div className="flex items-center gap-1.5 flex-wrap">
-                        <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-white/10 text-slate-300">
+                        <span className="text-[10px] font-semibold uppercase tracking-wider px-1.5 py-0.5 rounded bg-muted text-muted-foreground">
                           {locale === 'bn' ? meta.badgeBn : meta.badgeEn}
                         </span>
                         {isUrgent && (
-                          <span className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded bg-rose-500 text-white">
+                          <span className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded bg-destructive text-white">
                             {locale === 'bn' ? 'জরুরি' : 'Urgent'}
                           </span>
                         )}
                       </div>
-                      <span className="text-[11px] text-slate-400 font-mono shrink-0">
+                      <span className="text-[11px] text-muted-foreground font-mono shrink-0">
                         {formatRelativeTime(item.createdAt)}
                       </span>
                     </div>
 
-                    <h4 className="text-sm font-semibold text-white mt-1 leading-snug">
+                    <h4 className="text-sm font-semibold text-foreground mt-1 leading-snug">
                       {item.title}
                     </h4>
-                    <p className="mt-1 text-xs text-slate-300 leading-relaxed">{item.body}</p>
+                    <p className="mt-1 text-xs text-muted-foreground leading-relaxed">{item.body}</p>
 
                     <div className="mt-2.5 flex items-center justify-between pt-1">
                       {item.navigationTarget ? (
@@ -367,7 +367,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
                             if (!item.isRead) markAsRead(item.id);
                             setIsCenterOpen(false);
                           }}
-                          className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-300 hover:underline"
+                          className="inline-flex items-center gap-1 text-xs font-semibold text-info-soft-foreground hover:text-info-soft-foreground hover:underline"
                         >
                           <Sparkles className="w-3 h-3" />
                           <span>{locale === 'bn' ? 'বিস্তারিত দেখুন' : 'View Action'}</span>
@@ -381,10 +381,10 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
                         <button
                           type="button"
                           onClick={() => markAsRead(item.id)}
-                          className="inline-flex items-center gap-1 text-[11px] text-slate-400 hover:text-cyan-300 transition-colors"
+                          className="inline-flex items-center gap-1 text-[11px] text-muted-foreground hover:text-info-soft-foreground transition-colors"
                           title={locale === 'bn' ? 'পঠিত হিসেবে চিহ্নিত করুন' : 'Mark as read'}
                         >
-                          <Check className="w-3.5 h-3.5 text-cyan-400" />
+                          <Check className="w-3.5 h-3.5 text-info-soft-foreground" />
                           <span>{locale === 'bn' ? 'পঠিত' : 'Read'}</span>
                         </button>
                       )}
@@ -392,7 +392,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
                   </div>
 
                   {!item.isRead && (
-                    <span className="shrink-0 w-2 h-2 mt-2 rounded-full bg-cyan-400 shadow-xs shadow-cyan-400/50" />
+                    <span className="shrink-0 w-2 h-2 mt-2 rounded-full bg-info shadow-xs shadow-sm" />
                   )}
                 </div>
               );

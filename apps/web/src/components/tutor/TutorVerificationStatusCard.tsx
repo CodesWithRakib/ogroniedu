@@ -153,7 +153,7 @@ export function TutorVerificationStatusCard({
       <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/50">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <ShieldCheck className="h-5 w-5 text-emerald-600" />
+            <ShieldCheck className="h-5 w-5 text-primary" />
             <CardTitle className="text-xl font-bold tracking-tight">
               {t.verificationStatusTitle}
             </CardTitle>
@@ -190,20 +190,20 @@ export function TutorVerificationStatusCard({
           </h4>
           <div className="flex flex-wrap gap-2.5">
             {isTutorApproved && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border border-emerald-500/20">
-                <ShieldCheck className="h-3.5 w-3.5 text-emerald-600" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-primary/10 text-primary  border border-primary/20">
+                <ShieldCheck className="h-3.5 w-3.5 text-primary" />
                 {t.badgeVerifiedTutor}
               </span>
             )}
             {isIdentityVerified && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
-                <CheckCircle className="h-3.5 w-3.5 text-blue-600" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-interactive/10 text-interactive  border border-interactive/20">
+                <CheckCircle className="h-3.5 w-3.5 text-interactive" />
                 {t.badgeVerifiedIdentity}
               </span>
             )}
             {isAcademicVerified && (
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-purple-500/10 text-purple-700 dark:text-purple-300 border border-purple-500/20">
-                <Award className="h-3.5 w-3.5 text-purple-600" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium bg-interactive/10 text-interactive  border border-interactive/30">
+                <Award className="h-3.5 w-3.5 text-interactive" />
                 {t.badgeVerifiedAcademic}
               </span>
             )}

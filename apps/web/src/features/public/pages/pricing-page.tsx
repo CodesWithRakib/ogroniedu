@@ -54,7 +54,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Free for Students Banner */}
-      <div className="rounded-3xl bg-gradient-to-r from-primary/10 via-primary/5 to-emerald-500/10 border border-primary/25 p-6 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl shadow-primary/5">
+      <div className="rounded-3xl bg-gradient-to-r from-primary/10 via-primary/5 to-primary/10 border border-primary/25 p-6 sm:p-10 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xl shadow-primary/5">
         <div className="space-y-2 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 rounded-full bg-primary-soft px-3 py-1 text-xs font-bold text-primary">
             <CheckCircle2 className="h-3.5 w-3.5" />

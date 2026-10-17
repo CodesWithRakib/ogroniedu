@@ -14,7 +14,7 @@ const inputStyle: React.CSSProperties = {
   borderRadius: '8px',
   border: '1px solid #cbd5e1',
   fontSize: '0.85rem',
-  backgroundColor: '#ffffff',
+  backgroundColor: 'var(--card)',
 };
 
 const labelStyle: React.CSSProperties = {
@@ -22,7 +22,7 @@ const labelStyle: React.CSSProperties = {
   fontSize: '0.85rem',
   fontWeight: 600,
   marginBottom: '6px',
-  color: '#334155',
+  color: 'var(--muted-foreground)',
 };
 
 export function SafetyReportModal({
@@ -76,13 +76,13 @@ export function SafetyReportModal({
       {isUrgent && (
         <div
           style={{
-            backgroundColor: '#fff1f2',
+            backgroundColor: 'var(--destructive-soft)',
             border: '1px solid #fecdd3',
             borderRadius: '10px',
             padding: '12px 14px',
             marginBottom: '16px',
             fontSize: '0.85rem',
-            color: '#be123c',
+            color: 'var(--destructive)',
             lineHeight: 1.45,
           }}
         >
@@ -171,8 +171,8 @@ export function SafetyReportModal({
               padding: '8px 16px',
               borderRadius: '8px',
               border: '1px solid #cbd5e1',
-              backgroundColor: '#ffffff',
-              color: '#475569',
+              backgroundColor: 'var(--card)',
+              color: 'var(--muted-foreground)',
               fontWeight: 600,
               cursor: 'pointer',
             }}
@@ -189,7 +189,7 @@ export function SafetyReportModal({
               background: isUrgent
                 ? 'linear-gradient(135deg, #e11d48, #be123c)'
                 : 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-              color: '#ffffff',
+              color: 'var(--card)',
               fontWeight: 700,
               cursor: submit.isSubmitting ? 'not-allowed' : 'pointer',
               opacity: submit.isSubmitting ? 0.7 : 1,

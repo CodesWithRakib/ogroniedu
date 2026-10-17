@@ -21,19 +21,19 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
       <div className="bg-gradient-to-br from-primary via-primary/95 to-primary-hover text-primary-foreground border border-primary/20 rounded-3xl p-5 sm:p-6 shadow-lg shadow-primary/20 flex flex-col justify-between transition-all hover:-translate-y-0.5 relative overflow-hidden group select-none">
         <div className="flex items-center justify-between">
           <p className="text-xs font-semibold text-primary-foreground/90">{t('conversionRate')}</p>
-          <div className="h-8 w-8 rounded-full bg-white/20 flex items-center justify-center text-white shrink-0 group-hover:scale-105 transition-transform">
+          <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-foreground shrink-0 group-hover:scale-105 transition-transform">
             <ArrowUpRight className="h-4 w-4" />
           </div>
         </div>
         <div className="my-3">
           <div className="flex items-baseline gap-2">
             <p
-              className="text-3xl sm:text-4xl font-extrabold text-white tabular-nums tracking-tight font-sans"
+              className="text-3xl sm:text-4xl font-extrabold text-foreground tabular-nums tracking-tight font-sans"
               data-testid="kpi-conversion-rate"
             >
               {data.conversion.conversionRate}%
             </p>
-            <span className="text-xs text-white/80 tabular-nums">
+            <span className="text-xs text-muted-foreground tabular-nums">
               ({data.conversion.confirmedBookings} / {data.conversion.totalRequests})
             </span>
           </div>
@@ -44,7 +44,7 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
             />
           </div>
         </div>
-        <span className="text-[11px] text-white/90 font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/15 w-fit">
+        <span className="text-[11px] text-muted-foreground font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-muted w-fit">
           <TrendingUp className="h-3 w-3" />
           <span>Active Inflow</span>
         </span>
@@ -61,7 +61,7 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
         <div className="my-3">
           <div className="flex items-baseline gap-2">
             <p
-              className="text-3xl sm:text-4xl font-extrabold text-teal-600 dark:text-teal-400 tabular-nums tracking-tight font-sans"
+              className="text-3xl sm:text-4xl font-extrabold text-primary  tabular-nums tracking-tight font-sans"
               data-testid="kpi-completion-rate"
             >
               {data.sessions.completionRate}%
@@ -72,12 +72,12 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
           </div>
           <div className="w-full bg-surface-muted rounded-full h-1.5 overflow-hidden mt-3">
             <div
-              className="bg-teal-500 h-1.5 rounded-full transition-all duration-500"
+              className="bg-primary h-1.5 rounded-full transition-all duration-500"
               style={{ width: `${Math.min(data.sessions.completionRate, 100)}%` }}
             />
           </div>
         </div>
-        <span className="text-[11px] text-teal-600 dark:text-teal-400 font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-teal-500/10 border border-teal-500/20 w-fit">
+        <span className="text-[11px] text-primary  font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/40 w-fit">
           Verified Sessions
         </span>
       </div>
@@ -109,7 +109,7 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
             </span>
           </p>
         </div>
-        <span className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 w-fit">
+        <span className="text-[11px] text-success-soft-foreground  font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/40 w-fit">
           Escrow Reconciled
         </span>
       </div>

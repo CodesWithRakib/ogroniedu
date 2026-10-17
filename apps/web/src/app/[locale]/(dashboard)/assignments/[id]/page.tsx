@@ -173,19 +173,19 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
   if (error || !assignment) {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4">
-        <div className="rounded-2xl border border-rose-500/20 bg-rose-500/10 p-6 text-center text-rose-300">
-          <AlertCircle className="w-10 h-10 mx-auto mb-2 text-rose-400" />
+        <div className="rounded-2xl border border-destructive/40 bg-destructive/10 p-6 text-center text-destructive-soft-foreground">
+          <AlertCircle className="w-10 h-10 mx-auto mb-2 text-destructive-soft-foreground" />
           <h2 className="text-lg font-bold mb-1">
             {locale === 'bn' ? 'বাড়ির কাজ পাওয়া যায়নি' : 'Assignment Not Found'}
           </h2>
-          <p className="text-xs text-rose-200/80 mb-4">
+          <p className="text-xs text-destructive-soft-foreground mb-4">
             {locale === 'bn'
               ? 'বাড়ির কাজের আইডি সঠিক নয় অথবা আপনি এটি দেখার অনুমোদিত নন।'
               : 'The requested assignment could not be found or you do not have permission to view it.'}
           </p>
           <Link
             href={withLocale('/learning', locale)}
-            className="inline-flex items-center gap-1.5 px-4 py-2 bg-rose-600 hover:bg-rose-700 text-white text-xs font-semibold rounded-xl"
+            className="inline-flex items-center gap-1.5 px-4 py-2 bg-destructive hover:bg-destructive/90 text-white text-xs font-semibold rounded-xl"
           >
             <ArrowLeft className="w-4 h-4" />
             {locale === 'bn' ? 'লার্নিং সেন্টারে ফিরুন' : 'Back to Learning'}
@@ -205,7 +205,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
       <div className="flex items-center justify-between">
         <Link
           href={withLocale('/learning', locale)}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
           data-testid="back-to-learning-btn"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -214,7 +214,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
         {isTutor && (
           <Link
             href={withLocale(`/assignments/${assignmentId}/submissions`, locale)}
-            className="text-xs text-emerald-400 hover:text-emerald-300 underline font-medium"
+            className="text-xs text-success-soft-foreground hover:text-success-soft-foreground underline font-medium"
           >
             {locale === 'bn' ? 'জমা দেওয়া খাতা পর্যালোচনা' : 'Review Submissions'}
           </Link>
@@ -222,10 +222,10 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
       </div>
 
       {/* Main Assignment Banner */}
-      <div className="rounded-3xl bg-gradient-to-br from-slate-900 via-[#071d24] to-[#041318] border border-teal-500/20 p-8 text-white shadow-2xl space-y-4">
+      <div className="rounded-3xl bg-card border border-primary/40 p-8 text-foreground shadow-sm space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-teal-500/20 border border-teal-400/30 rounded-full text-xs font-medium text-teal-300">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-xs font-medium text-primary-soft-foreground">
               <BookOpen className="w-3.5 h-3.5" />
               <span>{locale === 'bn' ? 'বাড়ির কাজ / হোমওয়ার্ক' : 'Homework Assignment'}</span>
             </span>
@@ -233,10 +233,10 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
               <Badge
                 className={
                   submission.status === 'reviewed'
-                    ? 'bg-emerald-500/20 text-emerald-400 border border-emerald-500/30'
+                    ? 'bg-primary/20 text-success-soft-foreground border border-primary/40'
                     : submission.status === 'late'
-                      ? 'bg-amber-500/20 text-amber-400 border border-amber-500/30'
-                      : 'bg-blue-500/20 text-blue-400 border border-blue-500/30'
+                      ? 'bg-warning/20 text-warning-soft-foreground border border-warning/40'
+                      : 'bg-interactive/20 text-info-soft-foreground border border-interactive/40'
                 }
               >
                 {submission.status.toUpperCase()}
@@ -245,25 +245,25 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
           </div>
 
           <div className="text-right">
-            <div className="text-xs text-teal-300/80 uppercase font-semibold">
+            <div className="text-xs text-primary-soft-foreground uppercase font-semibold">
               {locale === 'bn' ? 'সর্বোচ্চ স্কোর' : 'Max Score'}
             </div>
-            <div className="text-2xl font-black text-emerald-400">
+            <div className="text-2xl font-black text-success-soft-foreground">
               {formatLocalizedNumber(assignment.maxScore, locale)}
             </div>
           </div>
         </div>
 
-        <h1 className="text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+        <h1 className="text-2xl md:text-3xl font-extrabold text-foreground tracking-tight">
           {assignment.title}
         </h1>
 
         {assignment.dueAt && (
-          <div className="flex items-center gap-2 text-xs text-slate-300">
-            <Clock className="w-3.5 h-3.5 text-amber-400" />
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Clock className="w-3.5 h-3.5 text-warning-soft-foreground" />
             <span>
               {locale === 'bn' ? 'জমার শেষ তারিখ:' : 'Due Date:'}{' '}
-              <strong className="text-white">
+              <strong className="text-foreground">
                 {new Date(assignment.dueAt).toLocaleDateString(dateLocale, {
                   weekday: 'short',
                   year: 'numeric',
@@ -278,12 +278,12 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
 
       {/* Instructions Card */}
       {assignment.instructions && (
-        <Card className="bg-slate-900/80 border border-slate-800 text-slate-200 rounded-2xl p-6 shadow-md">
-          <CardHeader className="p-0 pb-3 flex flex-row items-center gap-2 text-slate-300 font-semibold text-sm">
-            <FileText className="w-4 h-4 text-teal-400" />
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-md">
+          <CardHeader className="p-0 pb-3 flex flex-row items-center gap-2 text-muted-foreground font-semibold text-sm">
+            <FileText className="w-4 h-4 text-primary-soft-foreground" />
             <span>{locale === 'bn' ? 'নির্দেশাবলী ও প্রশ্নসমূহ' : 'Instructions & Details'}</span>
           </CardHeader>
-          <CardContent className="p-0 text-xs text-slate-300 whitespace-pre-wrap leading-relaxed">
+          <CardContent className="p-0 text-xs text-muted-foreground whitespace-pre-wrap leading-relaxed">
             {assignment.instructions}
           </CardContent>
         </Card>
@@ -292,13 +292,13 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
       {/* Submission & Grading Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Student Submission Card */}
-        <Card className="bg-slate-900/90 border border-slate-800 text-slate-100 rounded-3xl p-6 shadow-xl space-y-4">
+        <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm space-y-4">
           <CardHeader className="p-0 pb-2">
-            <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
-              <Send className="w-4 h-4 text-emerald-400" />
+            <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
+              <Send className="w-4 h-4 text-success-soft-foreground" />
               <span>{locale === 'bn' ? 'শিক্ষার্থীর সমাধান / খাতা' : 'Student Submission'}</span>
             </CardTitle>
-            <CardDescription className="text-xs text-slate-400">
+            <CardDescription className="text-xs text-muted-foreground">
               {submission
                 ? locale === 'bn'
                   ? 'শিক্ষার্থী কাজ সম্পন্ন করে জমা দিয়েছে।'
@@ -311,17 +311,17 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
 
           <CardContent className="p-0 space-y-3">
             {submission ? (
-              <div className="p-4 bg-slate-800/60 rounded-2xl border border-slate-700/60 space-y-2">
-                <div className="flex items-center justify-between text-[11px] text-slate-400">
+              <div className="p-4 bg-muted rounded-2xl border border-border space-y-2">
+                <div className="flex items-center justify-between text-[11px] text-muted-foreground">
                   <span>{locale === 'bn' ? 'জমার সময়:' : 'Submitted on:'}</span>
-                  <span className="font-medium text-slate-200">
+                  <span className="font-medium text-foreground">
                     {submission.submittedAt
                       ? new Date(submission.submittedAt).toLocaleString(dateLocale)
                       : 'N/A'}
                   </span>
                 </div>
                 {submission.submissionText && (
-                  <div className="p-3 bg-slate-900/80 rounded-xl border border-slate-700 text-xs text-slate-200 whitespace-pre-wrap font-sans">
+                  <div className="p-3 bg-card rounded-xl border border-border text-xs text-foreground whitespace-pre-wrap font-sans">
                     {submission.submissionText}
                   </div>
                 )}
@@ -334,7 +334,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
               >
                 <label
                   htmlFor="solution-text"
-                  className="text-xs font-semibold text-slate-300 block"
+                  className="text-xs font-semibold text-muted-foreground block"
                 >
                   {locale === 'bn'
                     ? 'আপনার উত্তর বা সমাধান লিখুন:'
@@ -350,17 +350,17 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                       ? 'অংক বা সমাধান বিস্তারিতভাবে লিখুন...'
                       : 'Type your answer or solution details...'
                   }
-                  className="w-full rounded-xl border border-slate-700 bg-slate-800 p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-emerald-500 leading-relaxed"
+                  className="w-full rounded-xl border border-border bg-muted p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring leading-relaxed"
                   data-testid="solution-textarea"
                 />
                 {submitError && (
-                  <div className="p-2.5 rounded-lg border border-rose-500/30 bg-rose-500/10 text-xs text-rose-300">
+                  <div className="p-2.5 rounded-lg border border-destructive/40 bg-destructive/10 text-xs text-destructive-soft-foreground">
                     {submitError}
                   </div>
                 )}
                 {submitSuccess && (
-                  <div className="p-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-300 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <div className="p-2.5 rounded-lg border border-primary/40 bg-primary/10 text-xs text-success-soft-foreground flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-success-soft-foreground shrink-0" />
                     <span>
                       {locale === 'bn'
                         ? 'সমাধান সফলভাবে জমা দেওয়া হয়েছে!'
@@ -372,7 +372,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                   type="submit"
                   size="sm"
                   isLoading={isSubmitting}
-                  className="w-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold rounded-xl"
+                  className="w-full bg-primary hover:bg-primary-hover text-white text-xs font-bold rounded-xl"
                   data-testid="submit-solution-btn"
                 >
                   <Send className="w-3.5 h-3.5 mr-1.5" />
@@ -380,7 +380,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                 </Button>
               </form>
             ) : (
-              <div className="p-4 bg-slate-800/30 rounded-xl border border-slate-800 text-center text-xs text-slate-400">
+              <div className="p-4 bg-muted rounded-xl border border-border text-center text-xs text-muted-foreground">
                 {locale === 'bn'
                   ? 'শিক্ষার্থী এখনো কাজ জমা দেননি।'
                   : 'Student has not submitted yet.'}
@@ -390,13 +390,13 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
         </Card>
 
         {/* Evaluation / Feedback Card */}
-        <Card className="bg-slate-900/90 border border-slate-800 text-slate-100 rounded-3xl p-6 shadow-xl space-y-4">
+        <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm space-y-4">
           <CardHeader className="p-0 pb-2">
-            <CardTitle className="text-base font-bold flex items-center gap-2 text-white">
-              <Award className="w-4 h-4 text-amber-400" />
+            <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
+              <Award className="w-4 h-4 text-warning-soft-foreground" />
               <span>{locale === 'bn' ? 'মূল্যায়ন ও প্রাপ্ত স্কোর' : 'Grade & Feedback'}</span>
             </CardTitle>
-            <CardDescription className="text-xs text-slate-400">
+            <CardDescription className="text-xs text-muted-foreground">
               {hasScore
                 ? locale === 'bn'
                   ? 'শিক্ষক খাতা মূল্যায়ন সম্পন্ন করেছেন।'
@@ -409,12 +409,12 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
 
           <CardContent className="p-0 space-y-3">
             {hasScore && !isEditingGrade && (
-              <div className="p-4 bg-emerald-950/30 border border-emerald-500/30 rounded-2xl space-y-3">
+              <div className="p-4 bg-primary-soft border border-primary/40 rounded-2xl space-y-3">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs text-emerald-300 font-semibold">
+                  <span className="text-xs text-success-soft-foreground font-semibold">
                     {locale === 'bn' ? 'প্রাপ্ত স্কোর:' : 'Awarded Score:'}
                   </span>
-                  <span className="text-2xl font-black text-emerald-400">
+                  <span className="text-2xl font-black text-success-soft-foreground">
                     {formatLocalizedNumber(submission!.score!, locale)} /{' '}
                     {formatLocalizedNumber(assignment.maxScore, locale)}
                   </span>
@@ -422,10 +422,10 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
 
                 {submission!.tutorFeedback && (
                   <div className="space-y-1">
-                    <span className="text-[11px] font-bold text-slate-400 uppercase">
+                    <span className="text-[11px] font-bold text-muted-foreground uppercase">
                       {locale === 'bn' ? 'শিক্ষকের মন্তব্য:' : 'Tutor Remarks:'}
                     </span>
-                    <p className="p-2.5 bg-slate-900/80 rounded-xl border border-emerald-500/20 text-xs text-slate-200 italic">
+                    <p className="p-2.5 bg-card rounded-xl border border-primary/40 text-xs text-foreground italic">
                       "{submission!.tutorFeedback}"
                     </p>
                   </div>
@@ -436,7 +436,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                     size="sm"
                     variant="outline"
                     onClick={() => setIsEditingGrade(true)}
-                    className="w-full border-teal-500/40 text-teal-300 hover:bg-teal-950/40 text-xs rounded-xl mt-2"
+                    className="w-full border-primary/40 text-primary-soft-foreground hover:bg-primary-soft text-xs rounded-xl mt-2"
                     data-testid="open-revise-grade-btn"
                   >
                     <Edit3 className="w-3.5 h-3.5 mr-1.5" />
@@ -449,7 +449,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
             {isTutor && submission && (!hasScore || isEditingGrade) && (
               <form onSubmit={handleGrade} className="space-y-3" data-testid="tutor-grading-form">
                 <div className="space-y-1">
-                  <label htmlFor="score-input" className="text-xs font-semibold text-slate-300">
+                  <label htmlFor="score-input" className="text-xs font-semibold text-muted-foreground">
                     {locale === 'bn' ? 'স্কোর (সর্বোচ্চ ' : 'Score (Max '}
                     {formatLocalizedNumber(assignment.maxScore, locale)}):
                   </label>
@@ -465,7 +465,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                 </div>
 
                 <div className="space-y-1">
-                  <label htmlFor="feedback-input" className="text-xs font-semibold text-slate-300">
+                  <label htmlFor="feedback-input" className="text-xs font-semibold text-muted-foreground">
                     {locale === 'bn' ? 'শিক্ষকের পরামর্শ / ফিডব্যাক:' : 'Feedback / Remarks:'}
                   </label>
                   <textarea
@@ -478,7 +478,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                         ? 'ভুলত্রুটি বা উন্নতির জায়গা উল্লেখ করুন...'
                         : 'Provide positive feedback or guidance...'
                     }
-                    className="w-full rounded-xl border border-slate-700 bg-slate-800 p-2.5 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="w-full rounded-xl border border-border bg-muted p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     data-testid="grading-feedback-input"
                   />
                 </div>
@@ -487,7 +487,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                   <div className="space-y-1">
                     <label
                       htmlFor="revision-reason"
-                      className="text-xs font-semibold text-amber-300"
+                      className="text-xs font-semibold text-warning-soft-foreground"
                     >
                       {locale === 'bn'
                         ? 'সংশোধনের কারণ (বাধ্যতামূলক):'
@@ -508,13 +508,13 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                 )}
 
                 {gradeError && (
-                  <div className="p-2.5 rounded-lg border border-rose-500/30 bg-rose-500/10 text-xs text-rose-300">
+                  <div className="p-2.5 rounded-lg border border-destructive/40 bg-destructive/10 text-xs text-destructive-soft-foreground">
                     {gradeError}
                   </div>
                 )}
                 {gradeSuccess && (
-                  <div className="p-2.5 rounded-lg border border-emerald-500/30 bg-emerald-500/10 text-xs text-emerald-300 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <div className="p-2.5 rounded-lg border border-primary/40 bg-primary/10 text-xs text-success-soft-foreground flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-success-soft-foreground shrink-0" />
                     <span>
                       {locale === 'bn' ? 'মূল্যায়ন সম্পন্ন হয়েছে!' : 'Grading saved successfully!'}
                     </span>
@@ -526,7 +526,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                     type="submit"
                     size="sm"
                     isLoading={isGrading}
-                    className="flex-1 bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-xl"
+                    className="flex-1 bg-interactive hover:bg-interactive-hover text-white text-xs font-bold rounded-xl"
                     data-testid="submit-grade-btn"
                   >
                     {hasScore
@@ -543,7 +543,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                       size="sm"
                       variant="outline"
                       onClick={() => setIsEditingGrade(false)}
-                      className="border-slate-700 text-slate-300 text-xs rounded-xl"
+                      className="border-border text-muted-foreground text-xs rounded-xl"
                     >
                       {locale === 'bn' ? 'বাতিল' : 'Cancel'}
                     </Button>
@@ -553,7 +553,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
             )}
 
             {!hasScore && !isTutor && (
-              <div className="p-4 bg-slate-800/30 rounded-xl border border-slate-800 text-center text-xs text-slate-400">
+              <div className="p-4 bg-muted rounded-xl border border-border text-center text-xs text-muted-foreground">
                 {locale === 'bn'
                   ? 'শিক্ষক খাতা দেখার পর এখানে স্কোর ও পরামর্শ দেখতে পাবেন।'
                   : 'Score and tutor remarks will be visible once reviewed.'}

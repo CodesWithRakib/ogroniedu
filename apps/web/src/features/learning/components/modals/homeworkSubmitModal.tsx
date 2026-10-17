@@ -45,7 +45,7 @@ export function HomeworkSubmitModal({
             value={text}
             onChange={(e) => onTextChange(e.target.value)}
             rows={5}
-            className="w-full rounded-xl border border-border p-3 text-sm bg-background text-foreground focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+            className="w-full rounded-xl border border-border p-3 text-sm bg-background text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
             placeholder="Type your homework answer or paste notes..."
           />
         </div>
@@ -58,7 +58,7 @@ export function HomeworkSubmitModal({
             size="sm"
             disabled={isPending || !text.trim()}
             onClick={onSubmit}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="bg-primary hover:bg-primary-hover text-white"
           >
             {t.submitHomework}
           </Button>

@@ -69,7 +69,7 @@ export function AnalyticsDashboardView({
         onExportJson={handleExportJson}
       />
 
-      <div className="bg-emerald-500/10 border border-emerald-500/25 rounded-2xl p-3.5 flex items-center space-x-3 text-xs text-emerald-600 dark:text-emerald-400 font-medium shadow-2xs">
+      <div className="bg-primary/10 border border-primary/25 rounded-2xl p-3.5 flex items-center space-x-3 text-xs text-primary  font-medium shadow-2xs">
         <span className="text-base">🛡️</span>
         <span>{t('sourceOfTruthNotice')}</span>
       </div>

@@ -46,7 +46,7 @@ export function ConfirmDialog({
           <AlertDialogAction
             data-testid={`${testId}-confirm`}
             disabled={pending}
-            className={destructive ? 'bg-rose-600 hover:bg-rose-500' : undefined}
+            className={destructive ? 'bg-destructive hover:bg-destructive' : undefined}
             onClick={async (e: React.MouseEvent) => {
               e.preventDefault();
               setPending(true);

@@ -36,7 +36,7 @@ export function RequireAuth({
         role="status"
         aria-live="polite"
       >
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary/40 border-t-transparent" />
       </div>
     );
   }

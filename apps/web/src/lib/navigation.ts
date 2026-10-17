@@ -347,7 +347,7 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
   guardian: {
     badgeBn: 'অভিভাবক পোর্টাল',
     badgeEn: 'Guardian Portal',
-    badgeClasses: 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25',
+    badgeClasses: 'bg-warning/10 text-warning  border-warning/25',
     portalTitleBn: 'অভিভাবক ড্যাশবোর্ড',
     portalTitleEn: 'Guardian Portal',
     widget: {
@@ -356,13 +356,13 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
       descBn: 'ক্লাস যাচাই শেষে পেমেন্ট নিশ্চিতকরণ',
       descEn: 'Disbursement after session verify',
       icon: ShieldCheck,
-      accentColor: 'text-amber-500',
+      accentColor: 'text-warning',
     },
   },
   student: {
     badgeBn: 'শিক্ষার্থী পোর্টাল',
     badgeEn: 'Student Portal',
-    badgeClasses: 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25',
+    badgeClasses: 'bg-primary/10 text-primary  border-primary/25',
     portalTitleBn: 'শিক্ষার্থী ড্যাশবোর্ড',
     portalTitleEn: 'Student Portal',
     widget: {
@@ -371,13 +371,13 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
       descBn: 'ধারাবাহিক লার্নিং ট্র্যাক সক্রিয়',
       descEn: 'Consistent learning tracker active',
       icon: Sparkles,
-      accentColor: 'text-emerald-500',
+      accentColor: 'text-primary',
     },
   },
   tutor: {
     badgeBn: 'শিক্ষক পোর্টাল',
     badgeEn: 'Tutor Portal',
-    badgeClasses: 'bg-teal-500/10 text-teal-600 dark:text-teal-400 border-teal-500/25',
+    badgeClasses: 'bg-primary/10 text-primary  border-primary/25',
     portalTitleBn: 'শিক্ষক ড্যাশবোর্ড',
     portalTitleEn: 'Tutor Portal',
     widget: {
@@ -386,13 +386,13 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
       descBn: '🟢 নতুন শিক্ষার্থী গ্রহণে সক্রিয়',
       descEn: '🟢 Open for new bookings',
       icon: CheckCircle2,
-      accentColor: 'text-teal-500',
+      accentColor: 'text-primary',
     },
   },
   admin: {
     badgeBn: 'সুপার অ্যাডমিন',
     badgeEn: 'Super Admin',
-    badgeClasses: 'bg-violet-500/10 text-violet-600 dark:text-violet-400 border-violet-500/25',
+    badgeClasses: 'bg-interactive/10 text-interactive  border-interactive/30',
     portalTitleBn: 'অ্যাডমিন কনসোল',
     portalTitleEn: 'Admin Operations',
     widget: {
@@ -401,13 +401,13 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
       descBn: '⚡ ৯৯.৯৯% আপটাইম ও নিরাপদ',
       descEn: '⚡ 99.99% uptime & secure',
       icon: ShieldCheck,
-      accentColor: 'text-violet-500',
+      accentColor: 'text-interactive',
     },
   },
   support_agent: {
     badgeBn: 'সাপোর্ট কনসোল',
     badgeEn: 'Support Console',
-    badgeClasses: 'bg-sky-500/10 text-sky-600 dark:text-sky-400 border-sky-500/25',
+    badgeClasses: 'bg-info/10 text-info-soft-foreground  border-info/30',
     portalTitleBn: 'সাপোর্ট কনসোল',
     portalTitleEn: 'Support Console',
     widget: {
@@ -416,13 +416,13 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
       descBn: 'টিকিট ট্রায়াজ ও এসএলএ ট্র্যাকিং',
       descEn: 'Ticket triage & SLA tracking',
       icon: MessageSquare,
-      accentColor: 'text-sky-500',
+      accentColor: 'text-info-soft-foreground',
     },
   },
   compliance_reviewer: {
     badgeBn: 'কমপ্লায়েন্স কনসোল',
     badgeEn: 'Compliance Console',
-    badgeClasses: 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25',
+    badgeClasses: 'bg-destructive/10 text-destructive  border-destructive/25',
     portalTitleBn: 'কমপ্লায়েন্স কনসোল',
     portalTitleEn: 'Compliance Console',
     widget: {
@@ -431,7 +431,7 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
       descBn: 'নীতিমালা ও ডেটা-রিটেনশন পর্যবেক্ষণ',
       descEn: 'Policy & data-retention oversight',
       icon: ShieldCheck,
-      accentColor: 'text-rose-500',
+      accentColor: 'text-destructive',
     },
   },
 };

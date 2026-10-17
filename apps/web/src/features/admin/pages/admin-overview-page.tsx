@@ -33,7 +33,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       descEn: 'Manage accounts, staff roles, suspensions and security access',
       href: `/${locale}/dashboard/admin/users`,
       icon: Users,
-      accent: 'from-cyan-500/20 to-teal-500/10 border-cyan-500/30 text-cyan-400',
+      accent: 'from-brand to-primary/10 border-info/40 text-info-soft-foreground',
       actionTextBn: 'ইউজার ম্যানেজার খুলুন',
       actionTextEn: 'Open User Manager',
     },
@@ -44,7 +44,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       descEn: 'Inspect NID, degree certificates and approve tutor credentials',
       href: `/${locale}/dashboard/admin/verification`,
       icon: Search,
-      accent: 'from-emerald-500/20 to-teal-500/10 border-emerald-500/30 text-emerald-400',
+      accent: 'from-primary/20 to-primary/10 border-primary/40 text-success-soft-foreground',
       actionTextBn: 'ভেরিফিকেশন কিউ খুলুন',
       actionTextEn: 'Open Verification Queue',
     },
@@ -55,7 +55,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       descEn: 'Continuous ledger audit and customer dispute resolution',
       href: `/${locale}/dashboard/admin/disputes`,
       icon: CreditCard,
-      accent: 'from-amber-500/20 to-orange-500/10 border-amber-500/30 text-amber-400',
+      accent: 'from-warning/20 to-warning/10 border-warning/40 text-warning-soft-foreground',
       actionTextBn: 'লেজার ও বিরোধ খুলুন',
       actionTextEn: 'Open Disputes & Ledger',
     },
@@ -66,7 +66,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       descEn: 'Conversion funnel, GMV, and operational reporting',
       href: `/${locale}/dashboard/admin/analytics`,
       icon: BarChart3,
-      accent: 'from-purple-500/20 to-indigo-500/10 border-purple-500/30 text-purple-400',
+      accent: 'from-interactive/20 to-interactive/10 border-interactive/30 text-interactive',
       actionTextBn: 'অ্যানালিটিক্স ড্যাশবোর্ড',
       actionTextEn: 'Open Analytics',
     },
@@ -84,14 +84,14 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border/80">
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {t('title')}
                 </h1>
-                <span className="px-3 py-1 text-xs font-bold rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30 shadow-xs">
+                <span className="px-3 py-1 text-xs font-bold rounded-full bg-interactive/15 text-info-soft-foreground border border-info/40 shadow-xs">
                   {isSuperAdmin ? 'SUPER ADMIN' : 'ADMIN'}
                 </span>
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-emerald-500/15 text-emerald-400 border border-emerald-500/30">
-                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-primary/15 text-success-soft-foreground border border-primary/40">
+                  <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
                   {locale === 'bn' ? 'সিস্টেম সক্রিয়' : 'System Active'}
                 </span>
               </div>
@@ -109,15 +109,15 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
             <Link
               href={`/${locale}/dashboard/admin/verification`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-cyan-500/50 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-info/40 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
                 <p className="text-xs text-muted-foreground font-medium">
                   {t('tutorVerificationQueue')}
                 </p>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-cyan-400 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-info-soft-foreground transition-transform group-hover:translate-x-0.5" />
               </div>
-              <p className="text-2xl font-black text-cyan-400 mt-2 font-mono">
+              <p className="text-2xl font-black text-info-soft-foreground mt-2 font-mono">
                 {admin.metrics.pendingTutorVerifications}
               </p>
               <p className="text-[11px] text-muted-foreground/80 mt-1">Pending Dossiers</p>
@@ -125,13 +125,13 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/disputes`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-amber-500/50 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-warning/40 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
                 <p className="text-xs text-muted-foreground font-medium">{t('replacementQueue')}</p>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-amber-400 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-warning-soft-foreground transition-transform group-hover:translate-x-0.5" />
               </div>
-              <p className="text-2xl font-black text-amber-400 mt-2 font-mono">
+              <p className="text-2xl font-black text-warning-soft-foreground mt-2 font-mono">
                 {admin.metrics.activeReplacementCases}
               </p>
               <p className="text-[11px] text-muted-foreground/80 mt-1">Active Cases</p>
@@ -139,13 +139,13 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/disputes`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-rose-500/50 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-destructive/40 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
                 <p className="text-xs text-muted-foreground font-medium">{t('safetyQueue')}</p>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-rose-400 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-destructive-soft-foreground transition-transform group-hover:translate-x-0.5" />
               </div>
-              <p className="text-2xl font-black text-rose-400 mt-2 font-mono">
+              <p className="text-2xl font-black text-destructive-soft-foreground mt-2 font-mono">
                 {admin.metrics.openSafetyReports}
               </p>
               <p className="text-[11px] text-muted-foreground/80 mt-1">Open Reports</p>
@@ -153,13 +153,13 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/bookings`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-emerald-500/50 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
                 <p className="text-xs text-muted-foreground font-medium">{t('activeBookings')}</p>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-emerald-400 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-success-soft-foreground transition-transform group-hover:translate-x-0.5" />
               </div>
-              <p className="text-2xl font-black text-emerald-400 mt-2 font-mono">
+              <p className="text-2xl font-black text-success-soft-foreground mt-2 font-mono">
                 {admin.metrics.activeBookingsCount}
               </p>
               <p className="text-[11px] text-muted-foreground/80 mt-1">In Progress</p>
@@ -167,13 +167,13 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/users`}
-              className="col-span-2 lg:col-span-1 bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-teal-500/50 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="col-span-2 lg:col-span-1 bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
                 <p className="text-xs text-muted-foreground font-medium">{t('totalUsers')}</p>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-teal-400 transition-transform group-hover:translate-x-0.5" />
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary-soft-foreground transition-transform group-hover:translate-x-0.5" />
               </div>
-              <p className="text-2xl font-black text-white mt-2 font-mono">
+              <p className="text-2xl font-black text-foreground mt-2 font-mono">
                 {admin.metrics.totalRegisteredUsers}
               </p>
               <p className="text-[11px] text-muted-foreground/80 mt-1">Total Catalog</p>
@@ -183,8 +183,8 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           {/* Quick Launch Control Hub */}
           <div>
             <div className="flex items-center justify-between mb-4">
-              <h2 className="text-lg font-bold text-white flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-cyan-400" />
+              <h2 className="text-lg font-bold text-foreground flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-info-soft-foreground" />
                 {locale === 'bn' ? 'প্রশাসনিক কন্ট্রোল হাব' : 'Administrative Control Hub'}
               </h2>
               <span className="text-xs text-muted-foreground">
@@ -208,12 +208,12 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                         >
                           <Icon className="w-5 h-5" />
                         </div>
-                        <span className="text-xs font-semibold text-cyan-400 group-hover:underline flex items-center gap-1">
+                        <span className="text-xs font-semibold text-info-soft-foreground group-hover:underline flex items-center gap-1">
                           {locale === 'bn' ? item.actionTextBn : item.actionTextEn}
                           <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-1" />
                         </span>
                       </div>
-                      <h3 className="text-base font-bold text-white">
+                      <h3 className="text-base font-bold text-foreground">
                         {locale === 'bn' ? item.titleBn : item.titleEn}
                       </h3>
                       <p className="text-xs text-muted-foreground mt-1.5 leading-relaxed">
@@ -230,8 +230,8 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           <div className="bg-card border border-border/70 rounded-3xl p-6 space-y-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
-                <h3 className="text-base font-bold text-white flex items-center gap-2">
-                  <CreditCard className="w-5 h-5 text-emerald-400" />
+                <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+                  <CreditCard className="w-5 h-5 text-success-soft-foreground" />
                   <span>{t('reconciliationTitle')}</span>
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1">
@@ -244,15 +244,15 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                 <span
                   className={`px-3 py-1 text-xs font-semibold rounded-full border ${
                     admin.reconciliation?.isBalanced
-                      ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
-                      : 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                      ? 'bg-primary/15 text-success-soft-foreground border-primary/40'
+                      : 'bg-destructive/15 text-destructive-soft-foreground border-destructive/40'
                   }`}
                 >
                   {admin.reconciliation?.isBalanced ? t('statusBalanced') : t('statusDiscrepancy')}
                 </span>
                 <Link
                   href={`/${locale}/dashboard/admin/disputes`}
-                  className="px-3.5 py-1.5 bg-surface hover:bg-surface-hover border border-border rounded-xl text-xs font-semibold text-white transition"
+                  className="px-3.5 py-1.5 bg-surface hover:bg-surface-hover border border-border rounded-xl text-xs font-semibold text-foreground transition"
                 >
                   {locale === 'bn' ? 'বিস্তারিত লেজার দেখুন' : 'View Full Ledger'}
                 </Link>
@@ -262,13 +262,13 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
               <div className="bg-surface/80 p-4 rounded-2xl border border-border/70">
                 <p className="text-xs text-muted-foreground font-medium">{t('totalDebits')}</p>
-                <p className="text-lg font-mono font-bold text-white mt-1">
+                <p className="text-lg font-mono font-bold text-foreground mt-1">
                   {admin.reconciliation?.totalDebits || '0'} BDT
                 </p>
               </div>
               <div className="bg-surface/80 p-4 rounded-2xl border border-border/70">
                 <p className="text-xs text-muted-foreground font-medium">{t('totalCredits')}</p>
-                <p className="text-lg font-mono font-bold text-white mt-1">
+                <p className="text-lg font-mono font-bold text-foreground mt-1">
                   {admin.reconciliation?.totalCredits || '0'} BDT
                 </p>
               </div>
@@ -276,7 +276,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">{t('discrepancy')}</p>
                 <p
                   className={`text-lg font-mono font-bold mt-1 ${
-                    admin.reconciliation?.discrepancy === '0' ? 'text-emerald-400' : 'text-rose-400'
+                    admin.reconciliation?.discrepancy === '0' ? 'text-success-soft-foreground' : 'text-destructive-soft-foreground'
                   }`}
                 >
                   {admin.reconciliation?.discrepancy || '0'}
@@ -288,7 +288,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           {/* Security & Audit Policy Card */}
           <div className="bg-card border border-border/70 rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="space-y-2">
-              <div className="flex items-center gap-2 text-emerald-400 text-sm font-semibold">
+              <div className="flex items-center gap-2 text-success-soft-foreground text-sm font-semibold">
                 <CheckCircle2 className="w-4 h-4" />
                 <span>{t('auditRedactedNotice')}</span>
               </div>

@@ -153,9 +153,9 @@ export function SessionScheduleCalendar({
       data-testid="scheduling-container"
     >
       {/* Banner */}
-      <div className="bg-gradient-to-r from-emerald-900 via-teal-900 to-slate-900 rounded-3xl p-8 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-card border border-brand/25 rounded-3xl p-8 text-foreground shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-emerald-500/20 border border-emerald-400/30 rounded-full text-xs font-medium text-emerald-300">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-xs font-medium text-success-soft-foreground">
             <Clock className="w-3.5 h-3.5" />
             <span>
               {dict.scheduling?.timezoneNotice || 'Bangladesh Standard Time (BST / UTC+6)'}
@@ -164,7 +164,7 @@ export function SessionScheduleCalendar({
           <h1 className="text-3xl font-extrabold tracking-tight">
             {dict.scheduling?.calendarTitle || 'Class Schedule & Sessions'}
           </h1>
-          <p className="text-emerald-100/80 text-sm max-w-xl">
+          <p className="text-primary-soft-foreground text-sm max-w-xl">
             {dict.scheduling?.calendarSubtitle ||
               'Manage scheduled tutoring classes, meeting links, and calendar slots'}
           </p>
@@ -172,13 +172,13 @@ export function SessionScheduleCalendar({
       </div>
 
       {/* Cancellation Policy Banner */}
-      <div className="bg-amber-50 dark:bg-amber-950/40 border border-amber-200 dark:border-amber-900 rounded-2xl p-4 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-3">
-        <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+      <div className="bg-warning-soft  border border-warning/20  rounded-2xl p-4 text-xs text-warning  flex items-start gap-3">
+        <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
         <div className="space-y-1">
           <span className="font-bold block">
             {dict.scheduling?.cancellationPolicyTitle || 'Bangladesh Cancellation & Refund Policy'}
           </span>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-amber-800 dark:text-amber-300">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-warning ">
             <span>• {dict.scheduling?.fullRefundNotice || 'Full 100% refund (>24h notice)'}</span>
             <span>• {dict.scheduling?.partialRefundNotice || '80% refund (4–24h notice)'}</span>
             <span>• {dict.scheduling?.noRefundNotice || 'Non-refundable (<4h notice)'}</span>
@@ -189,8 +189,8 @@ export function SessionScheduleCalendar({
       {/* Sessions Grid */}
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="text-xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2">
-            <CalendarIcon className="w-5 h-5 text-emerald-600" />
+          <h2 className="text-xl font-bold text-foreground  flex items-center gap-2">
+            <CalendarIcon className="w-5 h-5 text-success-soft-foreground" />
             <span>{locale === 'bn' ? 'নির্ধারিত ক্লাসসমূহ' : 'Scheduled Classes'}</span>
           </h2>
           {onScheduleOneOff && (
@@ -204,7 +204,7 @@ export function SessionScheduleCalendar({
         {actionError && (
           <div
             role="alert"
-            className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700"
+            className="rounded-xl border border-destructive/20 bg-destructive-soft p-3 text-xs text-destructive"
             data-testid="scheduling-action-error"
           >
             {actionError}
@@ -213,7 +213,7 @@ export function SessionScheduleCalendar({
         {queryError && (
           <div
             role="alert"
-            className="rounded-xl border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700"
+            className="rounded-xl border border-destructive/20 bg-destructive-soft p-3 text-xs text-destructive"
             data-testid="scheduling-query-error"
           >
             {queryError}
@@ -221,14 +221,14 @@ export function SessionScheduleCalendar({
         )}
         {isLoading ? (
           <Card className="text-center py-12">
-            <CardContent className="text-slate-500 text-sm">
+            <CardContent className="text-muted-foreground text-sm">
               {dict.common?.loading || 'Loading...'}
             </CardContent>
           </Card>
         ) : sessions.length === 0 ? (
           <Card className="text-center py-12">
-            <CardContent className="space-y-2 text-slate-500">
-              <CalendarIcon className="w-10 h-10 mx-auto text-slate-300" />
+            <CardContent className="space-y-2 text-muted-foreground">
+              <CalendarIcon className="w-10 h-10 mx-auto text-muted-foreground" />
               <p>{dict.scheduling?.noSessions || 'No sessions scheduled.'}</p>
             </CardContent>
           </Card>

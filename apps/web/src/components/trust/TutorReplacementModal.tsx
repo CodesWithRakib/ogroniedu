@@ -55,13 +55,13 @@ export function TutorReplacementModal({
     >
       <div
         style={{
-          backgroundColor: '#f0fdf4',
+          backgroundColor: 'var(--success-soft)',
           border: '1px solid #bbf7d0',
           borderRadius: '10px',
           padding: '12px 14px',
           marginBottom: '18px',
           fontSize: '0.85rem',
-          color: '#166534',
+          color: 'var(--primary)',
           lineHeight: 1.45,
         }}
       >
@@ -80,7 +80,7 @@ export function TutorReplacementModal({
               fontSize: '0.85rem',
               fontWeight: 600,
               marginBottom: '6px',
-              color: '#334155',
+              color: 'var(--muted-foreground)',
             }}
           >
             {t('reasonCode')}
@@ -95,8 +95,8 @@ export function TutorReplacementModal({
               borderRadius: '8px',
               border: '1px solid #cbd5e1',
               fontSize: '0.9rem',
-              backgroundColor: '#ffffff',
-              color: '#1e293b',
+              backgroundColor: 'var(--card)',
+              color: 'var(--foreground)',
             }}
           >
             <option value="trial_dissatisfaction">{t('reasonTrial')}</option>
@@ -115,7 +115,7 @@ export function TutorReplacementModal({
               fontSize: '0.85rem',
               fontWeight: 600,
               marginBottom: '6px',
-              color: '#334155',
+              color: 'var(--muted-foreground)',
             }}
           >
             Details / Explanation
@@ -149,8 +149,8 @@ export function TutorReplacementModal({
               padding: '8px 16px',
               borderRadius: '8px',
               border: '1px solid #cbd5e1',
-              backgroundColor: '#ffffff',
-              color: '#475569',
+              backgroundColor: 'var(--card)',
+              color: 'var(--muted-foreground)',
               fontWeight: 600,
               cursor: 'pointer',
             }}
@@ -165,7 +165,7 @@ export function TutorReplacementModal({
               borderRadius: '8px',
               border: 'none',
               background: 'linear-gradient(135deg, #059669, #047857)',
-              color: '#ffffff',
+              color: 'var(--card)',
               fontWeight: 700,
               cursor: submit.isSubmitting ? 'not-allowed' : 'pointer',
               opacity: submit.isSubmitting ? 0.7 : 1,

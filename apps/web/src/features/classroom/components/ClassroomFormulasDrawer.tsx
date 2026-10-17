@@ -165,19 +165,19 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
   };
 
   return (
-    <div className="bg-slate-900/90 border border-slate-800 rounded-3xl p-6 shadow-2xl flex flex-col space-y-5 text-slate-100">
+    <div className="bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col space-y-5 text-foreground">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-2xl bg-cyan-500/10 border border-cyan-500/30 text-cyan-400">
+          <div className="p-2 rounded-2xl bg-interactive/10 border border-info/40 text-info-soft-foreground">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="text-base font-extrabold text-white flex items-center gap-2">
+            <h3 className="text-base font-extrabold text-foreground flex items-center gap-2">
               <span>{locale === 'bn' ? 'ফর্মুলা ও নোটস চিটশিট' : 'Formulas & Quick Notes'}</span>
-              <Sparkles className="w-4 h-4 text-amber-400" />
+              <Sparkles className="w-4 h-4 text-warning-soft-foreground" />
             </h3>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-muted-foreground">
               {locale === 'bn'
                 ? 'NCTB কারিকুলাম ভিত্তিক পদার্থ, উচ্চতর গণিত ও রসায়নের প্রয়োজনীয় সূত্রাবলী'
                 : 'Essential NCTB formulas for Physics, Higher Math & Chemistry'}
@@ -187,13 +187,13 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
 
         {/* Search */}
         <div className="relative w-full sm:w-60">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
           <input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={locale === 'bn' ? 'সূত্র খুঁজুন...' : 'Search formulas...'}
-            className="w-full h-8 pl-8 pr-3 text-xs rounded-xl bg-slate-950 border border-slate-800 text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+            className="w-full h-8 pl-8 pr-3 text-xs rounded-xl bg-surface-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
             data-testid="formula-search-input"
           />
         </div>
@@ -206,8 +206,8 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
           onClick={() => setActiveCategory('all')}
           className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
             activeCategory === 'all'
-              ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-              : 'bg-slate-800/80 text-slate-400 hover:text-white'
+              ? 'bg-interactive text-foreground shadow-md shadow-sm'
+              : 'bg-muted text-muted-foreground hover:text-foreground'
           }`}
           data-testid="formula-tab-all"
         >
@@ -219,8 +219,8 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
           onClick={() => setActiveCategory('physics')}
           className={`px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCategory === 'physics'
-              ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-              : 'bg-slate-800/80 text-slate-400 hover:text-white'
+              ? 'bg-interactive text-foreground shadow-md shadow-sm'
+              : 'bg-muted text-muted-foreground hover:text-foreground'
           }`}
           data-testid="formula-tab-physics"
         >
@@ -233,8 +233,8 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
           onClick={() => setActiveCategory('math')}
           className={`px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCategory === 'math'
-              ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-              : 'bg-slate-800/80 text-slate-400 hover:text-white'
+              ? 'bg-interactive text-foreground shadow-md shadow-sm'
+              : 'bg-muted text-muted-foreground hover:text-foreground'
           }`}
           data-testid="formula-tab-math"
         >
@@ -247,8 +247,8 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
           onClick={() => setActiveCategory('chemistry')}
           className={`px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCategory === 'chemistry'
-              ? 'bg-cyan-500 text-slate-950 shadow-md shadow-cyan-500/20'
-              : 'bg-slate-800/80 text-slate-400 hover:text-white'
+              ? 'bg-interactive text-foreground shadow-md shadow-sm'
+              : 'bg-muted text-muted-foreground hover:text-foreground'
           }`}
           data-testid="formula-tab-chemistry"
         >
@@ -264,48 +264,48 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
           return (
             <div
               key={item.id}
-              className="p-3.5 rounded-2xl bg-slate-950/70 border border-slate-800/90 hover:border-cyan-500/40 transition-all flex flex-col justify-between group"
+              className="p-3.5 rounded-2xl bg-surface-muted border border-border hover:border-info/40 transition-all flex flex-col justify-between group"
               data-testid={`formula-card-${item.id}`}
             >
               <div className="space-y-1">
                 <div className="flex items-center justify-between">
-                  <span className="text-xs font-bold text-white group-hover:text-cyan-300 transition-colors">
+                  <span className="text-xs font-bold text-foreground group-hover:text-info-soft-foreground transition-colors">
                     {locale === 'bn' ? item.titleBn : item.titleEn}
                   </span>
                   <span
                     className={`text-[10px] font-bold uppercase px-2 py-0.5 rounded-full border ${
                       item.category === 'physics'
-                        ? 'bg-cyan-500/10 text-cyan-400 border-cyan-500/30'
+                        ? 'bg-interactive/10 text-info-soft-foreground border-info/40'
                         : item.category === 'math'
-                          ? 'bg-purple-500/10 text-purple-400 border-purple-500/30'
-                          : 'bg-emerald-500/10 text-emerald-400 border-emerald-500/30'
+                          ? 'bg-interactive/10 text-interactive border-interactive/30'
+                          : 'bg-primary/10 text-success-soft-foreground border-primary/40'
                     }`}
                   >
                     {item.category}
                   </span>
                 </div>
 
-                <div className="p-2.5 rounded-xl bg-slate-900 border border-slate-800 text-cyan-300 font-mono text-xs font-bold my-1.5 select-all break-all">
+                <div className="p-2.5 rounded-xl bg-card border border-border text-info-soft-foreground font-mono text-xs font-bold my-1.5 select-all break-all">
                   {item.formula}
                 </div>
 
-                <p className="text-[11px] text-slate-400 leading-relaxed">
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
                   {locale === 'bn' ? item.descriptionBn : item.descriptionEn}
                 </p>
               </div>
 
-              <div className="mt-3 pt-2 border-t border-slate-900 flex justify-end">
+              <div className="mt-3 pt-2 border-t border-border flex justify-end">
                 <button
                   type="button"
                   onClick={() => handleCopy(item.formula, item.id)}
-                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-slate-400 hover:text-cyan-300 transition-colors px-2 py-1 rounded-lg hover:bg-slate-800"
+                  className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground hover:text-info-soft-foreground transition-colors px-2 py-1 rounded-lg hover:bg-surface-hover"
                   title={locale === 'bn' ? 'ফর্মুলা কপি করুন' : 'Copy Formula'}
                   data-testid={`copy-formula-${item.id}`}
                 >
                   {isCopied ? (
                     <>
-                      <Check className="w-3.5 h-3.5 text-emerald-400" />
-                      <span className="text-emerald-400 font-bold">
+                      <Check className="w-3.5 h-3.5 text-success-soft-foreground" />
+                      <span className="text-success-soft-foreground font-bold">
                         {locale === 'bn' ? 'কপি হয়েছে' : 'Copied'}
                       </span>
                     </>
@@ -322,7 +322,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
         })}
 
         {filteredFormulas.length === 0 && (
-          <div className="col-span-2 text-center py-8 text-xs text-slate-500">
+          <div className="col-span-2 text-center py-8 text-xs text-muted-foreground">
             {locale === 'bn' ? 'কোনো ফর্মুলা খুঁজে পাওয়া যায়নি।' : 'No matching formulas found.'}
           </div>
         )}

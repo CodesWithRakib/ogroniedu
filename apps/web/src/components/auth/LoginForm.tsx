@@ -48,10 +48,10 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         {notice && (
           <div
             role="status"
-            className="flex items-start gap-2.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-3 text-xs font-medium text-emerald-700 dark:text-emerald-300 animate-in fade-in"
+            className="flex items-start gap-2.5 rounded-2xl border border-primary/30 bg-primary/10 p-3 text-xs font-medium text-primary  animate-in fade-in"
             data-testid="login-notice"
           >
-            <CheckCircle2 className="h-4 w-4 shrink-0 text-emerald-500 mt-0.5" />
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-primary mt-0.5" />
             <span>{notice}</span>
           </div>
         )}
@@ -60,10 +60,10 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         {formError && (
           <div
             role="alert"
-            className="flex items-start gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-medium text-rose-700 dark:text-rose-300 animate-in fade-in"
+            className="flex items-start gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-3 text-xs font-medium text-destructive  animate-in fade-in"
             data-testid="login-error"
           >
-            <AlertCircle className="h-4 w-4 shrink-0 text-rose-500 mt-0.5" />
+            <AlertCircle className="h-4 w-4 shrink-0 text-destructive mt-0.5" />
             <span>{formError}</span>
           </div>
         )}
@@ -196,7 +196,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
           {magicNotice && (
             <p
               role="status"
-              className="text-[11px] text-emerald-600 dark:text-emerald-400"
+              className="text-[11px] text-primary "
               data-testid="login-magic-notice"
             >
               {magicNotice}

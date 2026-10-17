@@ -27,8 +27,8 @@ export function AnalyticsTrendsCard({ data }: { data: AnalyticsOperationalData }
               <span className="font-bold text-foreground">{point.requests}</span>
             </div>
             <div className="flex justify-between text-xs">
-              <span className="text-teal-600 dark:text-teal-400 font-semibold">Confirmed:</span>
-              <span className="font-bold text-teal-600 dark:text-teal-400">{point.confirmed}</span>
+              <span className="text-primary  font-semibold">Confirmed:</span>
+              <span className="font-bold text-primary ">{point.confirmed}</span>
             </div>
           </div>
         ))}

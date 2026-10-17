@@ -121,7 +121,7 @@ export default function GuardianChildDetailPage({
             size="sm"
             variant="destructive"
             onClick={() => setIsSafetyModalOpen(true)}
-            className="gap-1.5 text-xs font-bold shadow-xs bg-red-600 hover:bg-red-700 text-white rounded-full"
+            className="gap-1.5 text-xs font-bold shadow-xs bg-destructive hover:bg-destructive/90 text-white rounded-full"
             id="btn-trigger-child-safety"
           >
             <ShieldAlert className="w-3.5 h-3.5" />
@@ -137,7 +137,7 @@ export default function GuardianChildDetailPage({
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start gap-4">
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-cyan-500/20 border border-primary/30 flex items-center justify-center text-primary font-black text-2xl shadow-inner">
+            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-brand-accent border border-primary/30 flex items-center justify-center text-primary font-black text-2xl shadow-inner">
               {child?.displayName ? child.displayName.slice(0, 2).toUpperCase() : 'ST'}
             </div>
             <div className="space-y-1">
@@ -148,7 +148,7 @@ export default function GuardianChildDetailPage({
                 {child?.isMinor && (
                   <Badge
                     variant="outline"
-                    className="text-xs bg-amber-500/10 text-amber-500 border-amber-500/20"
+                    className="text-xs bg-warning/10 text-warning border-warning/40"
                   >
                     {isBn ? 'অপ্রাপ্তবয়স্ক (Minor < 18)' : 'Minor (<18)'}
                   </Badge>
@@ -183,7 +183,7 @@ export default function GuardianChildDetailPage({
                         : 'Legal Guardian'}
                 </span>
               </p>
-              <div className="flex items-center gap-2 text-[11px] text-emerald-600 dark:text-emerald-400 font-medium pt-1">
+              <div className="flex items-center gap-2 text-[11px] text-success-soft-foreground  font-medium pt-1">
                 <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
                 <span>
                   {isBn
@@ -238,7 +238,7 @@ export default function GuardianChildDetailPage({
             <span className="text-xs font-semibold text-muted-foreground">
               {isBn ? 'সক্রিয় শিক্ষক ও কোর্স' : 'Active Tutors'}
             </span>
-            <div className="p-2 rounded-xl bg-cyan-500/10 text-cyan-600">
+            <div className="p-2 rounded-xl bg-interactive/10 text-info-soft-foreground">
               <GraduationCap className="w-4 h-4" />
             </div>
           </div>
@@ -255,7 +255,7 @@ export default function GuardianChildDetailPage({
             <span className="text-xs font-semibold text-muted-foreground">
               {isBn ? 'ক্লাস উপস্থিতি হার' : 'Attendance Rate'}
             </span>
-            <div className="p-2 rounded-xl bg-emerald-500/10 text-emerald-600">
+            <div className="p-2 rounded-xl bg-primary/10 text-success-soft-foreground">
               <Calendar className="w-4 h-4" />
             </div>
           </div>
@@ -278,7 +278,7 @@ export default function GuardianChildDetailPage({
             <span className="text-xs font-semibold text-muted-foreground">
               {isBn ? 'হোমওয়ার্ক সম্পন্ন' : 'Assignments'}
             </span>
-            <div className="p-2 rounded-xl bg-amber-500/10 text-amber-600">
+            <div className="p-2 rounded-xl bg-warning/10 text-warning">
               <BookOpen className="w-4 h-4" />
             </div>
           </div>
@@ -301,12 +301,12 @@ export default function GuardianChildDetailPage({
             <span className="text-xs font-semibold text-muted-foreground">
               {isBn ? 'আর্থিক এসক্রো সুরক্ষা' : 'Escrow Protected'}
             </span>
-            <div className="p-2 rounded-xl bg-indigo-500/10 text-indigo-600">
+            <div className="p-2 rounded-xl bg-interactive/10 text-interactive">
               <CreditCard className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-2">
-            <span className="text-2xl font-black text-emerald-500">১০০%</span>
+            <span className="text-2xl font-black text-success-soft-foreground">১০০%</span>
             <p className="text-[11px] text-muted-foreground mt-0.5">
               {isBn ? 'ক্লাস যাচাইয়ের পর ফান্ড ছাড়' : 'Milestone payout control'}
             </p>
@@ -365,7 +365,7 @@ export default function GuardianChildDetailPage({
           onClick={() => setActiveTab('safety')}
           className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'safety'
-              ? 'bg-red-600 text-white shadow-xs'
+              ? 'bg-destructive text-white shadow-xs'
               : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
           }`}
           id="tab-safety"
@@ -437,7 +437,7 @@ export default function GuardianChildDetailPage({
                   </div>
 
                   <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs">
-                    <span className="font-bold text-emerald-600 dark:text-emerald-400">
+                    <span className="font-bold text-success-soft-foreground ">
                       {isBn ? 'ফি:' : 'Rate:'}{' '}
                       {((Number(b.pricePerSessionMinor) || 0) / 100).toFixed(0)} BDT /{' '}
                       {isBn ? 'ক্লাস' : 'session'}
@@ -528,7 +528,7 @@ export default function GuardianChildDetailPage({
                         href={s.meetingUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-cyan-500/10 text-cyan-600 hover:bg-cyan-500/20 text-xs font-semibold"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-xl bg-interactive/10 text-info-soft-foreground hover:bg-interactive/20 text-xs font-semibold"
                       >
                         <Video className="w-3.5 h-3.5" />
                         <span>{isBn ? 'লাইভ ক্লাস' : 'Join'}</span>
@@ -539,7 +539,7 @@ export default function GuardianChildDetailPage({
                         size="sm"
                         disabled={isSettling}
                         onClick={() => handleSettleMilestone(s.id)}
-                        className="gap-1.5 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold h-8 px-3 rounded-xl"
+                        className="gap-1.5 text-xs bg-primary hover:bg-primary-hover text-white font-bold h-8 px-3 rounded-xl"
                         id={`btn-settle-${s.id}`}
                       >
                         <CreditCard className="w-3.5 h-3.5" />
@@ -605,18 +605,18 @@ export default function GuardianChildDetailPage({
       {/* TAB D: CHILD SAFETY & TRUST ACTIONS */}
       {activeTab === 'safety' && (
         <div className="space-y-4" data-testid="child-safety-section">
-          <Card className="rounded-3xl border-red-500/30 bg-slate-950 p-6 text-slate-100 shadow-xl">
+          <Card className="rounded-3xl border-destructive/40 bg-surface-muted p-6 text-foreground shadow-sm">
             <div className="flex items-start gap-4">
-              <div className="h-12 w-12 rounded-2xl bg-red-500/20 border border-red-500/30 text-red-400 flex items-center justify-center shrink-0">
+              <div className="h-12 w-12 rounded-2xl bg-destructive/20 border border-destructive/40 text-destructive-soft-foreground flex items-center justify-center shrink-0">
                 <ShieldAlert className="w-6 h-6" />
               </div>
               <div className="space-y-2">
-                <h3 className="text-lg font-bold text-white">
+                <h3 className="text-lg font-bold text-foreground">
                   {isBn
                     ? 'শিশু সুরক্ষা ও নীতি পর্যবেক্ষণ (Child Safeguarding Center)'
                     : 'Child Safeguarding & Incident Center'}
                 </h3>
-                <p className="text-xs text-slate-300 leading-relaxed max-w-2xl">
+                <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
                   {isBn
                     ? 'OgroniEdu প্ল্যাটফর্মে শিক্ষার্থীর মানসিক, শারীরিক ও একাডেমিক নিরাপত্তা সর্বোচ্চ অগ্রাধিকার। যেকোনো অনৈতিক প্রস্তাব, অসমীচীন আচরণ বা শিক্ষকের অনুপস্থিতিতে সরাসরি সিকিউরিটি ডেস্কে রিপোর্ট করুন।'
                     : 'The well-being, psychological safety and physical integrity of our students is our absolute priority. Immediately report any misconduct, inappropriate communication, or breach of protocol.'}
@@ -626,7 +626,7 @@ export default function GuardianChildDetailPage({
                     variant="destructive"
                     size="sm"
                     onClick={() => setIsSafetyModalOpen(true)}
-                    className="gap-2 bg-red-600 hover:bg-red-700 text-white font-bold px-4 rounded-xl"
+                    className="gap-2 bg-destructive hover:bg-destructive/90 text-white font-bold px-4 rounded-xl"
                   >
                     <ShieldAlert className="w-4 h-4" />
                     <span>
@@ -651,7 +651,7 @@ export default function GuardianChildDetailPage({
                       );
                       setIsReplacementModalOpen(true);
                     }}
-                    className="gap-2 border-slate-700 hover:bg-slate-800 text-slate-200 rounded-xl"
+                    className="gap-2 border-border hover:bg-surface-hover text-foreground rounded-xl"
                   >
                     <RefreshCw className="w-4 h-4 text-primary" />
                     <span>
@@ -665,19 +665,19 @@ export default function GuardianChildDetailPage({
 
           {/* National Helpline Contact Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-2xl border border-red-800/30 bg-red-950/20 flex items-center justify-between">
+            <div className="p-4 rounded-2xl border border-destructive/20 bg-destructive-soft flex items-center justify-between">
               <div>
-                <span className="text-[11px] font-bold uppercase tracking-wider text-red-400">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-destructive-soft-foreground">
                   {isBn ? 'জাতীয় জরুরি হটলাইন' : 'National Emergency Hotline'}
                 </span>
-                <h4 className="text-xl font-black text-white mt-0.5">১০৯৮ / ৯৯৯</h4>
-                <p className="text-xs text-slate-400">
+                <h4 className="text-xl font-black text-foreground mt-0.5">১০৯৮ / ৯৯৯</h4>
+                <p className="text-xs text-muted-foreground">
                   {isBn
                     ? 'বাংলাদেশ সরকার শিশু ও জরুরি সহায়তা ডেস্ক'
                     : 'Government of Bangladesh 24/7 Helpline'}
                 </p>
               </div>
-              <span className="px-3 py-1 rounded-full bg-red-500/20 text-red-400 text-xs font-bold border border-red-500/30">
+              <span className="px-3 py-1 rounded-full bg-destructive/20 text-destructive-soft-foreground text-xs font-bold border border-destructive/40">
                 ২৪/৭ ফ্রি কল
               </span>
             </div>

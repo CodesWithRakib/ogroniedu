@@ -16,8 +16,8 @@ import { normalizeUnknownError } from '@/lib/api-error';
 import { buildStepPayload, fieldsForStep, type StepField } from '../step-forms';
 
 function StepIcon({ status }: { status: OnboardingStep['status'] }) {
-  if (status === 'completed') return <CheckCircle2 className="h-5 w-5 text-emerald-500" />;
-  if (status === 'pending_review') return <Clock className="h-5 w-5 text-amber-500" />;
+  if (status === 'completed') return <CheckCircle2 className="h-5 w-5 text-primary" />;
+  if (status === 'pending_review') return <Clock className="h-5 w-5 text-warning" />;
   return <Circle className="h-5 w-5 text-muted-foreground" />;
 }
 
@@ -154,7 +154,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
         role="status"
         aria-live="polite"
       >
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-emerald-600 border-t-transparent" />
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-primary/40 border-t-transparent" />
       </div>
     );
   }
@@ -162,7 +162,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
   if (error || !data) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-10" data-testid="onboarding-error">
-        <div className="flex items-start gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-4 text-xs text-rose-700 dark:text-rose-300">
+        <div className="flex items-start gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-xs text-destructive ">
           <AlertCircle className="h-4 w-4 shrink-0" />
           <span>
             {isBn
@@ -205,7 +205,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
 
       {data.isComplete && (
         <div
-          className="mb-6 flex items-start gap-2.5 rounded-2xl border border-emerald-500/30 bg-emerald-500/10 p-4 text-xs text-emerald-700 dark:text-emerald-300"
+          className="mb-6 flex items-start gap-2.5 rounded-2xl border border-primary/30 bg-primary/10 p-4 text-xs text-primary "
           data-testid="onboarding-complete"
         >
           <CheckCircle2 className="h-4 w-4 shrink-0" />
@@ -247,7 +247,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
       </ul>
 
       {data.requiresApproval && !data.isComplete && (
-        <p className="mb-4 text-[11px] text-amber-600 dark:text-amber-400">
+        <p className="mb-4 text-[11px] text-warning ">
           {isBn
             ? 'কিছু ধাপ যাচাইকরণ/অনুমোদনের সাপেক্ষে। অনুমোদন ছাড়া এই ধাপগুলো সম্পন্ন হবে না।'
             : 'Some steps require review/approval and complete only after a platform decision.'}
@@ -257,7 +257,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
       {formError && (
         <div
           role="alert"
-          className="mb-4 flex items-start gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-700 dark:text-rose-300"
+          className="mb-4 flex items-start gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive "
           data-testid="onboarding-form-error"
         >
           <AlertCircle className="h-4 w-4 shrink-0" />

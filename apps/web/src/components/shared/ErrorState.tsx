@@ -17,10 +17,10 @@ export function ErrorState({
     <div
       role="alert"
       data-testid={testId}
-      className="flex flex-col items-center justify-center rounded-2xl border border-rose-500/30 bg-rose-500/5 p-8 text-center"
+      className="flex flex-col items-center justify-center rounded-2xl border border-destructive/30 bg-destructive/5 p-8 text-center"
     >
-      <AlertTriangle className="h-8 w-8 text-rose-500" aria-hidden />
-      <p className="mt-3 text-sm font-medium text-slate-700 dark:text-slate-200">{message}</p>
+      <AlertTriangle className="h-8 w-8 text-destructive" aria-hidden />
+      <p className="mt-3 text-sm font-medium text-foreground ">{message}</p>
       {onRetry && (
         <Button variant="outline" size="sm" className="mt-4" onClick={onRetry}>
           Retry

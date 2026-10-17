@@ -57,7 +57,7 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
         <div className="grid grid-cols-3 gap-3 text-center">
           <div className="bg-surface/75 p-3.5 rounded-2xl border border-border/70 shadow-2xs">
             <p className="text-xs text-muted-foreground font-medium">{t('completedSessions')}</p>
-            <p className="text-xl font-bold text-teal-600 dark:text-teal-400 mt-1 font-sans">
+            <p className="text-xl font-bold text-primary  mt-1 font-sans">
               {data.sessions.completedSessions}
             </p>
             <span className="text-[10px] text-muted-foreground">
@@ -66,7 +66,7 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
           </div>
           <div className="bg-surface/75 p-3.5 rounded-2xl border border-border/70 shadow-2xs">
             <p className="text-xs text-muted-foreground font-medium">{t('noShowRate')}</p>
-            <p className="text-xl font-bold text-amber-500 mt-1 font-sans">
+            <p className="text-xl font-bold text-warning mt-1 font-sans">
               {data.sessions.noShowRate}%
             </p>
             <span className="text-[10px] text-muted-foreground">
@@ -77,7 +77,7 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
             <p className="text-xs text-muted-foreground font-medium">
               {t('sessionCancellationRate')}
             </p>
-            <p className="text-xl font-bold text-rose-500 mt-1 font-sans">
+            <p className="text-xl font-bold text-destructive mt-1 font-sans">
               {data.sessions.sessionCancellationRate}%
             </p>
             <span className="text-[10px] text-muted-foreground">

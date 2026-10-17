@@ -50,7 +50,7 @@ export function TutorReviewsListView({
 
   return (
     <div style={{ marginTop: '24px' }}>
-      <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '16px', color: '#0f172a' }}>
+      <h3 style={{ fontSize: '1.2rem', fontWeight: 800, marginBottom: '16px', color: 'var(--foreground)' }}>
         {t('reviewsTitle')} ({localReviews.length})
       </h3>
 
@@ -59,10 +59,10 @@ export function TutorReviewsListView({
           style={{
             padding: '24px',
             textAlign: 'center',
-            backgroundColor: '#f8fafc',
+            backgroundColor: 'var(--surface-muted)',
             borderRadius: '12px',
             border: '1px dashed #cbd5e1',
-            color: '#64748b',
+            color: 'var(--muted-foreground)',
             fontSize: '0.9rem',
           }}
         >

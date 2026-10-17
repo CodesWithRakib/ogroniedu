@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { Button } from '../src/components/ui/Button';
 import { Badge } from '../src/components/ui/Badge';
 import { Card, CardTitle, CardDescription } from '../src/components/ui/Card';
@@ -25,6 +26,28 @@ describe('UI Primitives Unit Tests', () => {
       const element = React.createElement(Button, { isLoading: true }, 'লোড হচ্ছে');
 
       expect(element.props.isLoading).toBe(true);
+    });
+
+    it('asChild renders a single slotted element without throwing (strict radix-slot children)', () => {
+      // Regression: radix-slot 1.4 counts falsy sibling children (`{cond && <X/>}`)
+      // and throws "Slot failed to slot onto its children" unless children are
+      // wrapped in <Slottable>. Button must keep working with asChild.
+      const html = renderToStaticMarkup(
+        React.createElement(
+          Button,
+          { asChild: true, size: 'sm' },
+          React.createElement(
+            'a',
+            { href: '/bn/register' },
+            React.createElement('span', null, 'সাইন আপ'),
+            React.createElement('svg', { 'data-testid': 'arrow' }),
+          ),
+        ),
+      );
+
+      expect(html).toContain('<a');
+      expect(html).toContain('সাইন আপ');
+      expect(html).toContain('data-testid="arrow"');
     });
   });
 

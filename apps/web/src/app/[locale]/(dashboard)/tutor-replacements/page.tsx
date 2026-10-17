@@ -97,7 +97,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
                   ? '৪৮ ঘণ্টার মধ্যে শিক্ষক নিশ্চিতকরণ বা সম্পূর্ণ রিফান্ড'
                   : '48-Hour Matching Guarantee (FR-011)'}
               </h3>
-              <Badge variant="outline" className="text-xs border-emerald-500/40 text-emerald-500">
+              <Badge variant="outline" className="text-xs border-primary/40 text-success-soft-foreground">
                 {isBn ? '১০০% মানি-ব্যাক' : '100% Refundable'}
               </Badge>
             </div>
@@ -108,7 +108,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 dark:text-emerald-400 font-bold text-xs shrink-0">
+        <div className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-primary/10 border border-primary/40 text-success-soft-foreground  font-bold text-xs shrink-0">
           <Clock className="w-4 h-4" />
           <span>{isBn ? '৪৮ ঘণ্টা কঠোর SLA ট্র্যাকিং' : 'Strict 48-Hour SLA Active'}</span>
         </div>
@@ -131,7 +131,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
         ) : cases.length === 0 ? (
           <Card className="py-16 text-center rounded-3xl">
             <CardContent className="space-y-3">
-              <ShieldCheck className="w-14 h-14 text-emerald-500 mx-auto" />
+              <ShieldCheck className="w-14 h-14 text-success-soft-foreground mx-auto" />
               <h4 className="text-base font-bold text-foreground">
                 {isBn ? 'কোনো সক্রিয় রিপ্লেসমেন্ট কেস নেই' : 'No Replacement Cases Filed'}
               </h4>
@@ -181,7 +181,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
                   <span className="font-bold text-muted-foreground block">
                     {isBn ? 'অভিযোগ / প্রত্যাশা:' : 'Reason & Explanation:'}
                   </span>
-                  <p className="p-3 rounded-2xl bg-slate-900 border border-slate-800 text-slate-200">
+                  <p className="p-3 rounded-2xl bg-card border border-border text-foreground">
                     {c.explanation}
                   </p>
                 </div>
@@ -189,7 +189,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
                 {/* Progress Stepper */}
                 <div className="p-3.5 rounded-2xl bg-surface/50 border border-border flex items-center justify-between text-[11px]">
                   <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                    <CheckCircle2 className="w-4 h-4 text-success-soft-foreground" />
                     <span className="font-bold text-foreground">
                       {isBn ? '১. অনুরোধ গৃহীত' : '1. Requested'}
                     </span>
@@ -197,7 +197,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
                   <div className="w-8 h-0.5 bg-border" />
                   <div className="flex items-center gap-2">
                     <CheckCircle2
-                      className={`w-4 h-4 ${['matching', 'offered', 'accepted'].includes(c.status) ? 'text-emerald-500' : 'text-muted-foreground'}`}
+                      className={`w-4 h-4 ${['matching', 'offered', 'accepted'].includes(c.status) ? 'text-success-soft-foreground' : 'text-muted-foreground'}`}
                     />
                     <span className="font-bold text-foreground">
                       {isBn ? '২. শিক্ষক ম্যাচিং' : '2. Matching'}
@@ -206,7 +206,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
                   <div className="w-8 h-0.5 bg-border" />
                   <div className="flex items-center gap-2">
                     <CheckCircle2
-                      className={`w-4 h-4 ${c.status === 'accepted' ? 'text-emerald-500' : 'text-muted-foreground'}`}
+                      className={`w-4 h-4 ${c.status === 'accepted' ? 'text-success-soft-foreground' : 'text-muted-foreground'}`}
                     />
                     <span className="font-bold text-foreground">
                       {isBn ? '৩. ক্লাস চালু' : '3. Rebound'}
@@ -235,7 +235,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
                       size="sm"
                       disabled={isUpdating}
                       onClick={() => handleAcceptReplacement(c.id, c.replacementTutorUserId)}
-                      className="gap-1 text-xs bg-emerald-600 hover:bg-emerald-700 text-white font-bold"
+                      className="gap-1 text-xs bg-primary hover:bg-primary-hover text-white font-bold"
                     >
                       <UserCheck className="w-3.5 h-3.5" />
                       <span>{isBn ? 'শিক্ষক গ্রহণ করুন' : 'Accept Tutor'}</span>

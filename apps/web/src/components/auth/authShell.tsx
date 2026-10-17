@@ -13,7 +13,6 @@ import {
   Lock,
   Star,
 } from 'lucide-react';
-import { ThemePicker } from '@/components/theme/ThemePicker';
 import { type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { cn } from '@/lib/utils';
@@ -50,22 +49,21 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
       email: 'student.demo@ogroniedu.com',
       pass: 'OgroniDev#2026',
       icon: '🎓',
-      badgeClass:
-        'hover:border-emerald-500 hover:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400',
+      badgeClass: 'hover:border-primary hover:bg-primary/10 text-success-soft-foreground',
     },
     {
       role: isBn ? 'অভিভাবক' : 'Guardian',
       email: 'guardian.demo@ogroniedu.com',
       pass: 'OgroniDev#2026',
       icon: '🛡️',
-      badgeClass: 'hover:border-amber-500 hover:bg-amber-500/10 text-amber-600 dark:text-amber-400',
+      badgeClass: 'hover:border-warning/40 hover:bg-warning/10 text-warning',
     },
     {
       role: isBn ? 'শিক্ষক' : 'Tutor',
       email: 'tutor.demo@ogroniedu.com',
       pass: 'OgroniDev#2026',
       icon: '👨‍🏫',
-      badgeClass: 'hover:border-teal-500 hover:bg-teal-500/10 text-teal-600 dark:text-teal-400',
+      badgeClass: 'hover:border-primary hover:bg-primary/10 text-primary',
     },
     {
       role: isBn ? 'অ্যাডমিন' : 'Admin',
@@ -73,7 +71,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
       pass: 'OgroniDev#2026',
       icon: '⚡',
       badgeClass:
-        'hover:border-violet-500 hover:bg-violet-500/10 text-violet-600 dark:text-violet-400',
+        'hover:border-interactive/30 hover:bg-interactive/10 text-interactive',
     },
   ];
 
@@ -84,7 +82,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
         {/* ======================================================== */}
         {/* LEFT PANEL: Cinematic Visual Art Panel (Nebula Style)    */}
         {/* ======================================================== */}
-        <div className="hidden lg:flex lg:col-span-6 relative flex-col justify-between p-8 xl:p-10 overflow-hidden text-white bg-slate-950">
+        <div className="hidden lg:flex lg:col-span-6 relative flex-col justify-between p-8 xl:p-10 overflow-hidden text-foreground bg-surface-muted">
           {/* Background Illustration Asset */}
           <div
             className="absolute inset-0 bg-cover bg-center transition-transform duration-700 hover:scale-105"
@@ -92,8 +90,8 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
           />
 
           {/* Atmospheric Gradient Overlays for Readability */}
-          <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/50 to-slate-950/60" />
-          <div className="absolute inset-0 bg-gradient-to-r from-slate-950/80 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/60" />
+          <div className="absolute inset-0 bg-gradient-to-r from-background/90 via-transparent to-transparent" />
 
           {/* Top Bar on Visual Panel */}
           <div className="relative z-10 flex items-center justify-between">
@@ -102,19 +100,19 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
                 <GraduationCap className="h-5 w-5 text-primary-foreground" />
               </div>
               <div className="flex flex-col text-left">
-                <span className="font-serif text-lg font-bold tracking-tight text-white leading-none">
+                <span className="font-serif text-lg font-bold tracking-tight text-foreground leading-none">
                   {isBn ? 'অগ্রণী' : 'Ogroni'}
                   <span className="text-primary font-sans font-extrabold text-sm ml-0.5">
                     {isBn ? 'এডু' : 'Edu'}
                   </span>
                 </span>
-                <span className="text-[10px] text-white/70 font-medium mt-0.5">
+                <span className="text-[10px] text-muted-foreground font-medium mt-0.5">
                   {isBn ? 'বিশ্বস্ত শিক্ষা প্ল্যাটফর্ম' : 'Trusted Tutoring Platform'}
                 </span>
               </div>
             </Link>
 
-            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/10 backdrop-blur-md border border-white/15 text-[11px] font-semibold text-white/90">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-muted backdrop-blur-md border border-border text-[11px] font-semibold text-muted-foreground">
               <Sparkles className="h-3.5 w-3.5 text-primary" />
               <span>{isBn ? 'স্মার্ট লার্নিং ২০২৬' : 'Smart Learning 2026'}</span>
             </span>
@@ -126,7 +124,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
               <span className="text-xs font-bold uppercase tracking-wider text-primary">
                 {isBn ? 'শিক্ষা ও নিরাপত্তার নতুন দিগন্ত' : 'Next-Gen Educational Trust'}
               </span>
-              <h2 className="text-2xl xl:text-3xl font-extrabold tracking-tight text-white font-bengali leading-snug">
+              <h2 className="text-2xl xl:text-3xl font-extrabold tracking-tight text-foreground font-bengali leading-snug">
                 {isBn
                   ? 'সঠিক শিক্ষক, নিশ্চিত ক্লাস ও সুরক্ষিত এসক্রো পেমেন্ট।'
                   : 'Verified Tutors, Guaranteed Classes & Escrow Protection.'}
@@ -134,16 +132,16 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
             </div>
 
             <div className="space-y-2.5 pt-2">
-              <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 text-xs font-medium text-white/90">
-                <CheckCircle2 className="h-4 w-4 text-emerald-400 shrink-0" />
+              <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-muted backdrop-blur-sm border border-border text-xs font-medium text-muted-foreground">
+                <CheckCircle2 className="h-4 w-4 text-success-soft-foreground shrink-0" />
                 <span>
                   {isBn
                     ? '১০০% এনআইডি ও সনদ যাচাইকৃত শিক্ষক'
                     : '100% NID & verified credentials for every tutor'}
                 </span>
               </div>
-              <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-white/5 backdrop-blur-sm border border-white/10 text-xs font-medium text-white/90">
-                <ShieldCheck className="h-4 w-4 text-amber-400 shrink-0" />
+              <div className="flex items-center gap-3 p-2.5 rounded-2xl bg-muted backdrop-blur-sm border border-border text-xs font-medium text-muted-foreground">
+                <ShieldCheck className="h-4 w-4 text-warning-soft-foreground shrink-0" />
                 <span>
                   {isBn
                     ? 'ক্লাস যাচাই সাপেক্ষে নিরাপদ এসক্রো পেমেন্ট'
@@ -154,28 +152,28 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
           </div>
 
           {/* Bottom Social Proof / Tutor Testimonial Card (Donezo / Nebula Style) */}
-          <div className="relative z-10 rounded-2xl border border-white/15 bg-white/10 backdrop-blur-md p-4 shadow-xl">
+          <div className="relative z-10 rounded-2xl border border-border bg-muted backdrop-blur-md p-4 shadow-sm">
             <div className="flex items-center gap-3 mb-2.5">
-              <div className="relative h-10 w-10 rounded-full bg-gradient-to-tr from-primary to-primary-hover border-2 border-white/30 flex items-center justify-center font-bold text-white text-sm shrink-0">
+              <div className="relative h-10 w-10 rounded-full bg-gradient-to-tr from-primary to-primary-hover border-2 border-white flex items-center justify-center font-bold text-primary-foreground text-sm shrink-0">
                 তা
-                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-400 ring-2 ring-slate-950" />
+                <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-brand ring-2 ring-card" />
               </div>
               <div className="min-w-0 flex-1">
                 <div className="flex items-center gap-2">
-                  <h4 className="text-xs font-bold text-white truncate">
+                  <h4 className="text-xs font-bold text-foreground truncate">
                     {isBn ? 'ডাঃ তানভীর আহমেদ' : 'Dr. Tanvir Ahmed'}
                   </h4>
-                  <div className="flex items-center text-amber-400 text-[10px]">
-                    <Star className="h-3 w-3 fill-amber-400" />
+                  <div className="flex items-center text-warning-soft-foreground text-[10px]">
+                    <Star className="h-3 w-3 fill-warning" />
                     <span className="font-bold ml-0.5">৫.০</span>
                   </div>
                 </div>
-                <p className="text-[10px] text-white/70 truncate">
+                <p className="text-[10px] text-muted-foreground truncate">
                   {isBn ? 'বুয়েট ও ঢাবি মেন্টর | পদার্থবিজ্ঞান' : 'BUET & DU Mentor | Physics'}
                 </p>
               </div>
             </div>
-            <p className="text-[11px] text-white/80 leading-relaxed italic">
+            <p className="text-[11px] text-muted-foreground leading-relaxed italic">
               {isBn
                 ? '“অগ্রণী এডুর এসক্রো ও লাইভ ক্লাস শিডিউলার শিক্ষক ও শিক্ষার্থীর মধ্যে স্বচ্ছ ও নির্ভরযোগ্য পরিবেশ নিশ্চিত করেছে।”'
                 : '“OgroniEdu’s escrow system and live timetable provide unmatched trust and seamless learning for both tutors and students.”'}
@@ -187,7 +185,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
         {/* RIGHT PANEL: Polished Auth Form Container (Nebula Style) */}
         {/* ======================================================== */}
         <div className="col-span-1 lg:col-span-6 flex flex-col justify-between p-6 sm:p-8 xl:p-10 bg-card">
-          {/* Top Utilities: Back Link + Theme Picker + Language Switcher */}
+          {/* Top Utilities: Back Link + Language Switcher */}
           <div className="flex items-center justify-between gap-2 pb-4">
             <Link
               href={withLocale('/', locale)}
@@ -198,10 +196,9 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
             </Link>
 
             <div className="flex items-center gap-2">
-              <ThemePicker />
               <Link
                 href={targetPath}
-                className="flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-border bg-surface hover:bg-surface-hover text-xs font-semibold text-foreground transition-all shadow-2xs"
+                className="flex items-center gap-1 px-2.5 py-1.5 rounded-full border border-border bg-surface-muted hover:bg-surface-hover text-xs font-semibold text-foreground transition-colors shadow-xs"
                 title={isBn ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
               >
                 <Globe className="h-3.5 w-3.5 text-primary" />
@@ -264,7 +261,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
           {/* Bottom Security Seals & Compliance Note */}
           <div className="pt-4 border-t border-border/60 flex flex-wrap items-center justify-between gap-3 text-[11px] text-muted-foreground">
             <div className="flex items-center gap-1.5">
-              <Lock className="h-3.5 w-3.5 text-emerald-500" />
+              <Lock className="h-3.5 w-3.5 text-success-soft-foreground" />
               <span>
                 {isBn ? '২৫৬-বিট সুরক্ষিত এসএসএল এনক্রিপশন' : '256-bit Secure SSL Encryption'}
               </span>

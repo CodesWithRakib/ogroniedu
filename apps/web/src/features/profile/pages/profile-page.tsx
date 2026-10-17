@@ -67,13 +67,13 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-3">
-        <p className="text-xs text-slate-500">
+        <p className="text-xs text-muted-foreground">
           {isBn
             ? 'অন্য সব ডিভাইস ও ব্রাউজার থেকে সাইন-আউট করে সব সক্রিয় সেশন বাতিল করুন।'
             : 'Sign out on every other device and browser by revoking all active sessions.'}
         </p>
         {error && (
-          <p role="alert" className="text-xs text-rose-600" data-testid="revoke-all-error">
+          <p role="alert" className="text-xs text-destructive" data-testid="revoke-all-error">
             {error}
           </p>
         )}
@@ -117,7 +117,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
         <LoadingSpinner />
       ) : profile.queryError ? (
         <Card>
-          <CardContent className="py-8 text-center text-sm text-rose-600">
+          <CardContent className="py-8 text-center text-sm text-destructive">
             {profile.queryError}
           </CardContent>
         </Card>
@@ -130,12 +130,12 @@ export function ProfilePage({ locale }: { locale: Locale }) {
             <CardContent>
               <form onSubmit={profile.handleSave} className="space-y-4" data-testid="profile-form">
                 {profile.formError && (
-                  <p role="alert" className="text-sm text-rose-600">
+                  <p role="alert" className="text-sm text-destructive">
                     {profile.formError}
                   </p>
                 )}
                 {profile.saved && (
-                  <p role="status" className="text-sm text-emerald-600">
+                  <p role="status" className="text-sm text-primary">
                     {profile.saved}
                   </p>
                 )}

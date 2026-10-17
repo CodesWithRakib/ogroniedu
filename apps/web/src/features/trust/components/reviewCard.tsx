@@ -33,7 +33,7 @@ export function ReviewCard({
   return (
     <div
       style={{
-        backgroundColor: '#ffffff',
+        backgroundColor: 'var(--card)',
         border: '1px solid #e2e8f0',
         borderRadius: '12px',
         padding: '18px',
@@ -50,15 +50,15 @@ export function ReviewCard({
       >
         <div>
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontWeight: 700, fontSize: '0.95rem', color: '#0f172a' }}>
+            <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--foreground)' }}>
               {rev.reviewer?.displayName || 'Verified Learner'}
             </span>
             {rev.isVerifiedBooking && (
               <span
                 style={{
                   fontSize: '0.7rem',
-                  backgroundColor: '#ecfdf5',
-                  color: '#059669',
+                  backgroundColor: 'var(--success-soft)',
+                  color: 'var(--primary)',
                   padding: '2px 8px',
                   borderRadius: '12px',
                   fontWeight: 600,
@@ -69,12 +69,12 @@ export function ReviewCard({
               </span>
             )}
           </div>
-          <div style={{ fontSize: '0.75rem', color: '#94a3b8', marginTop: '2px' }}>
+          <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', marginTop: '2px' }}>
             {new Date(rev.createdAt).toLocaleDateString()}
           </div>
         </div>
 
-        <div style={{ color: '#f59e0b', fontSize: '1rem', fontWeight: 700 }}>
+        <div style={{ color: 'var(--warning)', fontSize: '1rem', fontWeight: 700 }}>
           {'★'.repeat(rev.rating)}
           {'☆'.repeat(5 - rev.rating)}
         </div>
@@ -85,8 +85,8 @@ export function ReviewCard({
           <span
             style={{
               fontSize: '0.75rem',
-              backgroundColor: '#f1f5f9',
-              color: '#475569',
+              backgroundColor: 'var(--surface-muted)',
+              color: 'var(--muted-foreground)',
               padding: '2px 8px',
               borderRadius: '6px',
             }}
@@ -98,8 +98,8 @@ export function ReviewCard({
           <span
             style={{
               fontSize: '0.75rem',
-              backgroundColor: '#f1f5f9',
-              color: '#475569',
+              backgroundColor: 'var(--surface-muted)',
+              color: 'var(--muted-foreground)',
               padding: '2px 8px',
               borderRadius: '6px',
             }}
@@ -111,8 +111,8 @@ export function ReviewCard({
           <span
             style={{
               fontSize: '0.75rem',
-              backgroundColor: '#f1f5f9',
-              color: '#475569',
+              backgroundColor: 'var(--surface-muted)',
+              color: 'var(--muted-foreground)',
               padding: '2px 8px',
               borderRadius: '6px',
             }}
@@ -122,7 +122,7 @@ export function ReviewCard({
         )}
       </div>
 
-      <p style={{ margin: 0, fontSize: '0.9rem', color: '#334155', lineHeight: 1.5 }}>
+      <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--muted-foreground)', lineHeight: 1.5 }}>
         {rev.comment}
       </p>
 
@@ -131,16 +131,16 @@ export function ReviewCard({
           style={{
             marginTop: '14px',
             padding: '12px 14px',
-            backgroundColor: '#f8fafc',
+            backgroundColor: 'var(--surface-muted)',
             borderLeft: '4px solid #2563eb',
             borderRadius: '0 8px 8px 0',
             fontSize: '0.85rem',
           }}
         >
-          <div style={{ fontWeight: 700, color: '#1e40af', marginBottom: '4px' }}>
+          <div style={{ fontWeight: 700, color: 'var(--interactive-soft-foreground)', marginBottom: '4px' }}>
             💬 {t('tutorResponse')}
           </div>
-          <div style={{ color: '#334155', lineHeight: 1.4 }}>{rev.tutorResponse}</div>
+          <div style={{ color: 'var(--muted-foreground)', lineHeight: 1.4 }}>{rev.tutorResponse}</div>
         </div>
       )}
 
@@ -149,7 +149,7 @@ export function ReviewCard({
           {replying ? (
             <div style={{ marginTop: '8px' }}>
               {replyError && (
-                <p role="alert" style={{ color: '#dc2626', fontSize: '0.8rem' }}>
+                <p role="alert" style={{ color: 'var(--destructive)', fontSize: '0.8rem' }}>
                   {replyError}
                 </p>
               )}
@@ -183,7 +183,7 @@ export function ReviewCard({
                     padding: '4px 12px',
                     borderRadius: '6px',
                     border: '1px solid #cbd5e1',
-                    background: '#fff',
+                    background: 'var(--card)',
                     fontSize: '0.8rem',
                     cursor: 'pointer',
                   }}
@@ -198,8 +198,8 @@ export function ReviewCard({
                     padding: '4px 14px',
                     borderRadius: '6px',
                     border: 'none',
-                    background: '#2563eb',
-                    color: '#fff',
+                    background: 'var(--interactive)',
+                    color: 'var(--card)',
                     fontSize: '0.8rem',
                     fontWeight: 600,
                     cursor: 'pointer',
@@ -216,7 +216,7 @@ export function ReviewCard({
               style={{
                 background: 'none',
                 border: 'none',
-                color: '#2563eb',
+                color: 'var(--interactive)',
                 fontSize: '0.8rem',
                 fontWeight: 600,
                 cursor: 'pointer',

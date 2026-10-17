@@ -30,7 +30,7 @@ export function LearningMetricsCards({
               {formatLocalizedNumber(metrics.attendanceCount, locale)} {t.present.toLowerCase()}
             </p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-emerald-500/10 text-emerald-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
             <CalendarCheck className="w-6 h-6" />
           </div>
         </CardContent>
@@ -48,7 +48,7 @@ export function LearningMetricsCards({
             </h3>
             <p className="text-xs text-muted-foreground mt-1">{t.tabsAssignments}</p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-teal-500/10 text-teal-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-primary/10 text-primary flex items-center justify-center">
             <BookOpen className="w-6 h-6" />
           </div>
         </CardContent>
@@ -70,7 +70,7 @@ export function LearningMetricsCards({
               {t.statusReviewed.toLowerCase()}
             </p>
           </div>
-          <div className="w-12 h-12 rounded-xl bg-blue-500/10 text-blue-600 flex items-center justify-center">
+          <div className="w-12 h-12 rounded-xl bg-interactive/10 text-interactive flex items-center justify-center">
             <Award className="w-6 h-6" />
           </div>
         </CardContent>

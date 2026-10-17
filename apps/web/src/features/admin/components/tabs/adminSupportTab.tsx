@@ -5,10 +5,10 @@ import { useTranslations, useLocale } from 'next-intl';
 import type { AdminSupportTicketItem } from '../../types/admin.types';
 
 const STATUS_TONE: Record<AdminSupportTicketItem['status'], string> = {
-  submitted: 'bg-blue-500/20 text-blue-300',
-  in_review: 'bg-amber-500/20 text-amber-300',
-  resolved: 'bg-emerald-500/20 text-emerald-300',
-  spam: 'bg-slate-700/60 text-slate-400',
+  submitted: 'bg-interactive/20 text-info-soft-foreground',
+  in_review: 'bg-warning/20 text-warning-soft-foreground',
+  resolved: 'bg-primary/20 text-success-soft-foreground',
+  spam: 'bg-muted text-muted-foreground',
 };
 
 const NEXT_STATUS: readonly AdminSupportTicketItem['status'][] = [

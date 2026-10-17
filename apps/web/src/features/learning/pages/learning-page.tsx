@@ -45,13 +45,13 @@ export function LearningPage({ locale }: { locale: Locale }) {
     <DashboardShell locale={locale} title={dict.learning.title} subtitle={dict.learning.subtitle}>
       {records.bookingOptions.length > 0 && (
         <div
-          className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-white dark:bg-slate-900 p-4 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm"
+          className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-white  p-4 rounded-2xl border border-border  shadow-sm"
           data-testid="learning-booking-picker"
         >
           <div className="flex items-center gap-2">
             <label
               htmlFor="learning-booking-select"
-              className="text-xs font-bold text-slate-700 dark:text-slate-300"
+              className="text-xs font-bold text-foreground "
             >
               {locale === 'bn' ? 'সক্রিয় কোর্স / বুকিং নির্বাচন:' : 'Select Tuition / Course:'}
             </label>
@@ -59,7 +59,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
               id="learning-booking-select"
               value={records.activeBookingId}
               onChange={(e) => records.setActiveBookingId(e.target.value)}
-              className="h-9 min-w-[260px] rounded-xl border border-slate-300 bg-slate-50 px-3 text-xs font-medium text-slate-800 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-200 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+              className="h-9 min-w-[260px] rounded-xl border border-border bg-muted px-3 text-xs font-medium text-foreground    focus:outline-none focus:ring-2 focus:ring-ring"
               data-testid="learning-booking-select"
             >
               {records.bookingOptions.map((opt) => (
@@ -69,7 +69,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
               ))}
             </select>
           </div>
-          <div className="text-xs text-slate-500">
+          <div className="text-xs text-muted-foreground">
             {locale === 'bn'
               ? 'ক্লাসের উপস্থিতি, হোমওয়ার্ক ও মাসিক মূল্যায়ন'
               : 'Attendance, homework submissions and progress review'}
@@ -80,7 +80,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
       {formError && (
         <div
           role="alert"
-          className="mb-4 rounded-lg border border-rose-200 bg-rose-50 p-3 text-sm text-rose-700"
+          className="mb-4 rounded-lg border border-destructive/20 bg-destructive-soft p-3 text-sm text-destructive"
         >
           {formError}
         </div>
@@ -137,7 +137,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
         </div>
       ) : records.queryError ? (
         <Card>
-          <CardContent className="py-8 text-center text-sm text-rose-600">
+          <CardContent className="py-8 text-center text-sm text-destructive">
             {records.queryError}
           </CardContent>
         </Card>

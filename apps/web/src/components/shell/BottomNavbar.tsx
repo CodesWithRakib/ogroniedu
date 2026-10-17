@@ -55,20 +55,20 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
   return (
     <nav
       aria-label={isBn ? 'মোবাইল বটম নেভিগেশন' : 'Mobile Bottom Navigation'}
-      className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-[#031419]/95 backdrop-blur-2xl border-t border-[#0df5c4]/20 shadow-[0_-10px_35px_rgba(0,0,0,0.7)] pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5 px-2 transition-all"
+      className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-card/95 backdrop-blur-2xl border-t border-border shadow-card pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5 px-2 transition-all"
     >
       <div className="flex items-center justify-around max-w-lg mx-auto">
         {/* 1. Home Tab */}
         <Link
           href={`/${locale}`}
           className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-all active:scale-90 ${
-            isHomeActive ? 'text-[#0df5c4] font-bold' : 'text-slate-400 hover:text-slate-200'
+            isHomeActive ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <div className="relative">
             <Home className="h-5 w-5 stroke-[2.2]" />
             {isHomeActive && (
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0df5c4] shadow-[0_0_8px_#0df5c4]" />
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand " />
             )}
           </div>
           <span className="text-[10px] tracking-tight mt-1">{isBn ? 'হোম' : 'Home'}</span>
@@ -78,13 +78,13 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
         <Link
           href={`/${locale}/tutors`}
           className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-all active:scale-90 ${
-            isTutorsActive ? 'text-[#0df5c4] font-bold' : 'text-slate-400 hover:text-slate-200'
+            isTutorsActive ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <div className="relative">
             <GraduationCap className="h-5 w-5 stroke-[2.2]" />
             {isTutorsActive && (
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0df5c4] shadow-[0_0_8px_#0df5c4]" />
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand " />
             )}
           </div>
           <span className="text-[10px] tracking-tight mt-1">{isBn ? 'শিক্ষক' : 'Tutors'}</span>
@@ -97,15 +97,15 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           aria-label={isBn ? 'টিউশন রিকোয়েস্ট পোস্ট করুন' : 'Post Tuition Request'}
         >
           <div
-            className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-[#0df5c4] via-[#00e1b2] to-[#00bfa5] text-[#031317] shadow-[0_0_20px_rgba(13,245,196,0.65)] ring-4 ring-[#031419] transition-all group-hover:scale-105 ${
-              isRequestsActive ? 'ring-[#0df5c4]/40' : ''
+            className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-brand via-brand-accent to-brand-accent text-brand-foreground shadow-sm ring-4 ring-card transition-all group-hover:scale-105 ${
+              isRequestsActive ? 'ring-brand/40' : ''
             }`}
           >
             <PlusCircle className="h-6 w-6 stroke-[2.4]" />
           </div>
           <span
             className={`text-[10px] tracking-tight mt-0.5 ${
-              isRequestsActive ? 'text-[#0df5c4] font-bold' : 'text-slate-300 font-medium'
+              isRequestsActive ? 'text-primary font-bold' : 'text-muted-foreground font-medium'
             }`}
           >
             {isBn ? 'টিউশন পোস্ট' : 'Post Request'}
@@ -117,19 +117,19 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           href={`/${locale}/notifications`}
           className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-all active:scale-90 ${
             isNotificationsActive
-              ? 'text-[#0df5c4] font-bold'
-              : 'text-slate-400 hover:text-slate-200'
+              ? 'text-primary font-bold'
+              : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <div className="relative">
             <Bell className="h-5 w-5 stroke-[2.2]" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-2 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-rose-500 text-[9px] font-extrabold text-white shadow-[0_0_8px_rgba(244,63,94,0.7)] animate-pulse">
+              <span className="absolute -top-1 -right-2 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-destructive text-[9px] font-extrabold text-white shadow-[0_0_8px_rgba(244,63,94,0.7)] animate-pulse">
                 {unreadCount > 99 ? '99+' : formatLocalizedNumber(unreadCount, locale)}
               </span>
             )}
             {isNotificationsActive && (
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0df5c4] shadow-[0_0_8px_#0df5c4]" />
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand " />
             )}
           </div>
           <span className="text-[10px] tracking-tight mt-1">{isBn ? 'বিজ্ঞপ্তি' : 'Alerts'}</span>
@@ -139,7 +139,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
         <Link
           href={accountHref}
           className={`relative flex flex-col items-center justify-center flex-1 py-1 transition-all active:scale-90 ${
-            isAccountActive ? 'text-[#0df5c4] font-bold' : 'text-slate-400 hover:text-slate-200'
+            isAccountActive ? 'text-primary font-bold' : 'text-muted-foreground hover:text-foreground'
           }`}
         >
           <div className="relative">
@@ -149,7 +149,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
               <User className="h-5 w-5 stroke-[2.2]" />
             )}
             {isAccountActive && (
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-[#0df5c4] shadow-[0_0_8px_#0df5c4]" />
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand " />
             )}
           </div>
           <span className="text-[10px] tracking-tight mt-1 truncate max-w-[54px]">

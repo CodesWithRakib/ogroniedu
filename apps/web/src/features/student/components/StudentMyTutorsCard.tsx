@@ -90,7 +90,7 @@ export function StudentMyTutorsCard({ locale, tutors, isLoading }: StudentMyTuto
                   className="p-3.5 rounded-2xl bg-surface/50 border border-border/50 hover:bg-surface/80 transition-all flex flex-col justify-between gap-3"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-linear-to-br from-primary/20 to-teal-500/20 border border-primary/30 text-primary font-bold text-xs flex items-center justify-center shrink-0">
+                    <div className="h-10 w-10 rounded-xl bg-linear-to-br from-primary/20 to-primary/20 border border-primary/30 text-primary font-bold text-xs flex items-center justify-center shrink-0">
                       {initials}
                     </div>
                     <div className="min-w-0 flex-1">

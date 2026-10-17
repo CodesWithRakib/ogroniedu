@@ -1,6 +1,6 @@
 import React, { forwardRef, type ButtonHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
-import { Slot } from '@radix-ui/react-slot';
+import { Slot, Slottable } from '@radix-ui/react-slot';
 import { Loader2 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -69,8 +69,14 @@ export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
         className={cn(buttonVariants({ variant, size, className }))}
         {...props}
       >
-        {isLoading && <Loader2 className="w-4 h-4 animate-spin text-current" />}
-        {children}
+        {asChild ? (
+          <Slottable>{children}</Slottable>
+        ) : (
+          <>
+            {isLoading && <Loader2 className="w-4 h-4 animate-spin text-current" />}
+            {children}
+          </>
+        )}
       </Comp>
     );
   },

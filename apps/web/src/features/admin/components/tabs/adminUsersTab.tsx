@@ -9,7 +9,7 @@ type StatusFilter = (typeof STATUS_FILTERS)[number];
 
 function roleBadgeClass(role: string): string {
   if (role === 'super_admin')
-    return 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/30';
+    return 'bg-destructive/15 text-destructive  border border-destructive/30';
   if (role === 'admin') return 'bg-primary/15 text-primary border border-primary/30';
   return 'bg-surface-muted text-muted-foreground border border-border/60';
 }
@@ -125,10 +125,10 @@ export function AdminUsersTab({
                     <span
                       className={`px-2 py-0.5 rounded-full text-[10px] font-semibold ${
                         user.status === 'active'
-                          ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25'
+                          ? 'bg-primary/15 text-primary  border border-primary/25'
                           : user.status === 'suspended'
-                            ? 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border border-rose-500/25'
-                            : 'bg-amber-500/15 text-amber-600 dark:text-amber-400 border border-amber-500/25'
+                            ? 'bg-destructive/15 text-destructive  border border-destructive/25'
+                            : 'bg-warning/15 text-warning  border border-warning/25'
                       }`}
                     >
                       {user.status === 'active'
@@ -142,7 +142,7 @@ export function AdminUsersTab({
                     {user.status !== 'suspended' ? (
                       <button
                         onClick={() => onRequestSuspend(user)}
-                        className="px-2.5 py-1 bg-rose-500/10 hover:bg-rose-500/20 text-rose-600 dark:text-rose-400 rounded-lg border border-rose-500/30 transition text-[11px] font-medium"
+                        className="px-2.5 py-1 bg-destructive/10 hover:bg-destructive/20 text-destructive  rounded-lg border border-destructive/30 transition text-[11px] font-medium"
                         data-testid={`suspend-user-btn-${user.id}`}
                       >
                         {t('suspendBtn')}
@@ -150,7 +150,7 @@ export function AdminUsersTab({
                     ) : (
                       <button
                         onClick={() => onReactivate(user.id)}
-                        className="px-2.5 py-1 bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-600 dark:text-emerald-400 rounded-lg border border-emerald-500/30 transition text-[11px] font-medium"
+                        className="px-2.5 py-1 bg-primary/10 hover:bg-primary/20 text-primary  rounded-lg border border-primary/30 transition text-[11px] font-medium"
                         data-testid={`reactivate-user-btn-${user.id}`}
                       >
                         {t('reactivateBtn')}
@@ -169,7 +169,7 @@ export function AdminUsersTab({
                         {!user.roles.includes('super_admin') && (
                           <button
                             onClick={() => onRequestImpersonate(user)}
-                            className="px-2.5 py-1 bg-amber-500/10 hover:bg-amber-500/20 text-amber-600 dark:text-amber-400 rounded-lg border border-amber-500/30 transition text-[11px] font-medium"
+                            className="px-2.5 py-1 bg-warning/10 hover:bg-warning/20 text-warning  rounded-lg border border-warning/30 transition text-[11px] font-medium"
                             data-testid={`impersonate-btn-${user.id}`}
                           >
                             {t('triggerImpersonation')}

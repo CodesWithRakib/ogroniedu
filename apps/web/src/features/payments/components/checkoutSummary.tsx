@@ -21,7 +21,7 @@ export function CheckoutSummary({ order, locale }: CheckoutSummaryProps) {
       <CardHeader className="pb-3 border-b border-border/50">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
-            <FileText className="w-5 h-5 text-emerald-600" />
+            <FileText className="w-5 h-5 text-primary" />
             {p.orderSummaryTitle}
           </CardTitle>
           <Badge
@@ -49,7 +49,7 @@ export function CheckoutSummary({ order, locale }: CheckoutSummaryProps) {
           </div>
           <div>
             <span className="text-muted-foreground block text-xs">{p.subject}</span>
-            <span className="font-medium text-slate-900 dark:text-white">{order.subjectName}</span>
+            <span className="font-medium text-foreground ">{order.subjectName}</span>
           </div>
           <div>
             <span className="text-muted-foreground block text-xs">{p.tutor}</span>
@@ -64,10 +64,10 @@ export function CheckoutSummary({ order, locale }: CheckoutSummaryProps) {
         </div>
 
         <div className="border-t border-border pt-4 flex items-baseline justify-between">
-          <span className="text-base font-semibold text-slate-900 dark:text-white">
+          <span className="text-base font-semibold text-foreground ">
             {p.totalAmount}
           </span>
-          <span className="text-2xl font-black text-emerald-600 dark:text-emerald-400">
+          <span className="text-2xl font-black text-primary ">
             ৳ {formatLocalizedNumber(amountBdt, locale)} {order.currency}
           </span>
         </div>

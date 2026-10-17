@@ -452,7 +452,7 @@ export function AdminVerificationTab() {
           role="dialog"
           aria-modal="true"
           aria-label={isBn ? 'ভেরিফিকেশন ডসিয়ার' : 'Verification dossier'}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-xs"
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-muted backdrop-blur-xs"
           data-testid="verification-dossier-modal"
         >
           <div className="bg-card border border-border rounded-3xl max-w-3xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
@@ -485,7 +485,7 @@ export function AdminVerificationTab() {
             {dossier.isFetching ? (
               <LoadingState testId="dossier-loading" />
             ) : dossier.isError ? (
-              <p role="alert" className="text-xs text-rose-600">
+              <p role="alert" className="text-xs text-destructive">
                 {normalizeApiError(dossier.error, locale).message}
               </p>
             ) : (
@@ -504,7 +504,7 @@ export function AdminVerificationTab() {
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <ShieldCheck className="w-4 h-4 text-cyan-400" />
+                          <ShieldCheck className="w-4 h-4 text-info-soft-foreground" />
                           <span className="text-sm font-semibold">
                             {levelLabel(lvl.level, locale)}
                           </span>
@@ -544,7 +544,7 @@ export function AdminVerificationTab() {
                       </p>
 
                       {lvl.applicantFeedback && (
-                        <p className="text-[11px] text-amber-600 dark:text-amber-400">
+                        <p className="text-[11px] text-warning ">
                           {isBn ? 'শিক্ষককে পাঠানো ফিডব্যাক' : 'Applicant feedback'}:{' '}
                           {lvl.applicantFeedback}
                         </p>
@@ -568,7 +568,7 @@ export function AdminVerificationTab() {
                               data-testid={`dossier-document-${document.id}`}
                             >
                               <div className="flex items-center gap-2 min-w-0">
-                                <FileText className="w-3.5 h-3.5 text-cyan-400 shrink-0" />
+                                <FileText className="w-3.5 h-3.5 text-info-soft-foreground shrink-0" />
                                 <span className="font-medium">
                                   {documentTypeLabel(document.documentType, locale)}
                                 </span>
@@ -635,9 +635,9 @@ export function AdminVerificationTab() {
                 })}
 
                 {preview && (
-                  <div className="rounded-xl border border-cyan-500/40 bg-cyan-950/20 p-3 text-xs space-y-1.5">
+                  <div className="rounded-xl border border-info/40 bg-info-soft p-3 text-xs space-y-1.5">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-cyan-300">
+                      <span className="font-semibold text-info-soft-foreground">
                         {isBn ? 'প্রমাণপত্র' : 'Evidence'}: {preview.label}
                       </span>
                       <button
@@ -652,7 +652,7 @@ export function AdminVerificationTab() {
                       href={preview.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-cyan-500/20 text-cyan-300 hover:bg-cyan-500/30 font-medium text-xs border border-cyan-500/30"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-interactive/20 text-info-soft-foreground hover:bg-interactive/30 font-medium text-xs border border-info/40"
                     >
                       <ExternalLink className="w-3.5 h-3.5" />
                       {isBn ? 'সাইনড লিংকে খুলুন (৫ মিনিট)' : 'Open signed link (5 min)'}
@@ -676,7 +676,7 @@ export function AdminVerificationTab() {
               {formError && (
                 <p
                   role="alert"
-                  className="text-xs text-rose-500 bg-rose-500/10 border border-rose-500/20 rounded-xl p-2.5 flex items-center gap-2"
+                  className="text-xs text-destructive bg-destructive/10 border border-destructive/40 rounded-xl p-2.5 flex items-center gap-2"
                   data-testid="verification-form-error"
                 >
                   <AlertCircle className="w-4 h-4 shrink-0" />
@@ -763,7 +763,7 @@ export function AdminVerificationTab() {
                           onClick={() => setReasonCode(preset.code)}
                           className={`text-[10px] px-2.5 py-1 rounded-lg border transition-all ${
                             reasonCode === preset.code
-                              ? 'bg-cyan-500/20 text-cyan-300 border-cyan-500/40'
+                              ? 'bg-interactive/20 text-info-soft-foreground border-info/40'
                               : 'bg-surface/60 text-muted-foreground border-border/80 hover:text-foreground'
                           }`}
                         >

@@ -34,7 +34,7 @@ export default function PaymentDetailRoute({ params }: PaymentDetailProps) {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3">
       <LoadingSpinner />
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-muted-foreground">
         {locale === 'bn'
           ? 'পেমেন্ট রসিদে নিয়ে যাওয়া হচ্ছে...'
           : 'Redirecting to payment receipt...'}

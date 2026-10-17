@@ -43,7 +43,7 @@ export function GradingModal({
       <div className="bg-background rounded-2xl max-w-lg w-full p-6 border border-border shadow-2xl space-y-4">
         <div className="flex items-center justify-between">
           <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
-            <Edit3 className="w-5 h-5 text-emerald-600" />
+            <Edit3 className="w-5 h-5 text-success-soft-foreground" />
             {hasPreviousScore ? t.reviseScore : t.gradeAction}
           </h3>
           <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
@@ -52,7 +52,7 @@ export function GradingModal({
         </div>
 
         {error && (
-          <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 text-rose-600 text-xs flex items-center gap-2">
+          <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/40 text-destructive text-xs flex items-center gap-2">
             <AlertCircle className="w-4 h-4 shrink-0" />
             <span>{error}</span>
           </div>
@@ -80,14 +80,14 @@ export function GradingModal({
               value={feedback}
               onChange={(e) => onFeedbackChange(e.target.value)}
               rows={3}
-              className="w-full rounded-xl border border-border p-3 text-sm bg-background text-foreground focus:ring-2 focus:ring-emerald-500 focus:outline-none"
+              className="w-full rounded-xl border border-border p-3 text-sm bg-background text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
               placeholder="Constructive feedback for learner..."
             />
           </div>
 
           {isRevision && (
-            <div className="p-3 rounded-xl bg-amber-500/10 border border-amber-500/30 space-y-1.5">
-              <label className="text-xs font-bold text-amber-700 dark:text-amber-400 flex items-center gap-1.5">
+            <div className="p-3 rounded-xl bg-warning/10 border border-warning/40 space-y-1.5">
+              <label className="text-xs font-bold text-warning  flex items-center gap-1.5">
                 <History className="w-3.5 h-3.5" />
                 {t.revisionReason} *
               </label>
@@ -109,7 +109,7 @@ export function GradingModal({
             size="sm"
             disabled={isPending}
             onClick={onSubmit}
-            className="bg-emerald-600 hover:bg-emerald-700 text-white"
+            className="bg-primary hover:bg-primary-hover text-white"
           >
             {dict.common.save}
           </Button>

@@ -95,8 +95,8 @@ export function BookingChatView({
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
         <div>
-          <h2 className="text-xl font-bold tracking-tight text-slate-900 dark:text-white flex items-center gap-2">
-            <GraduationCap className="w-5 h-5 text-emerald-600" />
+          <h2 className="text-xl font-bold tracking-tight text-foreground  flex items-center gap-2">
+            <GraduationCap className="w-5 h-5 text-success-soft-foreground" />
             {n.chatTitle}
           </h2>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -105,16 +105,16 @@ export function BookingChatView({
         </div>
         <Badge
           variant="outline"
-          className="w-fit text-[11px] font-normal border-emerald-500/30 text-emerald-700 dark:text-emerald-300"
+          className="w-fit text-[11px] font-normal border-primary/40 text-success-soft-foreground "
         >
-          <ShieldCheck className="w-3.5 h-3.5 mr-1 text-emerald-600" />
+          <ShieldCheck className="w-3.5 h-3.5 mr-1 text-success-soft-foreground" />
           ABAC Encrypted & Audited
         </Badge>
       </div>
 
       {/* Safety Notice Banner */}
-      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-3 text-xs text-amber-900 dark:text-amber-200 flex items-start gap-2.5">
-        <ShieldAlert className="w-4 h-4 text-amber-600 dark:text-amber-400 shrink-0 mt-0.5" />
+      <div className="bg-warning/10 border border-warning/40 rounded-xl p-3 text-xs text-warning  flex items-start gap-2.5">
+        <ShieldAlert className="w-4 h-4 text-warning  shrink-0 mt-0.5" />
         <div className="space-y-0.5">
           <span className="font-semibold block">{n.safetyNotice}</span>
           <span className="text-[11px] opacity-90">{n.guardianOversightNote}</span>
@@ -152,15 +152,15 @@ export function BookingChatView({
                   <div
                     className={`rounded-2xl px-4 py-2.5 text-sm shadow-sm space-y-1 ${
                       isMine
-                        ? 'bg-emerald-600 text-white rounded-tr-none'
-                        : 'bg-slate-100 dark:bg-slate-800 text-slate-900 dark:text-white rounded-tl-none'
+                        ? 'bg-primary text-white rounded-tr-none'
+                        : 'bg-muted  text-foreground  rounded-tl-none'
                     }`}
                   >
                     <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
 
                     {msg.isRedacted && (
-                      <div className="flex items-center gap-1 text-[10px] bg-black/10 dark:bg-white/10 px-2 py-0.5 rounded font-mono">
-                        <ShieldAlert className="w-3 h-3 text-amber-300" />
+                      <div className="flex items-center gap-1 text-[10px] bg-surface-muted  px-2 py-0.5 rounded font-mono">
+                        <ShieldAlert className="w-3 h-3 text-warning-soft-foreground" />
                         <span>{n.redactedBadge}</span>
                       </div>
                     )}
@@ -169,9 +169,9 @@ export function BookingChatView({
                   <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5 px-1">
                     {isMine &&
                       (msg.readAt ? (
-                        <CheckCheck className="w-3.5 h-3.5 text-emerald-600" />
+                        <CheckCheck className="w-3.5 h-3.5 text-success-soft-foreground" />
                       ) : (
-                        <Check className="w-3.5 h-3.5 text-slate-400" />
+                        <Check className="w-3.5 h-3.5 text-muted-foreground" />
                       ))}
                   </div>
                 </div>
@@ -181,7 +181,7 @@ export function BookingChatView({
         </CardContent>
 
         {/* Message Input Box */}
-        <CardFooter className="border-t border-border p-3 bg-slate-50/50 dark:bg-slate-900/50">
+        <CardFooter className="border-t border-border p-3 bg-muted/50 ">
           <form onSubmit={handleSend} className="w-full flex items-center gap-2">
             <input
               type="text"
@@ -189,12 +189,12 @@ export function BookingChatView({
               onChange={(e) => setInputText(e.target.value)}
               placeholder={n.typeMessagePlaceholder}
               disabled={isSending}
-              className="flex-1 rounded-xl border border-border bg-white dark:bg-slate-950 px-3.5 py-2.5 text-sm text-slate-900 dark:text-white placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-emerald-500/50"
+              className="flex-1 rounded-xl border border-border bg-white  px-3.5 py-2.5 text-sm text-foreground  placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
             />
             <Button
               type="submit"
               disabled={!inputText.trim() || isSending}
-              className="bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1.5"
+              className="bg-primary hover:bg-primary-hover text-white rounded-xl px-4 py-2.5 flex items-center gap-1.5"
             >
               <Send className="w-4 h-4" />
               <span className="hidden sm:inline text-xs font-semibold">{n.sendMessage}</span>

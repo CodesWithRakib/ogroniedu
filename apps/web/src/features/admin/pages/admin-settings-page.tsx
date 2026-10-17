@@ -34,7 +34,7 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
           {actions.actionError && (
             <div
               role="alert"
-              className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-sm text-rose-300"
+              className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-soft-foreground"
               data-testid="admin-action-error"
             >
               {actions.actionError}
@@ -45,12 +45,12 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn'
                     ? 'প্ল্যাটফর্ম সেটিংস ও ফিচার ফ্ল্যাগ'
                     : 'Platform Settings & Feature Flags'}
                 </h1>
-                <span className="px-3 py-1 text-xs font-bold rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                <span className="px-3 py-1 text-xs font-bold rounded-full bg-interactive/15 text-info-soft-foreground border border-info/40">
                   {isSuperAdmin ? 'SUPER ADMIN ACCESS' : 'READ ONLY'}
                 </span>
               </div>
@@ -64,8 +64,8 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
 
           {/* Feature Flags Section */}
           <div className="space-y-3">
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <ToggleLeft className="w-5 h-5 text-emerald-400" />
+            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+              <ToggleLeft className="w-5 h-5 text-success-soft-foreground" />
               <span>{locale === 'bn' ? 'ক্যানারি ফিচার ফ্ল্যাগ' : 'Canary Feature Flags'}</span>
             </h2>
             <AdminFeatureFlagsTab
@@ -77,8 +77,8 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
 
           {/* System Reference Settings Section */}
           <div className="space-y-3">
-            <h2 className="text-base font-bold text-white flex items-center gap-2">
-              <Sliders className="w-5 h-5 text-cyan-400" />
+            <h2 className="text-base font-bold text-foreground flex items-center gap-2">
+              <Sliders className="w-5 h-5 text-info-soft-foreground" />
               <span>
                 {locale === 'bn'
                   ? 'সিস্টেম রেফারেন্স কনফিগারেশন'

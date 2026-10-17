@@ -62,7 +62,7 @@ export function DataTable<T extends { id: string | number }>({
   }
   return (
     <div
-      className="overflow-x-auto rounded-xl border border-slate-200 dark:border-slate-800"
+      className="overflow-x-auto rounded-xl border border-border "
       data-testid={testId}
     >
       <Table>

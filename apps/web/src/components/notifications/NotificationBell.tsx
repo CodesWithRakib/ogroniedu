@@ -45,21 +45,21 @@ export function NotificationBell({ className, locale = 'bn' }: NotificationBellP
       }
       className={cn(
         'relative inline-flex items-center justify-center p-2.5 rounded-xl transition-all duration-200 cursor-pointer',
-        'hover:bg-cyan-500/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-cyan-500',
-        isCenterOpen && 'bg-cyan-500/15 text-cyan-400 border border-cyan-500/30',
+        'hover:bg-info/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-info',
+        isCenterOpen && 'bg-info/15 text-info-soft-foreground border border-info/30',
         className,
       )}
     >
-      <Bell className="w-5 h-5 text-slate-700 dark:text-slate-200 transition-transform duration-200 hover:scale-105" />
+      <Bell className="w-5 h-5 text-foreground  transition-transform duration-200 hover:scale-105" />
 
       {/* Real-time Unread Badge with animated ping effect */}
       {unreadCount > 0 && (
         <span className="absolute -top-1 -right-1 flex items-center justify-center min-w-5 h-5">
-          <span className="absolute inline-flex h-full w-full rounded-full bg-cyan-400 opacity-75 animate-ping" />
+          <span className="absolute inline-flex h-full w-full rounded-full bg-info opacity-75 animate-ping" />
           <span
             className={cn(
               'relative inline-flex items-center justify-center min-w-5 h-5 px-1.5 text-[11px] font-black rounded-full',
-              'bg-gradient-to-r from-cyan-500 to-emerald-500 text-slate-950 shadow-md shadow-cyan-500/40',
+              'bg-gradient-to-r from-brand to-primary text-foreground shadow-md shadow-sm',
             )}
           >
             {formatCount(unreadCount)}
@@ -71,8 +71,8 @@ export function NotificationBell({ className, locale = 'bn' }: NotificationBellP
       <span
         title={isConnected ? 'Live WebSockets Connected' : 'Gateway Offline'}
         className={cn(
-          'absolute bottom-1 right-1 w-2 h-2 rounded-full border-2 border-white dark:border-slate-950',
-          isConnected ? 'bg-emerald-400 shadow-xs shadow-emerald-400/80' : 'bg-rose-500',
+          'absolute bottom-1 right-1 w-2 h-2 rounded-full border-2 border-white ',
+          isConnected ? 'bg-primary shadow-xs shadow-sm' : 'bg-destructive',
         )}
       />
     </button>

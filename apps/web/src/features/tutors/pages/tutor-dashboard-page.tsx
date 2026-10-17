@@ -227,44 +227,44 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 2. QUICK ACTIONS BAR                                     */}
       {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2.5 p-3.5 rounded-2xl bg-[#062127]/90 border border-teal-500/20 shadow-xs">
-        <span className="text-xs font-bold text-teal-300 mr-1.5 flex items-center gap-1.5">
-          <Sparkles className="w-3.5 h-3.5 text-teal-400" />
+      <div className="flex flex-wrap items-center gap-2.5 p-3.5 rounded-2xl bg-card/90 border border-primary/40 shadow-xs">
+        <span className="text-xs font-bold text-primary-soft-foreground mr-1.5 flex items-center gap-1.5">
+          <Sparkles className="w-3.5 h-3.5 text-primary-soft-foreground" />
           {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
         </span>
         <Link
           href={withLocale('/dashboard/tutor/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-surface-hover border border-border text-foreground text-xs font-semibold transition-colors"
         >
-          <Inbox className="w-3.5 h-3.5 text-cyan-400" />
+          <Inbox className="w-3.5 h-3.5 text-info-soft-foreground" />
           <span>{isBn ? 'টিউশন অনুরোধসমূহ' : 'Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-surface-hover border border-border text-foreground text-xs font-semibold transition-colors"
         >
-          <Calendar className="w-3.5 h-3.5 text-emerald-400" />
+          <Calendar className="w-3.5 h-3.5 text-success-soft-foreground" />
           <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-surface-hover border border-border text-foreground text-xs font-semibold transition-colors"
         >
-          <BookOpen className="w-3.5 h-3.5 text-amber-400" />
+          <BookOpen className="w-3.5 h-3.5 text-warning-soft-foreground" />
           <span>{isBn ? 'স্টাডি রুম ও টিচিং' : 'Teaching Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/verification', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-surface-hover border border-border text-foreground text-xs font-semibold transition-colors"
         >
-          <ShieldCheck className="w-3.5 h-3.5 text-indigo-400" />
+          <ShieldCheck className="w-3.5 h-3.5 text-interactive-soft-foreground" />
           <span>{isBn ? 'সনদ ও ভেরিফিকেশন' : 'Verification'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-white/10 hover:bg-white/15 border border-white/10 text-white text-xs font-semibold transition-colors sm:ml-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-surface-hover border border-border text-foreground text-xs font-semibold transition-colors sm:ml-auto"
         >
-          <CreditCard className="w-3.5 h-3.5 text-rose-400" />
+          <CreditCard className="w-3.5 h-3.5 text-destructive-soft-foreground" />
           <span>{isBn ? 'আয় ও উত্তোলন' : 'Earnings'}</span>
         </Link>
       </div>
@@ -384,35 +384,35 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                   className="grid grid-cols-2 sm:grid-cols-4 gap-3"
                   data-testid="tutor-analytics-data"
                 >
-                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                  <div className="p-3.5 rounded-2xl bg-muted  border border-border ">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold block">
                       {isBn ? 'মোট আয়' : 'Total Earnings'}
                     </span>
-                    <span className="text-lg font-bold text-emerald-600 dark:text-emerald-400 mt-1 block">
+                    <span className="text-lg font-bold text-success-soft-foreground  mt-1 block">
                       ৳{formatLocalizedNumber(earningsVal, locale)}
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                  <div className="p-3.5 rounded-2xl bg-muted  border border-border ">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold block">
                       {isBn ? 'অনুরোধ গ্রহণ হার' : 'Acceptance'}
                     </span>
-                    <span className="text-lg font-bold text-cyan-600 dark:text-cyan-400 mt-1 block">
+                    <span className="text-lg font-bold text-info-soft-foreground  mt-1 block">
                       {formatLocalizedNumber(aData?.inquiries?.acceptanceRate ?? 100, locale)}%
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                  <div className="p-3.5 rounded-2xl bg-muted  border border-border ">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold block">
                       {isBn ? 'ক্লাস সমাপ্তি হার' : 'Completion'}
                     </span>
-                    <span className="text-lg font-bold text-indigo-600 dark:text-indigo-400 mt-1 block">
+                    <span className="text-lg font-bold text-interactive  mt-1 block">
                       {formatLocalizedNumber(aData?.sessions?.completionRate ?? 100, locale)}%
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                  <div className="p-3.5 rounded-2xl bg-muted  border border-border ">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold block">
                       {isBn ? 'শিক্ষার্থী রেটিং' : 'Rating'}
                     </span>
-                    <span className="text-lg font-bold text-amber-500 mt-1 block">
+                    <span className="text-lg font-bold text-warning mt-1 block">
                       {formatLocalizedNumber(aData?.rating?.averageRating ?? 5.0, locale)} ★
                     </span>
                   </div>
@@ -424,7 +424,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       </div>
 
       {(requests.isError || sessions.isError) && (
-        <p className="mt-3 text-xs text-rose-600" role="alert">
+        <p className="mt-3 text-xs text-destructive" role="alert">
           {normalizeApiError(requests.error ?? sessions.error, locale).message}
         </p>
       )}

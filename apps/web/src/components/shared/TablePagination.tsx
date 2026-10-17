@@ -33,7 +33,7 @@ export function TablePagination({
       className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
       data-testid={testId}
     >
-      <p className="text-xs text-slate-500" data-testid={`${testId}-summary`}>
+      <p className="text-xs text-muted-foreground" data-testid={`${testId}-summary`}>
         {isBn
           ? `পৃষ্ঠা ${formatLocalizedNumber(pagination.page, locale)} / ${formatLocalizedNumber(pagination.totalPages, locale)} · ${formatLocalizedNumber(pagination.totalItems, locale)}টি`
           : `Page ${pagination.page} of ${pagination.totalPages} · ${pagination.totalItems} items`}

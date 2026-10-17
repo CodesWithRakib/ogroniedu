@@ -161,7 +161,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
             setPayoutSuccess(null);
             setWithdrawModalOpen(true);
           }}
-          className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs gap-1.5 shadow-sm"
+          className="bg-primary hover:bg-primary-hover text-white font-bold text-xs gap-1.5 shadow-sm"
           data-testid="open-withdraw-modal-btn"
         >
           <ArrowUpRight className="w-3.5 h-3.5" />
@@ -173,7 +173,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
       {payoutSuccess && (
         <div
           role="status"
-          className="mb-4 rounded-xl border border-emerald-200 bg-emerald-50 p-4 text-xs text-emerald-700 dark:border-emerald-900/50 dark:bg-emerald-950/40 dark:text-emerald-300 flex items-start gap-2"
+          className="mb-4 rounded-xl border border-primary/20 bg-primary-soft p-4 text-xs text-success-soft-foreground    flex items-start gap-2"
           data-testid="payout-success-alert"
         >
           <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
@@ -229,9 +229,9 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 2. ESCROW ASSURANCE & 0% PLATFORM FEE PROMOTION          */}
       {/* ======================================================== */}
-      <div className="rounded-3xl p-6 bg-gradient-to-r from-emerald-950 via-teal-950 to-slate-900 border border-emerald-500/30 text-white shadow-xl flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="rounded-3xl p-6 bg-card border border-brand/25 text-foreground shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2 max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 text-xs font-bold border border-emerald-500/30">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/20 text-success-soft-foreground text-xs font-bold border border-primary/40">
             <Sparkles className="w-3.5 h-3.5" />
             <span>{isBn ? '০% প্ল্যাটফর্ম ফি অফার চলছে' : '0% Platform Fee Promotion'}</span>
           </div>
@@ -240,7 +240,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
               ? 'অগ্রণী এডুর ১০০% এসক্রো সুরক্ষা — বকেয়ার কোনো ভয় নেই'
               : 'OgroniEdu 100% Escrow Protection — Zero Payment Risk'}
           </h2>
-          <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+          <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
             {isBn
               ? 'ক্লাস শুরু হওয়ার পূর্বেই শিক্ষার্থী বা অভিভাবকের টাকা অগ্রণী এডুর বাংলাদেশ ব্যাংক অনুমোদিত এসক্রো অ্যাকাউন্টে জমা হয়। ক্লাস সম্পন্ন হওয়ার সাথে সাথে সম্পূর্ণ টাকা আপনার ওয়ালেটে ক্রেডিট করা হয়।'
               : 'Students prepay full session fees into our regulated escrow vault before classes begin. As soon as you deliver the session, 100% of the funds are unlocked into your withdrawable balance.'}
@@ -251,7 +251,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
           <Button
             size="sm"
             onClick={() => setWithdrawModalOpen(true)}
-            className="bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-extrabold text-xs"
+            className="bg-primary hover:bg-brand text-foreground font-extrabold text-xs"
           >
             <ArrowUpRight className="w-3.5 h-3.5 mr-1" />
             {isBn ? 'টাকা তুলুন' : 'Request Cashout'}
@@ -281,17 +281,17 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                 payoutHistory.map((rec) => (
                   <div
                     key={rec.id}
-                    className="p-3 rounded-2xl bg-[#062127]/80 border border-teal-500/20 flex items-center justify-between gap-3 text-xs"
+                    className="p-3 rounded-2xl bg-card/80 border border-primary/40 flex items-center justify-between gap-3 text-xs"
                     data-testid={`payout-record-${rec.id}`}
                   >
                     <div className="space-y-1">
-                      <div className="flex items-center gap-1.5 font-bold text-white">
+                      <div className="flex items-center gap-1.5 font-bold text-foreground">
                         <span>৳{formatLocalizedNumber(rec.amountBdt, locale)}</span>
-                        <span className="text-[10px] text-teal-300/70 font-normal">
+                        <span className="text-[10px] text-primary-soft-foreground font-normal">
                           ({rec.method})
                         </span>
                       </div>
-                      <p className="text-[11px] text-teal-300/80">{rec.accountNumber}</p>
+                      <p className="text-[11px] text-primary-soft-foreground">{rec.accountNumber}</p>
                     </div>
 
                     <div className="text-right space-y-1">
@@ -304,7 +304,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                           {isBn ? 'প্রক্রিয়াধীন' : 'Processing'}
                         </Badge>
                       )}
-                      <span className="block text-[10px] text-teal-300/60">
+                      <span className="block text-[10px] text-primary-soft-foreground">
                         {formatDateTime(rec.requestedAt, locale)}
                       </span>
                     </div>
@@ -318,17 +318,17 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
           <Card className="rounded-3xl border-border/70 shadow-xs">
             <CardHeader className="pb-3 border-b border-border/60">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
-                <Smartphone className="w-4 h-4 text-emerald-500" />
+                <Smartphone className="w-4 h-4 text-success-soft-foreground" />
                 <span>{isBn ? 'ডিফল্ট পে-আউট অ্যাকাউন্ট' : 'Default Payout Account'}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-2 text-xs">
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-emerald-50 dark:bg-emerald-950/30 border border-emerald-200 dark:border-emerald-800">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-primary-soft  border border-primary/20 ">
                 <div className="space-y-0.5">
-                  <span className="font-bold text-emerald-900 dark:text-emerald-200">
+                  <span className="font-bold text-primary-soft-foreground ">
                     bKash Personal
                   </span>
-                  <span className="block font-mono text-emerald-700 dark:text-emerald-300">
+                  <span className="block font-mono text-success-soft-foreground ">
                     01711-234567
                   </span>
                 </div>
@@ -386,7 +386,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                     return (
                       <div
                         key={sess.id}
-                        className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-slate-50/50 dark:hover:bg-slate-900/40 p-2 rounded-xl transition-colors"
+                        className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 hover:bg-muted/50  p-2 rounded-xl transition-colors"
                         data-testid={`session-earnings-row-${sess.id}`}
                       >
                         <div className="space-y-1">
@@ -395,7 +395,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                               {sess.subjectName ||
                                 (isBn ? 'পদার্থবিজ্ঞান ১ম পত্র' : 'Physics Paper 1')}
                             </span>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-slate-100 dark:bg-slate-800 text-slate-500">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-muted  text-muted-foreground">
                               #{sess.id.slice(0, 8)}
                             </span>
                           </div>
@@ -408,7 +408,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
 
                         <div className="flex items-center gap-3 shrink-0">
                           <div className="text-right">
-                            <span className="text-sm font-bold text-emerald-600 dark:text-emerald-400 block">
+                            <span className="text-sm font-bold text-success-soft-foreground  block">
                               {formatBDTMinor(feeMinor, locale)}
                             </span>
                             <span className="text-[10px] text-muted-foreground">
@@ -446,7 +446,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
           <div className="bg-card border border-border w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
             <div className="flex items-center justify-between pb-3 border-b border-border/60">
               <div className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-emerald-500" />
+                <CreditCard className="w-5 h-5 text-success-soft-foreground" />
                 <h3 className="text-base font-bold text-foreground">
                   {isBn ? 'টাকা উত্তোলন অনুরোধ' : 'Request Payout'}
                 </h3>
@@ -460,7 +460,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
             </div>
 
             {payoutError && (
-              <p role="alert" className="text-xs text-rose-600 font-medium">
+              <p role="alert" className="text-xs text-destructive font-medium">
                 {payoutError}
               </p>
             )}
@@ -477,7 +477,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                     onClick={() => setSelectedMethod('bkash')}
                     className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
                       selectedMethod === 'bkash'
-                        ? 'border-pink-500 bg-pink-500/10 text-pink-600 dark:text-pink-400'
+                        ? 'border-pink-500 bg-pink-500/10 text-pink-600 '
                         : 'border-border text-muted-foreground hover:bg-surface-hover'
                     }`}
                   >
@@ -488,7 +488,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                     onClick={() => setSelectedMethod('nagad')}
                     className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
                       selectedMethod === 'nagad'
-                        ? 'border-orange-500 bg-orange-500/10 text-orange-600 dark:text-orange-400'
+                        ? 'border-warning/40 bg-warning/10 text-orange-700 '
                         : 'border-border text-muted-foreground hover:bg-surface-hover'
                     }`}
                   >
@@ -499,7 +499,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                     onClick={() => setSelectedMethod('bank')}
                     className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
                       selectedMethod === 'bank'
-                        ? 'border-cyan-500 bg-cyan-500/10 text-cyan-600 dark:text-cyan-400'
+                        ? 'border-info/40 bg-interactive/10 text-info-soft-foreground '
                         : 'border-border text-muted-foreground hover:bg-surface-hover'
                     }`}
                   >
@@ -562,7 +562,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                 <Button
                   type="submit"
                   disabled={isSubmitting}
-                  className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs"
+                  className="bg-primary hover:bg-primary-hover text-white font-bold text-xs"
                   data-testid="confirm-withdraw-btn"
                 >
                   {isSubmitting ? (

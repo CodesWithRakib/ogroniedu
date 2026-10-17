@@ -145,53 +145,53 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         </span>
         <Link
           href={withLocale('/dashboard/guardian/children', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
         >
-          <Users className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+          <Users className="w-3.5 h-3.5 text-info-soft-foreground " />
           <span>{isBn ? 'সন্তান প্রোফাইল' : 'Children'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
         >
-          <BookOpen className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+          <BookOpen className="w-3.5 h-3.5 text-success-soft-foreground " />
           <span>{isBn ? 'লার্নিং অগ্রগতি' : 'Learning Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
         >
-          <Calendar className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+          <Calendar className="w-3.5 h-3.5 text-warning " />
           <span>{isBn ? 'ক্লাস সময়সূচি' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
         >
-          <Inbox className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+          <Inbox className="w-3.5 h-3.5 text-interactive " />
           <span>{isBn ? 'টিউশন অনুরোধ' : 'Tuition Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
         >
-          <CreditCard className="w-3.5 h-3.5 text-rose-600 dark:text-rose-400" />
+          <CreditCard className="w-3.5 h-3.5 text-destructive " />
           <span>{isBn ? 'টিউশন ফি ও এসক্রো' : 'Fees & Payments'}</span>
         </Link>
         <Link
           href={withLocale('/safety-reports', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-red-500/10 hover:bg-red-500/20 text-red-500 text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-destructive/10 hover:bg-destructive/20 text-destructive text-xs font-semibold transition-colors"
           id="link-safety-hub"
         >
-          <ShieldAlert className="w-3.5 h-3.5 text-red-500" />
+          <ShieldAlert className="w-3.5 h-3.5 text-destructive" />
           <span>{isBn ? 'শিশু সুরক্ষা হাব' : 'Safety Hub'}</span>
         </Link>
         <Link
           href={withLocale('/tutor-replacements', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-warning/10 hover:bg-warning/20 text-warning text-xs font-semibold transition-colors"
           id="link-replacement-hub"
         >
-          <RefreshCw className="w-3.5 h-3.5 text-amber-500" />
+          <RefreshCw className="w-3.5 h-3.5 text-warning" />
           <span>{isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacements'}</span>
         </Link>
         <Link
@@ -240,11 +240,11 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         {/* Child Academic Snapshot Card (2 Cols on lg) */}
         <div className="lg:col-span-2">
           {activeChild ? (
-            <Card className="rounded-3xl border-slate-200/80 dark:border-slate-800 shadow-xs h-full flex flex-col justify-between">
+            <Card className="rounded-3xl border-border  shadow-xs h-full flex flex-col justify-between">
               <CardHeader className="pb-3">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2.5">
-                    <div className="h-10 w-10 rounded-2xl bg-cyan-500/10 border border-cyan-500/20 text-cyan-600 flex items-center justify-center font-bold">
+                    <div className="h-10 w-10 rounded-2xl bg-interactive/10 border border-info/40 text-info-soft-foreground flex items-center justify-center font-bold">
                       <GraduationCap className="w-5 h-5" />
                     </div>
                     <div>
@@ -256,7 +256,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                       </h3>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/25 text-xs font-bold">
+                  <span className="px-3 py-1 rounded-full bg-primary/10 text-success-soft-foreground  border border-primary/40 text-xs font-bold">
                     {activeChild.relationshipType === 'father'
                       ? isBn
                         ? 'পিতা'
@@ -272,7 +272,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                 </div>
               </CardHeader>
               <CardContent className="space-y-3 pt-0 text-xs">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-slate-50 dark:bg-slate-900 border border-slate-100 dark:border-slate-800">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-muted  border border-border ">
                   <div>
                     <span className="text-muted-foreground block text-[11px]">
                       {isBn ? 'শিক্ষাপ্রতিষ্ঠান:' : 'Institution:'}
@@ -293,8 +293,8 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                 </div>
 
                 <div className="flex items-center justify-between pt-1">
-                  <div className="flex items-center gap-2 text-slate-500 text-xs">
-                    <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+                  <div className="flex items-center gap-2 text-muted-foreground text-xs">
+                    <ShieldCheck className="w-4 h-4 text-success-soft-foreground shrink-0" />
                     <span>
                       {isBn
                         ? 'অভিভাবক সম্মতি ও নিরাপত্তা নজরদারি সক্রিয়'
@@ -312,7 +312,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
               </CardContent>
             </Card>
           ) : (
-            <Card className="rounded-3xl border-slate-200/80 dark:border-slate-800 shadow-xs h-full flex items-center justify-center p-8 text-center">
+            <Card className="rounded-3xl border-border  shadow-xs h-full flex items-center justify-center p-8 text-center">
               <div className="space-y-2">
                 <Users className="w-10 h-10 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">

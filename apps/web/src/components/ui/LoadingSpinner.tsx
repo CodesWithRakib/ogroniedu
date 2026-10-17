@@ -27,7 +27,7 @@ export function LoadingSpinner({
       className={twMerge('flex items-center justify-center gap-2', className)}
     >
       <Loader2
-        className={clsx('animate-spin text-emerald-700 dark:text-emerald-500', sizes[size])}
+        className={clsx('animate-spin text-success-soft-foreground ', sizes[size])}
         aria-hidden="true"
       />
       <span className="sr-only">{label}</span>
@@ -38,7 +38,7 @@ export function LoadingSpinner({
 export function Skeleton({ className }: { className?: string }) {
   return (
     <div
-      className={twMerge('animate-pulse rounded-lg bg-slate-200/80 dark:bg-slate-800', className)}
+      className={twMerge('animate-pulse rounded-lg bg-muted/80 ', className)}
       aria-hidden="true"
     />
   );

@@ -211,7 +211,7 @@ export function VerificationLevelCard({
         {error && (
           <p
             role="alert"
-            className="text-xs text-rose-600 dark:text-rose-400 flex items-start gap-1.5"
+            className="text-xs text-destructive  flex items-start gap-1.5"
             data-testid={`level-error-${record.level}`}
           >
             <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
@@ -221,7 +221,7 @@ export function VerificationLevelCard({
         {message && (
           <p
             role="status"
-            className="text-xs text-emerald-600 dark:text-emerald-400 flex items-start gap-1.5"
+            className="text-xs text-primary  flex items-start gap-1.5"
             data-testid={`level-message-${record.level}`}
           >
             <CheckCircle2 className="w-3.5 h-3.5 shrink-0 mt-0.5" />
@@ -230,7 +230,7 @@ export function VerificationLevelCard({
         )}
 
         {record.applicantFeedback && (
-          <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-3 text-xs text-amber-800 dark:text-amber-200 space-y-1">
+          <div className="rounded-xl border border-warning/30 bg-warning/10 p-3 text-xs text-warning  space-y-1">
             <span className="font-semibold flex items-center gap-1.5">
               <Info className="w-3.5 h-3.5" />
               {isBn ? 'পর্যালোচকের মন্তব্য' : 'Reviewer feedback'}
@@ -245,7 +245,7 @@ export function VerificationLevelCard({
         )}
 
         {missingUploads.length > 0 && (
-          <div className="text-[11px] text-amber-700 dark:text-amber-300 space-y-1">
+          <div className="text-[11px] text-warning  space-y-1">
             <span className="font-semibold">
               {isBn ? 'আপলোড করা প্রয়োজন:' : 'Upload required:'}
             </span>
@@ -320,7 +320,7 @@ export function VerificationLevelCard({
                           aria-label={isBn ? 'প্রমাণপত্র মুছুন' : 'Remove evidence'}
                           data-testid={`delete-document-${document.id}`}
                         >
-                          <Trash2 className="w-3.5 h-3.5 text-rose-500" />
+                          <Trash2 className="w-3.5 h-3.5 text-destructive" />
                         </Button>
                       )}
                     </div>

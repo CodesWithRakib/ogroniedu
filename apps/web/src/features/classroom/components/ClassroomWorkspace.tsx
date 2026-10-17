@@ -241,7 +241,7 @@ export function ClassroomWorkspace({
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <Link
           href={withLocale(`/sessions/${session.id}`, locale)}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-400 hover:text-white transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
           data-testid="back-to-session-detail"
         >
           <ArrowLeft className="w-4 h-4" />
@@ -251,18 +251,18 @@ export function ClassroomWorkspace({
         {/* Live Status Pill & Timer */}
         <div className="flex items-center gap-3">
           {session.status === 'in_progress' ? (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-cyan-500/10 border border-cyan-400/30 text-cyan-300 text-xs font-bold animate-pulse">
-              <Radio className="w-3.5 h-3.5 text-cyan-400" />
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-interactive/10 border border-info/40 text-info-soft-foreground text-xs font-bold animate-pulse">
+              <Radio className="w-3.5 h-3.5 text-info-soft-foreground" />
               <span>{locale === 'bn' ? 'লাইভ ক্লাস চলছে' : 'Live Session Active'}</span>
               <span>•</span>
               <span className="font-mono">{formatTimer(secondsElapsed)}</span>
             </div>
           ) : session.status === 'completed' ? (
-            <Badge className="bg-blue-500/10 text-blue-400 border border-blue-500/30 text-xs px-3 py-1">
+            <Badge className="bg-interactive/10 text-info-soft-foreground border border-interactive/40 text-xs px-3 py-1">
               {locale === 'bn' ? 'ক্লাস সম্পন্ন' : 'Completed'}
             </Badge>
           ) : (
-            <Badge className="bg-emerald-500/10 text-emerald-400 border border-emerald-500/30 text-xs px-3 py-1">
+            <Badge className="bg-primary/10 text-success-soft-foreground border border-primary/40 text-xs px-3 py-1">
               {locale === 'bn' ? 'ক্লাসের জন্য নির্ধারিত' : 'Scheduled'}
             </Badge>
           )}
@@ -270,36 +270,36 @@ export function ClassroomWorkspace({
       </div>
 
       {/* Main Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-slate-950 via-[#0A192F] to-[#04202C] border border-cyan-500/20 p-6 md:p-8 shadow-2xl">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-3xl bg-brand-soft border border-brand/30 p-6 md:p-8 shadow-sm">
+        <div className="absolute top-0 right-0 w-80 h-80 bg-interactive/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs text-cyan-300 font-semibold">
-              <Sparkles className="w-4 h-4 text-cyan-400" />
+            <div className="flex items-center gap-2 text-xs text-info-soft-foreground font-semibold">
+              <Sparkles className="w-4 h-4 text-info-soft-foreground" />
               <span>
                 {locale === 'bn'
                   ? 'অগ্রণী এডু ইন্টারেক্টিভ লাইভ ক্লাসরুম'
                   : 'OgroniEdu Live Interactive Classroom'}
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-white tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
               {subjectTitle}
             </h1>
-            <div className="flex flex-wrap items-center gap-4 text-xs text-slate-300">
+            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <span className="text-slate-400">{locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'}</span>
-                <strong className="text-white font-bold">{tutorName}</strong>
+                <span className="text-muted-foreground">{locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'}</span>
+                <strong className="text-foreground font-bold">{tutorName}</strong>
               </span>
               <span>•</span>
               <span className="flex items-center gap-1.5">
-                <span className="text-slate-400">
+                <span className="text-muted-foreground">
                   {locale === 'bn' ? 'শিক্ষার্থী:' : 'Student:'}
                 </span>
-                <strong className="text-white font-bold">{studentName}</strong>
+                <strong className="text-foreground font-bold">{studentName}</strong>
               </span>
               <span>•</span>
-              <span className="flex items-center gap-1 text-cyan-400">
+              <span className="flex items-center gap-1 text-info-soft-foreground">
                 <Clock className="w-3.5 h-3.5" />
                 <span>
                   {formatWeekdayDate(session.startsAt, locale)} (
@@ -317,7 +317,7 @@ export function ClassroomWorkspace({
                 href={session.meetingUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-cyan-600 to-teal-600 hover:from-cyan-500 hover:to-teal-500 text-white text-xs font-bold rounded-2xl shadow-lg shadow-cyan-900/40 transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-brand to-brand-accent text-brand-foreground text-xs font-bold rounded-2xl shadow-sm transition-all"
                 data-testid="launch-meeting-btn"
               >
                 <Video className="w-4 h-4" />
@@ -329,7 +329,7 @@ export function ClassroomWorkspace({
                 <Button
                   size="sm"
                   onClick={() => setIsEditingMeetingUrl(true)}
-                  className="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-2xl"
+                  className="bg-interactive hover:bg-interactive-hover text-white text-xs font-bold rounded-2xl"
                   data-testid="set-meeting-url-btn"
                 >
                   <Video className="w-4 h-4 mr-1.5" />
@@ -344,12 +344,12 @@ export function ClassroomWorkspace({
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  className="p-2.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700 text-slate-300 border border-slate-700 transition-all text-xs flex items-center gap-1.5"
+                  className="p-2.5 rounded-2xl bg-muted hover:bg-surface-hover text-muted-foreground border border-border transition-all text-xs flex items-center gap-1.5"
                   title={locale === 'bn' ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
                   data-testid="copy-meeting-link-btn"
                 >
                   {copiedLink ? (
-                    <Check className="w-4 h-4 text-emerald-400" />
+                    <Check className="w-4 h-4 text-success-soft-foreground" />
                   ) : (
                     <Copy className="w-4 h-4" />
                   )}
@@ -370,7 +370,7 @@ export function ClassroomWorkspace({
                   )}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2.5 rounded-2xl bg-emerald-600/20 hover:bg-emerald-600/30 text-emerald-300 border border-emerald-500/30 transition-all text-xs flex items-center gap-1"
+                  className="p-2.5 rounded-2xl bg-primary/20 hover:bg-primary/30 text-success-soft-foreground border border-primary/40 transition-all text-xs flex items-center gap-1"
                   title={locale === 'bn' ? 'হোয়াটসঅ্যাপে শেয়ার করুন' : 'Share on WhatsApp'}
                 >
                   <Share2 className="w-4 h-4" />
@@ -384,7 +384,7 @@ export function ClassroomWorkspace({
                 size="sm"
                 onClick={handleStartClass}
                 isLoading={isStarting}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-lg shadow-emerald-900/40"
+                className="bg-primary hover:bg-primary-hover text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-sm"
                 data-testid="start-class-btn"
               >
                 <Play className="w-4 h-4 mr-1.5 fill-current" />
@@ -397,7 +397,7 @@ export function ClassroomWorkspace({
                 size="sm"
                 onClick={() => setShowCompletionModal(true)}
                 isLoading={isCompleting}
-                className="bg-blue-600 hover:bg-blue-500 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-lg shadow-blue-900/40"
+                className="bg-interactive hover:bg-interactive-hover text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-sm"
                 data-testid="complete-class-btn"
               >
                 <CheckCircle2 className="w-4 h-4 mr-1.5" />
@@ -409,7 +409,7 @@ export function ClassroomWorkspace({
               <button
                 type="button"
                 onClick={() => setIsEditingMeetingUrl(!isEditingMeetingUrl)}
-                className="p-2.5 rounded-2xl bg-slate-800/80 hover:bg-slate-700 text-slate-400 hover:text-white border border-slate-700"
+                className="p-2.5 rounded-2xl bg-muted hover:bg-surface-hover text-muted-foreground hover:text-foreground border border-border"
                 title={locale === 'bn' ? 'মিটিং লিংক পরিবর্তন করুন' : 'Edit Meeting Link'}
               >
                 <Edit2 className="w-4 h-4" />
@@ -422,7 +422,7 @@ export function ClassroomWorkspace({
         {isEditingMeetingUrl && (
           <form
             onSubmit={handleSaveMeetingUrl}
-            className="mt-4 pt-4 border-t border-slate-800 flex flex-col sm:flex-row items-center gap-2"
+            className="mt-4 pt-4 border-t border-border flex flex-col sm:flex-row items-center gap-2"
           >
             <input
               type="url"
@@ -430,7 +430,7 @@ export function ClassroomWorkspace({
               value={meetingUrlInput}
               onChange={(e) => setMeetingUrlInput(e.target.value)}
               placeholder="https://meet.google.com/xxx-yyyy-zzz"
-              className="flex-1 h-9 rounded-xl bg-slate-900 border border-slate-700 px-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+              className="flex-1 h-9 rounded-xl bg-card border border-border px-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
               data-testid="meeting-url-input"
             />
             <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -438,7 +438,7 @@ export function ClassroomWorkspace({
                 type="submit"
                 size="sm"
                 isLoading={isUpdatingUrl}
-                className="bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-xl h-9 px-4"
+                className="bg-interactive hover:bg-interactive-hover text-white text-xs font-bold rounded-xl h-9 px-4"
                 data-testid="save-meeting-url-btn"
               >
                 {locale === 'bn' ? 'সংরক্ষণ' : 'Save'}
@@ -448,7 +448,7 @@ export function ClassroomWorkspace({
                 size="sm"
                 variant="outline"
                 onClick={() => setIsEditingMeetingUrl(false)}
-                className="border-slate-700 text-slate-300 text-xs rounded-xl h-9 px-3"
+                className="border-border text-muted-foreground text-xs rounded-xl h-9 px-3"
               >
                 {locale === 'bn' ? 'বাতিল' : 'Cancel'}
               </Button>
@@ -458,31 +458,31 @@ export function ClassroomWorkspace({
 
         {/* Action Status Feedback */}
         {actionSuccess && (
-          <div className="mt-4 p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-400" />
+          <div className="mt-4 p-3 rounded-2xl bg-primary/10 border border-primary/40 text-success-soft-foreground text-xs flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-success-soft-foreground" />
             <span>{actionSuccess}</span>
           </div>
         )}
         {actionError && (
-          <div className="mt-4 p-3 rounded-2xl bg-rose-500/10 border border-rose-500/30 text-rose-300 text-xs">
+          <div className="mt-4 p-3 rounded-2xl bg-destructive/10 border border-destructive/40 text-destructive-soft-foreground text-xs">
             {actionError}
           </div>
         )}
       </div>
 
       {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-slate-800 pb-2">
+      <div className="flex items-center gap-2 border-b border-border pb-2">
         <button
           type="button"
           onClick={() => setActiveTab('whiteboard')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
             activeTab === 'whiteboard'
-              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-md'
-              : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40 shadow-md'
+              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
           }`}
           data-testid="tab-whiteboard"
         >
-          <Sparkles className="w-4 h-4 text-cyan-400" />
+          <Sparkles className="w-4 h-4 text-info-soft-foreground" />
           <span>{locale === 'bn' ? 'ইন্টারেক্টিভ হোয়াইটবোর্ড' : 'Interactive Whiteboard'}</span>
         </button>
 
@@ -491,12 +491,12 @@ export function ClassroomWorkspace({
           onClick={() => setActiveTab('formulas')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
             activeTab === 'formulas'
-              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-md'
-              : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40 shadow-md'
+              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
           }`}
           data-testid="tab-formulas"
         >
-          <BookOpen className="w-4 h-4 text-cyan-400" />
+          <BookOpen className="w-4 h-4 text-info-soft-foreground" />
           <span>{locale === 'bn' ? 'ফর্মুলা ও স্টাডি নোটস' : 'Formulas & Study Notes'}</span>
         </button>
 
@@ -505,12 +505,12 @@ export function ClassroomWorkspace({
           onClick={() => setActiveTab('attendance')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
             activeTab === 'attendance'
-              ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40 shadow-md'
-              : 'text-slate-400 hover:text-white hover:bg-slate-800/60'
+              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40 shadow-md'
+              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
           }`}
           data-testid="tab-attendance"
         >
-          <UserCheck className="w-4 h-4 text-cyan-400" />
+          <UserCheck className="w-4 h-4 text-info-soft-foreground" />
           <span>{locale === 'bn' ? 'উপস্থিতি ও ক্লাস বিবরণ' : 'Attendance & Details'}</span>
         </button>
       </div>
@@ -525,33 +525,33 @@ export function ClassroomWorkspace({
       {activeTab === 'attendance' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Attendance Status Card */}
-          <Card className="bg-slate-900/90 border border-slate-800 text-slate-100 rounded-3xl p-6 shadow-xl">
-            <h3 className="text-base font-bold text-white mb-2 flex items-center gap-2">
-              <UserCheck className="w-5 h-5 text-cyan-400" />
+          <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm">
+            <h3 className="text-base font-bold text-foreground mb-2 flex items-center gap-2">
+              <UserCheck className="w-5 h-5 text-info-soft-foreground" />
               <span>
                 {locale === 'bn' ? 'শিক্ষার্থীর হাজিরা / উপস্থিতি' : 'Student Attendance'}
               </span>
             </h3>
-            <p className="text-xs text-slate-400 mb-4">
+            <p className="text-xs text-muted-foreground mb-4">
               {locale === 'bn'
                 ? 'উপস্থিতি নিশ্চিত করলে অভিভাবক এসএমএস/নোটিফিকেশন পাবেন।'
                 : 'Recorded attendance triggers automated notifications to student & guardians.'}
             </p>
 
             {latestAttendance && (
-              <div className="p-4 bg-slate-950 rounded-2xl border border-slate-800 mb-4 space-y-2 text-xs">
+              <div className="p-4 bg-surface-muted rounded-2xl border border-border mb-4 space-y-2 text-xs">
                 <div className="flex items-center justify-between">
-                  <span className="text-slate-400">
+                  <span className="text-muted-foreground">
                     {locale === 'bn' ? 'রেকর্ডকৃত স্ট্যাটাস:' : 'Recorded Status:'}
                   </span>
-                  <Badge className="bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 uppercase font-bold">
+                  <Badge className="bg-primary/20 text-success-soft-foreground border border-primary/40 uppercase font-bold">
                     {latestAttendance.attendanceStatus}
                   </Badge>
                 </div>
                 {latestAttendance.notes && (
-                  <p className="text-slate-300 italic">"{latestAttendance.notes}"</p>
+                  <p className="text-muted-foreground italic">"{latestAttendance.notes}"</p>
                 )}
-                <div className="text-[10px] text-slate-500 text-right">
+                <div className="text-[10px] text-muted-foreground text-right">
                   {new Date(latestAttendance.recordedAt).toLocaleString(
                     locale === 'bn' ? 'bn-BD' : 'en-US',
                   )}
@@ -565,7 +565,7 @@ export function ClassroomWorkspace({
                 className="space-y-3"
                 data-testid="classroom-mark-attendance-form"
               >
-                <label className="text-xs font-semibold text-slate-300 block">
+                <label className="text-xs font-semibold text-muted-foreground block">
                   {locale === 'bn' ? 'উপস্থিতি নির্ধারণ করুন:' : 'Mark Attendance:'}
                 </label>
                 <div className="grid grid-cols-4 gap-2">
@@ -576,8 +576,8 @@ export function ClassroomWorkspace({
                       onClick={() => setSelectedAttendanceStatus(st)}
                       className={`py-2 text-xs font-bold rounded-xl border transition-all ${
                         selectedAttendanceStatus === st
-                          ? 'bg-cyan-600 border-cyan-400 text-white'
-                          : 'bg-slate-800 border-slate-700 text-slate-300 hover:bg-slate-700'
+                          ? 'bg-interactive border-info/40 text-white'
+                          : 'bg-muted border-border text-muted-foreground hover:bg-surface-hover'
                       }`}
                       data-testid={`classroom-attendance-${st}`}
                     >
@@ -601,7 +601,7 @@ export function ClassroomWorkspace({
                 </div>
 
                 <div className="space-y-1">
-                  <label htmlFor="notes-inp" className="text-xs text-slate-400">
+                  <label htmlFor="notes-inp" className="text-xs text-muted-foreground">
                     {locale === 'bn' ? 'ক্লাসের সক্রিয়তা বা মন্তব্য:' : 'Session remarks:'}
                   </label>
                   <input
@@ -612,14 +612,14 @@ export function ClassroomWorkspace({
                     placeholder={
                       locale === 'bn' ? 'যেমন: পাঠে মনোযোগ ছিল...' : 'e.g. Participated actively...'
                     }
-                    className="w-full h-9 rounded-xl border border-slate-700 bg-slate-950 px-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                    className="w-full h-9 rounded-xl border border-border bg-surface-muted px-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                     data-testid="attendance-notes-input"
                   />
                 </div>
 
                 {attendanceSuccess && (
-                  <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/30 text-emerald-300 text-xs flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400" />
+                  <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/40 text-success-soft-foreground text-xs flex items-center gap-1.5">
+                    <CheckCircle2 className="w-4 h-4 text-success-soft-foreground" />
                     <span>
                       {locale === 'bn' ? 'উপস্থিতি সফলভাবে সংরক্ষিত!' : 'Attendance marked!'}
                     </span>
@@ -630,7 +630,7 @@ export function ClassroomWorkspace({
                   type="submit"
                   size="sm"
                   isLoading={isMarkingAttendance}
-                  className="w-full bg-cyan-600 hover:bg-cyan-500 text-white text-xs font-bold rounded-xl"
+                  className="w-full bg-interactive hover:bg-interactive-hover text-white text-xs font-bold rounded-xl"
                   data-testid="classroom-save-attendance-btn"
                 >
                   {locale === 'bn' ? 'উপস্থিতি হালনাগাদ করুন' : 'Confirm Attendance'}
@@ -640,44 +640,44 @@ export function ClassroomWorkspace({
           </Card>
 
           {/* Session Safety & Security Card */}
-          <Card className="bg-slate-900/90 border border-slate-800 text-slate-100 rounded-3xl p-6 shadow-xl flex flex-col justify-between">
+          <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm flex flex-col justify-between">
             <div className="space-y-4">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-emerald-400" />
+              <h3 className="text-base font-bold text-foreground flex items-center gap-2">
+                <ShieldCheck className="w-5 h-5 text-success-soft-foreground" />
                 <span>
                   {locale === 'bn'
                     ? 'নিরাপত্তা ও এস্ক্রো প্রতিশ্রুতি'
                     : 'Safety & Escrow Protection'}
                 </span>
               </h3>
-              <p className="text-xs text-slate-400 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {locale === 'bn'
                   ? 'অগ্রণী এডুর ক্লাসরুম সেশন এন্ড-টু-এন্ড সুরক্ষিত। সেশন সম্পন্ন হওয়ার পর শিক্ষক ও শিক্ষার্থীর রিভিউয়ের ভিত্তিতে এস্ক্রো ফান্ড রিলিজ কার্যকর হয়।'
                   : 'All sessions are monitored under OgroniEdu safety standards. Escrow milestone releases are executed upon verified session completion.'}
               </p>
 
-              <div className="p-3.5 rounded-2xl bg-slate-950/80 border border-slate-800 space-y-2 text-xs">
-                <div className="flex items-center justify-between text-slate-300">
+              <div className="p-3.5 rounded-2xl bg-surface-muted border border-border space-y-2 text-xs">
+                <div className="flex items-center justify-between text-muted-foreground">
                   <span>{locale === 'bn' ? 'বুকিং আইডি:' : 'Booking ID:'}</span>
-                  <span className="font-mono text-cyan-300">
+                  <span className="font-mono text-info-soft-foreground">
                     {session.bookingId?.substring(0, 8)}...
                   </span>
                 </div>
-                <div className="flex items-center justify-between text-slate-300">
+                <div className="flex items-center justify-between text-muted-foreground">
                   <span>{locale === 'bn' ? 'ক্লাস আইডি:' : 'Session ID:'}</span>
-                  <span className="font-mono text-cyan-300">{session.id.substring(0, 8)}...</span>
+                  <span className="font-mono text-info-soft-foreground">{session.id.substring(0, 8)}...</span>
                 </div>
-                <div className="flex items-center justify-between text-slate-300">
+                <div className="flex items-center justify-between text-muted-foreground">
                   <span>{locale === 'bn' ? 'টাইমজোন:' : 'Timezone:'}</span>
-                  <span className="text-white font-semibold">Asia/Dhaka (BST)</span>
+                  <span className="text-foreground font-semibold">Asia/Dhaka (BST)</span>
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-800">
+            <div className="pt-4 border-t border-border">
               <Link
                 href={withLocale('/safety-reports', locale)}
-                className="text-xs text-rose-400 hover:text-rose-300 font-semibold inline-flex items-center gap-1"
+                className="text-xs text-destructive-soft-foreground hover:text-destructive-soft-foreground font-semibold inline-flex items-center gap-1"
               >
                 {locale === 'bn'
                   ? 'জরুরি রিপোর্ট বা সহায়তা প্রয়োজন?'
@@ -691,14 +691,14 @@ export function ClassroomWorkspace({
       {/* Class Completion Modal */}
       {showCompletionModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-md bg-slate-900 border border-cyan-500/30 rounded-3xl p-6 shadow-2xl space-y-4 text-slate-100">
-            <div className="flex items-center gap-2.5 text-emerald-400">
+          <div className="w-full max-w-md bg-card border border-info/40 rounded-3xl p-6 shadow-sm space-y-4 text-foreground">
+            <div className="flex items-center gap-2.5 text-success-soft-foreground">
               <CheckCircle2 className="w-6 h-6" />
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-lg font-bold text-foreground">
                 {locale === 'bn' ? 'ক্লাস সম্পন্ন করার নিশ্চিতকরণ' : 'Complete Tutoring Class'}
               </h3>
             </div>
-            <p className="text-xs text-slate-400">
+            <p className="text-xs text-muted-foreground">
               {locale === 'bn'
                 ? 'আপনি কি ক্লাসটি সম্পন্ন হিসেবে চিহ্নিত করতে চান? ক্লাসের উপর কোনো মন্তব্য বা অগ্রগতি নোট থাকলে লিখুন।'
                 : 'Mark this session as completed. You may optionally add summary feedback or study recommendations.'}
@@ -707,7 +707,7 @@ export function ClassroomWorkspace({
             <div className="space-y-1">
               <label
                 htmlFor="completion-notes-modal"
-                className="text-xs text-slate-300 font-medium"
+                className="text-xs text-muted-foreground font-medium"
               >
                 {locale === 'bn' ? 'ক্লাস রিভিউ ও মন্তব্য (ঐচ্ছিক):' : 'Session Notes (Optional):'}
               </label>
@@ -721,7 +721,7 @@ export function ClassroomWorkspace({
                     ? 'যেমন: আজকের ক্লাসে গতিবিদ্যার গাণিতিক সমাধান অনুশীলন করা হয়েছে...'
                     : 'e.g. Covered kinematics problem set and Newton laws...'
                 }
-                className="w-full rounded-2xl bg-slate-950 border border-slate-800 p-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-cyan-500"
+                className="w-full rounded-2xl bg-surface-muted border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
                 data-testid="completion-notes-textarea"
               />
             </div>
@@ -732,7 +732,7 @@ export function ClassroomWorkspace({
                 variant="outline"
                 size="sm"
                 onClick={() => setShowCompletionModal(false)}
-                className="border-slate-700 text-slate-300 text-xs rounded-xl"
+                className="border-border text-muted-foreground text-xs rounded-xl"
               >
                 {locale === 'bn' ? 'বাতিল' : 'Cancel'}
               </Button>
@@ -741,7 +741,7 @@ export function ClassroomWorkspace({
                 size="sm"
                 onClick={handleCompleteClass}
                 isLoading={isCompleting}
-                className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl"
+                className="bg-primary hover:bg-primary-hover text-white font-bold text-xs rounded-xl"
                 data-testid="confirm-complete-class-btn"
               >
                 {locale === 'bn' ? 'সম্পন্ন নিশ্চিত করুন' : 'Confirm Completion'}

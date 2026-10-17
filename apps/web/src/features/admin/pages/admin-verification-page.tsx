@@ -19,12 +19,12 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
           <div>
             <div className="flex items-center space-x-3">
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                 {locale === 'bn'
                   ? 'শিক্ষক যাচাই ও সনদ পর্যালোচনা'
                   : 'Tutor Verification & Compliance'}
               </h1>
-              <span className="px-3 py-1 text-xs font-bold rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+              <span className="px-3 py-1 text-xs font-bold rounded-full bg-interactive/15 text-info-soft-foreground border border-info/40">
                 {pendingCount} {locale === 'bn' ? 'অপেক্ষমান' : 'Pending'}
               </span>
             </div>
@@ -43,9 +43,9 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
               <p className="text-xs text-muted-foreground font-medium">
                 {locale === 'bn' ? 'অপেক্ষমান রিভিউ কিউ' : 'Pending Queue'}
               </p>
-              <p className="text-2xl font-black text-cyan-400 mt-1 font-mono">{pendingCount}</p>
+              <p className="text-2xl font-black text-info-soft-foreground mt-1 font-mono">{pendingCount}</p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+            <div className="w-10 h-10 rounded-xl bg-interactive/10 border border-info/40 flex items-center justify-center text-info-soft-foreground">
               <Clock className="w-5 h-5" />
             </div>
           </div>
@@ -55,11 +55,11 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
               <p className="text-xs text-muted-foreground font-medium">
                 {locale === 'bn' ? '৩-স্তর ভেরিফিকেশন' : '3-Tier Verification'}
               </p>
-              <p className="text-sm font-semibold text-emerald-400 mt-1">
+              <p className="text-sm font-semibold text-success-soft-foreground mt-1">
                 {locale === 'bn' ? 'NID • ডিগ্রি • অভিজ্ঞতা' : 'NID • Degree • Experience'}
               </p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/40 flex items-center justify-center text-success-soft-foreground">
               <ShieldCheck className="w-5 h-5" />
             </div>
           </div>
@@ -69,11 +69,11 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
               <p className="text-xs text-muted-foreground font-medium">
                 {locale === 'bn' ? 'অডিট ট্রেইল নিশ্চয়তা' : 'Audit Trail Standard'}
               </p>
-              <p className="text-sm font-semibold text-teal-400 mt-1">
+              <p className="text-sm font-semibold text-primary-soft-foreground mt-1">
                 {locale === 'bn' ? 'রিজন কোড ও অভ্যন্তরীণ নোট' : 'Reason Codes & Internal Notes'}
               </p>
             </div>
-            <div className="w-10 h-10 rounded-xl bg-teal-500/10 border border-teal-500/20 flex items-center justify-center text-teal-400">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/40 flex items-center justify-center text-primary-soft-foreground">
               <FileCheck2 className="w-5 h-5" />
             </div>
           </div>

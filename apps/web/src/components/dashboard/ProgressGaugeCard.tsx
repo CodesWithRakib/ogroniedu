@@ -55,7 +55,7 @@ export function ProgressGaugeCard({
           <path
             d="M 16 80 A 64 64 0 0 1 144 80"
             fill="none"
-            className="stroke-muted/40 dark:stroke-muted/20"
+            className="stroke-muted/40 "
             strokeWidth="14"
             strokeLinecap="round"
           />
@@ -88,7 +88,7 @@ export function ProgressGaugeCard({
           <span className="text-foreground">{lblDone}</span>
         </div>
         <div className="flex items-center gap-1.5 font-medium">
-          <span className="h-2.5 w-2.5 rounded-full bg-teal-500 shrink-0" />
+          <span className="h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
           <span className="text-muted-foreground">{lblActive}</span>
         </div>
         <div className="flex items-center gap-1.5 font-medium">

@@ -30,7 +30,7 @@ export function AdminCancelBookingModal({
       data-testid="cancel-booking-modal"
     >
       <div className="bg-card border border-border rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-        <h3 className="text-lg font-bold text-rose-500">{t('cancelIntervention')}</h3>
+        <h3 className="text-lg font-bold text-destructive">{t('cancelIntervention')}</h3>
         <p className="text-xs text-muted-foreground">
           Booking: <span className="font-semibold text-foreground">{booking.id}</span>
         </p>
@@ -43,7 +43,7 @@ export function AdminCancelBookingModal({
             value={reason}
             onChange={(e) => onReasonChange(e.target.value)}
             placeholder="State administrative reason for intervention..."
-            className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-rose-500/25"
+            className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-destructive/25"
             data-testid="cancel-reason-textarea"
           />
         </div>
@@ -67,7 +67,7 @@ export function AdminCancelBookingModal({
           <button
             disabled={!reason.trim()}
             onClick={onConfirm}
-            className="px-4 py-2 bg-rose-600 hover:bg-rose-500 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition"
+            className="px-4 py-2 bg-destructive hover:bg-destructive/90 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition"
             data-testid="confirm-cancel-booking-btn"
           >
             {t('confirmCancel')}

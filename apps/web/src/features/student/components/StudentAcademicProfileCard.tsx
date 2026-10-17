@@ -164,7 +164,7 @@ export function StudentAcademicProfileCard({
             </div>
 
             <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-surface/50 border border-border/40">
-              <BookOpen className="h-4 w-4 text-emerald-500 shrink-0 mt-0.5" />
+              <BookOpen className="h-4 w-4 text-success-soft-foreground shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-muted-foreground font-medium">
                   {isBn ? 'শ্রেণী ও কারিকুলাম' : 'Class & Curriculum'}
@@ -177,7 +177,7 @@ export function StudentAcademicProfileCard({
 
             {studentProfile?.stream && (
               <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-surface/50 border border-border/40">
-                <Sparkles className="h-4 w-4 text-amber-500 shrink-0 mt-0.5" />
+                <Sparkles className="h-4 w-4 text-warning shrink-0 mt-0.5" />
                 <div className="min-w-0">
                   <p className="text-[11px] text-muted-foreground font-medium">
                     {isBn ? 'বিভাগ / শাখা' : 'Stream / Group'}
@@ -190,7 +190,7 @@ export function StudentAcademicProfileCard({
             )}
 
             <div className="flex items-start gap-2.5 p-2.5 rounded-xl bg-surface/50 border border-border/40">
-              <ShieldCheck className="h-4 w-4 text-sky-500 shrink-0 mt-0.5" />
+              <ShieldCheck className="h-4 w-4 text-info-soft-foreground shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-muted-foreground font-medium">
                   {isBn ? 'অভিভাবক স্থিতি' : 'Guardian Status'}
@@ -261,7 +261,7 @@ export function StudentAcademicProfileCard({
             </div>
 
             {errorMessage && (
-              <div className="mt-4 p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-xs text-rose-500 font-semibold">
+              <div className="mt-4 p-3 rounded-xl bg-destructive/10 border border-destructive/40 text-xs text-destructive font-semibold">
                 {errorMessage}
               </div>
             )}

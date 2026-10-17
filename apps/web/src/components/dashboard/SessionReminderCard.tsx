@@ -37,8 +37,8 @@ export function SessionReminderCard({
           <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
             {isBn ? 'রিমাইন্ডার ও লাইভ ক্লাস' : 'Reminders & Live Class'}
           </span>
-          <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20">
-            <span className="h-1.5 w-1.5 rounded-full bg-emerald-500 animate-pulse" />
+          <span className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-primary/10 text-primary  border border-primary/20">
+            <span className="h-1.5 w-1.5 rounded-full bg-primary animate-pulse" />
             {isBn ? 'আসন্ন ক্লাস' : 'Upcoming'}
           </span>
         </div>

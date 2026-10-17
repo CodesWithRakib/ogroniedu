@@ -39,7 +39,7 @@ export function CheckoutMethodPicker({
     <Card className="border border-border shadow-sm">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <CreditCard className="w-5 h-5 text-indigo-600" />
+          <CreditCard className="w-5 h-5 text-interactive" />
           {p.selectGateway}
         </CardTitle>
       </CardHeader>
@@ -49,19 +49,19 @@ export function CheckoutMethodPicker({
           onClick={() => onSelectGateway('sslcommerz')}
           className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
             selectedGateway === 'sslcommerz'
-              ? 'border-cyan-500 bg-cyan-500/10 ring-2 ring-cyan-500/30'
-              : 'border-border hover:border-slate-300 dark:hover:border-slate-700'
+              ? 'border-info/40 bg-interactive/10 ring-2 ring-info/30'
+              : 'border-border hover:border-border '
           }`}
           data-testid="gateway-picker-sslcommerz"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-cyan-600 to-blue-700 text-white font-black flex items-center justify-center text-[10px] tracking-tight shadow-sm">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-interactive to-interactive-accent text-interactive-foreground font-black flex items-center justify-center text-[10px] tracking-tight shadow-sm">
               SSL
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-slate-900 dark:text-white">{p.sslTitle}</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                <span className="font-semibold text-foreground ">{p.sslTitle}</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-interactive/15 text-info-soft-foreground border border-info/40">
                   {locale === 'bn' ? 'সুপারিশকৃত' : 'Recommended'}
                 </span>
               </div>
@@ -73,7 +73,7 @@ export function CheckoutMethodPicker({
             name="gateway"
             checked={selectedGateway === 'sslcommerz'}
             onChange={() => onSelectGateway('sslcommerz')}
-            className="w-4 h-4 text-cyan-600"
+            className="w-4 h-4 text-info-soft-foreground"
           />
         </div>
 
@@ -83,7 +83,7 @@ export function CheckoutMethodPicker({
           className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
             selectedGateway === 'bkash'
               ? 'border-pink-500 bg-pink-500/5 ring-2 ring-pink-500/30'
-              : 'border-border hover:border-slate-300 dark:hover:border-slate-700'
+              : 'border-border hover:border-border '
           }`}
           data-testid="gateway-picker-bkash"
         >
@@ -92,7 +92,7 @@ export function CheckoutMethodPicker({
               বিকাশ
             </div>
             <div>
-              <div className="font-semibold text-slate-900 dark:text-white">{p.bkashTitle}</div>
+              <div className="font-semibold text-foreground ">{p.bkashTitle}</div>
               <div className="text-xs text-muted-foreground">{p.bkashDesc}</div>
             </div>
           </div>
@@ -110,17 +110,17 @@ export function CheckoutMethodPicker({
           onClick={() => onSelectGateway('nagad')}
           className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
             selectedGateway === 'nagad'
-              ? 'border-orange-500 bg-orange-500/5 ring-2 ring-orange-500/30'
-              : 'border-border hover:border-slate-300 dark:hover:border-slate-700'
+              ? 'border-warning/40 bg-warning/5 ring-2 ring-orange-500/30'
+              : 'border-border hover:border-border '
           }`}
           data-testid="gateway-picker-nagad"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-orange-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+            <div className="w-10 h-10 rounded-lg bg-warning text-white font-bold flex items-center justify-center text-sm shadow-sm">
               নগদ
             </div>
             <div>
-              <div className="font-semibold text-slate-900 dark:text-white">{p.nagadTitle}</div>
+              <div className="font-semibold text-foreground ">{p.nagadTitle}</div>
               <div className="text-xs text-muted-foreground">{p.nagadDesc}</div>
             </div>
           </div>
@@ -129,7 +129,7 @@ export function CheckoutMethodPicker({
             name="gateway"
             checked={selectedGateway === 'nagad'}
             onChange={() => onSelectGateway('nagad')}
-            className="w-4 h-4 text-orange-600"
+            className="w-4 h-4 text-orange-700"
           />
         </div>
       </CardContent>
@@ -137,7 +137,7 @@ export function CheckoutMethodPicker({
         {payError && (
           <div
             role="alert"
-            className="mb-3 w-full rounded-lg border border-rose-200 bg-rose-50 p-2.5 text-xs text-rose-700"
+            className="mb-3 w-full rounded-lg border border-destructive/20 bg-destructive-soft p-2.5 text-xs text-destructive"
             data-testid="payment-error"
           >
             {payError}
@@ -146,7 +146,7 @@ export function CheckoutMethodPicker({
         <Button
           onClick={onPay}
           disabled={isProcessing || Boolean(payDisabledReason) || order.status !== 'pending'}
-          className="w-full bg-emerald-600 hover:bg-emerald-700 text-white font-semibold py-3 text-base flex items-center justify-center gap-2"
+          className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 text-base flex items-center justify-center gap-2"
           data-testid="pay-now-btn"
         >
           {isProcessing ? (

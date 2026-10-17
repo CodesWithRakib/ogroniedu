@@ -11,7 +11,13 @@ import { toQueryString } from '../src/lib/api/query';
 import { normalizeApiError, normalizeUnknownError } from '../src/lib/api-error';
 import { formatDate, formatDateTime, formatGroupedNumber, formatBDTMinor } from '../src/lib/format';
 import { navForRole } from '../src/lib/navigation';
-import { isAppTheme, DEFAULT_THEME, APP_THEMES } from '../src/lib/theme/themes';
+import {
+  BRAND,
+  BRAND_USAGE_RULES,
+  SEMANTIC_COLORS,
+  contrastRatio,
+  relativeLuminance,
+} from '../src/lib/theme/brand';
 import {
   mapAdminUsers,
   mapAdminBookings,
@@ -108,15 +114,44 @@ describe('API contract parsing (Phase 22)', () => {
   });
 });
 
-describe('Theme registry', () => {
-  it('exposes themes with ocean-teal default', () => {
-    expect(APP_THEMES.length).toBeGreaterThanOrEqual(3);
-    expect(APP_THEMES).toContain('midnight-violet');
-    expect(APP_THEMES).toContain('ocean-teal');
-    expect(APP_THEMES).toContain('emerald-slate');
-    expect(DEFAULT_THEME).toBe('ocean-teal');
-    expect(isAppTheme('emerald-slate')).toBe(true);
-    expect(isAppTheme('light')).toBe(false);
+describe('Brand configuration (light theme only)', () => {
+  it('preserves the exact product-owner approved brand hex values', () => {
+    expect(BRAND.oceanTeal.primaryColor).toBe('#0df5c4');
+    expect(BRAND.oceanTeal.accentColor).toBe('#00e1b2');
+    expect(BRAND.sapphireBlue.primaryColor).toBe('#2563eb');
+    expect(BRAND.sapphireBlue.accentColor).toBe('#3b82f6');
+  });
+
+  it('derives accessible semantic shades instead of changing the approved hexes', () => {
+    // Bright mint is a fill token, never text on white.
+    expect(SEMANTIC_COLORS.brand).toBe('#0df5c4');
+    expect(SEMANTIC_COLORS.brandAccent).toBe('#00e1b2');
+    expect(contrastRatio(SEMANTIC_COLORS.brand, '#ffffff')).toBeLessThan(3);
+    // Ink on a mint fill stays readable.
+    expect(contrastRatio(SEMANTIC_COLORS.brandForeground, SEMANTIC_COLORS.brand)).toBeGreaterThanOrEqual(4.5);
+    // Derived action/interactive/status colours clear WCAG AA on white.
+    expect(contrastRatio(SEMANTIC_COLORS.primary, '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(SEMANTIC_COLORS.interactive, '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(SEMANTIC_COLORS.interactiveHover, '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(SEMANTIC_COLORS.success, '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(SEMANTIC_COLORS.warning, '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(SEMANTIC_COLORS.info, '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    expect(contrastRatio(SEMANTIC_COLORS.destructive, '#ffffff')).toBeGreaterThanOrEqual(4.5);
+    // Body text on the light canvas.
+    expect(contrastRatio(SEMANTIC_COLORS.foreground, SEMANTIC_COLORS.background)).toBeGreaterThanOrEqual(7);
+    expect(contrastRatio(SEMANTIC_COLORS.mutedForeground, SEMANTIC_COLORS.card)).toBeGreaterThanOrEqual(4.5);
+  });
+
+  it('computes WCAG relative luminance and contrast ratios correctly', () => {
+    expect(relativeLuminance('#000000')).toBeCloseTo(0, 5);
+    expect(relativeLuminance('#ffffff')).toBeCloseTo(1, 5);
+    expect(contrastRatio('#000000', '#ffffff')).toBeCloseTo(21, 1);
+    expect(contrastRatio('#ffffff', '#ffffff')).toBeCloseTo(1, 5);
+  });
+
+  it('documents the light-theme-only brand rules', () => {
+    expect(BRAND_USAGE_RULES.length).toBeGreaterThanOrEqual(4);
+    expect(BRAND_USAGE_RULES.join(' ')).toMatch(/no dark mode/i);
   });
 });
 

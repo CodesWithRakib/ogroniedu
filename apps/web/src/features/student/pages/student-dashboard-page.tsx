@@ -163,30 +163,30 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
         </span>
         <Link
           href={withLocale('/dashboard/student/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
         >
-          <BookOpen className="w-3.5 h-3.5 text-cyan-600 dark:text-cyan-400" />
+          <BookOpen className="w-3.5 h-3.5 text-info-soft-foreground " />
           <span>{isBn ? 'লার্নিং হাব' : 'Learning Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
         >
-          <Calendar className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400" />
+          <Calendar className="w-3.5 h-3.5 text-success-soft-foreground " />
           <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
         >
-          <Inbox className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400" />
+          <Inbox className="w-3.5 h-3.5 text-warning " />
           <span>{isBn ? 'টিউশন অনুরোধ' : 'Tuition Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 dark:bg-slate-800 dark:hover:bg-slate-700 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted hover:bg-muted   text-foreground text-xs font-semibold transition-colors"
         >
-          <CreditCard className="w-3.5 h-3.5 text-indigo-600 dark:text-indigo-400" />
+          <CreditCard className="w-3.5 h-3.5 text-interactive " />
           <span>{isBn ? 'টিউশন ফি ও পেমেন্ট' : 'Tuition Payments'}</span>
         </Link>
         <Link
@@ -354,10 +354,10 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                     <span
                       className={`px-3 py-1 text-[11px] font-bold rounded-full border ${
                         r.status === 'accepted'
-                          ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25'
+                          ? 'bg-primary/10 text-success-soft-foreground  border-primary/40'
                           : r.status === 'rejected'
-                            ? 'bg-rose-500/10 text-rose-600 dark:text-rose-400 border-rose-500/25'
-                            : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25'
+                            ? 'bg-destructive/10 text-destructive  border-destructive/40'
+                            : 'bg-warning/10 text-warning  border-warning/40'
                       }`}
                     >
                       {String(r.status)}

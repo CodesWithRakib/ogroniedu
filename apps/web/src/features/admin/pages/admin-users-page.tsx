@@ -73,7 +73,7 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
           {actions.actionError && (
             <div
               role="alert"
-              className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-sm text-rose-300"
+              className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-soft-foreground"
               data-testid="admin-action-error"
             >
               {actions.actionError}
@@ -82,18 +82,18 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
 
           {actions.activeImpersonation && (
             <div
-              className="bg-amber-500/10 border-2 border-amber-500/50 rounded-2xl p-4 flex items-center justify-between shadow-lg shadow-amber-500/10 animate-pulse"
+              className="bg-warning/10 border-2 border-warning/40 rounded-2xl p-4 flex items-center justify-between shadow-lg shadow-sm animate-pulse"
               data-testid="active-impersonation-banner"
             >
               <div className="flex items-center space-x-3">
                 <span className="text-2xl">⚠️</span>
                 <div>
-                  <p className="font-bold text-amber-600 dark:text-amber-400 text-sm tracking-wide">
+                  <p className="font-bold text-warning  text-sm tracking-wide">
                     {t('activeImpersonationBanner')}:{' '}
                     <span className="underline">{actions.activeImpersonation.targetName}</span> (
                     {actions.activeImpersonation.targetId})
                   </p>
-                  <p className="text-xs text-amber-600/80 dark:text-amber-300/80">
+                  <p className="text-xs text-warning/80 ">
                     {t('impersonationWarning')} (Session window:{' '}
                     {actions.activeImpersonation.expiresIn} min)
                   </p>
@@ -101,7 +101,7 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
               </div>
               <button
                 onClick={actions.terminateImpersonation}
-                className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-medium text-xs shadow-xs transition"
+                className="px-4 py-2 bg-warning hover:bg-warning/90 text-white rounded-xl font-medium text-xs shadow-xs transition"
                 data-testid="terminate-impersonation-btn"
               >
                 {t('terminateImpersonation')}
@@ -113,10 +113,10 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn' ? 'ব্যবহারকারী ও রোল ব্যবস্থাপনা' : 'User & Access Management'}
                 </h1>
-                <span className="px-3 py-1 text-xs font-bold rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                <span className="px-3 py-1 text-xs font-bold rounded-full bg-interactive/15 text-info-soft-foreground border border-info/40">
                   {totalUsers} {locale === 'bn' ? 'অ্যাকাউন্ট' : 'Accounts'}
                 </span>
               </div>
@@ -135,9 +135,9 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'সক্রিয় অ্যাকাউন্ট' : 'Active Accounts'}
                 </p>
-                <p className="text-2xl font-black text-emerald-400 mt-1 font-mono">{activeCount}</p>
+                <p className="text-2xl font-black text-success-soft-foreground mt-1 font-mono">{activeCount}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/40 flex items-center justify-center text-success-soft-foreground">
                 <UserCheck className="w-5 h-5" />
               </div>
             </div>
@@ -147,9 +147,9 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'স্থগিত অ্যাকাউন্ট' : 'Suspended Accounts'}
                 </p>
-                <p className="text-2xl font-black text-rose-400 mt-1 font-mono">{suspendedCount}</p>
+                <p className="text-2xl font-black text-destructive-soft-foreground mt-1 font-mono">{suspendedCount}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-400">
+              <div className="w-10 h-10 rounded-xl bg-destructive/10 border border-destructive/40 flex items-center justify-center text-destructive-soft-foreground">
                 <ShieldAlert className="w-5 h-5" />
               </div>
             </div>
@@ -159,9 +159,9 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'স্টাফ ও অপারেটর' : 'Staff & Operators'}
                 </p>
-                <p className="text-2xl font-black text-cyan-400 mt-1 font-mono">{staffCount}</p>
+                <p className="text-2xl font-black text-info-soft-foreground mt-1 font-mono">{staffCount}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+              <div className="w-10 h-10 rounded-xl bg-interactive/10 border border-info/40 flex items-center justify-center text-info-soft-foreground">
                 <Users className="w-5 h-5" />
               </div>
             </div>

@@ -18,7 +18,7 @@ export function StatCard({
   return (
     <Card data-testid={testId}>
       <CardHeader>
-        <CardTitle className="text-sm font-medium text-slate-500">{label}</CardTitle>
+        <CardTitle className="text-sm font-medium text-muted-foreground">{label}</CardTitle>
       </CardHeader>
       <CardContent>
         {isLoading ? (
@@ -26,7 +26,7 @@ export function StatCard({
         ) : (
           <p className="text-2xl font-bold">{value}</p>
         )}
-        {hint && <p className="mt-1 text-xs text-slate-500">{hint}</p>}
+        {hint && <p className="mt-1 text-xs text-muted-foreground">{hint}</p>}
       </CardContent>
     </Card>
   );

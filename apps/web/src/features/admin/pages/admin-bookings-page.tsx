@@ -48,7 +48,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
           {actions.actionError && (
             <div
               role="alert"
-              className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-sm text-rose-300"
+              className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-soft-foreground"
               data-testid="admin-action-error"
             >
               {actions.actionError}
@@ -59,10 +59,10 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
             <div>
               <div className="flex items-center space-x-3">
-                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+                <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn' ? 'বুকিং ও প্ল্যাটফর্ম হস্তক্ষেপ' : 'Bookings & Interventions'}
                 </h1>
-                <span className="px-3 py-1 text-xs font-bold rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
+                <span className="px-3 py-1 text-xs font-bold rounded-full bg-interactive/15 text-info-soft-foreground border border-info/40">
                   {totalBookings} {locale === 'bn' ? 'বুকিং' : 'Bookings'}
                 </span>
               </div>
@@ -81,9 +81,9 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'চলমান নিশ্চিত বুকিং' : 'Active Confirmed'}
                 </p>
-                <p className="text-2xl font-black text-cyan-400 mt-1 font-mono">{activeCount}</p>
+                <p className="text-2xl font-black text-info-soft-foreground mt-1 font-mono">{activeCount}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/20 flex items-center justify-center text-cyan-400">
+              <div className="w-10 h-10 rounded-xl bg-interactive/10 border border-info/40 flex items-center justify-center text-info-soft-foreground">
                 <Clock className="w-5 h-5" />
               </div>
             </div>
@@ -93,11 +93,11 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'সম্পন্ন সেশন' : 'Completed Sessions'}
                 </p>
-                <p className="text-2xl font-black text-emerald-400 mt-1 font-mono">
+                <p className="text-2xl font-black text-success-soft-foreground mt-1 font-mono">
                   {completedCount}
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/10 border border-emerald-500/20 flex items-center justify-center text-emerald-400">
+              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/40 flex items-center justify-center text-success-soft-foreground">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
             </div>
@@ -107,9 +107,9 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'মোট বুকিং রেকর্ড' : 'Total Bookings'}
                 </p>
-                <p className="text-2xl font-black text-white mt-1 font-mono">{totalBookings}</p>
+                <p className="text-2xl font-black text-foreground mt-1 font-mono">{totalBookings}</p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 flex items-center justify-center text-purple-400">
+              <div className="w-10 h-10 rounded-xl bg-interactive/10 border border-interactive/30 flex items-center justify-center text-interactive">
                 <Calendar className="w-5 h-5" />
               </div>
             </div>

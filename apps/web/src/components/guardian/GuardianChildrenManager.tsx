@@ -123,7 +123,7 @@ export function GuardianChildrenManager({
                       {child.isMinor && (
                         <Badge
                           variant="outline"
-                          className="text-xs bg-amber-500/10 text-amber-600 border-amber-200"
+                          className="text-xs bg-warning/10 text-warning border-warning/20"
                         >
                           {locale === 'bn' ? 'অপ্রাপ্তবয়স্ক (Minor)' : 'Minor (<18)'}
                         </Badge>
@@ -145,7 +145,7 @@ export function GuardianChildrenManager({
               <CardContent className="space-y-3 text-sm">
                 <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-2">
                   <span className="flex items-center gap-1.5">
-                    <ShieldCheck className="h-4 w-4 text-emerald-600" />
+                    <ShieldCheck className="h-4 w-4 text-success-soft-foreground" />
                     {locale === 'bn' ? 'সম্পর্ক:' : 'Relation:'}{' '}
                     <strong className="text-foreground capitalize">{child.relationshipType}</strong>
                   </span>
@@ -238,7 +238,7 @@ export function GuardianChildrenManager({
                       id="checkbox-consent"
                       checked={consentAgreed}
                       onChange={(e) => setConsentAgreed(e.target.checked)}
-                      className="mt-1 h-4 w-4 rounded border-gray-300 text-primary focus:ring-primary cursor-pointer"
+                      className="mt-1 h-4 w-4 rounded border-border text-primary focus:ring-primary cursor-pointer"
                       required
                     />
                     <label

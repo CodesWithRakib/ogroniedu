@@ -29,7 +29,7 @@ export function HomePage({ locale }: { locale: Locale }) {
   const { stats } = usePlatformStats();
 
   return (
-    <div className="relative overflow-hidden bg-[#051318] text-white">
+    <div className="relative overflow-hidden bg-background text-foreground">
       {/* Schema.org EducationalOrganization & WebSite Microdata */}
       <script
         type="application/ld+json"
@@ -65,9 +65,9 @@ export function HomePage({ locale }: { locale: Locale }) {
       />
 
       {/* Ambient Gradient Lights matching the design's dark emerald glow */}
-      <div className="absolute top-0 right-1/4 w-[700px] h-[450px] bg-[#0df5c4]/12 rounded-full blur-[160px] pointer-events-none -z-10" />
-      <div className="absolute top-36 left-10 w-[500px] h-[350px] bg-[#0d9488]/10 rounded-full blur-[140px] pointer-events-none -z-10" />
-      <div className="absolute top-[600px] left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-teal-500/10 rounded-full blur-[160px] pointer-events-none -z-10" />
+      <div className="absolute top-0 right-1/4 w-[700px] h-[450px] bg-brand-soft rounded-full blur-[160px] pointer-events-none -z-10" />
+      <div className="absolute top-36 left-10 w-[500px] h-[350px] bg-primary/10 rounded-full blur-[140px] pointer-events-none -z-10" />
+      <div className="absolute top-[600px] left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-primary/10 rounded-full blur-[160px] pointer-events-none -z-10" />
 
       {/* ====================================================================
        * HERO SECTION: Pixel-Perfect to the Reference Design
@@ -78,9 +78,9 @@ export function HomePage({ locale }: { locale: Locale }) {
             {/* Left Column: Trust Badge, Bold Headlines, Subtitle & Search */}
             <div className="lg:col-span-6 space-y-4 sm:space-y-5 text-left z-10">
               {/* Trust Pill Badge */}
-              <div className="inline-flex flex-nowrap items-center gap-2.5 rounded-full border border-teal-500/35 bg-[#062026]/90 py-1.5 px-3.5 backdrop-blur-md shadow-[0_0_20px_rgba(13,245,196,0.12)] whitespace-nowrap">
-                <div className="flex items-center gap-1.5 text-xs font-semibold text-teal-200">
-                  <ShieldCheck className="h-4 w-4 text-[#0df5c4]" />
+              <div className="inline-flex flex-nowrap items-center gap-2.5 rounded-full border border-primary/40 bg-card/90 py-1.5 px-3.5 backdrop-blur-md shadow-sm whitespace-nowrap">
+                <div className="flex items-center gap-1.5 text-xs font-semibold text-primary-soft-foreground">
+                  <ShieldCheck className="h-4 w-4 text-primary" />
                   <span>
                     {isBn
                       ? '১০,০০০+ অভিভাবক ও শিক্ষার্থীর আস্থা'
@@ -96,28 +96,28 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </div>
 
                 {/* Star Ratings */}
-                <div className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-amber-400">
+                <div className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-warning-soft-foreground">
                   <span className="tracking-tighter">★★★★★</span>
-                  <span className="text-slate-200 font-semibold ml-0.5">4.8/5</span>
-                  <span className="text-slate-400 font-normal text-[10px]">(2.5k+ reviews)</span>
+                  <span className="text-foreground font-semibold ml-0.5">4.8/5</span>
+                  <span className="text-muted-foreground font-normal text-[10px]">(2.5k+ reviews)</span>
                 </div>
               </div>
 
               {/* Main Headline: Exactly 2 Lines on Desktop */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[42px] xl:text-[50px] font-black tracking-tight text-white leading-[1.12]">
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[42px] xl:text-[50px] font-black tracking-tight text-foreground leading-[1.12]">
                 {isBn ? 'সঠিক শিক্ষক খুঁজুন।' : 'Find the Right Tutor.'}
                 <br />
                 {isBn ? (
-                  <span className="text-[#0df5c4]">সুপ্ত মেধার বিকাশ ঘটান।</span>
+                  <span className="text-primary">সুপ্ত মেধার বিকাশ ঘটান।</span>
                 ) : (
                   <>
-                    Unlock <span className="text-[#0df5c4]">Their Potential.</span>
+                    Unlock <span className="text-primary">Their Potential.</span>
                   </>
                 )}
               </h1>
 
               {/* Subtitle Description */}
-              <p className="text-sm sm:text-base text-slate-300 max-w-xl leading-relaxed">
+              <p className="text-sm sm:text-base text-muted-foreground max-w-xl leading-relaxed">
                 {isBn
                   ? 'বাংলা ও ইংরেজি মাধ্যম, মাদ্রাসা এবং বিশ্ববিদ্যালয় ভর্তি পরীক্ষার জন্য অভিজ্ঞ ও ভেরিফাইড শিক্ষকদের সাথে সরাসরি যুক্ত হোন এক প্ল্যাটফর্মে।'
                   : 'Get connected with verified tutors for Bangla & English curriculum, Madrasah, and university admission prep — all in one place.'}
@@ -134,7 +134,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               {/* Custom Interactive Visual Stage */}
               <div className="relative w-full max-w-[640px] select-none">
                 {/* 1. Base Layer: Real Student Photo Sitting at Desk (Rock-Solid Intrinsic Dimensions) */}
-                <div className="relative w-full rounded-3xl overflow-hidden shadow-[0_25px_60px_rgba(0,0,0,0.7)] ring-1 ring-white/10">
+                <div className="relative w-full rounded-3xl overflow-hidden shadow-card ring-1 ring-border">
                   <Image
                     src="/images/hero-student-pure.png"
                     alt="Student learning at desk with verified tutor"
@@ -145,7 +145,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                     className="w-full h-auto object-cover block"
                   />
                   {/* Subtle edge blend overlay */}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#051318]/50 via-transparent to-transparent pointer-events-none" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-background/50 via-transparent to-transparent pointer-events-none" />
                 </div>
 
                 {/* 2. Custom Floating Doodle: "Better Learning, Brighter Future ♡" with arrow */}
@@ -163,7 +163,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </div>
 
                 {/* 4. Live Interactive Student Dashboard iPad Tablet */}
-                <div className="absolute -bottom-6 -right-1 sm:-bottom-8 sm:-right-2 w-[380px] sm:w-[410px] scale-[0.82] sm:scale-[0.86] origin-bottom-right z-25 transition-all duration-500 drop-shadow-[0_30px_60px_rgba(0,0,0,0.95)] hover:scale-[0.89]">
+                <div className="absolute -bottom-6 -right-1 sm:-bottom-8 sm:-right-2 w-[380px] sm:w-[410px] scale-[0.82] sm:scale-[0.86] origin-bottom-right z-25 transition-all duration-500 drop-shadow-card hover:scale-[0.89]">
                   <HeroStudentTablet />
                 </div>
               </div>
@@ -176,7 +176,7 @@ export function HomePage({ locale }: { locale: Locale }) {
        * STATS & SOCIAL PROOF STRIP (Directly Below Hero)
        * ==================================================================== */}
       <section
-        className="relative py-6 sm:py-7 border-y border-teal-500/20 bg-[#061820]/95 backdrop-blur-xl"
+        className="relative py-6 sm:py-7 border-y border-primary/40 bg-card/95 backdrop-blur-xl"
         data-testid="platform-metrics-band"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -185,16 +185,16 @@ export function HomePage({ locale }: { locale: Locale }) {
             <div className="grid grid-cols-2 md:grid-cols-4 gap-6 sm:gap-10 w-full lg:w-auto">
               {/* Stat 1: Happy Students */}
               <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-[#0a2730] border border-teal-500/35 text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
                   <Users className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                     {stats?.activeStudents
                       ? `${formatLocalizedNumber(stats.activeStudents, locale)}+`
                       : '10,000+'}
                   </div>
-                  <div className="text-xs text-slate-400 font-medium">
+                  <div className="text-xs text-muted-foreground font-medium">
                     {isBn ? 'সন্তুষ্ট শিক্ষার্থী' : 'Happy Students'}
                   </div>
                 </div>
@@ -202,16 +202,16 @@ export function HomePage({ locale }: { locale: Locale }) {
 
               {/* Stat 2: Verified Tutors */}
               <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-[#0a2730] border border-teal-500/35 text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
                   <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                     {stats?.verifiedTutors
                       ? `${formatLocalizedNumber(stats.verifiedTutors, locale)}+`
                       : '2,500+'}
                   </div>
-                  <div className="text-xs text-slate-400 font-medium">
+                  <div className="text-xs text-muted-foreground font-medium">
                     {isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutors'}
                   </div>
                 </div>
@@ -219,14 +219,14 @@ export function HomePage({ locale }: { locale: Locale }) {
 
               {/* Stat 3: Satisfaction Rate */}
               <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-[#0a2730] border border-teal-500/35 text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
                   <Heart className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                     95%
                   </div>
-                  <div className="text-xs text-slate-400 font-medium">
+                  <div className="text-xs text-muted-foreground font-medium">
                     {isBn ? 'সন্তুষ্টির হার' : 'Satisfaction Rate'}
                   </div>
                 </div>
@@ -234,14 +234,14 @@ export function HomePage({ locale }: { locale: Locale }) {
 
               {/* Stat 4: 24/7 Support */}
               <div className="flex items-center gap-3.5">
-                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-[#0a2730] border border-teal-500/35 text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
+                <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
                   <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                     24/7
                   </div>
-                  <div className="text-xs text-slate-400 font-medium">
+                  <div className="text-xs text-muted-foreground font-medium">
                     {isBn ? 'সহায়তা ও সাপোর্ট' : 'Support'}
                   </div>
                 </div>
@@ -257,12 +257,12 @@ export function HomePage({ locale }: { locale: Locale }) {
                   <StudentAvatar index={1} size="md" />
                   <StudentAvatar index={2} size="md" />
                   <StudentAvatar index={3} size="md" />
-                  <StudentAvatar index={4} size="md" className="ring-2 ring-[#0df5c4]" />
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-[#07242a] border border-teal-500/40 text-[#0df5c4] text-[10px] font-black shadow-xs">
+                  <StudentAvatar index={4} size="md" className="ring-2 ring-brand" />
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-card border border-primary/40 text-primary text-[10px] font-black shadow-xs">
                     +10k
                   </div>
                 </div>
-                <div className="text-left text-xs text-slate-300 font-medium max-w-[160px] leading-snug">
+                <div className="text-left text-xs text-muted-foreground font-medium max-w-[160px] leading-snug">
                   {isBn
                     ? 'হাজারো সন্তুষ্ট শিক্ষার্থী ও অভিভাবকের সাথে যুক্ত হোন'
                     : 'Join thousands of happy students and parents'}
@@ -279,10 +279,10 @@ export function HomePage({ locale }: { locale: Locale }) {
       <section className="py-16 sm:py-24 relative">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-left mb-12 space-y-2.5">
-            <span className="text-xs font-bold tracking-widest text-[#0df5c4] uppercase">
+            <span className="text-xs font-bold tracking-widest text-primary uppercase">
               {isBn ? 'কেন অগ্রণী এডু বেছে নেবেন' : 'WHY CHOOSE OGRONIEDU'}
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-white font-sans">
+            <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground font-sans">
               {isBn
                 ? 'উন্নত শিক্ষার জন্য আপনার যা প্রয়োজন'
                 : 'Everything You Need for Better Learning'}
@@ -291,14 +291,14 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1: Verified & Experienced Tutors */}
-            <div className="rounded-2xl border border-teal-500/20 bg-[#081f26]/90 p-6 backdrop-blur-xl hover:border-teal-400 hover:shadow-[0_10px_35px_rgba(13,245,196,0.15)] hover:scale-[1.02] transition-all duration-300 space-y-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0a2c35] border border-teal-500/35 text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
+            <div className="rounded-2xl border border-primary/40 bg-card/90 p-6 backdrop-blur-xl hover:border-primary hover:shadow-sm hover:scale-[1.02] transition-all duration-300 space-y-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
                 <Award className="h-6 w-6" />
               </div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'যাচাইকৃত ও অভিজ্ঞ শিক্ষক' : 'Verified & Experienced Tutors'}
               </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {isBn
                   ? 'প্রতিটি শিক্ষকের একাডেমিক ব্যাকগ্রাউন্ড ও এনআইডি পুঙ্খানুপুঙ্খভাবে যাচাইকৃত।'
                   : 'All tutors are carefully verified and background checked.'}
@@ -306,14 +306,14 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 2: Flexible Learning Options */}
-            <div className="rounded-2xl border border-teal-500/20 bg-[#081f26]/90 p-6 backdrop-blur-xl hover:border-teal-400 hover:shadow-[0_10px_35px_rgba(13,245,196,0.15)] hover:scale-[1.02] transition-all duration-300 space-y-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0a2c35] border border-teal-500/35 text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
+            <div className="rounded-2xl border border-primary/40 bg-card/90 p-6 backdrop-blur-xl hover:border-primary hover:shadow-sm hover:scale-[1.02] transition-all duration-300 space-y-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
                 <CalendarDays className="h-6 w-6" />
               </div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'সহজ ও সুবিধাজনক ক্লাস' : 'Flexible Learning Options'}
               </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {isBn
                   ? 'আপনার সুবিধামতো অনলাইন অথবা সরাসরি ইন-পার্সন ক্লাসের সুযোগ।'
                   : 'Online & in-person classes at your convenience.'}
@@ -321,14 +321,14 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 3: Wide Subject Coverage */}
-            <div className="rounded-2xl border border-teal-500/20 bg-[#081f26]/90 p-6 backdrop-blur-xl hover:border-teal-400 hover:shadow-[0_10px_35px_rgba(13,245,196,0.15)] hover:scale-[1.02] transition-all duration-300 space-y-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0a2c35] border border-teal-500/35 text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
+            <div className="rounded-2xl border border-primary/40 bg-card/90 p-6 backdrop-blur-xl hover:border-primary hover:shadow-sm hover:scale-[1.02] transition-all duration-300 space-y-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
                 <BookOpen className="h-6 w-6" />
               </div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'সকল বিষয়ের সমাহার' : 'Wide Subject Coverage'}
               </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {isBn
                   ? 'প্রাথমিক শ্রেণি থেকে বিশ্ববিদ্যালয় ভর্তি প্রস্তুতি পর্যন্ত সকল বিষয়ের শিক্ষক।'
                   : 'From school to university admission prep.'}
@@ -336,14 +336,14 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 4: Track Progress */}
-            <div className="rounded-2xl border border-teal-500/20 bg-[#081f26]/90 p-6 backdrop-blur-xl hover:border-teal-400 hover:shadow-[0_10px_35px_rgba(13,245,196,0.15)] hover:scale-[1.02] transition-all duration-300 space-y-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-[#0a2c35] border border-teal-500/35 text-[#0df5c4] shadow-[0_0_15px_rgba(13,245,196,0.2)]">
+            <div className="rounded-2xl border border-primary/40 bg-card/90 p-6 backdrop-blur-xl hover:border-primary hover:shadow-sm hover:scale-[1.02] transition-all duration-300 space-y-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-full bg-card border border-primary/40 text-primary shadow-sm">
                 <TrendingUp className="h-6 w-6" />
               </div>
-              <h3 className="text-base font-bold text-white">
+              <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'অগ্রগতি পর্যবেক্ষণ' : 'Track Progress'}
               </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {isBn
                   ? 'বিস্তারিত রিপোর্ট এবং অ্যানালিটিক্সের মাধ্যমে শিক্ষার্থীর পড়াশোনার অগ্রগতি দেখুন।'
                   : 'Monitor your learning journey with detailed reports.'}
@@ -356,30 +356,30 @@ export function HomePage({ locale }: { locale: Locale }) {
       {/* ====================================================================
        * 3-STEP JOURNEY SECTION
        * ==================================================================== */}
-      <section className="py-16 sm:py-20 border-t border-teal-500/20 bg-[#061820]/50">
+      <section className="py-16 sm:py-20 border-t border-primary/40 bg-card/50">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14 space-y-2.5">
-            <span className="text-xs font-bold uppercase tracking-wider text-[#0df5c4]">
+            <span className="text-xs font-bold uppercase tracking-wider text-primary">
               {isBn ? 'সহজ ৩টি ধাপ' : 'Simple 3-Step Journey'}
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
               {isBn ? 'যেভাবে সেরা শিক্ষক পাবেন' : 'How You Connect With Top Educators'}
             </h2>
           </div>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
-            <div className="rounded-2xl border border-teal-500/25 bg-[#081f26]/80 p-7 backdrop-blur-md space-y-3.5 hover:border-teal-400 transition-all">
+            <div className="rounded-2xl border border-primary/40 bg-card/80 p-7 backdrop-blur-md space-y-3.5 hover:border-primary transition-all">
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-black text-teal-500/30 font-mono">01</span>
-                <div className="h-9 w-9 rounded-xl bg-[#0df5c4]/15 flex items-center justify-center text-[#0df5c4] font-bold">
+                <span className="text-3xl font-black text-primary/30 font-mono">01</span>
+                <div className="h-9 w-9 rounded-xl bg-brand-soft flex items-center justify-center text-primary font-bold">
                   <Search className="w-4 h-4" />
                 </div>
               </div>
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-lg font-bold text-foreground">
                 {isBn ? 'বিষয় ও এলাকা অনুযায়ী খুঁজুন' : 'Filter by Subject & Location'}
               </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {isBn
                   ? 'বুয়েট, ঢাবি বা মেডিকেল শিক্ষার্থীদের প্রোফাইল, রেটিং ও পারিশ্রমিক দেখে বাছাই করুন।'
                   : 'Browse verified profiles with university credentials, parent reviews, hourly rates, and subject experience.'}
@@ -387,17 +387,17 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-2xl border border-teal-500/25 bg-[#081f26]/80 p-7 backdrop-blur-md space-y-3.5 hover:border-teal-400 transition-all">
+            <div className="rounded-2xl border border-primary/40 bg-card/80 p-7 backdrop-blur-md space-y-3.5 hover:border-primary transition-all">
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-black text-teal-500/30 font-mono">02</span>
-                <div className="h-9 w-9 rounded-xl bg-[#0df5c4]/15 flex items-center justify-center text-[#0df5c4] font-bold">
+                <span className="text-3xl font-black text-primary/30 font-mono">02</span>
+                <div className="h-9 w-9 rounded-xl bg-brand-soft flex items-center justify-center text-primary font-bold">
                   <CalendarDays className="w-4 h-4" />
                 </div>
               </div>
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-lg font-bold text-foreground">
                 {isBn ? 'ফ্রি ট্রায়াল ও শিডিউল নিশ্চিত করুন' : 'Book Trial & Lock Schedule'}
               </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {isBn
                   ? 'প্রথম ট্রায়াল ক্লাসে শিক্ষকের সাথে পরিচিত হোন এবং উভয়ের সুবিধাজনক সময় বুক করুন।'
                   : 'Take a direct introductory session, assess compatibility, and lock non-conflicting time slots.'}
@@ -405,17 +405,17 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-2xl border border-teal-500/25 bg-[#081f26]/80 p-7 backdrop-blur-md space-y-3.5 hover:border-teal-400 transition-all">
+            <div className="rounded-2xl border border-primary/40 bg-card/80 p-7 backdrop-blur-md space-y-3.5 hover:border-primary transition-all">
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-black text-teal-500/30 font-mono">03</span>
-                <div className="h-9 w-9 rounded-xl bg-emerald-500/15 flex items-center justify-center text-emerald-400 font-bold">
+                <span className="text-3xl font-black text-primary/30 font-mono">03</span>
+                <div className="h-9 w-9 rounded-xl bg-primary/15 flex items-center justify-center text-success-soft-foreground font-bold">
                   <ShieldCheck className="w-4 h-4" />
                 </div>
               </div>
-              <h3 className="text-lg font-bold text-white">
+              <h3 className="text-lg font-bold text-foreground">
                 {isBn ? 'এসক্রো সুরক্ষা ও নিয়মিত ক্লাস' : 'Learn with Escrow Protection'}
               </h3>
-              <p className="text-xs text-slate-300 leading-relaxed">
+              <p className="text-xs text-muted-foreground leading-relaxed">
                 {isBn
                   ? 'টাকা থাকবে বাংলাদেশ ব্যাংক নিয়ন্ত্রিত এসক্রোতে। প্রতি মাসের ক্লাস সন্তোষজনকভাবে শেষ হলে শিক্ষক টাকা পাবেন।'
                   : 'Funds remain held securely in escrow until parent and student sign off on delivered classes.'}
@@ -430,20 +430,20 @@ export function HomePage({ locale }: { locale: Locale }) {
        * ==================================================================== */}
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl border border-teal-500/35 bg-gradient-to-br from-[#082029] via-[#061820] to-[#041217] p-8 sm:p-12 shadow-2xl">
-            <div className="absolute top-0 right-0 w-96 h-96 bg-[#0df5c4]/10 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
+          <div className="relative overflow-hidden rounded-3xl border border-primary/40 bg-gradient-to-br from-card via-card to-background p-8 sm:p-12 shadow-2xl">
+            <div className="absolute top-0 right-0 w-96 h-96 bg-brand-soft rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="space-y-3.5 max-w-xl">
-                <div className="inline-flex items-center gap-2 rounded-full border border-teal-500/40 bg-teal-500/10 px-3.5 py-1 text-xs font-semibold text-[#0df5c4]">
+                <div className="inline-flex items-center gap-2 rounded-full border border-primary/40 bg-primary/10 px-3.5 py-1 text-xs font-semibold text-primary">
                   <Sparkles className="h-3.5 w-3.5" />
                   <span>{isBn ? 'অগ্রণী এডু প্ল্যাটফর্ম' : 'OgroniEdu Platform'}</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl font-extrabold text-white">
+                <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground">
                   {isBn
                     ? 'আজই আপনার সন্তানের জন্য সেরা গৃহশিক্ষক নিশ্চিত করুন'
                     : 'Find the ideal verified tutor for your child today'}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                   {isBn
                     ? 'বিনামূল্যে অ্যাকাউন্ট তৈরি করুন এবং ঢাকা ও সারা বাংলাদেশের শীর্ষ বিশ্ববিদ্যালয়ের মেধাবী শিক্ষকদের সাথে কথা বলুন।'
                     : 'Create a free account and directly connect with brilliant university tutors across Dhaka and Bangladesh.'}
@@ -454,7 +454,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <Link href={`/${locale}/register`}>
                   <button
                     type="button"
-                    className="rounded-full bg-[#0df5c4] hover:bg-[#00f2c3] text-[#042426] font-bold text-xs sm:text-sm px-7 py-3 shadow-[0_0_20px_rgba(13,245,196,0.35)] hover:shadow-[0_0_30px_rgba(13,245,196,0.5)] hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
+                    className="rounded-full bg-brand hover:bg-brand-accent text-brand-foreground font-bold text-xs sm:text-sm px-7 py-3 shadow-sm hover:shadow-sm hover:scale-105 transition-all flex items-center gap-2 cursor-pointer"
                   >
                     <span>{isBn ? 'নিবন্ধন করুন' : 'Get Started'}</span>
                     <ArrowRight className="w-4 h-4" />
@@ -463,9 +463,9 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <Link href={`/${locale}/tutors`}>
                   <button
                     type="button"
-                    className="rounded-full border border-teal-500/40 bg-[#0a2730] hover:bg-teal-500/20 text-white font-bold text-xs sm:text-sm px-6 py-3 transition-all flex items-center gap-2 cursor-pointer"
+                    className="rounded-full border border-primary/40 bg-card hover:bg-primary/20 text-foreground font-bold text-xs sm:text-sm px-6 py-3 transition-all flex items-center gap-2 cursor-pointer"
                   >
-                    <Search className="w-4 h-4 text-[#0df5c4]" />
+                    <Search className="w-4 h-4 text-primary" />
                     <span>{isBn ? 'সকল শিক্ষক দেখুন' : 'Browse All Tutors'}</span>
                   </button>
                 </Link>

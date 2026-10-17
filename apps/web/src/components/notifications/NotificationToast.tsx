@@ -30,36 +30,36 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
     switch (category) {
       case 'booking':
         return {
-          icon: <Calendar className="w-5 h-5 text-emerald-400" />,
-          accent: 'border-l-emerald-500 text-emerald-400 bg-emerald-500/10',
+          icon: <Calendar className="w-5 h-5 text-success-soft-foreground" />,
+          accent: 'border-l-emerald-500 text-success-soft-foreground bg-primary/10',
           badgeBn: 'বুকিং',
           badgeEn: 'Booking',
         };
       case 'learning':
         return {
-          icon: <CheckCircle className="w-5 h-5 text-teal-400" />,
-          accent: 'border-l-teal-500 text-teal-400 bg-teal-500/10',
+          icon: <CheckCircle className="w-5 h-5 text-primary-soft-foreground" />,
+          accent: 'border-l-teal-500 text-primary-soft-foreground bg-primary/10',
           badgeBn: 'শিক্ষা ও ক্লাস',
           badgeEn: 'Learning',
         };
       case 'payment':
         return {
-          icon: <CreditCard className="w-5 h-5 text-amber-400" />,
-          accent: 'border-l-amber-500 text-amber-400 bg-amber-500/10',
+          icon: <CreditCard className="w-5 h-5 text-warning-soft-foreground" />,
+          accent: 'border-l-amber-500 text-warning-soft-foreground bg-warning/10',
           badgeBn: 'পেমেন্ট ও এসক্রো',
           badgeEn: 'Payment',
         };
       case 'trust':
         return {
-          icon: <ShieldCheck className="w-5 h-5 text-cyan-400" />,
-          accent: 'border-l-cyan-500 text-cyan-400 bg-cyan-500/10',
+          icon: <ShieldCheck className="w-5 h-5 text-info-soft-foreground" />,
+          accent: 'border-l-cyan-500 text-info-soft-foreground bg-interactive/10',
           badgeBn: 'নিরাপত্তা ও ট্রাস্ট',
           badgeEn: 'Trust & Safety',
         };
       default:
         return {
-          icon: <Bell className="w-5 h-5 text-indigo-400" />,
-          accent: 'border-l-indigo-500 text-indigo-400 bg-indigo-500/10',
+          icon: <Bell className="w-5 h-5 text-interactive-soft-foreground" />,
+          accent: 'border-l-indigo-500 text-interactive-soft-foreground bg-interactive/10',
           badgeBn: 'সিস্টেম নোটিশ',
           badgeEn: 'System',
         };
@@ -82,10 +82,10 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
             key={toast.toastId}
             className={cn(
               'pointer-events-auto relative overflow-hidden flex flex-col rounded-2xl shadow-2xl transition-all duration-300',
-              'bg-slate-900/95 dark:bg-[#04151b]/95 backdrop-blur-xl border border-slate-700/60 dark:border-cyan-500/30 text-white',
+              'bg-card  backdrop-blur-xl border border-border  text-foreground',
               'border-l-4 animate-in slide-in-from-bottom-5',
               isUrgent
-                ? 'border-l-rose-500 shadow-rose-950/30'
+                ? 'border-l-rose-500 shadow-sm'
                 : isHigh
                   ? 'border-l-amber-500'
                   : meta.accent.split(' ')[0],
@@ -94,7 +94,7 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
             <div className="p-4 flex items-start gap-3.5">
               <div
                 className={cn(
-                  'shrink-0 p-2.5 rounded-xl border border-white/10 shadow-xs flex items-center justify-center',
+                  'shrink-0 p-2.5 rounded-xl border border-border shadow-xs flex items-center justify-center',
                   meta.accent.split(' ').slice(1).join(' '),
                 )}
               >
@@ -103,29 +103,29 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
 
               <div className="flex-1 min-w-0 pr-1">
                 <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-white/10 text-white/90">
+                  <span className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
                     {locale === 'bn' ? meta.badgeBn : meta.badgeEn}
                   </span>
                   {soundEnabled && (
                     <span
                       title={locale === 'bn' ? 'ধ্বনি সংকেত বাজানো হয়েছে' : 'Audio chime played'}
-                      className="inline-flex items-center gap-1 text-[10px] text-cyan-300 font-mono"
+                      className="inline-flex items-center gap-1 text-[10px] text-info-soft-foreground font-mono"
                     >
-                      <Volume2 className="w-3 h-3 text-cyan-400" />
+                      <Volume2 className="w-3 h-3 text-info-soft-foreground" />
                       <span>{locale === 'bn' ? 'ধ্বনি সহ' : 'Chime'}</span>
                     </span>
                   )}
                   {isUrgent && (
-                    <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-rose-500 text-white animate-pulse">
+                    <span className="text-[10px] font-black uppercase tracking-wider px-1.5 py-0.5 rounded bg-destructive text-white animate-pulse">
                       {locale === 'bn' ? 'জরুরি' : 'Urgent'}
                     </span>
                   )}
                 </div>
 
-                <h4 className="text-sm font-bold text-white leading-snug line-clamp-1">
+                <h4 className="text-sm font-bold text-foreground leading-snug line-clamp-1">
                   {toast.title}
                 </h4>
-                <p className="mt-1 text-xs text-slate-300 dark:text-slate-300 line-clamp-2 leading-relaxed">
+                <p className="mt-1 text-xs text-muted-foreground  line-clamp-2 leading-relaxed">
                   {toast.body}
                 </p>
 
@@ -134,7 +134,7 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
                     <Link
                       href={toast.navigationTarget}
                       onClick={() => dismissToast(toast.toastId)}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-cyan-400 hover:text-cyan-300 hover:underline transition-colors"
+                      className="inline-flex items-center gap-1 text-xs font-semibold text-info-soft-foreground hover:text-info-soft-foreground hover:underline transition-colors"
                     >
                       <Sparkles className="w-3 h-3" />
                       <span>{locale === 'bn' ? 'কার্যক্রম দেখুন' : 'View Action'}</span>
@@ -147,7 +147,7 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
               <button
                 type="button"
                 onClick={() => dismissToast(toast.toastId)}
-                className="shrink-0 p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition-colors"
+                className="shrink-0 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
                 aria-label={locale === 'bn' ? 'বিজ্ঞপ্তি বন্ধ করুন' : 'Dismiss notification'}
               >
                 <X className="w-4 h-4" />
@@ -155,11 +155,11 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
             </div>
 
             {/* Visual 6-second auto-dismiss progress countdown */}
-            <div className="h-0.5 w-full bg-white/10 overflow-hidden">
+            <div className="h-0.5 w-full bg-muted overflow-hidden">
               <div
                 className={cn(
                   'h-full animate-[shrink_6s_linear_forwards]',
-                  isUrgent ? 'bg-rose-500' : 'bg-gradient-to-r from-cyan-400 to-emerald-400',
+                  isUrgent ? 'bg-destructive' : 'bg-gradient-to-r from-brand to-brand-accent',
                 )}
                 style={{
                   animation: 'toastCountdown 6s linear forwards',

@@ -175,13 +175,13 @@ export function AdminDashboardView({
 
   return (
     <div
-      className="min-h-screen bg-slate-950 text-slate-100 p-6 space-y-6"
+      className="min-h-screen bg-surface-muted text-foreground p-6 space-y-6"
       data-testid="admin-dashboard-view"
     >
       {actions.actionError && (
         <div
           role="alert"
-          className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-sm text-rose-300"
+          className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-soft-foreground"
           data-testid="admin-action-error"
         >
           {actions.actionError}
@@ -190,7 +190,7 @@ export function AdminDashboardView({
       {queryError && (
         <div
           role="alert"
-          className="rounded-xl border border-rose-500/40 bg-rose-500/10 p-3 text-sm text-rose-300"
+          className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-soft-foreground"
           data-testid="admin-query-error"
         >
           {queryError}
@@ -207,18 +207,18 @@ export function AdminDashboardView({
       )}
       {actions.activeImpersonation && (
         <div
-          className="bg-amber-500/10 border-2 border-amber-500/50 rounded-2xl p-4 flex items-center justify-between shadow-lg shadow-amber-500/10 animate-pulse"
+          className="bg-warning/10 border-2 border-warning/40 rounded-2xl p-4 flex items-center justify-between shadow-lg shadow-sm animate-pulse"
           data-testid="active-impersonation-banner"
         >
           <div className="flex items-center space-x-3">
             <span className="text-2xl">⚠️</span>
             <div>
-              <p className="font-bold text-amber-600 dark:text-amber-400 text-sm tracking-wide">
+              <p className="font-bold text-warning  text-sm tracking-wide">
                 {t('activeImpersonationBanner')}:{' '}
                 <span className="underline">{actions.activeImpersonation.targetName}</span> (
                 {actions.activeImpersonation.targetId})
               </p>
-              <p className="text-xs text-amber-600/80 dark:text-amber-300/80">
+              <p className="text-xs text-warning/80 ">
                 {t('impersonationWarning')} (Session window: {actions.activeImpersonation.expiresIn}{' '}
                 min)
               </p>
@@ -226,7 +226,7 @@ export function AdminDashboardView({
           </div>
           <button
             onClick={actions.terminateImpersonation}
-            className="px-4 py-2 bg-amber-600 hover:bg-amber-500 text-white rounded-xl font-medium text-xs shadow-xs transition"
+            className="px-4 py-2 bg-warning hover:bg-warning/90 text-white rounded-xl font-medium text-xs shadow-xs transition"
             data-testid="terminate-impersonation-btn"
           >
             {t('terminateImpersonation')}

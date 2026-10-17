@@ -68,7 +68,7 @@ export function StudentPendingAssignmentsCard({
         {/* Header */}
         <div className="flex items-center justify-between pb-3 border-b border-border/50">
           <div className="flex items-center gap-2.5">
-            <div className="h-9 w-9 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-500 flex items-center justify-center shrink-0">
+            <div className="h-9 w-9 rounded-xl bg-warning/10 border border-warning/40 text-warning flex items-center justify-center shrink-0">
               <FileText className="h-5 w-5" />
             </div>
             <div>
@@ -99,7 +99,7 @@ export function StudentPendingAssignmentsCard({
           ) : assignments.length === 0 ? (
             <div className="py-8 px-4 text-center">
               <div className="h-12 w-12 rounded-2xl bg-surface/80 border border-border/60 mx-auto flex items-center justify-center text-muted-foreground mb-3">
-                <CheckCircle2 className="h-6 w-6 text-emerald-500" />
+                <CheckCircle2 className="h-6 w-6 text-success-soft-foreground" />
               </div>
               <p className="text-xs font-bold text-foreground">
                 {isBn ? 'কোনো বকেয়া হোমওয়ার্ক নেই!' : 'All Caught Up!'}
@@ -122,7 +122,7 @@ export function StudentPendingAssignmentsCard({
                     className="p-3.5 rounded-2xl bg-surface/50 border border-border/50 hover:bg-surface/80 transition-all flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                   >
                     <div className="flex items-start gap-3 min-w-0">
-                      <div className="h-10 w-10 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-500 flex items-center justify-center shrink-0">
+                      <div className="h-10 w-10 rounded-xl bg-warning/10 border border-warning/40 text-warning flex items-center justify-center shrink-0">
                         <FileText className="h-5 w-5" />
                       </div>
 
@@ -134,10 +134,10 @@ export function StudentPendingAssignmentsCard({
                           <span
                             className={`px-2 py-0.5 text-[10px] font-bold rounded-full border ${
                               isReviewed
-                                ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border-emerald-500/25'
+                                ? 'bg-primary/10 text-success-soft-foreground  border-primary/40'
                                 : isSubmitted
-                                  ? 'bg-blue-500/10 text-blue-600 dark:text-blue-400 border-blue-500/25'
-                                  : 'bg-amber-500/10 text-amber-600 dark:text-amber-400 border-amber-500/25'
+                                  ? 'bg-interactive/10 text-interactive  border-interactive/40'
+                                  : 'bg-warning/10 text-warning  border-warning/40'
                             }`}
                           >
                             {isReviewed
@@ -167,7 +167,7 @@ export function StudentPendingAssignmentsCard({
                           </span>
                           {asgn.submission?.score !== null &&
                             asgn.submission?.score !== undefined && (
-                              <span className="font-bold text-emerald-500 flex items-center gap-0.5">
+                              <span className="font-bold text-success-soft-foreground flex items-center gap-0.5">
                                 <Award className="h-3.5 w-3.5" />
                                 <span>
                                   {formatLocalizedNumber(asgn.submission.score, locale)} /{' '}
@@ -247,7 +247,7 @@ export function StudentPendingAssignmentsCard({
             )}
 
             {errorMessage && (
-              <div className="mt-3 p-3 rounded-xl bg-rose-500/10 border border-rose-500/25 text-xs text-rose-500 font-semibold">
+              <div className="mt-3 p-3 rounded-xl bg-destructive/10 border border-destructive/40 text-xs text-destructive font-semibold">
                 {errorMessage}
               </div>
             )}

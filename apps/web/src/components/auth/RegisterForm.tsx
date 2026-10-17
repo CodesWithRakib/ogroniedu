@@ -69,10 +69,10 @@ export function RegisterForm({ locale }: { locale: Locale }) {
         {formError && (
           <div
             role="alert"
-            className="flex items-start gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs font-medium text-rose-700 dark:text-rose-300 animate-in fade-in"
+            className="flex items-start gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-3 text-xs font-medium text-destructive  animate-in fade-in"
             data-testid="register-error"
           >
-            <AlertCircle className="h-4 w-4 shrink-0 text-rose-500 mt-0.5" />
+            <AlertCircle className="h-4 w-4 shrink-0 text-destructive mt-0.5" />
             <span>{formError}</span>
           </div>
         )}

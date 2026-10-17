@@ -134,8 +134,8 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           onClick={() => setActiveTab('filter')}
           className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'filter'
-              ? 'bg-[#0df5c4] text-[#042426] shadow-[0_0_15px_rgba(13,245,196,0.35)]'
-              : 'text-slate-300 hover:text-white bg-[#062026]/80 hover:bg-[#062026] border border-teal-500/20'
+              ? 'bg-brand text-brand-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground bg-card/80 hover:bg-card border border-primary/40'
           }`}
         >
           <SlidersHorizontal className="h-3 w-3" />
@@ -148,8 +148,8 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           onClick={() => setActiveTab('search')}
           className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold transition-all cursor-pointer ${
             activeTab === 'search'
-              ? 'bg-[#0df5c4] text-[#042426] shadow-[0_0_15px_rgba(13,245,196,0.35)]'
-              : 'text-slate-300 hover:text-white bg-[#062026]/80 hover:bg-[#062026] border border-teal-500/20'
+              ? 'bg-brand text-brand-foreground shadow-sm'
+              : 'text-muted-foreground hover:text-foreground bg-card/80 hover:bg-card border border-primary/40'
           }`}
         >
           <Search className="h-3 w-3" />
@@ -163,94 +163,94 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           /* ========================================================
            * MODE 1: DIRECT FILTER (Class + Subject + Location)
            * ======================================================== */
-          <div className="rounded-2xl lg:rounded-full bg-[#061f26]/95 border border-[#0df5c4]/45 backdrop-blur-xl shadow-[0_15px_40px_rgba(0,0,0,0.5),0_0_25px_rgba(13,245,196,0.15)] p-2 lg:p-1.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all">
+          <div className="rounded-2xl lg:rounded-full bg-card/95 border border-border backdrop-blur-xl shadow-sm p-2 lg:p-1.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all">
             {/* Segment 1: Class / Education Level */}
-            <div className="relative flex-1 px-3 py-1.5 rounded-xl lg:rounded-l-full hover:bg-white/5 transition-colors border-b lg:border-b-0 lg:border-r border-teal-500/20">
-              <div className="flex items-center gap-1 text-[9px] font-bold text-teal-300 uppercase tracking-wider mb-0.5">
-                <GraduationCap className="h-3 w-3 text-[#0df5c4]" />
+            <div className="relative flex-1 px-3 py-1.5 rounded-xl lg:rounded-l-full hover:bg-surface-hover transition-colors border-b lg:border-b-0 lg:border-r border-primary/40">
+              <div className="flex items-center gap-1 text-[9px] font-bold text-primary-soft-foreground uppercase tracking-wider mb-0.5">
+                <GraduationCap className="h-3 w-3 text-primary" />
                 <span>{isBn ? 'শ্রেণি / মাধ্যম' : 'Class / Level'}</span>
               </div>
               <div className="relative flex items-center">
                 <select
                   value={selectedLevel}
                   onChange={(e) => setSelectedLevel(e.target.value)}
-                  className="w-full appearance-none bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-5"
+                  className="w-full appearance-none bg-transparent text-xs font-semibold text-foreground focus:outline-none cursor-pointer pr-5"
                 >
-                  <option value="" className="bg-[#081b22] text-slate-300">
+                  <option value="" className="bg-card text-muted-foreground">
                     {isBn ? 'সকল শ্রেণি ও মাধ্যম' : 'All Classes & Curriculums'}
                   </option>
                   {levels.map((lvl) => (
                     <option
                       key={String(lvl.id)}
                       value={String(lvl.id)}
-                      className="bg-[#081b22] text-slate-200"
+                      className="bg-card text-foreground"
                     >
                       {String(isBn ? lvl.nameBn || lvl.nameEn : lvl.nameEn)}
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="h-3.5 w-3.5 text-slate-400 absolute right-0 pointer-events-none" />
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground absolute right-0 pointer-events-none" />
               </div>
             </div>
 
             {/* Segment 2: Subject */}
-            <div className="relative flex-1 px-3 py-1.5 rounded-xl hover:bg-white/5 transition-colors border-b lg:border-b-0 lg:border-r border-teal-500/20">
-              <div className="flex items-center gap-1 text-[9px] font-bold text-teal-300 uppercase tracking-wider mb-0.5">
-                <BookOpen className="h-3 w-3 text-[#0df5c4]" />
+            <div className="relative flex-1 px-3 py-1.5 rounded-xl hover:bg-surface-hover transition-colors border-b lg:border-b-0 lg:border-r border-primary/40">
+              <div className="flex items-center gap-1 text-[9px] font-bold text-primary-soft-foreground uppercase tracking-wider mb-0.5">
+                <BookOpen className="h-3 w-3 text-primary" />
                 <span>{isBn ? 'পড়ার বিষয়' : 'Subject'}</span>
               </div>
               <div className="relative flex items-center">
                 <select
                   value={selectedSubject}
                   onChange={(e) => setSelectedSubject(e.target.value)}
-                  className="w-full appearance-none bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-5"
+                  className="w-full appearance-none bg-transparent text-xs font-semibold text-foreground focus:outline-none cursor-pointer pr-5"
                 >
-                  <option value="" className="bg-[#081b22] text-slate-300">
+                  <option value="" className="bg-card text-muted-foreground">
                     {isBn ? 'সকল বিষয়' : 'All Subjects'}
                   </option>
                   {subjects.map((sub) => (
                     <option
                       key={String(sub.id)}
                       value={String(sub.id)}
-                      className="bg-[#081b22] text-slate-200"
+                      className="bg-card text-foreground"
                     >
                       {String(isBn ? sub.nameBn || sub.nameEn : sub.nameEn)}
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="h-3.5 w-3.5 text-slate-400 absolute right-0 pointer-events-none" />
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground absolute right-0 pointer-events-none" />
               </div>
             </div>
 
             {/* Segment 3: Location / Tuition Mode */}
-            <div className="relative flex-1 px-3 py-1.5 rounded-xl hover:bg-white/5 transition-colors">
-              <div className="flex items-center gap-1 text-[9px] font-bold text-teal-300 uppercase tracking-wider mb-0.5">
-                <MapPin className="h-3 w-3 text-[#0df5c4]" />
+            <div className="relative flex-1 px-3 py-1.5 rounded-xl hover:bg-surface-hover transition-colors">
+              <div className="flex items-center gap-1 text-[9px] font-bold text-primary-soft-foreground uppercase tracking-wider mb-0.5">
+                <MapPin className="h-3 w-3 text-primary" />
                 <span>{isBn ? 'এলাকা বা মাধ্যম' : 'Location / Mode'}</span>
               </div>
               <div className="relative flex items-center">
                 <select
                   value={selectedLocation}
                   onChange={(e) => setSelectedLocation(e.target.value)}
-                  className="w-full appearance-none bg-transparent text-xs font-semibold text-white focus:outline-none cursor-pointer pr-5"
+                  className="w-full appearance-none bg-transparent text-xs font-semibold text-foreground focus:outline-none cursor-pointer pr-5"
                 >
-                  <option value="" className="bg-[#081b22] text-slate-300">
+                  <option value="" className="bg-card text-muted-foreground">
                     {isBn ? 'সারাদেশে বা অনলাইন' : 'Anywhere / Online'}
                   </option>
                   {locations.map((loc) => (
-                    <option key={loc.code} value={loc.code} className="bg-[#081b22] text-slate-200">
+                    <option key={loc.code} value={loc.code} className="bg-card text-foreground">
                       {isBn ? loc.nameBn : loc.nameEn}
                     </option>
                   ))}
                 </select>
-                <ChevronDown className="h-3.5 w-3.5 text-slate-400 absolute right-0 pointer-events-none" />
+                <ChevronDown className="h-3.5 w-3.5 text-muted-foreground absolute right-0 pointer-events-none" />
               </div>
             </div>
 
             {/* Action Button */}
             <button
               type="submit"
-              className="inline-flex items-center justify-center gap-2 rounded-xl lg:rounded-full bg-gradient-to-r from-[#0df5c4] to-[#00f2c3] hover:from-[#00f2c3] hover:to-[#0df5c4] text-[#042426] font-extrabold text-xs px-6 py-3 shadow-[0_0_20px_rgba(13,245,196,0.45)] whitespace-nowrap cursor-pointer shrink-0 transition-transform hover:scale-105 active:scale-95"
+              className="inline-flex items-center justify-center gap-2 rounded-xl lg:rounded-full bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-extrabold text-xs px-6 py-3 shadow-sm whitespace-nowrap cursor-pointer shrink-0 transition-transform hover:scale-105 active:scale-95"
             >
               <Search className="h-4 w-4 stroke-[2.5]" />
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
@@ -260,9 +260,9 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           /* ========================================================
            * MODE 2: QUICK KEYWORD SEARCH (Name, University, Topic)
            * ======================================================== */
-          <div className="rounded-2xl lg:rounded-full bg-[#061f26]/95 border border-[#0df5c4]/45 backdrop-blur-xl shadow-[0_15px_40px_rgba(0,0,0,0.5),0_0_25px_rgba(13,245,196,0.15)] p-2 lg:p-1.5 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all">
+          <div className="rounded-2xl lg:rounded-full bg-card/95 border border-border backdrop-blur-xl shadow-sm p-2 lg:p-1.5 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all">
             <div className="flex items-center flex-1 w-full px-3 py-1.5">
-              <Search className="h-4 w-4 text-[#0df5c4] mr-2.5 shrink-0" />
+              <Search className="h-4 w-4 text-primary mr-2.5 shrink-0" />
               <input
                 type="text"
                 value={searchQuery}
@@ -272,14 +272,14 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                     ? 'শিক্ষকের নাম, বিশ্ববিদ্যালয় বা বিশেষ কি-ওয়ার্ড লিখে খুঁজুন (যেমন: বুয়েট, আয়েশা)...'
                     : 'Search by tutor name, university, or keyword (e.g. BUET, Ayesha)...'
                 }
-                className="w-full bg-transparent text-xs text-white placeholder-slate-400 focus:outline-none"
+                className="w-full bg-transparent text-xs text-foreground placeholder:text-muted-foreground focus:outline-none"
                 autoFocus
               />
             </div>
 
             <button
               type="submit"
-              className="w-full lg:w-auto inline-flex items-center justify-center gap-2 rounded-xl lg:rounded-full bg-gradient-to-r from-[#0df5c4] to-[#00f2c3] hover:from-[#00f2c3] hover:to-[#0df5c4] text-[#042426] font-extrabold text-xs px-7 py-3 shadow-[0_0_20px_rgba(13,245,196,0.45)] whitespace-nowrap cursor-pointer shrink-0 transition-transform hover:scale-105 active:scale-95"
+              className="w-full lg:w-auto inline-flex items-center justify-center gap-2 rounded-xl lg:rounded-full bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-extrabold text-xs px-7 py-3 shadow-sm whitespace-nowrap cursor-pointer shrink-0 transition-transform hover:scale-105 active:scale-95"
             >
               <Search className="h-4 w-4 stroke-[2.5]" />
               <span>{isBn ? 'অনুসন্ধান' : 'Search'}</span>
@@ -290,8 +290,8 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
 
       {/* Popular Tags Row */}
       <div className="flex items-center gap-1.5 text-xs pt-0.5 overflow-x-auto lg:overflow-visible flex-nowrap scrollbar-none">
-        <span className="font-semibold text-slate-400 shrink-0 mr-0.5 text-xs flex items-center gap-1">
-          <Sparkles className="h-3 w-3 text-teal-400" />
+        <span className="font-semibold text-muted-foreground shrink-0 mr-0.5 text-xs flex items-center gap-1">
+          <Sparkles className="h-3 w-3 text-primary-soft-foreground" />
           <span>{isBn ? 'জনপ্রিয়:' : 'Popular:'}</span>
         </span>
         {popularTags.map((tag) => (
@@ -299,7 +299,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             key={tag.query}
             type="button"
             onClick={() => handleTagClick(tag.query)}
-            className="rounded-full border border-teal-500/30 bg-[#07242a]/80 px-2.5 py-0.5 text-[11px] font-medium text-teal-300 hover:border-[#0df5c4] hover:bg-[#0df5c4] hover:text-[#042426] transition-all cursor-pointer shadow-xs whitespace-nowrap shrink-0"
+            className="rounded-full border border-primary/40 bg-card/80 px-2.5 py-0.5 text-[11px] font-medium text-primary-soft-foreground hover:border-brand hover:bg-brand hover:text-brand-foreground transition-all cursor-pointer shadow-xs whitespace-nowrap shrink-0"
           >
             {tag.label}
           </button>

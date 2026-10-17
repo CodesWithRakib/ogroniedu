@@ -12,13 +12,13 @@ import type {
 function attendanceBadgeClass(status: AttendanceItemStatus): string {
   switch (status) {
     case 'present':
-      return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20';
+      return 'bg-primary/10 text-primary border-primary/20';
     case 'late':
-      return 'bg-amber-500/10 text-amber-600 border-amber-500/20';
+      return 'bg-warning/10 text-warning border-warning/20';
     case 'excused':
-      return 'bg-sky-500/10 text-sky-600 border-sky-500/20';
+      return 'bg-info/10 text-info-soft-foreground border-info/30';
     default:
-      return 'bg-rose-500/10 text-rose-600 border-rose-500/20';
+      return 'bg-destructive/10 text-destructive border-destructive/20';
   }
 }
 
@@ -80,7 +80,7 @@ export function AttendanceTab({
             <div className="px-6 pb-4 pt-1 flex justify-end">
               <Link
                 href={withLocale(`/sessions/${rec.sessionId}`, locale)}
-                className="inline-flex items-center gap-1 text-[11px] font-semibold text-teal-600 dark:text-teal-400 hover:underline"
+                className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary  hover:underline"
               >
                 <span>{locale === 'bn' ? 'সেশনের বিস্তারিত দেখুন' : 'View Session Details'}</span>
                 <ExternalLink className="w-3 h-3" />

@@ -101,7 +101,7 @@ export function DashboardMobileNav({
               <button
                 type="button"
                 onClick={onLogout}
-                className="flex items-center gap-1.5 text-xs font-semibold text-rose-600 hover:underline"
+                className="flex items-center gap-1.5 text-xs font-semibold text-destructive hover:underline"
               >
                 <LogOut className="h-3.5 w-3.5" />
                 <span>{isBn ? 'লগআউট' : 'Logout'}</span>

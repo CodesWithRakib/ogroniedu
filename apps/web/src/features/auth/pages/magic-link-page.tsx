@@ -80,7 +80,7 @@ export function MagicLinkPage({ locale }: { locale: Locale }) {
       {error && (
         <div
           role="alert"
-          className="mb-4 flex items-start gap-2.5 rounded-2xl border border-rose-500/30 bg-rose-500/10 p-3 text-xs text-rose-700 dark:text-rose-300"
+          className="mb-4 flex items-start gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive "
           data-testid="magic-link-error"
         >
           <AlertCircle className="h-4 w-4 shrink-0" />

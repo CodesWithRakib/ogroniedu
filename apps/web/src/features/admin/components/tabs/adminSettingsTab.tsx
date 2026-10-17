@@ -16,7 +16,7 @@ export function AdminSettingsTab({ settings }: { settings: AdminSystemSettingIte
                   {setting.description || 'Configurable operational threshold'}
                 </p>
               </div>
-              <span className="text-xs font-mono bg-surface px-3 py-1 rounded-lg border border-border text-teal-600 dark:text-teal-400">
+              <span className="text-xs font-mono bg-surface px-3 py-1 rounded-lg border border-border text-primary ">
                 {JSON.stringify(setting.value)}
               </span>
             </div>

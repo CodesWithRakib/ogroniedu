@@ -33,7 +33,7 @@ export function FilterChips({
             type="button"
             aria-label={locale === 'bn' ? `${f.label} ফিল্টার সরান` : `Remove ${f.label} filter`}
             onClick={() => onRemove(f.key)}
-            className="ml-1 rounded-full p-0.5 hover:bg-slate-300/50"
+            className="ml-1 rounded-full p-0.5 hover:bg-muted/50"
           >
             <X className="h-3 w-3" aria-hidden />
           </button>

@@ -18,11 +18,11 @@ export function PaymentReceipt({ receipt, locale, onPrint }: PaymentReceiptProps
   const p = dict.payments;
 
   return (
-    <Card className="border border-emerald-500/30 bg-emerald-500/5 shadow-md">
-      <CardHeader className="pb-3 border-b border-emerald-500/20">
+    <Card className="border border-primary/30 bg-primary/5 shadow-md">
+      <CardHeader className="pb-3 border-b border-primary/20">
         <div className="flex items-center justify-between">
-          <CardTitle className="text-lg font-semibold text-emerald-800 dark:text-emerald-300 flex items-center gap-2">
-            <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+          <CardTitle className="text-lg font-semibold text-primary-soft-foreground  flex items-center gap-2">
+            <CheckCircle2 className="w-5 h-5 text-primary" />
             {p.receiptTitle}
           </CardTitle>
           <Button
@@ -39,7 +39,7 @@ export function PaymentReceipt({ receipt, locale, onPrint }: PaymentReceiptProps
       <CardContent className="pt-4 space-y-3 text-sm">
         <div className="flex justify-between py-1 border-b border-border/40">
           <span className="text-muted-foreground">{p.receiptNumber}</span>
-          <span className="font-mono font-bold text-slate-900 dark:text-white">
+          <span className="font-mono font-bold text-foreground ">
             {receipt.receiptId}
           </span>
         </div>
@@ -52,8 +52,8 @@ export function PaymentReceipt({ receipt, locale, onPrint }: PaymentReceiptProps
           <span>{formatDateTime(receipt.paidAt, locale)}</span>
         </div>
         <div className="flex justify-between py-2 items-baseline">
-          <span className="font-semibold text-slate-900 dark:text-white">{p.totalAmount}</span>
-          <span className="text-xl font-black text-emerald-600">
+          <span className="font-semibold text-foreground ">{p.totalAmount}</span>
+          <span className="text-xl font-black text-primary">
             ৳ {formatLocalizedNumber(receipt.amountBdt, locale)} {receipt.currency}
           </span>
         </div>

@@ -32,14 +32,20 @@ interface ColorPreset {
   value: string;
 }
 
+/**
+ * Canvas ink presets.
+ *
+ * These are intentionally literal colours: the HTML canvas 2D context does not
+ * resolve CSS custom properties, and ink must stay readable on the white board
+ * surface. They are classroom tool colours, not theme tokens.
+ */
 const COLOR_PRESETS: ColorPreset[] = [
-  { name: 'White', value: '#FFFFFF' },
-  { name: 'Cyan', value: '#22D3EE' },
-  { name: 'Emerald', value: '#34D399' },
-  { name: 'Amber', value: '#FBBF24' },
-  { name: 'Rose', value: '#FB7185' },
-  { name: 'Violet', value: '#C084FC' },
-  { name: 'Yellow', value: '#FACC15' },
+  { name: 'Slate', value: '#0f172a' },
+  { name: 'Brand Teal', value: '#0f766e' },
+  { name: 'Sapphire', value: '#2563eb' },
+  { name: 'Amber', value: '#b45309' },
+  { name: 'Rose', value: '#be123c' },
+  { name: 'Violet', value: '#7c3aed' },
 ];
 
 const STROKE_SIZES = [
@@ -62,7 +68,7 @@ export function InteractiveWhiteboard({
   const containerRef = useRef<HTMLDivElement | null>(null);
 
   const [activeTool, setActiveTool] = useState<WhiteboardTool>('pen');
-  const [strokeColor, setStrokeColor] = useState<string>('#22D3EE');
+  const [strokeColor, setStrokeColor] = useState<string>('#0f766e');
   const [strokeWidth, setStrokeWidth] = useState<number>(4);
   const [backgroundMode, setBackgroundMode] = useState<BackgroundMode>('grid');
   const [isFullscreen, setIsFullscreen] = useState(false);
@@ -110,12 +116,13 @@ export function InteractiveWhiteboard({
   const drawBackground = useCallback(
     (ctx: CanvasRenderingContext2D, width: number, height: number, mode: BackgroundMode) => {
       ctx.save();
-      ctx.fillStyle = '#090D16';
+      // Light-only design system: the board surface is white in every mode.
+      ctx.fillStyle = '#ffffff';
       ctx.fillRect(0, 0, width, height);
 
       if (mode === 'grid') {
         // Math grid - 28px square spacing
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+        ctx.strokeStyle = 'rgba(15, 23, 42, 0.07)';
         ctx.lineWidth = 1;
         const step = 28;
         ctx.beginPath();
@@ -129,8 +136,8 @@ export function InteractiveWhiteboard({
         }
         ctx.stroke();
 
-        // Accent major grid lines every 140px
-        ctx.strokeStyle = 'rgba(34, 211, 238, 0.12)';
+        // Accent major grid lines every 140px (Sapphire Blue accent)
+        ctx.strokeStyle = 'rgba(37, 99, 235, 0.12)';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         for (let x = step * 5; x < width; x += step * 5) {
@@ -145,7 +152,7 @@ export function InteractiveWhiteboard({
       } else if (mode === 'ruled') {
         // Ruled sheet for Bangla/English handwriting
         const lineSpacing = 36;
-        ctx.strokeStyle = 'rgba(34, 211, 238, 0.2)';
+        ctx.strokeStyle = 'rgba(37, 99, 235, 0.22)';
         ctx.lineWidth = 1;
         ctx.beginPath();
         for (let y = 60; y < height; y += lineSpacing) {
@@ -154,8 +161,8 @@ export function InteractiveWhiteboard({
         }
         ctx.stroke();
 
-        // Left margin rule (Red/Rose line)
-        ctx.strokeStyle = 'rgba(251, 113, 133, 0.35)';
+        // Left margin rule (Rose line)
+        ctx.strokeStyle = 'rgba(190, 18, 60, 0.35)';
         ctx.lineWidth = 1.5;
         ctx.beginPath();
         ctx.moveTo(40, 0);
@@ -251,7 +258,7 @@ export function InteractiveWhiteboard({
 
     if (activeTool === 'eraser') {
       ctx.globalCompositeOperation = 'source-over';
-      ctx.strokeStyle = '#090D16'; // background eraser color
+      ctx.strokeStyle = '#ffffff'; // eraser paints the white board surface
       ctx.lineWidth = strokeWidth * 3;
     } else if (activeTool === 'highlighter') {
       ctx.globalCompositeOperation = 'source-over';
@@ -472,22 +479,22 @@ export function InteractiveWhiteboard({
   return (
     <div
       ref={containerRef}
-      className={`relative flex flex-col bg-[#060A12] border border-cyan-500/20 rounded-3xl overflow-hidden shadow-2xl transition-all ${
+      className={`relative flex flex-col bg-background border border-info/40 rounded-3xl overflow-hidden shadow-2xl transition-all ${
         isFullscreen ? 'p-4 h-screen w-screen rounded-none' : 'h-[680px]'
       }`}
       data-testid="interactive-whiteboard"
     >
       {/* Top Toolbar */}
-      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-slate-900/90 border-b border-slate-800 text-slate-200 z-10 backdrop-blur-md">
+      <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-card border-b border-border text-foreground z-10 backdrop-blur-md">
         {/* Drawing Tools */}
-        <div className="flex items-center gap-1 bg-slate-950/80 p-1 rounded-2xl border border-slate-800">
+        <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-2xl border border-border">
           <button
             type="button"
             onClick={() => setActiveTool('pen')}
             className={`p-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
               activeTool === 'pen'
-                ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-interactive text-foreground font-bold shadow-md shadow-sm'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'কলম (Pen)' : 'Pen'}
             data-testid="wb-tool-pen"
@@ -501,8 +508,8 @@ export function InteractiveWhiteboard({
             onClick={() => setActiveTool('highlighter')}
             className={`p-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
               activeTool === 'highlighter'
-                ? 'bg-cyan-500 text-slate-950 font-bold shadow-md shadow-cyan-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-interactive text-foreground font-bold shadow-md shadow-sm'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'হাইলাইটার' : 'Highlighter'}
             data-testid="wb-tool-highlighter"
@@ -516,8 +523,8 @@ export function InteractiveWhiteboard({
             onClick={() => setActiveTool('eraser')}
             className={`p-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
               activeTool === 'eraser'
-                ? 'bg-rose-500 text-white font-bold shadow-md shadow-rose-500/30'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-destructive text-white font-bold shadow-md shadow-sm'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'রাবার (Eraser)' : 'Eraser'}
             data-testid="wb-tool-eraser"
@@ -526,7 +533,7 @@ export function InteractiveWhiteboard({
             <span className="hidden sm:inline">{locale === 'bn' ? 'মুছুন' : 'Eraser'}</span>
           </button>
 
-          <div className="h-5 w-[1px] bg-slate-800 mx-1" />
+          <div className="h-5 w-[1px] bg-muted mx-1" />
 
           {/* Shapes */}
           <button
@@ -534,8 +541,8 @@ export function InteractiveWhiteboard({
             onClick={() => setActiveTool('line')}
             className={`p-2 rounded-xl transition-all ${
               activeTool === 'line'
-                ? 'bg-cyan-500 text-slate-950'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-interactive text-foreground'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'সোজা রেখা' : 'Line'}
             data-testid="wb-tool-line"
@@ -548,8 +555,8 @@ export function InteractiveWhiteboard({
             onClick={() => setActiveTool('arrow')}
             className={`p-2 rounded-xl transition-all ${
               activeTool === 'arrow'
-                ? 'bg-cyan-500 text-slate-950'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-interactive text-foreground'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'তীরচিহ্ন (Vector Arrow)' : 'Arrow'}
             data-testid="wb-tool-arrow"
@@ -562,8 +569,8 @@ export function InteractiveWhiteboard({
             onClick={() => setActiveTool('rect')}
             className={`p-2 rounded-xl transition-all ${
               activeTool === 'rect'
-                ? 'bg-cyan-500 text-slate-950'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-interactive text-foreground'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'আয়তক্ষেত্র (Rectangle)' : 'Rectangle'}
             data-testid="wb-tool-rect"
@@ -576,8 +583,8 @@ export function InteractiveWhiteboard({
             onClick={() => setActiveTool('circle')}
             className={`p-2 rounded-xl transition-all ${
               activeTool === 'circle'
-                ? 'bg-cyan-500 text-slate-950'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-interactive text-foreground'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'বৃত্ত (Circle)' : 'Circle'}
             data-testid="wb-tool-circle"
@@ -590,8 +597,8 @@ export function InteractiveWhiteboard({
             onClick={() => setActiveTool('text')}
             className={`p-2 rounded-xl transition-all ${
               activeTool === 'text'
-                ? 'bg-cyan-500 text-slate-950'
-                : 'text-slate-400 hover:text-white hover:bg-slate-800'
+                ? 'bg-interactive text-foreground'
+                : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'টেক্সট লিখুন' : 'Text'}
             data-testid="wb-tool-text"
@@ -601,7 +608,7 @@ export function InteractiveWhiteboard({
         </div>
 
         {/* Color Palette */}
-        <div className="flex items-center gap-1.5 bg-slate-950/80 p-1.5 rounded-2xl border border-slate-800">
+        <div className="flex items-center gap-1.5 bg-surface-muted p-1.5 rounded-2xl border border-border">
           {COLOR_PRESETS.map((color) => (
             <button
               key={color.value}
@@ -614,7 +621,7 @@ export function InteractiveWhiteboard({
             >
               {strokeColor === color.value && (
                 <Check
-                  className={`w-3 h-3 ${color.value === '#FFFFFF' ? 'text-black' : 'text-white'}`}
+                  className={`w-3 h-3 ${color.value === '#0f172a' ? 'text-foreground' : 'text-foreground'}`}
                 />
               )}
             </button>
@@ -622,7 +629,7 @@ export function InteractiveWhiteboard({
         </div>
 
         {/* Stroke Width Selector */}
-        <div className="flex items-center gap-1 bg-slate-950/80 p-1 rounded-2xl border border-slate-800 text-xs">
+        <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-2xl border border-border text-xs">
           {STROKE_SIZES.map((sz) => (
             <button
               key={sz.value}
@@ -630,8 +637,8 @@ export function InteractiveWhiteboard({
               onClick={() => setStrokeWidth(sz.value)}
               className={`px-2 py-1 rounded-xl font-bold transition-all ${
                 strokeWidth === sz.value
-                  ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400/40'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-interactive/20 text-info-soft-foreground border border-info/40'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
             >
               {sz.value}px
@@ -642,14 +649,14 @@ export function InteractiveWhiteboard({
         {/* Background, Undo, Redo, Export & Fullscreen */}
         <div className="flex items-center gap-1.5">
           {/* Background Toggle */}
-          <div className="flex items-center bg-slate-950/80 p-1 rounded-2xl border border-slate-800">
+          <div className="flex items-center bg-surface-muted p-1 rounded-2xl border border-border">
             <button
               type="button"
               onClick={() => handleChangeBackground('grid')}
               className={`p-1.5 rounded-xl transition-all ${
                 backgroundMode === 'grid'
-                  ? 'bg-cyan-500/20 text-cyan-300'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-interactive/20 text-info-soft-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
               title={locale === 'bn' ? 'ছক কাগজ (Math Grid)' : 'Math Grid'}
               data-testid="wb-bg-grid"
@@ -661,8 +668,8 @@ export function InteractiveWhiteboard({
               onClick={() => handleChangeBackground('ruled')}
               className={`p-1.5 rounded-xl transition-all ${
                 backgroundMode === 'ruled'
-                  ? 'bg-cyan-500/20 text-cyan-300'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-interactive/20 text-info-soft-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
               title={locale === 'bn' ? 'দাগ টানা কাগজ (Ruled Lines)' : 'Ruled Lines'}
               data-testid="wb-bg-ruled"
@@ -674,23 +681,23 @@ export function InteractiveWhiteboard({
               onClick={() => handleChangeBackground('blackboard')}
               className={`p-1.5 rounded-xl transition-all ${
                 backgroundMode === 'blackboard'
-                  ? 'bg-cyan-500/20 text-cyan-300'
-                  : 'text-slate-400 hover:text-white'
+                  ? 'bg-interactive/20 text-info-soft-foreground'
+                  : 'text-muted-foreground hover:text-foreground'
               }`}
               title={locale === 'bn' ? 'কালো বোর্ড (Plain Board)' : 'Plain Board'}
               data-testid="wb-bg-plain"
             >
-              <div className="w-4 h-4 rounded-sm bg-slate-800 border border-slate-600" />
+              <div className="w-4 h-4 rounded-sm bg-muted border border-border" />
             </button>
           </div>
 
           {/* Undo & Redo */}
-          <div className="flex items-center bg-slate-950/80 p-1 rounded-2xl border border-slate-800">
+          <div className="flex items-center bg-surface-muted p-1 rounded-2xl border border-border">
             <button
               type="button"
               onClick={handleUndo}
               disabled={!canUndo}
-              className="p-1.5 rounded-xl text-slate-400 hover:text-white disabled:opacity-30 disabled:hover:text-slate-400"
+              className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground"
               title={locale === 'bn' ? 'পূর্বাবস্থায় ফিরুন (Undo)' : 'Undo'}
               data-testid="wb-btn-undo"
             >
@@ -700,7 +707,7 @@ export function InteractiveWhiteboard({
               type="button"
               onClick={handleRedo}
               disabled={!canRedo}
-              className="p-1.5 rounded-xl text-slate-400 hover:text-white disabled:opacity-30 disabled:hover:text-slate-400"
+              className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground"
               title={locale === 'bn' ? 'পুনরায় করুন (Redo)' : 'Redo'}
               data-testid="wb-btn-redo"
             >
@@ -712,7 +719,7 @@ export function InteractiveWhiteboard({
           <button
             type="button"
             onClick={handleClear}
-            className="p-2 rounded-2xl bg-rose-500/10 hover:bg-rose-500/20 text-rose-400 border border-rose-500/30 transition-all"
+            className="p-2 rounded-2xl bg-destructive/10 hover:bg-destructive/20 text-destructive-soft-foreground border border-destructive/40 transition-all"
             title={locale === 'bn' ? 'সম্পূর্ণ পরিষ্কার করুন' : 'Clear Board'}
             data-testid="wb-btn-clear"
           >
@@ -723,7 +730,7 @@ export function InteractiveWhiteboard({
           <button
             type="button"
             onClick={handleExportPNG}
-            className="p-2 rounded-2xl bg-emerald-500/10 hover:bg-emerald-500/20 text-emerald-400 border border-emerald-500/30 transition-all flex items-center gap-1.5 text-xs font-bold"
+            className="p-2 rounded-2xl bg-primary/10 hover:bg-primary/20 text-success-soft-foreground border border-primary/40 transition-all flex items-center gap-1.5 text-xs font-bold"
             title={locale === 'bn' ? 'নোট ডাউনলোড করুন (PNG)' : 'Export PNG Notes'}
             data-testid="wb-btn-export"
           >
@@ -735,7 +742,7 @@ export function InteractiveWhiteboard({
           <button
             type="button"
             onClick={toggleFullscreen}
-            className="p-2 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-300 transition-all"
+            className="p-2 rounded-2xl bg-muted hover:bg-surface-hover text-muted-foreground transition-all"
             title={locale === 'bn' ? 'ফুলস্ক্রিন' : 'Fullscreen'}
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -760,7 +767,7 @@ export function InteractiveWhiteboard({
         {/* Text Input Modal on Canvas */}
         {textInputVisible && (
           <div
-            className="absolute z-20 bg-slate-900 border border-cyan-400/50 p-2.5 rounded-2xl shadow-2xl flex items-center gap-2"
+            className="absolute z-20 bg-card border border-info/40 p-2.5 rounded-2xl shadow-sm flex items-center gap-2"
             style={{ left: Math.min(textInputPos.x, 300), top: Math.min(textInputPos.y, 400) }}
           >
             <input
@@ -773,13 +780,13 @@ export function InteractiveWhiteboard({
                 if (e.key === 'Escape') setTextInputVisible(false);
               }}
               placeholder={locale === 'bn' ? 'এখানে লিখুন...' : 'Type note text...'}
-              className="bg-slate-800 border border-slate-700 text-white text-xs rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-cyan-400"
+              className="bg-muted border border-border text-foreground text-xs rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-ring"
               data-testid="wb-text-input"
             />
             <Button
               size="sm"
               onClick={handleApplyText}
-              className="bg-cyan-500 hover:bg-cyan-400 text-slate-950 font-bold text-xs h-8 px-3 rounded-xl"
+              className="bg-interactive hover:bg-info text-foreground font-bold text-xs h-8 px-3 rounded-xl"
             >
               {locale === 'bn' ? 'যুক্ত করুন' : 'Add'}
             </Button>
@@ -787,7 +794,7 @@ export function InteractiveWhiteboard({
         )}
 
         {/* Watermark in bottom corner */}
-        <div className="absolute bottom-3 right-4 pointer-events-none flex items-center gap-2 text-[11px] font-semibold text-slate-500/60 select-none">
+        <div className="absolute bottom-3 right-4 pointer-events-none flex items-center gap-2 text-[11px] font-semibold text-muted-foreground select-none">
           <span>OgroniEdu Interactive Whiteboard</span>
           <span>•</span>
           <span className="capitalize">{backgroundMode}</span>

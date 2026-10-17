@@ -33,7 +33,7 @@ export function AdminFeatureFlagsTab({
                 onClick={() => onToggle(flag.key, !flag.enabled)}
                 className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-2xs ${
                   flag.enabled
-                    ? 'bg-emerald-600 hover:bg-emerald-500 text-white'
+                    ? 'bg-primary hover:bg-primary-hover text-white'
                     : 'bg-surface hover:bg-surface-hover text-muted-foreground border border-border'
                 }`}
                 data-testid={`toggle-flag-${flag.key}`}

@@ -20,26 +20,26 @@ function PaymentsContent({ locale }: { locale: Locale }) {
   return (
     <DashboardShell locale={locale} title={dict.payments.title} subtitle={dict.payments.subtitle}>
       {/* Security & Escrow Trust Banner */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-gradient-to-r from-emerald-950/20 via-cyan-950/20 to-slate-900/30 border border-emerald-500/20 text-xs">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 rounded-2xl bg-card border border-interactive/25 text-xs">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 shrink-0">
+          <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/40 text-success-soft-foreground shrink-0">
             <ShieldCheck className="w-5 h-5" />
           </div>
           <div>
-            <h3 className="font-bold text-slate-100">
+            <h3 className="font-bold text-foreground">
               {locale === 'bn'
                 ? '১০০% নিরাপদ এসক্রো পেমেন্ট সুরক্ষা'
                 : '100% Escrow Protected Payments'}
             </h3>
-            <p className="text-slate-400 mt-0.5">
+            <p className="text-muted-foreground mt-0.5">
               {locale === 'bn'
                 ? 'ক্লাস সন্তোষজনকভাবে সম্পন্ন না হওয়া পর্যন্ত আপনার অর্থ অগ্রণী এডু এসক্রো অ্যাকাউন্টে সুরক্ষিত থাকে।'
                 : 'Your tuition fees remain safely in escrow until sessions are successfully conducted.'}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-slate-400 shrink-0">
-          <Lock className="w-3.5 h-3.5 text-cyan-400" />
+        <div className="flex items-center gap-2 text-muted-foreground shrink-0">
+          <Lock className="w-3.5 h-3.5 text-info-soft-foreground" />
           <span>bKash • Nagad • SSLCommerz</span>
         </div>
       </div>
@@ -85,7 +85,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
         />
       ) : (
         <>
-          <Card className="mb-6 border-slate-200/80 dark:border-slate-800 rounded-2xl shadow-sm">
+          <Card className="mb-6 border-border  rounded-2xl shadow-sm">
             <CardContent className="py-5">
               <form
                 onSubmit={pay.handleCreateOrder}
@@ -95,7 +95,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 <div className="space-y-1.5 sm:col-span-2">
                   <label
                     htmlFor="pay-booking"
-                    className="text-xs font-bold text-slate-700 dark:text-slate-300"
+                    className="text-xs font-bold text-foreground "
                   >
                     {locale === 'bn' ? 'টিউশন / কোর্স নির্বাচন করুন' : 'Select Tuition / Course'}
                   </label>
@@ -103,7 +103,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                     id="pay-booking"
                     value={pay.bookingId}
                     onChange={(e) => pay.handleSelectBooking(e.target.value)}
-                    className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium dark:border-slate-700 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="h-10 w-full rounded-xl border border-border bg-white px-3 text-xs font-medium   focus:outline-none focus:ring-2 focus:ring-ring"
                     data-testid="pay-booking-select"
                   >
                     {bookingOptions.map((opt) => (
@@ -117,7 +117,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 <div className="space-y-1.5">
                   <label
                     htmlFor="pay-amount"
-                    className="text-xs font-bold text-slate-700 dark:text-slate-300"
+                    className="text-xs font-bold text-foreground "
                   >
                     {dict.payments.totalAmount} (BDT ৳)
                   </label>
@@ -135,7 +135,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 <div className="space-y-1.5">
                   <label
                     htmlFor="pay-provider"
-                    className="text-xs font-bold text-slate-700 dark:text-slate-300"
+                    className="text-xs font-bold text-foreground "
                   >
                     {dict.payments.selectGateway}
                   </label>
@@ -143,7 +143,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                     id="pay-provider"
                     value={pay.provider}
                     onChange={(e) => pay.setProvider(e.target.value as PaymentProvider)}
-                    className="h-10 w-full rounded-xl border border-slate-300 bg-white px-3 text-xs font-medium dark:border-slate-700 dark:bg-slate-900 focus:outline-none focus:ring-2 focus:ring-cyan-500"
+                    className="h-10 w-full rounded-xl border border-border bg-white px-3 text-xs font-medium   focus:outline-none focus:ring-2 focus:ring-ring"
                     data-testid="pay-provider-select"
                   >
                     <option value="bkash">{dict.payments.bkashTitle}</option>
@@ -157,7 +157,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                     type="submit"
                     isLoading={pay.creating}
                     data-testid="create-order-btn"
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white px-6 text-xs font-semibold h-10"
+                    className="bg-primary hover:bg-primary-hover text-white px-6 text-xs font-semibold h-10"
                   >
                     <CreditCard className="w-4 h-4 mr-2" />
                     {locale === 'bn' ? 'পেমেন্ট গেটওয়েতে যান' : 'Proceed to Checkout'}
@@ -165,7 +165,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 </div>
               </form>
               {pay.formError && (
-                <p role="alert" className="mt-3 text-xs text-rose-600">
+                <p role="alert" className="mt-3 text-xs text-destructive">
                   {pay.formError}
                 </p>
               )}

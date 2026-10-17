@@ -21,9 +21,9 @@ import type {
 } from '../../types/learning.types';
 
 function submissionBadgeClass(status: SubmissionItemStatus): string {
-  if (status === 'reviewed') return 'bg-emerald-500/10 text-emerald-600 border-emerald-500/30';
-  if (status === 'late') return 'bg-amber-500/10 text-amber-600 border-amber-500/30';
-  return 'bg-blue-500/10 text-blue-600 border-blue-500/30';
+  if (status === 'reviewed') return 'bg-primary/10 text-success-soft-foreground border-primary/40';
+  if (status === 'late') return 'bg-warning/10 text-warning border-warning/40';
+  return 'bg-interactive/10 text-interactive border-interactive/40';
 }
 
 export function AssignmentsTab({
@@ -85,7 +85,7 @@ export function AssignmentsTab({
 
               {hasScore ? (
                 <div className="text-right">
-                  <div className="text-lg font-extrabold text-emerald-600">
+                  <div className="text-lg font-extrabold text-success-soft-foreground">
                     {formatLocalizedNumber(sub!.score!, locale)} /{' '}
                     {formatLocalizedNumber(asgn.maxScore, locale)}
                   </div>
@@ -108,7 +108,7 @@ export function AssignmentsTab({
               )}
 
               {sub?.submissionText && (
-                <div className="bg-slate-50 dark:bg-slate-900/60 p-3 rounded-lg border border-border/40 text-xs">
+                <div className="bg-muted  p-3 rounded-lg border border-border/40 text-xs">
                   <span className="font-semibold text-muted-foreground block mb-1">
                     {t.submissionTextLabel}:
                   </span>
@@ -117,11 +117,11 @@ export function AssignmentsTab({
               )}
 
               {sub?.tutorFeedback && (
-                <div className="bg-emerald-50 dark:bg-emerald-950/30 p-3 rounded-lg border border-emerald-500/30 text-xs">
-                  <span className="font-semibold text-emerald-700 dark:text-emerald-400 block mb-1 flex items-center gap-1">
+                <div className="bg-primary-soft  p-3 rounded-lg border border-primary/40 text-xs">
+                  <span className="font-semibold text-success-soft-foreground  block mb-1 flex items-center gap-1">
                     <Award className="w-3.5 h-3.5" /> {t.feedbackLabel}:
                   </span>
-                  <p className="text-emerald-950 dark:text-emerald-200">{sub.tutorFeedback}</p>
+                  <p className="text-primary-soft-foreground ">{sub.tutorFeedback}</p>
                 </div>
               )}
             </CardContent>
@@ -129,7 +129,7 @@ export function AssignmentsTab({
             <CardFooter className="pt-0 flex items-center justify-between gap-2">
               <Link
                 href={withLocale(`/assignments/${asgn.id}`, locale)}
-                className="inline-flex items-center gap-1 text-xs font-semibold text-teal-600 dark:text-teal-400 hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-primary  hover:underline"
               >
                 <span>{locale === 'bn' ? 'বিস্তারিত দেখুন' : 'View Details'}</span>
                 <ExternalLink className="w-3 h-3" />
@@ -139,7 +139,7 @@ export function AssignmentsTab({
                   <Button
                     size="sm"
                     onClick={() => onSubmit(asgn)}
-                    className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                    className="bg-primary hover:bg-primary-hover text-white"
                   >
                     <Send className="w-3.5 h-3.5 mr-1.5" />
                     {t.submitHomework}
@@ -151,7 +151,7 @@ export function AssignmentsTab({
                     size="sm"
                     variant="outline"
                     onClick={() => onGrade(asgn)}
-                    className="border-emerald-600 text-emerald-600 hover:bg-emerald-50 dark:hover:bg-emerald-950"
+                    className="border-primary/40 text-success-soft-foreground hover:bg-primary-soft "
                   >
                     <Edit3 className="w-3.5 h-3.5 mr-1.5" />
                     {hasScore ? t.reviseScore : t.gradeAction}

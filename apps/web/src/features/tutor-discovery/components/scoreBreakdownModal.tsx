@@ -20,21 +20,21 @@ export function ScoreBreakdownModal({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-muted backdrop-blur-xs animate-in fade-in"
       data-testid="score-breakdown-modal"
     >
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
+      <div className="bg-white  border border-border  rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+        <div className="flex items-center justify-between border-b border-border  pb-3">
           <div className="flex items-center gap-2">
-            <Sparkles className="w-5 h-5 text-emerald-600" />
-            <h3 className="font-bold text-slate-900 dark:text-slate-100">
+            <Sparkles className="w-5 h-5 text-success-soft-foreground" />
+            <h3 className="font-bold text-foreground ">
               {dict.discovery?.scoreBreakdownTitle || 'Ranking Factors'}
             </h3>
           </div>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 rounded-lg p-1"
+            className="text-muted-foreground hover:text-muted-foreground rounded-lg p-1"
             aria-label={locale === 'bn' ? 'মোডাল বন্ধ করুন' : 'Close modal'}
           >
             <X className="w-5 h-5" />
@@ -42,23 +42,23 @@ export function ScoreBreakdownModal({
         </div>
 
         <div>
-          <p className="text-sm font-semibold text-slate-800 dark:text-slate-200">
+          <p className="text-sm font-semibold text-foreground ">
             {tutor.displayName}
           </p>
-          <p className="text-xs text-emerald-600 dark:text-emerald-400 font-bold mt-0.5">
+          <p className="text-xs text-success-soft-foreground  font-bold mt-0.5">
             Total Score: {formatLocalizedNumber(tutor.matchScore, locale)} Points
           </p>
         </div>
 
         <div className="space-y-2 pt-1 text-xs">
-          <p className="text-slate-500 dark:text-slate-400">
+          <p className="text-muted-foreground ">
             OgroniEdu scores tutors using transparent, deterministic verification &amp; quality
             signals:
           </p>
-          <ul className="space-y-2 border border-slate-100 dark:border-slate-800 rounded-xl p-3 bg-slate-50 dark:bg-slate-800/50">
+          <ul className="space-y-2 border border-border  rounded-xl p-3 bg-muted ">
             {tutor.rankingReasons.map((reason, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-slate-700 dark:text-slate-300">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+              <li key={idx} className="flex items-start gap-2 text-foreground ">
+                <CheckCircle2 className="w-3.5 h-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
                 <span>{reason}</span>
               </li>
             ))}

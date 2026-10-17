@@ -91,12 +91,12 @@ export function DashboardShell({
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
             <div>
               {title && (
-                <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                <h1 className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight">
                   {title}
                 </h1>
               )}
               {subtitle && (
-                <p className="text-xs sm:text-sm text-teal-300/90 font-medium mt-1">{subtitle}</p>
+                <p className="text-xs sm:text-sm text-primary-soft-foreground font-medium mt-1">{subtitle}</p>
               )}
             </div>
             {actions && <div className="flex items-center gap-2">{actions}</div>}
@@ -110,7 +110,7 @@ export function DashboardShell({
   return (
     <DashboardShellContext.Provider value={true}>
       <div
-        className="h-screen w-full flex bg-[#031317] text-slate-100 antialiased overflow-hidden selection:bg-[#0df5c4] selection:text-[#031317]"
+        className="h-screen w-full flex bg-background text-foreground antialiased overflow-hidden selection:bg-brand selection:text-brand-foreground"
         data-testid="dashboard-shell"
       >
         {/* 1. Desktop Fixed Sidebar */}
@@ -137,7 +137,7 @@ export function DashboardShell({
         />
 
         {/* 3. Main Column: Sticky Topbar + Scrollable Main Content */}
-        <div className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden bg-[#031317]">
+        <div className="flex-1 min-w-0 flex flex-col h-screen overflow-hidden bg-background">
           {/* Sticky Topbar */}
           <DashboardTopbar
             locale={locale}
@@ -155,17 +155,17 @@ export function DashboardShell({
           <main
             id="main-content"
             tabIndex={-1}
-            className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 bg-[#031317] focus:outline-none"
+            className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 bg-background focus:outline-none"
           >
             {(title || subtitle) && (
               <div className="mb-2">
                 {title && (
-                  <h1 className="text-xl sm:text-2xl font-extrabold text-white tracking-tight">
+                  <h1 className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight">
                     {title}
                   </h1>
                 )}
                 {subtitle && (
-                  <p className="text-xs sm:text-sm text-teal-300 font-medium mt-1">{subtitle}</p>
+                  <p className="text-xs sm:text-sm text-primary-soft-foreground font-medium mt-1">{subtitle}</p>
                 )}
               </div>
             )}

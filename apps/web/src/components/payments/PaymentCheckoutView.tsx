@@ -43,7 +43,7 @@ export function PaymentCheckoutView({
         className="space-y-8 max-w-5xl mx-auto py-6 px-4 sm:px-6"
         data-testid="payment-empty-state"
       >
-        <div className="rounded-xl border border-dashed p-8 text-center text-sm text-slate-500">
+        <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
           {locale === 'bn'
             ? 'পেমেন্ট অর্ডার তৈরি করতে একটি বুকিং নির্বাচন করুন।'
             : 'Select a booking to create a payment order.'}
@@ -54,11 +54,11 @@ export function PaymentCheckoutView({
 
   return (
     <div className="space-y-8 max-w-5xl mx-auto py-6 px-4 sm:px-6">
-      <div className="bg-amber-500/10 border border-amber-500/30 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-amber-900 dark:text-amber-200">
+      <div className="bg-warning/10 border border-warning/30 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-warning ">
         <div className="flex items-center gap-3">
-          <ShieldCheck className="w-5 h-5 text-amber-600 dark:text-amber-400 shrink-0" />
+          <ShieldCheck className="w-5 h-5 text-warning  shrink-0" />
           <div className="text-sm font-medium">
-            <span className="font-bold uppercase tracking-wider bg-amber-500/20 px-2 py-0.5 rounded mr-2 text-xs">
+            <span className="font-bold uppercase tracking-wider bg-warning/20 px-2 py-0.5 rounded mr-2 text-xs">
               {p.sandboxBadge}
             </span>
             {p.noSuccessOnRedirectNotice}
@@ -67,7 +67,7 @@ export function PaymentCheckoutView({
       </div>
 
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-slate-900 dark:text-white">
+        <h1 className="text-3xl font-bold tracking-tight text-foreground ">
           {p.title}
         </h1>
         <p className="text-muted-foreground mt-1 text-sm sm:text-base">{p.subtitle}</p>

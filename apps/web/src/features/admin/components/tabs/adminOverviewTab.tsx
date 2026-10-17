@@ -15,8 +15,8 @@ export function AdminOverviewTab({ reconciliation }: { reconciliation: AdminReco
           <span
             className={`px-2.5 py-0.5 text-xs font-semibold rounded-full border ${
               reconciliation.isBalanced
-                ? 'bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 border-emerald-500/30'
-                : 'bg-rose-500/15 text-rose-600 dark:text-rose-400 border-rose-500/30'
+                ? 'bg-primary/15 text-primary  border-primary/30'
+                : 'bg-destructive/15 text-destructive  border-destructive/30'
             }`}
           >
             {reconciliation.isBalanced ? t('statusBalanced') : t('statusDiscrepancy')}
@@ -40,8 +40,8 @@ export function AdminOverviewTab({ reconciliation }: { reconciliation: AdminReco
             <p
               className={`text-sm font-mono font-bold mt-1 ${
                 reconciliation.discrepancy === '0'
-                  ? 'text-emerald-600 dark:text-emerald-400'
-                  : 'text-rose-600 dark:text-rose-400'
+                  ? 'text-primary '
+                  : 'text-destructive '
               }`}
             >
               {reconciliation.discrepancy}
@@ -52,7 +52,7 @@ export function AdminOverviewTab({ reconciliation }: { reconciliation: AdminReco
 
       <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-3 shadow-xs">
         <h3 className="text-base font-bold text-foreground">{t('auditTrailTitle')}</h3>
-        <p className="text-xs text-emerald-600 dark:text-emerald-400 font-semibold flex items-center space-x-1.5">
+        <p className="text-xs text-primary  font-semibold flex items-center space-x-1.5">
           <span>🛡️</span>
           <span>{t('auditRedactedNotice')}</span>
         </p>

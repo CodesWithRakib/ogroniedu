@@ -34,18 +34,18 @@ export function ScheduleSessionModal({
     <div
       role="dialog"
       aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/60 backdrop-blur-xs animate-in fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-muted backdrop-blur-xs animate-in fade-in"
       data-testid="schedule-modal"
     >
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
-        <div className="flex items-center justify-between border-b border-slate-100 dark:border-slate-800 pb-3">
-          <h3 className="font-bold text-slate-900 dark:text-slate-100">
+      <div className="bg-white  border border-border  rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4">
+        <div className="flex items-center justify-between border-b border-border  pb-3">
+          <h3 className="font-bold text-foreground ">
             {dict.scheduling.scheduleSession}
           </h3>
           <button
             type="button"
             onClick={onClose}
-            className="text-slate-400 hover:text-slate-600 rounded-lg p-1"
+            className="text-muted-foreground hover:text-muted-foreground rounded-lg p-1"
             aria-label={locale === 'bn' ? 'মোডাল বন্ধ করুন' : 'Close modal'}
           >
             <X className="w-5 h-5" />
@@ -54,14 +54,14 @@ export function ScheduleSessionModal({
 
         <form onSubmit={handleSubmit} className="space-y-4 text-xs">
           <div className="space-y-1">
-            <label className="font-medium text-slate-700 dark:text-slate-300">
+            <label className="font-medium text-foreground ">
               {dict.scheduling.scheduleBookingLabel}
             </label>
             <select
               required
               value={bookingId}
               onChange={(e) => setBookingId(e.target.value)}
-              className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
+              className="w-full h-10 px-3 rounded-xl border border-border  bg-white  text-foreground "
               data-testid="schedule-booking-select"
             >
               {options.length === 0 && <option value="">—</option>}
@@ -74,7 +74,7 @@ export function ScheduleSessionModal({
           </div>
 
           <div className="space-y-1">
-            <label className="font-medium text-slate-700 dark:text-slate-300">
+            <label className="font-medium text-foreground ">
               {dict.scheduling.rescheduleNewTime}
             </label>
             <input
@@ -82,13 +82,13 @@ export function ScheduleSessionModal({
               required
               value={startsAt}
               onChange={(e) => setStartsAt(e.target.value)}
-              className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
+              className="w-full h-10 px-3 rounded-xl border border-border  bg-white  text-foreground "
               data-testid="schedule-time-input"
             />
           </div>
 
           <div className="space-y-1">
-            <label className="font-medium text-slate-700 dark:text-slate-300">
+            <label className="font-medium text-foreground ">
               {dict.scheduling.meetingLinkLabel}
             </label>
             <input
@@ -96,7 +96,7 @@ export function ScheduleSessionModal({
               value={meetingUrl}
               onChange={(e) => setMeetingUrl(e.target.value)}
               placeholder="https://"
-              className="w-full h-10 px-3 rounded-xl border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-900 text-slate-900 dark:text-slate-100"
+              className="w-full h-10 px-3 rounded-xl border border-border  bg-white  text-foreground "
               data-testid="schedule-meeting-input"
             />
           </div>

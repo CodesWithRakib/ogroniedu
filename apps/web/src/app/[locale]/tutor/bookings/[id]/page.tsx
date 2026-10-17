@@ -27,7 +27,7 @@ export default function TutorBookingRoute({ params }: TutorBookingProps) {
   return (
     <div className="min-h-[60vh] flex flex-col items-center justify-center gap-3">
       <LoadingSpinner />
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-muted-foreground">
         {locale === 'bn'
           ? 'টিউশন অনুরোধে নিয়ে যাওয়া হচ্ছে...'
           : 'Redirecting to booking request...'}

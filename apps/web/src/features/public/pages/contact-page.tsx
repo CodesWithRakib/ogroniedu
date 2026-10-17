@@ -52,8 +52,8 @@ export function ContactPage({ locale }: { locale: Locale }) {
             </CardHeader>
             <CardContent className="px-0 pb-0">
               {submitted ? (
-                <div className="rounded-2xl bg-emerald-500/10 border border-emerald-500/30 p-8 text-center space-y-4">
-                  <CheckCircle2 className="h-12 w-12 text-emerald-600 dark:text-emerald-400 mx-auto" />
+                <div className="rounded-2xl bg-primary/10 border border-primary/30 p-8 text-center space-y-4">
+                  <CheckCircle2 className="h-12 w-12 text-primary  mx-auto" />
                   <p className="text-lg font-bold text-foreground font-bengali">
                     {p.submitSuccess}
                   </p>
