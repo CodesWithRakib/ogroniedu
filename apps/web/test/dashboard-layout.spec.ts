@@ -139,9 +139,11 @@ describe('Role Dashboard Architecture & Layout Tests', () => {
       // Verify sidebar renders branding
       expect(html).toContain('Ogroni');
       expect(html).toContain('Edu');
-      // Verify account link to /profile is present
+      // Verify account / promo link is present
       expect(html).toContain('/bn/profile');
-      expect(html).toContain('তন্ময় আহমেদ');
+      // User info card is removed from sidebar per user design update (placed in header UserNavDropdown instead)
+      expect(html).not.toContain('তন্ময় আহমেদ');
+      expect(html).toContain('অগ্রণী এডু অ্যাপ');
 
       // CRITICAL REQUIREMENT: Sidebar must NOT have any logout / signout button
       expect(html).not.toContain('header-signout-btn');

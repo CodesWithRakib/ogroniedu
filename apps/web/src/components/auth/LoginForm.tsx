@@ -11,7 +11,6 @@ import {
   Label,
   Alert,
   AlertDescription,
-  Separator,
 } from '@/components/ui';
 import { AuthShell } from './authShell';
 import { useLoginForm } from './use-login-form';
@@ -30,11 +29,6 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
     isBn,
     handleQuickFill,
     handleSubmit,
-    magicEmail,
-    setMagicEmail,
-    magicNotice,
-    isRequestingMagicLink,
-    handleMagicLinkRequest,
   } = useLoginForm(locale);
 
   const t = dict.auth;
@@ -137,13 +131,13 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         </div>
 
         {/* Primary Submit Button */}
-        <div className="pt-1">
+        <div className="pt-2">
           <Button
             type="submit"
             variant="primary"
             size="lg"
             isLoading={isLoading}
-            className="w-full font-semibold"
+            className="w-full font-semibold rounded-full shadow-xs"
             data-testid="login-submit-btn"
           >
             <span>{dict.nav.login}</span>
@@ -151,56 +145,8 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
           </Button>
         </div>
 
-        {/* Passwordless sign-in divider */}
-        <div className="relative my-4 flex items-center justify-center">
-          <div className="absolute inset-0 flex items-center">
-            <Separator className="w-full" />
-          </div>
-          <span className="relative bg-card px-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
-            {isBn ? 'অথবা' : 'or'}
-          </span>
-        </div>
-
-        {/* Magic link input & button */}
-        <div className="space-y-2">
-          <Label htmlFor="login-magic-email" className="text-xs font-semibold text-foreground block text-left">
-            {isBn ? 'ইমেইলে সাইন-ইন লিংক পাঠান' : 'Email me a sign-in link'}
-          </Label>
-          <div className="flex gap-2">
-            <Input
-              id="login-magic-email"
-              type="email"
-              value={magicEmail}
-              onChange={(e) => setMagicEmail(e.target.value)}
-              placeholder="you@mail.com"
-              autoComplete="email"
-              className="h-9 flex-1"
-              data-testid="login-magic-email-input"
-            />
-            <Button
-              type="button"
-              variant="secondary"
-              size="sm"
-              onClick={handleMagicLinkRequest}
-              isLoading={isRequestingMagicLink}
-              data-testid="login-magic-submit-btn"
-            >
-              {isBn ? 'লিংক পাঠান' : 'Send link'}
-            </Button>
-          </div>
-          {magicNotice && (
-            <p
-              role="status"
-              className="text-xs text-primary font-medium"
-              data-testid="login-magic-notice"
-            >
-              {magicNotice}
-            </p>
-          )}
-        </div>
-
         {/* Switch to Register */}
-        <p className="text-center text-xs text-muted-foreground pt-3">
+        <p className="text-center text-xs text-muted-foreground pt-4">
           <span>{isBn ? 'অ্যাকাউন্ট নেই? ' : "Don't have an account? "}</span>
           <Link
             href={withLocale('/register', locale)}

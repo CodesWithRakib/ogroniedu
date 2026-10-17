@@ -3,7 +3,6 @@
 import React from 'react';
 import Link from 'next/link';
 import { cn } from 'cn';
-import { ChevronRight } from 'lucide-react';
 import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
 import type { NavItem } from '@/lib/navigation';
@@ -16,8 +15,8 @@ export interface DashboardSidebarProps {
   isBn: boolean;
   pathname: string | null;
   roleKey: string;
-  authUser: AuthUser | null;
-  userInitials: string;
+  authUser?: AuthUser | null;
+  userInitials?: string;
 }
 
 const ROLE_HEADER_TITLES: Record<string, { bn: string; en: string }> = {
@@ -36,35 +35,60 @@ export function DashboardSidebar({
   isBn,
   pathname,
   roleKey,
-  authUser,
-  userInitials,
 }: DashboardSidebarProps) {
   const roleTitle = ROLE_HEADER_TITLES[roleKey] || ROLE_HEADER_TITLES.student;
 
   return (
     <aside
-      className="hidden lg:flex w-64 xl:w-72 flex-col justify-between h-screen shrink-0 border-r border-border bg-card/95 backdrop-blur-xl z-20 overflow-y-auto selection:bg-brand selection:text-brand-foreground"
+      className="hidden lg:flex w-64 xl:w-72 flex-col justify-between h-screen shrink-0 border-r border-border bg-card/95 backdrop-blur-xl z-20 selection:bg-brand selection:text-brand-foreground"
       data-testid="dashboard-sidebar"
     >
-      <div className="p-4 space-y-6">
+      {/* Top Section: Brand & Nav Links (scrollable) */}
+      <div className="p-4 space-y-5 overflow-y-auto flex-1">
         {/* Brand & Role Header */}
         <div className="space-y-3 pt-1">
-          <Link href={withLocale('/', locale)} className="flex items-center gap-3 px-2 group">
-            <div className="h-10 w-10 rounded-2xl bg-gradient-to-br from-brand to-brand-accent text-brand-foreground font-black text-lg flex items-center justify-center shadow-sm group-hover:scale-105 transition-transform shrink-0">
-              অ
+          <Link href={withLocale('/', locale)} className="flex items-center gap-2.5 px-1.5 group">
+            {/* Modern Academic Squircle Logo */}
+            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand via-brand-accent to-primary text-white shadow-xs shadow-primary/25 ring-1 ring-white/20 transition-all duration-300 group-hover:scale-105">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+                className="h-5 w-5 text-white drop-shadow-xs"
+              >
+                <path d="M12 3L2 8L12 13L22 8L12 3Z" fill="currentColor" fillOpacity="0.95" />
+                <path
+                  d="M6 10.5V16C6 17.8 8.7 19.5 12 19.5C15.3 19.5 18 17.8 18 16V10.5"
+                  stroke="currentColor"
+                  strokeWidth="1.8"
+                  strokeLinecap="round"
+                />
+                <path
+                  d="M21 8.5V15.5C21 16 20.6 16.5 20.1 16.5"
+                  stroke="currentColor"
+                  strokeWidth="1.6"
+                  strokeLinecap="round"
+                />
+                <circle cx="12" cy="8" r="1.3" className="fill-white" />
+              </svg>
             </div>
             <div className="min-w-0">
-              <span className="font-extrabold text-base tracking-tight text-foreground block group-hover:text-primary transition-colors">
-                OgroniEdu
-              </span>
-              <span className="text-[11px] font-medium text-muted-foreground block -mt-0.5">
-                {isBn ? 'অগ্রণী এডু প্ল্যাটফর্ম' : 'Trusted Learning'}
+              <div className="flex items-center gap-1">
+                <span className="font-black text-base tracking-tight text-foreground block group-hover:text-primary transition-colors">
+                  Ogroni<span className="text-primary font-black">Edu</span>
+                </span>
+                <span className="text-[10px] font-bold text-primary px-1.5 py-0.2 rounded-md bg-primary-soft border border-primary/20">
+                  {isBn ? 'অগ্রণী' : 'Edu'}
+                </span>
+              </div>
+              <span className="text-[10px] font-medium text-muted-foreground block -mt-0.5">
+                {isBn ? 'বিশ্বস্ত প্ল্যাটফর্ম' : 'Trusted Learning'}
               </span>
             </div>
           </Link>
 
           {/* Role Badge Indicator */}
-          <div className="mx-2 px-3 py-1.5 rounded-xl bg-surface border border-border/70 flex items-center justify-between">
+          <div className="px-3 py-1.5 rounded-xl bg-surface border border-border/70 flex items-center justify-between shadow-2xs">
             <span className="text-xs font-semibold text-foreground">
               {isBn ? roleTitle.bn : roleTitle.en}
             </span>
@@ -74,8 +98,8 @@ export function DashboardSidebar({
           </div>
         </div>
 
-        {/* Main Navigation Items */}
-        <nav className="space-y-1 px-1" aria-label="Sidebar navigation">
+        {/* Main Navigation Items (No active ball as requested) */}
+        <nav className="space-y-1 px-0.5" aria-label="Sidebar navigation">
           {items.map((item) => {
             const Icon = item.icon;
             const targetHref = withLocale(item.href, locale);
@@ -88,9 +112,9 @@ export function DashboardSidebar({
                 key={item.href}
                 href={targetHref}
                 className={cn(
-                  'group flex items-center justify-between px-3.5 py-2.5 rounded-xl text-xs font-medium transition-colors',
+                  'group flex items-center px-3.5 py-2.5 rounded-xl text-xs font-medium transition-all duration-150',
                   active
-                    ? 'bg-primary-soft text-primary font-semibold'
+                    ? 'bg-primary-soft text-primary font-bold shadow-2xs'
                     : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover',
                 )}
               >
@@ -103,78 +127,49 @@ export function DashboardSidebar({
                   />
                   <span className="truncate">{isBn ? item.labelBn : item.labelEn}</span>
                 </div>
-                {active && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-primary shrink-0" />
-                )}
               </Link>
             );
           })}
         </nav>
-
-        {/* Promotional / Status Card */}
-        <div className="pt-2 px-1">
-          <SidebarPromoCard
-            locale={locale}
-            title={
-              roleKey === 'tutor'
-                ? isBn
-                  ? 'টিচিং প্রোফাইল বুস্ট'
-                  : 'Boost Tutor Profile'
-                : roleKey === 'guardian'
-                  ? isBn
-                    ? 'এসক্রো নিরাপত্তা পাস'
-                    : 'Parent Escrow Pass'
-                  : isBn
-                    ? 'মোবাইল অ্যাপ নামিয়ে নিন'
-                    : 'Download Mobile App'
-            }
-            subtitle={
-              roleKey === 'tutor'
-                ? isBn
-                  ? 'অনুমোদিত শিক্ষক ব্যাজ পান'
-                  : 'Get verified badge & more students'
-                : isBn
-                  ? 'যেকোনো সময় লাইভ ক্লাস ও নোট'
-                  : 'Live classes & verified tutors'
-            }
-            actionLabel={
-              roleKey === 'tutor'
-                ? isBn
-                  ? 'যাচাই করুন'
-                  : 'Verify Now'
-                : isBn
-                  ? 'ডাউনলোড'
-                  : 'Download'
-            }
-            actionHref={roleKey === 'tutor' ? '/profile' : '/tutors'}
-          />
-        </div>
       </div>
 
-      {/* Clean User Account Card (NO LOGOUT BUTTON as requested) */}
-      <div className="p-3.5 border-t border-border/80 bg-card">
-        <Link
-          href={withLocale('/profile', locale)}
-          className="group rounded-xl border border-border/70 hover:border-border bg-surface/50 hover:bg-surface p-2.5 flex items-center justify-between gap-3 transition-colors cursor-pointer"
-          title={isBn ? 'প্রোফাইল সেটিংস দেখুন' : 'View Profile Settings'}
-        >
-          <div className="flex items-center gap-2.5 min-w-0 flex-1">
-            <div className="h-8 w-8 rounded-lg bg-primary-soft border border-primary/20 text-primary font-bold text-xs flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform">
-              {userInitials}
-            </div>
-            <div className="min-w-0 flex-1 leading-tight">
-              <p className="text-xs font-semibold text-foreground group-hover:text-primary transition-colors truncate">
-                {authUser?.displayName || authUser?.phone || (isBn ? 'ব্যবহারকারী' : 'User')}
-              </p>
-              <p className="text-[10px] text-muted-foreground truncate mt-0.5">
-                {authUser?.email ||
-                  authUser?.phone ||
-                  (isBn ? 'সক্রিয় প্রোফাইল' : 'Active Account')}
-              </p>
-            </div>
-          </div>
-          <ChevronRight className="h-4 w-4 text-muted-foreground group-hover:text-foreground group-hover:translate-x-0.5 transition-all shrink-0" />
-        </Link>
+      {/* Bottom Section: App Download / Promotional Card Only (No user info card) */}
+      <div className="p-3 border-t border-border/70 bg-card/60 shrink-0">
+        <SidebarPromoCard
+          locale={locale}
+          title={
+            roleKey === 'tutor'
+              ? isBn
+                ? 'টিচিং প্রোফাইল বুস্ট'
+                : 'Boost Tutor Profile'
+              : roleKey === 'guardian'
+                ? isBn
+                  ? 'এসক্রো নিরাপত্তা পাস'
+                  : 'Parent Escrow Pass'
+                : isBn
+                  ? 'মোবাইল অ্যাপ নামিয়ে নিন'
+                  : 'Download Mobile App'
+          }
+          subtitle={
+            roleKey === 'tutor'
+              ? isBn
+                ? 'অনুমোদিত শিক্ষক ব্যাজ পান'
+                : 'Get verified badge & more students'
+              : isBn
+                ? 'যেকোনো সময় লাইভ ক্লাস ও নোট'
+                : 'Live classes & verified tutors'
+          }
+          actionLabel={
+            roleKey === 'tutor'
+              ? isBn
+                ? 'যাচাই করুন'
+                : 'Verify Now'
+              : isBn
+                ? 'ডাউনলোড'
+                : 'Download'
+          }
+          actionHref={roleKey === 'tutor' ? '/profile' : '/tutors'}
+        />
       </div>
     </aside>
   );

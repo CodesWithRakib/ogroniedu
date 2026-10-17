@@ -9,7 +9,6 @@ import { useAppDispatch } from '@/store';
 import { setCredentials } from '@/store/slices/auth-slice';
 import {
   useLoginMutation,
-  useRequestMagicLinkMutation,
   toAuthUser,
   type AuthResponse,
 } from '@/store/services/auth-api';
@@ -21,38 +20,10 @@ export function useLoginForm(locale: Locale) {
   const router = useRouter();
   const dispatch = useAppDispatch();
   const [login, { isLoading }] = useLoginMutation();
-  const [requestMagicLink, { isLoading: isRequestingMagicLink }] = useRequestMagicLinkMutation();
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [formError, setFormError] = useState<string | null>(null);
-  const [magicEmail, setMagicEmail] = useState('');
-  const [magicNotice, setMagicNotice] = useState<string | null>(null);
-
-  /**
-   * Request a passwordless sign-in link. The backend always returns the same
-   * generic success message so this cannot be used to probe accounts.
-   */
-  async function handleMagicLinkRequest() {
-    setFormError(null);
-    setMagicNotice(null);
-    const email = magicEmail.trim();
-    if (!email || !email.includes('@')) {
-      setFormError(isBn ? 'সঠিক ইমেইল দিন।' : 'Enter a valid email address.');
-      return;
-    }
-    try {
-      const res = await requestMagicLink({ email, locale }).unwrap();
-      setMagicNotice(
-        res?.message ??
-          (isBn
-            ? 'যদি অ্যাকাউন্ট থাকে, একটি সাইন-ইন লিংক পাঠানো হয়েছে।'
-            : 'If an account exists, a sign-in link has been sent.'),
-      );
-    } catch (err) {
-      setFormError(normalizeUnknownError(err, locale).message);
-    }
-  }
 
   const isBn = locale === 'bn';
 
@@ -114,10 +85,5 @@ export function useLoginForm(locale: Locale) {
     isBn,
     handleQuickFill,
     handleSubmit,
-    magicEmail,
-    setMagicEmail,
-    magicNotice,
-    isRequestingMagicLink,
-    handleMagicLinkRequest,
   };
 }
