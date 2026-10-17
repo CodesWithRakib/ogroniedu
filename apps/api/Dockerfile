@@ -17,7 +17,8 @@ RUN pnpm install --frozen-lockfile
 # Stage 2: Builder
 FROM dependencies AS builder
 COPY . .
-RUN pnpm --filter @ogroniedu/contracts build && \
+RUN rm -f apps/api/*.tsbuildinfo && \
+    pnpm --filter @ogroniedu/contracts build && \
     pnpm --filter @ogroniedu/database build && \
     pnpm --filter @ogroniedu/api build
 

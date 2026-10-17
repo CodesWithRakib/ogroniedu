@@ -388,6 +388,9 @@ importers:
       '@ogroniedu/tsconfig':
         specifier: workspace:*
         version: link:../tsconfig
+      typescript:
+        specifier: ^7.0.2
+        version: 7.0.2
 
   packages/database:
     dependencies:

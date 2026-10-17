@@ -15,6 +15,7 @@
     "zod": "^4.6.5"
   },
   "devDependencies": {
-    "@ogroniedu/tsconfig": "workspace:*"
+    "@ogroniedu/tsconfig": "workspace:*",
+    "typescript": "^7.0.2"
   }
 }

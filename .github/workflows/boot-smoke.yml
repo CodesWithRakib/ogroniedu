@@ -67,7 +67,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build API bundle
-        run: pnpm --filter @ogroniedu/api build
+        run: pnpm --filter @ogroniedu/api... build
 
       - name: Migrate smoke database (includes 012_support_tickets)
         run: pnpm db:migrate

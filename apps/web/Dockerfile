@@ -18,7 +18,8 @@ RUN pnpm install --frozen-lockfile
 FROM dependencies AS builder
 COPY . .
 ENV NEXT_TELEMETRY_DISABLED=1
-RUN pnpm --filter @ogroniedu/contracts build && \
+RUN rm -f apps/web/*.tsbuildinfo && \
+    pnpm --filter @ogroniedu/contracts build && \
     pnpm --filter @ogroniedu/web build
 
 # Stage 3: Production Runner
