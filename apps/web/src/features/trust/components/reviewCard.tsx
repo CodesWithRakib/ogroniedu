@@ -2,6 +2,7 @@
 
 import { useTranslations } from 'next-intl';
 import type { ReviewItem } from '../types/trust.types';
+import { Card, Badge, Textarea, Button, Alert, AlertDescription } from '@/components/ui';
 
 /** One review card: ratings, criteria tags, comment, tutor response, reply thread. */
 export function ReviewCard({
@@ -31,203 +32,112 @@ export function ReviewCard({
   const rev = review;
 
   return (
-    <div
-      style={{
-        backgroundColor: 'var(--card)',
-        border: '1px solid #e2e8f0',
-        borderRadius: '12px',
-        padding: '18px',
-        boxShadow: '0 1px 3px rgba(0,0,0,0.05)',
-      }}
-    >
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-between',
-          alignItems: 'flex-start',
-          marginBottom: '10px',
-        }}
-      >
+    <Card className="p-5 border-border/80 bg-card rounded-2xl shadow-xs space-y-3">
+      <div className="flex justify-between items-start">
         <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-            <span style={{ fontWeight: 700, fontSize: '0.95rem', color: 'var(--foreground)' }}>
+          <div className="flex items-center gap-2">
+            <span className="font-bold text-sm text-foreground">
               {rev.reviewer?.displayName || 'Verified Learner'}
             </span>
             {rev.isVerifiedBooking && (
-              <span
-                style={{
-                  fontSize: '0.7rem',
-                  backgroundColor: 'var(--success-soft)',
-                  color: 'var(--primary)',
-                  padding: '2px 8px',
-                  borderRadius: '12px',
-                  fontWeight: 600,
-                  border: '1px solid #a7f3d0',
-                }}
-              >
+              <Badge variant="success" className="text-[10px]">
                 ✓ {t('verifiedBooking')}
-              </span>
+              </Badge>
             )}
           </div>
-          <div style={{ fontSize: '0.75rem', color: 'var(--muted-foreground)', marginTop: '2px' }}>
+          <p className="text-xs text-muted-foreground mt-0.5">
             {new Date(rev.createdAt).toLocaleDateString()}
-          </div>
+          </p>
         </div>
 
-        <div style={{ color: 'var(--warning)', fontSize: '1rem', fontWeight: 700 }}>
+        <div className="text-amber-500 font-bold tracking-wider text-sm">
           {'★'.repeat(rev.rating)}
           {'☆'.repeat(5 - rev.rating)}
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexWrap: 'wrap', gap: '6px', marginBottom: '12px' }}>
+      <div className="flex flex-wrap gap-1.5">
         {rev.punctualityRating && (
-          <span
-            style={{
-              fontSize: '0.75rem',
-              backgroundColor: 'var(--surface-muted)',
-              color: 'var(--muted-foreground)',
-              padding: '2px 8px',
-              borderRadius: '6px',
-            }}
-          >
+          <Badge variant="secondary" className="text-[11px] font-normal">
             ⏱ {t('punctuality')}: {rev.punctualityRating}/5
-          </span>
+          </Badge>
         )}
         {rev.teachingClarityRating && (
-          <span
-            style={{
-              fontSize: '0.75rem',
-              backgroundColor: 'var(--surface-muted)',
-              color: 'var(--muted-foreground)',
-              padding: '2px 8px',
-              borderRadius: '6px',
-            }}
-          >
+          <Badge variant="secondary" className="text-[11px] font-normal">
             💡 {t('teachingClarity')}: {rev.teachingClarityRating}/5
-          </span>
+          </Badge>
         )}
         {rev.subjectMasteryRating && (
-          <span
-            style={{
-              fontSize: '0.75rem',
-              backgroundColor: 'var(--surface-muted)',
-              color: 'var(--muted-foreground)',
-              padding: '2px 8px',
-              borderRadius: '6px',
-            }}
-          >
+          <Badge variant="secondary" className="text-[11px] font-normal">
             📚 {t('subjectMastery')}: {rev.subjectMasteryRating}/5
-          </span>
+          </Badge>
         )}
       </div>
 
-      <p style={{ margin: 0, fontSize: '0.9rem', color: 'var(--muted-foreground)', lineHeight: 1.5 }}>
+      <p className="text-xs text-foreground/90 leading-relaxed">
         {rev.comment}
       </p>
 
       {rev.tutorResponse && (
-        <div
-          style={{
-            marginTop: '14px',
-            padding: '12px 14px',
-            backgroundColor: 'var(--surface-muted)',
-            borderLeft: '4px solid #2563eb',
-            borderRadius: '0 8px 8px 0',
-            fontSize: '0.85rem',
-          }}
-        >
-          <div style={{ fontWeight: 700, color: 'var(--interactive-soft-foreground)', marginBottom: '4px' }}>
-            💬 {t('tutorResponse')}
+        <div className="p-3.5 bg-muted/60 border-l-4 border-primary rounded-r-xl text-xs space-y-1">
+          <div className="font-bold text-primary flex items-center gap-1.5">
+            <span>💬</span>
+            <span>{t('tutorResponse')}</span>
           </div>
-          <div style={{ color: 'var(--muted-foreground)', lineHeight: 1.4 }}>{rev.tutorResponse}</div>
+          <p className="text-muted-foreground leading-relaxed">{rev.tutorResponse}</p>
         </div>
       )}
 
       {isCurrentTutor && !rev.tutorResponse && (
-        <div style={{ marginTop: '12px' }}>
+        <div className="pt-1">
           {replying ? (
-            <div style={{ marginTop: '8px' }}>
+            <div className="space-y-2">
               {replyError && (
-                <p role="alert" style={{ color: 'var(--destructive)', fontSize: '0.8rem' }}>
-                  {replyError}
-                </p>
+                <Alert variant="destructive" className="py-2 px-3 rounded-xl">
+                  <AlertDescription className="text-xs">{replyError}</AlertDescription>
+                </Alert>
               )}
-              <textarea
+              <Textarea
                 rows={3}
                 maxLength={1000}
                 placeholder={t('replyPlaceholder')}
                 value={replyText}
                 onChange={(e) => onReplyTextChange(e.target.value)}
-                style={{
-                  width: '100%',
-                  padding: '8px 10px',
-                  borderRadius: '6px',
-                  border: '1px solid #cbd5e1',
-                  fontSize: '0.85rem',
-                  boxSizing: 'border-box',
-                }}
+                className="text-xs"
               />
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'flex-end',
-                  gap: '8px',
-                  marginTop: '6px',
-                }}
-              >
-                <button
+              <div className="flex justify-end gap-2">
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={onCancelReply}
-                  style={{
-                    padding: '4px 12px',
-                    borderRadius: '6px',
-                    border: '1px solid #cbd5e1',
-                    background: 'var(--card)',
-                    fontSize: '0.8rem',
-                    cursor: 'pointer',
-                  }}
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="button"
+                  size="sm"
                   disabled={isPostingReply}
                   onClick={onPostReply}
-                  style={{
-                    padding: '4px 14px',
-                    borderRadius: '6px',
-                    border: 'none',
-                    background: 'var(--interactive)',
-                    color: 'var(--card)',
-                    fontSize: '0.8rem',
-                    fontWeight: 600,
-                    cursor: 'pointer',
-                  }}
+                  isLoading={isPostingReply}
                 >
                   {isPostingReply ? 'Posting...' : t('postReply')}
-                </button>
+                </Button>
               </div>
             </div>
           ) : (
-            <button
+            <Button
               type="button"
+              variant="ghost"
+              size="sm"
               onClick={onOpenReply}
-              style={{
-                background: 'none',
-                border: 'none',
-                color: 'var(--interactive)',
-                fontSize: '0.8rem',
-                fontWeight: 600,
-                cursor: 'pointer',
-                padding: 0,
-              }}
+              className="text-primary hover:text-primary hover:bg-primary-soft text-xs h-8 px-2 font-semibold"
             >
               + {t('tutorResponse')}
-            </button>
+            </Button>
           )}
         </div>
       )}
-    </div>
+    </Card>
   );
 }

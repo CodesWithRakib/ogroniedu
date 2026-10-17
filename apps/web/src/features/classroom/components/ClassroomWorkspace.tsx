@@ -19,7 +19,19 @@ import {
   ShieldCheck,
   Radio,
 } from 'lucide-react';
-import { Button, Badge, Card } from '@/components/ui';
+import {
+  Button,
+  Badge,
+  Card,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  Input,
+  Label,
+  Textarea,
+} from '@/components/ui';
 import {
   SessionItem,
   useStartSessionMutation,
@@ -424,13 +436,13 @@ export function ClassroomWorkspace({
             onSubmit={handleSaveMeetingUrl}
             className="mt-4 pt-4 border-t border-border flex flex-col sm:flex-row items-center gap-2"
           >
-            <input
+            <Input
               type="url"
               required
               value={meetingUrlInput}
               onChange={(e) => setMeetingUrlInput(e.target.value)}
               placeholder="https://meet.google.com/xxx-yyyy-zzz"
-              className="flex-1 h-9 rounded-xl bg-card border border-border px-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+              className="flex-1 h-9 rounded-xl"
               data-testid="meeting-url-input"
             />
             <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -565,9 +577,9 @@ export function ClassroomWorkspace({
                 className="space-y-3"
                 data-testid="classroom-mark-attendance-form"
               >
-                <label className="text-xs font-semibold text-muted-foreground block">
+                <Label className="text-xs font-semibold text-muted-foreground block">
                   {locale === 'bn' ? 'উপস্থিতি নির্ধারণ করুন:' : 'Mark Attendance:'}
-                </label>
+                </Label>
                 <div className="grid grid-cols-4 gap-2">
                   {(['present', 'late', 'absent', 'excused'] as AttendanceStatus[]).map((st) => (
                     <button
@@ -601,10 +613,10 @@ export function ClassroomWorkspace({
                 </div>
 
                 <div className="space-y-1">
-                  <label htmlFor="notes-inp" className="text-xs text-muted-foreground">
+                  <Label htmlFor="notes-inp" className="text-xs text-muted-foreground">
                     {locale === 'bn' ? 'ক্লাসের সক্রিয়তা বা মন্তব্য:' : 'Session remarks:'}
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     id="notes-inp"
                     type="text"
                     value={attendanceNotes}
@@ -612,7 +624,7 @@ export function ClassroomWorkspace({
                     placeholder={
                       locale === 'bn' ? 'যেমন: পাঠে মনোযোগ ছিল...' : 'e.g. Participated actively...'
                     }
-                    className="w-full h-9 rounded-xl border border-border bg-surface-muted px-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+                    className="w-full h-9 rounded-xl border-input bg-card text-xs text-foreground placeholder:text-muted-foreground"
                     data-testid="attendance-notes-input"
                   />
                 </div>
@@ -689,67 +701,64 @@ export function ClassroomWorkspace({
       )}
 
       {/* Class Completion Modal */}
-      {showCompletionModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-          <div className="w-full max-w-md bg-card border border-info/40 rounded-3xl p-6 shadow-sm space-y-4 text-foreground">
-            <div className="flex items-center gap-2.5 text-success-soft-foreground">
-              <CheckCircle2 className="w-6 h-6" />
-              <h3 className="text-lg font-bold text-foreground">
+      <Dialog open={showCompletionModal} onOpenChange={setShowCompletionModal}>
+        <DialogContent className="max-w-md w-full space-y-4">
+          <DialogHeader className="text-left space-y-1">
+            <div className="flex items-center gap-2 text-primary">
+              <CheckCircle2 className="w-5 h-5 text-primary" />
+              <DialogTitle className="text-lg font-bold text-foreground">
                 {locale === 'bn' ? 'ক্লাস সম্পন্ন করার নিশ্চিতকরণ' : 'Complete Tutoring Class'}
-              </h3>
+              </DialogTitle>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <DialogDescription className="text-xs text-muted-foreground">
               {locale === 'bn'
                 ? 'আপনি কি ক্লাসটি সম্পন্ন হিসেবে চিহ্নিত করতে চান? ক্লাসের উপর কোনো মন্তব্য বা অগ্রগতি নোট থাকলে লিখুন।'
                 : 'Mark this session as completed. You may optionally add summary feedback or study recommendations.'}
-            </p>
+            </DialogDescription>
+          </DialogHeader>
 
-            <div className="space-y-1">
-              <label
-                htmlFor="completion-notes-modal"
-                className="text-xs text-muted-foreground font-medium"
-              >
-                {locale === 'bn' ? 'ক্লাস রিভিউ ও মন্তব্য (ঐচ্ছিক):' : 'Session Notes (Optional):'}
-              </label>
-              <textarea
-                id="completion-notes-modal"
-                rows={3}
-                value={completionNotes}
-                onChange={(e) => setCompletionNotes(e.target.value)}
-                placeholder={
-                  locale === 'bn'
-                    ? 'যেমন: আজকের ক্লাসে গতিবিদ্যার গাণিতিক সমাধান অনুশীলন করা হয়েছে...'
-                    : 'e.g. Covered kinematics problem set and Newton laws...'
-                }
-                className="w-full rounded-2xl bg-surface-muted border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
-                data-testid="completion-notes-textarea"
-              />
-            </div>
-
-            <div className="flex items-center justify-end gap-2 pt-2">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={() => setShowCompletionModal(false)}
-                className="border-border text-muted-foreground text-xs rounded-xl"
-              >
-                {locale === 'bn' ? 'বাতিল' : 'Cancel'}
-              </Button>
-              <Button
-                type="button"
-                size="sm"
-                onClick={handleCompleteClass}
-                isLoading={isCompleting}
-                className="bg-primary hover:bg-primary-hover text-white font-bold text-xs rounded-xl"
-                data-testid="confirm-complete-class-btn"
-              >
-                {locale === 'bn' ? 'সম্পন্ন নিশ্চিত করুন' : 'Confirm Completion'}
-              </Button>
-            </div>
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="completion-notes-modal"
+              className="text-xs text-muted-foreground font-medium"
+            >
+              {locale === 'bn' ? 'ক্লাস রিভিউ ও মন্তব্য (ঐচ্ছিক):' : 'Session Notes (Optional):'}
+            </Label>
+            <Textarea
+              id="completion-notes-modal"
+              rows={3}
+              value={completionNotes}
+              onChange={(e) => setCompletionNotes(e.target.value)}
+              placeholder={
+                locale === 'bn'
+                  ? 'যেমন: আজকের ক্লাসে গতিবিদ্যার গাণিতিক সমাধান অনুশীলন করা হয়েছে...'
+                  : 'e.g. Covered kinematics problem set and Newton laws...'
+              }
+              data-testid="completion-notes-textarea"
+            />
           </div>
-        </div>
-      )}
+
+          <div className="flex items-center justify-end gap-2 pt-2">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setShowCompletionModal(false)}
+            >
+              {locale === 'bn' ? 'বাতিল' : 'Cancel'}
+            </Button>
+            <Button
+              type="button"
+              size="sm"
+              onClick={handleCompleteClass}
+              isLoading={isCompleting}
+              data-testid="confirm-complete-class-btn"
+            >
+              {locale === 'bn' ? 'সম্পন্ন নিশ্চিত করুন' : 'Confirm Completion'}
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

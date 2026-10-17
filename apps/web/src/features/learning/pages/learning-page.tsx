@@ -2,7 +2,17 @@
 
 import React from 'react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
-import { Button, Card, CardContent, Input, LoadingSpinner, EmptyState } from '@/components/ui';
+import {
+  Button,
+  Card,
+  CardContent,
+  Input,
+  Label,
+  Alert,
+  AlertDescription,
+  LoadingSpinner,
+  EmptyState,
+} from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { normalizeUnknownError } from '@/lib/api-error';
@@ -45,21 +55,21 @@ export function LearningPage({ locale }: { locale: Locale }) {
     <DashboardShell locale={locale} title={dict.learning.title} subtitle={dict.learning.subtitle}>
       {records.bookingOptions.length > 0 && (
         <div
-          className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-white  p-4 rounded-2xl border border-border  shadow-sm"
+          className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-card p-4 rounded-2xl border border-border shadow-sm"
           data-testid="learning-booking-picker"
         >
           <div className="flex items-center gap-2">
-            <label
+            <Label
               htmlFor="learning-booking-select"
-              className="text-xs font-bold text-foreground "
+              className="text-xs font-bold text-foreground"
             >
               {locale === 'bn' ? 'সক্রিয় কোর্স / বুকিং নির্বাচন:' : 'Select Tuition / Course:'}
-            </label>
+            </Label>
             <select
               id="learning-booking-select"
               value={records.activeBookingId}
               onChange={(e) => records.setActiveBookingId(e.target.value)}
-              className="h-9 min-w-[260px] rounded-xl border border-border bg-muted px-3 text-xs font-medium text-foreground    focus:outline-none focus:ring-2 focus:ring-ring"
+              className="h-9 min-w-[260px] rounded-xl border border-input bg-card px-3 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
               data-testid="learning-booking-select"
             >
               {records.bookingOptions.map((opt) => (
@@ -78,12 +88,9 @@ export function LearningPage({ locale }: { locale: Locale }) {
       )}
 
       {formError && (
-        <div
-          role="alert"
-          className="mb-4 rounded-lg border border-destructive/20 bg-destructive-soft p-3 text-sm text-destructive"
-        >
-          {formError}
-        </div>
+        <Alert variant="destructive" className="mb-4">
+          <AlertDescription role="alert">{formError}</AlertDescription>
+        </Alert>
       )}
 
       {role === 'tutor' && records.activeBookingId && (
@@ -95,9 +102,9 @@ export function LearningPage({ locale }: { locale: Locale }) {
               data-testid="create-assignment-form"
             >
               <div className="flex-1 space-y-1">
-                <label htmlFor="assignment-title" className="text-xs font-medium">
+                <Label htmlFor="assignment-title" className="text-xs font-medium">
                   {dict.learning.createAssignment}
-                </label>
+                </Label>
                 <Input
                   id="assignment-title"
                   value={assignmentTitle}
@@ -106,9 +113,9 @@ export function LearningPage({ locale }: { locale: Locale }) {
                 />
               </div>
               <div className="w-28 space-y-1">
-                <label htmlFor="assignment-max" className="text-xs font-medium">
+                <Label htmlFor="assignment-max" className="text-xs font-medium">
                   {dict.learning.maxScoreLabel}
-                </label>
+                </Label>
                 <Input
                   id="assignment-max"
                   type="number"

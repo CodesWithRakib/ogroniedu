@@ -5,6 +5,16 @@ import { useTranslations, useLocale } from 'next-intl';
 import { TrustModalShell, TrustFormAlert } from '@/features/trust/components/trustModalShell';
 import { useModalSubmit } from '@/features/trust/hooks/use-modal-submit';
 import type { TutorReplacementModalProps } from '@/features/trust/types/trust.types';
+import {
+  Label,
+  Textarea,
+  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui';
 
 export type { TutorReplacementModalProps } from '@/features/trust/types/trust.types';
 
@@ -53,127 +63,70 @@ export function TutorReplacementModal({
       onClose={onClose}
       closeLabel={locale === 'bn' ? 'বন্ধ করুন' : 'Close'}
     >
-      <div
-        style={{
-          backgroundColor: 'var(--success-soft)',
-          border: '1px solid #bbf7d0',
-          borderRadius: '10px',
-          padding: '12px 14px',
-          marginBottom: '18px',
-          fontSize: '0.85rem',
-          color: 'var(--primary)',
-          lineHeight: 1.45,
-        }}
-      >
+      <div className="rounded-xl border border-success/30 bg-primary/10 p-3 mb-4 text-xs text-primary leading-relaxed font-medium">
         ✓ {t('slaNotice')}
       </div>
 
       {submit.errorMsg && <TrustFormAlert tone="error">{submit.errorMsg}</TrustFormAlert>}
       {submit.successMsg && <TrustFormAlert tone="success">{submit.successMsg}</TrustFormAlert>}
 
-      <form onSubmit={handleSubmit}>
-        <div style={{ marginBottom: '16px' }}>
-          <label
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="space-y-1.5">
+          <Label
             htmlFor="reason-code"
-            style={{
-              display: 'block',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              marginBottom: '6px',
-              color: 'var(--muted-foreground)',
-            }}
+            className="text-xs font-semibold text-muted-foreground"
           >
             {t('reasonCode')}
-          </label>
-          <select
-            id="reason-code"
-            value={reasonCode}
-            onChange={(e) => setReasonCode(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '10px 12px',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
-              fontSize: '0.9rem',
-              backgroundColor: 'var(--card)',
-              color: 'var(--foreground)',
-            }}
-          >
-            <option value="trial_dissatisfaction">{t('reasonTrial')}</option>
-            <option value="frequent_tutor_cancellation">{t('reasonCancellation')}</option>
-            <option value="tutor_no_show">{t('reasonNoShow')}</option>
-            <option value="teaching_mismatch">{t('reasonMismatch')}</option>
-            <option value="unprofessional_conduct">{t('reasonConduct')}</option>
-          </select>
+          </Label>
+          <Select value={reasonCode} onValueChange={setReasonCode}>
+            <SelectTrigger id="reason-code" className="w-full">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="trial_dissatisfaction">{t('reasonTrial')}</SelectItem>
+              <SelectItem value="frequent_tutor_cancellation">{t('reasonCancellation')}</SelectItem>
+              <SelectItem value="tutor_no_show">{t('reasonNoShow')}</SelectItem>
+              <SelectItem value="teaching_mismatch">{t('reasonMismatch')}</SelectItem>
+              <SelectItem value="unprofessional_conduct">{t('reasonConduct')}</SelectItem>
+            </SelectContent>
+          </Select>
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label
+        <div className="space-y-1.5">
+          <Label
             htmlFor="replacement-explanation"
-            style={{
-              display: 'block',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              marginBottom: '6px',
-              color: 'var(--muted-foreground)',
-            }}
+            className="text-xs font-semibold text-muted-foreground"
           >
             Details / Explanation
-          </label>
-          <textarea
+          </Label>
+          <Textarea
             id="replacement-explanation"
             rows={4}
             maxLength={3000}
             placeholder={t('explanationPlaceholder')}
             value={explanation}
             onChange={(e) => setExplanation(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '10px 12px',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
-              fontSize: '0.9rem',
-              fontFamily: 'inherit',
-              resize: 'vertical',
-              boxSizing: 'border-box',
-            }}
           />
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-          <button
+        <div className="flex justify-end gap-2.5 pt-2">
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={onClose}
             disabled={submit.isSubmitting}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
-              backgroundColor: 'var(--card)',
-              color: 'var(--muted-foreground)',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            disabled={submit.isSubmitting}
-            style={{
-              padding: '8px 20px',
-              borderRadius: '8px',
-              border: 'none',
-              background: 'linear-gradient(135deg, #059669, #047857)',
-              color: 'var(--card)',
-              fontWeight: 700,
-              cursor: submit.isSubmitting ? 'not-allowed' : 'pointer',
-              opacity: submit.isSubmitting ? 0.7 : 1,
-              boxShadow: '0 4px 6px -1px rgba(5, 150, 105, 0.2)',
-            }}
+            variant="primary"
+            size="sm"
+            isLoading={submit.isSubmitting}
           >
             {submit.isSubmitting ? 'Submitting...' : t('submitReplacement')}
-          </button>
+          </Button>
         </div>
       </form>
     </TrustModalShell>

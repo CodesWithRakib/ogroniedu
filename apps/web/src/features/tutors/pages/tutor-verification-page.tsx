@@ -22,6 +22,8 @@ import {
   CardHeader,
   CardTitle,
   LoadingSpinner,
+  Alert,
+  AlertDescription,
 } from '@/components/ui';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
@@ -127,14 +129,10 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
       }
     >
       {actionError && (
-        <div
-          role="alert"
-          className="mb-4 rounded-xl border border-destructive/20 bg-destructive-soft p-4 text-xs text-destructive    flex items-start gap-2"
-          data-testid="verification-action-error"
-        >
-          <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-          <span>{actionError}</span>
-        </div>
+        <Alert variant="destructive" className="mb-4" data-testid="verification-action-error">
+          <AlertTriangle className="w-4 h-4" />
+          <AlertDescription role="alert">{actionError}</AlertDescription>
+        </Alert>
       )}
       {successMessage && (
         <div

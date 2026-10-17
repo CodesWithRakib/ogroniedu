@@ -24,6 +24,8 @@ import {
   CardHeader,
   CardTitle,
   Badge,
+  Input,
+  Label,
   LoadingSpinner,
 } from '@/components/ui';
 import { useGetSessionByIdQuery } from '@/store/services/sessions-api';
@@ -480,9 +482,9 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
                 className="space-y-3"
                 data-testid="tutor-mark-attendance-form"
               >
-                <label className="text-xs font-semibold text-muted-foreground block">
+                <Label className="text-xs font-semibold text-muted-foreground block">
                   {locale === 'bn' ? 'উপস্থিতি নির্ধারণ করুন:' : 'Mark Attendance Status:'}
-                </label>
+                </Label>
                 <div className="grid grid-cols-4 gap-2">
                   {(['present', 'late', 'absent', 'excused'] as AttendanceStatus[]).map((st) => (
                     <button
@@ -516,10 +518,10 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
                 </div>
 
                 <div className="space-y-1">
-                  <label htmlFor="attendance-notes" className="text-xs text-muted-foreground">
+                  <Label htmlFor="attendance-notes" className="text-xs text-muted-foreground">
                     {locale === 'bn' ? 'মন্তব্য (ঐচ্ছিক):' : 'Notes (optional):'}
-                  </label>
-                  <input
+                  </Label>
+                  <Input
                     id="attendance-notes"
                     type="text"
                     value={attendanceNotes}
@@ -529,7 +531,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
                         ? 'ক্লাসের সক্রিয়তা বা মন্তব্য লিখুন...'
                         : 'Add session notes or observations...'
                     }
-                    className="w-full h-9 rounded-xl border border-border bg-muted px-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="w-full h-9 rounded-xl border-input bg-card text-xs text-foreground placeholder:text-muted-foreground"
                     data-testid="attendance-notes-input"
                   />
                 </div>

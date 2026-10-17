@@ -10,7 +10,6 @@ import {
   Eye,
   EyeOff,
   ArrowRight,
-  AlertCircle,
   GraduationCap,
   ShieldCheck,
   BookOpen,
@@ -18,8 +17,13 @@ import {
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import type { RegisterRole } from '@/store/services/auth-api';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import {
+  Button,
+  Input,
+  Label,
+  Alert,
+  AlertDescription,
+} from '@/components/ui';
 import { AuthShell } from './authShell';
 import { cn } from '@/lib/utils';
 import { useRegisterForm } from './use-register-form';
@@ -69,21 +73,20 @@ export function RegisterForm({ locale }: { locale: Locale }) {
       <form onSubmit={handleSubmit} className="space-y-4" data-testid="register-form">
         {/* Error Alert */}
         {formError && (
-          <div
-            role="alert"
-            className="flex items-start gap-2.5 rounded-xl border border-destructive/25 bg-destructive-soft p-3 text-xs font-medium text-destructive animate-in fade-in"
+          <Alert
+            variant="destructive"
+            className="rounded-xl"
             data-testid="register-error"
           >
-            <AlertCircle className="h-4 w-4 shrink-0 text-destructive mt-0.5" />
-            <span>{formError}</span>
-          </div>
+            <AlertDescription>{formError}</AlertDescription>
+          </Alert>
         )}
 
         {/* Role Picker (Visual Segmented Pills + synced select for test compatibility) */}
         <div className="space-y-1.5 text-left">
-          <label htmlFor="register-role" className="text-xs font-semibold text-foreground">
+          <Label htmlFor="register-role" className="text-xs font-semibold text-foreground">
             {isBn ? 'আপনার ভূমিকা নির্বাচন করুন' : 'Select Account Type'}
-          </label>
+          </Label>
           <div className="grid grid-cols-3 gap-2">
             {roleOptions.map((opt) => {
               const Icon = opt.icon;
@@ -124,9 +127,9 @@ export function RegisterForm({ locale }: { locale: Locale }) {
 
         {/* Full Name Input */}
         <div className="space-y-1.5 text-left">
-          <label htmlFor="register-name" className="text-xs font-semibold text-foreground">
+          <Label htmlFor="register-name" className="text-xs font-semibold text-foreground">
             {isBn ? 'পুরো নাম' : 'Full Name'}
-          </label>
+          </Label>
           <Input
             id="register-name"
             type="text"
@@ -142,9 +145,9 @@ export function RegisterForm({ locale }: { locale: Locale }) {
         {/* Email & Phone Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           <div className="space-y-1.5 text-left">
-            <label htmlFor="register-email" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="register-email" className="text-xs font-semibold text-foreground">
               {isBn ? 'ইমেইল (ঐচ্ছিক)' : 'Email (optional)'}
-            </label>
+            </Label>
             <Input
               id="register-email"
               type="email"
@@ -158,9 +161,9 @@ export function RegisterForm({ locale }: { locale: Locale }) {
           </div>
 
           <div className="space-y-1.5 text-left">
-            <label htmlFor="register-phone" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="register-phone" className="text-xs font-semibold text-foreground">
               {isBn ? 'মোবাইল (ঐচ্ছিক)' : 'Mobile (optional)'}
-            </label>
+            </Label>
             <Input
               id="register-phone"
               type="text"
@@ -176,9 +179,9 @@ export function RegisterForm({ locale }: { locale: Locale }) {
 
         {/* Password Input */}
         <div className="space-y-1.5 text-left">
-          <label htmlFor="register-password" className="text-xs font-semibold text-foreground">
+          <Label htmlFor="register-password" className="text-xs font-semibold text-foreground">
             {dict.auth.passwordLabel}
-          </label>
+          </Label>
           <div className="relative">
             <Input
               id="register-password"

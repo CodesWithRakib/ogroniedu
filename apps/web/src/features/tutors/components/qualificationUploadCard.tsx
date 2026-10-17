@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent, Button, Input } from '@/components/ui';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input, Label } from '@/components/ui';
 import { type Locale } from '@/lib/i18n';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { useUploadEvidenceMutation, type EvidencePurpose } from '@/store/services/files-api';
@@ -139,14 +139,14 @@ export function QualificationUploadCard({
             </p>
           )}
           <div className="space-y-1">
-            <label htmlFor="qual-doc-type" className="text-xs font-medium">
+            <Label htmlFor="qual-doc-type" className="text-xs font-medium">
               {isBn ? 'সনদের ধরন' : 'Document type'}
-            </label>
+            </Label>
             <select
               id="qual-doc-type"
               value={docType}
               onChange={(e) => setDocType(e.target.value as typeof docType)}
-              className="h-10 w-full rounded-xl border border-border bg-white px-3 text-sm  "
+              className="h-10 w-full rounded-xl border border-input bg-card text-foreground px-3 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
               data-testid="qualification-type-select"
             >
               <option value="nid">{isBn ? 'জাতীয় পরিচয়পত্র (NID)' : 'National ID (NID)'}</option>
@@ -157,9 +157,9 @@ export function QualificationUploadCard({
             </select>
           </div>
           <div className="space-y-1">
-            <label htmlFor="qual-title" className="text-xs font-medium">
+            <Label htmlFor="qual-title" className="text-xs font-medium">
               {isBn ? 'শিরোনাম' : 'Title'}
-            </label>
+            </Label>
             <Input
               id="qual-title"
               value={title}
@@ -169,9 +169,9 @@ export function QualificationUploadCard({
             />
           </div>
           <div className="space-y-1">
-            <label htmlFor="qual-institution" className="text-xs font-medium">
+            <Label htmlFor="qual-institution" className="text-xs font-medium">
               {isBn ? 'প্রতিষ্ঠান (ঐচ্ছিক)' : 'Institution (optional)'}
-            </label>
+            </Label>
             <Input
               id="qual-institution"
               value={institution}
@@ -180,17 +180,17 @@ export function QualificationUploadCard({
             />
           </div>
           <div className="space-y-1">
-            <label htmlFor="qual-file" className="text-xs font-medium">
+            <Label htmlFor="qual-file" className="text-xs font-medium">
               {isBn
                 ? 'ফাইল (PDF/JPEG/PNG/WEBP, সর্বোচ্চ ১০MB)'
                 : 'File (PDF/JPEG/PNG/WEBP, max 10MB)'}
-            </label>
-            <input
+            </Label>
+            <Input
               id="qual-file"
               type="file"
               accept=".pdf,.jpg,.jpeg,.png,.webp,application/pdf,image/jpeg,image/png,image/webp"
               onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-              className="w-full text-xs"
+              className="w-full text-xs h-9 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:bg-muted file:text-foreground"
               data-testid="qualification-file-input"
             />
           </div>

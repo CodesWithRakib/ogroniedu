@@ -1,8 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Star, ShieldCheck, AlertCircle, X, Sparkles } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Star, ShieldCheck, AlertCircle, Sparkles } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { useCreateReviewMutation } from '@/store/services/trust-api';
 import { StarSelector } from './starSelector';
 import { playAudioTone } from '@/lib/audio/notification-sound';
@@ -78,52 +88,43 @@ export function ReviewModal({
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm animate-in fade-in">
-      <div
-        className="w-full max-w-lg bg-card border border-warning/40 rounded-3xl p-6 md:p-8 shadow-sm space-y-5 text-foreground max-h-[90vh] overflow-y-auto"
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
         data-testid="review-modal"
+        className="w-full max-w-lg bg-card border-border rounded-2xl p-6 md:p-8 shadow-2xl space-y-5 text-foreground max-h-[90vh] overflow-y-auto"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-border pb-4">
-          <div className="flex items-center gap-2.5 text-warning-soft-foreground">
-            <div className="p-2 rounded-2xl bg-warning/10 border border-warning/40">
+        <DialogHeader className="border-b border-border pb-4 text-left">
+          <div className="flex items-center gap-2.5 text-warning">
+            <div className="p-2 rounded-xl bg-warning/10 border border-warning/30">
               <Star className="w-5 h-5 fill-current" />
             </div>
             <div>
-              <h3 className="text-lg font-black text-foreground flex items-center gap-1.5">
+              <DialogTitle className="text-lg font-bold text-foreground flex items-center gap-1.5">
                 <span>{isBn ? 'শিক্ষকের মূল্যায়ন ও রিভিউ' : 'Tutor Rating & Review'}</span>
-                <Sparkles className="w-4 h-4 text-warning-soft-foreground" />
-              </h3>
-              <p className="text-xs text-muted-foreground">
+                <Sparkles className="w-4 h-4 text-warning" />
+              </DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground mt-0.5">
                 {subjectName} • {tutorName}
-              </p>
+              </DialogDescription>
             </div>
           </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-all"
-            aria-label="Close"
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+        </DialogHeader>
 
         {/* Verified Booking Notice */}
-        <div className="p-3.5 rounded-2xl bg-primary/10 border border-primary/40 text-success-soft-foreground text-xs flex items-center gap-2">
-          <ShieldCheck className="w-4 h-4 text-success-soft-foreground shrink-0" />
-          <span>
+        <Alert className="bg-primary-soft border border-primary/25 text-primary-soft-foreground text-xs flex items-center gap-2 p-3.5 rounded-xl">
+          <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
+          <AlertDescription>
             {isBn
               ? 'এটি একটি ১০০% যাচাইকৃত বুকিং রিভিউ। আপনার সৎ মূল্যায়ন অন্য শিক্ষার্থীদের সাহায্য করবে।'
               : 'This is a verified booking review. Your genuine feedback guides fellow students.'}
-          </span>
-        </div>
+          </AlertDescription>
+        </Alert>
 
         {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           {/* Overall Rating */}
-          <div className="p-4 rounded-2xl bg-surface-muted border border-border space-y-1">
+          <div className="p-4 rounded-xl bg-muted/40 border border-border space-y-1">
             <StarSelector
               label={isBn ? 'সামগ্রিক সন্তুষ্টি (Overall Rating)' : 'Overall Rating'}
               value={rating}
@@ -133,8 +134,8 @@ export function ReviewModal({
           </div>
 
           {/* Breakdown Criteria Ratings */}
-          <div className="p-4 rounded-2xl bg-surface-muted border border-border space-y-3">
-            <span className="text-xs font-bold text-muted-foreground block">
+          <div className="p-4 rounded-xl bg-muted/40 border border-border space-y-3">
+            <span className="text-xs font-semibold text-muted-foreground block">
               {isBn ? 'বিস্তারিত ক্রাইটেরিয়া মূল্যায়ন:' : 'Detailed Criteria Breakdown:'}
             </span>
 
@@ -162,12 +163,12 @@ export function ReviewModal({
 
           {/* Comment / Remarks */}
           <div className="space-y-1.5">
-            <label htmlFor="review-comment" className="text-xs font-bold text-muted-foreground block">
+            <Label htmlFor="review-comment" className="text-xs font-semibold text-foreground block">
               {isBn
                 ? 'আপনার বিস্তারিত অভিজ্ঞতা ও মন্তব্য (ন্যূনতম ১০ অক্ষর):'
                 : 'Written Review (Min 10 chars):'}
-            </label>
-            <textarea
+            </Label>
+            <Textarea
               id="review-comment"
               rows={4}
               required
@@ -178,7 +179,7 @@ export function ReviewModal({
                   ? 'শিক্ষকের পাঠদান পদ্ধতি কেমন ছিল? শিক্ষার্থী কি উপকৃত হয়েছে? বিস্তারিত লিখুন...'
                   : 'How was the tutor’s teaching style? Did the student improve? Share specific feedback...'
               }
-              className="w-full rounded-2xl bg-surface-muted border border-border p-3.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-warning leading-relaxed"
+              className="w-full rounded-xl bg-card border border-border p-3.5 text-xs text-foreground placeholder:text-muted-foreground focus:ring-primary leading-relaxed"
               data-testid="review-comment-textarea"
             />
             <div className="text-[11px] text-muted-foreground text-right">
@@ -188,10 +189,10 @@ export function ReviewModal({
 
           {/* Error Message */}
           {errorMessage && (
-            <div className="p-3 rounded-xl bg-destructive/10 border border-destructive/40 text-destructive-soft-foreground text-xs flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-destructive-soft-foreground" />
-              <span>{errorMessage}</span>
-            </div>
+            <Alert variant="destructive" className="p-3 rounded-xl text-xs flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0" />
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
           )}
 
           {/* Action Buttons */}
@@ -207,16 +208,17 @@ export function ReviewModal({
             </Button>
             <Button
               type="submit"
+              variant="primary"
               size="sm"
               isLoading={isLoading}
-              className="bg-warning hover:bg-warning/90 text-white font-bold text-xs rounded-xl shadow-sm px-5"
+              className="text-xs rounded-xl font-semibold px-5"
               data-testid="submit-review-btn"
             >
               {isBn ? 'রিভিউ প্রকাশ করুন' : 'Submit Review'}
             </Button>
           </div>
         </form>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

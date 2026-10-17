@@ -19,7 +19,7 @@ import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart'
 import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard';
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
 import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
-import { LoadingSpinner } from '@/components/ui';
+import { LoadingSpinner, Alert, AlertDescription } from '@/components/ui';
 import { Button } from '@/components/ui/Button';
 import { TutorVerificationStatusCard } from '@/components/tutor/TutorVerificationStatusCard';
 import { QualificationUploadCard } from '../components/qualificationUploadCard';
@@ -429,9 +429,11 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       </div>
 
       {(requests.isError || sessions.isError) && (
-        <p className="mt-3 text-xs text-destructive" role="alert">
-          {normalizeApiError(requests.error ?? sessions.error, locale).message}
-        </p>
+        <Alert variant="destructive" className="mt-3">
+          <AlertDescription role="alert">
+            {normalizeApiError(requests.error ?? sessions.error, locale).message}
+          </AlertDescription>
+        </Alert>
       )}
     </TutorLayout>
   );

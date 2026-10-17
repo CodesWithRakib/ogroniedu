@@ -26,6 +26,14 @@ import {
   CardContent,
   Input,
   LoadingSpinner,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  Label,
+  Alert,
+  AlertDescription,
 } from '@/components/ui';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
@@ -395,7 +403,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                               {sess.subjectName ||
                                 (isBn ? 'পদার্থবিজ্ঞান ১ম পত্র' : 'Physics Paper 1')}
                             </span>
-                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-muted  text-muted-foreground">
+                            <span className="text-[10px] font-mono px-2 py-0.5 rounded-full bg-muted text-muted-foreground">
                               #{sess.id.slice(0, 8)}
                             </span>
                           </div>
@@ -408,7 +416,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
 
                         <div className="flex items-center gap-3 shrink-0">
                           <div className="text-right">
-                            <span className="text-sm font-bold text-success-soft-foreground  block">
+                            <span className="text-sm font-bold text-success-soft-foreground block">
                               {formatBDTMinor(feeMinor, locale)}
                             </span>
                             <span className="text-[10px] text-muted-foreground">
@@ -441,143 +449,138 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 4. WITHDRAW MODAL DIALOG                                 */}
       {/* ======================================================== */}
-      {withdrawModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm animate-fade-in">
-          <div className="bg-card border border-border w-full max-w-md rounded-3xl p-6 shadow-2xl space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-border/60">
-              <div className="flex items-center gap-2">
-                <CreditCard className="w-5 h-5 text-success-soft-foreground" />
-                <h3 className="text-base font-bold text-foreground">
-                  {isBn ? 'টাকা উত্তোলন অনুরোধ' : 'Request Payout'}
-                </h3>
+      <Dialog open={withdrawModalOpen} onOpenChange={setWithdrawModalOpen}>
+        <DialogContent className="max-w-md" data-testid="payout-modal">
+          <DialogHeader className="border-b border-border/60 pb-3">
+            <div className="flex items-center gap-2">
+              <CreditCard className="w-5 h-5 text-success-soft-foreground" />
+              <DialogTitle className="text-base font-bold text-foreground">
+                {isBn ? 'টাকা উত্তোলন অনুরোধ' : 'Request Payout'}
+              </DialogTitle>
+            </div>
+            <DialogDescription className="sr-only">
+              {isBn ? 'উত্তোলনের বিবরণ দিন' : 'Enter payout withdrawal details'}
+            </DialogDescription>
+          </DialogHeader>
+
+          {payoutError && (
+            <Alert variant="destructive">
+              <AlertDescription role="alert">{payoutError}</AlertDescription>
+            </Alert>
+          )}
+
+          <form onSubmit={handleRequestPayout} className="space-y-4" data-testid="payout-form">
+            {/* Payout Method Choice */}
+            <div className="space-y-1.5">
+              <Label className="text-xs font-bold text-foreground">
+                {isBn ? 'উত্তোলনের মাধ্যম নির্বাচন করুন:' : 'Select Payout Channel:'}
+              </Label>
+              <div className="grid grid-cols-3 gap-2">
+                <button
+                  type="button"
+                  onClick={() => setSelectedMethod('bkash')}
+                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
+                    selectedMethod === 'bkash'
+                      ? 'border-pink-500 bg-pink-500/10 text-pink-600'
+                      : 'border-border text-muted-foreground hover:bg-muted/50'
+                  }`}
+                >
+                  bKash
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedMethod('nagad')}
+                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
+                    selectedMethod === 'nagad'
+                      ? 'border-warning/40 bg-warning/10 text-orange-700'
+                      : 'border-border text-muted-foreground hover:bg-muted/50'
+                  }`}
+                >
+                  Nagad
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setSelectedMethod('bank')}
+                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
+                    selectedMethod === 'bank'
+                      ? 'border-info/40 bg-interactive/10 text-info-soft-foreground'
+                      : 'border-border text-muted-foreground hover:bg-muted/50'
+                  }`}
+                >
+                  Bank
+                </button>
               </div>
-              <button
-                onClick={() => setWithdrawModalOpen(false)}
-                className="text-muted-foreground hover:text-foreground text-sm font-bold p-1 rounded-lg"
-              >
-                ✕
-              </button>
             </div>
 
-            {payoutError && (
-              <p role="alert" className="text-xs text-destructive font-medium">
-                {payoutError}
-              </p>
-            )}
+            {/* Account Number */}
+            <div className="space-y-1">
+              <Label htmlFor="payout-acc" className="text-xs font-medium text-foreground">
+                {selectedMethod === 'bank'
+                  ? isBn
+                    ? 'ব্যাংক হিসাব নম্বর'
+                    : 'Bank Account Number'
+                  : isBn
+                    ? `${selectedMethod.toUpperCase()} মোবাইল নম্বর`
+                    : `${selectedMethod.toUpperCase()} Mobile Number`}
+              </Label>
+              <Input
+                id="payout-acc"
+                value={accountNumber}
+                onChange={(e) => setAccountNumber(e.target.value)}
+                placeholder="017XXXXXXXX"
+                className="rounded-xl"
+                data-testid="payout-account-input"
+              />
+            </div>
 
-            <form onSubmit={handleRequestPayout} className="space-y-4" data-testid="payout-form">
-              {/* Payout Method Choice */}
-              <div className="space-y-1.5">
-                <label className="text-xs font-bold text-foreground">
-                  {isBn ? 'উত্তোলনের মাধ্যম নির্বাচন করুন:' : 'Select Payout Channel:'}
-                </label>
-                <div className="grid grid-cols-3 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMethod('bkash')}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
-                      selectedMethod === 'bkash'
-                        ? 'border-pink-500 bg-pink-500/10 text-pink-600 '
-                        : 'border-border text-muted-foreground hover:bg-surface-hover'
-                    }`}
-                  >
-                    bKash
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMethod('nagad')}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
-                      selectedMethod === 'nagad'
-                        ? 'border-warning/40 bg-warning/10 text-orange-700 '
-                        : 'border-border text-muted-foreground hover:bg-surface-hover'
-                    }`}
-                  >
-                    Nagad
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setSelectedMethod('bank')}
-                    className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
-                      selectedMethod === 'bank'
-                        ? 'border-info/40 bg-interactive/10 text-info-soft-foreground '
-                        : 'border-border text-muted-foreground hover:bg-surface-hover'
-                    }`}
-                  >
-                    Bank
-                  </button>
-                </div>
+            {/* Amount */}
+            <div className="space-y-1">
+              <div className="flex items-center justify-between text-xs">
+                <Label htmlFor="payout-amount" className="font-medium text-foreground">
+                  {isBn ? 'উত্তোলনের পরিমাণ (টাকা)' : 'Withdrawal Amount (BDT)'}
+                </Label>
+                <span className="text-muted-foreground text-[11px]">
+                  {isBn ? 'সর্বোচ্চ:' : 'Available:'} ৳
+                  {formatLocalizedNumber(withdrawableBalanceBdt, locale)}
+                </span>
               </div>
+              <Input
+                id="payout-amount"
+                type="number"
+                value={withdrawAmount}
+                onChange={(e) => setWithdrawAmount(e.target.value)}
+                className="rounded-xl"
+                data-testid="payout-amount-input"
+              />
+            </div>
 
-              {/* Account Number */}
-              <div className="space-y-1">
-                <label htmlFor="payout-acc" className="text-xs font-medium text-foreground">
-                  {selectedMethod === 'bank'
-                    ? isBn
-                      ? 'ব্যাংক হিসাব নম্বর'
-                      : 'Bank Account Number'
-                    : isBn
-                      ? `${selectedMethod.toUpperCase()} মোবাইল নম্বর`
-                      : `${selectedMethod.toUpperCase()} Mobile Number`}
-                </label>
-                <Input
-                  id="payout-acc"
-                  value={accountNumber}
-                  onChange={(e) => setAccountNumber(e.target.value)}
-                  placeholder="017XXXXXXXX"
-                  className="rounded-xl"
-                  data-testid="payout-account-input"
-                />
-              </div>
-
-              {/* Amount */}
-              <div className="space-y-1">
-                <div className="flex items-center justify-between text-xs">
-                  <label htmlFor="payout-amount" className="font-medium text-foreground">
-                    {isBn ? 'উত্তোলনের পরিমাণ (টাকা)' : 'Withdrawal Amount (BDT)'}
-                  </label>
-                  <span className="text-muted-foreground text-[11px]">
-                    {isBn ? 'সর্বোচ্চ:' : 'Available:'} ৳
-                    {formatLocalizedNumber(withdrawableBalanceBdt, locale)}
-                  </span>
-                </div>
-                <Input
-                  id="payout-amount"
-                  type="number"
-                  value={withdrawAmount}
-                  onChange={(e) => setWithdrawAmount(e.target.value)}
-                  className="rounded-xl"
-                  data-testid="payout-amount-input"
-                />
-              </div>
-
-              <div className="pt-2 flex items-center justify-end gap-2">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={() => setWithdrawModalOpen(false)}
-                  className="text-xs"
-                >
-                  {isBn ? 'বাতিল' : 'Cancel'}
-                </Button>
-                <Button
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-primary hover:bg-primary-hover text-white font-bold text-xs"
-                  data-testid="confirm-withdraw-btn"
-                >
-                  {isSubmitting ? (
-                    <LoadingSpinner />
-                  ) : isBn ? (
-                    'উত্তোলন নিশ্চিত করুন'
-                  ) : (
-                    'Confirm Payout'
-                  )}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            <div className="pt-2 flex items-center justify-end gap-2">
+              <Button
+                type="button"
+                variant="outline"
+                onClick={() => setWithdrawModalOpen(false)}
+                className="text-xs"
+              >
+                {isBn ? 'বাতিল' : 'Cancel'}
+              </Button>
+              <Button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-primary hover:bg-primary-hover text-white font-bold text-xs"
+                data-testid="confirm-withdraw-btn"
+              >
+                {isSubmitting ? (
+                  <LoadingSpinner />
+                ) : isBn ? (
+                  'উত্তোলন নিশ্চিত করুন'
+                ) : (
+                  'Confirm Payout'
+                )}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </TutorLayout>
   );
 }

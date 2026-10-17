@@ -8,8 +8,8 @@ import {
   Target,
   Edit3,
   ShieldCheck,
-  X,
   Sparkles,
+  AlertCircle,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -21,6 +21,16 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import { Badge } from '@/components/ui/Badge';
 import {
   useUpsertStudentProfileMutation,
   type StudentProfileData,
@@ -238,178 +248,173 @@ export function StudentAcademicProfileCard({
         </div>
       </div>
 
-      {/* Edit Profile Modal */}
-      {isModalOpen && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
-        >
-          <div className="bg-card border border-border/80 w-full max-w-lg rounded-2xl p-6 shadow-xl relative text-foreground">
-            <button
-              onClick={() => setIsModalOpen(false)}
-              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              <X className="h-5 w-5" />
-            </button>
-
-            <div className="flex items-center gap-3 pb-4 border-b border-border/60">
-              <div className="h-10 w-10 rounded-xl bg-primary-soft text-primary flex items-center justify-center">
+      {/* Edit Profile Modal using shadcn Dialog */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="max-w-lg rounded-2xl p-6 bg-card border-border/80">
+          <DialogHeader className="text-left pb-3 border-b border-border/60">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
                 <GraduationCap className="h-5 w-5" />
               </div>
               <div>
-                <h3 className="text-base font-bold">
+                <DialogTitle className="text-base font-bold text-foreground">
                   {isBn ? 'একাডেমিক প্রোফাইল আপডেট' : 'Update Academic Profile'}
-                </h3>
-                <p className="text-xs text-muted-foreground">
+                </DialogTitle>
+                <DialogDescription className="text-xs text-muted-foreground mt-0.5">
                   {isBn
                     ? 'আপনার স্কুল/কলেজ ও পাঠ্যক্রমের তথ্য আপডেট করুন'
                     : 'Keep your school, class, and learning goals up to date'}
-                </p>
+                </DialogDescription>
+              </div>
+            </div>
+          </DialogHeader>
+
+          {errorMessage && (
+            <Alert variant="destructive" className="mt-2 rounded-xl bg-destructive-soft border-destructive/30">
+              <AlertCircle className="h-4 w-4" />
+              <AlertDescription className="text-xs font-semibold text-destructive">
+                {errorMessage}
+              </AlertDescription>
+            </Alert>
+          )}
+
+          <form onSubmit={handleSave} className="space-y-4 pt-1">
+            <div className="space-y-1.5">
+              <Label htmlFor="academic-institution" className="text-xs font-semibold text-foreground">
+                {isBn ? 'শিক্ষা প্রতিষ্ঠানের নাম' : 'Institution Name'}
+              </Label>
+              <Input
+                id="academic-institution"
+                type="text"
+                value={institution}
+                onChange={(e) => setInstitution(e.target.value)}
+                placeholder={
+                  isBn
+                    ? 'উদা: ঢাকা কলেজ / ভিকারুননিসা নূন'
+                    : 'e.g. Dhaka College / Notre Dame College'
+                }
+                className="rounded-xl h-10"
+              />
+            </div>
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+              <div className="space-y-1.5">
+                <Label htmlFor="academic-level" className="text-xs font-semibold text-foreground">
+                  {isBn ? 'শ্রেণী / পর্যায়' : 'Education Level'}
+                </Label>
+                <Select
+                  value={educationLevelId || 'none'}
+                  onValueChange={(val) => setEducationLevelId(val === 'none' ? '' : val)}
+                >
+                  <SelectTrigger id="academic-level" className="w-full h-10 rounded-xl bg-card border-border/80 text-xs">
+                    <SelectValue
+                      placeholder={isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      {isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
+                    </SelectItem>
+                    {educationLevels.map((lvl) => (
+                      <SelectItem key={lvl.id} value={lvl.id}>
+                        {isBn ? lvl.nameBn : lvl.nameEn}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-1.5">
+                <Label htmlFor="academic-curriculum" className="text-xs font-semibold text-foreground">
+                  {isBn ? 'পাঠ্যক্রম (কারিকুলাম)' : 'Curriculum'}
+                </Label>
+                <Select
+                  value={curriculumId || 'none'}
+                  onValueChange={(val) => setCurriculumId(val === 'none' ? '' : val)}
+                >
+                  <SelectTrigger id="academic-curriculum" className="w-full h-10 rounded-xl bg-card border-border/80 text-xs">
+                    <SelectValue
+                      placeholder={isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
+                    />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="none">
+                      {isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
+                    </SelectItem>
+                    {curricula.map((cur) => (
+                      <SelectItem key={cur.id} value={cur.id}>
+                        {isBn ? cur.nameBn : cur.nameEn}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
             </div>
 
-            {errorMessage && (
-              <div className="mt-4 p-3 rounded-xl bg-destructive-soft text-destructive font-semibold border border-destructive/30 text-xs">
-                {errorMessage}
-              </div>
-            )}
+            <div className="space-y-1.5">
+              <Label htmlFor="academic-stream" className="text-xs font-semibold text-foreground">
+                {isBn ? 'শাখা / বিভাগ' : 'Stream / Group'}
+              </Label>
+              <Input
+                id="academic-stream"
+                type="text"
+                value={stream}
+                onChange={(e) => setStream(e.target.value)}
+                placeholder={
+                  isBn
+                    ? 'উদা: বিজ্ঞান (Science) / ব্যবসায় শিক্ষা'
+                    : 'e.g. Science / Business Studies'
+                }
+                className="rounded-xl h-10"
+              />
+            </div>
 
-            <form onSubmit={handleSave} className="mt-4 space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">
-                  {isBn ? 'শিক্ষা প্রতিষ্ঠানের নাম' : 'Institution Name'}
-                </label>
-                <Input
-                  type="text"
-                  value={institution}
-                  onChange={(e) => setInstitution(e.target.value)}
-                  placeholder={
-                    isBn
-                      ? 'উদা: ঢাকা কলেজ / ভিকারুননিসা নূন'
-                      : 'e.g. Dhaka College / Notre Dame College'
-                  }
-                  className="rounded-xl h-10"
-                />
-              </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="academic-goals" className="text-xs font-semibold text-foreground">
+                {isBn ? 'পড়ার লক্ষ্য ও প্রস্তুতি' : 'Learning Goals'}
+              </Label>
+              <Textarea
+                id="academic-goals"
+                rows={3}
+                value={learningGoals}
+                onChange={(e) => setLearningGoals(e.target.value)}
+                placeholder={
+                  isBn
+                    ? 'উদা: এইচএসসি পরীক্ষায় গোল্ডেন জিপিএ ৫ এবং ইঞ্জিনিয়ারিং ভর্তি প্রস্তুতি।'
+                    : 'e.g. Aiming for GPA 5.0 in Board exams and Engineering admission.'
+                }
+                className="rounded-xl bg-card border-border/80 text-xs resize-none"
+              />
+            </div>
 
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
-                    {isBn ? 'শ্রেণী / পর্যায়' : 'Education Level'}
-                  </label>
-                  <Select
-                    value={educationLevelId || 'none'}
-                    onValueChange={(val) => setEducationLevelId(val === 'none' ? '' : val)}
-                  >
-                    <SelectTrigger className="w-full h-10 rounded-xl bg-card border-border/80 text-xs">
-                      <SelectValue
-                        placeholder={isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">
-                        {isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
-                      </SelectItem>
-                      {educationLevels.map((lvl) => (
-                        <SelectItem key={lvl.id} value={lvl.id}>
-                          {isBn ? lvl.nameBn : lvl.nameEn}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-semibold text-foreground mb-1">
-                    {isBn ? 'পাঠ্যক্রম (কারিকুলাম)' : 'Curriculum'}
-                  </label>
-                  <Select
-                    value={curriculumId || 'none'}
-                    onValueChange={(val) => setCurriculumId(val === 'none' ? '' : val)}
-                  >
-                    <SelectTrigger className="w-full h-10 rounded-xl bg-card border-border/80 text-xs">
-                      <SelectValue
-                        placeholder={isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="none">
-                        {isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
-                      </SelectItem>
-                      {curricula.map((cur) => (
-                        <SelectItem key={cur.id} value={cur.id}>
-                          {isBn ? cur.nameBn : cur.nameEn}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                </div>
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">
-                  {isBn ? ' শাখা / বিভাগ' : 'Stream / Group'}
-                </label>
-                <Input
-                  type="text"
-                  value={stream}
-                  onChange={(e) => setStream(e.target.value)}
-                  placeholder={
-                    isBn
-                      ? 'উদা: বিজ্ঞান (Science) / ব্যবসায় শিক্ষা'
-                      : 'e.g. Science / Business Studies'
-                  }
-                  className="rounded-xl h-10"
-                />
-              </div>
-
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">
-                  {isBn ? 'পড়ার লক্ষ্য ও প্রস্তুতি' : 'Learning Goals'}
-                </label>
-                <Textarea
-                  rows={3}
-                  value={learningGoals}
-                  onChange={(e) => setLearningGoals(e.target.value)}
-                  placeholder={
-                    isBn
-                      ? 'উদা: এইচএসসি পরীক্ষায় গোল্ডেন জিপিএ ৫ এবং ইঞ্জিনিয়ারিং ভর্তি প্রস্তুতি।'
-                      : 'e.g. Aiming for GPA 5.0 in Board exams and Engineering admission.'
-                  }
-                  className="rounded-xl bg-card border-border/80 text-xs resize-none"
-                />
-              </div>
-
-              <div className="pt-3 border-t border-border/60 flex items-center justify-end gap-2.5">
-                <Button
-                  type="button"
-                  variant="outline"
-                  size="sm"
-                  onClick={() => setIsModalOpen(false)}
-                  className="rounded-xl"
-                >
-                  {isBn ? 'বাতিল' : 'Cancel'}
-                </Button>
-                <Button
-                  type="submit"
-                  size="sm"
-                  disabled={isSaving}
-                  className="rounded-xl shadow-xs font-semibold"
-                >
-                  {isSaving
-                    ? isBn
-                      ? 'সংরক্ষণ হচ্ছে...'
-                      : 'Saving...'
-                    : isBn
-                      ? 'সংরক্ষণ করুন'
-                      : 'Save Profile'}
-                </Button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+            <div className="pt-3 border-t border-border/60 flex items-center justify-end gap-2.5">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsModalOpen(false)}
+                className="rounded-xl"
+              >
+                {isBn ? 'বাতিল' : 'Cancel'}
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                disabled={isSaving}
+                className="rounded-xl shadow-xs font-semibold"
+              >
+                {isSaving
+                  ? isBn
+                    ? 'সংরক্ষণ হচ্ছে...'
+                    : 'Saving...'
+                  : isBn
+                    ? 'সংরক্ষণ করুন'
+                    : 'Save Profile'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

@@ -20,7 +20,7 @@ import {
   Star,
 } from 'lucide-react';
 import { useAppSelector } from '@/store';
-import { Button, LoadingSpinner, EmptyState } from '@/components/ui';
+import { Button, LoadingSpinner, EmptyState, Alert, AlertDescription } from '@/components/ui';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import {
   useGetBookingRequestByIdQuery,
@@ -277,14 +277,10 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
           </div>
         )}
         {errorMessage && (
-          <div
-            role="alert"
-            className="rounded-2xl border border-destructive/40 bg-destructive/10 p-4 text-xs text-destructive-soft-foreground flex items-center gap-2.5"
-            data-testid="booking-error-banner"
-          >
+          <Alert variant="destructive" className="rounded-2xl" data-testid="booking-error-banner">
             <AlertTriangle className="w-4 h-4 shrink-0" />
-            <span>{errorMessage}</span>
-          </div>
+            <AlertDescription role="alert">{errorMessage}</AlertDescription>
+          </Alert>
         )}
 
         {/* Hero Card */}

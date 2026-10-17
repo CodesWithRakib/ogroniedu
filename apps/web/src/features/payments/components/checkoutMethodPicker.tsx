@@ -1,7 +1,17 @@
 'use client';
 
 import { CreditCard, Lock } from 'lucide-react';
-import { Button, Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui';
+import {
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  CardFooter,
+  Alert,
+  AlertDescription,
+  Badge,
+} from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import {
   orderAmountBdt,
@@ -60,10 +70,10 @@ export function CheckoutMethodPicker({
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground ">{p.sslTitle}</span>
-                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-interactive/15 text-info-soft-foreground border border-info/40">
+                <span className="font-semibold text-foreground">{p.sslTitle}</span>
+                <Badge variant="primary" className="text-[10px] font-bold">
                   {locale === 'bn' ? 'সুপারিশকৃত' : 'Recommended'}
-                </span>
+                </Badge>
               </div>
               <div className="text-xs text-muted-foreground mt-0.5">{p.sslDesc}</div>
             </div>
@@ -83,7 +93,7 @@ export function CheckoutMethodPicker({
           className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
             selectedGateway === 'bkash'
               ? 'border-pink-500 bg-pink-500/5 ring-2 ring-pink-500/30'
-              : 'border-border hover:border-border '
+              : 'border-border hover:border-border'
           }`}
           data-testid="gateway-picker-bkash"
         >
@@ -92,7 +102,7 @@ export function CheckoutMethodPicker({
               বিকাশ
             </div>
             <div>
-              <div className="font-semibold text-foreground ">{p.bkashTitle}</div>
+              <div className="font-semibold text-foreground">{p.bkashTitle}</div>
               <div className="text-xs text-muted-foreground">{p.bkashDesc}</div>
             </div>
           </div>
@@ -111,7 +121,7 @@ export function CheckoutMethodPicker({
           className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
             selectedGateway === 'nagad'
               ? 'border-warning/40 bg-warning/5 ring-2 ring-orange-500/30'
-              : 'border-border hover:border-border '
+              : 'border-border hover:border-border'
           }`}
           data-testid="gateway-picker-nagad"
         >
@@ -120,7 +130,7 @@ export function CheckoutMethodPicker({
               নগদ
             </div>
             <div>
-              <div className="font-semibold text-foreground ">{p.nagadTitle}</div>
+              <div className="font-semibold text-foreground">{p.nagadTitle}</div>
               <div className="text-xs text-muted-foreground">{p.nagadDesc}</div>
             </div>
           </div>
@@ -133,15 +143,11 @@ export function CheckoutMethodPicker({
           />
         </div>
       </CardContent>
-      <CardFooter className="pt-2">
+      <CardFooter className="pt-2 flex-col items-stretch">
         {payError && (
-          <div
-            role="alert"
-            className="mb-3 w-full rounded-lg border border-destructive/20 bg-destructive-soft p-2.5 text-xs text-destructive"
-            data-testid="payment-error"
-          >
-            {payError}
-          </div>
+          <Alert variant="destructive" className="mb-3 w-full" data-testid="payment-error">
+            <AlertDescription role="alert">{payError}</AlertDescription>
+          </Alert>
         )}
         <Button
           onClick={onPay}

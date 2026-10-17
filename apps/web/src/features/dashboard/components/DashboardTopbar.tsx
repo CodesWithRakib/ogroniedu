@@ -7,6 +7,7 @@ import type { Locale } from '@/lib/i18n';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { UserNavDropdown } from './UserNavDropdown';
 import { EmergencySosModal } from '@/features/trust';
+import { Input } from '@/components/ui/Input';
 import type { AuthUser, UserRole } from '@/store/slices/auth-slice';
 
 export interface DashboardTopbarProps {
@@ -51,14 +52,14 @@ export function DashboardTopbar({
 
           {/* Global Search Pill Input */}
           <div className="hidden sm:flex items-center w-full max-w-xs md:max-w-sm relative">
-            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none" />
-            <input
+            <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground pointer-events-none z-10" />
+            <Input
               type="text"
               placeholder={
                 isBn ? 'শিক্ষক, বিষয় বা সেশন খুঁজুন...' : 'Search tutors, subjects, sessions...'
               }
               aria-label={isBn ? 'গ্লোবাল অনুসন্ধান' : 'Global search'}
-              className="w-full h-9 pl-9 pr-12 rounded-full border border-border bg-surface-muted hover:bg-surface-hover focus:bg-card text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring/30 focus:border-ring transition-all"
+              className="w-full h-9 pl-9 pr-12 rounded-full text-xs"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   onSearchTutors();

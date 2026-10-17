@@ -2,6 +2,7 @@
 
 import React, { useState } from 'react';
 import { BookOpen, Search, Copy, Check, Atom, Binary, FlaskConical, Sparkles } from 'lucide-react';
+import { Input } from '@/components/ui/Input';
 
 interface FormulaItem {
   id: string;
@@ -187,13 +188,13 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
 
         {/* Search */}
         <div className="relative w-full sm:w-60">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
-          <input
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground z-10" />
+          <Input
             type="text"
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
             placeholder={locale === 'bn' ? 'সূত্র খুঁজুন...' : 'Search formulas...'}
-            className="w-full h-8 pl-8 pr-3 text-xs rounded-xl bg-surface-muted border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-ring"
+            className="w-full h-8 pl-8 pr-3 text-xs rounded-xl"
             data-testid="formula-search-input"
           />
         </div>

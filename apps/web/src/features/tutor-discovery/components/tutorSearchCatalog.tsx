@@ -2,6 +2,7 @@
 
 import React, { useState, useTransition } from 'react';
 import { Sparkles } from 'lucide-react';
+import { Alert, AlertDescription } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { TutorFiltersForm, type TutorFiltersValue } from './tutorFiltersForm';
 import { TutorResultsGrid } from './tutorResultsGrid';
@@ -258,13 +259,9 @@ export function TutorSearchCatalog({
         </span>
       </div>
       {(queryError || searchError) && (
-        <div
-          role="alert"
-          className="rounded-2xl border border-destructive/40 bg-destructive-soft p-4 text-sm text-destructive-soft-foreground backdrop-blur-md shadow-lg"
-          data-testid="discovery-error"
-        >
-          {queryError || searchError}
-        </div>
+        <Alert variant="destructive" className="rounded-2xl" data-testid="discovery-error">
+          <AlertDescription role="alert">{queryError || searchError}</AlertDescription>
+        </Alert>
       )}
 
       <TutorResultsGrid

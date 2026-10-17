@@ -20,7 +20,7 @@ import {
   Minimize2,
   Check,
 } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button, Input } from '@/components/ui';
 
 export type WhiteboardTool =
   'pen' | 'highlighter' | 'eraser' | 'rect' | 'circle' | 'line' | 'arrow' | 'text';
@@ -770,7 +770,7 @@ export function InteractiveWhiteboard({
             className="absolute z-20 bg-card border border-info/40 p-2.5 rounded-2xl shadow-sm flex items-center gap-2"
             style={{ left: Math.min(textInputPos.x, 300), top: Math.min(textInputPos.y, 400) }}
           >
-            <input
+            <Input
               type="text"
               autoFocus
               value={textInputValue}
@@ -780,7 +780,7 @@ export function InteractiveWhiteboard({
                 if (e.key === 'Escape') setTextInputVisible(false);
               }}
               placeholder={locale === 'bn' ? 'এখানে লিখুন...' : 'Type note text...'}
-              className="bg-muted border border-border text-foreground text-xs rounded-xl px-2.5 py-1.5 focus:outline-none focus:ring-1 focus:ring-ring"
+              className="text-xs h-8 px-2.5"
               data-testid="wb-text-input"
             />
             <Button

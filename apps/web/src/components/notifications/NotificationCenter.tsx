@@ -23,6 +23,14 @@ import {
 import { useNotifications } from './NotificationProvider';
 import { cn } from '@/lib/utils';
 import type { NotificationCategory } from '@ogroniedu/contracts';
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  Slider,
+  Badge,
+  ScrollArea,
+} from '@/components/ui';
 
 interface NotificationCenterProps {
   locale?: 'bn' | 'en';
@@ -113,24 +121,16 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 overflow-hidden">
-      {/* Backdrop overlay */}
-      <div
-        className="absolute inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in duration-200"
-        onClick={() => setIsCenterOpen(false)}
-        aria-hidden="true"
-      />
-
-      <div
-        role="dialog"
-        aria-modal="true"
+    <Sheet open={isCenterOpen} onOpenChange={setIsCenterOpen}>
+      <SheetContent
+        side="right"
+        showCloseButton={false}
         aria-label={locale === 'bn' ? 'বিজ্ঞপ্তি কেন্দ্র' : 'Notification Center'}
-        className={cn(
-          'absolute inset-y-0 right-0 max-w-md w-full shadow-2xl flex flex-col',
-          'bg-card  backdrop-blur-2xl border-l border-border  text-foreground',
-          'animate-in slide-in-from-right duration-300',
-        )}
+        className="p-0 sm:max-w-md w-full flex flex-col gap-0 border-l border-border bg-card text-foreground"
       >
+        <SheetDescription className="sr-only">
+          {locale === 'bn' ? 'সকল বিজ্ঞপ্তি ও সতর্কতা' : 'All notifications and alerts'}
+        </SheetDescription>
         {/* Header */}
         <div className="p-4 border-b border-border flex items-center justify-between">
           <div className="flex items-center gap-2.5">
@@ -224,18 +224,17 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
 
         {/* Volume Slider Panel */}
         {showVolumeSlider && (
-          <div className="px-4 py-2.5 bg-muted  border-b border-border flex items-center justify-between gap-3 text-xs">
+          <div className="px-4 py-2.5 bg-muted border-b border-border flex items-center justify-between gap-3 text-xs">
             <span className="text-muted-foreground shrink-0 font-medium">
               {locale === 'bn' ? 'শব্দের মাত্রা:' : 'Volume:'} {Math.round(soundVolume * 100)}%
             </span>
-            <input
-              type="range"
-              min="0"
-              max="1"
-              step="0.05"
-              value={soundVolume}
-              onChange={(e) => setSoundVolume(parseFloat(e.target.value))}
-              className="w-full accent-interactive cursor-pointer h-1.5 bg-muted rounded-lg"
+            <Slider
+              min={0}
+              max={1}
+              step={0.05}
+              value={[soundVolume]}
+              onValueChange={([val]) => setSoundVolume(val)}
+              className="w-full"
             />
             <button
               type="button"
@@ -399,7 +398,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
             })
           )}
         </div>
-      </div>
-    </div>
+      </SheetContent>
+    </Sheet>
   );
 }

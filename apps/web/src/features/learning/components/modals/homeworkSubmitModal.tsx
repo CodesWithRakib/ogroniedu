@@ -1,7 +1,15 @@
 'use client';
 
-import { X } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { Button } from '@/components/ui/Button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import type { AssignmentItem } from '../../types/learning.types';
 
@@ -26,44 +34,45 @@ export function HomeworkSubmitModal({
   const t = dict.learning;
 
   return (
-    <div className="fixed inset-0 z-50 bg-black/60 backdrop-blur-sm flex items-center justify-center p-4">
-      <div className="bg-background rounded-2xl max-w-lg w-full p-6 border border-border shadow-2xl space-y-4">
-        <div className="flex items-center justify-between">
-          <h3 className="text-lg font-bold text-foreground">
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="bg-card rounded-2xl max-w-lg w-full p-6 border border-border shadow-2xl space-y-4">
+        <DialogHeader className="border-b border-border pb-3 text-left">
+          <DialogTitle className="text-base font-bold text-foreground">
             {t.submitHomework}: {assignment.title}
-          </h3>
-          <button onClick={onClose} className="text-muted-foreground hover:text-foreground">
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+          </DialogTitle>
+          <DialogDescription className="sr-only">
+            Submit homework answer for assignment {assignment.title}
+          </DialogDescription>
+        </DialogHeader>
 
         <div className="space-y-2">
-          <label className="text-xs font-semibold text-muted-foreground">
+          <Label className="text-xs font-semibold text-foreground">
             {t.submissionTextLabel}
-          </label>
-          <textarea
+          </Label>
+          <Textarea
             value={text}
             onChange={(e) => onTextChange(e.target.value)}
             rows={5}
-            className="w-full rounded-xl border border-border p-3 text-sm bg-background text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
+            className="w-full rounded-xl border border-border p-3 text-xs bg-card text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
             placeholder="Type your homework answer or paste notes..."
           />
         </div>
 
         <div className="flex justify-end gap-2 pt-2">
-          <Button variant="outline" size="sm" onClick={onClose}>
+          <Button variant="outline" size="sm" onClick={onClose} className="rounded-xl">
             {dict.common.cancel}
           </Button>
           <Button
             size="sm"
+            variant="primary"
             disabled={isPending || !text.trim()}
             onClick={onSubmit}
-            className="bg-primary hover:bg-primary-hover text-white"
+            className="rounded-xl font-semibold"
           >
             {t.submitHomework}
           </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

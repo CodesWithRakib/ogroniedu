@@ -13,7 +13,7 @@ import {
   Upload,
 } from 'lucide-react';
 import type { VerificationDocumentType } from '@ogroniedu/contracts';
-import { Badge, Button, Card, CardContent, CardHeader, CardTitle } from '@/components/ui';
+import { Badge, Button, Card, CardContent, CardHeader, CardTitle, Label, Input } from '@/components/ui';
 import { formatDate } from '@/lib/format';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { normalizeUnknownError } from '@/lib/api-error';
@@ -339,14 +339,15 @@ export function VerificationLevelCard({
             data-testid={`upload-form-${record.level}`}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <label className="space-y-1 text-[11px]">
-                <span className="text-muted-foreground font-medium">
+              <div className="space-y-1">
+                <Label htmlFor={`document-type-${record.level}`} className="text-muted-foreground font-medium text-[11px]">
                   {isBn ? 'নথির ধরন' : 'Document type'}
-                </span>
+                </Label>
                 <select
+                  id={`document-type-${record.level}`}
                   value={documentType}
                   onChange={(e) => setDocumentType(e.target.value as VerificationDocumentType)}
-                  className="h-9 w-full rounded-lg border border-border bg-background px-2 text-xs"
+                  className="h-9 w-full rounded-lg border border-input bg-card text-foreground px-2 text-xs focus:ring-2 focus:ring-ring focus:outline-none"
                   data-testid={`document-type-${record.level}`}
                 >
                   {allowedTypes.map((type) => (
@@ -355,19 +356,20 @@ export function VerificationLevelCard({
                     </option>
                   ))}
                 </select>
-              </label>
-              <label className="space-y-1 text-[11px]">
-                <span className="text-muted-foreground font-medium">
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor={`document-file-${record.level}`} className="text-muted-foreground font-medium text-[11px]">
                   {isBn ? 'ফাইল (সর্বোচ্চ ১০MB)' : 'File (max 10MB)'}
-                </span>
-                <input
+                </Label>
+                <Input
+                  id={`document-file-${record.level}`}
                   type="file"
                   accept={ACCEPTED_EVIDENCE_MIME.join(',')}
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  className="w-full text-[11px]"
+                  className="w-full text-[11px] h-9 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:bg-muted file:text-foreground"
                   data-testid={`document-file-${record.level}`}
                 />
-              </label>
+              </div>
             </div>
             <Button
               type="submit"

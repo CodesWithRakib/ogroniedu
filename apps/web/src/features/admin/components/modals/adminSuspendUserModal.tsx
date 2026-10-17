@@ -1,8 +1,16 @@
-'use client';
-
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import type { AdminUserItem } from '../../types/admin.types';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  Label,
+  Textarea,
+  Button,
+} from '@/components/ui';
 
 export function AdminSuspendUserModal({
   user,
@@ -21,46 +29,49 @@ export function AdminSuspendUserModal({
   const tCommon = useTranslations('common');
 
   return (
-    <div
-      className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
-      data-testid="suspend-modal"
-    >
-      <div className="bg-card border border-border rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-        <h3 className="text-lg font-bold text-destructive">{t('suspendModalTitle')}</h3>
-        <p className="text-xs text-muted-foreground">
-          Target User: <span className="font-semibold text-foreground">{user.displayName}</span> (
-          {user.id})
-        </p>
-        <div>
-          <label className="block text-xs font-medium text-foreground mb-1.5">
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        className="max-w-md w-full space-y-4"
+        data-testid="suspend-modal"
+      >
+        <DialogHeader className="text-left space-y-1">
+          <DialogTitle className="text-lg font-bold text-destructive">
+            {t('suspendModalTitle')}
+          </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            Target User: <span className="font-semibold text-foreground">{user.displayName}</span> ({user.id})
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="suspend-reason" className="text-xs font-medium text-foreground">
             {t('suspendReasonLabel')} *
-          </label>
-          <textarea
+          </Label>
+          <Textarea
+            id="suspend-reason"
             rows={3}
             value={reason}
             onChange={(e) => onReasonChange(e.target.value)}
             placeholder="State specific operational or safety violations..."
-            className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-destructive/25"
             data-testid="suspend-reason-textarea"
           />
         </div>
+
         <div className="flex justify-end space-x-3 pt-2">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-surface hover:bg-surface-hover text-foreground border border-border rounded-xl text-xs font-semibold transition"
-          >
+          <Button variant="outline" size="sm" onClick={onClose}>
             {tCommon('cancel')}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
             disabled={!reason.trim()}
             onClick={onConfirm}
-            className="px-4 py-2 bg-destructive hover:bg-destructive/90 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition"
             data-testid="confirm-suspend-btn"
           >
             {t('suspendConfirm')}
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

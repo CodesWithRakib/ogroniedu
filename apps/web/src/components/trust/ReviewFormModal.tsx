@@ -6,6 +6,7 @@ import { TrustModalShell, TrustFormAlert } from '@/features/trust/components/tru
 import { StarSelector } from '@/features/trust/components/starSelector';
 import { useModalSubmit } from '@/features/trust/hooks/use-modal-submit';
 import type { ReviewFormModalProps } from '@/features/trust/types/trust.types';
+import { Button, Textarea, Label, Badge } from '@/components/ui';
 
 export type { ReviewFormModalProps } from '@/features/trust/types/trust.types';
 
@@ -61,44 +62,23 @@ export function ReviewFormModal({
       title={t('writeReview')}
       closeLabel={locale === 'bn' ? 'বন্ধ করুন' : 'Close'}
       headerExtra={
-        <span style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '4px' }}>
-          <span style={{ fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>{tutorName}</span>
-          <span
-            style={{
-              fontSize: '0.75rem',
-              padding: '2px 8px',
-              borderRadius: '12px',
-              backgroundColor: 'var(--success-soft)',
-              color: 'var(--primary)',
-              fontWeight: 600,
-              border: '1px solid #a7f3d0',
-            }}
-          >
+        <div className="flex items-center gap-2 mt-1">
+          <span className="text-xs text-muted-foreground">{tutorName}</span>
+          <Badge variant="success" className="text-[11px]">
             ✓ {t('verifiedBooking')}
-          </span>
-        </span>
+          </Badge>
+        </div>
       }
       onClose={onClose}
     >
-      <div
-        style={{
-          backgroundColor: 'var(--info-soft)',
-          border: '1px solid #bfdbfe',
-          borderRadius: '8px',
-          padding: '10px 14px',
-          marginBottom: '16px',
-          fontSize: '0.8rem',
-          color: 'var(--interactive-soft-foreground)',
-          lineHeight: 1.4,
-        }}
-      >
+      <div className="rounded-xl border border-info/40 bg-interactive/10 p-3 mb-4 text-xs text-info-soft-foreground leading-relaxed">
         ℹ️ {t('antiSelfReviewNotice')}
       </div>
 
       {submit.errorMsg && <TrustFormAlert tone="error">{submit.errorMsg}</TrustFormAlert>}
       {submit.successMsg && <TrustFormAlert tone="success">{submit.successMsg}</TrustFormAlert>}
 
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} className="space-y-4">
         <StarSelector
           label={t('overallRating')}
           value={rating}
@@ -124,84 +104,43 @@ export function ReviewFormModal({
           locale={locale}
         />
 
-        <div style={{ marginTop: '16px', marginBottom: '20px' }}>
-          <label
+        <div className="space-y-1.5 pt-2">
+          <Label
             htmlFor="review-comment"
-            style={{
-              display: 'block',
-              fontSize: '0.85rem',
-              fontWeight: 600,
-              marginBottom: '6px',
-              color: 'var(--muted-foreground)',
-            }}
+            className="text-xs font-semibold text-muted-foreground"
           >
             {t('writeReview')}
-          </label>
-          <textarea
+          </Label>
+          <Textarea
             id="review-comment"
             rows={4}
             maxLength={2000}
             placeholder={t('commentPlaceholder')}
             value={comment}
             onChange={(e) => setComment(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '10px 12px',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
-              fontSize: '0.9rem',
-              fontFamily: 'inherit',
-              resize: 'vertical',
-              boxSizing: 'border-box',
-            }}
           />
-          <div
-            style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              fontSize: '0.75rem',
-              color: 'var(--muted-foreground)',
-              marginTop: '4px',
-            }}
-          >
+          <div className="flex justify-end text-[11px] text-muted-foreground">
             {comment.length} / 2000
           </div>
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-          <button
+        <div className="flex justify-end gap-2.5 pt-2">
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={onClose}
             disabled={submit.isSubmitting}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
-              backgroundColor: 'var(--card)',
-              color: 'var(--muted-foreground)',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            disabled={submit.isSubmitting}
-            style={{
-              padding: '8px 20px',
-              borderRadius: '8px',
-              border: 'none',
-              background: 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-              color: 'var(--card)',
-              fontWeight: 700,
-              cursor: submit.isSubmitting ? 'not-allowed' : 'pointer',
-              opacity: submit.isSubmitting ? 0.7 : 1,
-              boxShadow: '0 4px 6px -1px rgba(37, 99, 235, 0.2)',
-            }}
+            size="sm"
+            isLoading={submit.isSubmitting}
           >
             {submit.isSubmitting ? 'Submitting...' : t('submitReview')}
-          </button>
+          </Button>
         </div>
       </form>
     </TrustModalShell>

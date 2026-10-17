@@ -1,11 +1,18 @@
 'use client';
 
 import React from 'react';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 
 /**
  * Shared dialog chrome for the trust modals (review / safety / replacement):
- * overlay, card, header with icon + close, and form alert boxes.
- * Visuals are byte-identical to the originals; only the structure is shared.
+ * Built on shadcn Dialog & Alert components.
  */
 export function TrustModalShell({
   icon,
@@ -27,73 +34,29 @@ export function TrustModalShell({
   children: React.ReactNode;
 }) {
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      style={{
-        position: 'fixed',
-        inset: 0,
-        backgroundColor: 'rgba(15, 23, 42, 0.65)',
-        backdropFilter: 'blur(4px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        zIndex: 9999,
-        padding: '16px',
-      }}
-    >
-      <div
-        style={{
-          backgroundColor: 'var(--card)',
-          color: 'var(--foreground)',
-          borderRadius: '16px',
-          padding: '24px',
-          maxWidth: `${maxWidth}px`,
-          width: '100%',
-          boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-          border: '1px solid var(--border)',
-          maxHeight: '90vh',
-          overflowY: 'auto',
-        }}
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        style={{ maxWidth: `${maxWidth}px` }}
+        className="w-full p-6 rounded-2xl bg-card border-border shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
+        aria-label={closeLabel}
       >
-        <div
-          style={{
-            display: 'flex',
-            justifyContent: 'space-between',
-            alignItems: 'flex-start',
-            marginBottom: '16px',
-          }}
-        >
-          <div>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-              <span style={{ fontSize: '1.25rem' }}>{icon}</span>
-              <h2 style={{ fontSize: '1.25rem', fontWeight: 800, margin: 0, color: 'var(--foreground)' }}>
-                {title}
-              </h2>
-            </div>
-            {subtitle && (
-              <p style={{ margin: '4px 0 0', fontSize: '0.85rem', color: 'var(--muted-foreground)' }}>{subtitle}</p>
-            )}
-            {headerExtra}
+        <DialogHeader className="border-b border-border/70 pb-3 text-left space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="text-xl">{icon}</span>
+            <DialogTitle className="text-lg font-bold text-foreground">
+              {title}
+            </DialogTitle>
           </div>
-          <button
-            type="button"
-            onClick={onClose}
-            aria-label={closeLabel}
-            style={{
-              background: 'none',
-              border: 'none',
-              fontSize: '1.25rem',
-              cursor: 'pointer',
-              color: 'var(--muted-foreground)',
-            }}
-          >
-            ✕
-          </button>
-        </div>
+          {subtitle && (
+            <DialogDescription className="text-xs text-muted-foreground">
+              {subtitle}
+            </DialogDescription>
+          )}
+          {headerExtra}
+        </DialogHeader>
         {children}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
 
@@ -104,24 +67,28 @@ export function TrustFormAlert({
   tone: 'error' | 'success';
   children: React.ReactNode;
 }) {
-  const palette =
-    tone === 'error'
-      ? { backgroundColor: 'var(--destructive-soft)', color: 'var(--destructive)', border: '1px solid #fecaca', icon: '⚠️' }
-      : { backgroundColor: 'var(--success-soft)', color: 'var(--primary)', border: '1px solid #a7f3d0', icon: '✓' };
+  if (tone === 'error') {
+    return (
+      <Alert
+        variant="destructive"
+        className="mb-3.5 p-3 text-xs font-medium"
+      >
+        <AlertDescription className="flex items-center gap-1.5">
+          <span>⚠️</span>
+          <span>{children}</span>
+        </AlertDescription>
+      </Alert>
+    );
+  }
+
   return (
-    <div
-      role={tone === 'error' ? 'alert' : 'status'}
-      style={{
-        backgroundColor: palette.backgroundColor,
-        color: palette.color,
-        padding: '10px 14px',
-        borderRadius: '8px',
-        fontSize: '0.85rem',
-        marginBottom: '14px',
-        border: palette.border,
-      }}
+    <Alert
+      className="mb-3.5 p-3 text-xs font-medium bg-primary-soft border border-primary/25 text-primary-soft-foreground"
     >
-      {palette.icon} {children}
-    </div>
+      <AlertDescription className="flex items-center gap-1.5">
+        <span>✓</span>
+        <span>{children}</span>
+      </AlertDescription>
+    </Alert>
   );
 }

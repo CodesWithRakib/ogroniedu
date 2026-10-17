@@ -20,6 +20,9 @@ import {
   CardContent,
   CardFooter,
   Badge,
+  Checkbox,
+  Label,
+  Slider,
 } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { useNotifications } from './NotificationProvider';
@@ -244,14 +247,13 @@ export function NotificationPreferencesView({
                 {Math.round(soundVolume * 100)}%
               </span>
               <div className="flex items-center gap-3 w-full sm:w-64">
-                <input
-                  type="range"
-                  min="0"
-                  max="1"
-                  step="0.05"
-                  value={soundVolume}
-                  onChange={(e) => setSoundVolume(parseFloat(e.target.value))}
-                  className="w-full accent-interactive cursor-pointer h-2 bg-surface rounded-lg"
+                <Slider
+                  min={0}
+                  max={1}
+                  step={0.05}
+                  value={[soundVolume]}
+                  onValueChange={(val) => setSoundVolume(val[0] ?? 0.5)}
+                  className="w-full cursor-pointer py-1"
                 />
                 <Button
                   type="button"
@@ -302,27 +304,31 @@ export function NotificationPreferencesView({
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 sm:gap-3">
                 {channels.map((ch) => {
                   const isChecked = !!preferences[`${cat.id}:${ch.id}`];
+                  const prefId = `pref-${cat.id}-${ch.id}`;
                   return (
-                    <label
+                    <div
                       key={ch.id}
                       onClick={() => togglePreference(cat.id, ch.id)}
-                      className={`cursor-pointer border rounded-lg p-2.5 flex items-center gap-2 transition-all select-none ${
+                      className={`cursor-pointer border rounded-lg p-2.5 flex items-center gap-2.5 transition-all select-none ${
                         isChecked
                           ? 'border-primary/40 bg-primary/5 ring-1 ring-primary/20'
-                          : 'border-border bg-muted/50  opacity-60'
+                          : 'border-border bg-muted/50 opacity-60'
                       }`}
                     >
-                      <input
-                        type="checkbox"
+                      <Checkbox
+                        id={prefId}
                         checked={isChecked}
-                        onChange={() => {}}
-                        className="rounded text-success-soft-foreground focus:ring-ring w-4 h-4 cursor-pointer"
+                        onCheckedChange={() => {}}
+                        className="cursor-pointer"
                       />
-                      <div className="flex items-center gap-1.5 text-xs font-medium">
+                      <Label
+                        htmlFor={prefId}
+                        className="flex items-center gap-1.5 text-xs font-medium cursor-pointer"
+                      >
                         {ch.icon}
                         <span className="truncate">{ch.label}</span>
-                      </div>
-                    </label>
+                      </Label>
+                    </div>
                   );
                 })}
               </div>

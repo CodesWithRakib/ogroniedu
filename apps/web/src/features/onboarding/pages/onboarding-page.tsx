@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { CheckCircle2, Clock, Circle, AlertCircle, ArrowRight } from 'lucide-react';
+import { CheckCircle2, Clock, Circle, ArrowRight, AlertCircle } from 'lucide-react';
 import type { Locale } from '@/lib/i18n';
 import { withLocale, dashboardPathForRoles } from '@/lib/auth';
 import { useAppDispatch, useAppSelector } from '@/store';
@@ -14,6 +14,17 @@ import {
 } from '@/store/services/onboarding-api';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { buildStepPayload, fieldsForStep, type StepField } from '../step-forms';
+import {
+  Button,
+  Input,
+  Textarea,
+  Label,
+  Checkbox,
+  Progress,
+  Badge,
+  Alert,
+  AlertDescription,
+} from '@/components/ui';
 
 function StepIcon({ status }: { status: OnboardingStep['status'] }) {
   if (status === 'completed') return <CheckCircle2 className="h-5 w-5 text-primary" />;
@@ -58,64 +69,60 @@ function StepForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-3" data-testid={`onboarding-form-${step.key}`}>
+    <form onSubmit={handleSubmit} className="space-y-4" data-testid={`onboarding-form-${step.key}`}>
       {fields.map((field: StepField) => {
         const id = `onboarding-${step.key}-${field.name}`;
         const label = isBn ? field.labelBn : field.labelEn;
         if (field.kind === 'checkbox') {
           return (
-            <div key={field.name} className="flex items-start gap-2">
-              <input
+            <div key={field.name} className="flex items-center gap-2">
+              <Checkbox
                 id={id}
-                type="checkbox"
                 checked={values[field.name] === true}
-                onChange={(e) => setValue(field.name, e.target.checked)}
-                className="mt-0.5 h-4 w-4 rounded border-border"
+                onCheckedChange={(checked) => setValue(field.name, Boolean(checked))}
               />
-              <label htmlFor={id} className="text-xs text-foreground">
+              <Label htmlFor={id} className="text-xs text-foreground cursor-pointer font-normal">
                 {label}
-              </label>
+              </Label>
             </div>
           );
         }
         return (
-          <div key={field.name} className="space-y-1 text-left">
-            <label htmlFor={id} className="text-xs font-bold text-foreground">
+          <div key={field.name} className="space-y-1.5 text-left">
+            <Label htmlFor={id} className="text-xs font-semibold text-foreground">
               {label}
               {field.required ? ' *' : ''}
-            </label>
+            </Label>
             {field.kind === 'textarea' ? (
-              <textarea
+              <Textarea
                 id={id}
                 rows={3}
                 required={field.required}
                 placeholder={field.placeholder}
                 value={String(values[field.name] ?? '')}
                 onChange={(e) => setValue(field.name, e.target.value)}
-                className="w-full rounded-2xl border border-border bg-surface px-3 py-2 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25"
               />
             ) : (
-              <input
+              <Input
                 id={id}
                 type={field.kind === 'number' ? 'number' : 'text'}
                 required={field.required}
                 placeholder={field.placeholder}
                 value={String(values[field.name] ?? '')}
                 onChange={(e) => setValue(field.name, e.target.value)}
-                className="w-full h-10 rounded-2xl border border-border bg-surface px-3 text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-primary/25"
               />
             )}
           </div>
         );
       })}
-      <button
+      <Button
         type="submit"
-        disabled={isSubmitting}
-        className="h-10 rounded-full bg-primary px-5 text-xs font-bold text-primary-foreground disabled:opacity-60"
+        isLoading={isSubmitting}
+        size="sm"
         data-testid={`onboarding-submit-${step.key}`}
       >
         {isBn ? 'সংরক্ষণ করুন' : 'Save step'}
-      </button>
+      </Button>
     </form>
   );
 }
@@ -162,14 +169,14 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
   if (error || !data) {
     return (
       <div className="mx-auto max-w-2xl px-4 py-10" data-testid="onboarding-error">
-        <div className="flex items-start gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-4 text-xs text-destructive ">
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>
+        <Alert variant="destructive">
+          <AlertCircle className="h-4 w-4" />
+          <AlertDescription role="alert">
             {isBn
               ? 'অনবোর্ডিং অবস্থা লোড করা যায়নি। পরে আবার চেষ্টা করুন।'
               : 'Could not load onboarding status. Please try again later.'}
-          </span>
-        </div>
+          </AlertDescription>
+        </Alert>
       </div>
     );
   }
@@ -193,22 +200,20 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
         </p>
       </header>
 
-      <div className="mb-6 space-y-1">
-        <div className="flex items-center justify-between text-[11px] font-semibold text-muted-foreground">
+      <div className="mb-6 space-y-2">
+        <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
           <span>{isBn ? 'অগ্রগতি' : 'Progress'}</span>
           <span data-testid="onboarding-progress">{progress}%</span>
         </div>
-        <div className="h-2 w-full overflow-hidden rounded-full bg-surface">
-          <div className="h-full bg-primary transition-all" style={{ width: `${progress}%` }} />
-        </div>
+        <Progress value={progress} className="h-2 w-full" />
       </div>
 
       {data.isComplete && (
         <div
-          className="mb-6 flex items-start gap-2.5 rounded-2xl border border-primary/30 bg-primary/10 p-4 text-xs text-primary "
+          className="mb-6 flex items-start gap-2.5 rounded-2xl border border-primary/25 bg-primary-soft p-4 text-xs font-medium text-primary"
           data-testid="onboarding-complete"
         >
-          <CheckCircle2 className="h-4 w-4 shrink-0" />
+          <CheckCircle2 className="h-4 w-4 shrink-0 text-primary mt-0.5" />
           <span>
             {isBn
               ? 'অনবোর্ডিং সম্পন্ন হয়েছে। আপনার ড্যাশবোর্ডে যান।'
@@ -221,7 +226,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
         {data.steps.map((step) => (
           <li
             key={step.key}
-            className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-surface px-4 py-3"
+            className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-3"
           >
             <div className="flex items-center gap-2.5">
               <StepIcon status={step.status} />
@@ -229,7 +234,15 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
                 {isBn ? step.titleBn : step.titleEn}
               </span>
             </div>
-            <span className="text-[10px] font-bold uppercase tracking-wide text-muted-foreground">
+            <Badge
+              variant={
+                step.status === 'completed'
+                  ? 'success'
+                  : step.status === 'pending_review'
+                    ? 'warning'
+                    : 'secondary'
+              }
+            >
               {step.status === 'completed'
                 ? isBn
                   ? 'সম্পন্ন'
@@ -241,13 +254,13 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
                   : isBn
                     ? 'বাকি'
                     : 'Pending'}
-            </span>
+            </Badge>
           </li>
         ))}
       </ul>
 
       {data.requiresApproval && !data.isComplete && (
-        <p className="mb-4 text-[11px] text-warning ">
+        <p className="mb-4 text-[11px] text-warning">
           {isBn
             ? 'কিছু ধাপ যাচাইকরণ/অনুমোদনের সাপেক্ষে। অনুমোদন ছাড়া এই ধাপগুলো সম্পন্ন হবে না।'
             : 'Some steps require review/approval and complete only after a platform decision.'}
@@ -255,14 +268,13 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
       )}
 
       {formError && (
-        <div
-          role="alert"
-          className="mb-4 flex items-start gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive "
+        <Alert
+          variant="destructive"
+          className="mb-4 rounded-xl"
           data-testid="onboarding-form-error"
         >
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>{formError}</span>
-        </div>
+          <AlertDescription>{formError}</AlertDescription>
+        </Alert>
       )}
 
       {nextStep && nextStep.submittable && (

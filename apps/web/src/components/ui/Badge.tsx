@@ -11,12 +11,19 @@ export interface BadgeProps extends HTMLAttributes<HTMLSpanElement> {
     | 'destructive'
     | 'info'
     | 'outline';
+  size?: 'sm' | 'md' | 'lg' | string;
 }
 
 export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
-  ({ className, variant = 'default', children, ...props }, ref) => {
+  ({ className, variant = 'default', size = 'md', children, ...props }, ref) => {
     const baseStyles =
-      'inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-semibold tracking-wide transition-colors select-none';
+      'inline-flex items-center rounded-full font-semibold tracking-wide transition-colors select-none';
+
+    const sizes: Record<string, string> = {
+      sm: 'px-2 py-0.5 text-[10px]',
+      md: 'px-2.5 py-0.5 text-xs',
+      lg: 'px-3 py-1 text-sm',
+    };
 
     const variants = {
       default: 'bg-surface-muted text-foreground border border-border/60',
@@ -32,7 +39,7 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
     return (
       <span
         ref={ref}
-        className={cn(baseStyles, variants[variant], className)}
+        className={cn(baseStyles, sizes[size] || sizes.md, variants[variant], className)}
         {...props}
       >
         {children}

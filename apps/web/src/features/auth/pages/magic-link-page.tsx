@@ -3,13 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { AlertCircle, ArrowRight, KeyRound, ShieldCheck } from 'lucide-react';
+import { ArrowRight, KeyRound, ShieldCheck } from 'lucide-react';
 import type { Locale } from '@/lib/i18n';
 import { withLocale, dashboardPathForRoles } from '@/lib/auth';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { useAppDispatch } from '@/store';
 import { setCredentials } from '@/store/slices/auth-slice';
 import { useConsumeMagicLinkMutation } from '@/store/services/auth-api';
+import { Button, Alert, AlertDescription } from '@/components/ui';
 
 /**
  * Magic-link confirmation.
@@ -64,8 +65,8 @@ export function MagicLinkPage({ locale }: { locale: Locale }) {
   return (
     <div className="mx-auto w-full max-w-md px-4 py-10" data-testid="magic-link-page">
       <header className="mb-6 space-y-1 text-center">
-        <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary/10">
-          <KeyRound className="h-5 w-5 text-primary" />
+        <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+          <KeyRound className="h-5 w-5" />
         </div>
         <h1 className="text-lg font-bold text-foreground">
           {isBn ? 'পাসওয়ার্ড ছাড়া লগইন' : 'Passwordless sign in'}
@@ -78,35 +79,29 @@ export function MagicLinkPage({ locale }: { locale: Locale }) {
       </header>
 
       {error && (
-        <div
-          role="alert"
-          className="mb-4 flex items-start gap-2.5 rounded-2xl border border-destructive/30 bg-destructive/10 p-3 text-xs text-destructive "
+        <Alert
+          variant="destructive"
+          className="mb-4 rounded-xl"
           data-testid="magic-link-error"
         >
-          <AlertCircle className="h-4 w-4 shrink-0" />
-          <span>{error}</span>
-        </div>
+          <AlertDescription>{error}</AlertDescription>
+        </Alert>
       )}
 
-      <button
+      <Button
         type="button"
         onClick={handleConfirm}
-        disabled={isLoading || !token}
-        className="flex h-11 w-full items-center justify-center gap-2 rounded-full bg-primary text-xs font-bold text-primary-foreground disabled:opacity-60"
+        disabled={!token}
+        isLoading={isLoading}
+        className="w-full font-semibold"
         data-testid="magic-link-confirm-btn"
       >
-        <ShieldCheck className="h-4 w-4" />
+        <ShieldCheck className="h-4 w-4 mr-2" />
         <span>
-          {isLoading
-            ? isBn
-              ? 'যাচাই করা হচ্ছে...'
-              : 'Verifying...'
-            : isBn
-              ? 'নিশ্চিত করে লগইন করুন'
-              : 'Confirm and sign in'}
+          {isBn ? 'নিশ্চিত করে লগইন করুন' : 'Confirm and sign in'}
         </span>
-        <ArrowRight className="h-4 w-4" />
-      </button>
+        <ArrowRight className="h-4 w-4 ml-2" />
+      </Button>
 
       {!token && (
         <p className="mt-4 text-center text-xs text-muted-foreground">

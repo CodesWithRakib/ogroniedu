@@ -24,6 +24,10 @@ import {
   Badge,
   Input,
   LoadingSpinner,
+  Textarea,
+  Label,
+  Alert,
+  AlertDescription,
 } from '@/components/ui';
 import {
   useGetAssignmentByIdQuery,
@@ -332,41 +336,42 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                 className="space-y-3"
                 data-testid="student-solution-form"
               >
-                <label
-                  htmlFor="solution-text"
-                  className="text-xs font-semibold text-muted-foreground block"
-                >
-                  {locale === 'bn'
-                    ? 'আপনার উত্তর বা সমাধান লিখুন:'
-                    : 'Write your solution or notes:'}
-                </label>
-                <textarea
-                  id="solution-text"
-                  rows={4}
-                  value={submissionText}
-                  onChange={(e) => setSubmissionText(e.target.value)}
-                  placeholder={
-                    locale === 'bn'
-                      ? 'অংক বা সমাধান বিস্তারিতভাবে লিখুন...'
-                      : 'Type your answer or solution details...'
-                  }
-                  className="w-full rounded-xl border border-border bg-muted p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring leading-relaxed"
-                  data-testid="solution-textarea"
-                />
+                <div className="space-y-1.5">
+                  <Label
+                    htmlFor="solution-text"
+                    className="text-xs font-semibold text-muted-foreground block"
+                  >
+                    {locale === 'bn'
+                      ? 'আপনার উত্তর বা সমাধান লিখুন:'
+                      : 'Write your solution or notes:'}
+                  </Label>
+                  <Textarea
+                    id="solution-text"
+                    rows={4}
+                    value={submissionText}
+                    onChange={(e) => setSubmissionText(e.target.value)}
+                    placeholder={
+                      locale === 'bn'
+                        ? 'অংক বা সমাধান বিস্তারিতভাবে লিখুন...'
+                        : 'Type your answer or solution details...'
+                    }
+                    data-testid="solution-textarea"
+                  />
+                </div>
                 {submitError && (
-                  <div className="p-2.5 rounded-lg border border-destructive/40 bg-destructive/10 text-xs text-destructive-soft-foreground">
-                    {submitError}
-                  </div>
+                  <Alert variant="destructive" className="py-2.5 rounded-xl">
+                    <AlertDescription className="text-xs">{submitError}</AlertDescription>
+                  </Alert>
                 )}
                 {submitSuccess && (
-                  <div className="p-2.5 rounded-lg border border-primary/40 bg-primary/10 text-xs text-success-soft-foreground flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-success-soft-foreground shrink-0" />
-                    <span>
+                  <Alert variant="success" className="py-2.5 rounded-xl">
+                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                    <AlertDescription className="text-xs">
                       {locale === 'bn'
                         ? 'সমাধান সফলভাবে জমা দেওয়া হয়েছে!'
                         : 'Homework submitted successfully!'}
-                    </span>
-                  </div>
+                    </AlertDescription>
+                  </Alert>
                 )}
                 <Button
                   type="submit"
@@ -449,10 +454,10 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
             {isTutor && submission && (!hasScore || isEditingGrade) && (
               <form onSubmit={handleGrade} className="space-y-3" data-testid="tutor-grading-form">
                 <div className="space-y-1">
-                  <label htmlFor="score-input" className="text-xs font-semibold text-muted-foreground">
+                  <Label htmlFor="score-input" className="text-xs font-semibold text-muted-foreground">
                     {locale === 'bn' ? 'স্কোর (সর্বোচ্চ ' : 'Score (Max '}
                     {formatLocalizedNumber(assignment.maxScore, locale)}):
-                  </label>
+                  </Label>
                   <Input
                     id="score-input"
                     type="number"
@@ -464,11 +469,11 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                   />
                 </div>
 
-                <div className="space-y-1">
-                  <label htmlFor="feedback-input" className="text-xs font-semibold text-muted-foreground">
+                <div className="space-y-1.5">
+                  <Label htmlFor="feedback-input" className="text-xs font-semibold text-muted-foreground">
                     {locale === 'bn' ? 'শিক্ষকের পরামর্শ / ফিডব্যাক:' : 'Feedback / Remarks:'}
-                  </label>
-                  <textarea
+                  </Label>
+                  <Textarea
                     id="feedback-input"
                     rows={2}
                     value={gradingFeedback}
@@ -478,21 +483,20 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                         ? 'ভুলত্রুটি বা উন্নতির জায়গা উল্লেখ করুন...'
                         : 'Provide positive feedback or guidance...'
                     }
-                    className="w-full rounded-xl border border-border bg-muted p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                     data-testid="grading-feedback-input"
                   />
                 </div>
 
                 {hasScore && isEditingGrade && (
-                  <div className="space-y-1">
-                    <label
+                  <div className="space-y-1.5">
+                    <Label
                       htmlFor="revision-reason"
                       className="text-xs font-semibold text-warning-soft-foreground"
                     >
                       {locale === 'bn'
                         ? 'সংশোধনের কারণ (বাধ্যতামূলক):'
                         : 'Revision Reason (Required):'}
-                    </label>
+                    </Label>
                     <Input
                       id="revision-reason"
                       value={revisionReason}
@@ -508,17 +512,17 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                 )}
 
                 {gradeError && (
-                  <div className="p-2.5 rounded-lg border border-destructive/40 bg-destructive/10 text-xs text-destructive-soft-foreground">
-                    {gradeError}
-                  </div>
+                  <Alert variant="destructive" className="py-2.5 rounded-xl">
+                    <AlertDescription className="text-xs">{gradeError}</AlertDescription>
+                  </Alert>
                 )}
                 {gradeSuccess && (
-                  <div className="p-2.5 rounded-lg border border-primary/40 bg-primary/10 text-xs text-success-soft-foreground flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-success-soft-foreground shrink-0" />
-                    <span>
+                  <Alert variant="success" className="py-2.5 rounded-xl">
+                    <CheckCircle2 className="w-4 h-4 mr-2" />
+                    <AlertDescription className="text-xs">
                       {locale === 'bn' ? 'মূল্যায়ন সম্পন্ন হয়েছে!' : 'Grading saved successfully!'}
-                    </span>
-                  </div>
+                    </AlertDescription>
+                  </Alert>
                 )}
 
                 <div className="flex gap-2">

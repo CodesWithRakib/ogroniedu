@@ -2,9 +2,18 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { FileText, Clock, CheckCircle2, ArrowRight, Send, Award, X } from 'lucide-react';
+import { FileText, Clock, CheckCircle2, ArrowRight, Send, Award } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { useSubmitAssignmentMutation, type AssignmentRecord } from '@/store/services/learning-api';
 import { useAppDispatch } from '@/store';
 import { enqueueToast } from '@/store/slices/ui-slice';
@@ -213,34 +222,30 @@ export function StudentPendingAssignmentsCard({
       </div>
 
       {/* Submission Modal */}
-      {activeAssignment && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in duration-200"
-        >
-          <div className="bg-card border border-border/80 w-full max-w-lg rounded-2xl p-6 shadow-xl relative text-foreground">
-            <button
-              onClick={() => setActiveAssignment(null)}
-              className="absolute top-5 right-5 p-1.5 rounded-full hover:bg-muted text-muted-foreground hover:text-foreground transition-colors cursor-pointer"
-            >
-              <X className="h-5 w-5" />
-            </button>
-
-            <div className="flex items-center gap-3 pb-4 border-b border-border/60">
-              <div className="h-10 w-10 rounded-xl bg-warning-soft text-warning flex items-center justify-center">
-                <FileText className="h-5 w-5" />
+      <Dialog
+        open={Boolean(activeAssignment)}
+        onOpenChange={(open) => !open && setActiveAssignment(null)}
+      >
+        {activeAssignment && (
+          <DialogContent className="bg-card border border-border w-full max-w-lg rounded-2xl p-6 shadow-2xl text-foreground space-y-4">
+            <DialogHeader className="border-b border-border/70 pb-3 text-left">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-warning-soft text-warning flex items-center justify-center shrink-0">
+                  <FileText className="h-5 w-5" />
+                </div>
+                <div>
+                  <DialogTitle className="text-base font-bold text-foreground">
+                    {activeAssignment.title}
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                    {isBn ? 'আপনার শিক্ষকের জন্য উত্তর লিখুন' : 'Submit your answer for review'}
+                  </DialogDescription>
+                </div>
               </div>
-              <div>
-                <h3 className="text-base font-bold">{activeAssignment.title}</h3>
-                <p className="text-xs text-muted-foreground">
-                  {isBn ? 'আপনার শিক্ষকের জন্য উত্তর লিখুন' : 'Submit your answer for review'}
-                </p>
-              </div>
-            </div>
+            </DialogHeader>
 
             {activeAssignment.instructions && (
-              <div className="mt-3 p-3 rounded-xl bg-muted/30 border border-border/60 text-xs text-foreground/80">
+              <div className="p-3 rounded-xl bg-muted/40 border border-border/60 text-xs text-foreground/80">
                 <span className="font-semibold text-foreground block mb-0.5">
                   {isBn ? 'নির্দেশনা:' : 'Instructions:'}
                 </span>
@@ -249,16 +254,16 @@ export function StudentPendingAssignmentsCard({
             )}
 
             {errorMessage && (
-              <div className="mt-3 p-3 rounded-xl bg-destructive/10 border border-destructive/30 text-xs text-destructive font-semibold">
-                {errorMessage}
-              </div>
+              <Alert variant="destructive" className="p-3 rounded-xl text-xs font-semibold">
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
             )}
 
-            <form onSubmit={handleSubmit} className="mt-4 space-y-4">
-              <div>
-                <label className="block text-xs font-semibold text-foreground mb-1">
+            <form onSubmit={handleSubmit} className="space-y-4">
+              <div className="space-y-1.5">
+                <Label className="block text-xs font-semibold text-foreground">
                   {isBn ? 'আপনার উত্তর / নোটস' : 'Your Answer / Notes'}
-                </label>
+                </Label>
                 <Textarea
                   rows={5}
                   required
@@ -269,7 +274,7 @@ export function StudentPendingAssignmentsCard({
                       ? 'অ্যাসাইনমেন্টের সমাধান বা Google Drive / GitHub লিংক এখানে লিখুন...'
                       : 'Type your solution or paste reference links here...'
                   }
-                  className="w-full text-xs"
+                  className="w-full text-xs rounded-xl border-border bg-card"
                 />
               </div>
 
@@ -285,6 +290,7 @@ export function StudentPendingAssignmentsCard({
                 </Button>
                 <Button
                   type="submit"
+                  variant="primary"
                   size="sm"
                   disabled={isSubmitting || !submissionText.trim()}
                   className="rounded-xl shadow-xs font-semibold"
@@ -299,9 +305,9 @@ export function StudentPendingAssignmentsCard({
                 </Button>
               </div>
             </form>
-          </div>
-        </div>
-      )}
+          </DialogContent>
+        )}
+      </Dialog>
     </>
   );
 }

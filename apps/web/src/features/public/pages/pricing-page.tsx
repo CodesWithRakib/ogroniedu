@@ -14,6 +14,7 @@ import {
 import { Button } from '@/components/ui/Button';
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/Card';
 import { Badge } from '@/components/ui/Badge';
+import { Slider } from '@/components/ui/slider';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatGroupedNumber } from '@/lib/format';
 import { usePricingCalculator } from '../hooks/use-pricing-calculator';
@@ -144,14 +145,13 @@ export function PricingPage({ locale }: { locale: Locale }) {
                   {formatLocalizedNumber(hoursPerWeek, locale)} {locale === 'bn' ? 'ঘণ্টা' : 'hrs'}
                 </span>
               </div>
-              <input
-                type="range"
-                min="2"
-                max="20"
-                step="1"
-                value={hoursPerWeek}
-                onChange={(e) => setHoursPerWeek(Number(e.target.value))}
-                className="w-full accent-primary h-2 bg-muted rounded-lg cursor-pointer"
+              <Slider
+                min={2}
+                max={20}
+                step={1}
+                value={[hoursPerWeek]}
+                onValueChange={(val) => setHoursPerWeek(val[0] ?? 2)}
+                className="w-full cursor-pointer py-1"
               />
             </div>
 
@@ -164,14 +164,13 @@ export function PricingPage({ locale }: { locale: Locale }) {
                   ৳{formatLocalizedNumber(hourlyRate, locale)}
                 </span>
               </div>
-              <input
-                type="range"
-                min="300"
-                max="3000"
-                step="50"
-                value={hourlyRate}
-                onChange={(e) => setHourlyRate(Number(e.target.value))}
-                className="w-full accent-primary h-2 bg-muted rounded-lg cursor-pointer"
+              <Slider
+                min={300}
+                max={3000}
+                step={50}
+                value={[hourlyRate]}
+                onValueChange={(val) => setHourlyRate(val[0] ?? 300)}
+                className="w-full cursor-pointer py-1"
               />
             </div>
           </div>

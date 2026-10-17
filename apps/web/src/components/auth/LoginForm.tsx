@@ -2,11 +2,17 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, AlertCircle, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
-import { Button } from '@/components/ui/Button';
-import { Input } from '@/components/ui/Input';
+import {
+  Button,
+  Input,
+  Label,
+  Alert,
+  AlertDescription,
+  Separator,
+} from '@/components/ui';
 import { AuthShell } from './authShell';
 import { useLoginForm } from './use-login-form';
 
@@ -60,19 +66,18 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
 
         {/* Error Alert */}
         {formError && (
-          <div
-            role="alert"
-            className="flex items-start gap-2.5 rounded-xl border border-destructive/25 bg-destructive-soft p-3 text-xs font-medium text-destructive animate-in fade-in"
+          <Alert
+            variant="destructive"
+            className="rounded-xl"
             data-testid="login-error"
           >
-            <AlertCircle className="h-4 w-4 shrink-0 text-destructive mt-0.5" />
-            <span>{formError}</span>
-          </div>
+            <AlertDescription>{formError}</AlertDescription>
+          </Alert>
         )}
 
         {/* Email or Phone Input */}
         <div className="space-y-1.5 text-left">
-          <label
+          <Label
             htmlFor="login-identifier"
             className="text-xs font-semibold text-foreground flex items-center justify-between"
           >
@@ -80,7 +85,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
             <span className="text-[11px] text-muted-foreground font-normal">
               {isBn ? 'বাধ্যতামূলক' : 'Required'}
             </span>
-          </label>
+          </Label>
           <Input
             id="login-identifier"
             type="text"
@@ -98,9 +103,9 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         {/* Password Input */}
         <div className="space-y-1.5 text-left">
           <div className="flex items-center justify-between">
-            <label htmlFor="login-password" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="login-password" className="text-xs font-semibold text-foreground">
               {t.passwordLabel}
-            </label>
+            </Label>
             <Link
               href={withLocale('/forgot-password', locale)}
               className="text-xs font-medium text-interactive hover:underline"
@@ -149,7 +154,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         {/* Passwordless sign-in divider */}
         <div className="relative my-4 flex items-center justify-center">
           <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t border-border/80" />
+            <Separator className="w-full" />
           </div>
           <span className="relative bg-card px-3 text-[11px] font-medium text-muted-foreground uppercase tracking-wider">
             {isBn ? 'অথবা' : 'or'}
@@ -158,9 +163,9 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
 
         {/* Magic link input & button */}
         <div className="space-y-2">
-          <label htmlFor="login-magic-email" className="text-xs font-semibold text-foreground block text-left">
+          <Label htmlFor="login-magic-email" className="text-xs font-semibold text-foreground block text-left">
             {isBn ? 'ইমেইলে সাইন-ইন লিংক পাঠান' : 'Email me a sign-in link'}
-          </label>
+          </Label>
           <div className="flex gap-2">
             <Input
               id="login-magic-email"

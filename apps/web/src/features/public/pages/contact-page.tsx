@@ -1,18 +1,25 @@
 'use client';
 
-import { MapPin, Mail, Phone, Clock, Send, CheckCircle2, AlertCircle } from 'lucide-react';
-import { Button } from '@/components/ui/Button';
-import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/Card';
-import { Input } from '@/components/ui/Input';
-import { Textarea } from '@/components/ui/textarea';
+import { MapPin, Mail, Phone, Clock, Send, CheckCircle2 } from 'lucide-react';
 import {
+  Button,
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  Input,
+  Textarea,
+  Label,
+  Alert,
+  AlertDescription,
+  Separator,
+  Badge,
   Select,
   SelectContent,
   SelectItem,
   SelectTrigger,
   SelectValue,
-} from '@/components/ui/select';
-import { Badge } from '@/components/ui/Badge';
+} from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { useContactForm } from '../hooks/use-contact-form';
 
@@ -86,11 +93,12 @@ export function ContactPage({ locale }: { locale: Locale }) {
                 </div>
               ) : (
                 <form onSubmit={handleSubmit} className="space-y-5 font-bengali">
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="contact-name" className="text-xs font-semibold text-foreground">
                       {p.nameLabel} *
-                    </label>
+                    </Label>
                     <Input
+                      id="contact-name"
                       required
                       placeholder={p.namePlaceholder}
                       value={formData.name}
@@ -100,11 +108,12 @@ export function ContactPage({ locale }: { locale: Locale }) {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="contact-email" className="text-xs font-semibold text-foreground">
                         {p.emailLabel} *
-                      </label>
+                      </Label>
                       <Input
+                        id="contact-email"
                         type="email"
                         required
                         placeholder={p.emailPlaceholder}
@@ -113,11 +122,12 @@ export function ContactPage({ locale }: { locale: Locale }) {
                         className="rounded-xl h-11"
                       />
                     </div>
-                    <div>
-                      <label className="block text-xs font-semibold text-foreground mb-1.5">
+                    <div className="space-y-1.5">
+                      <Label htmlFor="contact-phone" className="text-xs font-semibold text-foreground">
                         {p.phoneLabel}
-                      </label>
+                      </Label>
                       <Input
+                        id="contact-phone"
                         type="tel"
                         placeholder={p.phonePlaceholder}
                         value={formData.phone}
@@ -127,10 +137,10 @@ export function ContactPage({ locale }: { locale: Locale }) {
                     </div>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-semibold text-foreground">
                       {p.categoryLabel}
-                    </label>
+                    </Label>
                     <Select
                       value={formData.category}
                       onValueChange={(val) => updateField('category', val)}
@@ -148,11 +158,12 @@ export function ContactPage({ locale }: { locale: Locale }) {
                     </Select>
                   </div>
 
-                  <div>
-                    <label className="block text-xs font-semibold text-foreground mb-1.5">
+                  <div className="space-y-1.5">
+                    <Label htmlFor="contact-message" className="text-xs font-semibold text-foreground">
                       {p.messageLabel} *
-                    </label>
+                    </Label>
                     <Textarea
+                      id="contact-message"
                       required
                       rows={4}
                       className="rounded-xl border-border/80 bg-card p-3.5 text-sm resize-none"
@@ -163,14 +174,13 @@ export function ContactPage({ locale }: { locale: Locale }) {
                   </div>
 
                   {submitError && (
-                    <div
-                      role="alert"
+                    <Alert
+                      variant="destructive"
                       data-testid="contact-submit-error"
-                      className="flex items-start gap-2 rounded-xl border border-destructive/20 bg-destructive-soft p-3 text-xs text-destructive"
+                      className="rounded-xl"
                     >
-                      <AlertCircle className="h-4 w-4 shrink-0 mt-0.5" />
-                      <span>{submitError}</span>
-                    </div>
+                      <AlertDescription>{submitError}</AlertDescription>
+                    </Alert>
                   )}
 
                   <Button
@@ -225,9 +235,12 @@ export function ContactPage({ locale }: { locale: Locale }) {
                 <span className="font-bold text-foreground">{p.officialPhone}</span>
               </div>
 
-              <div className="flex items-start gap-3 pt-4 border-t border-border/60 text-xs text-muted-foreground">
-                <Clock className="h-4 w-4 shrink-0 mt-0.5 text-primary" />
-                <p>{p.operatingHours}</p>
+              <div className="pt-2">
+                <Separator className="my-3" />
+                <div className="flex items-start gap-3 text-xs text-muted-foreground">
+                  <Clock className="h-4 w-4 shrink-0 mt-0.5 text-primary" />
+                  <p>{p.operatingHours}</p>
+                </div>
               </div>
             </CardContent>
           </Card>

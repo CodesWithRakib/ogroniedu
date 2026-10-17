@@ -1,8 +1,17 @@
-'use client';
-
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import type { AdminBookingItem } from '../../types/admin.types';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  Label,
+  Textarea,
+  Checkbox,
+  Button,
+} from '@/components/ui';
 
 export function AdminCancelBookingModal({
   booking,
@@ -25,55 +34,64 @@ export function AdminCancelBookingModal({
   const tCommon = useTranslations('common');
 
   return (
-    <div
-      className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
-      data-testid="cancel-booking-modal"
-    >
-      <div className="bg-card border border-border rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-        <h3 className="text-lg font-bold text-destructive">{t('cancelIntervention')}</h3>
-        <p className="text-xs text-muted-foreground">
-          Booking: <span className="font-semibold text-foreground">{booking.id}</span>
-        </p>
-        <div>
-          <label className="block text-xs font-medium text-foreground mb-1.5">
+    <Dialog open onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        className="max-w-md w-full space-y-4"
+        data-testid="cancel-booking-modal"
+      >
+        <DialogHeader className="text-left space-y-1">
+          <DialogTitle className="text-lg font-bold text-destructive">
+            {t('cancelIntervention')}
+          </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            Booking: <span className="font-semibold text-foreground">{booking.id}</span>
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-1.5">
+          <Label htmlFor="cancel-reason" className="text-xs font-medium text-foreground">
             {t('cancelReasonLabel')} *
-          </label>
-          <textarea
+          </Label>
+          <Textarea
+            id="cancel-reason"
             rows={3}
             value={reason}
             onChange={(e) => onReasonChange(e.target.value)}
             placeholder="State administrative reason for intervention..."
-            className="w-full px-3 py-2 bg-surface border border-border rounded-xl text-xs text-foreground focus:outline-none focus:ring-2 focus:ring-destructive/25"
             data-testid="cancel-reason-textarea"
           />
         </div>
-        <label className="flex items-center space-x-2 text-xs text-foreground cursor-pointer">
-          <input
-            type="checkbox"
+
+        <div className="flex items-center space-x-2">
+          <Checkbox
+            id="refund-escrow"
             checked={refundEscrow}
-            onChange={(e) => onRefundChange(e.target.checked)}
-            className="rounded border-border bg-surface text-primary focus:ring-0"
+            onCheckedChange={(checked) => onRefundChange(Boolean(checked))}
             data-testid="refund-escrow-checkbox"
           />
-          <span>{t('refundEscrow')}</span>
-        </label>
-        <div className="flex justify-end space-x-3 pt-2">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-surface hover:bg-surface-hover text-foreground border border-border rounded-xl text-xs font-semibold transition"
+          <Label
+            htmlFor="refund-escrow"
+            className="text-xs text-foreground cursor-pointer font-normal"
           >
+            {t('refundEscrow')}
+          </Label>
+        </div>
+
+        <div className="flex justify-end space-x-3 pt-2">
+          <Button variant="outline" size="sm" onClick={onClose}>
             {tCommon('cancel')}
-          </button>
-          <button
+          </Button>
+          <Button
+            variant="destructive"
+            size="sm"
             disabled={!reason.trim()}
             onClick={onConfirm}
-            className="px-4 py-2 bg-destructive hover:bg-destructive/90 disabled:opacity-50 text-white rounded-xl text-xs font-bold shadow-xs transition"
             data-testid="confirm-cancel-booking-btn"
           >
             {t('confirmCancel')}
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

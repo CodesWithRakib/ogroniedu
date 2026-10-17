@@ -5,25 +5,18 @@ import { useTranslations, useLocale } from 'next-intl';
 import { TrustModalShell, TrustFormAlert } from '@/features/trust/components/trustModalShell';
 import { useModalSubmit } from '@/features/trust/hooks/use-modal-submit';
 import type { SafetyReportModalProps } from '@/features/trust/types/trust.types';
+import {
+  Label,
+  Textarea,
+  Button,
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from '@/components/ui';
 
 export type { SafetyReportModalProps } from '@/features/trust/types/trust.types';
-
-const inputStyle: React.CSSProperties = {
-  width: '100%',
-  padding: '9px 12px',
-  borderRadius: '8px',
-  border: '1px solid #cbd5e1',
-  fontSize: '0.85rem',
-  backgroundColor: 'var(--card)',
-};
-
-const labelStyle: React.CSSProperties = {
-  display: 'block',
-  fontSize: '0.85rem',
-  fontWeight: 600,
-  marginBottom: '6px',
-  color: 'var(--muted-foreground)',
-};
 
 export function SafetyReportModal({
   reportedUserId,
@@ -74,18 +67,7 @@ export function SafetyReportModal({
       closeLabel={locale === 'bn' ? 'বন্ধ করুন' : 'Close'}
     >
       {isUrgent && (
-        <div
-          style={{
-            backgroundColor: 'var(--destructive-soft)',
-            border: '1px solid #fecdd3',
-            borderRadius: '10px',
-            padding: '12px 14px',
-            marginBottom: '16px',
-            fontSize: '0.85rem',
-            color: 'var(--destructive)',
-            lineHeight: 1.45,
-          }}
-        >
+        <div className="rounded-xl border border-destructive/30 bg-destructive/10 p-3 mb-4 text-xs text-destructive leading-relaxed font-medium">
           ⚠️ {t('urgentEscalationNotice')}
         </div>
       )}
@@ -93,110 +75,76 @@ export function SafetyReportModal({
       {submit.errorMsg && <TrustFormAlert tone="error">{submit.errorMsg}</TrustFormAlert>}
       {submit.successMsg && <TrustFormAlert tone="success">{submit.successMsg}</TrustFormAlert>}
 
-      <form onSubmit={handleSubmit}>
-        <div
-          style={{
-            display: 'grid',
-            gridTemplateColumns: '1fr 1fr',
-            gap: '12px',
-            marginBottom: '16px',
-          }}
-        >
-          <div>
-            <label htmlFor="incident-category" style={labelStyle}>
+      <form onSubmit={handleSubmit} className="space-y-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+          <div className="space-y-1.5">
+            <Label htmlFor="incident-category" className="text-xs font-semibold text-muted-foreground">
               {t('category')}
-            </label>
-            <select
-              id="incident-category"
-              value={category}
-              onChange={(e) => setCategory(e.target.value)}
-              style={inputStyle}
-            >
-              <option value="harassment">{t('categoryHarassment')}</option>
-              <option value="child_safety">{t('categoryChildSafety')}</option>
-              <option value="inappropriate_content">{t('categoryInappropriate')}</option>
-              <option value="off_platform_payment">{t('categoryOffPlatform')}</option>
-              <option value="fraud_billing">{t('categoryFraud')}</option>
-            </select>
+            </Label>
+            <Select value={category} onValueChange={setCategory}>
+              <SelectTrigger id="incident-category" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="harassment">{t('categoryHarassment')}</SelectItem>
+                <SelectItem value="child_safety">{t('categoryChildSafety')}</SelectItem>
+                <SelectItem value="inappropriate_content">{t('categoryInappropriate')}</SelectItem>
+                <SelectItem value="off_platform_payment">{t('categoryOffPlatform')}</SelectItem>
+                <SelectItem value="fraud_billing">{t('categoryFraud')}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
 
-          <div>
-            <label htmlFor="incident-severity" style={labelStyle}>
+          <div className="space-y-1.5">
+            <Label htmlFor="incident-severity" className="text-xs font-semibold text-muted-foreground">
               {t('severity')}
-            </label>
-            <select
-              id="incident-severity"
-              value={severity}
-              onChange={(e) => setSeverity(e.target.value)}
-              style={inputStyle}
-            >
-              <option value="low">{t('severityLow')}</option>
-              <option value="medium">{t('severityMedium')}</option>
-              <option value="high">{t('severityHigh')}</option>
-              <option value="critical">{t('severityCritical')}</option>
-            </select>
+            </Label>
+            <Select value={severity} onValueChange={setSeverity}>
+              <SelectTrigger id="incident-severity" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="low">{t('severityLow')}</SelectItem>
+                <SelectItem value="medium">{t('severityMedium')}</SelectItem>
+                <SelectItem value="high">{t('severityHigh')}</SelectItem>
+                <SelectItem value="critical">{t('severityCritical')}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
         </div>
 
-        <div style={{ marginBottom: '20px' }}>
-          <label htmlFor="incident-description" style={labelStyle}>
+        <div className="space-y-1.5">
+          <Label htmlFor="incident-description" className="text-xs font-semibold text-muted-foreground">
             Description of Incident
-          </label>
-          <textarea
+          </Label>
+          <Textarea
             id="incident-description"
             rows={4}
             maxLength={5000}
             placeholder="Describe what occurred, dates, and any relevant details..."
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            style={{
-              width: '100%',
-              padding: '10px 12px',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
-              fontSize: '0.9rem',
-              fontFamily: 'inherit',
-              resize: 'vertical',
-              boxSizing: 'border-box',
-            }}
           />
         </div>
 
-        <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px' }}>
-          <button
+        <div className="flex justify-end gap-2.5 pt-2">
+          <Button
             type="button"
+            variant="outline"
+            size="sm"
             onClick={onClose}
             disabled={submit.isSubmitting}
-            style={{
-              padding: '8px 16px',
-              borderRadius: '8px',
-              border: '1px solid #cbd5e1',
-              backgroundColor: 'var(--card)',
-              color: 'var(--muted-foreground)',
-              fontWeight: 600,
-              cursor: 'pointer',
-            }}
           >
             Cancel
-          </button>
-          <button
+          </Button>
+          <Button
             type="submit"
-            disabled={submit.isSubmitting}
-            style={{
-              padding: '8px 20px',
-              borderRadius: '8px',
-              border: 'none',
-              background: isUrgent
-                ? 'linear-gradient(135deg, #e11d48, #be123c)'
-                : 'linear-gradient(135deg, #2563eb, #1d4ed8)',
-              color: 'var(--card)',
-              fontWeight: 700,
-              cursor: submit.isSubmitting ? 'not-allowed' : 'pointer',
-              opacity: submit.isSubmitting ? 0.7 : 1,
-            }}
+            variant={isUrgent ? 'destructive' : 'primary'}
+            size="sm"
+            isLoading={submit.isSubmitting}
           >
             {submit.isSubmitting ? 'Submitting...' : 'Submit Report'}
-          </button>
+          </Button>
         </div>
       </form>
     </TrustModalShell>

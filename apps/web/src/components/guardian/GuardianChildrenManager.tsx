@@ -23,6 +23,16 @@ import {
   Input,
 } from '@/components/ui';
 import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+  DialogFooter,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -190,93 +200,92 @@ export function GuardianChildrenManager({
         </div>
       )}
 
-      {/* Modal for linking child */}
-      {isModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in">
-          <Card className="w-full max-w-lg shadow-2xl border-border bg-card">
-            <CardHeader>
-              <CardTitle className="text-xl flex items-center gap-2">
-                <UserPlus className="h-5 w-5 text-primary" />
-                {dict.guardian.addChild}
-              </CardTitle>
-              <CardDescription>{dict.guardian.childrenSubtitle}</CardDescription>
-            </CardHeader>
-            <form onSubmit={handleLinkChild}>
-              <CardContent className="space-y-4">
-                {errorMessage && (
-                  <div className="p-3 text-sm bg-destructive/10 text-destructive rounded-md flex items-center gap-2">
-                    <AlertCircle className="h-4 w-4 shrink-0" />
-                    <span>{errorMessage}</span>
-                  </div>
-                )}
+      {/* Modal for linking child using shadcn Dialog */}
+      <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
+        <DialogContent className="w-full max-w-lg rounded-2xl p-6 shadow-2xl border-border bg-card">
+          <DialogHeader className="text-left pb-2">
+            <DialogTitle className="text-xl flex items-center gap-2">
+              <UserPlus className="h-5 w-5 text-primary" />
+              <span>{dict.guardian.addChild}</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              {dict.guardian.childrenSubtitle}
+            </DialogDescription>
+          </DialogHeader>
 
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium" htmlFor="input-student-identifier">
-                    {dict.guardian.studentIdentifier}
-                  </label>
-                  <Input
-                    id="input-student-identifier"
-                    value={identifier}
-                    onChange={(e) => setIdentifier(e.target.value)}
-                    placeholder="e.g. +8801722222222 or student@example.com"
-                    required
-                  />
-                </div>
+          <form onSubmit={handleLinkChild} className="space-y-4 pt-1">
+            {errorMessage && (
+              <Alert variant="destructive" className="bg-destructive-soft border-destructive/30">
+                <AlertCircle className="h-4 w-4" />
+                <AlertDescription className="text-xs font-medium text-destructive">
+                  {errorMessage}
+                </AlertDescription>
+              </Alert>
+            )}
 
-                <div className="space-y-1.5">
-                  <label className="text-sm font-medium" htmlFor="select-relationship">
-                    {dict.guardian.relationship}
-                  </label>
-                  <Select
-                    value={relationship}
-                    onValueChange={(val) => setRelationship(toGuardianRelationship(val))}
-                  >
-                    <SelectTrigger id="select-relationship" className="w-full h-10 rounded-xl bg-card border-border text-sm">
-                      <SelectValue placeholder={dict.guardian.relationship} />
-                    </SelectTrigger>
-                    <SelectContent>
-                      <SelectItem value="father">{dict.guardian.father}</SelectItem>
-                      <SelectItem value="mother">{dict.guardian.mother}</SelectItem>
-                      <SelectItem value="legal_guardian">{dict.guardian.legalGuardian}</SelectItem>
-                    </SelectContent>
-                  </Select>
-                </div>
+            <div className="space-y-1.5">
+              <Label htmlFor="input-student-identifier" className="text-xs font-semibold text-foreground">
+                {dict.guardian.studentIdentifier}
+              </Label>
+              <Input
+                id="input-student-identifier"
+                value={identifier}
+                onChange={(e) => setIdentifier(e.target.value)}
+                placeholder="e.g. +8801722222222 or student@example.com"
+                required
+              />
+            </div>
 
-                <div className="p-3 bg-muted/50 rounded-xl border border-border space-y-2">
-                  <div className="flex items-start gap-2.5">
-                    <Checkbox
-                      id="checkbox-consent"
-                      checked={consentAgreed}
-                      onCheckedChange={(checked) => setConsentAgreed(Boolean(checked))}
-                      className="mt-0.5 cursor-pointer"
-                    />
-                    <label
-                      htmlFor="checkbox-consent"
-                      className="text-xs text-muted-foreground leading-relaxed cursor-pointer select-none"
-                    >
-                      <strong className="text-foreground block mb-0.5">
-                        {dict.guardian.consentTitle} (v1.0-bd-minor-consent)
-                      </strong>
-                      {dict.guardian.consentAgreement}
-                    </label>
-                  </div>
-                </div>
-              </CardContent>
-              <div className="p-6 pt-0 flex justify-end gap-2">
-                <Button type="button" variant="outline" onClick={closeModal} disabled={loading}>
-                  {dict.common.cancel}
-                </Button>
-                <Button type="submit" disabled={loading} className="gap-2">
-                  {loading && (
-                    <div className="h-4 w-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
-                  )}
-                  {dict.common.confirm}
-                </Button>
+            <div className="space-y-1.5">
+              <Label htmlFor="select-relationship" className="text-xs font-semibold text-foreground">
+                {dict.guardian.relationship}
+              </Label>
+              <Select
+                value={relationship}
+                onValueChange={(val) => setRelationship(toGuardianRelationship(val))}
+              >
+                <SelectTrigger id="select-relationship" className="w-full h-10 rounded-xl bg-card border-border text-sm">
+                  <SelectValue placeholder={dict.guardian.relationship} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="father">{dict.guardian.father}</SelectItem>
+                  <SelectItem value="mother">{dict.guardian.mother}</SelectItem>
+                  <SelectItem value="legal_guardian">{dict.guardian.legalGuardian}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+
+            <div className="p-3 bg-muted/50 rounded-xl border border-border space-y-2">
+              <div className="flex items-start gap-2.5">
+                <Checkbox
+                  id="checkbox-consent"
+                  checked={consentAgreed}
+                  onCheckedChange={(checked) => setConsentAgreed(Boolean(checked))}
+                  className="mt-0.5 cursor-pointer"
+                />
+                <Label
+                  htmlFor="checkbox-consent"
+                  className="text-xs text-muted-foreground leading-relaxed cursor-pointer select-none font-normal"
+                >
+                  <strong className="text-foreground block mb-0.5">
+                    {dict.guardian.consentTitle} (v1.0-bd-minor-consent)
+                  </strong>
+                  {dict.guardian.consentAgreement}
+                </Label>
               </div>
-            </form>
-          </Card>
-        </div>
-      )}
+            </div>
+
+            <div className="pt-2 flex justify-end gap-2">
+              <Button type="button" variant="outline" onClick={closeModal} disabled={loading} className="rounded-xl">
+                {dict.common.cancel}
+              </Button>
+              <Button type="submit" disabled={loading} isLoading={loading} className="rounded-xl shadow-xs font-semibold">
+                {dict.common.confirm}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </div>
   );
 }

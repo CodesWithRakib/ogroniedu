@@ -3,6 +3,16 @@
 import React from 'react';
 import { useTranslations } from 'next-intl';
 import type { AdminUserItem } from '../../types/admin.types';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Label } from '@/components/ui/label';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Button } from '@/components/ui/Button';
 
 const ASSIGNABLE_ROLES = [
   'student',
@@ -37,48 +47,48 @@ export function AdminRolesModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50"
-      data-testid="roles-modal"
-    >
-      <div className="bg-card border border-border rounded-3xl p-6 max-w-md w-full space-y-4 shadow-2xl">
-        <h3 className="text-lg font-bold text-foreground">{t('rolesModalTitle')}</h3>
-        <p className="text-xs text-muted-foreground">
-          User: <span className="font-semibold text-foreground">{user.displayName}</span>
-        </p>
-        <div className="space-y-2">
-          {ASSIGNABLE_ROLES.map((role) => (
-            <label
-              key={role}
-              className="flex items-center space-x-2.5 text-xs text-foreground cursor-pointer p-1.5 rounded-lg hover:bg-surface-hover/60 transition-colors"
-            >
-              <input
-                type="checkbox"
-                checked={editingRoles.includes(role)}
-                onChange={(e) => toggleRole(role, e.target.checked)}
-                className="rounded border-border bg-surface text-primary focus:ring-0"
-                data-testid={`checkbox-role-${role}`}
-              />
-              <span className="capitalize">{role.replace('_', ' ')}</span>
-            </label>
-          ))}
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent className="max-w-md" data-testid="roles-modal">
+        <DialogHeader>
+          <DialogTitle>{t('rolesModalTitle')}</DialogTitle>
+          <DialogDescription>
+            User: <span className="font-semibold text-foreground">{user.displayName}</span>
+          </DialogDescription>
+        </DialogHeader>
+
+        <div className="space-y-2 py-2">
+          {ASSIGNABLE_ROLES.map((role) => {
+            const isChecked = editingRoles.includes(role);
+            const inputId = `role-${role}`;
+            return (
+              <div
+                key={role}
+                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
+              >
+                <Checkbox
+                  id={inputId}
+                  checked={isChecked}
+                  onCheckedChange={(checked) => toggleRole(role, Boolean(checked))}
+                  data-testid={`checkbox-role-${role}`}
+                />
+                <Label htmlFor={inputId} className="cursor-pointer text-sm font-medium capitalize">
+                  {role.replace('_', ' ')}
+                </Label>
+              </div>
+            );
+          })}
         </div>
-        <div className="flex justify-end space-x-3 pt-2">
-          <button
-            onClick={onClose}
-            className="px-4 py-2 bg-surface hover:bg-surface-hover text-foreground border border-border rounded-xl text-xs font-semibold transition"
-          >
+
+        <div className="flex justify-end space-x-3 pt-3">
+          <Button variant="outline" onClick={onClose}>
             {tCommon('cancel')}
-          </button>
-          <button
-            onClick={onConfirm}
-            className="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs font-bold shadow-xs transition"
-            data-testid="confirm-roles-btn"
-          >
+          </Button>
+          <Button variant="primary" onClick={onConfirm} data-testid="confirm-roles-btn">
             {tCommon('save')}
-          </button>
+          </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }
+

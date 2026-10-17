@@ -4,7 +4,17 @@ import React from 'react';
 import { ShieldCheck, CreditCard, Lock } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { PaymentCheckoutView } from '@/components/payments/PaymentCheckoutView';
-import { Button, Card, CardContent, Input, LoadingSpinner, EmptyState } from '@/components/ui';
+import {
+  Button,
+  Card,
+  CardContent,
+  Input,
+  Label,
+  Alert,
+  AlertDescription,
+  LoadingSpinner,
+  EmptyState,
+} from '@/components/ui';
 import { type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { usePaymentOrder, type PaymentProvider } from '../hooks/use-payment-order';
@@ -93,17 +103,17 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 data-testid="create-order-form"
               >
                 <div className="space-y-1.5 sm:col-span-2">
-                  <label
+                  <Label
                     htmlFor="pay-booking"
-                    className="text-xs font-bold text-foreground "
+                    className="text-xs font-bold text-foreground"
                   >
                     {locale === 'bn' ? 'টিউশন / কোর্স নির্বাচন করুন' : 'Select Tuition / Course'}
-                  </label>
+                  </Label>
                   <select
                     id="pay-booking"
                     value={pay.bookingId}
                     onChange={(e) => pay.handleSelectBooking(e.target.value)}
-                    className="h-10 w-full rounded-xl border border-border bg-white px-3 text-xs font-medium   focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="h-10 w-full rounded-xl border border-input bg-card text-foreground px-3 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-ring"
                     data-testid="pay-booking-select"
                   >
                     {bookingOptions.map((opt) => (
@@ -115,12 +125,12 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label
+                  <Label
                     htmlFor="pay-amount"
-                    className="text-xs font-bold text-foreground "
+                    className="text-xs font-bold text-foreground"
                   >
                     {dict.payments.totalAmount} (BDT ৳)
-                  </label>
+                  </Label>
                   <Input
                     id="pay-amount"
                     type="number"
@@ -133,17 +143,17 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 </div>
 
                 <div className="space-y-1.5">
-                  <label
+                  <Label
                     htmlFor="pay-provider"
-                    className="text-xs font-bold text-foreground "
+                    className="text-xs font-bold text-foreground"
                   >
                     {dict.payments.selectGateway}
-                  </label>
+                  </Label>
                   <select
                     id="pay-provider"
                     value={pay.provider}
                     onChange={(e) => pay.setProvider(e.target.value as PaymentProvider)}
-                    className="h-10 w-full rounded-xl border border-border bg-white px-3 text-xs font-medium   focus:outline-none focus:ring-2 focus:ring-ring"
+                    className="h-10 w-full rounded-xl border border-input bg-card text-foreground px-3 text-xs font-medium focus:outline-none focus:ring-2 focus:ring-ring"
                     data-testid="pay-provider-select"
                   >
                     <option value="bkash">{dict.payments.bkashTitle}</option>
@@ -165,9 +175,9 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 </div>
               </form>
               {pay.formError && (
-                <p role="alert" className="mt-3 text-xs text-destructive">
-                  {pay.formError}
-                </p>
+                <Alert variant="destructive" className="mt-3">
+                  <AlertDescription role="alert">{pay.formError}</AlertDescription>
+                </Alert>
               )}
             </CardContent>
           </Card>

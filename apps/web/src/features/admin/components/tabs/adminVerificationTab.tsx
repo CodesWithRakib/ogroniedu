@@ -15,7 +15,28 @@ import {
   ArrowRight,
 } from 'lucide-react';
 import type { TutorVerificationLevel } from '@ogroniedu/contracts';
-import { Badge, Button } from '@/components/ui';
+import {
+  Badge,
+  Button,
+  Input,
+  Textarea,
+  Label,
+  Alert,
+  AlertDescription,
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from '@/components/ui/table';
 import { EmptyState } from '@/components/ui/EmptyState';
 import { LoadingState } from '@/components/shared/LoadingState';
 import { ErrorState } from '@/components/shared/ErrorState';
@@ -114,56 +135,57 @@ export function VerificationQueueTable({
   }
   return (
     <div className="border border-border/70 rounded-2xl overflow-x-auto bg-card shadow-xs">
-      <table className="w-full text-left text-xs" data-testid="verification-table">
-        <thead className="bg-surface text-muted-foreground border-b border-border uppercase tracking-wider text-[11px] font-semibold">
-          <tr>
-            <th className="px-4 py-3">{isBn ? 'টিউটর' : 'Tutor'}</th>
-            <th className="px-4 py-3">{isBn ? 'স্তর' : 'Level'}</th>
-            <th className="px-4 py-3">{isBn ? 'অবস্থা' : 'Status'}</th>
-            <th className="px-4 py-3">{isBn ? 'নথি' : 'Docs'}</th>
-            <th className="px-4 py-3">{isBn ? 'জমা' : 'Submitted'}</th>
-            <th className="px-4 py-3 text-right">{isBn ? 'পদক্ষেপ' : 'Actions'}</th>
-          </tr>
-        </thead>
-        <tbody className="divide-y divide-border/60 text-foreground">
+      <Table data-testid="verification-table">
+        <TableHeader>
+          <TableRow className="bg-muted/30 text-muted-foreground uppercase tracking-wider text-[11px] font-semibold">
+            <TableHead className="px-4 py-3">{isBn ? 'টিউটর' : 'Tutor'}</TableHead>
+            <TableHead className="px-4 py-3">{isBn ? 'স্তর' : 'Level'}</TableHead>
+            <TableHead className="px-4 py-3">{isBn ? 'অবস্থা' : 'Status'}</TableHead>
+            <TableHead className="px-4 py-3">{isBn ? 'নথি' : 'Docs'}</TableHead>
+            <TableHead className="px-4 py-3">{isBn ? 'জমা' : 'Submitted'}</TableHead>
+            <TableHead className="px-4 py-3 text-right">{isBn ? 'পদক্ষেপ' : 'Actions'}</TableHead>
+          </TableRow>
+        </TableHeader>
+        <TableBody className="text-foreground text-xs">
           {rows.map((row) => (
-            <tr
+            <TableRow
               key={`${row.tutorUserId}:${row.level}`}
-              className="hover:bg-surface-hover/50 transition-colors"
+              className="hover:bg-muted/40 transition-colors"
               data-testid={`verification-row-${row.tutorUserId}-${row.level}`}
             >
-              <td className="px-4 py-3 font-medium">
+              <TableCell className="px-4 py-3 font-medium">
                 {row.displayName}
                 <span className="block text-[11px] text-muted-foreground font-normal">
                   {row.headline || row.email || '—'}
                 </span>
-              </td>
-              <td className="px-4 py-3">{levelLabel(row.level, locale)}</td>
-              <td className="px-4 py-3">
+              </TableCell>
+              <TableCell className="px-4 py-3">{levelLabel(row.level, locale)}</TableCell>
+              <TableCell className="px-4 py-3">
                 <Badge variant={levelStatusTone(row.levelStatus)} className="text-[11px]">
                   {levelStatusLabel(row.levelStatus, locale)}
                 </Badge>
-              </td>
-              <td className="px-4 py-3 text-muted-foreground">
+              </TableCell>
+              <TableCell className="px-4 py-3 text-muted-foreground">
                 {formatLocalizedNumber(row.pendingDocuments, locale)}{' '}
                 {isBn ? 'অপেক্ষমান' : 'pending'}
-              </td>
-              <td className="px-4 py-3 text-muted-foreground">
+              </TableCell>
+              <TableCell className="px-4 py-3 text-muted-foreground">
                 {row.submittedAt ? formatDate(row.submittedAt, locale) : '—'}
-              </td>
-              <td className="px-4 py-3 text-right">
+              </TableCell>
+              <TableCell className="px-4 py-3 text-right">
                 <Button
                   size="sm"
                   onClick={() => onOpen(row)}
                   data-testid={`review-tutor-btn-${row.tutorUserId}-${row.level}`}
+                  className="rounded-xl font-semibold"
                 >
                   {isBn ? 'পর্যালোচনা' : 'Review'}
                 </Button>
-              </td>
-            </tr>
+              </TableCell>
+            </TableRow>
           ))}
-        </tbody>
-      </table>
+        </TableBody>
+      </Table>
     </div>
   );
 }
@@ -447,47 +469,37 @@ export function AdminVerificationTab() {
       )}
 
       {/* Dossier modal */}
-      {selected && (
-        <div
-          role="dialog"
-          aria-modal="true"
-          aria-label={isBn ? 'ভেরিফিকেশন ডসিয়ার' : 'Verification dossier'}
-          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-surface-muted backdrop-blur-xs"
-          data-testid="verification-dossier-modal"
-        >
-          <div className="bg-card border border-border rounded-3xl max-w-3xl w-full p-6 shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex items-start justify-between gap-3 pb-3 border-b border-border/70">
-              <div>
-                <h3 className="text-lg font-bold text-foreground">{selected.displayName}</h3>
-                <p className="text-xs text-muted-foreground mt-0.5">
-                  {selected.email || selected.phoneE164 || '—'}
-                  {selected.headline ? ` · ${selected.headline}` : ''}
-                </p>
-                <div className="flex flex-wrap items-center gap-2 mt-2">
-                  <Badge variant={levelStatusTone(selected.overallVerificationStatus as never)}>
-                    {isBn ? 'সার্বিক' : 'Overall'}: {selected.overallVerificationStatus}
-                  </Badge>
-                  <Badge variant="info">
-                    {isBn ? 'পাবলিকেশন' : 'Publication'}: {selected.publicationStatus}
-                  </Badge>
-                </div>
+      <Dialog open={Boolean(selected)} onOpenChange={(open) => !open && setSelected(null)}>
+        {selected && (
+          <DialogContent
+            aria-label={isBn ? 'ভেরিফিকেশন ডসিয়ার' : 'Verification dossier'}
+            className="max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto"
+            data-testid="verification-dossier-modal"
+          >
+            <DialogHeader className="border-b border-border/70 pb-3 text-left">
+              <DialogTitle className="text-lg font-bold text-foreground">{selected.displayName}</DialogTitle>
+              <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                {selected.email || selected.phoneE164 || '—'}
+                {selected.headline ? ` · ${selected.headline}` : ''}
+              </DialogDescription>
+              <div className="flex flex-wrap items-center gap-2 mt-2">
+                <Badge variant={levelStatusTone(selected.overallVerificationStatus as never)}>
+                  {isBn ? 'সার্বিক' : 'Overall'}: {selected.overallVerificationStatus}
+                </Badge>
+                <Badge variant="info">
+                  {isBn ? 'পাবলিকেশন' : 'Publication'}: {selected.publicationStatus}
+                </Badge>
               </div>
-              <button
-                type="button"
-                onClick={() => setSelected(null)}
-                className="text-muted-foreground hover:text-foreground rounded-lg p-1"
-                aria-label={isBn ? 'বন্ধ করুন' : 'Close'}
-              >
-                ✕
-              </button>
-            </div>
+            </DialogHeader>
 
             {dossier.isFetching ? (
               <LoadingState testId="dossier-loading" />
             ) : dossier.isError ? (
-              <p role="alert" className="text-xs text-destructive">
-                {normalizeApiError(dossier.error, locale).message}
-              </p>
+              <Alert variant="destructive">
+                <AlertDescription role="alert">
+                  {normalizeApiError(dossier.error, locale).message}
+                </AlertDescription>
+              </Alert>
             ) : (
               <div className="space-y-3">
                 {dossierLevels.map((lvl) => {
@@ -674,14 +686,10 @@ export function AdminVerificationTab() {
               onSubmit={handleDecide}
             >
               {formError && (
-                <p
-                  role="alert"
-                  className="text-xs text-destructive bg-destructive/10 border border-destructive/40 rounded-xl p-2.5 flex items-center gap-2"
-                  data-testid="verification-form-error"
-                >
-                  <AlertCircle className="w-4 h-4 shrink-0" />
-                  <span>{formError}</span>
-                </p>
+                <Alert variant="destructive" data-testid="verification-form-error">
+                  <AlertCircle className="w-4 h-4" />
+                  <AlertDescription role="alert">{formError}</AlertDescription>
+                </Alert>
               )}
 
               {!activeLevel ? (
@@ -712,12 +720,12 @@ export function AdminVerificationTab() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <label className="space-y-1">
-                      <span className="text-xs font-medium">{isBn ? 'স্তর' : 'Level'}</span>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-medium">{isBn ? 'স্তর' : 'Level'}</Label>
                       <select
                         value={selectedLevel ?? activeLevel.level}
                         onChange={(e) => setSelectedLevel(e.target.value as TutorVerificationLevel)}
-                        className="h-10 w-full rounded-xl border border-border bg-surface px-3 text-sm"
+                        className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-hidden focus:ring-2 focus:ring-ring"
                         data-testid="decision-level-select"
                       >
                         {LEVELS.map((level) => (
@@ -726,13 +734,13 @@ export function AdminVerificationTab() {
                           </option>
                         ))}
                       </select>
-                    </label>
-                    <label className="space-y-1">
-                      <span className="text-xs font-medium">{isBn ? 'সিদ্ধান্ত' : 'Decision'}</span>
+                    </div>
+                    <div className="space-y-1.5">
+                      <Label className="text-xs font-medium">{isBn ? 'সিদ্ধান্ত' : 'Decision'}</Label>
                       <select
                         value={decision}
                         onChange={(e) => setDecision(e.target.value as TutorReviewDecision)}
-                        className="h-10 w-full rounded-xl border border-border bg-surface px-3 text-sm"
+                        className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-hidden focus:ring-2 focus:ring-ring"
                         data-testid="verification-decision-select"
                       >
                         {DECISIONS.map((value) => (
@@ -741,18 +749,17 @@ export function AdminVerificationTab() {
                           </option>
                         ))}
                       </select>
-                    </label>
+                    </div>
                   </div>
 
-                  <div className="space-y-1">
-                    <label className="text-xs font-medium" htmlFor="verification-reason">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium" htmlFor="verification-reason">
                       {isBn ? 'কারণ কোড' : 'Reason code'}
-                    </label>
-                    <input
+                    </Label>
+                    <Input
                       id="verification-reason"
                       value={reasonCode}
                       onChange={(e) => setReasonCode(e.target.value)}
-                      className="h-10 w-full rounded-xl border border-border bg-surface px-3 text-sm"
                       data-testid="verification-reason-input"
                     />
                     <div className="flex flex-wrap gap-1.5 pt-1">
@@ -764,7 +771,7 @@ export function AdminVerificationTab() {
                           className={`text-[10px] px-2.5 py-1 rounded-lg border transition-all ${
                             reasonCode === preset.code
                               ? 'bg-interactive/20 text-info-soft-foreground border-info/40'
-                              : 'bg-surface/60 text-muted-foreground border-border/80 hover:text-foreground'
+                              : 'bg-muted/60 text-muted-foreground border-border/80 hover:text-foreground'
                           }`}
                         >
                           {isBn ? preset.bn : preset.en}
@@ -773,11 +780,12 @@ export function AdminVerificationTab() {
                     </div>
                   </div>
 
-                  <label className="space-y-1 block">
-                    <span className="text-xs font-medium">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium" htmlFor="verification-feedback">
                       {isBn ? 'শিক্ষককে দেখানো ফিডব্যাক' : 'Applicant-facing feedback'}
-                    </span>
-                    <textarea
+                    </Label>
+                    <Textarea
+                      id="verification-feedback"
                       rows={2}
                       value={applicantFeedback}
                       onChange={(e) => setApplicantFeedback(e.target.value)}
@@ -786,28 +794,27 @@ export function AdminVerificationTab() {
                           ? 'শিক্ষক এই লেখাটি তার ডসিয়ারে দেখতে পাবেন...'
                           : 'The tutor sees this text in their dossier...'
                       }
-                      className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm"
                       data-testid="verification-feedback-input"
                     />
-                  </label>
+                  </div>
 
-                  <label className="space-y-1 block">
-                    <span className="text-xs font-medium">
+                  <div className="space-y-1.5">
+                    <Label className="text-xs font-medium" htmlFor="verification-notes">
                       {isBn
                         ? 'অভ্যন্তরীণ নোট (শিক্ষক দেখবেন না)'
                         : 'Internal notes (never shown to tutor)'}
-                    </span>
-                    <textarea
+                    </Label>
+                    <Textarea
+                      id="verification-notes"
                       rows={2}
                       value={internalNotes}
                       onChange={(e) => setInternalNotes(e.target.value)}
                       placeholder={
                         isBn ? 'শুধুমাত্র কমপ্লায়েন্স টিমের জন্য...' : 'Reviewer-only notes...'
                       }
-                      className="w-full rounded-xl border border-border bg-surface px-3 py-2 text-sm"
                       data-testid="verification-notes-input"
                     />
-                  </label>
+                  </div>
 
                   <div className="flex items-center justify-between gap-2 pt-1">
                     <span className="text-[10px] text-muted-foreground inline-flex items-center gap-1">
@@ -827,9 +834,9 @@ export function AdminVerificationTab() {
                 </>
               )}
             </form>
-          </div>
-        </div>
-      )}
+          </DialogContent>
+        )}
+      </Dialog>
     </div>
   );
 }

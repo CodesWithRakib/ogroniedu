@@ -1,5 +1,6 @@
 import React, { forwardRef, type InputHTMLAttributes, useId } from 'react';
 import { cn } from '@/lib/utils';
+import { Label } from './label';
 
 export interface InputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: string;
@@ -54,9 +55,9 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div className="w-full space-y-1.5">
         {label && (
-          <label htmlFor={inputId} className="block text-xs sm:text-sm font-medium text-foreground">
+          <Label htmlFor={inputId} className="block text-xs sm:text-sm font-medium text-foreground">
             {label}
-          </label>
+          </Label>
         )}
         {inputElement}
         {hasError && (

@@ -2,6 +2,7 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
+import { Alert, AlertDescription } from '@/components/ui';
 import {
   useAdminActions,
   EMPTY_RECONCILIATION,
@@ -179,22 +180,14 @@ export function AdminDashboardView({
       data-testid="admin-dashboard-view"
     >
       {actions.actionError && (
-        <div
-          role="alert"
-          className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-soft-foreground"
-          data-testid="admin-action-error"
-        >
-          {actions.actionError}
-        </div>
+        <Alert variant="destructive" data-testid="admin-action-error">
+          <AlertDescription role="alert">{actions.actionError}</AlertDescription>
+        </Alert>
       )}
       {queryError && (
-        <div
-          role="alert"
-          className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-soft-foreground"
-          data-testid="admin-query-error"
-        >
-          {queryError}
-        </div>
+        <Alert variant="destructive" data-testid="admin-query-error">
+          <AlertDescription role="alert">{queryError}</AlertDescription>
+        </Alert>
       )}
       {isLoading && (
         <div

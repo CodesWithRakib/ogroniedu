@@ -19,6 +19,7 @@ import {
   Send,
   AlertCircle,
 } from 'lucide-react';
+import { Button, Textarea, Label } from '@/components/ui';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { useGetTutorPublicProfileQuery } from '@/store/services/tutors-api';
 import { useCreateBookingRequestMutation } from '@/store/services/bookings-api';
@@ -945,9 +946,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 {/* Student Selector */}
                 {studentOptions.length > 0 ? (
                   <div className="space-y-1.5">
-                    <label className="font-semibold text-foreground block">
+                    <Label className="font-semibold text-foreground block">
                       {isBn ? 'শিক্ষার্থী নির্বাচন করুন *' : 'Select Student *'}
-                    </label>
+                    </Label>
                     <select
                       value={selectedStudentId}
                       onChange={(e) => setSelectedStudentId(e.target.value)}
@@ -979,9 +980,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
                 {/* Subject Selector */}
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-foreground block">
+                  <Label className="font-semibold text-foreground block">
                     {isBn ? 'পড়ার বিষয় নির্বাচন করুন *' : 'Select Subject *'}
-                  </label>
+                  </Label>
                   <select
                     value={selectedSubjectId}
                     onChange={(e) => setSelectedSubjectId(e.target.value)}
@@ -1001,9 +1002,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
                 {/* Teaching Mode */}
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-foreground block">
+                  <Label className="font-semibold text-foreground block">
                     {isBn ? 'পড়ার মাধ্যম *' : 'Teaching Mode *'}
-                  </label>
+                  </Label>
                   <div className="grid grid-cols-3 gap-1.5">
                     {[
                       { key: 'online', label: isBn ? 'অনলাইন' : 'Online' },
@@ -1030,9 +1031,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
                 {/* Preferred Days */}
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-foreground block">
+                  <Label className="font-semibold text-foreground block">
                     {isBn ? 'সাপ্তাহিক পছন্দের দিনসমূহ:' : 'Preferred Days:'}
-                  </label>
+                  </Label>
                   <div className="flex flex-wrap gap-1.5">
                     {daysList.map((d) => {
                       const isChecked = selectedDays.includes(d.key);
@@ -1056,12 +1057,13 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
                 {/* Additional Notes */}
                 <div className="space-y-1.5">
-                  <label className="font-semibold text-foreground block">
+                  <Label htmlFor="tutor-booking-notes" className="font-semibold text-foreground text-xs block">
                     {isBn
                       ? 'বিশেষ কোনো বার্তা বা চাহিদা (ঐচ্ছিক):'
                       : 'Notes / Special Requests (Optional):'}
-                  </label>
-                  <textarea
+                  </Label>
+                  <Textarea
+                    id="tutor-booking-notes"
                     rows={3}
                     value={bookingNotes}
                     onChange={(e) => setBookingNotes(e.target.value)}
@@ -1070,27 +1072,20 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                         ? 'যেমন: সপ্তাহে ৩ দিন পড়াতে হবে, টেস্ট পরীক্ষার প্রস্তুতি...'
                         : 'e.g. Need 3 days a week, focusing on upcoming board exams...'
                     }
-                    className="w-full p-2.5 rounded-xl bg-background border border-border text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-brand transition-colors resize-none text-xs"
                   />
                 </div>
 
                 {/* Submit Button */}
-                <button
+                <Button
                   type="submit"
-                  disabled={isBookingSubmitting}
-                  className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-black text-xs px-4 py-3.5 shadow-sm hover:shadow-sm active:scale-95 disabled:opacity-50 transition-all cursor-pointer"
+                  isLoading={isBookingSubmitting}
+                  className="w-full font-bold text-xs"
                 >
-                  <Send className="w-4 h-4" />
+                  <Send className="w-4 h-4 mr-2" />
                   <span>
-                    {isBookingSubmitting
-                      ? isBn
-                        ? 'অনুরোধ পাঠানো হচ্ছে...'
-                        : 'Submitting Request...'
-                      : isBn
-                        ? 'টিউশন অনুরোধ পাঠান'
-                        : 'Submit Tutoring Request'}
+                    {isBn ? 'টিউশন অনুরোধ পাঠান' : 'Submit Tutoring Request'}
                   </span>
-                </button>
+                </Button>
               </form>
             )}
 

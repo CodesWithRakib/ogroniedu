@@ -3,7 +3,7 @@
 import React from 'react';
 import { Calendar, CheckCircle2, Clock } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
-import { LoadingSpinner } from '@/components/ui';
+import { LoadingSpinner, Alert, AlertDescription } from '@/components/ui';
 import type { Locale } from '@/lib/i18n';
 import { useAdminDashboard } from '../hooks/use-admin-dashboard';
 import { useAdminActions } from '../hooks/use-admin-actions';
@@ -46,13 +46,9 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
       ) : (
         <div className="space-y-6 py-6" data-testid="admin-bookings-page">
           {actions.actionError && (
-            <div
-              role="alert"
-              className="rounded-xl border border-destructive/40 bg-destructive/10 p-3 text-sm text-destructive-soft-foreground"
-              data-testid="admin-action-error"
-            >
-              {actions.actionError}
-            </div>
+            <Alert variant="destructive" data-testid="admin-action-error">
+              <AlertDescription role="alert">{actions.actionError}</AlertDescription>
+            </Alert>
           )}
 
           {/* Page Header */}

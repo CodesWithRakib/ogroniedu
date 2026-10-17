@@ -23,6 +23,10 @@ import {
   Badge,
   Input,
   LoadingSpinner,
+  Textarea,
+  Label,
+  Alert,
+  AlertDescription,
 } from '@/components/ui';
 import {
   useGetAssignmentByIdQuery,
@@ -266,13 +270,13 @@ function AssignmentSubmissionsPage({
                   data-testid="submissions-grading-form"
                 >
                   <div className="space-y-1">
-                    <label
+                    <Label
                       htmlFor="submission-score"
                       className="text-xs font-semibold text-muted-foreground"
                     >
                       {locale === 'bn' ? 'প্রাপ্ত স্কোর (সর্বোচ্চ ' : 'Score (Max '}
                       {formatLocalizedNumber(assignment.maxScore, locale)}):
-                    </label>
+                    </Label>
                     <Input
                       id="submission-score"
                       type="number"
@@ -284,38 +288,37 @@ function AssignmentSubmissionsPage({
                     />
                   </div>
 
-                  <div className="space-y-1">
-                    <label
+                  <div className="space-y-1.5">
+                    <Label
                       htmlFor="submission-feedback"
                       className="text-xs font-semibold text-muted-foreground"
                     >
                       {locale === 'bn' ? 'পরামর্শ ও মন্তব্য:' : 'Feedback & Remarks:'}
-                    </label>
-                    <textarea
+                    </Label>
+                    <Textarea
                       id="submission-feedback"
                       rows={3}
                       value={feedback}
                       onChange={(e) => setFeedback(e.target.value)}
                       placeholder={
                         locale === 'bn'
-                          ? 'শিক্ষার্থীর উন্নতির জন্য গঠনমূলক মতামত দিন...'
-                          : 'Write encouraging feedback...'
+                           ? 'শিক্ষার্থীর উন্নতির জন্য গঠনমূলক মতামত দিন...'
+                           : 'Write encouraging feedback...'
                       }
-                      className="w-full rounded-xl border border-border bg-muted p-2.5 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
                       data-testid="submissions-feedback-input"
                     />
                   </div>
 
                   {hasScore && (
-                    <div className="space-y-1">
-                      <label
+                    <div className="space-y-1.5">
+                      <Label
                         htmlFor="submission-revision"
                         className="text-xs font-semibold text-warning-soft-foreground"
                       >
                         {locale === 'bn'
                           ? 'স্কোর পরিবর্তনের কারণ (বাধ্যতামূলক):'
                           : 'Revision Reason (Required):'}
-                      </label>
+                      </Label>
                       <Input
                         id="submission-revision"
                         value={revisionReason}
@@ -331,19 +334,19 @@ function AssignmentSubmissionsPage({
                   )}
 
                   {gradeError && (
-                    <div className="p-2.5 rounded-lg border border-destructive/40 bg-destructive/10 text-xs text-destructive-soft-foreground">
-                      {gradeError}
-                    </div>
+                    <Alert variant="destructive" className="py-2.5 rounded-xl">
+                      <AlertDescription className="text-xs">{gradeError}</AlertDescription>
+                    </Alert>
                   )}
                   {gradeSuccess && (
-                    <div className="p-2.5 rounded-lg border border-primary/40 bg-primary/10 text-xs text-success-soft-foreground flex items-center gap-1.5">
-                      <CheckCircle2 className="w-4 h-4 text-success-soft-foreground shrink-0" />
-                      <span>
+                    <Alert variant="success" className="py-2.5 rounded-xl">
+                      <CheckCircle2 className="w-4 h-4 mr-2" />
+                      <AlertDescription className="text-xs">
                         {locale === 'bn'
                           ? 'মূল্যায়ন সফলভাবে সংরক্ষিত হয়েছে!'
                           : 'Evaluation saved successfully!'}
-                      </span>
-                    </div>
+                      </AlertDescription>
+                    </Alert>
                   )}
 
                   <Button

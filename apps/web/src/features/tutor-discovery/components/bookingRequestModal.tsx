@@ -1,9 +1,18 @@
 'use client';
 
 import React from 'react';
-import { CheckCircle2, X } from 'lucide-react';
+import { CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Textarea } from '@/components/ui/textarea';
+import { Label } from '@/components/ui/label';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import {
   Select,
   SelectContent,
@@ -62,35 +71,27 @@ export function BookingRequestModal({
   ];
 
   return (
-    <div
-      role="dialog"
-      aria-modal="true"
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in"
-      data-testid="booking-request-modal"
-    >
-      <div className="bg-card border border-border rounded-2xl max-w-lg w-full p-6 shadow-2xl space-y-4">
-        <div className="flex items-center justify-between border-b border-border/70 pb-3">
-          <div>
-            <h3 className="font-bold text-foreground">
-              {dict.bookingRequest?.modalTitle || 'Request Tutoring Session'}
-            </h3>
-            <p className="text-xs text-muted-foreground">{tutor.displayName}</p>
-          </div>
-          <button
-            type="button"
-            onClick={onClose}
-            className="text-muted-foreground hover:text-foreground rounded-xl p-1 transition-colors cursor-pointer"
-            aria-label={locale === 'bn' ? 'মোডাল বন্ধ করুন' : 'Close modal'}
-          >
-            <X className="w-5 h-5" />
-          </button>
-        </div>
+    <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        data-testid="booking-request-modal"
+        className="max-w-lg w-full p-6 space-y-4 rounded-2xl"
+      >
+        <DialogHeader className="space-y-1 border-b border-border/70 pb-3 text-left">
+          <DialogTitle className="font-bold text-foreground text-base">
+            {dict.bookingRequest?.modalTitle || 'Request Tutoring Session'}
+          </DialogTitle>
+          <DialogDescription className="text-xs text-muted-foreground">
+            {tutor.displayName}
+          </DialogDescription>
+        </DialogHeader>
 
         {successMessage ? (
-          <div className="p-4 bg-primary-soft border border-primary/25 rounded-2xl text-center space-y-2">
-            <CheckCircle2 className="w-8 h-8 text-primary mx-auto" />
-            <p className="text-sm font-semibold text-primary-soft-foreground">{successMessage}</p>
-          </div>
+          <Alert className="bg-primary-soft border border-primary/25 text-center p-4">
+            <CheckCircle2 className="w-8 h-8 text-primary mx-auto mb-2" />
+            <AlertDescription className="text-sm font-semibold text-primary-soft-foreground">
+              {successMessage}
+            </AlertDescription>
+          </Alert>
         ) : (
           <form
             onSubmit={onSubmit}
@@ -98,19 +99,19 @@ export function BookingRequestModal({
             data-testid="booking-request-form"
           >
             {error && (
-              <div
-                role="alert"
-                className="rounded-xl border border-destructive/30 bg-destructive-soft p-3 text-xs text-destructive font-medium"
+              <Alert
+                variant="destructive"
                 data-testid="booking-request-error"
+                className="p-3 text-xs"
               >
-                {error}
-              </div>
+                <AlertDescription className="font-medium">{error}</AlertDescription>
+              </Alert>
             )}
             {studentOptions.length > 0 && (
-              <div className="space-y-1">
-                <label className="font-semibold text-foreground">
+              <div className="space-y-1.5">
+                <Label className="font-semibold text-foreground text-xs">
                   {dict.bookingRequest?.selectStudent || 'Select Student'}
-                </label>
+                </Label>
                 <Select
                   value={value.studentId}
                   onValueChange={(val) => onChange({ studentId: val })}
@@ -129,10 +130,10 @@ export function BookingRequestModal({
               </div>
             )}
             {levelOptions.length > 0 && (
-              <div className="space-y-1">
-                <label className="font-semibold text-foreground">
+              <div className="space-y-1.5">
+                <Label className="font-semibold text-foreground text-xs">
                   {dict.bookingRequest?.selectLevel || 'Select Level'}
-                </label>
+                </Label>
                 <Select
                   value={value.levelId}
                   onValueChange={(val) => onChange({ levelId: val })}
@@ -150,10 +151,10 @@ export function BookingRequestModal({
                 </Select>
               </div>
             )}
-            <div className="space-y-1">
-              <label className="font-semibold text-foreground">
+            <div className="space-y-1.5">
+              <Label className="font-semibold text-foreground text-xs">
                 {dict.bookingRequest?.selectSubject || 'Select Subject'}
-              </label>
+              </Label>
               <Select
                 value={value.subjectId}
                 onValueChange={(val) => onChange({ subjectId: val })}
@@ -172,10 +173,10 @@ export function BookingRequestModal({
               </Select>
             </div>
 
-            <div className="space-y-1">
-              <label className="font-semibold text-foreground">
+            <div className="space-y-1.5">
+              <Label className="font-semibold text-foreground text-xs">
                 {dict.bookingRequest?.selectMode || 'Preferred Mode'}
-              </label>
+              </Label>
               <Select
                 value={value.mode}
                 onValueChange={(val) => onChange({ mode: val as BookingFormValue['mode'] })}
@@ -191,10 +192,10 @@ export function BookingRequestModal({
               </Select>
             </div>
 
-            <div className="space-y-1">
-              <label className="font-semibold text-foreground">
+            <div className="space-y-1.5">
+              <Label className="font-semibold text-foreground text-xs">
                 {dict.bookingRequest?.preferredDaysLabel || 'Preferred Days'}
-              </label>
+              </Label>
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {daysList.map((d) => {
                   const isSelected = value.days.includes(d.key);
@@ -215,10 +216,10 @@ export function BookingRequestModal({
               </div>
             </div>
 
-            <div className="space-y-1">
-              <label className="font-semibold text-foreground">
+            <div className="space-y-1.5">
+              <Label className="font-semibold text-foreground text-xs">
                 {dict.bookingRequest?.notesLabel || 'Notes / Learning Goals'}
-              </label>
+              </Label>
               <Textarea
                 rows={3}
                 value={value.notes}
@@ -248,7 +249,7 @@ export function BookingRequestModal({
             </div>
           </form>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

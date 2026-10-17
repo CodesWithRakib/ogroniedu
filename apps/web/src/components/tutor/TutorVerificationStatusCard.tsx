@@ -20,6 +20,9 @@ import {
   CardDescription,
   CardContent,
   Badge,
+  Alert,
+  AlertDescription,
+  AlertTitle,
 } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 
@@ -169,18 +172,15 @@ export function TutorVerificationStatusCard({
 
       <CardContent className="pt-6 space-y-6">
         {errorNotice && (
-          <div
-            role="alert"
-            className="flex items-start gap-3 p-4 rounded-xl bg-destructive/10 border border-destructive/20 text-destructive text-sm"
-          >
-            <AlertTriangle className="h-5 w-5 shrink-0 mt-0.5" />
+          <Alert variant="destructive">
+            <AlertTriangle className="h-5 w-5" />
             <div>
-              <p className="font-semibold">
+              <AlertTitle>
                 {locale === 'bn' ? 'অপারেশন ব্যর্থ হয়েছে' : 'Operation Prohibited'}
-              </p>
-              <p>{errorNotice}</p>
+              </AlertTitle>
+              <AlertDescription role="alert">{errorNotice}</AlertDescription>
             </div>
-          </div>
+          </Alert>
         )}
 
         {/* Dynamic Verification Badges (Definition of Done: Only checks actually performed) */}

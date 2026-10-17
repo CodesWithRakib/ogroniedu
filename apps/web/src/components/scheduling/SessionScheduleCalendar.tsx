@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Calendar as CalendarIcon, Clock, AlertTriangle, Plus } from 'lucide-react';
-import { Button, Card, CardContent } from '@/components/ui';
+import { Button, Card, CardContent, Alert, AlertDescription } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import type {
   CalendarSessionItem,
@@ -202,22 +202,14 @@ export function SessionScheduleCalendar({
         </div>
 
         {actionError && (
-          <div
-            role="alert"
-            className="rounded-xl border border-destructive/20 bg-destructive-soft p-3 text-xs text-destructive"
-            data-testid="scheduling-action-error"
-          >
-            {actionError}
-          </div>
+          <Alert variant="destructive" className="rounded-xl" data-testid="scheduling-action-error">
+            <AlertDescription role="alert">{actionError}</AlertDescription>
+          </Alert>
         )}
         {queryError && (
-          <div
-            role="alert"
-            className="rounded-xl border border-destructive/20 bg-destructive-soft p-3 text-xs text-destructive"
-            data-testid="scheduling-query-error"
-          >
-            {queryError}
-          </div>
+          <Alert variant="destructive" className="rounded-xl" data-testid="scheduling-query-error">
+            <AlertDescription role="alert">{queryError}</AlertDescription>
+          </Alert>
         )}
         {isLoading ? (
           <Card className="text-center py-12">

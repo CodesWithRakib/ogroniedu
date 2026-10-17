@@ -4,7 +4,7 @@ import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Users, UserCheck, ShieldAlert } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
-import { LoadingSpinner, Button } from '@/components/ui';
+import { LoadingSpinner, Button, Alert, AlertDescription } from '@/components/ui';
 import type { Locale } from '@/lib/i18n';
 import { useAppSelector } from '@/store';
 import { useAdminDashboard } from '../hooks/use-admin-dashboard';
@@ -71,13 +71,9 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
       ) : (
         <div className="space-y-6 py-6" data-testid="admin-users-page">
           {actions.actionError && (
-            <div
-              role="alert"
-              className="rounded-xl border border-destructive/30 bg-destructive-soft p-3 text-sm text-destructive-soft-foreground"
-              data-testid="admin-action-error"
-            >
-              {actions.actionError}
-            </div>
+            <Alert variant="destructive" data-testid="admin-action-error">
+              <AlertDescription role="alert">{actions.actionError}</AlertDescription>
+            </Alert>
           )}
 
           {actions.activeImpersonation && (

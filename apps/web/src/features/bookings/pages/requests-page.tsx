@@ -27,6 +27,8 @@ import {
   EmptyState,
   LoadingSpinner,
   Badge,
+  Alert,
+  AlertDescription,
 } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
@@ -221,13 +223,9 @@ export function RequestsPage({ locale }: { locale: Locale }) {
       </div>
 
       {req.actionError && (
-        <div
-          role="alert"
-          className="mb-4 rounded-xl border border-destructive/20 bg-destructive-soft p-3 text-xs text-destructive   "
-          data-testid="requests-action-error"
-        >
-          {req.actionError}
-        </div>
+        <Alert variant="destructive" className="mb-4" data-testid="requests-action-error">
+          <AlertDescription role="alert">{req.actionError}</AlertDescription>
+        </Alert>
       )}
 
       {req.isLoading ? (

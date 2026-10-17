@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { Send, ShieldAlert, ShieldCheck, Check, CheckCheck, GraduationCap } from 'lucide-react';
-import { Button, Card, CardContent, CardFooter, Badge } from '@/components/ui';
+import { Button, Card, CardContent, CardFooter, Badge, Input } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 
 export interface ChatMessageItem {
@@ -183,13 +183,13 @@ export function BookingChatView({
         {/* Message Input Box */}
         <CardFooter className="border-t border-border p-3 bg-muted/50 ">
           <form onSubmit={handleSend} className="w-full flex items-center gap-2">
-            <input
+            <Input
               type="text"
               value={inputText}
               onChange={(e) => setInputText(e.target.value)}
               placeholder={n.typeMessagePlaceholder}
               disabled={isSending}
-              className="flex-1 rounded-xl border border-border bg-white  px-3.5 py-2.5 text-sm text-foreground  placeholder:text-muted-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="flex-1 rounded-xl h-10 text-sm"
             />
             <Button
               type="submit"

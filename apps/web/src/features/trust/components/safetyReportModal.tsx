@@ -1,8 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ShieldAlert, AlertTriangle, X, Send, PhoneCall, CheckCircle2 } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { ShieldAlert, AlertTriangle, Send, PhoneCall, CheckCircle2 } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Alert, AlertDescription } from '@/components/ui/alert';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { useCreateSafetyReportMutation } from '@/store/services/trust-api';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { toast } from 'sonner';
@@ -87,24 +97,14 @@ export function SafetyReportModal({
   };
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4 animate-in fade-in"
-      role="dialog"
-      aria-modal="true"
-      data-testid="safety-report-modal"
-    >
-      <div className="w-full max-w-xl rounded-3xl border border-destructive/40 bg-surface-muted p-6 text-foreground shadow-sm relative">
-        <button
-          onClick={onClose}
-          className="absolute top-5 right-5 text-muted-foreground hover:text-foreground p-1 rounded-full hover:bg-surface-hover transition-colors cursor-pointer"
-          aria-label={isBn ? 'বন্ধ করুন' : 'Close'}
-        >
-          <X className="w-5 h-5" />
-        </button>
-
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
+        data-testid="safety-report-modal"
+        className="w-full max-w-xl rounded-2xl border border-destructive/40 bg-card p-6 text-foreground shadow-2xl max-h-[90vh] overflow-y-auto"
+      >
         {isSuccess ? (
           <div className="py-10 text-center space-y-4">
-            <CheckCircle2 className="w-16 h-16 text-success-soft-foreground mx-auto animate-bounce" />
+            <CheckCircle2 className="w-16 h-16 text-primary mx-auto animate-bounce" />
             <h3 className="text-xl font-bold text-foreground">
               {isBn ? 'রিপোর্ট সফলভাবে গৃহীত হয়েছে' : 'Report Filed Successfully'}
             </h3>
@@ -116,44 +116,46 @@ export function SafetyReportModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="flex items-center gap-3 border-b border-destructive/40 pb-4">
-              <div className="h-10 w-10 rounded-2xl bg-destructive/20 border border-destructive/40 text-destructive-soft-foreground flex items-center justify-center shrink-0">
-                <ShieldAlert className="w-5 h-5" />
+            <DialogHeader className="border-b border-destructive/30 pb-4 text-left">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-xl bg-destructive/15 border border-destructive/30 text-destructive flex items-center justify-center shrink-0">
+                  <ShieldAlert className="w-5 h-5" />
+                </div>
+                <div>
+                  <DialogTitle className="text-lg font-bold text-foreground">
+                    {isBn ? 'শিশু সুরক্ষা ও নিরাপত্তা সতর্কতা' : 'Child Safety & Protection Alert'}
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-destructive mt-0.5">
+                    {reportedUserName
+                      ? isBn
+                        ? `${reportedUserName}-এর বিরুদ্ধে জরুরি রিপোর্ট`
+                        : `Filing confidential incident report against ${reportedUserName}`
+                      : isBn
+                        ? 'অসদাচরণ বা শিশু সুরক্ষার যেকোনো হুমকি রিপোর্ট করুন'
+                        : 'Report misconduct, harassment or any child safety concern'}
+                  </DialogDescription>
+                </div>
               </div>
-              <div>
-                <h3 className="text-lg font-bold text-foreground">
-                  {isBn ? 'শিশু সুরক্ষা ও নিরাপত্তা সতর্কতা' : 'Child Safety & Protection Alert'}
-                </h3>
-                <p className="text-xs text-destructive-soft-foreground">
-                  {reportedUserName
-                    ? isBn
-                      ? `${reportedUserName}-এর বিরুদ্ধে জরুরি রিপোর্ট`
-                      : `Filing confidential incident report against ${reportedUserName}`
-                    : isBn
-                      ? 'অসদাচরণ বা শিশু সুরক্ষার যেকোনো হুমকি রিপোর্ট করুন'
-                      : 'Report misconduct, harassment or any child safety concern'}
-                </p>
-              </div>
-            </div>
+            </DialogHeader>
 
             {/* Emergency Hotline Notice */}
-            <div className="flex items-center justify-between p-3 rounded-2xl bg-destructive-soft border border-destructive/30 text-xs">
-              <div className="flex items-center gap-2 text-destructive-soft-foreground">
-                <PhoneCall className="w-4 h-4 text-destructive-soft-foreground shrink-0" />
-                <span>
+            <Alert variant="destructive" className="flex items-center justify-between p-3 rounded-xl border border-destructive/30 text-xs">
+              <div className="flex items-center gap-2">
+                <PhoneCall className="w-4 h-4 shrink-0" />
+                <AlertDescription className="text-xs">
                   {isBn
                     ? 'জরুরি বিপদ? জাতীয় শিশু হেল্পলাইন ১০৯৮ বা ৯৯৯ এ কল করুন।'
                     : 'Immediate danger? Call National Child Helpline 1098 or 999.'}
-                </span>
+                </AlertDescription>
               </div>
-              <span className="font-bold text-destructive-soft-foreground text-xs">২৪/৭ সক্রিয়</span>
-            </div>
+              <span className="font-bold text-xs shrink-0">২৪/৭ সক্রিয়</span>
+            </Alert>
 
             {/* Category Select */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-muted-foreground">
+              <Label htmlFor="safety-category-select" className="text-xs font-semibold text-foreground">
                 {isBn ? 'ঘটনার শ্রেণি / ক্যাটাগরি:' : 'Incident Category:'}
-              </label>
+              </Label>
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
@@ -191,9 +193,9 @@ export function SafetyReportModal({
 
             {/* Severity Radio */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-muted-foreground">
+              <Label className="text-xs font-semibold text-foreground">
                 {isBn ? 'বিপদের মাত্রা (Severity):' : 'Urgency Level:'}
-              </label>
+              </Label>
               <div className="grid grid-cols-4 gap-2">
                 {[
                   {
@@ -239,12 +241,12 @@ export function SafetyReportModal({
 
             {/* Description Textarea */}
             <div className="space-y-1.5">
-              <label className="text-xs font-semibold text-muted-foreground">
+              <Label htmlFor="safety-description-input" className="text-xs font-semibold text-foreground">
                 {isBn
                   ? 'ঘটনার বিস্তারিত বিবরণ (কমপক্ষে ১০ অক্ষর):'
                   : 'Detailed Incident Description:'}
-              </label>
-              <textarea
+              </Label>
+              <Textarea
                 value={description}
                 onChange={(e) => setDescription(e.target.value)}
                 rows={4}
@@ -253,16 +255,16 @@ export function SafetyReportModal({
                     ? 'কী ঘটেছে, কখন ঘটেছে এবং শিক্ষার্থীর উপর কী প্রভাব পড়েছে তা স্পষ্টভাবে লিখুন...'
                     : 'Describe what happened, timestamp, and any safety impact on the student...'
                 }
-                className="w-full rounded-2xl bg-card border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-destructive/40"
+                className="w-full rounded-xl bg-card border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-destructive/40"
                 id="safety-description-input"
               />
             </div>
 
             {errorMessage && (
-              <div className="flex items-center gap-2 p-3 rounded-xl bg-destructive-soft border border-destructive/40 text-xs text-destructive-soft-foreground">
-                <AlertTriangle className="w-4 h-4 shrink-0 text-destructive-soft-foreground" />
-                <span>{errorMessage}</span>
-              </div>
+              <Alert variant="destructive" className="flex items-center gap-2 p-3 rounded-xl text-xs">
+                <AlertTriangle className="w-4 h-4 shrink-0" />
+                <AlertDescription>{errorMessage}</AlertDescription>
+              </Alert>
             )}
 
             <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
@@ -271,15 +273,16 @@ export function SafetyReportModal({
                 variant="outline"
                 size="sm"
                 onClick={onClose}
-                className="text-xs border-border hover:bg-surface-hover"
+                className="text-xs rounded-xl"
               >
                 {isBn ? 'বাতিল' : 'Cancel'}
               </Button>
               <Button
                 type="submit"
+                variant="destructive"
                 size="sm"
                 disabled={isLoading}
-                className="gap-1.5 text-xs bg-destructive hover:bg-destructive/90 text-white font-bold px-4"
+                className="gap-1.5 text-xs font-bold px-4 rounded-xl"
                 id="btn-submit-safety-report"
               >
                 <Send className="w-3.5 h-3.5" />
@@ -296,7 +299,7 @@ export function SafetyReportModal({
             </div>
           </form>
         )}
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

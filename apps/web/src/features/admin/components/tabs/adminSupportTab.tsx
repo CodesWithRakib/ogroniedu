@@ -1,6 +1,15 @@
 import React from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Textarea } from '@/components/ui/textarea';
+import { Badge } from '@/components/ui/Badge';
+import {
+  Table,
+  TableHeader,
+  TableBody,
+  TableHead,
+  TableRow,
+  TableCell,
+} from '@/components/ui/table';
 import {
   Select,
   SelectContent,
@@ -10,12 +19,12 @@ import {
 } from '@/components/ui/select';
 import type { AdminSupportTicketItem } from '../../types/admin.types';
 
-const STATUS_TONE: Record<AdminSupportTicketItem['status'], string> = {
-  submitted: 'bg-info-soft text-info-soft-foreground border border-info/20',
-  in_review: 'bg-warning-soft text-warning-soft-foreground border border-warning/20',
-  resolved: 'bg-success-soft text-success-soft-foreground border border-success/20',
-  spam: 'bg-muted text-muted-foreground border border-border/60',
-};
+function supportStatusVariant(status: AdminSupportTicketItem['status']): 'info' | 'warning' | 'success' | 'outline' {
+  if (status === 'submitted') return 'info';
+  if (status === 'in_review') return 'warning';
+  if (status === 'resolved') return 'success';
+  return 'outline';
+}
 
 const NEXT_STATUS: readonly AdminSupportTicketItem['status'][] = [
   'submitted',
@@ -71,32 +80,32 @@ export function AdminSupportTab({
         </Select>
       </div>
       <div className="border border-border/70 rounded-2xl overflow-hidden bg-card shadow-xs">
-        <table className="w-full text-left text-xs" data-testid="support-table">
-          <thead className="bg-muted/40 text-muted-foreground border-b border-border uppercase tracking-wider text-[11px] font-semibold">
-            <tr>
-              <th className="px-4 py-3">Contact</th>
-              <th className="px-4 py-3">Category</th>
-              <th className="px-4 py-3">Message</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Resolution</th>
-              <th className="px-4 py-3 text-right">Triage</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-border/60 text-foreground">
+        <Table data-testid="support-table">
+          <TableHeader>
+            <TableRow className="bg-muted/40 text-muted-foreground uppercase tracking-wider text-[11px] font-semibold">
+              <TableHead className="px-4 py-3">Contact</TableHead>
+              <TableHead className="px-4 py-3">Category</TableHead>
+              <TableHead className="px-4 py-3">Message</TableHead>
+              <TableHead className="px-4 py-3">Status</TableHead>
+              <TableHead className="px-4 py-3">Resolution</TableHead>
+              <TableHead className="px-4 py-3 text-right">Triage</TableHead>
+            </TableRow>
+          </TableHeader>
+          <TableBody className="text-foreground text-xs">
             {visible.length === 0 ? (
-              <tr>
-                <td colSpan={6} className="text-center py-6 text-muted-foreground">
+              <TableRow>
+                <TableCell colSpan={6} className="text-center py-6 text-muted-foreground">
                   {tCommon('noData')}
-                </td>
-              </tr>
+                </TableCell>
+              </TableRow>
             ) : (
               visible.map((row) => (
-                <tr
+                <TableRow
                   key={row.id}
                   className="hover:bg-muted/30 align-top transition-colors"
                   data-testid={`support-row-${row.id}`}
                 >
-                  <td className="px-4 py-3">
+                  <TableCell className="px-4 py-3">
                     <p className="font-medium text-foreground">{row.name}</p>
                     <p className="text-[11px] text-muted-foreground">{row.email}</p>
                     {row.phoneE164 && (
@@ -105,21 +114,23 @@ export function AdminSupportTab({
                     <p className="text-[10px] text-muted-foreground font-mono mt-1">
                       {row.createdAt}
                     </p>
-                  </td>
-                  <td className="px-4 py-3 text-muted-foreground font-mono text-[11px]">
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-muted-foreground font-mono text-[11px]">
                     {row.category}
-                  </td>
-                  <td className="px-4 py-3 text-foreground/90 max-w-xs">
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-foreground/90 max-w-xs">
                     <p className="whitespace-pre-wrap break-words">{row.message}</p>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span
-                      className={`inline-flex px-2.5 py-0.5 rounded-full text-[10px] font-semibold ${STATUS_TONE[row.status]}`}
+                  </TableCell>
+                  <TableCell className="px-4 py-3">
+                    <Badge
+                      variant={supportStatusVariant(row.status)}
+                      size="sm"
+                      className="text-[10px] font-semibold"
                     >
                       {row.status}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 min-w-40">
+                    </Badge>
+                  </TableCell>
+                  <TableCell className="px-4 py-3 min-w-40">
                     <Textarea
                       rows={2}
                       value={notes[row.id] ?? row.resolutionNotes ?? ''}
@@ -128,8 +139,8 @@ export function AdminSupportTab({
                       className="rounded-xl text-[11px] min-h-[50px] resize-none"
                       data-testid={`support-notes-${row.id}`}
                     />
-                  </td>
-                  <td className="px-4 py-3 text-right">
+                  </TableCell>
+                  <TableCell className="px-4 py-3 text-right">
                     <Select
                       value={row.status}
                       onValueChange={(val) =>
@@ -157,12 +168,12 @@ export function AdminSupportTab({
                         ))}
                       </SelectContent>
                     </Select>
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               ))
             )}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </div>
     </div>
   );

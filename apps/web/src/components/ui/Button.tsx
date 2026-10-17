@@ -20,6 +20,8 @@ export const buttonVariants = cva(
         ghost: 'bg-transparent text-foreground hover:bg-surface-hover hover:text-foreground',
         destructive:
           'bg-destructive text-white hover:bg-destructive/90 shadow-xs active:opacity-95',
+        warning:
+          'bg-warning text-white hover:bg-warning/90 shadow-xs active:opacity-95',
         link: 'text-interactive underline-offset-4 hover:underline p-0 h-auto font-medium',
       },
       size: {

@@ -10,6 +10,9 @@ import {
   CardTitle,
   CardContent,
   Input,
+  Label,
+  Alert,
+  AlertDescription,
   LoadingSpinner,
 } from '@/components/ui';
 import { type Locale } from '@/lib/i18n';
@@ -73,9 +76,9 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
             : 'Sign out on every other device and browser by revoking all active sessions.'}
         </p>
         {error && (
-          <p role="alert" className="text-xs text-destructive" data-testid="revoke-all-error">
-            {error}
-          </p>
+          <Alert variant="destructive" data-testid="revoke-all-error">
+            <AlertDescription role="alert">{error}</AlertDescription>
+          </Alert>
         )}
         {!confirming ? (
           <Button
@@ -130,9 +133,9 @@ export function ProfilePage({ locale }: { locale: Locale }) {
             <CardContent>
               <form onSubmit={profile.handleSave} className="space-y-4" data-testid="profile-form">
                 {profile.formError && (
-                  <p role="alert" className="text-sm text-destructive">
-                    {profile.formError}
-                  </p>
+                  <Alert variant="destructive">
+                    <AlertDescription role="alert">{profile.formError}</AlertDescription>
+                  </Alert>
                 )}
                 {profile.saved && (
                   <p role="status" className="text-sm text-primary">
@@ -140,9 +143,9 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                   </p>
                 )}
                 <div className="space-y-1.5">
-                  <label htmlFor="profile-name" className="text-sm font-medium">
+                  <Label htmlFor="profile-name" className="text-sm font-medium">
                     {locale === 'bn' ? 'পুরো নাম' : 'Full name'}
-                  </label>
+                  </Label>
                   <Input
                     id="profile-name"
                     value={profile.displayName}
