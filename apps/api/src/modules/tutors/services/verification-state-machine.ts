@@ -80,19 +80,26 @@ export function resolveDecisionTargetStatus(
 export function resolveNextAction(
   status: VerificationLevelStatus,
   evidence: readonly VerificationEvidenceItem[],
-  complete: boolean,
+  submitReady: boolean,
 ): VerificationNextAction {
   if (status === 'approved') return 'none';
   if (status === 'submitted' || status === 'under_review') return 'await_review';
   const hasRejected = evidence.some((item) => item.reviewStatus === 'rejected');
   if (hasRejected) return 'fix_rejected_documents';
-  if (!complete) return 'upload_documents';
+  if (!submitReady) return 'upload_documents';
   return 'submit_level';
 }
 
 /**
- * Outstanding mandatory evidence for a level, computed from approved documents
- * only: a pending or rejected upload never satisfies a requirement.
+ * Mandatory-evidence report for a level.
+ *
+ * Two distinct gates are reported:
+ *  - `submitReady` — every mandatory type has a *live* upload (pending or
+ *    approved). Submission only requires the evidence to exist, otherwise a
+ *    tutor could never submit while reviewers are the only ones able to approve
+ *    documents (circular wait).
+ *  - `complete` — every mandatory type has an *approved* document. This is the
+ *    gate for approving the level and for approval-based badges.
  */
 export function evaluateLevelRequirements(
   level: TutorVerificationLevel,
@@ -100,9 +107,12 @@ export function evaluateLevelRequirements(
   evidence: readonly VerificationEvidenceItem[],
 ): VerificationLevelRequirements {
   const policy = TUTOR_VERIFICATION_POLICY[level];
+  const isLive = (item: VerificationEvidenceItem) =>
+    item.reviewStatus === 'pending' || item.reviewStatus === 'approved';
   const approvedTypes = new Set(
     evidence.filter((item) => item.reviewStatus === 'approved').map((item) => item.documentType),
   );
+  const uploadedTypes = new Set(evidence.filter(isLive).map((item) => item.documentType));
   const missingRequiredDocumentTypes = policy.requiredDocumentTypes.filter(
     (type) => !approvedTypes.has(type),
   );
@@ -110,6 +120,15 @@ export function evaluateLevelRequirements(
     policy.anyOfDocumentTypes.length === 0 ||
     policy.anyOfDocumentTypes.some((type) => approvedTypes.has(type));
   const complete = missingRequiredDocumentTypes.length === 0 && anyOfSatisfied;
+
+  const missingUploadDocumentTypes = policy.requiredDocumentTypes.filter(
+    (type) => !uploadedTypes.has(type),
+  );
+  const anyOfUploaded =
+    policy.anyOfDocumentTypes.length === 0 ||
+    policy.anyOfDocumentTypes.some((type) => uploadedTypes.has(type));
+  const submitReady = missingUploadDocumentTypes.length === 0 && anyOfUploaded;
+
   return {
     level,
     requiredDocumentTypes: policy.requiredDocumentTypes,
@@ -117,7 +136,9 @@ export function evaluateLevelRequirements(
     missingRequiredDocumentTypes,
     anyOfSatisfied,
     complete,
-    nextAction: resolveNextAction(status, evidence, complete),
+    missingUploadDocumentTypes,
+    submitReady,
+    nextAction: resolveNextAction(status, evidence, submitReady),
   };
 }
 

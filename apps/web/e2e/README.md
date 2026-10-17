@@ -30,8 +30,14 @@ password `OgroniDev#2026`:
 
 `admin.console.spec.ts` additionally needs `E2E_ADMIN_EMAIL` /
 `E2E_ADMIN_PASSWORD`; it registers disposable student/tutor accounts per run
-via the real API for setup (all assertions stay browser-visible) and drives
-the verification queue plus suspend/reactivate entirely through the UI.
+via the real API for setup (all assertions stay browser-visible) and drives the
+three-level verification dossier (upload NID sides → submit the identity level →
+approve both documents → approve the level) plus suspend/reactivate entirely
+through the UI.
+
+`tutor.verification.spec.ts` uses `E2E_TUTOR_EMAIL` / `E2E_TUTOR_PASSWORD` and
+asserts the tutor verification page shows exactly the per-level statuses the API
+reports, including which levels still expose evidence-upload actions.
 
 Smoke (`smoke.public.spec.ts`) and guard (`auth.guards.spec.ts`) specs need
 no credentials. The contact-form smoke proves backend wiring: it passes on

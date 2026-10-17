@@ -91,8 +91,23 @@ describe('Verification state machine invariants', () => {
     );
   });
 
-  it('never counts pending or rejected evidence towards a requirement', () => {
-    const pendingOnly = evaluateLevelRequirements(
+  it('separates the upload gate from the approval gate', () => {
+    const pendingUploads = evaluateLevelRequirements('identity', 'draft', [
+      { documentType: 'nid_front', reviewStatus: 'pending' },
+      { documentType: 'nid_back', reviewStatus: 'pending' },
+    ]);
+    // Uploaded evidence satisfies submission but never the approval gate.
+    expect(pendingUploads.submitReady).toBe(true);
+    expect(pendingUploads.complete).toBe(false);
+    expect(pendingUploads.missingRequiredDocumentTypes).toEqual(['nid_front', 'nid_back']);
+    expect(pendingUploads.nextAction).toBe('submit_level');
+
+    const nothingUploaded = evaluateLevelRequirements('identity', 'draft', []);
+    expect(nothingUploaded.submitReady).toBe(false);
+    expect(nothingUploaded.missingUploadDocumentTypes).toEqual(['nid_front', 'nid_back']);
+    expect(nothingUploaded.nextAction).toBe('upload_documents');
+
+    const rejectedBack = evaluateLevelRequirements(
       'identity',
       'draft',
       [documentRow('nid_front', 'pending'), documentRow('nid_back', 'rejected')].map((doc) => ({
@@ -100,15 +115,17 @@ describe('Verification state machine invariants', () => {
         reviewStatus: doc.reviewStatus as never,
       })),
     );
-    expect(pendingOnly.complete).toBe(false);
-    expect(pendingOnly.missingRequiredDocumentTypes).toEqual(['nid_front', 'nid_back']);
-    expect(pendingOnly.nextAction).toBe('fix_rejected_documents');
+    expect(rejectedBack.complete).toBe(false);
+    expect(rejectedBack.submitReady).toBe(false);
+    expect(rejectedBack.missingUploadDocumentTypes).toEqual(['nid_back']);
+    expect(rejectedBack.nextAction).toBe('fix_rejected_documents');
 
     const complete = evaluateLevelRequirements('identity', 'draft', [
       { documentType: 'nid_front', reviewStatus: 'approved' },
       { documentType: 'nid_back', reviewStatus: 'approved' },
     ]);
     expect(complete.complete).toBe(true);
+    expect(complete.submitReady).toBe(true);
     expect(complete.nextAction).toBe('submit_level');
   });
 
@@ -242,13 +259,22 @@ describe('TutorDossierService (applicant workflow)', () => {
     build([levelRow({ level: 'identity' })]);
   });
 
-  it('rejects submission while mandatory evidence is unapproved', async () => {
-    const documents = [documentRow('nid_front', 'approved'), documentRow('nid_back', 'pending')];
-    build([levelRow({ level: 'identity' })], documents);
+  it('rejects submission while mandatory evidence has not been uploaded', async () => {
+    build([levelRow({ level: 'identity' })], [documentRow('nid_front', 'approved')]);
     await expect(
       service.submitLevel(tutorId, 'identity', 'v1.0-bd-tutor-verification'),
     ).rejects.toThrow(BadRequestException);
     expect(levelRepo.save).not.toHaveBeenCalled();
+  });
+
+  it('accepts a submission whose uploads are still awaiting review', async () => {
+    build(
+      [levelRow({ level: 'identity' })],
+      [documentRow('nid_front', 'pending'), documentRow('nid_back', 'pending')],
+    );
+    const submitted = await service.submitLevel(tutorId, 'identity', 'v1.0-bd-tutor-verification');
+    expect(submitted.status).toBe('submitted');
+    expect(submitted.submissionCount).toBe(1);
   });
 
   it('submits a complete level and recomputes the derived profile status', async () => {

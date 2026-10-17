@@ -127,7 +127,28 @@ export function nextActionLabel(action: VerificationNextAction, locale: Locale):
   return labels[action]?.[locale] ?? action;
 }
 
-/** Human-readable outstanding evidence for a level. */
+/**
+ * Evidence that still has to be *uploaded* before the level can be submitted.
+ * Pending (not yet reviewed) uploads do not count as missing here — a reviewer
+ * approves evidence after the tutor submits.
+ */
+export function missingUploadLabels(
+  requirements: VerificationLevelRequirementsView,
+  locale: Locale,
+): string[] {
+  if (requirements.submitReady) return [];
+  const missing = requirements.missingUploadDocumentTypes.map((type) =>
+    documentTypeLabel(type, locale),
+  );
+  if (missing.length === 0) {
+    missing.push(
+      requirements.anyOfDocumentTypes.map((type) => documentTypeLabel(type, locale)).join(' / '),
+    );
+  }
+  return missing;
+}
+
+/** Human-readable evidence still awaiting reviewer approval. */
 export function missingDocumentLabels(
   requirements: VerificationLevelRequirementsView,
   locale: Locale,

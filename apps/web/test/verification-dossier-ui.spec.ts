@@ -17,6 +17,7 @@ import {
   levelStatusLabel,
   levelStatusTone,
   missingDocumentLabels,
+  missingUploadLabels,
   nextActionLabel,
 } from '../src/features/tutors/utils/verification-ui';
 import type { VerificationLevelRequirementsView } from '../src/store/services/tutors-api';
@@ -31,6 +32,8 @@ function requirements(
     missingRequiredDocumentTypes: [],
     anyOfSatisfied: true,
     complete: true,
+    missingUploadDocumentTypes: [],
+    submitReady: true,
     nextAction: 'submit_level',
     ...overrides,
   };
@@ -65,7 +68,9 @@ function levelRecord(overrides: Partial<VerificationLevelView> = {}): Verificati
     version: 1,
     requirements: requirements({
       complete: false,
+      submitReady: false,
       missingRequiredDocumentTypes: ['nid_back'],
+      missingUploadDocumentTypes: ['nid_back'],
       nextAction: 'upload_documents',
     }),
     documents: [
@@ -95,8 +100,30 @@ describe('Tutor verification level card', () => {
     );
     expect(html).toContain('পরিচয় যাচাইকরণ');
     expect(html).toContain('জাতীয় পরিচয়পত্র — পেছনের অংশ');
+    expect(html).toContain('আপলোড করা প্রয়োজন');
     expect(html).toContain('upload-form-identity');
     expect(html).toMatch(/<button disabled=""[^>]*data-testid="submit-level-identity"/);
+  });
+
+  it('allows submission while uploaded evidence still awaits reviewer approval', () => {
+    const html = renderWithProviders(
+      React.createElement(VerificationLevelCard, {
+        record: levelRecord({
+          requirements: requirements({
+            complete: false,
+            submitReady: true,
+            missingRequiredDocumentTypes: ['nid_front', 'nid_back'],
+            missingUploadDocumentTypes: [],
+            nextAction: 'submit_level',
+          }),
+          documents: [{ ...levelRecord().documents[0], id: 'doc-2', reviewStatus: 'pending' }],
+        }),
+        locale: 'en',
+        onChanged: () => {},
+      }),
+    );
+    expect(html).toContain('Awaiting reviewer approval');
+    expect(html).not.toMatch(/<button disabled=""[^>]*data-testid="submit-level-identity"/);
   });
 
   it('hides applicant actions while the level is with the reviewer', () => {
@@ -203,6 +230,31 @@ describe('Verification dossier UI rules', () => {
     expect(documentTypeLabel('nid_front', 'bn')).toContain('জাতীয়');
     expect(nextActionLabel('await_review', 'en')).toBe('Awaiting reviewer decision');
     expect(nextActionLabel('upload_documents', 'bn')).toContain('আপলোড');
+  });
+
+  it('lists missing uploads separately from evidence awaiting approval', () => {
+    expect(missingUploadLabels(requirements(), 'en')).toEqual([]);
+    expect(
+      missingUploadLabels(
+        requirements({
+          submitReady: false,
+          missingUploadDocumentTypes: ['nid_back'],
+        }),
+        'en',
+      ),
+    ).toEqual(['National ID — Back']);
+    expect(
+      missingUploadLabels(
+        requirements({
+          level: 'educational',
+          requiredDocumentTypes: [],
+          anyOfDocumentTypes: ['transcript'],
+          submitReady: false,
+          missingUploadDocumentTypes: [],
+        }),
+        'en',
+      ),
+    ).toEqual(['Academic Transcript']);
   });
 
   it('turns outstanding requirements into human-readable labels', () => {

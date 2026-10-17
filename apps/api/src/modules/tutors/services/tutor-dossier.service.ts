@@ -305,13 +305,16 @@ export class TutorDossierService {
         reviewStatus: document.reviewStatus,
       })),
     );
-    if (!requirements.complete) {
-      const missing = [...requirements.missingRequiredDocumentTypes];
-      if (!requirements.anyOfSatisfied) {
+    // Submission only needs the evidence to be uploaded; a reviewer approving
+    // that evidence is enforced when the level is decided, which keeps the
+    // tutor → reviewer handoff from deadlocking.
+    if (!requirements.submitReady) {
+      const missing = [...requirements.missingUploadDocumentTypes];
+      if (missing.length === 0) {
         missing.push(...requirements.anyOfDocumentTypes);
       }
       throw new BadRequestException(
-        `The ${level} level is incomplete. Approval is still required for: ${missing.join(', ')}.`,
+        `The ${level} level is incomplete. Upload the missing evidence first: ${missing.join(', ')}.`,
       );
     }
     const fromStatus = levelRecord.status;

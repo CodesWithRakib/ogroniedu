@@ -58,14 +58,32 @@ test.describe('admin console journey', () => {
     return res as { user: { id: string }; accessToken: string };
   }
 
+  /** 1x1 PNG used as private dossier evidence. */
+  const EVIDENCE_PNG_BASE64 =
+    'iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAADUlEQVR42mP8z8BQDwAEhQGAhKmMIQAAAABJRU5ErkJggg==';
+
+  async function uploadEvidence(
+    request: APIRequestContext,
+    token: string,
+    filename: string,
+  ): Promise<string> {
+    const res = (await api(request, 'POST', '/api/v1/files/upload-evidence', token, {
+      purpose: 'tutor_verification_evidence',
+      originalFilename: filename,
+      mediaType: 'image/png',
+      sizeBytes: Buffer.from(EVIDENCE_PNG_BASE64, 'base64').length,
+      contentBase64: EVIDENCE_PNG_BASE64,
+    })) as { file: { id: string } };
+    return res.file.id;
+  }
+
   test.beforeAll(async ({ request }) => {
     // Disposable student for the suspend/reactivate loop.
     await register(request, `E2E Disposable ${stamp}`, studentEmail, 'student');
-    // Disposable tutor driven into the verification queue.
+    // Disposable tutor driven into the identity verification queue.
     const tutor = await register(request, tutorName, tutorEmail, 'tutor');
     tutorId = tutor.user.id;
     const th = tutor.accessToken;
-    const _headers = { Authorization: `Bearer ${th}` };
     const subjects = (await api(request, 'GET', '/api/v1/taxonomy/subjects', th)).data;
     const levels = (await api(request, 'GET', '/api/v1/taxonomy/education-levels', th)).data;
     await api(request, 'PUT', '/api/v1/tutors/me/profile', th, {
@@ -78,11 +96,16 @@ test.describe('admin console journey', () => {
       educationLevelId: levels[0].id,
       rateMinor: 80000,
     });
-    await api(request, 'POST', '/api/v1/tutors/me/qualifications', th, {
-      qualificationType: 'nid',
-      title: 'E2E National ID',
-    });
-    await api(request, 'POST', '/api/v1/tutors/me/submit-verification', th, {});
+    // Identity level needs both NID sides uploaded, then submitted for review.
+    for (const documentType of ['nid_front', 'nid_back'] as const) {
+      const fileAssetId = await uploadEvidence(request, th, `${documentType}.png`);
+      await api(request, 'POST', '/api/v1/tutors/me/verification/documents', th, {
+        level: 'identity',
+        documentType,
+        fileAssetId,
+      });
+    }
+    await api(request, 'POST', '/api/v1/tutors/me/verification/levels/identity/submit', th, {});
   });
 
   async function loginAsAdmin(page: Page) {
@@ -94,21 +117,49 @@ test.describe('admin console journey', () => {
     await expect(page.getByTestId('admin-dashboard-view')).toBeVisible({ timeout: 20_000 });
   }
 
-  test('admin approves the queued tutor from the verification tab', async ({ page }) => {
+  test('admin reviews the dossier evidence and approves the identity level', async ({ page }) => {
     await loginAsAdmin(page);
     await page.getByTestId('tab-verification').click();
     await expect(page.getByTestId('verification-tab-content')).toBeVisible();
     await page.getByTestId('verification-search-input').fill(tutorName);
-    const row = page.getByTestId(`verification-row-${tutorId}`);
+
+    // One queue row per level awaiting a decision.
+    const row = page.getByTestId(`verification-row-${tutorId}-identity`);
     await expect(row).toBeVisible({ timeout: 20_000 });
-    await page.getByTestId(`review-tutor-btn-${tutorId}`).click();
+    await page.getByTestId(`review-tutor-btn-${tutorId}-identity`).click();
+
     const modal = page.getByTestId('verification-dossier-modal');
     await expect(modal).toBeVisible();
+
+    // Approve both uploaded NID sides through the reviewer-scoped documents API.
+    const identityLevel = modal.getByTestId('dossier-level-identity');
+    const documentRows = identityLevel.locator('[data-testid^="dossier-document-"]');
+    await expect(documentRows).toHaveCount(2);
+    const approveButtons = identityLevel.locator('[data-testid^="approve-doc-btn-"]');
+    await expect(approveButtons).toHaveCount(2);
+    const approvedBadges = identityLevel
+      .locator('[data-testid^="doc-status-"]')
+      .filter({ hasText: /অনুমোদিত|Approved/ });
+    for (let index = 0; index < 2; index += 1) {
+      await approveButtons.nth(index).click();
+      await expect(approvedBadges).toHaveCount(index + 1, { timeout: 20_000 });
+    }
+
+    // The level can only be approved once every mandatory document is approved.
+    await modal.getByTestId('select-level-identity').click();
     await modal.getByTestId('verification-decision-select').selectOption('approved');
     await modal.getByTestId('verification-reason-input').fill('e2e-docs-verified');
+    await modal.getByTestId('verification-feedback-input').fill('Identity documents verified.');
     await modal.getByTestId('verification-confirm-btn').click();
-    await expect(modal).toBeHidden({ timeout: 20_000 });
-    // Approved tutors leave the pending queue.
+
+    // The decided level shows its new status in the open dossier...
+    await expect(modal.getByTestId('dossier-level-status-identity')).toHaveText(
+      /অনুমোদিত|Approved/,
+      { timeout: 20_000 },
+    );
+    // ...and the case leaves the submitted queue.
+    await modal.getByRole('button', { name: /বন্ধ করুন|Close/ }).click();
+    await expect(modal).toBeHidden();
     await page.getByTestId('verification-search-input').fill(tutorName);
     await expect(row).toBeHidden({ timeout: 20_000 });
   });

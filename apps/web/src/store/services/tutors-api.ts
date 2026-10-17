@@ -146,9 +146,13 @@ export interface VerificationLevelRequirementsView {
   level: TutorVerificationLevel;
   requiredDocumentTypes: VerificationDocumentType[];
   anyOfDocumentTypes: VerificationDocumentType[];
+  /** Required types with no approved document (blocks level approval). */
   missingRequiredDocumentTypes: VerificationDocumentType[];
   anyOfSatisfied: boolean;
   complete: boolean;
+  /** Required types with no upload at all (blocks submission). */
+  missingUploadDocumentTypes: VerificationDocumentType[];
+  submitReady: boolean;
   nextAction: VerificationNextAction;
 }
 

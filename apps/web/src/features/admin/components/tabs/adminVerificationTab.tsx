@@ -508,7 +508,11 @@ export function AdminVerificationTab() {
                           <span className="text-sm font-semibold">
                             {levelLabel(lvl.level, locale)}
                           </span>
-                          <Badge variant={levelStatusTone(lvl.status)} className="text-[10px]">
+                          <Badge
+                            variant={levelStatusTone(lvl.status)}
+                            className="text-[10px]"
+                            data-testid={`dossier-level-status-${lvl.level}`}
+                          >
                             {levelStatusLabel(lvl.status, locale)}
                           </Badge>
                         </div>
@@ -577,6 +581,7 @@ export function AdminVerificationTab() {
                                         : 'warning'
                                   }
                                   className="text-[10px]"
+                                  data-testid={`doc-status-${document.id}`}
                                 >
                                   {docStatusLabel(document.reviewStatus, isBn)}
                                 </Badge>

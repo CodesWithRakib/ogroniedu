@@ -8,6 +8,20 @@ Three independently reviewable levels replace a single verification flag:
 | `educational`   | at least one approved `academic_certificate` **or** `transcript`                              | none (never auto-expires)      |
 | `institutional` | at least one approved `institution_letter`, `employment_letter` or `professional_certificate` | none (never auto-expires)      |
 
+## Submission vs approval (two distinct gates)
+
+- **Submission** (`submitReady`) needs each mandatory evidence type to have a
+  _live_ upload (pending or approved). Requiring reviewer approval before a
+  tutor may submit would deadlock the flow — reviewers are the only ones who can
+  approve documents, and unsubmitted levels are what the queue is built from.
+- **Approval** (`complete`) needs every mandatory evidence type to have an
+  _approved_ document. A level can never be approved on pending or rejected
+  evidence, so uploading a document still never approves a level by itself.
+
+The reviewer queue therefore shows submitted levels together with their pending
+`documents` counts; approving the documents is the first step of a review, and
+the level decision is the second.
+
 `tutor_profiles.verification_status` is **derived** from the three level rows by
 `TutorVerificationStatusService.recomputeDerivedStatus` — it is never written by
 hand. Only that service recomputes it, so applicant submissions, reviewer
@@ -111,9 +125,9 @@ admins.
 
 ## Runbook checkpoints
 
-| Symptom                             | Check                                                                              |
-| ----------------------------------- | ---------------------------------------------------------------------------------- |
-| Tutor still visible after expiry    | sweep ran today? `tutor_profiles.verification_expires_at` vs `publication_status`  |
-| Tutor cannot submit despite uploads | evidence `review_status` must be `approved`, not merely `pending`                  |
-| Reviewer sees `409` on decision     | dossier changed since load — reload and re-apply with the fresh `version`          |
-| No reminder emails                  | delivery failures leave `reminder_stage` unchanged; the next run retries the stage |
+| Symptom                          | Check                                                                              |
+| -------------------------------- | ---------------------------------------------------------------------------------- |
+| Tutor still visible after expiry | sweep ran today? `tutor_profiles.verification_expires_at` vs `publication_status`  |     | Tutor cannot submit despite uploads | every mandatory type must have a live upload (pending or approved) — check `missingUploadDocumentTypes` |
+| Reviewer cannot approve a level  | approval needs _approved_ evidence (`complete`); pending documents block it        |
+| Reviewer sees `409` on decision  | dossier changed since load — reload and re-apply with the fresh `version`          |
+| No reminder emails               | delivery failures leave `reminder_stage` unchanged; the next run retries the stage |

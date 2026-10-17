@@ -42,6 +42,7 @@ import {
   levelStatusLabel,
   levelStatusTone,
   missingDocumentLabels,
+  missingUploadLabels,
   nextActionLabel,
 } from '../utils/verification-ui';
 
@@ -81,7 +82,8 @@ export function VerificationLevelCard({
 
   const editable = isEvidenceEditable(record.status);
   const submittable = canSubmitLevel(record.status, record.submissionCount ?? 0);
-  const missing = missingDocumentLabels(record.requirements, locale);
+  const missingUploads = missingUploadLabels(record.requirements, locale);
+  const awaitingApproval = missingDocumentLabels(record.requirements, locale);
   const busy = uploading || attaching || deleting || submitting || reopening;
 
   async function handleUpload(e: React.FormEvent) {
@@ -242,13 +244,26 @@ export function VerificationLevelCard({
           </div>
         )}
 
-        {missing.length > 0 && (
-          <div className="text-[11px] text-muted-foreground space-y-1">
-            <span className="font-semibold text-foreground">
-              {isBn ? 'অনুমোদিত প্রয়োজনীয় নথি বাকি:' : 'Outstanding approved evidence:'}
+        {missingUploads.length > 0 && (
+          <div className="text-[11px] text-amber-700 dark:text-amber-300 space-y-1">
+            <span className="font-semibold">
+              {isBn ? 'আপলোড করা প্রয়োজন:' : 'Upload required:'}
             </span>
             <ul className="list-disc list-inside">
-              {missing.map((label) => (
+              {missingUploads.map((label) => (
+                <li key={label}>{label}</li>
+              ))}
+            </ul>
+          </div>
+        )}
+
+        {missingUploads.length === 0 && awaitingApproval.length > 0 && (
+          <div className="text-[11px] text-muted-foreground space-y-1">
+            <span className="font-semibold text-foreground">
+              {isBn ? 'পর্যালোচকের অনুমোদনের অপেক্ষায়:' : 'Awaiting reviewer approval:'}
+            </span>
+            <ul className="list-disc list-inside">
+              {awaitingApproval.map((label) => (
                 <li key={label}>{label}</li>
               ))}
             </ul>
@@ -392,7 +407,7 @@ export function VerificationLevelCard({
               <Button
                 type="button"
                 size="sm"
-                disabled={busy || !record.requirements.complete}
+                disabled={busy || !record.requirements.submitReady}
                 onClick={handleSubmit}
                 data-testid={`submit-level-${record.level}`}
               >

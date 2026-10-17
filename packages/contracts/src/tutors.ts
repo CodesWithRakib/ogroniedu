@@ -402,9 +402,20 @@ export interface VerificationLevelRequirements {
   level: TutorVerificationLevel;
   requiredDocumentTypes: readonly VerificationDocumentType[];
   anyOfDocumentTypes: readonly VerificationDocumentType[];
+  /** Required types with no approved document (blocks level approval). */
   missingRequiredDocumentTypes: readonly VerificationDocumentType[];
   anyOfSatisfied: boolean;
+  /** Every mandatory evidence type has an *approved* document. */
   complete: boolean;
+  /**
+   * Required types with no live upload at all (pending or approved). Submission
+   * only needs the evidence to exist — a reviewer still has to approve it before
+   * the level can be approved, so a tutor is never blocked waiting for review to
+   * start. Blocks level submission only.
+   */
+  missingUploadDocumentTypes: readonly VerificationDocumentType[];
+  /** A live (pending or approved) upload satisfies every `anyOf` requirement. */
+  submitReady: boolean;
   /** Tutor-visible next action key, e.g. `upload_documents` | `resubmit` | `await_review`. */
   nextAction: VerificationNextAction;
 }
