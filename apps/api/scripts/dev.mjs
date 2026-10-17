@@ -11,7 +11,9 @@
  * reaches Nest's DI and pipes.
  *
  * Lifecycle: `tsc -p tsconfig.build.json --watch` (incremental rebuild) +
- * `node --watch dist/main.js` (restart on emit). Ctrl+C stops both.
+ * `node --watch --watch-path=dist dist/main.js` (restart when the compiled
+ * output changes; watching the whole module graph let node_modules churn
+ * from other tooling restart the API mid-request). Ctrl+C stops both.
  */
 import { spawn, spawnSync } from 'node:child_process';
 import { existsSync } from 'node:fs';
@@ -109,4 +111,8 @@ start('tsc --watch (incremental build)', [
   '--watch',
   '--preserveWatchOutput',
 ]);
-start('api server (node --watch dist/main.js)', ['--watch', 'dist/main.js']);
+start('api server (node --watch --watch-path=dist dist/main.js)', [
+  '--watch',
+  '--watch-path=dist',
+  'dist/main.js',
+]);
