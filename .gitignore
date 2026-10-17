@@ -31,6 +31,10 @@ yarn-error.log*
 coverage/
 .nyc_output/
 
+# Playwright E2E artifacts
+apps/web/test-results/
+apps/web/playwright-report/
+
 # IDE & Editor artifacts
 .idea/
 .vscode/*

@@ -39,6 +39,11 @@ through the UI.
 asserts the tutor verification page shows exactly the per-level statuses the API
 reports, including which levels still expose evidence-upload actions.
 
+Credentialed specs log in through the shared helpers in `e2e/support/login.ts`.
+Logins are rate-limited by the API (5 attempts/min per IP + account) and the
+seeded accounts are shared across parallel specs, so the helpers wait out a
+reported 429 window and retry instead of failing the journey.
+
 Smoke (`smoke.public.spec.ts`) and guard (`auth.guards.spec.ts`) specs need
 no credentials. The contact-form smoke proves backend wiring: it passes on
 either a ticket reference (API up) or a visible submit error (API down).
