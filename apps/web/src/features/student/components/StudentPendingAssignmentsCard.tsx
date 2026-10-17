@@ -143,12 +143,12 @@ export function StudentPendingAssignmentsCard({
                             {asgn.title}
                           </h4>
                           <span
-                            className={`px-2 py-0.5 text-[10px] font-semibold rounded-full border ${
+                            className={`px-2 py-0.5 text-[10px] font-bold rounded-full border ${
                               isReviewed
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30'
+                                ? 'bg-success-soft text-success border-success/30'
                                 : isSubmitted
-                                  ? 'bg-info-soft text-info-soft-foreground border-info/30'
-                                  : 'bg-warning-soft text-warning-soft-foreground border-warning/30'
+                                  ? 'bg-info-soft text-info border-info/30'
+                                  : 'bg-warning-soft text-warning border-warning/30'
                             }`}
                           >
                             {isReviewed
@@ -178,7 +178,7 @@ export function StudentPendingAssignmentsCard({
                           </span>
                           {asgn.submission?.score !== null &&
                             asgn.submission?.score !== undefined && (
-                              <span className="font-bold text-success-soft-foreground flex items-center gap-0.5">
+                              <span className="font-bold text-success flex items-center gap-0.5">
                                 <Award className="h-3.5 w-3.5" />
                                 <span>
                                   {formatLocalizedNumber(asgn.submission.score, locale)} /{' '}

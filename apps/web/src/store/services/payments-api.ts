@@ -23,8 +23,39 @@ export interface PaymentReceipt {
   paidAt: string;
 }
 
+export interface PaymentOrderRecord {
+  id: string;
+  bookingId: string;
+  payerUserId: string;
+  amountMinor: number | string;
+  currency: string;
+  status: string;
+  provider: string;
+  createdAt: string;
+  updatedAt: string;
+  booking?: {
+    id: string;
+    status: string;
+    pricePerSessionMinor?: number | string;
+    subject?: { nameEn?: string; nameBn?: string };
+    tutorProfile?: { user?: { displayName?: string } };
+    studentUser?: { displayName?: string };
+    requesterUser?: { displayName?: string };
+  };
+  transactions?: Array<{
+    id: string;
+    providerTransactionId?: string;
+    verifiedAt?: string;
+    status: string;
+  }>;
+}
+
 export const paymentsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
+    getMyPaymentOrders: builder.query<ApiSuccessEnvelope<PaymentOrderRecord[]>, void>({
+      query: () => '/api/v1/payments/orders',
+      providesTags: [{ type: 'PaymentOrder', id: 'LIST' }],
+    }),
     createPaymentOrder: builder.mutation<
       ApiSuccessEnvelope<unknown>,
       { body: CreatePaymentOrderRequest; idempotencyKey: string }
@@ -92,6 +123,8 @@ export const paymentsApi = baseApi.injectEndpoints({
 });
 
 export const {
+  useGetMyPaymentOrdersQuery,
+  useLazyGetMyPaymentOrdersQuery,
   useCreatePaymentOrderMutation,
   useSandboxConfirmPaymentMutation,
   useGetPaymentReceiptQuery,

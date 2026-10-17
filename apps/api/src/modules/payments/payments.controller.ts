@@ -120,6 +120,16 @@ export class PaymentsController {
     };
   }
 
+  @Get('orders')
+  @UseGuards(AuthGuard)
+  async getMyPaymentOrders(@CurrentUser() user: AuthenticatedUser) {
+    const orders = await this.paymentsService.getMyPaymentOrders(user);
+    return {
+      success: true,
+      data: orders,
+    };
+  }
+
   @Get('orders/:orderId/receipt')
   @UseGuards(AuthGuard)
   async getPaymentReceipt(

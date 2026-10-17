@@ -52,12 +52,12 @@ export function CheckoutLedger({ order, locale }: CheckoutLedgerProps) {
             </div>
           </div>
 
-          <div className="border border-primary/40 bg-primary/10 rounded-lg p-3 text-xs text-primary-soft-foreground  space-y-1">
-            <div className="font-semibold flex items-center gap-1.5">
-              <CheckCircle2 className="w-4 h-4 text-success-soft-foreground" />
+          <div className="border border-primary/30 bg-primary-soft rounded-xl p-3 text-xs text-foreground space-y-1">
+            <div className="font-bold flex items-center gap-1.5 text-primary">
+              <CheckCircle2 className="w-4 h-4 text-primary shrink-0" />
               {p.ledgerBalanced}
             </div>
-            <div className="text-muted-foreground text-[11px]">{p.ledgerInvariantNote}</div>
+            <div className="text-muted-foreground text-xs leading-relaxed">{p.ledgerInvariantNote}</div>
           </div>
 
           <div className="text-xs text-muted-foreground bg-muted  p-3 rounded-lg border border-border flex items-start gap-2">

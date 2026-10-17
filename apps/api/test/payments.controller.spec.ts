@@ -42,6 +42,9 @@ describe('PaymentsController Unit Tests', () => {
         receiptId: 'REC-123',
         amountBdt: '1000.00',
       }),
+      getMyPaymentOrders: vi.fn().mockResolvedValue([
+        { id: 'order-1', status: 'succeeded', amountMinor: 100000 },
+      ]),
       runReconciliation: vi.fn().mockResolvedValue({
         isLedgerBalanced: true,
         totalOrders: 5,
@@ -108,6 +111,14 @@ describe('PaymentsController Unit Tests', () => {
     );
     expect(res.success).toBe(true);
     expect(res.data.receiptId).toBe('REC-123');
+  });
+
+  it('should get user payment orders', async () => {
+    const res = await controller.getMyPaymentOrders(mockUser);
+    expect(res.success).toBe(true);
+    expect(res.data).toHaveLength(1);
+    expect(res.data[0].id).toBe('order-1');
+    expect(mockPaymentsService.getMyPaymentOrders).toHaveBeenCalledWith(mockUser);
   });
 
   it('should get reconciliation audit report', async () => {

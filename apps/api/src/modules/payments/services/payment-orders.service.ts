@@ -261,4 +261,45 @@ export class PaymentOrdersService {
     }
     return order;
   }
+
+  /**
+   * List payment orders accessible to the current user (as payer, student, linked guardian, or admin)
+   */
+  async getMyPaymentOrders(user: AuthenticatedUser): Promise<PaymentOrderEntity[]> {
+    if (isAdminRole(user)) {
+      return await this.orderRepo.find({
+        relations: {
+          booking: {
+            subject: true,
+            studentUser: true,
+            requesterUser: true,
+            tutorProfile: { user: true },
+          },
+          payerUser: true,
+          transactions: true,
+          refunds: true,
+        },
+        order: { createdAt: 'DESC' },
+      });
+    }
+
+    const childIds = await this.guardianAccess.findActiveStudentIds(user.id);
+    const studentIds = [user.id, ...childIds];
+
+    return await this.orderRepo
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.booking', 'booking')
+      .leftJoinAndSelect('booking.subject', 'subject')
+      .leftJoinAndSelect('booking.studentUser', 'student')
+      .leftJoinAndSelect('booking.requesterUser', 'requester')
+      .leftJoinAndSelect('booking.tutorProfile', 'tutorProfile')
+      .leftJoinAndSelect('tutorProfile.user', 'tutorUser')
+      .leftJoinAndSelect('order.payerUser', 'payerUser')
+      .leftJoinAndSelect('order.transactions', 'transactions')
+      .leftJoinAndSelect('order.refunds', 'refunds')
+      .where('order.payerUserId = :userId', { userId: user.id })
+      .orWhere('booking.studentUserId IN (:...studentIds)', { studentIds })
+      .orderBy('order.createdAt', 'DESC')
+      .getMany();
+  }
 }

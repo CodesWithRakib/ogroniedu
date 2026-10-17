@@ -153,32 +153,51 @@ export function SessionScheduleCalendar({
       data-testid="scheduling-container"
     >
       {/* Banner */}
-      <div className="bg-card border border-brand/25 rounded-3xl p-8 text-foreground shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 text-foreground shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-xs font-medium text-success-soft-foreground">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/25 rounded-full text-xs font-semibold text-primary">
             <Clock className="w-3.5 h-3.5" />
             <span>
               {dict.scheduling?.timezoneNotice || 'Bangladesh Standard Time (BST / UTC+6)'}
             </span>
           </div>
-          <h1 className="text-3xl font-extrabold tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
             {dict.scheduling?.calendarTitle || 'Class Schedule & Sessions'}
           </h1>
-          <p className="text-primary-soft-foreground text-sm max-w-xl">
+          <p className="text-muted-foreground text-sm max-w-xl font-normal leading-relaxed">
             {dict.scheduling?.calendarSubtitle ||
               'Manage scheduled tutoring classes, meeting links, and calendar slots'}
           </p>
         </div>
+
+        <div className="flex items-center gap-3 shrink-0">
+          <div className="px-4 py-2.5 rounded-2xl bg-surface border border-border text-center shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+              {locale === 'bn' ? 'আসন্ন ক্লাস' : 'Upcoming'}
+            </span>
+            <span className="text-xl font-black text-foreground">
+              {sessions.filter((s) => s.status === 'scheduled').length}
+            </span>
+          </div>
+          <div className="px-4 py-2.5 rounded-2xl bg-surface border border-border text-center shadow-2xs">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
+              {locale === 'bn' ? 'সম্পন্ন ক্লাস' : 'Completed'}
+            </span>
+            <span className="text-xl font-black text-foreground">
+              {sessions.filter((s) => s.status === 'completed').length}
+            </span>
+          </div>
+        </div>
       </div>
 
       {/* Cancellation Policy Banner */}
-      <div className="bg-warning-soft  border border-warning/20  rounded-2xl p-4 text-xs text-warning  flex items-start gap-3">
+      <div className="bg-warning-soft border border-warning/30 rounded-2xl p-4 text-xs flex items-start gap-3 shadow-2xs">
         <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
         <div className="space-y-1">
-          <span className="font-bold block">
+          <span className="font-bold text-foreground block text-sm">
             {dict.scheduling?.cancellationPolicyTitle || 'Bangladesh Cancellation & Refund Policy'}
           </span>
-          <div className="flex flex-wrap gap-x-4 gap-y-1 text-warning ">
+          <div className="flex flex-wrap gap-x-4 gap-y-1 text-muted-foreground font-medium">
             <span>• {dict.scheduling?.fullRefundNotice || 'Full 100% refund (>24h notice)'}</span>
             <span>• {dict.scheduling?.partialRefundNotice || '80% refund (4–24h notice)'}</span>
             <span>• {dict.scheduling?.noRefundNotice || 'Non-refundable (<4h notice)'}</span>
@@ -189,12 +208,12 @@ export function SessionScheduleCalendar({
       {/* Sessions Grid */}
       <div className="space-y-4">
         <div className="flex items-center justify-between gap-2">
-          <h2 className="text-xl font-bold text-foreground  flex items-center gap-2">
-            <CalendarIcon className="w-5 h-5 text-success-soft-foreground" />
+          <h2 className="text-lg sm:text-xl font-bold text-foreground flex items-center gap-2">
+            <CalendarIcon className="w-5 h-5 text-primary" />
             <span>{locale === 'bn' ? 'নির্ধারিত ক্লাসসমূহ' : 'Scheduled Classes'}</span>
           </h2>
           {onScheduleOneOff && (
-            <Button size="sm" onClick={() => setScheduleOpen(true)} data-testid="schedule-open-btn">
+            <Button size="sm" onClick={() => setScheduleOpen(true)} data-testid="schedule-open-btn" className="bg-primary hover:bg-primary-hover text-white shadow-xs">
               <Plus className="w-4 h-4 mr-1" />
               {dict.scheduling.scheduleSession}
             </Button>
@@ -213,15 +232,22 @@ export function SessionScheduleCalendar({
         )}
         {isLoading ? (
           <Card className="text-center py-12">
-            <CardContent className="text-muted-foreground text-sm">
+            <CardContent className="text-muted-foreground text-sm font-medium">
               {dict.common?.loading || 'Loading...'}
             </CardContent>
           </Card>
         ) : sessions.length === 0 ? (
-          <Card className="text-center py-12">
-            <CardContent className="space-y-2 text-muted-foreground">
-              <CalendarIcon className="w-10 h-10 mx-auto text-muted-foreground" />
-              <p>{dict.scheduling?.noSessions || 'No sessions scheduled.'}</p>
+          <Card className="text-center py-12 border-border/80 rounded-2xl">
+            <CardContent className="space-y-3 text-muted-foreground py-8">
+              <CalendarIcon className="w-10 h-10 mx-auto text-muted-foreground/60" />
+              <p className="text-sm font-semibold text-foreground">
+                {dict.scheduling?.noSessions || (locale === 'bn' ? 'কোনো নির্ধারিত ক্লাস নেই।' : 'No sessions scheduled.')}
+              </p>
+              <p className="text-xs text-muted-foreground max-w-sm mx-auto">
+                {locale === 'bn'
+                  ? 'আপনার শিক্ষকের সাথে টিউশন অনুরোধ অনুমোদন হলে ক্লাস শিডিউল এখানে দেখতে পাবেন।'
+                  : 'Once your tuition booking is confirmed, your live scheduled classes will appear here.'}
+              </p>
             </CardContent>
           </Card>
         ) : (

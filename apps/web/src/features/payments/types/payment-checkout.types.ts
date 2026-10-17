@@ -1,7 +1,11 @@
 import type { Locale } from '@/lib/i18n';
-import type { PaymentProvider, PaymentReceipt } from '@/store/services/payments-api';
+import type {
+  PaymentProvider,
+  PaymentReceipt,
+  PaymentOrderRecord,
+} from '@/store/services/payments-api';
 
-export type { PaymentProvider };
+export type { PaymentProvider, PaymentOrderRecord };
 
 export type CheckoutGateway = PaymentProvider;
 

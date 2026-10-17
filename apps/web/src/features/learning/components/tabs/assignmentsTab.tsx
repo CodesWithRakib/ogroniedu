@@ -21,9 +21,9 @@ import type {
 } from '../../types/learning.types';
 
 function submissionBadgeClass(status: SubmissionItemStatus): string {
-  if (status === 'reviewed') return 'bg-primary/10 text-success-soft-foreground border-primary/40';
-  if (status === 'late') return 'bg-warning/10 text-warning border-warning/40';
-  return 'bg-interactive/10 text-interactive border-interactive/40';
+  if (status === 'reviewed') return 'bg-success-soft text-success border border-success/30 font-bold';
+  if (status === 'late') return 'bg-warning-soft text-warning border border-warning/30 font-bold';
+  return 'bg-interactive-soft text-interactive border border-interactive/30 font-bold';
 }
 
 export function AssignmentsTab({
@@ -102,26 +102,26 @@ export function AssignmentsTab({
 
             <CardContent className="space-y-3 pt-0">
               {asgn.instructions && (
-                <p className="text-sm text-foreground/80 bg-muted/30 p-3 rounded-lg border border-border/40">
+                <p className="text-xs text-foreground bg-surface p-3 rounded-xl border border-border leading-relaxed">
                   {asgn.instructions}
                 </p>
               )}
 
               {sub?.submissionText && (
-                <div className="bg-muted  p-3 rounded-lg border border-border/40 text-xs">
-                  <span className="font-semibold text-muted-foreground block mb-1">
+                <div className="bg-surface p-3.5 rounded-xl border border-border text-xs">
+                  <span className="font-bold text-muted-foreground block mb-1">
                     {t.submissionTextLabel}:
                   </span>
-                  <p className="text-foreground">{sub.submissionText}</p>
+                  <p className="text-foreground leading-relaxed">{sub.submissionText}</p>
                 </div>
               )}
 
               {sub?.tutorFeedback && (
-                <div className="bg-primary-soft  p-3 rounded-lg border border-primary/40 text-xs">
-                  <span className="font-semibold text-success-soft-foreground  block mb-1 flex items-center gap-1">
+                <div className="bg-primary-soft p-3.5 rounded-xl border border-primary/30 text-xs">
+                  <span className="font-bold text-primary block mb-1 flex items-center gap-1.5">
                     <Award className="w-3.5 h-3.5" /> {t.feedbackLabel}:
                   </span>
-                  <p className="text-primary-soft-foreground ">{sub.tutorFeedback}</p>
+                  <p className="text-foreground font-medium leading-relaxed">{sub.tutorFeedback}</p>
                 </div>
               )}
             </CardContent>

@@ -100,7 +100,7 @@ export function StudentUpcomingClassesCard({
                     <div
                       className={`h-10 w-10 rounded-xl flex items-center justify-center shrink-0 font-bold text-xs ${
                         isLive
-                          ? 'bg-success-soft text-success-soft-foreground border border-success/30 animate-pulse'
+                          ? 'bg-success-soft text-success font-bold border border-success/30 animate-pulse'
                           : 'bg-primary-soft text-primary'
                       }`}
                     >
@@ -113,9 +113,9 @@ export function StudentUpcomingClassesCard({
                           {s.subjectName}
                         </h4>
                         <span
-                          className={`px-2 py-0.5 text-[10px] font-semibold rounded-full border ${
+                          className={`px-2 py-0.5 text-[10px] font-bold rounded-full border ${
                             isLive
-                              ? 'bg-success-soft text-success-soft-foreground border-success/30'
+                              ? 'bg-success-soft text-success border-success/30'
                               : 'bg-primary-soft text-primary border-primary/20'
                           }`}
                         >

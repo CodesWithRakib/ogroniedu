@@ -12,13 +12,13 @@ import type {
 function attendanceBadgeClass(status: AttendanceItemStatus): string {
   switch (status) {
     case 'present':
-      return 'bg-primary/10 text-primary border-primary/20';
+      return 'bg-success-soft text-success border border-success/30 font-bold';
     case 'late':
-      return 'bg-warning/10 text-warning border-warning/20';
+      return 'bg-warning-soft text-warning border border-warning/30 font-bold';
     case 'excused':
-      return 'bg-info/10 text-info-soft-foreground border-info/30';
+      return 'bg-info-soft text-info border border-info/30 font-bold';
     default:
-      return 'bg-destructive/10 text-destructive border-destructive/20';
+      return 'bg-destructive-soft text-destructive border border-destructive/30 font-bold';
   }
 }
 
@@ -35,9 +35,9 @@ export function AttendanceTab({
 
   if (attendance.length === 0) {
     return (
-      <Card className="p-8 text-center text-muted-foreground">
+      <Card className="p-10 text-center text-muted-foreground border-border/80 rounded-2xl bg-card">
         <CalendarCheck className="w-10 h-10 mx-auto mb-2 text-muted-foreground/60" />
-        <p>{t.noAttendance}</p>
+        <p className="text-sm font-semibold text-foreground">{t.noAttendance}</p>
       </Card>
     );
   }
@@ -52,13 +52,13 @@ export function AttendanceTab({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
       {attendance.map((rec) => (
-        <Card key={rec.id} className="border-border/60 hover:shadow-md transition-shadow">
+        <Card key={rec.id} className="border-border hover:border-primary/40 hover:shadow-md transition-all rounded-2xl bg-card shadow-xs">
           <CardHeader className="pb-3 flex flex-row items-center justify-between">
             <div>
-              <CardTitle className="text-base font-semibold">
+              <CardTitle className="text-base font-extrabold text-foreground">
                 {rec.subjectName || 'Tutoring Class'}
               </CardTitle>
-              <CardDescription className="text-xs">
+              <CardDescription className="text-xs text-muted-foreground font-medium">
                 {new Date(rec.recordedAt).toLocaleDateString(dateLocale, {
                   weekday: 'short',
                   year: 'numeric',
@@ -72,18 +72,18 @@ export function AttendanceTab({
             </Badge>
           </CardHeader>
           {rec.notes && (
-            <CardContent className="text-sm text-muted-foreground pt-0">
-              <p className="bg-muted/50 p-2 rounded-lg text-xs italic">&quot;{rec.notes}&quot;</p>
+            <CardContent className="text-xs text-foreground pt-0">
+              <p className="bg-surface p-3 rounded-xl border border-border text-xs italic">&quot;{rec.notes}&quot;</p>
             </CardContent>
           )}
           {rec.sessionId && (
             <div className="px-6 pb-4 pt-1 flex justify-end">
               <Link
                 href={withLocale(`/sessions/${rec.sessionId}`, locale)}
-                className="inline-flex items-center gap-1 text-[11px] font-semibold text-primary  hover:underline"
+                className="inline-flex items-center gap-1 text-xs font-semibold text-primary hover:underline"
               >
                 <span>{locale === 'bn' ? 'সেশনের বিস্তারিত দেখুন' : 'View Session Details'}</span>
-                <ExternalLink className="w-3 h-3" />
+                <ExternalLink className="w-3.5 h-3.5" />
               </Link>
             </div>
           )}

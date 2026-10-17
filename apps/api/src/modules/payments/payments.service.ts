@@ -63,6 +63,10 @@ export class PaymentsService {
     return this.orders.getPaymentReceipt(user, orderId);
   }
 
+  getMyPaymentOrders(user: AuthenticatedUser) {
+    return this.orders.getMyPaymentOrders(user);
+  }
+
   runReconciliation() {
     return this.settlement.runReconciliation();
   }

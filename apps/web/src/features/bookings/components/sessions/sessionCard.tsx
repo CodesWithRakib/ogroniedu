@@ -33,20 +33,20 @@ export function SessionCard({
 
   return (
     <Card
-      className="flex flex-col justify-between hover:shadow-lg transition-all bg-card/90 border border-primary/40 rounded-2xl overflow-hidden shadow-xs"
+      className="flex flex-col justify-between hover:shadow-md transition-all bg-card border border-border/90 hover:border-primary/40 rounded-2xl overflow-hidden shadow-xs"
       data-testid={`session-card-${session.id}`}
     >
       <CardHeader className="space-y-2 pb-3">
         <div className="flex items-center justify-between gap-2">
-          <span className="text-xs font-bold text-success-soft-foreground">
+          <span className="text-xs font-bold text-foreground">
             {formattedDate} • {formattedTime}
           </span>
           <SessionStatusBadge locale={locale} status={session.status} />
         </div>
-        <CardTitle className="text-base font-bold text-foreground">
+        <CardTitle className="text-base font-extrabold text-foreground">
           {session.subjectName || (locale === 'bn' ? 'পদার্থবিজ্ঞান ১ম পত্র' : 'Physics Paper 1')}
         </CardTitle>
-        <CardDescription className="text-xs text-primary-soft-foreground">
+        <CardDescription className="text-xs text-muted-foreground font-medium">
           {locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'} {session.tutorName} |{' '}
           {locale === 'bn' ? 'শিক্ষার্থী:' : 'Learner:'} {session.studentName}
         </CardDescription>
@@ -54,47 +54,49 @@ export function SessionCard({
 
       <CardContent className="space-y-3 text-xs pt-0">
         {session.meetingUrl && session.status !== 'cancelled' && (
-          <div className="p-2.5 bg-primary-soft  rounded-xl border border-primary/20  flex items-center justify-between gap-2">
-            <div className="flex items-center gap-2 text-primary-soft-foreground ">
-              <Video className="w-4 h-4 text-success-soft-foreground shrink-0" />
-              <span className="font-medium truncate max-w-[180px]">
-                {locale === 'bn' ? 'অনলাইন ক্লাসরুম (গুগল মিট)' : 'Online Classroom'}
+          <div className="p-3 bg-surface rounded-xl border border-border flex items-center justify-between gap-2 shadow-2xs">
+            <div className="flex items-center gap-2 text-foreground">
+              <Video className="w-4 h-4 text-primary shrink-0" />
+              <span className="font-semibold text-xs truncate max-w-[170px]">
+                {locale === 'bn' ? 'অনলাইন ক্লাসরুম' : 'Online Classroom'}
               </span>
             </div>
             <a
               href={session.meetingUrl}
               target="_blank"
               rel="noreferrer"
-              className="px-2.5 py-1 bg-primary hover:bg-primary-hover text-foreground rounded-lg font-medium text-[11px] transition-colors"
+              className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg font-bold text-xs shadow-xs transition-colors flex items-center gap-1.5 shrink-0"
             >
-              {dict.scheduling?.joinMeeting || (locale === 'bn' ? 'ক্লাসে যোগ দিন' : 'Join')}
+              <Video className="w-3.5 h-3.5" />
+              <span>{dict.scheduling?.joinMeeting || (locale === 'bn' ? 'ক্লাসে যোগ দিন' : 'Join Class')}</span>
             </a>
           </div>
         )}
 
         {session.cancellationAssessment && (
-          <div className="p-2 bg-destructive-soft  rounded-xl border border-destructive/20  text-[11px] text-destructive-soft-foreground  space-y-0.5">
-            <span className="font-semibold block">
-              {locale === 'bn' ? 'বাতিলকৃত' : 'Cancelled'}
+          <div className="p-3 bg-destructive-soft rounded-xl border border-destructive/20 text-xs text-destructive-soft-foreground space-y-1">
+            <span className="font-bold block">
+              {locale === 'bn' ? 'বাতিলকৃত সেশন' : 'Cancelled Session'}
             </span>
-            <p>
+            <p className="font-medium">
               {locale === 'bn' ? 'রিফান্ড হার:' : 'Refund:'}{' '}
               {formatLocalizedNumber(session.cancellationAssessment.refundPercentage, locale)}%
             </p>
             {session.cancellationAssessment.reason && (
-              <p className="italic">"{session.cancellationAssessment.reason}"</p>
+              <p className="italic text-muted-foreground">"{session.cancellationAssessment.reason}"</p>
             )}
           </div>
         )}
       </CardContent>
 
       {session.status === 'scheduled' && (
-        <CardFooter className="pt-3 border-t border-border  flex justify-end gap-2">
+        <CardFooter className="pt-3 border-t border-border flex justify-end gap-2 bg-card">
           <Button
             variant="outline"
             size="sm"
             onClick={() => onRescheduleClick(session)}
             data-testid={`reschedule-btn-${session.id}`}
+            className="text-xs font-semibold"
           >
             <RotateCcw className="w-3.5 h-3.5 mr-1" />
             {dict.scheduling?.reschedule || 'Reschedule'}
@@ -104,6 +106,7 @@ export function SessionCard({
             size="sm"
             onClick={() => onCancelClick(session)}
             data-testid={`cancel-btn-${session.id}`}
+            className="text-xs font-semibold"
           >
             {dict.scheduling?.cancelSession || 'Cancel'}
           </Button>

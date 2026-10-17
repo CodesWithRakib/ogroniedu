@@ -40,13 +40,21 @@ export function PaymentCheckoutView({
   if (!order) {
     return (
       <div
-        className="space-y-8 max-w-5xl mx-auto py-6 px-4 sm:px-6"
+        className="space-y-6 max-w-5xl mx-auto py-2"
         data-testid="payment-empty-state"
       >
-        <div className="rounded-xl border border-dashed p-8 text-center text-sm text-muted-foreground">
-          {locale === 'bn'
-            ? 'পেমেন্ট অর্ডার তৈরি করতে একটি বুকিং নির্বাচন করুন।'
-            : 'Select a booking to create a payment order.'}
+        <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center text-foreground shadow-2xs">
+          <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
+            <ShieldCheck className="w-6 h-6" />
+          </div>
+          <h4 className="text-base font-extrabold text-foreground">
+            {locale === 'bn' ? 'নিরাপদ এসক্রো পেমেন্ট ডিপোজিট' : 'Safe Escrow Payment Deposit'}
+          </h4>
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto mt-1 leading-relaxed">
+            {locale === 'bn'
+              ? 'উপরের তালিকা থেকে আপনার টিউশন কোর্স নির্বাচন করে "পেমেন্ট গেটওয়েতে যান" বাটনে ক্লিক করুন।'
+              : 'Select your tuition course above and click "Proceed to Checkout" to initialize secure escrow payment via bKash, Nagad or Cards.'}
+          </p>
         </div>
       </div>
     );

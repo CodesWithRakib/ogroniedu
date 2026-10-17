@@ -60,11 +60,11 @@ export function ProgressTab({
                   </span>
                 </div>
                 {rep.averageScore !== null && rep.averageScore !== undefined && (
-                  <div className="text-center bg-primary/10 px-3 py-1.5 rounded-lg border border-primary/40">
-                    <span className="text-[10px] uppercase text-success-soft-foreground font-semibold block">
+                  <div className="text-center bg-primary/10 px-3.5 py-1.5 rounded-xl border border-primary/25 shadow-2xs">
+                    <span className="text-[10px] uppercase text-primary font-bold block">
                       {t.averageScore}
                     </span>
-                    <span className="text-sm font-bold text-success-soft-foreground">
+                    <span className="text-sm font-black text-primary">
                       {formatLocalizedNumber(rep.averageScore, locale)}%
                     </span>
                   </div>
@@ -74,28 +74,28 @@ export function ProgressTab({
           </CardHeader>
 
           <CardContent className="space-y-3 pt-0">
-            <div className="bg-muted  p-3 rounded-lg border border-border/40 text-sm">
+            <div className="bg-surface p-3.5 rounded-xl border border-border text-sm">
               <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide block mb-1">
                 {t.observableProgressLabel}
               </span>
-              <p className="text-foreground">{rep.observableProgress}</p>
+              <p className="text-foreground leading-relaxed font-medium">{rep.observableProgress}</p>
             </div>
 
             {rep.areasForGrowth && (
-              <div className="bg-warning/5 p-3 rounded-lg border border-warning/40 text-sm">
+              <div className="bg-warning-soft p-3.5 rounded-xl border border-warning/30 text-sm">
                 <span className="text-xs font-bold text-warning uppercase tracking-wide block mb-1">
                   {t.areasForGrowthLabel}
                 </span>
-                <p className="text-warning ">{rep.areasForGrowth}</p>
+                <p className="text-foreground leading-relaxed font-medium">{rep.areasForGrowth}</p>
               </div>
             )}
 
             {rep.tutorRemarks && (
-              <div className="bg-primary/5 p-3 rounded-lg border border-primary/40 text-sm">
-                <span className="text-xs font-bold text-success-soft-foreground uppercase tracking-wide block mb-1">
+              <div className="bg-primary-soft p-3.5 rounded-xl border border-primary/30 text-sm">
+                <span className="text-xs font-bold text-primary uppercase tracking-wide block mb-1">
                   {t.tutorRemarksLabel}
                 </span>
-                <p className="text-primary-soft-foreground ">{rep.tutorRemarks}</p>
+                <p className="text-foreground leading-relaxed font-medium">{rep.tutorRemarks}</p>
               </div>
             )}
 
