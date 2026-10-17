@@ -55,6 +55,9 @@ jobs:
       - name: Strict TypeScript Typecheck
         run: pnpm typecheck
 
+      - name: Lint with Warnings Denied
+        run: pnpm lint
+
       - name: Run Automated Test Suites
         run: pnpm test
 
