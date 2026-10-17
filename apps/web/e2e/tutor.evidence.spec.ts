@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { loginViaUi } from './support/login';
 
 /**
  * Phase 21 remainder, verified in a real browser against seeded dev data:
@@ -14,14 +15,11 @@ const studentPassword = process.env.E2E_STUDENT_PASSWORD;
 const ready = Boolean(tutorEmail && tutorPassword && studentEmail && studentPassword);
 
 test.describe('evidence upload + session revocation', () => {
-  test.describe.configure({ mode: 'serial' });
+  test.describe.configure({ mode: 'serial', timeout: 120_000 });
   test.skip(!ready, 'needs seeded staging credentials (E2E_*_EMAIL/PASSWORD)');
 
   async function loginAs(page: Page, email: string, password: string) {
-    await page.goto('/bn/login');
-    await page.getByTestId('login-identifier-input').fill(email);
-    await page.getByTestId('login-password-input').fill(password);
-    await page.getByTestId('login-submit-btn').click();
+    await loginViaUi(page, email, password, /\/bn\/dashboard/);
   }
 
   test('tutor uploads NID evidence and links a qualification', async ({ page }) => {

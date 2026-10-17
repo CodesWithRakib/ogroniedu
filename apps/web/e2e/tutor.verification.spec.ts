@@ -1,4 +1,5 @@
 import { test, expect, type Page, type APIRequestContext } from '@playwright/test';
+import { loginViaUi, postLoginWithRateLimitRetry } from './support/login';
 
 /**
  * Tutor verification dossier journey against a live stack.
@@ -29,19 +30,18 @@ const STATUS_LABELS: Record<string, { bn: string; en: string }> = {
 };
 
 test.describe('tutor verification dossier', () => {
+  // Enough headroom for the login helper to wait out a rate-limit window.
+  test.describe.configure({ timeout: 120_000 });
   test.skip(!ready, 'needs seeded tutor credentials (E2E_TUTOR_EMAIL/PASSWORD)');
 
   async function loginAsTutor(page: Page) {
-    await page.goto('/bn/login');
-    await page.getByTestId('login-identifier-input').fill(tutorEmail!);
-    await page.getByTestId('login-password-input').fill(tutorPassword!);
-    await page.getByTestId('login-submit-btn').click();
-    await expect(page).toHaveURL(/\/bn\/dashboard/, { timeout: 20_000 });
+    await loginViaUi(page, tutorEmail!, tutorPassword!, /\/bn\/dashboard/);
   }
 
   async function apiDossierLevels(request: APIRequestContext): Promise<Record<string, string>> {
-    const login = await request.post(`${API}/api/v1/auth/login`, {
-      data: { identifier: tutorEmail, password: tutorPassword },
+    const login = await postLoginWithRateLimitRetry(request, API, {
+      identifier: tutorEmail!,
+      password: tutorPassword!,
     });
     expect(login.ok()).toBeTruthy();
     const { accessToken } = (await login.json()) as { accessToken: string };

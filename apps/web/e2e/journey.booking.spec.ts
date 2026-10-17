@@ -1,4 +1,5 @@
 import { test, expect, type Page } from '@playwright/test';
+import { loginViaUi } from './support/login';
 
 /**
  * Full tutoring-lifecycle journey against a SEEDED staging stack:
@@ -14,14 +15,11 @@ const ready = Boolean(studentEmail && studentPassword && tutorEmail && tutorPass
 
 test.describe('tutoring lifecycle journey', () => {
   // Ordered inbox flow: the tutor half depends on the request filed above.
-  test.describe.configure({ mode: 'serial' });
+  test.describe.configure({ mode: 'serial', timeout: 120_000 });
   test.skip(!ready, 'needs seeded staging credentials (E2E_*_EMAIL/PASSWORD)');
 
   async function loginAs(page: Page, email: string, password: string) {
-    await page.goto('/bn/login');
-    await page.getByTestId('login-identifier-input').fill(email);
-    await page.getByTestId('login-password-input').fill(password);
-    await page.getByTestId('login-submit-btn').click();
+    await loginViaUi(page, email, password, /\/bn\/dashboard/);
   }
 
   test('student discovers a tutor and files a booking request', async ({ page }) => {
