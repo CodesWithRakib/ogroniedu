@@ -15,6 +15,11 @@ import { EducationLevelEntity } from '../src/modules/taxonomy/entities/education
 import { GuardianStudentLinkEntity } from '../src/modules/guardians/entities/guardian-student-link.entity';
 import { AssignmentEntity } from '../src/modules/learning/entities/assignment.entity';
 import { SessionAttendanceEntity } from '../src/modules/learning/entities/session-attendance.entity';
+import { PaymentOrderEntity } from '../src/modules/payments/entities/payment-order.entity';
+import { PaymentTransactionEntity } from '../src/modules/payments/entities/payment-transaction.entity';
+import { PaymentRefundEntity } from '../src/modules/payments/entities/payment-refund.entity';
+import { InstitutionEntity } from '../src/modules/taxonomy/entities/institution.entity';
+import { StreamEntity } from '../src/modules/taxonomy/entities/stream.entity';
 
 const ENTITIES = [
   BookingEntity,
@@ -27,6 +32,11 @@ const ENTITIES = [
   GuardianStudentLinkEntity,
   AssignmentEntity,
   SessionAttendanceEntity,
+  PaymentOrderEntity,
+  PaymentTransactionEntity,
+  PaymentRefundEntity,
+  InstitutionEntity,
+  StreamEntity,
 ] as const;
 
 type EntityCtor = { name: string };

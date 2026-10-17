@@ -102,6 +102,8 @@ export class GuardianProvisioningService {
         educationLevelId: dto.educationLevelId ?? null,
         curriculumId: dto.curriculumId ?? null,
         institutionName: dto.institutionName ?? null,
+        stream: dto.stream ?? null,
+        learningGoals: dto.learningGoals ?? null,
         profileVisibility: 'private',
       });
       await queryRunner.manager.save(studentProfile);
@@ -146,8 +148,8 @@ export class GuardianProvisioningService {
           educationLevelId: studentProfile.educationLevelId,
           curriculumId: studentProfile.curriculumId,
           institutionName: studentProfile.institutionName,
-          stream: null,
-          learningGoals: null,
+          stream: studentProfile.stream,
+          learningGoals: studentProfile.learningGoals,
         },
       };
     } catch (err) {

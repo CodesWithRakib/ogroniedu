@@ -48,6 +48,21 @@ export class RegisterChildDto {
   @MaxLength(150)
   institutionName?: string;
 
+  @IsOptional()
+  @IsString()
+  @MaxLength(100)
+  stream?: string;
+
+  @IsOptional()
+  @IsString()
+  @MaxLength(500)
+  learningGoals?: string;
+
+  @IsOptional()
+  @IsString()
+  @IsIn(['male', 'female'], { message: 'gender must be male or female' })
+  gender?: string;
+
   @IsIn(['father', 'mother', 'legal_guardian'], {
     message: 'relationshipType must be one of: father, mother, legal_guardian',
   })

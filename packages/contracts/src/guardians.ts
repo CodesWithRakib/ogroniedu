@@ -27,6 +27,9 @@ export const RegisterChildSchema = z.object({
   educationLevelId: z.string().uuid().optional(),
   curriculumId: z.string().uuid().optional(),
   institutionName: z.string().max(150).optional(),
+  stream: z.string().max(100).optional(),
+  learningGoals: z.string().max(500).optional(),
+  gender: z.enum(['male', 'female']).optional(),
   ...consentFields,
 });
 export type RegisterChildInput = z.infer<typeof RegisterChildSchema>;

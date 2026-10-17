@@ -1,5 +1,5 @@
 import 'reflect-metadata';
-import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { describe, it, expect, beforeAll, beforeEach, afterAll, vi } from 'vitest';
 import { Test } from '@nestjs/testing';
 import { ValidationPipe, type INestApplication } from '@nestjs/common';
 import request from 'supertest';
@@ -21,15 +21,7 @@ describe('HTTP validation boundary (F-3 tripwire)', () => {
   let app: INestApplication;
   const login = vi.fn();
 
-  beforeEach(async () => {
-    login.mockReset();
-    login.mockResolvedValue({
-      user: { id: 'u-1', displayName: 'Demo Student', email: 'student.demo@ogroniedu.com' },
-      accessToken: 'access-token',
-      refreshToken: 'refresh-token',
-      expiresIn: 900,
-    });
-
+  beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({
       controllers: [AuthController],
       providers: [{ provide: AuthService, useValue: { login } }],
@@ -40,10 +32,22 @@ describe('HTTP validation boundary (F-3 tripwire)', () => {
       new ValidationPipe({ whitelist: true, transform: true, forbidNonWhitelisted: true }),
     );
     await app.init();
+  }, 30_000);
+
+  beforeEach(() => {
+    login.mockReset();
+    login.mockResolvedValue({
+      user: { id: 'u-1', displayName: 'Demo Student', email: 'student.demo@ogroniedu.com' },
+      accessToken: 'access-token',
+      refreshToken: 'refresh-token',
+      expiresIn: 900,
+    });
   });
 
-  afterEach(async () => {
-    await app.close();
+  afterAll(async () => {
+    if (app) {
+      await app.close();
+    }
   });
 
   it('rejects an empty login body with 400 without reaching the service', async () => {

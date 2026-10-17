@@ -301,6 +301,13 @@ export function navForRole(role: UserRole | null): NavItem[] {
         testId: 'nav-users',
       },
       {
+        href: '/dashboard/admin/taxonomy',
+        labelBn: 'একাডেমিক ট্যাক্সোনমি',
+        labelEn: 'Academic Taxonomy',
+        icon: GraduationCap,
+        testId: 'nav-taxonomy',
+      },
+      {
         href: '/admin?tab=audit',
         labelBn: 'অডিট লগ',
         labelEn: 'Audit Logs',

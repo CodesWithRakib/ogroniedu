@@ -6,9 +6,16 @@ import { GuardianChildrenManager } from '@/components/guardian/GuardianChildrenM
 import { LoadingSpinner } from '@/components/ui';
 import {
   useGetLinkedChildrenQuery,
+  useRegisterChildMutation,
   useLinkChildRequestMutation,
   useRevokeChildLinkMutation,
 } from '@/store/services/guardians-api';
+import {
+  useGetEducationLevelsQuery,
+  useGetCurriculaQuery,
+  useGetStreamsQuery,
+  useGetInstitutionsQuery,
+} from '@/store/services/taxonomy-api';
 import type { Locale } from '@/lib/i18n';
 
 export default function GuardianChildrenRoute({ params }: { params: Promise<{ locale: string }> }) {
@@ -16,8 +23,18 @@ export default function GuardianChildrenRoute({ params }: { params: Promise<{ lo
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
 
   const { data: childrenData, isLoading, refetch } = useGetLinkedChildrenQuery();
+  const { data: levelsEnvelope } = useGetEducationLevelsQuery();
+  const { data: curriculaEnvelope } = useGetCurriculaQuery();
+  const { data: streamsEnvelope } = useGetStreamsQuery();
+  const { data: institutionsEnvelope } = useGetInstitutionsQuery();
+  const [registerChild] = useRegisterChildMutation();
   const [linkChild] = useLinkChildRequestMutation();
   const [revokeLink] = useRevokeChildLinkMutation();
+
+  const educationLevels = React.useMemo(() => levelsEnvelope?.data || [], [levelsEnvelope]);
+  const curricula = React.useMemo(() => curriculaEnvelope?.data || [], [curriculaEnvelope]);
+  const streams = React.useMemo(() => streamsEnvelope?.data || [], [streamsEnvelope]);
+  const institutions = React.useMemo(() => institutionsEnvelope?.data || [], [institutionsEnvelope]);
 
   const mappedChildren = React.useMemo(() => {
     if (!childrenData) return [];
@@ -34,6 +51,28 @@ export default function GuardianChildrenRoute({ params }: { params: Promise<{ lo
       educationLevelName: c.educationLevelName,
     }));
   }, [childrenData]);
+
+  const handleRegisterChild = React.useCallback(
+    async (data: {
+      displayName: string;
+      dateOfBirth?: string;
+      gender?: string;
+      institutionName?: string;
+      educationLevelId?: string;
+      curriculumId?: string;
+      stream?: string;
+      learningGoals?: string;
+      email?: string;
+      phone?: string;
+      relationshipType: string;
+      consentPolicyVersion: string;
+      consentAgreed: boolean;
+    }) => {
+      await registerChild(data).unwrap();
+      refetch();
+    },
+    [registerChild, refetch],
+  );
 
   const handleAddChild = React.useCallback(
     async (data: {
@@ -78,6 +117,11 @@ export default function GuardianChildrenRoute({ params }: { params: Promise<{ lo
         <GuardianChildrenManager
           locale={locale}
           initialChildren={mappedChildren}
+          educationLevels={educationLevels.length > 0 ? educationLevels : undefined}
+          curricula={curricula.length > 0 ? curricula : undefined}
+          streams={streams.length > 0 ? streams : undefined}
+          institutions={institutions.length > 0 ? institutions : undefined}
+          onRegisterChild={handleRegisterChild}
           onAddChild={handleAddChild}
           onRevokeLink={handleRevokeLink}
         />

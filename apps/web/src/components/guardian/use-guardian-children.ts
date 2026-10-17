@@ -30,8 +30,7 @@ function messageFor(code: LinkChildFieldError, locale: Locale): string {
 }
 
 /**
- * Guardian children state + link/revoke flows. Rendering stays in
- * GuardianChildrenManager.
+ * Guardian children state + link/register/revoke flows.
  */
 export function useGuardianChildren(
   locale: Locale,
@@ -61,13 +60,31 @@ export function useGuardianChildren(
   }, [initialChildren]);
 
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [activeTab, setActiveTab] = useState<'register' | 'link'>('register');
+
+  // Form state for registering new child
+  const [regName, setRegName] = useState('');
+  const [regDob, setRegDob] = useState('');
+  const [regGender, setRegGender] = useState<'male' | 'female' | ''>('male');
+  const [regInstitution, setRegInstitution] = useState('');
+  const [regEducationLevelId, setRegEducationLevelId] = useState('');
+  const [regCurriculumId, setRegCurriculumId] = useState('');
+  const [regStream, setRegStream] = useState('');
+  const [regLearningGoals, setRegLearningGoals] = useState('');
+  const [regPhone, setRegPhone] = useState('');
+  const [regEmail, setRegEmail] = useState('');
+
+  // Form state for linking existing student
   const [identifier, setIdentifier] = useState('');
+
+  // Shared state
   const [relationship, setRelationship] = useState<GuardianRelationship>('father');
   const [consentAgreed, setConsentAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const { onAddChild, onRevokeLink } = callbacks;
+  const { onAddChild, onRegisterChild, onRevokeLink } = callbacks;
 
   async function handleLinkChild(e: React.FormEvent) {
     e.preventDefault();
@@ -79,11 +96,12 @@ export function useGuardianChildren(
 
     setLoading(true);
     setErrorMessage(null);
+    setSuccessMessage(null);
 
     try {
       if (onAddChild) {
         await onAddChild({
-          studentIdentifier: identifier,
+          studentIdentifier: identifier.trim(),
           relationshipType: relationship,
           consentPolicyVersion: 'v1.0-bd-minor-consent',
           consentAgreed,
@@ -104,6 +122,80 @@ export function useGuardianChildren(
     }
   }
 
+  async function handleRegisterChild(e: React.FormEvent) {
+    e.preventDefault();
+    if (!regName.trim() || regName.trim().length < 2) {
+      setErrorMessage(
+        locale === 'bn'
+          ? 'সন্তানের পুরো নাম কমপক্ষে ২ অক্ষরের হতে হবে।'
+          : 'Child full name must be at least 2 characters.',
+      );
+      return;
+    }
+    if (!consentAgreed) {
+      setErrorMessage(
+        locale === 'bn'
+          ? 'নীতিমালার অধীনে অভিভাবকের সম্মতি আবশ্যক।'
+          : 'Guardian consent agreement is mandatory.',
+      );
+      return;
+    }
+
+    setLoading(true);
+    setErrorMessage(null);
+    setSuccessMessage(null);
+
+    try {
+      if (onRegisterChild) {
+        await onRegisterChild({
+          displayName: regName.trim(),
+          dateOfBirth: regDob || undefined,
+          gender: regGender || undefined,
+          institutionName: regInstitution.trim() || undefined,
+          educationLevelId: regEducationLevelId || undefined,
+          curriculumId: regCurriculumId || undefined,
+          stream: regStream.trim() || undefined,
+          learningGoals: regLearningGoals.trim() || undefined,
+          phone: regPhone.trim() || undefined,
+          email: regEmail.trim() || undefined,
+          relationshipType: relationship,
+          consentPolicyVersion: 'v1.0-bd-minor-consent',
+          consentAgreed: true,
+        });
+      } else if (onAddChild) {
+        // Fallback if only onAddChild is provided
+        await onAddChild({
+          studentIdentifier: regPhone.trim() || regEmail.trim() || regName.trim(),
+          relationshipType: relationship,
+          consentPolicyVersion: 'v1.0-bd-minor-consent',
+          consentAgreed,
+        });
+      } else {
+        throw new Error(
+          locale === 'bn' ? 'সন্তান যুক্ত করতে লগইন করুন।' : 'Sign in to register a child.',
+        );
+      }
+
+      // Reset fields
+      setRegName('');
+      setRegDob('');
+      setRegGender('male');
+      setRegInstitution('');
+      setRegEducationLevelId('');
+      setRegCurriculumId('');
+      setRegStream('');
+      setRegLearningGoals('');
+      setRegPhone('');
+      setRegEmail('');
+      setConsentAgreed(false);
+      setIsModalOpen(false);
+    } catch (err) {
+      setErrorMessage(err instanceof Error ? err.message : 'Failed to register child profile');
+    } finally {
+      setLoading(false);
+    }
+  }
+
   async function handleRevoke(studentId: string) {
     if (confirm(dict.guardian.unlinkConfirm)) {
       if (onRevokeLink) {
@@ -116,6 +208,7 @@ export function useGuardianChildren(
   function closeModal() {
     setIsModalOpen(false);
     setErrorMessage(null);
+    setSuccessMessage(null);
   }
 
   return {
@@ -123,15 +216,42 @@ export function useGuardianChildren(
     children,
     isModalOpen,
     setIsModalOpen,
+    activeTab,
+    setActiveTab,
+    // Register child fields
+    regName,
+    setRegName,
+    regDob,
+    setRegDob,
+    regGender,
+    setRegGender,
+    regInstitution,
+    setRegInstitution,
+    regEducationLevelId,
+    setRegEducationLevelId,
+    regCurriculumId,
+    setRegCurriculumId,
+    regStream,
+    setRegStream,
+    regLearningGoals,
+    setRegLearningGoals,
+    regPhone,
+    setRegPhone,
+    regEmail,
+    setRegEmail,
+    // Link child fields
     identifier,
     setIdentifier,
+    // Shared
     relationship,
     setRelationship,
     consentAgreed,
     setConsentAgreed,
     loading,
     errorMessage,
+    successMessage,
     handleLinkChild,
+    handleRegisterChild,
     handleRevoke,
     closeModal,
   };

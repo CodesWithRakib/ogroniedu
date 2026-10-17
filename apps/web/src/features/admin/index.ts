@@ -6,6 +6,7 @@ export * from './pages/admin-disputes-page';
 export * from './pages/admin-bookings-page';
 export * from './pages/admin-audit-logs-page';
 export * from './pages/admin-settings-page';
+export * from './pages/admin-taxonomy-page';
 export * from './types/admin.types';
 export * from './utils/admin-mappers';
 export * from './hooks/use-admin-dashboard';

@@ -77,6 +77,12 @@ export const guardiansApi = baseApi.injectEndpoints({
         dateOfBirth?: string;
         institutionName?: string;
         educationLevelId?: string;
+        curriculumId?: string;
+        stream?: string;
+        learningGoals?: string;
+        gender?: string;
+        email?: string;
+        phone?: string;
         relationshipType: string;
         consentPolicyVersion: string;
         consentAgreed: boolean;

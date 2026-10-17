@@ -12,6 +12,7 @@ import {
   FileText,
   CheckCircle2,
   ArrowRight,
+  GraduationCap,
 } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner, Button } from '@/components/ui';
@@ -36,6 +37,17 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       accent: 'bg-info-soft border-info/30 text-info-soft-foreground',
       actionTextBn: 'ইউজার ম্যানেজার খুলুন',
       actionTextEn: 'Open User Manager',
+    },
+    {
+      titleBn: 'একাডেমিক ট্যাক্সোনমি ও ডেটা',
+      titleEn: 'Academic Taxonomy Management',
+      descBn: 'শ্রেণি, কারিকুলাম, গ্রুপ/শাখা, শিক্ষা প্রতিষ্ঠান ও বিষয় ডায়নামিক নিয়ন্ত্রণ',
+      descEn: 'Dynamically configure education levels, curricula, streams, institutions and subjects',
+      href: `/${locale}/dashboard/admin/taxonomy`,
+      icon: GraduationCap,
+      accent: 'bg-accent-soft border-accent/30 text-accent-soft-foreground',
+      actionTextBn: 'ট্যাক্সোনমি পরিচালনা',
+      actionTextEn: 'Manage Taxonomy',
     },
     {
       titleBn: 'শিক্ষক যাচাই কিউ',
