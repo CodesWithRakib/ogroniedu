@@ -1,5 +1,17 @@
 # Changelog
 
+## Phase 24 Pre-Gate — Hardening Before Phase 24 (2026-10-16 → 2026-10-17)
+
+- **Definition of Done Enforced — every Pre-Gate item implemented test-backed, one commit per step, no claim without a live probe:**
+- **PG-1 (`6e87fc5`, F-3): dev runtime now runs the tsc-built output.** `apps/api/scripts/dev.mjs` = `tsc -p tsconfig.build.json --watch` + `node --watch dist/main.js` (watcher later scoped to `dist` in `83cf532` after E2E showed `node_modules` churn restarting the API mid-request); `tsx` removed. `emitDecoratorMetadata` is now present in dev, so the global `ValidationPipe` behaves exactly as in production: live matrix 6/6 (empty body, `@MinLength`, unknown property, malformed JSON, non-UUID → `400 VALIDATION_ERROR` with field details; previously 500/401). New `test/validation-boundary.spec.ts` (4 tests) + hardened 5xx sanitizer (truthful 4xx never re-cast to 500; generated `requestId` on early parse failures).
+- **PG-2 (`454ac2d`, F-4): fabricated curated tutors removed from discovery.** Skeleton grid while the first search resolves; submit refuses tutor ids the search never returned. Seed student id corrected to an RFC-4122-valid variant (`…-b333-…`) — the invalid id had been masked by the dead validation (F-3). The flagship `journey.booking` spec is green.
+- **PG-3 (`72ccdb0`, F-1/F-2): lint and format gates cleared** — 16 → 0 oxlint warnings, 52 files formatted, docs-validator angle-bracket-link fix. Later `59477d6` restored both gates after post-Pre-Gate feature work.
+- **PG-4 (`6a41dbe`, F-6): `BottomNavbar` hydration mismatch fixed** with the mounted-gate pattern used by `Navbar`; 11-page browser probe → 0 hydration errors; `next-env.d.ts` prettier-ignored.
+- **PG-5 (`65b14df`, F-7/R-1): admin-family navigation aligned with route gates (least privilege).** Pure `super_admin` no longer bounced from `/dashboard/admin/*`; `support_agent`/`compliance_reviewer` get exactly the single console entry they can open; role probe matrix all-stable (no loops).
+- **PG-6 (`a4b1471`, SEC-6): Swagger UI gated by environment.** `isSwaggerEnabled()` (`config/swagger.ts`): `NODE_ENV=production` → `/api/docs` 404 with no bootstrap log line; development → 200. Unit test `test/swagger-gating.spec.ts`. SEC-1 (production hard-refuse of the test-auth bypass) and SEC-4 (demo strip gated to non-production; fake "Google" button removed in favor of the magic-link flow) were delivered upstream in `b3b29e3` and re-verified in a prod-mode `next build` + `next start` probe.
+- **E2E suite: 47/47 green (2.2m, default parallelism).** The owner's post-Pre-Gate specs (tutor-verification dossier, admin dossier review) grew the suite 45 → 47; follow-ups: `0a6d076` (admin console journey aligned with the modular admin pages — `admin-overview-page` testid added, `?tab=` navigation) and `fb3fc77` (shared `e2e/support/login.ts` helpers wait out the API's documented 5-attempts/min login rate limit; the final run absorbed a real `429`).
+- **Final baselines at HEAD:** typecheck 6/6; `pnpm test` **792 passed** (API 61 files/586 · Web 30 files/175 · Database 4 files/31); `pnpm build` 4/4; `pnpm docs:validate` 182 files / 26 mandatory docs; lint + format green. As-built details: `docs/engineering/06` §0, `08` §2.1.
+
 ## 1.21.0 — Phase 22 Architecture Refactoring, Oversized-File Split & Auth Hardening
 
 - **Definition of Done Enforced — no oversized mixed-responsibility files left in the web app, no source `any`, and no unauthenticated auth bypass reachable in production:**

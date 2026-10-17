@@ -36,6 +36,10 @@ tokens as fully authenticated identities, including privileged roles.
 Impact: a mis-set flag in a deployed environment = trivial impersonation of any user.
 Recommended: hard-refuse when `NODE_ENV=production` inside `isTestAuthBypassEnabled`.
 
+**Status (as-built — owner commit `b3b29e3`).** Fixed: `isTestAuthBypassEnabled()` now
+hard-refuses in production regardless of env vars; `apps/api/test/auth-bypass-guard.spec.ts`
+(5 tests) pins the production-denial path and continued test-mode behavior.
+
 ### SEC-2 (Low) — Hardcoded JWT fallbacks and a narrower-than-advertised prod invariant
 
 Five modules fall back to shared default secrets when `JWT_SECRET` is unset:
@@ -56,6 +60,10 @@ With the global `ValidationPipe` inert under `tsx` (`03-backend-and-api.md` §5)
 those are exactly where demos, QA, and security reviews happen. Fixing F-3 restores the
 protection and the 400-vs-500 contract.
 
+**Status (as-built — PG-1 `6e87fc5`).** Dev/E2E now run the tsc-built output, so `whitelist`
+and `forbidNonWhitelisted` are active outside production too (probe matrix 6/6 + new
+`test/validation-boundary.spec.ts`; see `03` §5 as-built).
+
 ### SEC-4 (Medium) — Public login page ships working demo credentials and a mislabeled OAuth button
 
 `authShell.tsx:39-70` hardcodes `OgroniDev#2026` for all four demo accounts and renders the
@@ -66,6 +74,12 @@ OAuth** — it fills the student demo credentials. Impact: the seeded accounts' 
 if any deployment uses seeded data (or the same password), those accounts are compromised, and the
 button is a user-deception/consent issue regardless. Recommended: gate to dev, remove the fake
 provider button.
+
+**Status (as-built — owner commit `b3b29e3`).** Fixed: the fake "Google" button is gone (the
+magic-link flow replaces it) and the demo strip is gated by `NODE_ENV !== 'production'`
+(`authShell.tsx`). Prod-mode evidence: `next build` + `next start` HTML probes on `/bn/login`
+and `/en/login` contain no demo credentials, no strip copy, and no provider button; the
+executable production bundles contain 0 hits.
 
 ### SEC-5 (Medium) — Web client persists access **and** refresh tokens in `localStorage`
 
@@ -80,6 +94,11 @@ cookie-first), access token in memory, rehydration via `/auth/refresh` on boot.
 `main.ts:59-60` always mounts `/api/docs` with the full route/DTO surface. In a production
 deployment this is an unauthenticated API map unless the proxy blocks it. Recommended: gate by
 environment or admin auth.
+
+**Status (as-built — PG-6 `a4b1471`).** Fixed: `isSwaggerEnabled()` (`apps/api/src/config/swagger.ts`)
+gates the mount by environment — `NODE_ENV=production` → `/api/docs` and `/api/docs-json`
+return 404 and no Swagger bootstrap log line is emitted; development serves 200. Unit test
+`apps/api/test/swagger-gating.spec.ts`; prod/dev boot probes recorded with the PG-6 evidence.
 
 ## 3. Positive verifications (this session)
 

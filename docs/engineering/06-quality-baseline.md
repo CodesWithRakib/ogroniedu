@@ -4,6 +4,30 @@ Everything in this document was executed or read this session against code state
 (no code changed mid-session — see `00-project-baseline.md` header). Where a prior claim is
 contradicted, both the claim and the measurement are shown.
 
+## 0. As-built update (Phase 24 Pre-Gate + follow-ups, 2026-10-17)
+
+The sections below are the audit-time record at `c58d026`. At HEAD, after PG-1…PG-6 and two
+gate-restoration passes, the same gates measure:
+
+| Gate                   | As-built result (measured 2026-10-17)                                                                               |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Typecheck              | **PASS** — `pnpm typecheck`, 6/6 tasks                                                                              |
+| Unit/integration tests | **PASS — 792 tests**: API 61 files / **586**, Web 30 files / **175**, Database 4 files / **31**; `pnpm test` exit 0 |
+| Build                  | **PASS** — `pnpm build`, 4/4 tasks                                                                                  |
+| Docs integrity         | **PASS** — `pnpm docs:validate`, 182 Markdown/Mermaid/SQL files, 26/26 mandatory docs                               |
+| Lint                   | **PASS** — exit 0 in both workspaces (`oxlint … --deny-warnings`)                                                   |
+| Format                 | **PASS** — `pnpm format:check` exit 0                                                                               |
+| E2E (live stack)       | **PASS — 47/47** (`e2e` script, 2.2m, default parallelism; suite grew 45 → 47 with the owner's specs)               |
+
+Per-step fixes are listed in `08` §2.1. Two suite-level follow-ups came out of the final sweep
+and are committed: `0a6d076` (the admin console journey had been written against the
+pre-refactor tabbed view; it now waits on `admin-overview-page` and navigates the modular pages
+via `?tab=`) and `fb3fc77` (a shared `e2e/support/login.ts` login helper that waits out the
+API's documented 5-attempts/min login rate limit — the seeded tutor account logs in repeatedly
+across the new specs, and the final full run demonstrably absorbed a real `429` on the way to
+47/47). Earlier, `59477d6` restored the lint/format gates after post-Pre-Gate feature work. The
+F-8 repo-hygiene items remain owner trackers (`08` §6).
+
 ## 1. Baseline suites (re-run this session)
 
 | Gate                   | Command              | Result                                                                               |

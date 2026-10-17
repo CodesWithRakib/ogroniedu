@@ -40,6 +40,24 @@ Recommendation: PG-1 and PG-2 first (they are also the two root causes of the E2
 then PG-4/PG-5/PG-6. Nothing in this list overlaps WS1–WS5 scope; PG-3/PG-6 partially pre-deliver
 WS6/WS4 items, which is fine.
 
+### 2.1 As-built status (2026-10-16 → 2026-10-17) — all six steps delivered
+
+| Step | Commit(s)                     | As-built outcome (evidence kept with the session's per-step summaries)                                                                                                                                                                                                                                                                             |
+| ---- | ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| PG-1 | `6e87fc5`, `83cf532`          | Dev runtime runs the tsc-built output (`scripts/dev.mjs` = `tsc -w` + `node --watch dist/main.js`; `tsx` removed). Live probe matrix 6/6 → 400s with field details; new `test/validation-boundary.spec.ts` (4 tests); 5xx sanitizer hardened. Watcher later scoped to `dist` after E2E showed `node_modules` churn restarting the API mid-request. |
+| PG-2 | `454ac2d`                     | `CURATED_SAMPLE_TUTORS` deleted; skeleton grid while the first search resolves; submit refuses tutor ids the search never returned. Seed student id corrected to an RFC-4122-valid variant (`…-b333-…`) — the invalid id had been masked by the dead validation (F-3). `journey.booking` green.                                                    |
+| PG-3 | `72ccdb0`                     | Lint **16 → 0** warnings; 52 files formatted (matches the audit count 1:1) + docs-validator angle-bracket link fix; `pnpm lint` / `format:check` exit 0.                                                                                                                                                                                           |
+| PG-4 | `6a41dbe`                     | `BottomNavbar` hydration mismatch fixed with the mounted-gate pattern; 11-page browser probe → **0 hydration errors**; `next-env.d.ts` prettier-ignored.                                                                                                                                                                                           |
+| PG-5 | `65b14df`                     | Admin-family nav aligned with route gates (least privilege): pure `super_admin` no longer bounced from `/dashboard/admin/*`; `support_agent`/`compliance_reviewer` get exactly the single console entry they can open; role probe matrix all-stable.                                                                                               |
+| PG-6 | `a4b1471` (+ owner `b3b29e3`) | Swagger env-gated (prod 404 + no log line; dev 200; unit test). SEC-1 (prod hard-refuse) and SEC-4 (demo strip gated, fake Google removed) were delivered upstream in `b3b29e3` and verified in a prod-mode `next build` + `next start` probe.                                                                                                     |
+
+The §2 acceptance rows were met with live-probe evidence. E2E grew **45 → 47** with the owner's
+post-Pre-Gate specs; the final full run is **47/47** (`06` §0). Two suite follow-ups after those
+specs landed: `0a6d076` (admin console journey aligned with the modular admin pages — the spec
+still waited on the pre-refactor `admin-dashboard-view` testid and clicked removed tabs) and
+`fb3fc77` (shared login helpers wait out the API's 5-attempts/min login rate limit for the
+seeded accounts); `59477d6` restored the lint/format gates after the same feature work.
+
 ## 3. Findings → Phase 24 WS mapping
 
 | Audit finding                                | Phase 24 workstream impact                                                                                    |
@@ -77,10 +95,14 @@ WS6/WS4 items, which is fine.
 
 ## 6. Open questions for the owner (needed before implementation)
 
-1. Commit plan for this audit set (`docs/engineering/02`–`09` untracked; `00/01/README` modified)
-   — commit as one docs commit after review?
+1. ~~Commit plan for this audit set (`docs/engineering/02`–`09` untracked; `00/01/README` modified)
+   — commit as one docs commit after review?~~ **Resolved:** the set is committed (`4b027a0`);
+   the Pre-Gate as-built updates live with it.
 2. `prompts/` gitignore — intended to stay untracked?
 3. Remove `apps/web/test-results/.last-run.json` from git tracking (and ignore `test-results/`)?
+   — **partially addressed in the working tree** (2026-10-17: `.gitignore` lists
+   `apps/web/test-results/` + `apps/web/playwright-report/`); untracking the already-tracked
+   artifact still needs `git rm --cached` — owner decision.
 4. Confirm phase-24 errata: restate entry-state numbers (lint 16 → fixed by PG-3; E2E 43/45) in
    the phase record, or annotate Phase 23 retroactively?
 5. WS8 product decisions for the home-stats fallbacks (real-only vs labeled estimates) — owner +

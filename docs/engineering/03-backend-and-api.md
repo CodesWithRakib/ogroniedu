@@ -3,16 +3,25 @@
 All counts in this document come from the API boot route map captured in this session
 (`09-evidence-appendix.md` §1), source inspection at commit `c58d026`, and live probes against
 the running dev API (`:4000`). No endpoint behavior is asserted without one of those sources.
+Sections marked **As-built** were added during the Phase 24 Pre-Gate and cite the implementing
+commits; unmarked text remains the audit-time record at `c58d026`.
 
 ## 1. Runtime & boot pipeline
 
-| Item             | Value                                                           |
-| ---------------- | --------------------------------------------------------------- |
-| Framework        | NestJS 12.1.2 on Express, TypeORM 1.1.2 (`pg` 8.23.1)           |
-| Dev runtime      | `tsx watch src/main.ts` (`pnpm --filter @ogroniedu/api dev`)    |
-| Prod runtime     | `tsc` build → `node dist/main.js` (Docker/compose)              |
-| Port / namespace | `:4000`; Socket.IO gateway namespace `ws://:4000/notifications` |
-| Docs             | Swagger UI at `/api/docs`                                       |
+| Item             | Value                                                                                    |
+| ---------------- | ---------------------------------------------------------------------------------------- |
+| Framework        | NestJS 12.1.2 on Express, TypeORM 1.1.2 (`pg` 8.23.1)                                    |
+| Dev runtime      | `tsx watch src/main.ts` (audit-time; **as-built:** `node scripts/dev.mjs` — see §1 note) |
+| Prod runtime     | `tsc` build → `node dist/main.js` (Docker/compose)                                       |
+| Port / namespace | `:4000`; Socket.IO gateway namespace `ws://:4000/notifications`                          |
+| Docs             | Swagger UI at `/api/docs`                                                                |
+
+**As-built (PG-1 `6e87fc5`, watcher scoped in `83cf532`).** `pnpm --filter @ogroniedu/api dev`
+now runs `node scripts/dev.mjs` = `tsc -p tsconfig.build.json --watch` +
+`node --watch --watch-path=dist dist/main.js`. Dev therefore executes the same compiled
+artifact as production (decorator metadata present; `tsx` removed from the dev path — see §5),
+and the watcher only reacts to `dist` emits, so unrelated `node_modules` churn cannot restart
+the API mid-request.
 
 Boot order (`apps/api/src/main.ts`): `cookieParser()` → CORS (`FRONTEND_URL`, comma-separated,
 `credentials: true`) → global `AllExceptionsFilter` → global `ResponseMetaInterceptor` →
@@ -93,7 +102,7 @@ What the implementation actually does:
    the remaining array-returning GETs return bare `{success:true,data:[…]}` — already scoped as
    Phase 24 WS1, not re-litigated here.
 
-## 5. F-3 (High) — DTO validation is silently disabled in dev (`tsx` emits no decorator metadata)
+## 5. F-3 (High) — DTO validation is silently disabled in dev (`tsx` emits no decorator metadata) — resolved by PG-1
 
 **Expected behavior.** `main.ts:32-38` installs a global `ValidationPipe` with
 `whitelist`, `transform`, `forbidNonWhitelisted`. DTOs across `apps/api/src/modules/**/dto` carry
@@ -131,9 +140,23 @@ so neither caught it.
 - It is invisible in CI: `tsc`, unit tests, and docs validation all pass; only a _live_ bad-input
   probe reveals it. Nothing in the current test suites exercises the HTTP validation boundary.
 
-**Mitigation direction (for the Pre-Gate, not implemented here).** Make the dev runtime emit
-metadata (or run dev against the built output / a loader that emits it), then add one live
-validation-boundary smoke test (bad DTO → 400) that fails if metadata is missing.
+**Mitigation direction (as recorded at audit time).** Make the dev runtime emit metadata (or run
+dev against the built output / a loader that emits it), then add one live validation-boundary
+smoke test (bad DTO → 400) that fails if metadata is missing.
+
+**As-built (PG-1 `6e87fc5`, verified 2026-10-16).** The dev runtime now runs the tsc-built
+output (`scripts/dev.mjs`; §1), so `design:paramtypes` is present and the global
+`ValidationPipe` is active in dev. Live probe matrix on the final code — 6/6 as expected:
+empty login body, `identifier:"a"` (`@MinLength(3)`), unknown property, malformed JSON, and a
+non-UUID booking `tutorId` all return **400 VALIDATION_ERROR with field details** (previously
+500/401); valid demo login → 200. Boundary coverage was added:
+`apps/api/test/validation-boundary.spec.ts` (4 tests, real HTTP boundary with the real global
+pipe config and `AuthController`). The same commit hardened
+`http-exception.filter.ts` (truthful 4xx statuses on non-`HttpException` errors are no longer
+re-cast to 500; a `requestId` is generated when the parser fails before `RequestIdMiddleware`;
+`entity.parse.failed` → "The request body is not valid JSON."). Because dev now runs the built
+artifact, the audit-time note below that "E2E runs against the dev `tsx` server" no longer
+holds; the dev watcher was later scoped to `dist` (`83cf532`).
 
 ## 6. Verified live this session (beyond F-3)
 

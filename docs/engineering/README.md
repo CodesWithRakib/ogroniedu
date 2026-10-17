@@ -23,6 +23,15 @@ However, this independent audit **contradicts two Phase-23 "green" claims** and 
 | F-7 | Admin-console nav is shown to `support_agent` / `compliance_reviewer` / pure `super_admin`, but `/dashboard/admin/*` gates on role `admin` only (dead links / redirects)                                                                                                                                                                                                                                           | Medium                    | `navigation.ts:266-323`, `RoleDashboardLayout.tsx:27` |
 | F-8 | Repo hygiene (largely resolved mid-session): at audit start `docs/` was `.gitignore`d (only **14** tracked docs files); the owner's commit `a90fd06` removed the `docs` ignore and tracked **121** docs files. Residual: `prompts/` still ignored (intended?); Playwright artifact `apps/web/test-results/.last-run.json` **tracked in git**; this audit set (`02`–`09`) currently untracked, pending owner commit | Low–Medium                | `.gitignore`, `git show a90fd06`, `git ls-files`      |
 
+**As-built status (Phase 24 Pre-Gate, 2026-10-16 → 2026-10-17).** All six Pre-Gate steps were
+implemented after this audit, one commit per step: F-3 → PG-1 `6e87fc5` (+ watcher scoping
+`83cf532`), F-4 → PG-2 `454ac2d`, F-1/F-2 → PG-3 `72ccdb0` (+ `59477d6` after later feature
+work), F-6 → PG-4 `6a41dbe`, F-7/R-1 → PG-5 `65b14df`, SEC-6 → PG-6 `a4b1471`; SEC-1 and the
+SEC-4 subset of F-5 landed upstream in the owner's `b3b29e3`. As-built baselines and per-step
+outcomes: `06` §0 and `08` §2.1. As-built E2E: **47/47 green** at HEAD (the suite grew 45 → 47
+with the owner's specs; `06` §0). F-8 remains owner-tracked (`08` §6): the audit set itself is
+committed (`4b027a0`); the `prompts/` and Playwright-artifact questions are unchanged.
+
 **Live E2E baseline (staging-style dev stack, seeded demo accounts): 45 tests → 43 passed, 1 failed, 1 did not run.** The single failure is fully explained by F-3 + F-4 (root-caused with API stack trace and a deterministic browser reproduction).
 
 ### Verdict
@@ -48,4 +57,4 @@ However, this independent audit **contradicts two Phase-23 "green" claims** and 
 | `08-execution-roadmap.md` | Phase status reconciliation, Pre-Gate P0 list, Phase 24 mapping, risk register, decision log    |
 | `09-evidence-appendix.md` | Raw command outputs and reproduction scripts (paths + excerpts)                                 |
 
-> Note: docs are tracked since the owner's `a90fd06` commit (the old `docs` gitignore entry was removed). This engineering set (`02`–`09`) is currently **untracked** and should be committed after owner review. The working tree is otherwise clean (only `docs/engineering/*` changes).
+> Note: docs are tracked since the owner's `a90fd06` commit (the old `docs` gitignore entry was removed); this engineering set (`02`–`09`) is committed since `4b027a0`. As-built updates from the Phase 24 Pre-Gate are marked "As-built" and cite their commits.
