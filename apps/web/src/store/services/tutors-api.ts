@@ -1,6 +1,13 @@
 import { baseApi, type ApiSuccessEnvelope } from '../base-api';
 import { toQueryString } from '@/lib/api/query';
 import type { TutoringMode } from '@/features/bookings/types/booking.types';
+import type {
+  TutorVerificationLevel,
+  VerificationDocumentReviewStatus,
+  VerificationDocumentType,
+  VerificationLevelStatus,
+  VerificationNextAction,
+} from '@ogroniedu/contracts';
 
 export interface TutorSubject {
   id: string;
@@ -131,6 +138,91 @@ export interface TutorOwnProfile {
   [key: string]: unknown;
 }
 
+/* -------------------------------------------------------------------------- */
+/* Three-level verification dossier (Phase 02)                                */
+/* -------------------------------------------------------------------------- */
+
+export interface VerificationLevelRequirementsView {
+  level: TutorVerificationLevel;
+  requiredDocumentTypes: VerificationDocumentType[];
+  anyOfDocumentTypes: VerificationDocumentType[];
+  missingRequiredDocumentTypes: VerificationDocumentType[];
+  anyOfSatisfied: boolean;
+  complete: boolean;
+  nextAction: VerificationNextAction;
+}
+
+export interface VerificationDocumentView {
+  id: string;
+  level: TutorVerificationLevel;
+  documentType: VerificationDocumentType;
+  fileAssetId: string;
+  originalFilename?: string | null;
+  mediaType?: string | null;
+  sizeBytes?: number | null;
+  reviewStatus: VerificationDocumentReviewStatus;
+  reasonCode: string | null;
+  expiresOn: string | null;
+  createdAt: string;
+}
+
+export interface VerificationLevelView {
+  id: string;
+  level: TutorVerificationLevel;
+  status: VerificationLevelStatus;
+  assignedReviewerUserId: string | null;
+  decisionReasonCode: string | null;
+  /** Applicant-facing feedback only. */
+  applicantFeedback: string | null;
+  expiresAt: string | null;
+  decidedAt: string | null;
+  lastSubmittedAt: string | null;
+  firstSubmittedAt?: string | null;
+  submissionCount?: number;
+  policyVersion: string;
+  version: number;
+  requirements: VerificationLevelRequirementsView;
+  documents: VerificationDocumentView[];
+}
+
+export interface TutorVerificationDossier {
+  profile: {
+    userId: string;
+    headline?: string | null;
+    bio?: string | null;
+    yearsExperience?: number | null;
+    teachingModes?: string[];
+    hourlyRateMinor?: string | null;
+    currency?: string;
+    verificationStatus: string;
+    publicationStatus: string;
+    verifiedAt?: string | null;
+    verificationExpiresAt?: string | null;
+    verificationPolicyVersion?: string | null;
+  };
+  user: {
+    id: string;
+    displayName: string;
+    email?: string | null;
+    phoneE164?: string | null;
+  } | null;
+  levels: VerificationLevelView[];
+  policyVersion?: string | null;
+  expiringDocuments?: Array<{
+    documentId: string;
+    level: TutorVerificationLevel;
+    documentType: VerificationDocumentType;
+    expiresOn: string | null;
+  }>;
+}
+
+export interface AddVerificationDocumentRequest {
+  level: TutorVerificationLevel;
+  documentType: VerificationDocumentType;
+  fileAssetId: string;
+  expiresOn?: string;
+}
+
 export const tutorsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     searchTutors: builder.query<SearchTutorsResponse, SearchTutorsParams | void>({
@@ -211,6 +303,52 @@ export const tutorsApi = baseApi.injectEndpoints({
       query: (body) => ({ url: '/api/v1/tutors/me/availability', method: 'PUT', body }),
       invalidatesTags: [{ type: 'TutorProfile', id: 'ME' }],
     }),
+
+    /* ---------------------------------------------------------------------- */
+    /* Applicant dossier                                                      */
+    /* ---------------------------------------------------------------------- */
+
+    getOwnVerificationDossier: builder.query<ApiSuccessEnvelope<TutorVerificationDossier>, void>({
+      query: () => '/api/v1/tutors/me/verification',
+      providesTags: [{ type: 'TutorVerification', id: 'ME' }],
+    }),
+    addVerificationDocument: builder.mutation<
+      ApiSuccessEnvelope<{
+        document: VerificationDocumentView;
+        levelRecord: VerificationLevelView;
+      }>,
+      AddVerificationDocumentRequest
+    >({
+      query: (body) => ({ url: '/api/v1/tutors/me/verification/documents', method: 'POST', body }),
+      invalidatesTags: [{ type: 'TutorVerification', id: 'ME' }],
+    }),
+    deleteVerificationDocument: builder.mutation<ApiSuccessEnvelope<null>, string>({
+      query: (id) => ({
+        url: `/api/v1/tutors/me/verification/documents/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'TutorVerification', id: 'ME' }],
+    }),
+    submitVerificationLevel: builder.mutation<ApiSuccessEnvelope<VerificationLevelView>, string>({
+      query: (level) => ({
+        url: `/api/v1/tutors/me/verification/levels/${level}/submit`,
+        method: 'POST',
+      }),
+      invalidatesTags: [
+        { type: 'TutorVerification', id: 'ME' },
+        { type: 'TutorProfile', id: 'ME' },
+      ],
+    }),
+    reopenVerificationLevel: builder.mutation<ApiSuccessEnvelope<VerificationLevelView>, string>({
+      query: (level) => ({
+        url: `/api/v1/tutors/me/verification/levels/${level}/reopen`,
+        method: 'POST',
+      }),
+      invalidatesTags: [
+        { type: 'TutorVerification', id: 'ME' },
+        { type: 'TutorProfile', id: 'ME' },
+      ],
+    }),
   }),
   overrideExisting: false,
 });
@@ -229,4 +367,9 @@ export const {
   useDeleteTutorSubjectMutation,
   useSetTutorServiceAreasMutation,
   useSetTutorAvailabilityMutation,
+  useGetOwnVerificationDossierQuery,
+  useAddVerificationDocumentMutation,
+  useDeleteVerificationDocumentMutation,
+  useSubmitVerificationLevelMutation,
+  useReopenVerificationLevelMutation,
 } = tutorsApi;

@@ -26,7 +26,10 @@ import {
   SetServiceAreasDto,
   SetAvailabilityDto,
   SearchTutorsQueryDto,
+  AddVerificationDocumentDto,
 } from './dto';
+import { TutorVerificationLevelPipe } from './pipes/verification-level.pipe';
+import type { TutorVerificationLevel } from '@ogroniedu/contracts';
 
 @Controller('api/v1/tutors')
 export class TutorsController {
@@ -104,6 +107,83 @@ export class TutorsController {
       success: true,
       message: 'Profile successfully submitted for verification review.',
       data: profile,
+    };
+  }
+
+  // --------------------------------------------------------------------------
+  // Three-level verification dossier (Phase 02)
+  // --------------------------------------------------------------------------
+
+  /** Own dossier: per-level status, evidence, reviewer feedback, next actions. */
+  @Get('me/verification')
+  @UseGuards(AuthGuard)
+  async getOwnVerificationDossier(@CurrentUser() user: AuthenticatedUser) {
+    const data = await this.tutorsService.getOwnDossier(user.id);
+    return {
+      success: true,
+      data,
+    };
+  }
+
+  /** Registers an uploaded private file asset as level evidence. */
+  @Post('me/verification/documents')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.CREATED)
+  async addVerificationDocument(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: AddVerificationDocumentDto,
+  ) {
+    const data = await this.tutorsService.addVerificationDocument(user.id, dto.level, dto);
+    return {
+      success: true,
+      data,
+    };
+  }
+
+  /** Soft-deletes evidence while retaining its review trail. */
+  @Delete('me/verification/documents/:id')
+  @UseGuards(AuthGuard)
+  async deleteVerificationDocument(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    await this.tutorsService.deleteVerificationDocument(user.id, id);
+    return {
+      success: true,
+      message: 'Evidence removed successfully.',
+      data: null,
+    };
+  }
+
+  /** Submits one level for review after server-side requirement validation. */
+  @Post('me/verification/levels/:level/submit')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async submitVerificationLevel(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('level', TutorVerificationLevelPipe) level: TutorVerificationLevel,
+  ) {
+    const data = await this.tutorsService.submitVerificationLevel(user.id, level);
+    return {
+      success: true,
+      message: `The ${level} verification level was submitted for review.`,
+      data,
+    };
+  }
+
+  /** Re-verification: reopens an approved/expired level for fresh evidence. */
+  @Post('me/verification/levels/:level/reopen')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async reopenVerificationLevel(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('level', TutorVerificationLevelPipe) level: TutorVerificationLevel,
+  ) {
+    const data = await this.tutorsService.reopenVerificationLevel(user.id, level);
+    return {
+      success: true,
+      message: `The ${level} verification level was reopened for re-verification.`,
+      data,
     };
   }
 

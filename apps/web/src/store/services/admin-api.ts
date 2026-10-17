@@ -1,6 +1,12 @@
 import { baseApi, type ApiSuccessEnvelope } from '../base-api';
 import { toQueryString } from '@/lib/api/query';
 import type { OffsetCollectionEnvelope } from '@/lib/api/contract';
+import type {
+  TutorVerificationLevel,
+  VerificationLevelStatus,
+  VerificationDocumentType,
+} from '@ogroniedu/contracts';
+import type { VerificationLevelView } from './tutors-api';
 
 export interface AdminDashboardMetrics {
   pendingTutorVerifications: number;
@@ -60,6 +66,120 @@ export interface ReviewTutorRequest {
   decision: TutorReviewDecision;
   reasonCode: string;
   internalNotes?: string;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Three-level verification queue (Phase 02)                                  */
+/* -------------------------------------------------------------------------- */
+
+export type VerificationQueueAssignment = 'any' | 'assigned_to_me' | 'unassigned';
+export type VerificationQueueSort = 'oldest_waiting' | 'newest' | 'expiring_soon';
+
+/** One row per level awaiting a decision. */
+export interface VerificationQueueRow {
+  tutorUserId: string;
+  displayName: string;
+  email?: string | null;
+  phoneE164?: string | null;
+  headline?: string | null;
+  accountStatus?: string | null;
+  level: TutorVerificationLevel;
+  levelStatus: VerificationLevelStatus;
+  levelVersion: number;
+  assignedReviewerUserId: string | null;
+  assignedToMe: boolean;
+  overallVerificationStatus: string;
+  publicationStatus: string;
+  submissionCount: number;
+  submittedAt: string | null;
+  expiresAt: string | null;
+  pendingDocuments: number;
+  canDecide: boolean;
+}
+
+export interface VerificationQueueParams {
+  status?: VerificationLevelStatus;
+  overallStatus?: VerificationLevelStatus;
+  level?: TutorVerificationLevel;
+  assignment?: VerificationQueueAssignment;
+  q?: string;
+  submittedFrom?: string;
+  submittedTo?: string;
+  sort?: VerificationQueueSort;
+  page?: number;
+  pageSize?: number;
+}
+
+export interface VerificationDossierLevel extends VerificationLevelView {
+  internalNotes: string | null;
+  decidedByUserId: string | null;
+}
+
+/** Reviewer dossier: adds reviewer-only fields the applicant payload omits. */
+export interface VerificationReviewDossier {
+  profile: {
+    userId: string;
+    headline?: string | null;
+    bio?: string | null;
+    yearsExperience?: number | null;
+    verificationStatus: string;
+    publicationStatus: string;
+    [key: string]: unknown;
+  };
+  user: {
+    id: string;
+    displayName: string;
+    email?: string | null;
+    phoneE164?: string | null;
+    status: string;
+    createdAt: string;
+  } | null;
+  reviewHistory: Array<{
+    id: string;
+    reviewerUserId: string;
+    decision: string;
+    reasonCode: string;
+    internalNotes: string | null;
+    applicantFeedback?: string | null;
+    level?: TutorVerificationLevel | null;
+    fromStatus?: string | null;
+    toStatus?: string | null;
+    createdAt: string;
+  }>;
+  levels?: VerificationDossierLevel[];
+  verificationPolicyVersion?: string;
+}
+
+export interface DecideVerificationLevelRequest {
+  tutorId: string;
+  level: TutorVerificationLevel;
+  decision: TutorReviewDecision;
+  reasonCode: string;
+  /** Shown to the applicant. Required for reject / needs_information / suspend. */
+  applicantFeedback?: string;
+  /** Reviewer-only. Never rendered to the applicant. */
+  internalNotes?: string;
+  /** Optimistic concurrency guard: the level version the reviewer loaded. */
+  expectedVersion?: number;
+}
+
+export interface VerifyVerificationDocumentRequest {
+  tutorId: string;
+  documentId: string;
+  reviewStatus: 'approved' | 'rejected';
+  reasonCode?: string;
+}
+
+export interface VerificationDocumentAccess {
+  document: {
+    id: string;
+    level: TutorVerificationLevel;
+    documentType: VerificationDocumentType;
+    fileAssetId: string;
+    reviewStatus: string;
+  };
+  signedAccessUrl: string;
+  expiresAt: string;
 }
 
 /** Shared serializer (replaces the former per-file toQuery duplicate). */
@@ -207,6 +327,73 @@ export const adminApi = baseApi.injectEndpoints({
         { type: 'SupportTicket', id: 'LIST' },
       ],
     }),
+    getVerificationQueue: builder.query<
+      OffsetCollectionEnvelope<VerificationQueueRow>,
+      VerificationQueueParams | void
+    >({
+      query: (params) =>
+        `/api/v1/admin/tutors/verification/queue${toQuery(
+          (params ?? {}) as Record<string, string | number | undefined>,
+        )}`,
+      providesTags: [{ type: 'TutorVerification', id: 'LIST' }],
+    }),
+    getVerificationDossier: builder.query<ApiSuccessEnvelope<VerificationReviewDossier>, string>({
+      query: (tutorId) => `/api/v1/admin/tutors/${tutorId}/review-dossier`,
+      providesTags: (_r, _e, tutorId) => [{ type: 'TutorVerification', id: tutorId }],
+    }),
+    decideVerificationLevel: builder.mutation<
+      ApiSuccessEnvelope<{
+        level: VerificationDossierLevel;
+        profile: { verificationStatus: string };
+      }>,
+      DecideVerificationLevelRequest
+    >({
+      query: ({ tutorId, level, ...body }) => ({
+        url: `/api/v1/admin/tutors/${tutorId}/verification/levels/${level}/decision`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { tutorId }) => [
+        { type: 'TutorVerification', id: 'LIST' },
+        { type: 'TutorVerification', id: tutorId },
+        { type: 'AdminDashboard', id: 'SUMMARY' },
+      ],
+    }),
+    verifyVerificationDocument: builder.mutation<
+      ApiSuccessEnvelope<unknown>,
+      VerifyVerificationDocumentRequest
+    >({
+      query: ({ tutorId, documentId, ...body }) => ({
+        url: `/api/v1/admin/tutors/${tutorId}/verification/documents/${documentId}/verify`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { tutorId }) => [
+        { type: 'TutorVerification', id: tutorId },
+        { type: 'TutorVerification', id: 'LIST' },
+      ],
+    }),
+    assignVerificationLevel: builder.mutation<
+      ApiSuccessEnvelope<unknown>,
+      { tutorId: string; level: TutorVerificationLevel; reviewerUserId?: string }
+    >({
+      query: ({ tutorId, level, ...body }) => ({
+        url: `/api/v1/admin/tutors/${tutorId}/verification/levels/${level}/assign`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { tutorId }) => [
+        { type: 'TutorVerification', id: 'LIST' },
+        { type: 'TutorVerification', id: tutorId },
+      ],
+    }),
+    getVerificationDocumentAccess: builder.query<
+      ApiSuccessEnvelope<VerificationDocumentAccess>,
+      { tutorId: string; documentId: string }
+    >({
+      query: ({ tutorId, documentId }) =>
+        `/api/v1/admin/tutors/${tutorId}/verification/documents/${documentId}/access`,
+    }),
     getPendingTutors: builder.query<ApiSuccessEnvelope<PendingTutorRow[]>, void>({
       query: () => '/api/v1/admin/tutors/pending',
       providesTags: [{ type: 'TutorVerification', id: 'LIST' }],
@@ -265,6 +452,13 @@ export const {
   useListSupportTicketsQuery,
   useUpdateSupportTicketMutation,
   useGetPendingTutorsQuery,
+  useGetVerificationQueueQuery,
+  useGetVerificationDossierQuery,
+  useLazyGetVerificationDossierQuery,
+  useDecideVerificationLevelMutation,
+  useVerifyVerificationDocumentMutation,
+  useAssignVerificationLevelMutation,
+  useLazyGetVerificationDocumentAccessQuery,
   useLazyGetTutorReviewDossierQuery,
   useReviewTutorMutation,
   useVerifyTutorQualificationMutation,

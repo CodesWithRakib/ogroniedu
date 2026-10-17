@@ -85,9 +85,9 @@ export function AdminDashboardView({
   initialFeatureFlags = [],
   initialAuditLogs = [],
   initialTickets = [],
-  initialPendingTutors = [],
-  pendingTutorsLoading = false,
-  pendingTutorsError = null,
+  initialPendingTutors: _initialPendingTutors = [],
+  pendingTutorsLoading: _pendingTutorsLoading = false,
+  pendingTutorsError: _pendingTutorsError = null,
   userSearch = '',
   onUserSearchChange,
   userStatus = 'all',
@@ -103,8 +103,8 @@ export function AdminDashboardView({
   onUpdateSetting,
   onUpdateFeatureFlag,
   onUpdateTicketStatus,
-  onReviewTutor,
-  onRefetchPendingTutors,
+  onReviewTutor: _onReviewTutor,
+  onRefetchPendingTutors: _onRefetchPendingTutors,
 }: AdminDashboardProps & {
   initialTab?: import('@/features/admin').AdminTabKey;
   onReviewTutor: (input: {
@@ -256,15 +256,7 @@ export function AdminDashboardView({
       {view.activeTab === 'overview' && (
         <AdminOverviewTab reconciliation={actions.reconciliation} />
       )}
-      {view.activeTab === 'verification' && (
-        <AdminVerificationTab
-          tutors={initialPendingTutors}
-          isLoading={pendingTutorsLoading}
-          queryError={pendingTutorsError}
-          onRetry={onRefetchPendingTutors}
-          onReview={onReviewTutor}
-        />
-      )}
+      {view.activeTab === 'verification' && <AdminVerificationTab />}
       {view.activeTab === 'users' && (
         <AdminUsersTab
           users={actions.users}

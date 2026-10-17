@@ -206,4 +206,34 @@ export class FilesService {
       expiresAt: token.expiresAt,
     });
   }
+
+  /**
+   * Issues a short-lived signed URL for a private file **without** making a role
+   * decision.
+   *
+   * Only domain services that have already authorized the actor may call this
+   * (see `TutorVerificationService.getDocumentAccess`, which enforces dossier
+   * ownership/assignment before delegating). It exists so reviewer roles such as
+   * `compliance_reviewer` never get blanket read access to the generic
+   * `/files/:id/access` route.
+   */
+  async issueSignedAccess(
+    fileId: string,
+    actorUserId: string,
+    ttlSeconds = 300,
+  ): Promise<{
+    file: FileAssetEntity;
+    signedUrl: string;
+    expiresAt: string;
+  }> {
+    const file = await this.fileRepo.findOne({ where: { id: fileId } });
+    if (!file || file.deletedAt) {
+      throw new NotFoundException(`File asset not found: ${fileId}`);
+    }
+    if (file.visibility !== 'private') {
+      throw new BadRequestException('Signed access is only issued for private evidence files.');
+    }
+    const token = this.generateSignedAccessToken(file.id, actorUserId, ttlSeconds);
+    return { file, signedUrl: token.signedUrl, expiresAt: token.expiresAt };
+  }
 }

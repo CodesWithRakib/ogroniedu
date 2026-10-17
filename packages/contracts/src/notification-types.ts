@@ -10,7 +10,16 @@ export type NotificationCategory = (typeof NotificationCategories)[number];
 export const NotificationPriorities = ['urgent', 'high', 'normal', 'low'] as const;
 export type NotificationPriority = (typeof NotificationPriorities)[number];
 
-export const NotificationRoles = ['guardian', 'student', 'tutor', 'admin', 'super_admin'] as const;
+export const NotificationRoles = [
+  'guardian',
+  'student',
+  'tutor',
+  'admin',
+  'super_admin',
+  // Staff role that owns tutor dossier review (Phase 02). Addressed directly by
+  // user id; no implicit super_admin privileges are implied by this entry.
+  'compliance_reviewer',
+] as const;
 export type NotificationRole = (typeof NotificationRoles)[number];
 
 export const NotificationDeliveryChannels = ['in_app', 'email', 'sms', 'push', 'whatsapp'] as const;
@@ -34,6 +43,14 @@ export const NotificationEventTypes = [
   'tutor.verified',
   'tutor.needs_information',
   'tutor.rejected',
+  'tutor.verification_submitted',
+  'tutor.verification_under_review',
+  'tutor.level_approved',
+  'tutor.level_decided',
+  'tutor.verification_suspended',
+  'tutor.verification_expired',
+  'tutor.document_expiring',
+  'tutor.review_assigned',
   'safety.alert',
   'tutor.replacement',
   'dispute.opened',

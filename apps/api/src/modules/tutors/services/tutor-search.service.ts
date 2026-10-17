@@ -2,6 +2,7 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { TutorProfileEntity } from '../entities/tutor-profile.entity';
+import { isDiscoveryEligible } from './verification-state-machine';
 import { UserEntity } from '../../auth/entities/user.entity';
 import { SubjectEntity } from '../../taxonomy/entities/subject.entity';
 import { EducationLevelEntity } from '../../taxonomy/entities/education-level.entity';
@@ -36,16 +37,23 @@ export class TutorSearchService {
       where: { userId: tutorUserId },
       relations: { qualifications: true, subjects: true, serviceAreas: true, availabilities: true },
     });
-    if (
-      !profile ||
-      profile.publicationStatus !== 'published' ||
-      profile.verificationStatus !== 'approved'
-    ) {
+    if (!profile) {
       throw new NotFoundException('Tutor profile is not published or verified.');
     }
     const user = await this.userRepo.findOne({ where: { id: profile.userId } });
-    if (!user || user.status !== 'active') {
-      throw new NotFoundException('Tutor account is inactive or not found.');
+    // Expired, revoked or unpublished verification must never surface publicly,
+    // even if a stale `verification_status` value survived a failed sweep.
+    if (
+      !user ||
+      !isDiscoveryEligible({
+        publicationStatus: profile.publicationStatus,
+        verificationStatus: profile.verificationStatus,
+        verificationExpiresAt: profile.verificationExpiresAt,
+        accountStatus: user.status,
+        deletedAt: user.deletedAt,
+      })
+    ) {
+      throw new NotFoundException('Tutor profile is not published or verified.');
     }
     const badges: string[] = ['verified_tutor'];
     const approvedQualifications = (profile.qualifications || []).filter(
@@ -140,7 +148,16 @@ export class TutorSearchService {
       userIds.length > 0 ? await this.userRepo.find({ where: { id: In(userIds) } }) : [];
     let candidates = publishedProfiles.filter((p) => {
       const u = users.find((usr) => usr.id === p.userId);
-      return u && u.status === 'active' && !u.deletedAt;
+      return (
+        !!u &&
+        isDiscoveryEligible({
+          publicationStatus: p.publicationStatus,
+          verificationStatus: p.verificationStatus,
+          verificationExpiresAt: p.verificationExpiresAt,
+          accountStatus: u.status,
+          deletedAt: u.deletedAt,
+        })
+      );
     });
     if (query.q && query.q.trim()) {
       const term = query.q.trim().toLowerCase();

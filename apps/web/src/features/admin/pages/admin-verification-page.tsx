@@ -1,16 +1,13 @@
 'use client';
 
 import React from 'react';
-import { useTranslations } from 'next-intl';
 import { ShieldCheck, FileCheck2, Clock } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
-import { LoadingSpinner } from '@/components/ui';
 import type { Locale } from '@/lib/i18n';
 import { useAdminDashboard } from '../hooks/use-admin-dashboard';
 import { AdminVerificationTab } from '../components/tabs/adminVerificationTab';
 
 export function AdminVerificationPage({ locale }: { locale: Locale }) {
-  const t = useTranslations('admin');
   const admin = useAdminDashboard(locale);
 
   const pendingCount = admin.pendingTutors.length;
@@ -23,7 +20,9 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
           <div>
             <div className="flex items-center space-x-3">
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-white">
-                {locale === 'bn' ? 'শিক্ষক যাচাই ও সনদ পর্যালোচনা' : 'Tutor Verification & Compliance'}
+                {locale === 'bn'
+                  ? 'শিক্ষক যাচাই ও সনদ পর্যালোচনা'
+                  : 'Tutor Verification & Compliance'}
               </h1>
               <span className="px-3 py-1 text-xs font-bold rounded-full bg-cyan-500/15 text-cyan-400 border border-cyan-500/30">
                 {pendingCount} {locale === 'bn' ? 'অপেক্ষমান' : 'Pending'}
@@ -82,14 +81,7 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
 
         {/* Verification Queue Card */}
         <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4">
-          <AdminVerificationTab
-            tutors={admin.pendingTutors}
-            isLoading={admin.pendingTutorsLoading}
-            queryError={admin.pendingTutorsError}
-            onRetry={admin.refetchPendingTutors}
-            onReview={admin.onReviewTutor}
-            onVerifyQualification={admin.onVerifyQualification}
-          />
+          <AdminVerificationTab />
         </div>
       </div>
     </AdminLayout>

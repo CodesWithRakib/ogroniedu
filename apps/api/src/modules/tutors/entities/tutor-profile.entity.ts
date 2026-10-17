@@ -8,6 +8,7 @@ import {
   JoinColumn,
   OneToMany,
 } from 'typeorm';
+import type { TutorVerificationStatus } from '@ogroniedu/contracts';
 import { UserEntity } from '../../auth/entities/user.entity';
 import { TutorQualificationEntity } from './tutor-qualification.entity';
 import { TutorSubjectEntity } from './tutor-subject.entity';
@@ -15,15 +16,11 @@ import { TutorServiceAreaEntity } from './tutor-service-area.entity';
 import { TutorAvailabilityEntity } from './tutor-availability.entity';
 
 export type TeachingMode = 'in_person' | 'online' | 'hybrid';
-export type VerificationStatus =
-  | 'not_submitted'
-  | 'submitted'
-  | 'under_review'
-  | 'needs_information'
-  | 'approved'
-  | 'rejected'
-  | 'suspended'
-  | 'expired';
+/**
+ * Profile-level status is DERIVED from `tutor_verification_levels` (Phase 02).
+ * The union mirrors the shared contract so schema, API and UI cannot drift.
+ */
+export type VerificationStatus = TutorVerificationStatus;
 export type PublicationStatus = 'draft' | 'published' | 'unpublished';
 
 @Entity('tutor_profiles')
@@ -60,6 +57,20 @@ export class TutorProfileEntity {
 
   @Column({ name: 'profile_updated_at', type: 'timestamptz', nullable: true })
   profileUpdatedAt!: Date | null;
+
+  /** Timestamp of the last transition into `approved` (all levels approved). */
+  @Column({ name: 'verified_at', type: 'timestamptz', nullable: true })
+  verifiedAt!: Date | null;
+
+  /**
+   * Earliest expiry across approved levels that carry a validity policy.
+   * Null means "no expiry policy applies" — never "valid forever by law".
+   */
+  @Column({ name: 'verification_expires_at', type: 'timestamptz', nullable: true })
+  verificationExpiresAt!: Date | null;
+
+  @Column({ name: 'verification_policy_version', type: 'text', nullable: true })
+  verificationPolicyVersion!: string | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;

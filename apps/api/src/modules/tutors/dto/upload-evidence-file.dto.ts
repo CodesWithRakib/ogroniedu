@@ -1,9 +1,23 @@
 import { IsString, IsNotEmpty, IsIn, IsInt, Min, Max, IsOptional } from 'class-validator';
+import { VERIFICATION_EVIDENCE_PURPOSE } from '../constants/verification-policy.constants';
+
+/**
+ * Purposes accepted by the evidence upload endpoint. `tutor_verification_evidence`
+ * is the Phase-02 dossier purpose; the legacy values are kept so existing
+ * qualification uploads keep working.
+ */
+export const ALLOWED_EVIDENCE_PURPOSES: readonly string[] = [
+  VERIFICATION_EVIDENCE_PURPOSE,
+  'nid',
+  'academic_certificate',
+  'degree',
+  'other_evidence',
+];
 
 export class UploadEvidenceFileDto {
   @IsNotEmpty()
   @IsString()
-  @IsIn(['nid', 'academic_certificate', 'degree', 'other_evidence'])
+  @IsIn([...ALLOWED_EVIDENCE_PURPOSES])
   purpose!: string;
 
   @IsNotEmpty()

@@ -9,3 +9,4 @@ export * from './pages/tutor-details-page';
 export * from './pages/tutor-verification-page';
 export * from './pages/tutor-earnings-page';
 export * from './components/qualificationUploadCard';
+export * from './components/verificationLevelCard';

@@ -5,6 +5,7 @@ export * from './add-tutor-subject.dto';
 export * from './set-service-areas.dto';
 export * from './set-availability.dto';
 export * from './admin-review-tutor.dto';
+export * from './verification-dossier.dto';
 export * from './upload-evidence-file.dto';
 export * from './tutor-public-profile.dto';
 export * from './search-tutors-query.dto';

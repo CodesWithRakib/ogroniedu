@@ -11,8 +11,8 @@ import {
   AdminBookingItem,
   AdminReconciliationData,
 } from '../src/components/admin/AdminDashboardView';
-import { AdminVerificationTab } from '../src/features/admin/components/tabs/adminVerificationTab';
-import type { PendingTutorItem } from '../src/features/admin/types/admin.types';
+import { VerificationQueueTable } from '../src/features/admin/components/tabs/adminVerificationTab';
+import type { VerificationQueueRow } from '../src/store/services/admin-api';
 import { getDictionary } from '../src/lib/i18n';
 
 function renderWithProviders(node: React.ReactElement): string {
@@ -159,45 +159,52 @@ describe('Admin Operations & Control Center Frontend Tests (Phase 14)', () => {
     );
   });
 
-  it('should render the verification queue with pending tutor rows', () => {
-    const pending: PendingTutorItem[] = [
+  it('should render the verification queue with one row per pending level', () => {
+    const pending: VerificationQueueRow[] = [
       {
-        userId: 'tutor-pending-1',
+        tutorUserId: 'tutor-pending-1',
         displayName: 'Pending Tutor',
         email: 'pending@example.com',
         phoneE164: null,
         headline: 'Physics Tutor',
-        verificationStatus: 'submitted',
+        accountStatus: 'active',
+        level: 'identity',
+        levelStatus: 'submitted',
+        levelVersion: 2,
+        assignedReviewerUserId: null,
+        assignedToMe: false,
+        overallVerificationStatus: 'submitted',
         publicationStatus: 'draft',
-        qualificationsCount: 2,
+        submissionCount: 1,
         submittedAt: '2026-10-14T10:00:00Z',
+        expiresAt: null,
+        pendingDocuments: 2,
+        canDecide: true,
       },
     ];
     const html = renderWithProviders(
-      React.createElement(AdminVerificationTab, {
-        tutors: pending,
-        isLoading: false,
-        queryError: null,
-        onRetry: () => {},
-        onReview: async () => {},
+      React.createElement(VerificationQueueTable, {
+        rows: pending,
+        locale: 'bn',
+        onOpen: () => {},
       }),
     );
     expect(html).toContain('Pending Tutor');
-    expect(html).toContain('verification-row-tutor-pending-1');
-    expect(html).toContain('review-tutor-btn-tutor-pending-1');
+    expect(html).toContain('verification-row-tutor-pending-1-identity');
+    expect(html).toContain('review-tutor-btn-tutor-pending-1-identity');
+    expect(html).toContain('পরিচয় যাচাইকরণ');
+    expect(html).toContain('জমা দেওয়া হয়েছে');
   });
 
   it('should render the verification empty state when the queue is clear', () => {
     const html = renderWithProviders(
-      React.createElement(AdminVerificationTab, {
-        tutors: [],
-        isLoading: false,
-        queryError: null,
-        onRetry: () => {},
-        onReview: async () => {},
+      React.createElement(VerificationQueueTable, {
+        rows: [],
+        locale: 'bn',
+        onOpen: () => {},
       }),
     );
-    expect(html).toContain('verification-tab-content');
+    expect(html).toContain('পর্যালোচনার অপেক্ষায় কিছু নেই');
     expect(html).not.toContain('verification-row-');
   });
 

@@ -10,9 +10,18 @@ export class AdminReviewTutorDto {
   @IsString()
   reasonCode!: string;
 
+  /** Reviewer-only notes. Never serialized to the applicant. */
   @IsOptional()
   @IsString()
   internalNotes?: string;
+
+  /**
+   * Applicant-facing text. Required by policy for reject / needs-information /
+   * suspend decisions on a level; optional on this legacy profile-level route.
+   */
+  @IsOptional()
+  @IsString()
+  applicantFeedback?: string;
 
   @IsOptional()
   @IsString()

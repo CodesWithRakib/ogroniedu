@@ -1,6 +1,12 @@
-import { baseApi, type ApiSuccessEnvelope } from '../base-api';
+import { baseApi } from '../base-api';
 
-export type EvidencePurpose = 'nid' | 'academic_certificate' | 'degree' | 'other_evidence';
+export type EvidencePurpose =
+  | 'nid'
+  | 'academic_certificate'
+  | 'degree'
+  | 'other_evidence'
+  /** Phase-02 verification dossier evidence. */
+  | 'tutor_verification_evidence';
 
 export interface UploadEvidenceRequest {
   purpose: EvidencePurpose;
@@ -52,4 +58,5 @@ export const filesApi = baseApi.injectEndpoints({
   overrideExisting: false,
 });
 
-export const { useUploadEvidenceMutation, useGetFileAccessQuery, useLazyGetFileAccessQuery } = filesApi;
+export const { useUploadEvidenceMutation, useGetFileAccessQuery, useLazyGetFileAccessQuery } =
+  filesApi;
