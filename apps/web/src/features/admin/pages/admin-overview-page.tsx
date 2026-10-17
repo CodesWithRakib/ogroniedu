@@ -79,7 +79,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           <LoadingSpinner />
         </div>
       ) : (
-        <div className="space-y-8 py-6">
+        <div className="space-y-8 py-6" data-testid="admin-overview-page">
           {/* Header Banner */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border/80">
             <div>
