@@ -14,7 +14,12 @@
     "ui:add": "pnpm dlx shadcn@latest add -c apps/web",
     "format": "prettier --write \"**/*.{ts,tsx,md,json}\"",
     "format:check": "prettier --check \"**/*.{ts,tsx,md,json}\"",
-    "lint": "turbo run lint"
+    "lint": "turbo run lint",
+    "docker:build": "docker compose build",
+    "docker:up": "docker compose up -d",
+    "docker:down": "docker compose down",
+    "docker:redis": "docker start ogroni_redis || docker run -d --name ogroni_redis --restart unless-stopped -p 6379:6379 redis:7-alpine",
+    "docker:ps": "docker ps"
   },
   "type": "module",
   "devDependencies": {
