@@ -75,6 +75,7 @@ function toCard(t: TutorSearchItem): TutorCardData {
   return {
     id: t.id,
     displayName: t.displayName,
+    avatarUrl: t.avatarUrl ?? null,
     headline: t.headline,
     bio: t.bio,
     yearsExperience: t.yearsExperience,

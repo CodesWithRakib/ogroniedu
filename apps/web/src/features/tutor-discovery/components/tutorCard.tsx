@@ -94,9 +94,17 @@ export function TutorCard({
         <div className="flex items-start gap-4 sm:gap-5 flex-1 min-w-0">
           {/* Avatar Capsule with Online Status */}
           <Link href={`/${locale}/tutors/${tutor.id}`} className="relative shrink-0 block">
-            <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl sm:rounded-3xl bg-gradient-to-br from-blue-50 via-indigo-50/50 to-blue-100/70 border-2 border-blue-200/80 text-blue-700 font-black text-lg sm:text-2xl shadow-xs group-hover:border-blue-500/50 transition-colors">
-              {initials}
-            </div>
+            {tutor.avatarUrl ? (
+              <img
+                src={tutor.avatarUrl}
+                alt={tutor.displayName}
+                className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl sm:rounded-3xl object-cover ring-2 ring-blue-100 shadow-xs group-hover:ring-blue-400 transition-all"
+              />
+            ) : (
+              <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl sm:rounded-3xl bg-gradient-to-br from-blue-50 via-indigo-50/50 to-blue-100/70 border-2 border-blue-200/80 text-blue-700 font-black text-lg sm:text-2xl shadow-xs group-hover:border-blue-500/50 transition-colors">
+                {initials}
+              </div>
+            )}
             <span
               className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-card bg-emerald-500 shadow-xs ring-2 ring-emerald-500/20"
               title={isBn ? 'সক্রিয় শিক্ষক' : 'Active Tutor'}

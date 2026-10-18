@@ -55,6 +55,9 @@ export class TutorProfileEntity {
   @Column({ name: 'response_time_minutes', type: 'integer', nullable: true })
   responseTimeMinutes!: number | null;
 
+  @Column({ name: 'avatar_url', type: 'text', nullable: true })
+  avatarUrl!: string | null;
+
   @Column({ name: 'profile_updated_at', type: 'timestamptz', nullable: true })
   profileUpdatedAt!: Date | null;
 

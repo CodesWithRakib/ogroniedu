@@ -220,6 +220,7 @@ export class TutorSearchService {
     return {
       id: profile.userId,
       displayName: user.displayName,
+      avatarUrl: profile.avatarUrl || user.avatarUrl || null,
       headline: profile.headline,
       bio: profile.bio,
       yearsExperience: profile.yearsExperience,
@@ -454,6 +455,7 @@ export class TutorSearchService {
         return {
           id: profile.userId,
           displayName: user.displayName,
+          avatarUrl: profile.avatarUrl || user.avatarUrl || null,
           headline: profile.headline,
           bio: profile.bio,
           yearsExperience: profile.yearsExperience,

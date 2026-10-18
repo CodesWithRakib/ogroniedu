@@ -35,6 +35,7 @@ export interface TutorServiceArea {
 export interface TutorSearchItem {
   id: string;
   displayName: string;
+  avatarUrl?: string | null;
   headline: string | null;
   bio: string | null;
   yearsExperience: number | null;
@@ -119,6 +120,7 @@ export interface PublicAvailability {
 export interface TutorPublicProfile {
   id: string;
   displayName: string;
+  avatarUrl?: string | null;
   headline: string | null;
   bio: string | null;
   yearsExperience: number | null;

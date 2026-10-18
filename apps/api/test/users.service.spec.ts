@@ -18,6 +18,7 @@ describe('UsersService Unit Tests', () => {
     id: 'user-uuid-1',
     displayName: 'Md. Rakib Islam',
     email: 'rakib@example.com',
+    avatarUrl: null,
     phoneE164: '+8801700000000',
     passwordHash: 'hash',
     preferredLocale: 'bn',

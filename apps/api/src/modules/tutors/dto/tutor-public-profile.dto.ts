@@ -44,6 +44,7 @@ export interface PublicQualificationItem {
 export class TutorPublicProfileDto {
   id!: string;
   displayName!: string;
+  avatarUrl!: string | null;
   headline!: string | null;
   bio!: string | null;
   yearsExperience!: number | null;

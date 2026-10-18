@@ -27,6 +27,9 @@ export class UserEntity {
   @Column({ name: 'preferred_locale', type: 'text', default: 'bn' })
   preferredLocale!: 'bn' | 'en';
 
+  @Column({ name: 'avatar_url', type: 'text', nullable: true })
+  avatarUrl!: string | null;
+
   @Column({ type: 'text', default: 'pending_verification' })
   status!: 'pending_verification' | 'active' | 'suspended' | 'deactivated' | 'deletion_pending';
 

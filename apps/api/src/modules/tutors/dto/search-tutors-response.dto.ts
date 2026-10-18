@@ -3,6 +3,7 @@ import { PublicSubjectItem, PublicServiceAreaItem } from './tutor-public-profile
 export interface TutorSearchResultItemDto {
   id: string;
   displayName: string;
+  avatarUrl?: string | null;
   headline: string | null;
   bio: string | null;
   yearsExperience: number | null;
