@@ -18,6 +18,22 @@ import type { AuthenticatedUser } from '../../common/decorators/current-user.dec
 import { isAdminRole } from '../../common/auth/role.utils';
 import { CreateReviewDto, TutorReplyDto, ModerateReviewDto } from './dto';
 
+/** Public-facing review projection. Never carries reviewer contact details. */
+export interface PublicReviewView {
+  id: string;
+  rating: number;
+  punctualityRating: number | null;
+  teachingClarityRating: number | null;
+  subjectMasteryRating: number | null;
+  comment: string;
+  isVerifiedBooking: boolean;
+  tutorResponse: string | null;
+  tutorRespondedAt: string | null;
+  createdAt: string;
+  reviewerDisplayName: string | null;
+  moderationStatus?: string;
+}
+
 @Injectable()
 export class ReviewsService {
   private readonly logger = new Logger(ReviewsService.name);
@@ -167,18 +183,45 @@ export class ReviewsService {
   }
 
   /**
-   * 2. Get Published Reviews for a Tutor
+   * 2. Get Reviews for a Tutor.
+   *
+   * Public projection whitelist: the reviewer's name and the review content
+   * only. Raw entities used to expose reviewer contact details (and `all=true`
+   * exposed unmoderated rows to anyone); both are fixed here. `includeAll` is
+   * honoured only for a staff viewer.
    */
-  async getTutorReviews(tutorUserId: string, includeAll = false): Promise<ReviewEntity[]> {
-    const where: FindOptionsWhere<ReviewEntity> = includeAll
+  async getTutorReviews(
+    tutorUserId: string,
+    includeAll = false,
+    viewer?: AuthenticatedUser,
+  ): Promise<PublicReviewView[]> {
+    const allowAll = includeAll && isAdminRole(viewer);
+    const where: FindOptionsWhere<ReviewEntity> = allowAll
       ? { tutorUserId }
       : { tutorUserId, moderationStatus: 'published' };
 
-    return this.reviewRepo.find({
+    const reviews = await this.reviewRepo.find({
       where,
       relations: { reviewer: true },
       order: { createdAt: 'DESC' },
     });
+
+    return reviews.map((review) => ({
+      id: review.id,
+      rating: review.rating,
+      punctualityRating: review.punctualityRating ?? null,
+      teachingClarityRating: review.teachingClarityRating ?? null,
+      subjectMasteryRating: review.subjectMasteryRating ?? null,
+      comment: review.comment,
+      isVerifiedBooking: review.isVerifiedBooking,
+      tutorResponse: review.tutorResponse ?? null,
+      tutorRespondedAt: review.tutorRespondedAt
+        ? new Date(review.tutorRespondedAt).toISOString()
+        : null,
+      createdAt: new Date(review.createdAt).toISOString(),
+      reviewerDisplayName: review.reviewer?.displayName ?? null,
+      ...(allowAll ? { moderationStatus: review.moderationStatus } : {}),
+    }));
   }
 
   /**

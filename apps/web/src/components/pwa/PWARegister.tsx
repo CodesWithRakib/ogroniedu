@@ -46,10 +46,10 @@ export function PWARegister({ locale }: { locale: Locale }) {
       // Check if user previously dismissed
       const dismissedUntil = localStorage.getItem('ogroni_pwa_dismissed');
       if (!dismissedUntil || Date.now() > Number(dismissedUntil)) {
-        // Show install invitation after 3 seconds for smooth UX
+        // Show install invitation after 12 seconds so it doesn't block hero interactions
         const timer = setTimeout(() => {
           setShowBanner(true);
-        }, 3000);
+        }, 12000);
         return () => clearTimeout(timer);
       }
     };
@@ -90,11 +90,11 @@ export function PWARegister({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className="fixed bottom-20 md:bottom-6 left-4 right-4 md:left-auto md:right-6 md:max-w-md z-50 animate-in fade-in slide-in-from-bottom-5 duration-300">
-      <div className="relative rounded-2xl bg-card/95 border border-border p-4 shadow-sm backdrop-blur-xl flex items-center justify-between gap-3 text-foreground">
+    <div className="fixed bottom-20 md:bottom-6 left-3 right-3 md:left-auto md:right-6 md:max-w-md z-40 animate-in fade-in slide-in-from-bottom-5 duration-300">
+      <div className="relative rounded-2xl bg-card/95 border border-border p-3 sm:p-4 shadow-popover backdrop-blur-xl flex items-center justify-between gap-3 text-foreground">
         {/* App Icon */}
-        <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-brand to-brand-accent text-brand-foreground shadow-sm">
-          <Smartphone className="h-6 w-6 stroke-[2.2]" />
+        <div className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-xs">
+          <Smartphone className="h-5 w-5 sm:h-6 sm:w-6 stroke-[2.2]" />
         </div>
 
         {/* Text Details */}
@@ -103,7 +103,7 @@ export function PWARegister({ locale }: { locale: Locale }) {
             <span className="font-bold text-sm text-foreground truncate">
               {isBn ? 'অগ্রণী এডু অ্যাপ' : 'OgroniEdu App'}
             </span>
-            <span className="inline-flex items-center gap-0.5 rounded-full bg-brand-soft px-1.5 py-0.2 text-[9px] font-bold text-primary">
+            <span className="inline-flex items-center gap-0.5 rounded-full bg-blue-50 px-1.5 py-0.2 text-[9px] font-bold text-blue-700 border border-blue-200/60">
               <Sparkles className="h-2.5 w-2.5" /> PWA
             </span>
           </div>
@@ -116,7 +116,7 @@ export function PWARegister({ locale }: { locale: Locale }) {
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={handleInstallClick}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-bold text-xs px-3 py-2 shadow-sm transition-transform active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2 shadow-xs transition-transform active:scale-95 cursor-pointer"
           >
             <Download className="h-3.5 w-3.5 stroke-[2.5]" />
             <span>{isBn ? 'ইনস্টল' : 'Install'}</span>

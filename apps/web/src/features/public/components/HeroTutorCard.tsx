@@ -2,25 +2,25 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Star, CheckCircle2, Users, Video, Award, ArrowRight } from 'lucide-react';
+import { Star, CheckCircle2, Video, BookOpen, Clock, ArrowRight, ShieldCheck } from 'lucide-react';
 import type { Locale } from '@/lib/i18n';
 
 export function HeroTutorCard({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
 
   return (
-    <div className="relative select-none group">
-      {/* Holographic Glowing Ambient Backlight */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-brand/30 via-brand-accent to-brand/30 rounded-2xl blur-xl opacity-75 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+    <div className="relative select-none group w-full max-w-[390px]">
+      {/* Subtle ambient shadow halo */}
+      <div className="absolute -inset-1.5 bg-gradient-to-r from-blue-500/15 via-indigo-500/10 to-blue-500/15 rounded-3xl blur-2xl opacity-70 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
 
-      {/* Main Glass Card Container */}
-      <div className="relative rounded-2xl sm:rounded-2xl border border-brand/60 bg-card/95 p-4 sm:p-5 backdrop-blur-2xl shadow-sm hover:border-brand transition-[border-color,box-shadow,transform] duration-200 max-w-[340px] sm:max-w-[380px] text-left">
-        {/* Top Header: Tutor Avatar, Verified Badge, Name & Online Status */}
+      {/* Main Prestige Card Container */}
+      <div className="relative rounded-3xl border border-border/80 bg-card/95 p-5 sm:p-6 backdrop-blur-xl shadow-card hover:border-primary/50 hover:shadow-popover transition-all duration-300 text-left">
+        {/* Top Header: Tutor Avatar, Verified Badge & Status */}
         <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
-            {/* Tutor Avatar with Glowing Verified Badge */}
-            <div className="relative">
-              <div className="h-12 w-12 sm:h-14 sm:w-14 rounded-full overflow-hidden border-2 border-brand shadow-sm">
+          <div className="flex items-center gap-3.5">
+            {/* Tutor Avatar with Verified Badge */}
+            <div className="relative shrink-0">
+              <div className="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl overflow-hidden border-2 border-primary/20 shadow-xs">
                 <div
                   className="w-full h-full bg-cover bg-center"
                   style={{
@@ -30,82 +30,92 @@ export function HeroTutorCard({ locale }: { locale: Locale }) {
                   }}
                 />
               </div>
-              <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-brand text-brand-foreground ring-2 ring-border shadow-xs">
-                <CheckCircle2 className="h-3.5 w-3.5 stroke-[3]" aria-hidden="true" />
+              <div
+                className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-white ring-2 ring-card shadow-xs"
+                title={isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor'}
+              >
+                <CheckCircle2 className="h-3.5 w-3.5 stroke-[2.8]" aria-hidden="true" />
               </div>
             </div>
 
             {/* Tutor Name & Credentials */}
-            <div>
+            <div className="min-w-0">
               <div className="flex items-center gap-1.5">
-                <h4 className="text-sm sm:text-base font-extrabold text-foreground tracking-tight">
+                <h4 className="text-base sm:text-lg font-extrabold text-foreground tracking-tight truncate">
                   {isBn ? 'আয়েশা রহমান' : 'Ayesha Rahman'}
                 </h4>
               </div>
-              <p className="text-[11px] sm:text-xs text-primary-soft-foreground font-medium">
-                {isBn ? 'গণিত • বি.এসসি (ইঞ্জিনিয়ারিং)' : 'Mathematics • B.Sc. in Engineering'}
+              <p className="text-xs text-primary font-bold truncate">
+                {isBn ? 'বুয়েট • সিএসই বিভাগ' : 'BUET • CSE Graduate'}
               </p>
 
-              {/* Rating */}
+              {/* Rating & Reviews */}
               <div
-                className="flex items-center gap-1 mt-0.5 text-[11px] font-bold text-warning-soft-foreground tabular-nums"
+                className="flex items-center gap-1 mt-1 text-xs font-bold text-star tabular-nums"
                 role="img"
                 aria-label={isBn ? 'রেটিং ৪.৯' : 'Rating 4.9 out of 5'}
               >
-                <Star
-                  className="h-3 w-3 fill-warning text-warning-soft-foreground"
-                  aria-hidden="true"
-                />
-                <span className="text-foreground">4.9</span>
-                <span className="text-muted-foreground font-normal text-[10px]">
-                  {isBn ? '(১.২হাজার+ রিভিউ)' : '(1.2k reviews)'}
+                <Star className="h-3.5 w-3.5 fill-star text-star" aria-hidden="true" />
+                <span className="text-foreground font-extrabold">4.9</span>
+                <span className="text-muted-foreground font-normal text-[11px]">
+                  {isBn ? '(১২০+ রিভিউ)' : '(120+ reviews)'}
                 </span>
               </div>
             </div>
           </div>
 
-          {/* Glowing Online Pill */}
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-success-soft border border-success/30 px-2.5 py-1 text-[10px] font-bold text-success-soft-foreground shadow-xs">
-            <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" aria-hidden="true" />
-            <span>{isBn ? 'অনলাইন' : 'Online'}</span>
+          {/* Verification Pill */}
+          <div className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200/70 px-2.5 py-1 text-[10px] font-bold text-emerald-700 shadow-xs shrink-0">
+            <ShieldCheck className="h-3 w-3 text-emerald-600 stroke-[2.5]" aria-hidden="true" />
+            <span>{isBn ? 'ভেরিফাইড' : 'Verified'}</span>
           </div>
         </div>
 
-        {/* Badges / Offerings Row */}
-        <div className="grid grid-cols-3 gap-1.5 mt-3.5 pt-3 border-t border-primary/40 text-[10px] text-muted-foreground font-semibold">
-          <div className="flex items-center gap-1 bg-card rounded-lg px-2 py-1.5 border border-primary/40">
-            <Video className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
+        {/* Highlights Row: Session Type, Experience & Response Time */}
+        <div className="grid grid-cols-3 gap-1.5 sm:gap-2 mt-4 pt-3.5 border-t border-border/80 text-[10px] sm:text-[11px] font-medium text-muted-foreground">
+          <div className="flex items-center gap-1 sm:gap-1.5 bg-surface rounded-xl px-2 sm:px-2.5 py-1.5 sm:py-2 border border-border/60">
+            <Video className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary shrink-0" aria-hidden="true" />
             <span className="truncate">{isBn ? '১:১ ক্লাস' : '1:1 Session'}</span>
           </div>
-          <div className="flex items-center gap-1 bg-card rounded-lg px-2 py-1.5 border border-primary/40">
-            <Users className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
-            <span className="truncate">{isBn ? 'গ্রুপ ব্যাচ' : 'Group Class'}</span>
+          <div className="flex items-center gap-1 sm:gap-1.5 bg-surface rounded-xl px-2 sm:px-2.5 py-1.5 sm:py-2 border border-border/60">
+            <BookOpen
+              className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary shrink-0"
+              aria-hidden="true"
+            />
+            <span className="truncate">{isBn ? 'গণিত ও পদার্থ' : 'Math & Phys'}</span>
           </div>
-          <div className="flex items-center gap-1 bg-card rounded-lg px-2 py-1.5 border border-primary/40">
-            <Award className="h-3 w-3 text-primary shrink-0" aria-hidden="true" />
+          <div className="flex items-center gap-1 sm:gap-1.5 bg-surface rounded-xl px-2 sm:px-2.5 py-1.5 sm:py-2 border border-border/60">
+            <Clock className="h-3 w-3 sm:h-3.5 sm:w-3.5 text-primary shrink-0" aria-hidden="true" />
             <span className="truncate tabular-nums">{isBn ? '৫+ বছর' : '5+ yrs'}</span>
           </div>
         </div>
 
-        {/* About Bio snippet */}
-        <div className="mt-3 text-[11px] text-muted-foreground leading-relaxed">
-          <span className="text-primary-soft-foreground font-bold text-[10px] uppercase tracking-wider block mb-0.5">
-            {isBn ? 'পরিচিতি' : 'About'}
-          </span>
-          <p className="line-clamp-2">
-            {isBn
-              ? 'শিক্ষার্থীদের বেসিক ধারণা স্পষ্ট করে সহজ কৌশলে কঠিন গণিত বোঝানো আমার বিশেষত্ব।'
-              : 'Passionate about teaching and helping students build strong concepts. I make complex topics simple and easy to understand.'}
-          </p>
-        </div>
+        {/* Bio Snippet */}
+        <p className="mt-3 text-xs text-muted-foreground line-clamp-2 leading-relaxed">
+          {isBn
+            ? 'শিক্ষার্থীদের বেসিক ধারণা স্পষ্ট করে সহজ কৌশলে কঠিন গণিত ও পদার্থবিজ্ঞান বোঝানো আমার বিশেষত্ব।'
+            : 'Passionate about simplifying complex concepts in Mathematics and Physics with real-world applications.'}
+        </p>
 
-        {/* CTA Button */}
-        <div className="mt-3.5">
+        {/* Pricing & CTA Button */}
+        <div className="mt-4 pt-3.5 border-t border-border/80 flex items-center justify-between gap-3">
+          <div>
+            <span className="text-[10px] font-semibold text-muted-foreground uppercase tracking-wider block">
+              {isBn ? 'পারিশ্রমিক' : 'Hourly Rate'}
+            </span>
+            <div className="text-base font-black text-foreground tabular-nums">
+              {isBn ? '৳ ৮০০' : '৳ 800'}
+              <span className="text-xs font-normal text-muted-foreground">
+                {isBn ? ' / ঘণ্টা' : ' / hr'}
+              </span>
+            </div>
+          </div>
+
           <Link
             href={`/${locale}/tutors`}
-            className="w-full inline-flex items-center justify-center gap-2 rounded-xl bg-brand hover:bg-brand-accent text-brand-foreground font-extrabold text-xs py-2.5 shadow-sm hover:shadow-sm transition-[background-color,box-shadow,transform] duration-150 cursor-pointer group-hover:scale-[1.01] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1"
+            className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary-hover text-white font-bold text-xs px-4 py-2.5 shadow-sm shadow-primary/20 transition-all duration-150 cursor-pointer active:scale-95"
           >
-            <span>{isBn ? 'সেশন বুক করুন' : 'Book a Session'}</span>
+            <span>{isBn ? 'ট্রায়াল বুক করুন' : 'Book Trial'}</span>
             <ArrowRight className="h-3.5 w-3.5 stroke-[2.5]" aria-hidden="true" />
           </Link>
         </div>

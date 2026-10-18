@@ -164,14 +164,12 @@
   --muted: #f1f5f9;
   --muted-foreground: #475569; /* 7.6:1 on white */
 
-  /* --- Primary: accessible derivation of the Ocean Teal signature ----------- */
-  /* #0f766e is teal-700 — 5.47:1 with white, so it is safe for buttons and
-   * brand text. The approved bright mint (#0df5c4) remains a fill token. */
-  --primary: #0f766e;
-  --primary-hover: #115e59;
+  /* --- Primary: accessible Prestige Sapphire Blue action colour ----------- */
+  --primary: #1d4ed8;
+  --primary-hover: #1e40af;
   --primary-foreground: #ffffff;
-  --primary-soft: #ecfdf5; /* mint tint wash */
-  --primary-soft-foreground: #115e59;
+  --primary-soft: #eff6ff; /* soft sapphire wash */
+  --primary-soft-foreground: #1e40af;
 
   /* --- Brand accents (EXACT approved values — never approximated) ----------- */
   --brand: #0df5c4; /* Ocean Teal primaryColor — fills, indicators, progress */
@@ -537,6 +535,23 @@ h3 em {
 
 *::-webkit-scrollbar-thumb:hover {
   background-color: #94a3b8;
+}
+
+/* ==========================================================================
+ * Scrollbar Utilities: Clean horizontal chip scrolling
+ * ========================================================================== */
+
+.no-scrollbar::-webkit-scrollbar,
+.scrollbar-none::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+.no-scrollbar,
+.scrollbar-none {
+  -ms-overflow-style: none !important;
+  scrollbar-width: none !important;
 }
 
 /* ==========================================================================

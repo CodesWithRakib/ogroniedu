@@ -14,6 +14,7 @@ export interface TutorSubject {
   subjectId: string;
   subjectNameEn: string;
   subjectNameBn: string;
+  educationLevelId?: string;
   educationLevelNameEn?: string;
   educationLevelNameBn?: string;
   curriculumNameEn?: string;
@@ -22,8 +23,13 @@ export interface TutorSubject {
 }
 
 export interface TutorServiceArea {
+  id?: string;
+  districtCode?: string;
   districtNameEn: string;
   districtNameBn: string;
+  upazilaCode?: string | null;
+  localityName?: string | null;
+  radiusKm?: number | null;
 }
 
 export interface TutorSearchItem {
@@ -41,6 +47,13 @@ export interface TutorSearchItem {
   rankingReasons: string[];
   subjects: TutorSubject[];
   serviceAreas: TutorServiceArea[];
+  /** Straight-line km when a location search was supplied; null otherwise. */
+  distanceKm: number | null;
+  /** Published-review average; null when the tutor has no published review. */
+  ratingAverage: number | null;
+  totalReviews: number;
+  /** Next weekday (0=Sun…6=Sat) with an active slot; null when unknown. */
+  nextAvailableWeekday: number | null;
 }
 
 export interface SearchTutorsParams {
@@ -52,7 +65,12 @@ export interface SearchTutorsParams {
   districtCode?: string;
   minPrice?: number;
   maxPrice?: number;
-  sort?: 'recommended' | 'price_asc' | 'price_desc' | 'experience_desc';
+  minExperience?: number;
+  availableWeekday?: number;
+  lat?: number;
+  lng?: number;
+  radiusKm?: number;
+  sort?: 'recommended' | 'nearest' | 'price_asc' | 'price_desc' | 'experience_desc' | 'rating_desc';
   page?: number;
   /** @deprecated Prefer pageSize (canonical). Both accepted; pageSize wins server-side. */
   limit?: number;
@@ -118,11 +136,20 @@ export interface TutorPublicProfile {
     localityName?: string | null;
     districtNameEn?: string;
     districtNameBn?: string;
+    radiusKm?: number | null;
   }>;
   availability?: PublicAvailability[];
-  ratingAverage?: number;
-  totalReviews?: number;
-  completedSessions?: number;
+  ratingAverage: number | null;
+  totalReviews: number;
+  completedSessions: number;
+  nextAvailableWeekday: number | null;
+}
+
+export interface SavedTutorItem {
+  tutorId: string;
+  savedAt: string;
+  /** Null when the tutor is no longer publicly discoverable. */
+  profile: TutorPublicProfile | null;
 }
 
 export interface TutorOwnProfile {
@@ -236,6 +263,24 @@ export const tutorsApi = baseApi.injectEndpoints({
     getTutorPublicProfile: builder.query<ApiSuccessEnvelope<TutorPublicProfile>, string>({
       query: (id) => `/api/v1/tutors/public/${id}`,
       providesTags: (_r, _e, id) => [{ type: 'TutorProfile', id }],
+    }),
+    getSavedTutors: builder.query<ApiSuccessEnvelope<SavedTutorItem[]>, void>({
+      query: () => '/api/v1/saved-tutors',
+      providesTags: [{ type: 'SavedTutor', id: 'LIST' }],
+    }),
+    saveTutor: builder.mutation<ApiSuccessEnvelope<SavedTutorItem>, string>({
+      query: (tutorUserId) => ({
+        url: `/api/v1/saved-tutors/${tutorUserId}`,
+        method: 'POST',
+      }),
+      invalidatesTags: [{ type: 'SavedTutor', id: 'LIST' }],
+    }),
+    unsaveTutor: builder.mutation<ApiSuccessEnvelope<{ removed: boolean }>, string>({
+      query: (tutorUserId) => ({
+        url: `/api/v1/saved-tutors/${tutorUserId}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: [{ type: 'SavedTutor', id: 'LIST' }],
     }),
     getOwnTutorProfile: builder.query<ApiSuccessEnvelope<TutorOwnProfile>, void>({
       query: () => '/api/v1/tutors/me',
@@ -361,6 +406,9 @@ export const {
   useSearchTutorsQuery,
   useLazySearchTutorsQuery,
   useGetTutorPublicProfileQuery,
+  useGetSavedTutorsQuery,
+  useSaveTutorMutation,
+  useUnsaveTutorMutation,
   useGetOwnTutorProfileQuery,
   useUpdateOwnTutorProfileMutation,
   useSubmitTutorVerificationMutation,

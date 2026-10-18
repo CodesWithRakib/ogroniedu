@@ -551,7 +551,8 @@ export const NOTIFICATION_REGISTRY: Record<NotificationEventType, NotificationDe
     type: 'tutor.replacement',
     category: 'booking',
     priority: 'high',
-    allowedRoles: ['guardian', 'student', 'tutor'],
+    // Admin/super_admin receive the operations escalation (requested/overdue).
+    allowedRoles: ['guardian', 'student', 'tutor', 'admin', 'super_admin'],
     titleKey: 'notifications.tutor_replacement.title',
     bodyKey: 'notifications.tutor_replacement.body',
     templateEn: {
@@ -564,8 +565,8 @@ export const NOTIFICATION_REGISTRY: Record<NotificationEventType, NotificationDe
     },
     persist: true,
     inAppToast: true,
-    navigationTarget: '/bookings/{{bookingId}}',
-    variables: ['bookingId', 'status'],
+    navigationTarget: '/tutor-replacements/{{caseId}}',
+    variables: ['caseId', 'bookingId', 'status'],
   },
   'dispute.opened': {
     type: 'dispute.opened',

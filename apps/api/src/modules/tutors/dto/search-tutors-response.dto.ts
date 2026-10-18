@@ -15,6 +15,13 @@ export interface TutorSearchResultItemDto {
   rankingReasons: string[];
   subjects: PublicSubjectItem[];
   serviceAreas: PublicServiceAreaItem[];
+  /** Straight-line km to the nearest supplied service-area centre; null when unknown. */
+  distanceKm: number | null;
+  /** Average of published reviews only; null when there are no published reviews. */
+  ratingAverage: number | null;
+  totalReviews: number;
+  /** Next active weekday (0=Sun…6=Sat) with a slot, or null when unpublished. */
+  nextAvailableWeekday: number | null;
 }
 
 export interface SearchTutorsResponseDto {

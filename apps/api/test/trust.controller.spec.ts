@@ -4,7 +4,7 @@ import { SafetyReportsController } from '../src/modules/trust/safety-reports.con
 import { TutorReplacementController } from '../src/modules/trust/tutor-replacement.controller';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
-describe('Trust & Safety Controllers Unit Tests (Phase 13)', () => {
+describe('Trust & Safety Controllers Unit Tests (Phase 13/03)', () => {
   let reviewsController: ReviewsController;
   let safetyController: SafetyReportsController;
   let replacementController: TutorReplacementController;
@@ -36,9 +36,24 @@ describe('Trust & Safety Controllers Unit Tests (Phase 13)', () => {
 
     mockReplacementService = {
       requestReplacement: vi.fn().mockResolvedValue({ id: 'case-1', status: 'requested' }),
-      listCases: vi.fn().mockResolvedValue([{ id: 'case-1' }]),
-      getCase: vi.fn().mockResolvedValue({ id: 'case-1' }),
+      listCases: vi.fn().mockResolvedValue({
+        data: [{ id: 'case-1' }],
+        total: 1,
+        page: 1,
+        pageSize: 20,
+        totalPages: 1,
+      }),
+      getCase: vi.fn().mockResolvedValue({ case: { id: 'case-1' }, history: [] }),
+      listEligibleBookings: vi.fn().mockResolvedValue([{ bookingId: 'b-1' }]),
       updateCaseStatus: vi.fn().mockResolvedValue({ id: 'case-1', status: 'matching' }),
+      extendDeadline: vi
+        .fn()
+        .mockResolvedValue({ id: 'case-1', deadlineAt: '2026-10-20T00:00:00Z' }),
+      acceptOffer: vi.fn().mockResolvedValue({ id: 'case-1', status: 'accepted' }),
+      declineOffer: vi.fn().mockResolvedValue({ id: 'case-1', status: 'matching' }),
+      cancelCase: vi.fn().mockResolvedValue({ id: 'case-1', status: 'cancelled' }),
+      listCandidates: vi.fn().mockResolvedValue({ success: true, data: [], total: 0 }),
+      runOverdueSweep: vi.fn().mockResolvedValue({ processed: 2 }),
     };
 
     reviewsController = new ReviewsController(mockReviewsService);
@@ -61,7 +76,16 @@ describe('Trust & Safety Controllers Unit Tests (Phase 13)', () => {
     it('GET /api/v1/reviews/tutors/:tutorId should delegate to ReviewsService.getTutorReviews', async () => {
       const res = await reviewsController.getTutorReviews('tutor-123', 'false');
       expect(res).toHaveLength(1);
-      expect(mockReviewsService.getTutorReviews).toHaveBeenCalledWith('tutor-123', false);
+      expect(mockReviewsService.getTutorReviews).toHaveBeenCalledWith(
+        'tutor-123',
+        false,
+        undefined,
+      );
+    });
+
+    it('passes the authenticated viewer through so the staff-only all=true gate applies', async () => {
+      await reviewsController.getTutorReviews('tutor-123', 'true', mockUser);
+      expect(mockReviewsService.getTutorReviews).toHaveBeenCalledWith('tutor-123', true, mockUser);
     });
   });
 
@@ -85,21 +109,33 @@ describe('Trust & Safety Controllers Unit Tests (Phase 13)', () => {
   });
 
   describe('TutorReplacementController', () => {
-    it('POST /api/v1/tutor-replacements should delegate to TutorReplacementService.requestReplacement', async () => {
+    it('POST /api/v1/tutor-replacements wraps the created case in the envelope', async () => {
       const dto: any = {
         bookingId: '00000000-0000-4000-8000-000000000010',
         reasonCode: 'trial_dissatisfaction',
         explanation: 'Dissatisfied with trial class',
       };
       const res = await replacementController.requestReplacement(mockUser, dto);
-      expect(res.id).toBe('case-1');
+      expect(res.success).toBe(true);
+      expect(res.data.id).toBe('case-1');
       expect(mockReplacementService.requestReplacement).toHaveBeenCalledWith(mockUser, dto);
     });
 
-    it('GET /api/v1/tutor-replacements/:id should delegate to TutorReplacementService.getCase', async () => {
+    it('GET /api/v1/tutor-replacements/:id returns case + history', async () => {
       const res = await replacementController.getCase(mockUser, 'case-1');
-      expect(res.id).toBe('case-1');
+      expect(res.data).toEqual({ case: { id: 'case-1' }, history: [] });
       expect(mockReplacementService.getCase).toHaveBeenCalledWith(mockUser, 'case-1');
+    });
+
+    it('POST /:id/accept delegates to the participant consent method', async () => {
+      const res = await replacementController.acceptOffer(mockUser, 'case-1');
+      expect(res.data.status).toBe('accepted');
+      expect(mockReplacementService.acceptOffer).toHaveBeenCalledWith(mockUser, 'case-1');
+    });
+
+    it('GET /eligible-bookings exposes computed eligibility only', async () => {
+      const res = await replacementController.listEligibleBookings(mockUser);
+      expect(res.data).toEqual([{ bookingId: 'b-1' }]);
     });
   });
 });

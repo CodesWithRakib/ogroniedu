@@ -1,0 +1,511 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>OgroniEdu — Concept 3 Refinements Showcase</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800;900&family=Noto+Sans+Bengali:wght@400;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', 'Noto Sans Bengali', -apple-system, sans-serif;
+      background: #f8fafc;
+      color: #0f172a;
+      padding: 40px 20px;
+      line-height: 1.5;
+    }
+    .header {
+      max-width: 1200px;
+      margin: 0 auto 40px auto;
+      text-align: center;
+    }
+    .badge {
+      display: inline-block;
+      padding: 6px 14px;
+      background: #eff6ff;
+      border: 1px solid #bfdbfe;
+      color: #1d4ed8;
+      border-radius: 9999px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 12px;
+    }
+    h1 {
+      font-size: 32px;
+      font-weight: 900;
+      color: #0f172a;
+      letter-spacing: -0.02em;
+      margin-bottom: 8px;
+    }
+    p.subtitle {
+      font-size: 15px;
+      color: #64748b;
+      max-width: 650px;
+      margin: 0 auto;
+    }
+    .grid {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(360px, 1fr));
+      gap: 28px;
+    }
+    .card {
+      background: #ffffff;
+      border: 1px solid #e2e8f0;
+      border-radius: 24px;
+      padding: 32px 28px;
+      box-shadow: 0 4px 20px -2px rgba(15, 23, 42, 0.05);
+      display: flex;
+      flex-col: column;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: all 0.2s ease;
+    }
+    .card:hover {
+      border-color: #3b82f6;
+      box-shadow: 0 12px 30px -4px rgba(29, 78, 216, 0.12);
+      transform: translateY(-2px);
+    }
+    .card-tag {
+      font-size: 11px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: #2563eb;
+      margin-bottom: 6px;
+    }
+    .card-title {
+      font-size: 20px;
+      font-weight: 800;
+      color: #0f172a;
+      margin-bottom: 6px;
+    }
+    .card-desc {
+      font-size: 13px;
+      color: #64748b;
+      margin-bottom: 24px;
+      min-height: 40px;
+    }
+    .preview-stage {
+      background: #f8fafc;
+      border: 1px solid #edf2f7;
+      border-radius: 20px;
+      padding: 32px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 24px;
+      margin-bottom: 24px;
+    }
+    .stage-dark {
+      background: #090d16;
+      border-color: #1e293b;
+    }
+    .brand-horizontal {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .brand-name {
+      font-size: 24px;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      color: #0f172a;
+    }
+    .brand-name-dark {
+      color: #ffffff;
+    }
+    .brand-name span {
+      color: #2563eb;
+    }
+    .brand-name-dark span {
+      color: #60a5fa;
+    }
+    .favicon-row {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 20px;
+      padding-top: 16px;
+      border-top: 1px dashed #e2e8f0;
+      width: 100%;
+    }
+    .fav-item {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      font-weight: 700;
+      color: #64748b;
+    }
+    .fav-box {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .fav-64 {
+      width: 64px;
+      height: 64px;
+      border-radius: 16px;
+    }
+    .fav-32 {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+    }
+    .fav-16 {
+      width: 20px;
+      height: 20px;
+      border-radius: 6px;
+    }
+    .features-list {
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      font-size: 12px;
+      color: #475569;
+    }
+    .features-list li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .features-list li::before {
+      content: "✓";
+      color: #2563eb;
+      font-weight: 900;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="header">
+    <div class="badge">কনসেপ্ট ৩ এর আধুনিক সংস্করণ • Concept 3 Refinement Suite</div>
+    <h1>OgroniEdu লোগো ও ফেভিকন কনসেপ্ট</h1>
+    <p class="subtitle">
+      কনসেপ্ট ৩ (রয়্যাল ও-লুপ + গ্র্যাজুয়েশন ক্যাপ + উইজডম ফ্লেম)-কে আরও নিখুঁত, বোল্ড ও ভেক্টর-প্রিসিশনে ৩টি আলাদা প্রিমিয়াম স্টাইলে উন্নত করা হয়েছে।
+    </p>
+  </div>
+
+  <div class="grid">
+
+    <!-- ================================================================
+         VARIATION 3A: THE MOBIUS ORBIT (আধুনিক ইনফিনিটি লুপ ও ক্যাপ)
+         ================================================================ -->
+    <div class="card">
+      <div>
+        <div class="card-tag">Variation 3.A • The Infinity Orbit</div>
+        <div class="card-title">ইনফিনিটি অরবিট ও নলেজ ক্রেস্ট</div>
+        <div class="card-desc">
+          নিরবচ্ছিন্ন রয়্যাল ব্লু 'O' লুপ যা জ্ঞান ও এসক্রো সুরক্ষার ধারাবাহিকতা নির্দেশ করে, কেন্দ্রে গ্র্যাজুয়েশন ক্যাপ ও শীর্ষে জ্বলন্ত আলোকশিখা।
+        </div>
+
+        <div class="preview-stage">
+          <!-- Horizontal Logo on Light -->
+          <div class="brand-horizontal">
+            <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="orbitGradA" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#2563eb" />
+                  <stop offset="50%" stop-color="#1d4ed8" />
+                  <stop offset="100%" stop-color="#1e1b4b" />
+                </linearGradient>
+                <linearGradient id="flameGradA" x1="0%" y1="100%" x2="0%" y2="0%">
+                  <stop offset="0%" stop-color="#f59e0b" />
+                  <stop offset="100%" stop-color="#fbbf24" />
+                </linearGradient>
+              </defs>
+              <!-- Outer Precision O-Ring / Infinity Loop -->
+              <path d="M50 12C29.013 12 12 29.013 12 50C12 70.987 29.013 88 50 88C70.987 88 88 70.987 88 50C88 29.013 70.987 12 50 12ZM50 20C66.568 20 80 33.432 80 50C80 66.568 66.568 80 50 80C33.432 80 20 66.568 20 50C20 33.432 33.432 20 50 20Z" fill="url(#orbitGradA)"/>
+              <!-- Graduation Cap Centerpiece -->
+              <path d="M50 32L26 44L50 56L74 44L50 32Z" fill="#1d4ed8"/>
+              <path d="M34 50V63C34 67.5 41.2 71 50 71C58.8 71 66 67.5 66 63V50" stroke="#1d4ed8" stroke-width="4.5" stroke-linecap="round"/>
+              <path d="M72 45V61C72 62.5 70.5 63.5 69 63" stroke="#2563eb" stroke-width="3" stroke-linecap="round"/>
+              <!-- Center Flame of Wisdom -->
+              <path d="M50 24C48 28 46 32 50 38C54 32 52 28 50 24Z" fill="url(#flameGradA)"/>
+            </svg>
+            <div class="brand-name">Ogroni<span>Edu</span></div>
+          </div>
+
+          <!-- Favicon Scale Preview Row -->
+          <div class="favicon-row">
+            <div class="fav-item">
+              <div class="fav-box fav-64" style="background: linear-gradient(135deg, #1d4ed8, #1e1b4b);">
+                <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
+                  <path d="M50 10C27.909 10 10 27.909 10 50C10 72.091 27.909 90 50 90C72.091 90 90 72.091 90 50C90 27.909 72.091 10 50 10ZM50 20C66.568 20 80 33.432 80 50C80 66.568 66.568 80 50 80C33.432 80 20 66.568 20 50C20 33.432 33.432 20 50 20Z" fill="#ffffff" fill-opacity="0.95"/>
+                  <path d="M50 32L26 44L50 56L74 44L50 32Z" fill="#ffffff"/>
+                  <path d="M34 50V63C34 67.5 41.2 71 50 71C58.8 71 66 67.5 66 63V50" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+                  <path d="M50 24C48 28 46 32 50 38C54 32 52 28 50 24Z" fill="#fbbf24"/>
+                </svg>
+              </div>
+              <span>App 64px</span>
+            </div>
+            <div class="fav-item">
+              <div class="fav-box fav-32" style="background: #1d4ed8;">
+                <svg width="20" height="20" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="38" stroke="#ffffff" stroke-width="10"/>
+                  <path d="M50 34L28 45L50 56L72 45L50 34Z" fill="#ffffff"/>
+                  <circle cx="50" cy="30" r="6" fill="#fbbf24"/>
+                </svg>
+              </div>
+              <span>Favicon 32px</span>
+            </div>
+            <div class="fav-item">
+              <div class="fav-box fav-16" style="background: #1d4ed8;">
+                <svg width="12" height="12" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="36" stroke="#ffffff" stroke-width="14"/>
+                  <polygon points="50,30 26,45 50,60 74,45" fill="#ffffff"/>
+                </svg>
+              </div>
+              <span>Tab 16px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="features-list">
+        <li>সহজ ও স্মুথ জ্যামিতিক কার্ভ যা চোখকে আরাম দেয়</li>
+        <li>১৬px ব্রাউজার ট্যাবেও গোলক ও ক্যাপ পরিষ্কার দৃশ্যমান</li>
+        <li>অগ্রণী ব্র্যান্ডের "O" অক্ষরের সাথে পূর্ণ সামঞ্জস্য</li>
+      </ul>
+    </div>
+
+
+    <!-- ================================================================
+         VARIATION 3B: THE SOVEREIGN CREST (স্মার্ট স্কোয়ার্কল শিল্ড ও ক্যাপ)
+         ================================================================ -->
+    <div class="card" style="border-color: #2563eb; box-shadow: 0 8px 26px -2px rgba(37,99,235,0.12);">
+      <div>
+        <div class="card-tag" style="color: #16a34a; font-weight: 900;">✓ Variation 3.B • চুড়ান্ত নির্বাচিত অফিসিয়াল ব্র্যান্ড লোগো</div>
+        <div class="card-title">সোভারেন শিল্ড ও গোল্ডেন স্পার্ক (Ogroni)</div>
+        <div class="card-desc">
+          প্রিমিয়াম স্কোয়ার্কল ও শিল্ড কাঠামোর ফিউশন। এটি ১০০% ভেরিফাইড বিশ্বাস, নির্ভরযোগ্য এসক্রো এবং শ্রেষ্ঠ শিক্ষকতার প্রতীক।
+        </div>
+
+        <div class="preview-stage">
+          <!-- Horizontal Logo on Light -->
+          <div class="brand-horizontal">
+            <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="shieldGradB" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#2563eb" />
+                  <stop offset="100%" stop-color="#1e40af" />
+                </linearGradient>
+                <linearGradient id="sparkGradB" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#f59e0b" />
+                  <stop offset="100%" stop-color="#d97706" />
+                </linearGradient>
+              </defs>
+              <!-- Outer Squircle Shield with Shadow -->
+              <rect x="8" y="8" width="84" height="84" rx="24" fill="url(#shieldGradB)"/>
+              <!-- Mortarboard Diamond Top in White -->
+              <path d="M50 25L20 40L50 55L80 40L50 25Z" fill="#ffffff"/>
+              <!-- Lower Neck & Arch -->
+              <path d="M30 47V62C30 67 38.5 72 50 72C61.5 72 70 67 70 62V47" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+              <!-- Tassel with Golden End -->
+              <path d="M78 41V60C78 61.5 76.5 63 75 63" stroke="#93c5fd" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="75" cy="63" r="3.5" fill="url(#sparkGradB)"/>
+              <!-- Golden Guidance Star / Spark on Top Cap -->
+              <path d="M50 35L52.5 39.5L57 40.5L53.5 43.5L54.5 48L50 45.5L45.5 48L46.5 43.5L43 40.5L47.5 39.5L50 35Z" fill="url(#sparkGradB)"/>
+            </svg>
+            <div class="brand-name">Ogroni</div>
+          </div>
+
+          <!-- Favicon Scale Preview Row -->
+          <div class="favicon-row">
+            <div class="fav-item">
+              <div class="fav-box fav-64" style="background: linear-gradient(135deg, #2563eb, #1e40af); box-shadow: 0 4px 12px rgba(37,99,235,0.3);">
+                <svg width="42" height="42" viewBox="0 0 100 100" fill="none">
+                  <path d="M50 24L18 39L50 54L82 39L50 24Z" fill="#ffffff"/>
+                  <path d="M28 47V62C28 68 37.5 73 50 73C62.5 73 72 68 72 62V47" stroke="#ffffff" stroke-width="6" stroke-linecap="round"/>
+                  <path d="M50 34L52.5 39.5L57 40.5L53.5 43.5L54.5 48L50 45.5L45.5 48L46.5 43.5L43 40.5L47.5 39.5L50 34Z" fill="#fbbf24"/>
+                </svg>
+              </div>
+              <span>App 64px</span>
+            </div>
+            <div class="fav-item">
+              <div class="fav-box fav-32" style="background: #1d4ed8;">
+                <svg width="22" height="22" viewBox="0 0 100 100" fill="none">
+                  <polygon points="50,22 16,39 50,56 84,39" fill="#ffffff"/>
+                  <path d="M28 48V62C28 68 38 74 50 74C62 74 72 68 72 62V48" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/>
+                  <circle cx="50" cy="40" r="5" fill="#fbbf24"/>
+                </svg>
+              </div>
+              <span>Favicon 32px</span>
+            </div>
+            <div class="fav-item">
+              <div class="fav-box fav-16" style="background: #1d4ed8;">
+                <svg width="14" height="14" viewBox="0 0 100 100" fill="none">
+                  <polygon points="50,20 12,40 50,60 88,40" fill="#ffffff"/>
+                  <circle cx="50" cy="40" r="8" fill="#fbbf24"/>
+                </svg>
+              </div>
+              <span>Tab 16px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="features-list">
+        <li><strong>সবচেয়ে স্পষ্ট ও আধুনিক:</strong> ছোট ফেভিকন থেকে মোবাইল অ্যাপের স্ক্রিনে সবচেয়ে নিখুঁত রিড্যাবিলিটি</li>
+        <li>গোল্ডেন গাইডেন্স স্টার শিক্ষকদের মেধা এবং শিক্ষার্থীদের লক্ষ্যের নির্দেশক</li>
+        <li>সোশ্যাল মিডিয়া অবতার ও অ্যাপল টাচ আইকনে চোখ ধাঁধানো লুক</li>
+      </ul>
+    </div>
+
+
+    <!-- ================================================================
+         VARIATION 3C: THE DUAL FACET CREST (ডুয়াল রিবন ও ওপেন বুক)
+         ================================================================ -->
+    <div class="card">
+      <div>
+        <div class="card-tag">Variation 3.C • The Dual Facet</div>
+        <div class="card-title">ডুয়াল রিবন, ওপেন বুক ও ফ্লেম</div>
+        <div class="card-desc">
+          দুটি ইন্টারলকিং ফিতার মতো থ্রিডি রিবন গঠন, যার নিচের অংশ উন্মুক্ত বই এবং ওপরের অংশ আধুনিক গ্র্যাজুয়েশন রত্ন।
+        </div>
+
+        <div class="preview-stage">
+          <!-- Horizontal Logo on Light -->
+          <div class="brand-horizontal">
+            <svg width="48" height="48" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="ribbon1" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stop-color="#3b82f6" />
+                  <stop offset="100%" stop-color="#1d4ed8" />
+                </linearGradient>
+                <linearGradient id="ribbon2" x1="0%" y1="100%" x2="100%" y2="0%">
+                  <stop offset="0%" stop-color="#1e1b4b" />
+                  <stop offset="100%" stop-color="#2563eb" />
+                </linearGradient>
+              </defs>
+              <!-- Left Wing / Ribbon -->
+              <path d="M50 16C31.224 16 16 31.224 16 50C16 68.776 31.224 84 50 84C42 76 34 64 34 50C34 36 42 24 50 16Z" fill="url(#ribbon1)"/>
+              <!-- Right Wing / Ribbon -->
+              <path d="M50 16C68.776 16 84 31.224 84 50C84 68.776 68.776 84 50 84C58 76 66 64 66 50C66 36 58 24 50 16Z" fill="url(#ribbon2)"/>
+              <!-- Floating Center Diamond Mortarboard -->
+              <path d="M50 34L32 45L50 56L68 45L50 34Z" fill="#ffffff" stroke="#1d4ed8" stroke-width="2"/>
+              <!-- Golden Core Flame -->
+              <circle cx="50" cy="45" r="4.5" fill="#f59e0b"/>
+            </svg>
+            <div class="brand-name">Ogroni<span>Edu</span></div>
+          </div>
+
+          <!-- Favicon Scale Preview Row -->
+          <div class="favicon-row">
+            <div class="fav-item">
+              <div class="fav-box fav-64" style="background: linear-gradient(135deg, #0f172a, #1e293b);">
+                <svg width="40" height="40" viewBox="0 0 100 100" fill="none">
+                  <path d="M50 14C31 14 16 29 16 48C16 67 31 82 50 82C41 74 33 62 33 48C33 34 41 22 50 14Z" fill="#60a5fa"/>
+                  <path d="M50 14C69 14 84 29 84 48C84 67 69 82 50 82C59 74 67 62 67 48C67 34 59 22 50 14Z" fill="#2563eb"/>
+                  <polygon points="50,33 31,45 50,57 69,45" fill="#ffffff"/>
+                  <circle cx="50" cy="45" r="4.5" fill="#fbbf24"/>
+                </svg>
+              </div>
+              <span>App 64px</span>
+            </div>
+            <div class="fav-item">
+              <div class="fav-box fav-32" style="background: #0f172a;">
+                <svg width="20" height="20" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="38" stroke="#3b82f6" stroke-width="10"/>
+                  <polygon points="50,34 30,46 50,58 70,46" fill="#ffffff"/>
+                  <circle cx="50" cy="46" r="4" fill="#fbbf24"/>
+                </svg>
+              </div>
+              <span>Favicon 32px</span>
+            </div>
+            <div class="fav-item">
+              <div class="fav-box fav-16" style="background: #0f172a;">
+                <svg width="12" height="12" viewBox="0 0 100 100" fill="none">
+                  <circle cx="50" cy="50" r="36" stroke="#60a5fa" stroke-width="14"/>
+                  <polygon points="50,32 26,46 50,60 74,46" fill="#ffffff"/>
+                </svg>
+              </div>
+              <span>Tab 16px</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="features-list">
+        <li>থ্রিডি ফিনিশ ও ডাবল শেড ইফেক্ট</li>
+        <li>ডার্ক মোড ও নাইট ব্যাকগ্রাউন্ডে অত্যন্ত উজ্জ্বল দেখায়</li>
+        <li>একাডেমিক সার্টিফিকেশন ও মেধার প্রতীক</li>
+      </ul>
+    </div>
+
+  </div>
+
+  <!-- Dark Mode Test Band -->
+  <div style="max-width: 1200px; margin: 40px auto 0 auto; background: #0b1120; border-radius: 24px; padding: 36px 32px; border: 1px solid #1e293b; color: #ffffff;">
+    <div style="font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: 0.08em; color: #60a5fa; margin-bottom: 8px;">
+      Dark Mode Contrast Testing • ডার্ক ব্যাকগ্রাউন্ডে প্রিভিউ
+    </div>
+    <div style="font-size: 18px; font-weight: 800; margin-bottom: 24px;">
+      রাতের ডার্ক মোডেও ৩টি লোগো কেমন উজ্জ্বল ও আকর্ষণীয় দেখাবে:
+    </div>
+
+    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 24px;">
+      <!-- Dark Preview 3A -->
+      <div style="background: #111827; padding: 20px; border-radius: 16px; border: 1px solid #1f2937; display: flex; align-items: center; gap: 14px;">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="38" stroke="#3b82f6" stroke-width="8"/>
+          <path d="M50 32L26 44L50 56L74 44L50 32Z" fill="#60a5fa"/>
+          <path d="M34 50V63C34 67.5 41.2 71 50 71C58.8 71 66 67.5 66 63V50" stroke="#60a5fa" stroke-width="4.5" stroke-linecap="round"/>
+          <circle cx="50" cy="27" r="5" fill="#fbbf24"/>
+        </svg>
+        <div>
+          <div style="font-size: 18px; font-weight: 900; color: #ffffff;">Ogroni<span style="color: #60a5fa;">Edu</span></div>
+          <div style="font-size: 11px; color: #94a3b8;">Variation 3.A (Orbit)</div>
+        </div>
+      </div>
+
+      <!-- Dark Preview 3B -->
+      <div style="background: #111827; padding: 20px; border-radius: 16px; border: 1px solid #2563eb; display: flex; align-items: center; gap: 14px; box-shadow: 0 0 20px rgba(37,99,235,0.15);">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none">
+          <rect x="8" y="8" width="84" height="84" rx="24" fill="url(#shieldGradDark)"/>
+          <defs>
+            <linearGradient id="shieldGradDark" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#3b82f6" />
+              <stop offset="100%" stop-color="#1d4ed8" />
+            </linearGradient>
+          </defs>
+          <path d="M50 25L20 40L50 55L80 40L50 25Z" fill="#ffffff"/>
+          <path d="M30 47V62C30 67 38.5 72 50 72C61.5 72 70 67 70 62V47" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+          <path d="M50 35L52.5 39.5L57 40.5L53.5 43.5L54.5 48L50 45.5L45.5 48L46.5 43.5L43 40.5L47.5 39.5L50 35Z" fill="#fbbf24"/>
+        </svg>
+        <div>
+          <div style="font-size: 18px; font-weight: 900; color: #ffffff;">Ogroni</div>
+          <div style="font-size: 11px; color: #93c5fd; font-weight: 700;">Variation 3.B (Sovereign Shield) ✓ Official</div>
+        </div>
+      </div>
+
+      <!-- Dark Preview 3C -->
+      <div style="background: #111827; padding: 20px; border-radius: 16px; border: 1px solid #1f2937; display: flex; align-items: center; gap: 14px;">
+        <svg width="44" height="44" viewBox="0 0 100 100" fill="none">
+          <circle cx="50" cy="50" r="38" stroke="#38bdf8" stroke-width="8"/>
+          <polygon points="50,33 30,45 50,57 70,45" fill="#ffffff"/>
+          <circle cx="50" cy="45" r="4.5" fill="#fbbf24"/>
+        </svg>
+        <div>
+          <div style="font-size: 18px; font-weight: 900; color: #ffffff;">Ogroni<span style="color: #60a5fa;">Edu</span></div>
+          <div style="font-size: 11px; color: #94a3b8;">Variation 3.C (Dual Facet)</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

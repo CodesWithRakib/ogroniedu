@@ -1,14 +1,13 @@
 'use client';
 
-import React, { useState, useTransition } from 'react';
+import React, { useEffect, useRef, useState, useTransition } from 'react';
 import { Sparkles } from 'lucide-react';
 import { Alert, AlertDescription } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
-import { TutorFiltersForm, type TutorFiltersValue } from './tutorFiltersForm';
+import { TutorFiltersForm, EMPTY_FILTERS, type TutorFiltersValue } from './tutorFiltersForm';
 import { TutorResultsGrid } from './tutorResultsGrid';
 import { ScoreBreakdownModal } from './scoreBreakdownModal';
 import { BookingRequestModal, type BookingFormValue } from './bookingRequestModal';
-import { filterCatalog } from '../utils/catalog-filter';
 import {
   EMPTY_CATALOG,
   type OptionItem,
@@ -17,13 +16,26 @@ import {
   type TutorCardData,
 } from '../types/tutor-discovery.types';
 
+const SEARCH_DEBOUNCE_MS = 350;
+
 interface TutorSearchCatalogProps {
   locale: Locale;
   initialData?: SearchCatalogResponse;
+  initialFilters?: TutorFiltersValue;
   studentOptions?: OptionItem[];
+  /** Education levels used by the booking modal picker. */
   levelOptions?: OptionItem[];
+  subjectOptions?: OptionItem[];
+  filterLevelOptions?: OptionItem[];
+  curriculumOptions?: OptionItem[];
+  districtOptions?: OptionItem[];
+  hasLocation?: boolean;
+  savedTutorIds?: Set<string>;
+  canSave?: boolean;
+  onToggleSave?: (tutor: TutorCardData) => void;
   isLoading?: boolean;
   queryError?: string | null;
+  onFiltersChange?: (filters: TutorFiltersValue) => void;
   onSearch?: (filters: SearchFilters) => Promise<SearchCatalogResponse>;
   onSubmitRequest?: (payload: {
     tutorId: string;
@@ -36,31 +48,54 @@ interface TutorSearchCatalogProps {
   }) => Promise<void>;
 }
 
-const INITIAL_FILTERS: TutorFiltersValue = {
-  query: '',
-  modeFilter: '',
-  sortBy: 'recommended',
-  minPrice: '',
-  maxPrice: '',
-};
+function toSearchFilters(filters: TutorFiltersValue, page: number): SearchFilters {
+  return {
+    q: filters.query.trim() || undefined,
+    subjectId: filters.subjectId || undefined,
+    educationLevelId: filters.educationLevelId || undefined,
+    curriculumId: filters.curriculumId || undefined,
+    districtCode: filters.districtCode || undefined,
+    mode: filters.modeFilter || undefined,
+    sortBy: filters.sortBy,
+    minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
+    maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
+    minExperience: filters.minExperience ? Number(filters.minExperience) : undefined,
+    availableWeekday: filters.availableWeekday ? Number(filters.availableWeekday) : undefined,
+    radiusKm: filters.radiusKm ? Number(filters.radiusKm) : undefined,
+    page,
+  };
+}
 
 export function TutorSearchCatalog({
   locale,
   initialData = EMPTY_CATALOG,
+  initialFilters,
   studentOptions = [],
   levelOptions = [],
+  subjectOptions = [],
+  filterLevelOptions = [],
+  curriculumOptions = [],
+  districtOptions = [],
+  hasLocation = false,
+  savedTutorIds,
+  canSave = false,
+  onToggleSave,
   isLoading = false,
   queryError = null,
+  onFiltersChange,
   onSearch,
   onSubmitRequest,
 }: TutorSearchCatalogProps) {
   const dict = getDictionary(locale);
   const [isPending, startTransition] = useTransition();
 
-  const [filters, setFilters] = useState<TutorFiltersValue>(INITIAL_FILTERS);
+  const [filters, setFilters] = useState<TutorFiltersValue>(initialFilters ?? EMPTY_FILTERS);
   const [results, setResults] = useState<SearchCatalogResponse>(initialData);
-  const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(initialData.page ?? 1);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const committedQuery = useRef(initialFilters?.query ?? '');
+  const filtersRef = useRef(filters);
+  filtersRef.current = filters;
 
   const [activeScoreTutor, setActiveScoreTutor] = useState<TutorCardData | null>(null);
   const [selectedTutorForBooking, setSelectedTutorForBooking] = useState<TutorCardData | null>(
@@ -78,64 +113,75 @@ export function TutorSearchCatalog({
   const [bookingSuccessMessage, setBookingSuccessMessage] = useState<string | null>(null);
   const [bookingError, setBookingError] = useState<string | null>(null);
 
-  // Sync locally managed results whenever the container delivers fresh API data.
-  React.useEffect(() => {
+  useEffect(() => {
     setResults(initialData);
   }, [initialData]);
 
-  const patchFilters = (patch: Partial<TutorFiltersValue>) =>
-    setFilters((prev) => ({ ...prev, ...patch }));
+  const runSearch = React.useCallback(
+    (page: number) => {
+      startTransition(async () => {
+        if (!onSearch) return;
+        try {
+          const res = await onSearch(toSearchFilters(filtersRef.current, page));
+          setResults(res);
+          setCurrentPage(res.page ?? page);
+          setSearchError(null);
+        } catch (err) {
+          setSearchError(err instanceof Error ? err.message : String(err));
+        }
+      });
+    },
+    [onSearch],
+  );
 
-  const buildFilters = (page: number): SearchFilters => ({
-    q: filters.query.trim() || undefined,
-    mode: filters.modeFilter || undefined,
-    sortBy: filters.sortBy,
-    minPrice: filters.minPrice ? Number(filters.minPrice) : undefined,
-    maxPrice: filters.maxPrice ? Number(filters.maxPrice) : undefined,
-    page,
-  });
+  // Debounced text search: one request per pause, never one per keystroke.
+  useEffect(() => {
+    if (!onSearch) return;
+    const term = filters.query.trim();
+    if (term === committedQuery.current) return;
+    const timer = setTimeout(() => {
+      committedQuery.current = term;
+      runSearch(1);
+    }, SEARCH_DEBOUNCE_MS);
+    return () => clearTimeout(timer);
+  }, [filters.query, onSearch, runSearch]);
+
+  const patchFilters = (patch: Partial<TutorFiltersValue>) =>
+    setFilters((prev) => {
+      const next = { ...prev, ...patch };
+      onFiltersChange?.(next);
+      return next;
+    });
 
   const handleFilterSubmit = () => {
-    startTransition(async () => {
-      if (onSearch) {
+    committedQuery.current = filters.query.trim();
+    runSearch(1);
+  };
+
+  const handleResetFilters = () => {
+    setFilters(EMPTY_FILTERS);
+    onFiltersChange?.(EMPTY_FILTERS);
+    committedQuery.current = '';
+    if (onSearch) {
+      startTransition(async () => {
         try {
-          const res = await onSearch(buildFilters(1));
+          const res = await onSearch({ page: 1, sortBy: 'recommended' });
           setResults(res);
           setCurrentPage(1);
           setSearchError(null);
         } catch (err) {
           setSearchError(err instanceof Error ? err.message : String(err));
         }
-      } else {
-        setResults(
-          filterCatalog(initialData, {
-            query: filters.query,
-            modeFilter: filters.modeFilter,
-            minPrice: filters.minPrice,
-            maxPrice: filters.maxPrice,
-            sortBy: filters.sortBy,
-          }),
-        );
-        setCurrentPage(1);
-      }
-    });
-  };
-
-  const handleResetFilters = () => {
-    setFilters(INITIAL_FILTERS);
-    setResults(initialData);
-    setCurrentPage(1);
+      });
+    } else {
+      setResults(initialData);
+      setCurrentPage(1);
+    }
   };
 
   const handlePageChange = (newPage: number) => {
     if (newPage < 1 || newPage > results.totalPages) return;
-    setCurrentPage(newPage);
-    if (onSearch) {
-      startTransition(async () => {
-        const res = await onSearch(buildFilters(newPage));
-        setResults(res);
-      });
-    }
+    if (onSearch) runSearch(newPage);
   };
 
   const handleOpenBookingModal = (tutor: TutorCardData) => {
@@ -210,7 +256,7 @@ export function TutorSearchCatalog({
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-soft border border-border rounded-full text-xs font-semibold text-primary">
             <Sparkles className="w-3.5 h-3.5" />
             <span>
-              {isBn ? '১০০% এনআইডি ও ডিগ্রি যাচাইকৃত শিক্ষক' : 'NID & Academic Verified Educators'}
+              {isBn ? 'যাচাইকৃত শিক্ষক — বাস্তব প্রোফাইল' : 'Verified educators — real profiles'}
             </span>
           </div>
           <h1 className="text-2xl sm:text-4xl font-extrabold tracking-tight text-foreground">
@@ -220,20 +266,6 @@ export function TutorSearchCatalog({
             {dict.discovery?.searchSubheading ||
               'Browse vetted educators across Bangladesh with transparent pricing and credential breakdown'}
           </p>
-          <div className="flex flex-wrap gap-2.5 pt-2 text-xs text-muted-foreground">
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-card border border-border px-2.5 py-1 text-[11px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand" />
-              <span>{isBn ? 'বুয়েট, ঢাবি ও মেডিকেল টিউটর' : 'BUET, DU & Medical Tutors'}</span>
-            </div>
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-card border border-border px-2.5 py-1 text-[11px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand" />
-              <span>{isBn ? '১০০% এসক্রো ফি সুরক্ষা' : '100% Escrow Protection'}</span>
-            </div>
-            <div className="inline-flex items-center gap-1.5 rounded-lg bg-card border border-border px-2.5 py-1 text-[11px]">
-              <span className="h-1.5 w-1.5 rounded-full bg-brand" />
-              <span>{isBn ? 'ফ্রি ট্রায়াল সেশন' : 'Free Trial Sessions'}</span>
-            </div>
-          </div>
         </div>
       </div>
 
@@ -241,6 +273,11 @@ export function TutorSearchCatalog({
         locale={locale}
         value={filters}
         isPending={isPending}
+        subjectOptions={subjectOptions}
+        levelOptions={filterLevelOptions}
+        curriculumOptions={curriculumOptions}
+        districtOptions={districtOptions}
+        hasLocation={hasLocation}
         onChange={patchFilters}
         onSubmit={handleFilterSubmit}
         onReset={handleResetFilters}
@@ -270,6 +307,9 @@ export function TutorSearchCatalog({
         isLoading={isLoading}
         currentPage={currentPage}
         totalPages={results.totalPages}
+        savedTutorIds={savedTutorIds}
+        canSave={canSave}
+        onToggleSave={onToggleSave}
         onShowScore={setActiveScoreTutor}
         onRequestBooking={handleOpenBookingModal}
         onPageChange={handlePageChange}

@@ -142,6 +142,7 @@ export const baseApi = createApi({
     'GuardianChild',
     'TutorSearch',
     'TutorProfile',
+    'SavedTutor',
     'TutorVerification',
     'BookingRequest',
     'Session',

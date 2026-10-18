@@ -20,46 +20,77 @@ export function OgroniEduBrand({
     <Link
       href={`/${locale}`}
       className={`inline-flex items-center gap-2.5 group transition-all duration-200 ${className}`}
-      aria-label="OgroniEdu Home"
+      aria-label="Ogroni Home"
     >
-      {/* Brand Icon: Modern Academic Squircle Emblem with Knowledge Diamond */}
-      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand via-brand-accent to-primary text-white ring-1 ring-white/20 transition-transform duration-300 group-hover:scale-105">
+      {/* Brand Icon: Sovereign Shield & Golden Spark (Variation 3.B) */}
+      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center transition-transform duration-300 group-hover:scale-105">
         <svg
-          viewBox="0 0 24 24"
+          viewBox="0 0 100 100"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="h-5 w-5 text-white drop-shadow-xs"
+          className="h-10 w-10 drop-shadow-sm"
+          aria-hidden="true"
         >
-          {/* Mortarboard / Graduation Cap Top */}
-          <path d="M12 3L2 8L12 13L22 8L12 3Z" fill="currentColor" fillOpacity="0.95" />
-          {/* Mortarboard Arch Underneath */}
+          <defs>
+            <linearGradient id="brandShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#2563eb" />
+              <stop offset="100%" stopColor="#1e40af" />
+            </linearGradient>
+            <linearGradient id="brandSparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stopColor="#fbbf24" />
+              <stop offset="100%" stopColor="#f59e0b" />
+            </linearGradient>
+          </defs>
+          {/* Squircle Shield */}
+          <rect x="8" y="8" width="84" height="84" rx="24" fill="url(#brandShieldGrad)" />
+          {/* Subtle inner highlight */}
+          <rect
+            x="9"
+            y="9"
+            width="82"
+            height="82"
+            rx="23"
+            fill="none"
+            stroke="#ffffff"
+            strokeWidth="1"
+            strokeOpacity="0.2"
+          />
+          {/* Mortarboard Diamond Top */}
+          <path d="M50 25L20 40L50 55L80 40L50 25Z" fill="#ffffff" />
+          {/* Mortarboard Neck & Arch */}
           <path
-            d="M6 10.5V16C6 17.8 8.7 19.5 12 19.5C15.3 19.5 18 17.8 18 16V10.5"
-            stroke="currentColor"
-            strokeWidth="1.8"
+            d="M30 47V62C30 67 38.5 72 50 72C61.5 72 70 67 70 62V47"
+            stroke="#ffffff"
+            strokeWidth="5"
             strokeLinecap="round"
           />
-          {/* Tassel */}
+          {/* Tassel with Golden End */}
           <path
-            d="M21 8.5V15.5C21 16 20.6 16.5 20.1 16.5"
-            stroke="currentColor"
-            strokeWidth="1.6"
+            d="M78 41V60C78 61.5 76.5 63 75 63"
+            stroke="#93c5fd"
+            strokeWidth="3"
             strokeLinecap="round"
           />
-          {/* Diamond Knowledge Spark at center */}
-          <circle cx="12" cy="8" r="1.3" className="fill-white" />
+          <circle cx="75" cy="63" r="3.5" fill="url(#brandSparkGrad)" />
+          {/* Golden Guidance Star on Top Cap */}
+          <path
+            d="M50 35L52.5 39.5L57 40.5L53.5 43.5L54.5 48L50 45.5L45.5 48L46.5 43.5L43 40.5L47.5 39.5L50 35Z"
+            fill="url(#brandSparkGrad)"
+          />
         </svg>
       </div>
 
-      {/* Brand Typography */}
+      {/* Brand Typography: "Ogroni" ONLY - no "Edu" */}
       <div className="flex flex-col text-left leading-tight">
-        <div className="flex items-center gap-1">
-          <span className="text-lg font-black tracking-tight text-foreground font-sans transition-colors group-hover:text-primary">
-            Ogroni<span className="text-primary font-black">Edu</span>
+        <div className="flex items-center gap-1.5">
+          <span className="text-xl font-black tracking-tight text-foreground font-sans transition-colors group-hover:text-primary">
+            Ogroni
           </span>
-          <span className="text-[10px] font-bold text-primary px-1.5 py-0.2 rounded-md bg-primary-soft border border-primary/20">
-            {isBn ? 'অগ্রণী' : 'Edu'}
-          </span>
+          {isBn && (
+            <span className="text-[10px] font-bold text-primary px-1.5 py-0.5 rounded-md bg-primary-soft border border-primary/20">
+              অগ্রণী
+            </span>
+          )}
         </div>
         {showSubtitle && (
           <span className="text-[10px] font-medium text-muted-foreground tracking-normal font-sans">

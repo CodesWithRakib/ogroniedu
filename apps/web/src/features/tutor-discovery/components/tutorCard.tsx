@@ -8,20 +8,29 @@ import {
   Sparkles,
   Star,
   ArrowRight,
+  MapPin,
+  CalendarDays,
+  Bookmark,
 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Badge } from '@/components/ui/Badge';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
-import type { TutorCardData } from '../types/tutor-discovery.types';
+import { WEEKDAY_LABELS, type TutorCardData } from '../types/tutor-discovery.types';
 
 export function TutorCard({
   tutor,
   locale,
+  isSaved = false,
+  canSave = false,
+  onToggleSave,
   onShowScore,
   onRequestBooking,
 }: {
   tutor: TutorCardData;
   locale: Locale;
+  isSaved?: boolean;
+  canSave?: boolean;
+  onToggleSave?: (tutor: TutorCardData) => void;
   onShowScore: (tutor: TutorCardData) => void;
   onRequestBooking: (tutor: TutorCardData) => void;
 }) {
@@ -64,7 +73,6 @@ export function TutorCard({
               <div className="flex h-12 w-12 items-center justify-center rounded-full bg-primary-soft text-primary font-bold text-sm ring-1 ring-border">
                 {initials}
               </div>
-              <span className="absolute bottom-0 right-0 h-3 w-3 rounded-full bg-success ring-2 ring-card" />
             </div>
 
             {/* Name, Headline & Rating */}
@@ -79,18 +87,29 @@ export function TutorCard({
                   {tutor.headline}
                 </p>
               )}
-              {/* Star Rating Demonstration */}
-              <div
-                className="flex items-center gap-1 mt-1 text-[11px] text-warning font-semibold"
-                role="img"
-                aria-label={`Rated 4.9 out of 5 stars from 48 reviews`}
-              >
-                <Star className="h-3 w-3 fill-warning text-warning" aria-hidden="true" />
-                <span className="text-foreground tabular-nums">4.9</span>
-                <span className="text-muted-foreground font-normal">
-                  ({locale === 'bn' ? '৪৮টি রিভিউ' : '48 reviews'})
+              {/* Real rating only — no published review means no rating is shown. */}
+              {tutor.totalReviews && tutor.totalReviews > 0 && tutor.ratingAverage != null ? (
+                <div
+                  className="flex items-center gap-1 mt-1 text-[11px] text-warning font-semibold"
+                  data-testid={`tutor-rating-${tutor.id}`}
+                >
+                  <Star className="h-3 w-3 fill-warning text-warning" aria-hidden="true" />
+                  <span className="text-foreground tabular-nums">
+                    {formatLocalizedNumber(tutor.ratingAverage, locale)}
+                  </span>
+                  <span className="text-muted-foreground font-normal">
+                    ({formatLocalizedNumber(tutor.totalReviews, locale)}{' '}
+                    {locale === 'bn' ? 'রিভিউ' : 'reviews'})
+                  </span>
+                </div>
+              ) : (
+                <span
+                  className="text-[11px] text-muted-foreground"
+                  data-testid={`tutor-no-rating-${tutor.id}`}
+                >
+                  {locale === 'bn' ? 'নতুন শিক্ষক — এখনো রিভিউ নেই' : 'New tutor — no reviews yet'}
                 </span>
-              </div>
+              )}
             </div>
           </Link>
 
@@ -127,7 +146,7 @@ export function TutorCard({
               {dict.tutor?.badgeVerifiedIdentity || 'NID Verified'}
             </Badge>
           )}
-          {tutor.badges.includes('verified_degree') && (
+          {tutor.badges.includes('verified_academic') && (
             <Badge variant="info" size="sm" className="gap-1">
               <GraduationCap className="w-3 h-3 text-info" aria-hidden="true" />
               {dict.tutor?.badgeVerifiedAcademic || 'Degree Verified'}
@@ -182,6 +201,25 @@ export function TutorCard({
               </span>
             </div>
           )}
+          {tutor.distanceKm != null && (
+            <div className="flex items-center gap-1.5" data-testid={`tutor-distance-${tutor.id}`}>
+              <MapPin className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+              <span className="tabular-nums">
+                {formatLocalizedNumber(tutor.distanceKm, locale)} km
+              </span>
+            </div>
+          )}
+          {tutor.nextAvailableWeekday != null && (
+            <div className="flex items-center gap-1.5">
+              <CalendarDays className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+              <span>
+                {locale === 'bn' ? 'পরবর্তী দিন: ' : 'Next: '}
+                {locale === 'bn'
+                  ? WEEKDAY_LABELS[tutor.nextAvailableWeekday]?.bn
+                  : WEEKDAY_LABELS[tutor.nextAvailableWeekday]?.en}
+              </span>
+            </div>
+          )}
           <div className="col-span-2 flex items-center gap-1.5 flex-wrap pt-0.5">
             <span className="font-semibold text-muted-foreground">
               {locale === 'bn' ? 'পদ্ধতি:' : 'Modes:'}
@@ -220,6 +258,29 @@ export function TutorCard({
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
+          {canSave && onToggleSave && (
+            <button
+              type="button"
+              onClick={() => onToggleSave(tutor)}
+              data-testid={`save-tutor-btn-${tutor.id}`}
+              aria-pressed={isSaved}
+              aria-label={
+                isSaved
+                  ? locale === 'bn'
+                    ? 'সংরক্ষিত থেকে সরান'
+                    : 'Remove from saved'
+                  : locale === 'bn'
+                    ? 'শিক্ষক সংরক্ষণ করুন'
+                    : 'Save tutor'
+              }
+              className="inline-flex h-9 w-9 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors"
+            >
+              <Bookmark
+                className={`w-4 h-4 ${isSaved ? 'fill-primary text-primary' : ''}`}
+                aria-hidden="true"
+              />
+            </button>
+          )}
           <Link
             href={`/${locale}/tutors/${tutor.id}`}
             className="inline-flex items-center justify-center gap-1 rounded-xl bg-card hover:bg-muted/50 border border-border text-foreground hover:text-primary font-semibold text-xs px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"

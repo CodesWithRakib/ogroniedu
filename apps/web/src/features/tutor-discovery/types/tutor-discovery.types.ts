@@ -24,7 +24,17 @@ export interface TutorCardData {
   matchScore: number;
   rankingReasons: string[];
   subjects: SubjectItem[];
-  serviceAreas?: Array<{ districtNameEn: string; districtNameBn: string }>;
+  serviceAreas?: Array<{
+    districtCode?: string;
+    districtNameEn: string;
+    districtNameBn: string;
+    localityName?: string | null;
+  }>;
+  distanceKm?: number | null;
+  /** Null when the tutor has no published review — never rendered as 0. */
+  ratingAverage?: number | null;
+  totalReviews?: number;
+  nextAvailableWeekday?: number | null;
 }
 
 export interface SearchCatalogResponse {
@@ -35,7 +45,8 @@ export interface SearchCatalogResponse {
   totalPages: number;
 }
 
-export type TutorSortKey = 'recommended' | 'price_asc' | 'price_desc' | 'experience_desc';
+export type TutorSortKey =
+  'recommended' | 'nearest' | 'price_asc' | 'price_desc' | 'experience_desc' | 'rating_desc';
 
 export interface SearchFilters {
   q?: string;
@@ -46,6 +57,11 @@ export interface SearchFilters {
   mode?: string;
   minPrice?: number;
   maxPrice?: number;
+  minExperience?: number;
+  availableWeekday?: number;
+  lat?: number;
+  lng?: number;
+  radiusKm?: number;
   sortBy?: TutorSortKey;
   page?: number;
 }
@@ -72,4 +88,14 @@ export const EMPTY_CATALOG: SearchCatalogResponse = {
   limit: 10,
   totalPages: 1,
   data: [],
+};
+
+export const WEEKDAY_LABELS: Record<number, { en: string; bn: string }> = {
+  0: { en: 'Sunday', bn: 'রবিবার' },
+  1: { en: 'Monday', bn: 'সোমবার' },
+  2: { en: 'Tuesday', bn: 'মঙ্গলবার' },
+  3: { en: 'Wednesday', bn: 'বুধবার' },
+  4: { en: 'Thursday', bn: 'বৃহস্পতিবার' },
+  5: { en: 'Friday', bn: 'শুক্রবার' },
+  6: { en: 'Saturday', bn: 'শনিবার' },
 };

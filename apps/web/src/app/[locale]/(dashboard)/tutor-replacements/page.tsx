@@ -2,254 +2,302 @@
 
 import React, { use } from 'react';
 import Link from 'next/link';
-import {
-  RefreshCw,
-  ShieldCheck,
-  Clock,
-  CheckCircle2,
-  UserCheck,
-  GraduationCap,
-} from 'lucide-react';
+import { Clock, PlusCircle, RefreshCw, ShieldCheck, UserCheck, X } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
-import { Card, CardContent, Button, Badge } from '@/components/ui';
-import {
-  useGetReplacementCasesQuery,
-  useUpdateReplacementCaseMutation,
-} from '@/store/services/trust-api';
+import { RequireAuth } from '@/components/auth/RequireAuth';
+import { Card, CardContent, Button, Badge, Alert, AlertDescription } from '@/components/ui';
+import { type Locale } from '@/lib/i18n';
 import { formatDateTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
-import { playAudioTone } from '@/lib/audio/notification-sound';
-import { toast } from 'sonner';
-import type { Locale } from '@/lib/i18n';
+import {
+  useGetReplacementCasesQuery,
+  useAcceptReplacementOfferMutation,
+  useDeclineReplacementOfferMutation,
+  useCancelReplacementCaseMutation,
+  type ReplacementCaseView,
+} from '@/store/services/trust-api';
+
+const STATUS_LABELS: Record<string, { en: string; bn: string }> = {
+  requested: { en: 'Requested', bn: 'অনুরোধ গৃহীত' },
+  under_review: { en: 'Under review', bn: 'পর্যালোচনায়' },
+  matching: { en: 'Matching', bn: 'শিক্ষক খোঁজা হচ্ছে' },
+  offered: { en: 'Tutor offered', bn: 'শিক্ষক প্রস্তাবিত' },
+  accepted: { en: 'Replacement accepted', bn: 'শিক্ষক গ্রহণ করা হয়েছে' },
+  rejected: { en: 'Rejected', bn: 'প্রত্যাখ্যাত' },
+  closed: { en: 'Closed', bn: 'সমাপ্ত' },
+  refund_eligible: { en: 'Eligible for refund review', bn: 'রিফান্ড পর্যালোচনার যোগ্য' },
+  cancelled: { en: 'Cancelled', bn: 'বাতিল' },
+};
+
+function StatusBadge({ status, locale }: { status: string; locale: Locale }) {
+  const label = STATUS_LABELS[status];
+  const variant =
+    status === 'accepted'
+      ? 'success'
+      : status === 'requested' || status === 'matching' || status === 'under_review'
+        ? 'warning'
+        : status === 'refund_eligible'
+          ? 'info'
+          : 'outline';
+  return (
+    <Badge variant={variant as never}>
+      {label ? (locale === 'bn' ? label.bn : label.en) : status}
+    </Badge>
+  );
+}
+
+function CaseCard({
+  item,
+  locale,
+  onAccept,
+  onDecline,
+  onCancel,
+  isMutating,
+}: {
+  item: ReplacementCaseView;
+  locale: Locale;
+  onAccept: (caseId: string) => void;
+  onDecline: (caseId: string) => void;
+  onCancel: (caseId: string) => void;
+  isMutating: boolean;
+}) {
+  const isBn = locale === 'bn';
+  return (
+    <Card
+      className="rounded-2xl border-border bg-card p-5 space-y-4"
+      data-testid={`replacement-case-${item.id}`}
+    >
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
+        <div className="space-y-1">
+          <div className="flex items-center gap-2">
+            <span className="font-mono text-xs font-bold text-muted-foreground">
+              #{item.id.slice(0, 8)}
+            </span>
+            <Badge variant="outline" className="text-xs capitalize">
+              {item.reasonCode.replace(/_/g, ' ')}
+            </Badge>
+            {item.isOverdue && (
+              <Badge variant="destructive" data-testid={`case-overdue-${item.id}`}>
+                {isBn ? 'সময়সীমা অতিক্রান্ত' : 'Overdue'}
+              </Badge>
+            )}
+          </div>
+          <span className="text-[11px] text-muted-foreground">
+            {isBn ? 'দায়ের:' : 'Filed:'} {formatDateTime(item.createdAt, locale)}
+          </span>
+        </div>
+        <StatusBadge status={item.status} locale={locale} />
+      </div>
+
+      <p className="text-xs rounded-xl bg-card border border-border p-3 text-foreground">
+        {item.explanation}
+      </p>
+
+      {item.deadlineAt &&
+        !['accepted', 'rejected', 'closed', 'refund_eligible', 'cancelled'].includes(
+          item.status,
+        ) && (
+          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+            <Clock className="w-4 h-4" aria-hidden="true" />
+            {isBn ? 'সময়সীমা:' : 'Deadline:'} {formatDateTime(item.deadlineAt, locale)}
+          </div>
+        )}
+
+      {item.userVisibleNote && (
+        <p className="text-xs text-muted-foreground">
+          <span className="font-semibold text-foreground">
+            {isBn ? 'সর্বশেষ আপডেট: ' : 'Latest update: '}
+          </span>
+          {item.userVisibleNote}
+        </p>
+      )}
+
+      {item.refundEligibility === 'eligible' && (
+        <Alert className="rounded-xl" data-testid={`refund-eligible-${item.id}`}>
+          <AlertDescription className="text-xs">
+            {isBn
+              ? 'এই কেসটি রিফান্ড পর্যালোচনার জন্য যোগ্য হিসেবে চিহ্নিত। প্রকৃত ফেরত পেমেন্ট আলাদা প্রক্রিয়ায় সম্পন্ন হয়।'
+              : 'This case is marked eligible for refund review. The actual refund is executed by the payment process, not here.'}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {item.status === 'offered' && item.replacementTutor && (
+        <div
+          className="p-4 rounded-2xl bg-primary/10 border border-primary/30 space-y-3"
+          data-testid={`offer-${item.id}`}
+        >
+          <p className="text-sm font-semibold text-foreground">
+            {isBn ? 'বিকল্প শিক্ষক প্রস্তাব:' : 'Proposed replacement tutor:'}{' '}
+            {item.replacementTutor.displayName}
+          </p>
+          <div className="flex gap-2">
+            <Button
+              size="sm"
+              disabled={isMutating}
+              onClick={() => onAccept(item.id)}
+              className="gap-1 text-xs"
+              data-testid={`accept-offer-${item.id}`}
+            >
+              <UserCheck className="w-3.5 h-3.5" aria-hidden="true" />
+              {isBn ? 'গ্রহণ করুন' : 'Accept'}
+            </Button>
+            <Button
+              size="sm"
+              variant="outline"
+              disabled={isMutating}
+              onClick={() => onDecline(item.id)}
+              className="gap-1 text-xs"
+              data-testid={`decline-offer-${item.id}`}
+            >
+              <X className="w-3.5 h-3.5" aria-hidden="true" />
+              {isBn ? 'প্রত্যাখ্যান' : 'Decline'}
+            </Button>
+          </div>
+        </div>
+      )}
+
+      <div className="flex items-center justify-between text-xs">
+        <Link
+          href={withLocale(`/tutor-replacements/${item.id}`, locale)}
+          className="font-semibold text-primary hover:underline"
+        >
+          {isBn ? 'বিস্তারিত ও ইতিহাস' : 'Details & history'}
+        </Link>
+        {['requested', 'under_review'].includes(item.status) && (
+          <Button
+            size="sm"
+            variant="ghost"
+            disabled={isMutating}
+            onClick={() => onCancel(item.id)}
+            className="text-xs text-muted-foreground hover:text-destructive"
+          >
+            {isBn ? 'অনুরোধ প্রত্যাহার' : 'Withdraw request'}
+          </Button>
+        )}
+      </div>
+    </Card>
+  );
+}
 
 export default function TutorReplacementsPage({ params }: { params: Promise<{ locale: string }> }) {
   const resolved = use(params);
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
+  return (
+    <RequireAuth locale={locale}>
+      <ReplacementCasesContent locale={locale} />
+    </RequireAuth>
+  );
+}
+
+function ReplacementCasesContent({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
 
-  const { data: casesData, isLoading, refetch } = useGetReplacementCasesQuery();
-  const [updateReplacementCase, { isLoading: isUpdating }] = useUpdateReplacementCaseMutation();
+  const { data, isLoading, isError, refetch } = useGetReplacementCasesQuery();
+  const [acceptOffer, acceptState] = useAcceptReplacementOfferMutation();
+  const [declineOffer, declineState] = useDeclineReplacementOfferMutation();
+  const [cancelCase, cancelState] = useCancelReplacementCaseMutation();
+  const [actionError, setActionError] = React.useState<string | null>(null);
 
-  const rawCases = Array.isArray(casesData)
-    ? casesData
-    : casesData &&
-        typeof casesData === 'object' &&
-        'data' in casesData &&
-        Array.isArray((casesData as { data: unknown[] }).data)
-      ? (casesData as { data: typeof casesData }).data
-      : [];
+  const cases = data?.data ?? [];
+  const isMutating = acceptState.isLoading || declineState.isLoading || cancelState.isLoading;
 
-  const cases = Array.isArray(rawCases) ? rawCases : [];
-
-  const handleAcceptReplacement = async (caseId: string, replacementTutorId?: string | null) => {
+  const runAction = async (fn: () => Promise<unknown>) => {
+    setActionError(null);
     try {
-      await updateReplacementCase({
-        id: caseId,
-        body: {
-          status: 'accepted',
-          replacementTutorUserId: replacementTutorId,
-          outcomeNotes: 'Replacement tutor accepted by guardian/student.',
-        },
-      }).unwrap();
-
-      playAudioTone('success');
-      toast.success(isBn ? 'নতুন শিক্ষক সফলভাবে যুক্ত করা হয়েছে' : 'Replacement Tutor Accepted', {
-        description: isBn
-          ? 'বুকিংটি নতুন শিক্ষকের সাথে পুনর্নির্ধারণ করা হয়েছে।'
-          : 'Booking successfully rebound with the new verified tutor.',
-      });
+      await fn();
       refetch();
-    } catch {
-      toast.error(isBn ? 'অনুমোদন ব্যর্থ হয়েছে' : 'Failed to accept replacement');
+    } catch (err) {
+      const message =
+        err && typeof err === 'object' && 'data' in err
+          ? ((err as { data?: { error?: { message?: string } } }).data?.error?.message ??
+            (isBn ? 'কাজটি ব্যর্থ হয়েছে।' : 'The action failed.'))
+          : isBn
+            ? 'কাজটি ব্যর্থ হয়েছে।'
+            : 'The action failed.';
+      setActionError(message);
     }
   };
 
   return (
     <DashboardShell
       locale={locale}
-      title={isBn ? 'শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি কেস' : 'Tutor Replacement Guarantee Cases'}
+      title={isBn ? 'শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি' : 'Tutor Replacement Guarantee'}
       subtitle={
         isBn
-          ? '৪৮ ঘণ্টার মধ্যে নতুন যাচাইকৃত শিক্ষক ম্যাচিং অথবা ১০০% এসক্রো রিফান্ড ট্র্যাকার'
-          : '48-Hour SLA Replacement Tracker: Guaranteed verified matching or 100% escrow refund'
+          ? 'আপনার বুকিংয়ের রিপ্লেসমেন্ট কেস, সময়সীমা ও ফলাফল'
+          : 'Your replacement cases, deadlines and outcomes'
       }
-      role="guardian"
       actions={
         <Link
-          href={withLocale('/dashboard/guardian/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground text-xs font-bold shadow-xs hover:bg-primary-hover"
+          href={withLocale('/tutor-replacements/new', locale)}
+          className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-primary text-primary-foreground text-xs font-bold"
+          data-testid="start-replacement-request"
         >
-          <RefreshCw className="w-3.5 h-3.5" />
-          <span>{isBn ? 'বুকিং তালিকা থেকে রিপ্লেসমেন্ট দাবি' : 'Claim from Bookings'}</span>
+          <PlusCircle className="w-3.5 h-3.5" aria-hidden="true" />
+          <span>{isBn ? 'নতুন অনুরোধ' : 'New request'}</span>
         </Link>
       }
     >
-      {/* 1. 48-HOUR SLA HERO BANNER */}
-      <div className="p-5 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-background flex flex-col md:flex-row md:items-center justify-between gap-4">
-        <div className="flex items-start gap-4">
-          <div className="h-14 w-14 rounded-2xl bg-primary/20 border border-primary/30 text-primary flex items-center justify-center shrink-0">
-            <RefreshCw className="w-7 h-7" />
-          </div>
-          <div className="space-y-1">
-            <div className="flex items-center gap-2">
-              <h3 className="text-lg font-bold text-foreground">
-                {isBn
-                  ? '৪৮ ঘণ্টার মধ্যে শিক্ষক নিশ্চিতকরণ বা সম্পূর্ণ রিফান্ড'
-                  : '48-Hour Matching Guarantee (FR-011)'}
-              </h3>
-              <Badge
-                variant="outline"
-                className="text-xs border-primary/40 text-success-soft-foreground"
-              >
-                {isBn ? '১০০% মানি-ব্যাক' : '100% Refundable'}
-              </Badge>
-            </div>
-            <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
-              {isBn
-                ? 'শিক্ষকের অনুপলব্ধতা, বোঝানোর অসঙ্গতি বা অসদাচরণ হলে আপনি যেকোনো সময় বিকল্প শিক্ষক চাইতে পারেন। ৪৮ ঘণ্টার মধ্যে সমাধান না হলে এসক্রো ফান্ড সম্পূর্ণ ফেরত দেওয়া হবে।'
-                : 'If your matched tutor fails to meet expectations or cancels sessions, our operations team guarantees a vetted replacement within 48 hours or full escrow reversal.'}
+      <div className="p-5 rounded-2xl border border-border bg-card flex items-start gap-4">
+        <RefreshCw className="w-6 h-6 text-primary shrink-0" aria-hidden="true" />
+        <p className="text-xs text-muted-foreground leading-relaxed">
+          {isBn
+            ? 'যোগ্য বুকিংয়ের জন্য আপনি বিকল্প যাচাইকৃত শিক্ষক চাইতে পারেন। অপারেশনস টিম নির্ধারিত সময়ের মধ্যে শিক্ষক খুঁজে দেয়; সময়ের মধ্যে বিকল্প না মিললে কেসটি রিফান্ড পর্যালোচনার জন্য চিহ্নিত হতে পারে। প্রকৃত রিফান্ড পেমেন্ট সিস্টেম সম্পন্ন করে।'
+            : 'For an eligible booking you can request a verified replacement tutor. Operations matches within the policy window; if no replacement is accepted the case can be marked for refund review. The actual refund is executed by the payment system.'}
+        </p>
+      </div>
+
+      {actionError && (
+        <Alert variant="destructive" className="rounded-2xl">
+          <AlertDescription role="alert">{actionError}</AlertDescription>
+        </Alert>
+      )}
+
+      {isLoading ? (
+        <div className="py-12 text-center text-sm text-muted-foreground">
+          {isBn ? 'লোড হচ্ছে...' : 'Loading replacement cases...'}
+        </div>
+      ) : isError ? (
+        <Card className="py-12 text-center rounded-2xl">
+          <CardContent className="space-y-3">
+            <p className="text-sm text-muted-foreground">
+              {isBn ? 'কেস লোড করা যায়নি।' : 'Failed to load replacement cases.'}
             </p>
-          </div>
+            <Button variant="outline" size="sm" onClick={() => refetch()}>
+              {isBn ? 'আবার চেষ্টা করুন' : 'Retry'}
+            </Button>
+          </CardContent>
+        </Card>
+      ) : cases.length === 0 ? (
+        <Card className="py-16 text-center rounded-2xl">
+          <CardContent className="space-y-3">
+            <ShieldCheck className="w-14 h-14 text-success mx-auto" aria-hidden="true" />
+            <h4 className="text-base font-bold text-foreground">
+              {isBn ? 'কোনো রিপ্লেসমেন্ট কেস নেই' : 'No replacement cases'}
+            </h4>
+            <p className="text-xs text-muted-foreground max-w-md mx-auto">
+              {isBn
+                ? 'যোগ্য বুকিং থেকে প্রয়োজনে নতুন অনুরোধ করতে পারেন।'
+                : 'You can start a request from an eligible booking when needed.'}
+            </p>
+          </CardContent>
+        </Card>
+      ) : (
+        <div className="space-y-4" data-testid="replacement-cases-list">
+          {cases.map((item) => (
+            <CaseCard
+              key={item.id}
+              item={item}
+              locale={locale}
+              isMutating={isMutating}
+              onAccept={(caseId) => void runAction(() => acceptOffer(caseId).unwrap())}
+              onDecline={(caseId) => void runAction(() => declineOffer(caseId).unwrap())}
+              onCancel={(caseId) => void runAction(() => cancelCase(caseId).unwrap())}
+            />
+          ))}
         </div>
-        <div className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-success-soft border border-success/30 text-success-soft-foreground  font-bold text-xs shrink-0">
-          <Clock className="w-4 h-4" />
-          <span>{isBn ? '৪৮ ঘণ্টা কঠোর SLA ট্র্যাকিং' : 'Strict 48-Hour SLA Active'}</span>
-        </div>
-      </div>
-
-      {/* 2. REPLACEMENT CASES LIST */}
-      <div className="space-y-4">
-        <div className="flex items-center justify-between border-b border-border pb-2">
-          <h4 className="text-sm font-bold text-foreground">
-            {isBn
-              ? `সক্রিয় ও অতীতের রিপ্লেসমেন্ট কেস (${cases.length})`
-              : `Replacement Requests (${cases.length})`}
-          </h4>
-        </div>
-
-        {isLoading ? (
-          <div className="py-12 text-center text-sm text-muted-foreground">
-            {isBn ? 'লোড হচ্ছে...' : 'Loading replacement cases...'}
-          </div>
-        ) : cases.length === 0 ? (
-          <Card className="py-16 text-center rounded-2xl">
-            <CardContent className="space-y-3">
-              <ShieldCheck className="w-14 h-14 text-success-soft-foreground mx-auto" />
-              <h4 className="text-base font-bold text-foreground">
-                {isBn ? 'কোনো সক্রিয় রিপ্লেসমেন্ট কেস নেই' : 'No Replacement Cases Filed'}
-              </h4>
-              <p className="text-xs text-muted-foreground max-w-md mx-auto">
-                {isBn
-                  ? 'আপনার সকল শিক্ষক বুকিং সন্তোষজনকভাবে পরিচালিত হচ্ছে। শিক্ষক পরিবর্তনের প্রয়োজন হলে বুকিং ডিটেইলস পেজ থেকে আবেদন করতে পারেন।'
-                  : 'All your tutoring arrangements are running smoothly. You can file a replacement from your booking details.'}
-              </p>
-            </CardContent>
-          </Card>
-        ) : (
-          <div className="space-y-4" data-testid="replacement-cases-list">
-            {cases.map((c) => (
-              <Card key={c.id} className="rounded-2xl border-border bg-card p-5 space-y-4">
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
-                  <div className="space-y-1">
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-xs font-bold text-muted-foreground">
-                        Case #{c.id.slice(0, 8)}
-                      </span>
-                      <Badge
-                        variant="outline"
-                        className="text-xs border-primary/30 text-primary capitalize"
-                      >
-                        {c.reasonCode.replace(/_/g, ' ')}
-                      </Badge>
-                    </div>
-                    <span className="text-[11px] text-muted-foreground">
-                      {isBn ? 'দায়ের সময়:' : 'Filed:'}{' '}
-                      {formatDateTime(String(c.createdAt), locale)}
-                    </span>
-                  </div>
-                  <Badge
-                    variant={
-                      c.status === 'accepted'
-                        ? 'success'
-                        : c.status === 'requested' || c.status === 'matching'
-                          ? 'warning'
-                          : 'outline'
-                    }
-                  >
-                    {c.status.toUpperCase()}
-                  </Badge>
-                </div>
-
-                <div className="text-xs text-foreground space-y-1">
-                  <span className="font-bold text-muted-foreground block">
-                    {isBn ? 'অভিযোগ / প্রত্যাশা:' : 'Reason & Explanation:'}
-                  </span>
-                  <p className="p-3 rounded-2xl bg-card border border-border text-foreground">
-                    {c.explanation}
-                  </p>
-                </div>
-
-                {/* Progress Stepper */}
-                <div className="p-3.5 rounded-2xl bg-surface/50 border border-border flex items-center justify-between text-[11px]">
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2 className="w-4 h-4 text-success-soft-foreground" />
-                    <span className="font-bold text-foreground">
-                      {isBn ? '১. অনুরোধ গৃহীত' : '1. Requested'}
-                    </span>
-                  </div>
-                  <div className="w-8 h-0.5 bg-border" />
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2
-                      className={`w-4 h-4 ${['matching', 'offered', 'accepted'].includes(c.status) ? 'text-success-soft-foreground' : 'text-muted-foreground'}`}
-                    />
-                    <span className="font-bold text-foreground">
-                      {isBn ? '২. শিক্ষক ম্যাচিং' : '2. Matching'}
-                    </span>
-                  </div>
-                  <div className="w-8 h-0.5 bg-border" />
-                  <div className="flex items-center gap-2">
-                    <CheckCircle2
-                      className={`w-4 h-4 ${c.status === 'accepted' ? 'text-success-soft-foreground' : 'text-muted-foreground'}`}
-                    />
-                    <span className="font-bold text-foreground">
-                      {isBn ? '৩. ক্লাস চালু' : '3. Rebound'}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Replacement Tutor Offered Card */}
-                {c.replacementTutorUserId && c.status !== 'accepted' && (
-                  <div className="p-4 rounded-2xl bg-primary/10 border border-primary/30 flex items-center justify-between gap-4">
-                    <div className="flex items-center gap-3">
-                      <GraduationCap className="w-6 h-6 text-primary" />
-                      <div>
-                        <h5 className="font-bold text-foreground text-xs">
-                          {isBn
-                            ? 'নতুন বিকল্প শিক্ষক প্রস্তাব করা হয়েছে'
-                            : 'Replacement Tutor Offered'}
-                        </h5>
-                        <p className="text-[11px] text-muted-foreground">
-                          {c.replacementTutor?.displayName ||
-                            (isBn ? 'যাচাইকৃত বিকল্প শিক্ষক' : 'Verified Alternate Tutor')}
-                        </p>
-                      </div>
-                    </div>
-                    <Button
-                      size="sm"
-                      disabled={isUpdating}
-                      onClick={() => handleAcceptReplacement(c.id, c.replacementTutorUserId)}
-                      className="gap-1 text-xs bg-primary hover:bg-primary-hover text-white font-bold"
-                    >
-                      <UserCheck className="w-3.5 h-3.5" />
-                      <span>{isBn ? 'শিক্ষক গ্রহণ করুন' : 'Accept Tutor'}</span>
-                    </Button>
-                  </div>
-                )}
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
+      )}
     </DashboardShell>
   );
 }

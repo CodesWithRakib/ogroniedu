@@ -303,6 +303,15 @@ export class TutorProfileService {
     areas: ServiceAreaItemDto[],
   ): Promise<TutorServiceAreaEntity[]> {
     await this.getOrCreateProfile(userId);
+    for (const area of areas ?? []) {
+      const hasLat = area.latitude !== undefined && area.latitude !== null;
+      const hasLng = area.longitude !== undefined && area.longitude !== null;
+      if (hasLat !== hasLng) {
+        throw new BadRequestException(
+          'A service area coordinate requires both latitude and longitude.',
+        );
+      }
+    }
     await this.serviceAreaRepo.delete({ tutorUserId: userId });
     if (!areas || areas.length === 0) return [];
     const entities = areas.map((a) =>
@@ -312,6 +321,8 @@ export class TutorProfileService {
         upazilaCode: a.upazilaCode ?? null,
         localityName: a.localityName ?? null,
         radiusKm: a.radiusKm ?? null,
+        latitude: a.latitude ?? null,
+        longitude: a.longitude ?? null,
       }),
     );
     const saved = await this.serviceAreaRepo.save(entities);

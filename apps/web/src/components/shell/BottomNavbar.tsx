@@ -68,7 +68,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           <div className="relative">
             <Home className="h-5 w-5 stroke-[2.2]" aria-hidden="true" />
             {isHomeActive && (
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand" />
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-primary" />
             )}
           </div>
           <span className="text-[10px] tracking-tight mt-1">{isBn ? 'হোম' : 'Home'}</span>
@@ -86,7 +86,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           <div className="relative">
             <GraduationCap className="h-5 w-5 stroke-[2.2]" aria-hidden="true" />
             {isTutorsActive && (
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand" />
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-primary" />
             )}
           </div>
           <span className="text-[10px] tracking-tight mt-1">{isBn ? 'শিক্ষক' : 'Tutors'}</span>
@@ -99,8 +99,8 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           aria-label={isBn ? 'টিউশন রিকোয়েস্ট পোস্ট করুন' : 'Post Tuition Request'}
         >
           <div
-            className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-brand via-brand-accent to-brand-accent text-brand-foreground shadow-sm ring-4 ring-card transition-transform duration-150 group-hover:scale-105 ${
-              isRequestsActive ? 'ring-brand/40' : ''
+            className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-500 text-white shadow-md shadow-blue-500/25 ring-4 ring-card transition-transform duration-150 group-hover:scale-105 ${
+              isRequestsActive ? 'ring-blue-500/40' : ''
             }`}
           >
             <PlusCircle className="h-6 w-6 stroke-[2.4]" aria-hidden="true" />
@@ -135,7 +135,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
               </span>
             )}
             {isNotificationsActive && (
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand" />
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-primary" />
             )}
           </div>
           <span className="text-[10px] tracking-tight mt-1">{isBn ? 'বিজ্ঞপ্তি' : 'Alerts'}</span>
@@ -157,7 +157,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
               <User className="h-5 w-5 stroke-[2.2]" aria-hidden="true" />
             )}
             {isAccountActive && (
-              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand" />
+              <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-primary" />
             )}
           </div>
           <span className="text-[10px] tracking-tight mt-1 truncate max-w-full">

@@ -1,4 +1,4 @@
-import { IsUUID, IsIn, IsString, IsNotEmpty, MaxLength } from 'class-validator';
+import { IsUUID, IsIn, IsString, IsNotEmpty, MaxLength, MinLength } from 'class-validator';
 import { ApiProperty } from '@nestjs/swagger';
 import type { ReplacementReasonCode } from '../entities/tutor-replacement-case.entity';
 
@@ -31,6 +31,7 @@ export class CreateReplacementCaseDto {
   @ApiProperty({ description: 'Detailed explanation for the replacement request', maxLength: 3000 })
   @IsString()
   @IsNotEmpty()
+  @MinLength(10)
   @MaxLength(3000)
   explanation!: string;
 }

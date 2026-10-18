@@ -1,35 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
   <defs>
-    <linearGradient id="mGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#0df5c4" />
-      <stop offset="50%" stop-color="#00cba0" />
-      <stop offset="100%" stop-color="#046b5a" />
+    <linearGradient id="maskableBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1e40af" />
     </linearGradient>
-    <radialGradient id="mCardGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#06252d" />
-      <stop offset="100%" stop-color="#031317" />
-    </radialGradient>
+    <linearGradient id="sparkGradM" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
   </defs>
 
-  <!-- Full Bleed Background for Maskable Icon -->
-  <rect width="512" height="512" fill="url(#mCardGrad)" />
+  <!-- Full-bleed background for adaptive Android launcher cropping -->
+  <rect width="512" height="512" fill="url(#maskableBg)" />
 
-  <!-- Center Mascot within 80% safe zone (radius 200) -->
-  <circle cx="256" cy="256" r="140" fill="url(#mGrad)" />
-  <circle cx="256" cy="256" r="130" fill="#042426" />
+  <!-- Centered Emblem (scaled 0.78x inside safe zone) -->
+  <g transform="translate(56, 56) scale(0.78)">
+    <!-- Mortarboard Diamond Top -->
+    <path d="M256 128 L102 205 L256 282 L410 205 Z" fill="#ffffff" />
 
-  <!-- Owl Mascot Safe-Zone Scaled -->
-  <path d="M185 180 L155 130 L225 150" stroke="#0df5c4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" />
-  <path d="M327 180 L357 130 L287 150" stroke="#0df5c4" stroke-width="16" stroke-linecap="round" stroke-linejoin="round" fill="none" />
+    <!-- Mortarboard Lower Neck & Arch -->
+    <path d="M154 240 V318 C154 343 197 369 256 369 C315 369 358 343 358 318 V240"
+          stroke="#ffffff"
+          stroke-width="26"
+          stroke-linecap="round"
+          fill="none" />
 
-  <circle cx="256" cy="265" r="95" stroke="#0df5c4" stroke-width="14" fill="#03191d" />
+    <!-- Tassel with Soft Blue Drape & Golden Droplet -->
+    <path d="M400 210 V307 C400 315 392 323 384 323"
+          stroke="#93c5fd"
+          stroke-width="15"
+          stroke-linecap="round"
+          fill="none" />
+    <circle cx="384" cy="323" r="18" fill="url(#sparkGradM)" />
 
-  <circle cx="218" cy="255" r="35" stroke="#0df5c4" stroke-width="14" fill="#073b3e" />
-  <circle cx="294" cy="255" r="35" stroke="#0df5c4" stroke-width="14" fill="#073b3e" />
-  <path d="M250 255 L262 255" stroke="#0df5c4" stroke-width="14" stroke-linecap="round" />
-
-  <circle cx="218" cy="255" r="12" fill="#ffffff" />
-  <circle cx="294" cy="255" r="12" fill="#ffffff" />
-
-  <polygon points="256,282 242,308 270,308" fill="#0df5c4" stroke="#0df5c4" stroke-width="3" stroke-linejoin="round" />
+    <!-- Golden Guidance Star / Spark -->
+    <path d="M256 179 L269 202 L292 207 L274 223 L279 246 L256 233 L233 246 L238 223 L220 207 L243 202 Z"
+          fill="url(#sparkGradM)" />
+  </g>
 </svg>

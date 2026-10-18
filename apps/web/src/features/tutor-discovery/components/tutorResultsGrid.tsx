@@ -12,6 +12,9 @@ export function TutorResultsGrid({
   isLoading = false,
   currentPage,
   totalPages,
+  savedTutorIds,
+  canSave = false,
+  onToggleSave,
   onShowScore,
   onRequestBooking,
   onPageChange,
@@ -22,6 +25,9 @@ export function TutorResultsGrid({
   isLoading?: boolean;
   currentPage: number;
   totalPages: number;
+  savedTutorIds?: Set<string>;
+  canSave?: boolean;
+  onToggleSave?: (tutor: TutorCardData) => void;
   onShowScore: (tutor: TutorCardData) => void;
   onRequestBooking: (tutor: TutorCardData) => void;
   onPageChange: (page: number) => void;
@@ -52,7 +58,10 @@ export function TutorResultsGrid({
 
   if (tutors.length === 0) {
     return (
-      <div className="rounded-2xl bg-card/90 border border-border p-10 sm:p-16 text-center space-y-4 backdrop-blur-xl">
+      <div
+        className="rounded-2xl bg-card/90 border border-border p-10 sm:p-16 text-center space-y-4 backdrop-blur-xl"
+        data-testid="tutors-empty"
+      >
         <div
           className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-soft border border-border text-primary mx-auto"
           aria-hidden="true"
@@ -89,6 +98,9 @@ export function TutorResultsGrid({
             key={tutor.id}
             tutor={tutor}
             locale={locale}
+            isSaved={savedTutorIds?.has(tutor.id) ?? false}
+            canSave={canSave}
+            onToggleSave={onToggleSave}
             onShowScore={onShowScore}
             onRequestBooking={onRequestBooking}
           />

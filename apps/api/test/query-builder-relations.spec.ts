@@ -20,6 +20,7 @@ import { PaymentTransactionEntity } from '../src/modules/payments/entities/payme
 import { PaymentRefundEntity } from '../src/modules/payments/entities/payment-refund.entity';
 import { InstitutionEntity } from '../src/modules/taxonomy/entities/institution.entity';
 import { StreamEntity } from '../src/modules/taxonomy/entities/stream.entity';
+import { TutorReplacementCaseEntity } from '../src/modules/trust/entities/tutor-replacement-case.entity';
 
 const ENTITIES = [
   BookingEntity,
@@ -37,6 +38,7 @@ const ENTITIES = [
   PaymentRefundEntity,
   InstitutionEntity,
   StreamEntity,
+  TutorReplacementCaseEntity,
 ] as const;
 
 type EntityCtor = { name: string };

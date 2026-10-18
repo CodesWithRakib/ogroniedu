@@ -8,13 +8,18 @@ export interface PublicSubjectItem {
   educationLevelCode: string;
   educationLevelNameEn: string;
   educationLevelNameBn: string;
+  curriculumId?: string | null;
   curriculumCode?: string | null;
+  curriculumNameEn?: string | null;
+  curriculumNameBn?: string | null;
   rateMinor?: string | null;
 }
 
 export interface PublicServiceAreaItem {
   id: string;
   districtCode: string;
+  districtNameEn: string;
+  districtNameBn: string;
   upazilaCode?: string | null;
   localityName?: string | null;
   radiusKm?: number | null;
@@ -51,7 +56,10 @@ export class TutorPublicProfileDto {
   subjects!: PublicSubjectItem[];
   serviceAreas!: PublicServiceAreaItem[];
   availability!: PublicAvailabilityItem[];
-  ratingAverage?: number;
-  totalReviews?: number;
-  completedSessions?: number;
+  /** Average of published reviews only; null when no published review exists. */
+  ratingAverage!: number | null;
+  totalReviews!: number;
+  /** Completed bookings only — never a fabrication or platform-wide count. */
+  completedSessions!: number;
+  nextAvailableWeekday!: number | null;
 }

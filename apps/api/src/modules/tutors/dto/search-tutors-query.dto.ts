@@ -1,14 +1,29 @@
-import { IsOptional, IsString, IsUUID, IsIn, IsInt, Min, Max } from 'class-validator';
+import {
+  IsOptional,
+  IsString,
+  IsUUID,
+  IsIn,
+  IsInt,
+  IsNumber,
+  Min,
+  Max,
+  MaxLength,
+} from 'class-validator';
 import { Type } from 'class-transformer';
 
 /** Single precedence rule shared with web via @ogroniedu/contracts. */
 export { resolveTutorSearchPageSize } from '@ogroniedu/contracts';
 
-export type SearchSortOption = 'recommended' | 'price_asc' | 'price_desc' | 'experience_desc';
+export type SearchSortOption =
+  'recommended' | 'nearest' | 'price_asc' | 'price_desc' | 'experience_desc' | 'rating_desc';
+
+/** Hard upper bound for a radius search (km). */
+export const MAX_SEARCH_RADIUS_KM = 100;
 
 export class SearchTutorsQueryDto {
   @IsOptional()
   @IsString()
+  @MaxLength(120)
   q?: string;
 
   @IsOptional()
@@ -29,10 +44,12 @@ export class SearchTutorsQueryDto {
 
   @IsOptional()
   @IsString()
+  @MaxLength(40)
   districtCode?: string;
 
   @IsOptional()
   @IsString()
+  @MaxLength(40)
   upazilaCode?: string;
 
   @IsOptional()
@@ -48,7 +65,43 @@ export class SearchTutorsQueryDto {
   maxPrice?: number;
 
   @IsOptional()
-  @IsIn(['recommended', 'price_asc', 'price_desc', 'experience_desc'])
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @Max(60)
+  minExperience?: number;
+
+  /** 0 = Sunday … 6 = Saturday. Only active, date-effective slots match. */
+  @IsOptional()
+  @Type(() => Number)
+  @IsInt()
+  @Min(0)
+  @Max(6)
+  availableWeekday?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 6 })
+  @Min(-90)
+  @Max(90)
+  lat?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 6 })
+  @Min(-180)
+  @Max(180)
+  lng?: number;
+
+  @IsOptional()
+  @Type(() => Number)
+  @IsNumber({ maxDecimalPlaces: 2 })
+  @Min(1)
+  @Max(MAX_SEARCH_RADIUS_KM)
+  radiusKm?: number;
+
+  @IsOptional()
+  @IsIn(['recommended', 'nearest', 'price_asc', 'price_desc', 'experience_desc', 'rating_desc'])
   sort?: SearchSortOption = 'recommended';
 
   @IsOptional()

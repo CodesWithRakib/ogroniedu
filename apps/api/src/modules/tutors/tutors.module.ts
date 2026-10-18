@@ -8,12 +8,14 @@ import { TutorVerificationDocumentEntity } from './entities/tutor-verification-d
 import { TutorSubjectEntity } from './entities/tutor-subject.entity';
 import { TutorServiceAreaEntity } from './entities/tutor-service-area.entity';
 import { TutorAvailabilityEntity } from './entities/tutor-availability.entity';
+import { SavedTutorEntity } from './entities/saved-tutor.entity';
 import { FileAssetEntity } from '../files/entities/file-asset.entity';
 import { UserEntity } from '../auth/entities/user.entity';
 import { RoleEntity } from '../auth/entities/role.entity';
 import { UserRoleEntity } from '../auth/entities/user-role.entity';
 import { SubjectEntity } from '../taxonomy/entities/subject.entity';
 import { EducationLevelEntity } from '../taxonomy/entities/education-level.entity';
+import { CurriculumEntity } from '../taxonomy/entities/curriculum.entity';
 import { TutorsService } from './tutors.service';
 import { TutorProfileService } from './services/tutor-profile.service';
 import { TutorSearchService } from './services/tutor-search.service';
@@ -23,7 +25,9 @@ import { TutorVerificationStatusService } from './services/tutor-verification-st
 import { TutorVerificationReviewerDirectoryService } from './services/tutor-verification-reviewer-directory.service';
 import { TutorVerificationExpiryService } from './services/tutor-verification-expiry.service';
 import { TutorVerificationSweepScheduler } from './services/tutor-verification-sweep.scheduler';
+import { SavedTutorsService } from './services/saved-tutors.service';
 import { TutorsController } from './tutors.controller';
+import { SavedTutorsController } from './saved-tutors.controller';
 import { AdminTutorsController } from './admin-tutors.controller';
 import { AuthModule } from '../auth/auth.module';
 import { AuditModule } from '../audit/audit.module';
@@ -41,19 +45,21 @@ import { FilesModule } from '../files/files.module';
       TutorSubjectEntity,
       TutorServiceAreaEntity,
       TutorAvailabilityEntity,
+      SavedTutorEntity,
       FileAssetEntity,
       UserEntity,
       RoleEntity,
       UserRoleEntity,
       SubjectEntity,
       EducationLevelEntity,
+      CurriculumEntity,
     ]),
     AuthModule,
     AuditModule,
     forwardRef(() => NotificationsModule),
     FilesModule,
   ],
-  controllers: [TutorsController, AdminTutorsController],
+  controllers: [TutorsController, SavedTutorsController, AdminTutorsController],
   providers: [
     TutorsService,
     TutorProfileService,
@@ -64,6 +70,7 @@ import { FilesModule } from '../files/files.module';
     TutorVerificationReviewerDirectoryService,
     TutorVerificationExpiryService,
     TutorVerificationSweepScheduler,
+    SavedTutorsService,
   ],
   exports: [
     TutorsService,
@@ -73,6 +80,7 @@ import { FilesModule } from '../files/files.module';
     TutorDossierService,
     TutorVerificationStatusService,
     TutorVerificationExpiryService,
+    SavedTutorsService,
     TypeOrmModule,
   ],
 })

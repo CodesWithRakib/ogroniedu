@@ -36,8 +36,13 @@ export class ReviewsController {
   @Get('tutors/:tutorId')
   @ApiOperation({ summary: 'Get published reviews for a tutor' })
   @ApiResponse({ status: 200, description: 'List of tutor reviews' })
-  async getTutorReviews(@Param('tutorId') tutorId: string, @Query('all') all?: string) {
-    return this.reviewsService.getTutorReviews(tutorId, all === 'true');
+  async getTutorReviews(
+    @Param('tutorId') tutorId: string,
+    @Query('all') all?: string,
+    @CurrentUser() viewer?: AuthenticatedUser,
+  ) {
+    // Public endpoint: `all=true` is only honoured for a staff viewer.
+    return this.reviewsService.getTutorReviews(tutorId, all === 'true', viewer);
   }
 
   @Post(':id/reply')

@@ -34,12 +34,12 @@ export const BRAND = {
  * so every readable/interactive colour below is a validated derivation.
  */
 export const SEMANTIC_COLORS = {
-  /** teal-700 — primary actions & brand text (5.47:1 on white). */
-  primary: '#0f766e',
-  primaryHover: '#115e59',
+  /** Sapphire Blue — primary actions & brand text (6.70:1 on white). */
+  primary: '#1d4ed8',
+  primaryHover: '#1e40af',
   primaryForeground: '#ffffff',
-  primarySoft: '#ecfdf5',
-  primarySoftForeground: '#115e59',
+  primarySoft: '#eff6ff',
+  primarySoftForeground: '#1e40af',
 
   /** Approved mint — fills, indicators, progress, decorative accents only. */
   brand: OCEAN_TEAL.primaryColor,

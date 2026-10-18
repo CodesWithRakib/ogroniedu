@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100" width="100%" height="100%">
+  <defs>
+    <linearGradient id="favShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1e40af" />
+    </linearGradient>
+    <linearGradient id="favSparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+  </defs>
+
+  <rect x="8" y="8" width="84" height="84" rx="24" fill="url(#favShieldGrad)" />
+  <path d="M50 25L20 40L50 55L80 40L50 25Z" fill="#ffffff" />
+  <path d="M30 47V62C30 67 38.5 72 50 72C61.5 72 70 67 70 62V47" stroke="#ffffff" stroke-width="5" stroke-linecap="round" fill="none" />
+  <path d="M78 41V60C78 61.5 76.5 63 75 63" stroke="#93c5fd" stroke-width="3" stroke-linecap="round" fill="none" />
+  <circle cx="75" cy="63" r="3.5" fill="url(#favSparkGrad)" />
+  <path d="M50 35L52.5 39.5L57 40.5L53.5 43.5L54.5 48L50 45.5L45.5 48L46.5 43.5L43 40.5L47.5 39.5L50 35Z" fill="url(#favSparkGrad)" />
+</svg>

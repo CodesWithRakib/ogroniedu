@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 80" width="320" height="80">
+  <defs>
+    <linearGradient id="logoShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563eb" />
+      <stop offset="100%" stop-color="#1e40af" />
+    </linearGradient>
+    <linearGradient id="logoSparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#fbbf24" />
+      <stop offset="100%" stop-color="#f59e0b" />
+    </linearGradient>
+  </defs>
+
+  <!-- Left Sovereign Shield Emblem (64x64 at x=8, y=8) -->
+  <g transform="translate(8, 8)">
+    <rect x="0" y="0" width="64" height="64" rx="18" fill="url(#logoShieldGrad)" />
+    <path d="M32 16L12 26L32 36L52 26L32 16Z" fill="#ffffff" />
+    <path d="M19 30V40C19 43.5 24.5 47 32 47C39.5 47 45 43.5 45 40V30" stroke="#ffffff" stroke-width="3.5" stroke-linecap="round" fill="none" />
+    <path d="M50 26.5V39C50 40 49 41 48 41" stroke="#93c5fd" stroke-width="2" stroke-linecap="round" fill="none" />
+    <circle cx="48" cy="41" r="2.2" fill="url(#logoSparkGrad)" />
+    <path d="M32 23L33.5 25.8L36.5 26.5L34.2 28.5L34.8 31.5L32 30L29.2 31.5L29.8 28.5L27.5 26.5L30.5 25.8L32 23Z" fill="url(#logoSparkGrad)" />
+  </g>
+
+  <!-- Typography: "Ogroni" ONLY -->
+  <text x="88" y="52"
+        font-family="'Plus Jakarta Sans', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif"
+        font-size="40"
+        font-weight="900"
+        letter-spacing="-1.5"
+        fill="#0f172a">Ogroni</text>
+</svg>
