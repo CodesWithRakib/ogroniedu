@@ -24,7 +24,7 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
   });
 
   return (
-    <AdminLayout locale={locale} title={locale === 'bn' ? 'প্ল্যাটফর্ম সেটিংস' : 'Settings'}>
+    <AdminLayout locale={locale}>
       {admin.loading && !admin.flags.length && !admin.settings.length ? (
         <div className="py-12 flex justify-center">
           <LoadingSpinner />
@@ -38,7 +38,7 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
           )}
 
           {/* Page Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">

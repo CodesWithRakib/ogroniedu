@@ -163,10 +163,10 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
         {/* Success State or Already Paid (Payment Receipt) */}
         {successReceipt || booking?.status === 'confirmed' ? (
           <div
-            className="rounded-3xl border border-primary/40 bg-gradient-to-br from-card via-card to-primary-soft p-8 shadow-sm space-y-6 text-center"
+            className="rounded-2xl border border-primary/40 bg-gradient-to-br from-card via-card to-primary-soft p-8 shadow-sm space-y-6 text-center"
             data-testid="payment-success-card"
           >
-            <div className="w-16 h-16 rounded-full bg-primary/15 border border-primary/40 flex items-center justify-center mx-auto text-success-soft-foreground">
+            <div className="w-16 h-16 rounded-full bg-success-soft border border-success/30 flex items-center justify-center mx-auto text-success-soft-foreground">
               <CheckCircle2 className="w-8 h-8" />
             </div>
 
@@ -181,8 +181,8 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
               </p>
             </div>
 
-            <div className="max-w-md mx-auto rounded-2xl border border-border/80 bg-surface/60 p-5 space-y-3 text-left text-xs">
-              <div className="flex justify-between pb-2 border-b border-border/70">
+            <div className="max-w-md mx-auto rounded-2xl border border-border bg-surface/60 p-5 space-y-3 text-left text-xs">
+              <div className="flex justify-between pb-2 border-b border-border">
                 <span className="text-muted-foreground">
                   {isBn ? 'অর্ডার / বুকিং আইডি:' : 'Order / Booking ID:'}
                 </span>
@@ -190,7 +190,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                   #{(successReceipt?.orderId || bookingId).slice(0, 12)}
                 </span>
               </div>
-              <div className="flex justify-between pb-2 border-b border-border/70">
+              <div className="flex justify-between pb-2 border-b border-border">
                 <span className="text-muted-foreground">
                   {isBn ? 'পরিশোধিত অঙ্ক:' : 'Amount Paid:'}
                 </span>
@@ -198,7 +198,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                   ৳{formatLocalizedNumber(successReceipt?.amountBdt || priceBdt, locale)}
                 </span>
               </div>
-              <div className="flex justify-between pb-2 border-b border-border/70">
+              <div className="flex justify-between pb-2 border-b border-border">
                 <span className="text-muted-foreground">
                   {isBn ? 'পেমেন্ট গেটওয়ে:' : 'Payment Gateway:'}
                 </span>
@@ -211,7 +211,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                   </span>
                 </span>
               </div>
-              <div className="flex justify-between pb-2 border-b border-border/70">
+              <div className="flex justify-between pb-2 border-b border-border">
                 <span className="text-muted-foreground">
                   {isBn ? 'ট্রানজ্যাকশন রেফারেন্স:' : 'Txn Reference:'}
                 </span>
@@ -219,7 +219,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                   SSLCZ-TRX-{(successReceipt?.orderId || bookingId).slice(0, 8).toUpperCase()}
                 </span>
               </div>
-              <div className="flex justify-between pb-2 border-b border-border/70">
+              <div className="flex justify-between pb-2 border-b border-border">
                 <span className="text-muted-foreground">
                   {isBn ? 'এসক্রো সার্টিফিকেট:' : 'Escrow Certificate:'}
                 </span>
@@ -257,7 +257,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
               </Link>
               <Link
                 href={withLocale('/dashboard/student/sessions', locale)}
-                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-foreground font-bold text-xs shadow-lg transition-transform hover:scale-102"
+                className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-primary text-foreground font-bold text-xs transition-transform hover:scale-102"
               >
                 <Calendar className="w-4 h-4" />
                 <span>{isBn ? 'ক্লাস রুটিন ও ক্যালেন্ডার' : 'Class Routine'}</span>
@@ -277,7 +277,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
             {/* Left 2 Cols: Order Details & Payment Method */}
             <div className="lg:col-span-2 space-y-6">
               {/* Trust Seal Banner */}
-              <div className="rounded-3xl border border-primary/40 bg-primary-soft p-5 flex items-start gap-3.5">
+              <div className="rounded-2xl border border-primary/40 bg-primary-soft p-5 flex items-start gap-3.5">
                 <ShieldCheck className="w-6 h-6 text-success-soft-foreground shrink-0 mt-0.5" />
                 <div className="space-y-1">
                   <h3 className="font-bold text-sm text-success-soft-foreground">
@@ -292,8 +292,8 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
               </div>
 
               {/* Payment Method Selector */}
-              <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
-                <div className="flex items-center justify-between pb-3 border-b border-border/70">
+              <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+                <div className="flex items-center justify-between pb-3 border-b border-border">
                   <h3 className="font-bold text-sm text-foreground flex items-center gap-2">
                     <CreditCard className="w-4 h-4 text-info-soft-foreground" />
                     <span>{isBn ? 'পেমেন্ট মাধ্যম নির্বাচন করুন' : 'Select Payment Gateway'}</span>
@@ -311,7 +311,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                     className={`rounded-2xl p-4 border text-left transition-all ${
                       selectedProvider === 'sslcommerz'
                         ? 'border-info/40 bg-interactive/10 ring-2 ring-info/30'
-                        : 'border-border/80 bg-surface/50 hover:border-info/40'
+                        : 'border-border bg-surface/50 hover:border-info/40'
                     }`}
                     data-testid="provider-sslcommerz-btn"
                   >
@@ -340,7 +340,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                     className={`rounded-2xl p-4 border text-left transition-all ${
                       selectedProvider === 'bkash'
                         ? 'border-pink-500 bg-pink-500/10 ring-2 ring-pink-500/30'
-                        : 'border-border/80 bg-surface/50 hover:border-pink-500/40'
+                        : 'border-border bg-surface/50 hover:border-pink-500/40'
                     }`}
                     data-testid="provider-bkash-btn"
                   >
@@ -361,15 +361,15 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                     onClick={() => setSelectedProvider('nagad')}
                     className={`rounded-2xl p-4 border text-left transition-all ${
                       selectedProvider === 'nagad'
-                        ? 'border-warning/40 bg-warning/10 ring-2 ring-orange-500/30'
-                        : 'border-border/80 bg-surface/50 hover:border-warning/40'
+                        ? 'border-warning/40 bg-warning/10 ring-2 ring-warning/30'
+                        : 'border-border bg-surface/50 hover:border-warning/40'
                     }`}
                     data-testid="provider-nagad-btn"
                   >
                     <div className="flex items-center justify-between">
-                      <span className="font-black text-orange-700 text-sm">Nagad</span>
+                      <span className="font-black text-warning-soft-foreground text-sm">Nagad</span>
                       {selectedProvider === 'nagad' && (
-                        <CheckCircle2 className="w-4 h-4 text-orange-700" />
+                        <CheckCircle2 className="w-4 h-4 text-warning-soft-foreground" />
                       )}
                     </div>
                     <p className="text-[11px] text-muted-foreground mt-1">
@@ -409,7 +409,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                       ].map((badge) => (
                         <span
                           key={badge}
-                          className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-surface border border-border/80 text-foreground"
+                          className="px-2 py-0.5 rounded-md text-[10px] font-semibold bg-surface border border-border text-foreground"
                         >
                           {badge}
                         </span>
@@ -422,8 +422,8 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
 
             {/* Right 1 Col: Summary & Execute */}
             <div className="space-y-6">
-              <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4 shadow-lg">
-                <h3 className="font-bold text-sm text-foreground pb-3 border-b border-border/70 flex items-center gap-2">
+              <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+                <h3 className="font-bold text-sm text-foreground pb-3 border-b border-border flex items-center gap-2">
                   <Receipt className="w-4 h-4 text-interactive" />
                   <span>{isBn ? 'বুকিং ও ফি বিবরণী' : 'Order Summary'}</span>
                 </h3>
@@ -443,7 +443,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                     </span>
                     <span className="text-foreground">{studentName}</span>
                   </div>
-                  <div className="flex justify-between pt-2 border-t border-border/60">
+                  <div className="flex justify-between pt-2 border-t border-border">
                     <span className="text-muted-foreground">
                       {isBn ? 'সেশন ফি:' : 'Session Fee:'}
                     </span>
@@ -479,7 +479,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                   size="lg"
                   disabled={creatingOrder || confirmingPayment}
                   onClick={handleExecutePayment}
-                  className="w-full bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm h-12 shadow-lg shadow-sm"
+                  className="w-full bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm h-12 shadow-sm"
                   data-testid="execute-escrow-payment-btn"
                 >
                   <Lock className="w-4 h-4 mr-2" />
@@ -504,10 +504,10 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
 
               {/* Double-Entry Ledger Breakdown */}
               <div
-                className="rounded-3xl border border-border/80 bg-surface/50 p-5 space-y-3"
+                className="rounded-2xl border border-border bg-surface/50 p-5 space-y-3"
                 data-testid="ledger-breakdown-card"
               >
-                <h4 className="text-xs font-bold text-foreground flex items-center justify-between pb-2 border-b border-border/60">
+                <h4 className="text-xs font-bold text-foreground flex items-center justify-between pb-2 border-b border-border">
                   <span className="flex items-center gap-1.5">
                     <Sparkles className="w-3.5 h-3.5 text-info-soft-foreground" />
                     <span>{isBn ? 'ডাবল-এন্ট্রি লেজার বিশ্লেষণ' : 'Ledger Accounting Split'}</span>
@@ -531,7 +531,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                       ৳{formatLocalizedNumber(priceBdt, locale)} [২১০০]
                     </span>
                   </div>
-                  <div className="pt-2 border-t border-border/40 space-y-1">
+                  <div className="pt-2 border-t border-border space-y-1">
                     <p className="text-[10px] text-muted-foreground font-semibold">
                       {isBn
                         ? 'ক্লাস সফল সমাপ্তি পরবর্তী বিতরণ (Settlement):'

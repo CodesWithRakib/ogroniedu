@@ -95,7 +95,7 @@ export function DashboardSidebar({
           </Link>
 
           {/* Role Badge Indicator */}
-          <div className="px-3 py-1.5 rounded-xl bg-surface border border-border/70 flex items-center justify-between shadow-2xs">
+          <div className="px-3 py-1.5 rounded-xl bg-surface border border-border flex items-center justify-between">
             <span className="text-xs font-semibold text-foreground">
               {isBn ? roleTitle.bn : roleTitle.en}
             </span>
@@ -133,7 +133,7 @@ export function DashboardSidebar({
                       className={cn(
                         'group flex items-center px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150',
                         active
-                          ? 'bg-primary-soft text-primary font-bold shadow-2xs'
+                          ? 'bg-primary-soft text-primary font-bold'
                           : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover',
                       )}
                     >
@@ -158,7 +158,7 @@ export function DashboardSidebar({
       </div>
 
       {/* Bottom Section: App Download / Promotional Card Only (No user info card) */}
-      <div className="p-3 border-t border-border/70 bg-card/60 shrink-0">
+      <div className="p-3 border-t border-border bg-card/60 shrink-0">
         <SidebarPromoCard
           locale={locale}
           title={

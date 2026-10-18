@@ -11,7 +11,7 @@ export function AnalyticsTrendsCard({ data }: { data: AnalyticsOperationalData }
 
   return (
     <div
-      className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xs"
+      className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs"
       data-testid="trends-card"
     >
       <h3 className="text-base font-bold text-foreground">{t('trendTitle')}</h3>
@@ -19,7 +19,7 @@ export function AnalyticsTrendsCard({ data }: { data: AnalyticsOperationalData }
         {data.trends.map((point) => (
           <div
             key={point.date}
-            className="bg-surface/75 p-4 rounded-2xl border border-border/70 space-y-2 shadow-2xs"
+            className="bg-surface/75 p-4 rounded-2xl border border-border space-y-2"
           >
             <span className="text-[11px] font-mono text-muted-foreground block">{point.date}</span>
             <div className="flex justify-between text-xs">

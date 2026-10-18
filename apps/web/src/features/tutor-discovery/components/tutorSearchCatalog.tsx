@@ -204,7 +204,7 @@ export function TutorSearchCatalog({
       className="w-full max-w-7xl mx-auto px-4 py-8 space-y-8"
       data-testid="tutor-discovery-container"
     >
-      <div className="rounded-3xl p-6 sm:p-10 bg-card/90 border border-border text-foreground shadow-sm relative overflow-hidden backdrop-blur-xl">
+      <div className="rounded-2xl p-6 sm:p-10 bg-card/90 border border-border text-foreground shadow-sm relative overflow-hidden backdrop-blur-xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-soft rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
         <div className="relative z-10 max-w-3xl space-y-3">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-brand-soft border border-border rounded-full text-xs font-semibold text-primary shadow-sm">

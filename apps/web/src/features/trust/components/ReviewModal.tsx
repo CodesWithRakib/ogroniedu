@@ -179,7 +179,7 @@ export function ReviewModal({
                   ? 'শিক্ষকের পাঠদান পদ্ধতি কেমন ছিল? শিক্ষার্থী কি উপকৃত হয়েছে? বিস্তারিত লিখুন...'
                   : 'How was the tutor’s teaching style? Did the student improve? Share specific feedback...'
               }
-              className="w-full rounded-xl bg-card border border-border p-3.5 text-xs text-foreground placeholder:text-muted-foreground focus:ring-primary leading-relaxed"
+              className="w-full rounded-xl bg-card border border-border p-3.5 text-xs text-foreground placeholder:text-muted-foreground focus-visible:ring-primary leading-relaxed"
               data-testid="review-comment-textarea"
             />
             <div className="text-[11px] text-muted-foreground text-right">

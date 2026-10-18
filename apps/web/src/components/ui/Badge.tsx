@@ -33,20 +33,20 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
     };
 
     const variants: Record<string, string> = {
-      default: 'bg-surface-muted text-foreground border border-border/70',
-      primary: 'bg-primary-soft text-primary-soft-foreground border border-primary/25',
-      secondary: 'bg-surface text-foreground border border-border/70',
-      success: 'bg-success-soft text-success border border-success/30',
-      warning: 'bg-warning-soft text-warning-soft-foreground border border-warning/30', // Warm pastel peach/amber matching Image 2
-      destructive: 'bg-destructive-soft text-destructive border border-destructive/30',
-      info: 'bg-info-soft text-info border border-info/30',
-      outline: 'border border-border text-foreground bg-card',
-      draft: 'bg-warning-soft text-warning-soft-foreground border border-warning/30',
-      pending: 'bg-warning-soft text-warning border border-warning/25',
-      active: 'bg-success-soft text-success border border-success/30',
-      completed: 'bg-primary-soft text-primary-soft-foreground border border-primary/25',
-      cancelled: 'bg-destructive-soft text-destructive border border-destructive/30',
-      suspended: 'bg-destructive-soft text-destructive border border-destructive/30',
+      default: 'bg-surface-muted text-foreground',
+      primary: 'bg-primary-soft text-primary-soft-foreground',
+      secondary: 'bg-surface text-foreground',
+      success: 'bg-success-soft text-success-soft-foreground',
+      warning: 'bg-warning-soft text-warning-soft-foreground',
+      destructive: 'bg-destructive-soft text-destructive-soft-foreground',
+      info: 'bg-info-soft text-info-soft-foreground',
+      outline: 'border border-border text-foreground bg-transparent',
+      draft: 'bg-warning-soft text-warning-soft-foreground',
+      pending: 'bg-warning-soft text-warning-soft-foreground',
+      active: 'bg-success-soft text-success-soft-foreground',
+      completed: 'bg-primary-soft text-primary-soft-foreground',
+      cancelled: 'bg-destructive-soft text-destructive-soft-foreground',
+      suspended: 'bg-destructive-soft text-destructive-soft-foreground',
     };
 
     return (

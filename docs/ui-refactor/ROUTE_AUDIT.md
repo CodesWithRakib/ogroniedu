@@ -111,3 +111,36 @@
 | `/[locale]/bookings/[id]/pay`                        | `bookings/[id]/pay/page.tsx`            | Checkout payment method picker needs clean radio cards without dark gradients.   |
 | `/[locale]/notifications`                            | `notifications/page.tsx`                | Notification items have excessive borders and unclear read/unread visual states. |
 | `/[locale]/requests`                                 | `requests/page.tsx`                     | Request status filters need clean tabs without heavy borders.                    |
+
+---
+
+## Continuation Route Verification — 2026-10-18 (post-fix)
+
+This pass re-verified a focused set of routes against the **production build** with new screenshots (`shots2/`) and a full credentialed E2E run (47/47). The remaining routes of the 64-route inventory carry the pre-fix baseline captures only and are marked accordingly.
+
+### Re-verified off the rendered UI (desktop + mobile)
+
+| Route                                         | Role          | Evidence                                                          | Status       |
+| :-------------------------------------------- | :------------ | :---------------------------------------------------------------- | :----------- |
+| `/[locale]` (home)                            | Public        | Screenshot review; hero blobs softened; E2E public smoke          | **VERIFIED** |
+| `/[locale]/tutors`                            | Public        | Screenshot review; E2E public smoke                               | **VERIFIED** |
+| `/[locale]/login`                             | Public        | Screenshot review; E2E auth journeys (all roles)                  | **VERIFIED** |
+| `/[locale]/dashboard/student`                 | Student       | Screenshot review; E2E login → dashboard                          | **VERIFIED** |
+| `/[locale]/dashboard/student/payments`        | Student       | Screenshot review                                                 | **VERIFIED** |
+| `/[locale]/profile`                           | Student       | Screenshot review; E2E profile-form + session revocation journey  | **VERIFIED** |
+| `/[locale]/dashboard/tutor`                   | Tutor         | Screenshot review; chart bars fixed                               | **VERIFIED** |
+| `/[locale]/dashboard/tutor/earnings`          | Tutor         | Screenshot review (payout selector trios)                         | **VERIFIED** |
+| `/[locale]/dashboard/admin`                   | Admin         | Screenshot review; E2E admin console journey                      | **VERIFIED** |
+| `/[locale]/dashboard/admin/users`             | Admin         | Screenshot review desktop + mobile; E2E suspension journey        | **VERIFIED** |
+| `/[locale]/dashboard/admin/settings`          | Admin         | Screenshot review; neutralized hub                                | **VERIFIED** |
+| `/[locale]/dashboard/admin/audit-logs`        | Admin         | Screenshot review after API Date-fix (timestamps render)          | **VERIFIED** |
+| `/[locale]/dashboard/admin/users/directory`   | Admin         | E2E suspension/resume journey passes                              | **VERIFIED** |
+| `/[locale]/dashboard/admin/verification`      | Admin         | E2E dossier approval journey passes                               | **VERIFIED** |
+
+### Covered by automated E2E (functional journeys)
+
+Auth (student/tutor/admin), tutor evidence upload, session revocation, verification dossier approval, user suspension/reactivation, responsive matrix, keyboard a11y (skip-link focus), public smoke (contact form, login validation).
+
+### Not re-verified this pass (pre-fix captures only)
+
+All remaining student/tutor/guardian/classroom/booking/payment sub-routes (e.g. `/[locale]/sessions*`, `/[locale]/bookings*`, `/[locale]/requests`, `/[locale]/safety*`, `/[locale]/tutor-replacements`, guardian child views, admin bookings/disputes/analytics/taxonomy/flags/finance, marketing pages beyond home/tutors/pricing). These inherit the systemic sweeps (palette, borders, radius, shadows) but have **not** been individually screenshot-verified post-fix — full-matrix re-capture is the next outstanding task.

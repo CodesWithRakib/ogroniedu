@@ -38,13 +38,13 @@ export function DashboardTopbar({
 
   return (
     <>
-      <header className="h-16 shrink-0 sticky top-0 z-30 border-b border-border/80 bg-card/90 backdrop-blur-xl px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4 shadow-2xs">
+      <header className="h-16 shrink-0 sticky top-0 z-30 border-b border-border bg-card/90 backdrop-blur-xl px-4 sm:px-6 lg:px-8 flex items-center justify-between gap-4">
         {/* Left: Mobile Toggle + Sleek Search Input */}
         <div className="flex items-center gap-3 min-w-0 flex-1 max-w-md">
           <button
             type="button"
             onClick={onOpenDrawer}
-            className="lg:hidden p-2 rounded-xl border border-border bg-card hover:bg-surface-hover text-foreground transition-colors shrink-0 cursor-pointer shadow-2xs"
+            className="lg:hidden p-2 rounded-xl border border-border bg-card hover:bg-surface-hover text-foreground transition-colors shrink-0 cursor-pointer"
             aria-label={isBn ? 'মেনু খুলুন' : 'Open menu'}
           >
             <Menu className="h-5 w-5" />
@@ -59,14 +59,14 @@ export function DashboardTopbar({
                 isBn ? 'শিক্ষক, বিষয় বা সেশন অনুসন্ধান...' : 'Search tutors, subjects, sessions...'
               }
               aria-label={isBn ? 'গ্লোবাল অনুসন্ধান' : 'Global search'}
-              className="w-full h-9 pl-9.5 pr-12 rounded-full text-xs bg-surface/70 border-border/80 focus:bg-card focus:border-primary/60 transition-all shadow-inner"
+              className="w-full h-9 pl-9.5 pr-12 rounded-full text-xs bg-surface/70 border-border focus:bg-card focus-visible:border-ring transition-all"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   onSearchTutors();
                 }
               }}
             />
-            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-muted-foreground px-1.5 py-0.5 rounded border border-border bg-card/90 pointer-events-none shadow-2xs">
+            <kbd className="absolute right-3 top-1/2 -translate-y-1/2 text-[10px] font-semibold text-muted-foreground px-1.5 py-0.5 rounded border border-border bg-card/90 pointer-events-none">
               ⌘K
             </kbd>
           </div>
@@ -81,7 +81,7 @@ export function DashboardTopbar({
           <button
             type="button"
             onClick={() => setIsSosOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-destructive/30 bg-destructive-soft hover:bg-destructive/15 text-xs font-bold text-destructive transition-all cursor-pointer shadow-2xs hover:scale-105"
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-destructive/30 bg-destructive-soft hover:bg-destructive/15 text-xs font-bold text-destructive transition-all cursor-pointer hover:scale-105"
             title={isBn ? 'জরুরি এসওএস ও শিশু সুরক্ষা' : 'Emergency SOS & Safeguarding'}
             data-testid="sos-emergency-trigger-btn"
           >
@@ -92,7 +92,7 @@ export function DashboardTopbar({
           {/* Language Switcher Pill */}
           <Link
             href={targetPath}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-border/80 bg-card hover:bg-surface-hover text-xs font-semibold text-foreground transition-all shadow-2xs"
+            className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover text-xs font-semibold text-foreground transition-all"
             title={isBn ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
             aria-label={isBn ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
           >

@@ -105,7 +105,7 @@ function ProgressReportDetailPage({ locale, reportId }: { locale: Locale; report
       </div>
 
       {/* Banner */}
-      <div className="rounded-3xl bg-card border border-interactive/25 p-8 text-foreground shadow-sm space-y-3">
+      <div className="rounded-2xl bg-card border border-interactive/25 p-8 text-foreground shadow-sm space-y-3">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-interactive/20 border border-interactive/40 rounded-full text-xs font-medium text-interactive-soft-foreground">
             <TrendingUp className="w-3.5 h-3.5" />
@@ -113,7 +113,7 @@ function ProgressReportDetailPage({ locale, reportId }: { locale: Locale; report
               {locale === 'bn' ? 'মাসিক অগ্রগতি মূল্যায়ন' : 'Periodic Progress Evaluation'}
             </span>
           </span>
-          <Badge className="bg-primary/20 text-success-soft-foreground border border-primary/40">
+          <Badge className="bg-success-soft text-success-soft-foreground border border-success/30">
             {locale === 'bn' ? 'প্রকাশিত' : 'Published'}
           </Badge>
         </div>
@@ -138,7 +138,7 @@ function ProgressReportDetailPage({ locale, reportId }: { locale: Locale; report
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="bg-card border border-border p-5 rounded-2xl shadow-lg">
+        <Card className="bg-card border border-border p-5 rounded-2xl">
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>{locale === 'bn' ? 'উপস্থিতির হার' : 'Attendance Rate'}</span>
             <Percent className="w-4 h-4 text-success-soft-foreground" />
@@ -148,7 +148,7 @@ function ProgressReportDetailPage({ locale, reportId }: { locale: Locale; report
           </div>
         </Card>
 
-        <Card className="bg-card border border-border p-5 rounded-2xl shadow-lg">
+        <Card className="bg-card border border-border p-5 rounded-2xl">
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>{locale === 'bn' ? 'সম্পন্ন বাড়ির কাজ' : 'Assignments Done'}</span>
             <FileCheck2 className="w-4 h-4 text-info-soft-foreground" />
@@ -158,7 +158,7 @@ function ProgressReportDetailPage({ locale, reportId }: { locale: Locale; report
           </div>
         </Card>
 
-        <Card className="bg-card border border-border p-5 rounded-2xl shadow-lg">
+        <Card className="bg-card border border-border p-5 rounded-2xl">
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>{locale === 'bn' ? 'গড় স্কোর' : 'Average Score'}</span>
             <Award className="w-4 h-4 text-warning-soft-foreground" />
@@ -174,7 +174,7 @@ function ProgressReportDetailPage({ locale, reportId }: { locale: Locale; report
       {/* Report Body Details */}
       <div className="space-y-4">
         {/* Observable Progress */}
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-md space-y-2">
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 space-y-2">
           <div className="flex items-center gap-2 text-success-soft-foreground text-sm font-bold">
             <CheckCircle2 className="w-4 h-4" />
             <span>
@@ -188,7 +188,7 @@ function ProgressReportDetailPage({ locale, reportId }: { locale: Locale; report
 
         {/* Areas for Growth */}
         {report.areasForGrowth && (
-          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-md space-y-2">
+          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 space-y-2">
             <div className="flex items-center gap-2 text-info-soft-foreground text-sm font-bold">
               <TrendingUp className="w-4 h-4" />
               <span>
@@ -205,7 +205,7 @@ function ProgressReportDetailPage({ locale, reportId }: { locale: Locale; report
 
         {/* Tutor Remarks */}
         {report.tutorRemarks && (
-          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-md space-y-2">
+          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 space-y-2">
             <div className="flex items-center gap-2 text-warning-soft-foreground text-sm font-bold">
               <Award className="w-4 h-4" />
               <span>

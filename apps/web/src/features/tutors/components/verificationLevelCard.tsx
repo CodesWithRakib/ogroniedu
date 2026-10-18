@@ -192,10 +192,10 @@ export function VerificationLevelCard({
 
   return (
     <Card
-      className="rounded-3xl border-border/70 shadow-xs"
+      className="rounded-2xl border-border shadow-xs"
       data-testid={`verification-level-${record.level}`}
     >
-      <CardHeader className="pb-3 border-b border-border/60">
+      <CardHeader className="pb-3 border-b border-border">
         <div className="flex flex-wrap items-center justify-between gap-2">
           <CardTitle className="text-sm font-bold flex items-center gap-2">
             <FileText className="w-4 h-4 text-primary" />
@@ -295,7 +295,7 @@ export function VerificationLevelCard({
                 return (
                   <li
                     key={document.id}
-                    className="flex items-center justify-between gap-2 rounded-xl border border-border/70 bg-surface/50 px-3 py-2 text-xs"
+                    className="flex items-center justify-between gap-2 rounded-xl border border-border bg-surface/50 px-3 py-2 text-xs"
                     data-testid={`document-${document.id}`}
                   >
                     <div className="min-w-0">
@@ -343,7 +343,7 @@ export function VerificationLevelCard({
         {/* Upload form */}
         {editable && (
           <form
-            className="space-y-2 border-t border-border/60 pt-3"
+            className="space-y-2 border-t border-border pt-3"
             onSubmit={handleUpload}
             data-testid={`upload-form-${record.level}`}
           >
@@ -359,7 +359,7 @@ export function VerificationLevelCard({
                   id={`document-type-${record.level}`}
                   value={documentType}
                   onChange={(e) => setDocumentType(e.target.value as VerificationDocumentType)}
-                  className="h-9 w-full rounded-lg border border-input bg-card text-foreground px-2 text-xs focus:ring-2 focus:ring-ring focus:outline-none"
+                  className="h-9 w-full rounded-lg border border-input bg-card text-foreground px-2 text-xs focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none"
                   data-testid={`document-type-${record.level}`}
                 >
                   {allowedTypes.map((type) => (
@@ -400,7 +400,7 @@ export function VerificationLevelCard({
         )}
 
         {/* Level actions */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border/60 pt-3">
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
           <span className="text-[10px] text-muted-foreground inline-flex items-center gap-1">
             <Clock className="w-3 h-3" />
             {formatLocalizedNumber(record.submissionCount ?? 0, locale)}{' '}

@@ -160,9 +160,9 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           /* ========================================================
            * MODE 1: DIRECT FILTER (Class + Subject + Location)
            * ======================================================== */
-          <div className="rounded-2xl lg:rounded-full bg-card border border-border/80 shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all">
+          <div className="rounded-2xl lg:rounded-full bg-card border border-border shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all">
             {/* Segment 1: Class / Education Level */}
-            <div className="flex-1 px-3.5 py-1.5 rounded-xl lg:rounded-l-full hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border/60">
+            <div className="flex-1 px-3.5 py-1.5 rounded-xl lg:rounded-l-full hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border">
               <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <GraduationCap className="h-3.5 w-3.5 text-primary" />
                 <span>{isBn ? 'শ্রেণি / মাধ্যম' : 'Class / Level'}</span>
@@ -196,7 +196,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             </div>
 
             {/* Segment 2: Subject */}
-            <div className="flex-1 px-3.5 py-1.5 rounded-xl hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border/60">
+            <div className="flex-1 px-3.5 py-1.5 rounded-xl hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border">
               <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <BookOpen className="h-3.5 w-3.5 text-primary" />
                 <span>{isBn ? 'পড়ার বিষয়' : 'Subject'}</span>
@@ -271,7 +271,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           /* ========================================================
            * MODE 2: QUICK KEYWORD SEARCH (Name, University, Topic)
            * ======================================================== */
-          <div className="rounded-2xl lg:rounded-full bg-card border border-border/80 shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all">
+          <div className="rounded-2xl lg:rounded-full bg-card border border-border shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all">
             <div className="flex items-center flex-1 w-full px-3 py-1.5">
               <Search className="h-4 w-4 text-primary mr-2.5 shrink-0" />
               <Input

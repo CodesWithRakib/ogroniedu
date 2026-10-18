@@ -139,10 +139,10 @@ export function StudentAcademicProfileCard({
 
   return (
     <>
-      <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs relative overflow-hidden flex flex-col justify-between">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs relative overflow-hidden flex flex-col justify-between">
         <div>
           {/* Header */}
-          <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
+          <div className="flex items-center justify-between pb-3.5 border-b border-border">
             <div className="flex items-center gap-2.5">
               <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
                 <GraduationCap className="h-5 w-5" />
@@ -171,7 +171,7 @@ export function StudentAcademicProfileCard({
 
           {/* Academic Details Grid */}
           <div className="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border">
               <Building2 className="h-4 w-4 text-primary shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-muted-foreground font-medium">
@@ -183,7 +183,7 @@ export function StudentAcademicProfileCard({
               </div>
             </div>
 
-            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border">
               <BookOpen className="h-4 w-4 text-success shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-muted-foreground font-medium">
@@ -196,7 +196,7 @@ export function StudentAcademicProfileCard({
             </div>
 
             {studentProfile?.stream && (
-              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
+              <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border">
                 <Sparkles className="h-4 w-4 text-warning shrink-0 mt-0.5" />
                 <div className="min-w-0">
                   <p className="text-[11px] text-muted-foreground font-medium">
@@ -209,7 +209,7 @@ export function StudentAcademicProfileCard({
               </div>
             )}
 
-            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border/60">
+            <div className="flex items-start gap-2.5 p-3 rounded-xl bg-muted/20 border border-border">
               <ShieldCheck className="h-4 w-4 text-info shrink-0 mt-0.5" />
               <div className="min-w-0">
                 <p className="text-[11px] text-muted-foreground font-medium">
@@ -251,8 +251,8 @@ export function StudentAcademicProfileCard({
 
       {/* Edit Profile Modal using shadcn Dialog */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-lg rounded-2xl p-6 bg-card border-border/80">
-          <DialogHeader className="text-left pb-3 border-b border-border/60">
+        <DialogContent className="max-w-lg rounded-2xl p-6 bg-card border-border">
+          <DialogHeader className="text-left pb-3 border-b border-border">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
                 <GraduationCap className="h-5 w-5" />
@@ -315,7 +315,7 @@ export function StudentAcademicProfileCard({
                 >
                   <SelectTrigger
                     id="academic-level"
-                    className="w-full h-10 rounded-xl bg-card border-border/80 text-xs"
+                    className="w-full h-10 rounded-xl bg-card border-border text-xs"
                   >
                     <SelectValue
                       placeholder={isBn ? '-- শ্রেণী নির্বাচন করুন --' : '-- Select Level --'}
@@ -347,7 +347,7 @@ export function StudentAcademicProfileCard({
                 >
                   <SelectTrigger
                     id="academic-curriculum"
-                    className="w-full h-10 rounded-xl bg-card border-border/80 text-xs"
+                    className="w-full h-10 rounded-xl bg-card border-border text-xs"
                   >
                     <SelectValue
                       placeholder={isBn ? '-- কারিকুলাম নির্বাচন --' : '-- Select Curriculum --'}
@@ -399,11 +399,11 @@ export function StudentAcademicProfileCard({
                     ? 'উদা: এইচএসসি পরীক্ষায় গোল্ডেন জিপিএ ৫ এবং ইঞ্জিনিয়ারিং ভর্তি প্রস্তুতি।'
                     : 'e.g. Aiming for GPA 5.0 in Board exams and Engineering admission.'
                 }
-                className="rounded-xl bg-card border-border/80 text-xs resize-none"
+                className="rounded-xl bg-card border-border text-xs resize-none"
               />
             </div>
 
-            <div className="pt-3 border-t border-border/60 flex items-center justify-end gap-2.5">
+            <div className="pt-3 border-t border-border flex items-center justify-end gap-2.5">
               <Button
                 type="button"
                 variant="outline"

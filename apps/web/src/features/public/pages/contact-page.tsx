@@ -59,7 +59,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Contact Form */}
         <div className="lg:col-span-7">
-          <Card className="bg-card border-border/80 rounded-2xl shadow-card p-6 sm:p-8">
+          <Card className="bg-card border-border rounded-2xl shadow-card p-6 sm:p-8">
             <CardHeader className="px-0 pt-0 pb-6">
               <CardTitle className="text-xl sm:text-2xl font-bold font-bengali text-foreground">
                 {p.formHeading}
@@ -74,7 +74,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                   </p>
                   {ticketRef && (
                     <p
-                      className="text-xs font-mono text-primary font-bold bg-card p-2 rounded-xl inline-block border border-border/80"
+                      className="text-xs font-mono text-primary font-bold bg-card p-2 rounded-xl inline-block border border-border"
                       data-testid="contact-ticket-ref"
                     >
                       {locale === 'bn' ? 'রেফারেন্স' : 'Reference'}: {ticketRef}
@@ -151,7 +151,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                       value={formData.category}
                       onValueChange={(val) => updateField('category', val)}
                     >
-                      <SelectTrigger className="w-full h-11 rounded-xl bg-card border-border/80 text-sm">
+                      <SelectTrigger className="w-full h-11 rounded-xl bg-card border-border text-sm">
                         <SelectValue placeholder={p.catGeneral} />
                       </SelectTrigger>
                       <SelectContent>
@@ -175,7 +175,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                       id="contact-message"
                       required
                       rows={4}
-                      className="rounded-xl border-border/80 bg-card p-3.5 text-sm resize-none"
+                      className="rounded-xl border-border bg-card p-3.5 text-sm resize-none"
                       placeholder={p.messagePlaceholder}
                       value={formData.message}
                       onChange={(e) => updateField('message', e.target.value)}
@@ -208,7 +208,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
 
         {/* Office Details */}
         <div className="lg:col-span-5 space-y-6">
-          <Card className="bg-card border-border/80 rounded-2xl shadow-xs p-6 sm:p-8">
+          <Card className="bg-card border-border rounded-2xl shadow-xs p-6 sm:p-8">
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-lg font-bold font-bengali text-foreground">
                 {p.officeHeading}

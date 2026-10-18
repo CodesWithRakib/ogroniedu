@@ -479,7 +479,7 @@ export function InteractiveWhiteboard({
   return (
     <div
       ref={containerRef}
-      className={`relative flex flex-col bg-background border border-info/40 rounded-3xl overflow-hidden shadow-2xl transition-all ${
+      className={`relative flex flex-col bg-background border border-info/40 rounded-2xl overflow-hidden shadow-2xl transition-all ${
         isFullscreen ? 'p-4 h-screen w-screen rounded-none' : 'h-[680px]'
       }`}
       data-testid="interactive-whiteboard"
@@ -730,7 +730,7 @@ export function InteractiveWhiteboard({
           <button
             type="button"
             onClick={handleExportPNG}
-            className="p-2 rounded-2xl bg-primary/10 hover:bg-primary/20 text-success-soft-foreground border border-primary/40 transition-all flex items-center gap-1.5 text-xs font-bold"
+            className="p-2 rounded-2xl bg-success-soft hover:bg-success-soft text-success-soft-foreground border border-success/30 transition-all flex items-center gap-1.5 text-xs font-bold"
             title={locale === 'bn' ? 'নোট ডাউনলোড করুন (PNG)' : 'Export PNG Notes'}
             data-testid="wb-btn-export"
           >

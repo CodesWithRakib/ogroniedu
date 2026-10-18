@@ -33,7 +33,7 @@ export function SessionCard({
 
   return (
     <Card
-      className="flex flex-col justify-between hover:shadow-md transition-all bg-card border border-border/90 hover:border-primary/40 rounded-2xl overflow-hidden shadow-xs"
+      className="flex flex-col justify-between hover:shadow-sm transition-all bg-card border border-border hover:border-primary/40 rounded-2xl overflow-hidden shadow-xs"
       data-testid={`session-card-${session.id}`}
     >
       <CardHeader className="space-y-2 pb-3">
@@ -54,7 +54,7 @@ export function SessionCard({
 
       <CardContent className="space-y-3 text-xs pt-0">
         {session.meetingUrl && session.status !== 'cancelled' && (
-          <div className="p-3 bg-surface rounded-xl border border-border flex items-center justify-between gap-2 shadow-2xs">
+          <div className="p-3 bg-surface rounded-xl border border-border flex items-center justify-between gap-2">
             <div className="flex items-center gap-2 text-foreground">
               <Video className="w-4 h-4 text-primary shrink-0" />
               <span className="font-semibold text-xs truncate max-w-[170px]">

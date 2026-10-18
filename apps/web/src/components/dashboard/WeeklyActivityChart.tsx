@@ -44,7 +44,7 @@ export function WeeklyActivityChart({
     (isBn ? 'সপ্তাহের দিনগুলোতে ক্লাস ও স্টাডির সময়' : 'Learning and session volume across week');
 
   return (
-    <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between select-none">
+    <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col justify-between select-none">
       {/* Header */}
       <div className="flex items-center justify-between pb-4">
         <div>
@@ -54,7 +54,7 @@ export function WeeklyActivityChart({
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
         </div>
-        <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-primary-soft text-primary-soft-foreground border border-primary/20">
+        <span className="text-[11px] font-medium px-2.5 py-1 rounded-full bg-primary-soft text-primary-soft-foreground">
           {isBn ? 'এই সপ্তাহ' : 'This Week'}
         </span>
       </div>
@@ -84,17 +84,10 @@ export function WeeklyActivityChart({
               >
                 {isHighest ? (
                   /* Solid active pill bar */
-                  <div className="w-full h-full bg-primary rounded-full shadow-xs shadow-primary/20 group-hover:bg-primary-hover transition-colors" />
+                  <div className="w-full h-full bg-primary rounded-full group-hover:bg-primary-hover transition-colors" />
                 ) : (
-                  /* Striped / soft pill bar (Donezo pattern style) */
-                  <div className="w-full h-full rounded-full bg-surface border border-border/70 flex items-center justify-center overflow-hidden group-hover:border-primary/50 transition-colors">
-                    <div
-                      className="w-full h-full opacity-35 "
-                      style={{
-                        backgroundImage: `repeating-linear-gradient(45deg, currentColor, currentColor 2px, transparent 2px, transparent 6px)`,
-                      }}
-                    />
-                  </div>
+                  /* Soft neutral pill bar */
+                  <div className="w-full h-full rounded-full bg-surface-muted group-hover:bg-surface-hover transition-colors" />
                 )}
               </div>
 

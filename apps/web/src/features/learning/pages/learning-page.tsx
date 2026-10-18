@@ -66,7 +66,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
               id="learning-booking-select"
               value={records.activeBookingId}
               onChange={(e) => records.setActiveBookingId(e.target.value)}
-              className="h-9 min-w-[260px] rounded-xl border border-input bg-card px-3 text-xs font-medium text-foreground focus:outline-none focus:ring-2 focus:ring-ring"
+              className="h-9 min-w-[260px] rounded-xl border border-input bg-card px-3 text-xs font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35"
               data-testid="learning-booking-select"
             >
               {records.bookingOptions.map((opt) => (

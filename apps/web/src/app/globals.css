@@ -94,6 +94,9 @@
   --color-destructive-soft: var(--destructive-soft);
   --color-destructive-soft-foreground: var(--destructive-soft-foreground);
 
+  /* --- Rating (star icons only — 3.05:1 non-text on white) ------------------ */
+  --color-star: var(--star);
+
   /* --- Sidebar / dashboard navigation -------------------------------------- */
   --color-sidebar: var(--sidebar);
   --color-sidebar-foreground: var(--sidebar-foreground);
@@ -203,6 +206,7 @@
   --warning-foreground: #ffffff;
   --warning-soft: #fffbeb;
   --warning-soft-foreground: #b45309;
+  --star: #d97706; /* rating star icons (3.05:1 on white — non-text contrast) */
 
   --info: #1d4ed8; /* 6.70:1 on white */
   --info-foreground: #ffffff;

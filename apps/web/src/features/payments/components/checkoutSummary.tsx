@@ -18,7 +18,7 @@ export function CheckoutSummary({ order, locale }: CheckoutSummaryProps) {
 
   return (
     <Card className="border border-border shadow-sm">
-      <CardHeader className="pb-3 border-b border-border/50">
+      <CardHeader className="pb-3 border-b border-border">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">
             <FileText className="w-5 h-5 text-primary" />

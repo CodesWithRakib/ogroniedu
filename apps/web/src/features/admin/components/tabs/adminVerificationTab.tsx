@@ -136,7 +136,7 @@ export function VerificationQueueTable({
     );
   }
   return (
-    <div className="border border-border/70 rounded-2xl overflow-x-auto bg-card shadow-xs">
+    <div className="border border-border rounded-2xl overflow-x-auto bg-card shadow-xs">
       <Table data-testid="verification-table">
         <TableHeader>
           <TableRow className="uppercase tracking-wider text-[11px] font-bold">
@@ -391,7 +391,7 @@ export function AdminVerificationTab() {
               setStatusFilter(e.target.value as typeof statusFilter);
               setPage(1);
             }}
-            className="h-11 px-4 py-2.5 bg-card border border-border/80 rounded-2xl text-xs text-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/60 cursor-pointer shadow-2xs"
+            className="h-11 px-4 py-2.5 bg-card border border-border rounded-2xl text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:border-ring cursor-pointer"
             aria-label={isBn ? 'অবস্থা অনুযায়ী ছাঁকুন' : 'Filter by status'}
             data-testid="verification-status-filter"
           >
@@ -413,7 +413,7 @@ export function AdminVerificationTab() {
               setLevelFilter(e.target.value as TutorVerificationLevel | 'all');
               setPage(1);
             }}
-            className="h-11 px-4 py-2.5 bg-card border border-border/80 rounded-2xl text-xs text-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/60 cursor-pointer shadow-2xs"
+            className="h-11 px-4 py-2.5 bg-card border border-border rounded-2xl text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:border-ring cursor-pointer"
             aria-label={isBn ? 'স্তর অনুযায়ী ছাঁকুন' : 'Filter by level'}
             data-testid="verification-level-filter"
           >
@@ -430,7 +430,7 @@ export function AdminVerificationTab() {
               setAssignment(e.target.value as typeof assignment);
               setPage(1);
             }}
-            className="h-11 px-4 py-2.5 bg-card border border-border/80 rounded-2xl text-xs text-foreground focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/60 cursor-pointer shadow-2xs"
+            className="h-11 px-4 py-2.5 bg-card border border-border rounded-2xl text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:border-ring cursor-pointer"
             aria-label={isBn ? 'অ্যাসাইনমেন্ট অনুযায়ী ছাঁকুন' : 'Filter by assignment'}
             data-testid="verification-assignment-filter"
           >
@@ -479,7 +479,7 @@ export function AdminVerificationTab() {
             className="max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto"
             data-testid="verification-dossier-modal"
           >
-            <DialogHeader className="border-b border-border/70 pb-3 text-left">
+            <DialogHeader className="border-b border-border pb-3 text-left">
               <DialogTitle className="text-lg font-bold text-foreground">
                 {selected.displayName}
               </DialogTitle>
@@ -515,7 +515,7 @@ export function AdminVerificationTab() {
                       className={`rounded-2xl border p-3.5 space-y-2 ${
                         lvl.level === selectedLevel
                           ? 'border-primary/50 bg-primary/5'
-                          : 'border-border/70 bg-surface/40'
+                          : 'border-border bg-surface/40'
                       }`}
                       data-testid={`dossier-level-${lvl.level}`}
                     >
@@ -581,7 +581,7 @@ export function AdminVerificationTab() {
                           {lvl.documents.map((document) => (
                             <li
                               key={document.id}
-                              className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border/60 bg-card/60 px-3 py-2 text-[11px]"
+                              className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border bg-card/60 px-3 py-2 text-[11px]"
                               data-testid={`dossier-document-${document.id}`}
                             >
                               <div className="flex items-center gap-2 min-w-0">
@@ -686,7 +686,7 @@ export function AdminVerificationTab() {
 
             {/* Decision form */}
             <form
-              className="space-y-3 border-t border-border/80 pt-4"
+              className="space-y-3 border-t border-border pt-4"
               data-testid="verification-decision-form"
               onSubmit={handleDecide}
             >
@@ -730,7 +730,7 @@ export function AdminVerificationTab() {
                       <select
                         value={selectedLevel ?? activeLevel.level}
                         onChange={(e) => setSelectedLevel(e.target.value as TutorVerificationLevel)}
-                        className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-hidden focus:ring-2 focus:ring-ring"
+                        className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35"
                         data-testid="decision-level-select"
                       >
                         {LEVELS.map((level) => (
@@ -747,7 +747,7 @@ export function AdminVerificationTab() {
                       <select
                         value={decision}
                         onChange={(e) => setDecision(e.target.value as TutorReviewDecision)}
-                        className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus:outline-hidden focus:ring-2 focus:ring-ring"
+                        className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35"
                         data-testid="verification-decision-select"
                       >
                         {DECISIONS.map((value) => (
@@ -778,7 +778,7 @@ export function AdminVerificationTab() {
                           className={`text-[10px] px-2.5 py-1 rounded-lg border transition-all ${
                             reasonCode === preset.code
                               ? 'bg-interactive/20 text-info-soft-foreground border-info/40'
-                              : 'bg-muted/60 text-muted-foreground border-border/80 hover:text-foreground'
+                              : 'bg-muted/60 text-muted-foreground border-border hover:text-foreground'
                           }`}
                         >
                           {isBn ? preset.bn : preset.en}

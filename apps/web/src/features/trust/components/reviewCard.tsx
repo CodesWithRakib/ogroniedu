@@ -32,7 +32,7 @@ export function ReviewCard({
   const rev = review;
 
   return (
-    <Card className="p-5 border-border/80 bg-card rounded-2xl shadow-xs space-y-3">
+    <Card className="p-5 border-border bg-card rounded-2xl shadow-xs space-y-3">
       <div className="flex justify-between items-start">
         <div>
           <div className="flex items-center gap-2">
@@ -50,7 +50,7 @@ export function ReviewCard({
           </p>
         </div>
 
-        <div className="text-amber-500 font-bold tracking-wider text-sm">
+        <div className="text-star font-bold tracking-wider text-sm">
           {'★'.repeat(rev.rating)}
           {'☆'.repeat(5 - rev.rating)}
         </div>

@@ -65,7 +65,7 @@ export function AssignmentsTab({
         const sub = asgn.submission;
         const hasScore = sub?.score !== null && sub?.score !== undefined;
         return (
-          <Card key={asgn.id} className="border-border/60 hover:shadow-md transition-shadow">
+          <Card key={asgn.id} className="border-border hover:shadow-sm transition-shadow">
             <CardHeader className="pb-3 flex flex-col md:flex-row md:items-center justify-between gap-2">
               <div>
                 <div className="flex items-center gap-2">

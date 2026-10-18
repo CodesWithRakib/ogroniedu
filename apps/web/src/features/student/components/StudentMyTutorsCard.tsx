@@ -18,9 +18,9 @@ export function StudentMyTutorsCard({ locale, tutors, isLoading }: StudentMyTuto
   const isBn = locale === 'bn';
 
   return (
-    <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+    <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
+      <div className="flex items-center justify-between pb-3.5 border-b border-border">
         <div className="flex items-center gap-2.5">
           <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
             <Users className="h-5 w-5" />
@@ -52,7 +52,7 @@ export function StudentMyTutorsCard({ locale, tutors, isLoading }: StudentMyTuto
           </div>
         ) : tutors.length === 0 ? (
           <div className="py-8 px-4 text-center">
-            <div className="h-12 w-12 rounded-xl bg-muted/40 border border-border/60 mx-auto flex items-center justify-center text-muted-foreground mb-3">
+            <div className="h-12 w-12 rounded-xl bg-muted/40 border border-border mx-auto flex items-center justify-center text-muted-foreground mb-3">
               <Users className="h-6 w-6" />
             </div>
             <p className="text-xs font-bold text-foreground">
@@ -87,7 +87,7 @@ export function StudentMyTutorsCard({ locale, tutors, isLoading }: StudentMyTuto
               return (
                 <div
                   key={t.tutorUserId}
-                  className="p-3.5 rounded-xl bg-muted/20 border border-border/60 hover:bg-muted/40 transition-colors flex flex-col justify-between gap-3"
+                  className="p-3.5 rounded-xl bg-muted/20 border border-border hover:bg-muted/40 transition-colors flex flex-col justify-between gap-3"
                 >
                   <div className="flex items-center gap-3">
                     <div className="h-10 w-10 rounded-xl bg-primary-soft text-primary font-bold text-xs flex items-center justify-center shrink-0 ring-1 ring-border">
@@ -103,7 +103,7 @@ export function StudentMyTutorsCard({ locale, tutors, isLoading }: StudentMyTuto
                     </div>
                   </div>
 
-                  <div className="pt-2 border-t border-border/60 flex items-center justify-between text-[11px]">
+                  <div className="pt-2 border-t border-border flex items-center justify-between text-[11px]">
                     <span className="text-muted-foreground">
                       {t.hourlyRateMinor
                         ? `${formatBDTMinor(t.hourlyRateMinor, locale)} ${isBn ? '/ ক্লাস' : '/ session'}`

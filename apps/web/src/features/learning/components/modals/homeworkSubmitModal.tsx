@@ -51,7 +51,7 @@ export function HomeworkSubmitModal({
             value={text}
             onChange={(e) => onTextChange(e.target.value)}
             rows={5}
-            className="w-full rounded-xl border border-border p-3 text-xs bg-card text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
+            className="w-full rounded-xl border border-border p-3 text-xs bg-card text-foreground focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none"
             placeholder="Type your homework answer or paste notes..."
           />
         </div>

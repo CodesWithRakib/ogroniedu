@@ -112,7 +112,7 @@ export default function GuardianChildDetailPage({
         <div className="flex items-center gap-2">
           <Link
             href={withLocale('/dashboard/guardian/children', locale)}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover text-foreground text-xs font-semibold shadow-2xs transition-colors"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover text-foreground text-xs font-semibold transition-colors"
           >
             <ArrowLeft className="w-3.5 h-3.5" />
             <span>{isBn ? 'সকল সন্তান' : 'Back to Children'}</span>
@@ -132,12 +132,12 @@ export default function GuardianChildDetailPage({
     >
       {/* 1. CHILD HERO DOSSIER CARD */}
       <div
-        className="p-5 rounded-3xl bg-card border border-border/80 shadow-xs relative overflow-hidden"
+        className="p-5 rounded-2xl bg-card border border-border shadow-xs relative overflow-hidden"
         data-testid="child-dossier-hero"
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start gap-4">
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-brand-accent border border-primary/30 flex items-center justify-center text-primary font-black text-2xl shadow-inner">
+            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-brand-accent border border-primary/30 flex items-center justify-center text-primary font-black text-2xl">
               {child?.displayName ? child.displayName.slice(0, 2).toUpperCase() : 'ST'}
             </div>
             <div className="space-y-1">
@@ -255,7 +255,7 @@ export default function GuardianChildDetailPage({
             <span className="text-xs font-semibold text-muted-foreground">
               {isBn ? 'ক্লাস উপস্থিতি হার' : 'Attendance Rate'}
             </span>
-            <div className="p-2 rounded-xl bg-primary/10 text-success-soft-foreground">
+            <div className="p-2 rounded-xl bg-success-soft text-success-soft-foreground">
               <Calendar className="w-4 h-4" />
             </div>
           </div>
@@ -379,7 +379,7 @@ export default function GuardianChildDetailPage({
       {activeTab === 'tutors' && (
         <div className="space-y-4" data-testid="child-tutors-list">
           {childBookings.length === 0 ? (
-            <Card className="py-12 text-center rounded-3xl">
+            <Card className="py-12 text-center rounded-2xl">
               <CardContent className="space-y-3">
                 <GraduationCap className="w-12 h-12 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
@@ -405,7 +405,7 @@ export default function GuardianChildDetailPage({
               {childBookings.map((b) => (
                 <Card
                   key={b.id}
-                  className="rounded-3xl border-border bg-card hover:border-primary/40 transition-all p-5"
+                  className="rounded-2xl border-border bg-card hover:border-primary/40 transition-all p-5"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="space-y-1">
@@ -478,7 +478,7 @@ export default function GuardianChildDetailPage({
       {activeTab === 'sessions' && (
         <div className="space-y-4" data-testid="child-sessions-list">
           {childSessions.length === 0 ? (
-            <Card className="py-12 text-center rounded-3xl">
+            <Card className="py-12 text-center rounded-2xl">
               <CardContent className="space-y-2">
                 <Calendar className="w-10 h-10 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
@@ -560,7 +560,7 @@ export default function GuardianChildDetailPage({
       {activeTab === 'homework' && (
         <div className="space-y-4" data-testid="child-homework-list">
           {!learningSummary?.assignments || learningSummary.assignments.length === 0 ? (
-            <Card className="py-12 text-center rounded-3xl">
+            <Card className="py-12 text-center rounded-2xl">
               <CardContent className="space-y-2">
                 <BookOpen className="w-10 h-10 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
@@ -605,7 +605,7 @@ export default function GuardianChildDetailPage({
       {/* TAB D: CHILD SAFETY & TRUST ACTIONS */}
       {activeTab === 'safety' && (
         <div className="space-y-4" data-testid="child-safety-section">
-          <Card className="rounded-3xl border-destructive/40 bg-surface-muted p-6 text-foreground shadow-sm">
+          <Card className="rounded-2xl border-destructive/40 bg-surface-muted p-6 text-foreground shadow-sm">
             <div className="flex items-start gap-4">
               <div className="h-12 w-12 rounded-2xl bg-destructive/20 border border-destructive/40 text-destructive-soft-foreground flex items-center justify-center shrink-0">
                 <ShieldAlert className="w-6 h-6" />

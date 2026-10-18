@@ -30,8 +30,8 @@ export function HeroKpiCard({
     <div
       data-testid={testId}
       className={cn(
-        'group relative flex flex-col justify-between rounded-2xl p-5 sm:p-6 transition-all duration-200 select-none bg-card border border-border/80 shadow-2xs hover:shadow-xs hover:border-border hover:-translate-y-0.5',
-        isHero && 'ring-1 ring-primary/20 bg-gradient-to-b from-primary-soft/30 via-card to-card',
+        'group relative flex flex-col justify-between rounded-2xl p-5 sm:p-6 transition-all duration-200 select-none bg-card border border-border hover:shadow-xs hover:border-input hover:-translate-y-0.5',
+        isHero && 'border-primary/25 bg-gradient-to-b from-primary-soft/40 via-card to-card',
       )}
     >
       {/* Top row: Title + Icon + Arrow indicator */}
@@ -40,10 +40,8 @@ export function HeroKpiCard({
           {Icon && (
             <div
               className={cn(
-                'h-8 w-8 rounded-xl flex items-center justify-center shrink-0 border transition-colors',
-                isHero
-                  ? 'bg-primary-soft border-primary/25 text-primary'
-                  : 'bg-surface border-border/70 text-muted-foreground group-hover:text-foreground',
+                'h-8 w-8 rounded-lg flex items-center justify-center shrink-0 transition-colors',
+                isHero ? 'bg-primary-soft/70 text-primary' : 'bg-surface text-muted-foreground',
               )}
             >
               <Icon className="h-4 w-4" />
@@ -71,10 +69,8 @@ export function HeroKpiCard({
         <div>
           <div
             className={cn(
-              'inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full text-[11px] font-medium w-fit tracking-tight border',
-              isHero
-                ? 'bg-primary-soft text-primary border-primary/25'
-                : 'bg-surface text-muted-foreground border-border/70',
+              'inline-flex items-center gap-1.5 text-[11px] font-medium w-fit tracking-tight',
+              isHero ? 'text-primary-soft-foreground' : 'text-muted-foreground',
             )}
           >
             <TrendingUp className="h-3 w-3 shrink-0" />
@@ -89,7 +85,7 @@ export function HeroKpiCard({
     return (
       <Link
         href={href}
-        className="block focus:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-2xl"
+        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-2xl"
       >
         {content}
       </Link>

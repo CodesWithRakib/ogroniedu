@@ -225,7 +225,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
     switch (status) {
       case 'scheduled':
         return (
-          <Badge className="bg-primary/10 text-success-soft-foreground border border-primary/40">
+          <Badge className="bg-success-soft text-success-soft-foreground border border-success/30">
             {locale === 'bn' ? 'নির্ধারিত' : 'Scheduled'}
           </Badge>
         );
@@ -279,7 +279,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
       </div>
 
       {/* Live Interactive Classroom Workspace Launch Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-card border border-interactive/25 p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="relative overflow-hidden rounded-2xl bg-card border border-interactive/25 p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-1 text-center md:text-left">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-interactive/20 text-info-soft-foreground text-xs font-bold border border-info/40">
             <Radio className="w-3.5 h-3.5 text-info-soft-foreground animate-pulse" />
@@ -298,7 +298,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
         </div>
         <Link
           href={withLocale(`/classroom/${sessionId}`, locale)}
-          className="shrink-0 flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand to-brand-accent text-foreground text-xs font-black rounded-2xl shadow-xl shadow-sm transition-all transform hover:scale-105"
+          className="shrink-0 flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand to-brand-accent text-foreground text-xs font-black rounded-2xl shadow-sm transition-all transform hover:scale-105"
           data-testid="enter-live-classroom-btn"
         >
           <Sparkles className="w-4 h-4 fill-current" />
@@ -307,13 +307,13 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
       </div>
 
       {/* Main Session Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-card border border-brand/25 p-8 shadow-sm">
+      <div className="relative overflow-hidden rounded-2xl bg-card border border-brand/25 p-8 shadow-sm">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-xs font-medium text-success-soft-foreground">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-success-soft border border-success/30 rounded-full text-xs font-medium text-success-soft-foreground">
                 <Clock className="w-3.5 h-3.5" />
                 <span>{locale === 'bn' ? 'বাংলাদেশ সময় (BST / UTC+6)' : 'BST / UTC+6'}</span>
               </span>
@@ -350,7 +350,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
       {/* Grid: Classroom Link & Attendance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Live Classroom Card */}
-        <Card className="bg-card border border-border text-foreground rounded-3xl p-6 flex flex-col justify-between shadow-sm">
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col justify-between shadow-sm">
           <CardHeader className="p-0 pb-4">
             <div className="flex items-center gap-2 text-success-soft-foreground mb-1">
               <Video className="w-5 h-5" />
@@ -424,7 +424,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
         </Card>
 
         {/* Attendance Card */}
-        <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm">
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-sm">
           <CardHeader className="p-0 pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-info-soft-foreground mb-1">
@@ -437,7 +437,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
                 <Badge
                   className={
                     latestRecord.attendanceStatus === 'present'
-                      ? 'bg-primary/20 text-success-soft-foreground border-primary/40'
+                      ? 'bg-success-soft text-success-soft-foreground border-success/30'
                       : latestRecord.attendanceStatus === 'late'
                         ? 'bg-warning/20 text-warning-soft-foreground border-warning/40'
                         : 'bg-destructive/20 text-destructive-soft-foreground border-destructive/40'
@@ -491,7 +491,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
                       onClick={() => setSelectedStatus(st)}
                       className={`py-2 px-1 text-xs font-bold rounded-xl border transition-all capitalize ${
                         selectedStatus === st
-                          ? 'bg-interactive border-info/40 text-white shadow-md'
+                          ? 'bg-interactive border-info/40 text-white'
                           : 'bg-muted border-border text-muted-foreground hover:bg-surface-hover'
                       }`}
                       data-testid={`attendance-status-${st}`}
@@ -540,7 +540,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
                   </div>
                 )}
                 {markSuccess && (
-                  <div className="p-2.5 rounded-lg border border-primary/40 bg-primary/10 text-xs text-success-soft-foreground flex items-center gap-1.5">
+                  <div className="p-2.5 rounded-lg border border-success/30 bg-success-soft text-xs text-success-soft-foreground flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-success-soft-foreground shrink-0" />
                     <span>
                       {locale === 'bn'

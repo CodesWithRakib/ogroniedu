@@ -146,7 +146,7 @@ export function QualificationUploadCard({
               id="qual-doc-type"
               value={docType}
               onChange={(e) => setDocType(e.target.value as typeof docType)}
-              className="h-10 w-full rounded-xl border border-input bg-card text-foreground px-3 text-sm focus:ring-2 focus:ring-ring focus:outline-none"
+              className="h-10 w-full rounded-xl border border-input bg-card text-foreground px-3 text-sm focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none"
               data-testid="qualification-type-select"
             >
               <option value="nid">{isBn ? 'জাতীয় পরিচয়পত্র (NID)' : 'National ID (NID)'}</option>

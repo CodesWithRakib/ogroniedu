@@ -45,7 +45,7 @@ export function NotificationBell({ className, locale = 'bn' }: NotificationBellP
       }
       className={cn(
         'relative inline-flex items-center justify-center p-2.5 rounded-xl transition-all duration-200 cursor-pointer',
-        'hover:bg-info/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-info',
+        'hover:bg-info/10 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-info',
         isCenterOpen && 'bg-info/15 text-info-soft-foreground border border-info/30',
         className,
       )}

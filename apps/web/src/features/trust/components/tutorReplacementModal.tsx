@@ -164,7 +164,7 @@ export function TutorReplacementModal({
               <select
                 value={reasonCode}
                 onChange={(e) => setReasonCode(e.target.value)}
-                className="w-full rounded-xl bg-card border border-border p-2.5 text-xs text-foreground focus:outline-none focus:border-primary"
+                className="w-full rounded-xl bg-card border border-border p-2.5 text-xs text-foreground focus-visible:outline-none focus:border-primary"
                 id="replacement-reason-select"
               >
                 <option value="teaching_mismatch">
@@ -215,7 +215,7 @@ export function TutorReplacementModal({
                     ? 'নতুন শিক্ষকের কাছ থেকে আপনার নির্দিষ্ট প্রত্যাশা, সময়সূচি বা কোনো অগ্রাধিকার উল্লেখ করুন...'
                     : 'Specify preferred background, schedule adjustments, or pedagogical style...'
                 }
-                className="w-full rounded-xl bg-card border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary"
+                className="w-full rounded-xl bg-card border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus:border-primary"
                 id="replacement-explanation-input"
               />
             </div>

@@ -58,7 +58,7 @@ export default function SafetyReportsPage({ params }: { params: Promise<{ locale
     >
       {/* 1. URGENT 24/7 EMERGENCY BANNER */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4" data-testid="safety-hotlines-banner">
-        <div className="md:col-span-2 p-5 rounded-3xl border border-destructive/40 bg-destructive-soft text-foreground flex flex-col justify-between">
+        <div className="md:col-span-2 p-5 rounded-2xl border border-destructive/40 bg-destructive-soft text-foreground flex flex-col justify-between">
           <div className="space-y-2">
             <div className="flex items-center gap-2 text-destructive-soft-foreground">
               <ShieldAlert className="w-5 h-5 shrink-0" />
@@ -94,7 +94,7 @@ export default function SafetyReportsPage({ params }: { params: Promise<{ locale
         </div>
 
         {/* National Helpline */}
-        <div className="p-5 rounded-3xl border border-border bg-card flex flex-col justify-between">
+        <div className="p-5 rounded-2xl border border-border bg-card flex flex-col justify-between">
           <div>
             <span className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground">
               {isBn ? 'জরুরি হেল্পলাইন নম্বর' : 'Emergency Contacts'}
@@ -168,7 +168,7 @@ export default function SafetyReportsPage({ params }: { params: Promise<{ locale
             {isBn ? 'লোড হচ্ছে...' : 'Loading safety reports...'}
           </div>
         ) : filteredReports.length === 0 ? (
-          <Card className="py-16 text-center rounded-3xl">
+          <Card className="py-16 text-center rounded-2xl">
             <CardContent className="space-y-3">
               <ShieldCheck className="w-14 h-14 text-success-soft-foreground mx-auto" />
               <h4 className="text-base font-bold text-foreground">
@@ -196,7 +196,7 @@ export default function SafetyReportsPage({ params }: { params: Promise<{ locale
                 key={report.id}
                 className="rounded-2xl border-border bg-card p-5 space-y-3 hover:border-destructive/40 transition-all"
               >
-                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/60 pb-3">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
                   <div className="flex items-center gap-2">
                     <span className="text-xs font-mono font-bold text-muted-foreground">
                       #{report.id.slice(0, 8)}

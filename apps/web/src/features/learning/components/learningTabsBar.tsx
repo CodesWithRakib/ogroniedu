@@ -40,7 +40,7 @@ export function LearningTabsBar({
   ];
 
   return (
-    <div className="flex border-b border-border/60 space-x-2">
+    <div className="flex border-b border-border space-x-2">
       {tabs.map(({ key, label, count, Icon }) => (
         <button
           key={key}

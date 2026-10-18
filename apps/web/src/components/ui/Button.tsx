@@ -9,18 +9,15 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary:
-          'bg-primary text-primary-foreground hover:bg-primary-hover shadow-xs active:opacity-95',
-        default:
-          'bg-primary text-primary-foreground hover:bg-primary-hover shadow-xs active:opacity-95',
+        primary: 'bg-primary text-primary-foreground hover:bg-primary-hover active:opacity-95',
+        default: 'bg-primary text-primary-foreground hover:bg-primary-hover active:opacity-95',
         secondary:
-          'bg-surface-muted text-foreground hover:bg-surface-hover border border-border/80 active:bg-surface-muted',
+          'bg-surface-muted text-foreground hover:bg-surface-hover border border-transparent active:bg-surface-muted',
         outline:
-          'border border-border bg-card text-foreground hover:bg-surface-hover hover:border-border active:bg-surface-muted shadow-2xs',
+          'border border-border bg-card text-foreground hover:bg-surface-hover hover:border-input active:bg-surface-muted',
         ghost: 'bg-transparent text-foreground hover:bg-surface-hover hover:text-foreground',
-        destructive:
-          'bg-destructive text-white hover:bg-destructive/90 shadow-xs active:opacity-95',
-        warning: 'bg-warning text-white hover:bg-warning/90 shadow-xs active:opacity-95',
+        destructive: 'bg-destructive text-white hover:bg-destructive/90 active:opacity-95',
+        warning: 'bg-warning text-white hover:bg-warning/90 active:opacity-95',
         link: 'text-interactive underline-offset-4 hover:underline p-0 h-auto font-medium',
       },
       size: {

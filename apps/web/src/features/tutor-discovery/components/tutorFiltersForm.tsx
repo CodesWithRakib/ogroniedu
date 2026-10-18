@@ -83,7 +83,7 @@ export function TutorFiltersForm({
               onValueChange={(val) => onChange({ modeFilter: val === 'all' ? '' : val })}
             >
               <SelectTrigger
-                className="w-full rounded-2xl bg-card border-border/80 text-xs sm:text-sm"
+                className="w-full rounded-2xl bg-card border-border text-xs sm:text-sm"
                 data-testid="mode-select"
                 aria-label={isBn ? 'পাঠদানের পদ্ধতি অনুযায়ী ছাঁকুন' : 'Filter mode'}
               >
@@ -105,7 +105,7 @@ export function TutorFiltersForm({
               onValueChange={(val) => onChange({ sortBy: val as TutorSortKey })}
             >
               <SelectTrigger
-                className="w-full rounded-2xl bg-card border-border/80 text-xs sm:text-sm"
+                className="w-full rounded-2xl bg-card border-border text-xs sm:text-sm"
                 data-testid="sort-by-select"
                 aria-label={isBn ? 'সাজানোর নিয়ম' : 'Sort by'}
               >

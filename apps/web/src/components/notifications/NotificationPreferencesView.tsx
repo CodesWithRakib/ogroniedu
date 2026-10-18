@@ -179,8 +179,8 @@ export function NotificationPreferencesView({
       </div>
 
       {/* Audio Sound Settings Card */}
-      <Card className="border border-border/70 shadow-xs bg-card/60 backdrop-blur-xs">
-        <CardHeader className="pb-3 border-b border-border/50">
+      <Card className="border border-border shadow-xs bg-card/60 backdrop-blur-xs">
+        <CardHeader className="pb-3 border-b border-border">
           <CardTitle className="text-base font-semibold flex items-center justify-between">
             <div className="flex items-center gap-2">
               <span className="p-1.5 rounded-lg bg-interactive/10 text-info-soft-foreground">
@@ -245,7 +245,7 @@ export function NotificationPreferencesView({
           </div>
 
           {soundEnabled && (
-            <div className="pt-3 border-t border-border/40 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
+            <div className="pt-3 border-t border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
               <span className="text-muted-foreground font-medium">
                 {locale === 'bn' ? 'শব্দের মাত্রা (Loudness Volume):' : 'Volume Level:'}{' '}
                 {Math.round(soundVolume * 100)}%
@@ -276,7 +276,7 @@ export function NotificationPreferencesView({
 
       {/* Preferences Matrix Card */}
       <Card className="border border-border shadow-sm">
-        <CardHeader className="pb-3 border-b border-border/50">
+        <CardHeader className="pb-3 border-b border-border">
           <CardTitle className="text-lg font-semibold flex items-center justify-between">
             <span>Channels & Categories</span>
             {saveSuccess && (
@@ -338,7 +338,7 @@ export function NotificationPreferencesView({
           ))}
         </CardContent>
 
-        <CardFooter className="border-t border-border/50 pt-4 flex items-center justify-between">
+        <CardFooter className="border-t border-border pt-4 flex items-center justify-between">
           <div className="text-xs text-muted-foreground flex items-center gap-1.5">
             <Info className="w-4 h-4 text-muted-foreground" />
             <span>{n.guardianOversightNote}</span>

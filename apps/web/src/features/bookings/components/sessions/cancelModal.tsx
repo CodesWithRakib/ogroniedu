@@ -70,7 +70,7 @@ export function CancelSessionModal({
               value={reason}
               onChange={(e) => setReason(e.target.value)}
               placeholder="Explain why you are cancelling..."
-              className="w-full p-2.5 rounded-xl border border-border bg-card text-foreground text-xs focus:ring-2 focus:ring-ring focus:outline-none"
+              className="w-full p-2.5 rounded-xl border border-border bg-card text-foreground text-xs focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none"
               data-testid="cancel-reason-input"
             />
           </div>

@@ -293,7 +293,7 @@ export function GuardianChildrenManager({
       </div>
 
       {/* Minor Protection & Autonomy Info Banner */}
-      <div className="rounded-3xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs">
+      <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs">
         <div className="flex items-start gap-3">
           <div className="h-10 w-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-sm mt-0.5">
             <ShieldCheck className="h-5 w-5" />
@@ -330,9 +330,9 @@ export function GuardianChildrenManager({
 
       {/* Children List */}
       {children.length === 0 ? (
-        <Card className="text-center py-16 rounded-3xl border-dashed border-2 border-border/80 bg-card/60">
+        <Card className="text-center py-16 rounded-2xl border-dashed border-2 border-border bg-card/60">
           <CardContent className="space-y-4 max-w-md mx-auto">
-            <div className="h-16 w-16 rounded-3xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto shadow-inner">
+            <div className="h-16 w-16 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto">
               <GraduationCap className="h-8 w-8" />
             </div>
             <div className="space-y-1">
@@ -382,12 +382,12 @@ export function GuardianChildrenManager({
             return (
               <Card
                 key={child.linkId}
-                className="rounded-3xl border-border bg-card hover:border-primary/40 hover:shadow-md transition-all p-5 flex flex-col justify-between"
+                className="rounded-2xl border-border bg-card hover:border-primary/40 hover:shadow-sm transition-all p-5 flex flex-col justify-between"
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 text-primary font-black text-sm flex items-center justify-center shrink-0 shadow-inner">
+                      <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 text-primary font-black text-sm flex items-center justify-center shrink-0">
                         {initials || 'ST'}
                       </div>
                       <div className="space-y-1">
@@ -430,7 +430,7 @@ export function GuardianChildrenManager({
                   </div>
 
                   {child.learningGoals && (
-                    <div className="p-2.5 rounded-xl bg-surface-muted border border-border/60 text-xs text-muted-foreground flex items-start gap-2">
+                    <div className="p-2.5 rounded-xl bg-surface-muted border border-border text-xs text-muted-foreground flex items-start gap-2">
                       <Sparkles className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
                       <span className="line-clamp-2">
                         <strong className="text-foreground">
@@ -441,7 +441,7 @@ export function GuardianChildrenManager({
                     </div>
                   )}
 
-                  <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border/80 pt-3">
+                  <div className="flex items-center justify-between text-xs text-muted-foreground border-t border-border pt-3">
                     <span className="flex items-center gap-1.5">
                       <ShieldCheck className="h-4 w-4 text-success-soft-foreground" />
                       {isBn ? 'সম্পর্ক:' : 'Relation:'}{' '}
@@ -449,14 +449,14 @@ export function GuardianChildrenManager({
                         {child.relationshipType}
                       </strong>
                     </span>
-                    <span className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground bg-surface-muted px-2 py-0.5 rounded-lg border border-border/60">
+                    <span className="flex items-center gap-1 text-[11px] font-mono text-muted-foreground bg-surface-muted px-2 py-0.5 rounded-lg border border-border">
                       <Lock className="h-3 w-3" />
                       {child.consentPolicyVersion || 'v1.0-bd-minor-consent'}
                     </span>
                   </div>
                 </div>
 
-                <div className="flex items-center justify-between pt-3 mt-3 border-t border-border/60">
+                <div className="flex items-center justify-between pt-3 mt-3 border-t border-border">
                   <Link
                     href={withLocale(`/dashboard/guardian/children/${child.studentId}`, locale)}
                     className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-primary/10 hover:bg-primary/20 text-primary text-xs font-semibold transition-colors"
@@ -483,7 +483,7 @@ export function GuardianChildrenManager({
 
       {/* Comprehensive Dual-Tab Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-3xl p-6 shadow-2xl border-border bg-card">
+        <DialogContent className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl p-6 border-border bg-card">
           <DialogHeader className="text-left pb-2">
             <div className="flex items-center justify-between gap-2">
               <DialogTitle className="text-xl font-bold flex items-center gap-2">
@@ -499,13 +499,13 @@ export function GuardianChildrenManager({
           </DialogHeader>
 
           {/* Tab selector */}
-          <div className="flex p-1 bg-surface-muted rounded-2xl border border-border/80 gap-1 my-2">
+          <div className="flex p-1 bg-surface-muted rounded-2xl border border-border gap-1 my-2">
             <button
               type="button"
               onClick={() => setActiveTab('register')}
               className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'register'
-                  ? 'bg-card text-foreground shadow-xs border border-border/60'
+                  ? 'bg-card text-foreground shadow-xs border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -517,7 +517,7 @@ export function GuardianChildrenManager({
               onClick={() => setActiveTab('link')}
               className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'link'
-                  ? 'bg-card text-foreground shadow-xs border border-border/60'
+                  ? 'bg-card text-foreground shadow-xs border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >

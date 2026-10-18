@@ -30,7 +30,6 @@ export function AdminUsersStudentsPage({ locale }: { locale: Locale }) {
   return (
     <AdminLayout
       locale={locale}
-      title={isBn ? 'শিক্ষার্থী ও অভিভাবক ডিরেক্টরি' : 'Students & Guardians Directory'}
     >
       <div className="space-y-6 py-6" data-testid="admin-users-students-page">
         {/* Back Link to Hub (Image 2 Pattern) */}
@@ -45,13 +44,13 @@ export function AdminUsersStudentsPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
           <div>
             <div className="flex items-center space-x-3">
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
                 {isBn ? 'শিক্ষার্থী ও অভিভাবক ডিরেক্টরি' : 'Students & Guardians'}
               </h1>
-              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20">
+              <span className="px-3 py-1 text-xs font-semibold rounded-full bg-info-soft text-info-soft-foreground border border-info/20">
                 {learners.length} {isBn ? 'টি অ্যাকাউন্ট' : 'Accounts'}
               </span>
             </div>
@@ -75,15 +74,15 @@ export function AdminUsersStudentsPage({ locale }: { locale: Locale }) {
             }
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 rounded-xl bg-card border border-border/80 text-foreground text-xs shadow-2xs"
+            className="w-full pl-10 pr-4 py-2 rounded-xl bg-card border border-border text-foreground text-xs"
           />
         </div>
 
         {/* Table */}
-        <div className="bg-card border border-border/80 rounded-2xl overflow-hidden shadow-2xs">
+        <div className="bg-card border border-border rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground">
-              <thead className="bg-muted/40 uppercase tracking-wider text-[10px] font-bold text-muted-foreground border-b border-border/60">
+              <thead className="bg-muted/40 uppercase tracking-wider text-[10px] font-bold text-muted-foreground border-b border-border">
                 <tr>
                   <th scope="col" className="px-5 py-3.5">
                     {isBn ? 'অ্যাকাউন্ট' : 'ACCOUNT'}
@@ -124,7 +123,7 @@ export function AdminUsersStudentsPage({ locale }: { locale: Locale }) {
                       <tr key={item.id} className="hover:bg-muted/20 transition-colors">
                         <td className="px-5 py-4 font-semibold text-foreground">
                           <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-lg bg-blue-500/10 border border-blue-500/20 text-blue-600 dark:text-blue-400 font-bold flex items-center justify-center text-xs">
+                            <div className="w-8 h-8 rounded-lg bg-info-soft border border-info/20 text-info font-bold flex items-center justify-center text-xs">
                               {isGuardian ? (
                                 <Users className="w-4 h-4" />
                               ) : (
@@ -146,7 +145,7 @@ export function AdminUsersStudentsPage({ locale }: { locale: Locale }) {
                         </td>
 
                         <td className="px-5 py-4">
-                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-blue-500/10 text-blue-700 dark:text-blue-300 border border-blue-500/20 uppercase">
+                          <span className="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-bold bg-info-soft text-info-soft-foreground border border-info/20 uppercase">
                             {isGuardian ? 'GUARDIAN' : 'STUDENT'}
                           </span>
                         </td>

@@ -49,9 +49,9 @@ const USER_HUB_CARDS: UserHubCard[] = [
       'Manage system administrators, oversee assigned roles, monitor administrative access, and view permissions.',
     badgeBn: 'সুপার অ্যাডমিন',
     badgeEn: 'Super Admin',
-    badgeClass: 'bg-primary/10 text-primary border-primary/20',
+    badgeClass: 'bg-primary-soft text-primary-soft-foreground',
     icon: Shield,
-    iconBg: 'bg-primary/10 border-primary/20',
+    iconBg: 'bg-primary-soft/70',
     iconColor: 'text-primary',
     actionBn: 'রোস্টার পরিচালনা করুন',
     actionEn: 'Manage & View',
@@ -67,10 +67,10 @@ const USER_HUB_CARDS: UserHubCard[] = [
       'Quickly onboard a new system administrator, staff operator, or regional support manager with direct role assignment.',
     badgeBn: 'স্টাফ প্রভিশনিং',
     badgeEn: 'Staff Provisioning',
-    badgeClass: 'bg-info-soft text-info-soft-foreground border-info/30',
+    badgeClass: 'bg-surface text-muted-foreground',
     icon: UserPlus,
-    iconBg: 'bg-info-soft border-info/30',
-    iconColor: 'text-info',
+    iconBg: 'bg-surface',
+    iconColor: 'text-foreground',
     actionBn: 'স্টাফ তৈরি করুন',
     actionEn: 'Provision Staff',
   },
@@ -85,9 +85,9 @@ const USER_HUB_CARDS: UserHubCard[] = [
       'Browse, search, and manage all accounts across students, tutors, guardians, and platform participants.',
     badgeBn: 'ডিরেক্টরি',
     badgeEn: 'All Accounts',
-    badgeClass: 'bg-surface text-foreground border-border',
+    badgeClass: 'bg-surface text-muted-foreground',
     icon: Users,
-    iconBg: 'bg-surface border-border',
+    iconBg: 'bg-surface',
     iconColor: 'text-foreground',
     actionBn: 'ইউজার ডিরেক্টরি দেখুন',
     actionEn: 'Browse Users',
@@ -103,10 +103,10 @@ const USER_HUB_CARDS: UserHubCard[] = [
       'Oversee verified tutors, inspect teaching performance, review ratings, and manage instructor profiles.',
     badgeBn: 'শিক্ষকবৃন্দ',
     badgeEn: 'Educators',
-    badgeClass: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20',
+    badgeClass: 'bg-surface text-muted-foreground',
     icon: GraduationCap,
-    iconBg: 'bg-emerald-500/10 border-emerald-500/20',
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    iconBg: 'bg-surface',
+    iconColor: 'text-foreground',
     actionBn: 'শিক্ষক তালিকা দেখুন',
     actionEn: 'View Directory',
   },
@@ -121,9 +121,9 @@ const USER_HUB_CARDS: UserHubCard[] = [
       'Review pending tutor registration applications, verify certificates and NID, and approve new educators.',
     badgeBn: 'কেওয়াইসি যাচাই',
     badgeEn: 'KYC Verification',
-    badgeClass: 'bg-warning-soft text-warning-soft-foreground border-warning/30',
+    badgeClass: 'bg-warning-soft text-warning-soft-foreground',
     icon: ShieldCheck,
-    iconBg: 'bg-warning-soft border-warning/30',
+    iconBg: 'bg-warning-soft',
     iconColor: 'text-warning',
     actionBn: 'আবেদন যাচাই করুন',
     actionEn: 'Review KYC',
@@ -139,10 +139,10 @@ const USER_HUB_CARDS: UserHubCard[] = [
       'Monitor active student enrollments, guardian accounts, assigned tuition sessions, and family profiles.',
     badgeBn: 'শিক্ষার্থীবৃন্দ',
     badgeEn: 'Learners',
-    badgeClass: 'bg-blue-500/10 text-blue-700 dark:text-blue-300 border-blue-500/20',
+    badgeClass: 'bg-surface text-muted-foreground',
     icon: BookOpen,
-    iconBg: 'bg-blue-500/10 border-blue-500/20',
-    iconColor: 'text-blue-600 dark:text-blue-400',
+    iconBg: 'bg-surface',
+    iconColor: 'text-foreground',
     actionBn: 'শিক্ষার্থী তালিকা দেখুন',
     actionEn: 'View Learners',
   },
@@ -156,10 +156,10 @@ const USER_HUB_CARDS: UserHubCard[] = [
       'Inspect comprehensive audit trails, admin actions, role modifications, and login sessions.',
     badgeBn: 'অডিট লগ',
     badgeEn: 'Audit Trail',
-    badgeClass: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20',
+    badgeClass: 'bg-surface text-muted-foreground',
     icon: FileText,
-    iconBg: 'bg-purple-500/10 border-purple-500/20',
-    iconColor: 'text-purple-600 dark:text-purple-400',
+    iconBg: 'bg-surface',
+    iconColor: 'text-foreground',
     actionBn: 'লগ পরিদর্শন করুন',
     actionEn: 'Inspect Logs',
   },
@@ -181,7 +181,6 @@ export function AdminUsersHubPage({ locale }: { locale: Locale }) {
   return (
     <AdminLayout
       locale={locale}
-      title={isBn ? 'ইউজার ও স্টাফ হাব' : 'User & Partner Management Hub'}
     >
       <div className="space-y-6 py-6" data-testid="admin-users-hub">
         {/* Eyebrow & Hero Header (Image 1 Exact Layout) */}
@@ -209,7 +208,7 @@ export function AdminUsersHubPage({ locale }: { locale: Locale }) {
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/25">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-primary-soft text-primary-soft-foreground">
                 <Users className="w-3.5 h-3.5" />
                 <span>
                   {totalUsers} {isBn ? 'টি অ্যাকাউন্ট' : 'Total Accounts'}
@@ -230,19 +229,19 @@ export function AdminUsersHubPage({ locale }: { locale: Locale }) {
                 key={card.id}
                 href={targetUrl}
                 data-testid={`user-hub-card-${card.id}`}
-                className="group relative bg-card border border-border/80 hover:border-primary/50 hover:shadow-md transition-all duration-200 rounded-2xl p-5 flex flex-col justify-between"
+                className="group relative bg-card border border-border hover:border-input hover:shadow-xs transition-all duration-200 rounded-2xl p-5 flex flex-col justify-between"
               >
                 <div>
                   {/* Top Row: Icon squircle + Badge */}
                   <div className="flex items-start justify-between gap-3">
                     <div
-                      className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-transform group-hover:scale-105 ${card.iconBg} ${card.iconColor}`}
+                      className={`w-11 h-11 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${card.iconBg} ${card.iconColor}`}
                     >
                       <Icon className="w-5 h-5" />
                     </div>
 
                     <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${card.badgeClass}`}
+                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${card.badgeClass}`}
                     >
                       <span>{isBn ? card.badgeBn : card.badgeEn}</span>
                       <ChevronRight className="w-3 h-3 opacity-60" />
@@ -259,7 +258,7 @@ export function AdminUsersHubPage({ locale }: { locale: Locale }) {
                 </div>
 
                 {/* Footer Link: Action text + Arrow */}
-                <div className="mt-5 pt-3 border-t border-border/50 flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
+                <div className="mt-5 pt-3 border-t border-border flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
                   <span>{isBn ? card.actionBn : card.actionEn}</span>
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                 </div>

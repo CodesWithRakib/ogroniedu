@@ -24,7 +24,7 @@ export function CheckoutLedger({ order, locale }: CheckoutLedgerProps) {
   return (
     <div className="space-y-6">
       <Card className="border border-border shadow-sm">
-        <CardHeader className="pb-3 border-b border-border/50">
+        <CardHeader className="pb-3 border-b border-border">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
             <Scale className="w-5 h-5 text-interactive" />
             {p.ledgerBreakdownTitle}
@@ -73,7 +73,7 @@ export function CheckoutLedger({ order, locale }: CheckoutLedgerProps) {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-2 text-xs">
-          <div className="flex justify-between py-1 border-b border-border/40">
+          <div className="flex justify-between py-1 border-b border-border">
             <span className="text-muted-foreground">{p.ledgerStatus}</span>
             <span className="font-semibold text-success-soft-foreground">
               {order.status === 'succeeded' ? p.statusSucceeded : p.statusPending}

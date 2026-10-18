@@ -121,7 +121,7 @@ export function HeroStudentTablet() {
                       </div>
                       <div className="flex items-baseline gap-1">
                         <span className="text-xs font-black text-foreground">24</span>
-                        <span className="text-[7px] font-bold text-success-soft-foreground bg-primary/10 px-0.5 rounded">
+                        <span className="text-[7px] font-bold text-success-soft-foreground bg-success-soft px-0.5 rounded">
                           +12%
                         </span>
                       </div>
@@ -135,7 +135,7 @@ export function HeroStudentTablet() {
                       </div>
                       <div className="flex items-baseline gap-1">
                         <span className="text-xs font-black text-foreground">18</span>
-                        <span className="text-[7px] font-bold text-success-soft-foreground bg-primary/10 px-0.5 rounded">
+                        <span className="text-[7px] font-bold text-success-soft-foreground bg-success-soft px-0.5 rounded">
                           +28%
                         </span>
                       </div>

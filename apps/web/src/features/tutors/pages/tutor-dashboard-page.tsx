@@ -232,42 +232,42 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 2. QUICK ACTIONS BAR                                     */}
       {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2.5 p-3.5 rounded-2xl bg-card border border-border/80 shadow-xs">
+      <div className="flex flex-wrap items-center gap-2.5 p-3.5 rounded-2xl bg-card border border-border shadow-xs">
         <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
         </span>
         <Link
           href={withLocale('/dashboard/tutor/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
         >
-          <Inbox className="w-3.5 h-3.5 text-blue-600" />
+          <Inbox className="w-3.5 h-3.5 text-info" />
           <span>{isBn ? 'টিউশন অনুরোধসমূহ' : 'Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
         >
-          <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+          <Calendar className="w-3.5 h-3.5 text-success" />
           <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
         >
-          <BookOpen className="w-3.5 h-3.5 text-amber-600" />
+          <BookOpen className="w-3.5 h-3.5 text-warning" />
           <span>{isBn ? 'স্টাডি রুম ও টিচিং' : 'Teaching Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/verification', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
         >
           <ShieldCheck className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'সনদ ও ভেরিফিকেশন' : 'Verification'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors sm:ml-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors sm:ml-auto"
         >
           <CreditCard className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'আয় ও উত্তোলন' : 'Earnings'}</span>
@@ -366,8 +366,8 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Performance & Analytics Details Card */}
-          <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs">
-            <div className="flex items-center justify-between pb-3 border-b border-border/60">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs">
+            <div className="flex items-center justify-between pb-3 border-b border-border">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-primary" />
                 <h3 className="text-base font-bold text-foreground">

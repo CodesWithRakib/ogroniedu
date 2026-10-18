@@ -40,7 +40,7 @@ export function PaymentCheckoutView({
   if (!order) {
     return (
       <div className="space-y-6 max-w-5xl mx-auto py-2" data-testid="payment-empty-state">
-        <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center text-foreground shadow-2xs">
+        <div className="rounded-2xl border border-border bg-card p-6 sm:p-8 text-center text-foreground">
           <div className="w-12 h-12 rounded-2xl bg-primary/10 text-primary flex items-center justify-center mx-auto mb-3">
             <ShieldCheck className="w-6 h-6" />
           </div>

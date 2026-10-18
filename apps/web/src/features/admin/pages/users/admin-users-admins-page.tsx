@@ -89,7 +89,6 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
   return (
     <AdminLayout
       locale={locale}
-      title={isBn ? 'অ্যাডমিন ও স্টাফ ম্যানেজমেন্ট' : 'Admin Management'}
     >
       <div className="space-y-6 py-6" data-testid="admin-users-admins-page">
         {/* Back Link to Hub (Matching Image 2: "← Back to Users & Staff") */}
@@ -137,7 +136,7 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
                 setSearch(e.target.value);
                 setPage(1);
               }}
-              className="w-full pl-10 pr-4 py-2 rounded-xl bg-card border border-border/80 text-foreground text-xs placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary shadow-2xs"
+              className="w-full pl-10 pr-4 py-2 rounded-xl bg-card border border-border text-foreground text-xs placeholder:text-muted-foreground focus-visible:outline-none focus:ring-1 focus-visible:ring-primary"
             />
           </div>
 
@@ -163,10 +162,10 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Table Card (Image 2 Replica) */}
-        <div className="bg-card border border-border/80 rounded-2xl overflow-hidden shadow-2xs">
+        <div className="bg-card border border-border rounded-2xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground">
-              <thead className="bg-muted/40 uppercase tracking-wider text-[10px] font-bold text-muted-foreground border-b border-border/60">
+              <thead className="bg-muted/40 uppercase tracking-wider text-[10px] font-bold text-muted-foreground border-b border-border">
                 <tr>
                   <th scope="col" className="px-5 py-3.5">
                     {isBn ? 'নাম' : 'NAME'}
@@ -317,7 +316,7 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Pagination Footer (Matching Image 2) */}
-          <div className="flex flex-col sm:flex-row items-center justify-between px-5 py-3 border-t border-border/60 text-xs text-muted-foreground gap-3">
+          <div className="flex flex-col sm:flex-row items-center justify-between px-5 py-3 border-t border-border text-xs text-muted-foreground gap-3">
             <div className="flex items-center gap-2">
               <span>{isBn ? 'প্রতি পাতায় সারি:' : 'Rows per page:'}</span>
               <span className="font-semibold text-foreground font-mono">{rowsPerPage}</span>

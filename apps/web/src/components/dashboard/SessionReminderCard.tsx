@@ -30,7 +30,7 @@ export function SessionReminderCard({
   const time = timeRange ?? (isBn ? 'আজ বিকাল ০৪:০০ - ০৫:৩০' : 'Today 04:00 PM - 05:30 PM');
 
   return (
-    <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between select-none">
+    <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between select-none">
       {/* Header */}
       <div>
         <div className="flex items-center justify-between pb-3">
@@ -49,7 +49,7 @@ export function SessionReminderCard({
         <p className="text-xs text-muted-foreground mt-1 font-medium">{tutor}</p>
 
         {/* Time metadata pill */}
-        <div className="mt-3.5 inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface border border-border/80 text-xs font-semibold text-foreground">
+        <div className="mt-3.5 inline-flex items-center gap-2 px-3 py-1.5 rounded-xl bg-surface border border-border text-xs font-semibold text-foreground">
           <Clock className="h-3.5 w-3.5 text-primary shrink-0" />
           <span>{time}</span>
         </div>
@@ -62,7 +62,7 @@ export function SessionReminderCard({
             href={roomUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs sm:text-sm py-3 px-4 shadow-md shadow-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs sm:text-sm py-3 px-4 shadow-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
           >
             <Video className="h-4 w-4" />
             <span>{isBn ? 'লাইভ ক্লাসে যোগ দিন' : 'Start / Join Meeting'}</span>
@@ -70,7 +70,7 @@ export function SessionReminderCard({
         ) : (
           <Link
             href={withLocale('/sessions', locale)}
-            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs sm:text-sm py-3 px-4 shadow-md shadow-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs sm:text-sm py-3 px-4 shadow-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
           >
             <Calendar className="h-4 w-4" />
             <span>{isBn ? 'ক্লাস শিডিউল দেখুন' : 'View Session Schedule'}</span>

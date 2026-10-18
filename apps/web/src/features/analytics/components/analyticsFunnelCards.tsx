@@ -10,7 +10,7 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
       <div
-        className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xs"
+        className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs"
         data-testid="conversion-funnel-card"
       >
         <h3 className="text-base font-bold text-foreground">{t('conversionFunnelTitle')}</h3>
@@ -40,7 +40,7 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
             </div>
           </div>
 
-          <div className="flex justify-between text-xs text-muted-foreground pt-2 border-t border-border/60">
+          <div className="flex justify-between text-xs text-muted-foreground pt-2 border-t border-border">
             <span>
               {t('cancelledRequests')}: {data.conversion.cancelledRequests}
             </span>
@@ -50,12 +50,12 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
       </div>
 
       <div
-        className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xs"
+        className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs"
         data-testid="session-reliability-card"
       >
         <h3 className="text-base font-bold text-foreground">{t('sessionReliabilityTitle')}</h3>
         <div className="grid grid-cols-3 gap-3 text-center">
-          <div className="bg-surface/75 p-3.5 rounded-2xl border border-border/70 shadow-2xs">
+          <div className="bg-surface/75 p-3.5 rounded-2xl border border-border">
             <p className="text-xs text-muted-foreground font-medium">{t('completedSessions')}</p>
             <p className="text-xl font-bold text-primary  mt-1 font-sans">
               {data.sessions.completedSessions}
@@ -64,7 +64,7 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
               {data.sessions.completionRate}% of total
             </span>
           </div>
-          <div className="bg-surface/75 p-3.5 rounded-2xl border border-border/70 shadow-2xs">
+          <div className="bg-surface/75 p-3.5 rounded-2xl border border-border">
             <p className="text-xs text-muted-foreground font-medium">{t('noShowRate')}</p>
             <p className="text-xl font-bold text-warning mt-1 font-sans">
               {data.sessions.noShowRate}%
@@ -73,7 +73,7 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
               {data.sessions.noShowSessions} instances
             </span>
           </div>
-          <div className="bg-surface/75 p-3.5 rounded-2xl border border-border/70 shadow-2xs">
+          <div className="bg-surface/75 p-3.5 rounded-2xl border border-border">
             <p className="text-xs text-muted-foreground font-medium">
               {t('sessionCancellationRate')}
             </p>

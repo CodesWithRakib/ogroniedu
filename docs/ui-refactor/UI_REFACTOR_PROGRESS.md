@@ -1,20 +1,20 @@
 # OgroniEdu — UI Refactor Progress & Route Acceptance Tracker
 
-**Date:** 2026-10-17  
+**Date:** 2026-10-18 (continuation pass)  
 **Overall Status:** IN_PROGRESS
 
 ---
 
 ## 1. Stage Progress Overview
 
-|    Stage    | Description                      |    Status    | Evidence / Notes                                                                                                                                     |
-| :---------: | :------------------------------- | :----------: | :--------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Stage A** | Audit & Defect Inventory         | **VERIFIED** | Comprehensive browser inspection, visual screenshot capture, defect matrix in `UI_AUDIT.md`.                                                         |
-| **Stage B** | Design-System Correction         | **VERIFIED** | Normalized tokens in `globals.css`, eliminated heavy drop shadows, standardized radius (6px, 8px, 12px, 16px) and WCAG 2.2 AA semantic colors.       |
-| **Stage C** | Shared Component Modernization   | **VERIFIED** | Refactored `Button` (with Radix `Slottable` `asChild`), `Card`, `Badge`, `Input`, `FormField`, `StatCard`, `StatusBadge`, `DataTable`, `EmptyState`. |
-| **Stage D** | Global Layouts & Shells          | **VERIFIED** | Modernized `Navbar`, `Footer`, `DashboardSidebar`, `DashboardTopbar`, `DashboardShell`, `AuthShell`.                                                 |
-| **Stage E** | Full Route Refactoring           | **VERIFIED** | Refactored key core workflows across public marketing, authentication, student, tutor, guardian, and admin portals.                                  |
-| **Stage F** | Quality Assurance & Verification | **VERIFIED** | Vitest test suite (179 passing across 30 files), 0 typecheck errors, automated browser visual QA recordings and screenshots.                         |
+|    Stage    | Description                      |     Status     | Evidence / Notes                                                                                                                                                                                                                        |
+| :---------: | :------------------------------- | :------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **Stage A** | Audit & Defect Inventory         | **VERIFIED**   | 2026-10-18: rendered-UI audit executed with Playwright harness (66 desktop/mobile screenshots across 4 authenticated roles + public). Defect inventory in `UI_AUDIT.md` §Continuation.                                                   |
+| **Stage B** | Design-System Correction         | **VERIFIED**   | 2026-10-18: 160 raw-palette classes → semantic tokens, 18 `dark:` remnants stripped, `shadow-2xs`/`shadow-inner` removed, 379 border-opacity variants simplified, 127 radii unified, `--star` token added. See `DESIGN_RULES.md` §Enforced. |
+| **Stage C** | Shared Component Modernization   | **VERIFIED**   | `Card`, `Button`, `Badge`, `Input`, `Textarea`, `Select` re-tuned this pass; `HeroKpiCard`, `WeeklyActivityChart`, audit table, notification toasts fixed. See `COMPONENT_AUDIT.md` §Continuation.                                       |
+| **Stage D** | Global Layouts & Shells          | **VERIFIED**   | Duplicate shell-title + page-H1 defect resolved: shell title removed from 18 admin pages (single H1 per page). Hub-card pattern standardized (neutral tiles + one functional accent).                                                   |
+| **Stage E** | Full Route Refactoring           | **IN_PROGRESS** | Focused route set re-verified post-fix with new screenshots + full credentialed E2E (47/47). Remaining routes carry pre-fix screenshots only — full 64-route post-fix visual sweep outstanding.                                          |
+| **Stage F** | Quality Assurance & Verification | **IN_PROGRESS** | All automated gates green (typecheck/lint/tests/build/E2E 47/47). Full-route post-fix visual matrix + tablet breakpoint re-check outstanding.                                                                                             |
 
 ---
 
@@ -116,3 +116,50 @@
 | `/[locale]/bookings/[id]/pay`                        | Escrow Payment Checkout        | IN_PROGRESS | Clean payment method selector (bKash/Nagad/Cards), escrow explanation |
 | `/[locale]/notifications`                            | Notification Center            | IN_PROGRESS | Filter tabs (all/unread/alerts), clean notification items             |
 | `/[locale]/(admin)/analytics`                        | Admin Analytics Portal         | IN_PROGRESS | Clean charts, metric cards                                            |
+
+---
+
+## 3. Continuation Log — 2026-10-18 (rendered-UI correction pass)
+
+### 3.1 Driven by rendered evidence
+
+A Playwright harness captured ~66 desktop + mobile screenshots across the public site and all four seeded demo roles. Defects triaged directly from the images: rainbow hub tiles/chips, duplicated headings (shell title + page H1), mint KPI pill footers, hatched chart bars, centered audit columns with empty timestamps, nested card-on-card containers, oversized mobile KPI cards.
+
+### 3.2 Systemic sweeps (applied to `apps/web/src`, counts from codemod logs)
+
+| Sweep                                          | Count          | Notes                                                                                                                    |
+| :--------------------------------------------- | :------------: | :----------------------------------------------------------------------------------------------------------------------- |
+| Raw palette classes → semantic tokens           | 160            | emerald/green→success, amber/orange→warning, blue/cyan→info, purple/indigo→interactive, rose→destructive; bKash pink kept |
+| `dark:` variant remnants stripped               | 18             | Light-theme-only mandate                                                                                                 |
+| `shadow-2xs` / `shadow-inner` removed           | 62 + 5         | Noise elevation                                                                                                          |
+| Heavy card elevation removed (`shadow-md/lg/xl`) | 45             | Card surfaces only; modal/popover/drawer shadows kept                                                                    |
+| `border-border/<opacity>` → `border-border`     | 379            | One border weight everywhere                                                                                             |
+| `rounded-3xl` → `rounded-2xl`                   | 127            | Radius hierarchy (controls `rounded-xl`, cards `rounded-2xl`)                                                            |
+| Ad-hoc `focus:ring-*` → standard focus-visible  | 33             | `focus-visible:ring-2 ring-ring/35`                                                                                      |
+| Success-chip mismatch pairs normalized          | 31 lines / 20 files | Mint background + green text combinations                                                                          |
+| New token                                       | 1              | `--star` (`#d97706`) for rating stars only                                                                               |
+
+### 3.3 Page-level fixes delivered this pass
+
+- **Admin hubs** (`admin-users-hub-page`, `admin-settings-hub-page`): rainbow icon tiles/chips replaced with neutral-first tiles + exactly one functional accent (KYC = warning).
+- **18 admin pages**: duplicate shell-title heading removed — each page now renders a single H1 (taxonomy keeps the shell header by design).
+- **Dashboards**: student dashboard (KPI pill corners, bordered quick-link pills with multicolor icons), tutor dashboard/earnings (token mismatches, green-on-mint chips, payout method states), payments + profile chip tokens.
+- **Audit logs**: real formatted timestamps, single-surface table (un-nested), left-aligned columns, semantic count badge.
+- **Charts**: `WeeklyActivityChart` hatched/striped bars → solid-primary peak bar + soft neutral pills.
+- **Home hero**: ambient mint blobs softened; rating stars tokenized.
+
+### 3.4 Backend fix (required for correct UI data)
+
+`apps/api` `redactSensitiveData` flattened any `Date` into `{}`, so admin audit-log `createdAt` (and other timestamped fields) rendered empty. Fixed with built-in type guards (Date/Map/Set/RegExp preserved); verified live against the running API.
+
+### 3.5 Verification status after this pass
+
+- Re-verified visually (new screenshots): `/bn`, `/bn/tutors`, `/bn/login`, `/bn/dashboard/student`, `/bn/dashboard/student/payments`, `/bn/profile`, `/bn/dashboard/tutor`, `/bn/dashboard/admin`, `/bn/dashboard/admin/users` (desktop + mobile), `/bn/dashboard/admin/settings`, `/bn/dashboard/admin/audit-logs`.
+- Automated gates all green (see `UI_QA_RESULTS.md` §6), including full credentialed E2E **47/47**.
+
+### 3.6 Remaining (not yet verified this pass)
+
+- Post-fix screenshots for the remaining routes (full 64-route matrix) — currently pre-fix baseline only.
+- A few admin filter controls remain raw `<select>` (styled to match the system).
+- English microcopy on Bengali admin chips (i18n content debt, e.g. “Pending Dossiers”).
+- bKash pink is the only intentionally retained non-semantic color (payment-provider brand).

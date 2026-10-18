@@ -14,7 +14,7 @@ export function AdminReconciliationTab({
 
   return (
     <div className="space-y-6" data-testid="reconciliation-tab-content">
-      <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xs">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs">
         <div className="flex items-center justify-between">
           <div>
             <h3 className="text-lg font-bold text-foreground">{t('reconciliationTitle')}</h3>
@@ -35,7 +35,7 @@ export function AdminReconciliationTab({
           {reconciliation.accounts.map((acc) => (
             <div
               key={acc.code}
-              className="bg-surface/75 border border-border/70 p-4 rounded-2xl flex justify-between items-center shadow-2xs"
+              className="bg-surface/75 border border-border p-4 rounded-2xl flex justify-between items-center"
             >
               <div>
                 <span className="text-xs font-mono text-muted-foreground">{acc.code}</span>

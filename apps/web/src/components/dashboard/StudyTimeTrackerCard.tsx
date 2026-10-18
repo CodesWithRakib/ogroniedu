@@ -35,7 +35,7 @@ export function StudyTimeTrackerCard({ locale, title, subtitle }: StudyTimeTrack
   const secs = String(seconds % 60).padStart(2, '0');
 
   return (
-    <div className="relative rounded-3xl p-5 sm:p-6 shadow-md overflow-hidden bg-card border border-brand/25 text-foreground flex flex-col justify-between select-none">
+    <div className="relative rounded-2xl p-5 sm:p-6 overflow-hidden bg-card border border-brand/25 text-foreground flex flex-col justify-between select-none">
       {/* Abstract undulating mesh wave background pattern (Donezo visual style) */}
       <div className="absolute inset-0 opacity-20 pointer-events-none">
         <svg viewBox="0 0 200 200" className="w-full h-full object-cover">
@@ -94,7 +94,7 @@ export function StudyTimeTrackerCard({ locale, title, subtitle }: StudyTimeTrack
             setIsRunning(false);
             setSeconds(0);
           }}
-          className="h-10 w-10 rounded-full bg-destructive/80 hover:bg-destructive/90 text-white flex items-center justify-center shadow-md hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+          className="h-10 w-10 rounded-full bg-destructive/80 hover:bg-destructive/90 text-white flex items-center justify-center hover:scale-105 active:scale-95 transition-transform cursor-pointer"
           aria-label="Reset timer"
           title="Reset"
         >

@@ -45,7 +45,7 @@ export function TutorCard({
 
   return (
     <div
-      className="group relative flex flex-col justify-between rounded-2xl bg-card border border-border/80 hover:border-primary/40 shadow-xs hover:shadow-card transition-all duration-300 overflow-hidden"
+      className="group relative flex flex-col justify-between rounded-2xl bg-card border border-border hover:border-primary/40 shadow-xs hover:shadow-card transition-all duration-300 overflow-hidden"
       data-testid={`tutor-card-${tutor.id}`}
     >
       {/* Subtle Glowing Top Edge */}
@@ -96,7 +96,7 @@ export function TutorCard({
             variant="outline"
             size="sm"
             onClick={() => onShowScore(tutor)}
-            className="rounded-full text-xs font-semibold bg-primary-soft text-primary border-border/80 hover:border-primary/40 h-7 px-2.5 gap-1 shadow-2xs shrink-0"
+            className="rounded-full text-xs font-semibold bg-primary-soft text-primary border-border hover:border-primary/40 h-7 px-2.5 gap-1 shrink-0"
             title={
               locale === 'bn'
                 ? 'ম্যাচ স্কোরের ব্যাখ্যা দেখুন'
@@ -137,7 +137,7 @@ export function TutorCard({
         )}
 
         {/* Teaching Subjects Box */}
-        <div className="space-y-1.5 bg-muted/20 p-3 rounded-xl border border-border/60">
+        <div className="space-y-1.5 bg-muted/20 p-3 rounded-xl border border-border">
           <span className="text-[10px] font-bold text-muted-foreground block uppercase tracking-wider">
             {dict.tutor?.subjectsTitle || 'Teaching Subjects'}:
           </span>
@@ -145,7 +145,7 @@ export function TutorCard({
             {tutor.subjects.slice(0, 3).map((sub) => (
               <span
                 key={sub.id}
-                className="bg-card px-2.5 py-0.5 rounded-md border border-border/80 text-foreground text-[11px] font-medium shadow-xs"
+                className="bg-card px-2.5 py-0.5 rounded-md border border-border text-foreground text-[11px] font-medium shadow-xs"
               >
                 {locale === 'bn' ? sub.subjectNameBn : sub.subjectNameEn}
               </span>
@@ -195,7 +195,7 @@ export function TutorCard({
       </div>
 
       {/* Card Footer: Hourly Rate & Booking CTA */}
-      <div className="p-4 sm:p-5 pt-3.5 border-t border-border/70 bg-muted/10 flex items-center justify-between gap-3">
+      <div className="p-4 sm:p-5 pt-3.5 border-t border-border bg-muted/10 flex items-center justify-between gap-3">
         <div>
           {hourlyRate ? (
             <div className="flex flex-col">
@@ -218,7 +218,7 @@ export function TutorCard({
         <div className="flex items-center gap-2 shrink-0">
           <Link
             href={`/${locale}/tutors/${tutor.id}`}
-            className="inline-flex items-center justify-center gap-1 rounded-xl bg-card hover:bg-muted/50 border border-border/80 text-foreground hover:text-primary font-semibold text-xs px-3 py-2 transition-colors"
+            className="inline-flex items-center justify-center gap-1 rounded-xl bg-card hover:bg-muted/50 border border-border text-foreground hover:text-primary font-semibold text-xs px-3 py-2 transition-colors"
             title={
               locale === 'bn'
                 ? 'সম্পূর্ণ প্রোফাইল ও যোগ্যতা দেখুন'

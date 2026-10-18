@@ -85,3 +85,40 @@ While a light theme conversion was executed previously (removing dark mode token
 
 5. **Role & Feature Page Refactoring:**
    - Refactor Public, Auth, Student, Tutor, Guardian, Admin, Bookings, Payments, Classroom, and Settings pages.
+
+---
+
+## Continuation Audit — 2026-10-18 (rendered-UI evidence pass)
+
+The earlier audit was code-reading based; this pass audited the **actual rendered UI** with a Playwright harness that logs into the seeded demo accounts (student / tutor / guardian / admin) and captures desktop + mobile screenshots (~66 images). Defects below were triaged from the images.
+
+### D-1: Defect inventory from rendered screenshots
+
+| #   | Defect observed in rendered UI                                                                                         | Status   | Resolution / Reference                                                                                        |
+| --- | :--------------------------------------------------------------------------------------------------------------------- | :------- | :------------------------------------------------------------------------------------------------------------ |
+| A-1 | Admin hub cards (users/settings) rendered a rainbow of accent-toned icon tiles and chips                               | **FIXED** | Neutral-first tiles; single functional accent (KYC = warning). `admin-users-hub-page.tsx`, `admin-settings-hub-page.tsx` |
+| A-2 | Duplicated page heading: shell header title + page `<h1>` rendered twice on 18 admin pages                             | **FIXED** | `RoleLayout`/`AdminLayout` `title` made optional; redundant prop removed from 18 pages (taxonomy keeps shell header by design) |
+| A-3 | Mint-background + green-text chip mismatches (unreadable/low-coherence pairs) across 20 files                          | **FIXED** | 31 lines normalized to coherent `success-soft` trios                                                          |
+| A-4 | KPI card footers repeated mint pills on every card ("one color everywhere" resurfacing)                                | **FIXED** | `HeroKpiCard` re-tuned: neutral tile, plain trend pill                                                        |
+| A-5 | `WeeklyActivityChart` rendered hatched/striped bars that read as noise                                                 | **FIXED** | Soft neutral pills + one solid primary bar for the peak day                                                   |
+| A-6 | Admin audit-log table: empty timestamp column, centered columns, card nested inside another card                       | **FIXED** | Formatted `createdAt` via `formatDateTime`, left-aligned, single surface; **required API fix** for Date serialization (see below) |
+| A-7 | Rating stars used amber-500 with no dedicated token; inconsistent with warning semantics                               | **FIXED** | New `--star: #d97706` token (3.05:1 non-text contrast) used only for ratings                                  |
+| A-8 | Home hero ambient blobs at full mint saturation, competing with hero content                                           | **FIXED** | Blobs softened (`bg-brand-soft/70`, `bg-primary/5`)                                                           |
+| A-9 | Tutor earnings payout selector mixed raw palette colors (green/blue/amber) with brand pink                             | **FIXED** | bKash pink retained (provider brand); Nagad → warning-soft; Bank → info-soft; escrow pill → primary-soft       |
+| A-10 | Login card carried a heavy drop shadow inconsistent with the flat system                                               | **FIXED** | Shadow removed; shared `Input` already in use                                                                  |
+| A-11 | Remaining `shadow-2xs`/`shadow-inner`/heavy card elevations systemwide                                                 | **FIXED** | 62 + 5 noise elevations removed; 45 heavy card shadows removed in 21 files (modal/popover shadows kept)        |
+| A-12 | `border-border/<opacity>` variants (5 different border weights)                                                        | **FIXED** | 379 occurrences normalized to `border-border`                                                                  |
+| A-13 | `rounded-3xl` overshoot on cards vs `rounded-xl` controls (inconsistent radius ladder)                                 | **FIXED** | 127 occurrences unified to `rounded-2xl` for cards                                                             |
+| A-14 | Ad-hoc `focus:` rings (ring offset colors, inconsistent widths)                                                        | **FIXED** | 33 occurrences → `focus-visible:ring-2 ring-ring/35`                                                           |
+| A-15 | `dark:` variant remnants still compiled in 18 places                                                                   | **FIXED** | Stripped; light-only mandate enforced                                                                          |
+| A-16 | 160 raw Tailwind palette classes (emerald/amber/blue/purple/rose) bypassing semantic tokens                            | **FIXED** | Mapped to success/warning/info/interactive/destructive semantically                                                           |
+| A-17 | Admin verification queue filters use raw `<select>` styled inline                                                      | **PARTIAL** | Visual OK; still not migrated to the `Select` primitive (tracked for docs/report)                              |
+| A-18 | English microcopy mixed into Bengali admin KPI hints (e.g. "Pending Dossiers")                                         | **OPEN** | i18n content debt — functionality unaffected                                                                   |
+| A-19 | Mobile bottom-nav labels truncate with ellipsis                                                                        | **OPEN** | Cosmetic; acceptable at 360px but noted                                                                        |
+| A-20 | Some admin overview hub cards still carry per-card semantic accent tones (brand-family)                                | **OPEN** | Much calmer than the original rainbow; deliberate nuance acceptable for now                                    |
+
+### D-2: Backend defect surfaced by the UI audit (fixed)
+
+- **Symptom:** admin audit-log `createdAt` rendered as an empty cell; API returned `"createdAt": {}`.
+- **Root cause:** `apps/api/src/modules/admin/utils/redact.util.ts` — `redactSensitiveData` recursed over `Date` instances via `Object.entries`, producing `{}`.
+- **Fix:** preserve `Date`/`Map`/`Set`/`RegExp` built-ins before recursion. Verified live against the running API (real ISO timestamps now returned and rendered).

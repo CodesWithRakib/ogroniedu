@@ -30,10 +30,10 @@ export function SidebarPromoCard({
   const btnLabel = actionLabel ?? (isBn ? 'ডাউনলোড' : 'Download');
 
   return (
-    <div className="relative rounded-xl p-3.5 bg-surface/75 border border-border/80 text-foreground select-none">
+    <div className="relative rounded-xl p-3.5 bg-surface border border-border text-foreground select-none">
       {/* Mini Icon */}
       <div className="flex items-center gap-2 mb-2">
-        <div className="h-6 w-6 rounded-lg bg-primary-soft text-primary border border-primary/20 flex items-center justify-center">
+        <div className="h-6 w-6 rounded-lg bg-primary-soft text-primary flex items-center justify-center">
           <Smartphone className="h-3.5 w-3.5" />
         </div>
         <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground">

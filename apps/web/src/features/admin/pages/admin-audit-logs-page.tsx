@@ -16,7 +16,7 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
   const totalLogs = admin.logs.length;
 
   return (
-    <AdminLayout locale={locale} title={locale === 'bn' ? 'অডিট লগ' : 'Audit Logs'}>
+    <AdminLayout locale={locale}>
       {admin.loading && !admin.logs.length ? (
         <div className="py-12 flex justify-center">
           <LoadingSpinner />
@@ -24,7 +24,7 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
       ) : (
         <div className="space-y-6 py-6" data-testid="admin-audit-logs-page">
           {/* Page Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
@@ -32,7 +32,7 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
                     ? 'প্ল্যাটফর্ম সিকিউরিটি ও অডিট লগ'
                     : 'Platform Security & Audit Trail'}
                 </h1>
-                <span className="px-3 py-1 text-xs font-bold rounded-full bg-interactive/15 text-info-soft-foreground border border-info/40">
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-info-soft text-info-soft-foreground">
                   {totalLogs} {locale === 'bn' ? 'ইভেন্ট রেকর্ড' : 'Events'}
                 </span>
               </div>
@@ -45,7 +45,7 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Security & Sanitization Card */}
-          <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-3">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-3">
             <h3 className="text-base font-bold text-foreground flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-success-soft-foreground" />
               <span>{t('auditTrailTitle')}</span>
@@ -77,8 +77,8 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Audit Logs Table Card */}
-          <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4">
-            <AdminAuditLogsTab auditLogs={admin.logs} />
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
+            <AdminAuditLogsTab auditLogs={admin.logs} locale={locale} />
           </div>
         </div>
       )}

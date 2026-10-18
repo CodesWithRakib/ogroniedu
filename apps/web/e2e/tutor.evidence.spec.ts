@@ -51,6 +51,10 @@ test.describe('evidence upload + session revocation', () => {
 
     await page.goto('/bn/profile');
     await expect(page.getByTestId('profile-form')).toBeVisible({ timeout: 20_000 });
+    // Security controls live on a dedicated tab since the profile page refactor.
+    await page
+      .getByRole('button', { name: /সেশন ও নিরাপত্তা|Security & Sessions/ })
+      .click();
     await page.getByTestId('revoke-all-btn').click();
     await page.getByTestId('revoke-all-confirm-btn').click();
     // Immediate local logout + redirect with confirmation notice on login.

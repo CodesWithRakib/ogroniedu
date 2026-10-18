@@ -13,7 +13,7 @@ export function AdminFeatureFlagsTab({
 }) {
   return (
     <div className="space-y-4" data-testid="feature-flags-tab-content">
-      <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xs">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs">
         <h3 className="text-base font-bold text-foreground">Feature Flags &amp; Canary Toggles</h3>
         <div className="divide-y divide-border/60">
           {featureFlags.map((flag) => (
@@ -31,7 +31,7 @@ export function AdminFeatureFlagsTab({
               <button
                 disabled={!isSuperAdmin}
                 onClick={() => onToggle(flag.key, !flag.enabled)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition shadow-2xs ${
+                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
                   flag.enabled
                     ? 'bg-primary hover:bg-primary-hover text-white'
                     : 'bg-surface hover:bg-surface-hover text-muted-foreground border border-border'

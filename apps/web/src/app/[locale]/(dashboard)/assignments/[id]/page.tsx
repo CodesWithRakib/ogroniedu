@@ -226,7 +226,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
       </div>
 
       {/* Main Assignment Banner */}
-      <div className="rounded-3xl bg-card border border-primary/40 p-8 text-foreground shadow-sm space-y-4">
+      <div className="rounded-2xl bg-card border border-primary/40 p-8 text-foreground shadow-sm space-y-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-xs font-medium text-primary-soft-foreground">
@@ -237,7 +237,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
               <Badge
                 className={
                   submission.status === 'reviewed'
-                    ? 'bg-primary/20 text-success-soft-foreground border border-primary/40'
+                    ? 'bg-success-soft text-success-soft-foreground border border-success/30'
                     : submission.status === 'late'
                       ? 'bg-warning/20 text-warning-soft-foreground border border-warning/40'
                       : 'bg-interactive/20 text-info-soft-foreground border border-interactive/40'
@@ -282,7 +282,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
 
       {/* Instructions Card */}
       {assignment.instructions && (
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-md">
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6">
           <CardHeader className="p-0 pb-3 flex flex-row items-center gap-2 text-muted-foreground font-semibold text-sm">
             <FileText className="w-4 h-4 text-primary-soft-foreground" />
             <span>{locale === 'bn' ? 'নির্দেশাবলী ও প্রশ্নসমূহ' : 'Instructions & Details'}</span>
@@ -296,7 +296,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
       {/* Submission & Grading Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Student Submission Card */}
-        <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm space-y-4">
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-sm space-y-4">
           <CardHeader className="p-0 pb-2">
             <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
               <Send className="w-4 h-4 text-success-soft-foreground" />
@@ -395,7 +395,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
         </Card>
 
         {/* Evaluation / Feedback Card */}
-        <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm space-y-4">
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-sm space-y-4">
           <CardHeader className="p-0 pb-2">
             <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
               <Award className="w-4 h-4 text-warning-soft-foreground" />

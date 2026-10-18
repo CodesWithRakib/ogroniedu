@@ -184,7 +184,7 @@ function AssignmentSubmissionsPage({
       </div>
 
       {/* Header */}
-      <div className="rounded-3xl bg-card border border-info/40 p-8 text-foreground shadow-sm space-y-2">
+      <div className="rounded-2xl bg-card border border-info/40 p-8 text-foreground shadow-sm space-y-2">
         <div className="flex items-center gap-2 text-info-soft-foreground text-xs font-bold uppercase tracking-wider">
           <BookOpen className="w-4 h-4" />
           <span>{locale === 'bn' ? 'জমা দেওয়া খাতা মূল্যায়ন' : 'Submission Evaluation'}</span>
@@ -199,7 +199,7 @@ function AssignmentSubmissionsPage({
       </div>
 
       {!submission ? (
-        <Card className="bg-card border border-border p-8 text-center text-muted-foreground rounded-3xl">
+        <Card className="bg-card border border-border p-8 text-center text-muted-foreground rounded-2xl">
           <Clock className="w-10 h-10 mx-auto mb-2 text-muted-foreground" />
           <p className="text-sm">
             {locale === 'bn'
@@ -210,7 +210,7 @@ function AssignmentSubmissionsPage({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Submission Work */}
-          <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm space-y-4">
+          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-sm space-y-4">
             <CardHeader className="p-0 pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
@@ -220,7 +220,7 @@ function AssignmentSubmissionsPage({
                 <Badge
                   className={
                     submission.status === 'reviewed'
-                      ? 'bg-primary/20 text-success-soft-foreground border border-primary/40'
+                      ? 'bg-success-soft text-success-soft-foreground border border-success/30'
                       : submission.status === 'late'
                         ? 'bg-warning/20 text-warning-soft-foreground border border-warning/40'
                         : 'bg-interactive/20 text-info-soft-foreground border border-interactive/40'
@@ -245,7 +245,7 @@ function AssignmentSubmissionsPage({
           </Card>
 
           {/* Grading Form */}
-          <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm space-y-4">
+          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-sm space-y-4">
             <CardHeader className="p-0 pb-2">
               <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
                 <Award className="w-4 h-4 text-success-soft-foreground" />

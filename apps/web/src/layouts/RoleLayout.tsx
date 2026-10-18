@@ -21,7 +21,7 @@ export function RoleLayout({
 }: {
   locale: Locale;
   allow: UserRole[];
-  title: string;
+  title?: string;
   subtitle?: string;
   actions?: React.ReactNode;
   children: React.ReactNode;

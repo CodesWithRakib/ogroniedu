@@ -158,7 +158,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
         <div className="space-y-6">
           {/* Status hero */}
           <div
-            className={`rounded-3xl p-6 sm:p-8 text-foreground shadow-xl relative overflow-hidden ${
+            className={`rounded-2xl p-6 sm:p-8 text-foreground relative overflow-hidden ${
               isApproved
                 ? 'bg-card border border-brand/25 '
                 : isUnderReview
@@ -195,7 +195,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
                   </span>
 
                   {publicationStatus === 'published' ? (
-                    <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-primary/20 text-success-soft-foreground border border-primary/40 font-medium">
+                    <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-success-soft text-success-soft-foreground border border-success/30 font-medium">
                       <span className="w-2 h-2 rounded-full bg-brand animate-pulse" />
                       {isBn ? 'প্রোফাইল লাইভ' : 'Profile Live'}
                     </span>
@@ -265,8 +265,8 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Three-level dossier */}
-          <Card className="rounded-3xl border-border/70 shadow-xs">
-            <CardHeader className="pb-3 border-b border-border/60">
+          <Card className="rounded-2xl border-border shadow-xs">
+            <CardHeader className="pb-3 border-b border-border">
               <CardTitle className="text-base font-bold flex items-center gap-2">
                 <ShieldCheck className="w-4 h-4 text-primary" />
                 {isBn ? 'তিন-স্তরের যাচাই ডসিয়ার' : 'Three-Level Verification Dossier'}

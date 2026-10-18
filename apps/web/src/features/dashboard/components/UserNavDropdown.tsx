@@ -49,7 +49,7 @@ const ROLE_LABELS: Record<string, { bn: string; en: string; color: string }> = {
   guardian: {
     bn: 'অভিভাবক',
     en: 'Guardian',
-    color: 'bg-primary/15 text-success-soft-foreground border-primary/40',
+    color: 'bg-success-soft text-success-soft-foreground border-success/30',
   },
   admin: {
     bn: 'অ্যাডমিন',

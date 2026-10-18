@@ -79,7 +79,7 @@ export function EmergencySosModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in">
       <div
-        className="w-full max-w-xl bg-surface-muted border border-destructive/40 rounded-3xl p-6 md:p-8 shadow-sm space-y-6 text-foreground max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-xl bg-surface-muted border border-destructive/40 rounded-2xl p-6 md:p-8 shadow-sm space-y-6 text-foreground max-h-[90vh] overflow-y-auto"
         data-testid="emergency-sos-modal"
       >
         {/* Header */}

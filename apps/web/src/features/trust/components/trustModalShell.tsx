@@ -40,7 +40,7 @@ export function TrustModalShell({
         className="w-full p-6 rounded-2xl bg-card border-border shadow-2xl space-y-4 max-h-[90vh] overflow-y-auto"
         aria-label={closeLabel}
       >
-        <DialogHeader className="border-b border-border/70 pb-3 text-left space-y-1">
+        <DialogHeader className="border-b border-border pb-3 text-left space-y-1">
           <div className="flex items-center gap-2">
             <span className="text-xl">{icon}</span>
             <DialogTitle className="text-lg font-bold text-foreground">{title}</DialogTitle>

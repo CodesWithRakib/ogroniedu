@@ -85,7 +85,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
       }
     >
       {/* 1. 48-HOUR SLA HERO BANNER */}
-      <div className="p-5 rounded-3xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-background flex flex-col md:flex-row md:items-center justify-between gap-4">
+      <div className="p-5 rounded-2xl border border-primary/30 bg-gradient-to-br from-primary/10 via-card to-background flex flex-col md:flex-row md:items-center justify-between gap-4">
         <div className="flex items-start gap-4">
           <div className="h-14 w-14 rounded-2xl bg-primary/20 border border-primary/30 text-primary flex items-center justify-center shrink-0">
             <RefreshCw className="w-7 h-7" />
@@ -111,7 +111,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-primary/10 border border-primary/40 text-success-soft-foreground  font-bold text-xs shrink-0">
+        <div className="flex items-center gap-2 px-4 py-3 rounded-2xl bg-success-soft border border-success/30 text-success-soft-foreground  font-bold text-xs shrink-0">
           <Clock className="w-4 h-4" />
           <span>{isBn ? '৪৮ ঘণ্টা কঠোর SLA ট্র্যাকিং' : 'Strict 48-Hour SLA Active'}</span>
         </div>
@@ -132,7 +132,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
             {isBn ? 'লোড হচ্ছে...' : 'Loading replacement cases...'}
           </div>
         ) : cases.length === 0 ? (
-          <Card className="py-16 text-center rounded-3xl">
+          <Card className="py-16 text-center rounded-2xl">
             <CardContent className="space-y-3">
               <ShieldCheck className="w-14 h-14 text-success-soft-foreground mx-auto" />
               <h4 className="text-base font-bold text-foreground">
@@ -148,7 +148,7 @@ export default function TutorReplacementsPage({ params }: { params: Promise<{ lo
         ) : (
           <div className="space-y-4" data-testid="replacement-cases-list">
             {cases.map((c) => (
-              <Card key={c.id} className="rounded-3xl border-border bg-card p-5 space-y-4">
+              <Card key={c.id} className="rounded-2xl border-border bg-card p-5 space-y-4">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
                   <div className="space-y-1">
                     <div className="flex items-center gap-2">

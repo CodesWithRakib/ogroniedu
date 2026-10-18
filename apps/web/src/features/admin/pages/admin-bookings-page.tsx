@@ -37,7 +37,6 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
   return (
     <AdminLayout
       locale={locale}
-      title={locale === 'bn' ? 'বুকিং ও হস্তক্ষেপ' : 'Bookings & Interventions'}
     >
       {admin.loading && !admin.bookings.length ? (
         <div className="py-12 flex justify-center">
@@ -52,7 +51,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
           )}
 
           {/* Page Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
@@ -72,7 +71,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
 
           {/* 3 Metric Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'চলমান নিশ্চিত বুকিং' : 'Active Confirmed'}
@@ -86,7 +85,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'সম্পন্ন সেশন' : 'Completed Sessions'}
@@ -95,12 +94,12 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
                   {completedCount}
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/40 flex items-center justify-center text-success-soft-foreground">
+              <div className="w-10 h-10 rounded-xl bg-success-soft border border-success/30 flex items-center justify-center text-success-soft-foreground">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'মোট বুকিং রেকর্ড' : 'Total Bookings'}
@@ -116,7 +115,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Bookings Table Card */}
-          <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
             <AdminBookingsTab
               bookings={actions.bookings}
               onRequestCancel={view.setSelectedBookingForCancel}

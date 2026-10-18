@@ -18,7 +18,7 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
       data-testid="kpi-cards-grid"
     >
       {/* Card 1: Conversion Rate (Featured Hero Card) */}
-      <div className="bg-gradient-to-br from-primary via-primary/95 to-primary-hover text-primary-foreground border border-primary/20 rounded-3xl p-5 sm:p-6 shadow-lg shadow-primary/20 flex flex-col justify-between transition-all hover:-translate-y-0.5 relative overflow-hidden group select-none">
+      <div className="bg-gradient-to-br from-primary via-primary/95 to-primary-hover text-primary-foreground border border-primary/20 rounded-2xl p-5 sm:p-6 shadow-primary/20 flex flex-col justify-between transition-all hover:-translate-y-0.5 relative overflow-hidden group select-none">
         <div className="flex items-center justify-between">
           <p className="text-xs font-semibold text-primary-foreground/90">{t('conversionRate')}</p>
           <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-foreground shrink-0 group-hover:scale-105 transition-transform">
@@ -51,10 +51,10 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
       </div>
 
       {/* Card 2: Completion Rate */}
-      <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-md hover:-translate-y-0.5 group select-none">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-sm hover:-translate-y-0.5 group select-none">
         <div className="flex items-center justify-between">
           <p className="text-xs font-semibold text-muted-foreground">{t('completionRate')}</p>
-          <div className="h-8 w-8 rounded-full border border-border/80 bg-surface/75 text-foreground flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
+          <div className="h-8 w-8 rounded-full border border-border bg-surface/75 text-foreground flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
             <ArrowUpRight className="h-4 w-4" />
           </div>
         </div>
@@ -83,12 +83,12 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
       </div>
 
       {/* Card 3: GMV */}
-      <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-md hover:-translate-y-0.5 group select-none">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-sm hover:-translate-y-0.5 group select-none">
         <div className="flex items-center justify-between">
           <p className="text-xs font-semibold text-muted-foreground">
             {t('grossMerchandiseValue')}
           </p>
-          <div className="h-8 w-8 rounded-full border border-border/80 bg-surface/75 text-foreground flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
+          <div className="h-8 w-8 rounded-full border border-border bg-surface/75 text-foreground flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
             <ArrowUpRight className="h-4 w-4" />
           </div>
         </div>
@@ -109,16 +109,16 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
             </span>
           </p>
         </div>
-        <span className="text-[11px] text-success-soft-foreground  font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-primary/10 border border-primary/40 w-fit">
+        <span className="text-[11px] text-success-soft-foreground  font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-success-soft border border-success/30 w-fit">
           Escrow Reconciled
         </span>
       </div>
 
       {/* Card 4: Retention Rate */}
-      <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-md hover:-translate-y-0.5 group select-none">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-sm hover:-translate-y-0.5 group select-none">
         <div className="flex items-center justify-between">
           <p className="text-xs font-semibold text-muted-foreground">{t('retentionRate')}</p>
-          <div className="h-8 w-8 rounded-full border border-border/80 bg-surface/75 text-foreground flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
+          <div className="h-8 w-8 rounded-full border border-border bg-surface/75 text-foreground flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
             <ArrowUpRight className="h-4 w-4" />
           </div>
         </div>
@@ -141,7 +141,7 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
             />
           </div>
         </div>
-        <span className="text-[11px] text-muted-foreground font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-border/70 w-fit">
+        <span className="text-[11px] text-muted-foreground font-semibold inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-surface border border-border w-fit">
           Returning Cohort
         </span>
       </div>

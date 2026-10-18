@@ -55,9 +55,9 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Free for Students Banner */}
-      <div className="rounded-2xl bg-primary-soft/40 border border-border/80 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
+      <div className="rounded-2xl bg-primary-soft/40 border border-border p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
         <div className="space-y-2 text-center sm:text-left">
-          <div className="inline-flex items-center gap-2 rounded-full bg-card border border-border/80 px-3 py-1 text-xs font-semibold text-primary">
+          <div className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-3 py-1 text-xs font-semibold text-primary">
             <CheckCircle2 className="h-3.5 w-3.5" />
             <span>
               {locale === 'bn' ? 'অভিভাবকদের জন্য সম্পূর্ণ ফ্রি' : '100% Free For Parents'}
@@ -80,7 +80,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
 
       {/* 8% Platform Commission Breakdown */}
       <section className="space-y-8">
-        <div className="border-b border-border/70 pb-4">
+        <div className="border-b border-border pb-4">
           <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-soft text-primary">
               <Percent className="h-4 w-4" />
@@ -101,7 +101,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card border-border/80 rounded-2xl shadow-xs hover:shadow-card hover:border-primary/40 transition-all"
+                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-card hover:border-primary/40 transition-all"
               >
                 <CardContent className="p-6 flex flex-col gap-3">
                   <div className="h-11 w-11 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
@@ -118,7 +118,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </section>
 
       {/* Interactive Calculator */}
-      <section className="rounded-2xl border border-border/80 bg-card p-6 sm:p-8 space-y-8 shadow-card">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-8 shadow-card">
         <div className="flex items-center gap-3">
           <div className="h-12 w-12 rounded-xl bg-primary-soft text-primary flex items-center justify-center">
             <Calculator className="h-6 w-6" />
@@ -178,7 +178,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="rounded-xl bg-muted/30 p-6 border border-border/80 space-y-4">
+          <div className="rounded-xl bg-muted/30 p-6 border border-border space-y-4">
             <div className="flex justify-between items-center text-sm">
               <span className="text-muted-foreground font-bengali">
                 {locale === 'bn' ? 'মাসিক মোট ফি (শিক্ষার্থী জমা):' : 'Gross Monthly Fee:'}
@@ -195,7 +195,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
                 ৳{formatGroupedNumber(tutorEarnings, locale)}
               </span>
             </div>
-            <div className="flex justify-between items-center text-xs text-muted-foreground pt-3 border-t border-border/80">
+            <div className="flex justify-between items-center text-xs text-muted-foreground pt-3 border-t border-border">
               <span className="font-bengali">
                 {locale === 'bn' ? 'প্ল্যাটফর্ম সার্ভিস ফি (৮%):' : 'Platform Fee (8%):'}
               </span>
@@ -209,7 +209,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
 
       {/* Hourly Benchmarks Grid */}
       <section className="space-y-8">
-        <div className="border-b border-border/70 pb-4">
+        <div className="border-b border-border pb-4">
           <h2 className="text-2xl font-bold text-foreground font-bengali">{p.benchmarksTitle}</h2>
           <p className="text-sm text-muted-foreground font-bengali mt-1">{p.benchmarksSubtitle}</p>
         </div>
@@ -218,10 +218,10 @@ export function PricingPage({ locale }: { locale: Locale }) {
           {tiers.map((tier, idx) => (
             <Card
               key={idx}
-              className="bg-card border-border/80 rounded-2xl shadow-xs relative overflow-hidden hover:shadow-card hover:border-primary/40 transition-all"
+              className="bg-card border-border rounded-2xl shadow-xs relative overflow-hidden hover:shadow-card hover:border-primary/40 transition-all"
             >
               <div className="absolute top-4 right-4">
-                <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border/60">
+                <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border">
                   {tier.tag}
                 </span>
               </div>

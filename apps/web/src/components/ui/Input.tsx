@@ -45,7 +45,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     const inputElement = (
       <div className="relative w-full">
         {leadingIcon && (
-          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-foreground/70">
+          <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3.5 text-muted-foreground">
             {leadingIcon}
           </div>
         )}
@@ -57,12 +57,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           aria-invalid={hasError}
           aria-describedby={hasError ? errorId : helperText ? helperId : undefined}
           className={cn(
-            'block w-full h-11 rounded-2xl border bg-card px-4 py-2.5 text-sm text-foreground transition-all duration-150 placeholder:text-muted-foreground/60 focus:outline-none focus:ring-4 focus:ring-primary/10 focus:border-primary/60 disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-muted-foreground shadow-2xs',
-            leadingIcon && 'pl-11',
-            (isPasswordType && showPasswordToggle) || trailingIcon ? 'pr-11' : '',
+            'block w-full h-10 rounded-xl border bg-card px-3.5 py-2 text-sm text-foreground transition-colors duration-150 placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:border-ring disabled:cursor-not-allowed disabled:bg-surface-muted disabled:text-muted-foreground',
+            leadingIcon && 'pl-10',
+            (isPasswordType && showPasswordToggle) || trailingIcon ? 'pr-10' : '',
             hasError
-              ? 'border-destructive focus:ring-destructive/10 focus:border-destructive'
-              : 'border-border/80 hover:border-border',
+              ? 'border-destructive focus-visible:ring-destructive/25 focus-visible:border-destructive'
+              : 'border-input hover:border-muted-foreground/40',
             className,
           )}
           {...props}
@@ -71,7 +71,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-foreground/70 hover:text-foreground transition-colors cursor-pointer focus:outline-none"
+            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none"
             tabIndex={-1}
             aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
@@ -82,7 +82,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
             )}
           </button>
         ) : trailingIcon ? (
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-foreground/70">
+          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-foreground">
             {trailingIcon}
           </div>
         ) : null}

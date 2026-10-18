@@ -30,7 +30,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
   ).length;
 
   return (
-    <AdminLayout locale={locale} title={locale === 'bn' ? 'লেজার ও বিরোধ' : 'Ledger & Disputes'}>
+    <AdminLayout locale={locale}>
       {admin.loading && !admin.tickets.length ? (
         <div className="py-12 flex justify-center">
           <LoadingSpinner />
@@ -44,7 +44,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
           )}
 
           {/* Page Header */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
@@ -55,7 +55,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
                 <span
                   className={`px-3 py-1 text-xs font-semibold rounded-full border ${
                     isBalanced
-                      ? 'bg-primary/15 text-success-soft-foreground border-primary/40'
+                      ? 'bg-success-soft text-success-soft-foreground border-success/30'
                       : 'bg-destructive/15 text-destructive-soft-foreground border-destructive/40'
                   }`}
                 >
@@ -70,7 +70,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Sub-section Switcher */}
-            <div className="flex bg-surface/80 p-1 rounded-2xl border border-border/80">
+            <div className="flex bg-surface/80 p-1 rounded-2xl border border-border">
               <button
                 onClick={() => setSubSection('reconciliation')}
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
@@ -99,7 +99,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
 
           {/* 3 Summary Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">{t('totalDebits')}</p>
                 <p className="text-2xl font-black text-foreground mt-1 font-mono">
@@ -111,19 +111,19 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">{t('totalCredits')}</p>
                 <p className="text-2xl font-black text-foreground mt-1 font-mono">
                   {admin.reconciliation?.totalCredits || '0'} BDT
                 </p>
               </div>
-              <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/40 flex items-center justify-center text-success-soft-foreground">
+              <div className="w-10 h-10 rounded-xl bg-success-soft border border-success/30 flex items-center justify-center text-success-soft-foreground">
                 <CheckCircle2 className="w-5 h-5" />
               </div>
             </div>
 
-            <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'উন্মুক্ত সাপোর্ট টিকিট' : 'Open Dispute Tickets'}
@@ -139,7 +139,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Content Card based on subSection */}
-          <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
             {subSection === 'reconciliation' ? (
               <AdminReconciliationTab
                 reconciliation={actions.reconciliation}

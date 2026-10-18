@@ -13,10 +13,10 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
   const pendingCount = admin.pendingTutors.length;
 
   return (
-    <AdminLayout locale={locale} title={locale === 'bn' ? 'শিক্ষক যাচাই' : 'Tutor Verification'}>
+    <AdminLayout locale={locale}>
       <div className="space-y-6 py-6" data-testid="admin-verification-page">
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
           <div>
             <div className="flex items-center space-x-3">
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
@@ -38,7 +38,7 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
 
         {/* 3 Metric Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between shadow-2xs">
+          <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground font-medium">
                 {locale === 'bn' ? 'অপেক্ষমান রিভিউ কিউ' : 'Pending Queue'}
@@ -50,7 +50,7 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between shadow-2xs">
+          <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground font-medium">
                 {locale === 'bn' ? '৩-স্তর ভেরিফিকেশন' : '3-Tier Verification'}
@@ -64,7 +64,7 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="bg-card border border-border/70 rounded-2xl p-4.5 flex items-center justify-between shadow-2xs">
+          <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground font-medium">
                 {locale === 'bn' ? 'অডিট ট্রেইল নিশ্চয়তা' : 'Audit Trail Standard'}
@@ -80,7 +80,7 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Verification Queue Card */}
-        <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4">
+        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
           <AdminVerificationTab />
         </div>
       </div>

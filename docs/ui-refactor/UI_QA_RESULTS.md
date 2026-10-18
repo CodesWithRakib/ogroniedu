@@ -70,3 +70,54 @@
 | **Guardian**       | `guardian.demo@ogroniedu.com` (1-click quick-fill) | `/en/dashboard/guardian` | Child switcher tabs, child academic profile, parental consent badge, safety monitor, live class card, header logout.                  | **VERIFIED (Pass)** |
 | **Admin**          | `admin.demo@ogroniedu.com` (1-click quick-fill)    | `/en/dashboard/admin`    | Operations & Control Center KPIs, Administrative Control Hub, User Manager tab (shadcn Select & Input), Support triage queue, logout. | **VERIFIED (Pass)** |
 | **Public Visitor** | Direct URL Navigation                              | `/en`                    | Hero section, upgraded `HeroSearchBar` with Radix custom selects, subject pill tags, CTA buttons, responsive layout.                  | **VERIFIED (Pass)** |
+
+---
+
+## 6. Continuation Verification — 2026-10-18 (rendered-UI correction pass)
+
+### 6.1 Quality gates (fresh runs after all changes)
+
+| Gate                  | Command                                    |   Result   | Details                                                                                                        |
+| :-------------------- | :----------------------------------------- | :--------: | :------------------------------------------------------------------------------------------------------------- |
+| Web typecheck         | `pnpm --filter @ogroniedu/web typecheck`   | **PASSED** | 0 errors, exit 0                                                                                               |
+| API typecheck         | `pnpm --filter @ogroniedu/api typecheck`   | **PASSED** | 0 errors, exit 0                                                                                               |
+| Web lint              | `pnpm --filter @ogroniedu/web lint`        | **PASSED** | oxlint `src test e2e`, exit 0                                                                                  |
+| API lint              | `pnpm --filter @ogroniedu/api lint`        | **PASSED** | oxlint `src test`, exit 0                                                                                      |
+| Web unit tests        | `pnpm --filter @ogroniedu/web test`        | **PASSED** | **179/179** across 30 files (one earlier cold-import timeout flake re-ran green twice; see note in §6.4)       |
+| API unit tests        | `pnpm --filter @ogroniedu/api test`        | **PASSED** | **588/588** across 61 files                                                                                    |
+| Web production build  | `pnpm --filter @ogroniedu/web build`       | **PASSED** | `next build` exit 0, all routes compiled                                                                       |
+| Web E2E (credentialed) | `E2E_* env + pnpm --filter @ogroniedu/web e2e` | **PASSED** | **47/47 passed** against production build on `:5000` + live API on `:4000` (auth, verification dossier approval, user suspension, evidence upload, session revocation, public smoke, responsive matrix, keyboard a11y) |
+
+### 6.2 Backend defect found & fixed (data correctness)
+
+- **Symptom:** admin audit-log timestamps rendered empty; API returned `"createdAt": {}`.
+- **Root cause:** `apps/api/src/modules/admin/utils/redact.util.ts` — `redactSensitiveData` iterated `Object.entries` on `Date` instances (no enumerable props) and produced `{}`.
+- **Fix:** preserve built-ins (`Date`, `Map`, `Set`, `RegExp`) before recursing.
+- **Verification:** live API returns real ISO timestamps; audit table now formats them (`formatDateTime`).
+
+### 6.3 E2E spec repairs (stale navigation, not app defects)
+
+| Spec                        | Stale expectation                                                   | Fixed to                                                                |
+| :-------------------------- | :------------------------------------------------------------------ | :---------------------------------------------------------------------- |
+| `e2e/admin.console.spec.ts` | Login URL asserted `/bn/admin` (redirect race)                      | `/bn/(dashboard/)?admin` + canonical `/bn/dashboard/admin/verification` and `/bn/dashboard/admin/users/directory` |
+| `e2e/tutor.evidence.spec.ts`| `revoke-all-btn` assumed on the default profile tab                 | Click the “সেশন ও নিরাপত্তা” tab first (current profile tab layout)      |
+
+### 6.4 Known flake (documented, not hidden)
+
+`apps/web/test/guardian-children.spec.ts` dynamically imports `@ogroniedu/contracts`; under full-suite parallel load the cold transform can exceed the 5s default timeout. It passes in isolation (8/8) and passed on a full-suite re-run. Suggested hardening: per-file test timeout or Vitest `fsModuleCache`.
+
+### 6.5 Verified screenshots (this pass)
+
+Public home, tutors list, login; student dashboard, student payments, profile; tutor dashboard; admin overview, admin users hub (desktop + mobile), admin settings hub, admin audit logs. All captured post-fix from the production build.
+
+### 6.6 Remaining defects / not yet re-verified
+
+1. Full 64-route post-fix screenshot matrix not yet re-captured (focused set above is verified; remaining routes hold pre-fix captures only).
+2. A few admin filter `<select>` controls remain raw HTML styled via tokens (not yet migrated to the `Select` primitive).
+3. English microcopy on Bengali admin chips (i18n content debt).
+4. `next start` prints a cosmetic warning because the project uses `output: standalone` — production serve command should be `node .next/standalone/server.js` per deployment docs.
+5. Tablet breakpoint (768/820px) visual re-check outstanding for the refactored hub/table pages.
+
+### 6.7 Blockers
+
+None. Web production server `:5000` and API dev server `:4000` were live during E2E verification.

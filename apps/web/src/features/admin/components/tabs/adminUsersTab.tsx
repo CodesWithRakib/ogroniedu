@@ -86,7 +86,7 @@ export function AdminUsersTab({
           onValueChange={(val) => onStatusFilterChange(val as StatusFilter)}
         >
           <SelectTrigger
-            className="w-full sm:w-48 rounded-2xl bg-card border-border/80 text-xs"
+            className="w-full sm:w-48 rounded-2xl bg-card border-border text-xs"
             data-testid="users-status-filter"
           >
             <SelectValue placeholder={t('allStatuses')} />
@@ -99,7 +99,7 @@ export function AdminUsersTab({
         </Select>
       </div>
 
-      <div className="border border-border/70 rounded-2xl overflow-hidden bg-card shadow-xs">
+      <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-xs">
         <Table data-testid="users-table">
           <TableHeader>
             <TableRow className="uppercase tracking-wider text-[11px] font-bold">

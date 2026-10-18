@@ -90,7 +90,7 @@ export function GradingModal({
               value={feedback}
               onChange={(e) => onFeedbackChange(e.target.value)}
               rows={3}
-              className="w-full rounded-xl border border-border p-3 text-xs bg-card text-foreground focus:ring-2 focus:ring-ring focus:outline-none"
+              className="w-full rounded-xl border border-border p-3 text-xs bg-card text-foreground focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none"
               placeholder="Constructive feedback for learner..."
             />
           </div>

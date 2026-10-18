@@ -181,7 +181,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
       {payoutSuccess && (
         <div
           role="status"
-          className="mb-4 rounded-xl border border-primary/20 bg-primary-soft p-4 text-xs text-success-soft-foreground    flex items-start gap-2"
+          className="mb-4 rounded-xl border border-success/20 bg-success-soft p-4 text-xs text-success-soft-foreground flex items-start gap-2"
           data-testid="payout-success-alert"
         >
           <CheckCircle2 className="w-4 h-4 shrink-0 mt-0.5" />
@@ -237,9 +237,9 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 2. ESCROW ASSURANCE & 0% PLATFORM FEE PROMOTION          */}
       {/* ======================================================== */}
-      <div className="rounded-3xl p-6 bg-card border border-brand/25 text-foreground shadow-sm flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="rounded-2xl p-6 bg-card border border-brand/25 text-foreground flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2 max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary/20 text-success-soft-foreground text-xs font-bold border border-primary/40">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-soft text-primary-soft-foreground text-xs font-semibold">
             <Sparkles className="w-3.5 h-3.5" />
             <span>{isBn ? '০% প্ল্যাটফর্ম ফি অফার চলছে' : '0% Platform Fee Promotion'}</span>
           </div>
@@ -259,7 +259,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
           <Button
             size="sm"
             onClick={() => setWithdrawModalOpen(true)}
-            className="bg-primary hover:bg-brand text-foreground font-extrabold text-xs"
+            className="bg-brand text-brand-foreground hover:bg-brand-accent font-bold text-xs"
           >
             <ArrowUpRight className="w-3.5 h-3.5 mr-1" />
             {isBn ? 'টাকা তুলুন' : 'Request Cashout'}
@@ -273,8 +273,8 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Left: Recent Payout Requests (1 Col) */}
         <div className="lg:col-span-1 space-y-4">
-          <Card className="rounded-3xl border-border/70 shadow-xs">
-            <CardHeader className="pb-3 border-b border-border/60">
+          <Card className="rounded-2xl border-border shadow-xs">
+            <CardHeader className="pb-3 border-b border-border">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <Receipt className="w-4 h-4 text-primary" />
                 <span>{isBn ? 'সাম্প্রতিক উত্তোলনের ইতিহাস' : 'Recent Payout Requests'}</span>
@@ -325,18 +325,18 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
           </Card>
 
           {/* Connected Payout Method Card */}
-          <Card className="rounded-3xl border-border/70 shadow-xs">
-            <CardHeader className="pb-3 border-b border-border/60">
+          <Card className="rounded-2xl border-border shadow-xs">
+            <CardHeader className="pb-3 border-b border-border">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
-                <Smartphone className="w-4 h-4 text-success-soft-foreground" />
+                <Smartphone className="w-4 h-4 text-muted-foreground" />
                 <span>{isBn ? 'ডিফল্ট পে-আউট অ্যাকাউন্ট' : 'Default Payout Account'}</span>
               </CardTitle>
             </CardHeader>
             <CardContent className="pt-4 space-y-2 text-xs">
-              <div className="flex items-center justify-between p-3 rounded-2xl bg-primary-soft  border border-primary/20 ">
+              <div className="flex items-center justify-between p-3 rounded-2xl bg-primary-soft">
                 <div className="space-y-0.5">
                   <span className="font-bold text-primary-soft-foreground ">bKash Personal</span>
-                  <span className="block font-mono text-success-soft-foreground ">
+                  <span className="block font-mono text-primary-soft-foreground/80 ">
                     01711-234567
                   </span>
                 </div>
@@ -355,8 +355,8 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
 
         {/* Right: Class & Session Earnings Ledger (2 Cols) */}
         <div className="lg:col-span-2 space-y-4">
-          <Card className="rounded-3xl border-border/70 shadow-xs">
-            <CardHeader className="pb-3 border-b border-border/60">
+          <Card className="rounded-2xl border-border shadow-xs">
+            <CardHeader className="pb-3 border-b border-border">
               <div className="flex items-center justify-between">
                 <div>
                   <CardTitle className="text-base font-bold flex items-center gap-2">
@@ -451,9 +451,9 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       <Dialog open={withdrawModalOpen} onOpenChange={setWithdrawModalOpen}>
         <DialogContent className="max-w-md" data-testid="payout-modal">
-          <DialogHeader className="border-b border-border/60 pb-3">
+          <DialogHeader className="border-b border-border pb-3">
             <div className="flex items-center gap-2">
-              <CreditCard className="w-5 h-5 text-success-soft-foreground" />
+              <CreditCard className="w-5 h-5 text-muted-foreground" />
               <DialogTitle className="text-base font-bold text-foreground">
                 {isBn ? 'টাকা উত্তোলন অনুরোধ' : 'Request Payout'}
               </DialogTitle>
@@ -492,7 +492,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                   onClick={() => setSelectedMethod('nagad')}
                   className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
                     selectedMethod === 'nagad'
-                      ? 'border-warning/40 bg-warning/10 text-orange-700'
+                      ? 'border-warning/40 bg-warning-soft text-warning-soft-foreground'
                       : 'border-border text-muted-foreground hover:bg-muted/50'
                   }`}
                 >
@@ -503,7 +503,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                   onClick={() => setSelectedMethod('bank')}
                   className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
                     selectedMethod === 'bank'
-                      ? 'border-info/40 bg-interactive/10 text-info-soft-foreground'
+                      ? 'border-info/40 bg-info-soft text-info-soft-foreground'
                       : 'border-border text-muted-foreground hover:bg-muted/50'
                   }`}
                 >

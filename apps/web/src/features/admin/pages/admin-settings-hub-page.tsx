@@ -47,9 +47,9 @@ const SETTINGS_CARDS: SettingHubCard[] = [
       'Safely toggle runtime beta features, system-wide canary releases, and experimental capabilities without redeployment.',
     badgeBn: 'সুপার অ্যাডমিন',
     badgeEn: 'Super Admin',
-    badgeClass: 'bg-primary/10 text-primary border-primary/20',
+    badgeClass: 'bg-primary-soft text-primary-soft-foreground',
     icon: ToggleLeft,
-    iconBg: 'bg-primary/10 border-primary/20',
+    iconBg: 'bg-primary-soft/70',
     iconColor: 'text-primary',
     actionBn: 'ফ্ল্যাগ পরিচালনা করুন',
     actionEn: 'Manage & View',
@@ -65,10 +65,10 @@ const SETTINGS_CARDS: SettingHubCard[] = [
       'Configure global platform parameters, maintenance mode, timeouts, cache policies, and default operational limits.',
     badgeBn: 'কোর কনফিগ',
     badgeEn: 'Core Config',
-    badgeClass: 'bg-info-soft text-info-soft-foreground border-info/30',
+    badgeClass: 'bg-surface text-muted-foreground',
     icon: Sliders,
-    iconBg: 'bg-info-soft border-info/30',
-    iconColor: 'text-info',
+    iconBg: 'bg-surface',
+    iconColor: 'text-foreground',
     actionBn: 'সিস্টেম কনফিগার করুন',
     actionEn: 'Manage & View',
   },
@@ -82,10 +82,10 @@ const SETTINGS_CARDS: SettingHubCard[] = [
       'Manage platform fee percentages, escrow hold durations, payout minimums, and dispute refund margins.',
     badgeBn: 'আর্থিক পলিসি',
     badgeEn: 'Finance & Escrow',
-    badgeClass: 'bg-success-soft text-success-soft-foreground border-success/30',
+    badgeClass: 'bg-surface text-muted-foreground',
     icon: CreditCard,
-    iconBg: 'bg-success-soft border-success/30',
-    iconColor: 'text-success',
+    iconBg: 'bg-surface',
+    iconColor: 'text-foreground',
     actionBn: 'পলিসি পরিচালনা করুন',
     actionEn: 'Manage & View',
   },
@@ -99,10 +99,10 @@ const SETTINGS_CARDS: SettingHubCard[] = [
       'Set rate limits, session expiry thresholds, multi-factor authentication policies, and IP whitelist rules.',
     badgeBn: 'নিরাপত্তা',
     badgeEn: 'Security & Access',
-    badgeClass: 'bg-warning-soft text-warning-soft-foreground border-warning/30',
+    badgeClass: 'bg-surface text-muted-foreground',
     icon: ShieldCheck,
-    iconBg: 'bg-warning-soft border-warning/30',
-    iconColor: 'text-warning',
+    iconBg: 'bg-surface',
+    iconColor: 'text-foreground',
     actionBn: 'নিরাপত্তা দেখুন',
     actionEn: 'Manage & View',
   },
@@ -116,10 +116,10 @@ const SETTINGS_CARDS: SettingHubCard[] = [
       'Setup SMS gateways (SSL Wireless, Twilio), email SMTP providers, and automated notification triggers.',
     badgeBn: 'মেসেজিং',
     badgeEn: 'Communication',
-    badgeClass: 'bg-purple-500/10 text-purple-700 dark:text-purple-300 border-purple-500/20',
+    badgeClass: 'bg-surface text-muted-foreground',
     icon: Bell,
-    iconBg: 'bg-purple-500/10 border-purple-500/20',
-    iconColor: 'text-purple-600 dark:text-purple-400',
+    iconBg: 'bg-surface',
+    iconColor: 'text-foreground',
     actionBn: 'গেটওয়ে সেটআপ',
     actionEn: 'Manage & View',
   },
@@ -134,10 +134,10 @@ const SETTINGS_CARDS: SettingHubCard[] = [
       'Manage curriculum education levels, boards, classes, grades, subjects, and institutional categories.',
     badgeBn: 'পাঠ্যক্রম হাব',
     badgeEn: 'Education Hub',
-    badgeClass: 'bg-emerald-500/10 text-emerald-700 dark:text-emerald-300 border-emerald-500/20',
+    badgeClass: 'bg-surface text-muted-foreground',
     icon: GraduationCap,
-    iconBg: 'bg-emerald-500/10 border-emerald-500/20',
-    iconColor: 'text-emerald-600 dark:text-emerald-400',
+    iconBg: 'bg-surface',
+    iconColor: 'text-foreground',
     actionBn: 'ট্যাক্সোনমি পরিচালনা করুন',
     actionEn: 'Manage & View',
   },
@@ -149,7 +149,7 @@ export function AdminSettingsHubPage({ locale }: { locale: Locale }) {
   const isSuperAdmin = user?.roles?.includes('super_admin') ?? false;
 
   return (
-    <AdminLayout locale={locale} title={isBn ? 'প্ল্যাটফর্ম সেটিংস হাব' : 'Platform Settings Hub'}>
+    <AdminLayout locale={locale}>
       <div className="space-y-6 py-6" data-testid="admin-settings-hub">
         {/* Eyebrow & Hero Header (Matching Reference Screenshot Image 1) */}
         <div className="space-y-2">
@@ -176,7 +176,7 @@ export function AdminSettingsHubPage({ locale }: { locale: Locale }) {
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-bold bg-primary/10 text-primary border border-primary/25">
+              <span className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold bg-primary-soft text-primary-soft-foreground">
                 <Settings className="w-3.5 h-3.5" />
                 <span>6 {isBn ? 'টি মডিউল' : 'Active Modules'}</span>
               </span>
@@ -195,19 +195,19 @@ export function AdminSettingsHubPage({ locale }: { locale: Locale }) {
                 key={card.id}
                 href={targetUrl}
                 data-testid={`settings-card-${card.id}`}
-                className="group relative bg-card border border-border/80 hover:border-primary/50 hover:shadow-md transition-all duration-200 rounded-2xl p-5 flex flex-col justify-between"
+                className="group relative bg-card border border-border hover:border-input hover:shadow-xs transition-all duration-200 rounded-2xl p-5 flex flex-col justify-between"
               >
                 <div>
                   {/* Top Row: Icon squircle + Badge */}
                   <div className="flex items-start justify-between gap-3">
                     <div
-                      className={`w-11 h-11 rounded-xl border flex items-center justify-center transition-transform group-hover:scale-105 ${card.iconBg} ${card.iconColor}`}
+                      className={`w-11 h-11 rounded-xl flex items-center justify-center transition-transform group-hover:scale-105 ${card.iconBg} ${card.iconColor}`}
                     >
                       <Icon className="w-5 h-5" />
                     </div>
 
                     <span
-                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-bold border ${card.badgeClass}`}
+                      className={`inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-[11px] font-semibold ${card.badgeClass}`}
                     >
                       <span>{isBn ? card.badgeBn : card.badgeEn}</span>
                       <ChevronRight className="w-3 h-3 opacity-60" />
@@ -224,7 +224,7 @@ export function AdminSettingsHubPage({ locale }: { locale: Locale }) {
                 </div>
 
                 {/* Footer Link: Action text + Arrow */}
-                <div className="mt-5 pt-3 border-t border-border/50 flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
+                <div className="mt-5 pt-3 border-t border-border flex items-center gap-1 text-xs font-bold text-primary group-hover:gap-2 transition-all">
                   <span>{isBn ? card.actionBn : card.actionEn}</span>
                   <ArrowRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
                 </div>

@@ -86,7 +86,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <AdminLayout locale={locale} title={locale === 'bn' ? 'অ্যাডমিন' : 'Admin'}>
+    <AdminLayout locale={locale}>
       {admin.loading && !admin.users.length ? (
         <div className="py-12 flex justify-center">
           <LoadingSpinner />
@@ -94,13 +94,13 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       ) : (
         <div className="space-y-8 py-6" data-testid="admin-overview-page">
           {/* Header Banner */}
-          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border/80">
+          <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
               <div className="flex items-center space-x-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {t('title')}
                 </h1>
-                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-info-soft text-info-soft-foreground border border-info/30 shadow-2xs">
+                <span className="px-3 py-1 text-xs font-semibold rounded-full bg-info-soft text-info-soft-foreground border border-info/30">
                   {isSuperAdmin ? 'SUPER ADMIN' : 'ADMIN'}
                 </span>
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 text-xs font-semibold rounded-full bg-success-soft text-success-soft-foreground border border-success/30">
@@ -110,7 +110,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               </div>
               <p className="text-muted-foreground text-sm mt-1.5">{t('subtitle')}</p>
             </div>
-            <div className="text-left md:text-right bg-surface border border-border/60 p-3 rounded-2xl">
+            <div className="text-left md:text-right bg-surface border border-border p-3 rounded-2xl">
               <p className="text-xs text-muted-foreground">Authenticated Operator</p>
               <p className="text-sm font-semibold text-foreground">
                 {user?.displayName || 'Admin'}
@@ -122,7 +122,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
             <Link
               href={`/${locale}/dashboard/admin/verification`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
                 <p className="text-xs text-muted-foreground font-medium">
@@ -138,7 +138,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/disputes`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
                 <p className="text-xs text-muted-foreground font-medium">{t('replacementQueue')}</p>
@@ -152,7 +152,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/disputes`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
                 <p className="text-xs text-muted-foreground font-medium">{t('safetyQueue')}</p>
@@ -166,7 +166,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/bookings`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
                 <p className="text-xs text-muted-foreground font-medium">{t('activeBookings')}</p>
@@ -180,7 +180,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/users`}
-              className="col-span-2 lg:col-span-1 bg-card hover:bg-surface-hover/80 border border-border/70 hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="col-span-2 lg:col-span-1 bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
             >
               <div className="flex justify-between items-start">
                 <p className="text-xs text-muted-foreground font-medium">{t('totalUsers')}</p>
@@ -212,7 +212,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="bg-card hover:bg-surface-hover border border-border/70 hover:border-primary/40 rounded-3xl p-5 sm:p-6 transition-all duration-200 group flex flex-col justify-between shadow-2xs"
+                    className="bg-card hover:bg-surface-hover border border-border hover:border-primary/40 rounded-2xl p-5 sm:p-6 transition-all duration-200 group flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-3">
@@ -240,7 +240,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Double-Entry Ledger Integrity Snapshot */}
-          <div className="bg-card border border-border/70 rounded-3xl p-6 space-y-5 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-5 shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-base font-bold text-foreground flex items-center gap-2">
@@ -273,19 +273,19 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div className="bg-surface p-4 rounded-2xl border border-border/70">
+              <div className="bg-surface p-4 rounded-2xl border border-border">
                 <p className="text-xs text-muted-foreground font-medium">{t('totalDebits')}</p>
                 <p className="text-lg font-mono font-bold text-foreground mt-1">
                   {admin.reconciliation?.totalDebits || '0'} BDT
                 </p>
               </div>
-              <div className="bg-surface p-4 rounded-2xl border border-border/70">
+              <div className="bg-surface p-4 rounded-2xl border border-border">
                 <p className="text-xs text-muted-foreground font-medium">{t('totalCredits')}</p>
                 <p className="text-lg font-mono font-bold text-foreground mt-1">
                   {admin.reconciliation?.totalCredits || '0'} BDT
                 </p>
               </div>
-              <div className="bg-surface p-4 rounded-2xl border border-border/70">
+              <div className="bg-surface p-4 rounded-2xl border border-border">
                 <p className="text-xs text-muted-foreground font-medium">{t('discrepancy')}</p>
                 <p
                   className={`text-lg font-mono font-bold mt-1 ${
@@ -301,7 +301,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Security & Audit Policy Card */}
-          <div className="bg-card border border-border/70 rounded-3xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs">
             <div className="space-y-2">
               <div className="flex items-center gap-2 text-success-soft-foreground text-sm font-semibold">
                 <CheckCircle2 className="w-4 h-4 text-success" />

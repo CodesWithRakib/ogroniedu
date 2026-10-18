@@ -76,7 +76,7 @@ export function BookingRequestModal({
         data-testid="booking-request-modal"
         className="max-w-lg w-full p-6 space-y-4 rounded-2xl"
       >
-        <DialogHeader className="space-y-1 border-b border-border/70 pb-3 text-left">
+        <DialogHeader className="space-y-1 border-b border-border pb-3 text-left">
           <DialogTitle className="font-bold text-foreground text-base">
             {dict.bookingRequest?.modalTitle || 'Request Tutoring Session'}
           </DialogTitle>

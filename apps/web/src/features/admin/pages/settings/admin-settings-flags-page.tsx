@@ -25,7 +25,7 @@ export function AdminSettingsFlagsPage({ locale }: { locale: Locale }) {
   });
 
   return (
-    <AdminLayout locale={locale} title={isBn ? 'ক্যানারি ফিচার ফ্ল্যাগ' : 'Canary Feature Flags'}>
+    <AdminLayout locale={locale}>
       <div className="space-y-6 py-6" data-testid="admin-settings-flags-page">
         {/* Back Link to Hub (Image 2 Pattern) */}
         <div>
@@ -39,7 +39,7 @@ export function AdminSettingsFlagsPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
           <div>
             <div className="flex items-center space-x-3">
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">

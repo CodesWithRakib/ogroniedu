@@ -78,7 +78,7 @@ export function SafetyPage({ locale }: { locale: Locale }) {
           return (
             <Card
               key={idx}
-              className="bg-card border-border/80 rounded-2xl shadow-xs hover:shadow-card hover:border-primary/40 transition-all relative overflow-hidden"
+              className="bg-card border-border rounded-2xl shadow-xs hover:shadow-card hover:border-primary/40 transition-all relative overflow-hidden"
             >
               <CardHeader className="flex flex-row items-start justify-between gap-4 p-6 pb-2">
                 <div className="h-12 w-12 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
@@ -86,7 +86,7 @@ export function SafetyPage({ locale }: { locale: Locale }) {
                 </div>
                 <Badge
                   variant="outline"
-                  className="text-xs rounded-full px-2.5 py-0.5 border-border/80 text-muted-foreground"
+                  className="text-xs rounded-full px-2.5 py-0.5 border-border text-muted-foreground"
                 >
                   {pillar.badge}
                 </Badge>

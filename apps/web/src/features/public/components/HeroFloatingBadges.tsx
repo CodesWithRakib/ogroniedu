@@ -7,7 +7,7 @@ import type { Locale } from '@/lib/i18n';
 export function QualifiedTutorsBadge({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
   return (
-    <div className="group rounded-xl sm:rounded-2xl border border-border/80 bg-card p-2 sm:p-2.5 shadow-card flex items-center gap-2.5 hover:border-primary/40 transition-all select-none">
+    <div className="group rounded-xl sm:rounded-2xl border border-border bg-card p-2 sm:p-2.5 shadow-card flex items-center gap-2.5 hover:border-primary/40 transition-all select-none">
       <div className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary">
         <GraduationCap className="h-4 w-4" />
       </div>
@@ -27,7 +27,7 @@ export function QualifiedTutorsBadge({ locale }: { locale: Locale }) {
 export function SafeSecureBadge({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
   return (
-    <div className="group rounded-xl sm:rounded-2xl border border-border/80 bg-card p-2 sm:p-2.5 shadow-card flex items-center gap-2.5 hover:border-primary/40 transition-all select-none">
+    <div className="group rounded-xl sm:rounded-2xl border border-border bg-card p-2 sm:p-2.5 shadow-card flex items-center gap-2.5 hover:border-primary/40 transition-all select-none">
       <div className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary">
         <ShieldCheck className="h-4 w-4" />
       </div>
@@ -47,7 +47,7 @@ export function SafeSecureBadge({ locale }: { locale: Locale }) {
 export function FlexibleLearningBadge({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
   return (
-    <div className="group rounded-xl sm:rounded-2xl border border-border/80 bg-card p-2 sm:p-2.5 shadow-card flex items-center gap-2.5 hover:border-primary/40 transition-all select-none">
+    <div className="group rounded-xl sm:rounded-2xl border border-border bg-card p-2 sm:p-2.5 shadow-card flex items-center gap-2.5 hover:border-primary/40 transition-all select-none">
       <div className="flex h-7 w-7 sm:h-8 sm:w-8 shrink-0 items-center justify-center rounded-lg bg-primary-soft text-primary">
         <Clock className="h-4 w-4" />
       </div>

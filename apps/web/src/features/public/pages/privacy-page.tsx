@@ -33,8 +33,8 @@ export function PrivacyPage({ locale }: { locale: Locale }) {
         <p className="text-xs sm:text-sm text-muted-foreground font-bengali">{p.subtitle}</p>
       </div>
 
-      <Card className="bg-card/90 backdrop-blur-xl border-border/80 rounded-3xl shadow-xl p-6 sm:p-10 space-y-6">
-        <p className="text-sm sm:text-base text-foreground font-bengali leading-relaxed border-b border-border/60 pb-6">
+      <Card className="bg-card/90 backdrop-blur-xl border-border rounded-2xl p-6 sm:p-10 space-y-6">
+        <p className="text-sm sm:text-base text-foreground font-bengali leading-relaxed border-b border-border pb-6">
           {p.introText}
         </p>
 

@@ -153,7 +153,7 @@ export function TutorVerificationStatusCard({
 
   return (
     <Card className="border-border bg-card shadow-sm">
-      <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border/50">
+      <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-primary" />
@@ -218,7 +218,7 @@ export function TutorVerificationStatusCard({
         </div>
 
         {/* Publication Control & Gate */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-muted/40 border border-border/80 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-muted/40 border border-border gap-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
               <Globe className="h-4 w-4 text-primary" />

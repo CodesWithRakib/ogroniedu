@@ -113,13 +113,14 @@ test.describe('admin console journey', () => {
     await page.getByTestId('login-identifier-input').fill(adminEmail!);
     await page.getByTestId('login-password-input').fill(adminPassword!);
     await page.getByTestId('login-submit-btn').click();
-    await expect(page).toHaveURL(/\/bn\/admin/, { timeout: 20_000 });
+    // Current routing: /bn/admin redirects to /bn/dashboard/admin (canonical).
+    await expect(page).toHaveURL(/\/bn\/(?:dashboard\/)?admin/, { timeout: 20_000 });
     await expect(page.getByTestId('admin-overview-page')).toBeVisible({ timeout: 20_000 });
   }
 
   test('admin reviews the dossier evidence and approves the identity level', async ({ page }) => {
     await loginAsAdmin(page);
-    await page.goto('/bn/admin?tab=verification');
+    await page.goto('/bn/dashboard/admin/verification');
     await expect(page.getByTestId('verification-tab-content')).toBeVisible();
     await page.getByTestId('verification-search-input').fill(tutorName);
 
@@ -166,7 +167,7 @@ test.describe('admin console journey', () => {
 
   test('admin suspends and reactivates the disposable student', async ({ page }) => {
     await loginAsAdmin(page);
-    await page.goto('/bn/admin?tab=users');
+    await page.goto('/bn/dashboard/admin/users/directory');
     await expect(page.getByTestId('users-tab-content')).toBeVisible();
     await page.getByTestId('users-search-input').fill(studentEmail);
     const suspendBtn = page.locator('[data-testid^="suspend-user-btn-"]').first();

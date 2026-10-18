@@ -165,7 +165,7 @@ export function SafetyReportModal({
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full rounded-xl bg-card border border-border p-2.5 text-xs text-foreground focus:outline-none focus:border-destructive/40"
+                className="w-full rounded-xl bg-card border border-border p-2.5 text-xs text-foreground focus-visible:outline-none focus:border-destructive/40"
                 id="safety-category-select"
               >
                 <option value="child_safety">
@@ -265,7 +265,7 @@ export function SafetyReportModal({
                     ? 'কী ঘটেছে, কখন ঘটেছে এবং শিক্ষার্থীর উপর কী প্রভাব পড়েছে তা স্পষ্টভাবে লিখুন...'
                     : 'Describe what happened, timestamp, and any safety impact on the student...'
                 }
-                className="w-full rounded-xl bg-card border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-destructive/40"
+                className="w-full rounded-xl bg-card border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus:border-destructive/40"
                 id="safety-description-input"
               />
             </div>

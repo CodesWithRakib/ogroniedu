@@ -77,11 +77,11 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full flex items-center justify-center p-3 sm:p-6 lg:p-8">
       {/* Outer Card: Clean Split-Screen Container */}
-      <div className="w-full max-w-5xl rounded-3xl border border-border/80 bg-card shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[600px] transition-all">
+      <div className="w-full max-w-5xl rounded-2xl border border-border bg-card shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[600px] transition-all">
         {/* ======================================================== */}
         {/* LEFT PANEL: Clean Educational Trust Showcase             */}
         {/* ======================================================== */}
-        <div className="hidden lg:flex lg:col-span-5 relative flex-col justify-between p-8 xl:p-10 overflow-hidden text-foreground bg-gradient-to-br from-primary-soft/50 via-surface to-surface-muted border-r border-border/80">
+        <div className="hidden lg:flex lg:col-span-5 relative flex-col justify-between p-8 xl:p-10 overflow-hidden text-foreground bg-gradient-to-br from-primary-soft/50 via-surface to-surface-muted border-r border-border">
           {/* Subtle Ambient Decorative Circles */}
           <div className="absolute top-0 right-0 w-64 h-64 bg-primary/5 rounded-full blur-3xl pointer-events-none -mr-16 -mt-16" />
           <div className="absolute bottom-0 left-0 w-64 h-64 bg-interactive/5 rounded-full blur-3xl pointer-events-none -ml-16 -mb-16" />
@@ -105,7 +105,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
               </div>
             </Link>
 
-            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-card border border-border/70 text-[11px] font-semibold text-muted-foreground shadow-2xs">
+            <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-card border border-border text-[11px] font-semibold text-muted-foreground">
               <Sparkles className="h-3 w-3 text-primary" />
               <span>{isBn ? 'স্মার্ট লার্নিং' : 'Smart Learning'}</span>
             </span>
@@ -125,7 +125,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
             </div>
 
             <div className="space-y-2.5 pt-1">
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/80 text-xs font-medium text-foreground shadow-2xs">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border text-xs font-medium text-foreground">
                 <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
                 <span>
                   {isBn
@@ -133,7 +133,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
                     : '100% NID & verified credentials for every tutor'}
                 </span>
               </div>
-              <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border/80 text-xs font-medium text-foreground shadow-2xs">
+              <div className="flex items-center gap-3 p-3 rounded-xl bg-card border border-border text-xs font-medium text-foreground">
                 <ShieldCheck className="h-4 w-4 text-interactive shrink-0" />
                 <span>
                   {isBn
@@ -145,7 +145,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
           </div>
 
           {/* Bottom Social Proof / Tutor Testimonial Card */}
-          <div className="relative z-10 rounded-xl border border-border/80 bg-card p-4 shadow-2xs">
+          <div className="relative z-10 rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-3 mb-2">
               <div className="h-9 w-9 rounded-full bg-primary-soft text-primary font-bold text-xs flex items-center justify-center shrink-0 border border-primary/20">
                 তা
@@ -190,7 +190,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
             <div className="flex items-center gap-2">
               <Link
                 href={targetPath}
-                className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-border/80 bg-surface hover:bg-surface-hover text-xs font-semibold text-foreground transition-colors"
+                className="flex items-center gap-1 px-2.5 py-1 rounded-full border border-border bg-surface hover:bg-surface-hover text-xs font-semibold text-foreground transition-colors"
                 title={isBn ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
               >
                 <Globe className="h-3.5 w-3.5 text-interactive" />
@@ -218,7 +218,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
 
             {/* 1-Click Demo Accounts Quick-Fill Strip (development/test builds only) */}
             {onQuickFill && isDemoQuickFillAllowed() && (
-              <div className="rounded-xl border border-border/80 bg-surface/60 p-3 space-y-2">
+              <div className="rounded-xl border border-border bg-surface/60 p-3 space-y-2">
                 <div className="flex items-center justify-between text-[11px] font-semibold text-muted-foreground">
                   <span>
                     {isBn
@@ -236,7 +236,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
                       type="button"
                       onClick={() => onQuickFill(acc.email, acc.pass)}
                       className={cn(
-                        'flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border border-border/70 bg-card text-xs font-medium transition-colors cursor-pointer hover:border-border',
+                        'flex items-center justify-center gap-1.5 py-1.5 px-2 rounded-lg border border-border bg-card text-xs font-medium transition-colors cursor-pointer hover:border-border',
                         acc.badgeClass,
                       )}
                     >
@@ -253,7 +253,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
           </div>
 
           {/* Bottom Security Seals & Compliance Note */}
-          <div className="pt-4 border-t border-border/60 flex flex-wrap items-center justify-between gap-3 text-[11px] text-muted-foreground">
+          <div className="pt-4 border-t border-border flex flex-wrap items-center justify-between gap-3 text-[11px] text-muted-foreground">
             <div className="flex items-center gap-1.5">
               <Lock className="h-3.5 w-3.5 text-success" />
               <span>

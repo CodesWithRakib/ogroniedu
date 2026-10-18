@@ -90,7 +90,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
                     'flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer',
                     active
                       ? 'border-primary bg-primary-soft text-primary shadow-xs font-bold'
-                      : 'border-border/80 bg-surface/50 hover:bg-surface text-muted-foreground hover:text-foreground',
+                      : 'border-border bg-surface/50 hover:bg-surface text-muted-foreground hover:text-foreground',
                   )}
                 >
                   <Icon

@@ -9,18 +9,26 @@ import {
   TableRow,
   TableCell,
 } from '@/components/ui/table';
+import { formatDateTime } from '@/lib/format';
+import type { Locale } from '@/lib/i18n';
 import type { AdminAuditLogItem } from '../../types/admin.types';
 
-export function AdminAuditLogsTab({ auditLogs }: { auditLogs: AdminAuditLogItem[] }) {
+export function AdminAuditLogsTab({
+  auditLogs,
+  locale = 'bn',
+}: {
+  auditLogs: AdminAuditLogItem[];
+  locale?: Locale;
+}) {
   const t = useTranslations('admin');
   const tCommon = useTranslations('common');
 
   return (
     <div className="space-y-4" data-testid="audit-logs-tab-content">
-      <div className="border border-border/70 rounded-2xl overflow-hidden bg-card shadow-xs">
+      <div className="border border-border rounded-2xl overflow-hidden bg-card">
         <Table data-testid="audit-logs-table">
           <TableHeader>
-            <TableRow className="uppercase tracking-wider text-[11px] font-bold">
+            <TableRow>
               <TableHead className="px-4 py-3.5">{t('auditTimestamp')}</TableHead>
               <TableHead className="px-4 py-3.5">{t('auditActor')}</TableHead>
               <TableHead className="px-4 py-3.5">{t('auditAction')}</TableHead>
@@ -39,11 +47,11 @@ export function AdminAuditLogsTab({ auditLogs }: { auditLogs: AdminAuditLogItem[
               auditLogs.map((log) => (
                 <TableRow
                   key={log.id}
-                  className="hover:bg-muted/40 transition-colors"
+                  className="hover:bg-surface-hover/60 transition-colors"
                   data-testid={`audit-row-${log.id}`}
                 >
-                  <TableCell className="px-4 py-3 text-muted-foreground font-mono text-[11px]">
-                    {log.createdAt}
+                  <TableCell className="px-4 py-3 text-muted-foreground text-[11px] whitespace-nowrap">
+                    {log.createdAt ? formatDateTime(log.createdAt, locale) : '—'}
                   </TableCell>
                   <TableCell className="px-4 py-3 font-mono text-[11px] text-foreground/80">
                     {log.actorUserId || 'system'}

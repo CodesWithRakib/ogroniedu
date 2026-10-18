@@ -62,7 +62,7 @@ export function ScheduleSessionModal({
               required
               value={bookingId}
               onChange={(e) => setBookingId(e.target.value)}
-              className="w-full h-10 px-3 rounded-xl border border-input bg-card text-foreground text-xs focus:ring-2 focus:ring-ring focus:outline-none transition-colors"
+              className="w-full h-10 px-3 rounded-xl border border-input bg-card text-foreground text-xs focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none transition-colors"
               data-testid="schedule-booking-select"
             >
               {options.length === 0 && <option value="">—</option>}

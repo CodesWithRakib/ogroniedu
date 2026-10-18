@@ -75,9 +75,9 @@ export function StudentPendingAssignmentsCard({
 
   return (
     <>
-      <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
         {/* Header */}
-        <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
+        <div className="flex items-center justify-between pb-3.5 border-b border-border">
           <div className="flex items-center gap-2.5">
             <div className="h-9 w-9 rounded-xl bg-warning-soft text-warning flex items-center justify-center shrink-0">
               <FileText className="h-5 w-5" />
@@ -109,8 +109,8 @@ export function StudentPendingAssignmentsCard({
             </div>
           ) : assignments.length === 0 ? (
             <div className="py-8 px-4 text-center">
-              <div className="h-12 w-12 rounded-xl bg-muted/40 border border-border/60 mx-auto flex items-center justify-center text-muted-foreground mb-3">
-                <CheckCircle2 className="h-6 w-6 text-emerald-600" />
+              <div className="h-12 w-12 rounded-xl bg-muted/40 border border-border mx-auto flex items-center justify-center text-muted-foreground mb-3">
+                <CheckCircle2 className="h-6 w-6 text-success" />
               </div>
               <p className="text-xs font-bold text-foreground">
                 {isBn ? 'কোনো বকেয়া হোমওয়ার্ক নেই!' : 'All Caught Up!'}
@@ -130,7 +130,7 @@ export function StudentPendingAssignmentsCard({
                 return (
                   <div
                     key={asgn.id}
-                    className="p-3.5 rounded-xl bg-muted/20 border border-border/60 hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                    className="p-3.5 rounded-xl bg-muted/20 border border-border hover:bg-muted/40 transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                   >
                     <div className="flex items-start gap-3 min-w-0">
                       <div className="h-10 w-10 rounded-xl bg-warning-soft text-warning flex items-center justify-center shrink-0">
@@ -227,8 +227,8 @@ export function StudentPendingAssignmentsCard({
         onOpenChange={(open) => !open && setActiveAssignment(null)}
       >
         {activeAssignment && (
-          <DialogContent className="bg-card border border-border w-full max-w-lg rounded-2xl p-6 shadow-2xl text-foreground space-y-4">
-            <DialogHeader className="border-b border-border/70 pb-3 text-left">
+          <DialogContent className="bg-card border border-border w-full max-w-lg rounded-2xl p-6 text-foreground space-y-4">
+            <DialogHeader className="border-b border-border pb-3 text-left">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-warning-soft text-warning flex items-center justify-center shrink-0">
                   <FileText className="h-5 w-5" />
@@ -245,7 +245,7 @@ export function StudentPendingAssignmentsCard({
             </DialogHeader>
 
             {activeAssignment.instructions && (
-              <div className="p-3 rounded-xl bg-muted/40 border border-border/60 text-xs text-foreground/80">
+              <div className="p-3 rounded-xl bg-muted/40 border border-border text-xs text-foreground/80">
                 <span className="font-semibold text-foreground block mb-0.5">
                   {isBn ? 'নির্দেশনা:' : 'Instructions:'}
                 </span>
@@ -278,7 +278,7 @@ export function StudentPendingAssignmentsCard({
                 />
               </div>
 
-              <div className="pt-3 border-t border-border/60 flex items-center justify-end gap-2.5">
+              <div className="pt-3 border-t border-border flex items-center justify-end gap-2.5">
                 <Button
                   type="button"
                   variant="outline"

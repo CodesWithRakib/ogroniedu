@@ -63,7 +63,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
       case 'booking':
         return {
           icon: <Calendar className="w-4 h-4 text-success-soft-foreground" />,
-          bg: 'bg-primary/10 text-success-soft-foreground border-primary/40',
+          bg: 'bg-success-soft text-success-soft-foreground border-success/30',
           badgeBn: 'বুকিং',
           badgeEn: 'Booking',
         };

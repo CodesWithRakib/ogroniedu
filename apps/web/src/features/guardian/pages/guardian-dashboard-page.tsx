@@ -157,42 +157,42 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 2. QUICK ACTIONS BAR                                     */}
       {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-card border border-border/70 shadow-xs">
+      <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-card border border-border shadow-xs">
         <span className="text-xs font-semibold text-muted-foreground mr-1 flex items-center gap-1.5">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
         </span>
         <Link
           href={withLocale('/dashboard/guardian/children', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/60 bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
         >
           <Users className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'সন্তান প্রোফাইল' : 'Children'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/60 bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
         >
           <BookOpen className="w-3.5 h-3.5 text-success-soft-foreground" />
           <span>{isBn ? 'লার্নিং অগ্রগতি' : 'Learning Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/60 bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
         >
           <Calendar className="w-3.5 h-3.5 text-warning" />
           <span>{isBn ? 'ক্লাস সময়সূচি' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/60 bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
         >
           <Inbox className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'টিউশন অনুরোধ' : 'Tuition Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/60 bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
         >
           <CreditCard className="w-3.5 h-3.5 text-destructive" />
           <span>{isBn ? 'টিউশন ফি ও এসক্রো' : 'Fees & Payments'}</span>
@@ -225,7 +225,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
       {/* Child Switcher Tabs if multiple children */}
       {children.length > 1 && (
         <div
-          className="flex flex-wrap items-center gap-2 p-2 rounded-2xl border border-border/80 bg-surface/50"
+          className="flex flex-wrap items-center gap-2 p-2 rounded-2xl border border-border bg-surface/50"
           role="tablist"
           aria-label={dict.guardian.childrenTitle}
           data-testid="child-switcher"
@@ -289,7 +289,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                 </div>
               </CardHeader>
               <CardContent className="space-y-4 pt-0 text-xs">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-surface border border-border/60">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-surface border border-border">
                   <div>
                     <span className="text-muted-foreground block text-[11px]">
                       {isBn ? 'শিক্ষাপ্রতিষ্ঠান:' : 'Institution:'}

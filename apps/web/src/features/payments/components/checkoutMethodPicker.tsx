@@ -120,7 +120,7 @@ export function CheckoutMethodPicker({
           onClick={() => onSelectGateway('nagad')}
           className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
             selectedGateway === 'nagad'
-              ? 'border-warning/40 bg-warning/5 ring-2 ring-orange-500/30'
+              ? 'border-warning/40 bg-warning/5 ring-2 ring-warning/30'
               : 'border-border hover:border-border'
           }`}
           data-testid="gateway-picker-nagad"
@@ -139,7 +139,7 @@ export function CheckoutMethodPicker({
             name="gateway"
             checked={selectedGateway === 'nagad'}
             onChange={() => onSelectGateway('nagad')}
-            className="w-4 h-4 text-orange-700"
+            className="w-4 h-4 text-warning-soft-foreground"
           />
         </div>
       </CardContent>

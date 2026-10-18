@@ -11,10 +11,10 @@ export function HeroTutorCard({ locale }: { locale: Locale }) {
   return (
     <div className="relative select-none group">
       {/* Holographic Glowing Ambient Backlight */}
-      <div className="absolute -inset-1 bg-gradient-to-r from-brand/30 via-brand-accent to-brand/30 rounded-3xl blur-xl opacity-75 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
+      <div className="absolute -inset-1 bg-gradient-to-r from-brand/30 via-brand-accent to-brand/30 rounded-2xl blur-xl opacity-75 group-hover:opacity-100 transition-opacity duration-500 -z-10" />
 
       {/* Main Glass Card Container */}
-      <div className="relative rounded-2xl sm:rounded-3xl border border-brand/60 bg-card/95 p-4 sm:p-5 backdrop-blur-2xl shadow-sm hover:border-brand transition-all duration-300 max-w-[340px] sm:max-w-[380px] text-left">
+      <div className="relative rounded-2xl sm:rounded-2xl border border-brand/60 bg-card/95 p-4 sm:p-5 backdrop-blur-2xl shadow-sm hover:border-brand transition-all duration-300 max-w-[340px] sm:max-w-[380px] text-left">
         {/* Top Header: Tutor Avatar, Verified Badge, Name & Online Status */}
         <div className="flex items-start justify-between gap-3">
           <div className="flex items-center gap-3">
@@ -58,7 +58,7 @@ export function HeroTutorCard({ locale }: { locale: Locale }) {
           </div>
 
           {/* Glowing Online Pill */}
-          <div className="inline-flex items-center gap-1.5 rounded-full bg-primary/15 border border-primary/40 px-2.5 py-1 text-[10px] font-bold text-success-soft-foreground shadow-xs">
+          <div className="inline-flex items-center gap-1.5 rounded-full bg-success-soft border border-success/30 px-2.5 py-1 text-[10px] font-bold text-success-soft-foreground shadow-xs">
             <span className="h-1.5 w-1.5 rounded-full bg-brand animate-pulse" />
             <span>{isBn ? 'অনলাইন' : 'Online'}</span>
           </div>

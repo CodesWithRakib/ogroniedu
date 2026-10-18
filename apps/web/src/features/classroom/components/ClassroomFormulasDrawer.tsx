@@ -166,7 +166,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
   };
 
   return (
-    <div className="bg-card border border-border rounded-3xl p-6 shadow-sm flex flex-col space-y-5 text-foreground">
+    <div className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col space-y-5 text-foreground">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
@@ -279,7 +279,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
                         ? 'bg-interactive/10 text-info-soft-foreground border-info/40'
                         : item.category === 'math'
                           ? 'bg-interactive/10 text-interactive border-interactive/30'
-                          : 'bg-primary/10 text-success-soft-foreground border-primary/40'
+                          : 'bg-success-soft text-success-soft-foreground border-success/30'
                     }`}
                   >
                     {item.category}

@@ -29,7 +29,7 @@ export function ProgressTab({
   return (
     <div className="grid grid-cols-1 gap-4">
       {reports.map((rep) => (
-        <Card key={rep.id} className="border-border/60 hover:shadow-md transition-shadow">
+        <Card key={rep.id} className="border-border hover:shadow-sm transition-shadow">
           <CardHeader>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
               <div>
@@ -43,7 +43,7 @@ export function ProgressTab({
               </div>
 
               <div className="flex items-center gap-3">
-                <div className="text-center bg-muted/60 px-3 py-1.5 rounded-lg border border-border/40">
+                <div className="text-center bg-muted/60 px-3 py-1.5 rounded-lg border border-border">
                   <span className="text-[10px] uppercase text-muted-foreground font-semibold block">
                     {t.attendanceRate}
                   </span>
@@ -51,7 +51,7 @@ export function ProgressTab({
                     {formatLocalizedNumber(rep.attendanceRate, locale)}%
                   </span>
                 </div>
-                <div className="text-center bg-muted/60 px-3 py-1.5 rounded-lg border border-border/40">
+                <div className="text-center bg-muted/60 px-3 py-1.5 rounded-lg border border-border">
                   <span className="text-[10px] uppercase text-muted-foreground font-semibold block">
                     {t.completedAssignments}
                   </span>
@@ -60,7 +60,7 @@ export function ProgressTab({
                   </span>
                 </div>
                 {rep.averageScore !== null && rep.averageScore !== undefined && (
-                  <div className="text-center bg-primary/10 px-3.5 py-1.5 rounded-xl border border-primary/25 shadow-2xs">
+                  <div className="text-center bg-primary/10 px-3.5 py-1.5 rounded-xl border border-primary/25">
                     <span className="text-[10px] uppercase text-primary font-bold block">
                       {t.averageScore}
                     </span>

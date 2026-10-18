@@ -269,7 +269,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
         {actionMessage && (
           <div
             role="status"
-            className="rounded-2xl border border-primary/40 bg-primary/10 p-4 text-xs text-success-soft-foreground flex items-center gap-2.5"
+            className="rounded-2xl border border-success/30 bg-success-soft p-4 text-xs text-success-soft-foreground flex items-center gap-2.5"
             data-testid="booking-success-banner"
           >
             <CheckCircle2 className="w-4 h-4 shrink-0" />
@@ -284,7 +284,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
         )}
 
         {/* Hero Card */}
-        <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-br from-card via-card/95 to-primary/5 p-6 sm:p-8 shadow-xl">
+        <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-card via-card/95 to-primary/5 p-6 sm:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-2.5">
@@ -304,7 +304,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                   </span>
                 )}
                 {status === 'confirmed' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-primary/15 text-success-soft-foreground border border-primary/40 flex items-center gap-1.5">
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-success-soft text-success-soft-foreground border border-success/30 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     {isBn ? 'নিশ্চিতকৃত বুকিং' : 'Confirmed & Active'}
                   </span>
@@ -345,7 +345,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
               {status === 'accepted' && (
                 <Link
                   href={withLocale(`/dashboard/bookings/${bookingId}/pay`, locale)}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm shadow-lg shadow-sm transition-all hover:scale-102"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm shadow-sm transition-all hover:scale-102"
                   data-testid="pay-escrow-cta-btn"
                 >
                   <CreditCard className="w-4 h-4" />
@@ -430,7 +430,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
 
         {/* 4 KPI Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="rounded-2xl border border-border/80 bg-card p-4.5 space-y-1">
+          <div className="rounded-2xl border border-border bg-card p-4.5 space-y-1">
             <p className="text-xs text-muted-foreground font-medium">
               {isBn ? 'সেশন ফি (প্রতি ক্লাস)' : 'Fee Per Session'}
             </p>
@@ -439,7 +439,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border/80 bg-card p-4.5 space-y-1">
+          <div className="rounded-2xl border border-border bg-card p-4.5 space-y-1">
             <p className="text-xs text-muted-foreground font-medium">
               {isBn ? 'ক্লাসের মাধ্যম' : 'Tutoring Mode'}
             </p>
@@ -454,7 +454,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border/80 bg-card p-4.5 space-y-1">
+          <div className="rounded-2xl border border-border bg-card p-4.5 space-y-1">
             <p className="text-xs text-muted-foreground font-medium">
               {isBn ? 'সেশন ব্যাপ্তি' : 'Duration'}
             </p>
@@ -464,7 +464,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border/80 bg-card p-4.5 space-y-1">
+          <div className="rounded-2xl border border-border bg-card p-4.5 space-y-1">
             <p className="text-xs text-muted-foreground font-medium">
               {isBn ? 'এসক্রো নিরাপত্তা' : 'Escrow Protection'}
             </p>
@@ -480,8 +480,8 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
           {/* Left Column (2 Cols wide) */}
           <div className="lg:col-span-2 space-y-6">
             {/* Preferred Weekly Routine & Schedule Slots */}
-            <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-border/70">
+            <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-primary" />
                   <h3 className="font-bold text-sm text-foreground">
@@ -522,7 +522,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 booking?.messageNotes ||
                 (booking?.serviceAgreementSnapshot as Record<string, unknown> | undefined)?.message,
               ) && (
-                <div className="rounded-2xl border border-border/60 bg-surface/60 p-4 space-y-1.5">
+                <div className="rounded-2xl border border-border bg-surface/60 p-4 space-y-1.5">
                   <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
                     {isBn ? 'শিক্ষার্থীর প্রয়োজন ও শিক্ষকের জন্য নোট:' : 'Learning Goals & Notes:'}
                   </p>
@@ -541,8 +541,8 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             </div>
 
             {/* Scheduled Class Sessions Table */}
-            <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
-              <div className="flex items-center justify-between pb-3 border-b border-border/70">
+            <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+              <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
                   <Video className="w-4 h-4 text-info-soft-foreground" />
                   <h3 className="font-bold text-sm text-foreground">
@@ -555,7 +555,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
               </div>
 
               {sessions.length === 0 ? (
-                <div className="text-center py-8 border border-dashed border-border/80 rounded-2xl space-y-2">
+                <div className="text-center py-8 border border-dashed border-border rounded-2xl space-y-2">
                   <Calendar className="w-8 h-8 text-muted-foreground mx-auto" />
                   <p className="text-xs text-muted-foreground">
                     {isBn
@@ -568,7 +568,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                   {sessions.map((session, idx) => (
                     <div
                       key={session.id}
-                      className="rounded-2xl border border-border/80 bg-surface/50 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
+                      className="rounded-2xl border border-border bg-surface/50 p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs"
                       data-testid={`session-row-${session.id}`}
                     >
                       <div className="space-y-1">
@@ -615,7 +615,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                         )}
                         <Link
                           href={withLocale(`/sessions/${session.id}`, locale)}
-                          className="px-3 py-1.5 rounded-xl border border-border/80 hover:bg-surface text-foreground font-medium text-xs transition-colors"
+                          className="px-3 py-1.5 rounded-xl border border-border hover:bg-surface text-foreground font-medium text-xs transition-colors"
                         >
                           {isBn ? 'বিস্তারিত' : 'Details'}
                         </Link>
@@ -630,8 +630,8 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
           {/* Right Column (1 Col wide) */}
           <div className="space-y-6">
             {/* Calendar Synchronization Hub */}
-            <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
-              <div className="flex items-center gap-2 pb-3 border-b border-border/70">
+            <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-border">
                 <Calendar className="w-4 h-4 text-interactive" />
                 <h3 className="font-bold text-sm text-foreground">
                   {isBn ? 'ক্যালেন্ডার সিঙ্ক ও রুটিন' : 'Calendar Synchronization'}
@@ -650,7 +650,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     href={googleCalUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-surface/80 hover:bg-surface border border-border/80 text-foreground font-semibold text-xs transition-all hover:border-primary/40"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-surface/80 hover:bg-surface border border-border text-foreground font-semibold text-xs transition-all hover:border-primary/40"
                     data-testid="google-calendar-sync-btn"
                   >
                     <ExternalLink className="w-3.5 h-3.5 text-info-soft-foreground" />
@@ -663,7 +663,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                   variant="outline"
                   onClick={handleDownloadIcs}
                   disabled={downloadingIcs}
-                  className="w-full justify-center text-xs h-10 border-border/80 hover:bg-surface"
+                  className="w-full justify-center text-xs h-10 border-border hover:bg-surface"
                   data-testid="download-ics-calendar-btn"
                 >
                   <Download className="w-3.5 h-3.5 mr-1.5 text-interactive" />
@@ -681,8 +681,8 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             </div>
 
             {/* Escrow Guarantee & Trust Seal */}
-            <div className="rounded-3xl border border-border/80 bg-card p-6 space-y-4">
-              <div className="flex items-center gap-2 pb-3 border-b border-border/70">
+            <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+              <div className="flex items-center gap-2 pb-3 border-b border-border">
                 <ShieldCheck className="w-4 h-4 text-success-soft-foreground" />
                 <h3 className="font-bold text-sm text-foreground">
                   {isBn ? 'অগ্রণী এডু আর্থিক ট্রাস্ট নিশ্চয়তা' : 'OgroniEdu Escrow Protection'}

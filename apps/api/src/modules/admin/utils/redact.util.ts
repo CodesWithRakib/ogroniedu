@@ -6,6 +6,10 @@
 export function redactSensitiveData<T>(obj: T): T {
   if (obj === null || obj === undefined) return obj;
   if (typeof obj !== 'object') return obj;
+  // Preserve non-plain built-ins — Object.entries would flatten a Date to `{}`,
+  // silently dropping timestamps from API responses.
+  if (obj instanceof Date) return obj;
+  if (obj instanceof Map || obj instanceof Set || obj instanceof RegExp) return obj;
   if (Array.isArray(obj)) {
     return obj.map((item) => redactSensitiveData(item)) as T;
   }

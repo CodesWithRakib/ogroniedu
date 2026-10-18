@@ -12,7 +12,7 @@ export function AdminLayout({
   children,
 }: {
   locale: Locale;
-  title: string;
+  title?: string;
   subtitle?: string;
   actions?: React.ReactNode;
   children: React.ReactNode;

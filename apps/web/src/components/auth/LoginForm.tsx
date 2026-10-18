@@ -127,7 +127,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
             variant="primary"
             size="lg"
             isLoading={isLoading}
-            className="w-full font-semibold rounded-full shadow-xs"
+            className="w-full font-semibold rounded-full"
             data-testid="login-submit-btn"
           >
             <span>{dict.nav.login}</span>

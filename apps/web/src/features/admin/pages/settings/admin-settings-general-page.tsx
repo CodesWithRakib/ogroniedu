@@ -23,7 +23,6 @@ export function AdminSettingsGeneralPage({ locale }: { locale: Locale }) {
   return (
     <AdminLayout
       locale={locale}
-      title={isBn ? 'সিস্টেম রেফারেন্স কনফিগারেশন' : 'System Reference Settings'}
     >
       <div className="space-y-6 py-6" data-testid="admin-settings-general-page">
         {/* Back Link to Hub (Image 2 Pattern) */}
@@ -38,7 +37,7 @@ export function AdminSettingsGeneralPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
           <div>
             <div className="flex items-center space-x-3">
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">

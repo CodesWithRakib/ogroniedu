@@ -522,18 +522,18 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
       </div>
 
       {/* Hero Profile Glass Card */}
-      <div className="max-w-7xl mx-auto rounded-3xl bg-card/90 border border-border p-6 sm:p-10 shadow-sm relative overflow-hidden backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto rounded-2xl bg-card/90 border border-border p-6 sm:p-10 shadow-sm relative overflow-hidden backdrop-blur-xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-soft rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-5">
             {/* Avatar */}
             <div className="relative shrink-0">
-              <div className="flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-3xl bg-brand-soft text-primary font-extrabold text-2xl sm:text-3xl ring-4 ring-brand/40 shadow-2xl">
+              <div className="flex h-24 w-24 sm:h-28 sm:w-28 items-center justify-center rounded-2xl bg-brand-soft text-primary font-extrabold text-2xl sm:text-3xl ring-4 ring-brand/40">
                 {initials}
               </div>
               <span
-                className="absolute bottom-1 right-1 h-5 w-5 rounded-full bg-brand ring-4 ring-border shadow-md"
+                className="absolute bottom-1 right-1 h-5 w-5 rounded-full bg-brand ring-4 ring-border"
                 title={isBn ? 'অনলাইনে সক্রিয়' : 'Active Online'}
               />
             </div>
@@ -574,7 +574,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
               {/* Verified Trust Badges */}
               <div className="flex flex-wrap gap-2 pt-2">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-primary/15 text-success-soft-foreground border border-primary/40">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-success-soft text-success-soft-foreground border border-success/30">
                   <CheckCircle2 className="w-3.5 h-3.5 text-success-soft-foreground" />
                   <span>{isBn ? '১০০% এনআইডি যাচাইকৃত' : 'NID Verified'}</span>
                 </span>
@@ -617,7 +617,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
         {/* Left Column (Details, Credentials, Subjects, Reviews) */}
         <div className="lg:col-span-8 space-y-8">
           {/* Section 1: About & Bio */}
-          <div className="rounded-3xl bg-card/80 border border-border p-6 sm:p-8 space-y-4 shadow-xl backdrop-blur-md">
+          <div className="rounded-2xl bg-card/80 border border-border p-6 sm:p-8 space-y-4 backdrop-blur-md">
             <div className="flex items-center gap-2.5 text-lg font-bold text-foreground border-b border-border pb-3">
               <BookOpen className="w-5 h-5 text-primary" />
               <h2>{isBn ? 'শিক্ষক পরিচিতি ও পাঠদান পদ্ধতি' : 'About Educator & Pedagogy'}</h2>
@@ -665,7 +665,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
           </div>
 
           {/* Section 2: Verified Academic Qualifications */}
-          <div className="rounded-3xl bg-card/80 border border-border p-6 sm:p-8 space-y-5 shadow-xl backdrop-blur-md">
+          <div className="rounded-2xl bg-card/80 border border-border p-6 sm:p-8 space-y-5 backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2.5 text-lg font-bold text-foreground">
                 <GraduationCap className="w-5 h-5 text-primary" />
@@ -701,7 +701,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                       </span>
                     </div>
                   </div>
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-primary/15 text-success-soft-foreground border border-primary/40 shrink-0">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[11px] font-semibold bg-success-soft text-success-soft-foreground border border-success/30 shrink-0">
                     <CheckCircle2 className="w-3.5 h-3.5 text-success-soft-foreground" />
                     <span>{isBn ? 'সনদপত্র ভেরিফাইড' : 'Credential Verified'}</span>
                   </span>
@@ -711,7 +711,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
           </div>
 
           {/* Section 3: Subjects, Curriculum & Individual Rates */}
-          <div className="rounded-3xl bg-card/80 border border-border p-6 sm:p-8 space-y-5 shadow-xl backdrop-blur-md">
+          <div className="rounded-2xl bg-card/80 border border-border p-6 sm:p-8 space-y-5 backdrop-blur-md">
             <div className="flex items-center gap-2.5 text-lg font-bold text-foreground border-b border-border pb-3">
               <BookOpen className="w-5 h-5 text-primary" />
               <h2>{isBn ? 'পাঠদানের বিষয়সমূহ ও শ্রেণিভিত্তিক রেট' : 'Subjects & Course Rates'}</h2>
@@ -747,7 +747,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
           </div>
 
           {/* Section 4: Teaching Modes & Service Areas */}
-          <div className="rounded-3xl bg-card/80 border border-border p-6 sm:p-8 space-y-5 shadow-xl backdrop-blur-md">
+          <div className="rounded-2xl bg-card/80 border border-border p-6 sm:p-8 space-y-5 backdrop-blur-md">
             <div className="flex items-center gap-2.5 text-lg font-bold text-foreground border-b border-border pb-3">
               <MapPin className="w-5 h-5 text-primary" />
               <h2>{isBn ? 'পাঠদানের মাধ্যম ও সার্ভিস এরিয়া' : 'Teaching Modes & Service Areas'}</h2>
@@ -790,7 +790,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
           </div>
 
           {/* Section 5: Weekly Schedule */}
-          <div className="rounded-3xl bg-card/80 border border-border p-6 sm:p-8 space-y-4 shadow-xl backdrop-blur-md">
+          <div className="rounded-2xl bg-card/80 border border-border p-6 sm:p-8 space-y-4 backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2.5 text-lg font-bold text-foreground">
                 <Calendar className="w-5 h-5 text-primary" />
@@ -824,7 +824,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
           </div>
 
           {/* Section 6: Ratings & Verified Student Reviews */}
-          <div className="rounded-3xl bg-card/80 border border-border p-6 sm:p-8 space-y-5 shadow-xl backdrop-blur-md">
+          <div className="rounded-2xl bg-card/80 border border-border p-6 sm:p-8 space-y-5 backdrop-blur-md">
             <div className="flex items-center justify-between border-b border-border pb-3">
               <div className="flex items-center gap-2.5 text-lg font-bold text-foreground">
                 <Star className="w-5 h-5 text-warning-soft-foreground fill-warning" />
@@ -877,7 +877,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
           </div>
 
           {/* Section 7: OgroniEdu Guarantee Banner */}
-          <div className="rounded-3xl bg-gradient-to-br from-card to-card border border-border p-6 space-y-3 shadow-lg">
+          <div className="rounded-2xl bg-gradient-to-br from-card to-card border border-border p-6 space-y-3">
             <div className="flex items-center gap-2 text-base font-bold text-primary">
               <ShieldCheck className="w-5 h-5" />
               <h3>
@@ -907,7 +907,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
         {/* Right Column: Sticky Booking Request Card */}
         <div id="booking-section" className="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
-          <div className="rounded-3xl bg-card border-2 border-border p-6 sm:p-7 shadow-sm space-y-5 backdrop-blur-xl">
+          <div className="rounded-2xl bg-card border-2 border-border p-6 sm:p-7 shadow-sm space-y-5 backdrop-blur-xl">
             <div className="border-b border-border pb-4">
               <span className="text-xs text-primary-soft-foreground font-semibold uppercase tracking-wider block">
                 {isBn ? 'টিউশন বুকিং করুন' : 'Book a Tutoring Session'}
@@ -960,7 +960,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                     <select
                       value={selectedStudentId}
                       onChange={(e) => setSelectedStudentId(e.target.value)}
-                      className="w-full h-10 px-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-brand transition-colors"
+                      className="w-full h-10 px-3 rounded-xl bg-background border border-border text-foreground focus-visible:outline-none focus:border-brand transition-colors"
                     >
                       {studentOptions.map((opt) => (
                         <option
@@ -998,7 +998,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   <select
                     value={selectedSubjectId}
                     onChange={(e) => setSelectedSubjectId(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl bg-background border border-border text-foreground focus:outline-none focus:border-brand transition-colors"
+                    className="w-full h-10 px-3 rounded-xl bg-background border border-border text-foreground focus-visible:outline-none focus:border-brand transition-colors"
                   >
                     {subjects.map((sub) => (
                       <option

@@ -554,7 +554,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             data-testid="tab-levels"
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'levels'
-                ? 'bg-card text-foreground shadow-xs border border-border/80'
+                ? 'bg-card text-foreground shadow-xs border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -573,7 +573,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             data-testid="tab-curricula"
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'curricula'
-                ? 'bg-card text-foreground shadow-xs border border-border/80'
+                ? 'bg-card text-foreground shadow-xs border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -592,7 +592,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             data-testid="tab-streams"
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'streams'
-                ? 'bg-card text-foreground shadow-xs border border-border/80'
+                ? 'bg-card text-foreground shadow-xs border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -611,7 +611,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             data-testid="tab-institutions"
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'institutions'
-                ? 'bg-card text-foreground shadow-xs border border-border/80'
+                ? 'bg-card text-foreground shadow-xs border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -630,7 +630,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             data-testid="tab-subjects"
             className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'subjects'
-                ? 'bg-card text-foreground shadow-xs border border-border/80'
+                ? 'bg-card text-foreground shadow-xs border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -706,7 +706,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* TABLE CONTENT */}
-        <Card className="rounded-3xl border border-border shadow-2xs overflow-hidden">
+        <Card className="rounded-2xl border border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
               <thead className="bg-surface border-b border-border text-muted-foreground font-semibold">
@@ -784,7 +784,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                                   ? 'ক্লিক করে সক্রিয় করুন'
                                   : 'Click to activate'
                             }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
                               lvl.isActive !== false
                                 ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
                                 : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
@@ -882,7 +882,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                                   ? 'ক্লিক করে সক্রিয় করুন'
                                   : 'Click to activate'
                             }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
                               curr.isActive !== false
                                 ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
                                 : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
@@ -980,7 +980,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                                   ? 'ক্লিক করে সক্রিয় করুন'
                                   : 'Click to activate'
                             }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
                               st.isActive !== false
                                 ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
                                 : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
@@ -1083,7 +1083,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                                   ? 'ক্লিক করে সক্রিয় করুন'
                                   : 'Click to activate'
                             }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
                               inst.isActive !== false
                                 ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
                                 : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
@@ -1181,7 +1181,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                                   ? 'ক্লিক করে সক্রিয় করুন'
                                   : 'Click to activate'
                             }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer shadow-2xs ${
+                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
                               subj.isActive !== false
                                 ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
                                 : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'

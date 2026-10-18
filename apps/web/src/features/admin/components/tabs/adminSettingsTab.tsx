@@ -5,7 +5,7 @@ import type { AdminSystemSettingItem } from '../../types/admin.types';
 export function AdminSettingsTab({ settings }: { settings: AdminSystemSettingItem[] }) {
   return (
     <div className="space-y-4" data-testid="settings-tab-content">
-      <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 space-y-4 shadow-xs">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs">
         <h3 className="text-base font-bold text-foreground">System Reference Settings</h3>
         <div className="divide-y divide-border/60">
           {settings.map((setting) => (

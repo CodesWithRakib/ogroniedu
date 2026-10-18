@@ -147,7 +147,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
       }
     >
       {/* Top Banner & Quick Actions */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-6 rounded-3xl border border-border shadow-xs">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-6 rounded-2xl border border-border shadow-xs">
         <div>
           <h2 className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight">
             {locale === 'bn' ? 'আপনার টিউশন অনুরোধসমূহ' : 'Your Tutoring Inquiries'}
@@ -172,13 +172,13 @@ export function RequestsPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Filter Tabs */}
-      <div className="mb-6 flex flex-wrap gap-2 border-b border-border/70 pb-3">
+      <div className="mb-6 flex flex-wrap gap-2 border-b border-border pb-3">
         <button
           onClick={() => setActiveFilter('all')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
             activeFilter === 'all'
               ? 'bg-primary text-white shadow-xs'
-              : 'bg-surface text-foreground hover:bg-surface-hover border border-border/80'
+              : 'bg-surface text-foreground hover:bg-surface-hover border border-border'
           }`}
         >
           <span>{locale === 'bn' ? 'সকল অনুরোধ' : 'All Requests'}</span>
@@ -233,7 +233,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
             activeFilter === 'closed'
               ? 'bg-muted text-foreground shadow-xs'
-              : 'bg-surface text-muted-foreground hover:bg-surface-hover border border-border/80'
+              : 'bg-surface text-muted-foreground hover:bg-surface-hover border border-border'
           }`}
         >
           <span>{locale === 'bn' ? 'বাতিল / শেষ' : 'Closed'}</span>
@@ -317,7 +317,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
               <Card
                 key={r.id}
                 data-testid={`request-card-${r.id}`}
-                className="flex flex-col justify-between bg-card border border-border/90 hover:border-primary/40 text-foreground hover:shadow-md transition-all rounded-2xl overflow-hidden shadow-xs"
+                className="flex flex-col justify-between bg-card border border-border hover:border-primary/40 text-foreground hover:shadow-sm transition-all rounded-2xl overflow-hidden shadow-xs"
               >
                 <CardHeader className="space-y-3 pb-3">
                   <div className="flex items-center justify-between gap-2">
@@ -359,12 +359,12 @@ export function RequestsPage({ locale }: { locale: Locale }) {
 
                 <CardContent className="space-y-3 text-xs pt-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-surface text-foreground border border-border/80 font-medium text-xs">
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-surface text-foreground border border-border font-medium text-xs">
                       <BookOpen className="w-3.5 h-3.5 text-primary" />
                       {subjectTitle}
                     </span>
                     {levelTitle && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-surface text-foreground border border-border/80 font-medium text-xs">
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-surface text-foreground border border-border font-medium text-xs">
                         <GraduationCap className="w-3.5 h-3.5 text-interactive" />
                         {levelTitle}
                       </span>
@@ -373,7 +373,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                   </div>
 
                   {r.messageNotes && (
-                    <div className="p-3 rounded-xl bg-surface border border-border/70 text-foreground text-xs leading-relaxed italic">
+                    <div className="p-3 rounded-xl bg-surface border border-border text-foreground text-xs leading-relaxed italic">
                       "{r.messageNotes}"
                     </div>
                   )}

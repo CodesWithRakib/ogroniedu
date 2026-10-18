@@ -78,7 +78,7 @@ export function AdminSupportTab({
           </SelectContent>
         </Select>
       </div>
-      <div className="border border-border/70 rounded-2xl overflow-hidden bg-card shadow-xs">
+      <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-xs">
         <Table data-testid="support-table">
           <TableHeader>
             <TableRow className="bg-muted/40 text-muted-foreground uppercase tracking-wider text-[11px] font-semibold">

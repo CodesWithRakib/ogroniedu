@@ -30,9 +30,9 @@ export function StudentUpcomingClassesCard({
   const isBn = locale === 'bn';
 
   return (
-    <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+    <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
+      <div className="flex items-center justify-between pb-3.5 border-b border-border">
         <div className="flex items-center gap-2.5">
           <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
             <Calendar className="h-5 w-5" />
@@ -64,7 +64,7 @@ export function StudentUpcomingClassesCard({
           </div>
         ) : sessions.length === 0 ? (
           <div className="py-8 px-4 text-center">
-            <div className="h-12 w-12 rounded-xl bg-muted/40 border border-border/60 mx-auto flex items-center justify-center text-muted-foreground mb-3">
+            <div className="h-12 w-12 rounded-xl bg-muted/40 border border-border mx-auto flex items-center justify-center text-muted-foreground mb-3">
               <Calendar className="h-6 w-6" />
             </div>
             <p className="text-xs font-bold text-foreground">
@@ -93,7 +93,7 @@ export function StudentUpcomingClassesCard({
                   className={`p-3.5 rounded-xl border transition-colors flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${
                     isLive
                       ? 'bg-primary-soft/40 border-primary/30'
-                      : 'bg-muted/20 border-border/60 hover:bg-muted/30'
+                      : 'bg-muted/20 border-border hover:bg-muted/30'
                   }`}
                 >
                   <div className="flex items-start gap-3 min-w-0">

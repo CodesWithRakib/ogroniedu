@@ -91,7 +91,7 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
   }
 
   return (
-    <Card className="rounded-3xl border-border bg-card shadow-xs">
+    <Card className="rounded-2xl border-border bg-card shadow-xs">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <KeyRound className="h-4 w-4 text-primary" />
@@ -104,7 +104,7 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
-        <div className="p-3.5 rounded-2xl bg-surface-muted border border-border/80 text-xs text-muted-foreground flex items-start gap-2.5">
+        <div className="p-3.5 rounded-2xl bg-surface-muted border border-border text-xs text-muted-foreground flex items-start gap-2.5">
           <ShieldCheck className="h-4 w-4 text-success-soft-foreground shrink-0 mt-0.5" />
           <span>
             {isBn
@@ -181,10 +181,10 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Card 1: Minor Child Learner */}
-        <Card className="rounded-3xl border-border bg-card p-5 space-y-4 flex flex-col justify-between hover:border-primary/40 transition-all">
+        <Card className="rounded-2xl border-border bg-card p-5 space-y-4 flex flex-col justify-between hover:border-primary/40 transition-all">
           <div className="space-y-3">
             <div className="flex items-center gap-2.5 pb-2 border-b border-border">
-              <div className="h-9 w-9 rounded-2xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center shrink-0">
+              <div className="h-9 w-9 rounded-2xl bg-warning-soft border border-warning/20 text-warning flex items-center justify-center shrink-0">
                 <ShieldAlert className="h-5 w-5" />
               </div>
               <div>
@@ -237,13 +237,13 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               </ul>
             </div>
 
-            <div className="space-y-2 text-xs pt-2 border-t border-border/80">
-              <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider text-amber-600">
+            <div className="space-y-2 text-xs pt-2 border-t border-border">
+              <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider text-warning">
                 {isBn ? 'অভিভাবকের সুরক্ষা ও নিয়ন্ত্রণ:' : 'Guardian Supervision:'}
               </p>
               <ul className="space-y-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <Lock className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+                  <Lock className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? 'সরাসরি আর্থিক লেনদেন ও পেমেন্ট নিষিদ্ধ'
@@ -251,7 +251,7 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Lock className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+                  <Lock className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? 'টিউটর হায়ার ও বুকিং চুক্তি অভিভাবকের অনুমোদনসাপেক্ষ'
@@ -259,7 +259,7 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <Lock className="h-3.5 w-3.5 text-amber-500 shrink-0 mt-0.5" />
+                  <Lock className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? 'জরুরি এসওএস সেফটি রিপোর্ট স্বয়ংক্রিয়ভাবে অভিভাবককে পাঠায়'
@@ -272,14 +272,14 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
 
           <Badge
             variant="outline"
-            className="w-full justify-center py-1 bg-amber-500/10 text-amber-700 border-amber-500/30 text-[11px]"
+            className="w-full justify-center py-1 bg-warning-soft text-warning-soft-foreground border-warning/30 text-[11px]"
           >
             {isBn ? '🛡️ অভিভাবক সুরক্ষায় পরিচালিত' : '🛡️ Guardian Protected'}
           </Badge>
         </Card>
 
         {/* Card 2: Standalone Student */}
-        <Card className="rounded-3xl border-border bg-card p-5 space-y-4 flex flex-col justify-between hover:border-primary/40 transition-all">
+        <Card className="rounded-2xl border-border bg-card p-5 space-y-4 flex flex-col justify-between hover:border-primary/40 transition-all">
           <div className="space-y-3">
             <div className="flex items-center gap-2.5 pb-2 border-b border-border">
               <div className="h-9 w-9 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
@@ -343,7 +343,7 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               </ul>
             </div>
 
-            <div className="space-y-2 text-xs pt-2 border-t border-border/80">
+            <div className="space-y-2 text-xs pt-2 border-t border-border">
               <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider text-primary">
                 {isBn ? 'ঐচ্ছিক সুবিধা:' : 'Optional Features:'}
               </p>
@@ -369,10 +369,10 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
         </Card>
 
         {/* Card 3: Guardian */}
-        <Card className="rounded-3xl border-border bg-card p-5 space-y-4 flex flex-col justify-between hover:border-primary/40 transition-all">
+        <Card className="rounded-2xl border-border bg-card p-5 space-y-4 flex flex-col justify-between hover:border-primary/40 transition-all">
           <div className="space-y-3">
             <div className="flex items-center gap-2.5 pb-2 border-b border-border">
-              <div className="h-9 w-9 rounded-2xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-600 flex items-center justify-center shrink-0">
+              <div className="h-9 w-9 rounded-2xl bg-success-soft border border-success/20 text-success flex items-center justify-center shrink-0">
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <div>
@@ -386,12 +386,12 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
             </div>
 
             <div className="space-y-2 text-xs">
-              <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider text-emerald-600">
+              <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider text-success">
                 {isBn ? 'তদারকি ও প্রশাসনিক অধিকার:' : 'Oversight & Administrative:'}
               </p>
               <ul className="space-y-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? 'একাধিক সন্তানের বিস্তারিত প্রোফাইল নিবন্ধন ও তদারকি'
@@ -399,7 +399,7 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? 'সন্তানদের জন্য যাচাইকৃত শিক্ষক নির্বাচন ও বুকিং'
@@ -407,7 +407,7 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? 'এসক্রো সিস্টেমে সুরক্ষিত ফি পরিশোধ ও অর্থ ছাড়'
@@ -415,7 +415,7 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? 'সন্তানের প্রতিদিনের ক্লাসের উপস্থিতি ও রিপোর্ট দেখা'
@@ -423,7 +423,7 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="h-3.5 w-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                  <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? '৪৮ ঘণ্টার মধ্যে ফ্রি শিক্ষক প্রতিস্থাপনের গ্যারান্টি দাবি'
@@ -436,7 +436,7 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
 
           <Badge
             variant="outline"
-            className="w-full justify-center py-1 bg-emerald-500/10 text-emerald-700 border-emerald-500/30 text-[11px]"
+            className="w-full justify-center py-1 bg-success-soft text-success-soft-foreground border-success/30 text-[11px]"
           >
             {isBn ? '👨‍👩‍👧 অভিভাবক ও এসক্রো নিয়ন্ত্রক' : '👨‍👩‍👧 Family Guardian'}
           </Badge>
@@ -500,7 +500,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
           </p>
         </div>
       ) : profile.queryError ? (
-        <Card className="rounded-3xl border-destructive/30 bg-destructive-soft">
+        <Card className="rounded-2xl border-destructive/30 bg-destructive-soft">
           <CardContent className="py-8 text-center text-sm text-destructive font-medium">
             {profile.queryError}
           </CardContent>
@@ -508,10 +508,10 @@ export function ProfilePage({ locale }: { locale: Locale }) {
       ) : (
         <div className="space-y-6">
           {/* Identity Hero Card */}
-          <Card className="rounded-3xl border-border bg-gradient-to-br from-card via-card to-surface-muted p-6 shadow-xs">
+          <Card className="rounded-2xl border-border bg-gradient-to-br from-card via-card to-surface-muted p-6 shadow-xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
               <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-3xl bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 border border-primary/30 text-primary font-black text-xl flex items-center justify-center shrink-0 shadow-inner">
+                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 border border-primary/30 text-primary font-black text-xl flex items-center justify-center shrink-0">
                   {initials}
                 </div>
                 <div className="space-y-1.5">
@@ -564,10 +564,10 @@ export function ProfilePage({ locale }: { locale: Locale }) {
               <div className="shrink-0 w-full sm:w-auto">
                 {isStudent ? (
                   isMinor ? (
-                    <div className="p-3 rounded-2xl bg-amber-500/10 border border-amber-500/30 flex items-center gap-2.5">
-                      <ShieldAlert className="h-5 w-5 text-amber-600 shrink-0" />
+                    <div className="p-3 rounded-2xl bg-warning-soft border border-warning/30 flex items-center gap-2.5">
+                      <ShieldAlert className="h-5 w-5 text-warning shrink-0" />
                       <div>
-                        <span className="text-xs font-bold text-amber-700 block">
+                        <span className="text-xs font-bold text-warning-soft-foreground block">
                           {isBn
                             ? '🛡️ অপ্রাপ্তবয়স্ক শিক্ষার্থী (Minor Learner)'
                             : '🛡️ Protected Minor Learner'}
@@ -597,10 +597,10 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </div>
                   )
                 ) : isGuardian ? (
-                  <div className="p-3 rounded-2xl bg-emerald-500/10 border border-emerald-500/30 flex items-center gap-2.5">
-                    <ShieldCheck className="h-5 w-5 text-emerald-600 shrink-0" />
+                  <div className="p-3 rounded-2xl bg-success-soft border border-success/30 flex items-center gap-2.5">
+                    <ShieldCheck className="h-5 w-5 text-success shrink-0" />
                     <div>
-                      <span className="text-xs font-bold text-emerald-700 block">
+                      <span className="text-xs font-bold text-success-soft-foreground block">
                         {isBn ? '👨‍👩‍👧 অভিভাবক একাউন্ট' : '👨‍👩‍👧 Family Guardian'}
                       </span>
                       <span className="text-[11px] text-muted-foreground block">
@@ -628,13 +628,13 @@ export function ProfilePage({ locale }: { locale: Locale }) {
           </Card>
 
           {/* Tab Navigation Controls */}
-          <div className="flex flex-wrap p-1 bg-surface-muted rounded-2xl border border-border/80 gap-1">
+          <div className="flex flex-wrap p-1 bg-surface-muted rounded-2xl border border-border gap-1">
             <button
               type="button"
               onClick={() => setActiveTab('personal')}
               className={`flex-1 min-w-[140px] py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'personal'
-                  ? 'bg-card text-foreground shadow-xs border border-border/60'
+                  ? 'bg-card text-foreground shadow-xs border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -648,7 +648,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                 onClick={() => setActiveTab('academic')}
                 className={`flex-1 min-w-[140px] py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
                   activeTab === 'academic'
-                    ? 'bg-card text-foreground shadow-xs border border-border/60'
+                    ? 'bg-card text-foreground shadow-xs border border-border'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -662,7 +662,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
               onClick={() => setActiveTab('matrix')}
               className={`flex-1 min-w-[140px] py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'matrix'
-                  ? 'bg-card text-foreground shadow-xs border border-border/60'
+                  ? 'bg-card text-foreground shadow-xs border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -675,7 +675,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
               onClick={() => setActiveTab('security')}
               className={`flex-1 min-w-[140px] py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'security'
-                  ? 'bg-card text-foreground shadow-xs border border-border/60'
+                  ? 'bg-card text-foreground shadow-xs border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -686,7 +686,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
 
           {/* TAB 1: Personal Details */}
           {activeTab === 'personal' && (
-            <Card className="rounded-3xl border-border bg-card shadow-xs">
+            <Card className="rounded-2xl border-border bg-card shadow-xs">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <User className="h-4 w-4 text-primary" />
@@ -825,7 +825,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
 
           {/* TAB 2: Academic Profile (For Students) */}
           {activeTab === 'academic' && isStudent && (
-            <Card className="rounded-3xl border-border bg-card shadow-xs">
+            <Card className="rounded-2xl border-border bg-card shadow-xs">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <School className="h-4 w-4 text-primary" />

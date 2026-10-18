@@ -35,7 +35,7 @@ export function AttendanceTab({
 
   if (attendance.length === 0) {
     return (
-      <Card className="p-10 text-center text-muted-foreground border-border/80 rounded-2xl bg-card">
+      <Card className="p-10 text-center text-muted-foreground border-border rounded-2xl bg-card">
         <CalendarCheck className="w-10 h-10 mx-auto mb-2 text-muted-foreground/60" />
         <p className="text-sm font-semibold text-foreground">{t.noAttendance}</p>
       </Card>
@@ -54,7 +54,7 @@ export function AttendanceTab({
       {attendance.map((rec) => (
         <Card
           key={rec.id}
-          className="border-border hover:border-primary/40 hover:shadow-md transition-all rounded-2xl bg-card shadow-xs"
+          className="border-border hover:border-primary/40 hover:shadow-sm transition-all rounded-2xl bg-card shadow-xs"
         >
           <CardHeader className="pb-3 flex flex-row items-center justify-between">
             <div>

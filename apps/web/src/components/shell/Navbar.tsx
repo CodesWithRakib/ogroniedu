@@ -73,7 +73,7 @@ export function Navbar({ locale }: NavbarProps) {
         {/* Center Pill Navigation - Essential Links Only */}
         <nav
           aria-label={isBn ? 'প্রধান নেভিগেশন' : 'Main Navigation'}
-          className="hidden md:flex items-center gap-1 p-1 rounded-full text-xs font-medium bg-surface/60 border border-border/60"
+          className="hidden md:flex items-center gap-1 p-1 rounded-full text-xs font-medium bg-surface/60 border border-border"
         >
           {navLinks.map((link) => {
             const active = isActive(link.href);
@@ -99,7 +99,7 @@ export function Navbar({ locale }: NavbarProps) {
           <Link
             href={targetPath}
             aria-label={`Switch language to ${isBn ? 'English' : 'বাংলা'}`}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border/80 bg-card px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-surface-hover transition-colors shadow-2xs"
+            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-surface-hover transition-colors"
           >
             <Globe className="h-3.5 w-3.5 text-primary" />
             <span className="font-semibold">{isBn ? 'বাং' : 'EN'}</span>
@@ -173,7 +173,7 @@ export function Navbar({ locale }: NavbarProps) {
           <div className="pt-3 border-t border-border">
             {showAuthed ? (
               <div className="space-y-3">
-                <div className="p-3 rounded-2xl bg-surface border border-border/80 flex items-center justify-between">
+                <div className="p-3 rounded-2xl bg-surface border border-border flex items-center justify-between">
                   <div className="space-y-0.5">
                     <p className="text-xs font-bold text-foreground">{user.displayName}</p>
                     <p className="text-[11px] text-muted-foreground capitalize">

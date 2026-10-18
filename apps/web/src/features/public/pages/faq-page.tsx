@@ -69,7 +69,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
             className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all font-bengali cursor-pointer ${
               activeCategory === cat.id
                 ? 'bg-primary text-primary-foreground shadow-xs'
-                : 'bg-card text-muted-foreground border border-border/80 hover:bg-muted/50 hover:text-foreground'
+                : 'bg-card text-muted-foreground border border-border hover:bg-muted/50 hover:text-foreground'
             }`}
           >
             {cat.label}
@@ -84,7 +84,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
           return (
             <Card
               key={idx}
-              className="bg-card border-border/80 rounded-2xl shadow-xs transition-all overflow-hidden hover:border-primary/40"
+              className="bg-card border-border rounded-2xl shadow-xs transition-all overflow-hidden hover:border-primary/40"
             >
               <button
                 type="button"
@@ -103,7 +103,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
               </button>
               {isOpen && (
                 <CardContent className="pt-0 pb-6 px-5 sm:px-6">
-                  <div className="border-t border-border/60 pt-4">
+                  <div className="border-t border-border pt-4">
                     <p className="text-sm sm:text-base text-muted-foreground font-bengali leading-relaxed">
                       {faq.a}
                     </p>
@@ -116,7 +116,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Still Have Questions CTA */}
-      <div className="rounded-2xl border border-border/80 bg-card p-8 sm:p-10 text-center space-y-4 shadow-card">
+      <div className="rounded-2xl border border-border bg-card p-8 sm:p-10 text-center space-y-4 shadow-card">
         <h3 className="text-xl font-bold text-foreground font-bengali">
           {locale === 'bn' ? 'আরও কোনো প্রশ্ন আছে?' : 'Still have questions?'}
         </h3>

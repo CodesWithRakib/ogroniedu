@@ -48,7 +48,7 @@ export const TabList = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivEl
       ref={ref}
       role="tablist"
       className={twMerge(
-        'inline-flex items-center justify-center rounded-xl bg-surface-muted p-1 text-muted-foreground border border-border/60 shadow-xs',
+        'inline-flex items-center justify-center rounded-xl bg-surface-muted p-1 text-muted-foreground border border-border shadow-xs',
         className,
       )}
       {...props}

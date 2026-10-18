@@ -66,9 +66,9 @@ export function HomePage({ locale }: { locale: Locale }) {
       />
 
       {/* Ambient Gradient Lights matching the design's dark emerald glow */}
-      <div className="absolute top-0 right-1/4 w-[700px] h-[450px] bg-brand-soft rounded-full blur-[160px] pointer-events-none -z-10" />
-      <div className="absolute top-36 left-10 w-[500px] h-[350px] bg-primary/10 rounded-full blur-[140px] pointer-events-none -z-10" />
-      <div className="absolute top-[600px] left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-primary/10 rounded-full blur-[160px] pointer-events-none -z-10" />
+      <div className="absolute top-0 right-1/4 w-[700px] h-[450px] bg-brand-soft/70 rounded-full blur-[160px] pointer-events-none -z-10" />
+      <div className="absolute top-36 left-10 w-[500px] h-[350px] bg-primary/5 rounded-full blur-[140px] pointer-events-none -z-10" />
+      <div className="absolute top-[600px] left-1/2 -translate-x-1/2 w-[800px] h-[300px] bg-primary/5 rounded-full blur-[160px] pointer-events-none -z-10" />
 
       {/* ====================================================================
        * HERO SECTION: Pixel-Perfect to the Reference Design
@@ -79,7 +79,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             {/* Left Column: Trust Badge, Bold Headlines, Subtitle & Search */}
             <div className="lg:col-span-6 space-y-4 sm:space-y-5 text-left z-10">
               {/* Trust Pill Badge */}
-              <div className="inline-flex flex-nowrap items-center gap-2.5 rounded-full border border-border/80 bg-card py-1.5 px-3.5 shadow-xs whitespace-nowrap">
+              <div className="inline-flex flex-nowrap items-center gap-2.5 rounded-full border border-border bg-card py-1.5 px-3.5 shadow-xs whitespace-nowrap">
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
                   <ShieldCheck className="h-4 w-4 text-primary" />
                   <span>
@@ -97,7 +97,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </div>
 
                 {/* Star Ratings */}
-                <div className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-amber-500">
+                <div className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-star">
                   <span className="tracking-tighter">★★★★★</span>
                   <span className="text-foreground font-semibold ml-0.5">4.8/5</span>
                   <span className="text-muted-foreground font-normal text-[10px]">
@@ -137,7 +137,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               {/* Custom Interactive Visual Stage */}
               <div className="relative w-full max-w-[640px] select-none">
                 {/* 1. Base Layer: Real Student Photo Sitting at Desk (Rock-Solid Intrinsic Dimensions) */}
-                <div className="relative w-full rounded-3xl overflow-hidden shadow-card ring-1 ring-border">
+                <div className="relative w-full rounded-2xl overflow-hidden shadow-card ring-1 ring-border">
                   <Image
                     src="/images/hero-student-pure.png"
                     alt="Student learning at desk with verified tutor"
@@ -179,7 +179,7 @@ export function HomePage({ locale }: { locale: Locale }) {
        * STATS & SOCIAL PROOF STRIP (Directly Below Hero)
        * ==================================================================== */}
       <section
-        className="relative py-6 sm:py-7 border-y border-border/60 bg-muted/20"
+        className="relative py-6 sm:py-7 border-y border-border bg-muted/20"
         data-testid="platform-metrics-band"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
@@ -261,7 +261,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                   <StudentAvatar index={2} size="md" />
                   <StudentAvatar index={3} size="md" />
                   <StudentAvatar index={4} size="md" className="ring-2 ring-brand" />
-                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-soft text-primary text-[10px] font-bold border border-border/80">
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full bg-primary-soft text-primary text-[10px] font-bold border border-border">
                     +10k
                   </div>
                 </div>
@@ -294,7 +294,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1: Verified & Experienced Tutors */}
-            <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <Award className="h-6 w-6" />
               </div>
@@ -309,7 +309,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 2: Flexible Learning Options */}
-            <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <CalendarDays className="h-6 w-6" />
               </div>
@@ -324,7 +324,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 3: Wide Subject Coverage */}
-            <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <BookOpen className="h-6 w-6" />
               </div>
@@ -339,7 +339,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 4: Track Progress */}
-            <div className="rounded-2xl border border-border/80 bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <TrendingUp className="h-6 w-6" />
               </div>
@@ -359,7 +359,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       {/* ====================================================================
        * 3-STEP JOURNEY SECTION
        * ==================================================================== */}
-      <section className="py-16 sm:py-20 border-t border-border/60 bg-muted/10">
+      <section className="py-16 sm:py-20 border-t border-border bg-muted/10">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-center max-w-2xl mx-auto mb-14 space-y-2.5">
             <span className="text-xs font-bold uppercase tracking-wider text-primary">
@@ -372,7 +372,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
-            <div className="rounded-2xl border border-border/80 bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono">01</span>
                 <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary font-bold">
@@ -390,7 +390,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-2xl border border-border/80 bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono">02</span>
                 <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary font-bold">
@@ -408,7 +408,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-2xl border border-border/80 bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono">03</span>
                 <div className="h-9 w-9 rounded-xl bg-success-soft flex items-center justify-center text-success font-bold">
@@ -433,7 +433,7 @@ export function HomePage({ locale }: { locale: Locale }) {
        * ==================================================================== */}
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-card p-8 sm:p-12 shadow-card">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 sm:p-12 shadow-card">
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-soft rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="space-y-3.5 max-w-xl">

@@ -38,7 +38,7 @@ export function ProgressGaugeCard({
   const strokeDashoffset = circumference - (percentage / 100) * circumference;
 
   return (
-    <div className="bg-card border border-border/70 rounded-3xl p-5 sm:p-6 shadow-xs flex flex-col justify-between select-none">
+    <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between select-none">
       {/* Header */}
       <div>
         <h3 className="text-base font-bold text-foreground tracking-tight flex items-center gap-2">
@@ -82,7 +82,7 @@ export function ProgressGaugeCard({
       </div>
 
       {/* Legend Dots (Donezo Style) */}
-      <div className="flex items-center justify-center gap-3 sm:gap-4 pt-2 border-t border-border/50 text-xs">
+      <div className="flex items-center justify-center gap-3 sm:gap-4 pt-2 border-t border-border text-xs">
         <div className="flex items-center gap-1.5 font-medium">
           <span className="h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
           <span className="text-foreground">{lblDone}</span>

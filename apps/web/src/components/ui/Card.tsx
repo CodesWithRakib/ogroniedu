@@ -8,11 +8,12 @@ export interface CardProps extends HTMLAttributes<HTMLDivElement> {
 export const Card = forwardRef<HTMLDivElement, CardProps>(
   ({ className, variant = 'default', ...props }, ref) => {
     const variantStyles = {
-      default: 'border border-border/80 bg-card text-card-foreground shadow-2xs',
-      elevated: 'border border-border/70 bg-card text-card-foreground shadow-sm',
-      subtle: 'border border-border/60 bg-surface/50 text-card-foreground',
+      // Borders carry separation; shadows are reserved for genuinely floating surfaces.
+      default: 'border border-border bg-card text-card-foreground',
+      elevated: 'border border-border bg-card text-card-foreground shadow-sm',
+      subtle: 'border border-border bg-surface text-card-foreground',
       interactive:
-        'border border-border/80 bg-card text-card-foreground shadow-2xs hover:border-border hover:shadow-xs hover:-translate-y-0.5 transition-all cursor-pointer',
+        'border border-border bg-card text-card-foreground hover:border-primary/30 hover:shadow-xs transition-all cursor-pointer',
     };
 
     return (
@@ -71,7 +72,7 @@ export const CardFooter = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivEleme
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn('flex items-center pt-3 border-t border-border/60 mt-3', className)}
+      className={cn('flex items-center pt-3 border-t border-border mt-3', className)}
       {...props}
     />
   ),

@@ -153,7 +153,7 @@ export function SessionScheduleCalendar({
       data-testid="scheduling-container"
     >
       {/* Banner */}
-      <div className="bg-card border border-border rounded-3xl p-6 sm:p-8 text-foreground shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 text-foreground shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="space-y-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/25 rounded-full text-xs font-semibold text-primary">
             <Clock className="w-3.5 h-3.5" />
@@ -171,7 +171,7 @@ export function SessionScheduleCalendar({
         </div>
 
         <div className="flex items-center gap-3 shrink-0">
-          <div className="px-4 py-2.5 rounded-2xl bg-surface border border-border text-center shadow-2xs">
+          <div className="px-4 py-2.5 rounded-2xl bg-surface border border-border text-center">
             <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
               {locale === 'bn' ? 'আসন্ন ক্লাস' : 'Upcoming'}
             </span>
@@ -179,7 +179,7 @@ export function SessionScheduleCalendar({
               {sessions.filter((s) => s.status === 'scheduled').length}
             </span>
           </div>
-          <div className="px-4 py-2.5 rounded-2xl bg-surface border border-border text-center shadow-2xs">
+          <div className="px-4 py-2.5 rounded-2xl bg-surface border border-border text-center">
             <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
               {locale === 'bn' ? 'সম্পন্ন ক্লাস' : 'Completed'}
             </span>
@@ -191,7 +191,7 @@ export function SessionScheduleCalendar({
       </div>
 
       {/* Cancellation Policy Banner */}
-      <div className="bg-warning-soft border border-warning/30 rounded-2xl p-4 text-xs flex items-start gap-3 shadow-2xs">
+      <div className="bg-warning-soft border border-warning/30 rounded-2xl p-4 text-xs flex items-start gap-3">
         <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
         <div className="space-y-1">
           <span className="font-bold text-foreground block text-sm">
@@ -242,7 +242,7 @@ export function SessionScheduleCalendar({
             </CardContent>
           </Card>
         ) : sessions.length === 0 ? (
-          <Card className="text-center py-12 border-border/80 rounded-2xl">
+          <Card className="text-center py-12 border-border rounded-2xl">
             <CardContent className="space-y-3 text-muted-foreground py-8">
               <CalendarIcon className="w-10 h-10 mx-auto text-muted-foreground/60" />
               <p className="text-sm font-semibold text-foreground">

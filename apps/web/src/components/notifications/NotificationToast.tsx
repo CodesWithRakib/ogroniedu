@@ -31,35 +31,35 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
       case 'booking':
         return {
           icon: <Calendar className="w-5 h-5 text-success-soft-foreground" />,
-          accent: 'border-l-emerald-500 text-success-soft-foreground bg-primary/10',
+          accent: 'border-l-success text-success-soft-foreground bg-success-soft',
           badgeBn: 'বুকিং',
           badgeEn: 'Booking',
         };
       case 'learning':
         return {
           icon: <CheckCircle className="w-5 h-5 text-primary-soft-foreground" />,
-          accent: 'border-l-teal-500 text-primary-soft-foreground bg-primary/10',
+          accent: 'border-l-primary text-primary-soft-foreground bg-primary-soft',
           badgeBn: 'শিক্ষা ও ক্লাস',
           badgeEn: 'Learning',
         };
       case 'payment':
         return {
           icon: <CreditCard className="w-5 h-5 text-warning-soft-foreground" />,
-          accent: 'border-l-amber-500 text-warning-soft-foreground bg-warning/10',
+          accent: 'border-l-warning text-warning-soft-foreground bg-warning-soft',
           badgeBn: 'পেমেন্ট ও এসক্রো',
           badgeEn: 'Payment',
         };
       case 'trust':
         return {
           icon: <ShieldCheck className="w-5 h-5 text-info-soft-foreground" />,
-          accent: 'border-l-cyan-500 text-info-soft-foreground bg-interactive/10',
+          accent: 'border-l-info text-info-soft-foreground bg-info-soft',
           badgeBn: 'নিরাপত্তা ও ট্রাস্ট',
           badgeEn: 'Trust & Safety',
         };
       default:
         return {
           icon: <Bell className="w-5 h-5 text-interactive-soft-foreground" />,
-          accent: 'border-l-indigo-500 text-interactive-soft-foreground bg-interactive/10',
+          accent: 'border-l-interactive text-interactive-soft-foreground bg-interactive-soft',
           badgeBn: 'সিস্টেম নোটিশ',
           badgeEn: 'System',
         };
@@ -85,9 +85,9 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
               'bg-card  backdrop-blur-xl border border-border  text-foreground',
               'border-l-4 animate-in slide-in-from-bottom-5',
               isUrgent
-                ? 'border-l-rose-500 shadow-sm'
+                ? 'border-l-destructive shadow-sm'
                 : isHigh
-                  ? 'border-l-amber-500'
+                  ? 'border-l-warning'
                   : meta.accent.split(' ')[0],
             )}
           >

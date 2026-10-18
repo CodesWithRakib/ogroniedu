@@ -35,7 +35,7 @@ export function AdminBookingsTab({
 
   return (
     <div className="space-y-4" data-testid="bookings-tab-content">
-      <div className="border border-border/70 rounded-2xl overflow-hidden bg-card shadow-xs">
+      <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-xs">
         <Table data-testid="bookings-table">
           <TableHeader>
             <TableRow className="uppercase tracking-wider text-[11px] font-bold">

@@ -121,3 +121,65 @@ To eliminate visual chaos, every component must adhere to this scale:
 6. **`link`:** Sapphire blue text (`text-interactive hover:underline`).
 
 All buttons have consistent height (`h-9` for sm, `h-10` for md, `h-11` for lg), consistent focus rings (`focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2`), and accessible touch targets.
+
+---
+
+## Enforced Rules — verified in code on 2026-10-18
+
+These are the rules actually enforced by the codebase after the rendered-UI correction pass (measured with codemod sweeps + screenshot review).
+
+### R-1: Shadow policy (elevation means floating)
+
+- **Default: no shadow.** Cards, sections, tables, KPIs, and page surfaces are defined by `border-border` + background contrast only.
+- `shadow-2xs` and `shadow-inner` are forbidden and were removed everywhere (67 occurrences).
+- `shadow-xs` remains only as a whisper-soft state hint on interactive cards (`~0.03` alpha, visually negligible).
+- Shadows are reserved for genuinely floating surfaces: dialogs, sheets/drawers, popovers, dropdowns, toasts.
+- Heavy card shadows (`shadow-md`/`lg`/`xl`/`2xl`) were removed from 45 card-like surfaces across 21 files.
+
+### R-2: Border policy (one weight)
+
+- All borders use `border-border`. Opacity variants (`border-border/40`, `/60`, `/70`, `/80`) are gone (379 occurrences normalized).
+- Badges and status chips are **borderless** soft fills (`bg-{semantic}-soft text-{semantic}-soft-foreground`).
+- Repeated nesting is forbidden: never wrap a `Card` inside another `Card` for decoration (fixed in audit-logs and hub pages).
+
+### R-3: Radius ladder
+
+| Layer             | Radius                   | Usage                                            |
+| :---------------- | :----------------------- | :----------------------------------------------- |
+| Controls          | `rounded-xl` (12px)      | Buttons, inputs, selects, textareas, tab pills   |
+| Cards / surfaces  | `rounded-2xl` (16px)     | Cards, panels, tables, sections, modals          |
+| Pills / chips     | `rounded-full`           | Badges, status chips, avatars, icon tiles        |
+
+`rounded-3xl` is no longer used (127 occurrences consolidated).
+
+### R-4: Color semantics (single source of truth)
+
+| Intent                       | Token(s)                                                                        | Notes                                                            |
+| :--------------------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------------------- |
+| Primary actions / brand text | `--primary` `#0f766e`                                                           | Buttons, active states, links-to-action                          |
+| Brand fills (Ocean Teal)     | `--brand` `#0df5c4` / `--brand-accent` `#00e1b2` + `--brand-foreground` ink     | Large fills with ink text only; never for small text contrast    |
+| Interactive (Sapphire)       | `--interactive` `#2563eb`                                                       | Links, focus-adjacent highlights, informational accents          |
+| Success                      | `success` + `success-soft` trio (icon `success-strong` in soft surfaces)        | Never pair a green icon/text on a mint fill directly             |
+| Warning                      | `warning` + `warning-soft`                                                      | Actionable upkeep (e.g. pending KYC), not decoration             |
+| Danger / destructive         | `destructive` + `destructive-soft`                                              | Dangerous actions, errors                                        |
+| Info                         | `info` + `info-soft`                                                            | Neutral-informational counters                                   |
+| Rating stars                 | `--star` `#d97706`                                                              | Ratings only; never reuse `warning` for stars                    |
+| Payment provider brands      | bKash pink `#E2136E`, Nagad orange (brand-mark only)                            | The only allowed non-semantic colors; provider identity only     |
+
+Raw Tailwind palette classes (`emerald-*`, `amber-*`, `blue-*`, `purple-*`, `rose-*`, `green-*`, `orange-*`, `cyan-*`, `indigo-*`) are forbidden in feature UI; use the semantic tokens above.
+
+### R-5: Focus standard
+
+- Keyboard focus: `focus-visible:ring-2 focus-visible:ring-ring/35` (with `ring-offset` only on floating controls where needed).
+- `focus:ring-*` without `focus-visible` is not permitted on interactive elements (33 occurrences migrated).
+- Radix close-buttons use explicit `focus-visible:ring-offset` handling.
+
+### R-6: Charts
+
+- No hatching/striping. Data emphasis uses **one solid `primary` bar** for the peak/active series; remaining bars are soft neutral pills (`surface-muted`) with value labels.
+- Gridlines and axes are `border-border` hairlines; no shadows on chart containers.
+
+### R-7: Hub / index page pattern
+
+- Index ("hub") pages: neutral `surface-muted` icon tiles; at most one functional accent per page (e.g. warning for actionable KYC), never a rainbow of per-card tones in the default state.
+- Section headers: single `<h1>` per page (shell title removed from 18 admin pages); hub cards carry `hover:border-input hover:shadow-xs` only.

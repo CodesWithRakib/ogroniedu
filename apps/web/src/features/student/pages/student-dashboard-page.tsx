@@ -64,7 +64,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
       role="student"
       actions={
         <div className="flex items-center gap-2">
-          <Button asChild size="sm" className="rounded-full shadow-xs">
+          <Button asChild size="sm" className="rounded-full">
             <Link
               href={withLocale('/dashboard/student/learning', locale)}
               className="flex items-center gap-1.5"
@@ -158,42 +158,42 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* QUICK ACTIONS ROW                                        */}
       {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-2xl bg-card border border-border/80 shadow-xs">
+      <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-2xl bg-card border border-border">
         <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
         </span>
         <Link
           href={withLocale('/dashboard/student/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-hover text-foreground text-xs font-semibold transition-colors"
         >
-          <BookOpen className="w-3.5 h-3.5 text-blue-600" />
+          <BookOpen className="w-3.5 h-3.5 text-muted-foreground" />
           <span>{isBn ? 'লার্নিং হাব' : 'Learning Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-hover text-foreground text-xs font-semibold transition-colors"
         >
-          <Calendar className="w-3.5 h-3.5 text-emerald-600" />
+          <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
           <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-hover text-foreground text-xs font-semibold transition-colors"
         >
-          <Inbox className="w-3.5 h-3.5 text-amber-600" />
+          <Inbox className="w-3.5 h-3.5 text-muted-foreground" />
           <span>{isBn ? 'টিউশন অনুরোধ' : 'Tuition Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border/60 text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-hover text-foreground text-xs font-semibold transition-colors"
         >
-          <CreditCard className="w-3.5 h-3.5 text-primary" />
+          <CreditCard className="w-3.5 h-3.5 text-muted-foreground" />
           <span>{isBn ? 'টিউশন ফি ও পেমেন্ট' : 'Tuition Payments'}</span>
         </Link>
         <Link
           href={withLocale('/tutors', locale)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary-soft hover:bg-primary/20 text-primary text-xs font-semibold transition-colors sm:ml-auto"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary-soft hover:bg-primary/15 text-primary-soft-foreground text-xs font-semibold transition-colors sm:ml-auto"
         >
           <Search className="w-3.5 h-3.5" />
           <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
@@ -288,8 +288,8 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
             actionHref={withLocale('/tutors', locale)}
           />
         ) : (
-          <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 shadow-xs">
-            <div className="flex items-center justify-between pb-4 border-b border-border/60">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6">
+            <div className="flex items-center justify-between pb-4 border-b border-border">
               <div>
                 <h3 className="text-base font-bold text-foreground">
                   {isBn ? 'সাম্প্রতিক টিউটরিং অনুরোধ' : 'Recent Tutoring Requests'}
@@ -339,7 +339,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                     className="py-3.5 flex items-center justify-between gap-3 hover:bg-muted/30 px-2 rounded-xl transition-colors"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0 font-bold text-xs ring-1 ring-border">
+                      <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0 font-bold text-xs">
                         #{r.id.slice(0, 3)}
                       </div>
                       <div className="min-w-0 flex-1">
@@ -354,12 +354,12 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                     </div>
 
                     <span
-                      className={`px-2.5 py-0.5 text-[11px] font-semibold rounded-full border ${
+                      className={`px-2.5 py-0.5 text-[11px] font-semibold rounded-full ${
                         r.status === 'accepted'
-                          ? 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20'
+                          ? 'bg-success-soft text-success-soft-foreground'
                           : r.status === 'rejected'
-                            ? 'bg-rose-500/10 text-rose-700 border-rose-500/20'
-                            : 'bg-amber-500/10 text-amber-700 border-amber-500/20'
+                            ? 'bg-destructive-soft text-destructive-soft-foreground'
+                            : 'bg-warning-soft text-warning-soft-foreground'
                       }`}
                     >
                       {String(r.status)}

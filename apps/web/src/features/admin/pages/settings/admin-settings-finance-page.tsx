@@ -24,7 +24,6 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
   return (
     <AdminLayout
       locale={locale}
-      title={isBn ? 'আর্থিক ও কমিশন পলিসি' : 'Financial & Commission Policy'}
     >
       <div className="space-y-6 py-6" data-testid="admin-settings-finance-page">
         {/* Back Link to Hub (Image 2 Pattern) */}
@@ -39,7 +38,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Page Header */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border/80">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
           <div>
             <div className="flex items-center space-x-3">
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
@@ -83,7 +82,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
         {/* Configuration Cards Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Card 1: Platform Fee */}
-          <div className="bg-card border border-border/70 rounded-3xl p-6 space-y-4 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold">
                 %
@@ -123,7 +122,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Card 2: Escrow Hold Duration */}
-          <div className="bg-card border border-border/70 rounded-3xl p-6 space-y-4 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-info-soft text-info border border-info/30 flex items-center justify-center font-bold">
                 ⏳
@@ -165,7 +164,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Card 3: Minimum Payout Threshold */}
-          <div className="bg-card border border-border/70 rounded-3xl p-6 space-y-4 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-success-soft text-success border border-success/30 flex items-center justify-center font-bold">
                 ৳
@@ -196,7 +195,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Card 4: Refund Dispute Window */}
-          <div className="bg-card border border-border/70 rounded-3xl p-6 space-y-4 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-warning-soft text-warning border border-warning/30 flex items-center justify-center font-bold">
                 🛡️

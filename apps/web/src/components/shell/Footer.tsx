@@ -22,9 +22,9 @@ export function Footer({ locale }: FooterProps) {
   const isBn = locale === 'bn';
 
   return (
-    <footer className="border-t border-border/80 bg-card/80 text-foreground backdrop-blur-xl transition-colors">
+    <footer className="border-t border-border bg-card/80 text-foreground backdrop-blur-xl transition-colors">
       {/* Trust & Compliance Ribbon */}
-      <div className="border-b border-border/60 bg-surface-muted/40 py-6">
+      <div className="border-b border-border bg-surface-muted/40 py-6">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-medium text-muted-foreground">
             <div className="flex items-center gap-2.5">
@@ -247,7 +247,7 @@ export function Footer({ locale }: FooterProps) {
         </div>
 
         {/* Bottom Bar: Copyright & Operational Status */}
-        <div className="mt-12 border-t border-border/70 pt-6 pb-14 md:pb-0 flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground gap-4">
+        <div className="mt-12 border-t border-border pt-6 pb-14 md:pb-0 flex flex-col sm:flex-row items-center justify-between text-xs text-muted-foreground gap-4">
           <div className="flex flex-col sm:flex-row items-center gap-2 sm:gap-4">
             <p>
               © {new Date().getFullYear()} {dict.common.appName}. {dict.footer.rightsReserved}

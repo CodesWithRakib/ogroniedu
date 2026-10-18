@@ -274,7 +274,7 @@ export function ClassroomWorkspace({
               {locale === 'bn' ? 'ক্লাস সম্পন্ন' : 'Completed'}
             </Badge>
           ) : (
-            <Badge className="bg-primary/10 text-success-soft-foreground border border-primary/40 text-xs px-3 py-1">
+            <Badge className="bg-success-soft text-success-soft-foreground border border-success/30 text-xs px-3 py-1">
               {locale === 'bn' ? 'ক্লাসের জন্য নির্ধারিত' : 'Scheduled'}
             </Badge>
           )}
@@ -282,7 +282,7 @@ export function ClassroomWorkspace({
       </div>
 
       {/* Main Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-brand-soft border border-brand/30 p-6 md:p-8 shadow-sm">
+      <div className="relative overflow-hidden rounded-2xl bg-brand-soft border border-brand/30 p-6 md:p-8 shadow-sm">
         <div className="absolute top-0 right-0 w-80 h-80 bg-interactive/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -384,7 +384,7 @@ export function ClassroomWorkspace({
                   )}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2.5 rounded-2xl bg-primary/20 hover:bg-primary/30 text-success-soft-foreground border border-primary/40 transition-all text-xs flex items-center gap-1"
+                  className="p-2.5 rounded-2xl bg-success-soft hover:bg-primary/30 text-success-soft-foreground border border-success/30 transition-all text-xs flex items-center gap-1"
                   title={locale === 'bn' ? 'হোয়াটসঅ্যাপে শেয়ার করুন' : 'Share on WhatsApp'}
                 >
                   <Share2 className="w-4 h-4" />
@@ -472,7 +472,7 @@ export function ClassroomWorkspace({
 
         {/* Action Status Feedback */}
         {actionSuccess && (
-          <div className="mt-4 p-3 rounded-2xl bg-primary/10 border border-primary/40 text-success-soft-foreground text-xs flex items-center gap-2">
+          <div className="mt-4 p-3 rounded-2xl bg-success-soft border border-success/30 text-success-soft-foreground text-xs flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 shrink-0 text-success-soft-foreground" />
             <span>{actionSuccess}</span>
           </div>
@@ -539,7 +539,7 @@ export function ClassroomWorkspace({
       {activeTab === 'attendance' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Attendance Status Card */}
-          <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm">
+          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-sm">
             <h3 className="text-base font-bold text-foreground mb-2 flex items-center gap-2">
               <UserCheck className="w-5 h-5 text-info-soft-foreground" />
               <span>
@@ -558,7 +558,7 @@ export function ClassroomWorkspace({
                   <span className="text-muted-foreground">
                     {locale === 'bn' ? 'রেকর্ডকৃত স্ট্যাটাস:' : 'Recorded Status:'}
                   </span>
-                  <Badge className="bg-primary/20 text-success-soft-foreground border border-primary/40 uppercase font-bold">
+                  <Badge className="bg-success-soft text-success-soft-foreground border border-success/30 uppercase font-bold">
                     {latestAttendance.attendanceStatus}
                   </Badge>
                 </div>
@@ -632,7 +632,7 @@ export function ClassroomWorkspace({
                 </div>
 
                 {attendanceSuccess && (
-                  <div className="p-2.5 rounded-xl bg-primary/10 border border-primary/40 text-success-soft-foreground text-xs flex items-center gap-1.5">
+                  <div className="p-2.5 rounded-xl bg-success-soft border border-success/30 text-success-soft-foreground text-xs flex items-center gap-1.5">
                     <CheckCircle2 className="w-4 h-4 text-success-soft-foreground" />
                     <span>
                       {locale === 'bn' ? 'উপস্থিতি সফলভাবে সংরক্ষিত!' : 'Attendance marked!'}
@@ -654,7 +654,7 @@ export function ClassroomWorkspace({
           </Card>
 
           {/* Session Safety & Security Card */}
-          <Card className="bg-card border border-border text-foreground rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-sm flex flex-col justify-between">
             <div className="space-y-4">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-success-soft-foreground" />
