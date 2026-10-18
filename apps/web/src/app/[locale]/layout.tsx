@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react';
+import Script from 'next/script';
 import { NextIntlClientProvider } from 'next-intl';
 import { StoreProvider } from '../../store';
 import { AuthBootstrap } from '@/components/auth/AuthBootstrap';
@@ -25,7 +26,9 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
   return (
     <>
       {/* Immediately sync document lang on client parse */}
-      <script
+      <Script
+        id="sync-lang"
+        strategy="beforeInteractive"
         dangerouslySetInnerHTML={{
           __html: `document.documentElement.lang = ${JSON.stringify(locale)};`,
         }}

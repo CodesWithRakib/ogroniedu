@@ -409,75 +409,36 @@ export function TutorsPage({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className="space-y-3">
-      <div className="max-w-7xl mx-auto px-4 pt-4 flex flex-wrap items-center gap-2 text-xs">
-        {coordinates ? (
-          <>
-            <span
-              className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 font-semibold text-foreground"
-              data-testid="location-active"
-            >
-              <MapPin className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-              {locale === 'bn' ? 'আপনার লোকেশন ব্যবহার হচ্ছে' : 'Using your location'}
-            </span>
-            <button
-              type="button"
-              onClick={handleClearLocation}
-              className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-3 py-1 text-muted-foreground hover:text-foreground"
-            >
-              <X className="h-3.5 w-3.5" aria-hidden="true" />
-              {locale === 'bn' ? 'মুছুন' : 'Clear'}
-            </button>
-          </>
-        ) : (
-          <button
-            type="button"
-            onClick={handleUseMyLocation}
-            data-testid="use-my-location"
-            className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1 font-semibold text-foreground hover:border-primary/40"
-          >
-            <LocateFixed className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
-            {locale === 'bn' ? 'নিকটবর্তী শিক্ষক খুঁজুন' : 'Find tutors near me'}
-          </button>
-        )}
-        {locationError && (
-          <span className="text-warning-soft-foreground" data-testid="location-error" role="alert">
-            {locationError}
-          </span>
-        )}
-        {saveError && (
-          <span className="text-destructive" data-testid="save-tutor-error" role="alert">
-            {saveError}
-          </span>
-        )}
-      </div>
-
-      <TutorSearchCatalog
-        locale={locale}
-        initialData={resultSnapshot}
-        initialFilters={filters}
-        studentOptions={studentOptions}
-        levelOptions={levelOptions}
-        subjectOptions={subjectOptions}
-        filterLevelOptions={levelOptions}
-        curriculumOptions={curriculumOptions}
-        districtOptions={districtOptions}
-        hasLocation={!!coordinates}
-        savedTutorIds={savedIds}
-        canSave={!!user}
-        onToggleSave={handleToggleSave}
-        isLoading={searchQuery.isLoading}
-        queryError={
-          searchQuery.error && resultSnapshot.data.length === 0
-            ? locale === 'bn'
-              ? 'শিক্ষকদের তথ্য লোড করা যায়নি'
-              : 'Failed to load tutors'
-            : null
-        }
-        onFiltersChange={handleFiltersChange}
-        onSearch={handleSearch}
-        onSubmitRequest={handleSubmitRequest}
-      />
-    </div>
+    <TutorSearchCatalog
+      locale={locale}
+      initialData={resultSnapshot}
+      initialFilters={filters}
+      studentOptions={studentOptions}
+      levelOptions={levelOptions}
+      subjectOptions={subjectOptions}
+      filterLevelOptions={levelOptions}
+      curriculumOptions={curriculumOptions}
+      districtOptions={districtOptions}
+      hasLocation={!!coordinates}
+      savedTutorIds={savedIds}
+      canSave={!!user}
+      onToggleSave={handleToggleSave}
+      isLoading={searchQuery.isLoading}
+      queryError={
+        searchQuery.error && resultSnapshot.data.length === 0
+          ? locale === 'bn'
+            ? 'শিক্ষকদের তথ্য লোড করা যায়নি'
+            : 'Failed to load tutors'
+          : null
+      }
+      onFiltersChange={handleFiltersChange}
+      onSearch={handleSearch}
+      onSubmitRequest={handleSubmitRequest}
+      locationActive={!!coordinates}
+      onUseMyLocation={handleUseMyLocation}
+      onClearLocation={handleClearLocation}
+      locationError={locationError}
+      saveError={saveError}
+    />
   );
 }

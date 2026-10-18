@@ -1,7 +1,20 @@
 'use client';
 
 import React from 'react';
-import { Search, Sparkles, Filter, RotateCcw, X } from 'lucide-react';
+import {
+  Search,
+  Sparkles,
+  Filter,
+  RotateCcw,
+  X,
+  SlidersHorizontal,
+  BookOpen,
+  GraduationCap,
+  MapPin,
+  Banknote,
+  Calendar,
+  ArrowUpDown,
+} from 'lucide-react';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
@@ -44,8 +57,8 @@ export const EMPTY_FILTERS: TutorFiltersValue = {
   radiusKm: '',
 };
 
-const POPULAR_SUBJECTS_BN = ['পদার্থবিজ্ঞান', 'গণিত', 'ইংরেজি', 'রসায়ন', 'আইসিটি', 'জীববিজ্ঞান'];
-const POPULAR_SUBJECTS_EN = ['Physics', 'Mathematics', 'English', 'Chemistry', 'ICT', 'Biology'];
+export const POPULAR_SUBJECTS_BN = ['পদার্থবিজ্ঞান', 'গণিত', 'ইংরেজি', 'রসায়ন', 'আইসিটি', 'জীববিজ্ঞান'];
+export const POPULAR_SUBJECTS_EN = ['Physics', 'Mathematics', 'English', 'Chemistry', 'ICT', 'Biology'];
 
 const RADIUS_OPTIONS = [5, 10, 20, 50, 100];
 
@@ -61,6 +74,9 @@ export function TutorFiltersForm({
   onChange,
   onSubmit,
   onReset,
+  className = '',
+  isMobileDrawer = false,
+  onCloseDrawer,
 }: {
   locale: Locale;
   value: TutorFiltersValue;
@@ -74,6 +90,9 @@ export function TutorFiltersForm({
   onChange: (patch: Partial<TutorFiltersValue>) => void;
   onSubmit: () => void;
   onReset: () => void;
+  className?: string;
+  isMobileDrawer?: boolean;
+  onCloseDrawer?: () => void;
 }) {
   const dict = getDictionary(locale);
   const isBn = locale === 'bn';
@@ -82,6 +101,9 @@ export function TutorFiltersForm({
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     onSubmit();
+    if (isMobileDrawer) {
+      onCloseDrawer?.();
+    }
   };
 
   const activeChips: Array<{ key: keyof TutorFiltersValue; label: string }> = [];
@@ -105,7 +127,17 @@ export function TutorFiltersForm({
       label: curriculumOptions.find((o) => o.id === value.curriculumId)?.label ?? 'Curriculum',
     });
   }
-  if (value.modeFilter) activeChips.push({ key: 'modeFilter', label: value.modeFilter });
+  if (value.modeFilter) {
+    const modeLabel =
+      value.modeFilter === 'in_person'
+        ? (dict.tutor?.modeInPerson || 'In-person')
+        : value.modeFilter === 'online'
+          ? (dict.tutor?.modeOnline || 'Online')
+          : value.modeFilter === 'hybrid'
+            ? (dict.tutor?.modeHybrid || 'Hybrid')
+            : value.modeFilter;
+    activeChips.push({ key: 'modeFilter', label: modeLabel });
+  }
   if (value.minPrice) activeChips.push({ key: 'minPrice', label: `≥ ৳${value.minPrice}` });
   if (value.maxPrice) activeChips.push({ key: 'maxPrice', label: `≤ ৳${value.maxPrice}` });
   if (value.minExperience) {
@@ -118,15 +150,76 @@ export function TutorFiltersForm({
     const day = WEEKDAY_LABELS[Number(value.availableWeekday)];
     activeChips.push({ key: 'availableWeekday', label: isBn ? day?.bn : day?.en });
   }
+  if (value.districtCode) {
+    const distName = districtOptions.find((d) => d.id === value.districtCode)?.label ?? value.districtCode;
+    activeChips.push({ key: 'districtCode', label: distName });
+  }
   if (value.radiusKm) {
     activeChips.push({ key: 'radiusKm', label: `${value.radiusKm} km` });
   }
 
+  const activeCount = activeChips.length;
+
   return (
-    <div className="bg-card/90 border border-border rounded-2xl p-5 sm:p-6 shadow-xs backdrop-blur-xl space-y-4 text-foreground transition-colors">
+    <div
+      className={`rounded-2xl border border-border bg-card/95 text-foreground shadow-xs transition-colors backdrop-blur-xl ${
+        isMobileDrawer ? 'p-4 sm:p-5' : 'p-5'
+      } ${className}`}
+    >
       <form onSubmit={handleSubmit} className="space-y-4" data-testid="discovery-filters-form">
-        <div className="grid grid-cols-1 md:grid-cols-12 gap-3 items-center">
-          <div className="md:col-span-4 relative">
+        {/* Header Row */}
+        <div className="flex items-center justify-between pb-3 border-b border-border">
+          <div className="flex items-center gap-2">
+            <div className="flex h-7 w-7 items-center justify-center rounded-lg bg-primary-soft text-primary">
+              <SlidersHorizontal className="h-4 w-4" />
+            </div>
+            <div className="flex items-center gap-1.5">
+              <span className="font-bold text-sm text-foreground">
+                {isBn ? 'ফিল্টারসমূহ' : 'Filters'}
+              </span>
+              {activeCount > 0 && (
+                <span className="inline-flex items-center justify-center h-5 px-1.5 rounded-full bg-primary text-primary-foreground text-[10px] font-black">
+                  {activeCount}
+                </span>
+              )}
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <Button
+              type="button"
+              variant="ghost"
+              size="xs"
+              onClick={onReset}
+              data-testid="reset-filters-button"
+              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2 gap-1"
+              title={dict.discovery?.resetFilters || 'Reset'}
+            >
+              <RotateCcw className="w-3 h-3" />
+              <span>{isBn ? 'রিসেট' : 'Reset'}</span>
+            </Button>
+            {isMobileDrawer && onCloseDrawer && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="icon"
+                onClick={onCloseDrawer}
+                className="h-7 w-7 rounded-full text-muted-foreground hover:text-foreground"
+                aria-label={isBn ? 'বন্ধ করুন' : 'Close'}
+              >
+                <X className="w-4 h-4" />
+              </Button>
+            )}
+          </div>
+        </div>
+
+        {/* 1. Search Query Input */}
+        <div className="space-y-1.5">
+          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+            <Search className="w-3 h-3 text-primary" />
+            <span>{isBn ? 'শিক্ষক বা বিষয় দিয়ে খুঁজুন' : 'Search by Name / Subject'}</span>
+          </label>
+          <div className="relative">
             <Input
               type="text"
               placeholder={
@@ -138,17 +231,24 @@ export function TutorFiltersForm({
               aria-label={isBn ? 'শিক্ষক খুঁজুন' : 'Search tutors'}
               data-testid="search-query-input"
               leadingIcon={<Search className="w-4 h-4 text-primary" />}
-              className="rounded-2xl"
+              className="rounded-xl h-10 text-xs sm:text-sm bg-background/60"
             />
           </div>
+        </div>
 
-          <div className="md:col-span-3 relative">
+        {/* 2. Subject & Class */}
+        <div className="space-y-2.5 pt-2 border-t border-border">
+          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+            <BookOpen className="w-3 h-3 text-primary" />
+            <span>{isBn ? 'বিষয় ও শ্রেণি' : 'Subject & Class'}</span>
+          </label>
+          <div className="space-y-2">
             <Select
               value={value.subjectId || 'all'}
               onValueChange={(val) => onChange({ subjectId: val === 'all' ? '' : val })}
             >
               <SelectTrigger
-                className="w-full rounded-2xl bg-card border-border text-xs sm:text-sm"
+                className="w-full rounded-xl bg-background/60 border-border text-xs h-9.5"
                 data-testid="subject-select"
                 aria-label={isBn ? 'বিষয়' : 'Subject'}
               >
@@ -163,15 +263,13 @@ export function TutorFiltersForm({
                 ))}
               </SelectContent>
             </Select>
-          </div>
 
-          <div className="md:col-span-3 relative">
             <Select
               value={value.educationLevelId || 'all'}
               onValueChange={(val) => onChange({ educationLevelId: val === 'all' ? '' : val })}
             >
               <SelectTrigger
-                className="w-full rounded-2xl bg-card border-border text-xs sm:text-sm"
+                className="w-full rounded-xl bg-background/60 border-border text-xs h-9.5"
                 data-testid="level-select"
                 aria-label={isBn ? 'শ্রেণি' : 'Class / level'}
               >
@@ -187,272 +285,349 @@ export function TutorFiltersForm({
               </SelectContent>
             </Select>
           </div>
-
-          <div className="md:col-span-2 flex gap-2">
-            <Button
-              type="submit"
-              disabled={isPending}
-              data-testid="apply-filters-button"
-              className="flex-1 rounded-2xl font-bold text-xs gap-1.5"
-            >
-              <Filter className="w-3.5 h-3.5" />
-              <span>{dict.discovery?.applyFilters || 'Filter'}</span>
-            </Button>
-            <Button
-              type="button"
-              variant="outline"
-              size="icon"
-              onClick={onReset}
-              data-testid="reset-filters-button"
-              className="h-11 w-11 rounded-2xl shrink-0"
-              title={dict.discovery?.resetFilters || 'Reset'}
-            >
-              <RotateCcw className="w-3.5 h-3.5" />
-            </Button>
-          </div>
         </div>
 
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
-          <Select
-            value={value.modeFilter || 'all'}
-            onValueChange={(val) => onChange({ modeFilter: val === 'all' ? '' : val })}
-          >
-            <SelectTrigger
-              className="w-full rounded-2xl bg-card border-border text-xs"
-              data-testid="mode-select"
-              aria-label={isBn ? 'পাঠদানের পদ্ধতি' : 'Teaching mode'}
-            >
-              <SelectValue placeholder={dict.discovery?.filterAllModes || 'All Modes'} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{dict.discovery?.filterAllModes || 'All Modes'}</SelectItem>
-              <SelectItem value="in_person">{dict.tutor?.modeInPerson || 'In-person'}</SelectItem>
-              <SelectItem value="online">{dict.tutor?.modeOnline || 'Online'}</SelectItem>
-              <SelectItem value="hybrid">{dict.tutor?.modeHybrid || 'Hybrid'}</SelectItem>
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={value.curriculumId || 'all'}
-            onValueChange={(val) => onChange({ curriculumId: val === 'all' ? '' : val })}
-          >
-            <SelectTrigger
-              className="w-full rounded-2xl bg-card border-border text-xs"
-              data-testid="curriculum-select"
-              aria-label={isBn ? 'শিক্ষাক্রম' : 'Curriculum'}
-            >
-              <SelectValue placeholder={isBn ? 'সকল শিক্ষাক্রম' : 'All Curricula'} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{isBn ? 'সকল শিক্ষাক্রম' : 'All Curricula'}</SelectItem>
-              {curriculumOptions.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={value.availableWeekday || 'all'}
-            onValueChange={(val) => onChange({ availableWeekday: val === 'all' ? '' : val })}
-          >
-            <SelectTrigger
-              className="w-full rounded-2xl bg-card border-border text-xs"
-              data-testid="weekday-select"
-              aria-label={isBn ? 'উপলব্ধতার দিন' : 'Availability day'}
-            >
-              <SelectValue placeholder={isBn ? 'সকল দিন' : 'Any Day'} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{isBn ? 'সকল দিন' : 'Any Day'}</SelectItem>
-              {Object.entries(WEEKDAY_LABELS).map(([value, label]) => (
-                <SelectItem key={value} value={value}>
-                  {isBn ? label.bn : label.en}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-
-          <Select
-            value={value.districtCode || 'all'}
-            onValueChange={(val) => onChange({ districtCode: val === 'all' ? '' : val })}
-          >
-            <SelectTrigger
-              className="w-full rounded-2xl bg-card border-border text-xs"
-              data-testid="district-select"
-              aria-label={isBn ? 'জেলা' : 'District'}
-            >
-              <SelectValue placeholder={isBn ? 'সকল জেলা' : 'All Districts'} />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="all">{isBn ? 'সকল জেলা' : 'All Districts'}</SelectItem>
-              {districtOptions.map((option) => (
-                <SelectItem key={option.id} value={option.id}>
-                  {option.label}
-                </SelectItem>
-              ))}
-            </SelectContent>
-          </Select>
-        </div>
-
-        <div className="flex flex-wrap items-center gap-3 pt-3 border-t border-border text-xs text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-foreground">৳ {isBn ? 'ফি' : 'Fee'}</span>
-            <Input
-              type="number"
-              min={0}
-              placeholder={dict.discovery?.minPrice || 'Min'}
-              value={value.minPrice}
-              onChange={(e) => onChange({ minPrice: e.target.value })}
-              className="h-8 w-24 text-xs rounded-xl"
-              data-testid="min-price-input"
-              aria-label={isBn ? 'সর্বনিম্ন ফি' : 'Minimum fee'}
-            />
-            <span>—</span>
-            <Input
-              type="number"
-              min={0}
-              placeholder={dict.discovery?.maxPrice || 'Max'}
-              value={value.maxPrice}
-              onChange={(e) => onChange({ maxPrice: e.target.value })}
-              className="h-8 w-24 text-xs rounded-xl"
-              data-testid="max-price-input"
-              aria-label={isBn ? 'সর্বোচ্চ ফি' : 'Maximum fee'}
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-foreground">
-              {isBn ? 'অভিজ্ঞতা (বছর)' : 'Experience (yrs)'}
-            </span>
-            <Input
-              type="number"
-              min={0}
-              max={60}
-              value={value.minExperience}
-              onChange={(e) => onChange({ minExperience: e.target.value })}
-              className="h-8 w-20 text-xs rounded-xl"
-              data-testid="min-experience-input"
-              aria-label={isBn ? 'সর্বনিম্ন অভিজ্ঞতা' : 'Minimum experience'}
-            />
-          </div>
-
-          <div className="flex items-center gap-2">
-            <span className="font-semibold text-foreground">{isBn ? 'দূরত্ব' : 'Distance'}</span>
+        {/* 3. Teaching Mode & Curriculum */}
+        <div className="space-y-2.5 pt-2 border-t border-border">
+          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+            <GraduationCap className="w-3 h-3 text-primary" />
+            <span>{isBn ? 'পদ্ধতি ও শিক্ষাক্রম' : 'Mode & Curriculum'}</span>
+          </label>
+          <div className="space-y-2">
             <Select
-              value={value.radiusKm || 'all'}
-              onValueChange={(val) => onChange({ radiusKm: val === 'all' ? '' : val })}
+              value={value.modeFilter || 'all'}
+              onValueChange={(val) => onChange({ modeFilter: val === 'all' ? '' : val })}
             >
               <SelectTrigger
-                className="h-8 w-28 rounded-xl bg-card border-border text-xs"
-                data-testid="radius-select"
-                aria-label={isBn ? 'দূরত্ব ব্যাসার্ধ' : 'Distance radius'}
+                className="w-full rounded-xl bg-background/60 border-border text-xs h-9.5"
+                data-testid="mode-select"
+                aria-label={isBn ? 'পাঠদানের পদ্ধতি' : 'Teaching mode'}
               >
-                <SelectValue placeholder={isBn ? 'যেকোনো' : 'Any'} />
+                <SelectValue placeholder={dict.discovery?.filterAllModes || 'All Modes'} />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="all">{isBn ? 'যেকোনো' : 'Any'}</SelectItem>
-                {RADIUS_OPTIONS.map((km) => (
-                  <SelectItem key={km} value={String(km)}>
-                    {km} km
+                <SelectItem value="all">{dict.discovery?.filterAllModes || 'All Modes'}</SelectItem>
+                <SelectItem value="in_person">{dict.tutor?.modeInPerson || 'In-person'}</SelectItem>
+                <SelectItem value="online">{dict.tutor?.modeOnline || 'Online'}</SelectItem>
+                <SelectItem value="hybrid">{dict.tutor?.modeHybrid || 'Hybrid'}</SelectItem>
+              </SelectContent>
+            </Select>
+
+            <Select
+              value={value.curriculumId || 'all'}
+              onValueChange={(val) => onChange({ curriculumId: val === 'all' ? '' : val })}
+            >
+              <SelectTrigger
+                className="w-full rounded-xl bg-background/60 border-border text-xs h-9.5"
+                data-testid="curriculum-select"
+                aria-label={isBn ? 'শিক্ষাক্রম' : 'Curriculum'}
+              >
+                <SelectValue placeholder={isBn ? 'সকল শিক্ষাক্রম' : 'All Curricula'} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isBn ? 'সকল শিক্ষাক্রম' : 'All Curricula'}</SelectItem>
+                {curriculumOptions.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>
+                    {option.label}
                   </SelectItem>
                 ))}
               </SelectContent>
             </Select>
+          </div>
+        </div>
+
+        {/* 4. District & Distance */}
+        <div className="space-y-2.5 pt-2 border-t border-border">
+          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+            <MapPin className="w-3 h-3 text-primary" />
+            <span>{isBn ? 'এলাকা ও দূরত্ব' : 'District & Radius'}</span>
+          </label>
+          <div className="space-y-2">
+            <Select
+              value={value.districtCode || 'all'}
+              onValueChange={(val) => onChange({ districtCode: val === 'all' ? '' : val })}
+            >
+              <SelectTrigger
+                className="w-full rounded-xl bg-background/60 border-border text-xs h-9.5"
+                data-testid="district-select"
+                aria-label={isBn ? 'জেলা' : 'District'}
+              >
+                <SelectValue placeholder={isBn ? 'সকল জেলা' : 'All Districts'} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="all">{isBn ? 'সকল জেলা' : 'All Districts'}</SelectItem>
+                {districtOptions.map((option) => (
+                  <SelectItem key={option.id} value={option.id}>
+                    {option.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+
+            <div className="flex items-center gap-2">
+              <Select
+                value={value.radiusKm || 'all'}
+                onValueChange={(val) => onChange({ radiusKm: val === 'all' ? '' : val })}
+              >
+                <SelectTrigger
+                  className="w-full rounded-xl bg-background/60 border-border text-xs h-9.5"
+                  data-testid="radius-select"
+                  aria-label={isBn ? 'দূরত্ব ব্যাসার্ধ' : 'Distance radius'}
+                >
+                  <SelectValue placeholder={isBn ? 'দূরত্ব: যেকোনো' : 'Radius: Any'} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{isBn ? 'দূরত্ব: যেকোনো' : 'Radius: Any'}</SelectItem>
+                  {RADIUS_OPTIONS.map((km) => (
+                    <SelectItem key={km} value={String(km)}>
+                      {km} km {isBn ? 'ব্যাসার্ধ' : 'radius'}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
             {!hasLocation && value.radiusKm && (
-              <span className="text-warning-soft-foreground" data-testid="radius-needs-location">
-                {isBn ? 'লোকেশন শেয়ার করুন' : 'Share location'}
+              <span
+                className="block text-[11px] text-warning-soft-foreground bg-warning/10 px-2.5 py-1 rounded-lg"
+                data-testid="radius-needs-location"
+              >
+                ⚠️ {isBn ? 'সঠিক দূরত্বের জন্য লোকেশন শেয়ার করুন' : 'Share location for accurate distance'}
               </span>
             )}
           </div>
+        </div>
 
-          <div className="flex items-center gap-2 ml-auto">
-            <span className="font-semibold text-foreground">{isBn ? 'সাজান' : 'Sort'}</span>
-            <Select
-              value={value.sortBy || 'recommended'}
-              onValueChange={(val) => onChange({ sortBy: val as TutorSortKey })}
+        {/* 5. Budget / Hourly Fee */}
+        <div className="space-y-2.5 pt-2 border-t border-border">
+          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+            <Banknote className="w-3 h-3 text-primary" />
+            <span>{isBn ? 'ঘণ্টাপ্রতি ফি (৳)' : 'Hourly Fee (৳)'}</span>
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="relative">
+              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-semibold">
+                ৳
+              </span>
+              <Input
+                type="number"
+                min={0}
+                placeholder={dict.discovery?.minPrice || 'Min'}
+                value={value.minPrice}
+                onChange={(e) => onChange({ minPrice: e.target.value })}
+                className="h-9 pl-7 text-xs rounded-xl bg-background/60"
+                data-testid="min-price-input"
+                aria-label={isBn ? 'সর্বনিম্ন ফি' : 'Minimum fee'}
+              />
+            </div>
+            <div className="relative">
+              <span className="absolute left-2.5 top-1/2 -translate-y-1/2 text-xs text-muted-foreground font-semibold">
+                ৳
+              </span>
+              <Input
+                type="number"
+                min={0}
+                placeholder={dict.discovery?.maxPrice || 'Max'}
+                value={value.maxPrice}
+                onChange={(e) => onChange({ maxPrice: e.target.value })}
+                className="h-9 pl-7 text-xs rounded-xl bg-background/60"
+                data-testid="max-price-input"
+                aria-label={isBn ? 'সর্বোচ্চ ফি' : 'Maximum fee'}
+              />
+            </div>
+          </div>
+          {/* Quick price chips */}
+          <div className="flex items-center gap-1.5 flex-wrap">
+            <button
+              type="button"
+              onClick={() => onChange({ minPrice: '', maxPrice: '500' })}
+              className={`text-[10px] px-2 py-0.5 rounded-full border border-border transition-colors ${
+                value.maxPrice === '500' && !value.minPrice
+                  ? 'bg-primary text-primary-foreground border-primary font-bold'
+                  : 'bg-background/40 hover:bg-muted text-muted-foreground'
+              }`}
             >
-              <SelectTrigger
-                className="h-8 w-48 rounded-xl bg-card border-border text-xs"
-                data-testid="sort-by-select"
-                aria-label={isBn ? 'সাজানোর নিয়ম' : 'Sort by'}
-              >
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="recommended">
-                  {dict.discovery?.sortRecommended || 'Recommended (Match Score)'}
-                </SelectItem>
-                <SelectItem value="nearest" disabled={!hasLocation}>
-                  {isBn ? 'নিকটতম প্রথমে' : 'Nearest first'}
-                </SelectItem>
-                <SelectItem value="price_asc">
-                  {dict.discovery?.sortPriceAsc || 'Price: Low to High'}
-                </SelectItem>
-                <SelectItem value="price_desc">
-                  {dict.discovery?.sortPriceDesc || 'Price: High to Low'}
-                </SelectItem>
-                <SelectItem value="experience_desc">
-                  {dict.discovery?.sortExpDesc || 'Experience: Most to Least'}
-                </SelectItem>
-                <SelectItem value="rating_desc">
-                  {isBn ? 'রেটিং: সর্বোচ্চ প্রথমে' : 'Rating: Highest'}
-                </SelectItem>
-              </SelectContent>
-            </Select>
+              &lt; ৳৫০০
+            </button>
+            <button
+              type="button"
+              onClick={() => onChange({ minPrice: '500', maxPrice: '1000' })}
+              className={`text-[10px] px-2 py-0.5 rounded-full border border-border transition-colors ${
+                value.minPrice === '500' && value.maxPrice === '1000'
+                  ? 'bg-primary text-primary-foreground border-primary font-bold'
+                  : 'bg-background/40 hover:bg-muted text-muted-foreground'
+              }`}
+            >
+              ৳৫০০ - ১০০০
+            </button>
+            <button
+              type="button"
+              onClick={() => onChange({ minPrice: '1000', maxPrice: '' })}
+              className={`text-[10px] px-2 py-0.5 rounded-full border border-border transition-colors ${
+                value.minPrice === '1000' && !value.maxPrice
+                  ? 'bg-primary text-primary-foreground border-primary font-bold'
+                  : 'bg-background/40 hover:bg-muted text-muted-foreground'
+              }`}
+            >
+              &gt; ৳১০০০
+            </button>
           </div>
         </div>
 
-        <div className="flex items-center gap-2 flex-wrap pt-1 text-xs">
-          <span className="text-muted-foreground font-medium flex items-center gap-1 shrink-0">
-            <Sparkles className="h-3 w-3 text-primary" />
-            {isBn ? 'জনপ্রিয়:' : 'Popular:'}
-          </span>
-          {popularSubjects.map((subject) => (
-            <Button
-              key={subject}
-              type="button"
-              variant={value.query === subject ? 'primary' : 'outline'}
-              size="xs"
-              onClick={() => {
-                onChange({ query: subject });
-                onSubmit();
-              }}
-              className="rounded-full px-2.5 py-0.5 text-[11px] font-semibold h-7"
-            >
-              {subject}
-            </Button>
-          ))}
+        {/* 6. Experience & Weekday */}
+        <div className="space-y-2.5 pt-2 border-t border-border">
+          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+            <Calendar className="w-3 h-3 text-primary" />
+            <span>{isBn ? 'অভিজ্ঞতা ও দিন' : 'Experience & Day'}</span>
+          </label>
+          <div className="grid grid-cols-2 gap-2">
+            <div className="space-y-1">
+              <span className="text-[10px] text-muted-foreground">
+                {isBn ? 'ন্যূনতম অভিজ্ঞতা (বছর)' : 'Min Exp (Years)'}
+              </span>
+              <Input
+                type="number"
+                min={0}
+                max={60}
+                placeholder="0"
+                value={value.minExperience}
+                onChange={(e) => onChange({ minExperience: e.target.value })}
+                className="h-9 text-xs rounded-xl bg-background/60"
+                data-testid="min-experience-input"
+                aria-label={isBn ? 'সর্বনিম্ন অভিজ্ঞতা' : 'Minimum experience'}
+              />
+            </div>
+            <div className="space-y-1">
+              <span className="text-[10px] text-muted-foreground">
+                {isBn ? 'উপলব্ধতার দিন' : 'Available Day'}
+              </span>
+              <Select
+                value={value.availableWeekday || 'all'}
+                onValueChange={(val) => onChange({ availableWeekday: val === 'all' ? '' : val })}
+              >
+                <SelectTrigger
+                  className="w-full rounded-xl bg-background/60 border-border text-xs h-9"
+                  data-testid="weekday-select"
+                  aria-label={isBn ? 'উপলব্ধতার দিন' : 'Availability day'}
+                >
+                  <SelectValue placeholder={isBn ? 'যেকোনো' : 'Any'} />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="all">{isBn ? 'যেকোনো দিন' : 'Any Day'}</SelectItem>
+                  {Object.entries(WEEKDAY_LABELS).map(([k, label]) => (
+                    <SelectItem key={k} value={k}>
+                      {isBn ? label.bn : label.en}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+          </div>
         </div>
 
-        {activeChips.length > 0 && (
-          <div className="flex flex-wrap items-center gap-2 pt-1" data-testid="active-filter-chips">
-            {activeChips.map((chip) => (
-              <button
-                key={chip.key}
-                type="button"
-                onClick={() => {
-                  onChange({ [chip.key]: chip.key === 'sortBy' ? 'recommended' : '' });
-                  onSubmit();
-                }}
-                className="inline-flex items-center gap-1 rounded-full border border-border bg-card px-2.5 py-0.5 text-[11px] font-medium text-foreground hover:border-primary/40"
-              >
-                <span>{chip.label}</span>
-                <X className="h-3 w-3" aria-hidden="true" />
-              </button>
-            ))}
-            <Button
-              type="button"
-              variant="ghost"
-              size="xs"
-              onClick={onReset}
-              className="text-[11px] h-7"
+        {/* 7. Sort By */}
+        <div className="space-y-2 pt-2 border-t border-border">
+          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+            <ArrowUpDown className="w-3 h-3 text-primary" />
+            <span>{isBn ? 'সাজানোর নিয়ম' : 'Sort By'}</span>
+          </label>
+          <Select
+            value={value.sortBy || 'recommended'}
+            onValueChange={(val) => onChange({ sortBy: val as TutorSortKey })}
+          >
+            <SelectTrigger
+              className="w-full rounded-xl bg-background/60 border-border text-xs h-9.5"
+              data-testid="sort-by-select"
+              aria-label={isBn ? 'সাজানোর নিয়ম' : 'Sort by'}
             >
-              {isBn ? 'সব মুছুন' : 'Clear all'}
-            </Button>
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="recommended">
+                {dict.discovery?.sortRecommended || 'Recommended (Match Score)'}
+              </SelectItem>
+              <SelectItem value="nearest" disabled={!hasLocation}>
+                {isBn ? 'নিকটতম প্রথমে' : 'Nearest first'}
+              </SelectItem>
+              <SelectItem value="price_asc">
+                {dict.discovery?.sortPriceAsc || 'Price: Low to High'}
+              </SelectItem>
+              <SelectItem value="price_desc">
+                {dict.discovery?.sortPriceDesc || 'Price: High to Low'}
+              </SelectItem>
+              <SelectItem value="experience_desc">
+                {dict.discovery?.sortExpDesc || 'Experience: Most to Least'}
+              </SelectItem>
+              <SelectItem value="rating_desc">
+                {isBn ? 'রেটিং: সর্বোচ্চ প্রথমে' : 'Rating: Highest'}
+              </SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+
+        {/* 8. Active Filter Chips Inside Sidebar */}
+        {activeChips.length > 0 && (
+          <div className="pt-2 border-t border-border space-y-1.5" data-testid="active-filter-chips">
+            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
+              {isBn ? 'সক্রিয় ফিল্টার:' : 'Active Filters:'}
+            </span>
+            <div className="flex flex-wrap items-center gap-1.5">
+              {activeChips.map((chip) => (
+                <button
+                  key={chip.key}
+                  type="button"
+                  onClick={() => {
+                    onChange({ [chip.key]: chip.key === 'sortBy' ? 'recommended' : '' });
+                    onSubmit();
+                  }}
+                  className="inline-flex items-center gap-1 rounded-full border border-border bg-background/80 px-2 py-0.5 text-[10px] font-medium text-foreground hover:border-primary/40 transition-colors"
+                >
+                  <span>{chip.label}</span>
+                  <X className="h-2.5 w-2.5 text-muted-foreground hover:text-foreground" aria-hidden="true" />
+                </button>
+              ))}
+            </div>
           </div>
         )}
+
+        {/* 9. Popular Quick Tags in Sidebar */}
+        <div className="pt-2 border-t border-border space-y-1.5">
+          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
+            <Sparkles className="w-3 h-3 text-primary" />
+            <span>{isBn ? 'জনপ্রিয় বিষয়:' : 'Popular Subjects:'}</span>
+          </span>
+          <div className="flex flex-wrap gap-1">
+            {popularSubjects.slice(0, 4).map((subject) => (
+              <button
+                key={subject}
+                type="button"
+                onClick={() => {
+                  onChange({ query: subject });
+                  onSubmit();
+                }}
+                className={`text-[10px] px-2 py-0.5 rounded-md border transition-all ${
+                  value.query === subject
+                    ? 'bg-primary text-primary-foreground border-primary font-bold'
+                    : 'bg-background/40 hover:bg-muted text-muted-foreground border-border'
+                }`}
+              >
+                {subject}
+              </button>
+            ))}
+          </div>
+        </div>
+
+        {/* Submit Action */}
+        <div className="pt-2">
+          <Button
+            type="submit"
+            disabled={isPending}
+            data-testid="apply-filters-button"
+            className="w-full rounded-xl font-extrabold text-xs gap-1.5 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/20 hover:shadow-lg transition-all duration-150 cursor-pointer"
+          >
+            <Filter className="w-3.5 h-3.5" />
+            <span>{dict.discovery?.applyFilters || (isBn ? 'ফিল্টার প্রয়োগ করুন' : 'Apply Filters')}</span>
+          </Button>
+        </div>
       </form>
     </div>
   );

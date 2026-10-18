@@ -41,15 +41,15 @@ export function TutorResultsGrid({
   if (isLoading && tutors.length === 0) {
     return (
       <div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="flex flex-col gap-4 sm:gap-5 w-full"
         data-testid="tutors-grid-loading"
         aria-hidden="true"
       >
-        {Array.from({ length: 6 }, (_, index) => (
+        {Array.from({ length: 4 }, (_, index) => (
           <div
             key={index}
             data-testid="tutor-skeleton-card"
-            className="h-80 animate-pulse rounded-2xl bg-card/70 border border-border"
+            className="h-44 sm:h-48 animate-pulse rounded-3xl bg-card/70 border border-border"
           />
         ))}
       </div>
@@ -78,7 +78,7 @@ export function TutorResultsGrid({
         <button
           type="button"
           onClick={onReset}
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-extrabold text-xs px-5 py-2.5 hover:scale-[1.03] active:scale-[0.98] transition-[transform,box-shadow,opacity] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-xs px-5 py-2.5 shadow-sm shadow-blue-500/20 hover:scale-[1.03] active:scale-[0.98] transition-[transform,box-shadow,opacity] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
           <span>{dict.discovery?.resetFilters || 'Reset Filters'}</span>
@@ -90,7 +90,7 @@ export function TutorResultsGrid({
   return (
     <>
       <div
-        className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
+        className="flex flex-col gap-4 sm:gap-5 w-full"
         data-testid="tutors-grid"
       >
         {tutors.map((tutor) => (
