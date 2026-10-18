@@ -77,15 +77,15 @@
 
 ### 6.1 Quality gates (fresh runs after all changes)
 
-| Gate                  | Command                                    |   Result   | Details                                                                                                        |
-| :-------------------- | :----------------------------------------- | :--------: | :------------------------------------------------------------------------------------------------------------- |
-| Web typecheck         | `pnpm --filter @ogroniedu/web typecheck`   | **PASSED** | 0 errors, exit 0                                                                                               |
-| API typecheck         | `pnpm --filter @ogroniedu/api typecheck`   | **PASSED** | 0 errors, exit 0                                                                                               |
-| Web lint              | `pnpm --filter @ogroniedu/web lint`        | **PASSED** | oxlint `src test e2e`, exit 0                                                                                  |
-| API lint              | `pnpm --filter @ogroniedu/api lint`        | **PASSED** | oxlint `src test`, exit 0                                                                                      |
-| Web unit tests        | `pnpm --filter @ogroniedu/web test`        | **PASSED** | **179/179** across 30 files (one earlier cold-import timeout flake re-ran green twice; see note in §6.4)       |
-| API unit tests        | `pnpm --filter @ogroniedu/api test`        | **PASSED** | **588/588** across 61 files                                                                                    |
-| Web production build  | `pnpm --filter @ogroniedu/web build`       | **PASSED** | `next build` exit 0, all routes compiled                                                                       |
+| Gate                   | Command                                        |   Result   | Details                                                                                                                                                                                                                |
+| :--------------------- | :--------------------------------------------- | :--------: | :--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Web typecheck          | `pnpm --filter @ogroniedu/web typecheck`       | **PASSED** | 0 errors, exit 0                                                                                                                                                                                                       |
+| API typecheck          | `pnpm --filter @ogroniedu/api typecheck`       | **PASSED** | 0 errors, exit 0                                                                                                                                                                                                       |
+| Web lint               | `pnpm --filter @ogroniedu/web lint`            | **PASSED** | oxlint `src test e2e`, exit 0                                                                                                                                                                                          |
+| API lint               | `pnpm --filter @ogroniedu/api lint`            | **PASSED** | oxlint `src test`, exit 0                                                                                                                                                                                              |
+| Web unit tests         | `pnpm --filter @ogroniedu/web test`            | **PASSED** | **179/179** across 30 files (one earlier cold-import timeout flake re-ran green twice; see note in §6.4)                                                                                                               |
+| API unit tests         | `pnpm --filter @ogroniedu/api test`            | **PASSED** | **588/588** across 61 files                                                                                                                                                                                            |
+| Web production build   | `pnpm --filter @ogroniedu/web build`           | **PASSED** | `next build` exit 0, all routes compiled                                                                                                                                                                               |
 | Web E2E (credentialed) | `E2E_* env + pnpm --filter @ogroniedu/web e2e` | **PASSED** | **47/47 passed** against production build on `:5000` + live API on `:4000` (auth, verification dossier approval, user suspension, evidence upload, session revocation, public smoke, responsive matrix, keyboard a11y) |
 
 ### 6.2 Backend defect found & fixed (data correctness)
@@ -97,10 +97,10 @@
 
 ### 6.3 E2E spec repairs (stale navigation, not app defects)
 
-| Spec                        | Stale expectation                                                   | Fixed to                                                                |
-| :-------------------------- | :------------------------------------------------------------------ | :---------------------------------------------------------------------- |
-| `e2e/admin.console.spec.ts` | Login URL asserted `/bn/admin` (redirect race)                      | `/bn/(dashboard/)?admin` + canonical `/bn/dashboard/admin/verification` and `/bn/dashboard/admin/users/directory` |
-| `e2e/tutor.evidence.spec.ts`| `revoke-all-btn` assumed on the default profile tab                 | Click the “সেশন ও নিরাপত্তা” tab first (current profile tab layout)      |
+| Spec                         | Stale expectation                                   | Fixed to                                                                                                          |
+| :--------------------------- | :-------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------- |
+| `e2e/admin.console.spec.ts`  | Login URL asserted `/bn/admin` (redirect race)      | `/bn/(dashboard/)?admin` + canonical `/bn/dashboard/admin/verification` and `/bn/dashboard/admin/users/directory` |
+| `e2e/tutor.evidence.spec.ts` | `revoke-all-btn` assumed on the default profile tab | Click the “সেশন ও নিরাপত্তা” tab first (current profile tab layout)                                               |
 
 ### 6.4 Known flake (documented, not hidden)
 

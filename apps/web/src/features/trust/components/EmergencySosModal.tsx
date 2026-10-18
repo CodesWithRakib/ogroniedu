@@ -105,10 +105,10 @@ export function EmergencySosModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-all"
+            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             aria-label="Close"
           >
-            <X className="w-5 h-5" />
+            <X className="w-5 h-5" aria-hidden="true" />
           </button>
         </div>
 
@@ -117,11 +117,11 @@ export function EmergencySosModal({
           {hotlines.map((item) => (
             <div
               key={item.telNumber}
-              className={`p-4 rounded-2xl border ${item.color} flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-all hover:scale-[1.01]`}
+              className={`p-4 rounded-2xl border ${item.color} flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-[transform,border-color] duration-150 hover:scale-[1.01]`}
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-black text-foreground tracking-wider font-mono">
+                  <span className="text-2xl font-black text-foreground tracking-wider font-mono tabular-nums">
                     {item.number}
                   </span>
                   <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-muted text-foreground">
@@ -138,10 +138,10 @@ export function EmergencySosModal({
 
               <a
                 href={`tel:${item.telNumber}`}
-                className="shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 bg-destructive hover:bg-destructive/90 text-white font-black text-xs rounded-xl transition-all"
+                className="shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 bg-destructive hover:bg-destructive/90 text-white font-black text-xs rounded-xl transition-[background-color,transform] duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
                 data-testid={`dial-${item.telNumber}`}
               >
-                <PhoneCall className="w-4 h-4" />
+                <PhoneCall className="w-4 h-4" aria-hidden="true" />
                 <span>{isBn ? 'কল করুন' : 'Fast Dial'}</span>
               </a>
             </div>

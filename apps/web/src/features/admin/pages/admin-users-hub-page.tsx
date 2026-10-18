@@ -179,9 +179,7 @@ export function AdminUsersHubPage({ locale }: { locale: Locale }) {
   ).length;
 
   return (
-    <AdminLayout
-      locale={locale}
-    >
+    <AdminLayout locale={locale}>
       <div className="space-y-6 py-6" data-testid="admin-users-hub">
         {/* Eyebrow & Hero Header (Image 1 Exact Layout) */}
         <div className="space-y-2">

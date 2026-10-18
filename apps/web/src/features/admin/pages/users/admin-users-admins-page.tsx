@@ -87,9 +87,7 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
   };
 
   return (
-    <AdminLayout
-      locale={locale}
-    >
+    <AdminLayout locale={locale}>
       <div className="space-y-6 py-6" data-testid="admin-users-admins-page">
         {/* Back Link to Hub (Matching Image 2: "← Back to Users & Staff") */}
         <div>

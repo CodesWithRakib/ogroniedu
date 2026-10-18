@@ -60,7 +60,12 @@ export const Badge = forwardRef<HTMLSpanElement, BadgeProps>(
         )}
         {...props}
       >
-        {dot && <span className="size-1.5 rounded-full bg-current opacity-80 shrink-0" />}
+        {dot && (
+          <span
+            className="size-1.5 rounded-full bg-current opacity-80 shrink-0"
+            aria-hidden="true"
+          />
+        )}
         {children}
       </span>
     );

@@ -77,7 +77,7 @@ export const TabTrigger = forwardRef<HTMLButtonElement, TabTriggerProps>(
         onClick={() => context.setActiveTab(value)}
         className={twMerge(
           clsx(
-            'inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
+            'inline-flex items-center justify-center whitespace-nowrap rounded-lg px-3.5 py-1.5 text-xs font-semibold transition-[background-color,color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 disabled:pointer-events-none disabled:opacity-50 cursor-pointer',
             isSelected
               ? 'bg-card text-foreground shadow-xs ring-1 ring-border/50'
               : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover/60',

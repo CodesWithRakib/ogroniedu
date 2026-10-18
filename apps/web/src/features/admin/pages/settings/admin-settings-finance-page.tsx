@@ -22,9 +22,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
   };
 
   return (
-    <AdminLayout
-      locale={locale}
-    >
+    <AdminLayout locale={locale}>
       <div className="space-y-6 py-6" data-testid="admin-settings-finance-page">
         {/* Back Link to Hub (Image 2 Pattern) */}
         <div>

@@ -81,7 +81,7 @@ export function Navbar({ locale }: NavbarProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-4 py-1.5 rounded-full text-xs font-semibold transition-all ${
+                className={`relative px-4 py-1.5 rounded-full text-xs font-semibold transition-[background-color,color,box-shadow] duration-150 ${
                   active
                     ? 'bg-primary text-primary-foreground shadow-xs'
                     : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
@@ -101,7 +101,7 @@ export function Navbar({ locale }: NavbarProps) {
             aria-label={`Switch language to ${isBn ? 'English' : 'বাংলা'}`}
             className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-semibold text-foreground hover:bg-surface-hover transition-colors"
           >
-            <Globe className="h-3.5 w-3.5 text-primary" />
+            <Globe className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
             <span className="font-semibold">{isBn ? 'বাং' : 'EN'}</span>
           </Link>
 
@@ -119,11 +119,11 @@ export function Navbar({ locale }: NavbarProps) {
             ) : (
               <Link
                 href={withLocale('/login', locale)}
-                className="inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold bg-primary text-primary-foreground hover:bg-primary-hover shadow-xs transition-all hover:scale-105"
+                className="inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold bg-primary text-primary-foreground hover:bg-primary-hover shadow-xs transition-[transform,background-color,box-shadow] duration-150 hover:scale-[1.03] active:scale-[0.98]"
                 data-testid="navbar-login-link"
               >
                 <span>{isBn ? 'লগইন' : 'Login'}</span>
-                <ArrowRight className="h-3.5 w-3.5" />
+                <ArrowRight className="h-3.5 w-3.5" aria-hidden="true" />
               </Link>
             )}
           </div>
@@ -137,7 +137,11 @@ export function Navbar({ locale }: NavbarProps) {
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
             className="md:hidden text-muted-foreground rounded-xl"
           >
-            {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+            {mobileMenuOpen ? (
+              <X className="h-5 w-5" aria-hidden="true" />
+            ) : (
+              <Menu className="h-5 w-5" aria-hidden="true" />
+            )}
           </Button>
         </div>
       </div>

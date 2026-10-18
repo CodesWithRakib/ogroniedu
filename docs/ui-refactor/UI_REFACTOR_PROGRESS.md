@@ -7,14 +7,14 @@
 
 ## 1. Stage Progress Overview
 
-|    Stage    | Description                      |     Status     | Evidence / Notes                                                                                                                                                                                                                        |
-| :---------: | :------------------------------- | :------------: | :-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| **Stage A** | Audit & Defect Inventory         | **VERIFIED**   | 2026-10-18: rendered-UI audit executed with Playwright harness (66 desktop/mobile screenshots across 4 authenticated roles + public). Defect inventory in `UI_AUDIT.md` §Continuation.                                                   |
-| **Stage B** | Design-System Correction         | **VERIFIED**   | 2026-10-18: 160 raw-palette classes → semantic tokens, 18 `dark:` remnants stripped, `shadow-2xs`/`shadow-inner` removed, 379 border-opacity variants simplified, 127 radii unified, `--star` token added. See `DESIGN_RULES.md` §Enforced. |
-| **Stage C** | Shared Component Modernization   | **VERIFIED**   | `Card`, `Button`, `Badge`, `Input`, `Textarea`, `Select` re-tuned this pass; `HeroKpiCard`, `WeeklyActivityChart`, audit table, notification toasts fixed. See `COMPONENT_AUDIT.md` §Continuation.                                       |
-| **Stage D** | Global Layouts & Shells          | **VERIFIED**   | Duplicate shell-title + page-H1 defect resolved: shell title removed from 18 admin pages (single H1 per page). Hub-card pattern standardized (neutral tiles + one functional accent).                                                   |
-| **Stage E** | Full Route Refactoring           | **IN_PROGRESS** | Focused route set re-verified post-fix with new screenshots + full credentialed E2E (47/47). Remaining routes carry pre-fix screenshots only — full 64-route post-fix visual sweep outstanding.                                          |
-| **Stage F** | Quality Assurance & Verification | **IN_PROGRESS** | All automated gates green (typecheck/lint/tests/build/E2E 47/47). Full-route post-fix visual matrix + tablet breakpoint re-check outstanding.                                                                                             |
+|    Stage    | Description                      |     Status      | Evidence / Notes                                                                                                                                                                                                                            |
+| :---------: | :------------------------------- | :-------------: | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| **Stage A** | Audit & Defect Inventory         |  **VERIFIED**   | 2026-10-18: rendered-UI audit executed with Playwright harness (66 desktop/mobile screenshots across 4 authenticated roles + public). Defect inventory in `UI_AUDIT.md` §Continuation.                                                      |
+| **Stage B** | Design-System Correction         |  **VERIFIED**   | 2026-10-18: 160 raw-palette classes → semantic tokens, 18 `dark:` remnants stripped, `shadow-2xs`/`shadow-inner` removed, 379 border-opacity variants simplified, 127 radii unified, `--star` token added. See `DESIGN_RULES.md` §Enforced. |
+| **Stage C** | Shared Component Modernization   |  **VERIFIED**   | `Card`, `Button`, `Badge`, `Input`, `Textarea`, `Select` re-tuned this pass; `HeroKpiCard`, `WeeklyActivityChart`, audit table, notification toasts fixed. See `COMPONENT_AUDIT.md` §Continuation.                                          |
+| **Stage D** | Global Layouts & Shells          |  **VERIFIED**   | Duplicate shell-title + page-H1 defect resolved: shell title removed from 18 admin pages (single H1 per page). Hub-card pattern standardized (neutral tiles + one functional accent).                                                       |
+| **Stage E** | Full Route Refactoring           | **IN_PROGRESS** | Focused route set re-verified post-fix with new screenshots + full credentialed E2E (47/47). Remaining routes carry pre-fix screenshots only — full 64-route post-fix visual sweep outstanding.                                             |
+| **Stage F** | Quality Assurance & Verification | **IN_PROGRESS** | All automated gates green (typecheck/lint/tests/build/E2E 47/47). Full-route post-fix visual matrix + tablet breakpoint re-check outstanding.                                                                                               |
 
 ---
 
@@ -127,17 +127,17 @@ A Playwright harness captured ~66 desktop + mobile screenshots across the public
 
 ### 3.2 Systemic sweeps (applied to `apps/web/src`, counts from codemod logs)
 
-| Sweep                                          | Count          | Notes                                                                                                                    |
-| :--------------------------------------------- | :------------: | :----------------------------------------------------------------------------------------------------------------------- |
-| Raw palette classes → semantic tokens           | 160            | emerald/green→success, amber/orange→warning, blue/cyan→info, purple/indigo→interactive, rose→destructive; bKash pink kept |
-| `dark:` variant remnants stripped               | 18             | Light-theme-only mandate                                                                                                 |
-| `shadow-2xs` / `shadow-inner` removed           | 62 + 5         | Noise elevation                                                                                                          |
-| Heavy card elevation removed (`shadow-md/lg/xl`) | 45             | Card surfaces only; modal/popover/drawer shadows kept                                                                    |
-| `border-border/<opacity>` → `border-border`     | 379            | One border weight everywhere                                                                                             |
-| `rounded-3xl` → `rounded-2xl`                   | 127            | Radius hierarchy (controls `rounded-xl`, cards `rounded-2xl`)                                                            |
-| Ad-hoc `focus:ring-*` → standard focus-visible  | 33             | `focus-visible:ring-2 ring-ring/35`                                                                                      |
-| Success-chip mismatch pairs normalized          | 31 lines / 20 files | Mint background + green text combinations                                                                          |
-| New token                                       | 1              | `--star` (`#d97706`) for rating stars only                                                                               |
+| Sweep                                            |        Count        | Notes                                                                                                                     |
+| :----------------------------------------------- | :-----------------: | :------------------------------------------------------------------------------------------------------------------------ |
+| Raw palette classes → semantic tokens            |         160         | emerald/green→success, amber/orange→warning, blue/cyan→info, purple/indigo→interactive, rose→destructive; bKash pink kept |
+| `dark:` variant remnants stripped                |         18          | Light-theme-only mandate                                                                                                  |
+| `shadow-2xs` / `shadow-inner` removed            |       62 + 5        | Noise elevation                                                                                                           |
+| Heavy card elevation removed (`shadow-md/lg/xl`) |         45          | Card surfaces only; modal/popover/drawer shadows kept                                                                     |
+| `border-border/<opacity>` → `border-border`      |         379         | One border weight everywhere                                                                                              |
+| `rounded-3xl` → `rounded-2xl`                    |         127         | Radius hierarchy (controls `rounded-xl`, cards `rounded-2xl`)                                                             |
+| Ad-hoc `focus:ring-*` → standard focus-visible   |         33          | `focus-visible:ring-2 ring-ring/35`                                                                                       |
+| Success-chip mismatch pairs normalized           | 31 lines / 20 files | Mint background + green text combinations                                                                                 |
+| New token                                        |          1          | `--star` (`#d97706`) for rating stars only                                                                                |
 
 ### 3.3 Page-level fixes delivered this pass
 

@@ -502,18 +502,18 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
           <button
             type="button"
             onClick={handleShare}
-            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card border border-border hover:border-brand/60 text-foreground text-xs font-semibold transition-all active:scale-95"
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-card border border-border hover:border-brand/60 text-foreground text-xs font-semibold transition-[border-color,background-color,transform] duration-150 active:scale-95 focus-visible:ring-2 focus-visible:ring-ring"
           >
             {isCopied ? (
               <>
-                <Check className="w-3.5 h-3.5 text-success-soft-foreground" />
+                <Check className="w-3.5 h-3.5 text-success-soft-foreground" aria-hidden="true" />
                 <span className="text-success-soft-foreground">
                   {isBn ? 'কপি হয়েছে!' : 'Copied!'}
                 </span>
               </>
             ) : (
               <>
-                <Share2 className="w-3.5 h-3.5 text-primary" />
+                <Share2 className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
                 <span>{isBn ? 'প্রোফাইল শেয়ার' : 'Share Profile'}</span>
               </>
             )}
@@ -603,9 +603,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             </div>
             <a
               href="#booking-section"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-black text-sm px-6 py-3.5 hover:shadow-xs hover:scale-105 active:scale-95 transition-all text-center"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-black text-sm px-6 py-3.5 hover:shadow-xs hover:scale-105 active:scale-95 transition-[background-color,box-shadow,transform] duration-150 text-center focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
             >
-              <Send className="w-4 h-4" />
+              <Send className="w-4 h-4" aria-hidden="true" />
               <span>{isBn ? 'সরাসরি টিউশন অনুরোধ পাঠান' : 'Request Tutoring Session'}</span>
             </a>
           </div>
@@ -807,7 +807,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 return (
                   <div
                     key={d.key}
-                    className={`rounded-2xl p-2.5 sm:p-3 border text-xs font-bold transition-all ${
+                    className={`rounded-2xl p-2.5 sm:p-3 border text-xs font-bold transition-colors duration-150 ${
                       isAvailable
                         ? 'bg-card border-brand/60 text-primary'
                         : 'bg-background border-border text-muted-foreground'
@@ -1021,7 +1021,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                         onClick={() =>
                           setSelectedMode(mode.key as 'online' | 'in_person' | 'hybrid')
                         }
-                        className={`py-2 rounded-xl border text-xs font-semibold transition-all ${
+                        className={`py-2 rounded-xl border text-xs font-semibold transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-ring ${
                           selectedMode === mode.key
                             ? 'bg-brand text-brand-foreground border-brand font-bold'
                             : 'bg-background border-border text-muted-foreground hover:border-border'
@@ -1046,7 +1046,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                           key={d.key}
                           type="button"
                           onClick={() => toggleDay(d.key)}
-                          className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-all ${
+                          className={`px-2.5 py-1 rounded-lg text-[11px] font-semibold border transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-ring ${
                             isChecked
                               ? 'bg-brand-soft text-primary border-brand shadow-xs'
                               : 'bg-background border-border text-muted-foreground hover:border-border'

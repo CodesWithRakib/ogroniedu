@@ -1,7 +1,16 @@
 'use client';
 
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent, Button, Input, Label, NativeSelect } from '@/components/ui';
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardContent,
+  Button,
+  Input,
+  Label,
+  NativeSelect,
+} from '@/components/ui';
 import { type Locale } from '@/lib/i18n';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { useUploadEvidenceMutation, type EvidencePurpose } from '@/store/services/files-api';

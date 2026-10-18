@@ -29,7 +29,7 @@ export function Footer({ locale }: FooterProps) {
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-xs font-medium text-muted-foreground">
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <ShieldCheck className="h-4 w-4" />
+                <ShieldCheck className="h-4 w-4" aria-hidden="true" />
               </div>
               <div>
                 <span className="font-bold text-foreground block">
@@ -43,7 +43,7 @@ export function Footer({ locale }: FooterProps) {
 
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Award className="h-4 w-4" />
+                <Award className="h-4 w-4" aria-hidden="true" />
               </div>
               <div>
                 <span className="font-bold text-foreground block">
@@ -57,7 +57,7 @@ export function Footer({ locale }: FooterProps) {
 
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary">
-                <Lock className="h-4 w-4" />
+                <Lock className="h-4 w-4" aria-hidden="true" />
               </div>
               <div>
                 <span className="font-bold text-foreground block">
@@ -71,7 +71,7 @@ export function Footer({ locale }: FooterProps) {
 
             <div className="flex items-center gap-2.5">
               <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary/10 text-primary ">
-                <CheckCircle2 className="h-4 w-4" />
+                <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
               </div>
               <div>
                 <span className="font-bold text-foreground block">
@@ -99,13 +99,13 @@ export function Footer({ locale }: FooterProps) {
 
             <div className="pt-2 flex flex-col gap-2 text-xs text-muted-foreground">
               <div className="flex items-center gap-2">
-                <MapPin className="h-3.5 w-3.5 text-primary" />
+                <MapPin className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>
                   {isBn ? 'গুলশান-২, ঢাকা-১২১২, বাংলাদেশ' : 'Gulshan-2, Dhaka-1212, Bangladesh'}
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <PhoneCall className="h-3.5 w-3.5 text-primary" />
+                <PhoneCall className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>
                   {isBn
                     ? 'হটলাইন: ০৯৬১২-অগ্রণী (সকাল ৯টা - রাত ১০টা)'
@@ -113,7 +113,7 @@ export function Footer({ locale }: FooterProps) {
                 </span>
               </div>
               <div className="flex items-center gap-2">
-                <Mail className="h-3.5 w-3.5 text-primary" />
+                <Mail className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>support@ogroni.edu.bd</span>
               </div>
             </div>
@@ -260,7 +260,10 @@ export function Footer({ locale }: FooterProps) {
 
           <div className="flex items-center gap-1.5">
             <span>{dict.footer.tagline}</span>
-            <Heart className="h-3.5 w-3.5 text-destructive inline fill-destructive animate-pulse" />
+            <Heart
+              className="h-3.5 w-3.5 text-destructive inline fill-destructive animate-pulse"
+              aria-hidden="true"
+            />
           </div>
         </div>
       </div>

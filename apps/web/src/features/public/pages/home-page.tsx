@@ -81,7 +81,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               {/* Trust Pill Badge */}
               <div className="inline-flex flex-nowrap items-center gap-2.5 rounded-full border border-border bg-card py-1.5 px-3.5 shadow-xs whitespace-nowrap">
                 <div className="flex items-center gap-1.5 text-xs font-semibold text-foreground">
-                  <ShieldCheck className="h-4 w-4 text-primary" />
+                  <ShieldCheck className="h-4 w-4 text-primary" aria-hidden="true" />
                   <span>
                     {isBn
                       ? '১০,০০০+ অভিভাবক ও শিক্ষার্থীর আস্থা'
@@ -90,16 +90,22 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </div>
 
                 {/* Overlapping Student Avatars */}
-                <div className="flex items-center -space-x-1.5 pl-0.5">
+                <div className="flex items-center -space-x-1.5 pl-0.5" aria-hidden="true">
                   <StudentAvatar index={1} size="sm" />
                   <StudentAvatar index={2} size="sm" />
                   <StudentAvatar index={3} size="sm" />
                 </div>
 
                 {/* Star Ratings */}
-                <div className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-star">
-                  <span className="tracking-tighter">★★★★★</span>
-                  <span className="text-foreground font-semibold ml-0.5">4.8/5</span>
+                <div
+                  className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-star"
+                  role="img"
+                  aria-label="4.8 out of 5 stars based on 2,500 reviews"
+                >
+                  <span className="tracking-tighter" aria-hidden="true">
+                    ★★★★★
+                  </span>
+                  <span className="text-foreground font-semibold ml-0.5 tabular-nums">4.8/5</span>
                   <span className="text-muted-foreground font-normal text-[10px]">
                     (2.5k+ reviews)
                   </span>
@@ -157,16 +163,16 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </div>
 
                 {/* 3. Custom Floating Trust Badges (Top Right & Mid Right) */}
-                <div className="absolute top-[10px] right-2 sm:top-[14px] sm:right-3 z-30 transition-all duration-300 hover:-translate-y-1">
+                <div className="absolute top-[10px] right-2 sm:top-[14px] sm:right-3 z-30 transition-transform duration-200 hover:-translate-y-1">
                   <QualifiedTutorsBadge locale={locale} />
                 </div>
 
-                <div className="absolute top-[60px] right-2 sm:top-[68px] sm:right-3 z-30 transition-all duration-300 hover:-translate-y-1">
+                <div className="absolute top-[60px] right-2 sm:top-[68px] sm:right-3 z-30 transition-transform duration-200 hover:-translate-y-1">
                   <SafeSecureBadge locale={locale} />
                 </div>
 
                 {/* 4. Live Interactive Student Dashboard iPad Tablet */}
-                <div className="absolute -bottom-6 -right-1 sm:-bottom-8 sm:-right-2 w-[380px] sm:w-[410px] scale-[0.82] sm:scale-[0.86] origin-bottom-right z-25 transition-all duration-500 drop-shadow-card hover:scale-[0.89]">
+                <div className="absolute -bottom-6 -right-1 sm:-bottom-8 sm:-right-2 w-[380px] sm:w-[410px] scale-[0.82] sm:scale-[0.86] origin-bottom-right z-25 transition-transform duration-300 drop-shadow-card hover:scale-[0.89]">
                   <HeroStudentTablet />
                 </div>
               </div>
@@ -189,10 +195,10 @@ export function HomePage({ locale }: { locale: Locale }) {
               {/* Stat 1: Happy Students */}
               <div className="flex items-center gap-3.5">
                 <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
-                  <Users className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <Users className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight tabular-nums">
                     {stats?.activeStudents
                       ? `${formatLocalizedNumber(stats.activeStudents, locale)}+`
                       : '10,000+'}
@@ -206,10 +212,10 @@ export function HomePage({ locale }: { locale: Locale }) {
               {/* Stat 2: Verified Tutors */}
               <div className="flex items-center gap-3.5">
                 <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
-                  <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight tabular-nums">
                     {stats?.verifiedTutors
                       ? `${formatLocalizedNumber(stats.verifiedTutors, locale)}+`
                       : '2,500+'}
@@ -223,10 +229,10 @@ export function HomePage({ locale }: { locale: Locale }) {
               {/* Stat 3: Satisfaction Rate */}
               <div className="flex items-center gap-3.5">
                 <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
-                  <Heart className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <Heart className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight tabular-nums">
                     95%
                   </div>
                   <div className="text-xs text-muted-foreground font-medium">
@@ -238,10 +244,10 @@ export function HomePage({ locale }: { locale: Locale }) {
               {/* Stat 4: 24/7 Support */}
               <div className="flex items-center gap-3.5">
                 <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-full bg-primary-soft text-primary">
-                  <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6" />
+                  <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
                 </div>
                 <div>
-                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+                  <div className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight tabular-nums">
                     24/7
                   </div>
                   <div className="text-xs text-muted-foreground font-medium">
@@ -282,8 +288,8 @@ export function HomePage({ locale }: { locale: Locale }) {
       <section className="py-16 sm:py-24 relative">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="text-left mb-12 space-y-2.5">
-            <span className="text-xs font-bold tracking-widest text-primary uppercase">
-              {isBn ? 'কেন অগ্রণী এডু বেছে নেবেন' : 'WHY CHOOSE OGRONIEDU'}
+            <span className="text-xs font-bold tracking-wider text-primary">
+              {isBn ? 'অগ্রণী এডুর বিশেষত্ব' : 'Why Choose OgroniEdu'}
             </span>
             <h2 className="text-3xl sm:text-4xl font-extrabold tracking-tight text-foreground font-sans">
               {isBn
@@ -294,9 +300,9 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1: Verified & Experienced Tutors */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                <Award className="h-6 w-6" />
+                <Award className="h-6 w-6" aria-hidden="true" />
               </div>
               <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'যাচাইকৃত ও অভিজ্ঞ শিক্ষক' : 'Verified & Experienced Tutors'}
@@ -309,9 +315,9 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 2: Flexible Learning Options */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                <CalendarDays className="h-6 w-6" />
+                <CalendarDays className="h-6 w-6" aria-hidden="true" />
               </div>
               <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'সহজ ও সুবিধাজনক ক্লাস' : 'Flexible Learning Options'}
@@ -324,9 +330,9 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 3: Wide Subject Coverage */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                <BookOpen className="h-6 w-6" />
+                <BookOpen className="h-6 w-6" aria-hidden="true" />
               </div>
               <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'সকল বিষয়ের সমাহার' : 'Wide Subject Coverage'}
@@ -339,9 +345,9 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 4: Track Progress */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
-                <TrendingUp className="h-6 w-6" />
+                <TrendingUp className="h-6 w-6" aria-hidden="true" />
               </div>
               <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'অগ্রগতি পর্যবেক্ষণ' : 'Track Progress'}
@@ -372,11 +378,13 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5">
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-black text-muted-foreground/30 font-mono">01</span>
+                <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
+                  01
+                </span>
                 <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary font-bold">
-                  <Search className="w-4 h-4" />
+                  <Search className="w-4 h-4" aria-hidden="true" />
                 </div>
               </div>
               <h3 className="text-lg font-bold text-foreground">
@@ -390,11 +398,13 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5">
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-black text-muted-foreground/30 font-mono">02</span>
+                <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
+                  02
+                </span>
                 <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary font-bold">
-                  <CalendarDays className="w-4 h-4" />
+                  <CalendarDays className="w-4 h-4" aria-hidden="true" />
                 </div>
               </div>
               <h3 className="text-lg font-bold text-foreground">
@@ -408,11 +418,13 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5">
               <div className="flex items-center justify-between">
-                <span className="text-3xl font-black text-muted-foreground/30 font-mono">03</span>
+                <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
+                  03
+                </span>
                 <div className="h-9 w-9 rounded-xl bg-success-soft flex items-center justify-center text-success font-bold">
-                  <ShieldCheck className="w-4 h-4" />
+                  <ShieldCheck className="w-4 h-4" aria-hidden="true" />
                 </div>
               </div>
               <h3 className="text-lg font-bold text-foreground">
@@ -438,7 +450,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="space-y-3.5 max-w-xl">
                 <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold text-primary">
-                  <Sparkles className="h-3.5 w-3.5" />
+                  <Sparkles className="h-3.5 w-3.5" aria-hidden="true" />
                   <span>{isBn ? 'অগ্রণী এডু প্ল্যাটফর্ম' : 'OgroniEdu Platform'}</span>
                 </div>
                 <h3 className="text-2xl sm:text-3xl font-extrabold text-foreground">
@@ -457,12 +469,12 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <Button asChild size="lg" className="rounded-full shadow-xs">
                   <Link href={`/${locale}/register`} className="flex items-center gap-2">
                     <span>{isBn ? 'নিবন্ধন করুন' : 'Get Started'}</span>
-                    <ArrowRight className="w-4 h-4" />
+                    <ArrowRight className="w-4 h-4" aria-hidden="true" />
                   </Link>
                 </Button>
                 <Button asChild variant="outline" size="lg" className="rounded-full">
                   <Link href={`/${locale}/tutors`} className="flex items-center gap-2">
-                    <Search className="w-4 h-4 text-primary" />
+                    <Search className="w-4 h-4 text-primary" aria-hidden="true" />
                     <span>{isBn ? 'সকল শিক্ষক দেখুন' : 'Browse All Tutors'}</span>
                   </Link>
                 </Button>

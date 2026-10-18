@@ -145,27 +145,27 @@ These are the rules actually enforced by the codebase after the rendered-UI corr
 
 ### R-3: Radius ladder
 
-| Layer             | Radius                   | Usage                                            |
-| :---------------- | :----------------------- | :----------------------------------------------- |
-| Controls          | `rounded-xl` (12px)      | Buttons, inputs, selects, textareas, tab pills   |
-| Cards / surfaces  | `rounded-2xl` (16px)     | Cards, panels, tables, sections, modals          |
-| Pills / chips     | `rounded-full`           | Badges, status chips, avatars, icon tiles        |
+| Layer            | Radius               | Usage                                          |
+| :--------------- | :------------------- | :--------------------------------------------- |
+| Controls         | `rounded-xl` (12px)  | Buttons, inputs, selects, textareas, tab pills |
+| Cards / surfaces | `rounded-2xl` (16px) | Cards, panels, tables, sections, modals        |
+| Pills / chips    | `rounded-full`       | Badges, status chips, avatars, icon tiles      |
 
 `rounded-3xl` is no longer used (127 occurrences consolidated).
 
 ### R-4: Color semantics (single source of truth)
 
-| Intent                       | Token(s)                                                                        | Notes                                                            |
-| :--------------------------- | :------------------------------------------------------------------------------ | :--------------------------------------------------------------- |
-| Primary actions / brand text | `--primary` `#0f766e`                                                           | Buttons, active states, links-to-action                          |
-| Brand fills (Ocean Teal)     | `--brand` `#0df5c4` / `--brand-accent` `#00e1b2` + `--brand-foreground` ink     | Large fills with ink text only; never for small text contrast    |
-| Interactive (Sapphire)       | `--interactive` `#2563eb`                                                       | Links, focus-adjacent highlights, informational accents          |
-| Success                      | `success` + `success-soft` trio (icon `success-strong` in soft surfaces)        | Never pair a green icon/text on a mint fill directly             |
-| Warning                      | `warning` + `warning-soft`                                                      | Actionable upkeep (e.g. pending KYC), not decoration             |
-| Danger / destructive         | `destructive` + `destructive-soft`                                              | Dangerous actions, errors                                        |
-| Info                         | `info` + `info-soft`                                                            | Neutral-informational counters                                   |
-| Rating stars                 | `--star` `#d97706`                                                              | Ratings only; never reuse `warning` for stars                    |
-| Payment provider brands      | bKash pink `#E2136E`, Nagad orange (brand-mark only)                            | The only allowed non-semantic colors; provider identity only     |
+| Intent                       | Token(s)                                                                    | Notes                                                         |
+| :--------------------------- | :-------------------------------------------------------------------------- | :------------------------------------------------------------ |
+| Primary actions / brand text | `--primary` `#0f766e`                                                       | Buttons, active states, links-to-action                       |
+| Brand fills (Ocean Teal)     | `--brand` `#0df5c4` / `--brand-accent` `#00e1b2` + `--brand-foreground` ink | Large fills with ink text only; never for small text contrast |
+| Interactive (Sapphire)       | `--interactive` `#2563eb`                                                   | Links, focus-adjacent highlights, informational accents       |
+| Success                      | `success` + `success-soft` trio (icon `success-strong` in soft surfaces)    | Never pair a green icon/text on a mint fill directly          |
+| Warning                      | `warning` + `warning-soft`                                                  | Actionable upkeep (e.g. pending KYC), not decoration          |
+| Danger / destructive         | `destructive` + `destructive-soft`                                          | Dangerous actions, errors                                     |
+| Info                         | `info` + `info-soft`                                                        | Neutral-informational counters                                |
+| Rating stars                 | `--star` `#d97706`                                                          | Ratings only; never reuse `warning` for stars                 |
+| Payment provider brands      | bKash pink `#E2136E`, Nagad orange (brand-mark only)                        | The only allowed non-semantic colors; provider identity only  |
 
 Raw Tailwind palette classes (`emerald-*`, `amber-*`, `blue-*`, `purple-*`, `rose-*`, `green-*`, `orange-*`, `cyan-*`, `indigo-*`) are forbidden in feature UI; use the semantic tokens above.
 

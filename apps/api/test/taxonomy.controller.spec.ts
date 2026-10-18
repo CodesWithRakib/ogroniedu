@@ -169,9 +169,9 @@ describe('TaxonomyController Public Reads & Admin CRUD Tests', () => {
     it('should 404 when updating a missing education level', async () => {
       levelRepo.findOne.mockResolvedValue(null);
 
-      await expect(controller.updateEducationLevel('missing-id', { nameEn: 'Nope' })).rejects.toThrow(
-        NotFoundException,
-      );
+      await expect(
+        controller.updateEducationLevel('missing-id', { nameEn: 'Nope' }),
+      ).rejects.toThrow(NotFoundException);
     });
 
     it('should apply partial education level updates without clobbering untouched fields', async () => {

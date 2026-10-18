@@ -120,22 +120,22 @@ This pass re-verified a focused set of routes against the **production build** w
 
 ### Re-verified off the rendered UI (desktop + mobile)
 
-| Route                                         | Role          | Evidence                                                          | Status       |
-| :-------------------------------------------- | :------------ | :---------------------------------------------------------------- | :----------- |
-| `/[locale]` (home)                            | Public        | Screenshot review; hero blobs softened; E2E public smoke          | **VERIFIED** |
-| `/[locale]/tutors`                            | Public        | Screenshot review; E2E public smoke                               | **VERIFIED** |
-| `/[locale]/login`                             | Public        | Screenshot review; E2E auth journeys (all roles)                  | **VERIFIED** |
-| `/[locale]/dashboard/student`                 | Student       | Screenshot review; E2E login → dashboard                          | **VERIFIED** |
-| `/[locale]/dashboard/student/payments`        | Student       | Screenshot review                                                 | **VERIFIED** |
-| `/[locale]/profile`                           | Student       | Screenshot review; E2E profile-form + session revocation journey  | **VERIFIED** |
-| `/[locale]/dashboard/tutor`                   | Tutor         | Screenshot review; chart bars fixed                               | **VERIFIED** |
-| `/[locale]/dashboard/tutor/earnings`          | Tutor         | Screenshot review (payout selector trios)                         | **VERIFIED** |
-| `/[locale]/dashboard/admin`                   | Admin         | Screenshot review; E2E admin console journey                      | **VERIFIED** |
-| `/[locale]/dashboard/admin/users`             | Admin         | Screenshot review desktop + mobile; E2E suspension journey        | **VERIFIED** |
-| `/[locale]/dashboard/admin/settings`          | Admin         | Screenshot review; neutralized hub                                | **VERIFIED** |
-| `/[locale]/dashboard/admin/audit-logs`        | Admin         | Screenshot review after API Date-fix (timestamps render)          | **VERIFIED** |
-| `/[locale]/dashboard/admin/users/directory`   | Admin         | E2E suspension/resume journey passes                              | **VERIFIED** |
-| `/[locale]/dashboard/admin/verification`      | Admin         | E2E dossier approval journey passes                               | **VERIFIED** |
+| Route                                       | Role    | Evidence                                                         | Status       |
+| :------------------------------------------ | :------ | :--------------------------------------------------------------- | :----------- |
+| `/[locale]` (home)                          | Public  | Screenshot review; hero blobs softened; E2E public smoke         | **VERIFIED** |
+| `/[locale]/tutors`                          | Public  | Screenshot review; E2E public smoke                              | **VERIFIED** |
+| `/[locale]/login`                           | Public  | Screenshot review; E2E auth journeys (all roles)                 | **VERIFIED** |
+| `/[locale]/dashboard/student`               | Student | Screenshot review; E2E login → dashboard                         | **VERIFIED** |
+| `/[locale]/dashboard/student/payments`      | Student | Screenshot review                                                | **VERIFIED** |
+| `/[locale]/profile`                         | Student | Screenshot review; E2E profile-form + session revocation journey | **VERIFIED** |
+| `/[locale]/dashboard/tutor`                 | Tutor   | Screenshot review; chart bars fixed                              | **VERIFIED** |
+| `/[locale]/dashboard/tutor/earnings`        | Tutor   | Screenshot review (payout selector trios)                        | **VERIFIED** |
+| `/[locale]/dashboard/admin`                 | Admin   | Screenshot review; E2E admin console journey                     | **VERIFIED** |
+| `/[locale]/dashboard/admin/users`           | Admin   | Screenshot review desktop + mobile; E2E suspension journey       | **VERIFIED** |
+| `/[locale]/dashboard/admin/settings`        | Admin   | Screenshot review; neutralized hub                               | **VERIFIED** |
+| `/[locale]/dashboard/admin/audit-logs`      | Admin   | Screenshot review after API Date-fix (timestamps render)         | **VERIFIED** |
+| `/[locale]/dashboard/admin/users/directory` | Admin   | E2E suspension/resume journey passes                             | **VERIFIED** |
+| `/[locale]/dashboard/admin/verification`    | Admin   | E2E dossier approval journey passes                              | **VERIFIED** |
 
 ### Covered by automated E2E (functional journeys)
 

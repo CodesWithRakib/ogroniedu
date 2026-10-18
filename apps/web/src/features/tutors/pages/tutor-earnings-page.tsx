@@ -479,7 +479,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                 <button
                   type="button"
                   onClick={() => setSelectedMethod('bkash')}
-                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
+                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-ring ${
                     selectedMethod === 'bkash'
                       ? 'border-pink-500 bg-pink-500/10 text-pink-600'
                       : 'border-border text-muted-foreground hover:bg-muted/50'
@@ -490,7 +490,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                 <button
                   type="button"
                   onClick={() => setSelectedMethod('nagad')}
-                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
+                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-ring ${
                     selectedMethod === 'nagad'
                       ? 'border-warning/40 bg-warning-soft text-warning-soft-foreground'
                       : 'border-border text-muted-foreground hover:bg-muted/50'
@@ -501,7 +501,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                 <button
                   type="button"
                   onClick={() => setSelectedMethod('bank')}
-                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-all ${
+                  className={`py-2 px-3 rounded-xl border text-xs font-bold transition-colors duration-150 focus-visible:ring-2 focus-visible:ring-ring ${
                     selectedMethod === 'bank'
                       ? 'border-info/40 bg-info-soft text-info-soft-foreground'
                       : 'border-border text-muted-foreground hover:bg-muted/50'

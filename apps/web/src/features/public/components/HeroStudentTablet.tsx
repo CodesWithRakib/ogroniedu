@@ -154,7 +154,7 @@ export function HeroStudentTablet() {
                   </div>
                   <button
                     type="button"
-                    className="mt-0.5 w-full rounded bg-brand-soft hover:bg-brand-soft text-primary border border-border py-0.5 text-[7.5px] font-bold transition-all text-center cursor-pointer"
+                    className="mt-0.5 w-full rounded bg-brand-soft hover:bg-brand-soft text-primary border border-border py-0.5 text-[7.5px] font-bold transition-[background-color,border-color,color] duration-150 text-center cursor-pointer focus-visible:ring-1 focus-visible:ring-ring"
                   >
                     View Details
                   </button>
@@ -169,10 +169,10 @@ export function HeroStudentTablet() {
                     <span className="font-bold text-foreground">Subject Performance</span>
                     <div className="flex items-center gap-1.5 text-[7px] text-muted-foreground">
                       <span className="flex items-center gap-0.5">
-                        <span className="h-1 w-1 rounded-full bg-brand" /> Cur
+                        <span className="h-1 w-1 rounded-full bg-brand" aria-hidden="true" /> Cur
                       </span>
                       <span className="flex items-center gap-0.5">
-                        <span className="h-1 w-1 rounded-full bg-card" /> Prev
+                        <span className="h-1 w-1 rounded-full bg-card" aria-hidden="true" /> Prev
                       </span>
                     </div>
                   </div>
@@ -193,7 +193,7 @@ export function HeroStudentTablet() {
                           {/* Current bar */}
                           <div
                             style={{ height: `${sub.current}%` }}
-                            className="w-1.5 rounded-t bg-gradient-to-t from-primary to-brand shadow-xs group-hover:brightness-125 transition-all"
+                            className="w-1.5 rounded-t bg-gradient-to-t from-primary to-brand shadow-xs group-hover:brightness-125 transition-[filter] duration-150"
                           />
                           {/* Previous bar */}
                           <div

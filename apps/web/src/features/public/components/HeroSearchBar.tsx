@@ -135,9 +135,9 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           variant={activeTab === 'filter' ? 'primary' : 'outline'}
           size="sm"
           onClick={() => setActiveTab('filter')}
-          className="rounded-full text-xs font-semibold gap-1.5 h-8 px-4 transition-all"
+          className="rounded-full text-xs font-semibold gap-1.5 h-8 px-4 transition-[background-color,border-color,color] duration-150"
         >
-          <SlidersHorizontal className="h-3.5 w-3.5" />
+          <SlidersHorizontal className="h-3.5 w-3.5" aria-hidden="true" />
           <span>{isBn ? 'শ্রেণি ও বিষয় দিয়ে খুঁজুন' : 'Filter by Class & Subject'}</span>
         </Button>
 
@@ -147,9 +147,9 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           variant={activeTab === 'search' ? 'primary' : 'outline'}
           size="sm"
           onClick={() => setActiveTab('search')}
-          className="rounded-full text-xs font-semibold gap-1.5 h-8 px-4 transition-all"
+          className="rounded-full text-xs font-semibold gap-1.5 h-8 px-4 transition-[background-color,border-color,color] duration-150"
         >
-          <Search className="h-3.5 w-3.5" />
+          <Search className="h-3.5 w-3.5" aria-hidden="true" />
           <span>{isBn ? 'নাম বা কি-ওয়ার্ড দিয়ে খুঁজুন' : 'Search by Name / Keyword'}</span>
         </Button>
       </div>
@@ -160,11 +160,11 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           /* ========================================================
            * MODE 1: DIRECT FILTER (Class + Subject + Location)
            * ======================================================== */
-          <div className="rounded-2xl lg:rounded-full bg-card border border-border shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all">
+          <div className="rounded-2xl lg:rounded-full bg-card border border-border shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-[border-color,box-shadow] duration-150">
             {/* Segment 1: Class / Education Level */}
             <div className="flex-1 px-3.5 py-1.5 rounded-xl lg:rounded-l-full hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border">
               <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                <GraduationCap className="h-3.5 w-3.5 text-primary" />
+                <GraduationCap className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>{isBn ? 'শ্রেণি / মাধ্যম' : 'Class / Level'}</span>
               </div>
               <Select
@@ -172,7 +172,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 onValueChange={(val) => setSelectedLevel(val === 'all' ? '' : val)}
               >
                 <SelectTrigger
-                  className="w-full border-0 bg-transparent p-0 h-7 text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-0 gap-1"
+                  className="w-full border-0 bg-transparent p-0 h-7 text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-1 focus-visible:ring-primary/40 rounded-md gap-1"
                   aria-label={isBn ? 'শ্রেণি / মাধ্যম নির্বাচন করুন' : 'Select Class or Level'}
                 >
                   <SelectValue
@@ -198,7 +198,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             {/* Segment 2: Subject */}
             <div className="flex-1 px-3.5 py-1.5 rounded-xl hover:bg-muted/40 transition-colors border-b lg:border-b-0 lg:border-r border-border">
               <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                <BookOpen className="h-3.5 w-3.5 text-primary" />
+                <BookOpen className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>{isBn ? 'পড়ার বিষয়' : 'Subject'}</span>
               </div>
               <Select
@@ -206,7 +206,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 onValueChange={(val) => setSelectedSubject(val === 'all' ? '' : val)}
               >
                 <SelectTrigger
-                  className="w-full border-0 bg-transparent p-0 h-7 text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-0 gap-1"
+                  className="w-full border-0 bg-transparent p-0 h-7 text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-1 focus-visible:ring-primary/40 rounded-md gap-1"
                   aria-label={isBn ? 'পড়ার বিষয় নির্বাচন করুন' : 'Select Subject'}
                 >
                   <SelectValue placeholder={isBn ? 'সকল বিষয়' : 'All Subjects'} />
@@ -228,7 +228,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             {/* Segment 3: Location / Tuition Mode */}
             <div className="flex-1 px-3.5 py-1.5 rounded-xl hover:bg-muted/40 transition-colors">
               <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
-                <MapPin className="h-3.5 w-3.5 text-primary" />
+                <MapPin className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>{isBn ? 'এলাকা বা মাধ্যম' : 'Location / Mode'}</span>
               </div>
               <Select
@@ -236,7 +236,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 onValueChange={(val) => setSelectedLocation(val === 'all' ? '' : val)}
               >
                 <SelectTrigger
-                  className="w-full border-0 bg-transparent p-0 h-7 text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-0 gap-1"
+                  className="w-full border-0 bg-transparent p-0 h-7 text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-1 focus-visible:ring-primary/40 rounded-md gap-1"
                   aria-label={isBn ? 'এলাকা বা মাধ্যম নির্বাচন করুন' : 'Select Location or Mode'}
                 >
                   <SelectValue placeholder={isBn ? 'সারাদেশে বা অনলাইন' : 'Anywhere / Online'} />
@@ -263,7 +263,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
               size="lg"
               className="rounded-xl lg:rounded-full px-7 py-3 h-auto text-xs font-semibold gap-2 shadow-xs shrink-0"
             >
-              <Search className="h-4 w-4 stroke-[2.5]" />
+              <Search className="h-4 w-4 stroke-[2.5]" aria-hidden="true" />
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
             </Button>
           </div>
@@ -271,9 +271,9 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           /* ========================================================
            * MODE 2: QUICK KEYWORD SEARCH (Name, University, Topic)
            * ======================================================== */
-          <div className="rounded-2xl lg:rounded-full bg-card border border-border shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all">
+          <div className="rounded-2xl lg:rounded-full bg-card border border-border shadow-xs p-2 lg:p-1.5 flex flex-col lg:flex-row items-center justify-between gap-2 transition-[border-color,box-shadow] duration-150">
             <div className="flex items-center flex-1 w-full px-3 py-1.5">
-              <Search className="h-4 w-4 text-primary mr-2.5 shrink-0" />
+              <Search className="h-4 w-4 text-primary mr-2.5 shrink-0" aria-hidden="true" />
               <Input
                 type="text"
                 value={searchQuery}
@@ -284,7 +284,6 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                     : 'Search by tutor name, university, or keyword (e.g. BUET, Ayesha)...'
                 }
                 className="w-full border-0 bg-transparent text-xs text-foreground placeholder:text-muted-foreground focus-visible:ring-0 shadow-none h-8 p-0"
-                autoFocus
               />
             </div>
 
@@ -293,7 +292,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
               size="lg"
               className="w-full lg:w-auto rounded-xl lg:rounded-full px-7 py-3 h-auto text-xs font-semibold gap-2 shadow-xs shrink-0"
             >
-              <Search className="h-4 w-4 stroke-[2.5]" />
+              <Search className="h-4 w-4 stroke-[2.5]" aria-hidden="true" />
               <span>{isBn ? 'অনুসন্ধান' : 'Search'}</span>
             </Button>
           </div>
@@ -303,7 +302,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
       {/* Popular Tags Row */}
       <div className="flex items-center gap-1.5 text-xs pt-0.5 overflow-x-auto lg:overflow-visible flex-nowrap scrollbar-none">
         <span className="font-semibold text-muted-foreground shrink-0 mr-1 text-xs flex items-center gap-1">
-          <Sparkles className="h-3 w-3 text-primary" />
+          <Sparkles className="h-3 w-3 text-primary" aria-hidden="true" />
           <span>{isBn ? 'জনপ্রিয়:' : 'Popular:'}</span>
         </span>
         {popularTags.map((tag) => (

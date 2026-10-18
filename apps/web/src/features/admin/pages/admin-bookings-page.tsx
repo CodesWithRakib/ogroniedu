@@ -35,9 +35,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
   const completedCount = admin.bookings.filter((b) => b.status === 'completed').length;
 
   return (
-    <AdminLayout
-      locale={locale}
-    >
+    <AdminLayout locale={locale}>
       {admin.loading && !admin.bookings.length ? (
         <div className="py-12 flex justify-center">
           <LoadingSpinner />

@@ -7,13 +7,13 @@ Every flow below is described as implemented in this repository: routes are real
 
 Actor shorthand:
 
-| Actor | Role value(s) | Demo account (dev seed) |
-| --- | --- | --- |
-| Student | `student` | `student.demo@ogroniedu.com` |
-| Tutor | `tutor` | `tutor.demo@ogroniedu.com` |
-| Guardian | `guardian` | `guardian.demo@ogroniedu.com` |
-| Admin | `admin`, `super_admin` | `admin.demo@ogroniedu.com` |
-| Staff | `support_agent`, `compliance_reviewer` | (seeded on demand) |
+| Actor    | Role value(s)                          | Demo account (dev seed)       |
+| -------- | -------------------------------------- | ----------------------------- |
+| Student  | `student`                              | `student.demo@ogroniedu.com`  |
+| Tutor    | `tutor`                                | `tutor.demo@ogroniedu.com`    |
+| Guardian | `guardian`                             | `guardian.demo@ogroniedu.com` |
+| Admin    | `admin`, `super_admin`                 | `admin.demo@ogroniedu.com`    |
+| Staff    | `support_agent`, `compliance_reviewer` | (seeded on demand)            |
 
 Dev password for all demo accounts: `OgroniDev#2026`.
 
@@ -134,10 +134,10 @@ Dev password for all demo accounts: `OgroniDev#2026`.
 
 **Three-tier model** (`verification-policy.constants.ts`):
 
-| Level | Purpose | Document types |
-| --- | --- | --- |
-| `identity` | NID-backed identity | `nid_front`, `nid_back`, `selfie_with_nid` |
-| `educational` | Academic credentials | `academic_certificate`, `transcript`, `other_supporting` |
+| Level           | Purpose               | Document types                                                        |
+| --------------- | --------------------- | --------------------------------------------------------------------- |
+| `identity`      | NID-backed identity   | `nid_front`, `nid_back`, `selfie_with_nid`                            |
+| `educational`   | Academic credentials  | `academic_certificate`, `transcript`, `other_supporting`              |
 | `institutional` | Professional standing | `professional_certificate`, `institution_letter`, `employment_letter` |
 
 **Tutor flow**

@@ -66,7 +66,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
             key={cat.id}
             type="button"
             onClick={() => setActiveCategory(cat.id)}
-            className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-all font-bengali cursor-pointer ${
+            className={`px-4 py-2 rounded-full text-xs sm:text-sm font-semibold transition-[background-color,color,border-color,box-shadow] duration-150 font-bengali cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
               activeCategory === cat.id
                 ? 'bg-primary text-primary-foreground shadow-xs'
                 : 'bg-card text-muted-foreground border border-border hover:bg-muted/50 hover:text-foreground'
@@ -84,20 +84,20 @@ export function FaqPage({ locale }: { locale: Locale }) {
           return (
             <Card
               key={idx}
-              className="bg-card border-border rounded-2xl shadow-xs transition-all overflow-hidden hover:border-primary/40"
+              className="bg-card border-border rounded-2xl shadow-xs transition-[border-color,box-shadow] duration-150 overflow-hidden hover:border-primary/40"
             >
               <button
                 type="button"
                 onClick={() => setOpenIndex(isOpen ? null : idx)}
-                className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 font-bengali cursor-pointer"
+                className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 font-bengali cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-2xl"
                 aria-expanded={isOpen}
               >
                 <span className="text-base sm:text-lg font-bold text-foreground">{faq.q}</span>
                 <span className="text-muted-foreground shrink-0">
                   {isOpen ? (
-                    <ChevronUp className="h-5 w-5 text-primary" />
+                    <ChevronUp className="h-5 w-5 text-primary" aria-hidden="true" />
                   ) : (
-                    <ChevronDown className="h-5 w-5" />
+                    <ChevronDown className="h-5 w-5" aria-hidden="true" />
                   )}
                 </span>
               </button>

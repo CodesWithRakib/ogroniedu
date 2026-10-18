@@ -32,18 +32,14 @@ describe('NotificationBell Component', () => {
   });
 
   it('should render the unread badge in Bengali digits with a localized aria label', () => {
-    const html = renderToStaticMarkup(
-      React.createElement(NotificationBell, { locale: 'bn' }),
-    );
+    const html = renderToStaticMarkup(React.createElement(NotificationBell, { locale: 'bn' }));
 
     expect(html).toContain('২৫');
     expect(html).toContain('aria-label="বিজ্ঞপ্তি (২৫টি অপঠিত)"');
   });
 
   it('should render the unread badge in English digits with a localized aria label', () => {
-    const html = renderToStaticMarkup(
-      React.createElement(NotificationBell, { locale: 'en' }),
-    );
+    const html = renderToStaticMarkup(React.createElement(NotificationBell, { locale: 'en' }));
 
     expect(html).toContain('>25</span>');
     expect(html).toContain('aria-label="Notifications (25 unread)"');
@@ -52,12 +48,8 @@ describe('NotificationBell Component', () => {
   it('should cap large counts at 99+ in the active locale', () => {
     mockNotifications.unreadCount = 150;
 
-    const bnHtml = renderToStaticMarkup(
-      React.createElement(NotificationBell, { locale: 'bn' }),
-    );
-    const enHtml = renderToStaticMarkup(
-      React.createElement(NotificationBell, { locale: 'en' }),
-    );
+    const bnHtml = renderToStaticMarkup(React.createElement(NotificationBell, { locale: 'bn' }));
+    const enHtml = renderToStaticMarkup(React.createElement(NotificationBell, { locale: 'en' }));
 
     expect(bnHtml).toContain('৯৯+');
     expect(enHtml).toContain('99+');
@@ -66,9 +58,7 @@ describe('NotificationBell Component', () => {
   it('should hide the badge at zero unread and still keep an accessible label', () => {
     mockNotifications.unreadCount = 0;
 
-    const html = renderToStaticMarkup(
-      React.createElement(NotificationBell, { locale: 'bn' }),
-    );
+    const html = renderToStaticMarkup(React.createElement(NotificationBell, { locale: 'bn' }));
 
     expect(html).not.toContain('animate-ping');
     expect(html).toContain('aria-label="বিজ্ঞপ্তি (০টি অপঠিত)"');
@@ -90,9 +80,7 @@ describe('NotificationBell Component', () => {
   it('should expose the expanded state for the notification center', () => {
     mockNotifications.isCenterOpen = true;
 
-    const html = renderToStaticMarkup(
-      React.createElement(NotificationBell, { locale: 'en' }),
-    );
+    const html = renderToStaticMarkup(React.createElement(NotificationBell, { locale: 'en' }));
 
     expect(html).toContain('aria-expanded="true"');
   });

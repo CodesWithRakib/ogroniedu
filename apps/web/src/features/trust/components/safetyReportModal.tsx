@@ -235,7 +235,7 @@ export function SafetyReportModal({
                     key={s.id}
                     type="button"
                     onClick={() => setSeverity(s.id)}
-                    className={`py-2 px-1 text-center rounded-xl border text-[11px] font-bold cursor-pointer transition-all ${
+                    className={`py-2 px-1 text-center rounded-xl border text-[11px] font-bold cursor-pointer transition-[background-color,border-color,box-shadow] duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring ${
                       severity === s.id
                         ? `${s.color} ring-2 ring-destructive/50`
                         : 'border-border bg-card text-muted-foreground hover:border-border'

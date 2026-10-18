@@ -132,7 +132,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
         <div className="border-b border-border pb-4">
           <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-soft text-primary">
-              <CheckCircle2 className="h-4 w-4" />
+              <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
             </div>
             <span>{p.forStudentsHeading}</span>
           </h2>
@@ -147,16 +147,16 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-xs hover:border-primary/40 transition-all relative overflow-hidden"
+                className="bg-card border-border rounded-2xl shadow-xs hover:border-primary/40 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 relative overflow-hidden"
               >
                 <div className="absolute top-4 right-4">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary-soft text-primary font-mono">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary-soft text-primary font-mono tabular-nums">
                     {step.tag}
                   </span>
                 </div>
                 <CardHeader className="p-6">
                   <div className="h-12 w-12 rounded-xl bg-primary-soft flex items-center justify-center text-primary mb-3">
-                    <Icon className="h-6 w-6" />
+                    <Icon className="h-6 w-6" aria-hidden="true" />
                   </div>
                   <CardTitle className="text-base font-bold font-bengali text-foreground">
                     {step.title}
@@ -180,7 +180,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
           >
             <Link href={`/${locale}/tutors`} className="flex items-center gap-2">
               <span>{dict.nav.findTutors}</span>
-              <ArrowRight className="h-4 w-4 ml-1" />
+              <ArrowRight className="h-4 w-4 ml-1" aria-hidden="true" />
             </Link>
           </Button>
         </div>
@@ -191,7 +191,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
         <div className="border-b border-border pb-4">
           <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-soft text-primary">
-              <GraduationCap className="h-4 w-4" />
+              <GraduationCap className="h-4 w-4" aria-hidden="true" />
             </div>
             <span>{p.forTutorsHeading}</span>
           </h2>
@@ -204,16 +204,16 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-xs hover:border-primary/40 transition-all relative overflow-hidden"
+                className="bg-card border-border rounded-2xl shadow-xs hover:border-primary/40 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 relative overflow-hidden"
               >
                 <div className="absolute top-4 right-4">
-                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-mono">
+                  <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-mono tabular-nums">
                     {step.tag}
                   </span>
                 </div>
                 <CardHeader className="p-6">
                   <div className="h-12 w-12 rounded-xl bg-primary-soft flex items-center justify-center text-primary mb-3">
-                    <Icon className="h-6 w-6" />
+                    <Icon className="h-6 w-6" aria-hidden="true" />
                   </div>
                   <CardTitle className="text-base font-bold font-bengali text-foreground">
                     {step.title}

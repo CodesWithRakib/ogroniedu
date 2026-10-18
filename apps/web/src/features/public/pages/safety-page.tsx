@@ -78,11 +78,11 @@ export function SafetyPage({ locale }: { locale: Locale }) {
           return (
             <Card
               key={idx}
-              className="bg-card border-border rounded-2xl shadow-xs hover:shadow-xs hover:border-primary/40 transition-all relative overflow-hidden"
+              className="bg-card border-border rounded-2xl shadow-xs hover:border-primary/40 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 relative overflow-hidden"
             >
               <CardHeader className="flex flex-row items-start justify-between gap-4 p-6 pb-2">
                 <div className="h-12 w-12 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
-                  <Icon className="h-6 w-6" />
+                  <Icon className="h-6 w-6" aria-hidden="true" />
                 </div>
                 <Badge
                   variant="outline"
@@ -108,7 +108,7 @@ export function SafetyPage({ locale }: { locale: Locale }) {
       <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
         <div className="space-y-2 text-center sm:text-left">
           <div className="flex items-center justify-center sm:justify-start gap-2 text-destructive font-bold text-sm">
-            <ShieldAlert className="h-5 w-5" />
+            <ShieldAlert className="h-5 w-5" aria-hidden="true" />
             <span>
               {locale === 'bn' ? 'জরুরি নিরাপত্তা সাপোর্ট' : 'Emergency Child Safety Protocol'}
             </span>
@@ -126,7 +126,7 @@ export function SafetyPage({ locale }: { locale: Locale }) {
         >
           <Link href={`/${locale}/contact`} className="flex items-center gap-2">
             <span>{dict.nav.contact}</span>
-            <ArrowRight className="h-4 w-4 ml-1" />
+            <ArrowRight className="h-4 w-4 ml-1" aria-hidden="true" />
           </Link>
         </Button>
       </div>

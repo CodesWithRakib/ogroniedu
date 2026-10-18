@@ -71,18 +71,26 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
           <button
             type="button"
             onClick={() => setShowPassword((prev) => !prev)}
-            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none"
-            tabIndex={-1}
+            className="absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-foreground hover:text-foreground transition-colors cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1 rounded-lg"
             aria-label={showPassword ? 'Hide password' : 'Show password'}
           >
             {showPassword ? (
-              <EyeOff className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+              <EyeOff
+                className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors"
+                aria-hidden="true"
+              />
             ) : (
-              <Eye className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors" />
+              <Eye
+                className="w-4 h-4 text-muted-foreground hover:text-foreground transition-colors"
+                aria-hidden="true"
+              />
             )}
           </button>
         ) : trailingIcon ? (
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-foreground">
+          <div
+            className="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-3.5 text-muted-foreground"
+            aria-hidden="true"
+          >
             {trailingIcon}
           </div>
         ) : null}
@@ -107,7 +115,12 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         )}
         {inputElement}
         {hasError && (
-          <p id={errorId} role="alert" className="text-xs text-destructive font-medium">
+          <p
+            id={errorId}
+            role="alert"
+            aria-live="polite"
+            className="text-xs text-destructive font-medium"
+          >
             {errorMessage}
           </p>
         )}

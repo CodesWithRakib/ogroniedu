@@ -31,8 +31,11 @@ export function EmptyState({
         className,
       )}
     >
-      <div className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface-muted text-muted-foreground border border-border">
-        {icon || <Inbox className="h-6 w-6" />}
+      <div
+        className="flex h-12 w-12 items-center justify-center rounded-2xl bg-surface-muted text-muted-foreground border border-border"
+        aria-hidden="true"
+      >
+        {icon || <Inbox className="h-6 w-6" aria-hidden="true" />}
       </div>
       <h3 className="mt-4 text-base font-semibold text-foreground tracking-tight">{title}</h3>
       <p className="mt-1.5 max-w-sm text-xs sm:text-sm text-muted-foreground leading-relaxed">

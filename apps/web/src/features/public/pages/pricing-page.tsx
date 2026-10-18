@@ -101,11 +101,14 @@ export function PricingPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-xs hover:border-primary/40 transition-all"
+                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-xs hover:border-primary/40 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5"
               >
                 <CardContent className="p-6 flex flex-col gap-3">
-                  <div className="h-11 w-11 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
-                    <Icon className="h-5 w-5" />
+                  <div
+                    className="h-11 w-11 rounded-xl bg-primary-soft flex items-center justify-center text-primary"
+                    aria-hidden="true"
+                  >
+                    <Icon className="h-5 w-5" aria-hidden="true" />
                   </div>
                   <p className="text-xs sm:text-sm text-muted-foreground font-bengali leading-relaxed">
                     {item.text}
@@ -120,8 +123,11 @@ export function PricingPage({ locale }: { locale: Locale }) {
       {/* Interactive Calculator */}
       <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-8">
         <div className="flex items-center gap-3">
-          <div className="h-12 w-12 rounded-xl bg-primary-soft text-primary flex items-center justify-center">
-            <Calculator className="h-6 w-6" />
+          <div
+            className="h-12 w-12 rounded-xl bg-primary-soft text-primary flex items-center justify-center"
+            aria-hidden="true"
+          >
+            <Calculator className="h-6 w-6" aria-hidden="true" />
           </div>
           <div>
             <h3 className="text-xl sm:text-2xl font-bold text-foreground font-bengali">
@@ -218,7 +224,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
           {tiers.map((tier, idx) => (
             <Card
               key={idx}
-              className="bg-card border-border rounded-2xl shadow-xs relative overflow-hidden hover:shadow-xs hover:border-primary/40 transition-all"
+              className="bg-card border-border rounded-2xl shadow-xs relative overflow-hidden hover:border-primary/40 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5"
             >
               <div className="absolute top-4 right-4">
                 <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border">
@@ -229,7 +235,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
                 <CardTitle className="text-base font-bold font-bengali text-foreground">
                   {tier.title}
                 </CardTitle>
-                <div className="text-xl font-extrabold text-primary pt-1 font-bengali">
+                <div className="text-xl font-extrabold text-primary pt-1 font-bengali tabular-nums">
                   {tier.range}
                 </div>
               </CardHeader>

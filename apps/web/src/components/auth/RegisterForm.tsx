@@ -87,7 +87,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
                   type="button"
                   onClick={() => setRole(opt.value)}
                   className={cn(
-                    'flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl border text-xs font-semibold transition-all cursor-pointer',
+                    'flex flex-col items-center justify-center gap-1.5 py-2.5 px-2 rounded-xl border text-xs font-semibold transition-[border-color,background-color,color] duration-150 cursor-pointer focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-1',
                     active
                       ? 'border-primary bg-primary-soft text-primary shadow-xs font-bold'
                       : 'border-border bg-surface/50 hover:bg-surface text-muted-foreground hover:text-foreground',
@@ -95,6 +95,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
                 >
                   <Icon
                     className={cn('h-4 w-4', active ? 'text-primary' : 'text-muted-foreground')}
+                    aria-hidden="true"
                   />
                   <span>{opt.label}</span>
                 </button>

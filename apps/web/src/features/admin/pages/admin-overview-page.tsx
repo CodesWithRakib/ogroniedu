@@ -133,7 +133,9 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               <p className="text-2xl font-bold text-foreground mt-2 font-mono">
                 {admin.metrics.pendingTutorVerifications}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">{t('captionPendingDossiers')}</p>
+              <p className="text-[11px] text-muted-foreground mt-1">
+                {t('captionPendingDossiers')}
+              </p>
             </Link>
 
             <Link

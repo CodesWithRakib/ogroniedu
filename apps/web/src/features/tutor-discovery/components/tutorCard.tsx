@@ -45,7 +45,7 @@ export function TutorCard({
 
   return (
     <div
-      className="group relative flex flex-col justify-between rounded-2xl bg-card border border-border hover:border-primary/40 shadow-xs hover:shadow-xs transition-all duration-300 overflow-hidden"
+      className="group relative flex flex-col justify-between rounded-2xl bg-card border border-border hover:border-primary/40 shadow-xs hover:shadow-xs transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 overflow-hidden"
       data-testid={`tutor-card-${tutor.id}`}
     >
       {/* Subtle Glowing Top Edge */}
@@ -80,9 +80,13 @@ export function TutorCard({
                 </p>
               )}
               {/* Star Rating Demonstration */}
-              <div className="flex items-center gap-1 mt-1 text-[11px] text-warning font-semibold">
-                <Star className="h-3 w-3 fill-warning text-warning" />
-                <span className="text-foreground">4.9</span>
+              <div
+                className="flex items-center gap-1 mt-1 text-[11px] text-warning font-semibold"
+                role="img"
+                aria-label={`Rated 4.9 out of 5 stars from 48 reviews`}
+              >
+                <Star className="h-3 w-3 fill-warning text-warning" aria-hidden="true" />
+                <span className="text-foreground tabular-nums">4.9</span>
                 <span className="text-muted-foreground font-normal">
                   ({locale === 'bn' ? '৪৮টি রিভিউ' : '48 reviews'})
                 </span>
@@ -104,7 +108,7 @@ export function TutorCard({
             }
             data-testid={`match-score-badge-${tutor.id}`}
           >
-            <Sparkles className="w-3.5 h-3.5 text-primary" />
+            <Sparkles className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
             <span className="tabular-nums">
               {formatLocalizedNumber(tutor.matchScore, locale)} pts
             </span>
@@ -114,18 +118,18 @@ export function TutorCard({
         {/* Verification Badges */}
         <div className="flex flex-wrap gap-1.5 pt-0.5">
           <Badge variant="success" size="sm" className="gap-1">
-            <CheckCircle2 className="w-3 h-3 text-success" />
+            <CheckCircle2 className="w-3 h-3 text-success" aria-hidden="true" />
             {dict.tutor?.badgeVerifiedTutor || 'Verified Tutor'}
           </Badge>
           {tutor.badges.includes('verified_identity') && (
             <Badge variant="primary" size="sm" className="gap-1">
-              <Award className="w-3 h-3 text-primary" />
+              <Award className="w-3 h-3 text-primary" aria-hidden="true" />
               {dict.tutor?.badgeVerifiedIdentity || 'NID Verified'}
             </Badge>
           )}
           {tutor.badges.includes('verified_degree') && (
             <Badge variant="info" size="sm" className="gap-1">
-              <GraduationCap className="w-3 h-3 text-info" />
+              <GraduationCap className="w-3 h-3 text-info" aria-hidden="true" />
               {dict.tutor?.badgeVerifiedAcademic || 'Degree Verified'}
             </Badge>
           )}
@@ -162,7 +166,7 @@ export function TutorCard({
         <div className="grid grid-cols-2 gap-2 text-xs text-muted-foreground pt-1">
           {expYears && (
             <div className="flex items-center gap-1.5">
-              <GraduationCap className="w-3.5 h-3.5 text-primary" />
+              <GraduationCap className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
               <span>
                 {dict.discovery?.yearsExperience
                   ? dict.discovery.yearsExperience.replace('{count}', expYears)
@@ -172,7 +176,7 @@ export function TutorCard({
           )}
           {tutor.responseTimeMinutes && (
             <div className="flex items-center gap-1.5">
-              <Clock className="w-3.5 h-3.5 text-primary" />
+              <Clock className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
               <span className="tabular-nums">
                 ~{formatLocalizedNumber(tutor.responseTimeMinutes, locale)}m response
               </span>
@@ -218,7 +222,7 @@ export function TutorCard({
         <div className="flex items-center gap-2 shrink-0">
           <Link
             href={`/${locale}/tutors/${tutor.id}`}
-            className="inline-flex items-center justify-center gap-1 rounded-xl bg-card hover:bg-muted/50 border border-border text-foreground hover:text-primary font-semibold text-xs px-3 py-2 transition-colors"
+            className="inline-flex items-center justify-center gap-1 rounded-xl bg-card hover:bg-muted/50 border border-border text-foreground hover:text-primary font-semibold text-xs px-3 py-2 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
             title={
               locale === 'bn'
                 ? 'সম্পূর্ণ প্রোফাইল ও যোগ্যতা দেখুন'
@@ -226,13 +230,13 @@ export function TutorCard({
             }
           >
             <span>{locale === 'bn' ? 'বিস্তারিত' : 'Details'}</span>
-            <ArrowRight className="w-3.5 h-3.5" />
+            <ArrowRight className="w-3.5 h-3.5" aria-hidden="true" />
           </Link>
           <button
             type="button"
             onClick={() => onRequestBooking(tutor)}
             data-testid={`request-tutoring-btn-${tutor.id}`}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs px-3.5 py-2 shadow-xs transition-colors cursor-pointer shrink-0"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground font-semibold text-xs px-3.5 py-2 shadow-xs transition-colors cursor-pointer shrink-0 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
           >
             <span>{dict.discovery?.requestSession || 'Request Tutoring'}</span>
           </button>
