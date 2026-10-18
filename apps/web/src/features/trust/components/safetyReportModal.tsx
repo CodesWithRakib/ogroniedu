@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { ShieldAlert, AlertTriangle, Send, PhoneCall, CheckCircle2 } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Label } from '@/components/ui/label';
+import { NativeSelect } from '@/components/ui/NativeSelect';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
@@ -162,10 +163,10 @@ export function SafetyReportModal({
               >
                 {isBn ? 'ঘটনার শ্রেণি / ক্যাটাগরি:' : 'Incident Category:'}
               </Label>
-              <select
+              <NativeSelect
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
-                className="w-full rounded-xl bg-card border border-border p-2.5 text-xs text-foreground focus-visible:outline-none focus:border-destructive/40"
+                className="text-xs"
                 id="safety-category-select"
               >
                 <option value="child_safety">
@@ -194,7 +195,7 @@ export function SafetyReportModal({
                     : 'Fraud / Billing Discrepancy'}
                 </option>
                 <option value="other">{isBn ? 'অন্যান্য অভিযোগ (Other)' : 'Other Concern'}</option>
-              </select>
+              </NativeSelect>
             </div>
 
             {/* Severity Radio */}
@@ -236,7 +237,7 @@ export function SafetyReportModal({
                     onClick={() => setSeverity(s.id)}
                     className={`py-2 px-1 text-center rounded-xl border text-[11px] font-bold cursor-pointer transition-all ${
                       severity === s.id
-                        ? `${s.color} ring-2 ring-destructive/50 shadow-sm`
+                        ? `${s.color} ring-2 ring-destructive/50`
                         : 'border-border bg-card text-muted-foreground hover:border-border'
                     }`}
                   >

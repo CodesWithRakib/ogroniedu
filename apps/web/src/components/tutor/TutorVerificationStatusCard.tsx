@@ -152,7 +152,7 @@ export function TutorVerificationStatusCard({
   };
 
   return (
-    <Card className="border-border bg-card shadow-sm">
+    <Card className="border-border bg-card">
       <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border">
         <div className="space-y-1">
           <div className="flex items-center gap-2">

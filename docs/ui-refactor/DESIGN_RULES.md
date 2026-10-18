@@ -135,6 +135,7 @@ These are the rules actually enforced by the codebase after the rendered-UI corr
 - `shadow-xs` remains only as a whisper-soft state hint on interactive cards (`~0.03` alpha, visually negligible).
 - Shadows are reserved for genuinely floating surfaces: dialogs, sheets/drawers, popovers, dropdowns, toasts.
 - Heavy card shadows (`shadow-md`/`lg`/`xl`/`2xl`) were removed from 45 card-like surfaces across 21 files.
+- Second pass: `shadow-sm` (70) and `shadow-md` (12) removed from card surfaces, segmented controls, banners, avatars, and opt-in shims; interactive hover elevation standardized to `hover:shadow-xs` (11 sites). A code-level sweep now auto-checks every swept route for unexpected visible box-shadows.
 
 ### R-2: Border policy (one weight)
 
@@ -183,3 +184,11 @@ Raw Tailwind palette classes (`emerald-*`, `amber-*`, `blue-*`, `purple-*`, `ros
 
 - Index ("hub") pages: neutral `surface-muted` icon tiles; at most one functional accent per page (e.g. warning for actionable KYC), never a rainbow of per-card tones in the default state.
 - Section headers: single `<h1>` per page (shell title removed from 18 admin pages); hub cards carry `hover:border-input hover:shadow-xs` only.
+
+### R-8: Native form controls live in shared components
+
+- Raw `<select>` may exist **only** inside `components/ui/NativeSelect.tsx`. Feature pages use `NativeSelect` (form/filter selects) or the Radix `Select` primitive (rich listboxes).
+- `NativeSelect` renders a real `<select>` with native `<option>` children on purpose: form autofill and Playwright `selectOption()` keep working; the chevron lives in the positioning wrapper.
+- All 18 feature-page raw selects migrated on 2026-10-18 (bookings, payments, learning, tutors, trust, admin verification queue + notification settings). The single remaining raw `<select>` is the intentional `sr-only` role-compat shim in `RegisterForm.tsx` (kept for test-ID compatibility; the visible control is the shared button group).
+- Admin KPI captions are fully localized (no English microcopy under `/bn`): `captionPendingDossiers`, `captionActiveCases`, `captionOpenReports`, `captionInProgress`, `captionTotalCatalog` in `messages/{bn,en}.json`.
+- Automated route sweep asserts `select` counts per page so new raw selects surface immediately.

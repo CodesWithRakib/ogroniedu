@@ -169,7 +169,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
             setPayoutSuccess(null);
             setWithdrawModalOpen(true);
           }}
-          className="bg-primary hover:bg-primary-hover text-white font-bold text-xs gap-1.5 shadow-sm"
+          className="bg-primary hover:bg-primary-hover text-white font-bold text-xs gap-1.5"
           data-testid="open-withdraw-modal-btn"
         >
           <ArrowUpRight className="w-3.5 h-3.5" />

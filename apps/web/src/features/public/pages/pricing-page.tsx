@@ -101,7 +101,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-card hover:border-primary/40 transition-all"
+                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-xs hover:border-primary/40 transition-all"
               >
                 <CardContent className="p-6 flex flex-col gap-3">
                   <div className="h-11 w-11 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
@@ -118,7 +118,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </section>
 
       {/* Interactive Calculator */}
-      <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-8 shadow-card">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-8">
         <div className="flex items-center gap-3">
           <div className="h-12 w-12 rounded-xl bg-primary-soft text-primary flex items-center justify-center">
             <Calculator className="h-6 w-6" />
@@ -218,7 +218,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
           {tiers.map((tier, idx) => (
             <Card
               key={idx}
-              className="bg-card border-border rounded-2xl shadow-xs relative overflow-hidden hover:shadow-card hover:border-primary/40 transition-all"
+              className="bg-card border-border rounded-2xl shadow-xs relative overflow-hidden hover:shadow-xs hover:border-primary/40 transition-all"
             >
               <div className="absolute top-4 right-4">
                 <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border">

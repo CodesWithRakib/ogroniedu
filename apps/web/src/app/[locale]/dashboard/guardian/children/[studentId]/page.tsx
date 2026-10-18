@@ -605,7 +605,7 @@ export default function GuardianChildDetailPage({
       {/* TAB D: CHILD SAFETY & TRUST ACTIONS */}
       {activeTab === 'safety' && (
         <div className="space-y-4" data-testid="child-safety-section">
-          <Card className="rounded-2xl border-destructive/40 bg-surface-muted p-6 text-foreground shadow-sm">
+          <Card className="rounded-2xl border-destructive/40 bg-surface-muted p-6 text-foreground">
             <div className="flex items-start gap-4">
               <div className="h-12 w-12 rounded-2xl bg-destructive/20 border border-destructive/40 text-destructive-soft-foreground flex items-center justify-center shrink-0">
                 <ShieldAlert className="w-6 h-6" />

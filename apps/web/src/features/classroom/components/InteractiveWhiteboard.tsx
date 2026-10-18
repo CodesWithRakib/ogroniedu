@@ -493,7 +493,7 @@ export function InteractiveWhiteboard({
             onClick={() => setActiveTool('pen')}
             className={`p-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
               activeTool === 'pen'
-                ? 'bg-interactive text-foreground font-bold shadow-md shadow-sm'
+                ? 'bg-interactive text-foreground font-bold'
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'কলম (Pen)' : 'Pen'}
@@ -508,7 +508,7 @@ export function InteractiveWhiteboard({
             onClick={() => setActiveTool('highlighter')}
             className={`p-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
               activeTool === 'highlighter'
-                ? 'bg-interactive text-foreground font-bold shadow-md shadow-sm'
+                ? 'bg-interactive text-foreground font-bold'
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'হাইলাইটার' : 'Highlighter'}
@@ -523,7 +523,7 @@ export function InteractiveWhiteboard({
             onClick={() => setActiveTool('eraser')}
             className={`p-2 rounded-xl text-xs font-semibold flex items-center gap-1.5 transition-all ${
               activeTool === 'eraser'
-                ? 'bg-destructive text-white font-bold shadow-md shadow-sm'
+                ? 'bg-destructive text-white font-bold'
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'রাবার (Eraser)' : 'Eraser'}
@@ -767,7 +767,7 @@ export function InteractiveWhiteboard({
         {/* Text Input Modal on Canvas */}
         {textInputVisible && (
           <div
-            className="absolute z-20 bg-card border border-info/40 p-2.5 rounded-2xl shadow-sm flex items-center gap-2"
+            className="absolute z-20 bg-card border border-info/40 p-2.5 rounded-2xl flex items-center gap-2"
             style={{ left: Math.min(textInputPos.x, 300), top: Math.min(textInputPos.y, 400) }}
           >
             <Input

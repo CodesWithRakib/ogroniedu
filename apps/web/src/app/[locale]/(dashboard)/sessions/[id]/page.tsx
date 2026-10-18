@@ -279,7 +279,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
       </div>
 
       {/* Live Interactive Classroom Workspace Launch Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-card border border-interactive/25 p-6 shadow-sm flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="relative overflow-hidden rounded-2xl bg-card border border-interactive/25 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-1 text-center md:text-left">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-interactive/20 text-info-soft-foreground text-xs font-bold border border-info/40">
             <Radio className="w-3.5 h-3.5 text-info-soft-foreground animate-pulse" />
@@ -298,7 +298,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
         </div>
         <Link
           href={withLocale(`/classroom/${sessionId}`, locale)}
-          className="shrink-0 flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand to-brand-accent text-foreground text-xs font-black rounded-2xl shadow-sm transition-all transform hover:scale-105"
+          className="shrink-0 flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand to-brand-accent text-foreground text-xs font-black rounded-2xl transition-all transform hover:scale-105"
           data-testid="enter-live-classroom-btn"
         >
           <Sparkles className="w-4 h-4 fill-current" />
@@ -307,7 +307,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
       </div>
 
       {/* Main Session Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-card border border-brand/25 p-8 shadow-sm">
+      <div className="relative overflow-hidden rounded-2xl bg-card border border-brand/25 p-8">
         <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
@@ -350,7 +350,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
       {/* Grid: Classroom Link & Attendance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Live Classroom Card */}
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col justify-between shadow-sm">
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col justify-between">
           <CardHeader className="p-0 pb-4">
             <div className="flex items-center gap-2 text-success-soft-foreground mb-1">
               <Video className="w-5 h-5" />
@@ -383,7 +383,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
                   href={meetingUrl}
                   target="_blank"
                   rel="noreferrer"
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-hover text-white text-xs font-bold rounded-xl transition-all shadow-sm"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary-hover text-white text-xs font-bold rounded-xl transition-all"
                   data-testid="join-classroom-btn"
                 >
                   <ExternalLink className="w-4 h-4" />
@@ -424,7 +424,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
         </Card>
 
         {/* Attendance Card */}
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-sm">
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6">
           <CardHeader className="p-0 pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-info-soft-foreground mb-1">

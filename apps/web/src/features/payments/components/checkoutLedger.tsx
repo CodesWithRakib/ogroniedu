@@ -23,7 +23,7 @@ export function CheckoutLedger({ order, locale }: CheckoutLedgerProps) {
 
   return (
     <div className="space-y-6">
-      <Card className="border border-border shadow-sm">
+      <Card className="border border-border">
         <CardHeader className="pb-3 border-b border-border">
           <CardTitle className="text-base font-semibold flex items-center gap-2">
             <Scale className="w-5 h-5 text-interactive" />
@@ -65,7 +65,7 @@ export function CheckoutLedger({ order, locale }: CheckoutLedgerProps) {
         </CardContent>
       </Card>
 
-      <Card className="border border-border shadow-sm">
+      <Card className="border border-border">
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-semibold flex items-center gap-2">
             <ShieldCheck className="w-4 h-4 text-success-soft-foreground" />

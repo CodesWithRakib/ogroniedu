@@ -21,7 +21,7 @@ export function StudentAvatar({
 
   return (
     <div
-      className={`${sizeClasses} rounded-full overflow-hidden border-2 border-border relative shrink-0 shadow-sm bg-card ${className}`}
+      className={`${sizeClasses} rounded-full overflow-hidden border-2 border-border relative shrink-0 bg-card ${className}`}
     >
       <div
         className="w-full h-full bg-cover bg-no-repeat"

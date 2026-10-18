@@ -163,7 +163,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
         {/* Success State or Already Paid (Payment Receipt) */}
         {successReceipt || booking?.status === 'confirmed' ? (
           <div
-            className="rounded-2xl border border-primary/40 bg-gradient-to-br from-card via-card to-primary-soft p-8 shadow-sm space-y-6 text-center"
+            className="rounded-2xl border border-primary/40 bg-gradient-to-br from-card via-card to-primary-soft p-8 space-y-6 text-center"
             data-testid="payment-success-card"
           >
             <div className="w-16 h-16 rounded-full bg-success-soft border border-success/30 flex items-center justify-center mx-auto text-success-soft-foreground">
@@ -171,9 +171,9 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
             </div>
 
             <div className="space-y-2">
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground">
                 {isBn ? 'এসক্রো পেমেন্ট পরিশোধিত ও নিশ্চিত!' : 'Escrow Deposit Confirmed!'}
-              </h1>
+              </h2>
               <p className="text-sm text-muted-foreground max-w-lg mx-auto">
                 {isBn
                   ? 'আপনার ফি নিরাপদে অগ্রণী এডু এসক্রো ট্রাস্ট অ্যাকাউন্টে জমা হয়েছে এবং বুকিং নিশ্চিত করা হয়েছে।'
@@ -479,7 +479,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                   size="lg"
                   disabled={creatingOrder || confirmingPayment}
                   onClick={handleExecutePayment}
-                  className="w-full bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm h-12 shadow-sm"
+                  className="w-full bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm h-12"
                   data-testid="execute-escrow-payment-btn"
                 >
                   <Lock className="w-4 h-4 mr-2" />

@@ -316,9 +316,9 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 )}
               </div>
 
-              <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                 {subjectName}
-              </h1>
+              </h2>
 
               <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
                 <span className="flex items-center gap-1.5">
@@ -345,7 +345,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
               {status === 'accepted' && (
                 <Link
                   href={withLocale(`/dashboard/bookings/${bookingId}/pay`, locale)}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm shadow-sm transition-all hover:scale-102"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm transition-all hover:scale-102"
                   data-testid="pay-escrow-cta-btn"
                 >
                   <CreditCard className="w-4 h-4" />

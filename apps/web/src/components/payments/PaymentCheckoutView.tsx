@@ -72,7 +72,7 @@ export function PaymentCheckoutView({
       </div>
 
       <div>
-        <h1 className="text-3xl font-bold tracking-tight text-foreground ">{p.title}</h1>
+        <h2 className="text-3xl font-bold tracking-tight text-foreground ">{p.title}</h2>
         <p className="text-muted-foreground mt-1 text-sm sm:text-base">{p.subtitle}</p>
       </div>
 

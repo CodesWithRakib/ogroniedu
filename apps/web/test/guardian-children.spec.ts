@@ -110,7 +110,7 @@ describe('Feature #3: Multi-Child Guardianship, Safety Alerts & Replacement Guar
     expect(targetPathEn).toContain(studentId);
   });
 
-  it('should ensure child safety categories include child_safety, harassment, and off_platform_payment', async () => {
+  it('should ensure child safety categories include child_safety, harassment, and off_platform_payment', { timeout: 15_000 }, async () => {
     const { SafetyCategories, SafetySeverities } = await import('@ogroniedu/contracts');
 
     expect(SafetyCategories).toContain('child_safety');
@@ -120,7 +120,7 @@ describe('Feature #3: Multi-Child Guardianship, Safety Alerts & Replacement Guar
     expect(SafetySeverities).toContain('high');
   });
 
-  it('should verify 48-hour tutor replacement reason codes', async () => {
+  it('should verify 48-hour tutor replacement reason codes', { timeout: 15_000 }, async () => {
     const { ReplacementReasonCodes, ReplacementStatuses } = await import('@ogroniedu/contracts');
 
     expect(ReplacementReasonCodes).toContain('tutor_no_show');

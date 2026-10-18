@@ -282,7 +282,7 @@ export function ClassroomWorkspace({
       </div>
 
       {/* Main Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-brand-soft border border-brand/30 p-6 md:p-8 shadow-sm">
+      <div className="relative overflow-hidden rounded-2xl bg-brand-soft border border-brand/30 p-6 md:p-8">
         <div className="absolute top-0 right-0 w-80 h-80 bg-interactive/10 rounded-full blur-3xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -331,7 +331,7 @@ export function ClassroomWorkspace({
                 href={session.meetingUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-brand to-brand-accent text-brand-foreground text-xs font-bold rounded-2xl shadow-sm transition-all"
+                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-brand to-brand-accent text-brand-foreground text-xs font-bold rounded-2xl transition-all"
                 data-testid="launch-meeting-btn"
               >
                 <Video className="w-4 h-4" />
@@ -398,7 +398,7 @@ export function ClassroomWorkspace({
                 size="sm"
                 onClick={handleStartClass}
                 isLoading={isStarting}
-                className="bg-primary hover:bg-primary-hover text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-sm"
+                className="bg-primary hover:bg-primary-hover text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl"
                 data-testid="start-class-btn"
               >
                 <Play className="w-4 h-4 mr-1.5 fill-current" />
@@ -411,7 +411,7 @@ export function ClassroomWorkspace({
                 size="sm"
                 onClick={() => setShowCompletionModal(true)}
                 isLoading={isCompleting}
-                className="bg-interactive hover:bg-interactive-hover text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-sm"
+                className="bg-interactive hover:bg-interactive-hover text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl"
                 data-testid="complete-class-btn"
               >
                 <CheckCircle2 className="w-4 h-4 mr-1.5" />
@@ -491,7 +491,7 @@ export function ClassroomWorkspace({
           onClick={() => setActiveTab('whiteboard')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
             activeTab === 'whiteboard'
-              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40 shadow-md'
+              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40'
               : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
           }`}
           data-testid="tab-whiteboard"
@@ -505,7 +505,7 @@ export function ClassroomWorkspace({
           onClick={() => setActiveTab('formulas')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
             activeTab === 'formulas'
-              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40 shadow-md'
+              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40'
               : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
           }`}
           data-testid="tab-formulas"
@@ -519,7 +519,7 @@ export function ClassroomWorkspace({
           onClick={() => setActiveTab('attendance')}
           className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
             activeTab === 'attendance'
-              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40 shadow-md'
+              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40'
               : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
           }`}
           data-testid="tab-attendance"
@@ -539,7 +539,7 @@ export function ClassroomWorkspace({
       {activeTab === 'attendance' && (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Attendance Status Card */}
-          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-sm">
+          <Card className="bg-card border border-border text-foreground rounded-2xl p-6">
             <h3 className="text-base font-bold text-foreground mb-2 flex items-center gap-2">
               <UserCheck className="w-5 h-5 text-info-soft-foreground" />
               <span>
@@ -654,7 +654,7 @@ export function ClassroomWorkspace({
           </Card>
 
           {/* Session Safety & Security Card */}
-          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 shadow-sm flex flex-col justify-between">
+          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col justify-between">
             <div className="space-y-4">
               <h3 className="text-base font-bold text-foreground flex items-center gap-2">
                 <ShieldCheck className="w-5 h-5 text-success-soft-foreground" />

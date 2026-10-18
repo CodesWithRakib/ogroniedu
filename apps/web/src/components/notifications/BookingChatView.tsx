@@ -122,7 +122,7 @@ export function BookingChatView({
       </div>
 
       {/* Messages Thread Container */}
-      <Card className="border border-border shadow-sm flex flex-col h-[450px]">
+      <Card className="border border-border flex flex-col h-[450px]">
         <CardContent className="flex-1 overflow-y-auto p-4 space-y-3">
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center text-xs text-muted-foreground">
@@ -150,7 +150,7 @@ export function BookingChatView({
                   </div>
 
                   <div
-                    className={`rounded-2xl px-4 py-2.5 text-sm shadow-sm space-y-1 ${
+                    className={`rounded-2xl px-4 py-2.5 text-sm space-y-1 ${
                       isMine
                         ? 'bg-primary text-white rounded-tr-none'
                         : 'bg-muted  text-foreground  rounded-tl-none'

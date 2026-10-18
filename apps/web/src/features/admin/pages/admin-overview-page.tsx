@@ -133,7 +133,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               <p className="text-2xl font-bold text-foreground mt-2 font-mono">
                 {admin.metrics.pendingTutorVerifications}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">Pending Dossiers</p>
+              <p className="text-[11px] text-muted-foreground mt-1">{t('captionPendingDossiers')}</p>
             </Link>
 
             <Link
@@ -147,7 +147,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               <p className="text-2xl font-bold text-foreground mt-2 font-mono">
                 {admin.metrics.activeReplacementCases}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">Active Cases</p>
+              <p className="text-[11px] text-muted-foreground mt-1">{t('captionActiveCases')}</p>
             </Link>
 
             <Link
@@ -161,7 +161,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               <p className="text-2xl font-bold text-foreground mt-2 font-mono">
                 {admin.metrics.openSafetyReports}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">Open Reports</p>
+              <p className="text-[11px] text-muted-foreground mt-1">{t('captionOpenReports')}</p>
             </Link>
 
             <Link
@@ -175,7 +175,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               <p className="text-2xl font-bold text-foreground mt-2 font-mono">
                 {admin.metrics.activeBookingsCount}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">In Progress</p>
+              <p className="text-[11px] text-muted-foreground mt-1">{t('captionInProgress')}</p>
             </Link>
 
             <Link
@@ -189,7 +189,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               <p className="text-2xl font-bold text-foreground mt-2 font-mono">
                 {admin.metrics.totalRegisteredUsers}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">Total Catalog</p>
+              <p className="text-[11px] text-muted-foreground mt-1">{t('captionTotalCatalog')}</p>
             </Link>
           </div>
 

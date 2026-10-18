@@ -275,7 +275,7 @@ export function NotificationPreferencesView({
       </Card>
 
       {/* Preferences Matrix Card */}
-      <Card className="border border-border shadow-sm">
+      <Card className="border border-border">
         <CardHeader className="pb-3 border-b border-border">
           <CardTitle className="text-lg font-semibold flex items-center justify-between">
             <span>Channels & Categories</span>

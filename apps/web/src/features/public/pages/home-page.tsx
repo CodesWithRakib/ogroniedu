@@ -294,7 +294,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1: Verified & Experienced Tutors */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-300 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <Award className="h-6 w-6" />
               </div>
@@ -309,7 +309,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 2: Flexible Learning Options */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-300 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <CalendarDays className="h-6 w-6" />
               </div>
@@ -324,7 +324,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 3: Wide Subject Coverage */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-300 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <BookOpen className="h-6 w-6" />
               </div>
@@ -339,7 +339,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 4: Track Progress */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-300 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-300 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary-soft text-primary">
                 <TrendingUp className="h-6 w-6" />
               </div>
@@ -372,7 +372,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Step 1 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono">01</span>
                 <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary font-bold">
@@ -390,7 +390,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono">02</span>
                 <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary font-bold">
@@ -408,7 +408,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-card transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono">03</span>
                 <div className="h-9 w-9 rounded-xl bg-success-soft flex items-center justify-center text-success font-bold">
@@ -433,7 +433,7 @@ export function HomePage({ locale }: { locale: Locale }) {
        * ==================================================================== */}
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 sm:p-12 shadow-card">
+          <div className="relative overflow-hidden rounded-2xl border border-border bg-card p-8 sm:p-12">
             <div className="absolute top-0 right-0 w-96 h-96 bg-brand-soft rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="space-y-3.5 max-w-xl">

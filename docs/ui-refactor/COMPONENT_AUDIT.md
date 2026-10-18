@@ -72,3 +72,31 @@
 | `src/app/globals.css`                                                          | Added `--star: #d97706` (root + `@theme`); token source of truth for all above.                                                                                          |
 | `src/features/auth/components/LoginForm.tsx`                                   | Shadow removed; shared `Input` (already migrated).                                                                                                                       |
 | `apps/api/src/modules/admin/utils/redact.util.ts`                              | **Backend:** preserve `Date`/`Map`/`Set`/`RegExp` in `redactSensitiveData` (timestamps were flattened to `{}`).                                                         |
+
+---
+
+## Continuation Component Changes — 2026-10-18 (feature-completion pass)
+
+| Component / File | Change delivered |
+| :--- | :--- |
+| `src/components/ui/NativeSelect.tsx` | **New shared component.** The single home for styled native `<select>` (h-10, `rounded-xl`, chevron wrapper, standard focus ring, `forwardRef`). Keeps native `<option>` semantics for autofill + Playwright `selectOption`. Exported from the `components/ui` barrel. |
+| `features/bookings/components/sessions/scheduleModal.tsx` | Booking picker → `NativeSelect`. |
+| `features/payments/pages/payments-page.tsx` | Booking + provider selects → `NativeSelect`. |
+| `features/admin/pages/settings/admin-settings-notifications-page.tsx` | SMS/email provider selects → `NativeSelect`; the two raw inputs → shared `Input`. |
+| `features/tutors/pages/tutor-details-page.tsx` | Student + subject selects → `NativeSelect`. |
+| `features/tutors/components/verificationLevelCard.tsx`, `qualificationUploadCard.tsx` | Document-type selects → `NativeSelect`. |
+| `features/trust/components/safetyReportModal.tsx`, `tutorReplacementModal.tsx` | Category / reason-code selects → `NativeSelect`. |
+| `features/learning/pages/learning-page.tsx` | Booking picker → `NativeSelect` (`wrapperClassName="w-auto"`); leftover `shadow-sm` removed. |
+| `features/admin/components/tabs/adminVerificationTab.tsx` | Status/level/assignment filters + decision-level/decision selects → `NativeSelect`; decision options localized via `DECISION_LABELS` (bn/en), including `reinstated`. |
+| 40 files (sweep) | `shadow-sm`/`shadow-md` removed from card surfaces, segmented tools, avatars, banners; `hover:shadow-sm` → `hover:shadow-xs`; whiteboard/formula drawer active tools flattened. |
+| `src/components/brand/OgroniEduBrand.tsx` | Colored logo shadow + hover shadow removed; keeps ring + gradient. |
+| `src/components/shell/BottomNavbar.tsx` | Notification badge glow removed; label no longer artificially truncated (`max-w-[54px]` → `max-w-full`). |
+| `src/components/notifications/NotificationBell.tsx` / `NotificationCenter.tsx` | Slop `shadow-md shadow-sm` / `shadow-xs shadow-sm` pairs cleaned. |
+| `src/features/admin/components/adminMetricsGrid.tsx`, `admin-overview-page.tsx` | English captions → `t('caption…')` (bn+en messages updated). |
+| `apps/web/test/progress-tracking.spec.ts` | **New:** real render tests for `ProgressGaugeCard`, `WeeklyActivityChart`, `StudyTimeTrackerCard`. |
+| `apps/web/test/notification-bell.spec.ts` | **Rewritten:** renders the real `NotificationBell` (provider mocked) instead of a local copy of `formatCount`. |
+| `apps/web/test/guardian-children.spec.ts` | Contract-import tests given 15 s timeouts (cold-import flake). |
+| `apps/api/test/bkash.adapter.spec.ts` | **New:** bKash sandbox checkout/signature/IPN/query/refund coverage. |
+| `apps/api/test/taxonomy.controller.spec.ts` | **New:** public taxonomy reads + admin CRUD (409/404/soft-delete/defaults). |
+| `apps/api/test/payments.service.spec.ts` | **Extended:** Sandbox Confirmation Pipeline (verify-through-webhook, idempotent short-circuit, provider fallback). |
+| `apps/web/e2e/journey.booking.spec.ts` | Radix level/subject pickers now genuinely exercised (replaces the no-op `selectOption` on a button trigger). |

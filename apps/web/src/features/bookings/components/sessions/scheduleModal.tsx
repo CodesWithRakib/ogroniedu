@@ -3,6 +3,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/Button';
 import { Input } from '@/components/ui/Input';
+import { NativeSelect } from '@/components/ui/NativeSelect';
 import { Label } from '@/components/ui/label';
 import {
   Dialog,
@@ -58,11 +59,11 @@ export function ScheduleSessionModal({
             <Label className="font-semibold text-foreground text-xs">
               {dict.scheduling.scheduleBookingLabel}
             </Label>
-            <select
+            <NativeSelect
               required
               value={bookingId}
               onChange={(e) => setBookingId(e.target.value)}
-              className="w-full h-10 px-3 rounded-xl border border-input bg-card text-foreground text-xs focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none transition-colors"
+              className="text-xs"
               data-testid="schedule-booking-select"
             >
               {options.length === 0 && <option value="">—</option>}
@@ -71,7 +72,7 @@ export function ScheduleSessionModal({
                   {o.id.slice(0, 8)} · {o.status}
                 </option>
               ))}
-            </select>
+            </NativeSelect>
           </div>
 
           <div className="space-y-1.5">

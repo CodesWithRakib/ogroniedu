@@ -85,11 +85,37 @@ export function useAdminDashboard(locale: Locale) {
         : null;
 
   const metrics = (dashboard.data?.data as AdminDashboardMetrics | undefined) ?? EMPTY_METRICS;
-  const users = mapAdminUsers((usersQuery.data?.data ?? []) as unknown[]);
-  const bookings = mapAdminBookings((bookingsQuery.data?.data ?? []) as unknown[]);
-  const logs = mapAuditLogs((auditLogs.data?.data ?? []) as unknown[]);
-  const tickets = mapSupportTickets((ticketsQuery.data?.data ?? []) as unknown[]);
-  const pendingTutors = mapPendingTutors((pendingTutorsQuery.data?.data ?? []) as unknown[]);
+  // Mapped result sets must keep a stable identity between renders: consuming
+  // pages sync local state from them in effects keyed on the array itself
+  // (useAdminActions), and a fresh array each render would loop setState forever.
+  const users = React.useMemo(
+    () => mapAdminUsers((usersQuery.data?.data ?? []) as unknown[]),
+    [usersQuery.data],
+  );
+  const bookings = React.useMemo(
+    () => mapAdminBookings((bookingsQuery.data?.data ?? []) as unknown[]),
+    [bookingsQuery.data],
+  );
+  const logs = React.useMemo(
+    () => mapAuditLogs((auditLogs.data?.data ?? []) as unknown[]),
+    [auditLogs.data],
+  );
+  const tickets = React.useMemo(
+    () => mapSupportTickets((ticketsQuery.data?.data ?? []) as unknown[]),
+    [ticketsQuery.data],
+  );
+  const pendingTutors = React.useMemo(
+    () => mapPendingTutors((pendingTutorsQuery.data?.data ?? []) as unknown[]),
+    [pendingTutorsQuery.data],
+  );
+  const settingsItems = React.useMemo(
+    () => (settings.data?.data as AdminSystemSettingItem[] | undefined) ?? [],
+    [settings.data],
+  );
+  const flagItems = React.useMemo(
+    () => (flags.data?.data as AdminFeatureFlagItem[] | undefined) ?? [],
+    [flags.data],
+  );
 
   const wrap =
     <A extends unknown[]>(fn: (...a: A) => Promise<unknown>) =>
@@ -119,8 +145,8 @@ export function useAdminDashboard(locale: Locale) {
     refetchPendingTutors: pendingTutorsQuery.refetch,
     reconciliation:
       (reconciliation.data?.data as AdminReconciliationData | undefined) ?? EMPTY_RECONCILIATION,
-    settings: (settings.data?.data as AdminSystemSettingItem[] | undefined) ?? [],
-    flags: (flags.data?.data as AdminFeatureFlagItem[] | undefined) ?? [],
+    settings: settingsItems,
+    flags: flagItems,
     loading,
     queryError,
     secondaryError: reconciliation.isError || settings.isError || flags.isError,

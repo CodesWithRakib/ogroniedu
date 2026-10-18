@@ -388,7 +388,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
                   </div>
 
                   {!item.isRead && (
-                    <span className="shrink-0 w-2 h-2 mt-2 rounded-full bg-info shadow-xs shadow-sm" />
+                    <span className="shrink-0 w-2 h-2 mt-2 rounded-full bg-info shadow-xs" />
                   )}
                 </div>
               );

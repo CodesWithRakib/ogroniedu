@@ -59,7 +59,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Contact Form */}
         <div className="lg:col-span-7">
-          <Card className="bg-card border-border rounded-2xl shadow-card p-6 sm:p-8">
+          <Card className="bg-card border-border rounded-2xl p-6 sm:p-8">
             <CardHeader className="px-0 pt-0 pb-6">
               <CardTitle className="text-xl sm:text-2xl font-bold font-bengali text-foreground">
                 {p.formHeading}

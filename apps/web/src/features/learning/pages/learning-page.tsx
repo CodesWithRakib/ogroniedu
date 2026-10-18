@@ -12,6 +12,7 @@ import {
   AlertDescription,
   LoadingSpinner,
   EmptyState,
+  NativeSelect,
 } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
@@ -52,21 +53,22 @@ export function LearningPage({ locale }: { locale: Locale }) {
   }
 
   return (
-    <DashboardShell locale={locale} title={dict.learning.title} subtitle={dict.learning.subtitle}>
+    <DashboardShell locale={locale}>
       {records.bookingOptions.length > 0 && (
         <div
-          className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-card p-4 rounded-2xl border border-border shadow-sm"
+          className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-card p-4 rounded-2xl border border-border"
           data-testid="learning-booking-picker"
         >
           <div className="flex items-center gap-2">
             <Label htmlFor="learning-booking-select" className="text-xs font-bold text-foreground">
               {locale === 'bn' ? 'সক্রিয় কোর্স / বুকিং নির্বাচন:' : 'Select Tuition / Course:'}
             </Label>
-            <select
+            <NativeSelect
               id="learning-booking-select"
               value={records.activeBookingId}
               onChange={(e) => records.setActiveBookingId(e.target.value)}
-              className="h-9 min-w-[260px] rounded-xl border border-input bg-card px-3 text-xs font-medium text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35"
+              wrapperClassName="w-auto"
+              className="h-9 min-w-[260px] text-xs font-medium"
               data-testid="learning-booking-select"
             >
               {records.bookingOptions.map((opt) => (
@@ -74,7 +76,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
                   {opt.label}
                 </option>
               ))}
-            </select>
+            </NativeSelect>
           </div>
           <div className="text-xs text-muted-foreground">
             {locale === 'bn'

@@ -59,7 +59,7 @@ export function NotificationBell({ className, locale = 'bn' }: NotificationBellP
           <span
             className={cn(
               'relative inline-flex items-center justify-center min-w-5 h-5 px-1.5 text-[11px] font-black rounded-full',
-              'bg-gradient-to-r from-brand to-primary text-foreground shadow-md shadow-sm',
+              'bg-gradient-to-r from-brand to-primary text-foreground',
             )}
           >
             {formatCount(unreadCount)}
@@ -72,7 +72,7 @@ export function NotificationBell({ className, locale = 'bn' }: NotificationBellP
         title={isConnected ? 'Live WebSockets Connected' : 'Gateway Offline'}
         className={cn(
           'absolute bottom-1 right-1 w-2 h-2 rounded-full border-2 border-white ',
-          isConnected ? 'bg-primary shadow-xs shadow-sm' : 'bg-destructive',
+          isConnected ? 'bg-primary shadow-xs' : 'bg-destructive',
         )}
       />
     </button>

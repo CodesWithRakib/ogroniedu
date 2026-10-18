@@ -147,7 +147,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-card hover:border-primary/40 transition-all relative overflow-hidden"
+                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-xs hover:border-primary/40 transition-all relative overflow-hidden"
               >
                 <div className="absolute top-4 right-4">
                   <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary-soft text-primary font-mono">
@@ -204,7 +204,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-card hover:border-primary/40 transition-all relative overflow-hidden"
+                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-xs hover:border-primary/40 transition-all relative overflow-hidden"
               >
                 <div className="absolute top-4 right-4">
                   <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-mono">

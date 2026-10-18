@@ -200,7 +200,7 @@ export function AdminDashboardView({
       )}
       {actions.activeImpersonation && (
         <div
-          className="bg-warning/10 border-2 border-warning/40 rounded-2xl p-4 flex items-center justify-between shadow-sm animate-pulse"
+          className="bg-warning/10 border-2 border-warning/40 rounded-2xl p-4 flex items-center justify-between animate-pulse"
           data-testid="active-impersonation-banner"
         >
           <div className="flex items-center space-x-3">

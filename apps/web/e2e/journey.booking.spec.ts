@@ -45,12 +45,36 @@ test.describe('tutoring lifecycle journey', () => {
 
     const modal = page.getByTestId('booking-request-modal');
     await expect(modal).toBeVisible();
-    const subjectOptions = await modal
-      .getByTestId('booking-subject-select')
-      .locator('option')
-      .count();
-    if (subjectOptions > 1) {
-      await modal.getByTestId('booking-subject-select').selectOption({ index: 1 });
+    // The level/subject pickers are the shared Radix Select (trigger button +
+    // portal listbox), so drive the real open/choose interaction here — a
+    // native selectOption() call would silently no-op against a button.
+    const levelTrigger = modal.getByTestId('booking-level-select');
+    if ((await levelTrigger.count()) > 0) {
+      await levelTrigger.click();
+      const levelOption = page.getByRole('option').first();
+      const hasLevelOption = await levelOption
+        .waitFor({ state: 'visible', timeout: 5_000 })
+        .then(() => true)
+        .catch(() => false);
+      if (hasLevelOption) {
+        await levelOption.click();
+      } else {
+        await page.keyboard.press('Escape');
+      }
+    }
+    const subjectTrigger = modal.getByTestId('booking-subject-select');
+    await expect(subjectTrigger).toBeVisible();
+    await subjectTrigger.click();
+    const subjectOption = page.getByRole('option').first();
+    const hasSubjectOption = await subjectOption
+      .waitFor({ state: 'visible', timeout: 5_000 })
+      .then(() => true)
+      .catch(() => false);
+    if (hasSubjectOption) {
+      await subjectOption.click();
+    } else {
+      // Seeded tutor exposes no subjects; close the empty listbox.
+      await page.keyboard.press('Escape');
     }
     await modal.locator('[data-testid^="day-toggle-"]').first().click();
     await modal

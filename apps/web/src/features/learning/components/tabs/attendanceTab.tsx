@@ -54,7 +54,7 @@ export function AttendanceTab({
       {attendance.map((rec) => (
         <Card
           key={rec.id}
-          className="border-border hover:border-primary/40 hover:shadow-sm transition-all rounded-2xl bg-card shadow-xs"
+          className="border-border hover:border-primary/40 hover:shadow-xs transition-all rounded-2xl bg-card shadow-xs"
         >
           <CardHeader className="pb-3 flex flex-row items-center justify-between">
             <div>

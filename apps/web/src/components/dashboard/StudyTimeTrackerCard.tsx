@@ -67,7 +67,7 @@ export function StudyTimeTrackerCard({ locale, title, subtitle }: StudyTimeTrack
 
       {/* Center: Digital Clock display */}
       <div className="relative z-10 my-4 text-center">
-        <span className="font-mono text-3xl sm:text-4xl font-extrabold tracking-widest text-foreground drop-shadow-md">
+        <span className="font-mono text-3xl sm:text-4xl font-extrabold tracking-widest text-foreground">
           {hrs}:{mins}:{secs}
         </span>
       </div>
@@ -77,7 +77,7 @@ export function StudyTimeTrackerCard({ locale, title, subtitle }: StudyTimeTrack
         <button
           type="button"
           onClick={() => setIsRunning(!isRunning)}
-          className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold shadow-sm hover:bg-primary-hover hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+          className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold hover:bg-primary-hover hover:scale-105 active:scale-95 transition-transform cursor-pointer"
           aria-label={isRunning ? 'Pause timer' : 'Start timer'}
           title={isRunning ? 'Pause' : 'Start'}
         >

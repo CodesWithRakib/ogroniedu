@@ -46,7 +46,7 @@ export function CheckoutMethodPicker({
   const amountBdt = orderAmountBdt(order);
 
   return (
-    <Card className="border border-border shadow-sm">
+    <Card className="border border-border">
       <CardHeader className="pb-3">
         <CardTitle className="text-lg font-semibold flex items-center gap-2">
           <CreditCard className="w-5 h-5 text-interactive" />
@@ -65,7 +65,7 @@ export function CheckoutMethodPicker({
           data-testid="gateway-picker-sslcommerz"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-interactive to-interactive-accent text-interactive-foreground font-black flex items-center justify-center text-[10px] tracking-tight shadow-sm">
+            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-interactive to-interactive-accent text-interactive-foreground font-black flex items-center justify-center text-[10px] tracking-tight">
               SSL
             </div>
             <div>
@@ -98,7 +98,7 @@ export function CheckoutMethodPicker({
           data-testid="gateway-picker-bkash"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-pink-600 text-white font-bold flex items-center justify-center text-sm shadow-sm">
+            <div className="w-10 h-10 rounded-lg bg-pink-600 text-white font-bold flex items-center justify-center text-sm">
               বিকাশ
             </div>
             <div>
@@ -126,7 +126,7 @@ export function CheckoutMethodPicker({
           data-testid="gateway-picker-nagad"
         >
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-warning text-white font-bold flex items-center justify-center text-sm shadow-sm">
+            <div className="w-10 h-10 rounded-lg bg-warning text-white font-bold flex items-center justify-center text-sm">
               নগদ
             </div>
             <div>

@@ -32,6 +32,7 @@ import {
   EmptyState,
 } from '@/components/ui';
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { NativeSelect } from '@/components/ui/NativeSelect';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDate } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
@@ -592,11 +593,11 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                       <Label htmlFor="pay-booking" className="text-xs font-bold text-foreground">
                         {isBn ? 'টিউশন / কোর্স নির্বাচন করুন' : 'Select Tuition / Course'}
                       </Label>
-                      <select
+                      <NativeSelect
                         id="pay-booking"
                         value={pay.bookingId}
                         onChange={(e) => pay.handleSelectBooking(e.target.value)}
-                        className="h-11 w-full rounded-xl border border-input bg-surface text-foreground px-3.5 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35"
+                        className="h-11 bg-surface text-xs font-semibold"
                         data-testid="pay-booking-select"
                       >
                         {bookingOptions.map((opt) => (
@@ -604,7 +605,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                             {opt.label}
                           </option>
                         ))}
-                      </select>
+                      </NativeSelect>
                     </div>
 
                     <div className="space-y-1.5">
@@ -626,17 +627,17 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                       <Label htmlFor="pay-provider" className="text-xs font-bold text-foreground">
                         {dict.payments.selectGateway}
                       </Label>
-                      <select
+                      <NativeSelect
                         id="pay-provider"
                         value={pay.provider}
                         onChange={(e) => pay.setProvider(e.target.value as PaymentProvider)}
-                        className="h-11 w-full rounded-xl border border-input bg-surface text-foreground px-3.5 text-xs font-semibold focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35"
+                        className="h-11 bg-surface text-xs font-semibold"
                         data-testid="pay-provider-select"
                       >
                         <option value="bkash">{dict.payments.bkashTitle}</option>
                         <option value="nagad">{dict.payments.nagadTitle}</option>
                         <option value="sslcommerz">{dict.payments.sslTitle}</option>
-                      </select>
+                      </NativeSelect>
                     </div>
 
                     <div className="md:col-span-3 flex justify-end pt-2">

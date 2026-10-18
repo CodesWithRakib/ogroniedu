@@ -48,13 +48,22 @@ export function DashboardShell({
   const authUser = useAppSelector((s) => s.auth.user);
   const refreshToken = useAppSelector((s) => s.auth.refreshToken);
 
+  // The auth store is only populated on the client, so every user-dependent
+  // chrome value must render the same fallback during SSR and the first client
+  // render (mount gate) — otherwise shared pages that render this shell
+  // directly hydrate against stale nav/user markup. Role layouts already run
+  // behind RequireRole's mount gate, which is why this only bit direct usages.
+  const [mounted, setMounted] = React.useState(false);
+  React.useEffect(() => setMounted(true), []);
+  const effectiveUser = mounted ? authUser : null;
+
   // The layout's nominal role is only used for nav selection when the signed-in
   // user actually holds it; shared surfaces (e.g. the admin console, which also
   // admits support/compliance staff) must not inherit unrelated nav items (F-7).
   const activeRole: UserRole | null =
-    roleOverride && authUser?.roles?.includes(roleOverride)
+    roleOverride && effectiveUser?.roles?.includes(roleOverride)
       ? roleOverride
-      : primaryRole(authUser?.roles);
+      : primaryRole(effectiveUser?.roles);
   const items = navForRole(activeRole);
   const sections = navSectionsForRole(activeRole);
   const isBn = locale === 'bn';
@@ -77,7 +86,7 @@ export function DashboardShell({
     router.replace(withLocale('/login', locale));
   }
 
-  const userInitials = (authUser?.displayName ?? authUser?.phone ?? 'U')
+  const userInitials = (effectiveUser?.displayName ?? effectiveUser?.phone ?? 'U')
     .split(' ')
     .map((n) => n[0])
     .slice(0, 2)
@@ -124,7 +133,7 @@ export function DashboardShell({
           isBn={isBn}
           pathname={pathname}
           roleKey={roleKey}
-          authUser={authUser}
+          authUser={effectiveUser}
           userInitials={userInitials}
         />
 
@@ -149,7 +158,7 @@ export function DashboardShell({
             isBn={isBn}
             actions={actions}
             targetPath={targetPath}
-            authUser={authUser}
+            authUser={effectiveUser}
             role={activeRole}
             onOpenDrawer={() => setMobileDrawerOpen(true)}
             onSearchTutors={() => router.push(withLocale('/tutors', locale))}

@@ -79,7 +79,7 @@ export function EmergencySosModal({
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in">
       <div
-        className="w-full max-w-xl bg-surface-muted border border-destructive/40 rounded-2xl p-6 md:p-8 shadow-sm space-y-6 text-foreground max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-xl bg-surface-muted border border-destructive/40 rounded-2xl p-6 md:p-8 space-y-6 text-foreground max-h-[90vh] overflow-y-auto"
         data-testid="emergency-sos-modal"
       >
         {/* Header */}
@@ -138,7 +138,7 @@ export function EmergencySosModal({
 
               <a
                 href={`tel:${item.telNumber}`}
-                className="shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 bg-destructive hover:bg-destructive/90 text-white font-black text-xs rounded-xl shadow-sm transition-all"
+                className="shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 bg-destructive hover:bg-destructive/90 text-white font-black text-xs rounded-xl transition-all"
                 data-testid={`dial-${item.telNumber}`}
               >
                 <PhoneCall className="w-4 h-4" />

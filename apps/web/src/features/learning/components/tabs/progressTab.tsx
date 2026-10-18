@@ -29,7 +29,7 @@ export function ProgressTab({
   return (
     <div className="grid grid-cols-1 gap-4">
       {reports.map((rep) => (
-        <Card key={rep.id} className="border-border hover:shadow-sm transition-shadow">
+        <Card key={rep.id} className="border-border hover:shadow-xs transition-shadow">
           <CardHeader>
             <div className="flex flex-col md:flex-row md:items-center justify-between gap-2">
               <div>

@@ -17,7 +17,7 @@ export function CheckoutSummary({ order, locale }: CheckoutSummaryProps) {
   const amountBdt = orderAmountBdt(order);
 
   return (
-    <Card className="border border-border shadow-sm">
+    <Card className="border border-border">
       <CardHeader className="pb-3 border-b border-border">
         <div className="flex items-center justify-between">
           <CardTitle className="text-lg font-semibold flex items-center gap-2">

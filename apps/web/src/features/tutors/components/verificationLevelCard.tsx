@@ -22,6 +22,7 @@ import {
   CardTitle,
   Label,
   Input,
+  NativeSelect,
 } from '@/components/ui';
 import { formatDate } from '@/lib/format';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
@@ -355,11 +356,11 @@ export function VerificationLevelCard({
                 >
                   {isBn ? 'নথির ধরন' : 'Document type'}
                 </Label>
-                <select
+                <NativeSelect
                   id={`document-type-${record.level}`}
                   value={documentType}
                   onChange={(e) => setDocumentType(e.target.value as VerificationDocumentType)}
-                  className="h-9 w-full rounded-lg border border-input bg-card text-foreground px-2 text-xs focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none"
+                  className="h-9 text-xs"
                   data-testid={`document-type-${record.level}`}
                 >
                   {allowedTypes.map((type) => (
@@ -367,7 +368,7 @@ export function VerificationLevelCard({
                       {documentTypeLabel(type, locale)}
                     </option>
                   ))}
-                </select>
+                </NativeSelect>
               </div>
               <div className="space-y-1">
                 <Label

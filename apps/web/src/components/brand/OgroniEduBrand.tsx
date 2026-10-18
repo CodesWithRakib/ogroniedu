@@ -23,7 +23,7 @@ export function OgroniEduBrand({
       aria-label="OgroniEdu Home"
     >
       {/* Brand Icon: Modern Academic Squircle Emblem with Knowledge Diamond */}
-      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand via-brand-accent to-primary text-white shadow-xs shadow-primary/25 ring-1 ring-white/20 transition-all duration-300 group-hover:scale-105 group-hover:shadow-sm">
+      <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand via-brand-accent to-primary text-white ring-1 ring-white/20 transition-transform duration-300 group-hover:scale-105">
         <svg
           viewBox="0 0 24 24"
           fill="none"

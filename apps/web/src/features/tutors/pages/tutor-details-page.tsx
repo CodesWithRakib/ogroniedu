@@ -19,7 +19,7 @@ import {
   Send,
   AlertCircle,
 } from 'lucide-react';
-import { Button, Textarea, Label } from '@/components/ui';
+import { Button, Textarea, Label, NativeSelect } from '@/components/ui';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { useGetTutorPublicProfileQuery } from '@/store/services/tutors-api';
 import { useCreateBookingRequestMutation } from '@/store/services/bookings-api';
@@ -522,7 +522,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
       </div>
 
       {/* Hero Profile Glass Card */}
-      <div className="max-w-7xl mx-auto rounded-2xl bg-card/90 border border-border p-6 sm:p-10 shadow-sm relative overflow-hidden backdrop-blur-xl">
+      <div className="max-w-7xl mx-auto rounded-2xl bg-card/90 border border-border p-6 sm:p-10 relative overflow-hidden backdrop-blur-xl">
         <div className="absolute top-0 right-0 w-96 h-96 bg-brand-soft rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
 
         <div className="relative z-10 flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
@@ -544,7 +544,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 <h1 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
                   {displayName}
                 </h1>
-                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-brand-soft text-primary border border-border shadow-sm">
+                <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full text-xs font-bold bg-brand-soft text-primary border border-border">
                   <Sparkles className="w-3.5 h-3.5" />
                   <span>১৬৫ pts ম্যাচ স্কোর</span>
                 </span>
@@ -603,7 +603,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             </div>
             <a
               href="#booking-section"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-black text-sm px-6 py-3.5 shadow-sm hover:shadow-sm hover:scale-105 active:scale-95 transition-all text-center"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-black text-sm px-6 py-3.5 hover:shadow-xs hover:scale-105 active:scale-95 transition-all text-center"
             >
               <Send className="w-4 h-4" />
               <span>{isBn ? 'সরাসরি টিউশন অনুরোধ পাঠান' : 'Request Tutoring Session'}</span>
@@ -809,7 +809,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                     key={d.key}
                     className={`rounded-2xl p-2.5 sm:p-3 border text-xs font-bold transition-all ${
                       isAvailable
-                        ? 'bg-card border-brand/60 text-primary shadow-sm'
+                        ? 'bg-card border-brand/60 text-primary'
                         : 'bg-background border-border text-muted-foreground'
                     }`}
                   >
@@ -907,7 +907,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
         {/* Right Column: Sticky Booking Request Card */}
         <div id="booking-section" className="lg:col-span-4 lg:sticky lg:top-24 space-y-4">
-          <div className="rounded-2xl bg-card border-2 border-border p-6 sm:p-7 shadow-sm space-y-5 backdrop-blur-xl">
+          <div className="rounded-2xl bg-card border-2 border-border p-6 sm:p-7 space-y-5 backdrop-blur-xl">
             <div className="border-b border-border pb-4">
               <span className="text-xs text-primary-soft-foreground font-semibold uppercase tracking-wider block">
                 {isBn ? 'টিউশন বুকিং করুন' : 'Book a Tutoring Session'}
@@ -957,21 +957,17 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                     <Label className="font-semibold text-foreground block">
                       {isBn ? 'শিক্ষার্থী নির্বাচন করুন *' : 'Select Student *'}
                     </Label>
-                    <select
+                    <NativeSelect
                       value={selectedStudentId}
                       onChange={(e) => setSelectedStudentId(e.target.value)}
-                      className="w-full h-10 px-3 rounded-xl bg-background border border-border text-foreground focus-visible:outline-none focus:border-brand transition-colors"
+                      className="bg-background"
                     >
                       {studentOptions.map((opt) => (
-                        <option
-                          key={opt.id}
-                          value={opt.id}
-                          className="bg-background text-foreground"
-                        >
+                        <option key={opt.id} value={opt.id}>
                           {opt.label}
                         </option>
                       ))}
-                    </select>
+                    </NativeSelect>
                   </div>
                 ) : (
                   <div className="rounded-xl bg-card border border-border p-3 text-muted-foreground">
@@ -995,21 +991,17 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   <Label className="font-semibold text-foreground block">
                     {isBn ? 'পড়ার বিষয় নির্বাচন করুন *' : 'Select Subject *'}
                   </Label>
-                  <select
+                  <NativeSelect
                     value={selectedSubjectId}
                     onChange={(e) => setSelectedSubjectId(e.target.value)}
-                    className="w-full h-10 px-3 rounded-xl bg-background border border-border text-foreground focus-visible:outline-none focus:border-brand transition-colors"
+                    className="bg-background"
                   >
                     {subjects.map((sub) => (
-                      <option
-                        key={sub.id}
-                        value={sub.subjectId || sub.id}
-                        className="bg-background text-foreground"
-                      >
+                      <option key={sub.id} value={sub.subjectId || sub.id}>
                         {isBn ? sub.nameBn : sub.nameEn} ({isBn ? sub.levelBn : sub.levelEn})
                       </option>
                     ))}
-                  </select>
+                  </NativeSelect>
                 </div>
 
                 {/* Teaching Mode */}
@@ -1031,7 +1023,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                         }
                         className={`py-2 rounded-xl border text-xs font-semibold transition-all ${
                           selectedMode === mode.key
-                            ? 'bg-brand text-brand-foreground border-brand font-bold shadow-sm'
+                            ? 'bg-brand text-brand-foreground border-brand font-bold'
                             : 'bg-background border-border text-muted-foreground hover:border-border'
                         }`}
                       >

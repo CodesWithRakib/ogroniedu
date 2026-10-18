@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { RefreshCw, Send, Clock, CheckCircle2, AlertTriangle, ShieldCheck } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
 import { Label } from '@/components/ui/label';
+import { NativeSelect } from '@/components/ui/NativeSelect';
 import { Textarea } from '@/components/ui/textarea';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
@@ -161,10 +162,10 @@ export function TutorReplacementModal({
               >
                 {isBn ? 'পরিবর্তন চাওয়ার কারণ:' : 'Reason for Replacement:'}
               </Label>
-              <select
+              <NativeSelect
                 value={reasonCode}
                 onChange={(e) => setReasonCode(e.target.value)}
-                className="w-full rounded-xl bg-card border border-border p-2.5 text-xs text-foreground focus-visible:outline-none focus:border-primary"
+                className="text-xs"
                 id="replacement-reason-select"
               >
                 <option value="teaching_mismatch">
@@ -193,7 +194,7 @@ export function TutorReplacementModal({
                     : 'Trial Class Dissatisfaction'}
                 </option>
                 <option value="other">{isBn ? 'অন্যান্য কারণ (Other)' : 'Other Reason'}</option>
-              </select>
+              </NativeSelect>
             </div>
 
             {/* Explanation Textarea */}

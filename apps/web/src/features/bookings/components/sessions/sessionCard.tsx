@@ -33,7 +33,7 @@ export function SessionCard({
 
   return (
     <Card
-      className="flex flex-col justify-between hover:shadow-sm transition-all bg-card border border-border hover:border-primary/40 rounded-2xl overflow-hidden shadow-xs"
+      className="flex flex-col justify-between hover:shadow-xs transition-all bg-card border border-border hover:border-primary/40 rounded-2xl overflow-hidden shadow-xs"
       data-testid={`session-card-${session.id}`}
     >
       <CardHeader className="space-y-2 pb-3">

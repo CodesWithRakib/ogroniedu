@@ -16,7 +16,7 @@ export function LearningMetricsCards({
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-      <Card className="border-border shadow-sm bg-card/60 backdrop-blur">
+      <Card className="border-border bg-card/60 backdrop-blur">
         <CardContent className="pt-6 flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -36,7 +36,7 @@ export function LearningMetricsCards({
         </CardContent>
       </Card>
 
-      <Card className="border-border shadow-sm bg-card/60 backdrop-blur">
+      <Card className="border-border bg-card/60 backdrop-blur">
         <CardContent className="pt-6 flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">
@@ -54,7 +54,7 @@ export function LearningMetricsCards({
         </CardContent>
       </Card>
 
-      <Card className="border-border shadow-sm bg-card/60 backdrop-blur">
+      <Card className="border-border bg-card/60 backdrop-blur">
         <CardContent className="pt-6 flex items-center justify-between">
           <div>
             <p className="text-xs font-medium text-muted-foreground uppercase tracking-wider">

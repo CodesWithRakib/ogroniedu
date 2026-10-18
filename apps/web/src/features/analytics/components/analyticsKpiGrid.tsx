@@ -51,7 +51,7 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
       </div>
 
       {/* Card 2: Completion Rate */}
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-sm hover:-translate-y-0.5 group select-none">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-xs hover:-translate-y-0.5 group select-none">
         <div className="flex items-center justify-between">
           <p className="text-xs font-semibold text-muted-foreground">{t('completionRate')}</p>
           <div className="h-8 w-8 rounded-full border border-border bg-surface/75 text-foreground flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
@@ -83,7 +83,7 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
       </div>
 
       {/* Card 3: GMV */}
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-sm hover:-translate-y-0.5 group select-none">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-xs hover:-translate-y-0.5 group select-none">
         <div className="flex items-center justify-between">
           <p className="text-xs font-semibold text-muted-foreground">
             {t('grossMerchandiseValue')}
@@ -115,7 +115,7 @@ export function AnalyticsKpiGrid({ data }: { data: AnalyticsOperationalData }) {
       </div>
 
       {/* Card 4: Retention Rate */}
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-sm hover:-translate-y-0.5 group select-none">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between transition-all hover:shadow-xs hover:-translate-y-0.5 group select-none">
         <div className="flex items-center justify-between">
           <p className="text-xs font-semibold text-muted-foreground">{t('retentionRate')}</p>
           <div className="h-8 w-8 rounded-full border border-border bg-surface/75 text-foreground flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">

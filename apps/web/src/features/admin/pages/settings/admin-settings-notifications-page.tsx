@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { ArrowLeft, Bell, Check, RefreshCw, Send, Smartphone, Mail } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
-import { Button, Alert, AlertDescription } from '@/components/ui';
+import { Button, Alert, AlertDescription, Input, NativeSelect } from '@/components/ui';
 import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
 
@@ -122,26 +122,26 @@ export function AdminSettingsNotificationsPage({ locale }: { locale: Locale }) {
                 <label className="text-xs font-semibold text-foreground">
                   {isBn ? 'প্রোভাইডার নির্বাচন' : 'Active Provider'}
                 </label>
-                <select
+                <NativeSelect
                   value={smsGateway}
                   onChange={(e) => setSmsGateway(e.target.value as any)}
-                  className="w-full px-4 py-2 rounded-xl bg-surface border border-border text-foreground font-semibold text-xs"
+                  className="bg-surface font-semibold text-xs"
                 >
                   <option value="ssl_wireless">SSL Wireless (Recommended BD)</option>
                   <option value="mim_sms">MiM SMS (Bangladeshi Masking)</option>
                   <option value="twilio">Twilio Global SMS</option>
-                </select>
+                </NativeSelect>
               </div>
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-foreground">
                   {isBn ? 'এসএমএস মাস্কিং আইডি' : 'SMS Masking Sender ID'}
                 </label>
-                <input
+                <Input
                   type="text"
                   value={smsSenderId}
                   onChange={(e) => setSmsSenderId(e.target.value)}
-                  className="w-full px-4 py-2 rounded-xl bg-surface border border-border text-foreground font-mono font-bold text-xs"
+                  className="bg-surface font-mono font-bold text-xs"
                 />
               </div>
 
@@ -182,26 +182,26 @@ export function AdminSettingsNotificationsPage({ locale }: { locale: Locale }) {
                 <label className="text-xs font-semibold text-foreground">
                   {isBn ? 'ইমেইল এপিআই' : 'Email Delivery API'}
                 </label>
-                <select
+                <NativeSelect
                   value={emailProvider}
                   onChange={(e) => setEmailProvider(e.target.value as any)}
-                  className="w-full px-4 py-2 rounded-xl bg-surface border border-border text-foreground font-semibold text-xs"
+                  className="bg-surface font-semibold text-xs"
                 >
                   <option value="resend">Resend.com (Modern HTTP API)</option>
                   <option value="sendgrid">Twilio SendGrid</option>
                   <option value="smtp">Custom Enterprise SMTP</option>
-                </select>
+                </NativeSelect>
               </div>
 
               <div className="space-y-1">
                 <label className="text-xs font-semibold text-foreground">
                   {isBn ? 'সাপোর্ট ইমেইল ঠিকানা' : 'From / Support Email Address'}
                 </label>
-                <input
+                <Input
                   type="email"
                   value={supportEmail}
                   onChange={(e) => setSupportEmail(e.target.value)}
-                  className="w-full px-4 py-2 rounded-xl bg-surface border border-border text-foreground font-mono font-bold text-xs"
+                  className="bg-surface font-mono font-bold text-xs"
                 />
               </div>
             </div>

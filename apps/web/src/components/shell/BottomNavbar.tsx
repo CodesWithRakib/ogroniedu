@@ -126,7 +126,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           <div className="relative">
             <Bell className="h-5 w-5 stroke-[2.2]" />
             {unreadCount > 0 && (
-              <span className="absolute -top-1 -right-2 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-destructive text-[9px] font-extrabold text-white shadow-[0_0_8px_rgba(244,63,94,0.7)] animate-pulse">
+              <span className="absolute -top-1 -right-2 flex h-4 min-w-[16px] px-1 items-center justify-center rounded-full bg-destructive text-[9px] font-extrabold text-white">
                 {unreadCount > 99 ? '99+' : formatLocalizedNumber(unreadCount, locale)}
               </span>
             )}
@@ -156,7 +156,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
               <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-brand " />
             )}
           </div>
-          <span className="text-[10px] tracking-tight mt-1 truncate max-w-[54px]">
+          <span className="text-[10px] tracking-tight mt-1 truncate max-w-full">
             {authedUser ? (isBn ? 'ড্যাশবোর্ড' : 'Dashboard') : isBn ? 'প্রোফাইল' : 'Account'}
           </span>
         </Link>

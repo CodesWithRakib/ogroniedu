@@ -166,7 +166,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 shadow-sm flex flex-col space-y-5 text-foreground">
+    <div className="bg-card border border-border rounded-2xl p-6 flex flex-col space-y-5 text-foreground">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
@@ -207,7 +207,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
           onClick={() => setActiveCategory('all')}
           className={`px-3 py-1.5 rounded-xl font-bold transition-all ${
             activeCategory === 'all'
-              ? 'bg-interactive text-foreground shadow-md shadow-sm'
+              ? 'bg-interactive text-foreground'
               : 'bg-muted text-muted-foreground hover:text-foreground'
           }`}
           data-testid="formula-tab-all"
@@ -220,7 +220,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
           onClick={() => setActiveCategory('physics')}
           className={`px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCategory === 'physics'
-              ? 'bg-interactive text-foreground shadow-md shadow-sm'
+              ? 'bg-interactive text-foreground'
               : 'bg-muted text-muted-foreground hover:text-foreground'
           }`}
           data-testid="formula-tab-physics"
@@ -234,7 +234,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
           onClick={() => setActiveCategory('math')}
           className={`px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCategory === 'math'
-              ? 'bg-interactive text-foreground shadow-md shadow-sm'
+              ? 'bg-interactive text-foreground'
               : 'bg-muted text-muted-foreground hover:text-foreground'
           }`}
           data-testid="formula-tab-math"
@@ -248,7 +248,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
           onClick={() => setActiveCategory('chemistry')}
           className={`px-3 py-1.5 rounded-xl font-bold flex items-center gap-1.5 transition-all ${
             activeCategory === 'chemistry'
-              ? 'bg-interactive text-foreground shadow-md shadow-sm'
+              ? 'bg-interactive text-foreground'
               : 'bg-muted text-muted-foreground hover:text-foreground'
           }`}
           data-testid="formula-tab-chemistry"

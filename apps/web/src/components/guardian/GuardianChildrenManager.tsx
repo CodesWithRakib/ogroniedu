@@ -295,7 +295,7 @@ export function GuardianChildrenManager({
       {/* Minor Protection & Autonomy Info Banner */}
       <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs">
         <div className="flex items-start gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 shadow-sm mt-0.5">
+          <div className="h-10 w-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 mt-0.5">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div className="space-y-1">
@@ -382,7 +382,7 @@ export function GuardianChildrenManager({
             return (
               <Card
                 key={child.linkId}
-                className="rounded-2xl border-border bg-card hover:border-primary/40 hover:shadow-sm transition-all p-5 flex flex-col justify-between"
+                className="rounded-2xl border-border bg-card hover:border-primary/40 hover:shadow-xs transition-all p-5 flex flex-col justify-between"
               >
                 <div className="space-y-3">
                   <div className="flex items-start justify-between gap-3">

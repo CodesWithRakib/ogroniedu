@@ -105,7 +105,7 @@ function ProgressReportDetailPage({ locale, reportId }: { locale: Locale; report
       </div>
 
       {/* Banner */}
-      <div className="rounded-2xl bg-card border border-interactive/25 p-8 text-foreground shadow-sm space-y-3">
+      <div className="rounded-2xl bg-card border border-interactive/25 p-8 text-foreground space-y-3">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-interactive/20 border border-interactive/40 rounded-full text-xs font-medium text-interactive-soft-foreground">
             <TrendingUp className="w-3.5 h-3.5" />

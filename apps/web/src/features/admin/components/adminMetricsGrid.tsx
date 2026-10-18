@@ -24,7 +24,7 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
       key: 'tutors',
       label: t('tutorVerificationQueue'),
       value: metrics.pendingTutorVerifications,
-      caption: 'Pending Dossiers',
+      caption: t('captionPendingDossiers'),
       valueClass: 'text-primary-foreground',
       testId: 'metric-pending-tutors',
       isHero: true,
@@ -33,7 +33,7 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
       key: 'replacements',
       label: t('replacementQueue'),
       value: metrics.activeReplacementCases,
-      caption: 'Active Cases',
+      caption: t('captionActiveCases'),
       valueClass: 'text-warning',
       testId: 'metric-replacement-cases',
     },
@@ -41,7 +41,7 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
       key: 'safety',
       label: t('safetyQueue'),
       value: metrics.openSafetyReports,
-      caption: 'Open Reports',
+      caption: t('captionOpenReports'),
       valueClass: 'text-destructive',
       testId: 'metric-safety-reports',
     },
@@ -49,7 +49,7 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
       key: 'bookings',
       label: t('activeBookings'),
       value: metrics.activeBookingsCount,
-      caption: 'In Progress',
+      caption: t('captionInProgress'),
       valueClass: 'text-primary',
       testId: 'metric-active-bookings',
     },
@@ -57,7 +57,7 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
       key: 'users',
       label: t('totalUsers'),
       value: metrics.totalRegisteredUsers,
-      caption: 'Total Catalog',
+      caption: t('captionTotalCatalog'),
       valueClass: 'text-foreground',
       testId: 'metric-total-users',
     },
@@ -96,7 +96,7 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
         return (
           <div
             key={card.key}
-            className="bg-card border border-border rounded-2xl p-5 shadow-xs col-span-2 md:col-span-1 transition-all hover:shadow-sm hover:-translate-y-0.5 group select-none"
+            className="bg-card border border-border rounded-2xl p-5 shadow-xs col-span-2 md:col-span-1 transition-all hover:shadow-xs hover:-translate-y-0.5 group select-none"
           >
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold text-muted-foreground truncate">{card.label}</p>

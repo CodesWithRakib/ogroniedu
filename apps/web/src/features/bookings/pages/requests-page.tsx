@@ -317,7 +317,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
               <Card
                 key={r.id}
                 data-testid={`request-card-${r.id}`}
-                className="flex flex-col justify-between bg-card border border-border hover:border-primary/40 text-foreground hover:shadow-sm transition-all rounded-2xl overflow-hidden shadow-xs"
+                className="flex flex-col justify-between bg-card border border-border hover:border-primary/40 text-foreground hover:shadow-xs transition-all rounded-2xl overflow-hidden shadow-xs"
               >
                 <CardHeader className="space-y-3 pb-3">
                   <div className="flex items-center justify-between gap-2">

@@ -120,5 +120,30 @@ The earlier audit was code-reading based; this pass audited the **actual rendere
 ### D-2: Backend defect surfaced by the UI audit (fixed)
 
 - **Symptom:** admin audit-log `createdAt` rendered as an empty cell; API returned `"createdAt": {}`.
-- **Root cause:** `apps/api/src/modules/admin/utils/redact.util.ts` — `redactSensitiveData` recursed over `Date` instances via `Object.entries`, producing `{}`.
+- **Root cause:** `apps/api/src/modules/admin/utils/redact.util.ts` - `redactSensitiveData` recursed over `Date` instances via `Object.entries`, producing `{}`.
 - **Fix:** preserve `Date`/`Map`/`Set`/`RegExp` built-ins before recursion. Verified live against the running API (real ISO timestamps now returned and rendered).
+
+## Continuation Audit - 2026-10-18 (feature-completion pass)
+
+### D-3: Open items from D-1 resolved
+
+| Ref (D-1) | Item | Status | Resolution |
+| --- | --- | --- | --- |
+| A-17 | Raw `<select>` styled inline (admin verification + others) | **FIXED** | New shared `components/ui/NativeSelect.tsx`; all 18 feature-page raw selects migrated (verification filters + decision selects, schedule modal, payments, learning, tutors, trust modals, notification settings). Only remaining raw select is the documented `sr-only` compat shim in `RegisterForm.tsx`. |
+| A-18 | English microcopy in Bengali admin KPI hints | **FIXED** | Five `caption*` keys added to `messages/bn.json` + `en.json`; `adminMetricsGrid`/`admin-overview-page` now use `t('caption…')` — English debt removed. |
+| A-19 | Mobile bottom-nav label truncation | **FIXED** | `BottomNavbar` label `max-w-[54px]` → `max-w-full`; verified in the mobile route sweep. |
+| A-20 | Per-card accent tones on some admin hub cards | **ACCEPTED** | Calm brand-family nuance retained deliberately; not a defect. |
+
+### D-4: New defects found and fixed in the feature-completion pass
+
+| # | Defect | Status | Resolution |
+| --- | --- | --- | --- |
+| B-1 | `shadow-sm`/`shadow-md` still present on 40 files (cards, segmented tools, avatars, banners, brand mark, badge glow) contradicting R-1 | **FIXED** | Codemod sweep (70 `shadow-sm` + 12 `shadow-md` removed, 11 hover elevations normalized to `hover:shadow-xs`) + hand fixes (`OgroniEduBrand`, `BottomNavbar` badge glow, `StudyTimeTrackerCard` drop-shadow, `NotificationBell`) |
+| B-2 | `journey.booking.spec.ts` subject picker was a silent no-op (`selectOption` on a Radix button trigger; `.locator('option').count()` always 0) — the journey could pass without ever exercising level/subject selection | **FIXED** | Rewritten to open the Radix listbox and click real `role=option` entries for both level and subject, with a graceful empty-listbox fallback |
+| B-3 | `guardian-children.spec.ts` cold-import flake (`@ogroniedu/contracts` dynamic import under parallel workers) | **FIXED** | Per-test `{ timeout: 15_000 }` on the two import-heavy tests (no global config change) |
+| B-4 | Two modals left unclosed `</select>` JSX after the migration (typecheck caught) | **FIXED** | `safetyReportModal`, `tutorReplacementModal` closing tags |
+| B-5 | Zero test coverage on progress widgets, bKash adapter, taxonomy CRUD, sandbox-confirm, and the notification bell was tested against a local copy of its logic | **FIXED** | New: `progress-tracking.spec.ts` (6), rewritten `notification-bell.spec.ts` (renders the real component), `bkash.adapter.spec.ts` (8), `taxonomy.controller.spec.ts` (16), Sandbox Confirmation Pipeline block in `payments.service.spec.ts` (4). API suite 588 → 616, web 179 → 188. |
+
+### D-5: Route sweep instrumentation (feature-completion pass)
+
+A refined DOM audit runs on every route in a real logged-in browser: visible box-shadows only (transparent ring layers and `shadow-xs` excluded), visible native selects (Radix's hidden form `<select>` excluded), unnamed visible controls, horizontal overflow, console/page errors, failed HTTP responses, and redirect detection. Its purpose is to catch design-rule regressions and broken routes without relying on eyeballing alone. Results are recorded in `UI_QA_RESULTS.md` §7.

@@ -3,6 +3,7 @@ export * from './Card';
 export * from './Badge';
 export * from './StatusBadge';
 export * from './Input';
+export * from './NativeSelect';
 export * from './Tabs';
 export * from './EmptyState';
 export { LoadingSpinner, type LoadingSpinnerProps } from './LoadingSpinner';

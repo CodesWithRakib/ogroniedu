@@ -40,6 +40,7 @@ import {
   TableCell,
 } from '@/components/ui/table';
 import { EmptyState } from '@/components/ui/EmptyState';
+import { NativeSelect } from '@/components/ui/NativeSelect';
 import { LoadingState } from '@/components/shared/LoadingState';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
@@ -87,6 +88,14 @@ const DECISIONS: TutorReviewDecision[] = [
   'suspended',
   'reinstated',
 ];
+
+const DECISION_LABELS: Record<TutorReviewDecision, { en: string; bn: string }> = {
+  approved: { en: 'Approved', bn: 'অনুমোদিত' },
+  rejected: { en: 'Rejected', bn: 'প্রত্যাখ্যাত' },
+  needs_information: { en: 'Information needed', bn: 'তথ্য প্রয়োজন' },
+  suspended: { en: 'Suspended', bn: 'স্থগিত' },
+  reinstated: { en: 'Reinstated', bn: 'পুনর্বহাল' },
+};
 
 const PRESET_REASON_CODES = [
   {
@@ -385,13 +394,14 @@ export function AdminVerificationTab() {
             className="w-full sm:w-72 rounded-2xl"
             data-testid="verification-search-input"
           />
-          <select
+          <NativeSelect
             value={statusFilter}
             onChange={(e) => {
               setStatusFilter(e.target.value as typeof statusFilter);
               setPage(1);
             }}
-            className="h-11 px-4 py-2.5 bg-card border border-border rounded-2xl text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:border-ring cursor-pointer"
+            wrapperClassName="w-auto"
+            className="h-11 text-xs"
             aria-label={isBn ? 'অবস্থা অনুযায়ী ছাঁকুন' : 'Filter by status'}
             data-testid="verification-status-filter"
           >
@@ -404,16 +414,17 @@ export function AdminVerificationTab() {
                   : levelStatusLabel(status as never, locale)}
               </option>
             ))}
-          </select>
+          </NativeSelect>
         </div>
         <div className="flex flex-col sm:flex-row gap-3">
-          <select
+          <NativeSelect
             value={levelFilter}
             onChange={(e) => {
               setLevelFilter(e.target.value as TutorVerificationLevel | 'all');
               setPage(1);
             }}
-            className="h-11 px-4 py-2.5 bg-card border border-border rounded-2xl text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:border-ring cursor-pointer"
+            wrapperClassName="w-auto"
+            className="h-11 text-xs"
             aria-label={isBn ? 'স্তর অনুযায়ী ছাঁকুন' : 'Filter by level'}
             data-testid="verification-level-filter"
           >
@@ -423,21 +434,22 @@ export function AdminVerificationTab() {
                 {levelLabel(level, locale)}
               </option>
             ))}
-          </select>
-          <select
+          </NativeSelect>
+          <NativeSelect
             value={assignment}
             onChange={(e) => {
               setAssignment(e.target.value as typeof assignment);
               setPage(1);
             }}
-            className="h-11 px-4 py-2.5 bg-card border border-border rounded-2xl text-xs text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:border-ring cursor-pointer"
+            wrapperClassName="w-auto"
+            className="h-11 text-xs"
             aria-label={isBn ? 'অ্যাসাইনমেন্ট অনুযায়ী ছাঁকুন' : 'Filter by assignment'}
             data-testid="verification-assignment-filter"
           >
             <option value="any">{isBn ? 'সব কেস' : 'All cases'}</option>
             <option value="unassigned">{isBn ? 'অ্যাসাইন হয়নি' : 'Unassigned'}</option>
             <option value="assigned_to_me">{isBn ? 'আমার কাছে' : 'Assigned to me'}</option>
-          </select>
+          </NativeSelect>
         </div>
       </div>
 
@@ -727,10 +739,9 @@ export function AdminVerificationTab() {
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     <div className="space-y-1.5">
                       <Label className="text-xs font-medium">{isBn ? 'স্তর' : 'Level'}</Label>
-                      <select
+                      <NativeSelect
                         value={selectedLevel ?? activeLevel.level}
                         onChange={(e) => setSelectedLevel(e.target.value as TutorVerificationLevel)}
-                        className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35"
                         data-testid="decision-level-select"
                       >
                         {LEVELS.map((level) => (
@@ -738,24 +749,23 @@ export function AdminVerificationTab() {
                             {levelLabel(level, locale)}
                           </option>
                         ))}
-                      </select>
+                      </NativeSelect>
                     </div>
                     <div className="space-y-1.5">
                       <Label className="text-xs font-medium">
                         {isBn ? 'সিদ্ধান্ত' : 'Decision'}
                       </Label>
-                      <select
+                      <NativeSelect
                         value={decision}
                         onChange={(e) => setDecision(e.target.value as TutorReviewDecision)}
-                        className="h-10 w-full rounded-xl border border-border bg-background px-3 text-sm text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring/35"
                         data-testid="verification-decision-select"
                       >
                         {DECISIONS.map((value) => (
                           <option key={value} value={value}>
-                            {value}
+                            {DECISION_LABELS[value][locale]}
                           </option>
                         ))}
-                      </select>
+                      </NativeSelect>
                     </div>
                   </div>
 

@@ -77,7 +77,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
   return (
     <div className="min-h-[calc(100vh-4rem)] w-full flex items-center justify-center p-3 sm:p-6 lg:p-8">
       {/* Outer Card: Clean Split-Screen Container */}
-      <div className="w-full max-w-5xl rounded-2xl border border-border bg-card shadow-sm overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[600px] transition-all">
+      <div className="w-full max-w-5xl rounded-2xl border border-border bg-card overflow-hidden grid grid-cols-1 lg:grid-cols-12 min-h-[600px] transition-all">
         {/* ======================================================== */}
         {/* LEFT PANEL: Clean Educational Trust Showcase             */}
         {/* ======================================================== */}

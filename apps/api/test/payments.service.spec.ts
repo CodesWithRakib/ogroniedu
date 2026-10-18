@@ -436,4 +436,52 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
       expect(report.unreconciledDiscrepancies[0].reason).toContain('no verified transaction');
     });
   });
+
+  describe('Sandbox Confirmation Pipeline', () => {
+    it('should verify a pending sandbox order through the webhook pipeline and post the escrow journal', async () => {
+      mockOrderRepo.findOne.mockResolvedValue(sampleOrder); // pending, provider: 'bkash'
+      mockTransactionRepo.findOne.mockResolvedValue(null);
+
+      const res = await service.sandboxConfirmOrder(studentUser, orderId, undefined, 'req-sbx-1');
+
+      expect(res.received).toBe(true);
+      expect(res.processed).toBe(true);
+      expect(res.status).toBe('succeeded');
+      expect(mockAdapterFactory.getAdapter).toHaveBeenCalledWith('bkash');
+      expect(mockLedgerService.postJournal).toHaveBeenCalledWith(
+        expect.objectContaining({
+          sourceType: 'payment_order',
+          entries: [
+            { accountCode: '1000', direction: 'debit', amountMinor: sampleOrder.amountMinor },
+            { accountCode: '2100', direction: 'credit', amountMinor: sampleOrder.amountMinor },
+          ],
+        }),
+      );
+    });
+
+    it('IDEMPOTENCY: already-succeeded order short-circuits without re-posting the ledger', async () => {
+      mockOrderRepo.findOne.mockResolvedValue({ ...sampleOrder, status: 'succeeded' });
+
+      const res = await service.sandboxConfirmOrder(studentUser, orderId);
+
+      expect(res).toEqual({ received: true, processed: true, orderId, status: 'succeeded' });
+      expect(mockLedgerService.postJournal).not.toHaveBeenCalled();
+    });
+
+    it('should fall back to the sslcommerz adapter when neither body nor order specifies a provider', async () => {
+      mockOrderRepo.findOne.mockResolvedValue({ ...sampleOrder, provider: null });
+
+      await service.sandboxConfirmOrder(studentUser, orderId);
+
+      expect(mockAdapterFactory.getAdapter).toHaveBeenCalledWith('sslcommerz');
+    });
+
+    it('should honor an explicit body provider over the order provider', async () => {
+      mockOrderRepo.findOne.mockResolvedValue({ ...sampleOrder, provider: 'bkash' });
+
+      await service.sandboxConfirmOrder(studentUser, orderId, 'sslcommerz');
+
+      expect(mockAdapterFactory.getAdapter).toHaveBeenCalledWith('sslcommerz');
+    });
+  });
 });

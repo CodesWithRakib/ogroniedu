@@ -1,7 +1,7 @@
 'use client';
 
 import React from 'react';
-import { Card, CardHeader, CardTitle, CardContent, Button, Input, Label } from '@/components/ui';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input, Label, NativeSelect } from '@/components/ui';
 import { type Locale } from '@/lib/i18n';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { useUploadEvidenceMutation, type EvidencePurpose } from '@/store/services/files-api';
@@ -142,11 +142,10 @@ export function QualificationUploadCard({
             <Label htmlFor="qual-doc-type" className="text-xs font-medium">
               {isBn ? 'সনদের ধরন' : 'Document type'}
             </Label>
-            <select
+            <NativeSelect
               id="qual-doc-type"
               value={docType}
               onChange={(e) => setDocType(e.target.value as typeof docType)}
-              className="h-10 w-full rounded-xl border border-input bg-card text-foreground px-3 text-sm focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none"
               data-testid="qualification-type-select"
             >
               <option value="nid">{isBn ? 'জাতীয় পরিচয়পত্র (NID)' : 'National ID (NID)'}</option>
@@ -154,7 +153,7 @@ export function QualificationUploadCard({
                 {isBn ? 'একাডেমিক সনদপত্র' : 'Academic certificate'}
               </option>
               <option value="degree">{isBn ? 'ডিগ্রি' : 'Degree'}</option>
-            </select>
+            </NativeSelect>
           </div>
           <div className="space-y-1">
             <Label htmlFor="qual-title" className="text-xs font-medium">

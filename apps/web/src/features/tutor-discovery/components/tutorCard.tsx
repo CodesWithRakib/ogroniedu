@@ -45,7 +45,7 @@ export function TutorCard({
 
   return (
     <div
-      className="group relative flex flex-col justify-between rounded-2xl bg-card border border-border hover:border-primary/40 shadow-xs hover:shadow-card transition-all duration-300 overflow-hidden"
+      className="group relative flex flex-col justify-between rounded-2xl bg-card border border-border hover:border-primary/40 shadow-xs hover:shadow-xs transition-all duration-300 overflow-hidden"
       data-testid={`tutor-card-${tutor.id}`}
     >
       {/* Subtle Glowing Top Edge */}

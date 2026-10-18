@@ -116,7 +116,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Still Have Questions CTA */}
-      <div className="rounded-2xl border border-border bg-card p-8 sm:p-10 text-center space-y-4 shadow-card">
+      <div className="rounded-2xl border border-border bg-card p-8 sm:p-10 text-center space-y-4">
         <h3 className="text-xl font-bold text-foreground font-bengali">
           {locale === 'bn' ? 'আরও কোনো প্রশ্ন আছে?' : 'Still have questions?'}
         </h3>

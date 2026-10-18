@@ -43,7 +43,7 @@ export function TutorResultsGrid({
           <div
             key={index}
             data-testid="tutor-skeleton-card"
-            className="h-80 animate-pulse rounded-2xl bg-card/70 border border-border shadow-card"
+            className="h-80 animate-pulse rounded-2xl bg-card/70 border border-border"
           />
         ))}
       </div>
@@ -52,8 +52,8 @@ export function TutorResultsGrid({
 
   if (tutors.length === 0) {
     return (
-      <div className="rounded-2xl bg-card/90 border border-border p-10 sm:p-16 text-center space-y-4 shadow-card backdrop-blur-xl">
-        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-soft border border-border text-primary mx-auto shadow-sm">
+      <div className="rounded-2xl bg-card/90 border border-border p-10 sm:p-16 text-center space-y-4 backdrop-blur-xl">
+        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-soft border border-border text-primary mx-auto">
           <SearchX className="w-8 h-8 stroke-[2]" />
         </div>
         <h3 className="text-xl font-bold text-foreground">
@@ -66,7 +66,7 @@ export function TutorResultsGrid({
         <button
           type="button"
           onClick={onReset}
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-extrabold text-xs px-5 py-2.5 shadow-sm hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-brand to-brand-accent hover:from-brand-accent hover:to-brand text-brand-foreground font-extrabold text-xs px-5 py-2.5 hover:scale-105 active:scale-95 transition-all cursor-pointer"
         >
           <RotateCcw className="w-3.5 h-3.5" />
           <span>{dict.discovery?.resetFilters || 'Reset Filters'}</span>
