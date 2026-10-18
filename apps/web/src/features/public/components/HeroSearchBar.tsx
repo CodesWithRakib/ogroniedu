@@ -2,7 +2,15 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { Search, GraduationCap, BookOpen, MapPin, SlidersHorizontal, Sparkles } from 'lucide-react';
+import {
+  Search,
+  GraduationCap,
+  BookOpen,
+  MapPin,
+  SlidersHorizontal,
+  Sparkles,
+  ArrowRight,
+} from 'lucide-react';
 import type { Locale } from '@/lib/i18n';
 import {
   Select,
@@ -27,7 +35,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
   const router = useRouter();
   const isBn = locale === 'bn';
 
-  // Mode: 'filter' (Class + Subject + Location) or 'search' (Direct free-text keyword search)
+  // Mode: 'filter' (Class + Subject + Location) or 'search' (Free-text search)
   const [activeTab, setActiveTab] = useState<'filter' | 'search'>('filter');
 
   const [searchQuery, setSearchQuery] = useState('');
@@ -82,7 +90,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
     apiLocations.length > 0
       ? apiLocations
       : [
-          { code: 'online', nameEn: 'All Bangladesh (Online)', nameBn: 'সারাদেশে (অনলাইন)' },
+          { code: 'online', nameEn: 'All Bangladesh (Online)', nameBn: 'সারাদেশে বা অনলাইন' },
           { code: 'dhaka', nameEn: 'Dhaka', nameBn: 'ঢাকা' },
           { code: 'chittagong', nameEn: 'Chattogram', nameBn: 'চট্টগ্রাম' },
           { code: 'sylhet', nameEn: 'Sylhet', nameBn: 'সিলেট' },
@@ -122,7 +130,8 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
     } else {
       if (selectedLevel) params.set('educationLevelId', selectedLevel);
       if (selectedSubject) params.set('subjectId', selectedSubject);
-      if (selectedLocation) params.set('districtCode', selectedLocation);
+      if (selectedLocation && selectedLocation !== 'online')
+        params.set('districtCode', selectedLocation);
     }
 
     const queryStr = params.toString();
@@ -134,7 +143,6 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
       setSelectedLevel('');
       return;
     }
-    // Match with level IDs or search query
     const matched = levels.find(
       (l) => String(l.id).toLowerCase().includes(id) || String(l.nameEn).toLowerCase().includes(id),
     );
@@ -150,72 +158,72 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
   }
 
   return (
-    <div className="w-full space-y-3.5">
-      {/* Curriculum Quick Filter Horizontal Chips */}
-      <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar scrollbar-none text-xs">
-        {curriculumPills.map((pill) => {
-          const isSelected =
-            (!pill.id && !selectedLevel) || (pill.id && selectedLevel.includes(pill.id));
-          return (
-            <button
-              key={pill.id || 'all'}
-              type="button"
-              onClick={() => handleCurriculumClick(pill.id)}
-              className={`rounded-full px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-all duration-150 cursor-pointer ${
-                isSelected
-                  ? 'bg-primary text-white shadow-xs font-bold'
-                  : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/40'
-              }`}
-            >
-              {isBn ? pill.labelBn : pill.labelEn}
-            </button>
-          );
-        })}
+    <div className="w-full space-y-3">
+      {/* Search Header Row: Curriculum Quick Chips + Mode Switcher */}
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
+        {/* Curriculum Horizontal Filter Chips */}
+        <div className="flex items-center gap-1.5 overflow-x-auto pb-0.5 no-scrollbar scrollbar-none text-xs">
+          {curriculumPills.map((pill) => {
+            const isSelected =
+              (!pill.id && !selectedLevel) || (pill.id && selectedLevel.includes(pill.id));
+            return (
+              <button
+                key={pill.id || 'all'}
+                type="button"
+                onClick={() => handleCurriculumClick(pill.id)}
+                className={`rounded-full px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all duration-150 cursor-pointer ${
+                  isSelected
+                    ? 'bg-primary text-white shadow-xs scale-102 ring-2 ring-primary/20'
+                    : 'bg-card/90 border border-border/80 text-muted-foreground hover:text-foreground hover:border-primary/40'
+                }`}
+              >
+                {isBn ? pill.labelBn : pill.labelEn}
+              </button>
+            );
+          })}
+        </div>
+
+        {/* Compact Mode Switcher */}
+        <div className="flex items-center self-start sm:self-auto p-1 bg-surface/90 rounded-xl border border-border/80 shrink-0">
+          <button
+            type="button"
+            data-testid="hero-tab-filter"
+            onClick={() => setActiveTab('filter')}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer ${
+              activeTab === 'filter'
+                ? 'bg-card text-foreground shadow-xs'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <SlidersHorizontal className="h-3 w-3 text-primary" aria-hidden="true" />
+            <span>{isBn ? 'ফিল্টার সার্চ' : 'Filters'}</span>
+          </button>
+          <button
+            type="button"
+            data-testid="hero-tab-search"
+            onClick={() => setActiveTab('search')}
+            className={`flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs font-bold transition-all duration-150 cursor-pointer ${
+              activeTab === 'search'
+                ? 'bg-card text-foreground shadow-xs'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <Search className="h-3 w-3 text-primary" aria-hidden="true" />
+            <span>{isBn ? 'নাম / কি-ওয়ার্ড' : 'Keyword'}</span>
+          </button>
+        </div>
       </div>
 
-      {/* Top Tab Switcher: Direct Filter vs Quick Search */}
-      <div className="flex sm:inline-flex w-full sm:w-auto p-1 bg-surface rounded-2xl border border-border">
-        <Button
-          type="button"
-          data-testid="hero-tab-filter"
-          variant={activeTab === 'filter' ? 'primary' : 'ghost'}
-          size="sm"
-          onClick={() => setActiveTab('filter')}
-          className="flex-1 sm:flex-initial rounded-xl text-xs font-semibold gap-1.5 h-8 px-3 sm:px-4 transition-all duration-150"
-        >
-          <SlidersHorizontal className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-          <span className="sm:hidden">{isBn ? 'শ্রেণি ও বিষয়' : 'By Subject'}</span>
-          <span className="hidden sm:inline">
-            {isBn ? 'শ্রেণি ও বিষয় দিয়ে খুঁজুন' : 'Filter by Class & Subject'}
-          </span>
-        </Button>
-
-        <Button
-          type="button"
-          data-testid="hero-tab-search"
-          variant={activeTab === 'search' ? 'primary' : 'ghost'}
-          size="sm"
-          onClick={() => setActiveTab('search')}
-          className="flex-1 sm:flex-initial rounded-xl text-xs font-semibold gap-1.5 h-8 px-3 sm:px-4 transition-all duration-150"
-        >
-          <Search className="h-3.5 w-3.5 shrink-0" aria-hidden="true" />
-          <span className="sm:hidden">{isBn ? 'নাম / কি-ওয়ার্ড' : 'By Keyword'}</span>
-          <span className="hidden sm:inline">
-            {isBn ? 'নাম বা কি-ওয়ার্ড দিয়ে খুঁজুন' : 'Search by Name / Keyword'}
-          </span>
-        </Button>
-      </div>
-
-      {/* Main Search Card */}
+      {/* Main Glassmorphic Search Bar Capsule */}
       <form onSubmit={handleSubmit} className="w-full">
         {activeTab === 'filter' ? (
           /* ========================================================
-           * MODE 1: DIRECT FILTER (Class + Subject + Location)
+           * MODE 1: STRUCTURED FILTER CAPSULE
            * ======================================================== */
-          <div className="rounded-2xl lg:rounded-full bg-card border border-border shadow-xs hover:border-primary/40 hover:shadow-sm p-2 lg:p-1.5 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all duration-150">
-            {/* Segment 1: Class / Education Level */}
-            <div className="flex-1 px-3.5 py-1.5 rounded-xl lg:rounded-l-full hover:bg-surface-hover/60 transition-colors border-b lg:border-b-0 lg:border-r border-border">
-              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
+          <div className="rounded-3xl lg:rounded-full bg-card/95 border border-border/80 shadow-card hover:border-primary/40 hover:shadow-popover p-2 lg:p-2 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all duration-300">
+            {/* Segment 1: Education Level / Class */}
+            <div className="flex-1 px-4 py-2 rounded-2xl lg:rounded-l-full hover:bg-surface-hover/70 transition-colors border-b lg:border-b-0 lg:border-r border-border/70">
+              <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <GraduationCap className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>{isBn ? 'শ্রেণি / মাধ্যম' : 'Class / Level'}</span>
               </div>
@@ -224,7 +232,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 onValueChange={(val) => setSelectedLevel(val === 'all' ? '' : val)}
               >
                 <SelectTrigger
-                  className="w-full border-0 bg-transparent p-0 min-h-[36px] text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-1 focus-visible:ring-primary/40 rounded-md gap-1"
+                  className="w-full border-0 bg-transparent p-0 min-h-[34px] text-xs font-extrabold text-foreground shadow-none hover:bg-transparent focus-visible:ring-0 rounded-md gap-1"
                   aria-label={isBn ? 'শ্রেণি / মাধ্যম নির্বাচন করুন' : 'Select Class or Level'}
                 >
                   <SelectValue
@@ -248,8 +256,8 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             </div>
 
             {/* Segment 2: Subject */}
-            <div className="flex-1 px-3.5 py-1.5 rounded-xl hover:bg-surface-hover/60 transition-colors border-b lg:border-b-0 lg:border-r border-border">
-              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
+            <div className="flex-1 px-4 py-2 rounded-2xl hover:bg-surface-hover/70 transition-colors border-b lg:border-b-0 lg:border-r border-border/70">
+              <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <BookOpen className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>{isBn ? 'পড়ার বিষয়' : 'Subject'}</span>
               </div>
@@ -258,7 +266,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 onValueChange={(val) => setSelectedSubject(val === 'all' ? '' : val)}
               >
                 <SelectTrigger
-                  className="w-full border-0 bg-transparent p-0 min-h-[36px] text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-1 focus-visible:ring-primary/40 rounded-md gap-1"
+                  className="w-full border-0 bg-transparent p-0 min-h-[34px] text-xs font-extrabold text-foreground shadow-none hover:bg-transparent focus-visible:ring-0 rounded-md gap-1"
                   aria-label={isBn ? 'পড়ার বিষয় নির্বাচন করুন' : 'Select Subject'}
                 >
                   <SelectValue placeholder={isBn ? 'সকল বিষয়' : 'All Subjects'} />
@@ -277,9 +285,9 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
               </Select>
             </div>
 
-            {/* Segment 3: Location / Tuition Mode */}
-            <div className="flex-1 px-3.5 py-1.5 rounded-xl hover:bg-surface-hover/60 transition-colors">
-              <div className="flex items-center gap-1.5 text-[10px] font-semibold text-muted-foreground uppercase tracking-wider mb-0.5">
+            {/* Segment 3: Location / Medium */}
+            <div className="flex-1 px-4 py-2 rounded-2xl hover:bg-surface-hover/70 transition-colors">
+              <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <MapPin className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>{isBn ? 'এলাকা বা মাধ্যম' : 'Location / Mode'}</span>
               </div>
@@ -288,7 +296,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 onValueChange={(val) => setSelectedLocation(val === 'all' ? '' : val)}
               >
                 <SelectTrigger
-                  className="w-full border-0 bg-transparent p-0 min-h-[36px] text-xs font-semibold text-foreground shadow-none hover:bg-transparent focus-visible:ring-1 focus-visible:ring-primary/40 rounded-md gap-1"
+                  className="w-full border-0 bg-transparent p-0 min-h-[34px] text-xs font-extrabold text-foreground shadow-none hover:bg-transparent focus-visible:ring-0 rounded-md gap-1"
                   aria-label={isBn ? 'এলাকা বা মাধ্যম নির্বাচন করুন' : 'Select Location or Mode'}
                 >
                   <SelectValue placeholder={isBn ? 'সারাদেশে বা অনলাইন' : 'Anywhere / Online'} />
@@ -309,65 +317,67 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
               </Select>
             </div>
 
-            {/* Action Button */}
+            {/* Primary Action Button */}
             <Button
               type="submit"
               size="lg"
-              className="w-full lg:w-auto rounded-xl lg:rounded-full px-8 py-3.5 h-auto text-xs font-bold gap-2 shadow-xs shrink-0 cursor-pointer"
+              className="w-full lg:w-auto rounded-2xl lg:rounded-full px-8 py-3.5 h-auto text-xs font-black gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
             >
-              <Search className="h-4 w-4 stroke-[2.5]" aria-hidden="true" />
+              <Search className="h-4 w-4 stroke-[2.8]" aria-hidden="true" />
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
+              <ArrowRight
+                className="h-3.5 w-3.5 stroke-[2.5] transition-transform group-hover:translate-x-0.5 hidden sm:inline"
+                aria-hidden="true"
+              />
             </Button>
           </div>
         ) : (
           /* ========================================================
-           * MODE 2: QUICK KEYWORD SEARCH (Name, University, Topic)
+           * MODE 2: DIRECT KEYWORD SEARCH CAPSULE
            * ======================================================== */
-          <div className="rounded-2xl lg:rounded-full bg-card border border-border shadow-xs hover:border-primary/40 p-2 lg:p-1.5 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all duration-150">
-            <div className="flex items-center flex-1 w-full px-3.5 py-1.5">
-              <Search className="h-4 w-4 text-primary mr-2.5 shrink-0" aria-hidden="true" />
+          <div className="rounded-3xl lg:rounded-full bg-card/95 border border-border/80 shadow-card hover:border-primary/40 p-2 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all duration-300">
+            <div className="flex items-center flex-1 w-full px-4 py-2">
+              <Search className="h-4 w-4 text-primary mr-3 shrink-0" aria-hidden="true" />
               <Input
                 type="text"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder={
                   isBn
-                    ? 'শিক্ষকের নাম, বিশ্ববিদ্যালয় বা বিশেষ কি-ওয়ার্ড লিখে খুঁজুন (যেমন: বুয়েট, আয়েশা)...'
-                    : 'Search by tutor name, university, or keyword (e.g. BUET, Ayesha)...'
+                    ? 'শিক্ষকের নাম, বিশ্ববিদ্যালয় বা বিশেষ কি-ওয়ার্ড লিখে খুঁজুন (যেমন: বুয়েট, আয়শা, উচ্চতর গণিত)...'
+                    : 'Search by tutor name, institution or subject (e.g. BUET, Ayesha, Physics)...'
                 }
-                className="w-full border-0 bg-transparent text-xs text-foreground placeholder:text-muted-foreground focus-visible:ring-0 shadow-none h-8 p-0"
+                className="w-full border-0 bg-transparent text-xs font-semibold text-foreground placeholder:text-muted-foreground focus-visible:ring-0 shadow-none h-8 p-0"
               />
             </div>
 
             <Button
               type="submit"
               size="lg"
-              className="w-full lg:w-auto rounded-xl lg:rounded-full px-8 py-3.5 h-auto text-xs font-bold gap-2 shadow-xs shrink-0 cursor-pointer"
+              className="w-full lg:w-auto rounded-2xl lg:rounded-full px-8 py-3.5 h-auto text-xs font-black gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95"
             >
-              <Search className="h-4 w-4 stroke-[2.5]" aria-hidden="true" />
+              <Search className="h-4 w-4 stroke-[2.8]" aria-hidden="true" />
               <span>{isBn ? 'অনুসন্ধান' : 'Search'}</span>
             </Button>
           </div>
         )}
       </form>
 
-      {/* Popular Tags Row */}
+      {/* Popular Subject Quick Pills */}
       <div className="flex items-center gap-1.5 text-xs pt-0.5 overflow-x-auto lg:overflow-visible flex-nowrap no-scrollbar scrollbar-none">
-        <span className="font-semibold text-muted-foreground shrink-0 mr-1 text-xs flex items-center gap-1">
-          <Sparkles className="h-3 w-3 text-primary" aria-hidden="true" />
-          <span>{isBn ? 'জনপ্রিয়:' : 'Popular:'}</span>
+        <span className="font-bold text-muted-foreground shrink-0 mr-1 text-xs flex items-center gap-1">
+          <Sparkles className="h-3 w-3 text-amber-500 fill-amber-400" aria-hidden="true" />
+          <span>{isBn ? 'জনপ্রিয় বিষয়:' : 'Popular Subjects:'}</span>
         </span>
         {popularTags.map((tag) => (
-          <Button
+          <button
             key={tag.query}
             type="button"
-            variant="outline"
-            size="sm"
             onClick={() => handleTagClick(tag.query)}
-            className="rounded-full h-6 px-2.5 text-[11px] font-medium text-muted-foreground hover:text-foreground hover:border-primary/40 transition-colors whitespace-nowrap shrink-0 cursor-pointer"
+            className="rounded-full px-3 py-1 text-[11px] font-bold bg-primary-soft text-primary hover:bg-primary hover:text-white border border-primary/15 transition-all duration-150 whitespace-nowrap shrink-0 cursor-pointer active:scale-95"
           >
             {tag.label}
-          </Button>
+          </button>
         ))}
       </div>
     </div>

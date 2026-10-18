@@ -101,7 +101,7 @@ export function PWARegister({ locale }: { locale: Locale }) {
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-1.5">
             <span className="font-bold text-sm text-foreground truncate">
-              {isBn ? 'অগ্রণী এডু অ্যাপ' : 'OgroniEdu App'}
+              {isBn ? 'অগ্রণী অ্যাপ' : 'Ogroni App'}
             </span>
             <span className="inline-flex items-center gap-0.5 rounded-full bg-blue-50 px-1.5 py-0.2 text-[9px] font-bold text-blue-700 border border-blue-200/60">
               <Sparkles className="h-2.5 w-2.5" /> PWA

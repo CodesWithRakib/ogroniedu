@@ -197,25 +197,40 @@ export function HomePage({ locale }: { locale: Locale }) {
         ].slice(0, 4)
       : fallbackTutors;
 
+  const displayedStudents =
+    stats?.activeStudents && stats.activeStudents > 100
+      ? `${formatLocalizedNumber(stats.activeStudents, locale)}+`
+      : isBn
+        ? '১০,০০০+'
+        : '10,000+';
+
+  const displayedTutorsCount =
+    stats?.verifiedTutors && stats.verifiedTutors > 50
+      ? `${formatLocalizedNumber(stats.verifiedTutors, locale)}+`
+      : isBn
+        ? '১,২০০+'
+        : '1,200+';
+
   return (
     <div className="relative overflow-hidden bg-background text-foreground">
-      {/* Subtle, Sophisticated Ambient Lighting (No harsh neon glow) */}
-      <div className="absolute top-0 right-1/4 w-[600px] h-[350px] bg-blue-100/40 rounded-full blur-[140px] pointer-events-none -z-10" />
-      <div className="absolute top-28 left-8 w-[450px] h-[300px] bg-indigo-50/50 rounded-full blur-[120px] pointer-events-none -z-10" />
+      {/* Subtle, Sophisticated Ambient Lighting & Micro-Grid Texture */}
+      <div className="absolute inset-0 bg-[radial-gradient(#cbd5e1_1px,transparent_1px)] [background-size:24px_24px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_20%,#000_70%,transparent_100%)] opacity-35 dark:opacity-10 pointer-events-none -z-10" />
+      <div className="absolute top-0 right-1/4 w-[650px] h-[380px] bg-blue-100/60 dark:bg-blue-900/10 rounded-full blur-[140px] pointer-events-none -z-10" />
+      <div className="absolute top-28 left-8 w-[450px] h-[320px] bg-indigo-50/70 dark:bg-indigo-950/20 rounded-full blur-[120px] pointer-events-none -z-10" />
 
       {/* ====================================================================
-       * HERO SECTION: Clean, High-Trust, Prestige Visual
+       * HERO SECTION: Clean, High-Trust, Prestige Visual Experience
        * ==================================================================== */}
       <section className="relative pt-4 pb-8 lg:pt-8 lg:pb-12 overflow-visible">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-8 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             {/* Left Column: Trust Pill, Bengali Headline, Subtitle & Search */}
             <div className="lg:col-span-7 space-y-4 sm:space-y-5 text-left z-10">
               {/* Trust Pill Badge */}
-              <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card py-1 sm:py-1.5 px-2.5 sm:px-3.5 shadow-xs max-w-full overflow-hidden text-xs">
-                <div className="flex items-center gap-1.5 font-semibold text-foreground shrink-0">
+              <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card/90 py-1.5 px-3.5 shadow-xs max-w-full overflow-hidden text-xs backdrop-blur-md">
+                <div className="flex items-center gap-1.5 font-bold text-foreground shrink-0">
                   <ShieldCheck
-                    className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary shrink-0"
+                    className="h-4 w-4 text-primary shrink-0 stroke-[2.5]"
                     aria-hidden="true"
                   />
                   <span className="sm:hidden">
@@ -239,24 +254,24 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <div
                   className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-star shrink-0"
                   role="img"
-                  aria-label="4.8 out of 5 stars based on 2,500 reviews"
+                  aria-label="4.9 out of 5 stars based on 2,500 reviews"
                 >
                   <span className="tracking-tighter hidden xs:inline" aria-hidden="true">
                     ★★★★★
                   </span>
                   <span className="xs:hidden">★</span>
-                  <span className="text-foreground font-semibold tabular-nums">4.8</span>
+                  <span className="text-foreground font-black tabular-nums">4.9</span>
                   <span className="text-muted-foreground font-normal text-[10px] hidden sm:inline">
                     (2.5k+)
                   </span>
                 </div>
               </div>
 
-              {/* Main Headline */}
-              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[42px] xl:text-[50px] font-black tracking-tight text-foreground leading-[1.14]">
+              {/* Main Headline with High-Contrast Gradient */}
+              <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[44px] xl:text-[52px] font-black tracking-tight text-foreground leading-[1.14]">
                 {isBn ? 'সঠিক শিক্ষক খুঁজুন।' : 'Find the Right Tutor.'}
                 <br />
-                <span className="text-primary">
+                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
                   {isBn ? 'সুপ্ত মেধার শ্রেষ্ঠ বিকাশ।' : 'Unlock Their Potential.'}
                 </span>
               </h1>
@@ -268,7 +283,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                   : 'Connect with verified top-tier tutors from BUET, DU & Medical for personalized 1:1 and online classes across Bangladesh.'}
               </p>
 
-              {/* Multi-Filter Search Bar with Curriculum Fast-Pills */}
+              {/* Multi-Filter Search Bar Capsule */}
               <div className="pt-1">
                 <HeroSearchBar locale={locale} />
               </div>
@@ -276,48 +291,13 @@ export function HomePage({ locale }: { locale: Locale }) {
 
             {/* Right Column: Hero Visual Stage Focused on Verified Educators */}
             <div className="lg:col-span-5 relative mt-6 lg:mt-0 flex flex-col items-center lg:items-end">
-              <div className="relative w-full max-w-[420px]">
+              <div className="relative w-full max-w-[430px]">
                 {/* Background Decorative Mesh Glow */}
-                <div className="absolute -top-6 -right-6 w-60 h-60 bg-blue-100/50 rounded-full blur-2xl pointer-events-none -z-10" />
-                <div className="absolute -bottom-6 -left-6 w-60 h-60 bg-indigo-100/40 rounded-full blur-2xl pointer-events-none -z-10" />
+                <div className="absolute -top-6 -right-6 w-64 h-64 bg-blue-100/50 dark:bg-blue-900/10 rounded-full blur-2xl pointer-events-none -z-10" />
+                <div className="absolute -bottom-6 -left-6 w-64 h-64 bg-indigo-100/40 dark:bg-indigo-950/15 rounded-full blur-2xl pointer-events-none -z-10" />
 
-                {/* Primary Featured Tutor Spotlight Card */}
+                {/* Primary Featured Tutor Spotlight Card (Interactive & Zero-Overlap) */}
                 <HeroTutorCard locale={locale} />
-
-                {/* Floating Trust Metric 1: Escrow Protection */}
-                <div className="hidden sm:block absolute sm:-bottom-6 sm:-left-4 z-20 transition-transform duration-200 hover:-translate-y-1">
-                  <div className="flex items-center gap-2.5 rounded-2xl bg-card/95 border border-border sm:p-3 shadow-card backdrop-blur-xl">
-                    <div className="h-8 w-8 sm:h-9 sm:w-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200/60">
-                      <ShieldCheck
-                        className="h-4 w-4 sm:h-5 sm:w-5 stroke-[2.4]"
-                        aria-hidden="true"
-                      />
-                    </div>
-                    <div className="text-left">
-                      <div className="text-xs font-extrabold text-foreground">
-                        {isBn ? '১০০% এসক্রো সুরক্ষা' : '100% Escrow Protection'}
-                      </div>
-                      <div className="text-[10px] text-muted-foreground font-medium">
-                        {isBn
-                          ? 'ক্লাস সন্তুষ্টি নিশ্চিত হলে পেমেন্ট'
-                          : 'Funds released after class'}
-                      </div>
-                    </div>
-                  </div>
-                </div>
-
-                {/* Floating Trust Metric 2: Academic Excellence */}
-                <div className="absolute -top-4 -right-2 sm:-top-5 sm:-right-4 z-20 transition-transform duration-200 hover:-translate-y-1">
-                  <div className="flex items-center gap-1.5 rounded-2xl bg-card/95 border border-border py-1.5 px-3 shadow-card backdrop-blur-xl">
-                    <Sparkles
-                      className="h-3.5 w-3.5 text-amber-500 fill-amber-400"
-                      aria-hidden="true"
-                    />
-                    <span className="text-xs font-bold text-foreground">
-                      {isBn ? 'শীর্ষ ২০% নির্বাচিত শিক্ষক' : 'Top 20% Verified'}
-                    </span>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
@@ -347,11 +327,9 @@ export function HomePage({ locale }: { locale: Locale }) {
                 ) : (
                   <>
                     <div className="text-xl sm:text-3xl font-black text-foreground tracking-tight tabular-nums truncate">
-                      {stats?.activeStudents
-                        ? `${formatLocalizedNumber(stats.activeStudents, locale)}+`
-                        : '10,000+'}
+                      {displayedStudents}
                     </div>
-                    <div className="text-[11px] sm:text-xs text-muted-foreground font-medium mt-0.5 truncate">
+                    <div className="text-[11px] sm:text-xs text-muted-foreground font-bold mt-0.5 truncate">
                       {isBn ? 'সন্তুষ্ট শিক্ষার্থী' : 'Happy Students'}
                     </div>
                   </>
@@ -373,11 +351,9 @@ export function HomePage({ locale }: { locale: Locale }) {
                 ) : (
                   <>
                     <div className="text-xl sm:text-3xl font-black text-foreground tracking-tight tabular-nums truncate">
-                      {stats?.verifiedTutors
-                        ? `${formatLocalizedNumber(stats.verifiedTutors, locale)}+`
-                        : '2,500+'}
+                      {displayedTutorsCount}
                     </div>
-                    <div className="text-[11px] sm:text-xs text-muted-foreground font-medium mt-0.5 truncate">
+                    <div className="text-[11px] sm:text-xs text-muted-foreground font-bold mt-0.5 truncate">
                       {isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutors'}
                     </div>
                   </>
