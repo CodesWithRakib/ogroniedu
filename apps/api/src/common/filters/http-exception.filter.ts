@@ -42,13 +42,13 @@ export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost): void {
-    if (host.getType() !== 'http') {
+    if (typeof host.getType === 'function' && host.getType() !== 'http') {
       return;
     }
 
-    const ctx = host.switchToHttp();
-    const response = ctx.getResponse<Response>();
-    const request = ctx.getRequest<Request>();
+    const ctx = host.switchToHttp?.();
+    const response = ctx?.getResponse<Response>();
+    const request = ctx?.getRequest<Request>();
 
     if (!request || !response || typeof response.status !== 'function') {
       return;

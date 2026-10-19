@@ -28,13 +28,13 @@ export class ResponseMetaInterceptor implements NestInterceptor {
   }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
-    if (context.getType() !== 'http') {
+    if (typeof context.getType === 'function' && context.getType() !== 'http') {
       return next.handle();
     }
 
-    const ctx = context.switchToHttp();
-    const request = ctx.getRequest<Request>();
-    const response = ctx.getResponse<Response>();
+    const ctx = context.switchToHttp?.();
+    const request = ctx?.getRequest<Request>();
+    const response = ctx?.getResponse<Response>();
 
     if (!request) {
       return next.handle();
