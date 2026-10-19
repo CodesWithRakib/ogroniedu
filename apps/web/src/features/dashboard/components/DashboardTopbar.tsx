@@ -59,7 +59,7 @@ export function DashboardTopbar({
                 isBn ? 'শিক্ষক, বিষয় বা সেশন অনুসন্ধান...' : 'Search tutors, subjects, sessions...'
               }
               aria-label={isBn ? 'গ্লোবাল অনুসন্ধান' : 'Global search'}
-              className="w-full h-9 pl-9.5 pr-12 rounded-full text-xs bg-surface/70 border-border focus:bg-card focus-visible:border-ring transition-all"
+              className="w-full h-9 pl-9.5 pr-12 rounded-full text-xs bg-surface/70 border-border focus:bg-card focus-visible:border-primary focus-visible:ring-1 focus-visible:ring-primary transition-all"
               onKeyDown={(e) => {
                 if (e.key === 'Enter') {
                   onSearchTutors();
@@ -73,7 +73,7 @@ export function DashboardTopbar({
         </div>
 
         {/* Right: Actions + SOS + Language + Alerts + User Dropdown */}
-        <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-1.5 sm:gap-2.5 shrink-0">
           {/* Custom Actions Slot */}
           {actions && <div className="hidden md:flex items-center gap-2">{actions}</div>}
 
@@ -81,23 +81,23 @@ export function DashboardTopbar({
           <button
             type="button"
             onClick={() => setIsSosOpen(true)}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-destructive/30 bg-destructive-soft hover:bg-destructive/15 text-xs font-bold text-destructive transition-all cursor-pointer hover:scale-105"
+            className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full border border-destructive/30 bg-destructive-soft hover:bg-destructive/15 text-xs font-bold text-destructive transition-all cursor-pointer hover:scale-105"
             title={isBn ? 'জরুরি এসওএস ও শিশু সুরক্ষা' : 'Emergency SOS & Safeguarding'}
             data-testid="sos-emergency-trigger-btn"
           >
             <ShieldAlert className="h-3.5 w-3.5 text-destructive animate-pulse" />
-            <span>{isBn ? 'এসওএস' : 'SOS'}</span>
+            <span className="hidden xs:inline">{isBn ? 'এসওএস' : 'SOS'}</span>
           </button>
 
           {/* Language Switcher Pill */}
           <Link
             href={targetPath}
-            className="flex items-center gap-1 px-3 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover text-xs font-semibold text-foreground transition-all"
+            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover hover:border-primary/40 text-xs font-semibold text-foreground transition-all shadow-2xs"
             title={isBn ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
             aria-label={isBn ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
           >
             <Globe className="h-3.5 w-3.5 text-primary" />
-            <span className="font-bold">{isBn ? 'EN' : 'বাং'}</span>
+            <span className="font-bold text-primary">{isBn ? 'EN' : 'বাং'}</span>
           </Link>
 
           {/* Notification Bell */}

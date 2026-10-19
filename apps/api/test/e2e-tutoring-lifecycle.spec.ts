@@ -238,7 +238,13 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
         providerOrderId: 'PROV-ORD-E2E-1',
       }),
       verifyWebhookSignature: vi.fn().mockReturnValue(true),
-      queryTransaction: vi.fn().mockResolvedValue({ status: 'succeeded' }),
+      queryTransaction: vi.fn().mockResolvedValue({
+        status: 'succeeded',
+        amountMinor: 60000,
+        currency: 'BDT',
+        providerTransactionId: 'TRX-BKASH-E2E-999',
+        verifiedAt: new Date(),
+      }),
     };
 
     const mockAdapterFactory = {
@@ -412,7 +418,7 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
     const acceptedBooking = await bookingsService.respondToRequest(sharedBooking.id, tutorUser, {
       action: 'accept',
     });
-    expect(acceptedBooking.status).toBe('accepted');
+    expect(acceptedBooking.status).toBe('awaiting_payment');
   });
 
   it('STAGE 2: Student creates payment order, and verified webhook callback secures funds in escrow', async () => {

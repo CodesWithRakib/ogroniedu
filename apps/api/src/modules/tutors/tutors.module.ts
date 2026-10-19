@@ -8,6 +8,7 @@ import { TutorVerificationDocumentEntity } from './entities/tutor-verification-d
 import { TutorSubjectEntity } from './entities/tutor-subject.entity';
 import { TutorServiceAreaEntity } from './entities/tutor-service-area.entity';
 import { TutorAvailabilityEntity } from './entities/tutor-availability.entity';
+import { TutorAvailabilityExceptionEntity } from './entities/tutor-availability-exception.entity';
 import { SavedTutorEntity } from './entities/saved-tutor.entity';
 import { FileAssetEntity } from '../files/entities/file-asset.entity';
 import { UserEntity } from '../auth/entities/user.entity';
@@ -25,6 +26,7 @@ import { TutorVerificationStatusService } from './services/tutor-verification-st
 import { TutorVerificationReviewerDirectoryService } from './services/tutor-verification-reviewer-directory.service';
 import { TutorVerificationExpiryService } from './services/tutor-verification-expiry.service';
 import { TutorVerificationSweepScheduler } from './services/tutor-verification-sweep.scheduler';
+import { TutorAvailabilityService } from './services/tutor-availability.service';
 import { SavedTutorsService } from './services/saved-tutors.service';
 import { TutorsController } from './tutors.controller';
 import { SavedTutorsController } from './saved-tutors.controller';
@@ -45,6 +47,7 @@ import { FilesModule } from '../files/files.module';
       TutorSubjectEntity,
       TutorServiceAreaEntity,
       TutorAvailabilityEntity,
+      TutorAvailabilityExceptionEntity,
       SavedTutorEntity,
       FileAssetEntity,
       UserEntity,
@@ -70,6 +73,7 @@ import { FilesModule } from '../files/files.module';
     TutorVerificationReviewerDirectoryService,
     TutorVerificationExpiryService,
     TutorVerificationSweepScheduler,
+    TutorAvailabilityService,
     SavedTutorsService,
   ],
   exports: [
@@ -80,6 +84,7 @@ import { FilesModule } from '../files/files.module';
     TutorDossierService,
     TutorVerificationStatusService,
     TutorVerificationExpiryService,
+    TutorAvailabilityService,
     SavedTutorsService,
     TypeOrmModule,
   ],

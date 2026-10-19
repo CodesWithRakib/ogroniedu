@@ -11,7 +11,10 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   Inject,
+  Res,
+  Header,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { SchedulingService } from './scheduling.service';
@@ -84,6 +87,18 @@ export class SessionsController {
         eventsCount: (icsContent.match(/BEGIN:VEVENT/g) || []).length,
       },
     };
+  }
+
+  @Get('sessions/calendar/ical/file')
+  @UseGuards(AuthGuard)
+  @Header('Content-Type', 'text/calendar; charset=utf-8')
+  @Header('Content-Disposition', 'attachment; filename="ogroniedu-classes.ics"')
+  async downloadIcsCalendar(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query() query: GetSessionsQueryDto,
+    @Res({ passthrough: true }) _res: Response,
+  ): Promise<string> {
+    return this.schedulingService.generateIcsCalendar(user, query);
   }
 
   @Get('sessions/:id')

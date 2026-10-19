@@ -60,10 +60,10 @@ describe('BookingsController Unit Tests', () => {
   });
 
   it('should get requests for user', async () => {
-    const res = await controller.getRequests(mockUser);
+    const res = await controller.getRequests(mockUser, {});
     expect(res.success).toBe(true);
     expect(res.data).toHaveLength(1);
-    expect(mockService.getRequests).toHaveBeenCalledWith(mockUser);
+    expect(mockService.getRequests).toHaveBeenCalledWith(mockUser, {});
   });
 
   it('should get single request by id', async () => {

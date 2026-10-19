@@ -7,3 +7,5 @@ export * from './cancel-session.dto';
 export * from './get-sessions-query.dto';
 export * from './complete-session.dto';
 export * from './update-meeting-url.dto';
+export * from './series-change.dto';
+export * from './get-booking-requests-query.dto';

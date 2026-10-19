@@ -66,4 +66,9 @@ export class CreateRecurringSessionsDto {
   @IsString()
   @IsOptional()
   timezone?: string;
+
+  @IsString()
+  @IsOptional()
+  @MaxLength(128)
+  idempotencyKey?: string;
 }

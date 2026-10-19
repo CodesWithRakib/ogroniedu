@@ -39,12 +39,12 @@ const ROLE_LABELS: Record<string, { bn: string; en: string; color: string }> = {
   student: {
     bn: 'শিক্ষার্থী',
     en: 'Student',
-    color: 'bg-interactive/15 text-info-soft-foreground border-info/40',
+    color: 'bg-primary-soft text-primary border-primary/20',
   },
   tutor: {
     bn: 'গৃহশিক্ষক',
     en: 'Verified Tutor',
-    color: 'bg-brand-soft text-primary border-border',
+    color: 'bg-primary-soft text-primary border-primary/20',
   },
   guardian: {
     bn: 'অভিভাবক',
@@ -54,7 +54,7 @@ const ROLE_LABELS: Record<string, { bn: string; en: string; color: string }> = {
   admin: {
     bn: 'অ্যাডমিন',
     en: 'Admin',
-    color: 'bg-interactive/15 text-interactive border-interactive/30',
+    color: 'bg-primary-soft text-primary border-primary/20',
   },
   super_admin: {
     bn: 'সুপার অ্যাডমিন',
@@ -82,18 +82,18 @@ export function UserNavDropdown({ authUser, locale, role, onLogout }: UserNavDro
         <button
           type="button"
           data-testid="user-nav-dropdown-trigger"
-          className="group flex items-center gap-2.5 p-1 pl-1.5 pr-3 rounded-full border border-border bg-card/90 hover:bg-card hover:border-brand/60 transition-all duration-200 outline-none focus:ring-2 focus:ring-brand/40 cursor-pointer"
+          className="group flex items-center gap-2.5 p-1 pl-1.5 pr-1.5 md:pr-3 rounded-full border border-border bg-card/90 hover:bg-card hover:border-primary/50 transition-all duration-200 outline-none focus:ring-2 focus:ring-primary/40 cursor-pointer"
           title={isBn ? 'ইউজার একাউন্ট ও সেটিংস' : 'User Account & Settings'}
         >
           {/* Avatar with online indicator */}
           <div className="relative">
-            <Avatar className="h-8 w-8 ring-2 ring-brand/30 group-hover:ring-brand/60 transition-all">
+            <Avatar className="h-8 w-8 ring-2 ring-primary/20 group-hover:ring-primary/50 transition-all">
               {authUser?.avatarUrl && <AvatarImage src={authUser.avatarUrl} alt={displayName} />}
-              <AvatarFallback className="bg-brand-soft text-primary font-bold text-xs">
+              <AvatarFallback className="bg-primary-soft text-primary font-bold text-xs">
                 {userInitials}
               </AvatarFallback>
             </Avatar>
-            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-brand ring-2 ring-border" />
+            <span className="absolute bottom-0 right-0 h-2.5 w-2.5 rounded-full bg-emerald-500 ring-2 ring-card" />
           </div>
 
           {/* User Name & Role Pill (Hidden on mobile) */}
@@ -119,7 +119,7 @@ export function UserNavDropdown({ authUser, locale, role, onLogout }: UserNavDro
         {/* Header Label: Full User Info */}
         <DropdownMenuLabel className="p-2.5 rounded-xl bg-card/90 border border-border mb-1">
           <div className="flex items-center gap-3">
-            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-brand-soft text-primary font-extrabold text-sm ring-1 ring-brand/35 shrink-0">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary-soft text-primary font-extrabold text-sm ring-1 ring-primary/20 shrink-0">
               {userInitials}
             </div>
             <div className="min-w-0 flex-1">
@@ -138,7 +138,7 @@ export function UserNavDropdown({ authUser, locale, role, onLogout }: UserNavDro
           </div>
         </DropdownMenuLabel>
 
-        <DropdownMenuSeparator className="bg-brand-soft my-1" />
+        <DropdownMenuSeparator className="bg-border my-1" />
 
         {/* Profile Link */}
         <DropdownMenuItem asChild>

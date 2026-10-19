@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
 import crypto from 'node:crypto';
 import { readErrorMessage } from '../../../common/errors/error-message';
 import {
@@ -114,16 +114,16 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       }
     } catch (err: unknown) {
       this.logger.warn(
-        `Failed to reach SSLCOMMERZ gateway directly (${readErrorMessage(err)}). Using sandbox direct checkout URL.`,
+        `Failed to reach SSLCOMMERZ gateway directly (${readErrorMessage(err)}).`,
+      );
+      throw new ServiceUnavailableException(
+        'The payment gateway could not create a checkout session. Please try again later.',
       );
     }
 
-    // Resilient Sandbox Checkout URL fallback
-    const fallbackCheckoutUrl = `https://sandbox.sslcommerz.com/gwprocess/v4/gw.php?Q=pay&SESSIONKEY=SSLCZ-SBX-${orderId.slice(0, 8)}&amount=${amountBdt}&store=${this.storeId}`;
-    return {
-      checkoutUrl: fallbackCheckoutUrl,
-      providerOrderId: `SSLCZ-${orderId.slice(0, 8)}`,
-    };
+    throw new ServiceUnavailableException(
+      'The payment gateway rejected the checkout session request. Please try again later.',
+    );
   }
 
   /**
@@ -139,44 +139,37 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       (typeof rawBody === 'object' &&
         ((rawBody.verify_sign as string | undefined) || (rawBody.signature as string | undefined)));
 
-    // If signature provided, enforce strict cryptographic check
-    if (rawSignature && typeof rawSignature === 'string') {
-      const payloadString =
-        typeof rawBody === 'string'
-          ? rawBody
-          : JSON.stringify(
-              Object.keys(rawBody)
-                .filter((k) => k !== 'verify_sign' && k !== 'signature')
-                .sort()
-                .reduce<Record<string, unknown>>((obj, key) => {
-                  obj[key] = rawBody[key];
-                  return obj;
-                }, {}),
-            );
-
-      const expectedHmac = crypto
-        .createHmac('sha256', this.storePasswd)
-        .update(payloadString)
-        .digest('hex');
-
-      try {
-        const sigBuf = Buffer.from(rawSignature.toLowerCase(), 'utf-8');
-        const expBuf = Buffer.from(expectedHmac.toLowerCase(), 'utf-8');
-        return sigBuf.length === expBuf.length && crypto.timingSafeEqual(sigBuf, expBuf);
-      } catch {
-        return false;
-      }
+    // Signature is mandatory. An unsigned body is never trusted, even when it
+    // claims status VALID/succeeded.
+    if (!rawSignature || typeof rawSignature !== 'string') {
+      return false;
     }
 
-    // When signature header is absent, allow sandbox IPN with verified status
-    if (typeof rawBody === 'object') {
-      const body = rawBody as Record<string, unknown>;
-      if (body.status === 'VALID' || body.status === 'VALIDATED' || body.status === 'succeeded') {
-        return true;
-      }
-    }
+    const payloadString =
+      typeof rawBody === 'string'
+        ? rawBody
+        : JSON.stringify(
+            Object.keys(rawBody)
+              .filter((k) => k !== 'verify_sign' && k !== 'signature')
+              .sort()
+              .reduce<Record<string, unknown>>((obj, key) => {
+                obj[key] = rawBody[key];
+                return obj;
+              }, {}),
+          );
 
-    return false;
+    const expectedHmac = crypto
+      .createHmac('sha256', this.storePasswd)
+      .update(payloadString)
+      .digest('hex');
+
+    try {
+      const sigBuf = Buffer.from(rawSignature.toLowerCase(), 'utf-8');
+      const expBuf = Buffer.from(expectedHmac.toLowerCase(), 'utf-8');
+      return sigBuf.length === expBuf.length && crypto.timingSafeEqual(sigBuf, expBuf);
+    } catch {
+      return false;
+    }
   }
 
   /**
@@ -189,7 +182,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       const validationUrl = `${this.validationApiUrl}?val_id=${encodeURIComponent(providerTransactionId)}&store_id=${encodeURIComponent(this.storeId)}&store_passwd=${encodeURIComponent(this.storePasswd)}&format=json`;
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
 
       const response = await fetch(validationUrl, {
         method: 'GET',
@@ -201,7 +194,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       if (response.ok) {
         const data = (await response.json()) as SslcommerzValidationResponse;
         if (data.status === 'VALID' || data.status === 'VALIDATED') {
-          const amountMinor = Math.round(parseFloat(data.amount || '1000') * 100);
+          const amountMinor = Math.round(parseFloat(data.amount || '0') * 100);
           return {
             providerTransactionId: data.bank_tran_id || providerTransactionId,
             amountMinor,
@@ -212,15 +205,16 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
         }
       }
     } catch (err: unknown) {
-      this.logger.warn(`SSLCOMMERZ validation server query note: ${readErrorMessage(err)}`);
+      this.logger.warn(`SSLCOMMERZ validation server query failed: ${readErrorMessage(err)}`);
     }
 
-    // Default verified response for sandbox simulated testing
+    // Never fabricate success. If the validation server cannot verify the
+    // transaction, the webhook processor must reject it.
     return {
       providerTransactionId,
-      amountMinor: 100000,
+      amountMinor: 0,
       currency: 'BDT',
-      status: 'succeeded',
+      status: 'failed',
       verifiedAt: new Date(),
     };
   }

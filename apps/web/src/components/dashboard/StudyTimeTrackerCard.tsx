@@ -35,19 +35,19 @@ export function StudyTimeTrackerCard({ locale, title, subtitle }: StudyTimeTrack
   const secs = String(seconds % 60).padStart(2, '0');
 
   return (
-    <div className="relative rounded-2xl p-5 sm:p-6 overflow-hidden bg-card border border-brand/25 text-foreground flex flex-col justify-between select-none">
+    <div className="relative rounded-2xl p-5 sm:p-6 overflow-hidden bg-card border border-primary/20 text-foreground flex flex-col justify-between select-none shadow-xs">
       {/* Abstract undulating mesh wave background pattern (Donezo visual style) */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
+      <div className="absolute inset-0 opacity-15 pointer-events-none">
         <svg viewBox="0 0 200 200" className="w-full h-full object-cover">
           <path
             d="M 0,100 C 40,60 80,140 120,90 C 160,40 180,120 200,100 L 200,200 L 0,200 Z"
             fill="currentColor"
-            className="text-success-soft-foreground"
+            className="text-primary-soft-foreground"
           />
           <path
             d="M 0,130 C 50,90 90,160 140,110 C 180,80 190,140 200,130 L 200,200 L 0,200 Z"
             fill="currentColor"
-            className="text-primary-soft-foreground opacity-60"
+            className="text-primary opacity-60"
           />
         </svg>
       </div>
@@ -55,12 +55,12 @@ export function StudyTimeTrackerCard({ locale, title, subtitle }: StudyTimeTrack
       {/* Top: Header */}
       <div className="relative z-10 flex items-center justify-between pb-3">
         <div>
-          <span className="text-[11px] font-bold uppercase tracking-wider text-success-soft-foreground">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-primary">
             {heading}
           </span>
           <p className="text-[11px] text-muted-foreground mt-0.5">{sub}</p>
         </div>
-        <div className="h-8 w-8 rounded-full bg-muted flex items-center justify-center text-success-soft-foreground backdrop-blur-xs">
+        <div className="h-8 w-8 rounded-full bg-primary-soft flex items-center justify-center text-primary backdrop-blur-xs">
           <Clock className="h-4 w-4" />
         </div>
       </div>

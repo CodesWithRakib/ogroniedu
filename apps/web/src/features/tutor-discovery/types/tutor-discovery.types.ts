@@ -12,17 +12,18 @@ export interface SubjectItem {
 
 export interface TutorCardData {
   id: string;
-  displayName: string;
+  displayNameEn?: string | null;
+  displayNameBn?: string | null;
+  displayName?: string;
   avatarUrl?: string | null;
-  /** English headline (legacy field). */
-  headline: string | null;
-  /** English biography (legacy field). */
-  bio: string | null;
   headlineEn?: string | null;
   /** Null when the tutor has not written Bangla copy yet. */
   headlineBn?: string | null;
   bioEn?: string | null;
   bioBn?: string | null;
+  /** Legacy English fallback */
+  headline?: string | null;
+  bio?: string | null;
   yearsExperience: number | null;
   teachingModes: string[];
   hourlyRateMinor: string | null;
@@ -36,7 +37,8 @@ export interface TutorCardData {
     districtCode?: string;
     districtNameEn: string;
     districtNameBn: string;
-    localityName?: string | null;
+    localityNameEn?: string | null;
+    localityNameBn?: string | null;
   }>;
   distanceKm?: number | null;
   /** Null when the tutor has no published review — never rendered as 0. */

@@ -46,59 +46,52 @@ export class BkashSandboxAdapter implements PaymentProviderAdapter {
       headers['X-BKASH-SIGNATURE'] ||
       (typeof rawBody === 'object' ? (rawBody.signature as string | undefined) : undefined);
 
-    // If signature provided, enforce strict cryptographic check
-    if (rawSignature && typeof rawSignature === 'string') {
-      const payloadString =
-        typeof rawBody === 'string'
-          ? rawBody
-          : JSON.stringify(
-              Object.keys(rawBody)
-                .filter((k) => k !== 'signature')
-                .sort()
-                .reduce<Record<string, unknown>>((obj, key) => {
-                  obj[key] = rawBody[key];
-                  return obj;
-                }, {}),
-            );
+    // Signature is mandatory; unsigned IPNs are never trusted.
+    if (!rawSignature || typeof rawSignature !== 'string') {
+      return false;
+    }
 
-      const expected = crypto
-        .createHmac('sha256', this.secretKey)
-        .update(payloadString)
-        .digest('hex');
+    const payloadString =
+      typeof rawBody === 'string'
+        ? rawBody
+        : JSON.stringify(
+            Object.keys(rawBody)
+              .filter((k) => k !== 'signature')
+              .sort()
+              .reduce<Record<string, unknown>>((obj, key) => {
+                obj[key] = rawBody[key];
+                return obj;
+              }, {}),
+          );
 
-      try {
-        const sigBuf = Buffer.from(rawSignature.toLowerCase(), 'utf-8');
-        const expBuf = Buffer.from(expected.toLowerCase(), 'utf-8');
-        if (sigBuf.length !== expBuf.length) {
-          return false;
-        }
-        return crypto.timingSafeEqual(sigBuf, expBuf);
-      } catch {
+    const expected = crypto
+      .createHmac('sha256', this.secretKey)
+      .update(payloadString)
+      .digest('hex');
+
+    try {
+      const sigBuf = Buffer.from(rawSignature.toLowerCase(), 'utf-8');
+      const expBuf = Buffer.from(expected.toLowerCase(), 'utf-8');
+      if (sigBuf.length !== expBuf.length) {
         return false;
       }
+      return crypto.timingSafeEqual(sigBuf, expBuf);
+    } catch {
+      return false;
     }
-
-    // When signature header is absent, allow sandbox IPN with verified status
-    if (typeof rawBody === 'object') {
-      const body = rawBody as Record<string, unknown>;
-      if (body.status === 'VALID' || body.status === 'VALIDATED' || body.status === 'succeeded') {
-        return true;
-      }
-    }
-
-    return false;
   }
 
   async queryTransaction(providerTransactionId: string): Promise<ProviderTransactionResult> {
     this.logger.log(
       `Querying bKash sandbox transaction server-to-server: ${providerTransactionId}`,
     );
-    // Simulate server-to-server verified query
+    // No live bKash credentials are configured in this environment. Returning
+    // "succeeded" here would fabricate a payment, so verification fails closed.
     return {
       providerTransactionId,
-      amountMinor: 100000,
+      amountMinor: 0,
       currency: 'BDT',
-      status: 'succeeded',
+      status: 'failed',
       verifiedAt: new Date(),
     };
   }

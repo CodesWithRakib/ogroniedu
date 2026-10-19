@@ -389,31 +389,31 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                   className="grid grid-cols-2 sm:grid-cols-4 gap-3"
                   data-testid="tutor-analytics-data"
                 >
-                  <div className="p-3.5 rounded-2xl bg-muted  border border-border ">
+                  <div className="p-3.5 rounded-2xl bg-surface border border-border">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold block">
                       {isBn ? 'মোট আয়' : 'Total Earnings'}
                     </span>
-                    <span className="text-lg font-bold text-success-soft-foreground  mt-1 block">
+                    <span className="text-lg font-bold text-success-soft-foreground mt-1 block">
                       ৳{formatLocalizedNumber(earningsVal, locale)}
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-2xl bg-muted  border border-border ">
+                  <div className="p-3.5 rounded-2xl bg-surface border border-border">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold block">
                       {isBn ? 'অনুরোধ গ্রহণ হার' : 'Acceptance'}
                     </span>
-                    <span className="text-lg font-bold text-info-soft-foreground  mt-1 block">
+                    <span className="text-lg font-bold text-primary mt-1 block">
                       {formatLocalizedNumber(aData?.inquiries?.acceptanceRate ?? 100, locale)}%
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-2xl bg-muted  border border-border ">
+                  <div className="p-3.5 rounded-2xl bg-surface border border-border">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold block">
                       {isBn ? 'ক্লাস সমাপ্তি হার' : 'Completion'}
                     </span>
-                    <span className="text-lg font-bold text-interactive  mt-1 block">
+                    <span className="text-lg font-bold text-primary mt-1 block">
                       {formatLocalizedNumber(aData?.sessions?.completionRate ?? 100, locale)}%
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-2xl bg-muted  border border-border ">
+                  <div className="p-3.5 rounded-2xl bg-surface border border-border">
                     <span className="text-[10px] text-muted-foreground uppercase font-bold block">
                       {isBn ? 'শিক্ষার্থী রেটিং' : 'Rating'}
                     </span>

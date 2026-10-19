@@ -9,10 +9,15 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { BookingSessionEntity, CancellationAssessment } from '../entities/booking-session.entity';
+import {
+  BookingSessionEntity,
+  CancellationAssessment,
+} from '../entities/booking-session.entity';
+import { BookingEntity } from '../entities/booking.entity';
 import { OutboxEventEntity } from '../entities/outbox-event.entity';
 import { AuditService } from '../../audit/audit.service';
 import { NotificationService } from '../../notifications/notification.service';
+import { TutorAvailabilityService } from '../../tutors/services/tutor-availability.service';
 import {
   assertNoTutorOverlap,
   recordOutboxEvent,
@@ -21,11 +26,19 @@ import {
 import { RescheduleSessionDto, CancelSessionDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { SessionQueriesService } from './session-queries.service';
+import { assessCancellation, CancellationInitiator } from '../utils/cancellation-policy';
+import { applyBookingTransition } from '../utils/booking-lifecycle';
+import {
+  CANCELLABLE_SESSION_STATUSES,
+  RESCHEDULABLE_SESSION_STATUSES,
+  assertSessionTransition,
+} from '../constants/session-status-transitions';
 
 /**
- * Reschedule and cancel flows: status transition guards and the
- * Bangladesh operational cancellation-policy matrix stay intact.
- * Authorization is delegated to SessionQueriesService (no cycles).
+ * Reschedule, cancel, start, complete, and meeting-url flows.
+ * Every state change passes through the session transition map and records
+ * actor/reason/timestamp. Cancellation produces an assessment only; no money
+ * moves in this phase.
  */
 @Injectable()
 export class SessionReschedulingService {
@@ -43,11 +56,14 @@ export class SessionReschedulingService {
     private readonly notificationService: NotificationService | undefined,
     @Inject(forwardRef(() => SessionQueriesService))
     private readonly queries: SessionQueriesService,
+    @Optional()
+    @Inject(forwardRef(() => TutorAvailabilityService))
+    private readonly availability?: TutorAvailabilityService,
+    @Optional()
+    @InjectRepository(BookingEntity)
+    private readonly bookingRepo?: Repository<BookingEntity>,
   ) {}
 
-  /**
-   * Reschedule an existing scheduled session
-   */
   async rescheduleSession(
     sessionId: string,
     user: AuthenticatedUser,
@@ -66,7 +82,7 @@ export class SessionReschedulingService {
       await this.queries.assertCanManageSessions(user, session.booking);
     }
 
-    if (session.status !== 'scheduled' && session.status !== 'reschedule_pending') {
+    if (!(RESCHEDULABLE_SESSION_STATUSES as readonly string[]).includes(session.status)) {
       throw new BadRequestException(
         `Cannot reschedule session with current status '${session.status}'.`,
       );
@@ -90,7 +106,14 @@ export class SessionReschedulingService {
       throw new BadRequestException('Cannot reschedule to a past time slot.');
     }
 
-    // Check overlap excluding this session id
+    if (this.availability) {
+      await this.availability.assertWithinAvailability(
+        session.tutorUserId,
+        newStartsAt,
+        newEndsAt,
+      );
+    }
+
     await assertNoTutorOverlap(
       this.sessionRepo,
       session.tutorUserId,
@@ -99,18 +122,35 @@ export class SessionReschedulingService {
       session.id,
     );
 
+    const previousStartsAt = session.startsAt;
+    assertSessionTransition(session.status, 'scheduled');
     session.startsAt = newStartsAt;
     session.endsAt = newEndsAt;
     session.status = 'scheduled';
+    session.rescheduledAt = new Date();
+    session.rescheduledBy = user.id;
+    session.rescheduleReason = dto.reason;
+    session.statusChangedAt = new Date();
+    session.statusChangedBy = user.id;
+    session.version += 1;
 
     const saved = await this.sessionRepo.save(session);
 
-    await recordOutboxEvent(this.outboxRepo, 'session.rescheduled', 'session', saved.id, {
-      sessionId: saved.id,
-      newStartsAt: saved.startsAt.toISOString(),
-      newEndsAt: saved.endsAt.toISOString(),
-      reason: dto.reason,
-    });
+    await recordOutboxEvent(
+      this.outboxRepo,
+      'session.rescheduled',
+      'session',
+      saved.id,
+      {
+        sessionId: saved.id,
+        bookingId: saved.bookingId,
+        previousStartsAt: previousStartsAt.toISOString(),
+        newStartsAt: saved.startsAt.toISOString(),
+        newEndsAt: saved.endsAt.toISOString(),
+        reason: dto.reason,
+      },
+      `session.rescheduled:${saved.id}:${saved.version}`,
+    );
 
     await this.auditService.record({
       actorUserId: user.id,
@@ -118,14 +158,22 @@ export class SessionReschedulingService {
       resourceType: 'booking_session',
       resourceId: saved.id,
       reason: dto.reason,
+      safeMetadata: {
+        previousStartsAt,
+        newStartsAt,
+        newEndsAt,
+      },
     });
 
+    const notifyRecipientId =
+      user.id === session.tutorUserId ? session.studentUserId : session.tutorUserId;
+    const recipientRole = user.id === session.tutorUserId ? 'student' : 'tutor';
     dispatchNotificationSafe(
       this.logger,
       this.notificationService,
-      session.tutorUserId,
+      notifyRecipientId,
       'booking.confirmed',
-      'tutor',
+      recipientRole,
       {
         bookingId: session.bookingId,
         subjectName: 'Rescheduled Session',
@@ -135,10 +183,6 @@ export class SessionReschedulingService {
     return saved;
   }
 
-  /**
-   * Cancel a scheduled session applying the Bangladesh operational refund matrix
-   * When a session is cancelled, status becomes 'cancelled', immediately freeing the GiST slot for reuse.
-   */
   async cancelSession(
     sessionId: string,
     user: AuthenticatedUser,
@@ -157,97 +201,46 @@ export class SessionReschedulingService {
       await this.queries.assertCanManageSessions(user, session.booking);
     }
 
-    if (session.status !== 'scheduled' && session.status !== 'reschedule_pending') {
+    if (!(CANCELLABLE_SESSION_STATUSES as readonly string[]).includes(session.status)) {
       throw new BadRequestException(
         `Cannot cancel session with current status '${session.status}'.`,
       );
     }
 
-    // Determine initiator role
-    const isTutor = user.id === session.tutorUserId;
-    const initiatedByRole = isTutor
-      ? 'tutor'
-      : user.roles?.includes('guardian')
-        ? 'guardian'
-        : 'student';
-
-    // Calculate lead time in hours
+    const initiator = this.resolveInitiator(user, session);
     const now = new Date();
-    const leadHours = Math.max(0, (session.startsAt.getTime() - now.getTime()) / (1000 * 60 * 60));
+    const assessment = assessCancellation({
+      initiator,
+      startsAt: session.startsAt,
+      now,
+      reason: dto.reason,
+    });
 
-    // Apply Operational Policy Matrix (docs/BUSINESS_RULES.md Section 2)
-    let assessment: CancellationAssessment;
-
-    if (isTutor) {
-      if (leadHours >= 24) {
-        assessment = {
-          initiatedByRole: 'tutor',
-          leadHours: Math.round(leadHours * 10) / 10,
-          refundPercentage: 100,
-          tutorCompensationPercentage: 0,
-          penaltyNotice: '1 reliability point deducted',
-          reason: dto.reason,
-          assessedAt: now.toISOString(),
-        };
-      } else {
-        assessment = {
-          initiatedByRole: 'tutor',
-          leadHours: Math.round(leadHours * 10) / 10,
-          refundPercentage: 100,
-          tutorCompensationPercentage: 0,
-          penaltyNotice: '3 reliability points deducted + warning',
-          reason: dto.reason,
-          assessedAt: now.toISOString(),
-        };
-      }
-    } else {
-      // Guardian or Student
-      if (leadHours >= 24) {
-        assessment = {
-          initiatedByRole,
-          leadHours: Math.round(leadHours * 10) / 10,
-          refundPercentage: 100,
-          tutorCompensationPercentage: 0,
-          penaltyNotice: 'none',
-          reason: dto.reason,
-          assessedAt: now.toISOString(),
-        };
-      } else if (leadHours >= 4) {
-        assessment = {
-          initiatedByRole,
-          leadHours: Math.round(leadHours * 10) / 10,
-          refundPercentage: 80,
-          tutorCompensationPercentage: 20,
-          penaltyNotice: 'none',
-          reason: dto.reason,
-          assessedAt: now.toISOString(),
-        };
-      } else {
-        assessment = {
-          initiatedByRole,
-          leadHours: Math.round(leadHours * 10) / 10,
-          refundPercentage: 0,
-          tutorCompensationPercentage: 80,
-          penaltyNotice: 'Late cancellation recorded on history',
-          reason: dto.reason,
-          assessedAt: now.toISOString(),
-        };
-      }
-    }
-
+    assertSessionTransition(session.status, 'cancelled');
     session.status = 'cancelled';
     session.cancellationAssessment = assessment;
+    session.cancelledAt = now;
+    session.cancellationReason = dto.reason;
+    session.statusChangedAt = now;
+    session.statusChangedBy = user.id;
+    session.version += 1;
 
     const saved = await this.sessionRepo.save(session);
 
-    // Persist outbox event
-    await recordOutboxEvent(this.outboxRepo, 'session.cancelled', 'session', saved.id, {
-      sessionId: saved.id,
-      bookingId: session.bookingId,
-      leadHours: assessment.leadHours,
-      refundPercentage: assessment.refundPercentage,
-      reason: dto.reason,
-    });
+    await recordOutboxEvent(
+      this.outboxRepo,
+      'session.cancelled',
+      'session',
+      saved.id,
+      {
+        sessionId: saved.id,
+        bookingId: session.bookingId,
+        leadHours: assessment.leadHours,
+        refundPercentage: assessment.refundPercentage,
+        reason: dto.reason,
+      },
+      `session.cancelled:${saved.id}`,
+    );
 
     await this.auditService.record({
       actorUserId: user.id,
@@ -258,9 +251,9 @@ export class SessionReschedulingService {
       safeMetadata: assessment as unknown as Record<string, unknown>,
     });
 
-    // Notify other participant
-    const notifyRecipientId = isTutor ? session.studentUserId : session.tutorUserId;
-    const recipientRole = isTutor ? 'student' : 'tutor';
+    const notifyRecipientId =
+      user.id === session.tutorUserId ? session.studentUserId : session.tutorUserId;
+    const recipientRole = user.id === session.tutorUserId ? 'student' : 'tutor';
     dispatchNotificationSafe(
       this.logger,
       this.notificationService,
@@ -276,9 +269,6 @@ export class SessionReschedulingService {
     return { session: saved, policyAssessment: assessment };
   }
 
-  /**
-   * Start a session (scheduled -> in_progress)
-   */
   async startSession(sessionId: string, user: AuthenticatedUser): Promise<BookingSessionEntity> {
     const session = await this.sessionRepo.findOne({
       where: { id: sessionId },
@@ -295,13 +285,20 @@ export class SessionReschedulingService {
       throw new BadRequestException('Not authorized to start this session.');
     }
 
-    if (session.status !== 'scheduled' && session.status !== 'in_progress') {
+    if (session.booking && !['confirmed', 'in_progress'].includes(session.booking.status)) {
       throw new BadRequestException(
-        `Cannot start session with current status '${session.status}'.`,
+        `Cannot start a session for a booking in status '${session.booking.status}'.`,
       );
     }
 
+    if (session.status === 'in_progress') {
+      return session;
+    }
+
+    assertSessionTransition(session.status, 'in_progress');
     session.status = 'in_progress';
+    session.statusChangedAt = new Date();
+    session.statusChangedBy = user.id;
     const saved = await this.sessionRepo.save(session);
 
     await this.auditService.record({
@@ -311,27 +308,9 @@ export class SessionReschedulingService {
       resourceId: saved.id,
     });
 
-    const notifyRecipientId = isTutor ? session.studentUserId : session.tutorUserId;
-    const recipientRole = isTutor ? 'student' : 'tutor';
-    dispatchNotificationSafe(
-      this.logger,
-      this.notificationService,
-      notifyRecipientId,
-      'session.reminder',
-      recipientRole,
-      {
-        sessionId: saved.id,
-        bookingId: session.bookingId,
-        message: 'Live session has started. Please join the classroom.',
-      },
-    );
-
     return saved;
   }
 
-  /**
-   * Mark a session as completed
-   */
   async completeSession(
     sessionId: string,
     user: AuthenticatedUser,
@@ -353,8 +332,11 @@ export class SessionReschedulingService {
       );
     }
 
+    assertSessionTransition(session.status, 'completed');
     session.status = 'completed';
     session.completedAt = new Date();
+    session.statusChangedAt = new Date();
+    session.statusChangedBy = user.id;
     const saved = await this.sessionRepo.save(session);
 
     await this.auditService.record({
@@ -364,6 +346,8 @@ export class SessionReschedulingService {
       resourceId: saved.id,
       reason: notes,
     });
+
+    await this.maybeCompleteBooking(session.bookingId, user, notes);
 
     dispatchNotificationSafe(
       this.logger,
@@ -381,9 +365,6 @@ export class SessionReschedulingService {
     return saved;
   }
 
-  /**
-   * Update meeting URL for a session
-   */
   async updateMeetingUrl(
     sessionId: string,
     user: AuthenticatedUser,
@@ -402,6 +383,12 @@ export class SessionReschedulingService {
       throw new BadRequestException('Only the assigned tutor or admin can set the meeting URL.');
     }
 
+    if (!['scheduled', 'reschedule_pending', 'in_progress'].includes(session.status)) {
+      throw new BadRequestException(
+        `Cannot update the meeting URL for a session in status '${session.status}'.`,
+      );
+    }
+
     session.meetingUrl = meetingUrl;
     const saved = await this.sessionRepo.save(session);
 
@@ -414,5 +401,56 @@ export class SessionReschedulingService {
     });
 
     return saved;
+  }
+
+  /**
+   * When no active sessions remain, move the booking to `completed` through
+   * the transition map. Failures here never undo the session completion.
+   */
+  private async maybeCompleteBooking(
+    bookingId: string,
+    user: AuthenticatedUser,
+    notes?: string,
+  ): Promise<void> {
+    if (!this.bookingRepo) return;
+    const booking = await this.bookingRepo.findOne({ where: { id: bookingId } });
+    if (!booking) return;
+    if (!['confirmed', 'in_progress'].includes(booking.status)) return;
+
+    const remaining = await this.sessionRepo
+      .createQueryBuilder('s')
+      .where('s.bookingId = :bookingId', { bookingId })
+      .andWhere('s.status IN (:...statuses)', {
+        statuses: ['scheduled', 'in_progress', 'reschedule_pending'],
+      })
+      .getCount();
+    if (remaining > 0) return;
+
+    try {
+      applyBookingTransition(booking, 'completed', {
+        actorUserId: user.id,
+        reason: notes,
+      });
+      await this.bookingRepo.save(booking);
+      await this.auditService.record({
+        actorUserId: user.id,
+        action: 'booking.completed',
+        resourceType: 'booking',
+        resourceId: bookingId,
+        reason: notes,
+      });
+    } catch (err) {
+      this.logger.warn(`Could not complete booking ${bookingId}: ${String(err)}`);
+    }
+  }
+
+  private resolveInitiator(
+    user: AuthenticatedUser,
+    session: BookingSessionEntity,
+  ): CancellationInitiator {
+    if (user.roles?.includes('admin') || user.roles?.includes('super_admin')) return 'admin';
+    if (user.id === session.tutorUserId) return 'tutor';
+    if (user.id === session.studentUserId) return 'student';
+    return 'guardian';
   }
 }

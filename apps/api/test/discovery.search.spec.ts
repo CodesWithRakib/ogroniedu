@@ -292,7 +292,7 @@ describe('Tutor discovery search (FR-001)', () => {
   it('returns sanitized public fields and real aggregates only', async () => {
     const result = await service.searchTutors({});
     const tutor = result.data[0];
-    expect(tutor.displayName).toBe('Tanvir Hossain');
+    expect(tutor.displayNameEn).toBe('Tanvir Hossain');
     expect(tutor.badges).toContain('verified_tutor');
     expect(tutor.badges).toContain('verified_identity');
     expect(tutor.badges).toContain('verified_academic');

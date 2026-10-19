@@ -29,4 +29,7 @@ export class OutboxEventEntity {
 
   @Column({ name: 'last_error_code', type: 'text', nullable: true })
   lastErrorCode!: string | null;
+
+  @Column({ name: 'idempotency_key', type: 'text', nullable: true })
+  idempotencyKey!: string | null;
 }

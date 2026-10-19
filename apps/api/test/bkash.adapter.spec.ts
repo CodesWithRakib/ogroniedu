@@ -72,20 +72,20 @@ describe('BkashSandboxAdapter Unit & Sandbox Verification Tests', () => {
     expect(adapter.verifyWebhookSignature({}, { ...base, signature: 'deadbeef' })).toBe(false);
   });
 
-  it('should accept signature-less sandbox IPN payloads only when the status is verified', () => {
-    expect(adapter.verifyWebhookSignature({}, { status: 'VALID' })).toBe(true);
-    expect(adapter.verifyWebhookSignature({}, { status: 'VALIDATED' })).toBe(true);
-    expect(adapter.verifyWebhookSignature({}, { status: 'succeeded' })).toBe(true);
+  it('REJECTS signature-less IPN payloads regardless of the claimed status', () => {
+    expect(adapter.verifyWebhookSignature({}, { status: 'VALID' })).toBe(false);
+    expect(adapter.verifyWebhookSignature({}, { status: 'VALIDATED' })).toBe(false);
+    expect(adapter.verifyWebhookSignature({}, { status: 'succeeded' })).toBe(false);
     expect(adapter.verifyWebhookSignature({}, { status: 'FAILED' })).toBe(false);
     expect(adapter.verifyWebhookSignature({}, 'raw-string-body')).toBe(false);
   });
 
-  it('should return a server-to-server verified transaction query result', async () => {
+  it('FAILS CLOSED for server-to-server transaction queries without live credentials', async () => {
     const result = await adapter.queryTransaction('TRX-SBX-1');
 
     expect(result.providerTransactionId).toBe('TRX-SBX-1');
-    expect(result.status).toBe('succeeded');
-    expect(result.amountMinor).toBe(100000);
+    expect(result.status).toBe('failed');
+    expect(result.amountMinor).toBe(0);
     expect(result.currency).toBe('BDT');
     expect(result.verifiedAt).toBeInstanceOf(Date);
   });

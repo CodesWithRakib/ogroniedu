@@ -31,7 +31,9 @@ export function filterCatalog(
   if (query) {
     filtered = filtered.filter(
       (t) =>
-        t.displayName.toLowerCase().includes(query) ||
+        [t.displayName, t.displayNameEn, t.displayNameBn].some(
+          (value) => value?.toLowerCase().includes(query) ?? false,
+        ) ||
         [t.headline, t.headlineEn, t.headlineBn].some(
           (value) => value?.toLowerCase().includes(query) ?? false,
         ) ||

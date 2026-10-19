@@ -55,7 +55,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
   return (
     <nav
       aria-label={isBn ? 'মোবাইল বটম নেভিগেশন' : 'Mobile Bottom Navigation'}
-      className="fixed bottom-0 inset-x-0 z-50 md:hidden bg-card/95 backdrop-blur-2xl border-t border-border shadow-card pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5 px-2 transition-[background-color,border-color] duration-150"
+      className="fixed bottom-0 inset-x-0 z-30 md:hidden bg-card/95 backdrop-blur-2xl border-t border-border shadow-card pb-[max(0.6rem,env(safe-area-inset-bottom))] pt-1.5 px-2 transition-[background-color,border-color] duration-150"
     >
       <div className="flex items-center justify-around max-w-lg mx-auto">
         {/* 1. Home Tab */}

@@ -146,8 +146,10 @@ export class TutorSearchService {
     const publicQualifications = approvedQualifications.map((q) => ({
       id: q.id,
       qualificationType: q.qualificationType,
-      institution: q.institution,
-      title: q.title,
+      institutionEn: q.institutionEn ?? q.institution ?? null,
+      institutionBn: q.institutionBn ?? q.institution ?? null,
+      titleEn: q.titleEn ?? q.title ?? '',
+      titleBn: q.titleBn ?? q.title ?? null,
       issuedYear: q.issuedYear,
       isVerified: true,
     }));
@@ -204,7 +206,8 @@ export class TutorSearchService {
         districtNameEn: name.en,
         districtNameBn: name.bn,
         upazilaCode: a.upazilaCode,
-        localityName: a.localityName,
+        localityNameEn: a.localityNameEn ?? a.localityName,
+        localityNameBn: a.localityNameBn ?? a.localityName,
         radiusKm: a.radiusKm !== null ? Number(a.radiusKm) : null,
       };
     });
@@ -219,14 +222,13 @@ export class TutorSearchService {
 
     return {
       id: profile.userId,
-      displayName: user.displayName,
+      displayNameEn: user.displayNameEn ?? user.displayName ?? '',
+      displayNameBn: user.displayNameBn ?? user.displayName ?? null,
       avatarUrl: profile.avatarUrl || user.avatarUrl || null,
-      headline: profile.headlineEn ?? profile.headline,
-      bio: profile.bioEn ?? profile.bio,
-      headlineEn: profile.headlineEn ?? profile.headline,
-      headlineBn: profile.headlineBn,
-      bioEn: profile.bioEn ?? profile.bio,
-      bioBn: profile.bioBn,
+      headlineEn: profile.headlineEn ?? profile.headline ?? null,
+      headlineBn: profile.headlineBn ?? null,
+      bioEn: profile.bioEn ?? profile.bio ?? null,
+      bioBn: profile.bioBn ?? null,
       yearsExperience: profile.yearsExperience,
       teachingModes: profile.teachingModes,
       hourlyRateMinor: profile.hourlyRateMinor,
@@ -446,7 +448,8 @@ export class TutorSearchService {
             districtNameEn: name.en,
             districtNameBn: name.bn,
             upazilaCode: a.upazilaCode,
-            localityName: a.localityName,
+            localityNameEn: a.localityNameEn ?? a.localityName,
+            localityNameBn: a.localityNameBn ?? a.localityName,
             radiusKm: a.radiusKm !== null ? Number(a.radiusKm) : null,
           };
         });
@@ -458,14 +461,13 @@ export class TutorSearchService {
 
         return {
           id: profile.userId,
-          displayName: user.displayName,
+          displayNameEn: user.displayNameEn ?? user.displayName ?? '',
+          displayNameBn: user.displayNameBn ?? user.displayName ?? null,
           avatarUrl: profile.avatarUrl || user.avatarUrl || null,
-          headline: profile.headlineEn ?? profile.headline,
-          bio: profile.bioEn ?? profile.bio,
-          headlineEn: profile.headlineEn ?? profile.headline,
-          headlineBn: profile.headlineBn,
-          bioEn: profile.bioEn ?? profile.bio,
-          bioBn: profile.bioBn,
+          headlineEn: profile.headlineEn ?? profile.headline ?? null,
+          headlineBn: profile.headlineBn ?? null,
+          bioEn: profile.bioEn ?? profile.bio ?? null,
+          bioBn: profile.bioBn ?? null,
           yearsExperience: profile.yearsExperience,
           teachingModes: profile.teachingModes,
           hourlyRateMinor: profile.hourlyRateMinor,

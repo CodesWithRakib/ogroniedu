@@ -43,6 +43,12 @@ export class ReviewEntity {
   @Column({ type: 'text' })
   comment!: string;
 
+  @Column({ name: 'comment_en', type: 'text', nullable: true })
+  commentEn?: string | null;
+
+  @Column({ name: 'comment_bn', type: 'text', nullable: true })
+  commentBn?: string | null;
+
   @Column({
     name: 'moderation_status',
     type: 'text',
@@ -59,6 +65,12 @@ export class ReviewEntity {
 
   @Column({ name: 'tutor_response', type: 'text', nullable: true })
   tutorResponse?: string | null;
+
+  @Column({ name: 'tutor_response_en', type: 'text', nullable: true })
+  tutorResponseEn?: string | null;
+
+  @Column({ name: 'tutor_response_bn', type: 'text', nullable: true })
+  tutorResponseBn?: string | null;
 
   @Column({ name: 'tutor_responded_at', type: 'timestamptz', nullable: true })
   tutorRespondedAt?: Date | null;

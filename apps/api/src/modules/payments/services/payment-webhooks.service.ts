@@ -12,6 +12,7 @@ import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { PaymentOrderEntity, PaymentTransactionEntity } from '../entities';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
+import { BookingStatusEventEntity } from '../../bookings/entities/booking-status-event.entity';
 import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { OutboxEventEntity } from '../../bookings/entities/outbox-event.entity';
 import { LedgerService } from '../ledger.service';
@@ -63,7 +64,7 @@ export class PaymentWebhooksService {
   ): Promise<{ received: boolean; processed: boolean; orderId?: string; status?: string }> {
     const adapter = this.adapterFactory.getAdapter(provider);
 
-    // 1. Verify Cryptographic Webhook Signature
+    // 2. Cryptographic webhook signature is mandatory.
     const isValidSignature = adapter.verifyWebhookSignature(
       headers as WebhookHeaderMap,
       rawBody as unknown as Record<string, unknown>,
@@ -157,23 +158,9 @@ export class PaymentWebhooksService {
       throw new NotFoundException('Matching pending payment order not found');
     }
 
-    // 4. Server-to-server transaction verification with provider
-    const providerVerified = await adapter.queryTransaction(rawBody.providerTransactionId);
-
-    // Amount & Currency mismatch verification
-    if (BigInt(rawBody.amountMinor) !== BigInt(order.amountMinor)) {
-      this.logger.error(
-        `Amount mismatch for order ${order.id}: expected ${order.amountMinor}, got ${rawBody.amountMinor}`,
-      );
-      throw new BadRequestException('Payment amount mismatch between gateway and order');
-    }
-
-    if (rawBody.currency !== order.currency) {
-      throw new BadRequestException('Currency mismatch between gateway and order');
-    }
-
-    // Handle failure event
-    if (rawBody.status === 'failed' || providerVerified.status === 'failed') {
+    // 4. Failure events are recorded without provider verification. They never
+    // confirm a payment or mutate the booking.
+    if (rawBody.status === 'failed') {
       order.status = 'failed';
       await this.orderRepo.save(order);
 
@@ -206,7 +193,40 @@ export class PaymentWebhooksService {
       return { received: true, processed: true, orderId: order.id, status: 'failed' };
     }
 
-    // 5. Atomic PostgreSQL Execution: Payment + Ledger Journal + Outbox + Booking
+    if (rawBody.status !== 'succeeded') {
+      throw new BadRequestException('Webhook status is not a terminal success or failure state');
+    }
+
+    // 5. Server-to-server transaction verification with provider.
+    // A failed/unreachable verification must never confirm a payment.
+    const providerVerified = await adapter.queryTransaction(rawBody.providerTransactionId);
+    if (providerVerified.status !== 'succeeded') {
+      throw new BadRequestException('Provider could not verify this transaction as successful');
+    }
+
+    // Amount & Currency mismatch verification (webhook body and provider).
+    if (BigInt(rawBody.amountMinor) !== BigInt(order.amountMinor)) {
+      this.logger.error(
+        `Amount mismatch for order ${order.id}: expected ${order.amountMinor}, got ${rawBody.amountMinor}`,
+      );
+      throw new BadRequestException('Payment amount mismatch between gateway and order');
+    }
+
+    if (rawBody.currency !== order.currency) {
+      throw new BadRequestException('Currency mismatch between gateway and order');
+    }
+
+    if (
+      BigInt(providerVerified.amountMinor) !== BigInt(order.amountMinor) ||
+      providerVerified.currency !== order.currency
+    ) {
+      this.logger.error(
+        `Provider verification mismatch for order ${order.id}: expected ${order.amountMinor} ${order.currency}, got ${providerVerified.amountMinor} ${providerVerified.currency}`,
+      );
+      throw new BadRequestException('Provider-verified amount/currency does not match the order');
+    }
+
+    // 6. Atomic PostgreSQL Execution: Payment + Ledger Journal + Outbox + Booking
     let confirmedBooking: BookingEntity | null = null;
     await this.dataSource.transaction(async (manager) => {
       // a. Mark order succeeded
@@ -246,15 +266,37 @@ export class PaymentWebhooksService {
         ],
       });
 
-      // d. Transition Booking to Confirmed
+      // d. Transition Booking to Confirmed (only from a payable state).
       const booking = await manager.findOne(BookingEntity, {
         where: { id: order.bookingId },
         relations: { subject: true, studentUser: true, requesterUser: true },
       });
       if (booking) {
-        booking.status = 'confirmed';
-        await manager.save(booking);
-        confirmedBooking = booking;
+        if (booking.status === 'confirmed') {
+          confirmedBooking = booking;
+        } else if (booking.status === 'accepted' || booking.status === 'awaiting_payment') {
+          const from = booking.status;
+          booking.status = 'confirmed';
+          await manager.save(booking);
+          await manager.save(
+            manager.create(BookingStatusEventEntity, {
+              bookingId: booking.id,
+              fromStatus: from,
+              toStatus: 'confirmed',
+              actorUserId: order.payerUserId,
+              actorRole: 'student',
+              reason: 'Verified payment webhook',
+              safeMetadata: { orderId: order.id, provider, providerTransactionId: rawBody.providerTransactionId },
+            }),
+          );
+          confirmedBooking = booking;
+        } else {
+          // Late payment for a cancelled/declined/expired booking: record the
+          // payment and flag it, but never resurrect the booking.
+          this.logger.error(
+            `Payment succeeded for booking ${booking.id} in non-payable status '${booking.status}'. Booking left unchanged; manual reconciliation required.`,
+          );
+        }
       }
 
       // e. Transactional Outbox Event

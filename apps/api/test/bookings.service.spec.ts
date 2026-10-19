@@ -409,7 +409,7 @@ describe('BookingsService Unit & Invariant Tests', () => {
 
       const res = await service.respondToRequest('booking-1', tutorUser, { action: 'accept' });
 
-      expect(res.status).toBe('accepted');
+      expect(res.status).toBe('awaiting_payment');
       expect(mockAuditService.record).toHaveBeenCalledWith(
         expect.objectContaining({
           action: 'booking.request.accepted',

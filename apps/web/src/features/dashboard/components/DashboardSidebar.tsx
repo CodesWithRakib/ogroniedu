@@ -8,6 +8,7 @@ import type { Locale } from '@/lib/i18n';
 import { navSectionsForRole, type NavItem, type NavSection } from '@/lib/navigation';
 import type { AuthUser, UserRole } from '@/store/slices/auth-slice';
 import { SidebarPromoCard } from '@/components/dashboard/SidebarPromoCard';
+import { OgroniEduBrand } from '@/components/brand/OgroniEduBrand';
 
 export interface DashboardSidebarProps {
   items: NavItem[];
@@ -47,60 +48,24 @@ export function DashboardSidebar({
 
   return (
     <aside
-      className="hidden lg:flex w-64 xl:w-72 flex-col justify-between h-screen shrink-0 border-r border-border bg-card/95 backdrop-blur-xl z-20 selection:bg-brand selection:text-brand-foreground"
+      className="hidden lg:flex w-64 xl:w-72 flex-col justify-between h-screen shrink-0 border-r border-border bg-card/95 backdrop-blur-xl z-20 selection:bg-primary selection:text-white"
       data-testid="dashboard-sidebar"
     >
       {/* Top Section: Brand & Nav Links (scrollable) */}
       <div className="p-4 space-y-5 overflow-y-auto flex-1">
         {/* Brand & Role Header */}
         <div className="space-y-3 pt-1">
-          <Link href={withLocale('/', locale)} className="flex items-center gap-2.5 px-1.5 group">
-            {/* Modern Academic Squircle Logo */}
-            <div className="relative flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-gradient-to-tr from-brand via-brand-accent to-primary text-white ring-1 ring-white/20 transition-transform duration-300 group-hover:scale-105">
-              <svg
-                viewBox="0 0 24 24"
-                fill="none"
-                xmlns="http://www.w3.org/2000/svg"
-                className="h-5 w-5 text-white drop-shadow-xs"
-              >
-                <path d="M12 3L2 8L12 13L22 8L12 3Z" fill="currentColor" fillOpacity="0.95" />
-                <path
-                  d="M6 10.5V16C6 17.8 8.7 19.5 12 19.5C15.3 19.5 18 17.8 18 16V10.5"
-                  stroke="currentColor"
-                  strokeWidth="1.8"
-                  strokeLinecap="round"
-                />
-                <path
-                  d="M21 8.5V15.5C21 16 20.6 16.5 20.1 16.5"
-                  stroke="currentColor"
-                  strokeWidth="1.6"
-                  strokeLinecap="round"
-                />
-                <circle cx="12" cy="8" r="1.3" className="fill-white" />
-              </svg>
-            </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1">
-                <span className="font-black text-base tracking-tight text-foreground block group-hover:text-primary transition-colors">
-                  Ogroni<span className="text-primary font-black">Edu</span>
-                </span>
-                <span className="text-[10px] font-bold text-primary px-1.5 py-0.2 rounded-md bg-primary-soft border border-primary/20">
-                  {isBn ? 'অগ্রণী' : 'Edu'}
-                </span>
-              </div>
-              <span className="text-[10px] font-medium text-muted-foreground block -mt-0.5">
-                {isBn ? 'বিশ্বস্ত প্ল্যাটফর্ম' : 'Trusted Learning'}
-              </span>
-            </div>
-          </Link>
+          <div className="px-1.5">
+            <OgroniEduBrand locale={locale} />
+          </div>
 
           {/* Role Badge Indicator */}
           <div className="px-3 py-1.5 rounded-xl bg-surface border border-border flex items-center justify-between">
             <span className="text-xs font-semibold text-foreground">
               {isBn ? roleTitle.bn : roleTitle.en}
             </span>
-            <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-primary-soft text-primary border border-primary/20">
-              v1.0 Pro
+            <span className="text-[10px] font-bold px-2 py-0.5 rounded-md bg-primary-soft text-primary border border-primary/20">
+              Edu Pro
             </span>
           </div>
         </div>

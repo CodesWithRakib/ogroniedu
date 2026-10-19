@@ -16,10 +16,32 @@ async function main() {
   try {
     await client.query('BEGIN');
 
-    // 0. Ensure avatar_url columns exist
+    // 0. Ensure bilingual and avatar columns exist
     await client.query(`
       ALTER TABLE users ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS display_name_en TEXT;
+      ALTER TABLE users ADD COLUMN IF NOT EXISTS display_name_bn TEXT;
+
       ALTER TABLE tutor_profiles ADD COLUMN IF NOT EXISTS avatar_url TEXT;
+      ALTER TABLE tutor_profiles ADD COLUMN IF NOT EXISTS headline_en TEXT;
+      ALTER TABLE tutor_profiles ADD COLUMN IF NOT EXISTS headline_bn TEXT;
+      ALTER TABLE tutor_profiles ADD COLUMN IF NOT EXISTS bio_en TEXT;
+      ALTER TABLE tutor_profiles ADD COLUMN IF NOT EXISTS bio_bn TEXT;
+
+      ALTER TABLE tutor_qualifications ADD COLUMN IF NOT EXISTS title_en TEXT;
+      ALTER TABLE tutor_qualifications ADD COLUMN IF NOT EXISTS title_bn TEXT;
+      ALTER TABLE tutor_qualifications ADD COLUMN IF NOT EXISTS institution_en TEXT;
+      ALTER TABLE tutor_qualifications ADD COLUMN IF NOT EXISTS institution_bn TEXT;
+
+      ALTER TABLE tutor_service_areas ADD COLUMN IF NOT EXISTS locality_name_en TEXT;
+      ALTER TABLE tutor_service_areas ADD COLUMN IF NOT EXISTS locality_name_bn TEXT;
+
+      ALTER TABLE reviews ADD COLUMN IF NOT EXISTS comment_en TEXT;
+      ALTER TABLE reviews ADD COLUMN IF NOT EXISTS comment_bn TEXT;
+      ALTER TABLE reviews ADD COLUMN IF NOT EXISTS tutor_response_en TEXT;
+      ALTER TABLE reviews ADD COLUMN IF NOT EXISTS tutor_response_bn TEXT;
+      ALTER TABLE reviews ADD COLUMN IF NOT EXISTS reviewer_display_name_en TEXT;
+      ALTER TABLE reviews ADD COLUMN IF NOT EXISTS reviewer_display_name_bn TEXT;
     `);
 
     // Fetch Subject and Education Level IDs
@@ -41,9 +63,19 @@ async function main() {
         email: 'tutor.demo@ogroniedu.com',
         phone: '+8801711000002',
         name: 'রাশেদ করিম (Rashed Karim)',
+        nameEn: 'Rashed Karim',
+        nameBn: 'রাশেদ করিম',
         avatarUrl: '/images/tutors/tutor-rashed.jpg',
         headline: 'বুয়েট সিভিল ইঞ্জিনিয়ারিং | এইচএসসি ও এসএসসি পদার্থবিজ্ঞান ও উচ্চতর গণিত বিশেষজ্ঞ',
+        headlineEn: 'BUET Civil Engineering | Experienced Physics & Higher Math Specialist for SSC & HSC',
+        headlineBn: 'বুয়েট সিভিল ইঞ্জিনিয়ারিং | এইচএসসি ও এসএসসি পদার্থবিজ্ঞান ও উচ্চতর গণিত বিশেষজ্ঞ',
         bio: `আসসালামু আলাইকুম। আমি রাশেদ করিম, বাংলাদেশ প্রকৌশল বিশ্ববিদ্যালয় (বুয়েট) থেকে সিভিল ইঞ্জিনিয়ারিং সম্পন্ন করেছি। গত ৫ বছর ধরে এইচএসসি ও এসএসসি স্তরের শিক্ষার্থীদের পদার্থবিজ্ঞান ও উচ্চতর গণিত পড়াচ্ছি।
+
+আমার পাঠদানের মূল দর্শন হলো—শুধু সূত্র মুখস্থ না করিয়ে প্রতিটি সূত্রের পেছনের বৈজ্ঞানিক কারণ ও বাস্তব প্রয়োগ বুঝিয়ে দেওয়া। বিগত বছরগুলোতে আমার বহু শিক্ষার্থী বুয়েট, ঢাবি এবং বিভিন্ন পাবলিক বিশ্ববিদ্যালয়ে কৃতিত্বের সাথে সুযোগ পেয়েছে। দুর্বল শিক্ষার্থীদের বিশেষ যত্ন ও উইকলি মডেল টেস্টের মাধ্যমে প্রস্তুতি নিশ্চিত করি।`,
+        bioEn: `Assalamu Alaikum. I am Rashed Karim, graduated in Civil Engineering from Bangladesh University of Engineering and Technology (BUET). For the past 5 years, I have been mentoring HSC and SSC students in Physics and Higher Mathematics.
+
+My teaching philosophy is to avoid rote memorization by explaining the scientific reasoning and real-world practical applications behind each formula. Over the years, many of my students have excelled and secured admission into BUET, Dhaka University, and leading public universities. I provide personalized support with weekly model tests and continuous progress tracking.`,
+        bioBn: `আসসালামু আলাইকুম। আমি রাশেদ করিম, বাংলাদেশ প্রকৌশল বিশ্ববিদ্যালয় (বুয়েট) থেকে সিভিল ইঞ্জিনিয়ারিং সম্পন্ন করেছি। গত ৫ বছর ধরে এইচএসসি ও এসএসসি স্তরের শিক্ষার্থীদের পদার্থবিজ্ঞান ও উচ্চতর গণিত পড়াচ্ছি।
 
 আমার পাঠদানের মূল দর্শন হলো—শুধু সূত্র মুখস্থ না করিয়ে প্রতিটি সূত্রের পেছনের বৈজ্ঞানিক কারণ ও বাস্তব প্রয়োগ বুঝিয়ে দেওয়া। বিগত বছরগুলোতে আমার বহু শিক্ষার্থী বুয়েট, ঢাবি এবং বিভিন্ন পাবলিক বিশ্ববিদ্যালয়ে কৃতিত্বের সাথে সুযোগ পেয়েছে। দুর্বল শিক্ষার্থীদের বিশেষ যত্ন ও উইকলি মডেল টেস্টের মাধ্যমে প্রস্তুতি নিশ্চিত করি।`,
         yearsExp: 5,
@@ -54,28 +86,44 @@ async function main() {
             id: 'aaaa1111-1111-4aaa-baaa-111111111101',
             type: 'nid',
             title: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
+            titleEn: 'National ID (NID) — Election Commission Bangladesh',
+            titleBn: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
             institution: 'EC Bangladesh',
+            institutionEn: 'Election Commission Bangladesh',
+            institutionBn: 'বাংলাদেশ নির্বাচন কমিশন',
             year: 2020,
           },
           {
             id: 'aaaa1111-1111-4aaa-baaa-111111111102',
             type: 'degree',
             title: 'বি.এস.সি. ইন সিভিল ইঞ্জিনিয়ারিং (B.Sc. in Civil Engineering)',
+            titleEn: 'B.Sc. in Civil Engineering',
+            titleBn: 'বি.এস.সি. ইন সিভিল ইঞ্জিনিয়ারিং (B.Sc. in Civil Engineering)',
             institution: 'বাংলাদেশ প্রকৌশল বিশ্ববিদ্যালয় (BUET)',
+            institutionEn: 'Bangladesh University of Engineering and Technology (BUET)',
+            institutionBn: 'বাংলাদেশ প্রকৌশল বিশ্ববিদ্যালয় (BUET)',
             year: 2023,
           },
           {
             id: 'aaaa1111-1111-4aaa-baaa-111111111103',
             type: 'academic_certificate',
             title: 'এইচএসসি বিজ্ঞান বিভাগ (HSC Science)',
+            titleEn: 'HSC Science Division',
+            titleBn: 'এইচএসসি বিজ্ঞান বিভাগ (HSC Science)',
             institution: 'নটর ডেম কলেজ, ঢাকা',
+            institutionEn: 'Notre Dame College, Dhaka',
+            institutionBn: 'নটর ডেম কলেজ, ঢাকা',
             year: 2018,
           },
           {
             id: 'aaaa1111-1111-4aaa-baaa-111111111104',
             type: 'academic_certificate',
             title: 'এসএসসি বিজ্ঞান বিভাগ (SSC Science)',
+            titleEn: 'SSC Science Division',
+            titleBn: 'এসএসসি বিজ্ঞান বিভাগ (SSC Science)',
             institution: 'মতিঝিল আইডিয়াল স্কুল অ্যান্ড কলেজ',
+            institutionEn: 'Motijheel Ideal School and College',
+            institutionBn: 'মতিঝিল আইডিয়াল স্কুল অ্যান্ড কলেজ',
             year: 2016,
           },
         ],
@@ -86,9 +134,9 @@ async function main() {
           { sub: 'math_general', lvl: 'secondary_ssc' },
         ],
         areas: [
-          { district: 'dhaka', locality: 'ধানমন্ডি ও কলাবাগান', radius: 5.0 },
-          { district: 'dhaka', locality: 'মোহাম্মদপুর ও লালমাটিয়া', radius: 6.0 },
-          { district: 'dhaka', locality: 'ফার্মগেট ও গ্রিন রোড', radius: 4.5 },
+          { district: 'dhaka', locality: 'ধানমন্ডি ও কলাবাগান', localityEn: 'Dhanmondi & Kalabagan', localityBn: 'ধানমন্ডি ও কলাবাগান', radius: 5.0 },
+          { district: 'dhaka', locality: 'মোহাম্মদপুর ও লালমাটিয়া', localityEn: 'Mohammadpur & Lalmatia', localityBn: 'মোহাম্মদপুর ও লালমাটিয়া', radius: 6.0 },
+          { district: 'dhaka', locality: 'ফার্মগেট ও গ্রিন রোড', localityEn: 'Farmgate & Green Road', localityBn: 'ফার্মগেট ও গ্রিন রোড', radius: 4.5 },
         ],
         availability: [
           { weekday: 6, start: '17:00:00', end: '21:00:00' },
@@ -102,7 +150,14 @@ async function main() {
             reviewerId: '33333333-3333-4333-b333-333333333333',
             rating: 5,
             comment: 'রাশেদ ভাইয়ার স্থির তড়িৎ ও গতিবিদ্যার ক্লাসগুলো অসাধারণ ছিল। জটিল কনসেপ্টগুলো খুব সহজ বাস্তব উদাহরণ দিয়ে মাথায় ঢুকিয়ে দেন। টেস্ট পরীক্ষায় ফিজিক্সে হাইয়েস্ট পেয়েছি!',
+            commentEn: "Rashed brother's electricity and dynamics classes were extraordinary. He explains complex concepts with relatable real-life examples. I scored the highest in Physics in my college test exams!",
+            commentBn: 'রাশেদ ভাইয়ার স্থির তড়িৎ ও গতিবিদ্যার ক্লাসগুলো অসাধারণ ছিল। জটিল কনসেপ্টগুলো খুব সহজ বাস্তব উদাহরণ দিয়ে মাথায় ঢুকিয়ে দেন। টেস্ট পরীক্ষায় ফিজিক্সে হাইয়েস্ট পেয়েছি!',
             reply: 'অনেক ধন্যবাদ আবরার! তোমার নিয়মিত প্র্যাকটিস এবং নিষ্ঠাই ভালো রেজাল্টের মূল কারণ। শুভকামনা!',
+            replyEn: 'Thank you so much Abrar! Your consistent practice and dedication are the real keys to your great result. Best wishes!',
+            replyBn: 'অনেক ধন্যবাদ আবরার! তোমার নিয়মিত প্র্যাকটিস এবং নিষ্ঠাই ভালো রেজাল্টের মূল কারণ। শুভকামনা!',
+            reviewerName: 'আবরার আহমেদ (Abrar Ahmed)',
+            reviewerNameEn: 'Abrar Ahmed',
+            reviewerNameBn: 'আবরার আহমেদ',
           },
         ],
       },
@@ -111,9 +166,19 @@ async function main() {
         email: 'nusrat.tutor@ogroniedu.com',
         phone: '+8801711000004',
         name: 'ডা. নুসরাত জাহান (Dr. Nusrat Jahan)',
+        nameEn: 'Dr. Nusrat Jahan',
+        nameBn: 'ডা. নুসরাত জাহান',
         avatarUrl: '/images/tutors/tutor-nusrat.jpg',
         headline: 'ঢাকা মেডিকেল কলেজ (DMC) | এইচএসসি জীববিজ্ঞান ও রসায়ন মেন্টর',
+        headlineEn: 'Dhaka Medical College (DMC) | HSC Biology & Chemistry Mentor',
+        headlineBn: 'ঢাকা মেডিকেল কলেজ (DMC) | এইচএসসি জীববিজ্ঞান ও রসায়ন মেন্টর',
         bio: `আসসালামু আলাইকুম। আমি ডা. নুসরাত জাহান, ঢাকা মেডিকেল কলেজ (DMC) থেকে এমবিবিএস সম্পন্ন করেছি। মেডিকেল ভর্তি পরীক্ষা এবং বোর্ড পরীক্ষার জীববিজ্ঞান ও রসায়নে সর্বোচ্চ নম্বর তোলার জন্য কনসেপ্ট ক্লিয়ারিংয়ের পাশাপাশি স্পেশাল মেমোরি টেকনিক ও ডায়াগ্রাম প্র্যাকটিস করাই।
+
+প্রতিটি ক্লাসে অধ্যায়ভিত্তিক বিগত বছরের বোর্ড ও মেডিকেল প্রশ্ন সলভ করানো হয়, যা শিক্ষার্থীদের আত্মবিশ্বাস বহুগুণ বাড়িয়ে তোলে।`,
+        bioEn: `Assalamu Alaikum. I am Dr. Nusrat Jahan, graduated with MBBS from Dhaka Medical College (DMC). To help students achieve top scores in Medical Admission and Board examinations in Biology and Chemistry, I combine deep concept-clearing with memory retention techniques and scientific diagram practice.
+
+Every session includes chapter-wise walkthroughs of previous years' board and medical admission questions, substantially boosting student confidence and academic performance.`,
+        bioBn: `আসসালামু আলাইকুম। আমি ডা. নুসরাত জাহান, ঢাকা মেডিকেল কলেজ (DMC) থেকে এমবিবিএস সম্পন্ন করেছি। মেডিকেল ভর্তি পরীক্ষা এবং বোর্ড পরীক্ষার জীববিজ্ঞান ও রসায়নে সর্বোচ্চ নম্বর তোলার জন্য কনসেপ্ট ক্লিয়ারিংয়ের পাশাপাশি স্পেশাল মেমোরি টেকনিক ও ডায়াগ্রাম প্র্যাকটিস করাই।
 
 প্রতিটি ক্লাসে অধ্যায়ভিত্তিক বিগত বছরের বোর্ড ও মেডিকেল প্রশ্ন সলভ করানো হয়, যা শিক্ষার্থীদের আত্মবিশ্বাস বহুগুণ বাড়িয়ে তোলে।`,
         yearsExp: 4,
@@ -124,21 +189,33 @@ async function main() {
             id: 'aaaa2222-2222-4aaa-baaa-222222222201',
             type: 'nid',
             title: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
+            titleEn: 'National ID (NID) — Election Commission Bangladesh',
+            titleBn: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
             institution: 'EC Bangladesh',
+            institutionEn: 'Election Commission Bangladesh',
+            institutionBn: 'বাংলাদেশ নির্বাচন কমিশন',
             year: 2020,
           },
           {
             id: 'aaaa2222-2222-4aaa-baaa-222222222202',
             type: 'degree',
             title: 'ব্যাচেলর অব মেডিসিন অ্যান্ড ব্যাচেলর অব সার্জারি (MBBS)',
+            titleEn: 'Bachelor of Medicine and Bachelor of Surgery (MBBS)',
+            titleBn: 'ব্যাচেলর অব মেডিসিন অ্যান্ড ব্যাচেলর অব সার্জারি (MBBS)',
             institution: 'ঢাকা মেডিকেল কলেজ (DMC)',
+            institutionEn: 'Dhaka Medical College (DMC)',
+            institutionBn: 'ঢাকা মেডিকেল কলেজ (DMC)',
             year: 2024,
           },
           {
             id: 'aaaa2222-2222-4aaa-baaa-222222222203',
             type: 'academic_certificate',
             title: 'এইচএসসি বিজ্ঞান বিভাগ (HSC Science)',
+            titleEn: 'HSC Science Division',
+            titleBn: 'এইচএসসি বিজ্ঞান বিভাগ (HSC Science)',
             institution: 'ভিকারুননিসা নূন স্কুল অ্যান্ড কলেজ',
+            institutionEn: 'Viqarunnisa Noon School & College',
+            institutionBn: 'ভিকারুননিসা নূন স্কুল অ্যান্ড কলেজ',
             year: 2018,
           },
         ],
@@ -149,8 +226,8 @@ async function main() {
           { sub: 'biology', lvl: 'admission_prep' },
         ],
         areas: [
-          { district: 'dhaka', locality: 'শান্তিনগর, সিদ্ধেশ্বরী ও বেইলি রোড', radius: 4.0 },
-          { district: 'dhaka', locality: 'ধানমন্ডি ও আজিমপুর', radius: 5.5 },
+          { district: 'dhaka', locality: 'শান্তিনগর, সিদ্ধেশ্বরী ও বেইলি রোড', localityEn: 'Shantinagar, Siddheshwari & Bailey Road', localityBn: 'শান্তিনগর, সিদ্ধেশ্বরী ও বেইলি রোড', radius: 4.0 },
+          { district: 'dhaka', locality: 'ধানমন্ডি ও আজিমপুর', localityEn: 'Dhanmondi & Azimpur', localityBn: 'ধানমন্ডি ও আজিমপুর', radius: 5.5 },
         ],
         availability: [
           { weekday: 0, start: '16:00:00', end: '20:00:00' },
@@ -164,9 +241,19 @@ async function main() {
         email: 'tanvir.tutor@ogroniedu.com',
         phone: '+8801711000005',
         name: 'তানভীর আহমেদ (Tanvir Ahmed)',
+        nameEn: 'Tanvir Ahmed',
+        nameBn: 'তানভীর আহমেদ',
         avatarUrl: '/images/tutors/tutor-tanvir.jpg',
         headline: 'ঢাকা বিশ্ববিদ্যালয় (DU CSE) | এইচএসসি আইসিটি ও গণিত প্রশিক্ষক',
+        headlineEn: 'University of Dhaka (DU CSE) | HSC ICT & Math Instructor',
+        headlineBn: 'ঢাকা বিশ্ববিদ্যালয় (DU CSE) | এইচএসসি আইসিটি ও গণিত প্রশিক্ষক',
         bio: `ঢাকা বিশ্ববিদ্যালয়ের কম্পিউটার সায়েন্স অ্যান্ড ইঞ্জিনিয়ারিং (CSE) বিভাগ থেকে গ্র্যাজুয়েশন সম্পন্ন করেছি। গত ৪ বছর ধরে শিক্ষার্থীদের সি প্রোগ্রামিং, এইচটিএমএল, এসকিউএল এবং এইচএসসি আইসিটির পুরো সিলেবাস প্র্যাক্টিক্যাল কোডিং সহকারে পড়াচ্ছি।
+
+এছাড়াও মাধ্যমিক ও উচ্চমাধ্যমিক গণিতের বীজগণিত ও ক্যালকুলাসে শিক্ষার্থীদের ভিত মজবুত করতে নিবিড় গাইডলাইন দিয়ে থাকি।`,
+        bioEn: `Graduated from the Department of Computer Science & Engineering (CSE) at University of Dhaka. For the past 4 years, I have mentored students in C programming, HTML, SQL, and the full HSC ICT syllabus through hands-on practical coding.
+
+I also offer structured guidance to reinforce strong fundamentals in algebra and calculus for secondary and higher secondary mathematics.`,
+        bioBn: `ঢাকা বিশ্ববিদ্যালয়ের কম্পিউটার সায়েন্স অ্যান্ড ইঞ্জিনিয়ারিং (CSE) বিভাগ থেকে গ্র্যাজুয়েশন সম্পন্ন করেছি। গত ৪ বছর ধরে শিক্ষার্থীদের সি প্রোগ্রামিং, এইচটিএমএল, এসকিউএল এবং এইচএসসি আইসিটির পুরো সিলেবাস প্র্যাক্টিক্যাল কোডিং সহকারে পড়াচ্ছি।
 
 এছাড়াও মাধ্যমিক ও উচ্চমাধ্যমিক গণিতের বীজগণিত ও ক্যালকুলাসে শিক্ষার্থীদের ভিত মজবুত করতে নিবিড় গাইডলাইন দিয়ে থাকি।`,
         yearsExp: 4,
@@ -177,21 +264,33 @@ async function main() {
             id: 'aaaa3333-3333-4aaa-baaa-333333333301',
             type: 'nid',
             title: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
+            titleEn: 'National ID (NID) — Election Commission Bangladesh',
+            titleBn: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
             institution: 'EC Bangladesh',
+            institutionEn: 'Election Commission Bangladesh',
+            institutionBn: 'বাংলাদেশ নির্বাচন কমিশন',
             year: 2021,
           },
           {
             id: 'aaaa3333-3333-4aaa-baaa-333333333302',
             type: 'degree',
             title: 'বি.এস.সি. ইন সিএসই (B.Sc. in CSE)',
+            titleEn: 'B.Sc. in Computer Science & Engineering (CSE)',
+            titleBn: 'বি.এস.সি. ইন সিএসই (B.Sc. in CSE)',
             institution: 'ঢাকা বিশ্ববিদ্যালয় (University of Dhaka)',
+            institutionEn: 'University of Dhaka',
+            institutionBn: 'ঢাকা বিশ্ববিদ্যালয় (University of Dhaka)',
             year: 2023,
           },
           {
             id: 'aaaa3333-3333-4aaa-baaa-333333333303',
             type: 'academic_certificate',
             title: 'এইচএসসি বিজ্ঞান বিভাগ (HSC Science)',
+            titleEn: 'HSC Science Division',
+            titleBn: 'এইচএসসি বিজ্ঞান বিভাগ (HSC Science)',
             institution: 'ঢাকা কলেজ',
+            institutionEn: 'Dhaka College',
+            institutionBn: 'ঢাকা কলেজ',
             year: 2018,
           },
         ],
@@ -201,8 +300,8 @@ async function main() {
           { sub: 'math_general', lvl: 'secondary_ssc' },
         ],
         areas: [
-          { district: 'dhaka', locality: 'উত্তরা ও এয়ারপোর্ট', radius: 6.0 },
-          { district: 'dhaka', locality: 'বনানী, গুলশান ও বারিধারা', radius: 7.0 },
+          { district: 'dhaka', locality: 'উত্তরা ও এয়ারপোর্ট', localityEn: 'Uttara & Airport', localityBn: 'উত্তরা ও এয়ারপোর্ট', radius: 6.0 },
+          { district: 'dhaka', locality: 'বনানী, গুলশান ও বারিধারা', localityEn: 'Banani, Gulshan & Baridhara', localityBn: 'বনানী, গুলশান ও বারিধারা', radius: 7.0 },
         ],
         availability: [
           { weekday: 6, start: '18:00:00', end: '22:00:00' },
@@ -217,9 +316,19 @@ async function main() {
         email: 'sadia.tutor@ogroniedu.com',
         phone: '+8801711000006',
         name: 'সাদিয়া রহমান (Sadia Rahman)',
+        nameEn: 'Sadia Rahman',
+        nameBn: 'সাদিয়া রহমান',
         avatarUrl: '/images/tutors/tutor-sadia.jpg',
         headline: 'ঢাকা বিশ্ববিদ্যালয় (ইংরেজি বিভাগ) | এইচএসসি ও এসএসসি ইংরেজি স্পেশালিস্ট',
+        headlineEn: 'University of Dhaka (English Dept) | HSC & SSC English Specialist',
+        headlineBn: 'ঢাকা বিশ্ববিদ্যালয় (ইংরেজি বিভাগ) | এইচএসসি ও এসএসসি ইংরেজি স্পেশালিস্ট',
         bio: `ঢাকা বিশ্ববিদ্যালয় থেকে ইংরেজি সাহিত্যে বিএ (অনার্স) ও এমএ সম্পন্ন করেছি। গ্রামারের কঠিন নিয়মাবলী সহজ বাংলা উদাহরণের মাধ্যমে প্রাঞ্জলভাবে উপস্থাপন করাই আমার স্পেশালিটি।
+
+ফ্রি-হ্যান্ড রাইটিং, রিডিং কমপ্রিহেনশন এবং বোর্ড পরীক্ষার স্টাইলিশ ও ত্রুটিমুক্ত উত্তর লেখার টেকনিক শেখাই। আইইএলটিএস বেসিক প্রস্তুতিও দিয়ে থাকি।`,
+        bioEn: `Completed B.A. (Hons) and M.A. in English from University of Dhaka. My teaching specialty is breaking down complex grammar rules into intuitive, easy-to-understand concepts.
+
+I focus on developing freehand creative writing, reading comprehension, and error-free examination presentation techniques, alongside fundamental IELTS preparation.`,
+        bioBn: `ঢাকা বিশ্ববিদ্যালয় থেকে ইংরেজি সাহিত্যে বিএ (অনার্স) ও এমএ সম্পন্ন করেছি। গ্রামারের কঠিন নিয়মাবলী সহজ বাংলা উদাহরণের মাধ্যমে প্রাঞ্জলভাবে উপস্থাপন করাই আমার স্পেশালিটি।
 
 ফ্রি-হ্যান্ড রাইটিং, রিডিং কমপ্রিহেনশন এবং বোর্ড পরীক্ষার স্টাইলিশ ও ত্রুটিমুক্ত উত্তর লেখার টেকনিক শেখাই। আইইএলটিএস বেসিক প্রস্তুতিও দিয়ে থাকি।`,
         yearsExp: 5,
@@ -230,64 +339,82 @@ async function main() {
             id: 'aaaa4444-4444-4aaa-baaa-444444444401',
             type: 'nid',
             title: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
+            titleEn: 'National ID (NID) — Election Commission Bangladesh',
+            titleBn: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
             institution: 'EC Bangladesh',
+            institutionEn: 'Election Commission Bangladesh',
+            institutionBn: 'বাংলাদেশ নির্বাচন কমিশন',
             year: 2020,
           },
           {
             id: 'aaaa4444-4444-4aaa-baaa-444444444402',
             type: 'degree',
             title: 'এম.এ. ইন ইংলিশ (M.A. in English)',
+            titleEn: 'M.A. in English',
+            titleBn: 'এম.এ. ইন ইংলিশ (M.A. in English)',
             institution: 'ঢাকা বিশ্ববিদ্যালয় (University of Dhaka)',
+            institutionEn: 'University of Dhaka',
+            institutionBn: 'ঢাকা বিশ্ববিদ্যালয় (University of Dhaka)',
             year: 2023,
           },
           {
             id: 'aaaa4444-4444-4aaa-baaa-444444444403',
             type: 'degree',
             title: 'বি.এ. অনার্স ইন ইংলিশ (B.A. Hons in English)',
+            titleEn: 'B.A. (Hons) in English',
+            titleBn: 'বি.এ. অনার্স ইন ইংলিশ (B.A. Hons in English)',
             institution: 'ঢাকা বিশ্ববিদ্যালয়',
+            institutionEn: 'University of Dhaka',
+            institutionBn: 'ঢাকা বিশ্ববিদ্যালয়',
             year: 2022,
           },
           {
             id: 'aaaa4444-4444-4aaa-baaa-444444444404',
             type: 'academic_certificate',
             title: 'এইচএসসি মানবিক বিভাগ (HSC Humanities)',
-            institution: 'হলি ক্রস কলেজ',
-            year: 2017,
+            titleEn: 'HSC Humanities Division',
+            titleBn: 'এইচএসসি মানবিক বিভাগ (HSC Humanities)',
+            institution: 'হলিক্রস কলেজ, ঢাকা',
+            institutionEn: 'Holy Cross College, Dhaka',
+            institutionBn: 'হলিক্রস কলেজ, ঢাকা',
+            year: 2018,
           },
         ],
         subjects: [
-          { sub: 'english', lvl: 'higher_hsc' },
-          { sub: 'english', lvl: 'secondary_ssc' },
-          { sub: 'english', lvl: 'admission_prep' },
+          { sub: 'english_1st', lvl: 'higher_hsc' },
+          { sub: 'english_2nd', lvl: 'higher_hsc' },
+          { sub: 'english_1st', lvl: 'secondary_ssc' },
         ],
         areas: [
-          { district: 'dhaka', locality: 'ধানমন্ডি ও লালমাটিয়া', radius: 5.0 },
-          { district: 'dhaka', locality: 'মোহাম্মদপুর ও শ্যামলী', radius: 5.0 },
-          { district: 'dhaka', locality: 'গুলশান ও বনানী', radius: 8.0 },
+          { district: 'dhaka', locality: 'মিরপুর ও পল্লবী', localityEn: 'Mirpur & Pallabi', localityBn: 'মিরপুর ও পল্লবী', radius: 5.0 },
+          { district: 'dhaka', locality: 'ধানমন্ডি, কলাবাগান ও পান্থপথ', localityEn: 'Dhanmondi, Kalabagan & Panthapath', localityBn: 'ধানমন্ডি, কলাবাগান ও পান্থপথ', radius: 5.5 },
         ],
         availability: [
-          { weekday: 6, start: '15:00:00', end: '19:00:00' },
-          { weekday: 1, start: '15:00:00', end: '19:00:00' },
-          { weekday: 3, start: '15:00:00', end: '19:00:00' },
-          { weekday: 4, start: '15:00:00', end: '19:00:00' },
+          { weekday: 6, start: '16:00:00', end: '20:00:00' },
+          { weekday: 0, start: '16:00:00', end: '20:00:00' },
+          { weekday: 1, start: '16:00:00', end: '20:00:00' },
+          { weekday: 3, start: '16:00:00', end: '20:00:00' },
         ],
         reviews: [],
       },
     ];
 
     for (const t of tutors) {
-      console.log(`Seeding tutor: ${t.name}...`);
-      // 1. User
+      // 1. Insert/update User
       await client.query(`
-        INSERT INTO users (id, email, phone_e164, password_hash, display_name, avatar_url, preferred_locale, status)
-        VALUES ($1, $2, $3, $4, $5, $6, 'bn', 'active')
+        INSERT INTO users (id, email, phone_e164, password_hash, display_name, display_name_en, display_name_bn, preferred_locale, status, avatar_url)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, 'bn', 'active', $8)
         ON CONFLICT (id) DO UPDATE
-        SET display_name = EXCLUDED.display_name,
-            avatar_url = EXCLUDED.avatar_url,
-            status = 'active';
-      `, [t.id, t.email, t.phone, DEMO_PASSWORD_HASH, t.name, t.avatarUrl]);
+        SET email = EXCLUDED.email,
+            phone_e164 = EXCLUDED.phone_e164,
+            display_name = EXCLUDED.display_name,
+            display_name_en = EXCLUDED.display_name_en,
+            display_name_bn = EXCLUDED.display_name_bn,
+            status = 'active',
+            avatar_url = EXCLUDED.avatar_url;
+      `, [t.id, t.email, t.phone, DEMO_PASSWORD_HASH, t.name, t.nameEn, t.nameBn, t.avatarUrl]);
 
-      // 2. Role
+      // 2. Assign Tutor Role
       if (tutorRoleId) {
         await client.query(`
           INSERT INTO user_roles (user_id, role_id)
@@ -296,35 +423,58 @@ async function main() {
         `, [t.id, tutorRoleId]);
       }
 
-      // 3. Tutor Profile
+      // 3. Insert/update Tutor Profile
       await client.query(`
         INSERT INTO tutor_profiles (
-          user_id, headline, bio, years_experience, teaching_modes,
-          hourly_rate_minor, currency, verification_status, publication_status, avatar_url, response_time_minutes
+          user_id, headline, bio, headline_en, headline_bn, bio_en, bio_bn,
+          years_experience, teaching_modes, hourly_rate_minor, currency,
+          verification_status, publication_status, response_time_minutes, avatar_url
         )
-        VALUES ($1, $2, $3, $4, $5, $6, 'BDT', 'approved', 'published', $7, 25)
+        VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'BDT', 'approved', 'published', 25, $11)
         ON CONFLICT (user_id) DO UPDATE
         SET headline = EXCLUDED.headline,
             bio = EXCLUDED.bio,
+            headline_en = EXCLUDED.headline_en,
+            headline_bn = EXCLUDED.headline_bn,
+            bio_en = EXCLUDED.bio_en,
+            bio_bn = EXCLUDED.bio_bn,
             years_experience = EXCLUDED.years_experience,
             teaching_modes = EXCLUDED.teaching_modes,
             hourly_rate_minor = EXCLUDED.hourly_rate_minor,
             verification_status = 'approved',
             publication_status = 'published',
-            avatar_url = EXCLUDED.avatar_url,
-            response_time_minutes = 25;
-      `, [t.id, t.headline, t.bio, t.yearsExp, t.modes, t.rateMinor, t.avatarUrl]);
+            response_time_minutes = 25,
+            avatar_url = EXCLUDED.avatar_url;
+      `, [
+        t.id,
+        t.headline,
+        t.bio,
+        t.headlineEn,
+        t.headlineBn,
+        t.bioEn,
+        t.bioBn,
+        t.yearsExp,
+        t.modes,
+        t.rateMinor,
+        t.avatarUrl,
+      ]);
 
       // 4. Qualifications
       for (const q of t.qualifications) {
         await client.query(`
-          INSERT INTO tutor_qualifications (id, tutor_user_id, qualification_type, title, institution, issued_year, review_status)
-          VALUES ($1, $2, $3, $4, $5, $6, 'approved')
+          INSERT INTO tutor_qualifications (id, tutor_user_id, qualification_type, title, title_en, title_bn, institution, institution_en, institution_bn, issued_year, review_status)
+          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, 'approved')
           ON CONFLICT (id) DO UPDATE
-          SET title = EXCLUDED.title,
+          SET qualification_type = EXCLUDED.qualification_type,
+              title = EXCLUDED.title,
+              title_en = EXCLUDED.title_en,
+              title_bn = EXCLUDED.title_bn,
               institution = EXCLUDED.institution,
+              institution_en = EXCLUDED.institution_en,
+              institution_bn = EXCLUDED.institution_bn,
+              issued_year = EXCLUDED.issued_year,
               review_status = 'approved';
-        `, [q.id, t.id, q.type, q.title, q.institution, q.year]);
+        `, [q.id, t.id, q.type, q.title, q.titleEn, q.titleBn, q.institution, q.institutionEn, q.institutionBn, q.year]);
       }
 
       // 5. Subjects
@@ -336,20 +486,21 @@ async function main() {
             INSERT INTO tutor_subjects (tutor_user_id, subject_id, education_level_id, rate_minor, currency)
             SELECT $1, $2, $3, $4, 'BDT'
             WHERE NOT EXISTS (
-              SELECT 1 FROM tutor_subjects
-              WHERE tutor_user_id = $1 AND subject_id = $2 AND education_level_id = $3
+              SELECT 1 FROM tutor_subjects ts
+              WHERE ts.tutor_user_id = $1 AND ts.subject_id = $2 AND ts.education_level_id = $3
             );
           `, [t.id, subId, lvlId, t.rateMinor]);
         }
       }
 
       // 6. Service Areas
+      // Clear existing areas for tutor to avoid duplicates
       await client.query('DELETE FROM tutor_service_areas WHERE tutor_user_id = $1', [t.id]);
       for (const a of t.areas) {
         await client.query(`
-          INSERT INTO tutor_service_areas (tutor_user_id, district_code, locality_name, radius_km)
-          VALUES ($1, $2, $3, $4);
-        `, [t.id, a.district, a.locality, a.radius]);
+          INSERT INTO tutor_service_areas (tutor_user_id, district_code, locality_name, locality_name_en, locality_name_bn, radius_km)
+          VALUES ($1, $2, $3, $4, $5, $6);
+        `, [t.id, a.district, a.locality, a.localityEn, a.localityBn, a.radius]);
       }
 
       // 7. Availability
@@ -365,24 +516,29 @@ async function main() {
       for (const r of t.reviews) {
         await client.query(`
           INSERT INTO reviews (
-            id, booking_id, reviewer_user_id, tutor_user_id, rating,
-            punctuality_rating, teaching_clarity_rating, subject_mastery_rating,
-            comment, moderation_status, tutor_response, tutor_responded_at
+            id, booking_id, reviewer_user_id, tutor_user_id, rating, punctuality_rating,
+            teaching_clarity_rating, subject_mastery_rating, comment, comment_en, comment_bn,
+            moderation_status, tutor_response, tutor_response_en, tutor_response_bn, tutor_responded_at, is_verified_booking
           )
           VALUES (
-            $1, 'bbbbbbbb-bbbb-4bbb-abbb-bbbbbbbbbb01', $2, $3, $4,
-            5, 5, 5,
-            $5, 'published', $6, now() - INTERVAL '1 day'
+            $1, 'bbbbbbbb-bbbb-4bbb-abbb-bbbbbbbbbb01', $2, $3, $4, $4, $4, $4,
+            $5, $6, $7, 'published', $8, $9, $10, NOW() - INTERVAL '1 day', true
           )
           ON CONFLICT (id) DO UPDATE
-          SET comment = EXCLUDED.comment,
-              tutor_response = EXCLUDED.tutor_response;
-        `, [r.id, r.reviewerId, t.id, r.rating, r.comment, r.reply]);
+          SET rating = EXCLUDED.rating,
+              comment = EXCLUDED.comment,
+              comment_en = EXCLUDED.comment_en,
+              comment_bn = EXCLUDED.comment_bn,
+              tutor_response = EXCLUDED.tutor_response,
+              tutor_response_en = EXCLUDED.tutor_response_en,
+              tutor_response_bn = EXCLUDED.tutor_response_bn,
+              moderation_status = 'published';
+        `, [r.id, r.reviewerId, t.id, r.rating, r.comment, r.commentEn, r.commentBn, r.reply, r.replyEn, r.replyBn]);
       }
     }
 
     await client.query('COMMIT');
-    console.log('Successfully seeded 4 authentic educators with full details!');
+    console.log('Successfully seeded rich bilingual Bangladeshi tutors with photos and full profile details!');
   } catch (err) {
     await client.query('ROLLBACK');
     console.error('Seeding error:', err);
@@ -392,7 +548,4 @@ async function main() {
   }
 }
 
-main().catch(err => {
-  console.error(err);
-  process.exit(1);
-});
+main().catch(console.error);

@@ -26,11 +26,17 @@ export interface PublicReviewView {
   teachingClarityRating: number | null;
   subjectMasteryRating: number | null;
   comment: string;
+  commentEn?: string | null;
+  commentBn?: string | null;
   isVerifiedBooking: boolean;
   tutorResponse: string | null;
+  tutorResponseEn?: string | null;
+  tutorResponseBn?: string | null;
   tutorRespondedAt: string | null;
   createdAt: string;
   reviewerDisplayName: string | null;
+  reviewerDisplayNameEn?: string | null;
+  reviewerDisplayNameBn?: string | null;
   moderationStatus?: string;
 }
 
@@ -213,13 +219,19 @@ export class ReviewsService {
       teachingClarityRating: review.teachingClarityRating ?? null,
       subjectMasteryRating: review.subjectMasteryRating ?? null,
       comment: review.comment,
+      commentEn: review.commentEn ?? review.comment,
+      commentBn: review.commentBn ?? review.comment,
       isVerifiedBooking: review.isVerifiedBooking,
       tutorResponse: review.tutorResponse ?? null,
+      tutorResponseEn: review.tutorResponseEn ?? review.tutorResponse ?? null,
+      tutorResponseBn: review.tutorResponseBn ?? review.tutorResponse ?? null,
       tutorRespondedAt: review.tutorRespondedAt
         ? new Date(review.tutorRespondedAt).toISOString()
         : null,
       createdAt: new Date(review.createdAt).toISOString(),
       reviewerDisplayName: review.reviewer?.displayName ?? null,
+      reviewerDisplayNameEn: review.reviewer?.displayNameEn ?? review.reviewer?.displayName ?? null,
+      reviewerDisplayNameBn: review.reviewer?.displayNameBn ?? review.reviewer?.displayName ?? null,
       ...(allowAll ? { moderationStatus: review.moderationStatus } : {}),
     }));
   }

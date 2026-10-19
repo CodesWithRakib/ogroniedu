@@ -1,13 +1,16 @@
-import { Injectable, Inject, forwardRef } from '@nestjs/common';
+import { Injectable, Inject, Optional, forwardRef } from '@nestjs/common';
 import { SessionSchedulingService } from './services/session-scheduling.service';
 import { SessionReschedulingService } from './services/session-rescheduling.service';
 import { SessionQueriesService } from './services/session-queries.service';
+import { SessionSeriesService } from './services/session-series.service';
 import {
   CreateSessionDto,
   CreateRecurringSessionsDto,
   RescheduleSessionDto,
   CancelSessionDto,
   GetSessionsQueryDto,
+  SeriesCancelDto,
+  SeriesRescheduleDto,
 } from './dto';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 
@@ -28,6 +31,9 @@ export class SchedulingService {
     private readonly rescheduling: SessionReschedulingService,
     @Inject(forwardRef(() => SessionQueriesService))
     private readonly queries: SessionQueriesService,
+    @Optional()
+    @Inject(forwardRef(() => SessionSeriesService))
+    private readonly series?: SessionSeriesService,
   ) {}
 
   scheduleSession(user: AuthenticatedUser, dto: CreateSessionDto) {
@@ -53,6 +59,21 @@ export class SchedulingService {
   }
   generateIcsCalendar(user: AuthenticatedUser, query: GetSessionsQueryDto) {
     return this.queries.generateIcsCalendar(user, query);
+  }
+  getSeries(seriesId: string, user: AuthenticatedUser) {
+    return this.requireSeries().getSeries(seriesId, user);
+  }
+  cancelSeries(seriesId: string, user: AuthenticatedUser, dto: SeriesCancelDto) {
+    return this.requireSeries().cancelSeries(seriesId, user, dto);
+  }
+  rescheduleSeries(seriesId: string, user: AuthenticatedUser, dto: SeriesRescheduleDto) {
+    return this.requireSeries().rescheduleSeries(seriesId, user, dto);
+  }
+  private requireSeries(): SessionSeriesService {
+    if (!this.series) {
+      throw new Error('SessionSeriesService is not configured.');
+    }
+    return this.series;
   }
   startSession(sessionId: string, user: AuthenticatedUser) {
     return this.rescheduling.startSession(sessionId, user);

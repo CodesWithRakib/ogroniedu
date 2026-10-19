@@ -4,6 +4,7 @@ import {
   Get,
   Param,
   Body,
+  Query,
   UseGuards,
   HttpCode,
   HttpStatus,
@@ -15,6 +16,7 @@ import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-
 import { BookingsService } from './bookings.service';
 import {
   CreateBookingRequestDto,
+  GetBookingRequestsQueryDto,
   RespondBookingRequestDto,
   WithdrawBookingRequestDto,
 } from './dto';
@@ -42,12 +44,24 @@ export class BookingsController {
   }
 
   @Get()
-  async getRequests(@CurrentUser() user: AuthenticatedUser) {
-    const list = await this.bookingsService.getRequests(user);
+  async getRequests(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query() query: GetBookingRequestsQueryDto,
+  ) {
+    const list = await this.bookingsService.getRequests(user, query);
     return {
       success: true,
       data: list,
     };
+  }
+
+  @Get(':id/history')
+  async getStatusHistory(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    const events = await this.bookingsService.getStatusHistory(id, user);
+    return { success: true, data: events };
   }
 
   @Get(':id')

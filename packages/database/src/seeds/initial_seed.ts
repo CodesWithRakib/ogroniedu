@@ -307,9 +307,10 @@ export async function runInitialSeed(
     `INSERT INTO tutor_profiles (
        user_id, headline, bio, headline_en, headline_bn, bio_en, bio_bn,
        years_experience, teaching_modes, hourly_rate_minor, currency,
+       avatar_url, response_time_minutes,
        verification_status, publication_status
      )
-     VALUES ($1, $2, $3, $2, $4, $3, $5, $6, $7, $8, $9, $10, $11)
+     VALUES ($1, $2, $3, $2, $4, $3, $5, $6, $7, $8, $9, $10, $11, $12, $13)
      ON CONFLICT (user_id) DO UPDATE
      SET headline = EXCLUDED.headline,
          bio = EXCLUDED.bio,
@@ -317,6 +318,8 @@ export async function runInitialSeed(
          headline_bn = EXCLUDED.headline_bn,
          bio_en = EXCLUDED.bio_en,
          bio_bn = EXCLUDED.bio_bn,
+         avatar_url = EXCLUDED.avatar_url,
+         response_time_minutes = EXCLUDED.response_time_minutes,
          verification_status = EXCLUDED.verification_status,
          publication_status = EXCLUDED.publication_status;`,
     [
@@ -326,9 +329,11 @@ export async function runInitialSeed(
       'বুয়েট সিভিল ইঞ্জিনিয়ারিং | এইচএসসি ও এসএসসি পদার্থবিজ্ঞান ও উচ্চতর গণিত অভিজ্ঞ শিক্ষক',
       '৫+ বছরের অভিজ্ঞতায় শিক্ষার্থীদের বেসিক ক্লিয়ার ও কনসেপচুয়াল লার্নিং নিশ্চিত করি।',
       5,
-      ['in_person', 'online'],
+      ['in_person', 'online', 'hybrid'],
       120000, // 1200 BDT in poisha (1200 * 100)
       'BDT',
+      '/tutors/tutor-rashed.jpg',
+      25,
       'approved',
       'published',
     ],
@@ -340,7 +345,11 @@ export async function runInitialSeed(
       id: 'aaaa1111-1111-4aaa-baaa-111111111101',
       type: 'nid',
       title: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
+      titleEn: 'National ID (NID) — Election Commission Bangladesh',
+      titleBn: 'জাতীয় পরিচয়পত্র (NID) — বাংলাদেশ নির্বাচন কমিশন',
       institution: 'EC Bangladesh',
+      institutionEn: 'Election Commission Bangladesh',
+      institutionBn: 'বাংলাদেশ নির্বাচন কমিশন',
       year: 2020,
       status: 'approved',
     },
@@ -348,7 +357,11 @@ export async function runInitialSeed(
       id: 'aaaa1111-1111-4aaa-baaa-111111111102',
       type: 'degree',
       title: 'বি.এস.সি. ইন সিভিল ইঞ্জিনিয়ারিং (B.Sc. in Civil Engineering)',
+      titleEn: 'B.Sc. in Civil Engineering',
+      titleBn: 'বি.এস.সি. ইন সিভিল ইঞ্জিনিয়ারিং (B.Sc. in Civil Engineering)',
       institution: 'বাংলাদেশ প্রকৌশল বিশ্ববিদ্যালয় (BUET)',
+      institutionEn: 'Bangladesh University of Engineering and Technology (BUET)',
+      institutionBn: 'বাংলাদেশ প্রকৌশল বিশ্ববিদ্যালয় (BUET)',
       year: 2023,
       status: 'approved',
     },
@@ -356,19 +369,75 @@ export async function runInitialSeed(
       id: 'aaaa1111-1111-4aaa-baaa-111111111103',
       type: 'academic_certificate',
       title: 'এইচএসসি বিজ্ঞান বিভাগ (HSC Science)',
+      titleEn: 'HSC Science Division',
+      titleBn: 'এইচএসসি বিজ্ঞান বিভাগ (HSC Science)',
       institution: 'নটর ডেম কলেজ, ঢাকা',
+      institutionEn: 'Notre Dame College, Dhaka',
+      institutionBn: 'নটর ডেম কলেজ, ঢাকা',
       year: 2018,
+      status: 'approved',
+    },
+    {
+      id: 'aaaa1111-1111-4aaa-baaa-111111111104',
+      type: 'academic_certificate',
+      title: 'এসএসসি বিজ্ঞান বিভাগ (SSC Science)',
+      titleEn: 'SSC Science Division',
+      titleBn: 'এসএসসি বিজ্ঞান বিভাগ (SSC Science)',
+      institution: 'মতিঝিল আইডিয়াল স্কুল অ্যান্ড কলেজ',
+      institutionEn: 'Motijheel Ideal School and College',
+      institutionBn: 'মতিঝিল আইডিয়াল স্কুল অ্যান্ড কলেজ',
+      year: 2016,
       status: 'approved',
     },
   ];
 
   for (const q of demoQualifications) {
     await client.query(
-      `INSERT INTO tutor_qualifications (id, tutor_user_id, qualification_type, title, institution, issued_year, review_status)
-       VALUES ($1, '22222222-2222-4222-b222-222222222222', $2, $3, $4, $5, $6)
+      `INSERT INTO tutor_qualifications (
+         id, tutor_user_id, qualification_type, title, title_en, title_bn,
+         institution, institution_en, institution_bn, issued_year, review_status
+       )
+       VALUES ($1, '22222222-2222-4222-b222-222222222222', $2, $3, $4, $5, $6, $7, $8, $9, $10)
        ON CONFLICT (id) DO UPDATE
-       SET title = EXCLUDED.title, institution = EXCLUDED.institution, review_status = EXCLUDED.review_status;`,
-      [q.id, q.type, q.title, q.institution, q.year, q.status],
+       SET title = EXCLUDED.title,
+           title_en = EXCLUDED.title_en,
+           title_bn = EXCLUDED.title_bn,
+           institution = EXCLUDED.institution,
+           institution_en = EXCLUDED.institution_en,
+           institution_bn = EXCLUDED.institution_bn,
+           review_status = EXCLUDED.review_status;`,
+      [q.id, q.type, q.title, q.titleEn, q.titleBn, q.institution, q.institutionEn, q.institutionBn, q.year, q.status],
+    );
+  }
+
+  // Seed service areas for Rashed Karim
+  await client.query(`DELETE FROM tutor_service_areas WHERE tutor_user_id = '22222222-2222-4222-b222-222222222222'`);
+  const demoAreas = [
+    { district: 'dhaka', locality: 'ধানমন্ডি ও কলাবাগান', localityEn: 'Dhanmondi & Kalabagan', localityBn: 'ধানমন্ডি ও কলাবাগান', radius: 5 },
+    { district: 'dhaka', locality: 'মোহাম্মদপুর ও লালমাটিয়া', localityEn: 'Mohammadpur & Lalmatia', localityBn: 'মোহাম্মদপুর ও লালমাটিয়া', radius: 6 },
+    { district: 'dhaka', locality: 'ফার্মগেট ও গ্রিন রোড', localityEn: 'Farmgate & Green Road', localityBn: 'ফার্মগেট ও গ্রিন রোড', radius: 4.5 },
+  ];
+  for (const a of demoAreas) {
+    await client.query(
+      `INSERT INTO tutor_service_areas (tutor_user_id, district_code, locality_name, locality_name_en, locality_name_bn, radius_km)
+       VALUES ('22222222-2222-4222-b222-222222222222', $1, $2, $3, $4, $5);`,
+      [a.district, a.locality, a.localityEn, a.localityBn, a.radius],
+    );
+  }
+
+  // Seed availability for Rashed Karim
+  await client.query(`DELETE FROM tutor_availability WHERE tutor_user_id = '22222222-2222-4222-b222-222222222222'`);
+  const demoAvailabilities = [
+    { weekday: 6, start: '17:00', end: '21:00' }, // Sat
+    { weekday: 1, start: '17:00', end: '21:00' }, // Mon
+    { weekday: 3, start: '17:00', end: '21:00' }, // Wed
+    { weekday: 5, start: '09:30', end: '12:30' }, // Fri
+  ];
+  for (const av of demoAvailabilities) {
+    await client.query(
+      `INSERT INTO tutor_availability (tutor_user_id, weekday, start_local, end_local, timezone, is_active)
+       VALUES ('22222222-2222-4222-b222-222222222222', $1, $2, $3, 'Asia/Dhaka', true);`,
+      [av.weekday, av.start, av.end],
     );
   }
 
@@ -485,4 +554,38 @@ export async function runInitialSeed(
      SET title = EXCLUDED.title, instructions = EXCLUDED.instructions;`,
     [ASSIGNMENT_ID, BOOKING_ID, PAST_SESSION_ID],
   );
+
+  // Demo Review for Tutor Rashed Karim from Student Abrar Ahmed
+  const REVIEW_ID = 'eeee1111-1111-4eee-beee-111111111101';
+  await client.query(
+    `INSERT INTO reviews (
+       id, booking_id, reviewer_user_id, tutor_user_id, rating, punctuality_rating,
+       teaching_clarity_rating, subject_mastery_rating, comment, comment_en, comment_bn,
+       moderation_status, tutor_response, tutor_response_en, tutor_response_bn, tutor_responded_at, is_verified_booking
+     )
+     VALUES (
+       $1, $2, '33333333-3333-4333-b333-333333333333', '22222222-2222-4222-b222-222222222222',
+       5, 5, 5, 5,
+       'রাশেদ ভাইয়ার স্থির তড়িৎ ও গতিবিদ্যার ক্লাসগুলো অসাধারণ ছিল। জটিল কনসেপ্টগুলো খুব সহজ বাস্তব উদাহরণ দিয়ে মাথায় ঢুকিয়ে দেন। টেস্ট পরীক্ষায় ফিজিক্সে হাইয়েস্ট পেয়েছি!',
+       'Rashed brother''s electricity and dynamics classes were extraordinary. He explains complex concepts with relatable real-life examples. I scored the highest in Physics in my college test exams!',
+       'রাশেদ ভাইয়ার স্থির তড়িৎ ও গতিবিদ্যার ক্লাসগুলো অসাধারণ ছিল। জটিল কনসেপ্টগুলো খুব সহজ বাস্তব উদাহরণ দিয়ে মাথায় ঢুকিয়ে দেন। টেস্ট পরীক্ষায় ফিজিক্সে হাইয়েস্ট পেয়েছি!',
+       'published',
+       'অনেক ধন্যবাদ আবরার! তোমার নিয়মিত প্র্যাকটিস এবং নিষ্ঠাই ভালো রেজাল্টের মূল কারণ। শুভকামনা!',
+       'Thank you so much Abrar! Your consistent practice and dedication are the real keys to your great result. Best wishes!',
+       'অনেক ধন্যবাদ আবরার! তোমার নিয়মিত প্র্যাকটিস এবং নিষ্ঠাই ভালো রেজাল্টের মূল কারণ। শুভকামনা!',
+       now() - INTERVAL '1 day',
+       true
+     )
+     ON CONFLICT (id) DO UPDATE
+     SET rating = EXCLUDED.rating,
+         comment = EXCLUDED.comment,
+         comment_en = EXCLUDED.comment_en,
+         comment_bn = EXCLUDED.comment_bn,
+         tutor_response = EXCLUDED.tutor_response,
+         tutor_response_en = EXCLUDED.tutor_response_en,
+         tutor_response_bn = EXCLUDED.tutor_response_bn,
+         moderation_status = 'published';`,
+    [REVIEW_ID, BOOKING_ID],
+  );
 }
+

@@ -10,6 +10,7 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   Inject,
+  GoneException,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
@@ -100,24 +101,13 @@ export class PaymentsController {
 
   @Post('orders/:orderId/sandbox-confirm')
   @UseGuards(AuthGuard)
-  @HttpCode(HttpStatus.OK)
-  async sandboxConfirmOrder(
-    @CurrentUser() user: AuthenticatedUser,
-    @Param('orderId', ParseUUIDPipe) orderId: string,
-    @Body() body?: { provider?: string },
-    @Headers('x-request-id') requestId?: string,
-  ) {
-    const result = await this.paymentsService.sandboxConfirmOrder(
-      user,
-      orderId,
-      body?.provider,
-      requestId,
+  @HttpCode(HttpStatus.GONE)
+  async sandboxConfirmOrder(): Promise<never> {
+    // The client-triggerable sandbox confirmation path fabricated provider
+    // success and bypassed the authoritative webhook. It is intentionally gone.
+    throw new GoneException(
+      'Sandbox payment confirmation was removed. Payment confirmation is only accepted from a verified provider webhook.',
     );
-    return {
-      success: true,
-      message: 'Sandbox payment verified and processed successfully.',
-      data: result,
-    };
   }
 
   @Get('orders')

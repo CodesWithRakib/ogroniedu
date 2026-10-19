@@ -38,6 +38,9 @@ export function TutorCard({
 }) {
   const dict = getDictionary(locale);
   const isBn = locale === 'bn';
+  const resolvedDisplayName = isBn
+    ? tutor.displayNameBn || tutor.displayNameEn || tutor.displayName || ''
+    : tutor.displayNameEn || tutor.displayNameBn || tutor.displayName || '';
   const { headline, bio } = localizedTutorFields(locale, tutor);
 
   const hourlyRate = tutor.hourlyRateMinor
@@ -48,8 +51,8 @@ export function TutorCard({
     : null;
 
   // Extract initials for modern avatar
-  const initials = tutor.displayName
-    ? tutor.displayName
+  const initials = resolvedDisplayName
+    ? resolvedDisplayName
         .split(' ')
         .filter(Boolean)
         .map((n) => n[0])
@@ -99,7 +102,7 @@ export function TutorCard({
             {tutor.avatarUrl ? (
               <img
                 src={tutor.avatarUrl}
-                alt={tutor.displayName}
+                alt={resolvedDisplayName}
                 className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl sm:rounded-3xl object-cover ring-2 ring-blue-100 shadow-xs group-hover:ring-blue-400 transition-all"
               />
             ) : (
@@ -122,7 +125,7 @@ export function TutorCard({
                   href={`/${locale}/tutors/${tutor.id}`}
                   className="text-base sm:text-lg xl:text-xl font-black text-foreground hover:text-blue-600 transition-colors tracking-tight line-clamp-2 leading-tight"
                 >
-                  {tutor.displayName}
+                  {resolvedDisplayName}
                 </Link>
 
                 {headline && (

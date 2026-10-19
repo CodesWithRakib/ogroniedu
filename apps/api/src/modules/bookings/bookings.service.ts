@@ -12,6 +12,7 @@ import {
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingEntity } from './entities/booking.entity';
+import { BookingStatusEventEntity } from './entities/booking-status-event.entity';
 import { TutorProfileEntity } from '../tutors/entities/tutor-profile.entity';
 import { TutorSubjectEntity } from '../tutors/entities/tutor-subject.entity';
 import { GuardianStudentLinkEntity } from '../guardians/entities/guardian-student-link.entity';
@@ -22,11 +23,18 @@ import { AuditService } from '../audit/audit.service';
 import { NotificationService } from '../notifications/notification.service';
 import {
   CreateBookingRequestDto,
+  GetBookingRequestsQueryDto,
   RespondBookingRequestDto,
   WithdrawBookingRequestDto,
 } from './dto';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { GuardianAccessService } from '../guardians/guardian-access.service';
+import { isAdminRole } from '../../common/auth/role.utils';
+import {
+  applyBookingTransition,
+  transitionHistoryValues,
+} from './utils/booking-lifecycle';
+import { isZeroPriceBooking } from './constants/booking-status-transitions';
 
 @Injectable()
 export class BookingsService {
@@ -54,46 +62,37 @@ export class BookingsService {
     @Optional()
     @Inject(NotificationService)
     private readonly notificationService?: NotificationService,
+    @Optional()
+    @InjectRepository(BookingStatusEventEntity)
+    private readonly statusEventRepo?: Repository<BookingStatusEventEntity>,
   ) {}
 
   /**
-   * Create an initial booking request from guardian or adult student
-   * Enforces: Anti-spam duplicate prevention, unpublished tutor rejection,
-   *           and relationship authorization.
+   * Create an initial booking request from a guardian or adult student.
+   * Enforces anti-spam, unpublished-tutor rejection, and relationship
+   * authorization. The partial unique index is the final race guard.
    */
   async createRequest(
     requester: AuthenticatedUser,
     dto: CreateBookingRequestDto,
   ): Promise<BookingEntity> {
-    // 1. Prevent requesting oneself
     if (dto.tutorId === requester.id || dto.tutorId === dto.studentId) {
       throw new BadRequestException('Cannot request tutoring sessions from yourself.');
     }
 
-    // 2. Requester Relationship Verification
     const requesterUser = await this.userRepo.findOne({ where: { id: requester.id } });
     if (!requesterUser) {
       throw new NotFoundException('Requester account not found.');
     }
 
     if (requester.id !== dto.studentId) {
-      // Must be an active guardian
-      const activeLink = await this.linkRepo.findOne({
-        where: {
-          guardianUserId: requester.id,
-          studentUserId: dto.studentId,
-          status: 'active',
-        },
-      });
-
-      if (!activeLink) {
-        throw new ForbiddenException(
-          'Access denied: You are not authorized to create requests for this student (no active guardian link).',
-        );
-      }
+      await this.guardianAccess.assertActiveLink(
+        requester.id,
+        dto.studentId,
+        'Access denied: You are not authorized to create requests for this student (no active guardian link).',
+      );
     }
 
-    // 3. Target Tutor Verification & Publication Check
     const tutorProfile = await this.tutorProfileRepo.findOne({
       where: { userId: dto.tutorId },
     });
@@ -108,7 +107,6 @@ export class BookingsService {
       );
     }
 
-    // 4. Verify Subject and Level
     const subject = await this.subjectRepo.findOne({ where: { id: dto.subjectId } });
     if (!subject) {
       throw new NotFoundException(`Subject not found: ${dto.subjectId}`);
@@ -119,7 +117,6 @@ export class BookingsService {
       throw new NotFoundException(`Education level not found: ${dto.educationLevelId}`);
     }
 
-    // 5. Anti-Spam & Duplicate Request Invariant
     const existingActiveRequest = await this.bookingRepo.findOne({
       where: {
         studentUserId: dto.studentId,
@@ -135,7 +132,6 @@ export class BookingsService {
       );
     }
 
-    // 6. Pricing Determination
     const tutorSubject = await this.tutorSubjectRepo.findOne({
       where: {
         tutorUserId: dto.tutorId,
@@ -145,9 +141,8 @@ export class BookingsService {
 
     const priceMinor = tutorSubject?.rateMinor
       ? tutorSubject.rateMinor
-      : tutorProfile.hourlyRateMinor || '50000'; // Default 500 BDT
+      : tutorProfile.hourlyRateMinor || '50000';
 
-    // 7. Persist Booking Entity
     const booking = this.bookingRepo.create({
       requesterUserId: requester.id,
       studentUserId: dto.studentId,
@@ -168,9 +163,32 @@ export class BookingsService {
       },
     });
 
-    const saved = await this.bookingRepo.save(booking);
+    let saved: BookingEntity;
+    try {
+      saved = await this.bookingRepo.save(booking);
+    } catch (err: unknown) {
+      const code =
+        typeof err === 'object' && err !== null && 'code' in err
+          ? (err as { code: unknown }).code
+          : undefined;
+      if (code === '23505') {
+        throw new ConflictException(
+          'A pending tutoring request for this student, tutor, and subject already exists.',
+        );
+      }
+      throw err;
+    }
 
-    // 8. Global Audit Trail
+    await this.recordStatusEvent(saved.id, {
+      from: null,
+      to: 'requested',
+      changed: true,
+    }, {
+      actorUserId: requester.id,
+      actorRole: requester.roles?.[0] ?? 'student',
+      metadata: { tutorId: dto.tutorId, studentId: dto.studentId },
+    });
+
     await this.auditService.record({
       actorUserId: requester.id,
       action: 'booking.request.created',
@@ -184,7 +202,6 @@ export class BookingsService {
       },
     });
 
-    // 9. Dispatch In-App Notification to Tutor
     if (this.notificationService) {
       try {
         await this.notificationService.dispatch({
@@ -206,34 +223,57 @@ export class BookingsService {
   }
 
   /**
-   * List requests accessible to current user
+   * List requests accessible to the current user, optionally scoped to one
+   * child. A supplied `studentId` is revalidated server-side.
    */
-  async getRequests(user: AuthenticatedUser): Promise<BookingEntity[]> {
-    // Collect all student IDs user can access as guardian
+  async getRequests(
+    user: AuthenticatedUser,
+    query: GetBookingRequestsQueryDto = {},
+  ): Promise<BookingEntity[]> {
     const childIds = await this.guardianAccess.findActiveStudentIds(user.id);
-
     const allAllowedStudentIds = [user.id, ...childIds];
 
-    return await this.bookingRepo
+    if (query.studentId) {
+      const allowed =
+        isAdminRole(user) || query.studentId === user.id || childIds.includes(query.studentId);
+      if (!allowed) {
+        throw new ForbiddenException(
+          'Access denied: You are not an active guardian of this student.',
+        );
+      }
+    }
+
+    const qb = this.bookingRepo
       .createQueryBuilder('booking')
       .leftJoinAndSelect('booking.subject', 'subject')
       .leftJoinAndSelect('booking.educationLevel', 'educationLevel')
       .leftJoinAndSelect('booking.requesterUser', 'requester')
       .leftJoinAndSelect('booking.studentUser', 'student')
       .leftJoinAndSelect('booking.tutorProfile', 'tutorProfile')
-      .leftJoinAndSelect('tutorProfile.user', 'tutorUser')
-      .where('booking.requesterUserId = :userId', { userId: user.id })
-      .orWhere('booking.tutorUserId = :userId', { userId: user.id })
-      .orWhere('booking.studentUserId IN (:...studentIds)', {
-        studentIds: allAllowedStudentIds,
-      })
-      .orderBy('booking.createdAt', 'DESC')
-      .getMany();
+      .leftJoinAndSelect('tutorProfile.user', 'tutorUser');
+
+    if (query.role === 'tutor') {
+      qb.where('booking.tutorUserId = :userId', { userId: user.id });
+    } else if (query.studentId) {
+      qb.where('booking.studentUserId = :studentId', { studentId: query.studentId });
+    } else {
+      qb.where('booking.requesterUserId = :userId', { userId: user.id })
+        .orWhere('booking.tutorUserId = :userId', { userId: user.id })
+        .orWhere('booking.studentUserId IN (:...studentIds)', {
+          studentIds: allAllowedStudentIds,
+        });
+    }
+
+    if (query.studentId && query.role !== 'tutor') {
+      qb.andWhere('booking.studentUserId = :studentId', { studentId: query.studentId });
+    }
+    if (query.status) {
+      qb.andWhere('booking.status = :status', { status: query.status });
+    }
+
+    return await qb.orderBy('booking.createdAt', 'DESC').getMany();
   }
 
-  /**
-   * Get single booking request with ownership guard
-   */
   async getRequestById(requestId: string, user: AuthenticatedUser): Promise<BookingEntity> {
     const booking = await this.bookingRepo.findOne({
       where: { id: requestId },
@@ -252,7 +292,6 @@ export class BookingsService {
       throw new NotFoundException(`Booking request not found: ${requestId}`);
     }
 
-    // Ownership guard: participant, admin, or active guardian (single rule home)
     await this.guardianAccess.assertCanAccessBooking(
       user,
       booking,
@@ -261,9 +300,19 @@ export class BookingsService {
     return booking;
   }
 
-  /**
-   * Withdraw an active request (Requester only)
-   */
+  /** Append-only status history for one booking (authorized readers only). */
+  async getStatusHistory(
+    requestId: string,
+    user: AuthenticatedUser,
+  ): Promise<BookingStatusEventEntity[]> {
+    await this.getRequestById(requestId, user);
+    if (!this.statusEventRepo) return [];
+    return this.statusEventRepo.find({
+      where: { bookingId: requestId },
+      order: { createdAt: 'ASC' },
+    });
+  }
+
   async withdrawRequest(
     requestId: string,
     requester: AuthenticatedUser,
@@ -275,24 +324,33 @@ export class BookingsService {
       throw new NotFoundException(`Booking request not found: ${requestId}`);
     }
 
-    // Ownership guard: only requester can withdraw
     if (booking.requesterUserId !== requester.id) {
       throw new ForbiddenException('Only the requester can withdraw this booking request.');
     }
 
     if (booking.status !== 'requested') {
       throw new BadRequestException(
-        `Cannot withdraw request in current status '${booking.status}'.`,
+        `Only pending requests can be withdrawn (current status: '${booking.status}').`,
       );
     }
 
-    booking.status = 'cancelled';
+    const transition = applyBookingTransition(booking, 'cancelled', {
+      actorUserId: requester.id,
+      reason: dto?.reason,
+    });
+
     booking.serviceAgreementSnapshot = {
       ...booking.serviceAgreementSnapshot,
       withdrawnReason: dto?.reason,
     };
 
     const saved = await this.bookingRepo.save(booking);
+
+    await this.recordStatusEvent(saved.id, transition, {
+      actorUserId: requester.id,
+      actorRole: requester.roles?.[0] ?? 'student',
+      reason: dto?.reason,
+    });
 
     await this.auditService.record({
       actorUserId: requester.id,
@@ -302,7 +360,6 @@ export class BookingsService {
       reason: dto?.reason,
     });
 
-    // Notify tutor of cancellation
     if (this.notificationService) {
       try {
         await this.notificationService.dispatch({
@@ -322,9 +379,6 @@ export class BookingsService {
     return saved;
   }
 
-  /**
-   * Tutor responds to request (Accept or Decline)
-   */
   async respondToRequest(
     requestId: string,
     tutor: AuthenticatedUser,
@@ -339,16 +393,9 @@ export class BookingsService {
       throw new NotFoundException(`Booking request not found: ${requestId}`);
     }
 
-    // Ownership guard: only assigned tutor can respond
     if (booking.tutorUserId !== tutor.id) {
       throw new ForbiddenException(
         'Only the assigned tutor can accept or decline this booking request.',
-      );
-    }
-
-    if (booking.status !== 'requested') {
-      throw new BadRequestException(
-        `Cannot respond to request in current status '${booking.status}'.`,
       );
     }
 
@@ -356,34 +403,38 @@ export class BookingsService {
     const tutorName = tutorUser?.displayName || 'Your Tutor';
 
     if (dto.action === 'accept') {
-      booking.status = 'accepted';
-    } else {
-      booking.status = 'declined';
-      booking.serviceAgreementSnapshot = {
-        ...booking.serviceAgreementSnapshot,
-        declinedReason: dto.reasonNotes,
-      };
-    }
+      // Paid bookings stop at awaiting_payment until a verified payment
+      // confirms them. Zero-price bookings have no payment to wait for, so the
+      // server confirms them directly through the transition map.
+      const targetStatus = isZeroPriceBooking(booking.pricePerSessionMinor)
+        ? 'confirmed'
+        : 'awaiting_payment';
+      const transition = applyBookingTransition(booking, targetStatus, {
+        actorUserId: tutor.id,
+        reason: dto.reasonNotes,
+      });
+      const saved = await this.bookingRepo.save(booking);
+      await this.recordStatusEvent(saved.id, transition, {
+        actorUserId: tutor.id,
+        actorRole: 'tutor',
+        reason: dto.reasonNotes,
+      });
+      await this.auditService.record({
+        actorUserId: tutor.id,
+        action: 'booking.request.accepted',
+        resourceType: 'booking',
+        resourceId: requestId,
+        reason: dto.reasonNotes,
+        safeMetadata: { targetStatus },
+      });
 
-    const saved = await this.bookingRepo.save(booking);
-
-    await this.auditService.record({
-      actorUserId: tutor.id,
-      action: dto.action === 'accept' ? 'booking.request.accepted' : 'booking.request.declined',
-      resourceType: 'booking',
-      resourceId: requestId,
-      reason: dto.reasonNotes,
-    });
-
-    // Notify requester
-    if (this.notificationService) {
-      try {
+      if (this.notificationService) {
         const recipientRole: 'student' | 'guardian' =
           booking.requesterUserId === booking.studentUserId ? 'student' : 'guardian';
-        if (dto.action === 'accept') {
+        try {
           await this.notificationService.dispatch({
             userId: booking.requesterUserId,
-            eventType: 'booking.accepted',
+            eventType: targetStatus === 'confirmed' ? 'booking.confirmed' : 'booking.accepted',
             recipientRole,
             payload: {
               bookingId: booking.id,
@@ -391,23 +442,83 @@ export class BookingsService {
               subjectName: booking.subject?.nameEn || 'Subject',
             },
           });
-        } else {
-          await this.notificationService.dispatch({
-            userId: booking.requesterUserId,
-            eventType: 'booking.declined',
-            recipientRole,
-            payload: {
-              bookingId: booking.id,
-              tutorName,
-              reason: dto.reasonNotes || 'Tutor unavailable',
-            },
-          });
+        } catch (err) {
+          this.logger.warn(`Failed to dispatch booking response notification: ${err}`);
         }
+      }
+      return saved;
+    }
+
+    const transition = applyBookingTransition(booking, 'declined', {
+      actorUserId: tutor.id,
+      reason: dto.reasonNotes,
+    });
+    booking.serviceAgreementSnapshot = {
+      ...booking.serviceAgreementSnapshot,
+      declinedReason: dto.reasonNotes,
+    };
+    const saved = await this.bookingRepo.save(booking);
+
+    await this.recordStatusEvent(saved.id, transition, {
+      actorUserId: tutor.id,
+      actorRole: 'tutor',
+      reason: dto.reasonNotes,
+    });
+
+    await this.auditService.record({
+      actorUserId: tutor.id,
+      action: 'booking.request.declined',
+      resourceType: 'booking',
+      resourceId: requestId,
+      reason: dto.reasonNotes,
+    });
+
+    if (this.notificationService) {
+      const recipientRole: 'student' | 'guardian' =
+        booking.requesterUserId === booking.studentUserId ? 'student' : 'guardian';
+      try {
+        await this.notificationService.dispatch({
+          userId: booking.requesterUserId,
+          eventType: 'booking.declined',
+          recipientRole,
+          payload: {
+            bookingId: booking.id,
+            tutorName,
+            reason: dto.reasonNotes || 'Tutor unavailable',
+          },
+        });
       } catch (err) {
         this.logger.warn(`Failed to dispatch booking response notification: ${err}`);
       }
     }
 
     return saved;
+  }
+
+  private async recordStatusEvent(
+    bookingId: string,
+    transition: { from: string | null; to: string; changed: boolean },
+    context: {
+      actorUserId?: string | null;
+      actorRole?: string | null;
+      reason?: string | null;
+      metadata?: Record<string, unknown>;
+    } = {},
+  ): Promise<void> {
+    if (!this.statusEventRepo) return;
+    try {
+      await this.statusEventRepo.save(
+        this.statusEventRepo.create(
+          transitionHistoryValues(
+            bookingId,
+            transition as Parameters<typeof transitionHistoryValues>[1],
+            context,
+          ),
+        ),
+      );
+    } catch (err) {
+      // History must never break the primary transaction; log and continue.
+      this.logger.warn(`Failed to record booking status event for ${bookingId}: ${err}`);
+    }
   }
 }

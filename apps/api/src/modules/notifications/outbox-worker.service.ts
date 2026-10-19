@@ -145,17 +145,103 @@ export class OutboxWorkerService {
       }
 
       case 'session.scheduled':
+        // Scheduling is not a reminder. Notify both parties that the class is
+        // on the calendar (booking.confirmed is the registered event).
         if (payload.studentUserId) {
           await this.notificationService.dispatch({
             userId: String(payload.studentUserId),
             recipientRole: 'student',
-            eventType: 'session.reminder',
+            eventType: 'booking.confirmed',
             payload: {
-              sessionId: event.aggregateId,
-              startsAt: String(payload.startsAt || ''),
+              bookingId: String(payload.bookingId || event.aggregateId),
+              subjectName: String(payload.subjectName || 'Tutoring Session'),
+              nextSessionTime: String(payload.startsAt || ''),
             },
           });
         }
+        if (payload.tutorUserId) {
+          await this.notificationService.dispatch({
+            userId: String(payload.tutorUserId),
+            recipientRole: 'tutor',
+            eventType: 'booking.confirmed',
+            payload: {
+              bookingId: String(payload.bookingId || event.aggregateId),
+              subjectName: String(payload.subjectName || 'Tutoring Session'),
+              nextSessionTime: String(payload.startsAt || ''),
+            },
+          });
+        }
+        break;
+
+      case 'session.reminder': {
+        const subjectName = String(payload.subjectName || 'Tutoring Session');
+        const startTime = String(payload.localStart || payload.startsAt || '');
+        const recipients: Array<{ id: string; role: 'student' | 'tutor' }> = [];
+        if (payload.studentUserId) {
+          recipients.push({ id: String(payload.studentUserId), role: 'student' });
+        }
+        if (payload.tutorUserId) {
+          recipients.push({ id: String(payload.tutorUserId), role: 'tutor' });
+        }
+        for (const recipient of recipients) {
+          await this.notificationService.dispatch({
+            userId: recipient.id,
+            recipientRole: recipient.role,
+            eventType: 'session.reminder',
+            payload: {
+              sessionId: String(payload.sessionId || event.aggregateId),
+              bookingId: String(payload.bookingId || ''),
+              subjectName,
+              startTime,
+            },
+          });
+        }
+        break;
+      }
+
+      case 'booking.cancelled': {
+        const recipients: Array<{ id: string; role: 'student' | 'tutor' | 'guardian' }> = [];
+        if (payload.studentUserId) {
+          recipients.push({ id: String(payload.studentUserId), role: 'student' });
+        }
+        if (payload.tutorUserId) {
+          recipients.push({ id: String(payload.tutorUserId), role: 'tutor' });
+        }
+        if (payload.requesterUserId && payload.requesterUserId !== payload.studentUserId) {
+          recipients.push({ id: String(payload.requesterUserId), role: 'guardian' });
+        }
+        for (const recipient of recipients) {
+          await this.notificationService.dispatch({
+            userId: recipient.id,
+            recipientRole: recipient.role,
+            eventType: 'booking.cancelled',
+            payload: {
+              bookingId: String(payload.bookingId || event.aggregateId),
+              reason: String(payload.reason || 'Session cancelled'),
+            },
+          });
+        }
+        break;
+      }
+
+      case 'booking.declined':
+        if (payload.requesterUserId) {
+          await this.notificationService.dispatch({
+            userId: String(payload.requesterUserId),
+            recipientRole: String(payload.recipientRole || 'student') as 'student' | 'guardian',
+            eventType: 'booking.declined',
+            payload: {
+              bookingId: String(payload.bookingId || event.aggregateId),
+              tutorName: String(payload.tutorName || 'Tutor'),
+              reason: String(payload.reason || 'Tutor unavailable'),
+            },
+          });
+        }
+        break;
+
+      case 'session.cancelled':
+        // Direct notification is sent by the cancellation service; this outbox
+        // row is retained for auditing/replay without duplicating delivery.
         break;
 
       default:

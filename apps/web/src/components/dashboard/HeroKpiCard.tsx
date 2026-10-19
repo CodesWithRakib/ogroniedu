@@ -30,8 +30,8 @@ export function HeroKpiCard({
     <div
       data-testid={testId}
       className={cn(
-        'group relative flex flex-col justify-between rounded-2xl p-5 sm:p-6 transition-[border-color,box-shadow,transform] duration-200 select-none bg-card border border-border hover:shadow-xs hover:border-input hover:-translate-y-0.5',
-        isHero && 'border-primary/25 bg-gradient-to-b from-primary-soft/40 via-card to-card',
+        'group relative flex flex-col justify-between rounded-2xl p-5 sm:p-6 transition-[border-color,box-shadow,transform] duration-200 select-none bg-card border border-border hover:shadow-xs hover:border-primary/40 hover:-translate-y-0.5',
+        isHero && 'border-primary/30 bg-gradient-to-b from-primary-soft/50 via-card to-card shadow-xs',
       )}
     >
       {/* Top row: Title + Icon + Arrow indicator */}
@@ -41,7 +41,9 @@ export function HeroKpiCard({
             <div
               className={cn(
                 'h-8 w-8 rounded-lg flex items-center justify-center shrink-0 transition-colors',
-                isHero ? 'bg-primary-soft/70 text-primary' : 'bg-surface text-muted-foreground',
+                isHero
+                  ? 'bg-primary-soft text-primary'
+                  : 'bg-surface text-muted-foreground group-hover:text-primary group-hover:bg-primary-soft/60',
               )}
             >
               <Icon className="h-4 w-4" aria-hidden="true" />
@@ -52,7 +54,7 @@ export function HeroKpiCard({
           </span>
         </div>
 
-        <div className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0 text-muted-foreground/70 group-hover:text-foreground group-hover:bg-surface-hover transition-colors">
+        <div className="h-7 w-7 rounded-lg flex items-center justify-center shrink-0 text-muted-foreground/70 group-hover:text-primary group-hover:bg-primary-soft transition-colors">
           <ArrowUpRight
             className="h-4 w-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5"
             aria-hidden="true"
@@ -72,8 +74,10 @@ export function HeroKpiCard({
         <div>
           <div
             className={cn(
-              'inline-flex items-center gap-1.5 text-[11px] font-medium w-fit tracking-tight',
-              isHero ? 'text-primary-soft-foreground' : 'text-muted-foreground',
+              'inline-flex items-center gap-1.5 text-[11px] font-medium w-fit tracking-tight px-2 py-0.5 rounded-md',
+              isHero
+                ? 'bg-primary-soft text-primary font-semibold'
+                : 'text-muted-foreground bg-surface',
             )}
           >
             <TrendingUp className="h-3 w-3 shrink-0" aria-hidden="true" />

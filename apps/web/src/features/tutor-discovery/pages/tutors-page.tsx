@@ -74,13 +74,15 @@ function filtersFromParams(params: URLSearchParams): TutorFiltersValue {
 function toCard(t: TutorSearchItem): TutorCardData {
   return {
     id: t.id,
-    displayName: t.displayName,
+    displayName: t.displayName ?? (t.displayNameBn || t.displayNameEn || ''),
+    displayNameEn: t.displayNameEn ?? t.displayName ?? null,
+    displayNameBn: t.displayNameBn ?? null,
     avatarUrl: t.avatarUrl ?? null,
-    headline: t.headline,
-    bio: t.bio,
-    headlineEn: t.headlineEn ?? t.headline,
+    headline: t.headlineEn ?? t.headline ?? null,
+    bio: t.bioEn ?? t.bio ?? null,
+    headlineEn: t.headlineEn ?? t.headline ?? null,
     headlineBn: t.headlineBn ?? null,
-    bioEn: t.bioEn ?? t.bio,
+    bioEn: t.bioEn ?? t.bio ?? null,
     bioBn: t.bioBn ?? null,
     yearsExperience: t.yearsExperience,
     teachingModes: t.teachingModes,
@@ -109,7 +111,8 @@ function toCard(t: TutorSearchItem): TutorCardData {
       districtCode: a.districtCode,
       districtNameEn: a.districtNameEn,
       districtNameBn: a.districtNameBn,
-      localityName: a.localityName,
+      localityNameEn: a.localityNameEn,
+      localityNameBn: a.localityNameBn,
     })),
   };
 }

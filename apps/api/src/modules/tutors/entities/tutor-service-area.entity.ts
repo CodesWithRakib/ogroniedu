@@ -25,6 +25,12 @@ export class TutorServiceAreaEntity {
   @Column({ name: 'locality_name', type: 'text', nullable: true })
   localityName!: string | null;
 
+  @Column({ name: 'locality_name_en', type: 'text', nullable: true })
+  localityNameEn?: string | null;
+
+  @Column({ name: 'locality_name_bn', type: 'text', nullable: true })
+  localityNameBn?: string | null;
+
   @Column({ name: 'radius_km', type: 'numeric', precision: 5, scale: 2, nullable: true })
   radiusKm!: number | null;
 

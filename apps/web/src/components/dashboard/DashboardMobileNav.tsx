@@ -1,7 +1,8 @@
 'use client';
 
 import Link from 'next/link';
-import { GraduationCap, LogOut, X } from 'lucide-react';
+import { LogOut, X } from 'lucide-react';
+import { OgroniEduBrand } from '@/components/brand/OgroniEduBrand';
 import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
 import { cn } from '@/lib/utils';
@@ -34,7 +35,7 @@ export function DashboardMobileNav({
   return (
     <>
       {drawerOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex">
+        <div className="fixed inset-0 z-[70] lg:hidden flex">
           {/* Backdrop */}
           <div
             className="fixed inset-0 bg-black/60 backdrop-blur-xs transition-opacity animate-in fade-in"
@@ -43,19 +44,9 @@ export function DashboardMobileNav({
           />
 
           {/* Drawer Menu */}
-          <div className="relative z-50 w-72 max-w-[85vw] h-full bg-card border-r border-border flex flex-col p-4 shadow-2xl animate-in slide-in-from-left duration-200">
+          <div className="relative z-[70] w-72 max-w-[85vw] h-full bg-card border-r border-border flex flex-col p-4 shadow-2xl animate-in slide-in-from-left duration-200">
             <div className="flex items-center justify-between pb-4 border-b border-border">
-              <div className="flex items-center gap-2">
-                <div className="h-8 w-8 rounded-xl bg-primary text-primary-foreground flex items-center justify-center font-bold">
-                  <GraduationCap className="h-5 w-5" />
-                </div>
-                <span className="font-serif text-lg font-bold">
-                  {isBn ? 'অগ্রণী' : 'Ogroni'}
-                  <span className="text-primary font-sans text-sm ml-0.5">
-                    {isBn ? 'এডু' : 'Edu'}
-                  </span>
-                </span>
-              </div>
+              <OgroniEduBrand locale={locale} showSubtitle={false} />
               <button
                 type="button"
                 onClick={onCloseDrawer}

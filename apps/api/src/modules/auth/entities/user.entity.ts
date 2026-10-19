@@ -24,6 +24,12 @@ export class UserEntity {
   @Column({ name: 'display_name', type: 'text' })
   displayName!: string;
 
+  @Column({ name: 'display_name_en', type: 'text', nullable: true })
+  displayNameEn?: string | null;
+
+  @Column({ name: 'display_name_bn', type: 'text', nullable: true })
+  displayNameBn?: string | null;
+
   @Column({ name: 'preferred_locale', type: 'text', default: 'bn' })
   preferredLocale!: 'bn' | 'en';
 

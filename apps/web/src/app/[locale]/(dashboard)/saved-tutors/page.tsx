@@ -69,7 +69,9 @@ function SavedTutorCard({
             href={withLocale(`/tutors/${item.tutorId}`, locale)}
             className="text-base font-bold text-foreground hover:text-primary"
           >
-            {profile.displayName}
+            {isBn
+              ? profile.displayNameBn || profile.displayNameEn
+              : profile.displayNameEn || profile.displayNameBn}
           </Link>
           {headline && <p className="text-xs text-muted-foreground line-clamp-2">{headline}</p>}
         </div>

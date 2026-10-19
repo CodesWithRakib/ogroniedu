@@ -437,12 +437,26 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
     });
   });
 
-  describe('Sandbox Confirmation Pipeline', () => {
-    it('should verify a pending sandbox order through the webhook pipeline and post the escrow journal', async () => {
+  describe('Authoritative Webhook Confirmation Pipeline', () => {
+    const successBody = {
+      providerTransactionId: 'TRX-123',
+      providerEventId: 'EVT-123',
+      amountMinor: 100000,
+      currency: 'BDT',
+      status: 'succeeded' as const,
+      orderId,
+    };
+
+    it('confirms a payable booking through the verified webhook pipeline and posts the escrow journal', async () => {
       mockOrderRepo.findOne.mockResolvedValue(sampleOrder); // pending, provider: 'bkash'
       mockTransactionRepo.findOne.mockResolvedValue(null);
 
-      const res = await service.sandboxConfirmOrder(studentUser, orderId, undefined, 'req-sbx-1');
+      const res = await service.handleWebhook(
+        'bkash',
+        { 'x-webhook-timestamp': Date.now() },
+        successBody,
+        'req-sbx-1',
+      );
 
       expect(res.received).toBe(true);
       expect(res.processed).toBe(true);
@@ -459,29 +473,64 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
       );
     });
 
-    it('IDEMPOTENCY: already-succeeded order short-circuits without re-posting the ledger', async () => {
-      mockOrderRepo.findOne.mockResolvedValue({ ...sampleOrder, status: 'succeeded' });
+    it('IDEMPOTENCY: an already-succeeded provider event is ignored without re-posting the ledger', async () => {
+      mockTransactionRepo.findOne.mockResolvedValue({ status: 'succeeded' });
 
-      const res = await service.sandboxConfirmOrder(studentUser, orderId);
+      const res = await service.handleWebhook(
+        'bkash',
+        { 'x-webhook-timestamp': Date.now() },
+        successBody,
+      );
 
-      expect(res).toEqual({ received: true, processed: true, orderId, status: 'succeeded' });
+      expect(res).toEqual({ received: true, processed: false, status: 'succeeded' });
       expect(mockLedgerService.postJournal).not.toHaveBeenCalled();
     });
 
-    it('should fall back to the sslcommerz adapter when neither body nor order specifies a provider', async () => {
-      mockOrderRepo.findOne.mockResolvedValue({ ...sampleOrder, provider: null });
+    it('REJECTS an unsigned webhook instead of trusting a claimed success status', async () => {
+      mockAdapterFactory.getAdapter.mockReturnValue({
+        providerName: 'bkash',
+        verifyWebhookSignature: vi.fn().mockReturnValue(false),
+        queryTransaction: vi.fn(),
+      });
 
-      await service.sandboxConfirmOrder(studentUser, orderId);
-
-      expect(mockAdapterFactory.getAdapter).toHaveBeenCalledWith('sslcommerz');
+      await expect(
+        service.handleWebhook('bkash', {}, successBody),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
-    it('should honor an explicit body provider over the order provider', async () => {
-      mockOrderRepo.findOne.mockResolvedValue({ ...sampleOrder, provider: 'bkash' });
+    it('REJECTS a webhook whose amount does not match the order', async () => {
+      mockOrderRepo.findOne.mockResolvedValue(sampleOrder);
 
-      await service.sandboxConfirmOrder(studentUser, orderId, 'sslcommerz');
+      await expect(
+        service.handleWebhook(
+          'bkash',
+          { 'x-webhook-timestamp': Date.now() },
+          { ...successBody, amountMinor: 1 },
+        ),
+      ).rejects.toThrow(BadRequestException);
+    });
 
-      expect(mockAdapterFactory.getAdapter).toHaveBeenCalledWith('sslcommerz');
+    it('REJECTS confirmation when the provider cannot verify the transaction', async () => {
+      mockOrderRepo.findOne.mockResolvedValue(sampleOrder);
+      mockAdapterFactory.getAdapter.mockReturnValue({
+        providerName: 'bkash',
+        verifyWebhookSignature: vi.fn().mockReturnValue(true),
+        queryTransaction: vi.fn().mockResolvedValue({
+          providerTransactionId: 'TRX-123',
+          amountMinor: 100000,
+          currency: 'BDT',
+          status: 'failed',
+          verifiedAt: new Date(),
+        }),
+      });
+
+      await expect(
+        service.handleWebhook(
+          'bkash',
+          { 'x-webhook-timestamp': Date.now() },
+          successBody,
+        ),
+      ).rejects.toThrow(BadRequestException);
     });
   });
 });

@@ -171,12 +171,12 @@
   --primary-soft: #eff6ff; /* soft sapphire wash */
   --primary-soft-foreground: #1e40af;
 
-  /* --- Brand accents (EXACT approved values — never approximated) ----------- */
-  --brand: #0df5c4; /* Ocean Teal primaryColor — fills, indicators, progress */
-  --brand-accent: #00e1b2; /* Ocean Teal accentColor — gradient step, chart fill */
-  --brand-foreground: #042426; /* ink placed on brand fills (11.6:1 on #0df5c4) */
-  --brand-soft: #e6fffa; /* whisper-mint decorative wash */
-  --brand-soft-foreground: #115e59;
+  /* --- Brand accents (Ogroni Royal Sapphire Blue identity) ---------------- */
+  --brand: #2563eb; /* Royal Sapphire Blue primaryColor */
+  --brand-accent: #1d4ed8; /* Deep Sapphire Blue accent */
+  --brand-foreground: #ffffff; /* pure white text on brand fills */
+  --brand-soft: #eff6ff; /* soft sapphire blue tint */
+  --brand-soft-foreground: #1e40af; /* deep readable sapphire text */
 
   /* --- Interactive: Sapphire Blue (links, focus, secondary emphasis) -------- */
   --interactive: #2563eb; /* EXACT approved sapphire primary — 5.17:1 on white */
@@ -189,7 +189,7 @@
 
   /* --- shadcn/ui bridge tokens --------------------------------------------- */
   --accent: #f1f5f9; /* subtle neutral hover surface (shadcn convention) */
-  --accent-foreground: #134e4a; /* deep teal ink for brand-tinted hovers */
+  --accent-foreground: #1e40af; /* deep sapphire ink for brand-tinted hovers */
   --border: #e2e8f0; /* subtle neutral border */
   --input: #cbd5e1; /* input outline, one step stronger than --border */
   --ring: #2563eb; /* sapphire focus ring (5.17:1) */
@@ -221,9 +221,9 @@
   --sidebar-foreground: #0f172a;
   --sidebar-muted: #64748b;
   --sidebar-border: #e2e8f0;
-  --sidebar-active: #e6fffa; /* mint wash marks the selected item */
-  --sidebar-active-foreground: #115e59;
-  --sidebar-hover: #f1f5f9;
+  --sidebar-active: #eff6ff; /* soft sapphire blue wash marks the selected item */
+  --sidebar-active-foreground: #1d4ed8;
+  --sidebar-hover: #f8fafc;
 
   /* --- Elevation (restrained, modern SaaS) -------------------------------- */
   --elevation-xs: 0 1px 2px 0 rgba(15, 23, 42, 0.03);
@@ -234,10 +234,10 @@
   /* --- Decorative gradients (light, calm) ---------------------------------- */
   --gradient-hero: radial-gradient(
     60% 55% at 50% 0%,
-    rgba(13, 245, 196, 0.16) 0%,
+    rgba(37, 99, 235, 0.12) 0%,
     rgba(246, 248, 250, 0) 72%
   );
-  --gradient-card: linear-gradient(180deg, rgba(13, 245, 196, 0.07) 0%, rgba(255, 255, 255, 0) 100%);
+  --gradient-card: linear-gradient(180deg, rgba(37, 99, 235, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
   --shadow-card: var(--elevation-card);
 }
 

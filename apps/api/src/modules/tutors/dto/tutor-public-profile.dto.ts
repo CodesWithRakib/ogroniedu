@@ -21,7 +21,8 @@ export interface PublicServiceAreaItem {
   districtNameEn: string;
   districtNameBn: string;
   upazilaCode?: string | null;
-  localityName?: string | null;
+  localityNameEn?: string | null;
+  localityNameBn?: string | null;
   radiusKm?: number | null;
 }
 
@@ -35,20 +36,19 @@ export interface PublicAvailabilityItem {
 export interface PublicQualificationItem {
   id: string;
   qualificationType: string;
-  institution: string | null;
-  title: string;
+  institutionEn?: string | null;
+  institutionBn?: string | null;
+  titleEn: string;
+  titleBn?: string | null;
   issuedYear?: number | null;
   isVerified: boolean;
 }
 
 export class TutorPublicProfileDto {
   id!: string;
-  displayName!: string;
+  displayNameEn!: string;
+  displayNameBn?: string | null;
   avatarUrl!: string | null;
-  /** English headline (legacy field, kept for older clients). */
-  headline!: string | null;
-  /** English biography (legacy field, kept for older clients). */
-  bio!: string | null;
   headlineEn!: string | null;
   /** Null when the tutor has not written a Bangla headline yet. */
   headlineBn!: string | null;

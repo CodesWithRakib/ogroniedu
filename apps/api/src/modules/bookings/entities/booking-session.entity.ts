@@ -68,6 +68,39 @@ export class BookingSessionEntity {
   @Column('uuid', { name: 'rescheduled_from_id', nullable: true })
   rescheduledFromId!: string | null;
 
+  @Column('uuid', { name: 'series_id', nullable: true })
+  seriesId!: string | null;
+
+  @Column({ name: 'occurrence_index', type: 'integer', nullable: true })
+  occurrenceIndex!: number | null;
+
+  @Column({ name: 'reminder_sent_at', type: 'timestamptz', nullable: true })
+  reminderSentAt!: Date | null;
+
+  @Column({ name: 'status_changed_at', type: 'timestamptz', nullable: true })
+  statusChangedAt!: Date | null;
+
+  @Column('uuid', { name: 'status_changed_by', nullable: true })
+  statusChangedBy!: string | null;
+
+  @Column({ name: 'cancelled_at', type: 'timestamptz', nullable: true })
+  cancelledAt!: Date | null;
+
+  @Column({ name: 'cancellation_reason', type: 'text', nullable: true })
+  cancellationReason!: string | null;
+
+  @Column({ name: 'rescheduled_at', type: 'timestamptz', nullable: true })
+  rescheduledAt!: Date | null;
+
+  @Column('uuid', { name: 'rescheduled_by', nullable: true })
+  rescheduledBy!: string | null;
+
+  @Column({ name: 'reschedule_reason', type: 'text', nullable: true })
+  rescheduleReason!: string | null;
+
+  @Column({ type: 'integer', default: 1 })
+  version!: number;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 

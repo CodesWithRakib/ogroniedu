@@ -11,6 +11,7 @@ import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { NotificationService } from './notification.service';
 import { NotificationPreferencesService } from './notification-preferences.service';
 import { OutboxWorkerService } from './outbox-worker.service';
+import { OutboxScheduler } from './outbox.scheduler';
 import { BookingMessagesService } from './booking-messages.service';
 import { NotificationGateway } from './notification.gateway';
 import { NotificationController } from './notification.controller';
@@ -37,6 +38,7 @@ import { GuardiansModule } from '../guardians/guardians.module';
     NotificationPreferencesService,
     NotificationGateway,
     OutboxWorkerService,
+    OutboxScheduler,
     BookingMessagesService,
   ],
   exports: [
@@ -44,6 +46,7 @@ import { GuardiansModule } from '../guardians/guardians.module';
     NotificationPreferencesService,
     NotificationGateway,
     OutboxWorkerService,
+    OutboxScheduler,
     BookingMessagesService,
   ],
 })

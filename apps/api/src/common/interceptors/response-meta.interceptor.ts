@@ -28,12 +28,20 @@ export class ResponseMetaInterceptor implements NestInterceptor {
   }
 
   intercept(context: ExecutionContext, next: CallHandler): Observable<unknown> {
+    if (context.getType() !== 'http') {
+      return next.handle();
+    }
+
     const ctx = context.switchToHttp();
     const request = ctx.getRequest<Request>();
     const response = ctx.getResponse<Response>();
 
+    if (!request) {
+      return next.handle();
+    }
+
     const requestId =
-      request.requestId || (request.headers['x-request-id'] as string) || randomUUID();
+      request.requestId || (request.headers?.['x-request-id'] as string) || randomUUID();
 
     if (!request.requestId) {
       request.requestId = requestId;

@@ -96,7 +96,10 @@ export function HomePage({ locale }: { locale: Locale }) {
     const copy = localizedTutorFields(locale, t);
     return {
       id: t.id,
-      name: t.displayName,
+      name:
+        (isBn ? t.displayNameBn || t.displayNameEn : t.displayNameEn || t.displayNameBn) ||
+        t.displayName ||
+        (isBn ? 'শিক্ষক' : 'Tutor'),
       institution: copy.headline,
       rating: t.ratingAverage,
       reviewsCount: t.totalReviews,

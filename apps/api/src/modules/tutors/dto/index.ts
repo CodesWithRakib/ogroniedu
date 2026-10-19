@@ -10,3 +10,4 @@ export * from './upload-evidence-file.dto';
 export * from './tutor-public-profile.dto';
 export * from './search-tutors-query.dto';
 export * from './search-tutors-response.dto';
+export * from './availability-block.dto';

@@ -124,10 +124,16 @@ export interface TutorReviewItem {
   id: string;
   rating: number;
   comment: string;
+  commentEn?: string | null;
+  commentBn?: string | null;
   createdAt: string;
   isVerifiedBooking: boolean;
   reviewerDisplayName: string | null;
+  reviewerDisplayNameEn?: string | null;
+  reviewerDisplayNameBn?: string | null;
   tutorResponse: string | null;
+  tutorResponseEn?: string | null;
+  tutorResponseBn?: string | null;
   tutorRespondedAt: string | null;
 }
 

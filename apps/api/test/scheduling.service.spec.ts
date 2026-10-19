@@ -47,7 +47,8 @@ describe('SchedulingService Unit & Conflict-Safety Tests (Phase 09)', () => {
     studentUserId: studentUser.id,
     tutorUserId: tutorId,
     durationMinutes: 60,
-    status: 'accepted',
+    status: 'confirmed',
+    pricePerSessionMinor: '100000',
     subject: { nameEn: 'Mathematics' } as any,
   };
 
@@ -211,7 +212,7 @@ describe('SchedulingService Unit & Conflict-Safety Tests (Phase 09)', () => {
       ).rejects.toThrow(ConflictException);
     });
 
-    it('should successfully schedule session, confirm booking, persist outbox and audit log', async () => {
+    it('should schedule a session for a confirmed booking without mutating booking status', async () => {
       const futureStartsAt = new Date(Date.now() + 86400000).toISOString();
 
       const session = await service.scheduleSession(guardianUser, {
@@ -223,9 +224,9 @@ describe('SchedulingService Unit & Conflict-Safety Tests (Phase 09)', () => {
       expect(session).toBeDefined();
       expect(session.status).toBe('scheduled');
       expect(mockSessionRepo.save).toHaveBeenCalled();
-      expect(mockBookingRepo.save).toHaveBeenCalledWith(
-        expect.objectContaining({ status: 'confirmed' }),
-      );
+      // Scheduling must never confirm a paid booking; confirmation is the
+      // payment webhook's responsibility.
+      expect(mockBookingRepo.save).not.toHaveBeenCalled();
       expect(mockOutboxRepo.save).toHaveBeenCalledWith(
         expect.objectContaining({
           eventType: 'session.scheduled',

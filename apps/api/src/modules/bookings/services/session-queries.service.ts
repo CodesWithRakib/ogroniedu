@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException, Inject } from '@nestjs/common';
+import { Injectable, NotFoundException, Inject, ForbiddenException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingEntity } from '../entities/booking.entity';
@@ -15,8 +15,6 @@ export type { BookingParties } from '../../guardians/guardian-access.service';
 /**
  * Read-model queries for booking sessions plus the shared
  * participant/admin access-scope helper.
- * Scheduling and rescheduling services inject this service for
- * authorization checks (one-directional: no cycles).
  */
 @Injectable()
 export class SessionQueriesService {
@@ -27,10 +25,6 @@ export class SessionQueriesService {
     private readonly guardianAccess: GuardianAccessService,
   ) {}
 
-  /**
-   * Ensure user is authorized to manage or view sessions for this booking.
-   * Delegates to the shared guardian-access service (single rule home).
-   */
   async assertCanManageSessions(user: AuthenticatedUser, booking: BookingEntity): Promise<void> {
     await this.guardianAccess.assertCanAccessBooking(
       user,
@@ -40,15 +34,25 @@ export class SessionQueriesService {
   }
 
   /**
-   * List sessions accessible to current user with deterministic filters
+   * List sessions accessible to the current user. An explicit `studentId`
+   * filter is revalidated against active guardian links; cross-child access is
+   * a 403, never a silent empty list.
    */
   async getSessions(
     user: AuthenticatedUser,
     query: GetSessionsQueryDto,
   ): Promise<BookingSessionEntity[]> {
-    // Collect allowed student IDs for guardians
     const childIds = await this.guardianAccess.findActiveStudentIds(user.id);
     const allowedStudentIds = [user.id, ...childIds];
+
+    if (query.studentId && !isAdminRole(user)) {
+      const allowed = allowedStudentIds.includes(query.studentId);
+      if (!allowed) {
+        throw new ForbiddenException(
+          'Access denied: You are not an active guardian of this student.',
+        );
+      }
+    }
 
     const qb = this.sessionRepo
       .createQueryBuilder('session')
@@ -59,7 +63,6 @@ export class SessionQueriesService {
       .leftJoinAndSelect('tutorProfile.user', 'tutorUser')
       .leftJoinAndSelect('session.studentUser', 'studentUser');
 
-    // Scoped ownership check
     if (!isAdminRole(user)) {
       qb.where('(session.tutorUserId = :userId OR session.studentUserId IN (:...studentIds))', {
         userId: user.id,
@@ -89,9 +92,6 @@ export class SessionQueriesService {
     return await qb.orderBy('session.startsAt', 'ASC').getMany();
   }
 
-  /**
-   * Get single session with ownership check
-   */
   async getSessionById(sessionId: string, user: AuthenticatedUser): Promise<BookingSessionEntity> {
     const session = await this.sessionRepo.findOne({
       where: { id: sessionId },
@@ -118,9 +118,6 @@ export class SessionQueriesService {
     return session;
   }
 
-  /**
-   * Privacy-safe tutor calendar intervals (student PII completely excluded)
-   */
   async getTutorCalendar(tutorId: string, from: Date, to: Date): Promise<PublicCalendarSlot[]> {
     const activeSessions = await this.sessionRepo
       .createQueryBuilder('s')
@@ -138,59 +135,99 @@ export class SessionQueriesService {
   }
 
   /**
-   * RFC 5545 iCalendar format generator for calendar sync (Google, Apple, Outlook)
+   * RFC 5545 iCalendar generator.
+   *
+   * Instants are exported in UTC (`...Z`), which is unambiguous and DST-safe.
+   * The session timezone is advertised via `X-WR-TIMEZONE` for display.
+   * `SEQUENCE` derives from the session `version`, so reschedules/cancellations
+   * update existing calendar entries. Meeting URLs are deliberately omitted
+   * (they can carry join tokens).
    */
   async generateIcsCalendar(user: AuthenticatedUser, query: GetSessionsQueryDto): Promise<string> {
     const sessions = await this.getSessions(user, query);
 
-    const formatIcsDate = (d: Date): string => {
-      return d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
-    };
+    const formatIcsDate = (d: Date): string =>
+      d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
-    const escapeIcs = (str: string): string => {
-      return str
+    const escapeIcs = (str: string): string =>
+      str
         .replace(/\\/g, '\\\\')
         .replace(/;/g, '\\;')
         .replace(/,/g, '\\,')
-        .replace(/\n/g, '\\n');
+        .replace(/\r?\n/g, '\\n');
+
+    const foldLine = (line: string): string => {
+      // RFC 5545: lines SHOULD be no longer than 75 octets. Continuation lines
+      // begin with a single space. Fold on UTF-8 byte boundaries.
+      const encoder = new TextEncoder();
+      if (encoder.encode(line).length <= 75) return line;
+      const chunks: string[] = [];
+      let current = '';
+      let currentBytes = 0;
+      for (const char of line) {
+        const bytes = encoder.encode(char).length;
+        const limit = chunks.length === 0 ? 75 : 74;
+        if (currentBytes + bytes > limit) {
+          chunks.push(current);
+          current = '';
+          currentBytes = 0;
+        }
+        current += char;
+        currentBytes += bytes;
+      }
+      if (current) chunks.push(current);
+      return chunks.join('\r\n ');
     };
 
     const nowStr = formatIcsDate(new Date());
+    const timezones = new Set(sessions.map((s) => s.timezone || 'Asia/Dhaka'));
 
     const events = sessions.map((s) => {
       const subjectName =
         s.booking?.subject?.nameEn || s.booking?.subject?.nameBn || 'Tuition Class';
       const tutorName = s.tutorProfile?.user?.displayName || 'Tutor';
-      const studentName = s.studentUser?.displayName || 'Student';
       const starts = formatIcsDate(new Date(s.startsAt));
       const ends = formatIcsDate(new Date(s.endsAt));
-      const loc = s.meetingUrl || s.locationInstructions || 'Online (OgroniEdu Class)';
-      const desc = `OgroniEdu Live Class\nSubject: ${subjectName}\nTutor: ${tutorName}\nStudent: ${studentName}\nMeeting URL: ${s.meetingUrl || 'Will be shared before class'}\nNotes: ${s.locationInstructions || 'None'}`;
+      const location = s.locationInstructions || 'Online (OgroniEdu Class)';
+      const description =
+        `OgroniEdu class\nSubject: ${subjectName}\nTutor: ${tutorName}\n` +
+        `Timezone: ${s.timezone}\nJoin from your OgroniEdu dashboard.`;
+      const isCancelled = s.status === 'cancelled';
+      const updated = formatIcsDate(new Date(s.updatedAt ?? new Date()));
 
       return [
         'BEGIN:VEVENT',
-        `UID:${s.id}@ogroniedu.com`,
+        `UID:session-${s.id}@ogroniedu.com`,
         `DTSTAMP:${nowStr}`,
+        `LAST-MODIFIED:${updated}`,
+        `SEQUENCE:${Math.max(0, (s.version ?? 1) - 1)}`,
         `DTSTART:${starts}`,
         `DTEND:${ends}`,
         `SUMMARY:${escapeIcs(`OgroniEdu: ${subjectName} with ${tutorName}`)}`,
-        `DESCRIPTION:${escapeIcs(desc)}`,
-        `LOCATION:${escapeIcs(loc)}`,
-        `STATUS:${s.status === 'cancelled' ? 'CANCELLED' : 'CONFIRMED'}`,
+        `DESCRIPTION:${escapeIcs(description)}`,
+        `LOCATION:${escapeIcs(location)}`,
+        `STATUS:${isCancelled ? 'CANCELLED' : 'CONFIRMED'}`,
+        'TRANSP:OPAQUE',
         'END:VEVENT',
-      ].join('\r\n');
+      ]
+        .map(foldLine)
+        .join('\r\n');
     });
 
-    return [
+    const calendar = [
       'BEGIN:VCALENDAR',
       'VERSION:2.0',
-      'PRODID:-//OgroniEdu//Tuition Class Schedule//BN',
+      'PRODID:-//OgroniEdu//Tuition Class Schedule//EN',
       'CALSCALE:GREGORIAN',
       'METHOD:PUBLISH',
       'X-WR-CALNAME:OgroniEdu Classes',
-      'X-WR-TIMEZONE:Asia/Dhaka',
+      `X-WR-TIMEZONE:${[...timezones][0] || 'Asia/Dhaka'}`,
       ...events,
       'END:VCALENDAR',
-    ].join('\r\n');
+    ]
+      .map(foldLine)
+      .join('\r\n');
+
+    return `${calendar}\r\n`;
   }
 }

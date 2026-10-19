@@ -70,7 +70,7 @@ describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => 
     expect(isInvalid).toBe(false);
   });
 
-  it('should verify IPN payload with status VALID in sandbox mode', () => {
+  it('REJECTS a signature-less IPN payload even when it claims a verified status', () => {
     const validPayload = {
       status: 'VALID',
       tran_id: 'ord-1234',
@@ -79,7 +79,15 @@ describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => 
     };
 
     const verified = adapter.verifyWebhookSignature({}, validPayload);
-    expect(verified).toBe(true);
+    expect(verified).toBe(false);
+  });
+
+  it('REJECTS an unsigned webhook even when the body carries verify_sign', () => {
+    const verified = adapter.verifyWebhookSignature(
+      {},
+      { status: 'VALID', verify_sign: 'not-a-real-signature' },
+    );
+    expect(verified).toBe(false);
   });
 
   it('should reject invalid or tampered webhook payload with empty signature and failed status', () => {
@@ -114,14 +122,13 @@ describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => 
     fetchSpy.mockRestore();
   });
 
-  it('should fall back gracefully to sandbox default when server query fails', async () => {
+  it('FAILS CLOSED when the validation server cannot be reached', async () => {
     const fetchSpy = vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
       throw new Error('Network timeout');
     });
 
     const result = await adapter.queryTransaction('val-timeout');
-    expect(result.status).toBe('succeeded');
-    expect(result.amountMinor).toBe(100000);
+    expect(result.status).toBe('failed');
 
     fetchSpy.mockRestore();
   });

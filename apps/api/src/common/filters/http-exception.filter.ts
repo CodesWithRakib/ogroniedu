@@ -42,12 +42,22 @@ export class AllExceptionsFilter implements ExceptionFilter {
   private readonly logger = new Logger(AllExceptionsFilter.name);
 
   catch(exception: unknown, host: ArgumentsHost): void {
+    if (host.getType() !== 'http') {
+      return;
+    }
+
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
     const request = ctx.getRequest<Request>();
+
+    if (!request || !response || typeof response.status !== 'function') {
+      return;
+    }
+
     // Middleware-level errors (body parser) can precede RequestIdMiddleware;
     // generate a fallback so every error envelope stays traceable.
-    const requestId = request.requestId ?? randomUUID();
+    const requestId =
+      request.requestId ?? (request.headers?.['x-request-id'] as string) ?? randomUUID();
     if (!request.requestId && typeof response.setHeader === 'function') {
       response.setHeader('x-request-id', requestId);
     }

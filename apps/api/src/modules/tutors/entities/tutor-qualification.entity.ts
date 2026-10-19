@@ -25,8 +25,20 @@ export class TutorQualificationEntity {
   @Column({ type: 'text', nullable: true })
   institution!: string | null;
 
+  @Column({ name: 'institution_en', type: 'text', nullable: true })
+  institutionEn?: string | null;
+
+  @Column({ name: 'institution_bn', type: 'text', nullable: true })
+  institutionBn?: string | null;
+
   @Column({ type: 'text' })
   title!: string;
+
+  @Column({ name: 'title_en', type: 'text', nullable: true })
+  titleEn?: string | null;
+
+  @Column({ name: 'title_bn', type: 'text', nullable: true })
+  titleBn?: string | null;
 
   @Column({ name: 'issued_year', type: 'smallint', nullable: true })
   issuedYear!: number | null;

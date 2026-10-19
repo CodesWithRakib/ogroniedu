@@ -25,6 +25,8 @@ import {
   AddTutorSubjectDto,
   SetServiceAreasDto,
   SetAvailabilityDto,
+  CreateBlockedPeriodDto,
+  GetBlockedPeriodsQueryDto,
   SearchTutorsQueryDto,
   AddVerificationDocumentDto,
 } from './dto';
@@ -271,5 +273,48 @@ export class TutorsController {
       success: true,
       data: slots,
     };
+  }
+
+  @Get('me/availability')
+  @UseGuards(AuthGuard)
+  async getAvailability(@CurrentUser() user: AuthenticatedUser) {
+    const slots = await this.tutorsService.getAvailability(user.id);
+    return { success: true, data: slots };
+  }
+
+  @Get('me/availability/blocks')
+  @UseGuards(AuthGuard)
+  async getBlockedPeriods(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query() query: GetBlockedPeriodsQueryDto,
+  ) {
+    const blocks = await this.tutorsService.getBlockedPeriods(
+      user.id,
+      query.from ? new Date(query.from) : undefined,
+      query.to ? new Date(query.to) : undefined,
+    );
+    return { success: true, data: blocks };
+  }
+
+  @Post('me/availability/blocks')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.CREATED)
+  async addBlockedPeriod(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreateBlockedPeriodDto,
+  ) {
+    const block = await this.tutorsService.addBlockedPeriod(user.id, dto);
+    return { success: true, data: block };
+  }
+
+  @Delete('me/availability/blocks/:id')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async removeBlockedPeriod(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) id: string,
+  ) {
+    await this.tutorsService.removeBlockedPeriod(user.id, id);
+    return { success: true, data: { id } };
   }
 }

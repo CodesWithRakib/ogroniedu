@@ -2,12 +2,9 @@ import { PublicSubjectItem, PublicServiceAreaItem } from './tutor-public-profile
 
 export interface TutorSearchResultItemDto {
   id: string;
-  displayName: string;
+  displayNameEn: string;
+  displayNameBn?: string | null;
   avatarUrl?: string | null;
-  /** English headline (legacy field). */
-  headline: string | null;
-  /** English biography (legacy field). */
-  bio: string | null;
   headlineEn: string | null;
   /** Null when the tutor has not written a Bangla headline yet. */
   headlineBn: string | null;

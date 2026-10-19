@@ -4,6 +4,7 @@ import { TutorSearchService } from './services/tutor-search.service';
 import { TutorVerificationService } from './services/tutor-verification.service';
 import { TutorDossierService } from './services/tutor-dossier.service';
 import { TutorVerificationExpiryService } from './services/tutor-verification-expiry.service';
+import { TutorAvailabilityService } from './services/tutor-availability.service';
 import {
   UpdateTutorProfileDto,
   AddTutorQualificationDto,
@@ -12,6 +13,7 @@ import {
   AvailabilitySlotItemDto,
   AdminReviewTutorDto,
   AddVerificationDocumentDto,
+  CreateBlockedPeriodDto,
   ReviewerDecisionDto,
   VerifyVerificationDocumentDto,
   VerificationQueueQueryDto,
@@ -44,6 +46,9 @@ export class TutorsService {
     @Optional()
     @Inject(forwardRef(() => TutorVerificationExpiryService))
     private readonly expiry?: TutorVerificationExpiryService,
+    @Optional()
+    @Inject(forwardRef(() => TutorAvailabilityService))
+    private readonly availability?: TutorAvailabilityService,
   ) {}
 
   getOrCreateProfile(userId: string) {
@@ -85,6 +90,24 @@ export class TutorsService {
   }
   setAvailability(userId: string, slots: AvailabilitySlotItemDto[]) {
     return this.profiles.setAvailability(userId, slots);
+  }
+  getAvailability(userId: string) {
+    return this.requireAvailability().getAvailability(userId);
+  }
+  getBlockedPeriods(userId: string, from?: Date, to?: Date) {
+    return this.requireAvailability().getBlockedPeriods(userId, from, to);
+  }
+  addBlockedPeriod(userId: string, dto: CreateBlockedPeriodDto) {
+    return this.requireAvailability().addBlockedPeriod(userId, dto);
+  }
+  removeBlockedPeriod(userId: string, id: string) {
+    return this.requireAvailability().removeBlockedPeriod(userId, id);
+  }
+  private requireAvailability(): TutorAvailabilityService {
+    if (!this.availability) {
+      throw new BadRequestException('Tutor availability service is not configured.');
+    }
+    return this.availability;
   }
   getPublicProfile(tutorUserId: string) {
     return this.search.getPublicProfile(tutorUserId);
