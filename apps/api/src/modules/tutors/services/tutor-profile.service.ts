@@ -90,8 +90,26 @@ export class TutorProfileService {
 
   async updateOwnProfile(userId: string, dto: UpdateTutorProfileDto): Promise<TutorProfileEntity> {
     const profile = await this.getOrCreateProfile(userId);
-    if (dto.headline !== undefined) profile.headline = dto.headline;
-    if (dto.bio !== undefined) profile.bio = dto.bio;
+
+    // Legacy single-language fields map onto the English copy. Explicit
+    // language fields win when both are supplied. Blank strings clear a value
+    // instead of persisting whitespace.
+    const headlineEn = normalizeOptionalText(dto.headlineEn ?? dto.headline);
+    const headlineBn = normalizeOptionalText(dto.headlineBn);
+    const bioEn = normalizeOptionalText(dto.bioEn ?? dto.bio);
+    const bioBn = normalizeOptionalText(dto.bioBn);
+
+    if (dto.headlineEn !== undefined || dto.headline !== undefined) {
+      profile.headlineEn = headlineEn;
+      profile.headline = headlineEn;
+    }
+    if (dto.headlineBn !== undefined) profile.headlineBn = headlineBn;
+    if (dto.bioEn !== undefined || dto.bio !== undefined) {
+      profile.bioEn = bioEn;
+      profile.bio = bioEn;
+    }
+    if (dto.bioBn !== undefined) profile.bioBn = bioBn;
+
     if (dto.yearsExperience !== undefined) profile.yearsExperience = dto.yearsExperience;
     if (dto.teachingModes !== undefined) profile.teachingModes = dto.teachingModes;
     if (dto.hourlyRateMinor !== undefined) profile.hourlyRateMinor = String(dto.hourlyRateMinor);
@@ -104,7 +122,8 @@ export class TutorProfileService {
       resourceType: 'tutor_profile',
       resourceId: userId,
       safeMetadata: {
-        headline: dto.headline,
+        headlineEn,
+        headlineBn,
         yearsExperience: dto.yearsExperience,
         teachingModes: dto.teachingModes,
         hourlyRateMinor: dto.hourlyRateMinor,
@@ -118,7 +137,9 @@ export class TutorProfileService {
     if (profile.verificationStatus === 'approved') {
       throw new BadRequestException('Tutor profile is already verified and approved.');
     }
-    if (!profile.headline && !profile.bio) {
+    const hasHeadline = Boolean(profile.headlineEn || profile.headline || profile.headlineBn);
+    const hasBio = Boolean(profile.bioEn || profile.bio || profile.bioBn);
+    if (!hasHeadline && !hasBio) {
       throw new BadRequestException(
         'Please complete your headline or biography before submitting for verification.',
       );
@@ -370,4 +391,11 @@ export class TutorProfileService {
     });
     return saved;
   }
+}
+
+/** Trims free text and turns a blank value into NULL. */
+function normalizeOptionalText(value: string | undefined): string | null {
+  if (value === undefined) return null;
+  const trimmed = value.trim();
+  return trimmed === '' ? null : trimmed;
 }

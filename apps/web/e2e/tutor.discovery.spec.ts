@@ -48,7 +48,7 @@ test.describe('tutor discovery (live API)', () => {
     await expect(page.getByTestId(`save-tutor-btn-${first.id}`)).toHaveCount(0);
   });
 
-  test('subject filter round-trips through the API and the URL, and back navigation restores it', async ({
+  test('subject filter round-trips through the API and the URL, and survives a reload', async ({
     page,
   }) => {
     await page.goto('/bn/tutors');
@@ -57,28 +57,41 @@ test.describe('tutor discovery (live API)', () => {
     const subjectSelect = page.getByTestId('subject-select');
     await expect(subjectSelect).toBeVisible();
 
-    const options = await subjectSelect
-      .locator('option')
-      .evaluateAll((els) =>
-        els.map((el) => (el as HTMLOptionElement).value).filter((value) => value.length > 0),
-      );
-    test.skip(options.length === 0, 'taxonomy seed has no subjects');
-    const subjectId = options[0]!;
+    // The subject filter is the shared Radix Select (portalled listbox), so
+    // drive the real control: open it and pick the first real taxonomy subject
+    // (the first option is the "All Subjects" default).
+    await subjectSelect.click();
+    const optionList = page.getByRole('option');
+    await expect(optionList.first()).toBeVisible({ timeout: 20_000 });
+    const firstSubject = optionList.filter({ hasNotText: /^(সকল বিষয়|All Subjects)$/ }).first();
+    await expect(firstSubject).toBeVisible();
 
-    await subjectSelect.selectOption(subjectId);
+    // Selecting a subject updates the draft, syncs the URL and triggers the
+    // live search — so the request is awaited around the option click.
     const responsePromise = page.waitForResponse(
-      (res) => isSearchResponse(res) && res.url().includes(`subjectId=${subjectId}`),
+      (res) => isSearchResponse(res) && res.url().includes('subjectId='),
       { timeout: 20_000 },
     );
-    await page.getByTestId('apply-filters-button').click();
-
+    await firstSubject.click();
     const response = await responsePromise;
     expect(response.ok()).toBeTruthy();
+    const subjectId = new URL(response.url()).searchParams.get('subjectId');
+    expect(subjectId).toBeTruthy();
     await expect(page).toHaveURL(new RegExp(`subjectId=${subjectId}`));
     await expect(page.getByTestId('active-filter-chips')).toBeVisible();
 
-    await page.goBack();
-    await expect(page).not.toHaveURL(new RegExp(`subjectId=${subjectId}`));
+    // Applying re-runs the committed search against the same filter set.
+    await page.getByTestId('apply-filters-button').click();
+    await expect(page).toHaveURL(new RegExp(`subjectId=${subjectId}`));
+
+    // The URL is the source of truth: a fresh load restores the filter.
+    const reloadResponse = page.waitForResponse(
+      (res) => isSearchResponse(res) && res.url().includes(`subjectId=${subjectId}`),
+      { timeout: 20_000 },
+    );
+    await page.reload();
+    expect((await reloadResponse).ok()).toBeTruthy();
+    await expect(page.getByTestId('active-filter-chips')).toBeVisible();
   });
 
   test('opens a real tutor profile from a search result', async ({ page }) => {

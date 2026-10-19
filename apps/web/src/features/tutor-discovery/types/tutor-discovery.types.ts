@@ -14,8 +14,15 @@ export interface TutorCardData {
   id: string;
   displayName: string;
   avatarUrl?: string | null;
+  /** English headline (legacy field). */
   headline: string | null;
+  /** English biography (legacy field). */
   bio: string | null;
+  headlineEn?: string | null;
+  /** Null when the tutor has not written Bangla copy yet. */
+  headlineBn?: string | null;
+  bioEn?: string | null;
+  bioBn?: string | null;
   yearsExperience: number | null;
   teachingModes: string[];
   hourlyRateMinor: string | null;

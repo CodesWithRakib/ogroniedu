@@ -62,8 +62,10 @@ export async function loginViaUi(
 }
 
 /**
- * API login tolerant of one 429 window (used where a spec reads expected state
- * straight from the API). Callers still assert the final response.
+ * API login tolerant of 429 windows (used where a spec reads expected state
+ * straight from the API). A fully parallel suite can contend on the shared
+ * seeded account, so it waits out up to two rate-limit windows. Callers still
+ * assert the final response.
  */
 export async function postLoginWithRateLimitRetry(
   request: APIRequestContext,
@@ -72,7 +74,7 @@ export async function postLoginWithRateLimitRetry(
 ): Promise<APIResponse> {
   const url = `${apiBaseUrl}/api/v1/auth/login`;
   let response = await request.post(url, { data: credentials });
-  if (response.status() === 429) {
+  for (let attempt = 0; attempt < 2 && response.status() === 429; attempt++) {
     await waitOutLoginRateLimit(response);
     response = await request.post(url, { data: credentials });
   }

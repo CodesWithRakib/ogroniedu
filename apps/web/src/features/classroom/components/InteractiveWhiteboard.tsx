@@ -479,7 +479,7 @@ export function InteractiveWhiteboard({
   return (
     <div
       ref={containerRef}
-      className={`relative flex flex-col bg-background border border-info/40 rounded-2xl overflow-hidden shadow-2xl transition-all ${
+      className={`relative flex flex-col bg-background border border-info/40 rounded-2xl overflow-hidden shadow-xs transition-all ${
         isFullscreen ? 'p-4 h-screen w-screen rounded-none' : 'h-[680px]'
       }`}
       data-testid="interactive-whiteboard"
@@ -497,6 +497,7 @@ export function InteractiveWhiteboard({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'কলম (Pen)' : 'Pen'}
+            aria-label={locale === 'bn' ? 'কলম (Pen)' : 'Pen'}
             data-testid="wb-tool-pen"
           >
             <Pen className="w-4 h-4" />
@@ -512,6 +513,7 @@ export function InteractiveWhiteboard({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'হাইলাইটার' : 'Highlighter'}
+            aria-label={locale === 'bn' ? 'হাইলাইটার' : 'Highlighter'}
             data-testid="wb-tool-highlighter"
           >
             <Highlighter className="w-4 h-4" />
@@ -527,6 +529,7 @@ export function InteractiveWhiteboard({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'রাবার (Eraser)' : 'Eraser'}
+            aria-label={locale === 'bn' ? 'রাবার (Eraser)' : 'Eraser'}
             data-testid="wb-tool-eraser"
           >
             <Eraser className="w-4 h-4" />
@@ -545,6 +548,7 @@ export function InteractiveWhiteboard({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'সোজা রেখা' : 'Line'}
+            aria-label={locale === 'bn' ? 'সোজা রেখা' : 'Line'}
             data-testid="wb-tool-line"
           >
             <Minus className="w-4 h-4" />
@@ -559,6 +563,7 @@ export function InteractiveWhiteboard({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'তীরচিহ্ন (Vector Arrow)' : 'Arrow'}
+            aria-label={locale === 'bn' ? 'তীরচিহ্ন (Vector Arrow)' : 'Arrow'}
             data-testid="wb-tool-arrow"
           >
             <MoveUpRight className="w-4 h-4" />
@@ -573,6 +578,7 @@ export function InteractiveWhiteboard({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'আয়তক্ষেত্র (Rectangle)' : 'Rectangle'}
+            aria-label={locale === 'bn' ? 'আয়তক্ষেত্র (Rectangle)' : 'Rectangle'}
             data-testid="wb-tool-rect"
           >
             <Square className="w-4 h-4" />
@@ -587,6 +593,7 @@ export function InteractiveWhiteboard({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'বৃত্ত (Circle)' : 'Circle'}
+            aria-label={locale === 'bn' ? 'বৃত্ত (Circle)' : 'Circle'}
             data-testid="wb-tool-circle"
           >
             <CircleIcon className="w-4 h-4" />
@@ -601,6 +608,7 @@ export function InteractiveWhiteboard({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
             }`}
             title={locale === 'bn' ? 'টেক্সট লিখুন' : 'Text'}
+            aria-label={locale === 'bn' ? 'টেক্সট লিখুন' : 'Text'}
             data-testid="wb-tool-text"
           >
             <Type className="w-4 h-4" />
@@ -617,6 +625,7 @@ export function InteractiveWhiteboard({
               className="w-5 h-5 rounded-full transition-transform hover:scale-110 flex items-center justify-center relative"
               style={{ backgroundColor: color.value }}
               title={color.name}
+              aria-label={color.name}
               data-testid={`wb-color-${color.name.toLowerCase()}`}
             >
               {strokeColor === color.value && (
@@ -659,6 +668,7 @@ export function InteractiveWhiteboard({
                   : 'text-muted-foreground hover:text-foreground'
               }`}
               title={locale === 'bn' ? 'ছক কাগজ (Math Grid)' : 'Math Grid'}
+              aria-label={locale === 'bn' ? 'ছক কাগজ (Math Grid)' : 'Math Grid'}
               data-testid="wb-bg-grid"
             >
               <Grid className="w-4 h-4" />
@@ -672,6 +682,7 @@ export function InteractiveWhiteboard({
                   : 'text-muted-foreground hover:text-foreground'
               }`}
               title={locale === 'bn' ? 'দাগ টানা কাগজ (Ruled Lines)' : 'Ruled Lines'}
+              aria-label={locale === 'bn' ? 'দাগ টানা কাগজ (Ruled Lines)' : 'Ruled Lines'}
               data-testid="wb-bg-ruled"
             >
               <AlignJustify className="w-4 h-4" />
@@ -685,6 +696,7 @@ export function InteractiveWhiteboard({
                   : 'text-muted-foreground hover:text-foreground'
               }`}
               title={locale === 'bn' ? 'কালো বোর্ড (Plain Board)' : 'Plain Board'}
+              aria-label={locale === 'bn' ? 'কালো বোর্ড (Plain Board)' : 'Plain Board'}
               data-testid="wb-bg-plain"
             >
               <div className="w-4 h-4 rounded-sm bg-muted border border-border" />
@@ -699,6 +711,7 @@ export function InteractiveWhiteboard({
               disabled={!canUndo}
               className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground"
               title={locale === 'bn' ? 'পূর্বাবস্থায় ফিরুন (Undo)' : 'Undo'}
+              aria-label={locale === 'bn' ? 'পূর্বাবস্থায় ফিরুন (Undo)' : 'Undo'}
               data-testid="wb-btn-undo"
             >
               <RotateCcw className="w-4 h-4" />
@@ -709,6 +722,7 @@ export function InteractiveWhiteboard({
               disabled={!canRedo}
               className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground disabled:opacity-30 disabled:hover:text-muted-foreground"
               title={locale === 'bn' ? 'পুনরায় করুন (Redo)' : 'Redo'}
+              aria-label={locale === 'bn' ? 'পুনরায় করুন (Redo)' : 'Redo'}
               data-testid="wb-btn-redo"
             >
               <RotateCw className="w-4 h-4" />
@@ -721,6 +735,7 @@ export function InteractiveWhiteboard({
             onClick={handleClear}
             className="p-2 rounded-2xl bg-destructive/10 hover:bg-destructive/20 text-destructive-soft-foreground border border-destructive/40 transition-all"
             title={locale === 'bn' ? 'সম্পূর্ণ পরিষ্কার করুন' : 'Clear Board'}
+            aria-label={locale === 'bn' ? 'সম্পূর্ণ পরিষ্কার করুন' : 'Clear Board'}
             data-testid="wb-btn-clear"
           >
             <Trash2 className="w-4 h-4" />
@@ -732,6 +747,7 @@ export function InteractiveWhiteboard({
             onClick={handleExportPNG}
             className="p-2 rounded-2xl bg-success-soft hover:bg-success-soft text-success-soft-foreground border border-success/30 transition-all flex items-center gap-1.5 text-xs font-bold"
             title={locale === 'bn' ? 'নোট ডাউনলোড করুন (PNG)' : 'Export PNG Notes'}
+            aria-label={locale === 'bn' ? 'নোট ডাউনলোড করুন (PNG)' : 'Export PNG Notes'}
             data-testid="wb-btn-export"
           >
             <Download className="w-4 h-4" />
@@ -744,6 +760,7 @@ export function InteractiveWhiteboard({
             onClick={toggleFullscreen}
             className="p-2 rounded-2xl bg-muted hover:bg-surface-hover text-muted-foreground transition-all"
             title={locale === 'bn' ? 'ফুলস্ক্রিন' : 'Fullscreen'}
+            aria-label={locale === 'bn' ? 'ফুলস্ক্রিন' : 'Fullscreen'}
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
           </button>

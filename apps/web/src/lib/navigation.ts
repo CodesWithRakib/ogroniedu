@@ -313,6 +313,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
         titleEn: 'Credentials & Earnings',
         items: [
           {
+            href: '/dashboard/tutor/profile',
+            labelBn: 'আমার প্রোফাইল',
+            labelEn: 'My Profile',
+            icon: User,
+            testId: 'nav-tutor-profile',
+          },
+          {
             href: '/dashboard/tutor/verification',
             labelBn: 'সনদ ও ভেরিফিকেশন',
             labelEn: 'Verification',

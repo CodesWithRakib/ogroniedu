@@ -10,14 +10,28 @@ import { ProgressTab } from './tabs/progressTab';
 import { HomeworkSubmitModal } from './modals/homeworkSubmitModal';
 import { GradingModal } from './modals/gradingModal';
 import { useLearningManagement } from '../hooks/use-learning-management';
-import type { LearningManagementViewProps } from '../types/learning.types';
+import type {
+  AttendanceRecordItem,
+  AssignmentItem,
+  LearningManagementViewProps,
+  ProgressReportItem,
+} from '../types/learning.types';
+
+/**
+ * Stable empty collections for destructuring defaults; a fresh `[]` gets a new
+ * identity each render and the learning hook syncs state from these arrays in
+ * effects keyed on the array itself.
+ */
+const EMPTY_ATTENDANCE: AttendanceRecordItem[] = [];
+const EMPTY_ASSIGNMENTS: AssignmentItem[] = [];
+const EMPTY_REPORTS: ProgressReportItem[] = [];
 
 export function LearningManagementView({
   locale,
   userRole = 'tutor',
-  initialAttendance = [],
-  initialAssignments = [],
-  initialReports = [],
+  initialAttendance = EMPTY_ATTENDANCE,
+  initialAssignments = EMPTY_ASSIGNMENTS,
+  initialReports = EMPTY_REPORTS,
   onMarkAttendance,
   onSubmitAssignment,
   onGradeSubmission,

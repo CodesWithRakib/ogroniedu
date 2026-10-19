@@ -40,15 +40,24 @@ export interface LearningManagementState {
 }
 
 /**
+ * Stable empty collections for destructuring defaults. A fresh `[]` default is
+ * a new identity on every render and the sync effects below are keyed on these
+ * arrays, which would re-run setState forever (React update-depth loop).
+ */
+const EMPTY_ATTENDANCE: AttendanceRecordItem[] = [];
+const EMPTY_ASSIGNMENTS: AssignmentItem[] = [];
+const EMPTY_REPORTS: ProgressReportItem[] = [];
+
+/**
  * Owns learning-management local state, derived metrics, and the submit/grade
  * action lifecycle (including the audit requirement that a changed score needs
  * a revision reason). The view stays purely presentational.
  */
 export function useLearningManagement({
   locale,
-  initialAttendance = [],
-  initialAssignments = [],
-  initialReports = [],
+  initialAttendance = EMPTY_ATTENDANCE,
+  initialAssignments = EMPTY_ASSIGNMENTS,
+  initialReports = EMPTY_REPORTS,
   onSubmitAssignment,
   onGradeSubmission,
 }: Pick<

@@ -103,6 +103,8 @@ describe('onboarding step payloads', () => {
   it('resolves role-specific profile fields', () => {
     expect(fieldsForStep('student', 'profile').map((f) => f.name)).toContain('institutionName');
     expect(fieldsForStep('tutor', 'profile').map((f) => f.name)).toContain('headline');
+    expect(fieldsForStep('tutor', 'profile').map((f) => f.name)).toContain('headlineBn');
+    expect(fieldsForStep('tutor', 'profile').map((f) => f.name)).toContain('bioBn');
     expect(fieldsForStep('guardian', 'profile').map((f) => f.name)).toContain('relationshipType');
     expect(fieldsForStep('admin', 'security_setup')).toEqual([
       expect.objectContaining({ name: 'acknowledgePolicy', kind: 'checkbox' }),

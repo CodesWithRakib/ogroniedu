@@ -4,8 +4,16 @@ export interface TutorSearchResultItemDto {
   id: string;
   displayName: string;
   avatarUrl?: string | null;
+  /** English headline (legacy field). */
   headline: string | null;
+  /** English biography (legacy field). */
   bio: string | null;
+  headlineEn: string | null;
+  /** Null when the tutor has not written a Bangla headline yet. */
+  headlineBn: string | null;
+  bioEn: string | null;
+  /** Null when the tutor has not written a Bangla biography yet. */
+  bioBn: string | null;
   yearsExperience: number | null;
   teachingModes: string[];
   hourlyRateMinor: string | null;

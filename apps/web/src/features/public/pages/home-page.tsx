@@ -25,6 +25,7 @@ import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSearchTutorsQuery } from '@/store/services/tutors-api';
+import { localizedTutorFields } from '@/features/tutor-discovery/utils/localized-tutor-text';
 import { usePlatformStats } from '../hooks/use-platform-stats';
 import { HeroSearchBar } from '../components/HeroSearchBar';
 import { HeroTutorCard } from '../components/HeroTutorCard';
@@ -45,7 +46,6 @@ export function HomePage({ locale }: { locale: Locale }) {
       icon: Compass,
       titleBn: 'সাধারণ ও উচ্চতর গণিত',
       titleEn: 'General & Higher Math',
-      tutorsCount: '৫৫০+',
       accentColor: 'text-blue-600 bg-blue-50 border-blue-200/60',
     },
     {
@@ -54,7 +54,6 @@ export function HomePage({ locale }: { locale: Locale }) {
       icon: Atom,
       titleBn: 'পদার্থবিজ্ঞান',
       titleEn: 'Physics',
-      tutorsCount: '৪৮০+',
       accentColor: 'text-indigo-600 bg-indigo-50 border-indigo-200/60',
     },
     {
@@ -63,7 +62,6 @@ export function HomePage({ locale }: { locale: Locale }) {
       icon: FlaskConical,
       titleBn: 'রসায়ন ও জীববিজ্ঞান',
       titleEn: 'Chemistry & Biology',
-      tutorsCount: '৪২০+',
       accentColor: 'text-emerald-600 bg-emerald-50 border-emerald-200/60',
     },
     {
@@ -72,7 +70,6 @@ export function HomePage({ locale }: { locale: Locale }) {
       icon: BookOpen,
       titleBn: 'ইংরেজি ভাষা ও সাহিত্য',
       titleEn: 'English Language & Lit',
-      tutorsCount: '৬২০+',
       accentColor: 'text-amber-600 bg-amber-50 border-amber-200/60',
     },
     {
@@ -81,7 +78,6 @@ export function HomePage({ locale }: { locale: Locale }) {
       icon: Binary,
       titleBn: 'আইসিটি ও কম্পিউটার',
       titleEn: 'ICT & Computer Science',
-      tutorsCount: '২৯০+',
       accentColor: 'text-sky-600 bg-sky-50 border-sky-200/60',
     },
     {
@@ -90,126 +86,51 @@ export function HomePage({ locale }: { locale: Locale }) {
       icon: GraduationCap,
       titleBn: 'বিশ্ববিদ্যালয় ভর্তি প্রস্তুতি',
       titleEn: 'University Admission Prep',
-      tutorsCount: '৩৫০+',
       accentColor: 'text-rose-600 bg-rose-50 border-rose-200/60',
     },
   ];
 
   const apiTutors = Array.isArray(tutorsData?.data) ? tutorsData.data : [];
 
-  const fallbackTutors = [
-    {
-      id: 'buet-ayesha',
-      name: isBn ? 'আয়েশা রহমান' : 'Ayesha Rahman',
-      institution: isBn ? 'বুয়েট • সিএসই বিভাগ' : 'BUET • CSE Graduate',
-      rating: '4.9',
-      reviewsCount: 120,
-      subjects: isBn ? ['উচ্চতর গণিত', 'পদার্থবিজ্ঞান'] : ['Higher Math', 'Physics'],
-      rate: isBn ? '৳ ৮০০' : '৳ 800',
-      experience: isBn ? '৫+ বছর' : '5+ yrs',
-      modes: isBn ? 'অনলাইন ও ১:১' : 'Online & 1:1',
+  const displayedTutors = apiTutors.slice(0, 4).map((t) => {
+    const copy = localizedTutorFields(locale, t);
+    return {
+      id: t.id,
+      name: t.displayName,
+      institution: copy.headline,
+      rating: t.ratingAverage,
+      reviewsCount: t.totalReviews,
+      subjects: t.subjects.slice(0, 2).map((s) => (isBn ? s.subjectNameBn : s.subjectNameEn)),
+      rate: t.hourlyRateMinor ? Math.round(Number(t.hourlyRateMinor) / 100) : null,
+      experience:
+        t.yearsExperience != null
+          ? `${formatLocalizedNumber(t.yearsExperience, locale)}+ ${isBn ? 'বছর' : 'yrs'}`
+          : null,
+      modes:
+        t.teachingModes && t.teachingModes.length > 0
+          ? t.teachingModes
+              .map((m) =>
+                m === 'in_person'
+                  ? isBn
+                    ? 'অফলাইন'
+                    : 'In-person'
+                  : m === 'online'
+                    ? isBn
+                      ? 'অনলাইন'
+                      : 'Online'
+                    : m,
+              )
+              .join(isBn ? ' ও ' : ' & ')
+          : null,
       avatarBg: 'from-blue-600 to-indigo-600',
-    },
-    {
-      id: 'du-tanvir',
-      name: isBn ? 'তানভীর আহমেদ' : 'Tanvir Ahmed',
-      institution: isBn ? 'ঢাকা বিশ্ববিদ্যালয় • গণিত' : 'Dhaka University • Math',
-      rating: '4.8',
-      reviewsCount: 95,
-      subjects: isBn ? ['সাধারণ গণিত', 'আইসিটি'] : ['General Math', 'ICT'],
-      rate: isBn ? '৳ ৭৫০' : '৳ 750',
-      experience: isBn ? '৪ বছর' : '4 yrs',
-      modes: isBn ? 'অনলাইন' : 'Online',
-      avatarBg: 'from-indigo-600 to-blue-600',
-    },
-    {
-      id: 'dmc-nusrat',
-      name: isBn ? 'ডা. নুসরাত জাহান' : 'Dr. Nusrat Jahan',
-      institution: isBn ? 'ডিএমসি • এমবিবিএস' : 'Dhaka Medical • MBBS',
-      rating: '5.0',
-      reviewsCount: 140,
-      subjects: isBn ? ['জীববিজ্ঞান', 'রসায়ন'] : ['Biology', 'Chemistry'],
-      rate: isBn ? '৳ ৯০০' : '৳ 900',
-      experience: isBn ? '৬ বছর' : '6 yrs',
-      modes: isBn ? 'হোম ও অনলাইন' : 'Home & Online',
-      avatarBg: 'from-emerald-600 to-teal-600',
-    },
-    {
-      id: 'iba-farhan',
-      name: isBn ? 'ফারহান করিম' : 'Farhan Karim',
-      institution: isBn ? 'আইবিএ, ঢাবি • বিবিএ' : 'IBA, DU • BBA',
-      rating: '4.9',
-      reviewsCount: 88,
-      subjects: isBn ? ['ইংরেজি ভাষা', 'অর্থনীতি'] : ['English', 'Economics'],
-      rate: isBn ? '৳ ৮৫০' : '৳ 850',
-      experience: isBn ? '৩+ বছর' : '3+ yrs',
-      modes: isBn ? 'অনলাইন' : 'Online',
-      avatarBg: 'from-amber-600 to-orange-600',
-    },
-  ];
+    };
+  });
 
-  const displayedTutors =
-    apiTutors.length > 0
-      ? [
-          ...apiTutors.map((t) => ({
-            id: t.id,
-            name: t.displayName,
-            institution: t.headline || (isBn ? 'যাচাইকৃত শীর্ষ শিক্ষক' : 'Verified Top Educator'),
-            rating: t.ratingAverage ? t.ratingAverage.toFixed(1) : '4.9',
-            reviewsCount: t.totalReviews || 24,
-            subjects:
-              t.subjects.length > 0
-                ? t.subjects.slice(0, 2).map((s) => (isBn ? s.subjectNameBn : s.subjectNameEn))
-                : isBn
-                  ? ['সাধারণ বিষয়']
-                  : ['General Subjects'],
-            rate: t.hourlyRateMinor
-              ? `৳ ${Math.round(Number(t.hourlyRateMinor) / 100)}`
-              : isBn
-                ? '৳ ৮০০'
-                : '৳ 800',
-            experience: t.yearsExperience
-              ? `${formatLocalizedNumber(t.yearsExperience, locale)}+ ${isBn ? 'বছর' : 'yrs'}`
-              : isBn
-                ? '৫+ বছর'
-                : '5+ yrs',
-            modes:
-              t.teachingModes && t.teachingModes.length > 0
-                ? t.teachingModes
-                    .map((m) =>
-                      m === 'in_person'
-                        ? isBn
-                          ? 'অফলাইন'
-                          : 'In-person'
-                        : m === 'online'
-                          ? isBn
-                            ? 'অনলাইন'
-                            : 'Online'
-                          : m,
-                    )
-                    .join(isBn ? ' ও ' : ' & ')
-                : isBn
-                  ? 'অনলাইন'
-                  : 'Online',
-            avatarBg: 'from-blue-600 to-indigo-600',
-          })),
-          ...fallbackTutors,
-        ].slice(0, 4)
-      : fallbackTutors;
-
-  const displayedStudents =
-    stats?.activeStudents && stats.activeStudents > 100
-      ? `${formatLocalizedNumber(stats.activeStudents, locale)}+`
-      : isBn
-        ? '১০,০০০+'
-        : '10,000+';
-
-  const displayedTutorsCount =
-    stats?.verifiedTutors && stats.verifiedTutors > 50
-      ? `${formatLocalizedNumber(stats.verifiedTutors, locale)}+`
-      : isBn
-        ? '১,২০০+'
-        : '1,200+';
+  // Only live aggregates are rendered. A missing stats response shows an em
+  // dash instead of a fabricated platform count.
+  const displayedStudents = stats ? formatLocalizedNumber(stats.activeStudents, locale) : '—';
+  const displayedTutorsCount = stats ? formatLocalizedNumber(stats.verifiedTutors, locale) : '—';
+  const displayedSessions = stats ? formatLocalizedNumber(stats.completedSessions, locale) : '—';
 
   return (
     <div className="relative overflow-hidden bg-background text-foreground">
@@ -234,12 +155,10 @@ export function HomePage({ locale }: { locale: Locale }) {
                     aria-hidden="true"
                   />
                   <span className="sm:hidden">
-                    {isBn ? '১০,০০০+ শিক্ষার্থীর আস্থা' : '10,000+ Happy Students'}
+                    {isBn ? 'শিক্ষার্থীদের আস্থা' : 'Trusted by students'}
                   </span>
                   <span className="hidden sm:inline">
-                    {isBn
-                      ? '১০,০০০+ অভিভাবক ও শিক্ষার্থীর আস্থা'
-                      : 'Trusted by 10,000+ Parents & Students'}
+                    {isBn ? 'অভিভাবক ও শিক্ষার্থীদের আস্থা' : 'Trusted by parents & students'}
                   </span>
                 </div>
 
@@ -250,21 +169,22 @@ export function HomePage({ locale }: { locale: Locale }) {
                   <StudentAvatar index={3} size="sm" />
                 </div>
 
-                {/* Star Ratings */}
-                <div
-                  className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-star shrink-0"
-                  role="img"
-                  aria-label="4.9 out of 5 stars based on 2,500 reviews"
-                >
-                  <span className="tracking-tighter hidden xs:inline" aria-hidden="true">
-                    ★★★★★
-                  </span>
-                  <span className="xs:hidden">★</span>
-                  <span className="text-foreground font-black tabular-nums">4.9</span>
-                  <span className="text-muted-foreground font-normal text-[10px] hidden sm:inline">
-                    (2.5k+)
-                  </span>
-                </div>
+                {/* Live average rating — omitted when the platform has no published reviews. */}
+                {stats?.averageRating != null && (
+                  <div
+                    className="flex items-center gap-1 pl-0.5 text-[11px] font-bold text-star shrink-0"
+                    role="img"
+                    aria-label={`${stats.averageRating.toFixed(1)} out of 5`}
+                  >
+                    <span className="tracking-tighter hidden xs:inline" aria-hidden="true">
+                      ★★★★★
+                    </span>
+                    <span className="xs:hidden">★</span>
+                    <span className="text-foreground font-black tabular-nums">
+                      {stats.averageRating.toFixed(1)}
+                    </span>
+                  </div>
+                )}
               </div>
 
               {/* Main Headline with High-Contrast Gradient */}
@@ -314,7 +234,7 @@ export function HomePage({ locale }: { locale: Locale }) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {/* Stat 1: Happy Students */}
-            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-sm">
+            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-xs">
               <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-primary border border-blue-100">
                 <Users className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
@@ -338,7 +258,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Stat 2: Verified Tutors */}
-            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-sm">
+            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-xs">
               <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100">
                 <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
@@ -361,8 +281,8 @@ export function HomePage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            {/* Stat 3: Satisfaction Rate */}
-            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-sm">
+            {/* Stat 3: Completed sessions (live aggregate) */}
+            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-xs">
               <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
                 <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
@@ -375,10 +295,10 @@ export function HomePage({ locale }: { locale: Locale }) {
                 ) : (
                   <>
                     <div className="text-xl sm:text-3xl font-black text-foreground tracking-tight tabular-nums truncate">
-                      95%
+                      {displayedSessions}
                     </div>
                     <div className="text-[11px] sm:text-xs text-muted-foreground font-medium mt-0.5 truncate">
-                      {isBn ? 'সফলতার হার' : 'Success Rate'}
+                      {isBn ? 'সম্পন্ন ক্লাস' : 'Completed Sessions'}
                     </div>
                   </>
                 )}
@@ -386,7 +306,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Stat 4: 100% Escrow Protection */}
-            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-sm">
+            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-xs">
               <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
                 <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
@@ -445,7 +365,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <Link
                   key={cat.id}
                   href={`/${locale}/tutors?q=${encodeURIComponent(cat.query)}`}
-                  className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs hover:border-primary/40 hover:shadow-sm transition-all duration-200 group text-left flex flex-col justify-between min-h-[140px]"
+                  className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 group text-left flex flex-col justify-between min-h-[140px]"
                 >
                   <div
                     className={`h-10 w-10 rounded-xl flex items-center justify-center border transition-transform duration-200 group-hover:scale-110 ${cat.accentColor}`}
@@ -458,7 +378,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                       {isBn ? cat.titleBn : cat.titleEn}
                     </h3>
                     <p className="text-[11px] text-muted-foreground mt-1 tabular-nums">
-                      {cat.tutorsCount} {isBn ? 'শিক্ষক' : 'tutors'}
+                      {isBn ? 'শিক্ষক দেখুন' : 'Explore tutors'}
                     </p>
                   </div>
                 </Link>
@@ -523,6 +443,22 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </div>
               ))}
             </div>
+          ) : displayedTutors.length === 0 ? (
+            <div
+              className="rounded-2xl border border-border bg-card p-8 text-center"
+              data-testid="home-tutors-empty"
+            >
+              <p className="text-sm font-bold text-foreground">
+                {isBn
+                  ? 'এখন কোনো যাচাইকৃত শিক্ষক তালিকাভুক্ত নেই।'
+                  : 'No verified tutors are listed yet.'}
+              </p>
+              <p className="mt-1 text-xs text-muted-foreground">
+                {isBn
+                  ? 'শিক্ষক তালিকা দেখে ফিল্টার করুন অথবা একটু পরে আবার দেখুন।'
+                  : 'Browse the tutor directory or check back shortly.'}
+              </p>
+            </div>
           ) : (
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
               {displayedTutors.map((tutor) => (
@@ -551,20 +487,26 @@ export function HomePage({ locale }: { locale: Locale }) {
                           <h3 className="text-sm font-bold text-foreground group-hover:text-primary transition-colors truncate">
                             {tutor.name}
                           </h3>
-                          <p className="text-[11px] font-semibold text-primary truncate">
-                            {tutor.institution}
-                          </p>
+                          {tutor.institution && (
+                            <p className="text-[11px] font-semibold text-primary truncate">
+                              {tutor.institution}
+                            </p>
+                          )}
                         </div>
                       </div>
 
-                      <div
-                        className="flex items-center gap-1 text-[11px] font-bold text-star shrink-0"
-                        role="img"
-                        aria-label={`Rating ${tutor.rating}`}
-                      >
-                        <Star className="h-3.5 w-3.5 fill-star text-star" />
-                        <span className="text-foreground">{tutor.rating}</span>
-                      </div>
+                      {tutor.rating != null && (
+                        <div
+                          className="flex items-center gap-1 text-[11px] font-bold text-star shrink-0"
+                          role="img"
+                          aria-label={`${formatLocalizedNumber(tutor.rating, locale)} / 5`}
+                        >
+                          <Star className="h-3.5 w-3.5 fill-star text-star" />
+                          <span className="text-foreground tabular-nums">
+                            {tutor.rating.toFixed(1)}
+                          </span>
+                        </div>
+                      )}
                     </div>
 
                     {/* Subjects Row */}
@@ -593,10 +535,18 @@ export function HomePage({ locale }: { locale: Locale }) {
                         {isBn ? 'পারিশ্রমিক' : 'Rate'}
                       </span>
                       <span className="text-xs font-black text-foreground tabular-nums">
-                        {tutor.rate}
-                        <span className="text-[10px] font-normal text-muted-foreground">
-                          {isBn ? ' /ঘণ্টা' : ' /hr'}
-                        </span>
+                        {tutor.rate != null ? (
+                          <>
+                            {formatLocalizedNumber(tutor.rate, locale)}
+                            <span className="text-[10px] font-normal text-muted-foreground">
+                              {isBn ? ' /ঘণ্টা' : ' /hr'}
+                            </span>
+                          </>
+                        ) : (
+                          <span className="text-[11px] font-medium text-muted-foreground">
+                            {isBn ? 'আলোচনা সাপেক্ষে' : 'Negotiable'}
+                          </span>
+                        )}
                       </span>
                     </div>
 
@@ -637,7 +587,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-sm transition-all duration-200 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-primary border border-blue-100">
                 <Award className="h-6 w-6" aria-hidden="true" />
               </div>
@@ -652,7 +602,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 2 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-sm transition-all duration-200 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
                 <ShieldCheck className="h-6 w-6" aria-hidden="true" />
               </div>
@@ -667,7 +617,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 3 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-sm transition-all duration-200 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100">
                 <TrendingUp className="h-6 w-6" aria-hidden="true" />
               </div>
@@ -682,7 +632,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 4 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-sm transition-all duration-200 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 space-y-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
                 <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
               </div>
@@ -715,7 +665,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {/* Step 1 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-sm transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
                   01
@@ -735,7 +685,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-sm transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
                   02
@@ -755,7 +705,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-sm transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
                   03
@@ -782,7 +732,7 @@ export function HomePage({ locale }: { locale: Locale }) {
        * ==================================================================== */}
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white p-8 sm:p-14 shadow-xl border border-blue-900/50">
+          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white p-8 sm:p-14 border border-blue-900/50">
             {/* Ambient Backlight */}
             <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
             <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
@@ -809,7 +759,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <Button
                   asChild
                   size="lg"
-                  className="rounded-full px-7 py-3.5 h-auto text-xs font-bold bg-primary hover:bg-primary-hover text-white shadow-md shadow-primary/30"
+                  className="rounded-full px-7 py-3.5 h-auto text-xs font-bold bg-primary hover:bg-primary-hover text-white shadow-xs shadow-primary/30"
                 >
                   <Link href={`/${locale}/register`} className="flex items-center gap-2">
                     <span>{isBn ? 'নিবন্ধন করুন' : 'Get Started'}</span>

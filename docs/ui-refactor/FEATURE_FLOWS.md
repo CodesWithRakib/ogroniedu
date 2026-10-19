@@ -59,6 +59,7 @@ Dev password for all demo accounts: `OgroniDev#2026`.
 1. `/[locale]/tutors` (`tutorSearchCatalog`) lists only tutors that are **published AND verified** (API `GET /api/v1/tutors/search` excludes anything else — `discovery.search.spec.ts` NEGATIVE test).
 2. Filters (subject, level, mode, district, price, sort) are sent as query params; results carry an explainable match score (`scoreBreakdownModal`).
 3. `/[locale]/tutors/[id]` renders the public profile — private contact fields are excluded by an explicit invariant (`public-website-and-seo.spec.ts`).
+4. **Bilingual copy & media:** search/profile responses carry `headlineEn/Bn`, `bioEn/Bn` and `avatarUrl`. `localizedTutorText()` prefers the active locale (Bangla on `bn`, English on `en`) and falls back to the other language; missing Bangla renders English, never machine-translated or fabricated. Tutors author both languages at `/[locale]/dashboard/tutor/profile` (`PUT /tutors/me/profile`; both required — headline ≥ 5 chars, bio ≥ 20 chars). Avatar URLs come from migration `018_profile_avatar_urls.sql`; the UI renders the real image or initials, never a stock photo.
 
 **Flow B — booking request**
 
@@ -251,8 +252,9 @@ Dev password for all demo accounts: `OgroniDev#2026`.
 4. Security tab → active sessions + revoke-all (see §1).
 5. Data rights: `GET /users/me/export` (structured export incl. sessions and family links, no hashes) and `POST /users/me/delete-account` — blocked while active tutoring bookings exist; otherwise `deletion_pending` + immediate session revocation.
 6. Onboarding gate: `route-policy.ts` marks `/dashboard/**`, `/admin`, `/bookings`, `/requests`, `/tutor` as onboarding-gated; steps post to `POST /onboarding/steps/:stepKey`; the security acknowledgement maps to a boolean policy flag.
+7. Tutor profile editor (`/[locale]/dashboard/tutor/profile`): bilingual headline/bio, teaching modes, experience and hourly fee; reads `GET /tutors/me`, saves `PUT /tutors/me/profile`; both languages required (headline ≥ 5 chars, bio ≥ 20 chars).
 
-**Verified by:** `users.service.spec.ts` (7), `security-and-privacy-hardening.spec.ts` deletion/export cases, `onboarding.service.spec.ts` (13), `auth-session-storage.spec.ts`, e2e `tutor.evidence.spec.ts` (security tab).
+**Verified by:** `users.service.spec.ts` (7), `security-and-privacy-hardening.spec.ts` deletion/export cases, `onboarding.service.spec.ts` (13), `onboarding-validators.spec.ts`, `auth-session-storage.spec.ts`, e2e `tutor.evidence.spec.ts` (security tab), e2e `tutor.localization.spec.ts` (editor round-trip).
 
 ---
 

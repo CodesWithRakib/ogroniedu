@@ -36,8 +36,14 @@ export interface TutorSearchItem {
   id: string;
   displayName: string;
   avatarUrl?: string | null;
+  /** English headline (legacy field). */
   headline: string | null;
+  /** English biography (legacy field). */
   bio: string | null;
+  headlineEn?: string | null;
+  headlineBn?: string | null;
+  bioEn?: string | null;
+  bioBn?: string | null;
   yearsExperience: number | null;
   teachingModes: string[];
   hourlyRateMinor: string | null;
@@ -121,8 +127,14 @@ export interface TutorPublicProfile {
   id: string;
   displayName: string;
   avatarUrl?: string | null;
+  /** English headline (legacy field). */
   headline: string | null;
+  /** English biography (legacy field). */
   bio: string | null;
+  headlineEn?: string | null;
+  headlineBn?: string | null;
+  bioEn?: string | null;
+  bioBn?: string | null;
   yearsExperience: number | null;
   teachingModes: string[];
   hourlyRateMinor: string | null;
@@ -157,8 +169,13 @@ export interface SavedTutorItem {
 export interface TutorOwnProfile {
   id: string;
   userId: string;
+  /** English headline (legacy field). */
   headline?: string | null;
   bio?: string | null;
+  headlineEn?: string | null;
+  headlineBn?: string | null;
+  bioEn?: string | null;
+  bioBn?: string | null;
   yearsExperience?: number | null;
   teachingModes?: string[];
   hourlyRateMinor?: string | null;
@@ -223,6 +240,10 @@ export interface TutorVerificationDossier {
     userId: string;
     headline?: string | null;
     bio?: string | null;
+    headlineEn?: string | null;
+    headlineBn?: string | null;
+    bioEn?: string | null;
+    bioBn?: string | null;
     yearsExperience?: number | null;
     teachingModes?: string[];
     hourlyRateMinor?: string | null;

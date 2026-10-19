@@ -45,8 +45,16 @@ export class TutorPublicProfileDto {
   id!: string;
   displayName!: string;
   avatarUrl!: string | null;
+  /** English headline (legacy field, kept for older clients). */
   headline!: string | null;
+  /** English biography (legacy field, kept for older clients). */
   bio!: string | null;
+  headlineEn!: string | null;
+  /** Null when the tutor has not written a Bangla headline yet. */
+  headlineBn!: string | null;
+  bioEn!: string | null;
+  /** Null when the tutor has not written a Bangla biography yet. */
+  bioBn!: string | null;
   yearsExperience!: number | null;
   teachingModes!: string[];
   hourlyRateMinor!: string | null;

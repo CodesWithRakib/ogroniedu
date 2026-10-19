@@ -37,6 +37,7 @@ import { useAppSelector } from '@/store';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { withLocale } from '@/lib/auth';
 import { WEEKDAY_LABELS } from '@/features/tutor-discovery/types/tutor-discovery.types';
+import { localizedTutorFields } from '@/features/tutor-discovery/utils/localized-tutor-text';
 
 const DAY_MAP: Record<string, number> = {
   sunday: 0,
@@ -81,6 +82,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
   const profileQuery = useGetTutorPublicProfileQuery(tutorId);
   const profile = profileQuery.data?.data;
+  const { headline, bio } = localizedTutorFields(locale, profile ?? {});
 
   const reviewsQuery = useGetTutorReviewsQuery({ tutorId }, { skip: !profile });
   const reviews = reviewsQuery.data?.data ?? [];
@@ -212,7 +214,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
   if (profileQuery.error || !profile) {
     return (
       <div className="min-h-screen bg-background py-16 px-4" data-testid="profile-unavailable">
-        <div className="max-w-xl mx-auto rounded-3xl border border-border/80 bg-card p-8 sm:p-10 text-center space-y-5 shadow-lg">
+        <div className="max-w-xl mx-auto rounded-3xl border border-border/80 bg-card p-8 sm:p-10 text-center space-y-5 shadow-xs">
           <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-amber-50 text-amber-600 dark:bg-amber-950/40 dark:text-amber-400 mx-auto">
             <AlertCircle className="h-8 w-8" aria-hidden="true" />
           </div>
@@ -276,7 +278,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
           href={withLocale('/tutors', locale)}
           className="inline-flex items-center gap-2 text-blue-600 dark:text-blue-400 hover:text-blue-700 font-semibold group transition-colors"
         >
-          <ArrowLeft className="w-4 h-4 group-hover:-translate-x-1 transition-transform" aria-hidden="true" />
+          <ArrowLeft
+            className="w-4 h-4 group-hover:-translate-x-1 transition-transform"
+            aria-hidden="true"
+          />
           <span>{isBn ? 'শিক্ষক তালিকায় ফিরুন' : 'Back to tutors'}</span>
         </Link>
 
@@ -298,7 +303,13 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
               aria-hidden="true"
             />
             <span>
-              {isSaved ? (isBn ? 'সংরক্ষিত শিক্ষক' : 'Saved Tutor') : isBn ? 'বুকমার্কে রাখুন' : 'Save tutor'}
+              {isSaved
+                ? isBn
+                  ? 'সংরক্ষিত শিক্ষক'
+                  : 'Saved Tutor'
+                : isBn
+                  ? 'বুকমার্কে রাখুন'
+                  : 'Save tutor'}
             </span>
           </button>
         )}
@@ -311,7 +322,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
       )}
 
       {/* Hero Profile Banner */}
-      <div className="max-w-7xl mx-auto rounded-3xl bg-card border border-border/80 p-6 sm:p-10 shadow-sm relative overflow-hidden">
+      <div className="max-w-7xl mx-auto rounded-3xl bg-card border border-border/80 p-6 sm:p-10 shadow-xs relative overflow-hidden">
         {/* Subtle decorative background glow */}
         <div className="absolute top-0 right-0 -mt-16 -mr-16 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -324,10 +335,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 <img
                   src={profile.avatarUrl}
                   alt={profile.displayName}
-                  className="h-24 w-24 sm:h-32 sm:w-32 rounded-3xl object-cover ring-4 ring-blue-100 dark:ring-blue-950/70 shadow-md"
+                  className="h-24 w-24 sm:h-32 sm:w-32 rounded-3xl object-cover ring-4 ring-blue-100 dark:ring-blue-950/70 shadow-xs"
                 />
               ) : (
-                <div className="flex h-24 w-24 sm:h-32 sm:w-32 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-black text-2xl sm:text-4xl shadow-md">
+                <div className="flex h-24 w-24 sm:h-32 sm:w-32 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-black text-2xl sm:text-4xl shadow-xs">
                   {initials}
                 </div>
               )}
@@ -343,9 +354,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tracking-tight leading-tight">
                   {profile.displayName}
                 </h1>
-                {profile.headline && (
+                {headline && (
                   <p className="text-sm sm:text-base font-bold text-blue-600 dark:text-blue-400 mt-1 leading-snug">
-                    {profile.headline}
+                    {headline}
                   </p>
                 )}
               </div>
@@ -377,7 +388,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 {expYears && (
                   <span className="inline-flex items-center gap-1 text-xs font-semibold text-foreground/80 bg-muted/40 px-3 py-1 rounded-full border border-border/70">
                     <Clock className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
-                    <span>{expYears} {isBn ? 'বছরের অভিজ্ঞতা' : 'yrs experience'}</span>
+                    <span>
+                      {expYears} {isBn ? 'বছরের অভিজ্ঞতা' : 'yrs experience'}
+                    </span>
                   </span>
                 )}
 
@@ -395,7 +408,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
               {/* Trust & Verification Badges */}
               <div className="flex flex-wrap gap-2 pt-1">
                 <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-700 border border-emerald-200/80 dark:bg-emerald-950/40 dark:text-emerald-300 dark:border-emerald-800/50 shadow-2xs">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600 dark:text-emerald-400" aria-hidden="true" />
+                  <ShieldCheck
+                    className="w-4 h-4 text-emerald-600 dark:text-emerald-400"
+                    aria-hidden="true"
+                  />
                   {isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor'}
                 </span>
 
@@ -429,7 +445,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
             <a
               href="#booking-section"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold px-6 py-3 text-sm shadow-md shadow-blue-500/20 hover:shadow-lg hover:shadow-blue-500/30 transition-all duration-200 w-full sm:w-auto"
+              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold px-6 py-3 text-sm shadow-xs shadow-blue-500/20 hover:shadow-xs hover:shadow-blue-500/30 transition-all duration-200 w-full sm:w-auto"
             >
               <Send className="w-4 h-4" aria-hidden="true" />
               <span>{isBn ? 'টিউশন অনুরোধ পাঠান' : 'Request Tutoring'}</span>
@@ -443,14 +459,14 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
         {/* Left Column: Bio, Qualifications, Subjects, Reviews */}
         <div className="lg:col-span-8 space-y-6 sm:space-y-8">
           {/* About Section */}
-          {profile.bio && (
+          {bio && (
             <SectionCard
               title={isBn ? 'শিক্ষক পরিচিতি ও পাঠদান পদ্ধতি' : 'About the educator'}
               icon={<BookOpen className="w-5 h-5 text-blue-600" aria-hidden="true" />}
             >
               <div className="relative pl-4 border-l-2 border-blue-500/30">
                 <p className="text-sm sm:text-base text-foreground/90 leading-relaxed whitespace-pre-line font-normal">
-                  {profile.bio}
+                  {bio}
                 </p>
               </div>
             </SectionCard>
@@ -586,7 +602,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                       </div>
 
                       <div className="flex items-center gap-1 rounded-full bg-amber-50 dark:bg-amber-950/30 px-2.5 py-1 text-xs font-bold text-amber-700 dark:text-amber-400 border border-amber-200/60 dark:border-amber-800/40">
-                        <Star className="w-3.5 h-3.5 fill-amber-400 text-amber-500" aria-hidden="true" />
+                        <Star
+                          className="w-3.5 h-3.5 fill-amber-400 text-amber-500"
+                          aria-hidden="true"
+                        />
                         <span>{formatLocalizedNumber(review.rating, locale)}</span>
                       </div>
                     </div>
@@ -725,7 +744,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                     : 'Sign in or create an account to send a direct tutoring booking request.'}
                 </p>
                 <Link href={withLocale('/login', locale)} className="block">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl shadow-md">
+                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl shadow-xs">
                     {isBn ? 'লগইন করুন' : 'Sign in'}
                   </Button>
                 </Link>
@@ -834,7 +853,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
                 <div className="space-y-1.5">
                   <Label htmlFor="booking-notes" className="text-xs font-bold text-foreground">
-                    {isBn ? 'শিক্ষকের জন্য কোনো বিশেষ বার্তা (ঐচ্ছিক)' : 'Message for tutor (optional)'}
+                    {isBn
+                      ? 'শিক্ষকের জন্য কোনো বিশেষ বার্তা (ঐচ্ছিক)'
+                      : 'Message for tutor (optional)'}
                   </Label>
                   <Textarea
                     id="booking-notes"
@@ -847,8 +868,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                         : 'Mention student current topics or specific requirements...'
                     }
                     className="text-xs rounded-xl"
-                  >
-                  </Textarea>
+                  ></Textarea>
                 </div>
 
                 {bookingError && (
@@ -857,7 +877,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   </Alert>
                 )}
                 {bookingSuccess && (
-                  <Alert className="rounded-xl border-emerald-200 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-300" data-testid="booking-success">
+                  <Alert
+                    className="rounded-xl border-emerald-200 bg-emerald-50 text-emerald-800 dark:bg-emerald-950/40 dark:border-emerald-800 dark:text-emerald-300"
+                    data-testid="booking-success"
+                  >
                     <AlertDescription className="font-semibold">{bookingSuccess}</AlertDescription>
                   </Alert>
                 )}
@@ -865,7 +888,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 <Button
                   type="submit"
                   disabled={isBookingSubmitting || !selectedSubject}
-                  className="w-full gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 shadow-md shadow-blue-500/20 hover:shadow-lg transition-all"
+                  className="w-full gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 shadow-xs shadow-blue-500/20 hover:shadow-xs transition-all"
                   data-testid="submit-booking-request"
                 >
                   <Send className="w-4 h-4" aria-hidden="true" />

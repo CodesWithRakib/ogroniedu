@@ -1,5 +1,6 @@
 export * from './types/tutor-discovery.types';
 export * from './utils/catalog-filter';
+export * from './utils/localized-tutor-text';
 export * from './components/tutorCard';
 export * from './components/tutorFiltersForm';
 export * from './components/tutorResultsGrid';

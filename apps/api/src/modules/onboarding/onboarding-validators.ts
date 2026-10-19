@@ -66,11 +66,23 @@ const GUARDIAN_PROFILE: OnboardingPayloadValidator = (payload) => {
 const TUTOR_PROFILE: OnboardingPayloadValidator = (payload) => {
   const record = asRecord(payload);
   if (!record) return 'payload must be an object';
-  if (!nonEmptyString(record.headline, 5)) {
-    return 'headline must be at least 5 characters';
+
+  // Bilingual profile copy. `headline`/`bio` are the legacy English fields.
+  // Both languages are required so the public UI can show tutor-authored copy
+  // in the visitor's language. Bangla is never auto-translated from English.
+  const headlineEn = nonEmptyString(record.headlineEn, 5) || nonEmptyString(record.headline, 5);
+  const bioEn = nonEmptyString(record.bioEn, 20) || nonEmptyString(record.bio, 20);
+  if (!headlineEn) {
+    return 'an English headline of at least 5 characters is required';
   }
-  if (!nonEmptyString(record.bio, 20)) {
-    return 'bio must be at least 20 characters';
+  if (!nonEmptyString(record.headlineBn, 5)) {
+    return 'a Bangla headline of at least 5 characters is required';
+  }
+  if (!bioEn) {
+    return 'an English biography of at least 20 characters is required';
+  }
+  if (!nonEmptyString(record.bioBn, 20)) {
+    return 'a Bangla biography of at least 20 characters is required';
   }
   if (record.yearsExperience !== undefined) {
     const years = Number(record.yearsExperience);

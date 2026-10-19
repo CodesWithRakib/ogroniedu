@@ -13,6 +13,7 @@ import {
   useUnsaveTutorMutation,
   type SavedTutorItem,
 } from '@/store/services/tutors-api';
+import { localizedTutorFields } from '@/features/tutor-discovery/utils/localized-tutor-text';
 
 function SavedTutorCard({
   item,
@@ -27,6 +28,7 @@ function SavedTutorCard({
 }) {
   const isBn = locale === 'bn';
   const profile = item.profile;
+  const { headline } = localizedTutorFields(locale, profile ?? {});
 
   if (!profile) {
     return (
@@ -69,9 +71,7 @@ function SavedTutorCard({
           >
             {profile.displayName}
           </Link>
-          {profile.headline && (
-            <p className="text-xs text-muted-foreground line-clamp-2">{profile.headline}</p>
-          )}
+          {headline && <p className="text-xs text-muted-foreground line-clamp-2">{headline}</p>}
         </div>
         <Button
           variant="ghost"

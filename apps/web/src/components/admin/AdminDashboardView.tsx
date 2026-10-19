@@ -34,6 +34,20 @@ import {
 } from '@/features/admin';
 import type { TutorReviewDecision } from '@/store/services/admin-api';
 
+/**
+ * Stable empty collections for destructuring defaults. Fresh `[]` literals in
+ * the parameter list get a new identity every render; because these values feed
+ * `useAdminActions` sync effects (keyed on the arrays), that would re-run
+ * setState forever and surface as React "Maximum update depth exceeded".
+ */
+const EMPTY_USERS: AdminUserItem[] = [];
+const EMPTY_BOOKINGS: AdminBookingItem[] = [];
+const EMPTY_SETTINGS: AdminSystemSettingItem[] = [];
+const EMPTY_FLAGS: AdminFeatureFlagItem[] = [];
+const EMPTY_AUDIT_LOGS: AdminAuditLogItem[] = [];
+const EMPTY_TICKETS: AdminSupportTicketItem[] = [];
+const EMPTY_PENDING_TUTORS: PendingTutorItem[] = [];
+
 export type {
   AdminAuditLogItem,
   AdminBookingItem,
@@ -79,14 +93,14 @@ export interface AdminDashboardProps extends AdminActionHandlers {
 export function AdminDashboardView({
   currentUser,
   metrics,
-  initialUsers = [],
-  initialBookings = [],
+  initialUsers = EMPTY_USERS,
+  initialBookings = EMPTY_BOOKINGS,
   initialReconciliation = EMPTY_RECONCILIATION,
-  initialSettings = [],
-  initialFeatureFlags = [],
-  initialAuditLogs = [],
-  initialTickets = [],
-  initialPendingTutors: _initialPendingTutors = [],
+  initialSettings = EMPTY_SETTINGS,
+  initialFeatureFlags = EMPTY_FLAGS,
+  initialAuditLogs = EMPTY_AUDIT_LOGS,
+  initialTickets = EMPTY_TICKETS,
+  initialPendingTutors: _initialPendingTutors = EMPTY_PENDING_TUTORS,
   pendingTutorsLoading: _pendingTutorsLoading = false,
   pendingTutorsError: _pendingTutorsError = null,
   userSearch = '',

@@ -155,6 +155,52 @@ describe('TutorsService Unit & Security Invariant Tests', () => {
       );
     });
 
+    it('stores Bangla and English profile copy independently without auto-translating', async () => {
+      mockProfileRepo.findOne.mockResolvedValueOnce({
+        userId: tutorId,
+        headline: null,
+        bio: null,
+        headlineEn: null,
+        headlineBn: null,
+        bioEn: null,
+        bioBn: null,
+        teachingModes: [],
+        verificationStatus: 'not_submitted',
+        publicationStatus: 'draft',
+      });
+
+      const result = await service.updateOwnProfile(tutorId, {
+        headlineEn: 'BUET EEE Physics Tutor',
+        headlineBn: 'বুয়েট ইইই পদার্থবিজ্ঞান শিক্ষক',
+        bioEn: 'I teach Physics for Class 9-12.',
+        bioBn: 'আমি নবম-দ্বাদশ শ্রেণির পদার্থবিজ্ঞান পড়াই।',
+        teachingModes: ['online'],
+      });
+
+      expect(result.headlineEn).toBe('BUET EEE Physics Tutor');
+      expect(result.headlineBn).toBe('বুয়েট ইইই পদার্থবিজ্ঞান শিক্ষক');
+      expect(result.bioEn).toBe('I teach Physics for Class 9-12.');
+      expect(result.bioBn).toBe('আমি নবম-দ্বাদশ শ্রেণির পদার্থবিজ্ঞান পড়াই।');
+      // Legacy English columns stay synchronized for older consumers.
+      expect(result.headline).toBe('BUET EEE Physics Tutor');
+      expect(result.bio).toBe('I teach Physics for Class 9-12.');
+    });
+
+    it('clears blank bilingual copy to NULL instead of persisting whitespace', async () => {
+      mockProfileRepo.findOne.mockResolvedValueOnce({
+        userId: tutorId,
+        headline: 'Existing',
+        bio: 'Existing bio',
+        teachingModes: [],
+        verificationStatus: 'not_submitted',
+        publicationStatus: 'draft',
+      });
+
+      const result = await service.updateOwnProfile(tutorId, { bioEn: '   ' });
+      expect(result.bioEn).toBeNull();
+      expect(result.bio).toBeNull();
+    });
+
     it('NEGATIVE TEST: should prevent verification submission if qualifications are missing', async () => {
       mockProfileRepo.findOne.mockResolvedValueOnce({
         userId: tutorId,

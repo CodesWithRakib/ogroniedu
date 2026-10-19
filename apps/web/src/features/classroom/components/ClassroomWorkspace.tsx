@@ -360,6 +360,7 @@ export function ClassroomWorkspace({
                   onClick={handleCopyLink}
                   className="p-2.5 rounded-2xl bg-muted hover:bg-surface-hover text-muted-foreground border border-border transition-all text-xs flex items-center gap-1.5"
                   title={locale === 'bn' ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
+                  aria-label={locale === 'bn' ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
                   data-testid="copy-meeting-link-btn"
                 >
                   {copiedLink ? (
@@ -386,6 +387,7 @@ export function ClassroomWorkspace({
                   rel="noreferrer"
                   className="p-2.5 rounded-2xl bg-success-soft hover:bg-primary/30 text-success-soft-foreground border border-success/30 transition-all text-xs flex items-center gap-1"
                   title={locale === 'bn' ? 'হোয়াটসঅ্যাপে শেয়ার করুন' : 'Share on WhatsApp'}
+                  aria-label={locale === 'bn' ? 'হোয়াটসঅ্যাপে শেয়ার করুন' : 'Share on WhatsApp'}
                 >
                   <Share2 className="w-4 h-4" />
                 </a>
@@ -425,6 +427,7 @@ export function ClassroomWorkspace({
                 onClick={() => setIsEditingMeetingUrl(!isEditingMeetingUrl)}
                 className="p-2.5 rounded-2xl bg-muted hover:bg-surface-hover text-muted-foreground hover:text-foreground border border-border"
                 title={locale === 'bn' ? 'মিটিং লিংক পরিবর্তন করুন' : 'Edit Meeting Link'}
+                aria-label={locale === 'bn' ? 'মিটিং লিংক পরিবর্তন করুন' : 'Edit Meeting Link'}
               >
                 <Edit2 className="w-4 h-4" />
               </button>

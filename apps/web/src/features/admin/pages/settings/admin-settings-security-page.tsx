@@ -82,7 +82,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
           <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-foreground">
+                <h3 id="security-2fa-title" className="text-base font-bold text-foreground">
                   {isBn
                     ? 'সুপার অ্যাডমিনদের জন্য ২-ফ্যাক্টর (2FA)'
                     : 'Mandatory 2FA for Super Admins'}
@@ -95,6 +95,9 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
               </div>
               <button
                 type="button"
+                role="switch"
+                aria-checked={enforce2FA}
+                aria-labelledby="security-2fa-title"
                 onClick={() => setEnforce2FA(!enforce2FA)}
                 className={`w-12 h-6 rounded-full transition-colors relative p-0.5 ${enforce2FA ? 'bg-primary' : 'bg-muted'}`}
               >
@@ -108,7 +111,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
           <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
             <div className="flex items-center justify-between">
               <div>
-                <h3 className="text-base font-bold text-foreground">
+                <h3 id="security-ip-title" className="text-base font-bold text-foreground">
                   {isBn ? 'স্ট্রিক্ট আইপি লোকেশন ভ্যালিডেশন' : 'Strict IP Whitelisting for Admins'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-0.5">
@@ -119,6 +122,9 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
               </div>
               <button
                 type="button"
+                role="switch"
+                aria-checked={strictIPCheck}
+                aria-labelledby="security-ip-title"
                 onClick={() => setStrictIPCheck(!strictIPCheck)}
                 className={`w-12 h-6 rounded-full transition-colors relative p-0.5 ${strictIPCheck ? 'bg-primary' : 'bg-muted'}`}
               >

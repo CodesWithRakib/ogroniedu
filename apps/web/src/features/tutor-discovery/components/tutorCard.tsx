@@ -17,6 +17,7 @@ import {
 } from 'lucide-react';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { WEEKDAY_LABELS, type TutorCardData } from '../types/tutor-discovery.types';
+import { localizedTutorFields } from '../utils/localized-tutor-text';
 
 export function TutorCard({
   tutor,
@@ -37,6 +38,7 @@ export function TutorCard({
 }) {
   const dict = getDictionary(locale);
   const isBn = locale === 'bn';
+  const { headline, bio } = localizedTutorFields(locale, tutor);
 
   const hourlyRate = tutor.hourlyRateMinor
     ? formatLocalizedNumber(Number(tutor.hourlyRateMinor) / 100, locale)
@@ -86,7 +88,7 @@ export function TutorCard({
 
   return (
     <div
-      className="group relative rounded-3xl bg-card border border-border/80 hover:border-blue-500/40 p-5 sm:p-6 shadow-xs hover:shadow-xl transition-all duration-300 hover:-translate-y-0.5 text-left w-full overflow-hidden"
+      className="group relative rounded-3xl bg-card border border-border/80 hover:border-blue-500/40 p-5 sm:p-6 shadow-xs hover:shadow-xs transition-all duration-300 hover:-translate-y-0.5 text-left w-full overflow-hidden"
       data-testid={`tutor-card-${tutor.id}`}
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
@@ -123,9 +125,9 @@ export function TutorCard({
                   {tutor.displayName}
                 </Link>
 
-                {tutor.headline && (
+                {headline && (
                   <p className="text-xs sm:text-sm text-blue-600 font-bold line-clamp-2 mt-0.5 leading-snug">
-                    {tutor.headline}
+                    {headline}
                   </p>
                 )}
               </div>
@@ -142,7 +144,10 @@ export function TutorCard({
                 }
                 data-testid={`match-score-badge-${tutor.id}`}
               >
-                <Sparkles className="w-3.5 h-3.5 text-blue-600 fill-blue-600/20" aria-hidden="true" />
+                <Sparkles
+                  className="w-3.5 h-3.5 text-blue-600 fill-blue-600/20"
+                  aria-hidden="true"
+                />
                 <span className="tabular-nums">
                   {formatLocalizedNumber(tutor.matchScore, locale)} pts
                 </span>
@@ -177,21 +182,36 @@ export function TutorCard({
 
               {/* Verification Pills */}
               <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 shadow-2xs">
-                <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]" aria-hidden="true" />
-                <span>{dict.tutor?.badgeVerifiedTutor || (isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor')}</span>
+                <CheckCircle2
+                  className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]"
+                  aria-hidden="true"
+                />
+                <span>
+                  {dict.tutor?.badgeVerifiedTutor || (isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor')}
+                </span>
               </span>
 
               {tutor.badges.includes('verified_identity') && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-200/80 px-2.5 py-0.5 text-[11px] font-bold text-blue-700 shadow-2xs">
                   <Award className="w-3.5 h-3.5 text-blue-600 stroke-[2.5]" aria-hidden="true" />
-                  <span>{dict.tutor?.badgeVerifiedIdentity || (isBn ? 'এনআইডি যাচাইকৃত' : 'NID Verified')}</span>
+                  <span>
+                    {dict.tutor?.badgeVerifiedIdentity ||
+                      (isBn ? 'এনআইডি যাচাইকৃত' : 'NID Verified')}
+                  </span>
                 </span>
               )}
 
-              {(tutor.badges.includes('verified_academic') || tutor.badges.includes('verified_degree')) && (
+              {(tutor.badges.includes('verified_academic') ||
+                tutor.badges.includes('verified_degree')) && (
                 <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 border border-indigo-200/80 px-2.5 py-0.5 text-[11px] font-bold text-indigo-700 shadow-2xs">
-                  <GraduationCap className="w-3.5 h-3.5 text-indigo-600 stroke-[2.5]" aria-hidden="true" />
-                  <span>{dict.tutor?.badgeVerifiedAcademic || (isBn ? 'সনদপত্র যাচাইকৃত' : 'Degree Verified')}</span>
+                  <GraduationCap
+                    className="w-3.5 h-3.5 text-indigo-600 stroke-[2.5]"
+                    aria-hidden="true"
+                  />
+                  <span>
+                    {dict.tutor?.badgeVerifiedAcademic ||
+                      (isBn ? 'সনদপত্র যাচাইকৃত' : 'Degree Verified')}
+                  </span>
                 </span>
               )}
             </div>
@@ -215,7 +235,10 @@ export function TutorCard({
               {/* Experience */}
               {expYears && (
                 <div className="flex items-center gap-1.5 bg-surface/90 rounded-xl px-2.5 py-1 border border-border/70 text-foreground/85">
-                  <GraduationCap className="h-3.5 w-3.5 text-blue-600 shrink-0" aria-hidden="true" />
+                  <GraduationCap
+                    className="h-3.5 w-3.5 text-blue-600 shrink-0"
+                    aria-hidden="true"
+                  />
                   <span className="tabular-nums">
                     {dict.discovery?.yearsExperience
                       ? dict.discovery.yearsExperience.replace('{count}', expYears)
@@ -252,9 +275,9 @@ export function TutorCard({
             </div>
 
             {/* Clean Bio Snippet */}
-            {tutor.bio && !tutor.bio.toLowerCase().includes('live probe') && (
+            {bio && !bio.toLowerCase().includes('live probe') && (
               <p className="text-xs sm:text-sm text-muted-foreground line-clamp-2 leading-relaxed pt-0.5">
-                {tutor.bio}
+                {bio}
               </p>
             )}
           </div>
@@ -288,10 +311,12 @@ export function TutorCard({
               type="button"
               onClick={() => onRequestBooking(tutor)}
               data-testid={`request-tutoring-btn-${tutor.id}`}
-              className="inline-flex items-center justify-center gap-1.5 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs px-4 py-2.5 shadow-sm shadow-blue-500/20 hover:shadow-md hover:shadow-blue-500/30 transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 active:scale-[0.98] group"
+              className="inline-flex items-center justify-center gap-1.5 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs px-4 py-2.5 shadow-xs shadow-blue-500/20 hover:shadow-xs hover:shadow-blue-500/30 transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 active:scale-[0.98] group"
             >
               <Send className="w-3.5 h-3.5 stroke-[2.2] transition-transform group-hover:translate-x-0.5" />
-              <span>{dict.discovery?.requestSession || (isBn ? 'অনুরোধ পাঠান' : 'Request Tutoring')}</span>
+              <span>
+                {dict.discovery?.requestSession || (isBn ? 'অনুরোধ পাঠান' : 'Request Tutoring')}
+              </span>
             </button>
 
             {/* Secondary Row: Details Link + Bookmark */}

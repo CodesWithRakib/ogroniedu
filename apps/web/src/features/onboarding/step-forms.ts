@@ -69,8 +69,36 @@ const GUARDIAN_PROFILE_FIELDS: StepField[] = [
 ];
 
 const TUTOR_PROFILE_FIELDS: StepField[] = [
-  { name: 'headline', labelBn: 'শিরোনাম', labelEn: 'Headline', kind: 'text', required: true },
-  { name: 'bio', labelBn: 'পরিচিতি', labelEn: 'Biography', kind: 'textarea', required: true },
+  {
+    name: 'headline',
+    labelBn: 'শিরোনাম (ইংরেজি)',
+    labelEn: 'Headline (English)',
+    kind: 'text',
+    required: true,
+    placeholder: 'Physics teacher for Class 9–12',
+  },
+  {
+    name: 'headlineBn',
+    labelBn: 'শিরোনাম (বাংলা)',
+    labelEn: 'Headline (Bangla)',
+    kind: 'text',
+    required: true,
+    placeholder: 'নবম–দ্বাদশ শ্রেণির পদার্থবিজ্ঞান শিক্ষক',
+  },
+  {
+    name: 'bio',
+    labelBn: 'পরিচিতি (ইংরেজি)',
+    labelEn: 'Biography (English)',
+    kind: 'textarea',
+    required: true,
+  },
+  {
+    name: 'bioBn',
+    labelBn: 'পরিচিতি (বাংলা)',
+    labelEn: 'Biography (Bangla)',
+    kind: 'textarea',
+    required: true,
+  },
   {
     name: 'yearsExperience',
     labelBn: 'অভিজ্ঞতা (বছর)',

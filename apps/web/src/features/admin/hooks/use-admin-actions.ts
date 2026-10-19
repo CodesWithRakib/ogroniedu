@@ -87,6 +87,18 @@ export interface UseAdminActionsResult {
 }
 
 /**
+ * Stable empty collections used as destructuring defaults. A fresh `[]` default
+ * would be a new identity on every render, and the sync effects below are keyed
+ * on these arrays — that would re-run setState forever (React update-depth loop).
+ */
+const EMPTY_USERS: AdminUserItem[] = [];
+const EMPTY_BOOKINGS: AdminBookingItem[] = [];
+const EMPTY_SETTINGS: AdminSystemSettingItem[] = [];
+const EMPTY_FLAGS: AdminFeatureFlagItem[] = [];
+const EMPTY_AUDIT_LOGS: AdminAuditLogItem[] = [];
+const EMPTY_TICKETS: AdminSupportTicketItem[] = [];
+
+/**
  * Owns admin operational state, optimistic local updates, and async action
  * error handling so the AdminDashboardView stays a thin orchestration layer.
  * Local state is updated only AFTER the mutation resolves, so the UI never
@@ -94,13 +106,13 @@ export interface UseAdminActionsResult {
  */
 export function useAdminActions(params: UseAdminActionsParams): UseAdminActionsResult {
   const {
-    initialUsers = [],
-    initialBookings = [],
-    initialSettings = [],
-    initialFeatureFlags = [],
+    initialUsers = EMPTY_USERS,
+    initialBookings = EMPTY_BOOKINGS,
+    initialSettings = EMPTY_SETTINGS,
+    initialFeatureFlags = EMPTY_FLAGS,
     initialReconciliation = EMPTY_RECONCILIATION,
-    initialAuditLogs = [],
-    initialTickets = [],
+    initialAuditLogs = EMPTY_AUDIT_LOGS,
+    initialTickets = EMPTY_TICKETS,
   } = params;
 
   const [users, setUsers] = React.useState<AdminUserItem[]>(initialUsers);

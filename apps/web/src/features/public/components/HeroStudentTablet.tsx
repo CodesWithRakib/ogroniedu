@@ -27,7 +27,7 @@ export function HeroStudentTablet() {
   return (
     <div className="relative mx-auto w-full select-none">
       {/* Outer Hardware Tablet Frame with subtle drop shadow and glossy bezel */}
-      <div className="relative rounded-[22px] border-[4px] border-border bg-background p-1.5 sm:p-2 shadow-sm ring-1 ring-border backdrop-blur-2xl">
+      <div className="relative rounded-[22px] border-[4px] border-border bg-background p-1.5 sm:p-2 shadow-xs ring-1 ring-border backdrop-blur-2xl">
         {/* Tablet Top Camera Notch */}
         <div className="absolute top-1.5 left-1/2 -translate-x-1/2 flex items-center gap-1.5 z-20">
           <span className="h-1 w-1 rounded-full bg-black/80 ring-1 ring-border" />

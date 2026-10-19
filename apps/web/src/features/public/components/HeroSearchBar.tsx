@@ -321,7 +321,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             <Button
               type="submit"
               size="lg"
-              className="w-full lg:w-auto rounded-2xl lg:rounded-full px-8 py-3.5 h-auto text-xs font-black gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
+              className="w-full lg:w-auto rounded-2xl lg:rounded-full px-8 py-3.5 h-auto text-xs font-black gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
             >
               <Search className="h-4 w-4 stroke-[2.8]" aria-hidden="true" />
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
@@ -354,7 +354,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             <Button
               type="submit"
               size="lg"
-              className="w-full lg:w-auto rounded-2xl lg:rounded-full px-8 py-3.5 h-auto text-xs font-black gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95"
+              className="w-full lg:w-auto rounded-2xl lg:rounded-full px-8 py-3.5 h-auto text-xs font-black gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95"
             >
               <Search className="h-4 w-4 stroke-[2.8]" aria-hidden="true" />
               <span>{isBn ? 'অনুসন্ধান' : 'Search'}</span>

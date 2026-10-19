@@ -289,6 +289,13 @@ export interface TutorReviewDossierRecord {
     userId: string;
     headline?: string | null;
     bio?: string | null;
+    /** English copy; `headline`/`bio` mirror these for legacy clients. */
+    headlineEn?: string | null;
+    /** Null until the tutor supplies Bangla copy. */
+    headlineBn?: string | null;
+    bioEn?: string | null;
+    /** Null until the tutor supplies Bangla copy. */
+    bioBn?: string | null;
     gender?: string | null;
     yearsExperience?: number | null;
     hourlyRateMin?: number | null;

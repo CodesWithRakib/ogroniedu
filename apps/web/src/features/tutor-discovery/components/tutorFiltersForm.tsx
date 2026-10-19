@@ -622,7 +622,7 @@ export function TutorFiltersForm({
             type="submit"
             disabled={isPending}
             data-testid="apply-filters-button"
-            className="w-full rounded-xl font-extrabold text-xs gap-1.5 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-md shadow-blue-500/20 hover:shadow-lg transition-all duration-150 cursor-pointer"
+            className="w-full rounded-xl font-extrabold text-xs gap-1.5 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/20 hover:shadow-xs transition-all duration-150 cursor-pointer"
           >
             <Filter className="w-3.5 h-3.5" />
             <span>{dict.discovery?.applyFilters || (isBn ? 'ফিল্টার প্রয়োগ করুন' : 'Apply Filters')}</span>

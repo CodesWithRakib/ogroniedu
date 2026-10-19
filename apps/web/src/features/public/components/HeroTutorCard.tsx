@@ -240,7 +240,7 @@ export function HeroTutorCard({ locale }: HeroTutorCardProps) {
 
           <Link
             href={`/${locale}/tutors?q=${encodeURIComponent(currentTutor.tag)}`}
-            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs px-4 py-2.5 shadow-sm shadow-blue-500/20 transition-all duration-150 cursor-pointer active:scale-95 group"
+            className="inline-flex items-center justify-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs px-4 py-2.5 shadow-xs shadow-blue-500/20 transition-all duration-150 cursor-pointer active:scale-95 group"
           >
             <span>{isBn ? 'ট্রায়াল বুক করুন' : 'Book Trial'}</span>
             <ArrowRight
@@ -252,7 +252,7 @@ export function HeroTutorCard({ locale }: HeroTutorCardProps) {
       </div>
 
       {/* Docked Escrow & Quality Guarantee Strip (Positioned Below Card with ZERO OVERLAP) */}
-      <div className="w-full mt-3 flex items-center justify-between gap-2.5 rounded-2xl bg-card/90 border border-border/80 px-4 py-2.5 shadow-sm backdrop-blur-md">
+      <div className="w-full mt-3 flex items-center justify-between gap-2.5 rounded-2xl bg-card/90 border border-border/80 px-4 py-2.5 shadow-xs backdrop-blur-md">
         <div className="flex items-center gap-2.5 min-w-0">
           <div className="h-8 w-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center shrink-0 border border-emerald-200/60">
             <ShieldCheck className="h-4 w-4 sm:h-5 sm:w-5 stroke-[2.4]" aria-hidden="true" />

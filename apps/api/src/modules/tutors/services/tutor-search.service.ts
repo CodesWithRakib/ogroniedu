@@ -221,8 +221,12 @@ export class TutorSearchService {
       id: profile.userId,
       displayName: user.displayName,
       avatarUrl: profile.avatarUrl || user.avatarUrl || null,
-      headline: profile.headline,
-      bio: profile.bio,
+      headline: profile.headlineEn ?? profile.headline,
+      bio: profile.bioEn ?? profile.bio,
+      headlineEn: profile.headlineEn ?? profile.headline,
+      headlineBn: profile.headlineBn,
+      bioEn: profile.bioEn ?? profile.bio,
+      bioBn: profile.bioBn,
       yearsExperience: profile.yearsExperience,
       teachingModes: profile.teachingModes,
       hourlyRateMinor: profile.hourlyRateMinor,
@@ -456,8 +460,12 @@ export class TutorSearchService {
           id: profile.userId,
           displayName: user.displayName,
           avatarUrl: profile.avatarUrl || user.avatarUrl || null,
-          headline: profile.headline,
-          bio: profile.bio,
+          headline: profile.headlineEn ?? profile.headline,
+          bio: profile.bioEn ?? profile.bio,
+          headlineEn: profile.headlineEn ?? profile.headline,
+          headlineBn: profile.headlineBn,
+          bioEn: profile.bioEn ?? profile.bio,
+          bioBn: profile.bioBn,
           yearsExperience: profile.yearsExperience,
           teachingModes: profile.teachingModes,
           hourlyRateMinor: profile.hourlyRateMinor,
@@ -509,6 +517,10 @@ export class TutorSearchService {
           u.display_name ILIKE :term
           OR tp.headline ILIKE :term
           OR tp.bio ILIKE :term
+          OR tp.headline_en ILIKE :term
+          OR tp.headline_bn ILIKE :term
+          OR tp.bio_en ILIKE :term
+          OR tp.bio_bn ILIKE :term
           OR EXISTS (
             SELECT 1 FROM tutor_subjects ts
             JOIN subjects s ON s.id = ts.subject_id

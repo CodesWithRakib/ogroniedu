@@ -87,6 +87,23 @@ The plan maps every acceptance area to an automated test. Commands are recorded 
 | W-9  | Accept/decline only visible to participants and calls participant endpoint  | vitest              |
 | W-10 | Mobile/desktop layouts (responsive matrix)                                  | Playwright          |
 
+## 5a. Bilingual tutor copy
+
+| #    | Test                                                                          | Type         |
+| ---- | ----------------------------------------------------------------------------- | ------------ |
+| B-1  | Profile update stores English and Bangla headline/bio independently           | vitest (API) |
+| B-2  | Blank Bangla fields persist as NULL, never whitespace                         | vitest (API) |
+| B-3  | Public search/profile serialize both languages plus legacy English fields     | API + manual |
+| B-4  | Keyword `q` matches Bangla headline/bio as well as English                    | API + manual |
+| B-5  | `localizedTutorText` prefers Bangla on `bn` and English on `en`               | vitest (web) |
+| B-6  | Missing Bangla copy falls back to English (no fabricated translation)         | vitest (web) |
+| B-7  | Result cards and profile page render the route language                       | Playwright   |
+| B-8  | Tutor profile editor loads saved bilingual values from `/tutors/me`           | Playwright   |
+| B-9  | Onboarding tutor step exposes English and Bangla headline/bio fields          | vitest (web) |
+| B-10 | Onboarding validator rejects a tutor profile missing Bangla copy              | vitest (API) |
+| B-11 | Editor rejects missing/short copy in either language                          | Playwright   |
+| B-12 | Saved bilingual copy persists, is publicly searchable, and renders per locale | Playwright   |
+
 ## 6. Validation commands
 
 ```

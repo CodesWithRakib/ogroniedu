@@ -32,8 +32,10 @@ export function filterCatalog(
     filtered = filtered.filter(
       (t) =>
         t.displayName.toLowerCase().includes(query) ||
-        (t.headline?.toLowerCase().includes(query) ?? false) ||
-        (t.bio?.toLowerCase().includes(query) ?? false) ||
+        [t.headline, t.headlineEn, t.headlineBn].some(
+          (value) => value?.toLowerCase().includes(query) ?? false,
+        ) ||
+        [t.bio, t.bioEn, t.bioBn].some((value) => value?.toLowerCase().includes(query) ?? false) ||
         t.subjects.some(
           (s) => s.subjectNameEn.toLowerCase().includes(query) || s.subjectNameBn.includes(query),
         ),

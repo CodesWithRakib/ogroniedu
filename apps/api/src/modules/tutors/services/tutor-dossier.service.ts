@@ -393,8 +393,12 @@ export class TutorDossierService {
     return {
       profile: {
         userId: profile.userId,
-        headline: profile.headline,
-        bio: profile.bio,
+        headline: profile.headlineEn ?? profile.headline,
+        bio: profile.bioEn ?? profile.bio,
+        headlineEn: profile.headlineEn ?? profile.headline,
+        headlineBn: profile.headlineBn,
+        bioEn: profile.bioEn ?? profile.bio,
+        bioBn: profile.bioBn,
         yearsExperience: profile.yearsExperience,
         teachingModes: profile.teachingModes,
         hourlyRateMinor: profile.hourlyRateMinor,

@@ -82,7 +82,7 @@ export function UserNavDropdown({ authUser, locale, role, onLogout }: UserNavDro
         <button
           type="button"
           data-testid="user-nav-dropdown-trigger"
-          className="group flex items-center gap-2.5 p-1 pl-1.5 pr-3 rounded-full border border-border bg-card/90 hover:bg-card hover:border-brand/60 transition-all duration-200 outline-none focus:ring-2 focus:ring-brand/40 shadow-sm cursor-pointer"
+          className="group flex items-center gap-2.5 p-1 pl-1.5 pr-3 rounded-full border border-border bg-card/90 hover:bg-card hover:border-brand/60 transition-all duration-200 outline-none focus:ring-2 focus:ring-brand/40 cursor-pointer"
           title={isBn ? 'ইউজার একাউন্ট ও সেটিংস' : 'User Account & Settings'}
         >
           {/* Avatar with online indicator */}

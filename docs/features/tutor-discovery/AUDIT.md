@@ -40,26 +40,28 @@ Stack observed (not assumed):
 
 ## 2. Defects and gaps found
 
-| ID   | Severity | Finding                                                                                                                                                                                                    |
-| ---- | -------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| F-1  | **High** | `GET /public/:id` returned **fabricated** `ratingAverage: 4.9`, `totalReviews: 48`, `completedSessions: 120` for every tutor. No review/session query existed.                                             |
-| F-2  | **High** | `tutor-details-page.tsx` fell back to three hardcoded fake tutors (`FALLBACK_TUTORS_DETAILS`) with invented reviews, statistics, fees, availability and qualifications when the API was missing or failed. |
-| F-3  | **High** | `tutorCard.tsx` always rendered “4.9 / 48 reviews” regardless of real data (hardcoded rating demonstration).                                                                                               |
-| F-4  | **High** | Search was executed **in application memory**: every published profile was loaded with four relations, then filtered/sorted/paginated in JS. No DB-level pagination, no scalable filtering.                |
-| F-5  | **High** | No location matching at all: `tutor_service_areas` had no coordinates and search accepted no coordinates/radius; `sort=nearest` could not exist.                                                           |
-| F-6  | **High** | Public profile serialization did not include availability timing data from the DB (only mapping existed), and `search` results had no availability/distance/rating fields.                                 |
-| F-7  | Medium   | Search sort had no deterministic tie-breaker (equal `matchScore` / rates produced nondeterministic order across pages).                                                                                    |
-| F-8  | Medium   | `verified_academic` badge was emitted by the API but the card checked `verified_degree`, so the academic badge never rendered.                                                                             |
-| F-9  | Medium   | Saved tutors did not exist: no table, entity, endpoint, UI, or cache tag.                                                                                                                                  |
-| F-10 | **High** | Replacement flow had **no state-machine validation**: any admin could jump from `requested` to `accepted`/`closed`; no deadline, no history, no concurrency guard, no refund-eligibility tracking.         |
-| F-11 | **High** | Anyone could accept a replacement by calling `PATCH /:id` as admin (`accepted`) — user consent was not required. The participant page called the admin-only endpoint.                                      |
-| F-12 | Medium   | Duplicate active requests were checked with a read-then-write race and no database constraint.                                                                                                             |
-| F-13 | Medium   | Replacement case detail exposed raw entity fields including `outcomeNotes`; there was no separation between internal notes and applicant-facing text.                                                      |
-| F-14 | Medium   | No staff queue filtering by status/deadline, no overdue detection, no candidate suggestions, no participant decline path.                                                                                  |
-| F-15 | Medium   | Replacement booking status was set to `replacement_requested` **outside a transaction** and before notifications; partial failures left inconsistent state.                                                |
-| F-16 | Low      | `GET /taxonomy/subjects`/`education-levels` computed an `all` filter but ignored it (always returned all rows).                                                                                            |
-| F-17 | Low      | Discovery page did not persist filters in the URL, did not debounce text input, and did not reset pagination consistently on filter changes.                                                               |
-| F-18 | Low      | Service-area district names were never enriched in API responses; UI had to display raw codes or a hardcoded “ঢাকা”.                                                                                       |
+| ID   | Severity | Finding                                                                                                                                                                                                                                                     |
+| ---- | -------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| F-1  | **High** | `GET /public/:id` returned **fabricated** `ratingAverage: 4.9`, `totalReviews: 48`, `completedSessions: 120` for every tutor. No review/session query existed.                                                                                              |
+| F-2  | **High** | `tutor-details-page.tsx` fell back to three hardcoded fake tutors (`FALLBACK_TUTORS_DETAILS`) with invented reviews, statistics, fees, availability and qualifications when the API was missing or failed.                                                  |
+| F-3  | **High** | `tutorCard.tsx` always rendered “4.9 / 48 reviews” regardless of real data (hardcoded rating demonstration).                                                                                                                                                |
+| F-4  | **High** | Search was executed **in application memory**: every published profile was loaded with four relations, then filtered/sorted/paginated in JS. No DB-level pagination, no scalable filtering.                                                                 |
+| F-5  | **High** | No location matching at all: `tutor_service_areas` had no coordinates and search accepted no coordinates/radius; `sort=nearest` could not exist.                                                                                                            |
+| F-6  | **High** | Public profile serialization did not include availability timing data from the DB (only mapping existed), and `search` results had no availability/distance/rating fields.                                                                                  |
+| F-7  | Medium   | Search sort had no deterministic tie-breaker (equal `matchScore` / rates produced nondeterministic order across pages).                                                                                                                                     |
+| F-8  | Medium   | `verified_academic` badge was emitted by the API but the card checked `verified_degree`, so the academic badge never rendered.                                                                                                                              |
+| F-9  | Medium   | Saved tutors did not exist: no table, entity, endpoint, UI, or cache tag.                                                                                                                                                                                   |
+| F-10 | **High** | Replacement flow had **no state-machine validation**: any admin could jump from `requested` to `accepted`/`closed`; no deadline, no history, no concurrency guard, no refund-eligibility tracking.                                                          |
+| F-11 | **High** | Anyone could accept a replacement by calling `PATCH /:id` as admin (`accepted`) — user consent was not required. The participant page called the admin-only endpoint.                                                                                       |
+| F-12 | Medium   | Duplicate active requests were checked with a read-then-write race and no database constraint.                                                                                                                                                              |
+| F-13 | Medium   | Replacement case detail exposed raw entity fields including `outcomeNotes`; there was no separation between internal notes and applicant-facing text.                                                                                                       |
+| F-14 | Medium   | No staff queue filtering by status/deadline, no overdue detection, no candidate suggestions, no participant decline path.                                                                                                                                   |
+| F-15 | Medium   | Replacement booking status was set to `replacement_requested` **outside a transaction** and before notifications; partial failures left inconsistent state.                                                                                                 |
+| F-16 | Low      | `GET /taxonomy/subjects`/`education-levels` computed an `all` filter but ignored it (always returned all rows).                                                                                                                                             |
+| F-17 | Low      | Discovery page did not persist filters in the URL, did not debounce text input, and did not reset pagination consistently on filter changes.                                                                                                                |
+| F-18 | Low      | Service-area district names were never enriched in API responses; UI had to display raw codes or a hardcoded “ঢাকা”.                                                                                                                                        |
+| F-19 | **High** | Tutor profiles had only single-language `headline`/`bio`. A Bangla visitor and an English visitor saw the same copy, and there was no tutor-owned screen to enter both languages.                                                                           |
+| F-20 | **High** | Both `users.avatar_url` and `tutor_profiles.avatar_url` were mapped in TypeORM but the columns did not exist. Every entity query (public search, tutor profile, auth session) failed at runtime with `column TutorProfileEntity.avatar_url does not exist`. |
 
 ## 3. Privacy and authorization findings
 
@@ -83,6 +85,9 @@ Stack observed (not assumed):
    overdue marker, extended status vocabulary.
 4. `tutor_replacement_case_events`: append-only per-case history with user-visible vs internal notes.
 5. Partial unique index for one active replacement case per booking.
+6. `tutor_profiles.headline_en/headline_bn/bio_en/bio_bn` with backfill from the legacy English
+   columns; Bangla values are left NULL rather than copied from English.
+7. `users.avatar_url` and `tutor_profiles.avatar_url` to match the already-mapped entities.
 
 ## 5. Dependencies on earlier phases
 

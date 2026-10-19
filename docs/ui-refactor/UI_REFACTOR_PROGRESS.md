@@ -163,3 +163,36 @@ A Playwright harness captured ~66 desktop + mobile screenshots across the public
 - A few admin filter controls remain raw `<select>` (styled to match the system).
 - English microcopy on Bengali admin chips (i18n content debt, e.g. “Pending Dossiers”).
 - bKash pink is the only intentionally retained non-semantic color (payment-provider brand).
+
+---
+
+## 4. Closing pass — 2026-10-19 (full route sweep + runtime defect fixes)
+
+### 4.1 Runtime defects found by the sweep and fixed
+
+| #   | Defect (evidence)                                                                                                              | Root cause                                                                                                                                                                             | Fix                                                                                                                                    | Post-fix verification                                             |
+| --- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| 1   | Hydration mismatch — SSR nav rendered the “মেনু” fallback while the client rendered role sections (`/safety-reports`, `/tutor-replacements`, `/bookings/[id]`, `/bookings/[id]/pay`) | Auth store hydrated before React hydration, so shell markup differed between server and client                                                                                          | `DashboardShell` mount gate (`effectiveUser`) — identical SSR/first-client markup, same pattern `RequireRole` already used             | 0 hydration console errors/pageerrors on all 4 routes (fresh login) |
+| 2   | React “Maximum update depth exceeded” on 10+ admin pages                                                                        | Destructuring defaults `initialX = []` in `useAdminActions` produce a fresh array identity every render; the sync effects are keyed on those arrays, re-running `setState` forever      | Module-level stable constants (`EMPTY_USERS`, …) in `useAdminActions`; same fix in `AdminDashboardView`, `useLearningManagement`, `LearningManagementView` | 17 admin routes + `/bn/analytics`: loop=0 (console-verified)       |
+| 3   | Duplicate `<h1>` per page (shell title + page heading)                                                                          | Inner headings stayed `h1` after the shell header was introduced                                                                                                                        | Demoted to `h2` in `bookings/[id]`, analytics header, pay page, `PaymentCheckoutView`, learning shell                                  | Sweep: every route ≤ 1 `<h1>`                                      |
+| 4   | 19 + 10 unnamed visible icon controls (classroom whiteboard, admin taxonomy)                                                    | Icon-only buttons relied on `title` only (fragile for touch/AT)                                                                                                                         | 21 `aria-label`s in classroom components, 10 in taxonomy (with item name), 2 security toggles became `role="switch"` + `aria-checked` + `aria-labelledby` | Refined audit: 0 unnamed controls on all 64 routes                 |
+| 5   | Residual resting shadows on marketing surfaces (home CTA/band, tutor cards, profile header, slider thumb, whiteboard `shadow-2xl`) | Sweep residue + marketing composition liberties                                                                                                                                         | Resting `shadow-sm/md/xl/2xl` removed or demoted to `shadow-xs`; every `hover:shadow-{sm…2xl}` normalized to `hover:shadow-xs`          | Refined audit: no unflagged visible shadows on any route           |
+
+### 4.2 Verification instruments used this pass
+
+- `shots-full/report.txt` — ~90-shot desktop/tablet/mobile render sweep (console errors, failed requests, redirects, H1 count, control names, shadows).
+- `audit-final.txt` — 64-route DOM audit: visible-shadow analysis by alpha (Tailwind ring layers excluded), raw-vs-`NativeSelect` classification, accessible-name check (`aria-label` / `aria-labelledby` / `title` / text); includes in-run re-login + retry on transient session loss.
+- `verify-fixes.mjs`, `diag-loop6.mjs` — targeted hydration/update-loop verification with fresh per-role logins (storageState rotation artifacts eliminated).
+
+### 4.3 Gates after the closing pass
+
+- Web: typecheck + lint green; **207/207** unit/component tests (33 files).
+- API: typecheck + lint green; **649/649** tests (65 files).
+- Database: **31/31** (4 files).
+- Credentialed E2E: **58 executed, 0 failed, 0 skipped, exit 0**; skip-gate green. A permanently-skipping discovery spec was repaired to drive the real Radix `Select`, and the shared login helper now waits out two rate-limit windows — recorded in `UI_QA_RESULTS.md` §7.4.
+
+### 4.4 Remaining at closing (known, tracked)
+
+- English microcopy on Bengali admin chips (content debt; no functional impact).
+- `PG_TRGM` not installed — keyword search is DB-filtered but not trigram-indexed (measure before adding).
+- Avatar columns exist and render real URLs/initials; there is no avatar upload flow yet.

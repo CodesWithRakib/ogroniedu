@@ -78,7 +78,7 @@ export function TutorResultsGrid({
         <button
           type="button"
           onClick={onReset}
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-xs px-5 py-2.5 shadow-sm shadow-blue-500/20 hover:scale-[1.03] active:scale-[0.98] transition-[transform,box-shadow,opacity] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-xs px-5 py-2.5 shadow-xs shadow-blue-500/20 hover:scale-[1.03] active:scale-[0.98] transition-[transform,box-shadow,opacity] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
         >
           <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
           <span>{dict.discovery?.resetFilters || 'Reset Filters'}</span>

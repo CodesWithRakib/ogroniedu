@@ -133,9 +133,10 @@ These are the rules actually enforced by the codebase after the rendered-UI corr
 - **Default: no shadow.** Cards, sections, tables, KPIs, and page surfaces are defined by `border-border` + background contrast only.
 - `shadow-2xs` and `shadow-inner` are forbidden and were removed everywhere (67 occurrences).
 - `shadow-xs` remains only as a whisper-soft state hint on interactive cards (`~0.03` alpha, visually negligible).
-- Shadows are reserved for genuinely floating surfaces: dialogs, sheets/drawers, popovers, dropdowns, toasts.
+- Shadows are reserved for genuinely floating surfaces: dialogs, sheets/drawers, popovers, dropdowns, toasts, and nav chrome (the app header/bottom navbar and the bottom-nav action button, which floats above page content on small screens).
 - Heavy card shadows (`shadow-md`/`lg`/`xl`/`2xl`) were removed from 45 card-like surfaces across 21 files.
 - Second pass: `shadow-sm` (70) and `shadow-md` (12) removed from card surfaces, segmented controls, banners, avatars, and opt-in shims; interactive hover elevation standardized to `hover:shadow-xs` (11 sites). A code-level sweep now auto-checks every swept route for unexpected visible box-shadows.
+- Third pass (2026-10-19 closing): residual resting shadows on marketing surfaces demoted (`shadow-sm/md/xl/2xl` → none or `shadow-xs`), the whiteboard workspace panel `shadow-2xl` → `shadow-xs`, and every `hover:shadow-{sm…2xl}` normalized to `hover:shadow-xs`. The audit treats `nav`-contained surfaces and fixed/sticky/absolute elements as floating chrome; everything else with a `shadow-sm`-or-larger class is reported as a defect.
 
 ### R-2: Border policy (one weight)
 

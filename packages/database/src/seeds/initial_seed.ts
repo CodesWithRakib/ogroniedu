@@ -298,14 +298,31 @@ export async function runInitialSeed(
      SET status = 'active';`,
   );
 
-  // Tutor Profile for Rashed Karim
+  // Tutor Profile for Rashed Karim — bilingual public copy.
+  const tutorHeadlineEn =
+    'BUET Civil Engineering | Experienced Physics & Higher Math tutor for SSC and HSC';
+  const tutorBioEn =
+    'With 5+ years of experience I help students build clear fundamentals and conceptual understanding.';
   await client.query(
-    `INSERT INTO tutor_profiles (user_id, headline, bio, years_experience, teaching_modes, hourly_rate_minor, currency, verification_status, publication_status)
-     VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+    `INSERT INTO tutor_profiles (
+       user_id, headline, bio, headline_en, headline_bn, bio_en, bio_bn,
+       years_experience, teaching_modes, hourly_rate_minor, currency,
+       verification_status, publication_status
+     )
+     VALUES ($1, $2, $3, $2, $4, $3, $5, $6, $7, $8, $9, $10, $11)
      ON CONFLICT (user_id) DO UPDATE
-     SET headline = EXCLUDED.headline, verification_status = EXCLUDED.verification_status, publication_status = EXCLUDED.publication_status;`,
+     SET headline = EXCLUDED.headline,
+         bio = EXCLUDED.bio,
+         headline_en = EXCLUDED.headline_en,
+         headline_bn = EXCLUDED.headline_bn,
+         bio_en = EXCLUDED.bio_en,
+         bio_bn = EXCLUDED.bio_bn,
+         verification_status = EXCLUDED.verification_status,
+         publication_status = EXCLUDED.publication_status;`,
     [
       '22222222-2222-4222-b222-222222222222',
+      tutorHeadlineEn,
+      tutorBioEn,
       'বুয়েট সিভিল ইঞ্জিনিয়ারিং | এইচএসসি ও এসএসসি পদার্থবিজ্ঞান ও উচ্চতর গণিত অভিজ্ঞ শিক্ষক',
       '৫+ বছরের অভিজ্ঞতায় শিক্ষার্থীদের বেসিক ক্লিয়ার ও কনসেপচুয়াল লার্নিং নিশ্চিত করি।',
       5,

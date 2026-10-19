@@ -139,8 +139,32 @@ This pass re-verified a focused set of routes against the **production build** w
 
 ### Covered by automated E2E (functional journeys)
 
-Auth (student/tutor/admin), tutor evidence upload, session revocation, verification dossier approval, user suspension/reactivation, responsive matrix, keyboard a11y (skip-link focus), public smoke (contact form, login validation).
+58 browser tests run against the live stack (final closing run: 0 failed, 0 skipped — `UI_QA_RESULTS.md` §7.4): auth guards (bn/en), credentialed login for student/tutor/admin, tutor booking journey, admin console (suspension/reactivation), tutor evidence upload, verification dossier approval + level-status consistency, tutor discovery & subject-filter round-trip (rewritten to drive the real Radix `Select` — it was a permanently skipping legacy test), location-permission degradation, responsive matrix, keyboard a11y (skip-link focus), public smoke (contact form, login validation), and tutor profile localization (bn/en round-trip).
 
 ### Not re-verified this pass (pre-fix captures only)
 
 All remaining student/tutor/guardian/classroom/booking/payment sub-routes (e.g. `/[locale]/sessions*`, `/[locale]/bookings*`, `/[locale]/requests`, `/[locale]/safety*`, `/[locale]/tutor-replacements`, guardian child views, admin bookings/disputes/analytics/taxonomy/flags/finance, marketing pages beyond home/tutors/pricing). These inherit the systemic sweeps (palette, borders, radius, shadows) but have **not** been individually screenshot-verified post-fix — full-matrix re-capture is the next outstanding task.
+
+---
+
+## Final closing verification — 2026-10-19 (all routes)
+
+The outstanding full-matrix re-capture was completed: a Playwright harness loaded **64 routes** (public + student + tutor + guardian + admin) against the running app with real seeded data, at desktop 1440×900, with tablet 834×1112 and mobile 390×844 coverage on the core/hub pages. Each load asserts: no console errors, no failed API responses, no uncaught page errors, no horizontal overflow, no error overlay, ≤ 1 `<h1>`, no unnamed visible controls, no visible box-shadow outside the design policy, and no raw native `<select>` outside the shared `NativeSelect`.
+
+**Result: 64/64 routes clean** (anonymous 11, student 20, tutor 6, guardian 7, admin 20) — see `UI_QA_RESULTS.md` §7 for the evidence table and the defect list that was fixed during this pass (hydration mismatch, admin update loops, duplicate H1s, unnamed icon controls, residual shadows). One transient session loss at the first student route was auto-recovered by a re-login + retry inside the same run (recorded in the console log, not hidden).
+
+Viewport coverage post-fix: the full 64-route audit ran at desktop 1440×900; the 8 core routes that the pre-fix sweep examined at tablet and mobile widths were re-run post-fix at **tablet 834×1112 (8/8 clean)** and **mobile 390×844 (8/8 clean)** — `audit-tablet-final.txt`, `audit-mobile-final.txt`.
+
+Expected redirects (verified as intended):
+
+| Requested route                | Final route                                           | Reason                                          |
+| :----------------------------- | :---------------------------------------------------- | :---------------------------------------------- |
+| `/[locale]/dashboard`          | `/[locale]/dashboard/student`                         | Role landing redirect                           |
+| `/[locale]/payments/[id]`      | `/[locale]/dashboard/student/payments?orderId=…`      | Canonical payments hub                          |
+| `/[locale]/tutor/bookings/[id]`| `/[locale]/dashboard/tutor/requests`                  | Tutor booking entry alias                       |
+| `/[locale]/admin`              | `/[locale]/dashboard/admin`                           | Legacy admin alias                              |
+
+Notes on the audit allow-list:
+
+- `NativeSelect` instances (1–3 per page on learning/verification/settings pages) are the shared styled native `<select>`; they are real, visible controls by design and are reported as informational, not defects.
+- Floating chrome (dialogs, sheets, nav, toasts, the bottom-nav action button, whiteboard workspace, hero composition) keeps elevation by policy; the refined audit only flags resting shadows on in-flow surfaces (fixed/sticky/absolute and `nav`-contained elements are treated as floating).

@@ -301,6 +301,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
                   onClick={() => handleCopy(item.formula, item.id)}
                   className="inline-flex items-center gap-1.5 text-[11px] font-semibold text-muted-foreground hover:text-info-soft-foreground transition-colors px-2 py-1 rounded-lg hover:bg-surface-hover"
                   title={locale === 'bn' ? 'ফর্মুলা কপি করুন' : 'Copy Formula'}
+                  aria-label={locale === 'bn' ? 'ফর্মুলা কপি করুন' : 'Copy Formula'}
                   data-testid={`copy-formula-${item.id}`}
                 >
                   {isCopied ? (

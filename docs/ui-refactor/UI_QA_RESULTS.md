@@ -1,8 +1,8 @@
 # OgroniEdu — UI Quality Assurance & Verification Results
 
-**Date:** 2026-10-17  
-**Scope:** Automated testing, responsive layout inspection, WCAG 2.2 AA contrast, and browser QA  
-**Status:** Initial Verification Passed — In-depth Route Verification Underway
+**Date:** 2026-10-17 (closing verification added 2026-10-19)  
+**Scope:** Automated testing, responsive layout inspection, WCAG 2.2 AA contrast, full-route DOM audit, and credentialed browser E2E  
+**Status:** Closing verification passed — all gates green, 64/64 routes clean (desktop) + core routes clean at tablet/mobile, E2E 0 skipped
 
 ---
 
@@ -121,3 +121,78 @@ Public home, tutors list, login; student dashboard, student payments, profile; t
 ### 6.7 Blockers
 
 None. Web production server `:5000` and API dev server `:4000` were live during E2E verification.
+
+---
+
+## 7. Closing verification — 2026-10-19 (full-route sweep, runtime fixes, credentialed E2E)
+
+**Scope:** every route of the 64-route inventory plus its role-alias URLs — **64 route loads** across anonymous, student, tutor, guardian and admin — re-loaded on the live stack (web `:5000`, API `:4000`, seeded Postgres) after this pass's fixes; each route was also re-run through the credentialed E2E suite.
+
+### 7.1 Quality gates (fresh runs after all changes in this pass)
+
+| Gate                    | Command                                  |  Result  | Details                                                          |
+| :---------------------- | :--------------------------------------- | :------: | :--------------------------------------------------------------- |
+| **Web typecheck**       | `pnpm --filter @ogroniedu/web typecheck` | **PASS** | 0 TypeScript errors.                                             |
+| **Web lint**            | `pnpm --filter @ogroniedu/web lint`      | **PASS** | Oxlint clean across `src/`, `test/`, `e2e/`.                     |
+| **Web unit/component**  | `pnpm --filter @ogroniedu/web test`      | **PASS** | **207/207** tests, 33 files.                                     |
+| **API typecheck**       | `pnpm --filter @ogroniedu/api typecheck` | **PASS** | 0 TypeScript errors.                                             |
+| **API lint**            | `pnpm --filter @ogroniedu/api lint`      | **PASS** | Oxlint clean across `src/`, `test/`.                             |
+| **API unit/integration**| `pnpm --filter @ogroniedu/api test`      | **PASS** | **649/649** tests, 65 files.                                     |
+| **Database**            | `pnpm --filter @ogroniedu/database test` | **PASS** | **31/31** tests, 4 files (migrations, invariants, BCDR drill).   |
+| **Browser E2E**         | `E2E_BASE_URL=… pnpm --filter @ogroniedu/web e2e` | **PASS** | Credentialed run — see §7.4.                          |
+
+### 7.2 Runtime defects found by the sweep — fixed and re-verified
+
+These were functional bugs surfaced by the all-route sweep, not cosmetic polish:
+
+| # | Defect | Root cause | Fix | Post-fix verification |
+| :- | :--- | :--- | :--- | :--- |
+| 1 | React hydration mismatch in the dashboard shell (server rendered the generic "menu" fallback, client rendered role sections) on `/safety-reports`, `/tutor-replacements`, `/bookings/[id]`, `/bookings/[id]/pay` | Auth store hydrated from `localStorage` before React's first client render, so shell markup differed | `DashboardShell` mount gate (`effectiveUser`) — identical SSR/first-client markup, same pattern `RequireRole` already used | 0 hydration errors / page errors on all four routes (instrumented run) |
+| 2 | React "Maximum update depth exceeded" on admin pages (bookings, disputes, users, settings, audit-logs, …) | Destructuring defaults `state = []` in `useAdminActions` created a fresh array identity each render; the effects keyed on those arrays re-ran `setState` forever | Module-level stable constants (`EMPTY_USERS`, `EMPTY_BOOKINGS`, …) as defaults in `use-admin-actions.ts`; same fix in `AdminDashboardView`, `use-learning-management.ts`, `learningManagementView.tsx` | 17 admin routes + `/bn/analytics`: 0 update-loop errors, stable render counts |
+| 3 | Duplicate `<h1>` per page (shell title + page heading) | Inner headings were still `h1` after the shell header was introduced | Demoted to `h2` in `bookings/[id]`, analytics header, pay page, `PaymentCheckoutView`, learning shell | Sweep: ≤ 1 `<h1>` on every audited route |
+| 4 | Unnamed visible icon controls (classroom whiteboard ×17, classroom workspace ×3, formulas drawer ×1, admin taxonomy edit/delete ×10) | Icon-only buttons relied on `title` tooltips only (no accessible name) | Added `aria-label`s (taxonomy labels include the item name); security toggles became `role="switch"` + `aria-checked` + `aria-labelledby` | Refined audit: 0 unnamed controls on all 64 routes |
+| 5 | Residual resting shadows on marketing surfaces (home CTA/band, tutor cards, tutor details, slider thumb, user-menu pill, whiteboard `shadow-2xl`) | Sweep residue; hero composition liberties | Resting `shadow-sm/md/xl/2xl` removed or demoted to `shadow-xs`; every `hover:shadow-{sm…2xl}` normalized to `hover:shadow-xs`; floating chrome keeps elevation | Refined audit: no visible resting shadows outside policy on any route |
+
+### 7.3 Full-route DOM audit — method and result
+
+Harness: Playwright (Chromium 1440×900, `bn-BD`, fresh sign-in per role inside the run to avoid storage-state refresh-token artifacts; a lost session triggers a re-login and one route retry before anything is reported).
+
+Per route it checks: (a) visible `box-shadow` with alpha > 0.01 on in-flow surfaces (Tailwind `ring-*` layers excluded — they are outlines, not elevation); (b) visible native `<select>` without the `NativeSelect` `appearance-none` style; (c) accessible name for every visible control (`aria-label`, `aria-labelledby` text, `title`, or text content); plus the sweep-wide checks (console errors, failed requests, uncaught errors, `<h1>` count, horizontal overflow).
+
+**Result: 64/64 routes clean** — no shadow-policy violations, no raw selects, no unnamed controls, no console/page errors. Evidence: `shots-full/audit-final.txt` (machine output) and `shots-full/report.txt` (pre-fix sweep with screenshots). One transient session loss at the first student route was auto-recovered by an in-run re-login + retry (logged in `audit-final-console.txt`).
+
+Post-fix viewport coverage: the 8 core routes the pre-fix sweep had examined at tablet/mobile widths were re-run after the fixes — **tablet 834×1112: 8/8 clean** (`audit-tablet-final.txt`), **mobile 390×844: 8/8 clean** (`audit-mobile-final.txt`).
+
+Allow-list / informational (by design, reported but never counted as defects):
+
+- `NativeSelect` (1–3 per page on learning, verification and settings pages) — the shared styled native `<select>`; visible by design, `appearance-none`, token-styled.
+- Floating chrome keeps elevation by policy: dialogs, sheets, nav (header/bottom navbar and its action button), toasts, the whiteboard workspace toolbar, and the hero composition's subtle `shadow-xs`.
+
+### 7.4 Credentialed browser E2E
+
+Run against the live stack with seeded demo accounts (`student.demo@`, `tutor.demo@`, `admin.demo@ogroniedu.com`; dev-only password `OgroniDev#2026`):
+
+`E2E_BASE_URL=http://localhost:5000 E2E_API_URL=http://localhost:4000 … pnpm --filter @ogroniedu/web e2e`
+
+**Result: 58 tests executed — 0 failed, 0 skipped, exit 0** (CI reporter with retries). `node scripts/check-e2e-skips.mjs` → **OK: 58 test(s) executed, 0 skipped.**
+
+Two harness defects were found and fixed during this closing pass:
+
+1. `tutor.discovery.spec.ts › subject filter round-trips through the API and the URL` had been **silently skipping** — it drove a native `<option>` list, but the filter has been the shared Radix `Select` for some time, so it always read zero options and called `test.skip`. Rewritten to drive the real control: open the portalled listbox, pick the first taxonomy subject, assert the live `/tutors/search` response carries `subjectId`, the URL reflects it, Apply re-runs the committed search, and a reload restores the filter from the URL. The first run exposed the real interaction order (selection triggers the search; `router.replace` means there is no separate history entry) — the test now asserts the behaviour the app actually has.
+2. `support/login.ts` (`postLoginWithRateLimitRetry`) now waits out **two** 429 windows instead of one — the fully-parallel suite can legitimately contend on the shared seeded tutor account.
+
+Flakes observed and classified (all passed on retry; none are app defects):
+
+- `tutor.verification.spec.ts` login contention (fixed above by the retry hardening).
+- `auth.guards.spec.ts` (en locale) — dev-server cold compile of `/en/**` routes exceeded the 15 s element timeout on first attempt; a warm re-run passes **8/8 in 18.9 s**. Environmental (Next dev on-demand compile), not a product defect.
+
+### 7.5 Remaining defects & documented limitations (carried forward honestly)
+
+1. English microcopy on Bengali admin chips (e.g. "Pending Dossiers") — i18n content debt, no functional impact.
+2. `PG_TRGM` is not installed; keyword search is DB-filtered but not trigram-indexed. Measure first; not a correctness defect.
+3. Avatar columns exist and render real URLs or initials — there is no avatar-upload flow yet.
+4. `next start` prints a cosmetic warning because the project uses `output: standalone`; production serve uses `node .next/standalone/server.js` per the deployment docs.
+
+### 7.6 Blockers
+
+None.

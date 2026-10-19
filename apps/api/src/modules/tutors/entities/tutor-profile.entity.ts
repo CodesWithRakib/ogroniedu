@@ -28,11 +28,29 @@ export class TutorProfileEntity {
   @PrimaryColumn('uuid', { name: 'user_id' })
   userId!: string;
 
+  /** Legacy canonical English headline. Kept in sync with `headlineEn`. */
   @Column({ type: 'text', nullable: true })
   headline!: string | null;
 
+  /** Legacy canonical English biography. Kept in sync with `bioEn`. */
   @Column({ type: 'text', nullable: true })
   bio!: string | null;
+
+  /** English headline shown to `en` visitors. */
+  @Column({ name: 'headline_en', type: 'text', nullable: true })
+  headlineEn!: string | null;
+
+  /** Bangla headline shown to `bn` visitors; null means "fall back to English". */
+  @Column({ name: 'headline_bn', type: 'text', nullable: true })
+  headlineBn!: string | null;
+
+  /** English biography shown to `en` visitors. */
+  @Column({ name: 'bio_en', type: 'text', nullable: true })
+  bioEn!: string | null;
+
+  /** Bangla biography shown to `bn` visitors; null means "fall back to English". */
+  @Column({ name: 'bio_bn', type: 'text', nullable: true })
+  bioBn!: string | null;
 
   @Column({ name: 'years_experience', type: 'smallint', nullable: true })
   yearsExperience!: number | null;
