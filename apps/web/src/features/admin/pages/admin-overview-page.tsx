@@ -13,10 +13,13 @@ import {
   CheckCircle2,
   ArrowRight,
   GraduationCap,
+  RefreshCw,
+  ShieldAlert,
+  Calendar,
 } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner, Button } from '@/components/ui';
-import type { Locale } from '@/lib/i18n';
+import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { useAppSelector } from '@/store';
 import { useAdminDashboard } from '../hooks/use-admin-dashboard';
 
@@ -110,7 +113,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               </div>
               <p className="text-muted-foreground text-sm mt-1.5">{t('subtitle')}</p>
             </div>
-            <div className="text-left md:text-right bg-surface border border-border p-3 rounded-2xl">
+            <div className="text-left md:text-right bg-surface border border-border/80 p-3 rounded-2xl shadow-xs">
               <p className="text-xs text-muted-foreground">Authenticated Operator</p>
               <p className="text-sm font-semibold text-foreground">
                 {user?.displayName || 'Admin'}
@@ -122,76 +125,101 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
             <Link
               href={`/${locale}/dashboard/admin/verification`}
-              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border/80 hover:border-primary/40 rounded-2xl p-4 sm:p-4.5 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between"
             >
-              <div className="flex justify-between items-start">
-                <p className="text-xs text-muted-foreground font-medium">
-                  {t('tutorVerificationQueue')}
-                </p>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-0.5" />
+              <div className="flex justify-between items-start gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="h-6 w-6 rounded-lg bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                    <Search className="w-3.5 h-3.5" />
+                  </div>
+                  <p className="text-xs text-muted-foreground font-semibold truncate">
+                    {t('tutorVerificationQueue')}
+                  </p>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition-transform group-hover:translate-x-0.5 shrink-0" />
               </div>
-              <p className="text-2xl font-bold text-foreground mt-2 font-mono">
-                {admin.metrics.pendingTutorVerifications}
+              <p className="text-2xl sm:text-3xl font-extrabold text-foreground mt-3 font-sans tabular-nums">
+                {formatLocalizedNumber(admin.metrics.pendingTutorVerifications, locale)}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">
+              <p className="text-[11px] text-muted-foreground mt-1 font-medium">
                 {t('captionPendingDossiers')}
               </p>
             </Link>
 
             <Link
               href={`/${locale}/dashboard/admin/disputes`}
-              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border/80 hover:border-primary/40 rounded-2xl p-4 sm:p-4.5 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between"
             >
-              <div className="flex justify-between items-start">
-                <p className="text-xs text-muted-foreground font-medium">{t('replacementQueue')}</p>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-0.5" />
+              <div className="flex justify-between items-start gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="h-6 w-6 rounded-lg bg-warning-soft text-warning flex items-center justify-center shrink-0">
+                    <RefreshCw className="w-3.5 h-3.5" />
+                  </div>
+                  <p className="text-xs text-muted-foreground font-semibold truncate">{t('replacementQueue')}</p>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition-transform group-hover:translate-x-0.5 shrink-0" />
               </div>
-              <p className="text-2xl font-bold text-foreground mt-2 font-mono">
-                {admin.metrics.activeReplacementCases}
+              <p className="text-2xl sm:text-3xl font-extrabold text-foreground mt-3 font-sans tabular-nums">
+                {formatLocalizedNumber(admin.metrics.activeReplacementCases, locale)}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">{t('captionActiveCases')}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 font-medium">{t('captionActiveCases')}</p>
             </Link>
 
             <Link
               href={`/${locale}/dashboard/admin/disputes`}
-              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border/80 hover:border-primary/40 rounded-2xl p-4 sm:p-4.5 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between"
             >
-              <div className="flex justify-between items-start">
-                <p className="text-xs text-muted-foreground font-medium">{t('safetyQueue')}</p>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-0.5" />
+              <div className="flex justify-between items-start gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="h-6 w-6 rounded-lg bg-destructive-soft text-destructive flex items-center justify-center shrink-0">
+                    <ShieldAlert className="w-3.5 h-3.5" />
+                  </div>
+                  <p className="text-xs text-muted-foreground font-semibold truncate">{t('safetyQueue')}</p>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition-transform group-hover:translate-x-0.5 shrink-0" />
               </div>
-              <p className="text-2xl font-bold text-foreground mt-2 font-mono">
-                {admin.metrics.openSafetyReports}
+              <p className="text-2xl sm:text-3xl font-extrabold text-foreground mt-3 font-sans tabular-nums">
+                {formatLocalizedNumber(admin.metrics.openSafetyReports, locale)}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">{t('captionOpenReports')}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 font-medium">{t('captionOpenReports')}</p>
             </Link>
 
             <Link
               href={`/${locale}/dashboard/admin/bookings`}
-              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="bg-card hover:bg-surface-hover/80 border border-border/80 hover:border-primary/40 rounded-2xl p-4 sm:p-4.5 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between"
             >
-              <div className="flex justify-between items-start">
-                <p className="text-xs text-muted-foreground font-medium">{t('activeBookings')}</p>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-0.5" />
+              <div className="flex justify-between items-start gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="h-6 w-6 rounded-lg bg-success-soft text-success flex items-center justify-center shrink-0">
+                    <Calendar className="w-3.5 h-3.5" />
+                  </div>
+                  <p className="text-xs text-muted-foreground font-semibold truncate">{t('activeBookings')}</p>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition-transform group-hover:translate-x-0.5 shrink-0" />
               </div>
-              <p className="text-2xl font-bold text-foreground mt-2 font-mono">
-                {admin.metrics.activeBookingsCount}
+              <p className="text-2xl sm:text-3xl font-extrabold text-foreground mt-3 font-sans tabular-nums">
+                {formatLocalizedNumber(admin.metrics.activeBookingsCount, locale)}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">{t('captionInProgress')}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 font-medium">{t('captionInProgress')}</p>
             </Link>
 
             <Link
               href={`/${locale}/dashboard/admin/users`}
-              className="col-span-2 lg:col-span-1 bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-2xl p-4.5 transition-all shadow-xs group"
+              className="col-span-2 lg:col-span-1 bg-card hover:bg-surface-hover/80 border border-border/80 hover:border-primary/40 rounded-2xl p-4 sm:p-4.5 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between"
             >
-              <div className="flex justify-between items-start">
-                <p className="text-xs text-muted-foreground font-medium">{t('totalUsers')}</p>
-                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground group-hover:text-primary transition-transform group-hover:translate-x-0.5" />
+              <div className="flex justify-between items-start gap-2">
+                <div className="flex items-center gap-2">
+                  <div className="h-6 w-6 rounded-lg bg-primary-soft text-primary flex items-center justify-center shrink-0">
+                    <Users className="w-3.5 h-3.5" />
+                  </div>
+                  <p className="text-xs text-muted-foreground font-semibold truncate">{t('totalUsers')}</p>
+                </div>
+                <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition-transform group-hover:translate-x-0.5 shrink-0" />
               </div>
-              <p className="text-2xl font-bold text-foreground mt-2 font-mono">
-                {admin.metrics.totalRegisteredUsers}
+              <p className="text-2xl sm:text-3xl font-extrabold text-foreground mt-3 font-sans tabular-nums">
+                {formatLocalizedNumber(admin.metrics.totalRegisteredUsers, locale)}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1">{t('captionTotalCatalog')}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 font-medium">{t('captionTotalCatalog')}</p>
             </Link>
           </div>
 

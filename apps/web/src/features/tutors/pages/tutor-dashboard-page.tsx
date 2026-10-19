@@ -232,42 +232,42 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 2. QUICK ACTIONS BAR                                     */}
       {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2.5 p-3.5 rounded-2xl bg-card border border-border shadow-xs">
-        <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1.5">
+      <div className="flex flex-wrap items-center gap-2 p-3 sm:p-3.5 rounded-2xl bg-card border border-border/80 shadow-xs">
+        <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1.5 px-1">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
         </span>
         <Link
           href={withLocale('/dashboard/tutor/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
         >
-          <Inbox className="w-3.5 h-3.5 text-info" />
+          <Inbox className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'টিউশন অনুরোধসমূহ' : 'Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
         >
-          <Calendar className="w-3.5 h-3.5 text-success" />
+          <Calendar className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
         >
-          <BookOpen className="w-3.5 h-3.5 text-warning" />
+          <BookOpen className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'স্টাডি রুম ও টিচিং' : 'Teaching Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/verification', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
         >
           <ShieldCheck className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'সনদ ও ভেরিফিকেশন' : 'Verification'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/30 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors sm:ml-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150 sm:ml-auto"
         >
           <CreditCard className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'আয় ও উত্তোলন' : 'Earnings'}</span>
@@ -386,38 +386,38 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                 </div>
               ) : (
                 <div
-                  className="grid grid-cols-2 sm:grid-cols-4 gap-3"
+                  className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4"
                   data-testid="tutor-analytics-data"
                 >
-                  <div className="p-3.5 rounded-2xl bg-surface border border-border">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                  <div className="p-4 rounded-2xl bg-surface/70 border border-border/80 hover:border-primary/30 transition-colors">
+                    <span className="text-[11px] text-muted-foreground font-semibold block">
                       {isBn ? 'মোট আয়' : 'Total Earnings'}
                     </span>
-                    <span className="text-lg font-bold text-success-soft-foreground mt-1 block">
+                    <span className="text-lg sm:text-xl font-extrabold text-foreground tabular-nums mt-1 block">
                       ৳{formatLocalizedNumber(earningsVal, locale)}
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-2xl bg-surface border border-border">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                  <div className="p-4 rounded-2xl bg-surface/70 border border-border/80 hover:border-primary/30 transition-colors">
+                    <span className="text-[11px] text-muted-foreground font-semibold block">
                       {isBn ? 'অনুরোধ গ্রহণ হার' : 'Acceptance'}
                     </span>
-                    <span className="text-lg font-bold text-primary mt-1 block">
+                    <span className="text-lg sm:text-xl font-extrabold text-primary tabular-nums mt-1 block">
                       {formatLocalizedNumber(aData?.inquiries?.acceptanceRate ?? 100, locale)}%
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-2xl bg-surface border border-border">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                  <div className="p-4 rounded-2xl bg-surface/70 border border-border/80 hover:border-primary/30 transition-colors">
+                    <span className="text-[11px] text-muted-foreground font-semibold block">
                       {isBn ? 'ক্লাস সমাপ্তি হার' : 'Completion'}
                     </span>
-                    <span className="text-lg font-bold text-primary mt-1 block">
+                    <span className="text-lg sm:text-xl font-extrabold text-primary tabular-nums mt-1 block">
                       {formatLocalizedNumber(aData?.sessions?.completionRate ?? 100, locale)}%
                     </span>
                   </div>
-                  <div className="p-3.5 rounded-2xl bg-surface border border-border">
-                    <span className="text-[10px] text-muted-foreground uppercase font-bold block">
+                  <div className="p-4 rounded-2xl bg-surface/70 border border-border/80 hover:border-primary/30 transition-colors">
+                    <span className="text-[11px] text-muted-foreground font-semibold block">
                       {isBn ? 'শিক্ষার্থী রেটিং' : 'Rating'}
                     </span>
-                    <span className="text-lg font-bold text-warning mt-1 block">
+                    <span className="text-lg sm:text-xl font-extrabold text-amber-600 tabular-nums mt-1 block">
                       {formatLocalizedNumber(aData?.rating?.averageRating ?? 5.0, locale)} ★
                     </span>
                   </div>

@@ -158,42 +158,42 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* QUICK ACTIONS ROW                                        */}
       {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-2xl bg-card border border-border">
-        <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1">
+      <div className="flex flex-wrap items-center gap-2 p-3 sm:p-3.5 rounded-2xl bg-card border border-border/80 shadow-xs">
+        <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1.5 px-1">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
         </span>
         <Link
           href={withLocale('/dashboard/student/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-hover text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
         >
-          <BookOpen className="w-3.5 h-3.5 text-muted-foreground" />
+          <BookOpen className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'লার্নিং হাব' : 'Learning Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-hover text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
         >
-          <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+          <Calendar className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-hover text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
         >
-          <Inbox className="w-3.5 h-3.5 text-muted-foreground" />
+          <Inbox className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'টিউশন অনুরোধ' : 'Tuition Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/student/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-surface-hover text-foreground text-xs font-semibold transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
         >
-          <CreditCard className="w-3.5 h-3.5 text-muted-foreground" />
+          <CreditCard className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'টিউশন ফি ও পেমেন্ট' : 'Tuition Payments'}</span>
         </Link>
         <Link
           href={withLocale('/tutors', locale)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary-soft hover:bg-primary/15 text-primary-soft-foreground text-xs font-semibold transition-colors sm:ml-auto"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold shadow-xs transition-colors sm:ml-auto"
         >
           <Search className="w-3.5 h-3.5" />
           <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>

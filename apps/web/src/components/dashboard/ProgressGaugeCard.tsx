@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { Target } from 'lucide-react';
-import type { Locale } from '@/lib/i18n';
+import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 
 export interface ProgressGaugeCardProps {
   locale: Locale;
@@ -74,8 +74,8 @@ export function ProgressGaugeCard({
 
         {/* Center Text inside the arc */}
         <div className="absolute bottom-1 flex flex-col items-center">
-          <span className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight font-sans leading-none">
-            {percentage}%
+          <span className="text-3xl sm:text-4xl font-extrabold text-foreground tracking-tight font-sans leading-none tabular-nums">
+            {formatLocalizedNumber(percentage, locale)}%
           </span>
           <span className="text-[11px] text-muted-foreground font-semibold mt-1">{lblDone}</span>
         </div>
@@ -84,11 +84,11 @@ export function ProgressGaugeCard({
       {/* Legend Dots (Donezo Style) */}
       <div className="flex items-center justify-center gap-3 sm:gap-4 pt-2 border-t border-border text-xs">
         <div className="flex items-center gap-1.5 font-medium">
-          <span className="h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
+          <span className="h-2.5 w-2.5 rounded-full bg-primary shrink-0 shadow-xs" />
           <span className="text-foreground">{lblDone}</span>
         </div>
         <div className="flex items-center gap-1.5 font-medium">
-          <span className="h-2.5 w-2.5 rounded-full bg-primary shrink-0" />
+          <span className="h-2.5 w-2.5 rounded-full bg-primary/45 shrink-0" />
           <span className="text-muted-foreground">{lblActive}</span>
         </div>
         <div className="flex items-center gap-1.5 font-medium">

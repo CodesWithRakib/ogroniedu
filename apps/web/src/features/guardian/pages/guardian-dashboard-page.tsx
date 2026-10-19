@@ -157,49 +157,49 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 2. QUICK ACTIONS BAR                                     */}
       {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2 p-3 rounded-2xl bg-card border border-border shadow-xs">
-        <span className="text-xs font-semibold text-muted-foreground mr-1 flex items-center gap-1.5">
+      <div className="flex flex-wrap items-center gap-2 p-3 sm:p-3.5 rounded-2xl bg-card border border-border/80 shadow-xs">
+        <span className="text-xs font-bold text-muted-foreground mr-1 flex items-center gap-1.5 px-1">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
         </span>
         <Link
           href={withLocale('/dashboard/guardian/children', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/70 bg-surface hover:bg-primary-soft hover:border-primary/30 text-foreground text-xs font-semibold transition-all duration-150"
         >
           <Users className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'সন্তান প্রোফাইল' : 'Children'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/70 bg-surface hover:bg-primary-soft hover:border-primary/30 text-foreground text-xs font-semibold transition-all duration-150"
         >
-          <BookOpen className="w-3.5 h-3.5 text-success-soft-foreground" />
+          <BookOpen className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'লার্নিং অগ্রগতি' : 'Learning Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/70 bg-surface hover:bg-primary-soft hover:border-primary/30 text-foreground text-xs font-semibold transition-all duration-150"
         >
-          <Calendar className="w-3.5 h-3.5 text-warning" />
+          <Calendar className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'ক্লাস সময়সূচি' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/70 bg-surface hover:bg-primary-soft hover:border-primary/30 text-foreground text-xs font-semibold transition-all duration-150"
         >
           <Inbox className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'টিউশন অনুরোধ' : 'Tuition Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/guardian/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-surface hover:bg-surface-hover text-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/70 bg-surface hover:bg-primary-soft hover:border-primary/30 text-foreground text-xs font-semibold transition-all duration-150"
         >
-          <CreditCard className="w-3.5 h-3.5 text-destructive" />
+          <CreditCard className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'টিউশন ফি ও এসক্রো' : 'Fees & Payments'}</span>
         </Link>
         <Link
           href={withLocale('/safety-reports', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-destructive/20 bg-destructive-soft hover:bg-destructive/15 text-destructive-soft-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-destructive/25 bg-destructive-soft hover:bg-destructive/15 text-destructive font-semibold text-xs transition-colors"
           id="link-safety-hub"
         >
           <ShieldAlert className="w-3.5 h-3.5 text-destructive" />
@@ -207,7 +207,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         </Link>
         <Link
           href={withLocale('/tutor-replacements', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-warning/20 bg-warning-soft hover:bg-warning/15 text-warning-soft-foreground text-xs font-medium transition-colors"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-warning/25 bg-warning-soft hover:bg-warning/15 text-warning font-semibold text-xs transition-colors"
           id="link-replacement-hub"
         >
           <RefreshCw className="w-3.5 h-3.5 text-warning" />
@@ -215,7 +215,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         </Link>
         <Link
           href={withLocale('/tutors', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-primary/30 bg-primary/5 hover:bg-primary/10 text-primary text-xs font-semibold transition-colors sm:ml-auto"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold shadow-xs transition-colors sm:ml-auto"
         >
           <Search className="w-3.5 h-3.5" />
           <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
