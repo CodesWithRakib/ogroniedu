@@ -1,11 +1,13 @@
 import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
 import crypto from 'node:crypto';
+import { bdtToMinor } from '../../../common/money/money';
 import { readErrorMessage } from '../../../common/errors/error-message';
 import {
   PaymentProviderAdapter,
   CheckoutSessionResult,
   ProviderTransactionResult,
   ProviderRefundResult,
+  NormalizedWebhookEvent,
 } from './payment-provider.interface';
 
 /** Subset of the SSLCOMMERZ session-initiation response we depend on. */
@@ -173,10 +175,71 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
   }
 
   /**
+   * Normalize an SSLCOMMERZ IPN/redirect payload. `tran_id` is our payment
+   * order id; `val_id` is the validation reference used for the mandatory
+   * server-to-server check.
+   */
+  normalizeWebhook(
+    _headers: Record<string, string | string[] | undefined>,
+    rawBody: string | Record<string, unknown>,
+  ): NormalizedWebhookEvent {
+    let record: Record<string, unknown> = {};
+    if (typeof rawBody === 'string') {
+      try {
+        record = JSON.parse(rawBody) as Record<string, unknown>;
+      } catch {
+        record = {};
+      }
+    } else {
+      record = rawBody;
+    }
+
+    const read = (...keys: string[]): string => {
+      for (const key of keys) {
+        const value = record[key];
+        if (typeof value === 'string' && value.length > 0) return value;
+        if (typeof value === 'number') return String(value);
+      }
+      return '';
+    };
+
+    const rawStatus = read('status', 'status_code').toUpperCase();
+    const status = /^(VALID|VALIDATED|SUCCESS|SUCCEEDED)$/.test(rawStatus)
+      ? 'succeeded'
+      : /^(FAILED|FAIL|CANCELLED|CANCELED|EXPIRED)$/.test(rawStatus)
+        ? 'failed'
+        : 'pending';
+
+    const valId = read('val_id', 'valId');
+    const bankTranId = read('bank_tran_id', 'bankTranId');
+    const providerTransactionId = valId || bankTranId || read('tran_id');
+    const orderReference = read('tran_id', 'tranId');
+    const amountText = read('amount', 'currency_amount') || '0';
+    const eventId = read('event_id', 'eventId') || `${valId || bankTranId || orderReference}:${rawStatus}`;
+
+    let amountMinor = '0';
+    try {
+      amountMinor = bdtToMinor(amountText).toString();
+    } catch {
+      amountMinor = '0';
+    }
+
+    return {
+      eventId,
+      eventType: `sslcommerz.${status}`,
+      providerTransactionId,
+      orderReference,
+      amountMinor,
+      currency: (read('currency') || 'BDT').toUpperCase(),
+      status,
+      rawStatus,
+    };
+  }
+
+  /**
    * 3. Server-to-Server Validation Query
    */
-  async queryTransaction(providerTransactionId: string): Promise<ProviderTransactionResult> {
-    this.logger.log(`Validating SSLCOMMERZ transaction server-to-server: ${providerTransactionId}`);
+  async queryTransaction(providerTransactionId: string): Promise<ProviderTransactionResult> {    this.logger.log(`Validating SSLCOMMERZ transaction server-to-server: ${providerTransactionId}`);
 
     try {
       const validationUrl = `${this.validationApiUrl}?val_id=${encodeURIComponent(providerTransactionId)}&store_id=${encodeURIComponent(this.storeId)}&store_passwd=${encodeURIComponent(this.storePasswd)}&format=json`;
@@ -194,7 +257,13 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       if (response.ok) {
         const data = (await response.json()) as SslcommerzValidationResponse;
         if (data.status === 'VALID' || data.status === 'VALIDATED') {
-          const amountMinor = Math.round(parseFloat(data.amount || '0') * 100);
+          // Parse the gateway decimal string directly; no float arithmetic.
+          let amountMinor = 0;
+          try {
+            amountMinor = Number(bdtToMinor(data.amount || '0'));
+          } catch {
+            amountMinor = 0;
+          }
           return {
             providerTransactionId: data.bank_tran_id || providerTransactionId,
             amountMinor,
@@ -220,22 +289,23 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
   }
 
   /**
-   * 4. Operational Sandbox Refund
+   * 4. Refund support
+   *
+   * The merchant refund contract is not provisioned in this environment. Never
+   * fabricate a provider reference: the caller must complete the transfer
+   * externally and record it through the audited manual-confirmation path.
    */
   async processRefund(
-    providerTransactionId: string,
+    _providerTransactionId: string,
     amountMinor: number,
-    reason: string,
+    _reason: string,
   ): Promise<ProviderRefundResult> {
-    const providerRefundId = `SSLCZ-REF-${Date.now()}`;
-    this.logger.log(
-      `Executed SSLCOMMERZ sandbox refund for ${providerTransactionId}: ${amountMinor} poisha (${reason})`,
-    );
-
     return {
-      providerRefundId,
+      status: 'unsupported',
+      providerRefundId: null,
       amountMinor,
-      status: 'succeeded',
+      failureReason:
+        'SSLCOMMERZ automated refunds are not provisioned. Complete the refund externally and record the reference.',
     };
   }
 }

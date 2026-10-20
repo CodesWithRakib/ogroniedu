@@ -5,31 +5,33 @@ import {
   Param,
   Body,
   Headers,
+  Query,
+  Req,
   UseGuards,
   HttpCode,
   HttpStatus,
   ParseUUIDPipe,
   Inject,
   GoneException,
+  Header,
 } from '@nestjs/common';
+import type { Request } from 'express';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { PaymentsService } from './payments.service';
-import { LedgerService } from './ledger.service';
-import {
-  CreatePaymentOrderDto,
-  PaymentWebhookDto,
-  ProcessRefundDto,
-  SettleMilestoneDto,
-} from './dto';
+import { InvoicesService } from './services/invoices.service';
+import { RefundsService } from './services/refunds.service';
+import { RequestRefundDto, SettleMilestoneDto, CreatePaymentOrderDto } from './dto';
 
 @Controller('api/v1/payments')
 export class PaymentsController {
   constructor(
     @Inject(PaymentsService)
     private readonly paymentsService: PaymentsService,
-    @Inject(LedgerService)
-    private readonly ledgerService: LedgerService,
+    @Inject(InvoicesService)
+    private readonly invoicesService: InvoicesService,
+    @Inject(RefundsService)
+    private readonly refundsService: RefundsService,
   ) {}
 
   @Post('orders')
@@ -51,15 +53,27 @@ export class PaymentsController {
     };
   }
 
+  /**
+   * Provider callback. The signature is verified against the exact raw request
+   * body, so the raw buffer is passed through instead of the parsed object.
+   */
   @Post('webhook/:provider')
   @HttpCode(HttpStatus.OK)
   async handleWebhook(
     @Param('provider') provider: string,
     @Headers() headers: Record<string, string>,
-    @Body() body: PaymentWebhookDto,
+    @Body() body: Record<string, unknown>,
+    @Req() req: Request & { rawBody?: Buffer },
     @Headers('x-request-id') requestId?: string,
   ) {
-    const result = await this.paymentsService.handleWebhook(provider, headers, body, requestId);
+    const rawBody = req.rawBody?.toString('utf8');
+    const result = await this.paymentsService.handleWebhook(
+      provider,
+      headers,
+      body,
+      requestId,
+      rawBody,
+    );
     return {
       success: true,
       message: 'Webhook processed successfully.',
@@ -69,18 +83,34 @@ export class PaymentsController {
 
   @Post('refunds')
   @UseGuards(AuthGuard)
-  @HttpCode(HttpStatus.OK)
-  async processRefund(
+  @HttpCode(HttpStatus.CREATED)
+  async requestRefund(
     @CurrentUser() user: AuthenticatedUser,
-    @Body() dto: ProcessRefundDto,
-    @Headers('x-request-id') requestId?: string,
+    @Body() dto: RequestRefundDto,
   ) {
-    const refund = await this.paymentsService.processRefund(user, dto, requestId);
+    const refund = await this.refundsService.requestRefund(user, dto);
     return {
       success: true,
-      message: 'Refund processed successfully.',
+      message: 'Refund request submitted for finance review.',
       data: refund,
     };
+  }
+
+  @Get('refunds')
+  @UseGuards(AuthGuard)
+  async listMyRefunds(@CurrentUser() user: AuthenticatedUser) {
+    const refunds = await this.refundsService.listMine(user);
+    return { success: true, data: refunds };
+  }
+
+  @Get('refunds/:refundId')
+  @UseGuards(AuthGuard)
+  async getRefund(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('refundId', ParseUUIDPipe) refundId: string,
+  ) {
+    const refund = await this.refundsService.getRefund(user, refundId);
+    return { success: true, data: refund };
   }
 
   @Post('milestones/settle')
@@ -133,27 +163,29 @@ export class PaymentsController {
     };
   }
 
-  @Get('reconciliation')
+  @Get('invoices/:invoiceId')
   @UseGuards(AuthGuard)
-  async runReconciliation() {
-    const report = await this.paymentsService.runReconciliation();
-    return {
-      success: true,
-      data: report,
-    };
+  async getInvoice(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('invoiceId', ParseUUIDPipe) invoiceId: string,
+  ) {
+    const invoice = await this.invoicesService.getInvoice(user, invoiceId);
+    return { success: true, data: invoice };
   }
 
-  @Get('ledger/balance/:accountCode')
+  /** Printable invoice HTML (no PDF renderer is bundled in this build). */
+  @Get('invoices/:invoiceId/print')
   @UseGuards(AuthGuard)
-  async getLedgerBalance(@Param('accountCode') accountCode: string) {
-    const balance = await this.ledgerService.getAccountBalance(accountCode);
-    return {
-      success: true,
-      data: {
-        accountCode,
-        balancePoisha: balance.toString(),
-        balanceBdt: (Number(balance) / 100).toFixed(2),
-      },
-    };
+  @Header('Content-Type', 'text/html; charset=utf-8')
+  async printInvoice(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('invoiceId', ParseUUIDPipe) invoiceId: string,
+    @Query('locale') locale?: string,
+  ) {
+    return this.invoicesService.renderInvoiceHtml(
+      user,
+      invoiceId,
+      locale === 'bn' ? 'bn' : 'en',
+    );
   }
 }

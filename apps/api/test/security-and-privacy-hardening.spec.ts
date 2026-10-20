@@ -3,11 +3,7 @@ import { SecurityHeadersMiddleware } from '../src/common/middleware/security-hea
 import { StructuredLoggerService } from '../src/common/logger/structured-logger.service';
 import { AllExceptionsFilter } from '../src/common/filters/http-exception.filter';
 import { FilesService } from '../src/modules/files/files.service';
-import { PaymentsService } from '../src/modules/payments/payments.service';
-import { PaymentOrdersService } from '../src/modules/payments/services/payment-orders.service';
 import { PaymentWebhooksService } from '../src/modules/payments/services/payment-webhooks.service';
-import { RefundsService } from '../src/modules/payments/services/refunds.service';
-import { SettlementService } from '../src/modules/payments/services/settlement.service';
 import { UsersService } from '../src/modules/users/users.service';
 import { StudentProfileService } from '../src/modules/users/services/student-profile.service';
 import { UserLifecycleService } from '../src/modules/users/services/user-lifecycle.service';
@@ -236,122 +232,87 @@ describe('Phase 17 — Security and Privacy Hardening Tests', () => {
   });
 
   describe('5. Payment Webhook Anti-Replay & Timestamp Skew Protection', () => {
-    let paymentsService: PaymentsService;
-    let mockOrderRepo: any;
-    let mockTxnRepo: any;
-    let mockRefundRepo: any;
-    let mockBookingRepo: any;
-    let mockSessionRepo: any;
-    let mockGuardianLinkRepo: any;
-    let mockOutboxRepo: any;
-    let mockLedgerService: any;
+    let webhooksService: PaymentWebhooksService;
     let mockFactory: any;
-    let mockAuditService: any;
-    let mockDataSource: any;
+    let mockWebhookRepo: any;
+
+    const payload = {
+      providerTransactionId: 'TXN-1',
+      providerEventId: 'EVT-1',
+      orderReference: 'order-1',
+      amountMinor: 100000,
+      currency: 'BDT',
+      status: 'succeeded',
+    };
 
     beforeEach(() => {
-      mockOrderRepo = { findOne: vi.fn(), save: vi.fn((o) => Promise.resolve(o)) };
-      mockTxnRepo = {
+      mockWebhookRepo = {
+        create: vi.fn((record) => record),
+        save: vi.fn(async (record) => ({ id: 'webhook-1', ...record })),
+        update: vi.fn().mockResolvedValue({}),
         findOne: vi.fn(),
-        create: vi.fn((t) => t),
-        save: vi.fn((t) => Promise.resolve(t)),
       };
-      mockRefundRepo = { findOne: vi.fn() };
-      mockBookingRepo = { findOne: vi.fn(), save: vi.fn((b) => Promise.resolve(b)) };
-      mockSessionRepo = { find: vi.fn() };
-      mockGuardianLinkRepo = { findOne: vi.fn() };
-      mockOutboxRepo = { create: vi.fn((e) => e), save: vi.fn((e) => Promise.resolve(e)) };
-      mockLedgerService = { recordOrderEscrowHolding: vi.fn().mockResolvedValue({}) };
-      mockAuditService = { record: vi.fn().mockResolvedValue({}) };
-      mockDataSource = {
-        transaction: vi.fn(async (cb) => {
-          return await cb({
-            save: vi.fn((x) => Promise.resolve(x)),
-            create: vi.fn((_, x) => x),
-          });
+      mockFactory = {
+        getAdapter: vi.fn().mockReturnValue({
+          verifyWebhookSignature: vi.fn().mockReturnValue(true),
+          normalizeWebhook: vi.fn(() => ({
+            eventId: 'EVT-1',
+            eventType: 'bkash.succeeded',
+            orderReference: 'order-1',
+            providerTransactionId: 'TXN-1',
+            amountMinor: '100000',
+            currency: 'BDT',
+            status: 'succeeded',
+            rawStatus: 'COMPLETED',
+          })),
+          queryTransaction: vi.fn().mockResolvedValue({
+            status: 'succeeded',
+            amountMinor: 100000,
+            currency: 'BDT',
+            providerTransactionId: 'TXN-1',
+          }),
         }),
       };
 
-      const mockAdapter = {
-        verifyWebhookSignature: vi.fn().mockReturnValue(true),
-        queryTransaction: vi.fn().mockResolvedValue({ status: 'succeeded' }),
-      };
-
-      mockFactory = {
-        getAdapter: vi.fn().mockReturnValue(mockAdapter),
-      };
-
-      paymentsService = new PaymentsService(
-        new PaymentOrdersService(
-          mockOrderRepo,
-          mockBookingRepo,
-          mockGuardianLinkRepo,
-          mockFactory,
-          mockAuditService,
-        ) as never,
-        new PaymentWebhooksService(
-          mockOrderRepo,
-          mockTxnRepo,
-          mockGuardianLinkRepo,
-          mockLedgerService,
-          mockFactory,
-          mockAuditService,
-          mockDataSource,
-        ) as never,
-        new RefundsService(
-          mockOrderRepo,
-          mockRefundRepo,
-          mockOutboxRepo,
-          mockLedgerService,
-          mockFactory,
-          mockAuditService,
-        ) as never,
-        new SettlementService(
-          mockSessionRepo,
-          mockOrderRepo,
-          mockTxnRepo,
-          mockLedgerService,
-          mockAuditService,
-        ) as never,
+      webhooksService = new PaymentWebhooksService(
+        { findOne: vi.fn() } as never,
+        { findOne: vi.fn() } as never,
+        mockWebhookRepo,
+        { findActiveGuardianIds: vi.fn().mockResolvedValue([]) } as never,
+        { postJournal: vi.fn() } as never,
+        mockFactory,
+        { createForOrder: vi.fn() } as never,
+        { record: vi.fn().mockResolvedValue({}) } as never,
+        { transaction: vi.fn() } as never,
+        undefined,
       );
     });
 
-    it('NEGATIVE TEST: should reject webhook when timestamp is expired by more than 5 minutes (Replay Attack)', async () => {
-      const expiredTimestamp = new Date(Date.now() - 600 * 1000).toISOString(); // 10 minutes ago (> 5m tolerance)
+    it('NEGATIVE TEST: rejects a webhook older than the 5-minute tolerance (replay attack)', async () => {
+      const expiredTimestamp = new Date(Date.now() - 600 * 1000).toISOString();
 
       await expect(
-        paymentsService.handleWebhook(
+        webhooksService.handleWebhook(
           'bkash',
           { 'x-webhook-timestamp': expiredTimestamp },
-          {
-            providerTransactionId: 'TXN-OLD-1',
-            providerEventId: 'EVT-OLD-1',
-            amountMinor: 100000,
-            currency: 'BDT',
-            status: 'succeeded',
-          },
+          payload,
         ),
       ).rejects.toThrow(UnauthorizedException);
     });
 
-    it('NEGATIVE TEST: should reject webhook if adapter signature verification fails', async () => {
+    it('NEGATIVE TEST: rejects the webhook before persisting when signature verification fails', async () => {
       mockFactory.getAdapter.mockReturnValueOnce({
         verifyWebhookSignature: vi.fn().mockReturnValue(false),
       });
 
       await expect(
-        paymentsService.handleWebhook(
+        webhooksService.handleWebhook(
           'bkash',
           { 'x-webhook-timestamp': new Date().toISOString() },
-          {
-            providerTransactionId: 'TXN-TAMPERED-1',
-            providerEventId: 'EVT-TAMPERED-1',
-            amountMinor: 100000,
-            currency: 'BDT',
-            status: 'succeeded',
-          },
+          payload,
         ),
       ).rejects.toThrow(UnauthorizedException);
+      expect(mockWebhookRepo.save).not.toHaveBeenCalled();
     });
   });
 

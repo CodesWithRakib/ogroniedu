@@ -7,6 +7,15 @@ import {
   LedgerAccountEntity,
   LedgerJournalEntity,
   LedgerEntryEntity,
+  CommissionPolicyEntity,
+  EscrowHoldEntity,
+  WebhookEventEntity,
+  SessionSettlementEntity,
+  TutorFinancialAccountEntity,
+  TutorEarningAdjustmentEntity,
+  PayoutEntity,
+  InvoiceEntity,
+  ReconciliationRunEntity,
 } from './entities';
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { BookingSessionEntity } from '../bookings/entities/booking-session.entity';
@@ -16,8 +25,13 @@ import { PaymentOrdersService } from './services/payment-orders.service';
 import { PaymentWebhooksService } from './services/payment-webhooks.service';
 import { RefundsService } from './services/refunds.service';
 import { SettlementService } from './services/settlement.service';
+import { PayoutsService } from './services/payouts.service';
+import { InvoicesService } from './services/invoices.service';
+import { CommissionPolicyService } from './services/commission-policy.service';
 import { LedgerService } from './ledger.service';
 import { PaymentsController } from './payments.controller';
+import { TutorFinanceController } from './tutor-finance.controller';
+import { AdminFinanceController } from './admin-finance.controller';
 import { BkashSandboxAdapter } from './adapters/bkash-sandbox.adapter';
 import { SslcommerzSandboxAdapter } from './adapters/sslcommerz-sandbox.adapter';
 import { PaymentAdapterFactory } from './adapters/adapter.factory';
@@ -35,6 +49,15 @@ import { GuardiansModule } from '../guardians/guardians.module';
       LedgerAccountEntity,
       LedgerJournalEntity,
       LedgerEntryEntity,
+      CommissionPolicyEntity,
+      EscrowHoldEntity,
+      WebhookEventEntity,
+      SessionSettlementEntity,
+      TutorFinancialAccountEntity,
+      TutorEarningAdjustmentEntity,
+      PayoutEntity,
+      InvoiceEntity,
+      ReconciliationRunEntity,
       BookingEntity,
       BookingSessionEntity,
       OutboxEventEntity,
@@ -44,13 +67,16 @@ import { GuardiansModule } from '../guardians/guardians.module';
     forwardRef(() => NotificationsModule),
     GuardiansModule,
   ],
-  controllers: [PaymentsController],
+  controllers: [PaymentsController, TutorFinanceController, AdminFinanceController],
   providers: [
     PaymentsService,
     PaymentOrdersService,
     PaymentWebhooksService,
     RefundsService,
     SettlementService,
+    PayoutsService,
+    InvoicesService,
+    CommissionPolicyService,
     LedgerService,
     BkashSandboxAdapter,
     SslcommerzSandboxAdapter,
@@ -62,6 +88,9 @@ import { GuardiansModule } from '../guardians/guardians.module';
     PaymentWebhooksService,
     RefundsService,
     SettlementService,
+    PayoutsService,
+    InvoicesService,
+    CommissionPolicyService,
     LedgerService,
     TypeOrmModule,
   ],

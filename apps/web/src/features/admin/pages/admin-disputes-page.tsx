@@ -22,6 +22,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
     initialReconciliation: admin.reconciliation,
     initialTickets: admin.tickets,
     onUpdateTicketStatus: admin.onUpdateTicketStatus,
+    onRerunReconciliation: admin.onRunReconciliation,
   });
 
   const isBalanced = admin.reconciliation?.isBalanced ?? true;
@@ -144,6 +145,7 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
               <AdminReconciliationTab
                 reconciliation={actions.reconciliation}
                 onRunAudit={actions.rerunReconciliation}
+                locale={locale}
               />
             ) : (
               <AdminSupportTab

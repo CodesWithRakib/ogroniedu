@@ -34,6 +34,14 @@ export class LedgerEntryEntity {
   @Column({ type: 'char', length: 3, default: 'BDT' })
   currency!: string;
 
+  /**
+   * Optional party dimension. Tutor payable (account 2000) is attributed to a
+   * tutor so balances can be derived from the ledger instead of a mutable
+   * wallet column.
+   */
+  @Column('uuid', { name: 'tutor_user_id', nullable: true })
+  tutorUserId!: string | null;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 

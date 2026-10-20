@@ -9,7 +9,14 @@ import {
 } from '../src/lib/api/parse';
 import { toQueryString } from '../src/lib/api/query';
 import { normalizeApiError, normalizeUnknownError } from '../src/lib/api-error';
-import { formatDate, formatDateTime, formatGroupedNumber, formatBDTMinor } from '../src/lib/format';
+import {
+  formatDate,
+  formatDateTime,
+  formatGroupedNumber,
+  formatBDTMinor,
+  localDateTimeToIso,
+  toDateTimeLocalValue,
+} from '../src/lib/format';
 import { navForRole } from '../src/lib/navigation';
 import {
   BRAND,
@@ -201,6 +208,15 @@ describe('Phase 23 error + format regressions', () => {
     expect(formatBDTMinor(null, 'en')).toBe('—');
     expect(formatGroupedNumber(NaN, 'en')).toBe('—');
     expect(formatBDTMinor('150000', 'en')).toContain('1,500');
+  });
+
+  it('round-trips schedule inputs through browser-local time without server offsets', () => {
+    const localValue = '2026-10-20T16:30';
+    const iso = localDateTimeToIso(localValue);
+    expect(iso).toMatch(/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/);
+    expect(toDateTimeLocalValue(iso)).toBe(localValue);
+    expect(toDateTimeLocalValue('not-a-date')).toBe('');
+    expect(localDateTimeToIso('')).toBe('');
   });
 
   it('navForRole is centralized and covers all roles', () => {

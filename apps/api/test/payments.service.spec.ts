@@ -4,27 +4,51 @@ import { PaymentOrdersService } from '../src/modules/payments/services/payment-o
 import { PaymentWebhooksService } from '../src/modules/payments/services/payment-webhooks.service';
 import { RefundsService } from '../src/modules/payments/services/refunds.service';
 import { SettlementService } from '../src/modules/payments/services/settlement.service';
-import { BadRequestException, ForbiddenException, UnauthorizedException } from '@nestjs/common';
+import { PayoutsService } from '../src/modules/payments/services/payouts.service';
+import {
+  PaymentOrderEntity,
+  PaymentTransactionEntity,
+  EscrowHoldEntity,
+  SessionSettlementEntity,
+  TutorFinancialAccountEntity,
+} from '../src/modules/payments/entities';
+import { BookingSessionEntity } from '../src/modules/bookings/entities/booking-session.entity';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 import { GuardianAccessService } from '../src/modules/guardians/guardian-access.service';
 
-describe('PaymentsService Unit & Financial Invariant Tests', () => {
+describe('Payments domain: orders, verified webhooks, settlement and reconciliation', () => {
   let service: PaymentsService;
+  let orders: PaymentOrdersService;
+  let webhooks: PaymentWebhooksService;
+  let settlement: SettlementService;
+
   let mockOrderRepo: any;
   let mockTransactionRepo: any;
   let mockRefundRepo: any;
   let mockBookingRepo: any;
   let mockSessionRepo: any;
+  let mockEscrowRepo: any;
+  let mockSettlementRepo: any;
+  let mockPayoutRepo: any;
+  let mockReconciliationRepo: any;
+  let mockWebhookRepo: any;
   let mockGuardianLinkRepo: any;
   let mockOutboxRepo: any;
   let mockLedgerService: any;
   let mockAdapterFactory: any;
   let mockAuditService: any;
-  let mockDataSource: any;
   let mockNotificationService: any;
+  let mockCommissionPolicyService: any;
+  let mockInvoicesService: any;
+  let mockDataSource: any;
 
   const studentId = '11111111-1111-4111-8111-111111111111';
-  const _guardianId = '22222222-2222-4222-8222-222222222222';
   const strangerId = '99999999-9999-4999-8999-999999999999';
   const tutorId = '33333333-3333-4333-8333-333333333333';
   const bookingId = 'bbbbbbbb-bbbb-4bbb-8bbb-bbbbbbbbbbbb';
@@ -42,74 +66,112 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
     roles: ['student'],
   };
 
-  const sampleBooking: any = {
-    id: bookingId,
-    requesterUserId: studentId,
-    studentUserId: studentId,
-    tutorUserId: tutorId,
-    pricePerSessionMinor: 100000, // 1000 BDT (100,000 poisha)
-    currency: 'BDT',
-    status: 'accepted',
-    studentUser: { id: studentId, displayName: 'Rahim' },
-    subject: { nameEn: 'Mathematics' },
-  };
-
+  let booking: any;
   let sampleOrder: any;
+  let lockedOrder: any;
+  let hold: any;
+  let invoice: any;
 
   beforeEach(() => {
+    booking = {
+      id: bookingId,
+      requesterUserId: studentId,
+      studentUserId: studentId,
+      tutorUserId: tutorId,
+      pricePerSessionMinor: '100000', // 1000.00 BDT
+      currency: 'BDT',
+      status: 'accepted',
+      studentUser: { id: studentId, displayName: 'Rahim' },
+      requesterUser: { id: studentId, displayName: 'Rahim' },
+      tutorProfile: { user: { id: tutorId, displayName: 'Tutor One' } },
+      subject: { nameEn: 'Mathematics' },
+    };
+
     sampleOrder = {
       id: orderId,
       bookingId,
       payerUserId: studentId,
-      amountMinor: 100000,
+      amountMinor: '100000',
       currency: 'BDT',
       status: 'pending',
       idempotencyKey: 'idem-pay-1',
       provider: 'bkash',
+      providerReference: 'PROV-ORDER-1',
+      commissionRateBps: 800,
+      commissionPolicyId: 'policy-1',
       createdAt: new Date(),
       updatedAt: new Date(),
+      booking,
+    };
+    lockedOrder = { ...sampleOrder, payerUser: { id: studentId, displayName: 'Rahim' } };
+
+    hold = {
+      id: 'hold-1',
+      paymentOrderId: orderId,
+      bookingId,
+      payerUserId: studentId,
+      tutorUserId: tutorId,
+      amountMinor: '100000',
+      releasedMinor: '0',
+      refundedMinor: '0',
+      currency: 'BDT',
+      commissionRateBps: 800,
+      commissionPolicyId: 'policy-1',
+      status: 'held',
+      heldAt: new Date(),
+    };
+
+    invoice = {
+      id: 'invoice-1',
+      invoiceNumber: 'INV-2026-000001',
+      paymentOrderId: orderId,
+      status: 'issued',
+      totalMinor: '100000',
+      commissionMinor: '8000',
+      snapshot: {},
     };
 
     mockOrderRepo = {
-      findOne: vi.fn(),
-      find: vi.fn().mockImplementation(() => Promise.resolve([{ ...sampleOrder }])),
-      create: vi.fn((data) => ({ id: orderId, ...data })),
-      save: vi.fn((entity) => Promise.resolve({ id: entity.id || orderId, ...entity })),
+      findOne: vi.fn().mockResolvedValue(null),
+      find: vi.fn().mockResolvedValue([]),
+      create: vi.fn((data) => ({ ...data, id: orderId })),
+      save: vi.fn(async (entity) => ({
+        ...entity,
+        id: entity.id ?? orderId,
+        updatedAt: new Date(),
+      })),
     };
 
     mockTransactionRepo = {
       findOne: vi.fn().mockResolvedValue(null),
       find: vi.fn().mockResolvedValue([]),
-      create: vi.fn((data) => ({ id: 'txn-1', ...data })),
-      save: vi.fn((entity) => Promise.resolve({ id: entity.id || 'txn-1', ...entity })),
     };
 
-    mockRefundRepo = {
-      find: vi.fn().mockResolvedValue([]),
-      create: vi.fn((data) => ({ id: 'ref-1', ...data })),
-      save: vi.fn((entity) => Promise.resolve({ id: entity.id || 'ref-1', ...entity })),
+    mockRefundRepo = { find: vi.fn().mockResolvedValue([]), findOne: vi.fn() };
+    mockBookingRepo = { findOne: vi.fn().mockResolvedValue(booking), save: vi.fn(async (b) => b) };
+    mockSessionRepo = { findOne: vi.fn() };
+    mockEscrowRepo = { find: vi.fn().mockResolvedValue([]) };
+    mockSettlementRepo = { findOne: vi.fn(), create: vi.fn(), save: vi.fn(), find: vi.fn() };
+    mockPayoutRepo = { find: vi.fn().mockResolvedValue([]) };
+    mockReconciliationRepo = {
+      create: vi.fn((data) => ({ id: 'run-1', ...data })),
+      save: vi.fn(async (r) => ({ id: r.id ?? 'run-1', ...r })),
     };
-
-    mockBookingRepo = {
-      findOne: vi.fn().mockResolvedValue(sampleBooking),
-    };
-
-    mockSessionRepo = {
+    mockWebhookRepo = {
+      create: vi.fn((data) => data),
+      save: vi.fn(async (record) => ({ id: 'webhook-1', ...record })),
+      update: vi.fn().mockResolvedValue({}),
       findOne: vi.fn(),
     };
-
     mockGuardianLinkRepo = {
       findOne: vi.fn().mockResolvedValue(null),
       find: vi.fn().mockResolvedValue([]),
     };
-
-    mockOutboxRepo = {
-      create: vi.fn((data) => ({ id: 'out-1', ...data })),
-      save: vi.fn((entity) => Promise.resolve({ id: 'out-1', ...entity })),
-    };
+    mockOutboxRepo = { create: vi.fn((e) => e), save: vi.fn(async (e) => e) };
 
     mockLedgerService = {
-      postJournal: vi.fn().mockResolvedValue({ id: 'journal-1' }),
+      postJournal: vi.fn().mockResolvedValue({ id: 'journal-1', entries: [] }),
+      getPartyBalance: vi.fn().mockResolvedValue(0n),
       verifySystemLedgerIntegrity: vi.fn().mockResolvedValue({
         isBalanced: true,
         totalDebits: 100000n,
@@ -118,109 +180,174 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
       }),
     };
 
-    const mockAdapter = {
-      providerName: 'bkash',
-      createCheckoutSession: vi.fn().mockResolvedValue({
-        checkoutUrl: 'https://sandbox.payment.bkash.com/checkout?token=mock',
-        providerOrderId: 'BKASH-123',
-      }),
-      verifyWebhookSignature: vi.fn().mockReturnValue(true),
-      queryTransaction: vi.fn().mockResolvedValue({
-        providerTransactionId: 'TRX-123',
-        amountMinor: 100000,
-        currency: 'BDT',
-        status: 'succeeded',
-      }),
-      processRefund: vi.fn().mockResolvedValue({
-        providerRefundId: 'REF-123',
-        amountMinor: 50000,
-        status: 'succeeded',
-      }),
-    };
-
     mockAdapterFactory = {
-      getAdapter: vi.fn().mockReturnValue(mockAdapter),
+      getAdapter: vi.fn().mockReturnValue({
+        providerName: 'bkash',
+        createCheckoutSession: vi.fn().mockResolvedValue({
+          checkoutUrl: 'https://sandbox.payment.bkash.com/checkout?token=mock',
+          providerOrderId: 'PROV-ORDER-1',
+        }),
+        verifyWebhookSignature: vi.fn().mockReturnValue(true),
+        normalizeWebhook: vi.fn((_headers, rawBody) => {
+          const body = rawBody as Record<string, unknown>;
+          return {
+            eventId: String(body.providerEventId ?? 'EVT-999'),
+            eventType: 'bkash.succeeded',
+            orderReference: String(body.orderReference ?? orderId),
+            providerTransactionId: String(body.providerTransactionId ?? 'TRX-123'),
+            amountMinor: String(body.amountMinor ?? '100000'),
+            currency: String(body.currency ?? 'BDT'),
+            status: body.status === 'failed' ? 'failed' : 'succeeded',
+            rawStatus: 'COMPLETED',
+          };
+        }),
+        queryTransaction: vi.fn().mockResolvedValue({
+          providerTransactionId: 'TRX-123',
+          amountMinor: 100000,
+          currency: 'BDT',
+          status: 'succeeded',
+          verifiedAt: new Date(),
+        }),
+        processRefund: vi.fn().mockResolvedValue({
+          providerRefundId: null,
+          amountMinor: 50000,
+          status: 'unsupported',
+        }),
+      }),
     };
 
-    mockAuditService = {
-      record: vi.fn().mockResolvedValue({ id: 'aud-1' }),
+    mockAuditService = { record: vi.fn().mockResolvedValue({ id: 'aud-1' }) };
+    mockNotificationService = { dispatch: vi.fn().mockResolvedValue({ id: 'notif-1' }) };
+    mockCommissionPolicyService = {
+      getActivePolicy: vi.fn().mockResolvedValue({
+        id: 'policy-1',
+        version: 1,
+        platformFeeBps: 800,
+        minPayoutMinor: '50000',
+        currency: 'BDT',
+      }),
+    };
+    mockInvoicesService = {
+      createForOrder: vi.fn().mockResolvedValue(invoice),
+      getInvoiceForOrder: vi.fn().mockResolvedValue(invoice),
     };
 
     mockDataSource = {
-      transaction: vi.fn().mockImplementation(async (cb) => {
-        const mockManager = {
-          save: vi.fn((entity) => Promise.resolve(entity)),
-          create: vi.fn((_, data) => ({ id: `gen-${Math.random()}`, ...data })),
-          findOne: vi.fn().mockResolvedValue(sampleBooking),
+      transaction: vi.fn(async (cb) => {
+        const manager = {
+          findOne: vi.fn(async (entity) => {
+            if (entity === PaymentOrderEntity) return lockedOrder;
+            if (entity === PaymentTransactionEntity) return null;
+            if (entity === EscrowHoldEntity) return null;
+            if (entity === BookingSessionEntity) return mockSessionRepo.findOne();
+            if (entity === SessionSettlementEntity) return null;
+            if (entity === TutorFinancialAccountEntity)
+              return { tutorUserId: tutorId, reservedMinor: '0' };
+            return null;
+          }),
+          create: vi.fn((entity, data) => ({
+            ...data,
+            id:
+              entity === EscrowHoldEntity
+                ? 'hold-1'
+                : entity === SessionSettlementEntity
+                  ? 'settlement-1'
+                  : `gen-${Math.random()}`,
+          })),
+          save: vi.fn(async (value) => value),
+          update: vi.fn().mockResolvedValue({}),
         };
-        return cb(mockManager);
+        return cb(manager);
       }),
     };
 
-    mockNotificationService = {
-      dispatch: vi.fn().mockResolvedValue({ id: 'notif-1' }),
-    };
-
-    service = new PaymentsService(
-      new PaymentOrdersService(
-        mockOrderRepo,
-        mockBookingRepo,
-        new GuardianAccessService(mockGuardianLinkRepo),
-        mockAdapterFactory,
-        mockAuditService,
-      ) as never,
-      new PaymentWebhooksService(
-        mockOrderRepo,
-        mockTransactionRepo,
-        new GuardianAccessService(mockGuardianLinkRepo),
-        mockLedgerService,
-        mockAdapterFactory,
-        mockAuditService,
-        mockDataSource,
-        mockNotificationService,
-      ) as never,
-      new RefundsService(
-        mockOrderRepo,
-        mockRefundRepo,
-        mockOutboxRepo,
-        mockLedgerService,
-        mockAdapterFactory,
-        mockAuditService,
-        mockNotificationService,
-      ) as never,
-      new SettlementService(
-        mockSessionRepo,
-        mockOrderRepo,
-        mockTransactionRepo,
-        mockLedgerService,
-        mockAuditService,
-      ) as never,
+    orders = new PaymentOrdersService(
+      mockOrderRepo,
+      mockBookingRepo,
+      new GuardianAccessService(mockGuardianLinkRepo),
+      mockAdapterFactory,
+      mockAuditService,
+      mockCommissionPolicyService,
+      mockInvoicesService,
     );
+    webhooks = new PaymentWebhooksService(
+      mockOrderRepo,
+      mockTransactionRepo,
+      mockWebhookRepo,
+      new GuardianAccessService(mockGuardianLinkRepo),
+      mockLedgerService,
+      mockAdapterFactory,
+      mockInvoicesService,
+      mockAuditService,
+      mockDataSource,
+      mockNotificationService,
+    );
+    const refunds = new RefundsService(
+      mockOrderRepo,
+      mockRefundRepo,
+      mockTransactionRepo,
+      mockEscrowRepo,
+      mockOutboxRepo,
+      mockLedgerService,
+      mockAdapterFactory,
+      mockAuditService,
+      new GuardianAccessService(mockGuardianLinkRepo),
+      mockDataSource,
+      mockNotificationService,
+    );
+    settlement = new SettlementService(
+      mockSessionRepo,
+      mockOrderRepo,
+      mockTransactionRepo,
+      mockEscrowRepo,
+      mockSettlementRepo,
+      mockRefundRepo,
+      mockPayoutRepo,
+      mockReconciliationRepo,
+      mockLedgerService,
+      mockAuditService,
+      mockDataSource,
+      mockNotificationService,
+    );
+    const payouts = new PayoutsService(
+      mockPayoutRepo,
+      { findOne: vi.fn() } as never,
+      mockSettlementRepo,
+      { find: vi.fn() } as never,
+      mockEscrowRepo,
+      mockLedgerService,
+      mockCommissionPolicyService,
+      mockAuditService,
+      mockNotificationService,
+      mockDataSource,
+    );
+
+    service = new PaymentsService(orders, webhooks, refunds, settlement, payouts);
   });
 
-  describe('Payment Order Creation & Idempotency', () => {
-    it('should create pending payment order and return sandbox checkout URL', async () => {
-      mockBookingRepo.findOne.mockResolvedValue(sampleBooking);
-      mockOrderRepo.findOne.mockResolvedValue(null);
-
+  describe('Payment order creation and idempotency', () => {
+    it('snapshots the active commission policy and stores the provider reference', async () => {
       const res = await service.createPaymentOrder(
         studentUser,
         { bookingId, provider: 'bkash' },
         'idem-key-1',
+        'req-1',
       );
 
       expect(res.orderId).toBe(orderId);
       expect(res.amountMinor).toBe(100000);
       expect(res.currency).toBe('BDT');
       expect(res.checkoutUrl).toContain('bkash.com');
-      expect(mockOrderRepo.save).toHaveBeenCalled();
+      expect(res.commissionRateBps).toBe(800);
+      expect(mockOrderRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({ commissionRateBps: 800, commissionPolicyId: 'policy-1' }),
+      );
       expect(mockAuditService.record).toHaveBeenCalledWith(
         expect.objectContaining({ action: 'payment.order_created' }),
       );
     });
 
-    it('IDEMPOTENCY: should replay existing checkout session when same idempotencyKey is submitted', async () => {
-      mockBookingRepo.findOne.mockResolvedValue(sampleBooking);
+    it('replays the existing order for the same idempotency key without creating another', async () => {
       mockOrderRepo.findOne.mockResolvedValue(sampleOrder);
 
       const res = await service.createPaymentOrder(
@@ -230,61 +357,78 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
       );
 
       expect(res.orderId).toBe(orderId);
-      expect(mockOrderRepo.save).not.toHaveBeenCalled(); // No duplicate order created!
+      expect(mockOrderRepo.create).not.toHaveBeenCalled();
+      expect(mockOrderRepo.save).not.toHaveBeenCalled();
     });
 
-    it('NEGATIVE TEST: should reject payment initiation by unrelated learner (403 Forbidden)', async () => {
-      mockBookingRepo.findOne.mockResolvedValue(sampleBooking);
+    it('rejects an idempotency key reused with a different booking', async () => {
+      mockOrderRepo.findOne.mockResolvedValue({ ...sampleOrder, bookingId: 'other-booking' });
 
+      await expect(
+        service.createPaymentOrder(studentUser, { bookingId }, 'idem-pay-1'),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('rejects payment initiation by an unrelated learner', async () => {
       await expect(
         service.createPaymentOrder(strangerUser, { bookingId }, 'idem-stranger'),
       ).rejects.toThrow(ForbiddenException);
     });
 
-    it('NEGATIVE TEST: should reject payment initiation if booking is already confirmed/paid', async () => {
-      mockBookingRepo.findOne.mockResolvedValue({
-        ...sampleBooking,
-        status: 'confirmed',
-      });
+    it('rejects payment initiation when the booking is already confirmed', async () => {
+      mockBookingRepo.findOne.mockResolvedValue({ ...booking, status: 'confirmed' });
 
       await expect(
         service.createPaymentOrder(studentUser, { bookingId }, 'idem-already-paid'),
       ).rejects.toThrow(BadRequestException);
     });
+
+    it('refuses to fund a booking that already has a succeeded order', async () => {
+      mockOrderRepo.findOne.mockResolvedValueOnce(null).mockResolvedValueOnce({
+        ...sampleOrder,
+        status: 'succeeded',
+      });
+
+      await expect(
+        service.createPaymentOrder(studentUser, { bookingId }, 'idem-new-key'),
+      ).rejects.toThrow(BadRequestException);
+
+      expect(mockOrderRepo.create).not.toHaveBeenCalled();
+    });
   });
 
-  describe('Verified Webhook & Double-Entry Escrow Invariants', () => {
-    const validWebhookPayload: any = {
+  describe('Verified webhook pipeline', () => {
+    const validWebhookPayload = {
       providerTransactionId: 'TRX-123',
       providerEventId: 'EVT-999',
+      orderReference: orderId,
       amountMinor: 100000,
       currency: 'BDT',
       status: 'succeeded',
     };
 
-    it('FINANCIAL INVARIANT: should process verified webhook, post escrow ledger journal, and confirm booking', async () => {
-      mockOrderRepo.findOne.mockResolvedValue(sampleOrder);
+    it('posts escrow ledger, creates the invoice, confirms the booking and outbox event', async () => {
+      mockOrderRepo.findOne.mockResolvedValue(lockedOrder);
 
-      const res = await service.handleWebhook('bkash', {}, validWebhookPayload);
+      const res = await service.handleWebhook(
+        'bkash',
+        { 'x-webhook-timestamp': new Date().toISOString() },
+        validWebhookPayload,
+        'req-sbx-1',
+      );
 
-      expect(res.received).toBe(true);
-      expect(res.processed).toBe(true);
-      expect(res.status).toBe('succeeded');
-
-      // Verify double-entry ledger journal was posted:
-      // Debit: 1000 (Escrow Holding Pool)
-      // Credit: 2100 (Student Escrow Deposit)
+      expect(res).toMatchObject({ received: true, processed: true, status: 'succeeded' });
       expect(mockLedgerService.postJournal).toHaveBeenCalledWith(
         expect.objectContaining({
           sourceType: 'payment_order',
           entries: [
-            { accountCode: '1000', direction: 'debit', amountMinor: sampleOrder.amountMinor },
-            { accountCode: '2100', direction: 'credit', amountMinor: sampleOrder.amountMinor },
+            { accountCode: '1000', direction: 'debit', amountMinor: '100000' },
+            { accountCode: '2100', direction: 'credit', amountMinor: '100000' },
           ],
         }),
+        expect.anything(),
       );
-
-      // Verify audit and outbox event emitted
+      expect(mockInvoicesService.createForOrder).toHaveBeenCalled();
       expect(mockAuditService.record).toHaveBeenCalledWith(
         expect.objectContaining({ action: 'payment.order_succeeded' }),
       );
@@ -293,93 +437,136 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
       );
     });
 
-    it('NEGATIVE TEST: should reject webhook with invalid signature (401 Unauthorized)', async () => {
+    it('ignores an already-recorded webhook event without re-posting the ledger', async () => {
+      mockWebhookRepo.save.mockRejectedValueOnce({ code: '23505' });
+      mockWebhookRepo.findOne.mockResolvedValue({ id: 'webhook-old', status: 'processed' });
+
+      const res = await service.handleWebhook(
+        'bkash',
+        { 'x-webhook-timestamp': new Date().toISOString() },
+        validWebhookPayload,
+      );
+
+      expect(res).toEqual({ received: true, processed: false });
+      expect(mockDataSource.transaction).not.toHaveBeenCalled();
+      expect(mockLedgerService.postJournal).not.toHaveBeenCalled();
+    });
+
+    it('rejects a webhook with an invalid signature before persisting it', async () => {
       mockAdapterFactory.getAdapter().verifyWebhookSignature.mockReturnValue(false);
 
       await expect(service.handleWebhook('bkash', {}, validWebhookPayload)).rejects.toThrow(
         UnauthorizedException,
       );
+      expect(mockWebhookRepo.save).not.toHaveBeenCalled();
     });
 
-    it('NEGATIVE TEST: should reject webhook when amount mismatches pending order (400 BadRequest)', async () => {
-      mockOrderRepo.findOne.mockResolvedValue(sampleOrder);
-      const tamperedPayload = {
-        ...validWebhookPayload,
-        amountMinor: 50000, // 500 BDT instead of 1000 BDT!
-      };
-
-      await expect(service.handleWebhook('bkash', {}, tamperedPayload)).rejects.toThrow(
-        BadRequestException,
-      );
+    it('rejects a webhook timestamp outside the replay window', async () => {
+      await expect(
+        service.handleWebhook(
+          'bkash',
+          { 'x-webhook-timestamp': new Date(Date.now() - 10 * 60 * 1000).toISOString() },
+          validWebhookPayload,
+        ),
+      ).rejects.toThrow(UnauthorizedException);
     });
 
-    it('IDEMPOTENCY: should ignore duplicate webhook event without double posting to ledger', async () => {
-      mockTransactionRepo.findOne.mockResolvedValue({
-        id: 'txn-existing',
-        providerEventId: 'EVT-999',
-        status: 'succeeded',
-      });
-
-      const res = await service.handleWebhook('bkash', {}, validWebhookPayload);
-      expect(res.received).toBe(true);
-      expect(res.processed).toBe(false);
-      expect(mockLedgerService.postJournal).not.toHaveBeenCalled();
-    });
-  });
-
-  describe('Refunds & Balance Bounds', () => {
-    it('should process refund within available balance and post reversal ledger journal', async () => {
-      const succeededOrder = { ...sampleOrder, status: 'succeeded' };
-      mockOrderRepo.findOne.mockResolvedValue(succeededOrder);
-      mockRefundRepo.find.mockResolvedValue([]); // No previous refunds
-
-      const refund = await service.processRefund(studentUser, {
-        paymentOrderId: orderId,
-        amountMinor: 80000, // 80% refund (800 BDT)
-        reason: 'Cancelled with >24h notice per Bangladesh cancellation policy',
-      });
-
-      expect(refund.status).toBe('succeeded');
-      expect(mockLedgerService.postJournal).toHaveBeenCalledWith(
-        expect.objectContaining({
-          sourceType: 'payment_refund',
-          entries: [
-            { accountCode: '2100', direction: 'debit', amountMinor: 80000 },
-            { accountCode: '1000', direction: 'credit', amountMinor: 80000 },
-          ],
-        }),
-      );
-    });
-
-    it('NEGATIVE TEST: should reject refund exceeding paid balance', async () => {
-      const succeededOrder = { ...sampleOrder, status: 'succeeded' };
-      mockOrderRepo.findOne.mockResolvedValue(succeededOrder);
-      mockRefundRepo.find.mockResolvedValue([
-        { id: 'ref-prev', amountMinor: '70000', status: 'succeeded' }, // Already refunded 700 BDT
-      ]);
+    it('rejects an amount that does not match the order', async () => {
+      mockOrderRepo.findOne.mockResolvedValue(lockedOrder);
 
       await expect(
-        service.processRefund(studentUser, {
-          paymentOrderId: orderId,
-          amountMinor: 50000, // 700 + 500 = 1200 BDT > 1000 BDT total!
-          reason: 'Excessive refund attempt',
-        }),
+        service.handleWebhook(
+          'bkash',
+          { 'x-webhook-timestamp': new Date().toISOString() },
+          { ...validWebhookPayload, amountMinor: 50000 },
+        ),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockDataSource.transaction).not.toHaveBeenCalled();
+    });
+
+    it('rejects confirmation when server-to-server verification does not succeed', async () => {
+      mockOrderRepo.findOne.mockResolvedValue(lockedOrder);
+      mockAdapterFactory.getAdapter().queryTransaction.mockResolvedValue({
+        providerTransactionId: 'TRX-123',
+        amountMinor: 100000,
+        currency: 'BDT',
+        status: 'failed',
+        verifiedAt: new Date(),
+      });
+
+      await expect(
+        service.handleWebhook(
+          'bkash',
+          { 'x-webhook-timestamp': new Date().toISOString() },
+          validWebhookPayload,
+        ),
+      ).rejects.toThrow(BadRequestException);
+      expect(mockLedgerService.postJournal).not.toHaveBeenCalled();
+    });
+
+    it('rejects a provider-verified amount that differs from the order', async () => {
+      mockOrderRepo.findOne.mockResolvedValue(lockedOrder);
+      mockAdapterFactory.getAdapter().queryTransaction.mockResolvedValue({
+        providerTransactionId: 'TRX-123',
+        amountMinor: 99000,
+        currency: 'BDT',
+        status: 'succeeded',
+        verifiedAt: new Date(),
+      });
+
+      await expect(
+        service.handleWebhook(
+          'bkash',
+          { 'x-webhook-timestamp': new Date().toISOString() },
+          validWebhookPayload,
+        ),
       ).rejects.toThrow(BadRequestException);
     });
   });
 
-  describe('Completed Session Milestone Settlement', () => {
-    it('FINANCIAL INVARIANT: should settle completed session into 92% tutor payable and 8% platform revenue', async () => {
-      const completedSession: any = {
-        id: 'sess-123',
-        status: 'completed',
-        booking: sampleBooking,
+  describe('Session settlement from escrow', () => {
+    function stubSettlementManager(holdRow: any) {
+      const holdBuilder = {
+        where: vi.fn().mockReturnThis(),
+        andWhere: vi.fn().mockReturnThis(),
+        orderBy: vi.fn().mockReturnThis(),
+        setLock: vi.fn().mockReturnThis(),
+        getOne: vi.fn().mockResolvedValue(holdRow),
       };
-      mockSessionRepo.findOne.mockResolvedValue(completedSession);
-
-      const journal = await service.settleMilestone(studentUser, {
-        sessionId: 'sess-123',
+      const insertBuilder = {
+        insert: vi.fn().mockReturnThis(),
+        into: vi.fn().mockReturnThis(),
+        values: vi.fn().mockReturnThis(),
+        orIgnore: vi.fn().mockReturnThis(),
+        execute: vi.fn().mockResolvedValue({}),
+      };
+      mockDataSource.transaction.mockImplementationOnce(async (cb: any) => {
+        const manager = {
+          findOne: vi.fn(async (entity) => {
+            if (entity === BookingSessionEntity) {
+              return { id: 'sess-123', status: 'completed', booking };
+            }
+            if (entity === SessionSettlementEntity) return null;
+            if (entity === TutorFinancialAccountEntity) {
+              return { tutorUserId: tutorId, reservedMinor: '0' };
+            }
+            return null;
+          }),
+          createQueryBuilder: vi
+            .fn()
+            .mockReturnValueOnce(holdBuilder)
+            .mockReturnValueOnce(insertBuilder),
+          create: vi.fn((entity, data) => ({ ...data, id: 'settlement-1' })),
+          save: vi.fn(async (value) => value),
+        };
+        return cb(manager);
       });
+    }
+
+    it('splits 8% commission using the hold snapshot and credits the tutor party balance', async () => {
+      stubSettlementManager({ ...hold });
+
+      const journal = await service.settleMilestone(studentUser, { sessionId: 'sess-123' });
 
       expect(journal).toBeDefined();
       expect(mockLedgerService.postJournal).toHaveBeenCalledWith(
@@ -387,150 +574,74 @@ describe('PaymentsService Unit & Financial Invariant Tests', () => {
           sourceType: 'session_milestone',
           entries: [
             { accountCode: '2100', direction: 'debit', amountMinor: 100000n },
-            { accountCode: '2000', direction: 'credit', amountMinor: 92000n }, // 92%
-            { accountCode: '4000', direction: 'credit', amountMinor: 8000n }, // 8%
+            {
+              accountCode: '2000',
+              direction: 'credit',
+              amountMinor: 92000n,
+              tutorUserId: tutorId,
+            },
+            { accountCode: '4000', direction: 'credit', amountMinor: 8000n },
           ],
         }),
+        expect.anything(),
       );
+      expect(mockNotificationService.dispatch).toHaveBeenCalledWith(
+        expect.objectContaining({ eventType: 'tutor.earnings_released' }),
+      );
+    });
+
+    it('refuses to release more than the funded escrow hold remaining', async () => {
+      // Only 500.00 BDT was funded but the session costs 1000.00 BDT.
+      stubSettlementManager({ ...hold, amountMinor: '50000' });
+
+      await expect(
+        service.settleMilestone(studentUser, { sessionId: 'sess-123' }),
+      ).rejects.toThrow(ConflictException);
+      expect(mockLedgerService.postJournal).not.toHaveBeenCalled();
     });
   });
 
-  describe('Financial Reconciliation & Receipts', () => {
-    it('should generate official payment receipt with BDT format', async () => {
-      const succeededOrder = {
+  describe('Receipts and reconciliation', () => {
+    it('returns real names and the issued invoice number instead of a synthetic receipt', async () => {
+      mockOrderRepo.findOne.mockResolvedValue({
         ...sampleOrder,
         status: 'succeeded',
-        booking: sampleBooking,
-      };
-      mockOrderRepo.findOne.mockResolvedValue(succeededOrder);
+        booking,
+        payerUser: { displayName: 'Rahim' },
+      });
 
       const receipt = await service.getPaymentReceipt(studentUser, orderId);
 
-      expect(receipt.receiptId).toContain('REC-');
+      expect(receipt.invoiceNumber).toBe('INV-2026-000001');
       expect(receipt.amountBdt).toBe('1000.00');
-      expect(receipt.currency).toBe('BDT');
+      expect(receipt.payerName).toBe('Rahim');
+      expect(receipt.tutorName).toBe('Tutor One');
       expect(receipt.paymentMethod).toBe('BKASH');
     });
 
-    it('should execute reconciliation audit confirming matching orders and balanced ledger', async () => {
-      mockOrderRepo.find.mockResolvedValue([{ ...sampleOrder, status: 'succeeded' }]);
-      mockTransactionRepo.find.mockResolvedValue([
-        { paymentOrderId: orderId, status: 'succeeded' },
-      ]);
-
-      const report = await service.runReconciliation();
-
-      expect(report.isLedgerBalanced).toBe(true);
-      expect(report.unreconciledDiscrepancies).toHaveLength(0);
-      expect(report.succeededOrders).toBe(1);
-    });
-
-    it('should flag discrepancy when succeeded order has missing transaction record', async () => {
+    it('flags a succeeded order with no verified transaction as a discrepancy', async () => {
       mockOrderRepo.find.mockResolvedValue([{ ...sampleOrder, status: 'succeeded' }]);
       mockTransactionRepo.find.mockResolvedValue([]);
 
-      const report = await service.runReconciliation();
+      const report = await service.runReconciliation(studentUser);
 
-      expect(report.unreconciledDiscrepancies).toHaveLength(1);
-      expect(report.unreconciledDiscrepancies[0].orderId).toBe(orderId);
+      expect(report.isLedgerBalanced).toBe(true);
+      expect(report.succeededOrders).toBe(1);
+      expect(report.unreconciledDiscrepancies).toEqual([
+        expect.objectContaining({ reference: orderId }),
+      ]);
       expect(report.unreconciledDiscrepancies[0].reason).toContain('no verified transaction');
-    });
-  });
-
-  describe('Authoritative Webhook Confirmation Pipeline', () => {
-    const successBody = {
-      providerTransactionId: 'TRX-123',
-      providerEventId: 'EVT-123',
-      amountMinor: 100000,
-      currency: 'BDT',
-      status: 'succeeded' as const,
-      orderId,
-    };
-
-    it('confirms a payable booking through the verified webhook pipeline and posts the escrow journal', async () => {
-      mockOrderRepo.findOne.mockResolvedValue(sampleOrder); // pending, provider: 'bkash'
-      mockTransactionRepo.findOne.mockResolvedValue(null);
-
-      const res = await service.handleWebhook(
-        'bkash',
-        { 'x-webhook-timestamp': Date.now() },
-        successBody,
-        'req-sbx-1',
-      );
-
-      expect(res.received).toBe(true);
-      expect(res.processed).toBe(true);
-      expect(res.status).toBe('succeeded');
-      expect(mockAdapterFactory.getAdapter).toHaveBeenCalledWith('bkash');
-      expect(mockLedgerService.postJournal).toHaveBeenCalledWith(
-        expect.objectContaining({
-          sourceType: 'payment_order',
-          entries: [
-            { accountCode: '1000', direction: 'debit', amountMinor: sampleOrder.amountMinor },
-            { accountCode: '2100', direction: 'credit', amountMinor: sampleOrder.amountMinor },
-          ],
-        }),
-      );
+      expect(mockReconciliationRepo.save).toHaveBeenCalled();
     });
 
-    it('IDEMPOTENCY: an already-succeeded provider event is ignored without re-posting the ledger', async () => {
-      mockTransactionRepo.findOne.mockResolvedValue({ status: 'succeeded' });
+    it('flags a paid payout that has no external reference', async () => {
+      mockPayoutRepo.find.mockResolvedValue([{ id: 'payout-1', status: 'paid', externalReference: null }]);
 
-      const res = await service.handleWebhook(
-        'bkash',
-        { 'x-webhook-timestamp': Date.now() },
-        successBody,
-      );
+      const report = await service.runReconciliation(studentUser);
 
-      expect(res).toEqual({ received: true, processed: false, status: 'succeeded' });
-      expect(mockLedgerService.postJournal).not.toHaveBeenCalled();
-    });
-
-    it('REJECTS an unsigned webhook instead of trusting a claimed success status', async () => {
-      mockAdapterFactory.getAdapter.mockReturnValue({
-        providerName: 'bkash',
-        verifyWebhookSignature: vi.fn().mockReturnValue(false),
-        queryTransaction: vi.fn(),
-      });
-
-      await expect(
-        service.handleWebhook('bkash', {}, successBody),
-      ).rejects.toThrow(UnauthorizedException);
-    });
-
-    it('REJECTS a webhook whose amount does not match the order', async () => {
-      mockOrderRepo.findOne.mockResolvedValue(sampleOrder);
-
-      await expect(
-        service.handleWebhook(
-          'bkash',
-          { 'x-webhook-timestamp': Date.now() },
-          { ...successBody, amountMinor: 1 },
-        ),
-      ).rejects.toThrow(BadRequestException);
-    });
-
-    it('REJECTS confirmation when the provider cannot verify the transaction', async () => {
-      mockOrderRepo.findOne.mockResolvedValue(sampleOrder);
-      mockAdapterFactory.getAdapter.mockReturnValue({
-        providerName: 'bkash',
-        verifyWebhookSignature: vi.fn().mockReturnValue(true),
-        queryTransaction: vi.fn().mockResolvedValue({
-          providerTransactionId: 'TRX-123',
-          amountMinor: 100000,
-          currency: 'BDT',
-          status: 'failed',
-          verifiedAt: new Date(),
-        }),
-      });
-
-      await expect(
-        service.handleWebhook(
-          'bkash',
-          { 'x-webhook-timestamp': Date.now() },
-          successBody,
-        ),
-      ).rejects.toThrow(BadRequestException);
+      expect(report.unreconciledDiscrepancies).toEqual([
+        expect.objectContaining({ reference: 'payout-1' }),
+      ]);
     });
   });
 });

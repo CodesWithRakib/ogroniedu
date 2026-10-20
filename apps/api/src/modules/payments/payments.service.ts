@@ -3,12 +3,8 @@ import { PaymentOrdersService } from './services/payment-orders.service';
 import { PaymentWebhooksService } from './services/payment-webhooks.service';
 import { RefundsService } from './services/refunds.service';
 import { SettlementService } from './services/settlement.service';
-import {
-  CreatePaymentOrderDto,
-  PaymentWebhookDto,
-  ProcessRefundDto,
-  SettleMilestoneDto,
-} from './dto';
+import { PayoutsService } from './services/payouts.service';
+import { CreatePaymentOrderDto, RequestRefundDto, SettleMilestoneDto } from './dto';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 
 export type { PaymentReceiptDto } from './services/payment-orders.service';
@@ -18,7 +14,7 @@ export type { ReconciliationReport } from './services/settlement.service';
  * Backward-compatible facade over the split payment domain services.
  * Controllers and other modules keep importing PaymentsService; new code
  * should inject PaymentOrdersService / PaymentWebhooksService /
- * RefundsService / SettlementService directly.
+ * RefundsService / SettlementService / PayoutsService directly.
  */
 @Injectable()
 export class PaymentsService {
@@ -31,6 +27,8 @@ export class PaymentsService {
     private readonly refunds: RefundsService,
     @Inject(forwardRef(() => SettlementService))
     private readonly settlement: SettlementService,
+    @Inject(forwardRef(() => PayoutsService))
+    private readonly payouts: PayoutsService,
   ) {}
 
   createPaymentOrder(
@@ -45,14 +43,15 @@ export class PaymentsService {
   handleWebhook(
     provider: string,
     headers: Record<string, unknown>,
-    rawBody: PaymentWebhookDto,
+    rawBody: Record<string, unknown>,
     requestId?: string,
+    rawBodyString?: string,
   ) {
-    return this.webhooks.handleWebhook(provider, headers, rawBody, requestId);
+    return this.webhooks.handleWebhook(provider, headers, rawBody, requestId, rawBodyString);
   }
 
-  processRefund(user: AuthenticatedUser, dto: ProcessRefundDto, requestId?: string) {
-    return this.refunds.processRefund(user, dto, requestId);
+  requestRefund(user: AuthenticatedUser, dto: RequestRefundDto) {
+    return this.refunds.requestRefund(user, dto);
   }
 
   settleMilestone(user: AuthenticatedUser, dto: SettleMilestoneDto, requestId?: string) {
@@ -67,7 +66,11 @@ export class PaymentsService {
     return this.orders.getMyPaymentOrders(user);
   }
 
-  runReconciliation() {
-    return this.settlement.runReconciliation();
+  runReconciliation(user?: AuthenticatedUser) {
+    return this.settlement.runReconciliation(user);
+  }
+
+  getTutorSummary(user: AuthenticatedUser) {
+    return this.payouts.getTutorSummary(user);
   }
 }

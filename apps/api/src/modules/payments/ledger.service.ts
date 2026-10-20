@@ -1,6 +1,6 @@
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
-import { Repository, DataSource } from 'typeorm';
+import { Repository, DataSource, EntityManager } from 'typeorm';
 import {
   LedgerAccountEntity,
   LedgerJournalEntity,
@@ -12,6 +12,8 @@ export interface JournalEntryInput {
   accountCode: string;
   direction: LedgerDirection;
   amountMinor: number | string | bigint;
+  /** Optional party attribution, used for per-tutor payable balances. */
+  tutorUserId?: string | null;
 }
 
 export interface PostJournalParams {
@@ -21,6 +23,22 @@ export interface PostJournalParams {
   description: string;
   createdBy?: string | null;
   entries: JournalEntryInput[];
+}
+
+export interface LedgerIntegrityResult {
+  isBalanced: boolean;
+  totalDebits: bigint;
+  totalCredits: bigint;
+  discrepancy: bigint;
+}
+
+function isUniqueViolation(error: unknown): boolean {
+  return (
+    typeof error === 'object' &&
+    error !== null &&
+    'code' in error &&
+    (error as { code?: string }).code === '23505'
+  );
 }
 
 @Injectable()
@@ -39,11 +57,23 @@ export class LedgerService {
   ) {}
 
   /**
-   * Post an immutable double-entry journal ensuring debits equal credits
+   * Post an immutable double-entry journal ensuring debits equal credits.
+   *
+   * Pass `manager` to participate in a caller-owned transaction. Financial
+   * mutations (payment, refund, settlement, payout) do this so the business
+   * row and the journal commit or roll back together.
    */
-  async postJournal(params: PostJournalParams): Promise<LedgerJournalEntity> {
-    // 1. Idempotency Check (Prevent duplicate postings / replay)
-    const existing = await this.journalRepo.findOne({
+  async postJournal(
+    params: PostJournalParams,
+    manager?: EntityManager,
+  ): Promise<LedgerJournalEntity> {
+    const journalRepo = manager
+      ? manager.getRepository(LedgerJournalEntity)
+      : this.journalRepo;
+    const accountRepo = manager ? manager.getRepository(LedgerAccountEntity) : this.accountRepo;
+
+    // 1. Idempotency check (fast path).
+    const existing = await journalRepo.findOne({
       where: { idempotencyKey: params.idempotencyKey },
       relations: { entries: { account: true } },
     });
@@ -56,7 +86,7 @@ export class LedgerService {
       throw new BadRequestException('A double-entry journal requires at least two entry legs');
     }
 
-    // 2. Mathematical Double-Entry Invariant: Debits === Credits
+    // 2. Mathematical invariant: debits === credits.
     let totalDebits = 0n;
     let totalCredits = 0n;
 
@@ -65,7 +95,6 @@ export class LedgerService {
       if (amt <= 0n) {
         throw new BadRequestException(`Entry amount must be strictly positive: ${leg.amountMinor}`);
       }
-
       if (leg.direction === 'debit') {
         totalDebits += amt;
       } else if (leg.direction === 'credit') {
@@ -81,12 +110,11 @@ export class LedgerService {
       );
     }
 
-    // 3. Resolve accounts from database catalog
+    // 3. Resolve accounts from the database catalog.
     const accountCodes = Array.from(new Set(params.entries.map((e) => e.accountCode)));
-    const accounts = await this.accountRepo.find({
+    const accounts = await accountRepo.find({
       where: accountCodes.map((code) => ({ code, isActive: true })),
     });
-
     const accountMap = new Map(accounts.map((a) => [a.code, a]));
 
     for (const code of accountCodes) {
@@ -95,9 +123,16 @@ export class LedgerService {
       }
     }
 
-    // 4. Save journal and entries atomically in transaction
-    return this.dataSource.transaction(async (manager) => {
-      const journal = manager.create(LedgerJournalEntity, {
+    const write = async (mgr: EntityManager): Promise<LedgerJournalEntity> => {
+      // Re-check inside the transaction to close the pre-check race. The unique
+      // index is still the final authority; the catch below handles it.
+      const raced = await mgr.getRepository(LedgerJournalEntity).findOne({
+        where: { idempotencyKey: params.idempotencyKey },
+        relations: { entries: { account: true } },
+      });
+      if (raced) return raced;
+
+      const journal = mgr.create(LedgerJournalEntity, {
         sourceType: params.sourceType,
         sourceId: params.sourceId,
         idempotencyKey: params.idempotencyKey,
@@ -105,39 +140,63 @@ export class LedgerService {
         createdBy: params.createdBy ?? null,
       });
 
-      const savedJournal = await manager.save(journal);
+      const savedJournal = await mgr.save(journal);
 
       const entryEntities = params.entries.map((leg) => {
         const account = accountMap.get(leg.accountCode)!;
-        return manager.create(LedgerEntryEntity, {
+        return mgr.create(LedgerEntryEntity, {
           journalId: savedJournal.id,
           accountId: account.id,
           direction: leg.direction,
           amountMinor: leg.amountMinor.toString(),
           currency: account.currency,
+          tutorUserId: leg.tutorUserId ?? null,
         });
       });
 
-      await manager.save(entryEntities);
-
+      await mgr.save(entryEntities);
       savedJournal.entries = entryEntities;
+
       this.logger.log(
         `Posted balanced double-entry journal ${savedJournal.id} (${params.sourceType}): ${totalDebits} poisha`,
       );
       return savedJournal;
-    });
+    };
+
+    try {
+      if (manager) return await write(manager);
+      return await this.dataSource.transaction(write);
+    } catch (error: unknown) {
+      if (isUniqueViolation(error)) {
+        const winner = await this.journalRepo.findOne({
+          where: { idempotencyKey: params.idempotencyKey },
+          relations: { entries: { account: true } },
+        });
+        if (winner) {
+          this.logger.log(`Concurrent duplicate journal collapsed for key: ${params.idempotencyKey}`);
+          return winner;
+        }
+      }
+      throw error;
+    }
   }
 
   /**
-   * Calculate account balance based on accounting equation
+   * Account balance using the accounting equation. When `tutorUserId` is
+   * supplied only that party's entries are counted (used for tutor payable).
    */
-  async getAccountBalance(accountCode: string): Promise<bigint> {
+  async getAccountBalance(accountCode: string, tutorUserId?: string): Promise<bigint> {
     const account = await this.accountRepo.findOne({ where: { code: accountCode } });
     if (!account) {
       throw new BadRequestException(`Account ${accountCode} not found`);
     }
 
-    const entries = await this.entryRepo.find({ where: { accountId: account.id } });
+    const entries = await this.entryRepo.find({
+      where: {
+        accountId: account.id,
+        ...(tutorUserId ? { tutorUserId } : {}),
+      },
+    });
 
     let debits = 0n;
     let credits = 0n;
@@ -151,24 +210,20 @@ export class LedgerService {
       }
     }
 
-    // Asset & Expense normal balance = Debit
-    // Liability, Equity, Revenue normal balance = Credit
+    // Asset & expense normal balance = debit; liability/equity/revenue = credit.
     if (account.accountType === 'asset' || account.accountType === 'expense') {
       return debits - credits;
-    } else {
-      return credits - debits;
     }
+    return credits - debits;
   }
 
-  /**
-   * System-wide ledger integrity check: Debits must equal Credits across all entries
-   */
-  async verifySystemLedgerIntegrity(): Promise<{
-    isBalanced: boolean;
-    totalDebits: bigint;
-    totalCredits: bigint;
-    discrepancy: bigint;
-  }> {
+  /** Per-tutor balance for an account (normally 2000 Tutor Earnings Payable). */
+  async getPartyBalance(accountCode: string, tutorUserId: string): Promise<bigint> {
+    return this.getAccountBalance(accountCode, tutorUserId);
+  }
+
+  /** System-wide integrity check: debits must equal credits across all entries. */
+  async verifySystemLedgerIntegrity(): Promise<LedgerIntegrityResult> {
     const allEntries = await this.entryRepo.find();
     let totalDebits = 0n;
     let totalCredits = 0n;
@@ -191,9 +246,7 @@ export class LedgerService {
     };
   }
 
-  /**
-   * Run full operational reconciliation with per-account balances and discrepancy detection
-   */
+  /** Full operational reconciliation: per-account balances plus integrity. */
   async runReconciliation(): Promise<{
     isBalanced: boolean;
     totalDebits: string;

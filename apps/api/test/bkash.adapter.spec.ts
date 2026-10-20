@@ -1,44 +1,31 @@
-import { describe, it, expect, beforeEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { ServiceUnavailableException } from '@nestjs/common';
 import { BkashSandboxAdapter } from '../src/modules/payments/adapters/bkash-sandbox.adapter';
 
-describe('BkashSandboxAdapter Unit & Sandbox Verification Tests', () => {
+describe('BkashSandboxAdapter (fail-closed)', () => {
   let adapter: BkashSandboxAdapter;
 
   beforeEach(() => {
+    vi.stubEnv('BKASH_WEBHOOK_SECRET', 'test-bkash-secret');
     adapter = new BkashSandboxAdapter();
   });
 
-  it('should expose the bkash provider identity', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+  });
+
+  it('exposes the bkash provider identity', () => {
     expect(adapter.providerName).toBe('bkash');
   });
 
-  it('should generate a sandbox checkout URL with payment id, BDT amount, currency, and payer phone', async () => {
-    const session = await adapter.createCheckoutSession(
-      '00000000-0000-4000-8000-000000000001',
-      100000, // 1000.00 BDT in poisha
-      'BDT',
-      '01952879249',
-    );
-
-    expect(session.providerOrderId).toMatch(/^BKASH-SBX-/);
-    expect(session.checkoutUrl).toContain('sandbox.payment.bkash.com/checkout');
-    expect(session.checkoutUrl).toContain('amount=1000.00');
-    expect(session.checkoutUrl).toContain('currency=BDT');
-    expect(session.checkoutUrl).toContain('phone=01952879249');
+  it('FAILS CLOSED when creating a checkout session without live credentials', async () => {
+    await expect(
+      adapter.createCheckoutSession('00000000-0000-4000-8000-000000000001', 100000, 'BDT'),
+    ).rejects.toThrow(ServiceUnavailableException);
   });
 
-  it('should default the payer phone to the sandbox placeholder when none is supplied', async () => {
-    const session = await adapter.createCheckoutSession(
-      '00000000-0000-4000-8000-000000000002',
-      50000,
-      'BDT',
-    );
-
-    expect(session.checkoutUrl).toContain('phone=01700000000');
-  });
-
-  it('should cryptographically verify an HMAC-SHA256 signature header', () => {
-    const payload = { orderId: 'ord-1', status: 'succeeded', amount: '1000.00' };
+  it('verifies an HMAC-SHA256 signature header', () => {
+    const payload = { orderId: 'ord-1', status: 'COMPLETED', amount: '1000.00' };
     const payloadString = JSON.stringify(
       Object.keys(payload)
         .sort()
@@ -56,31 +43,50 @@ describe('BkashSandboxAdapter Unit & Sandbox Verification Tests', () => {
     ).toBe(false);
   });
 
-  it('should verify a body-carried signature that excludes the signature field itself', () => {
-    const base = { orderId: 'ord-2', status: 'succeeded', amount: '250.00' };
-    const payloadString = JSON.stringify(
-      Object.keys(base)
-        .sort()
-        .reduce<Record<string, string>>((acc, key) => {
-          acc[key] = (base as Record<string, string>)[key];
-          return acc;
-        }, {}),
-    );
-    const signature = adapter.generateSignature(payloadString);
-
-    expect(adapter.verifyWebhookSignature({}, { ...base, signature })).toBe(true);
-    expect(adapter.verifyWebhookSignature({}, { ...base, signature: 'deadbeef' })).toBe(false);
-  });
-
-  it('REJECTS signature-less IPN payloads regardless of the claimed status', () => {
-    expect(adapter.verifyWebhookSignature({}, { status: 'VALID' })).toBe(false);
-    expect(adapter.verifyWebhookSignature({}, { status: 'VALIDATED' })).toBe(false);
+  it('REJECTS signature-less payloads regardless of the claimed status', () => {
+    expect(adapter.verifyWebhookSignature({}, { status: 'COMPLETED' })).toBe(false);
     expect(adapter.verifyWebhookSignature({}, { status: 'succeeded' })).toBe(false);
-    expect(adapter.verifyWebhookSignature({}, { status: 'FAILED' })).toBe(false);
     expect(adapter.verifyWebhookSignature({}, 'raw-string-body')).toBe(false);
   });
 
-  it('FAILS CLOSED for server-to-server transaction queries without live credentials', async () => {
+  it('rejects all webhooks when no webhook secret is configured', () => {
+    vi.stubEnv('BKASH_WEBHOOK_SECRET', '');
+    const unconfigured = new BkashSandboxAdapter();
+
+    expect(unconfigured.verifyWebhookSignature({ 'x-bkash-signature': 'abc' }, {})).toBe(false);
+  });
+
+  it('normalizes a provider payload into the shared contract', () => {
+    const event = adapter.normalizeWebhook(
+      {},
+      {
+        eventId: 'EVT-1',
+        merchantInvoiceNumber: '00000000-0000-4000-8000-000000000000',
+        trxID: 'TRX-1',
+        amount: '1000.00',
+        transactionStatus: 'Completed',
+        currency: 'BDT',
+      },
+    );
+
+    expect(event).toEqual({
+      eventId: 'EVT-1',
+      eventType: 'bkash.succeeded',
+      orderReference: '00000000-0000-4000-8000-000000000000',
+      providerTransactionId: 'TRX-1',
+      amountMinor: '100000',
+      currency: 'BDT',
+      status: 'succeeded',
+      rawStatus: 'COMPLETED',
+    });
+  });
+
+  it('normalizes failed and pending provider states', () => {
+    expect(adapter.normalizeWebhook({}, { status: 'Failed' }).status).toBe('failed');
+    expect(adapter.normalizeWebhook({}, { status: 'Pending' }).status).toBe('pending');
+  });
+
+  it('FAILS CLOSED for server-to-server transaction queries', async () => {
     const result = await adapter.queryTransaction('TRX-SBX-1');
 
     expect(result.providerTransactionId).toBe('TRX-SBX-1');
@@ -90,11 +96,12 @@ describe('BkashSandboxAdapter Unit & Sandbox Verification Tests', () => {
     expect(result.verifiedAt).toBeInstanceOf(Date);
   });
 
-  it('should process an operational refund in sandbox mode', async () => {
+  it('reports automated refunds as unsupported instead of fabricating success', async () => {
     const refund = await adapter.processRefund('TRX-SBX-1', 40000, 'Duplicate charge');
 
-    expect(refund.status).toBe('succeeded');
+    expect(refund.status).toBe('unsupported');
     expect(refund.amountMinor).toBe(40000);
-    expect(refund.providerRefundId).toMatch(/^BKASH-REF-/);
+    expect(refund.providerRefundId).toBeNull();
+    expect(refund.failureReason).toContain('not provisioned');
   });
 });

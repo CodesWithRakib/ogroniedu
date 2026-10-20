@@ -38,6 +38,7 @@ export interface AdminActionHandlers {
     status: AdminSupportTicketItem['status'],
     resolutionNotes?: string,
   ) => Promise<void>;
+  onRerunReconciliation?: () => Promise<void>;
 }
 
 export interface ActiveImpersonation {
@@ -82,7 +83,7 @@ export interface UseAdminActionsResult {
     status: AdminSupportTicketItem['status'],
     resolutionNotes?: string,
   ) => Promise<void>;
-  rerunReconciliation: () => void;
+  rerunReconciliation: () => Promise<void>;
   terminateImpersonation: () => void;
 }
 
@@ -243,9 +244,16 @@ export function useAdminActions(params: UseAdminActionsParams): UseAdminActionsR
     [params, runAction],
   );
 
-  const rerunReconciliation = React.useCallback(() => {
-    setReconciliation((prev) => ({ ...prev, isBalanced: true, discrepancy: '0' }));
-  }, []);
+  const rerunReconciliation = React.useCallback(
+    () =>
+      runAction(async () => {
+        if (!params.onRerunReconciliation) {
+          throw new Error('Reconciliation is unavailable (missing finance permission).');
+        }
+        await params.onRerunReconciliation();
+      }),
+    [params, runAction],
+  );
 
   const terminateImpersonation = React.useCallback(() => setActiveImpersonation(null), []);
 

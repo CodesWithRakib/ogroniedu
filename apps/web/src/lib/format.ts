@@ -67,6 +67,33 @@ export function formatTime(iso: string | Date | null | undefined, locale: Locale
   });
 }
 
+/**
+ * Format an ISO instant for a native `datetime-local` control in the browser's
+ * local timezone. Native controls do not understand ISO strings with `Z`.
+ */
+export function toDateTimeLocalValue(
+  iso: string | Date | null | undefined,
+): string {
+  if (!iso) return '';
+  const d = iso instanceof Date ? iso : new Date(iso);
+  if (Number.isNaN(d.getTime())) return '';
+  const pad = (value: number) => String(value).padStart(2, '0');
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}T${pad(
+    d.getHours(),
+  )}:${pad(d.getMinutes())}`;
+}
+
+/**
+ * Convert a `datetime-local` value (browser wall-clock time) to an explicit
+ * ISO-8601 UTC instant. The API must never infer an offset from server-local
+ * time or receive an offset-less timestamp.
+ */
+export function localDateTimeToIso(value: string): string {
+  if (!value) return '';
+  const d = new Date(value);
+  return Number.isNaN(d.getTime()) ? value : d.toISOString();
+}
+
 /** BDT amounts stored as minor units (poisha). Renders ৳ with locale digits. */
 export function formatBDTMinor(minor: string | number | null | undefined, locale: Locale): string {
   const n = typeof minor === 'string' ? Number(minor) : (minor ?? NaN);

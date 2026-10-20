@@ -5,7 +5,14 @@ import { PaymentOrdersService } from '../src/modules/payments/services/payment-o
 import { PaymentWebhooksService } from '../src/modules/payments/services/payment-webhooks.service';
 import { RefundsService } from '../src/modules/payments/services/refunds.service';
 import { SettlementService } from '../src/modules/payments/services/settlement.service';
-import { LedgerService } from '../src/modules/payments/ledger.service';
+import {
+  PaymentOrderEntity,
+  PaymentTransactionEntity,
+  EscrowHoldEntity,
+  SessionSettlementEntity,
+  TutorFinancialAccountEntity,
+} from '../src/modules/payments/entities';
+import { BookingSessionEntity } from '../src/modules/bookings/entities/booking-session.entity';
 import { LearningService } from '../src/modules/learning/learning.service';
 import { LearningAccessService } from '../src/modules/learning/services/learning-access.service';
 import { LearningAttendanceService } from '../src/modules/learning/services/attendance.service';
@@ -14,11 +21,7 @@ import { LearningProgressService } from '../src/modules/learning/services/progre
 import { ReviewsService } from '../src/modules/trust/reviews.service';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 import { CreateBookingRequestDto } from '../src/modules/bookings/dto';
-import {
-  CreatePaymentOrderDto,
-  PaymentWebhookDto,
-  SettleMilestoneDto,
-} from '../src/modules/payments/dto';
+import { CreatePaymentOrderDto, SettleMilestoneDto } from '../src/modules/payments/dto';
 import {
   CreateAssignmentDto,
   SubmitAssignmentDto,
@@ -57,11 +60,12 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
   // Services
   let bookingsService: BookingsService;
   let paymentsService: PaymentsService;
-  let ledgerService: LedgerService;
   let learningService: LearningService;
   let reviewsService: ReviewsService;
 
   beforeEach(() => {
+    sharedOrder = undefined;
+
     sharedBooking = {
       id: '00000000-0000-4000-8000-000000000001',
       studentUserId: studentUser.id,
@@ -168,61 +172,46 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
       undefined,
     );
 
-    // 2. Ledger Service Mock Setup
-    const mockAccountRepo: any = {
-      find: vi.fn().mockResolvedValue([
-        { id: 'acc-1', code: '1000', name: 'Gateway', balanceMinor: '0', isActive: true },
-        { id: 'acc-2', code: '2100', name: 'Escrow', balanceMinor: '0', isActive: true },
-        { id: 'acc-3', code: '2000', name: 'Tutor', balanceMinor: '0', isActive: true },
-        { id: 'acc-4', code: '4000', name: 'Platform Revenue', balanceMinor: '0', isActive: true },
-      ]),
+    // 2. Payments Service Mock Setup
+    const mockPaymentLedger: any = {
+      postJournal: vi.fn().mockResolvedValue({ id: 'journal-e2e-1', entries: [] }),
     };
 
-    const mockJournalRepo: any = {
-      findOne: vi.fn().mockResolvedValue(null),
-      create: vi.fn((j) => ({ id: 'journal-e2e-1', ...j, entries: [] })),
-      save: vi.fn((j) => Promise.resolve(j)),
-    };
-
-    const mockEntryRepo: any = { create: vi.fn((e) => e) };
-
-    const mockDataSource: any = {
-      transaction: vi.fn(async (cb) => {
-        return await cb({
-          save: vi.fn((x) => Promise.resolve({ id: 'saved-id-1', ...(Array.isArray(x) ? {} : x) })),
-          create: vi.fn((_, x) => ({ id: 'created-id-1', ...x })),
-          findOne: vi.fn().mockImplementation((__, _opts) => Promise.resolve(sharedBooking)),
-        });
-      }),
-    };
-
-    ledgerService = new LedgerService(
-      mockAccountRepo,
-      mockJournalRepo,
-      mockEntryRepo,
-      mockDataSource,
-    );
-
-    // 3. Payments Service Mock Setup
     const mockOrderRepo: any = {
-      findOne: vi.fn().mockImplementation(() => Promise.resolve(sharedOrder)),
+      findOne: vi.fn().mockImplementation(({ where }) => {
+        if (where?.id) return Promise.resolve(sharedOrder ?? null);
+        return Promise.resolve(null);
+      }),
+      find: vi.fn(async () => (sharedOrder ? [sharedOrder] : [])),
       create: vi.fn((o) => {
-        sharedOrder = { ...o, id: 'order-e2e-1', status: 'pending', createdAt: new Date() };
+        sharedOrder = {
+          ...o,
+          id: 'order-e2e-1',
+          status: 'pending',
+          booking: sharedBooking,
+          payerUser: { id: studentUser.id, displayName: 'Student One' },
+          updatedAt: new Date(),
+          createdAt: new Date(),
+        };
         return sharedOrder;
       }),
       save: vi.fn(async (o) => {
-        sharedOrder = { ...sharedOrder, ...o };
+        sharedOrder = { ...sharedOrder, ...o, booking: sharedBooking };
         return sharedOrder;
       }),
     };
 
     const mockTxnRepo: any = {
       findOne: vi.fn().mockResolvedValue(null),
+      find: vi.fn().mockResolvedValue([]),
       create: vi.fn((t) => t),
       save: vi.fn((t) => Promise.resolve(t)),
     };
 
-    const mockRefundRepo: any = { findOne: vi.fn() };
+    const mockRefundRepo: any = {
+      findOne: vi.fn(),
+      find: vi.fn().mockResolvedValue([]),
+    };
     const mockSessionRepo: any = {
       findOne: vi.fn().mockImplementation(() => Promise.resolve(sharedSession)),
       find: vi.fn().mockResolvedValue([sharedSession]),
@@ -233,11 +222,22 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
     };
 
     const mockAdapter = {
+      providerName: 'bkash',
       createCheckoutSession: vi.fn().mockResolvedValue({
         checkoutUrl: 'https://sandbox.payment.bkash.com/checkout?token=e2e-token',
         providerOrderId: 'PROV-ORD-E2E-1',
       }),
       verifyWebhookSignature: vi.fn().mockReturnValue(true),
+      normalizeWebhook: vi.fn(() => ({
+        eventId: 'EVT-BKASH-E2E-999',
+        eventType: 'bkash.succeeded',
+        orderReference: sharedOrder.id,
+        providerTransactionId: 'TRX-BKASH-E2E-999',
+        amountMinor: '60000',
+        currency: 'BDT',
+        status: 'succeeded',
+        rawStatus: 'COMPLETED',
+      })),
       queryTransaction: vi.fn().mockResolvedValue({
         status: 'succeeded',
         amountMinor: 60000,
@@ -245,15 +245,108 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
         providerTransactionId: 'TRX-BKASH-E2E-999',
         verifiedAt: new Date(),
       }),
+      processRefund: vi.fn().mockResolvedValue({
+        status: 'unsupported',
+        providerRefundId: null,
+        amountMinor: 0,
+      }),
     };
 
     const mockAdapterFactory = {
       getAdapter: vi.fn().mockReturnValue(mockAdapter),
     };
 
+    const mockWebhookRepo: any = {
+      create: vi.fn((e) => e),
+      save: vi.fn(async (e) => ({ id: 'webhook-e2e-1', ...e })),
+      update: vi.fn().mockResolvedValue({}),
+      findOne: vi.fn(),
+    };
+
     const mockOutboxRepo: any = {
       create: vi.fn((e) => e),
       save: vi.fn((e) => Promise.resolve(e)),
+    };
+
+    const escrowHold: any = {
+      id: 'hold-e2e-1',
+      paymentOrderId: 'order-e2e-1',
+      bookingId: sharedBooking.id,
+      payerUserId: studentUser.id,
+      tutorUserId: tutorUser.id,
+      amountMinor: '60000',
+      releasedMinor: '0',
+      refundedMinor: '0',
+      currency: 'BDT',
+      commissionRateBps: 800,
+      commissionPolicyId: 'policy-1',
+      status: 'held',
+      heldAt: new Date(),
+    };
+
+    const holdBuilder = {
+      where: vi.fn().mockReturnThis(),
+      andWhere: vi.fn().mockReturnThis(),
+      orderBy: vi.fn().mockReturnThis(),
+      setLock: vi.fn().mockReturnThis(),
+      getOne: vi.fn().mockResolvedValue(escrowHold),
+    };
+    const insertBuilder = {
+      insert: vi.fn().mockReturnThis(),
+      into: vi.fn().mockReturnThis(),
+      values: vi.fn().mockReturnThis(),
+      orIgnore: vi.fn().mockReturnThis(),
+      execute: vi.fn().mockResolvedValue({}),
+    };
+
+    const mockDataSource: any = {
+      transaction: vi.fn(async (cb) => {
+        const manager: any = {
+          findOne: vi.fn(async (entity) => {
+            if (entity === PaymentOrderEntity) return sharedOrder ?? null;
+            if (entity === PaymentTransactionEntity) return null;
+            if (entity === EscrowHoldEntity) return null;
+            if (entity === BookingSessionEntity) return sharedSession;
+            if (entity === SessionSettlementEntity) return null;
+            if (entity === TutorFinancialAccountEntity) {
+              return { tutorUserId: tutorUser.id, reservedMinor: '0' };
+            }
+            return null;
+          }),
+          createQueryBuilder: vi
+            .fn()
+            .mockReturnValueOnce(holdBuilder)
+            .mockReturnValueOnce(insertBuilder),
+          create: vi.fn((entity, x) => ({
+            ...x,
+            id:
+              entity === EscrowHoldEntity
+                ? 'hold-e2e-1'
+                : entity === SessionSettlementEntity
+                  ? 'settlement-e2e-1'
+                  : 'created-id-1',
+          })),
+          save: vi.fn((x) => Promise.resolve(x)),
+          update: vi.fn().mockResolvedValue({}),
+        };
+        return await cb(manager);
+      }),
+    };
+
+    const mockCommissionPolicy: any = {
+      getActivePolicy: vi.fn().mockResolvedValue({
+        id: 'policy-1',
+        version: 1,
+        platformFeeBps: 800,
+        minPayoutMinor: '50000',
+      }),
+    };
+    const mockInvoiceService: any = {
+      createForOrder: vi.fn().mockResolvedValue({
+        id: 'invoice-e2e-1',
+        invoiceNumber: 'INV-2026-000001',
+      }),
+      getInvoiceForOrder: vi.fn().mockResolvedValue(null),
     };
 
     paymentsService = new PaymentsService(
@@ -263,31 +356,49 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
         new GuardianAccessService(mockLinkRepo),
         mockAdapterFactory as any,
         mockAuditService,
+        mockCommissionPolicy,
+        mockInvoiceService,
       ) as never,
       new PaymentWebhooksService(
         mockOrderRepo,
         mockTxnRepo,
+        mockWebhookRepo,
         new GuardianAccessService(mockLinkRepo),
-        ledgerService,
+        mockPaymentLedger,
         mockAdapterFactory as any,
+        mockInvoiceService,
         mockAuditService,
         mockDataSource,
+        undefined,
       ) as never,
       new RefundsService(
         mockOrderRepo,
         mockRefundRepo,
+        mockTxnRepo,
+        { findOne: vi.fn() } as never,
         mockOutboxRepo,
-        ledgerService,
+        mockPaymentLedger,
         mockAdapterFactory as any,
         mockAuditService,
+        new GuardianAccessService(mockLinkRepo),
+        mockDataSource,
+        undefined,
       ) as never,
       new SettlementService(
         mockSessionRepo,
         mockOrderRepo,
         mockTxnRepo,
-        ledgerService,
+        { find: vi.fn() } as never,
+        { findOne: vi.fn() } as never,
+        mockRefundRepo,
+        { find: vi.fn() } as never,
+        { create: vi.fn(), save: vi.fn() } as never,
+        mockPaymentLedger,
         mockAuditService,
+        mockDataSource,
+        undefined,
       ) as never,
+      {} as never,
     );
 
     // 4. Learning Service Mock Setup
@@ -443,9 +554,10 @@ describe('Phase 18: Full End-to-End Tutoring Lifecycle Integration Tests', () =>
     expect(orderResult.status).toBe('pending');
 
     // 2. Payment Gateway Webhook Callback arrives with fresh timestamp and valid signature
-    const webhookDto: PaymentWebhookDto = {
+    const webhookDto: Record<string, unknown> = {
       providerTransactionId: 'TRX-BKASH-E2E-999',
       providerEventId: 'EVT-BKASH-E2E-999',
+      orderReference: sharedOrder.id,
       amountMinor: 60000,
       currency: 'BDT',
       status: 'succeeded',

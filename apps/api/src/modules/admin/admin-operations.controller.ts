@@ -158,9 +158,14 @@ export class AdminOperationsController {
     @Body() dto: AdminCancelBookingDto,
   ) {
     const result = await this.adminService.adminCancelBooking(adminUser, bookingId, dto);
+    const refundNote = result.refundId
+      ? result.refundIssued
+        ? ' Refund confirmed.'
+        : ` Refund request ${result.refundStatus ?? 'pending'} in the finance queue.`
+      : '';
     return {
       success: true,
-      message: `Booking ${bookingId} cancelled by administrator.${result.refundIssued ? ' Refund processed.' : ''}`,
+      message: `Booking ${bookingId} cancelled by administrator.${refundNote}`,
       data: result,
     };
   }

@@ -2,11 +2,10 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { PaymentsService } from '../src/modules/payments/payments.service';
 import { PaymentOrdersService } from '../src/modules/payments/services/payment-orders.service';
 import { PaymentWebhooksService } from '../src/modules/payments/services/payment-webhooks.service';
-import { RefundsService } from '../src/modules/payments/services/refunds.service';
-import { SettlementService } from '../src/modules/payments/services/settlement.service';
 import { LedgerService } from '../src/modules/payments/ledger.service';
+import { GuardianAccessService } from '../src/modules/guardians/guardian-access.service';
 import { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
-import { CreatePaymentOrderDto, PaymentWebhookDto } from '../src/modules/payments/dto';
+import { CreatePaymentOrderDto } from '../src/modules/payments/dto';
 import {
   PaymentOrderEntity,
   LedgerJournalEntity,
@@ -15,19 +14,11 @@ import {
 import { BadRequestException } from '@nestjs/common';
 
 describe('NFR-002: Concurrency & Idempotency Tests', () => {
-  describe('1. Payment Order Idempotency Engine', () => {
+  describe('1. Payment Order Idempotency', () => {
     let paymentsService: PaymentsService;
     let mockOrderRepo: any;
-    let mockTxnRepo: any;
-    let mockRefundRepo: any;
     let mockBookingRepo: any;
-    let mockSessionRepo: any;
-    let mockGuardianLinkRepo: any;
-    let mockOutboxRepo: any;
-    let mockLedgerService: any;
     let mockAdapterFactory: any;
-    let mockAuditService: any;
-    let mockDataSource: any;
 
     const studentUser: AuthenticatedUser = {
       id: 'usr-student-idem',
@@ -42,7 +33,8 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
       tutorUserId: 'usr-tutor-idem',
       status: 'accepted',
       pricePerSessionMinor: '50000',
-      subject: { name: 'Mathematics' },
+      currency: 'BDT',
+      subject: { nameEn: 'Mathematics' },
       studentUser: { displayName: 'Student One' },
     };
 
@@ -54,83 +46,53 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
           id: 'order-uuid-1',
           status: 'pending',
           createdAt: new Date(),
+          updatedAt: new Date(),
         })),
-        save: vi.fn((e) => Promise.resolve(e)),
+        save: vi.fn(async (entity) => entity),
       };
-      mockTxnRepo = {
-        findOne: vi.fn(),
-        create: vi.fn((e) => e),
-        save: vi.fn((e) => Promise.resolve(e)),
-      };
-      mockRefundRepo = { findOne: vi.fn() };
       mockBookingRepo = {
         findOne: vi.fn().mockResolvedValue(mockBooking),
-        save: vi.fn((b) => Promise.resolve(b)),
+        save: vi.fn(async (b) => b),
       };
-      mockSessionRepo = { find: vi.fn().mockResolvedValue([]) };
-      mockGuardianLinkRepo = { findOne: vi.fn().mockResolvedValue(null) };
-      mockOutboxRepo = { create: vi.fn((e) => e), save: vi.fn((e) => Promise.resolve(e)) };
-      mockLedgerService = { recordOrderEscrowHolding: vi.fn().mockResolvedValue({}) };
-      mockAuditService = { record: vi.fn().mockResolvedValue({}) };
-      mockDataSource = {
-        transaction: vi.fn(async (cb) => {
-          return await cb({
-            save: vi.fn((x) => Promise.resolve(x)),
-            create: vi.fn((_, x) => x),
-          });
-        }),
-      };
-
-      const mockAdapter = {
-        createCheckoutSession: vi.fn().mockResolvedValue({
-          checkoutUrl: 'https://sandbox.payment.bkash.com/checkout?token=123',
-          providerOrderId: 'PROV-ORD-123',
-        }),
-        verifyWebhookSignature: vi.fn().mockReturnValue(true),
-        queryTransaction: vi.fn().mockResolvedValue({ status: 'succeeded' }),
-      };
-
       mockAdapterFactory = {
-        getAdapter: vi.fn().mockReturnValue(mockAdapter),
+        getAdapter: vi.fn().mockReturnValue({
+          providerName: 'bkash',
+          createCheckoutSession: vi.fn().mockResolvedValue({
+            checkoutUrl: 'https://sandbox.payment.bkash.com/checkout?token=123',
+            providerOrderId: 'PROV-ORD-123',
+          }),
+        }),
       };
 
       paymentsService = new PaymentsService(
         new PaymentOrdersService(
           mockOrderRepo,
           mockBookingRepo,
-          mockGuardianLinkRepo,
+          new GuardianAccessService({
+            findOne: vi.fn().mockResolvedValue(null),
+            find: vi.fn().mockResolvedValue([]),
+          } as never),
           mockAdapterFactory,
-          mockAuditService,
+          { record: vi.fn().mockResolvedValue({}) } as never,
+          {
+            getActivePolicy: vi.fn().mockResolvedValue({
+              id: 'policy-1',
+              version: 1,
+              platformFeeBps: 800,
+              minPayoutMinor: '50000',
+            }),
+          } as never,
+          undefined,
         ) as never,
-        new PaymentWebhooksService(
-          mockOrderRepo,
-          mockTxnRepo,
-          mockGuardianLinkRepo,
-          mockLedgerService,
-          mockAdapterFactory,
-          mockAuditService,
-          mockDataSource,
-        ) as never,
-        new RefundsService(
-          mockOrderRepo,
-          mockRefundRepo,
-          mockOutboxRepo,
-          mockLedgerService,
-          mockAdapterFactory,
-          mockAuditService,
-        ) as never,
-        new SettlementService(
-          mockSessionRepo,
-          mockOrderRepo,
-          mockTxnRepo,
-          mockLedgerService,
-          mockAuditService,
-        ) as never,
+        {} as never,
+        {} as never,
+        {} as never,
+        {} as never,
       );
     });
 
-    it('POSITIVE TEST: should create new order on first invocation with unique idempotency key', async () => {
-      mockOrderRepo.findOne.mockResolvedValueOnce(null); // No previous order with this key
+    it('creates a new order on the first invocation with a unique key', async () => {
+      mockOrderRepo.findOne.mockResolvedValueOnce(null);
 
       const dto: CreatePaymentOrderDto = {
         bookingId: mockBooking.id,
@@ -145,13 +107,13 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
         'req-id-1',
       );
 
-      expect(result).toBeDefined();
       expect(result.orderId).toBe('order-uuid-1');
       expect(result.amountMinor).toBe(50000);
-      expect(mockOrderRepo.save).toHaveBeenCalledTimes(1);
+      expect(result.commissionRateBps).toBe(800);
+      expect(mockOrderRepo.save).toHaveBeenCalled();
     });
 
-    it('POSITIVE TEST: should return existing order idempotently on replay without duplicate creation', async () => {
+    it('returns the existing order idempotently on replay without creating a duplicate', async () => {
       const existingOrder: Partial<PaymentOrderEntity> = {
         id: 'order-uuid-existing',
         payerUserId: studentUser.id,
@@ -160,56 +122,67 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
         amountMinor: '50000',
         currency: 'BDT',
         status: 'pending',
+        provider: 'bkash',
+        providerReference: 'PROV-ORD-123',
+        commissionRateBps: 800,
       };
 
-      // Mock that finding by idempotency key returns the existing order
       mockOrderRepo.findOne.mockResolvedValueOnce(existingOrder);
-
-      const dto: CreatePaymentOrderDto = {
-        bookingId: mockBooking.id,
-        amountMinor: 50000,
-        paymentMethod: 'bkash',
-      };
 
       const result = await paymentsService.createPaymentOrder(
         studentUser,
-        dto,
-        'idem-key-unique-001', // Replayed key
+        { bookingId: mockBooking.id, amountMinor: 50000, paymentMethod: 'bkash' },
+        'idem-key-unique-001',
         'req-id-2',
       );
 
-      expect(result).toBeDefined();
       expect(result.orderId).toBe('order-uuid-existing');
-      expect(result.amountMinor).toBe(50000);
-      // save should NOT be called again because existing order is returned idempotently
+      expect(mockOrderRepo.create).not.toHaveBeenCalled();
       expect(mockOrderRepo.save).not.toHaveBeenCalled();
     });
 
-    it('NEGATIVE TEST: should detect conflict if existing order amount does not match incoming replayed payload', async () => {
-      const existingOrder: Partial<PaymentOrderEntity> = {
+    it('rejects a replayed key whose booking differs', async () => {
+      mockOrderRepo.findOne.mockResolvedValueOnce({
         id: 'order-uuid-existing',
         payerUserId: studentUser.id,
-        bookingId: mockBooking.id,
+        bookingId: 'another-booking',
         idempotencyKey: 'idem-key-conflict-001',
         amountMinor: '50000',
         currency: 'BDT',
         status: 'pending',
-      };
-
-      mockOrderRepo.findOne.mockResolvedValueOnce(existingOrder);
-
-      const mismatchDto: CreatePaymentOrderDto = {
-        bookingId: mockBooking.id,
-        amountMinor: 75000, // Different amount with same key!
-        paymentMethod: 'bkash',
-      };
+      });
 
       await expect(
         paymentsService.createPaymentOrder(
           studentUser,
-          mismatchDto,
+          {
+            bookingId: mockBooking.id,
+            amountMinor: 50000,
+            paymentMethod: 'bkash',
+          },
           'idem-key-conflict-001',
           'req-id-3',
+        ),
+      ).rejects.toThrow(BadRequestException);
+    });
+
+    it('rejects a replayed key whose amount differs', async () => {
+      mockOrderRepo.findOne.mockResolvedValueOnce({
+        id: 'order-uuid-existing',
+        payerUserId: studentUser.id,
+        bookingId: mockBooking.id,
+        idempotencyKey: 'idem-key-conflict-002',
+        amountMinor: '50000',
+        currency: 'BDT',
+        status: 'pending',
+      });
+
+      await expect(
+        paymentsService.createPaymentOrder(
+          studentUser,
+          { bookingId: mockBooking.id, amountMinor: 75000, paymentMethod: 'bkash' },
+          'idem-key-conflict-002',
+          'req-id-4',
         ),
       ).rejects.toThrow(BadRequestException);
     });
@@ -220,39 +193,32 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
     let mockAccountRepo: any;
     let mockJournalRepo: any;
     let mockEntryRepo: any;
-    let _mockAuditService: any;
     let mockDataSource: any;
 
     beforeEach(() => {
       mockAccountRepo = {
-        findOne: vi.fn().mockImplementation(({ where }) => {
-          return Promise.resolve({
+        findOne: vi.fn().mockImplementation(({ where }) =>
+          Promise.resolve({
             id: `acc-${where.code}`,
             code: where.code,
             name: where.code,
             accountType: 'liability',
             currency: 'BDT',
             isActive: true,
-          } as LedgerAccountEntity);
-        }),
-        find: vi.fn().mockResolvedValue([
-          {
-            id: 'acc-1',
-            code: 'GATEWAY_CLEARING',
-            name: 'Gateway',
-            accountType: 'asset',
-            currency: 'BDT',
-            isActive: true,
-          },
-          {
-            id: 'acc-2',
-            code: 'STUDENT_ESCROW',
-            name: 'Escrow',
-            accountType: 'liability',
-            currency: 'BDT',
-            isActive: true,
-          },
-        ]),
+          } as LedgerAccountEntity),
+        ),
+        find: vi.fn().mockImplementation(({ where }) =>
+          Promise.resolve(
+            where.map((entry: { code: string }) => ({
+              id: `acc-${entry.code}`,
+              code: entry.code,
+              name: entry.code,
+              accountType: 'liability',
+              currency: 'BDT',
+              isActive: true,
+            })),
+          ),
+        ),
       };
 
       mockJournalRepo = {
@@ -261,13 +227,14 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
         save: vi.fn((j) => Promise.resolve(j)),
       };
 
-      mockEntryRepo = {
-        create: vi.fn((e) => e),
-      };
+      mockEntryRepo = { create: vi.fn((e) => e) };
 
       mockDataSource = {
         transaction: vi.fn(async (cb) => {
           return await cb({
+            getRepository: vi.fn().mockReturnValue({
+              findOne: vi.fn().mockResolvedValue(null),
+            }),
             save: vi.fn((x) => Promise.resolve(x)),
             create: vi.fn((_, x) => x),
           });
@@ -282,7 +249,7 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
       );
     });
 
-    it('POSITIVE TEST: should record new double-entry journal when idempotency key is fresh', async () => {
+    it('records a new balanced journal for a fresh idempotency key', async () => {
       mockJournalRepo.findOne.mockResolvedValueOnce(null);
 
       const journal = await ledgerService.postJournal({
@@ -291,8 +258,8 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
         description: 'Student payment held in escrow',
         idempotencyKey: 'ledger:pay:order-101',
         entries: [
-          { accountCode: 'GATEWAY_CLEARING', direction: 'debit', amountMinor: 50000 },
-          { accountCode: 'STUDENT_ESCROW', direction: 'credit', amountMinor: 50000 },
+          { accountCode: '1000', direction: 'debit', amountMinor: 50000 },
+          { accountCode: '2100', direction: 'credit', amountMinor: 50000 },
         ],
       });
 
@@ -300,7 +267,7 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
       expect(mockDataSource.transaction).toHaveBeenCalled();
     });
 
-    it('POSITIVE TEST: should return existing journal idempotently when same key is submitted again', async () => {
+    it('returns an existing journal for a duplicate key without a new transaction', async () => {
       const existingJournal: Partial<LedgerJournalEntity> = {
         id: 'journal-existing-999',
         sourceType: 'payment_order',
@@ -309,136 +276,74 @@ describe('NFR-002: Concurrency & Idempotency Tests', () => {
         description: 'Existing journal',
         entries: [],
       };
-
       mockJournalRepo.findOne.mockResolvedValueOnce(existingJournal);
 
       const journal = await ledgerService.postJournal({
         sourceType: 'payment_order',
         sourceId: 'order-101',
-        description: 'Duplicate attempt to record same journal',
+        description: 'Duplicate attempt',
         idempotencyKey: 'ledger:pay:order-101',
         entries: [
-          { accountCode: 'GATEWAY_CLEARING', direction: 'debit', amountMinor: 50000 },
-          { accountCode: 'STUDENT_ESCROW', direction: 'credit', amountMinor: 50000 },
+          { accountCode: '1000', direction: 'debit', amountMinor: 50000 },
+          { accountCode: '2100', direction: 'credit', amountMinor: 50000 },
         ],
       });
 
       expect(journal.id).toBe('journal-existing-999');
-      // Must NOT run a new transaction or insert duplicate entries
       expect(mockDataSource.transaction).not.toHaveBeenCalled();
     });
   });
 
-  describe('3. Webhook Event Deduplication Idempotency', () => {
-    let paymentsService: PaymentsService;
-    let mockOrderRepo: any;
-    let mockTxnRepo: any;
-    let mockRefundRepo: any;
-    let mockBookingRepo: any;
-    let mockSessionRepo: any;
-    let mockGuardianLinkRepo: any;
-    let mockOutboxRepo: any;
-    let mockLedgerService: any;
-    let mockAdapterFactory: any;
-    let mockAuditService: any;
-    let mockDataSource: any;
-
-    beforeEach(() => {
-      mockOrderRepo = { findOne: vi.fn(), save: vi.fn((e) => Promise.resolve(e)) };
-      mockTxnRepo = {
-        findOne: vi.fn(),
-        create: vi.fn((e) => e),
-        save: vi.fn((e) => Promise.resolve(e)),
-      };
-      mockRefundRepo = { findOne: vi.fn() };
-      mockBookingRepo = { findOne: vi.fn(), save: vi.fn((e) => Promise.resolve(e)) };
-      mockSessionRepo = { find: vi.fn().mockResolvedValue([]) };
-      mockGuardianLinkRepo = { findOne: vi.fn().mockResolvedValue(null) };
-      mockOutboxRepo = { create: vi.fn((e) => e), save: vi.fn((e) => Promise.resolve(e)) };
-      mockLedgerService = { recordOrderEscrowHolding: vi.fn().mockResolvedValue({}) };
-      mockAuditService = { record: vi.fn().mockResolvedValue({}) };
-      mockDataSource = {
-        transaction: vi.fn(async (cb) => {
-          return await cb({
-            save: vi.fn((x) => Promise.resolve(x)),
-            create: vi.fn((_, x) => x),
-          });
-        }),
-      };
-
-      const mockAdapter = {
-        verifyWebhookSignature: vi.fn().mockReturnValue(true),
-        queryTransaction: vi.fn().mockResolvedValue({ status: 'succeeded' }),
-      };
-
-      mockAdapterFactory = {
-        getAdapter: vi.fn().mockReturnValue(mockAdapter),
-      };
-
-      paymentsService = new PaymentsService(
-        new PaymentOrdersService(
-          mockOrderRepo,
-          mockBookingRepo,
-          mockGuardianLinkRepo,
-          mockAdapterFactory,
-          mockAuditService,
-        ) as never,
-        new PaymentWebhooksService(
-          mockOrderRepo,
-          mockTxnRepo,
-          mockGuardianLinkRepo,
-          mockLedgerService,
-          mockAdapterFactory,
-          mockAuditService,
-          mockDataSource,
-        ) as never,
-        new RefundsService(
-          mockOrderRepo,
-          mockRefundRepo,
-          mockOutboxRepo,
-          mockLedgerService,
-          mockAdapterFactory,
-          mockAuditService,
-        ) as never,
-        new SettlementService(
-          mockSessionRepo,
-          mockOrderRepo,
-          mockTxnRepo,
-          mockLedgerService,
-          mockAuditService,
-        ) as never,
+  describe('3. Durable Webhook Event Deduplication', () => {
+    it('ignores a duplicate provider event without executing payment mutations', async () => {
+      const dataSource = { transaction: vi.fn() };
+      const service = new PaymentWebhooksService(
+        {} as never,
+        {} as never,
+        {
+          create: vi.fn((record) => record),
+          save: vi.fn().mockRejectedValue({ code: '23505' }),
+          findOne: vi.fn().mockResolvedValue({ id: 'webhook-existing', status: 'processed' }),
+        } as never,
+        { findActiveGuardianIds: vi.fn().mockResolvedValue([]) } as never,
+        { postJournal: vi.fn() } as never,
+        {
+          getAdapter: vi.fn().mockReturnValue({
+            verifyWebhookSignature: vi.fn().mockReturnValue(true),
+            normalizeWebhook: vi.fn(() => ({
+              eventId: 'EVT-DUPLICATE-777',
+              eventType: 'bkash.succeeded',
+              orderReference: 'order-1',
+              providerTransactionId: 'TXN-777',
+              amountMinor: '50000',
+              currency: 'BDT',
+              status: 'succeeded',
+              rawStatus: 'COMPLETED',
+            })),
+          }),
+        } as never,
+        { createForOrder: vi.fn() } as never,
+        { record: vi.fn() } as never,
+        dataSource as never,
+        undefined,
       );
-    });
 
-    it('POSITIVE TEST: should ignore duplicate webhook event without re-executing ledger or booking mutations', async () => {
-      // Simulate that this providerEventId has already been recorded and succeeded
-      mockTxnRepo.findOne.mockResolvedValueOnce({
-        id: 'txn-existing-1',
-        provider: 'bkash',
-        providerEventId: 'EVT-DUPLICATE-777',
-        status: 'succeeded',
-      });
-
-      const webhookPayload: PaymentWebhookDto = {
-        providerTransactionId: 'TXN-777',
-        providerEventId: 'EVT-DUPLICATE-777',
-        amountMinor: 50000,
-        currency: 'BDT',
-        status: 'succeeded',
-      };
-
-      const result = await paymentsService.handleWebhook(
+      const result = await service.handleWebhook(
         'bkash',
         { 'x-webhook-timestamp': new Date().toISOString() },
-        webhookPayload,
+        {
+          providerTransactionId: 'TXN-777',
+          providerEventId: 'EVT-DUPLICATE-777',
+          orderReference: 'order-1',
+          amountMinor: 50000,
+          currency: 'BDT',
+          status: 'succeeded',
+        },
         'req-webhook-idem',
       );
 
-      expect(result.received).toBe(true);
-      expect(result.processed).toBe(false);
-      expect(result.status).toBe('succeeded');
-      // Must not mutate database in transaction
-      expect(mockDataSource.transaction).not.toHaveBeenCalled();
+      expect(result).toEqual({ received: true, processed: false });
+      expect(dataSource.transaction).not.toHaveBeenCalled();
     });
   });
 });

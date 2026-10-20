@@ -1,18 +1,25 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
+import { ServiceUnavailableException } from '@nestjs/common';
 import { SslcommerzSandboxAdapter } from '../src/modules/payments/adapters/sslcommerz-sandbox.adapter';
 
-describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => {
+describe('SslcommerzSandboxAdapter', () => {
   let adapter: SslcommerzSandboxAdapter;
 
   beforeEach(() => {
+    vi.stubEnv('SSLCOMMERZ_STORE_PASSWD', 'test-store-passwd');
     adapter = new SslcommerzSandboxAdapter();
   });
 
-  it('should be configured with SSLCOMMERZ sandbox store ID and credentials', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs();
+    vi.restoreAllMocks();
+  });
+
+  it('exposes the sslcommerz provider identity', () => {
     expect(adapter.providerName).toBe('sslcommerz');
   });
 
-  it('should generate checkout session URL with sandbox parameters', async () => {
+  it('creates a checkout session from a successful gateway response', async () => {
     const fetchSpy = vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
       return {
         ok: true,
@@ -27,19 +34,27 @@ describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => 
 
     const session = await adapter.createCheckoutSession(
       '00000000-0000-4000-8000-000000000001',
-      100000, // 1000.00 BDT
+      100000,
       'BDT',
       '01952879249',
     );
 
-    expect(session.checkoutUrl).toBeDefined();
     expect(session.checkoutUrl).toContain('sandbox.sslcommerz.com');
-    expect(session.providerOrderId).toBeDefined();
-
-    fetchSpy.mockRestore();
+    expect(session.providerOrderId).toBe('TEST-SESSION-KEY');
+    expect(fetchSpy).toHaveBeenCalledOnce();
   });
 
-  it('should cryptographically verify HMAC-SHA256 webhook signatures', () => {
+  it('FAILS CLOSED when the gateway cannot be reached', async () => {
+    vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
+      throw new Error('Network timeout');
+    });
+
+    await expect(
+      adapter.createCheckoutSession('00000000-0000-4000-8000-000000000002', 50000, 'BDT'),
+    ).rejects.toThrow(ServiceUnavailableException);
+  });
+
+  it('verifies HMAC-SHA256 webhook signatures', () => {
     const payload = {
       tran_id: 'ord-1234',
       val_id: 'val-5678',
@@ -57,20 +72,15 @@ describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => 
 
     const validSignature = adapter.generateSignature(payloadString);
 
-    const isValid = adapter.verifyWebhookSignature(
-      { 'x-sslcommerz-signature': validSignature },
-      payload,
-    );
-    expect(isValid).toBe(true);
-
-    const isInvalid = adapter.verifyWebhookSignature(
-      { 'x-sslcommerz-signature': 'tampered_invalid_hex' },
-      payload,
-    );
-    expect(isInvalid).toBe(false);
+    expect(
+      adapter.verifyWebhookSignature({ 'x-sslcommerz-signature': validSignature }, payload),
+    ).toBe(true);
+    expect(
+      adapter.verifyWebhookSignature({ 'x-sslcommerz-signature': 'tampered_invalid_hex' }, payload),
+    ).toBe(false);
   });
 
-  it('REJECTS a signature-less IPN payload even when it claims a verified status', () => {
+  it('REJECTS signature-less payloads even when they claim VALID', () => {
     const validPayload = {
       status: 'VALID',
       tran_id: 'ord-1234',
@@ -78,30 +88,39 @@ describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => 
       amount: '1000.00',
     };
 
-    const verified = adapter.verifyWebhookSignature({}, validPayload);
-    expect(verified).toBe(false);
+    expect(adapter.verifyWebhookSignature({}, validPayload)).toBe(false);
+    expect(
+      adapter.verifyWebhookSignature({}, { status: 'VALID', verify_sign: 'not-a-real-signature' }),
+    ).toBe(false);
   });
 
-  it('REJECTS an unsigned webhook even when the body carries verify_sign', () => {
-    const verified = adapter.verifyWebhookSignature(
+  it('normalizes an IPN payload into the shared contract', () => {
+    const event = adapter.normalizeWebhook(
       {},
-      { status: 'VALID', verify_sign: 'not-a-real-signature' },
+      {
+        status: 'VALID',
+        event_id: 'EVT-1',
+        tran_id: '00000000-0000-4000-8000-000000000000',
+        val_id: 'VAL-1',
+        amount: '1000.00',
+        currency: 'BDT',
+      },
     );
-    expect(verified).toBe(false);
+
+    expect(event).toEqual({
+      eventId: 'EVT-1',
+      eventType: 'sslcommerz.succeeded',
+      orderReference: '00000000-0000-4000-8000-000000000000',
+      providerTransactionId: 'VAL-1',
+      amountMinor: '100000',
+      currency: 'BDT',
+      status: 'succeeded',
+      rawStatus: 'VALID',
+    });
   });
 
-  it('should reject invalid or tampered webhook payload with empty signature and failed status', () => {
-    const invalidPayload = {
-      status: 'FAILED',
-      tran_id: 'ord-1234',
-    };
-
-    const verified = adapter.verifyWebhookSignature({}, invalidPayload);
-    expect(verified).toBe(false);
-  });
-
-  it('should query server-to-server transaction status and return minor units', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
+  it('queries the validation server and returns minor units', async () => {
+    vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
       return {
         ok: true,
         json: async () => ({
@@ -118,26 +137,23 @@ describe('SslcommerzSandboxAdapter Unit & Credential Verification Tests', () => 
     expect(result.status).toBe('succeeded');
     expect(result.amountMinor).toBe(100000);
     expect(result.currency).toBe('BDT');
-
-    fetchSpy.mockRestore();
   });
 
-  it('FAILS CLOSED when the validation server cannot be reached', async () => {
-    const fetchSpy = vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
+  it('FAILS CLOSED when the validation server cannot verify the transaction', async () => {
+    vi.spyOn(global, 'fetch').mockImplementationOnce(async () => {
       throw new Error('Network timeout');
     });
 
     const result = await adapter.queryTransaction('val-timeout');
     expect(result.status).toBe('failed');
-
-    fetchSpy.mockRestore();
   });
 
-  it('should process operational refund in sandbox mode', async () => {
+  it('reports automated refunds as unsupported instead of fabricating success', async () => {
     const refund = await adapter.processRefund('val-5678', 50000, 'Student requested cancellation');
 
-    expect(refund.status).toBe('succeeded');
+    expect(refund.status).toBe('unsupported');
     expect(refund.amountMinor).toBe(50000);
-    expect(refund.providerRefundId).toContain('SSLCZ-REF-');
+    expect(refund.providerRefundId).toBeNull();
+    expect(refund.failureReason).toContain('not provisioned');
   });
 });

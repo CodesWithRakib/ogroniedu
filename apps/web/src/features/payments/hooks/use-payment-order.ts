@@ -9,7 +9,7 @@ import { useGetBookingRequestsQuery, type BookingRequestItem } from '@/store/ser
 import {
   useCreatePaymentOrderMutation,
   useLazyGetPaymentReceiptQuery,
-  useProcessRefundMutation,
+  useRequestRefundMutation,
   useGetMyPaymentOrdersQuery,
   type CreatePaymentOrderResponse,
   type PaymentOrderRecord,
@@ -144,7 +144,7 @@ export function usePaymentOrder(locale: Locale) {
 
   const [createOrder, { isLoading: creating }] = useCreatePaymentOrderMutation();
   const [fetchReceipt] = useLazyGetPaymentReceiptQuery();
-  const [processRefund, { isLoading: refunding }] = useProcessRefundMutation();
+  const [requestRefund, { isLoading: refunding }] = useRequestRefundMutation();
 
   const canRefund = user?.roles?.some(
     (r) => r === 'admin' || r === 'super_admin' || r === 'guardian',
@@ -306,10 +306,10 @@ export function usePaymentOrder(locale: Locale) {
   async function handleRefund() {
     if (!order) return;
     try {
-      await processRefund({
+      await requestRefund({
         paymentOrderId: order.id,
         amountMinor: order.amountMinor,
-        reason: 'customer_request_refund',
+        reason: 'Customer requested refund',
       }).unwrap();
       requests.refetch();
       ordersQuery.refetch();

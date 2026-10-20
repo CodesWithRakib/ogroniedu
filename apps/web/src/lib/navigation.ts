@@ -423,6 +423,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             testId: 'nav-users',
           },
           {
+            href: '/dashboard/admin/finance',
+            labelBn: 'আর্থিক অপারেশন',
+            labelEn: 'Finance Operations',
+            icon: CreditCard,
+            testId: 'nav-finance',
+          },
+          {
             href: '/dashboard/admin/disputes',
             labelBn: 'লেজার ও রিকনসিলিয়েশন',
             labelEn: 'Finance & Payouts',

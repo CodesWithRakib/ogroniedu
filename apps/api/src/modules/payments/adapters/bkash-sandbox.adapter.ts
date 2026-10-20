@@ -1,52 +1,61 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
 import crypto from 'node:crypto';
+import { bdtToMinor } from '../../../common/money/money';
 import {
   PaymentProviderAdapter,
   CheckoutSessionResult,
   ProviderTransactionResult,
   ProviderRefundResult,
+  NormalizedWebhookEvent,
 } from './payment-provider.interface';
 
+/**
+ * bKash adapter.
+ *
+ * No live bKash merchant credentials are configured in this environment, so
+ * checkout creation and transaction verification fail closed. Returning a
+ * synthetic checkout URL or a synthetic "succeeded" verification would
+ * fabricate a payment.
+ */
 @Injectable()
 export class BkashSandboxAdapter implements PaymentProviderAdapter {
   readonly providerName = 'bkash';
   private readonly logger = new Logger(BkashSandboxAdapter.name);
-  private readonly secretKey = process.env.BKASH_WEBHOOK_SECRET || 'bkash_sandbox_secret_2026';
+  private readonly secretKey = process.env.BKASH_WEBHOOK_SECRET || '';
 
-  /**
-   * Helper: Generate a valid signature for testing or mocking
-   */
+  /** Helper used by provider-side test fixtures only. */
   generateSignature(payload: string): string {
+    if (!this.secretKey) {
+      throw new Error('BKASH_WEBHOOK_SECRET is not configured');
+    }
     return crypto.createHmac('sha256', this.secretKey).update(payload).digest('hex');
   }
 
   async createCheckoutSession(
-    orderId: string,
-    amountMinor: number,
-    currency: string,
-    payerPhone?: string,
+    _orderId: string,
+    _amountMinor: number,
+    _currency: string,
+    _payerPhone?: string,
   ): Promise<CheckoutSessionResult> {
-    const providerOrderId = `BKASH-SBX-${orderId.slice(0, 8)}-${Date.now()}`;
-    const amountBdt = (amountMinor / 100).toFixed(2);
-    const checkoutUrl = `https://sandbox.payment.bkash.com/checkout?paymentID=${providerOrderId}&amount=${amountBdt}&currency=${currency}&phone=${payerPhone || '01700000000'}`;
-
-    this.logger.log(`Generated bKash sandbox checkout session: ${providerOrderId}`);
-    return {
-      checkoutUrl,
-      providerOrderId,
-    };
+    throw new ServiceUnavailableException(
+      'bKash checkout is not configured. Use SSLCOMMERZ or contact operations to provision bKash merchant credentials.',
+    );
   }
 
   verifyWebhookSignature(
     headers: Record<string, string | string[] | undefined>,
     rawBody: string | Record<string, unknown>,
   ): boolean {
+    if (!this.secretKey) {
+      this.logger.warn('Rejected bKash webhook: BKASH_WEBHOOK_SECRET is not configured');
+      return false;
+    }
+
     const rawSignature =
       headers['x-bkash-signature'] ||
       headers['X-BKASH-SIGNATURE'] ||
       (typeof rawBody === 'object' ? (rawBody.signature as string | undefined) : undefined);
 
-    // Signature is mandatory; unsigned IPNs are never trusted.
     if (!rawSignature || typeof rawSignature !== 'string') {
       return false;
     }
@@ -81,12 +90,64 @@ export class BkashSandboxAdapter implements PaymentProviderAdapter {
     }
   }
 
+  normalizeWebhook(
+    _headers: Record<string, string | string[] | undefined>,
+    rawBody: string | Record<string, unknown>,
+  ): NormalizedWebhookEvent {
+    let record: Record<string, unknown> = {};
+    if (typeof rawBody === 'string') {
+      try {
+        record = JSON.parse(rawBody) as Record<string, unknown>;
+      } catch {
+        record = {};
+      }
+    } else {
+      record = rawBody;
+    }
+
+    const read = (...keys: string[]): string => {
+      for (const key of keys) {
+        const value = record[key];
+        if (typeof value === 'string' && value.length > 0) return value;
+        if (typeof value === 'number') return String(value);
+      }
+      return '';
+    };
+
+    const rawStatus = read('transactionStatus', 'status', 'paymentStatus').toUpperCase();
+    const status = /^(COMPLETED|SUCCESS|SUCCEEDED|VALID)$/.test(rawStatus)
+      ? 'succeeded'
+      : /^(FAILED|CANCELLED|CANCELED|EXPIRED|DECLINED)$/.test(rawStatus)
+        ? 'failed'
+        : 'pending';
+
+    const providerTransactionId = read('trxID', 'transactionId', 'paymentID');
+    const orderReference = read('merchantInvoiceNumber', 'orderId', 'paymentID');
+    const amountText = read('amount', 'transactionAmount') || '0';
+
+    let amountMinor = '0';
+    try {
+      amountMinor = bdtToMinor(amountText).toString();
+    } catch {
+      amountMinor = '0';
+    }
+
+    return {
+      eventId: read('eventId', 'eventID') || `${providerTransactionId}:${rawStatus}`,
+      eventType: `bkash.${status}`,
+      providerTransactionId,
+      orderReference,
+      amountMinor,
+      currency: (read('currency') || 'BDT').toUpperCase(),
+      status,
+      rawStatus,
+    };
+  }
+
   async queryTransaction(providerTransactionId: string): Promise<ProviderTransactionResult> {
-    this.logger.log(
-      `Querying bKash sandbox transaction server-to-server: ${providerTransactionId}`,
+    this.logger.warn(
+      `bKash transaction verification requested (${providerTransactionId}) but no live credentials are configured; failing closed.`,
     );
-    // No live bKash credentials are configured in this environment. Returning
-    // "succeeded" here would fabricate a payment, so verification fails closed.
     return {
       providerTransactionId,
       amountMinor: 0,
@@ -97,19 +158,16 @@ export class BkashSandboxAdapter implements PaymentProviderAdapter {
   }
 
   async processRefund(
-    providerTransactionId: string,
+    _providerTransactionId: string,
     amountMinor: number,
-    reason: string,
+    _reason: string,
   ): Promise<ProviderRefundResult> {
-    const providerRefundId = `BKASH-REF-${Date.now()}`;
-    this.logger.log(
-      `Executed bKash sandbox refund for ${providerTransactionId}: ${amountMinor} poisha (${reason})`,
-    );
-
     return {
-      providerRefundId,
+      status: 'unsupported',
+      providerRefundId: null,
       amountMinor,
-      status: 'succeeded',
+      failureReason:
+        'bKash automated refunds are not provisioned. Complete the refund externally and record the reference.',
     };
   }
 }

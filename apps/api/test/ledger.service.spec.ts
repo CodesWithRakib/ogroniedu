@@ -67,6 +67,9 @@ describe('LedgerService Unit & Invariant Tests (Double-Entry Financial Accountin
     mockDataSource = {
       transaction: vi.fn().mockImplementation(async (cb) => {
         const mockManager = {
+          getRepository: vi.fn().mockReturnValue({
+            findOne: vi.fn().mockResolvedValue(null),
+          }),
           create: vi.fn((entityClass, data) => ({ id: `gen-${Math.random()}`, ...data })),
           save: vi.fn((entity) => Promise.resolve(entity)),
         };

@@ -46,6 +46,20 @@ export class PaymentOrderEntity {
   @Column({ type: 'text' })
   provider!: string;
 
+  /** Commission snapshot taken when the order is created (basis points). */
+  @Column({ name: 'commission_rate_bps', type: 'integer', default: 800 })
+  commissionRateBps!: number;
+
+  @Column({ name: 'commission_policy_id', type: 'uuid', nullable: true })
+  commissionPolicyId!: string | null;
+
+  /** Provider session/checkout reference used for server-side status sync. */
+  @Column({ name: 'provider_reference', type: 'text', nullable: true })
+  providerReference!: string | null;
+
+  @Column({ name: 'escrow_hold_id', type: 'uuid', nullable: true })
+  escrowHoldId!: string | null;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 

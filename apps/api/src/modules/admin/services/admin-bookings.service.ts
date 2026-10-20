@@ -7,7 +7,7 @@ import { TutorReplacementCaseEntity } from '../../trust/entities/tutor-replaceme
 import { SafetyReportEntity } from '../../trust/entities/safety-report.entity';
 import { PaymentOrderEntity } from '../../payments/entities/payment-order.entity';
 import { AuditService } from '../../audit/audit.service';
-import { PaymentsService } from '../../payments/payments.service';
+import { RefundsService } from '../../payments/services/refunds.service';
 import type { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { AdminCancelBookingDto, AssignSupportCaseDto } from '../dto';
 
@@ -32,8 +32,8 @@ export class AdminBookingsService {
     private readonly paymentOrderRepo: Repository<PaymentOrderEntity>,
     @Inject(AuditService)
     private readonly auditService: AuditService,
-    @Inject(PaymentsService)
-    private readonly paymentsService: PaymentsService,
+    @Inject(RefundsService)
+    private readonly refundsService: RefundsService,
   ) {}
 
   /**
@@ -78,7 +78,12 @@ export class AdminBookingsService {
     adminUser: AuthenticatedUser,
     bookingId: string,
     dto: AdminCancelBookingDto,
-  ): Promise<{ booking: BookingEntity; refundIssued: boolean }> {
+  ): Promise<{
+    booking: BookingEntity;
+    refundIssued: boolean;
+    refundStatus: string | null;
+    refundId: string | null;
+  }> {
     const booking = await this.bookingRepo.findOne({
       where: { id: bookingId },
     });
@@ -115,8 +120,12 @@ export class AdminBookingsService {
     });
 
     let refundIssued = false;
+    let refundStatus: string | null = null;
+    let refundId: string | null = null;
 
-    // Optional escrow reversal / refund execution
+    // Escrow reversal is a finance workflow, not an instant side effect. The
+    // request is auto-approved here, but money is only reported as refunded
+    // after provider/manual confirmation succeeds.
     if (dto.refundStudent) {
       const order = await this.paymentOrderRepo.findOne({
         where: { bookingId, status: 'succeeded' },
@@ -124,18 +133,16 @@ export class AdminBookingsService {
 
       if (order) {
         try {
-          await this.paymentsService.processRefund(
-            adminUser,
-            {
-              paymentOrderId: order.id,
-              amountMinor: Number(order.amountMinor),
-              reason: `Admin emergency intervention: ${dto.reason}`,
-            },
-            `admin-refund-${bookingId}-${Date.now()}`,
-          );
-          refundIssued = true;
+          const refund = await this.refundsService.requestAndApproveForAdmin(adminUser, {
+            paymentOrderId: order.id,
+            amountMinor: Number(order.amountMinor),
+            reason: `Admin emergency intervention: ${dto.reason}`,
+          });
+          refundId = refund.id;
+          refundStatus = refund.status;
+          refundIssued = refund.status === 'succeeded';
           this.logger.log(
-            `Administrative refund issued for order ${order.id} on booking ${bookingId}`,
+            `Administrative refund ${refund.refundNumber ?? refund.id} for order ${order.id} is ${refund.status}; confirmation is pending in the finance queue`,
           );
         } catch (err: unknown) {
           const message = err instanceof Error ? err.message : String(err);
@@ -144,7 +151,7 @@ export class AdminBookingsService {
       }
     }
 
-    return { booking: savedBooking, refundIssued };
+    return { booking: savedBooking, refundIssued, refundStatus, refundId };
   }
 
   /**

@@ -38,6 +38,45 @@ export class PaymentRefundEntity {
   @Column({ name: 'provider_refund_id', type: 'text', nullable: true })
   providerRefundId!: string | null;
 
+  @Column({ name: 'refund_number', type: 'text', nullable: true })
+  refundNumber!: string | null;
+
+  @Column('uuid', { name: 'booking_id', nullable: true })
+  bookingId!: string | null;
+
+  @Column({ name: 'initiated_by_role', type: 'text', nullable: true })
+  initiatedByRole!: string | null;
+
+  @Column('uuid', { name: 'decided_by', nullable: true })
+  decidedBy!: string | null;
+
+  @Column({ name: 'decided_at', type: 'timestamptz', nullable: true })
+  decidedAt!: Date | null;
+
+  @Column({ name: 'decision_note', type: 'text', nullable: true })
+  decisionNote!: string | null;
+
+  @Column({ name: 'provider_status', type: 'text', nullable: true })
+  providerStatus!: string | null;
+
+  @Column({ name: 'provider_reference', type: 'text', nullable: true })
+  providerReference!: string | null;
+
+  @Column({ name: 'provider_confirmed_at', type: 'timestamptz', nullable: true })
+  providerConfirmedAt!: Date | null;
+
+  @Column({ name: 'failure_reason', type: 'text', nullable: true })
+  failureReason!: string | null;
+
+  @Column({ name: 'eligibility_snapshot', type: 'jsonb', default: {} })
+  eligibilitySnapshot!: Record<string, unknown>;
+
+  @Column('uuid', { name: 'ledger_journal_id', nullable: true })
+  ledgerJournalId!: string | null;
+
+  @Column({ name: 'idempotency_key', type: 'text', nullable: true })
+  idempotencyKey!: string | null;
+
   @Column('uuid', { name: 'requested_by' })
   requestedBy!: string;
 

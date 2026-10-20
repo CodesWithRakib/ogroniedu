@@ -95,7 +95,11 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
   };
 
   const mockPaymentsService = {
-    processRefund: vi.fn().mockResolvedValue({ id: 'refund-1' }),
+    requestAndApproveForAdmin: vi.fn().mockResolvedValue({
+      id: 'refund-1',
+      refundNumber: 'RFD-2026-000001',
+      status: 'approved',
+    }),
   };
 
   const mockDataSource = {
@@ -341,14 +345,17 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
       });
 
       expect(res.booking.status).toBe('cancelled');
-      expect(res.refundIssued).toBe(true);
-      expect(mockPaymentsService.processRefund).toHaveBeenCalledWith(
+      // Approval is not payment: the finance queue must confirm the transfer.
+      expect(res.refundIssued).toBe(false);
+      expect(res.refundStatus).toBe('approved');
+      expect(res.refundId).toBe('refund-1');
+      expect(mockPaymentsService.requestAndApproveForAdmin).toHaveBeenCalledWith(
         adminUser,
         expect.objectContaining({
           paymentOrderId: 'order-1',
           amountMinor: 250000,
+          reason: expect.stringContaining('Admin emergency intervention'),
         }),
-        expect.stringContaining('admin-refund-'),
       );
       expect(mockAuditService.record).toHaveBeenCalledWith(
         expect.objectContaining({

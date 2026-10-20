@@ -24,6 +24,7 @@ import {
   useVerifyTutorQualificationMutation,
   type TutorReviewDecision,
 } from '@/store/services/admin-api';
+import { useRunFinanceReconciliationMutation } from '@/store/services/payments-api';
 import {
   EMPTY_METRICS,
   type AdminDashboardMetrics,
@@ -74,6 +75,7 @@ export function useAdminDashboard(locale: Locale) {
   const [updateTicket] = useUpdateSupportTicketMutation();
   const [reviewTutor] = useReviewTutorMutation();
   const [verifyQualification] = useVerifyTutorQualificationMutation();
+  const [runFinanceReconciliation] = useRunFinanceReconciliationMutation();
 
   const loading = dashboard.isLoading || usersQuery.isLoading || bookingsQuery.isLoading;
   const queryError = dashboard.isError
@@ -206,5 +208,9 @@ export function useAdminDashboard(locale: Locale) {
         pendingTutorsQuery.refetch();
       },
     ),
+    onRunReconciliation: wrap(async () => {
+      await runFinanceReconciliation().unwrap();
+      await reconciliation.refetch();
+    }),
   };
 }

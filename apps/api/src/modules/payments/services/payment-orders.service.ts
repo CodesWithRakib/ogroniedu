@@ -6,6 +6,7 @@ import {
   Logger,
   Inject,
   forwardRef,
+  Optional,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -14,12 +15,17 @@ import { BookingEntity } from '../../bookings/entities/booking.entity';
 import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { PaymentAdapterFactory } from '../adapters/adapter.factory';
 import { AuditService } from '../../audit/audit.service';
+import { CommissionPolicyService } from './commission-policy.service';
+import { InvoicesService } from './invoices.service';
 import { CreatePaymentOrderDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { isAdminRole } from '../../../common/auth/role.utils';
+import { minorToBdtString, parseMinor } from '../../../common/money/money';
 
 export interface PaymentReceiptDto {
   receiptId: string;
+  invoiceId: string | null;
+  invoiceNumber: string | null;
   orderId: string;
   bookingId: string;
   payerName: string;
@@ -37,8 +43,8 @@ export interface PaymentReceiptDto {
 
 /**
  * Payment order lifecycle: creation with idempotency protection plus
- * verifiable receipt generation. Does not handle webhooks, refunds,
- * or milestone settlement.
+ * verifiable receipt generation. Amounts always come from the booking; the
+ * commission rate is snapshotted from the active policy.
  */
 @Injectable()
 export class PaymentOrdersService {
@@ -55,22 +61,19 @@ export class PaymentOrdersService {
     private readonly adapterFactory: PaymentAdapterFactory,
     @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
+    @Inject(CommissionPolicyService)
+    private readonly commissionPolicyService: CommissionPolicyService,
+    @Optional()
+    @Inject(InvoicesService)
+    private readonly invoicesService?: InvoicesService,
   ) {}
 
-  /**
-   * Helper: Check if user is authorized to act on this booking
-   */
   private async assertCanPayForBooking(
     user: AuthenticatedUser,
     booking: BookingEntity,
   ): Promise<void> {
-    if (isAdminRole(user)) {
-      return;
-    }
-
-    if (user.id === booking.requesterUserId || user.id === booking.studentUserId) {
-      return;
-    }
+    if (isAdminRole(user)) return;
+    if (user.id === booking.requesterUserId || user.id === booking.studentUserId) return;
 
     await this.guardianAccess.assertActiveLink(
       user.id,
@@ -79,9 +82,6 @@ export class PaymentOrdersService {
     );
   }
 
-  /**
-   * 1. Create a Digital Payment Order with Idempotency Protection
-   */
   async createPaymentOrder(
     user: AuthenticatedUser,
     dto: CreatePaymentOrderDto,
@@ -93,6 +93,7 @@ export class PaymentOrdersService {
     amountMinor: number;
     currency: string;
     status: PaymentOrderStatus;
+    commissionRateBps: number;
   }> {
     const booking = await this.bookingRepo.findOne({
       where: { id: dto.bookingId },
@@ -110,7 +111,6 @@ export class PaymentOrdersService {
 
     await this.assertCanPayForBooking(user, booking);
 
-    // Validate booking state
     if (booking.status === 'confirmed') {
       throw new BadRequestException('This booking has already been paid and confirmed');
     }
@@ -120,12 +120,13 @@ export class PaymentOrdersService {
       );
     }
 
-    // Idempotency check: Replay existing order if same idempotency key
+    const amountMinor = parseMinor(booking.pricePerSessionMinor);
+    if (amountMinor <= 0n) {
+      throw new BadRequestException('Booking has no payable amount');
+    }
+
     const existingOrder = await this.orderRepo.findOne({
-      where: {
-        payerUserId: user.id,
-        idempotencyKey,
-      },
+      where: { payerUserId: user.id, idempotencyKey },
     });
 
     const providerName =
@@ -134,12 +135,11 @@ export class PaymentOrdersService {
         ? dto.paymentMethod
         : 'sslcommerz');
     const adapter = this.adapterFactory.getAdapter(providerName);
-    const amountMinor = Number(booking.pricePerSessionMinor);
 
     if (existingOrder) {
       if (
         existingOrder.bookingId !== dto.bookingId ||
-        (dto.amountMinor && Number(existingOrder.amountMinor) !== Number(dto.amountMinor))
+        (dto.amountMinor && BigInt(existingOrder.amountMinor) !== parseMinor(dto.amountMinor))
       ) {
         throw new BadRequestException(
           'Idempotency key was already used for a different order or amount',
@@ -152,37 +152,58 @@ export class PaymentOrdersService {
         existingOrder.currency,
         user.phone,
       );
+      if (
+        existingOrder.providerReference !== sessionResult.providerOrderId &&
+        !existingOrder.providerReference
+      ) {
+        existingOrder.providerReference = sessionResult.providerOrderId;
+        await this.orderRepo.save(existingOrder);
+      }
       return {
         orderId: existingOrder.id,
         checkoutUrl: sessionResult.checkoutUrl,
         amountMinor: Number(existingOrder.amountMinor),
         currency: existingOrder.currency,
         status: existingOrder.status,
+        commissionRateBps: existingOrder.commissionRateBps,
       };
     }
 
-    // Create fresh payment order
+    // A booking can only be funded once. Partial secondary funding is not a
+    // supported product flow yet (documented in REFUND_AND_PAYOUT_RULES.md).
+    const alreadyPaid = await this.orderRepo.findOne({
+      where: { bookingId: booking.id, status: 'succeeded' },
+    });
+    if (alreadyPaid) {
+      throw new BadRequestException('This booking has already been funded');
+    }
+
+    const policy = await this.commissionPolicyService.getActivePolicy();
+
     const order = this.orderRepo.create({
       bookingId: booking.id,
       payerUserId: user.id,
       amountMinor: amountMinor.toString(),
-      currency: 'BDT',
+      currency: booking.currency || 'BDT',
       status: 'pending',
       idempotencyKey,
       provider: providerName,
+      commissionRateBps: policy.platformFeeBps,
+      commissionPolicyId: policy.id,
     });
 
     const savedOrder = await this.orderRepo.save(order);
 
-    // Call adapter to generate sandbox checkout session
     const sessionResult = await adapter.createCheckoutSession(
       savedOrder.id,
-      amountMinor,
-      'BDT',
+      Number(amountMinor),
+      savedOrder.currency,
       user.phone,
     );
 
-    // Audit log
+    savedOrder.providerReference = sessionResult.providerOrderId;
+    await this.orderRepo.save(savedOrder);
+
     await this.auditService.record({
       actorUserId: user.id,
       action: 'payment.order_created',
@@ -191,29 +212,33 @@ export class PaymentOrdersService {
       requestId,
       safeMetadata: {
         bookingId: booking.id,
-        amountMinor,
-        currency: 'BDT',
+        amountMinor: amountMinor.toString(),
+        currency: savedOrder.currency,
         provider: providerName,
+        commissionRateBps: policy.platformFeeBps,
       },
     });
 
     return {
       orderId: savedOrder.id,
       checkoutUrl: sessionResult.checkoutUrl,
-      amountMinor,
-      currency: 'BDT',
+      amountMinor: Number(amountMinor),
+      currency: savedOrder.currency,
       status: savedOrder.status,
+      commissionRateBps: policy.platformFeeBps,
     };
   }
 
-  /**
-   * 5. Generate Verifiable Payment Receipt
-   */
   async getPaymentReceipt(user: AuthenticatedUser, orderId: string): Promise<PaymentReceiptDto> {
     const order = await this.orderRepo.findOne({
       where: { id: orderId },
       relations: {
-        booking: { subject: true, studentUser: true, requesterUser: true },
+        booking: {
+          subject: true,
+          studentUser: true,
+          requesterUser: true,
+          tutorProfile: { user: true },
+        },
         payerUser: true,
       },
     });
@@ -231,17 +256,21 @@ export class PaymentOrdersService {
       throw new ForbiddenException('Access denied to payment receipt');
     }
 
-    const amountBdt = (Number(order.amountMinor) / 100).toFixed(2);
+    const invoice = this.invoicesService
+      ? await this.invoicesService.getInvoiceForOrder(user, order.id)
+      : null;
 
     return {
-      receiptId: `REC-${order.id.slice(0, 8).toUpperCase()}`,
+      receiptId: invoice?.invoiceNumber ?? `REC-${order.id.slice(0, 8).toUpperCase()}`,
+      invoiceId: invoice?.id ?? null,
+      invoiceNumber: invoice?.invoiceNumber ?? null,
       orderId: order.id,
       bookingId: order.bookingId,
-      payerName: order.payerUser?.displayName || 'Valued Guardian/Student',
-      studentName: order.booking?.studentUser?.displayName || 'Student',
-      tutorName: 'Verified OgroniEdu Tutor',
-      subjectName: order.booking?.subject?.nameEn || 'Tutoring Course',
-      amountBdt,
+      payerName: order.payerUser?.displayName ?? '—',
+      studentName: order.booking?.studentUser?.displayName ?? '—',
+      tutorName: order.booking?.tutorProfile?.user?.displayName ?? '—',
+      subjectName: order.booking?.subject?.nameEn ?? '—',
+      amountBdt: minorToBdtString(order.amountMinor),
       amountMinor: Number(order.amountMinor),
       currency: order.currency,
       status: order.status,
@@ -262,12 +291,9 @@ export class PaymentOrdersService {
     return order;
   }
 
-  /**
-   * List payment orders accessible to the current user (as payer, student, linked guardian, or admin)
-   */
   async getMyPaymentOrders(user: AuthenticatedUser): Promise<PaymentOrderEntity[]> {
     if (isAdminRole(user)) {
-      return await this.orderRepo.find({
+      return this.orderRepo.find({
         relations: {
           booking: {
             subject: true,
@@ -286,7 +312,7 @@ export class PaymentOrdersService {
     const childIds = await this.guardianAccess.findActiveStudentIds(user.id);
     const studentIds = [user.id, ...childIds];
 
-    return await this.orderRepo
+    return this.orderRepo
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.booking', 'booking')
       .leftJoinAndSelect('booking.subject', 'subject')
