@@ -505,6 +505,7 @@ export class TutorSearchService {
       .innerJoin(UserEntity, 'u', 'u.id = tp.user_id')
       .where('tp.publication_status = :published', { published: 'published' })
       .andWhere('tp.verification_status = :approved', { approved: 'approved' })
+      .andWhere("tp.safety_hold_status != 'safety_hold'")
       .andWhere('(tp.verification_expires_at IS NULL OR tp.verification_expires_at > :now)', {
         now: new Date(),
       })

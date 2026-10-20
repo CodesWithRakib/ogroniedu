@@ -3,6 +3,17 @@ import { z } from 'zod';
 /** Trust & safety contracts. Mirrors trust/dto (create shapes). */
 
 export const SafetyCategories = [
+  'general_complaint',
+  'tutor_conduct',
+  'student_guardian_conduct',
+  'inappropriate_communication',
+  'harassment_bullying',
+  'discrimination',
+  'abuse_exploitation',
+  'physical_safety',
+  'privacy_data_exposure',
+  'booking_dispute',
+  'payment_refund',
   'harassment',
   'child_safety',
   'inappropriate_content',
@@ -38,6 +49,10 @@ export const CreateSafetyReportSchema = z.object({
   severity: z.enum(SafetySeverities).optional(),
   description: z.string().min(10).max(5000),
   evidenceAssetIds: z.array(z.string().uuid()).optional(),
+  isConfidential: z.boolean().optional(),
+  preferredContactMethod: z.enum(['in_app', 'email', 'phone', 'emergency_only']).optional(),
+  incidentDate: z.string().optional(),
+  conflictUserIds: z.array(z.string().uuid()).optional(),
 });
 export type CreateSafetyReportInput = z.infer<typeof CreateSafetyReportSchema>;
 
@@ -63,9 +78,16 @@ export type TutorReplyInput = z.infer<typeof TutorReplySchema>;
 
 export const SafetyStatuses = [
   'submitted',
+  'triaged',
+  'assigned',
+  'under_review',
   'under_investigation',
+  'awaiting_information',
   'escalated',
   'action_taken',
+  'resolved',
+  'closed',
+  'reopened',
   'dismissed',
 ] as const;
 export const EscalationLevels = ['standard', 'urgent_child_safety', 'legal_review'] as const;
@@ -94,19 +116,66 @@ export const UpdateReplacementCaseSchema = z.object({
 });
 export type UpdateReplacementCaseInput = z.infer<typeof UpdateReplacementCaseSchema>;
 
+export interface SafetyCaseMessageRecord {
+  id: string;
+  reportId: string;
+  senderUserId: string;
+  message: string;
+  isInternalNote: boolean;
+  attachmentAssetIds: string[];
+  createdAt: string;
+  sender?: {
+    id: string;
+    displayName: string;
+    role?: string;
+  };
+}
+
+export interface SafetyCaseEventRecord {
+  id: string;
+  reportId: string;
+  actorUserId?: string | null;
+  eventType: string;
+  eventPayload?: Record<string, unknown> | null;
+  createdAt: string;
+  actor?: {
+    id: string;
+    displayName: string;
+  };
+}
+
+export interface SafetyActionRecord {
+  id: string;
+  reportId: string;
+  targetUserId: string;
+  actionType: string;
+  reason: string;
+  isActive: boolean;
+  expiresAt?: string | null;
+  revokedAt?: string | null;
+  createdAt: string;
+}
+
 export interface SafetyReportRecord {
   id: string;
   reporterUserId: string;
   reportedUserId: string | null;
   bookingId: string | null;
+  sessionId?: string | null;
   category: (typeof SafetyCategories)[number];
   severity: (typeof SafetySeverities)[number];
   description: string;
   evidenceAssetIds: string[];
   status: (typeof SafetyStatuses)[number];
   escalationLevel: (typeof EscalationLevels)[number];
+  assignedTo?: string | null;
+  isConfidential?: boolean;
+  preferredContactMethod?: string;
+  incidentDate?: string | null;
+  conflictUserIds?: string[];
   policyVersion: string;
   resolutionNotes?: string | null;
+  resolvedBy?: string | null;
   resolvedAt?: string | null;
   createdAt: string;
   updatedAt: string;
@@ -118,6 +187,13 @@ export interface SafetyReportRecord {
     id: string;
     displayName: string;
   };
+  assignedInvestigator?: {
+    id: string;
+    displayName: string;
+  };
+  messages?: SafetyCaseMessageRecord[];
+  events?: SafetyCaseEventRecord[];
+  actions?: SafetyActionRecord[];
 }
 
 export interface ReplacementCaseRecord {

@@ -143,6 +143,52 @@ export interface CreateReplacementRequest {
   explanation: string;
 }
 
+export interface BookingDisputeView {
+  id: string;
+  bookingId: string;
+  disputedBy: string;
+  reasonCode: string;
+  description: string;
+  evidenceAssetIds: string[];
+  disputedAmountMinor: string | null;
+  status: string;
+  assignedTo: string | null;
+  resolutionNotes: string | null;
+  resolutionType: string | null;
+  refundId: string | null;
+  resolvedBy: string | null;
+  resolvedAt: string | null;
+  policyVersion: string;
+  createdAt: string;
+  updatedAt: string;
+  booking?: {
+    id: string;
+    status: string;
+    pricePerSessionMinor: string;
+    studentUserId: string;
+    requesterUserId: string;
+    tutorUserId: string;
+    subject?: { name: string; nameBn?: string };
+    tutorProfile?: { user?: { displayName?: string } };
+  };
+  disputant?: { id: string; displayName: string };
+  resolver?: { id: string; displayName: string };
+}
+
+export interface CreateDisputeRequest {
+  bookingId: string;
+  reasonCode: string;
+  description: string;
+  disputedAmountMinor?: string | number;
+  evidenceAssetIds?: string[];
+}
+
+export interface ResolveDisputeRequest {
+  resolutionType: 'refund' | 'tutor_upheld' | 'partial_refund' | 'replacement' | 'dismissed';
+  resolutionNotes: string;
+  refundAmountMinor?: string | number;
+}
+
 export const trustApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     getEligibleBookings: builder.query<{ success: boolean; data: EligibleBookingItem[] }, void>({
@@ -315,6 +361,153 @@ export const trustApi = baseApi.injectEndpoints({
         { type: 'Notification', id: 'LIST' },
       ],
     }),
+    getDisputes: builder.query<
+      { success: boolean; data: BookingDisputeView[]; total: number; page: number; pageSize: number },
+      { status?: string; page?: number; pageSize?: number } | void
+    >({
+      query: (params) => ({ url: '/api/v1/disputes', params: params ?? undefined }),
+      providesTags: [{ type: 'BookingDispute' as any, id: 'LIST' }],
+    }),
+    getDisputeById: builder.query<{ success: boolean; data: BookingDisputeView }, string>({
+      query: (id) => `/api/v1/disputes/${id}`,
+      providesTags: (_r, _e, id) => [{ type: 'BookingDispute' as any, id }],
+    }),
+    createDispute: builder.mutation<
+      { success: boolean; data: BookingDisputeView },
+      CreateDisputeRequest
+    >({
+      query: (body) => ({ url: '/api/v1/disputes', method: 'POST', body }),
+      invalidatesTags: [
+        { type: 'BookingDispute' as any, id: 'LIST' },
+        { type: 'BookingRequest', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
+    resolveDispute: builder.mutation<
+      { success: boolean; data: BookingDisputeView },
+      { id: string; body: ResolveDisputeRequest }
+    >({
+      query: ({ id, body }) => ({
+        url: `/api/v1/disputes/${id}/resolve`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: [
+        { type: 'BookingDispute' as any, id: 'LIST' },
+        { type: 'BookingRequest', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
+    applyProtectiveSafetyHold: builder.mutation<
+      { success: boolean; data: SafetyReportRecord },
+      { reportId: string; reason: string }
+    >({
+      query: ({ reportId, reason }) => ({
+        url: `/api/v1/safety-reports/${reportId}/protective-hold`,
+        method: 'POST',
+        body: { reason },
+      }),
+      invalidatesTags: [
+        { type: 'SafetyReport' as any, id: 'LIST' },
+        { type: 'Tutor', id: 'LIST' },
+      ],
+    }),
+    releaseProtectiveSafetyHold: builder.mutation<
+      { success: boolean; data: SafetyReportRecord },
+      string
+    >({
+      query: (reportId) => ({
+        url: `/api/v1/safety-reports/${reportId}/protective-hold/release`,
+        method: 'PATCH',
+      }),
+      invalidatesTags: [
+        { type: 'SafetyReport' as any, id: 'LIST' },
+        { type: 'Tutor', id: 'LIST' },
+      ],
+    }),
+    assignCase: builder.mutation<
+      SafetyReportRecord,
+      { reportId: string; assignedTo: string; reason?: string }
+    >({
+      query: ({ reportId, assignedTo, reason }) => ({
+        url: `/api/v1/safety-reports/${reportId}/assign`,
+        method: 'POST',
+        body: { assignedTo, reason },
+      }),
+      invalidatesTags: [
+        { type: 'SafetyReport' as any, id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
+    addCaseMessage: builder.mutation<
+      unknown,
+      { reportId: string; message: string; isInternalNote?: boolean; attachmentAssetIds?: string[] }
+    >({
+      query: ({ reportId, ...body }) => ({
+        url: `/api/v1/safety-reports/${reportId}/messages`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_r, _e, arg) => [
+        { type: 'SafetyReport' as any, id: arg.reportId },
+        { type: 'SafetyReport' as any, id: 'LIST' },
+      ],
+    }),
+    updateCaseStatus: builder.mutation<
+      SafetyReportRecord,
+      { reportId: string; status: string; reason?: string }
+    >({
+      query: ({ reportId, status, reason }) => ({
+        url: `/api/v1/safety-reports/${reportId}/status`,
+        method: 'PATCH',
+        body: { status, reason },
+      }),
+      invalidatesTags: (_r, _e, arg) => [
+        { type: 'SafetyReport' as any, id: arg.reportId },
+        { type: 'SafetyReport' as any, id: 'LIST' },
+      ],
+    }),
+    applyCaseSafetyAction: builder.mutation<
+      unknown,
+      { reportId: string; actionType: string; targetUserId: string; reason: string; expiresAt?: string }
+    >({
+      query: ({ reportId, ...body }) => ({
+        url: `/api/v1/safety-reports/${reportId}/actions`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [
+        { type: 'SafetyReport' as any, id: 'LIST' },
+        { type: 'Tutor', id: 'LIST' },
+      ],
+    }),
+    resolveSafetyCase: builder.mutation<
+      SafetyReportRecord,
+      { reportId: string; resolutionNotes: string; status?: string; outcomeType?: string }
+    >({
+      query: ({ reportId, ...body }) => ({
+        url: `/api/v1/safety-reports/${reportId}/resolve`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: [
+        { type: 'SafetyReport' as any, id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
+    reopenSafetyCase: builder.mutation<
+      SafetyReportRecord,
+      { reportId: string; reason: string }
+    >({
+      query: ({ reportId, reason }) => ({
+        url: `/api/v1/safety-reports/${reportId}/reopen`,
+        method: 'POST',
+        body: { reason },
+      }),
+      invalidatesTags: [
+        { type: 'SafetyReport' as any, id: 'LIST' },
+      ],
+    }),
   }),
   overrideExisting: false,
 });
@@ -339,4 +532,16 @@ export const {
   useCancelReplacementCaseMutation,
   useExtendReplacementDeadlineMutation,
   useRunReplacementOverdueSweepMutation,
+  useGetDisputesQuery,
+  useGetDisputeByIdQuery,
+  useCreateDisputeMutation,
+  useResolveDisputeMutation,
+  useApplyProtectiveSafetyHoldMutation,
+  useReleaseProtectiveSafetyHoldMutation,
+  useAssignCaseMutation,
+  useAddCaseMessageMutation,
+  useUpdateCaseStatusMutation,
+  useApplyCaseSafetyActionMutation,
+  useResolveSafetyCaseMutation,
+  useReopenSafetyCaseMutation,
 } = trustApi;

@@ -18,6 +18,7 @@ import {
   GraduationCap,
   Sparkles,
   Star,
+  Scale,
 } from 'lucide-react';
 import { useAppSelector } from '@/store';
 import { Button, LoadingSpinner, EmptyState, Alert, AlertDescription } from '@/components/ui';
@@ -28,7 +29,7 @@ import {
   useWithdrawBookingRequestMutation,
 } from '@/store/services/bookings-api';
 import { useGetSessionsQuery, useLazyGetIcsCalendarQuery } from '@/store/services/sessions-api';
-import { SafetyReportModal, TutorReplacementModal, ReviewModal } from '@/features/trust';
+import { SafetyReportModal, TutorReplacementModal, ReviewModal, DisputeModal } from '@/features/trust';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDate } from '@/lib/format';
@@ -81,6 +82,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
   const [safetyModalOpen, setSafetyModalOpen] = useState(false);
   const [replacementModalOpen, setReplacementModalOpen] = useState(false);
   const [reviewModalOpen, setReviewModalOpen] = useState(false);
+  const [disputeModalOpen, setDisputeModalOpen] = useState(false);
   const [actionMessage, setActionMessage] = useState<string | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -442,6 +444,19 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 {isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacement'}
               </Button>
 
+              {!isTutor && ['confirmed', 'in_progress', 'completed'].includes(status) && (
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setDisputeModalOpen(true)}
+                  className="border-warning/50 text-warning hover:bg-warning/10 text-xs"
+                  data-testid="open-dispute-modal-btn"
+                >
+                  <Scale className="w-3.5 h-3.5 mr-1.5" />
+                  {isBn ? 'বিরোধ দায়ের / রিফান্ড' : 'File Dispute'}
+                </Button>
+              )}
+
               {!isTutor && (
                 <Button
                   size="sm"
@@ -457,6 +472,26 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
             </div>
           </div>
         </div>
+
+        {/* Active Dispute Warning Banner */}
+        {status === 'disputed' && (
+          <div
+            className="p-4 rounded-2xl border border-warning/40 bg-warning/10 text-foreground flex items-center gap-3 animate-in fade-in"
+            data-testid="booking-disputed-banner"
+          >
+            <Scale className="w-5 h-5 text-warning shrink-0" />
+            <div className="space-y-0.5 text-xs">
+              <span className="font-bold text-warning-foreground">
+                {isBn ? 'সক্রিয় বিরোধ পর্যালোচনা চলছে' : 'Active Dispute Under Review'}
+              </span>
+              <p className="text-muted-foreground text-[11px] leading-relaxed">
+                {isBn
+                  ? 'এই বুকিংটির বিপরীতে একটি বিরোধ অভিযোগ তদন্তাধীন রয়েছে। সমাধান না হওয়া পর্যন্ত সমস্ত আর্থিক এসক্রো রিলিজ স্থগিত থাকবে।'
+                  : 'A formal dispute is being investigated for this booking. Escrow releases to the tutor are frozen until resolved.'}
+              </p>
+            </div>
+          </div>
+        )}
 
         {/* 4 KPI Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
@@ -774,6 +809,18 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
           bookingId={bookingId}
           tutorName={tutorName}
           subjectName={subjectName}
+          locale={locale}
+        />
+
+        <DisputeModal
+          isOpen={disputeModalOpen}
+          onClose={() => {
+            setDisputeModalOpen(false);
+            refetchBooking();
+          }}
+          bookingId={bookingId}
+          tutorName={tutorName}
+          priceBdt={priceBdt}
           locale={locale}
         />
       </div>

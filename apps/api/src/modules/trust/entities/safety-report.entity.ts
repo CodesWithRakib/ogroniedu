@@ -5,12 +5,28 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   ManyToOne,
+  OneToMany,
   JoinColumn,
 } from 'typeorm';
 import { UserEntity } from '../../auth/entities/user.entity';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
+import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
+import { SafetyCaseMessageEntity } from './safety-case-message.entity';
+import { SafetyCaseEventEntity } from './safety-case-event.entity';
+import { SafetyActionEntity } from './safety-action.entity';
 
 export type SafetyCategory =
+  | 'general_complaint'
+  | 'tutor_conduct'
+  | 'student_guardian_conduct'
+  | 'inappropriate_communication'
+  | 'harassment_bullying'
+  | 'discrimination'
+  | 'abuse_exploitation'
+  | 'physical_safety'
+  | 'privacy_data_exposure'
+  | 'booking_dispute'
+  | 'payment_refund'
   | 'harassment'
   | 'child_safety'
   | 'inappropriate_content'
@@ -22,9 +38,21 @@ export type SafetyCategory =
 export type SafetySeverity = 'low' | 'medium' | 'high' | 'critical';
 
 export type SafetyStatus =
-  'submitted' | 'under_investigation' | 'escalated' | 'action_taken' | 'dismissed';
+  | 'submitted'
+  | 'triaged'
+  | 'assigned'
+  | 'under_review'
+  | 'under_investigation'
+  | 'awaiting_information'
+  | 'escalated'
+  | 'action_taken'
+  | 'resolved'
+  | 'closed'
+  | 'reopened'
+  | 'dismissed';
 
 export type EscalationLevel = 'standard' | 'urgent_child_safety' | 'legal_review';
+export type ContactMethod = 'in_app' | 'email' | 'phone' | 'emergency_only';
 
 @Entity('safety_reports')
 export class SafetyReportEntity {
@@ -39,6 +67,9 @@ export class SafetyReportEntity {
 
   @Column('uuid', { name: 'booking_id', nullable: true })
   bookingId?: string | null;
+
+  @Column('uuid', { name: 'session_id', nullable: true })
+  sessionId?: string | null;
 
   @Column({ type: 'text' })
   category!: SafetyCategory;
@@ -61,6 +92,21 @@ export class SafetyReportEntity {
     default: 'standard',
   })
   escalationLevel!: EscalationLevel;
+
+  @Column('uuid', { name: 'assigned_to', nullable: true })
+  assignedTo?: string | null;
+
+  @Column({ name: 'is_confidential', type: 'boolean', default: true })
+  isConfidential!: boolean;
+
+  @Column({ name: 'preferred_contact_method', type: 'text', default: 'in_app' })
+  preferredContactMethod!: ContactMethod;
+
+  @Column({ name: 'incident_date', type: 'timestamptz', nullable: true })
+  incidentDate?: Date | null;
+
+  @Column('uuid', { array: true, name: 'conflict_user_ids', default: () => "'{}'" })
+  conflictUserIds!: string[];
 
   @Column({ name: 'resolution_notes', type: 'text', nullable: true })
   resolutionNotes?: string | null;
@@ -96,7 +142,24 @@ export class SafetyReportEntity {
   @JoinColumn({ name: 'booking_id' })
   booking?: BookingEntity;
 
+  @ManyToOne(() => BookingSessionEntity, { nullable: true, onDelete: 'SET NULL' })
+  @JoinColumn({ name: 'session_id' })
+  session?: BookingSessionEntity;
+
+  @ManyToOne(() => UserEntity, { nullable: true })
+  @JoinColumn({ name: 'assigned_to' })
+  assignedInvestigator?: UserEntity;
+
   @ManyToOne(() => UserEntity, { nullable: true })
   @JoinColumn({ name: 'resolved_by' })
   resolver?: UserEntity;
+
+  @OneToMany(() => SafetyCaseMessageEntity, (m) => m.report)
+  messages?: SafetyCaseMessageEntity[];
+
+  @OneToMany(() => SafetyCaseEventEntity, (e) => e.report)
+  events?: SafetyCaseEventEntity[];
+
+  @OneToMany(() => SafetyActionEntity, (a) => a.report)
+  actions?: SafetyActionEntity[];
 }

@@ -168,6 +168,7 @@ export const baseApi = createApi({
     'SupportTicket',
     'Review',
     'SafetyReport',
+    'BookingDispute',
     'ReplacementCase',
     'AdminDashboard',
     'AdminUser',

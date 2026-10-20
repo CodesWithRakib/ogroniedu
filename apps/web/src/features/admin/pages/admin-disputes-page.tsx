@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
-import { CreditCard, LifeBuoy, CheckCircle2, ArrowUpDown } from 'lucide-react';
+import { CreditCard, LifeBuoy, CheckCircle2, ArrowUpDown, Scale, ShieldAlert } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner, Alert, AlertDescription } from '@/components/ui';
 import type { Locale } from '@/lib/i18n';
@@ -10,13 +10,15 @@ import { useAdminDashboard } from '../hooks/use-admin-dashboard';
 import { useAdminActions } from '../hooks/use-admin-actions';
 import { AdminReconciliationTab } from '../components/tabs/adminReconciliationTab';
 import { AdminSupportTab } from '../components/tabs/adminSupportTab';
+import { AdminDisputesTab } from '../components/tabs/adminDisputesTab';
+import { AdminSafetyTab } from '../components/tabs/adminSafetyTab';
 
 export function AdminDisputesPage({ locale }: { locale: Locale }) {
   const t = useTranslations('admin');
   const admin = useAdminDashboard(locale);
-  const [subSection, setSubSection] = React.useState<'reconciliation' | 'support'>(
-    'reconciliation',
-  );
+  const [subSection, setSubSection] = React.useState<
+    'disputes' | 'safety' | 'reconciliation' | 'support'
+  >('disputes');
 
   const actions = useAdminActions({
     initialReconciliation: admin.reconciliation,
@@ -71,28 +73,54 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Sub-section Switcher */}
-            <div className="flex bg-surface/80 p-1 rounded-2xl border border-border">
+            <div className="flex flex-wrap bg-surface/80 p-1 rounded-2xl border border-border gap-1">
+              <button
+                onClick={() => setSubSection('disputes')}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                  subSection === 'disputes'
+                    ? 'bg-primary text-primary-foreground shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                data-testid="tab-disputes-btn"
+              >
+                <Scale className="w-3.5 h-3.5" />
+                {locale === 'bn' ? 'বুকিং বিরোধ' : 'Booking Disputes'}
+              </button>
+              <button
+                onClick={() => setSubSection('safety')}
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                  subSection === 'safety'
+                    ? 'bg-primary text-primary-foreground shadow-xs'
+                    : 'text-muted-foreground hover:text-foreground'
+                }`}
+                data-testid="tab-safety-btn"
+              >
+                <ShieldAlert className="w-3.5 h-3.5" />
+                {locale === 'bn' ? 'শিশু সুরক্ষা' : 'Child Safety'}
+              </button>
               <button
                 onClick={() => setSubSection('reconciliation')}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                   subSection === 'reconciliation'
                     ? 'bg-primary text-primary-foreground shadow-xs'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
+                data-testid="tab-reconciliation-btn"
               >
                 <CreditCard className="w-3.5 h-3.5" />
                 {locale === 'bn' ? 'লেজার হিসাব' : 'Ledger Accounts'}
               </button>
               <button
                 onClick={() => setSubSection('support')}
-                className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
                   subSection === 'support'
                     ? 'bg-primary text-primary-foreground shadow-xs'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
+                data-testid="tab-support-btn"
               >
                 <LifeBuoy className="w-3.5 h-3.5" />
-                {locale === 'bn' ? 'বিরোধ ও সাপোর্ট টিকেট' : 'Dispute Tickets'}
+                {locale === 'bn' ? 'সাপোর্ট টিকিট' : 'Support Tickets'}
                 {openTicketsCount > 0 && <span className="w-2 h-2 rounded-full bg-warning" />}
               </button>
             </div>
@@ -141,13 +169,16 @@ export function AdminDisputesPage({ locale }: { locale: Locale }) {
 
           {/* Content Card based on subSection */}
           <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
-            {subSection === 'reconciliation' ? (
+            {subSection === 'disputes' && <AdminDisputesTab locale={locale} />}
+            {subSection === 'safety' && <AdminSafetyTab locale={locale} />}
+            {subSection === 'reconciliation' && (
               <AdminReconciliationTab
                 reconciliation={actions.reconciliation}
                 onRunAudit={actions.rerunReconciliation}
                 locale={locale}
               />
-            ) : (
+            )}
+            {subSection === 'support' && (
               <AdminSupportTab
                 tickets={actions.tickets}
                 onUpdateStatus={actions.updateTicketStatus}

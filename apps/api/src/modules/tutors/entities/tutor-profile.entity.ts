@@ -16,6 +16,7 @@ import { TutorServiceAreaEntity } from './tutor-service-area.entity';
 import { TutorAvailabilityEntity } from './tutor-availability.entity';
 
 export type TeachingMode = 'in_person' | 'online' | 'hybrid';
+export type SafetyHoldStatus = 'clear' | 'under_investigation' | 'safety_hold';
 /**
  * Profile-level status is DERIVED from `tutor_verification_levels` (Phase 02).
  * The union mirrors the shared contract so schema, API and UI cannot drift.
@@ -92,6 +93,12 @@ export class TutorProfileEntity {
 
   @Column({ name: 'verification_policy_version', type: 'text', nullable: true })
   verificationPolicyVersion!: string | null;
+
+  @Column({ name: 'safety_hold_status', type: 'text', default: 'clear' })
+  safetyHoldStatus!: SafetyHoldStatus;
+
+  @Column({ name: 'safety_hold_reason', type: 'text', nullable: true })
+  safetyHoldReason?: string | null;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;

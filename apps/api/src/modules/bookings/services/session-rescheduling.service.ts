@@ -12,6 +12,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { BookingSessionEntity, CancellationAssessment } from '../entities/booking-session.entity';
 import { BookingEntity } from '../entities/booking.entity';
+import { TutorProfileEntity } from '../../tutors/entities/tutor-profile.entity';
 import { OutboxEventEntity } from '../entities/outbox-event.entity';
 import { AuditService } from '../../audit/audit.service';
 import { NotificationService } from '../../notifications/notification.service';
@@ -64,6 +65,9 @@ export class SessionReschedulingService {
     @Optional()
     @Inject(forwardRef(() => GuardianAccessService))
     private readonly guardianAccess?: GuardianAccessService,
+    @Optional()
+    @InjectRepository(TutorProfileEntity)
+    private readonly tutorProfileRepo?: Repository<TutorProfileEntity>,
   ) {}
 
   async rescheduleSession(
@@ -287,6 +291,18 @@ export class SessionReschedulingService {
       throw new ForbiddenException(
         'Only the assigned tutor or an administrator can start a session.',
       );
+    }
+
+    // Safety Invariant: Check if tutor is under active protective safety hold
+    if (this.tutorProfileRepo) {
+      const tutorProfile = await this.tutorProfileRepo.findOne({
+        where: { userId: session.tutorUserId },
+      });
+      if (tutorProfile?.safetyHoldStatus === 'safety_hold') {
+        throw new ForbiddenException(
+          'Session cannot be started: Tutor is under an active protective safety hold pending investigation.',
+        );
+      }
     }
 
     if (session.booking && !['confirmed', 'in_progress'].includes(session.booking.status)) {

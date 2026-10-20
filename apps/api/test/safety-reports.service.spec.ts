@@ -6,6 +6,7 @@ import type { AuthenticatedUser } from '../src/common/decorators/current-user.de
 describe('SafetyReportsService Unit Tests (Phase 13)', () => {
   let service: SafetyReportsService;
   let mockReportRepo: any;
+  let mockTutorProfileRepo: any;
   let mockOutboxRepo: any;
   let mockAuditRepo: any;
   let mockNotificationService: any;
@@ -50,15 +51,65 @@ describe('SafetyReportsService Unit Tests (Phase 13)', () => {
       save: vi.fn().mockResolvedValue({ id: 'aud-1' }),
     };
 
+    mockTutorProfileRepo = {
+      findOne: vi.fn(),
+      save: vi.fn().mockImplementation((p) => Promise.resolve(p)),
+    };
+
     mockNotificationService = {
       dispatch: vi.fn().mockResolvedValue({ id: 'notif-1' }),
     };
 
+    const mockMessageRepo = {
+      create: vi.fn((data) => ({ id: 'msg-1', ...data })),
+      save: vi.fn((data) => Promise.resolve(data)),
+      find: vi.fn().mockResolvedValue([]),
+    };
+
+    const mockEventRepo = {
+      create: vi.fn((data) => ({ id: 'evt-1', ...data })),
+      save: vi.fn((data) => Promise.resolve(data)),
+    };
+
+    const mockActionRepo = {
+      create: vi.fn((data) => ({ id: 'act-1', ...data })),
+      save: vi.fn((data) => Promise.resolve(data)),
+      findOne: vi.fn().mockResolvedValue(null),
+    };
+
+    const mockFilesService = {
+      issueSignedAccess: vi.fn().mockResolvedValue({
+        file: { id: 'asset-1' },
+        signedUrl: 'https://cdn.example.com/signed/asset-1',
+        expiresAt: '2026-10-21T00:00:00Z',
+      }),
+    };
+
+    const mockDataSource = {
+      transaction: vi.fn(async (cb) => {
+        const manager = {
+          create: vi.fn((_cls, data) => ({ id: 'rep-1', ...data })),
+          save: vi.fn((_cls, data) => {
+            const entity = data || _cls;
+            return Promise.resolve({ id: entity.id || 'rep-1', ...entity });
+          }),
+          findOne: vi.fn().mockImplementation((_cls, _opts) => Promise.resolve(null)),
+        };
+        return cb(manager);
+      }),
+    };
+
     service = new SafetyReportsService(
-      mockReportRepo,
-      mockOutboxRepo,
-      mockAuditRepo,
-      mockNotificationService,
+      mockReportRepo as any,
+      mockMessageRepo as any,
+      mockEventRepo as any,
+      mockActionRepo as any,
+      mockTutorProfileRepo as any,
+      mockOutboxRepo as any,
+      mockAuditRepo as any,
+      mockNotificationService as any,
+      mockFilesService as any,
+      mockDataSource as any,
     );
   });
 

@@ -101,6 +101,12 @@ export class SettlementService {
       const booking = session.booking;
       if (!booking) throw new NotFoundException('Associated booking not found');
 
+      if (booking.status === 'disputed') {
+        throw new BadRequestException(
+          'Settlement blocked: Associated booking is currently in disputed status. Resolve dispute before settling milestone.',
+        );
+      }
+
       const isParticipant =
         user.id === booking.studentUserId ||
         user.id === booking.requesterUserId ||

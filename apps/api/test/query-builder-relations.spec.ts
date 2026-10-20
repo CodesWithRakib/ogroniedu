@@ -25,6 +25,11 @@ import { PaymentRefundEntity } from '../src/modules/payments/entities/payment-re
 import { InstitutionEntity } from '../src/modules/taxonomy/entities/institution.entity';
 import { StreamEntity } from '../src/modules/taxonomy/entities/stream.entity';
 import { TutorReplacementCaseEntity } from '../src/modules/trust/entities/tutor-replacement-case.entity';
+import { BookingDisputeEntity } from '../src/modules/trust/entities/booking-dispute.entity';
+import { SafetyReportEntity } from '../src/modules/trust/entities/safety-report.entity';
+import { SafetyCaseMessageEntity } from '../src/modules/trust/entities/safety-case-message.entity';
+import { SafetyCaseEventEntity } from '../src/modules/trust/entities/safety-case-event.entity';
+import { SafetyActionEntity } from '../src/modules/trust/entities/safety-action.entity';
 
 const ENTITIES = [
   BookingEntity,
@@ -47,6 +52,11 @@ const ENTITIES = [
   InstitutionEntity,
   StreamEntity,
   TutorReplacementCaseEntity,
+  BookingDisputeEntity,
+  SafetyReportEntity,
+  SafetyCaseMessageEntity,
+  SafetyCaseEventEntity,
+  SafetyActionEntity,
 ] as const;
 
 type EntityCtor = { name: string };
