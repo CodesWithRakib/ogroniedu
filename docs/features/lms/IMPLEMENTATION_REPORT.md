@@ -316,7 +316,46 @@ The web frontend (`apps/web`) provides role-tailored, premium interfaces rendere
 
 ---
 
-## 12. Conclusion & Operational Readiness
+## 12. Implementation Decisions Requiring Product-Owner Approval
+
+While all features in Phase 06 have been implemented to high engineering and fintech security standards, the following specific business policies and operational limits represent intentional implementation decisions that should be reviewed and formally signed off by the Product Owner:
+
+### Decision 1: Attendance Correction Window (72 Hours)
+- **Implemented:** Tutors can adjust attendance for up to 72 hours after session scheduled end time, requiring a non-empty `correctionReason`. Past 72 hours, records are locked and require an administrator or support agent to modify.
+- **For PO Approval:**
+  1. Confirm if 72 hours is the desired duration (alternative: 24h or 48h).
+  2. Confirm whether an in-app student/guardian "Contest Attendance" flow is needed, or if notification + support ticket escalation remains the standard dispute channel.
+
+### Decision 2: Attendance Rate Calculation Weighting
+- **Implemented:** Formula is `(present + late) / (present + late + absent) * 100`. Excused absences are omitted from the denominator. When total attendance records are 0, the UI returns `null` ("—" / "Not enough data yet") rather than 100% or 0%.
+- **For PO Approval:**
+  1. Confirm whether `late` should count as full attendance (1.0), partial (0.5), or if a tardiness threshold should be introduced for student streak gamification.
+  2. Confirm the honest `null` empty-state display policy.
+
+### Decision 3: Separation of Session Completion and Financial Escrow Release
+- **Implemented:** Marking a session as `completed` verifies attendance, updates the session lifecycle, logs actual start/end timestamps, and emits an idempotent outbox event (`session.completed:<id>`). It does **not** automatically release escrow funds to the tutor's payable balance. Escrow release remains an explicit Phase 05 financial service (`SettlementService.settleMilestone`) or scheduled settlement batch.
+- **For PO Approval:**
+  1. Confirm the retention of this manual/batched escrow release model vs. introducing an automated post-session settlement job (e.g. auto-release 48 hours post-completion if no dispute is filed).
+
+### Decision 4: Learning Material Upload Limits and Local Disk Storage
+- **Implemented:** Materials upload cap is strictly 10 MB per file, restricted to verified MIME types and magic-byte patterns (PDF, PNG, JPG, WEBP, ZIP, DOCX, PPTX, TXT), stored on local disk under `var/uploads/learning`, and served via authenticated streaming endpoint `GET /api/v1/learning/materials/:id/download`.
+- **For PO Approval:**
+  1. Approve the 10 MB file cap per upload.
+  2. Approve the plan to transition from local disk storage to S3-compatible cloud storage (Cloudflare R2 or AWS S3) before Phase 07 production deployment.
+
+### Decision 5: Learning Goals Creation and Achievement Protocol
+- **Implemented:** Tutors can create and manage learning goals. Setting a goal to `achieved` mandates non-empty `evidence` documentation. Terminal states (`achieved`, `not_achieved`, `cancelled`) cannot be reopened without administrative intervention.
+- **For PO Approval:**
+  1. Confirm whether students and guardians should be granted capability to propose goals for tutor review, or remain view-only consumers of progress milestones.
+
+### Decision 6: Assignment Resubmission Limit & Snapshotting Policy
+- **Implemented:** Resubmissions automatically create an immutable snapshot in `assignment_revisions` (capturing previous submission answer, score, feedback, and timestamp) before updating the active record. There is currently no hard cap on the number of resubmissions allowed before the assignment deadline.
+- **For PO Approval:**
+  1. Confirm whether tutors should be allowed to configure a maximum resubmission limit (e.g., max 3 attempts) per assignment.
+
+---
+
+## 13. Conclusion & Operational Readiness
 
 Phase 06 brings the complete learning lifecycle of OgroniEdu to production readiness:
 
