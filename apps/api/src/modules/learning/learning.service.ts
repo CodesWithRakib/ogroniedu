@@ -8,7 +8,9 @@ import {
   CreateAssignmentDto,
   SubmitAssignmentDto,
   GradeSubmissionDto,
+  ReturnSubmissionDto,
   CreateProgressReportDto,
+  LearningListQueryDto,
 } from './dto';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 
@@ -74,6 +76,32 @@ export class LearningService {
   }
   getAssignmentById(user: AuthenticatedUser, assignmentId: string) {
     return this.assignments.getAssignmentById(user, assignmentId);
+  }
+  listAssignments(user: AuthenticatedUser, query: LearningListQueryDto) {
+    return this.assignments.listAssignments(user, query);
+  }
+  publishAssignment(user: AuthenticatedUser, assignmentId: string, requestId?: string) {
+    return this.assignments.publishAssignment(user, assignmentId, requestId);
+  }
+  archiveAssignment(user: AuthenticatedUser, assignmentId: string, requestId?: string) {
+    return this.assignments.archiveAssignment(user, assignmentId, requestId);
+  }
+  listSubmissions(user: AuthenticatedUser, assignmentId: string) {
+    return this.assignments.listSubmissions(user, assignmentId);
+  }
+  getSubmissionById(user: AuthenticatedUser, submissionId: string) {
+    return this.assignments.getSubmissionById(user, submissionId);
+  }
+  listSubmissionRevisions(user: AuthenticatedUser, submissionId: string) {
+    return this.assignments.listSubmissionRevisions(user, submissionId);
+  }
+  returnSubmission(
+    user: AuthenticatedUser,
+    submissionId: string,
+    dto: ReturnSubmissionDto,
+    requestId?: string,
+  ) {
+    return this.assignments.returnSubmission(user, submissionId, dto, requestId);
   }
   getProgressReportById(user: AuthenticatedUser, reportId: string) {
     return this.progress.getProgressReportById(user, reportId);

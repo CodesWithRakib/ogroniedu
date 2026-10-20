@@ -37,6 +37,7 @@ export interface BookingOption {
   subjectName: string;
   tutorName: string;
   studentName: string;
+  studentUserId: string;
   status: string;
 }
 
@@ -65,7 +66,14 @@ export interface LearningRecordsState {
   creating: boolean;
   generating: boolean;
   refetch: () => void;
-  createAssignment: (input: { title: string; maxScore: number }) => Promise<void>;
+  createAssignment: (input: {
+    title: string;
+    instructions?: string;
+    dueAt?: string;
+    maxScore: number;
+    publishNow: boolean;
+  }) => Promise<void>;
+  activeBookingStudentId: string | null;
   submitAssignment: (assignmentId: string, data: { submissionText: string }) => Promise<void>;
   gradeSubmission: (submissionId: string, data: GradeSubmissionInput) => Promise<void>;
   generateReport: (data: GenerateReportInput) => Promise<void>;
@@ -83,12 +91,17 @@ export interface LearningRecordsState {
  * RTK hooks inline. Envelopes are unwrapped with the canonical parse helpers
  * and every failure surfaces a localized message plus field-level errors.
  */
-export function useLearningRecords(locale: Locale): LearningRecordsState {
+export function useLearningRecords(locale: Locale, studentId?: string): LearningRecordsState {
   const requests = useGetBookingRequestsQuery();
-  const rawItems = React.useMemo<BookingRequestItem[]>(
-    () => (requests.data ? parseOffsetCollection<BookingRequestItem>(requests.data).items : []),
-    [requests.data],
-  );
+  const rawItems = React.useMemo<BookingRequestItem[]>(() => {
+    const items = requests.data
+      ? parseOffsetCollection<BookingRequestItem>(requests.data).items
+      : [];
+    // A guardian's child scope narrows the booking picker; the per-booking
+    // learning query is keyed by booking id, so switching children fetches
+    // that child's records rather than reusing the previous cache entry.
+    return studentId ? items.filter((item) => item.studentUser?.id === studentId) : items;
+  }, [requests.data, studentId]);
 
   const bookingOptions = React.useMemo<BookingOption[]>(() => {
     return rawItems.map((r) => {
@@ -111,6 +124,7 @@ export function useLearningRecords(locale: Locale): LearningRecordsState {
         subjectName,
         tutorName,
         studentName,
+        studentUserId: r.studentUser?.id ?? '',
         status: r.status,
       };
     });
@@ -120,7 +134,9 @@ export function useLearningRecords(locale: Locale): LearningRecordsState {
 
   const [activeBookingId, setActiveBookingId] = React.useState<string>('');
   React.useEffect(() => {
-    if (!activeBookingId && bookingIds[0]) setActiveBookingId(bookingIds[0]);
+    if (!bookingIds.includes(activeBookingId)) {
+      setActiveBookingId(bookingIds[0] ?? '');
+    }
   }, [bookingIds, activeBookingId]);
 
   const records = useGetBookingLearningRecordsQuery(activeBookingId, {
@@ -187,13 +203,18 @@ export function useLearningRecords(locale: Locale): LearningRecordsState {
     refetch: () => {
       records.refetch();
     },
+    activeBookingStudentId:
+      bookingOptions.find((option) => option.id === activeBookingId)?.studentUserId ?? null,
     createAssignment: async (input) => {
       if (!activeBookingId) return;
       await runMutation(() =>
         createAssignment({
           bookingId: activeBookingId,
           title: input.title,
+          instructions: input.instructions,
+          dueAt: input.dueAt,
           maxScore: input.maxScore,
+          publishNow: input.publishNow,
         }).unwrap(),
       );
     },

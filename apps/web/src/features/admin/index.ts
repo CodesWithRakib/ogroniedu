@@ -5,6 +5,7 @@ export * from './pages/admin-verification-page';
 export * from './pages/admin-disputes-page';
 export * from './pages/admin-finance-page';
 export * from './pages/admin-bookings-page';
+export * from './pages/admin-learning-page';
 export * from './pages/admin-audit-logs-page';
 export * from './pages/admin-settings-page';
 export * from './pages/admin-taxonomy-page';

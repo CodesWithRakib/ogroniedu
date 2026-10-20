@@ -13,6 +13,7 @@ import {
   Inject,
   Res,
   Header,
+  Headers,
 } from '@nestjs/common';
 import type { Response } from 'express';
 import { AuthGuard } from '../../common/guards/auth.guard';
@@ -38,8 +39,16 @@ export class SessionsController {
   @Post('sessions')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  async scheduleSession(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateSessionDto) {
-    const session = await this.schedulingService.scheduleSession(user, dto);
+  async scheduleSession(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: CreateSessionDto,
+    @Headers('idempotency-key') idempotencyKey?: string,
+  ) {
+    const session = await this.schedulingService.scheduleSession(
+      user,
+      dto,
+      idempotencyKey?.trim() || undefined,
+    );
     return {
       success: true,
       message: 'Tutoring session scheduled successfully.',

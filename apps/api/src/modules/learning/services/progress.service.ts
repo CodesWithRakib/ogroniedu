@@ -3,33 +3,86 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  Logger,
+  Optional,
   Inject,
   forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, Between, In } from 'typeorm';
-import { SessionAttendanceEntity } from '../entities/session-attendance.entity';
+import { Repository } from 'typeorm';
+import { SessionAttendanceEntity, type AttendanceStatus } from '../entities/session-attendance.entity';
 import { AssignmentEntity } from '../entities/assignment.entity';
 import { AssignmentSubmissionEntity } from '../entities/assignment-submission.entity';
 import { ProgressReportEntity } from '../entities/progress-report.entity';
+import { LearningGoalEntity } from '../entities/learning-goal.entity';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
 import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
 import { AuditService } from '../../audit/audit.service';
+import { NotificationService } from '../../notifications/notification.service';
+import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { LearningAccessService } from './learning-access.service';
-import { CreateProgressReportDto } from '../dto';
+import { CreateProgressReportDto, AttendanceSummaryQueryDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { isAdminRole } from '../../../common/auth/role.utils';
 import type { StudentLearningSummary } from '../interfaces/student-learning-summary.interface';
+import {
+  computeAttendanceMetrics,
+  computeAverageScorePercent,
+  computeCompletionRate,
+} from '../utils/learning-metrics';
 
 export type { StudentLearningSummary } from '../interfaces/student-learning-summary.interface';
 
+export interface StudentProgressView {
+  studentUserId: string;
+  bookingId: string | null;
+  periodStart: string;
+  periodEnd: string;
+  sessions: {
+    completed: number;
+    upcoming: number;
+    cancelled: number;
+  };
+  attendance: ReturnType<typeof computeAttendanceMetrics> & { sessionsInPeriod: number };
+  assignments: {
+    published: number;
+    submitted: number;
+    reviewed: number;
+    completionRate: number | null;
+    averageScore: number | null;
+  };
+  attendanceTrend: Array<{ month: string; attendanceRate: number | null; recorded: number }>;
+  goals: Array<{
+    id: string;
+    title: string;
+    status: string;
+    targetDate: string | null;
+  }>;
+  recentFeedback: Array<{
+    submissionId: string;
+    assignmentId: string;
+    assignmentTitle: string;
+    score: number | null;
+    maxScore: number | null;
+    feedback: string;
+    reviewedAt: string;
+  }>;
+  latestReport: {
+    id: string;
+    periodStart: string;
+    periodEnd: string;
+    generatedAt: string;
+  } | null;
+}
+
 /**
- * Progress analytics: auditable progress reports computed from real
- * attendance/submission records, booking record aggregation, and
- * student learning summaries with verifiable metrics.
+ * Progress analytics computed exclusively from stored learning records.
+ * Formulas are documented in docs/features/lms/LEARNING_PROGRESS.md.
  */
 @Injectable()
 export class LearningProgressService {
+  private readonly logger = new Logger(LearningProgressService.name);
+
   constructor(
     @InjectRepository(ProgressReportEntity)
     private readonly progressReportRepo: Repository<ProgressReportEntity>,
@@ -47,11 +100,17 @@ export class LearningProgressService {
     private readonly access: LearningAccessService,
     @Inject(forwardRef(() => AuditService))
     private readonly auditService: AuditService,
+    @Optional()
+    @Inject(NotificationService)
+    private readonly notificationService?: NotificationService,
+    @Optional()
+    @InjectRepository(LearningGoalEntity)
+    private readonly goalsRepo?: Repository<LearningGoalEntity>,
+    @Optional()
+    @Inject(GuardianAccessService)
+    private readonly guardianAccess?: GuardianAccessService,
   ) {}
 
-  /**
-   * Generate an auditable progress report based on real database records
-   */
   async generateProgressReport(
     user: AuthenticatedUser,
     dto: CreateProgressReportDto,
@@ -66,10 +125,7 @@ export class LearningProgressService {
       throw new NotFoundException(`Booking ${dto.bookingId} not found`);
     }
 
-    // Only assigned tutor or admin can generate progress reports
-    const isTutor = booking.tutorUserId === user.id;
-    const isAdmin = isAdminRole(user);
-    if (!isTutor && !isAdmin) {
+    if (!isAdminRole(user) && booking.tutorUserId !== user.id) {
       throw new ForbiddenException(
         'Only the assigned tutor or admin can generate progress reports for this booking',
       );
@@ -81,61 +137,72 @@ export class LearningProgressService {
       throw new BadRequestException('periodEnd must be greater than or equal to periodStart');
     }
 
-    // 1. Calculate Attendance Rate from real DB sessions & attendance
     const sessions = await this.sessionRepo.find({
-      where: {
-        bookingId: booking.id,
-        startsAt: Between(startDate, endDate),
-      },
+      where: { bookingId: booking.id },
+      order: { startsAt: 'ASC' },
+      take: 500,
     });
+    const inPeriod = sessions.filter((session) => {
+      const at = new Date(session.startsAt).getTime();
+      return at >= startDate.getTime() && at <= endDate.getTime();
+    });
+    const eligibleSessions = inPeriod.filter(
+      (session) => !['cancelled', 'no_show'].includes(session.status),
+    );
 
-    let attendanceRate = 100.0;
-    if (sessions.length > 0) {
-      const sessionIds = sessions.map((s) => s.id);
-      const attendanceRecords = await this.attendanceRepo.find({
-        where: {
-          sessionId: In(sessionIds),
-          participantUserId: booking.studentUserId,
-        },
-      });
+    const attendanceRows =
+      inPeriod.length > 0
+        ? await this.attendanceRepo.find({
+            where: { participantUserId: booking.studentUserId },
+            take: 1000,
+          })
+        : [];
+    const sessionStarts = new Map(
+      inPeriod.map((session) => [session.id, new Date(session.startsAt).getTime()]),
+    );
+    const statuses: AttendanceStatus[] = attendanceRows
+      .filter((row) => {
+        const at = sessionStarts.get(row.sessionId);
+        return at !== undefined && at >= startDate.getTime() && at <= endDate.getTime();
+      })
+      .map((row) => row.attendanceStatus);
+    const attendanceMetrics = computeAttendanceMetrics(statuses, eligibleSessions.length);
 
-      if (attendanceRecords.length > 0) {
-        const attended = attendanceRecords.filter(
-          (a) => a.attendanceStatus === 'present' || a.attendanceStatus === 'late',
-        ).length;
-        attendanceRate = Number(((attended / attendanceRecords.length) * 100).toFixed(2));
-      }
-    }
-
-    // 2. Calculate Completed Assignments & Average Score from real submissions
     const assignments = await this.assignmentRepo.find({
       where: { bookingId: booking.id },
+      take: 500,
     });
-    const assignmentIds = assignments.map((a) => a.id);
+    const countedAssignments = assignments.filter(
+      (assignment) => assignment.status !== 'draft' && assignment.status !== 'archived',
+    );
+    const assignmentIds = new Set(countedAssignments.map((assignment) => assignment.id));
 
-    let assignmentsCompleted = 0;
-    let averageScore: number | null = null;
+    const submissions = await this.submissionRepo.find({
+      where: { studentUserId: booking.studentUserId },
+      take: 1000,
+    });
+    const periodSubmissions = submissions.filter((submission) => {
+      if (!assignmentIds.has(submission.assignmentId)) return false;
+      if (!submission.submittedAt) return true; // legacy rows predate the column default
+      const at = new Date(submission.submittedAt).getTime();
+      return at >= startDate.getTime() && at <= endDate.getTime();
+    });
 
-    if (assignmentIds.length > 0) {
-      const submissions = await this.submissionRepo.find({
-        where: {
-          assignmentId: In(assignmentIds),
-          studentUserId: booking.studentUserId,
-          submittedAt: Between(startDate, endDate),
-        },
-      });
-
-      assignmentsCompleted = submissions.filter((s) => s.status !== 'returned').length;
-
-      const scoredSubmissions = submissions.filter((s) => s.score !== null && s.maxScore);
-      if (scoredSubmissions.length > 0) {
-        const totalPct = scoredSubmissions.reduce(
-          (sum, sub) => sum + (Number(sub.score) / Number(sub.maxScore)) * 100,
-          0,
-        );
-        averageScore = Number((totalPct / scoredSubmissions.length).toFixed(2));
-      }
-    }
+    const assignmentsCompleted = periodSubmissions.filter(
+      (submission) => submission.status !== 'returned',
+    ).length;
+    const reviewed = periodSubmissions.filter((submission) => submission.status === 'reviewed');
+    const averageScore = computeAverageScorePercent(
+      reviewed.map((submission) => ({
+        score: submission.score !== null ? Number(submission.score) : null,
+        maxScore:
+          submission.maxScore !== null
+            ? Number(submission.maxScore)
+            : Number(
+                countedAssignments.find((a) => a.id === submission.assignmentId)?.maxScore ?? 0,
+              ),
+      })),
+    );
 
     const report = this.progressReportRepo.create({
       bookingId: booking.id,
@@ -143,7 +210,7 @@ export class LearningProgressService {
       tutorUserId: booking.tutorUserId,
       periodStart: dto.periodStart,
       periodEnd: dto.periodEnd,
-      attendanceRate,
+      attendanceRate: attendanceMetrics.attendanceRate ?? 0,
       assignmentsCompleted,
       averageScore,
       observableProgress: dto.observableProgress,
@@ -153,7 +220,6 @@ export class LearningProgressService {
 
     const saved = await this.progressReportRepo.save(report);
 
-    // Audit log
     await this.auditService.record({
       actorUserId: user.id,
       action: 'learning.progress_report_generated',
@@ -163,18 +229,17 @@ export class LearningProgressService {
       safeMetadata: {
         bookingId: booking.id,
         studentUserId: booking.studentUserId,
-        attendanceRate,
+        attendanceRate: attendanceMetrics.attendanceRate,
+        attendanceCoverage: attendanceMetrics.coverage,
         assignmentsCompleted,
         averageScore,
       },
     });
 
+    await this.notifyReportPublished(saved, booking);
     return saved;
   }
 
-  /**
-   * Get all learning records for a booking
-   */
   async getBookingLearningRecords(user: AuthenticatedUser, bookingId: string) {
     const booking = await this.bookingRepo.findOne({
       where: { id: bookingId },
@@ -191,39 +256,44 @@ export class LearningProgressService {
       where: { bookingId },
       relations: { submissions: { studentUser: true } },
       order: { createdAt: 'DESC' },
+      take: 100,
     });
 
     const sessions = await this.sessionRepo.find({
       where: { bookingId },
       order: { startsAt: 'DESC' },
+      take: 200,
     });
 
-    const sessionIds = sessions.map((s) => s.id);
+    const sessionIds = sessions.map((session) => session.id);
     const attendance =
       sessionIds.length > 0
         ? await this.attendanceRepo.find({
-            where: { sessionId: In(sessionIds) },
+            where: { participantUserId: booking.studentUserId },
             relations: { session: true },
             order: { recordedAt: 'DESC' },
+            take: 500,
           })
         : [];
 
     const progressReports = await this.progressReportRepo.find({
       where: { bookingId },
       order: { generatedAt: 'DESC' },
+      take: 50,
     });
 
     return {
       bookingId,
       assignments,
-      attendance,
+      attendance: attendance.filter((row) => sessionIds.includes(row.sessionId)),
       reports: progressReports,
       progressReports,
     };
   }
 
   /**
-   * Get student learning summary with verifiable metrics
+   * Legacy summary kept for the learning page. Uses the same formulas as
+   * getStudentProgress; bounded queries only.
    */
   async getStudentLearningSummary(
     user: AuthenticatedUser,
@@ -236,58 +306,215 @@ export class LearningProgressService {
         where: { participantUserId: studentUserId },
         relations: { session: true },
         order: { recordedAt: 'DESC' },
+        take: 500,
       }),
       this.assignmentRepo.find({
         where: { studentUserId },
         order: { createdAt: 'DESC' },
+        take: 200,
       }),
       this.submissionRepo.find({
         where: { studentUserId },
         relations: { assignment: true },
         order: { submittedAt: 'DESC' },
+        take: 200,
       }),
       this.progressReportRepo.find({
         where: { studentUserId },
         order: { generatedAt: 'DESC' },
+        take: 50,
       }),
     ]);
 
-    const totalSessionsRecorded = attendance.length;
-    const sessionsAttended = attendance.filter(
-      (a) => a.attendanceStatus === 'present' || a.attendanceStatus === 'late',
-    ).length;
-    const attendanceRate =
-      totalSessionsRecorded > 0
-        ? Number(((sessionsAttended / totalSessionsRecorded) * 100).toFixed(2))
-        : 100.0;
-
-    const assignmentsAssigned = assignments.length;
-    const assignmentsCompleted = submissions.filter((s) => s.status !== 'returned').length;
-
-    const scoredSubmissions = submissions.filter((s) => s.score !== null && s.maxScore);
-    let averageScore: number | null = null;
-    if (scoredSubmissions.length > 0) {
-      const totalPct = scoredSubmissions.reduce(
-        (acc, cur) => acc + (Number(cur.score) / Number(cur.maxScore)) * 100,
-        0,
-      );
-      averageScore = Number((totalPct / scoredSubmissions.length).toFixed(2));
-    }
+    const metrics = computeAttendanceMetrics(
+      attendance.map((row) => row.attendanceStatus),
+      attendance.length,
+    );
+    const publishedAssignments = assignments.filter(
+      (assignment) => assignment.status !== 'draft' && assignment.status !== 'archived',
+    );
+    const publishedIds = new Set(publishedAssignments.map((assignment) => assignment.id));
+    const relevantSubmissions = submissions.filter((s) => publishedIds.has(s.assignmentId));
+    const reviewed = relevantSubmissions.filter((s) => s.status === 'reviewed');
 
     return {
       studentUserId,
       metrics: {
-        totalSessionsRecorded,
-        sessionsAttended,
-        attendanceRate,
-        assignmentsAssigned,
-        assignmentsCompleted,
-        averageScore,
+        totalSessionsRecorded: metrics.recorded,
+        sessionsAttended: metrics.attended,
+        attendanceRate: metrics.attendanceRate ?? 0,
+        assignmentsAssigned: publishedAssignments.length,
+        assignmentsCompleted: relevantSubmissions.filter((s) => s.status !== 'returned').length,
+        averageScore: computeAverageScorePercent(
+          reviewed.map((submission) => ({
+            score: submission.score !== null ? Number(submission.score) : null,
+            maxScore:
+              submission.maxScore !== null
+                ? Number(submission.maxScore)
+                : Number(submission.assignment?.maxScore ?? 0),
+          })),
+        ),
       },
       attendance,
       assignments,
       submissions,
       progressReports,
+    };
+  }
+
+  async getStudentProgress(
+    user: AuthenticatedUser,
+    studentUserId: string,
+    query: AttendanceSummaryQueryDto,
+  ): Promise<StudentProgressView> {
+    if (query.bookingId) {
+      const booking = await this.bookingRepo.findOne({ where: { id: query.bookingId } });
+      if (!booking) throw new NotFoundException(`Booking ${query.bookingId} not found`);
+      if (booking.studentUserId !== studentUserId) {
+        throw new BadRequestException('studentId does not match the booking student');
+      }
+      await this.access.assertCanAccessStudentRecords(user, studentUserId, booking.id);
+    } else {
+      await this.access.assertCanAccessStudentRecords(user, studentUserId);
+    }
+
+    const now = new Date();
+    const periodEnd = query.to ? new Date(query.to) : now;
+    const periodStart = query.from
+      ? new Date(query.from)
+      : new Date(now.getTime() - 90 * 24 * 60 * 60 * 1000);
+    if (periodStart > periodEnd) {
+      throw new BadRequestException('from must be before to');
+    }
+
+    const sessionQuery = this.sessionRepo
+      .createQueryBuilder('session')
+      .where('session.studentUserId = :studentUserId', { studentUserId })
+      .orderBy('session.startsAt', 'DESC')
+      .take(500);
+    if (query.bookingId) {
+      sessionQuery.andWhere('session.bookingId = :bookingId', { bookingId: query.bookingId });
+    }
+    const sessions = await sessionQuery.getMany();
+
+    const inPeriod = sessions.filter((session) => {
+      const at = new Date(session.startsAt);
+      return at >= periodStart && at <= periodEnd;
+    });
+    const eligible = inPeriod.filter(
+      (session) =>
+        !['cancelled', 'no_show'].includes(session.status) &&
+        new Date(session.startsAt) <= now,
+    );
+    const sessionById = new Map(inPeriod.map((session) => [session.id, session]));
+
+    const attendanceRows = await this.attendanceRepo.find({
+      where: { participantUserId: studentUserId },
+      order: { recordedAt: 'DESC' },
+      take: 1000,
+    });
+    const periodStatuses: AttendanceStatus[] = attendanceRows
+      .filter((row) => sessionById.has(row.sessionId))
+      .map((row) => row.attendanceStatus);
+    const attendanceMetrics = computeAttendanceMetrics(periodStatuses, eligible.length);
+
+    const assignmentQuery = this.assignmentRepo
+      .createQueryBuilder('assignment')
+      .where('assignment.studentUserId = :studentUserId', { studentUserId })
+      .andWhere("assignment.status = 'published'")
+      .take(500);
+    if (query.bookingId) {
+      assignmentQuery.andWhere('assignment.bookingId = :bookingId', {
+        bookingId: query.bookingId,
+      });
+    }
+    const publishedAssignments = await assignmentQuery.getMany();
+    const assignmentIds = new Set(publishedAssignments.map((assignment) => assignment.id));
+
+    const submissions = await this.submissionRepo.find({
+      where: { studentUserId },
+      relations: { assignment: true },
+      order: { submittedAt: 'DESC' },
+      take: 500,
+    });
+    const relevant = submissions.filter((submission) => assignmentIds.has(submission.assignmentId));
+    const reviewed = relevant.filter((submission) => submission.status === 'reviewed');
+
+    const goals = this.goalsRepo
+      ? await this.goalsRepo.find({
+          where: { studentUserId },
+          order: { updatedAt: 'DESC' },
+          take: 50,
+        })
+      : [];
+
+    const latestReport = await this.progressReportRepo.findOne({
+      where: { studentUserId },
+      order: { generatedAt: 'DESC' },
+    });
+
+    return {
+      studentUserId,
+      bookingId: query.bookingId ?? null,
+      periodStart: periodStart.toISOString(),
+      periodEnd: periodEnd.toISOString(),
+      sessions: {
+        completed: inPeriod.filter((session) => session.status === 'completed').length,
+        upcoming: sessions.filter(
+          (session) =>
+            ['scheduled', 'in_progress'].includes(session.status) &&
+            new Date(session.startsAt) > now,
+        ).length,
+        cancelled: inPeriod.filter((session) => session.status === 'cancelled').length,
+      },
+      attendance: { ...attendanceMetrics, sessionsInPeriod: eligible.length },
+      assignments: {
+        published: publishedAssignments.length,
+        submitted: relevant.filter((submission) => submission.status !== 'returned').length,
+        reviewed: reviewed.length,
+        completionRate: computeCompletionRate(
+          relevant.filter((submission) => submission.status !== 'returned').length,
+          publishedAssignments.length,
+        ),
+        averageScore: computeAverageScorePercent(
+          reviewed.map((submission) => ({
+            score: submission.score !== null ? Number(submission.score) : null,
+            maxScore:
+              submission.maxScore !== null
+                ? Number(submission.maxScore)
+                : Number(submission.assignment?.maxScore ?? 0),
+          })),
+        ),
+      },
+      attendanceTrend: this.buildAttendanceTrend(inPeriod, attendanceRows, now),
+      goals: goals.map((goal) => ({
+        id: goal.id,
+        title: goal.title,
+        status: goal.status,
+        targetDate: goal.targetDate,
+      })),
+      recentFeedback: reviewed
+        .filter((submission) => Boolean(submission.tutorFeedback))
+        .slice(0, 5)
+        .map((submission) => ({
+          submissionId: submission.id,
+          assignmentId: submission.assignmentId,
+          assignmentTitle: submission.assignment?.title ?? 'Assignment',
+          score: submission.score !== null ? Number(submission.score) : null,
+          maxScore: submission.maxScore !== null ? Number(submission.maxScore) : null,
+          feedback: submission.tutorFeedback ?? '',
+          reviewedAt: submission.reviewedAt
+            ? new Date(submission.reviewedAt).toISOString()
+            : new Date(submission.submittedAt).toISOString(),
+        })),
+      latestReport: latestReport
+        ? {
+            id: latestReport.id,
+            periodStart: latestReport.periodStart,
+            periodEnd: latestReport.periodEnd,
+            generatedAt: new Date(latestReport.generatedAt).toISOString(),
+          }
+        : null,
     };
   }
 
@@ -297,10 +524,7 @@ export class LearningProgressService {
   ): Promise<ProgressReportEntity> {
     const report = await this.progressReportRepo.findOne({
       where: { id: reportId },
-      relations: {
-        booking: { subject: true },
-        studentUser: true,
-      },
+      relations: { booking: { subject: true }, studentUser: true },
     });
 
     if (!report) {
@@ -310,5 +534,96 @@ export class LearningProgressService {
     await this.access.assertCanAccessStudentRecords(user, report.studentUserId, report.bookingId);
 
     return report;
+  }
+
+  /**
+   * Calendar months (session timezone) over the last six months. Months with no
+   * eligible sessions are omitted, never rendered as 0%.
+   */
+  private buildAttendanceTrend(
+    sessions: BookingSessionEntity[],
+    attendance: SessionAttendanceEntity[],
+    now: Date,
+  ): Array<{ month: string; attendanceRate: number | null; recorded: number }> {
+    const cutoff = new Date(now.getTime() - 180 * 24 * 60 * 60 * 1000);
+    const sessionById = new Map(
+      sessions
+        .filter(
+          (session) =>
+            new Date(session.startsAt) >= cutoff &&
+            !['cancelled', 'no_show'].includes(session.status) &&
+            new Date(session.startsAt) <= now,
+        )
+        .map((session) => [session.id, session]),
+    );
+    const statusByMonth = new Map<string, AttendanceStatus[]>();
+    for (const row of attendance) {
+      const session = sessionById.get(row.sessionId);
+      if (!session) continue;
+      const month = this.monthKey(session);
+      const list = statusByMonth.get(month) ?? [];
+      list.push(row.attendanceStatus);
+      statusByMonth.set(month, list);
+    }
+
+    return [...statusByMonth.entries()]
+      .sort(([a], [b]) => (a < b ? 1 : -1))
+      .slice(0, 6)
+      .map(([month, statuses]) => {
+        const metrics = computeAttendanceMetrics(statuses, statuses.length);
+        return {
+          month,
+          attendanceRate: metrics.attendanceRate,
+          recorded: metrics.recorded,
+        };
+      });
+  }
+
+  private monthKey(session: BookingSessionEntity): string {
+    const timezone = session.timezone || 'Asia/Dhaka';
+    try {
+      const parts = new Intl.DateTimeFormat('en-CA', {
+        timeZone: timezone,
+        year: 'numeric',
+        month: '2-digit',
+      }).formatToParts(new Date(session.startsAt));
+      const year = parts.find((part) => part.type === 'year')?.value ?? '0000';
+      const month = parts.find((part) => part.type === 'month')?.value ?? '00';
+      return `${year}-${month}`;
+    } catch {
+      return new Date(session.startsAt).toISOString().slice(0, 7);
+    }
+  }
+
+  private async notifyReportPublished(
+    report: ProgressReportEntity,
+    booking: BookingEntity,
+  ): Promise<void> {
+    if (!this.notificationService) return;
+    const payload = {
+      reportId: report.id,
+      studentName: booking.studentUser?.displayName || 'Student',
+      period: `${report.periodStart} – ${report.periodEnd}`,
+    };
+    await this.notificationService
+      .dispatch({
+        userId: report.studentUserId,
+        recipientRole: 'student',
+        eventType: 'progress.published',
+        payload,
+      })
+      .catch((err) => this.logger.warn(`Student report notification failed: ${String(err)}`));
+
+    const guardianIds = (await this.guardianAccess?.findActiveGuardianIds(report.studentUserId)) ?? [];
+    for (const guardianId of guardianIds) {
+      await this.notificationService
+        .dispatch({
+          userId: guardianId,
+          recipientRole: 'guardian',
+          eventType: 'progress.published',
+          payload,
+        })
+        .catch((err) => this.logger.warn(`Guardian report notification failed: ${String(err)}`));
+    }
   }
 }

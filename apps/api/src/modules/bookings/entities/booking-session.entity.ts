@@ -62,6 +62,13 @@ export class BookingSessionEntity {
   @Column({ name: 'completed_at', type: 'timestamptz', nullable: true })
   completedAt!: Date | null;
 
+  @Column({ name: 'actual_started_at', type: 'timestamptz', nullable: true })
+  actualStartedAt!: Date | null;
+
+  /** Optional client-supplied replay key for one-off session creation. */
+  @Column({ name: 'idempotency_key', type: 'text', nullable: true })
+  idempotencyKey!: string | null;
+
   @Column({ name: 'cancellation_assessment', type: 'jsonb', nullable: true })
   cancellationAssessment!: CancellationAssessment | null;
 

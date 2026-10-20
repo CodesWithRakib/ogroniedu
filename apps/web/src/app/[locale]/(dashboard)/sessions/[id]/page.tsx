@@ -29,6 +29,8 @@ import {
   LoadingSpinner,
 } from '@/components/ui';
 import { useGetSessionByIdQuery } from '@/store/services/sessions-api';
+import { SessionLearningPanel } from '@/features/learning/components/sessionLearningPanel';
+import { SessionLifecycleActions } from '@/features/learning/components/sessionLifecycleActions';
 import {
   useGetSessionAttendanceQuery,
   useMarkAttendanceMutation,
@@ -48,6 +50,7 @@ interface SessionDetailParams {
 interface SessionDetailData {
   id: string;
   bookingId?: string;
+  tutorUserId?: string;
   startsAt: string;
   endsAt: string;
   status: string;
@@ -98,6 +101,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
 
   const [selectedStatus, setSelectedStatus] = useState<AttendanceStatus>('present');
   const [attendanceNotes, setAttendanceNotes] = useState('');
+  const [correctionReason, setCorrectionReason] = useState('');
   const [markSuccess, setMarkSuccess] = useState(false);
   const [markError, setMarkError] = useState<string | null>(null);
 
@@ -129,6 +133,8 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
   }, [attendanceData]);
 
   const latestRecord = existingAttendance[0] ?? null;
+  const latestRecordRef = React.useRef(latestRecord);
+  latestRecordRef.current = latestRecord;
 
   const handleMarkAttendance = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -149,12 +155,22 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
     }
 
     try {
+      if (latestRecordRef.current && !correctionReason.trim()) {
+        setMarkError(
+          locale === 'bn'
+            ? 'উপস্থিতি সংশোধনের জন্য কারণ লিখুন।'
+            : 'A reason is required to correct attendance.',
+        );
+        return;
+      }
       await markAttendance({
         sessionId,
         participantUserId,
         attendanceStatus: selectedStatus,
         notes: attendanceNotes.trim() || undefined,
+        correctionReason: correctionReason.trim() || undefined,
       }).unwrap();
+      setCorrectionReason('');
       setMarkSuccess(true);
       refetchAttendance();
     } catch (err: unknown) {
@@ -305,6 +321,16 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
           <span>{locale === 'bn' ? 'লাইভ ক্লাসরুমে প্রবেশ করুন' : 'Enter Live Classroom'}</span>
         </Link>
       </div>
+
+      <SessionLifecycleActions
+        locale={locale}
+        sessionId={sessionId}
+        status={session.status || 'scheduled'}
+        canManage={
+          Boolean(currentUser?.roles?.includes('admin') || currentUser?.roles?.includes('super_admin')) ||
+          (Boolean(isTutor) && session.tutorUserId === currentUser?.id)
+        }
+      />
 
       {/* Main Session Banner */}
       <div className="relative overflow-hidden rounded-2xl bg-card border border-brand/25 p-8">
@@ -515,6 +541,25 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
                   ))}
                 </div>
 
+                {latestRecord && (
+                  <div className="space-y-1">
+                    <Label
+                      htmlFor="attendance-correction-reason"
+                      className="text-xs text-muted-foreground"
+                    >
+                      {locale === 'bn' ? 'সংশোধনের কারণ (আবশ্যক)' : 'Correction reason (required)'}
+                    </Label>
+                    <Input
+                      id="attendance-correction-reason"
+                      type="text"
+                      value={correctionReason}
+                      onChange={(e) => setCorrectionReason(e.target.value)}
+                      className="w-full h-9 rounded-xl border-input bg-card text-xs text-foreground"
+                      data-testid="attendance-correction-reason-input"
+                    />
+                  </div>
+                )}
+
                 <div className="space-y-1">
                   <Label htmlFor="attendance-notes" className="text-xs text-muted-foreground">
                     {locale === 'bn' ? 'মন্তব্য (ঐচ্ছিক):' : 'Notes (optional):'}
@@ -580,6 +625,8 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
           </CardContent>
         </Card>
       </div>
+
+      <SessionLearningPanel locale={locale} sessionId={sessionId} />
     </div>
   );
 }

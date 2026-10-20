@@ -36,8 +36,8 @@ export class SchedulingService {
     private readonly series?: SessionSeriesService,
   ) {}
 
-  scheduleSession(user: AuthenticatedUser, dto: CreateSessionDto) {
-    return this.scheduling.scheduleSession(user, dto);
+  scheduleSession(user: AuthenticatedUser, dto: CreateSessionDto, idempotencyKey?: string) {
+    return this.scheduling.scheduleSession(user, dto, idempotencyKey);
   }
   scheduleRecurringSessions(user: AuthenticatedUser, dto: CreateRecurringSessionsDto) {
     return this.scheduling.scheduleRecurringSessions(user, dto);

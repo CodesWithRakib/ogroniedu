@@ -305,6 +305,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             icon: BookOpen,
             testId: 'nav-learning',
           },
+          {
+            href: '/dashboard/tutor/lesson-plans',
+            labelBn: 'পাঠ পরিকল্পনা',
+            labelEn: 'Lesson Plans',
+            icon: BookOpen,
+            testId: 'nav-lesson-plans',
+          },
         ],
       },
       {
@@ -407,6 +414,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             labelEn: 'Tuition Bookings',
             icon: Calendar,
             testId: 'nav-bookings',
+          },
+          {
+            href: '/dashboard/admin/learning',
+            labelBn: 'শিক্ষা কার্যক্রম পর্যবেক্ষণ',
+            labelEn: 'Learning Oversight',
+            icon: BookOpen,
+            testId: 'nav-lms-oversight',
           },
         ],
       },

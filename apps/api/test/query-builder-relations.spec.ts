@@ -15,6 +15,10 @@ import { EducationLevelEntity } from '../src/modules/taxonomy/entities/education
 import { GuardianStudentLinkEntity } from '../src/modules/guardians/entities/guardian-student-link.entity';
 import { AssignmentEntity } from '../src/modules/learning/entities/assignment.entity';
 import { SessionAttendanceEntity } from '../src/modules/learning/entities/session-attendance.entity';
+import { LessonPlanEntity } from '../src/modules/learning/entities/lesson-plan.entity';
+import { LearningMaterialEntity } from '../src/modules/learning/entities/learning-material.entity';
+import { LearningGoalEntity } from '../src/modules/learning/entities/learning-goal.entity';
+import { AssignmentSubmissionEntity } from '../src/modules/learning/entities/assignment-submission.entity';
 import { PaymentOrderEntity } from '../src/modules/payments/entities/payment-order.entity';
 import { PaymentTransactionEntity } from '../src/modules/payments/entities/payment-transaction.entity';
 import { PaymentRefundEntity } from '../src/modules/payments/entities/payment-refund.entity';
@@ -33,6 +37,10 @@ const ENTITIES = [
   GuardianStudentLinkEntity,
   AssignmentEntity,
   SessionAttendanceEntity,
+  LessonPlanEntity,
+  LearningMaterialEntity,
+  LearningGoalEntity,
+  AssignmentSubmissionEntity,
   PaymentOrderEntity,
   PaymentTransactionEntity,
   PaymentRefundEntity,

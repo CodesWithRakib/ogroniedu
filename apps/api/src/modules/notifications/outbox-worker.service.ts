@@ -199,6 +199,49 @@ export class OutboxWorkerService {
         break;
       }
 
+      case 'session.started': {
+        const subjectName = String(payload.subjectName || 'Tutoring Session');
+        const sessionId = String(payload.sessionId || event.aggregateId);
+        const startTime = String(payload.startTime || '');
+        const recipients: Array<{ id: string; role: 'student' | 'guardian' }> = [];
+        if (payload.studentUserId) {
+          recipients.push({ id: String(payload.studentUserId), role: 'student' });
+        }
+        for (const guardianId of this.readGuardianIds(payload)) {
+          recipients.push({ id: guardianId, role: 'guardian' });
+        }
+        for (const recipient of recipients) {
+          await this.notificationService.dispatch({
+            userId: recipient.id,
+            recipientRole: recipient.role,
+            eventType: 'session.started',
+            payload: { sessionId, subjectName, startTime },
+          });
+        }
+        break;
+      }
+
+      case 'session.completed': {
+        const subjectName = String(payload.subjectName || 'Tutoring Session');
+        const sessionId = String(payload.sessionId || event.aggregateId);
+        const recipients: Array<{ id: string; role: 'student' | 'guardian' }> = [];
+        if (payload.studentUserId) {
+          recipients.push({ id: String(payload.studentUserId), role: 'student' });
+        }
+        for (const guardianId of this.readGuardianIds(payload)) {
+          recipients.push({ id: guardianId, role: 'guardian' });
+        }
+        for (const recipient of recipients) {
+          await this.notificationService.dispatch({
+            userId: recipient.id,
+            recipientRole: recipient.role,
+            eventType: 'session.completed',
+            payload: { sessionId, subjectName },
+          });
+        }
+        break;
+      }
+
       case 'booking.cancelled': {
         const recipients: Array<{ id: string; role: 'student' | 'tutor' | 'guardian' }> = [];
         if (payload.studentUserId) {
@@ -247,5 +290,11 @@ export class OutboxWorkerService {
       default:
         this.logger.log(`Processed generic outbox event: ${event.eventType}`);
     }
+  }
+
+  private readGuardianIds(payload: Record<string, unknown>): string[] {
+    const raw = payload.guardianUserIds;
+    if (!Array.isArray(raw)) return [];
+    return raw.filter((value): value is string => typeof value === 'string');
   }
 }

@@ -2,6 +2,7 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
+  ForbiddenException,
   Logger,
   Optional,
   Inject,
@@ -23,6 +24,7 @@ import {
   recordOutboxEvent,
   dispatchNotificationSafe,
 } from './session-booking.helpers';
+import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { RescheduleSessionDto, CancelSessionDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { SessionQueriesService } from './session-queries.service';
@@ -62,6 +64,9 @@ export class SessionReschedulingService {
     @Optional()
     @InjectRepository(BookingEntity)
     private readonly bookingRepo?: Repository<BookingEntity>,
+    @Optional()
+    @Inject(forwardRef(() => GuardianAccessService))
+    private readonly guardianAccess?: GuardianAccessService,
   ) {}
 
   async rescheduleSession(
@@ -133,6 +138,9 @@ export class SessionReschedulingService {
     session.statusChangedAt = new Date();
     session.statusChangedBy = user.id;
     session.version += 1;
+    // A rescheduled session needs a fresh reminder window; the previous
+    // reminder flag must not suppress it.
+    session.reminderSentAt = null;
 
     const saved = await this.sessionRepo.save(session);
 
@@ -272,17 +280,18 @@ export class SessionReschedulingService {
   async startSession(sessionId: string, user: AuthenticatedUser): Promise<BookingSessionEntity> {
     const session = await this.sessionRepo.findOne({
       where: { id: sessionId },
-      relations: { booking: true },
+      relations: { booking: { subject: true } },
     });
     if (!session) {
       throw new NotFoundException(`Session ${sessionId} not found`);
     }
 
+    // Only the delivering tutor (or platform admin) may start a session.
+    // Students/guardians must never flip the lifecycle state.
     const isTutor = user.id === session.tutorUserId;
-    const isStudent = user.id === session.studentUserId;
     const isAdmin = user.roles.some((r) => ['admin', 'super_admin'].includes(r));
-    if (!isTutor && !isStudent && !isAdmin) {
-      throw new BadRequestException('Not authorized to start this session.');
+    if (!isTutor && !isAdmin) {
+      throw new ForbiddenException('Only the assigned tutor or an administrator can start a session.');
     }
 
     if (session.booking && !['confirmed', 'in_progress'].includes(session.booking.status)) {
@@ -296,8 +305,10 @@ export class SessionReschedulingService {
     }
 
     assertSessionTransition(session.status, 'in_progress');
+    const now = new Date();
     session.status = 'in_progress';
-    session.statusChangedAt = new Date();
+    session.actualStartedAt = session.actualStartedAt ?? now;
+    session.statusChangedAt = now;
     session.statusChangedBy = user.id;
     const saved = await this.sessionRepo.save(session);
 
@@ -306,6 +317,16 @@ export class SessionReschedulingService {
       action: 'session.started',
       resourceType: 'booking_session',
       resourceId: saved.id,
+      safeMetadata: { actualStartedAt: saved.actualStartedAt?.toISOString() },
+    });
+
+    const guardianUserIds = (await this.guardianAccess?.findActiveGuardianIds(
+      saved.studentUserId,
+    )) ?? [];
+    await this.recordLifecycleEvent('session.started', saved, {
+      subjectName: saved.booking?.subject?.nameEn || 'Tutoring Session',
+      startTime: saved.startsAt.toISOString(),
+      guardianUserIds,
     });
 
     return saved;
@@ -318,7 +339,7 @@ export class SessionReschedulingService {
   ): Promise<BookingSessionEntity> {
     const session = await this.sessionRepo.findOne({
       where: { id: sessionId },
-      relations: { booking: true },
+      relations: { booking: { subject: true } },
     });
     if (!session) {
       throw new NotFoundException(`Session ${sessionId} not found`);
@@ -327,15 +348,29 @@ export class SessionReschedulingService {
     const isTutor = user.id === session.tutorUserId;
     const isAdmin = user.roles.some((r) => ['admin', 'super_admin'].includes(r));
     if (!isTutor && !isAdmin) {
-      throw new BadRequestException(
+      throw new ForbiddenException(
         'Only the assigned tutor or admin can mark a session as completed.',
       );
     }
 
+    // Repeated completion is a no-op: no second audit/outbox/financial signal.
+    if (session.status === 'completed') {
+      return session;
+    }
+
+    if (!session.actualStartedAt) {
+      throw new BadRequestException('A session must be started before it can be completed.');
+    }
+
     assertSessionTransition(session.status, 'completed');
+    const now = new Date();
+    if (now < new Date(session.actualStartedAt)) {
+      throw new BadRequestException('Completion time cannot precede the actual start time.');
+    }
+
     session.status = 'completed';
-    session.completedAt = new Date();
-    session.statusChangedAt = new Date();
+    session.completedAt = now;
+    session.statusChangedAt = now;
     session.statusChangedBy = user.id;
     const saved = await this.sessionRepo.save(session);
 
@@ -345,24 +380,58 @@ export class SessionReschedulingService {
       resourceType: 'booking_session',
       resourceId: saved.id,
       reason: notes,
+      safeMetadata: {
+        actualStartedAt: saved.actualStartedAt?.toISOString() ?? null,
+        completedAt: saved.completedAt?.toISOString() ?? null,
+      },
     });
 
     await this.maybeCompleteBooking(session.bookingId, user, notes);
 
-    dispatchNotificationSafe(
-      this.logger,
-      this.notificationService,
-      session.studentUserId,
-      'attendance.marked',
-      'student',
-      {
-        sessionId: saved.id,
-        bookingId: session.bookingId,
-        message: 'Class session completed successfully.',
-      },
-    );
+    const guardianUserIds = (await this.guardianAccess?.findActiveGuardianIds(
+      saved.studentUserId,
+    )) ?? [];
+    await this.recordLifecycleEvent('session.completed', saved, {
+      subjectName: saved.booking?.subject?.nameEn || 'Tutoring Session',
+      guardianUserIds,
+    });
 
     return saved;
+  }
+
+  /**
+   * Durable lifecycle event with a per-session idempotency key. A duplicate
+   * insert (already emitted) is ignored rather than surfaced to the caller.
+   */
+  private async recordLifecycleEvent(
+    eventType: 'session.started' | 'session.completed',
+    session: BookingSessionEntity,
+    extra: Record<string, unknown>,
+  ): Promise<void> {
+    try {
+      await recordOutboxEvent(
+        this.outboxRepo,
+        eventType,
+        'session',
+        session.id,
+        {
+          sessionId: session.id,
+          bookingId: session.bookingId,
+          tutorUserId: session.tutorUserId,
+          studentUserId: session.studentUserId,
+          ...extra,
+        },
+        `${eventType}:${session.id}`,
+      );
+    } catch (err: unknown) {
+      const code =
+        typeof err === 'object' && err !== null && 'code' in err
+          ? (err as { code: unknown }).code
+          : undefined;
+      if (code !== '23505') {
+        this.logger.warn(`Could not record ${eventType} for ${session.id}: ${String(err)}`);
+      }
+    }
   }
 
   async updateMeetingUrl(

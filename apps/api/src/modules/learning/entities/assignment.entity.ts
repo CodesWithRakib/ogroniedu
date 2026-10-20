@@ -13,6 +13,7 @@ import { BookingEntity } from '../../bookings/entities/booking.entity';
 import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 import { TutorProfileEntity } from '../../tutors/entities/tutor-profile.entity';
+import { SubjectEntity } from '../../taxonomy/entities/subject.entity';
 import { AssignmentSubmissionEntity } from './assignment-submission.entity';
 
 export type AssignmentStatus = 'draft' | 'published' | 'archived';
@@ -37,8 +38,14 @@ export class AssignmentEntity {
   @Column('uuid', { name: 'student_user_id' })
   studentUserId!: string;
 
+  @Column('uuid', { name: 'subject_id', nullable: true })
+  subjectId!: string | null;
+
   @Column({ type: 'text' })
   title!: string;
+
+  @Column({ type: 'text', nullable: true })
+  topic!: string | null;
 
   @Column({ type: 'text', nullable: true })
   instructions!: string | null;
@@ -49,8 +56,20 @@ export class AssignmentEntity {
   @Column({ name: 'max_score', type: 'numeric', precision: 5, scale: 2, default: 100 })
   maxScore!: number;
 
-  @Column({ type: 'text', default: 'published' })
+  @Column({ type: 'text', default: 'draft' })
   status!: AssignmentStatus;
+
+  @Column({ name: 'published_at', type: 'timestamptz', nullable: true })
+  publishedAt!: Date | null;
+
+  @Column({ name: 'resubmission_allowed', type: 'boolean', default: true })
+  resubmissionAllowed!: boolean;
+
+  @Column({ name: 'late_submission_allowed', type: 'boolean', default: true })
+  lateSubmissionAllowed!: boolean;
+
+  @Column({ name: 'max_attempts', type: 'integer', default: 3 })
+  maxAttempts!: number;
 
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
@@ -73,6 +92,10 @@ export class AssignmentEntity {
   @ManyToOne(() => UserEntity)
   @JoinColumn({ name: 'student_user_id' })
   studentUser?: UserEntity;
+
+  @ManyToOne(() => SubjectEntity, { onDelete: 'SET NULL', nullable: true })
+  @JoinColumn({ name: 'subject_id' })
+  subject?: SubjectEntity;
 
   @OneToMany(() => AssignmentSubmissionEntity, (sub) => sub.assignment)
   submissions?: AssignmentSubmissionEntity[];

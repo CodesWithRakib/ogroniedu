@@ -81,6 +81,7 @@ export class SessionSchedulingService {
   async scheduleSession(
     user: AuthenticatedUser,
     dto: CreateSessionDto,
+    idempotencyKey?: string,
   ): Promise<BookingSessionEntity> {
     const booking = await this.bookingRepo.findOne({
       where: { id: dto.bookingId },
@@ -93,6 +94,20 @@ export class SessionSchedulingService {
 
     await this.queries.assertCanManageSessions(user, booking);
     await this.assertBookingSchedulable(booking, user);
+
+    // Replay protection: the same client key returns the original row instead of
+    // creating a duplicate session.
+    if (idempotencyKey) {
+      const existing = await this.sessionRepo.findOne({
+        where: { idempotencyKey },
+      });
+      if (existing) {
+        if (existing.bookingId !== booking.id) {
+          throw new ConflictException('Idempotency key was already used for another booking');
+        }
+        return existing;
+      }
+    }
 
     const startsAt = new Date(dto.startsAt);
     if (isNaN(startsAt.getTime())) {
@@ -131,12 +146,17 @@ export class SessionSchedulingService {
       locationInstructions: dto.locationInstructions || null,
       statusChangedAt: new Date(),
       statusChangedBy: user.id,
+      idempotencyKey: idempotencyKey ?? null,
     });
 
     let savedSession: BookingSessionEntity;
     try {
       savedSession = await this.sessionRepo.save(session);
     } catch (err: unknown) {
+      if (idempotencyKey && this.isUniqueViolation(err)) {
+        const existing = await this.sessionRepo.findOne({ where: { idempotencyKey } });
+        if (existing) return existing;
+      }
       this.rethrowConstraintError(err);
       throw err;
     }
@@ -511,6 +531,15 @@ export class SessionSchedulingService {
     throw new BadRequestException(
       `Cannot schedule sessions for booking with status '${booking.status}'. ` +
         `Paid bookings must be confirmed by the payment provider before scheduling.`,
+    );
+  }
+
+  private isUniqueViolation(err: unknown): boolean {
+    return (
+      typeof err === 'object' &&
+      err !== null &&
+      'code' in err &&
+      (err as { code: unknown }).code === '23505'
     );
   }
 

@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  UpdateDateColumn,
   ManyToOne,
   JoinColumn,
   Unique,
@@ -35,6 +36,12 @@ export class SessionAttendanceEntity {
 
   @Column({ type: 'text', nullable: true })
   notes!: string | null;
+
+  @Column({ name: 'correction_reason', type: 'text', nullable: true })
+  correctionReason!: string | null;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  updatedAt!: Date;
 
   @ManyToOne(() => BookingSessionEntity, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'session_id' })

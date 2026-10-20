@@ -19,4 +19,10 @@ export class MarkAttendanceDto {
   @MaxLength(1000)
   @IsOptional()
   notes?: string;
+
+  /** Required when overwriting an existing attendance record. */
+  @IsString()
+  @MaxLength(500)
+  @IsOptional()
+  correctionReason?: string;
 }

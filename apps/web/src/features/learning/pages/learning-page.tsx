@@ -13,12 +13,16 @@ import {
   LoadingSpinner,
   EmptyState,
   NativeSelect,
+  Textarea,
 } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
 import { LearningManagementView } from '../components/learningManagementView';
+import { StudentProgressPanel } from '../components/studentProgressPanel';
+import { ChildScopeSelect } from '@/features/guardian/components/ChildScopeSelect';
+import { useChildScope } from '@/features/guardian/hooks/use-child-scope';
 import { useLearningRecords } from '../hooks/use-learning-records';
 import type { LearningRole } from '../types/learning.types';
 
@@ -32,10 +36,14 @@ export function LearningPage({ locale }: { locale: Locale }) {
       ? 'guardian'
       : 'student';
 
-  const records = useLearningRecords(locale);
+  const scope = useChildScope();
+  const records = useLearningRecords(locale, scope.selectedStudentId);
   const [formError, setFormError] = React.useState<string | null>(null);
   const [assignmentTitle, setAssignmentTitle] = React.useState('');
   const [assignmentMax, setAssignmentMax] = React.useState('100');
+  const [assignmentDue, setAssignmentDue] = React.useState('');
+  const [assignmentInstructions, setAssignmentInstructions] = React.useState('');
+  const [publishNow, setPublishNow] = React.useState('true');
 
   async function handleCreateAssignment(e: React.FormEvent) {
     e.preventDefault();
@@ -44,9 +52,14 @@ export function LearningPage({ locale }: { locale: Locale }) {
     try {
       await records.createAssignment({
         title: assignmentTitle.trim(),
+        instructions: assignmentInstructions.trim() || undefined,
+        dueAt: assignmentDue ? new Date(assignmentDue).toISOString() : undefined,
         maxScore: Number(assignmentMax) || 100,
+        publishNow: publishNow === 'true',
       });
       setAssignmentTitle('');
+      setAssignmentInstructions('');
+      setAssignmentDue('');
     } catch (err) {
       setFormError(normalizeUnknownError(err, locale).message);
     }
@@ -54,6 +67,11 @@ export function LearningPage({ locale }: { locale: Locale }) {
 
   return (
     <DashboardShell locale={locale}>
+      {scope.isGuardian && (
+        <div className="mb-4">
+          <ChildScopeSelect locale={locale} scope={scope} />
+        </div>
+      )}
       {records.bookingOptions.length > 0 && (
         <div
           className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-card p-4 rounded-2xl border border-border"
@@ -95,43 +113,74 @@ export function LearningPage({ locale }: { locale: Locale }) {
       {role === 'tutor' && records.activeBookingId && (
         <Card className="mb-4">
           <CardContent className="py-4">
-            <form
-              onSubmit={handleCreateAssignment}
-              className="flex flex-col gap-2 sm:flex-row sm:items-end"
-              data-testid="create-assignment-form"
-            >
-              <div className="flex-1 space-y-1">
-                <Label htmlFor="assignment-title" className="text-xs font-medium">
+            <form onSubmit={handleCreateAssignment} className="space-y-3" data-testid="create-assignment-form">
+              <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                <div className="sm:col-span-2 space-y-1">
+                  <Label htmlFor="assignment-title" className="text-xs font-medium">
+                    {dict.learning.newHomework}
+                  </Label>
+                  <Input
+                    id="assignment-title"
+                    value={assignmentTitle}
+                    onChange={(e) => setAssignmentTitle(e.target.value)}
+                    data-testid="assignment-title-input"
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="assignment-due" className="text-xs font-medium">
+                    {dict.learning.dueAtLabel}
+                  </Label>
+                  <Input
+                    id="assignment-due"
+                    type="datetime-local"
+                    value={assignmentDue}
+                    onChange={(e) => setAssignmentDue(e.target.value)}
+                  />
+                </div>
+                <div className="space-y-1">
+                  <Label htmlFor="assignment-max" className="text-xs font-medium">
+                    {dict.learning.maxScoreLabel}
+                  </Label>
+                  <Input
+                    id="assignment-max"
+                    type="number"
+                    min={1}
+                    value={assignmentMax}
+                    onChange={(e) => setAssignmentMax(e.target.value)}
+                    data-testid="assignment-max-input"
+                  />
+                </div>
+              </div>
+              <div className="space-y-1">
+                <Label htmlFor="assignment-instructions" className="text-xs font-medium">
+                  {dict.learning.instructionsLabel}
+                </Label>
+                <Textarea
+                  id="assignment-instructions"
+                  rows={3}
+                  value={assignmentInstructions}
+                  onChange={(e) => setAssignmentInstructions(e.target.value)}
+                />
+              </div>
+              <div className="flex flex-wrap items-end gap-2">
+                <div className="w-44 space-y-1">
+                  <Label htmlFor="assignment-publication" className="text-xs font-medium">
+                    {dict.learning.statusPublished} / {dict.learning.statusDraft}
+                  </Label>
+                  <NativeSelect
+                    id="assignment-publication"
+                    value={publishNow}
+                    onChange={(e) => setPublishNow(e.target.value)}
+                    className="h-9 text-xs"
+                  >
+                    <option value="true">{dict.learning.publishAction}</option>
+                    <option value="false">{dict.learning.saveAsDraft}</option>
+                  </NativeSelect>
+                </div>
+                <Button type="submit" size="sm" isLoading={records.creating} data-testid="create-assignment-btn">
                   {dict.learning.createAssignment}
-                </Label>
-                <Input
-                  id="assignment-title"
-                  value={assignmentTitle}
-                  onChange={(e) => setAssignmentTitle(e.target.value)}
-                  data-testid="assignment-title-input"
-                />
+                </Button>
               </div>
-              <div className="w-28 space-y-1">
-                <Label htmlFor="assignment-max" className="text-xs font-medium">
-                  {dict.learning.maxScoreLabel}
-                </Label>
-                <Input
-                  id="assignment-max"
-                  type="number"
-                  min={1}
-                  value={assignmentMax}
-                  onChange={(e) => setAssignmentMax(e.target.value)}
-                  data-testid="assignment-max-input"
-                />
-              </div>
-              <Button
-                type="submit"
-                size="sm"
-                isLoading={records.creating}
-                data-testid="create-assignment-btn"
-              >
-                {dict.learning.createAssignment}
-              </Button>
             </form>
           </CardContent>
         </Card>
@@ -165,7 +214,16 @@ export function LearningPage({ locale }: { locale: Locale }) {
           actionHref={role === 'tutor' ? undefined : withLocale('/tutors', locale)}
         />
       ) : (
-        <LearningManagementView
+        <div className="space-y-4">
+          {records.activeBookingStudentId && (
+            <StudentProgressPanel
+              locale={locale}
+              studentId={records.activeBookingStudentId}
+              bookingId={records.activeBookingId}
+              canManageGoals={role === 'tutor'}
+            />
+          )}
+          <LearningManagementView
           locale={locale}
           userRole={role}
           initialAttendance={records.attendance}
@@ -182,7 +240,8 @@ export function LearningPage({ locale }: { locale: Locale }) {
           onSubmitAssignment={records.submitAssignment}
           onGradeSubmission={records.gradeSubmission}
           onGenerateReport={records.generateReport}
-        />
+          />
+        </div>
       )}
       {records.generating && <LoadingSpinner />}
     </DashboardShell>

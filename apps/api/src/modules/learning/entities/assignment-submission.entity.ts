@@ -3,6 +3,7 @@ import {
   PrimaryGeneratedColumn,
   Column,
   CreateDateColumn,
+  UpdateDateColumn,
   ManyToOne,
   JoinColumn,
   Index,
@@ -12,6 +13,9 @@ import { AssignmentEntity } from './assignment.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 
 export type SubmissionStatus = 'submitted' | 'late' | 'reviewed' | 'returned';
+
+/** UI projection that never replaces the stored status. */
+export type SubmissionWorkflowState = 'submitted' | 'under_review' | 'reviewed' | 'returned' | 'late';
 
 @Entity('assignment_submissions')
 @Unique(['assignmentId', 'studentUserId'])
@@ -39,6 +43,15 @@ export class AssignmentSubmissionEntity {
   @Column({ type: 'text', default: 'submitted' })
   status!: SubmissionStatus;
 
+  @Column({ name: 'attempt_count', type: 'integer', default: 1 })
+  attemptCount!: number;
+
+  @Column({ name: 'returned_at', type: 'timestamptz', nullable: true })
+  returnedAt!: Date | null;
+
+  @Column({ name: 'return_reason', type: 'text', nullable: true })
+  returnReason!: string | null;
+
   @Column({ type: 'numeric', precision: 5, scale: 2, nullable: true })
   score!: number | null;
 
@@ -53,6 +66,9 @@ export class AssignmentSubmissionEntity {
 
   @Column({ name: 'reviewed_at', type: 'timestamptz', nullable: true })
   reviewedAt!: Date | null;
+
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
+  updatedAt!: Date;
 
   @ManyToOne(() => AssignmentEntity, (a) => a.submissions, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'assignment_id' })
