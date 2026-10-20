@@ -23,6 +23,14 @@ export interface PaymentReceipt {
   paidAt: string;
 }
 
+export interface CreatePaymentOrderResponse {
+  orderId: string;
+  checkoutUrl: string;
+  amountMinor: number;
+  currency: string;
+  status: 'pending' | 'succeeded' | 'failed' | 'refunded' | string;
+}
+
 export interface PaymentOrderRecord {
   id: string;
   bookingId: string;
@@ -57,7 +65,7 @@ export const paymentsApi = baseApi.injectEndpoints({
       providesTags: [{ type: 'PaymentOrder', id: 'LIST' }],
     }),
     createPaymentOrder: builder.mutation<
-      ApiSuccessEnvelope<unknown>,
+      ApiSuccessEnvelope<CreatePaymentOrderResponse>,
       { body: CreatePaymentOrderRequest; idempotencyKey: string }
     >({
       query: ({ body, idempotencyKey }) => ({
@@ -68,22 +76,6 @@ export const paymentsApi = baseApi.injectEndpoints({
       }),
       invalidatesTags: [
         { type: 'PaymentOrder', id: 'LIST' },
-        { type: 'Notification', id: 'LIST' },
-      ],
-    }),
-    sandboxConfirmPayment: builder.mutation<
-      ApiSuccessEnvelope<unknown>,
-      { orderId: string; provider?: PaymentProvider }
-    >({
-      query: ({ orderId, provider }) => ({
-        url: `/api/v1/payments/orders/${orderId}/sandbox-confirm`,
-        method: 'POST',
-        body: { provider },
-      }),
-      invalidatesTags: [
-        { type: 'PaymentOrder', id: 'LIST' },
-        { type: 'PaymentReceipt', id: 'LIST' },
-        { type: 'BookingRequest', id: 'LIST' },
         { type: 'Notification', id: 'LIST' },
       ],
     }),
@@ -126,7 +118,6 @@ export const {
   useGetMyPaymentOrdersQuery,
   useLazyGetMyPaymentOrdersQuery,
   useCreatePaymentOrderMutation,
-  useSandboxConfirmPaymentMutation,
   useGetPaymentReceiptQuery,
   useLazyGetPaymentReceiptQuery,
   useProcessRefundMutation,

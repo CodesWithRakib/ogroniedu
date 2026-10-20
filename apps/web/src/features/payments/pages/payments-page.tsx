@@ -586,7 +586,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 <CardContent className="pt-5">
                   <form
                     onSubmit={pay.handleCreateOrder}
-                    className="grid grid-cols-1 gap-5 md:grid-cols-3 md:items-end"
+                    className="grid grid-cols-1 gap-5 md:grid-cols-2 md:items-end"
                     data-testid="create-order-form"
                   >
                     <div className="space-y-1.5 md:col-span-1">
@@ -609,18 +609,20 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                     </div>
 
                     <div className="space-y-1.5">
-                      <Label htmlFor="pay-amount" className="text-xs font-bold text-foreground">
-                        {dict.payments.totalAmount} (BDT ৳)
+                      <Label className="text-xs font-bold text-foreground">
+                        {isBn ? 'সার্ভার-যাচাইকৃত পরিমাণ' : 'Server-verified amount'}
                       </Label>
-                      <Input
-                        id="pay-amount"
-                        type="number"
-                        min={1}
-                        value={pay.amountBdt}
-                        onChange={(e) => pay.setAmountBdt(e.target.value)}
-                        className="h-11 text-xs font-bold text-foreground bg-surface"
-                        data-testid="pay-amount-input"
-                      />
+                      <div className="h-11 rounded-xl border border-border bg-surface px-3.5 flex items-center justify-between text-xs font-bold text-foreground">
+                        <span className="tabular-nums">
+                          ৳ {formatLocalizedNumber(Number(pay.amountBdt) || 0, locale)}
+                        </span>
+                        <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+                      </div>
+                      <p className="text-[10px] text-muted-foreground">
+                        {isBn
+                          ? 'পরিমাণ বুকিং থেকে নির্ধারিত হয়, সম্পাদনাযোগ্য নয়।'
+                          : 'Amount is taken from the booking and cannot be edited.'}
+                      </p>
                     </div>
 
                     <div className="space-y-1.5">

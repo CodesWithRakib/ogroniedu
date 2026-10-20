@@ -2,11 +2,11 @@
 
 ## Booking statuses
 
-`requested → accepted | declined | cancelled | expired`
+`requested → accepted | awaiting_payment | declined | cancelled | expired`
 
 | From | Allowed to |
 | --- | --- |
-| `requested` | `accepted`, `declined`, `cancelled`, `expired` |
+| `requested` | `accepted`, `awaiting_payment`, `declined`, `cancelled`, `expired` |
 | `accepted` | `awaiting_payment`, `confirmed`, `cancelled`, `declined`, `expired` |
 | `awaiting_payment` | `confirmed`, `cancelled`, `expired` |
 | `confirmed` | `in_progress`, `completed`, `cancelled`, `disputed`, `replacement_requested` |

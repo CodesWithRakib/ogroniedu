@@ -90,7 +90,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
   const status = booking?.status || 'requested';
   const priceBdt = booking?.pricePerSessionMinor
     ? Math.round(Number(booking.pricePerSessionMinor) / 100)
-    : 1200;
+    : 0;
 
   const preferredDays = Array.isArray(booking?.preferredDays) ? booking.preferredDays : [];
   const weekdayLabels = isBn ? WEEKDAY_NAMES_BN : WEEKDAY_NAMES_EN;
@@ -239,8 +239,20 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
       title={isBn ? `টিউটরিং বুকিং: ${subjectName}` : `Tutoring Booking: ${subjectName}`}
       subtitle={
         isBn
-          ? `আইডি: #${bookingId.slice(0, 8)} | স্ট্যাটাস: ${status === 'accepted' ? 'অনুমোদিত — পেমেন্ট করুন' : status === 'confirmed' ? 'নিশ্চিতকৃত' : 'বিবেচনাধীন'}`
-          : `ID: #${bookingId.slice(0, 8)} | Status: ${status}`
+          ? `আইডি: #${bookingId.slice(0, 8)} | স্ট্যাটাস: ${
+              status === 'accepted' || status === 'awaiting_payment'
+                ? 'পেমেন্টের অপেক্ষায়'
+                : status === 'confirmed'
+                  ? 'নিশ্চিতকৃত'
+                  : status === 'in_progress'
+                    ? 'চলমান'
+                    : status === 'completed'
+                      ? 'সম্পন্ন'
+                      : status === 'requested'
+                        ? 'বিবেচনাধীন'
+                        : 'বন্ধ'
+            }`
+          : `ID: #${bookingId.slice(0, 8)} | Status: ${status.replace(/_/g, ' ')}`
       }
     >
       <div className="max-w-6xl mx-auto space-y-6" data-testid="booking-dossier-page">
@@ -300,13 +312,31 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                 {status === 'accepted' && (
                   <span className="px-3 py-1 rounded-full text-xs font-semibold bg-interactive/15 text-info-soft-foreground border border-info/40 flex items-center gap-1.5">
                     <span className="w-2 h-2 rounded-full bg-info animate-pulse" />
-                    {isBn ? 'গৃহীত — এসক্রো ফি জমা দিন' : 'Accepted — Escrow Deposit Required'}
+                    {isBn ? 'গৃহীত — পেমেন্ট প্রয়োজন' : 'Accepted — Payment Required'}
+                  </span>
+                )}
+                {status === 'awaiting_payment' && (
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-warning/15 text-warning-soft-foreground border border-warning/40 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-warning animate-pulse" />
+                    {isBn ? 'পেমেন্টের অপেক্ষায়' : 'Awaiting Payment'}
                   </span>
                 )}
                 {status === 'confirmed' && (
                   <span className="px-3 py-1 rounded-full text-xs font-semibold bg-success-soft text-success-soft-foreground border border-success/30 flex items-center gap-1.5">
                     <CheckCircle2 className="w-3.5 h-3.5" />
                     {isBn ? 'নিশ্চিতকৃত বুকিং' : 'Confirmed & Active'}
+                  </span>
+                )}
+                {status === 'in_progress' && (
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-success-soft text-success-soft-foreground border border-success/30 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                    {isBn ? 'ক্লাস চলছে' : 'In Progress'}
+                  </span>
+                )}
+                {status === 'completed' && (
+                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-surface text-foreground border border-border flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5" />
+                    {isBn ? 'সম্পন্ন' : 'Completed'}
                   </span>
                 )}
                 {status === 'cancelled' && (
@@ -342,14 +372,14 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
 
             {/* Action CTA Box */}
             <div className="flex flex-wrap items-center gap-3">
-              {status === 'accepted' && (
+              {(status === 'accepted' || status === 'awaiting_payment') && (
                 <Link
                   href={withLocale(`/dashboard/bookings/${bookingId}/pay`, locale)}
                   className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm transition-all hover:scale-102"
                   data-testid="pay-escrow-cta-btn"
                 >
                   <CreditCard className="w-4 h-4" />
-                  <span>{isBn ? 'এসক্রো ফি পরিশোধ করুন' : 'Pay Escrow Fees'}</span>
+                  <span>{isBn ? 'পেমেন্ট সম্পন্ন করুন' : 'Complete Payment'}</span>
                 </Link>
               )}
 

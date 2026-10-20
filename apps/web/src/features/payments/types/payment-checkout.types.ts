@@ -25,6 +25,8 @@ export interface PaymentOrderDetails {
   provider: PaymentProvider;
   createdAt: string;
   paidAt?: string;
+  /** Provider-hosted checkout URL. Payment success is only ever confirmed by the backend. */
+  checkoutUrl?: string;
 }
 
 /** Receipt shape — single-sourced from the payments API type. */
@@ -36,7 +38,6 @@ export interface PaymentCheckoutViewProps {
   receipt?: PaymentReceiptData | null;
   payDisabledReason?: string | null;
   onPay?: (provider: PaymentProvider) => Promise<PaymentReceiptData>;
-  onSimulateWebhook?: (orderId: string, provider: string) => Promise<void>;
 }
 
 /** Total amount in BDT units, preserving the original fixed-2 formatting. */

@@ -1,4 +1,5 @@
 import { baseApi, type ApiSuccessEnvelope } from '../base-api';
+import { toQueryString } from '@/lib/api/query';
 
 export type TutoringMode = 'in_person' | 'online' | 'hybrid';
 
@@ -65,6 +66,12 @@ export interface BookingRequestItem {
   [key: string]: unknown;
 }
 
+export interface GetBookingRequestsParams {
+  studentId?: string;
+  status?: string;
+  role?: 'student' | 'tutor';
+}
+
 export const bookingsApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
     createBookingRequest: builder.mutation<
@@ -78,8 +85,16 @@ export const bookingsApi = baseApi.injectEndpoints({
         { type: 'UnreadCount', id: 'COUNT' },
       ],
     }),
-    getBookingRequests: builder.query<ApiSuccessEnvelope<BookingRequestItem[]>, void>({
-      query: () => '/api/v1/requests',
+    getBookingRequests: builder.query<
+      ApiSuccessEnvelope<BookingRequestItem[]>,
+      GetBookingRequestsParams | void
+    >({
+      query: (params) =>
+        `/api/v1/requests${toQueryString({
+          studentId: params?.studentId,
+          status: params?.status,
+          role: params?.role,
+        })}`,
       providesTags: (result) =>
         result
           ? [

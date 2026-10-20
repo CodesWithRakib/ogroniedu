@@ -31,3 +31,22 @@ export interface ScheduleOneOffInput {
   startsAt: string;
   meetingUrl?: string;
 }
+
+export interface WeeklySlotInput {
+  weekday: number;
+  startLocal: string;
+  durationMinutes?: number;
+}
+
+export interface ScheduleRecurringInput {
+  bookingId: string;
+  startDate: string;
+  count: number;
+  timezone?: string;
+  meetingUrl?: string;
+  scheduleSlots: WeeklySlotInput[];
+}
+
+export type ScheduleSessionInput =
+  | ({ mode: 'one_off' } & ScheduleOneOffInput)
+  | ({ mode: 'recurring' } & ScheduleRecurringInput);

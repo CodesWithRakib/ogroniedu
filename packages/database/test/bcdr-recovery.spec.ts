@@ -42,8 +42,8 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
     // 2. Execute full cold recovery via MigrationRunner
     const executed = await runner.runMigrations();
 
-    // Verify all 18 ordered migrations were replayed from WAL / migration log
-    expect(executed).toHaveLength(18);
+    // Verify all 21 ordered migrations were replayed from WAL / migration log
+    expect(executed).toHaveLength(21);
     expect(executed).toEqual([
       '001_initial_schema.sql',
       '002_auth_verification_codes.sql',
@@ -63,15 +63,18 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
       '016_tutor_discovery_and_replacement_workflow.sql',
       '017_tutor_profile_localization.sql',
       '018_profile_avatar_urls.sql',
+      '019_booking_scheduling_integrity.sql',
+      '020_bilingual_schema_cleanup.sql',
+      '021_review_bilingual_fields.sql',
     ]);
 
-    // Verify schema_migrations ledger records all 18 entries
+    // Verify schema_migrations ledger records all 21 entries
     const migrationRecords = await client.query<{ name: string; id: number }>(
       'SELECT id, name FROM schema_migrations ORDER BY id ASC;',
     );
-    expect(migrationRecords.rows).toHaveLength(18);
+    expect(migrationRecords.rows).toHaveLength(21);
     expect(migrationRecords.rows[0].name).toBe('001_initial_schema.sql');
-    expect(migrationRecords.rows[17].name).toBe('018_profile_avatar_urls.sql');
+    expect(migrationRecords.rows[20].name).toBe('021_review_bilingual_fields.sql');
   });
 
   it('STAGE 2: Verify post-recovery schema completeness and catalog invariants', async () => {
@@ -165,7 +168,7 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
 
     const status = await runner.getStatus();
     expect(status.pending).toHaveLength(0);
-    expect(status.applied).toHaveLength(18);
+    expect(status.applied).toHaveLength(21);
   });
 
   it('STAGE 5: Double-entry ledger balance conservation invariant drill', async () => {

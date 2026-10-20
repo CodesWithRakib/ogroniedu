@@ -71,6 +71,9 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
       'tutor_profiles',
       'bookings',
       'booking_sessions',
+      'booking_status_events',
+      'booking_session_series',
+      'tutor_availability_exceptions',
       'session_attendance',
       'ledger_accounts',
       'ledger_journals',
@@ -177,6 +180,55 @@ describe('Database Migration Runner & Integrity Constraint Tests', () => {
           VALUES ('${bookingId}', '${tutorUserId}', '${studentUserId}', '${startB}', '${endB}', 'scheduled');
         `),
       ).rejects.toThrow(/ex_tutor_session_overlap/);
+    });
+
+    it('NEGATIVE TEST: should reject a second open request for the same student/tutor/subject (uq_bookings_active_request)', async () => {
+      const tutorUserId = crypto.randomUUID();
+      const studentUserId = crypto.randomUUID();
+
+      await client.query(`
+        INSERT INTO users (id, display_name, email)
+        VALUES ('${tutorUserId}', 'Tutor Duplicate', 'tutor.${tutorUserId}@test.com'),
+               ('${studentUserId}', 'Student Duplicate', 'student.${studentUserId}@test.com');
+      `);
+
+      await client.query(`
+        INSERT INTO tutor_profiles (user_id, headline)
+        VALUES ('${tutorUserId}', 'Chemistry Tutor');
+      `);
+
+      const levelRes = await client.query('SELECT id FROM education_levels LIMIT 1;');
+      const subjectRes = await client.query('SELECT id FROM subjects LIMIT 1;');
+      const levelId = levelRes.rows[0]?.id;
+      const subjectId = subjectRes.rows[0]?.id;
+
+      const insertBooking = () =>
+        client.query(`
+          INSERT INTO bookings (requester_user_id, student_user_id, tutor_user_id, subject_id, education_level_id, mode, price_per_session_minor, duration_minutes, cancellation_policy_version, status)
+          VALUES ('${studentUserId}', '${studentUserId}', '${tutorUserId}', '${subjectId}', '${levelId}', 'online', 100000, 60, 'v1', 'requested');
+        `);
+
+      await insertBooking();
+      await expect(insertBooking()).rejects.toThrow(/uq_bookings_active_request/);
+    });
+
+    it('NEGATIVE TEST: should reject duplicate outbox idempotency keys (uq_outbox_idempotency)', async () => {
+      const idempotencyKey = `outbox-duplicate-${crypto.randomUUID()}`;
+      const aggregateId = crypto.randomUUID();
+
+      await client.query(
+        `INSERT INTO outbox_events (event_type, aggregate_type, aggregate_id, payload, idempotency_key)
+         VALUES ('test.event', 'session', $1, '{}'::jsonb, $2);`,
+        [aggregateId, idempotencyKey],
+      );
+
+      await expect(
+        client.query(
+          `INSERT INTO outbox_events (event_type, aggregate_type, aggregate_id, payload, idempotency_key)
+           VALUES ('test.event', 'session', $1, '{}'::jsonb, $2);`,
+          [aggregateId, idempotencyKey],
+        ),
+      ).rejects.toThrow(/uq_outbox_idempotency/);
     });
 
     it('NEGATIVE TEST: should reject progress report when period_end is before period_start (chk_progress_report_dates)', async () => {

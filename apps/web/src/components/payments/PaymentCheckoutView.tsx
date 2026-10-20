@@ -21,7 +21,6 @@ interface PaymentCheckoutViewProps {
   receipt?: PaymentReceiptData | null;
   payDisabledReason?: string | null;
   onPay?: (provider: PaymentProvider) => Promise<PaymentReceiptData>;
-  onSimulateWebhook?: (orderId: string, provider: string) => Promise<void>;
 }
 
 export function PaymentCheckoutView({
@@ -30,11 +29,10 @@ export function PaymentCheckoutView({
   receipt: receiptProp,
   payDisabledReason,
   onPay,
-  onSimulateWebhook,
 }: PaymentCheckoutViewProps) {
   const dict = getDictionary(locale);
   const p = dict.payments;
-  const flow = useCheckoutFlow({ locale, initialOrder, receiptProp, onPay, onSimulateWebhook });
+  const flow = useCheckoutFlow({ locale, initialOrder, receiptProp, onPay });
   const { order, receipt } = flow;
 
   if (!order) {

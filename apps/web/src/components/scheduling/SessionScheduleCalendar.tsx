@@ -7,14 +7,14 @@ import { getDictionary, type Locale } from '@/lib/i18n';
 import type {
   CalendarSessionItem,
   CancelAssessmentView,
-  ScheduleOneOffInput,
+  ScheduleSessionInput,
 } from '@/features/bookings/types/session.types';
 import { SessionCard } from '@/features/bookings/components/sessions/sessionCard';
 import { RescheduleModal } from '@/features/bookings/components/sessions/rescheduleModal';
 import { CancelSessionModal } from '@/features/bookings/components/sessions/cancelModal';
 import { ScheduleSessionModal } from '@/features/bookings/components/sessions/scheduleModal';
 
-export type { CalendarSessionItem, CancelAssessmentView, ScheduleOneOffInput };
+export type { CalendarSessionItem, CancelAssessmentView, ScheduleSessionInput };
 export type { SessionItemStatus } from '@/features/bookings/types/session.types';
 
 interface SessionScheduleCalendarProps {
@@ -22,10 +22,11 @@ interface SessionScheduleCalendarProps {
   initialSessions?: CalendarSessionItem[];
   isLoading?: boolean;
   queryError?: string | null;
-  onScheduleOneOff?: (data: ScheduleOneOffInput) => Promise<void>;
+  onScheduleSession?: (data: ScheduleSessionInput) => Promise<void>;
   scheduleOptions?: { id: string; status: string }[];
   onReschedule?: (sessionId: string, newStartsAt: string, reason: string) => Promise<void>;
   onCancel?: (sessionId: string, reason: string) => Promise<CancelAssessmentView | null | void>;
+  scopeSlot?: React.ReactNode;
 }
 
 const DEFAULT_SESSIONS: CalendarSessionItem[] = [];
@@ -41,10 +42,11 @@ export function SessionScheduleCalendar({
   initialSessions = DEFAULT_SESSIONS,
   isLoading = false,
   queryError = null,
-  onScheduleOneOff,
+  onScheduleSession,
   onReschedule,
   onCancel,
   scheduleOptions = [],
+  scopeSlot,
 }: SessionScheduleCalendarProps) {
   const dict = getDictionary(locale);
   const [sessions, setSessions] = useState<CalendarSessionItem[]>(initialSessions);
@@ -127,12 +129,12 @@ export function SessionScheduleCalendar({
     }
   };
 
-  const handleConfirmSchedule = async (input: ScheduleOneOffInput) => {
+  const handleConfirmSchedule = async (input: ScheduleSessionInput) => {
     setIsSubmitting(true);
     setActionError(null);
     try {
-      if (onScheduleOneOff) {
-        await onScheduleOneOff(input);
+      if (onScheduleSession) {
+        await onScheduleSession(input);
       } else {
         throw new Error(
           locale === 'bn' ? 'শিডিউলিং এখন উপলব্ধ নয়।' : 'Scheduling is unavailable right now.',
@@ -152,26 +154,28 @@ export function SessionScheduleCalendar({
       className="w-full max-w-7xl mx-auto px-4 py-8 space-y-8"
       data-testid="scheduling-container"
     >
-      {/* Banner */}
-      <div className="bg-card border border-border rounded-2xl p-6 sm:p-8 text-foreground shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-2">
-          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary/10 border border-primary/25 rounded-full text-xs font-semibold text-primary">
+      {/* Banner — matches home / tutor discovery visual language */}
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-6 sm:p-8 text-foreground shadow-xs flex flex-col md:flex-row md:items-center justify-between gap-6">
+        <div className="absolute -top-20 -right-12 w-72 h-72 rounded-full bg-brand-soft blur-3xl pointer-events-none" />
+        <div className="relative z-10 space-y-2">
+          <div className="inline-flex items-center gap-2 px-3 py-1 bg-primary-soft border border-primary/25 rounded-full text-[11px] font-bold text-primary">
             <Clock className="w-3.5 h-3.5" />
             <span>
               {dict.scheduling?.timezoneNotice || 'Bangladesh Standard Time (BST / UTC+6)'}
             </span>
           </div>
-          <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
+          <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
             {dict.scheduling?.calendarTitle || 'Class Schedule & Sessions'}
           </h1>
-          <p className="text-muted-foreground text-sm max-w-xl font-normal leading-relaxed">
+          <p className="text-muted-foreground text-xs sm:text-sm max-w-xl font-normal leading-relaxed">
             {dict.scheduling?.calendarSubtitle ||
               'Manage scheduled tutoring classes, meeting links, and calendar slots'}
           </p>
+          {scopeSlot && <div className="pt-1">{scopeSlot}</div>}
         </div>
 
-        <div className="flex items-center gap-3 shrink-0">
-          <div className="px-4 py-2.5 rounded-2xl bg-surface border border-border text-center">
+        <div className="relative z-10 flex items-center gap-3 shrink-0">
+          <div className="px-4 py-2.5 rounded-2xl bg-card/80 border border-border text-center backdrop-blur">
             <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
               {locale === 'bn' ? 'আসন্ন ক্লাস' : 'Upcoming'}
             </span>
@@ -179,7 +183,7 @@ export function SessionScheduleCalendar({
               {sessions.filter((s) => s.status === 'scheduled').length}
             </span>
           </div>
-          <div className="px-4 py-2.5 rounded-2xl bg-surface border border-border text-center">
+          <div className="px-4 py-2.5 rounded-2xl bg-card/80 border border-border text-center backdrop-blur">
             <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
               {locale === 'bn' ? 'সম্পন্ন ক্লাস' : 'Completed'}
             </span>
@@ -212,7 +216,7 @@ export function SessionScheduleCalendar({
             <CalendarIcon className="w-5 h-5 text-primary" />
             <span>{locale === 'bn' ? 'নির্ধারিত ক্লাসসমূহ' : 'Scheduled Classes'}</span>
           </h2>
-          {onScheduleOneOff && (
+          {onScheduleSession && (
             <Button
               size="sm"
               onClick={() => setScheduleOpen(true)}
@@ -296,7 +300,7 @@ export function SessionScheduleCalendar({
       )}
 
       {/* Schedule Modal */}
-      {scheduleOpen && onScheduleOneOff && (
+      {scheduleOpen && onScheduleSession && (
         <ScheduleSessionModal
           locale={locale}
           options={scheduleOptions}

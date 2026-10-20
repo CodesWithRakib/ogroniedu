@@ -15,7 +15,6 @@ export interface UseCheckoutFlowOptions {
   initialOrder?: PaymentOrderDetails;
   receiptProp?: PaymentReceiptData | null;
   onPay?: (provider: PaymentProvider) => Promise<PaymentReceiptData>;
-  onSimulateWebhook?: (orderId: string, provider: string) => Promise<void>;
 }
 
 function fieldErrorsFrom(err: unknown): Record<string, string> {
@@ -38,7 +37,6 @@ export function useCheckoutFlow({
   initialOrder,
   receiptProp,
   onPay,
-  onSimulateWebhook,
 }: UseCheckoutFlowOptions) {
   const [order, setOrder] = React.useState<PaymentOrderDetails | null>(initialOrder ?? null);
   const [selectedGateway, setSelectedGateway] = React.useState<PaymentProvider>(
@@ -72,8 +70,6 @@ export function useCheckoutFlow({
           provider: selectedGateway,
           paidAt: serverReceipt.paidAt,
         });
-      } else if (onSimulateWebhook) {
-        await onSimulateWebhook(order.id, selectedGateway);
       } else {
         throw new Error(
           locale === 'bn' ? 'পেমেন্ট এখন উপলব্ধ নয়।' : 'Payment is unavailable right now.',
@@ -85,7 +81,7 @@ export function useCheckoutFlow({
     } finally {
       setIsProcessing(false);
     }
-  }, [locale, onPay, onSimulateWebhook, order, selectedGateway]);
+  }, [locale, onPay, order, selectedGateway]);
 
   const handlePrint = React.useCallback(() => {
     if (typeof window !== 'undefined') {

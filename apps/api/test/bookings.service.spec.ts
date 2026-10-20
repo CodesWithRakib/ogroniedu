@@ -456,4 +456,44 @@ describe('BookingsService Unit & Invariant Tests', () => {
       );
     });
   });
+
+  describe('getRequests guardian child scope', () => {
+    function mockQueryBuilder() {
+      const qb: any = {
+        leftJoinAndSelect: vi.fn(() => qb),
+        where: vi.fn(() => qb),
+        andWhere: vi.fn(() => qb),
+        orderBy: vi.fn(() => qb),
+        getMany: vi.fn().mockResolvedValue([]),
+      };
+      mockBookingRepo.createQueryBuilder.mockReturnValue(qb);
+      return qb;
+    }
+
+    it('rejects a studentId that is not an active guardian link (403)', async () => {
+      mockLinkRepo.find.mockResolvedValue([{ studentUserId: 'child-linked-1' }]);
+      mockQueryBuilder();
+
+      await expect(
+        service.getRequests(guardianUser, { studentId: 'child-unlinked-2' }),
+      ).rejects.toThrow(ForbiddenException);
+    });
+
+    it('binds the query to the explicitly selected linked child', async () => {
+      mockLinkRepo.find.mockResolvedValue([
+        { studentUserId: 'child-linked-1' },
+        { studentUserId: 'child-linked-2' },
+      ]);
+      const qb = mockQueryBuilder();
+
+      await service.getRequests(guardianUser, { studentId: 'child-linked-2' });
+
+      expect(qb.where).toHaveBeenCalledWith('booking.studentUserId = :studentId', {
+        studentId: 'child-linked-2',
+      });
+      expect(qb.andWhere).toHaveBeenCalledWith('booking.studentUserId = :studentId', {
+        studentId: 'child-linked-2',
+      });
+    });
+  });
 });

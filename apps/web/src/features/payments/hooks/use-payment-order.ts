@@ -8,10 +8,10 @@ import { useAppSelector } from '@/store';
 import { useGetBookingRequestsQuery, type BookingRequestItem } from '@/store/services/bookings-api';
 import {
   useCreatePaymentOrderMutation,
-  useSandboxConfirmPaymentMutation,
   useLazyGetPaymentReceiptQuery,
   useProcessRefundMutation,
   useGetMyPaymentOrdersQuery,
+  type CreatePaymentOrderResponse,
   type PaymentOrderRecord,
 } from '@/store/services/payments-api';
 import type {
@@ -143,7 +143,6 @@ export function usePaymentOrder(locale: Locale) {
   const [receiptLoading, setReceiptLoading] = React.useState(false);
 
   const [createOrder, { isLoading: creating }] = useCreatePaymentOrderMutation();
-  const [sandboxConfirm] = useSandboxConfirmPaymentMutation();
   const [fetchReceipt] = useLazyGetPaymentReceiptQuery();
   const [processRefund, { isLoading: refunding }] = useProcessRefundMutation();
 
@@ -187,33 +186,41 @@ export function usePaymentOrder(locale: Locale) {
     }
   }
 
+  async function requestCheckout(targetBookingId: string, gateway: PaymentProvider) {
+    const res = await createOrder({
+      body: { bookingId: targetBookingId, provider: gateway },
+      idempotencyKey: newIdempotencyKey('order'),
+    }).unwrap();
+    const created = (res.data ?? res) as CreatePaymentOrderResponse;
+    if (!created?.orderId || !created?.checkoutUrl) {
+      throw new Error(
+        locale === 'bn'
+          ? 'পেমেন্ট গেটওয়ে চেকআউট লিংক দেয়নি। আবার চেষ্টা করুন।'
+          : 'The payment gateway did not return a checkout session. Please try again.',
+      );
+    }
+    return created;
+  }
+
   async function handleCreateOrder(e: React.FormEvent) {
     e.preventDefault();
     setFormError(null);
     if (!bookingId) return;
-    const amountMinor = Math.round(Number(amountBdt) * 100);
-    if (!Number.isFinite(amountMinor) || amountMinor <= 0) {
-      setFormError(locale === 'bn' ? 'সঠিক পরিমাণ দিন।' : 'Enter a valid amount.');
-      return;
-    }
     try {
-      const res = await createOrder({
-        body: { bookingId, amountMinor, provider },
-        idempotencyKey: newIdempotencyKey('order'),
-      }).unwrap();
-      const created = (res.data ?? res) as Record<string, unknown>;
+      const created = await requestCheckout(bookingId, provider);
       setOrder({
-        id: String(created.id ?? created.orderId ?? `ord-${Date.now()}`),
+        id: created.orderId,
         bookingId,
         payerName: user?.displayName ?? '',
         studentName: '',
         tutorName: '',
         subjectName: '',
-        amountMinor,
-        currency: 'BDT',
+        amountMinor: created.amountMinor,
+        currency: created.currency || 'BDT',
         status: 'pending',
         provider,
         createdAt: new Date().toISOString(),
+        checkoutUrl: created.checkoutUrl,
       });
       setActiveTab('checkout');
     } catch (err) {
@@ -223,31 +230,65 @@ export function usePaymentOrder(locale: Locale) {
 
   async function handlePay(gateway: PaymentProvider) {
     if (!order) throw new Error('No order');
-    setOrder({ ...order, provider: gateway });
+    setFormError(null);
 
-    // Execute sandbox verified confirmation to trigger atomic ledger posting & booking confirmation
-    try {
-      await sandboxConfirm({ orderId: order.id, provider: gateway }).unwrap();
-    } catch {
-      // Proceed to fetch receipt even if sandbox-confirm returns already-processed
+    // Reserve the tab synchronously so browsers do not block the provider
+    // checkout window opened after the async order request.
+    const checkoutWindow =
+      typeof window !== 'undefined' ? window.open('about:blank', '_blank') : null;
+    if (checkoutWindow) checkoutWindow.opener = null;
+
+    let checkoutUrl = order.checkoutUrl;
+    let activeOrderId = order.id;
+    if (!checkoutUrl || order.provider !== gateway) {
+      try {
+        const created = await requestCheckout(order.bookingId, gateway);
+        checkoutUrl = created.checkoutUrl;
+        activeOrderId = created.orderId;
+        setOrder({
+          ...order,
+          id: created.orderId,
+          amountMinor: created.amountMinor,
+          currency: created.currency || order.currency,
+          provider: gateway,
+          status: 'pending',
+          checkoutUrl,
+        });
+      } catch (err) {
+        checkoutWindow?.close();
+        throw err;
+      }
     }
 
-    const receiptRes = await fetchReceipt(order.id)
-      .unwrap()
-      .catch((err: unknown) => {
-        throw new Error(normalizeUnknownError(err, locale).message);
-      });
-    const receipt = receiptRes.data;
-    if (receipt.status !== 'succeeded') {
-      throw new Error(
-        locale === 'bn'
-          ? 'পেমেন্ট এখনও নিশ্চিত হয়নি। ওয়েবহুক নিশ্চিতকরণের পর রসিদ পাওয়া যাবে।'
-          : 'Payment not yet confirmed. The receipt appears after webhook confirmation.',
-      );
+    if (checkoutWindow) {
+      checkoutWindow.location.replace(checkoutUrl);
+    } else {
+      window.location.assign(checkoutUrl);
     }
-    requests.refetch();
-    ordersQuery.refetch();
-    return receipt;
+
+    // The provider redirect is never proof of payment. Poll the backend receipt
+    // (which is only issued after the verified webhook) and never mark success
+    // from this browser.
+    for (let attempt = 0; attempt < 10; attempt += 1) {
+      await new Promise((resolve) => setTimeout(resolve, 3000));
+      try {
+        const receiptRes = await fetchReceipt(activeOrderId).unwrap();
+        const receipt = receiptRes.data;
+        if (receipt.status === 'succeeded') {
+          requests.refetch();
+          ordersQuery.refetch();
+          return receipt;
+        }
+      } catch {
+        // Receipt is not available until the webhook is processed.
+      }
+    }
+
+    throw new Error(
+      locale === 'bn'
+        ? 'পেমেন্ট এখনও নিশ্চিত হয়নি। গেটওয়েতে পেমেন্ট সম্পন্ন করে এই পেজ রিফ্রেশ করুন।'
+        : 'Payment is not confirmed yet. Complete the payment in the provider window, then refresh this page.',
+    );
   }
 
   async function handleViewReceipt(orderId: string) {

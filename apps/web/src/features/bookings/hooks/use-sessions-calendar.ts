@@ -12,8 +12,10 @@ import { mapSessionItems, toCancelAssessment } from '../utils/session-mappers';
 import type { CalendarSessionItem, CancelAssessmentView } from '../types/session.types';
 
 /** Feature-level sessions hook: calendar items + reschedule/cancel actions with localized errors. */
-export function useSessionsCalendar(locale: Locale) {
-  const { data, isFetching, isError, error, refetch } = useGetSessionsQuery();
+export function useSessionsCalendar(locale: Locale, studentId?: string) {
+  const { data, isFetching, isError, error, refetch } = useGetSessionsQuery(
+    studentId ? { studentId } : undefined,
+  );
   const [reschedule] = useRescheduleSessionMutation();
   const [cancel] = useCancelSessionMutation();
 

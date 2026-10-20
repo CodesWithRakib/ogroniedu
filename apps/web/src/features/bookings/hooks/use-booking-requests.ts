@@ -11,10 +11,12 @@ import {
 } from '@/store/services/bookings-api';
 
 /** Feature-level booking-requests hook: list state plus withdraw/respond actions. */
-export function useBookingRequests(locale: Locale) {
+export function useBookingRequests(locale: Locale, studentId?: string) {
   const user = useAppSelector((s) => s.auth.user);
   const isTutor = user?.roles?.includes('tutor');
-  const { data, isLoading, isError, error, refetch } = useGetBookingRequestsQuery();
+  const { data, isLoading, isError, error, refetch } = useGetBookingRequestsQuery(
+    studentId ? { studentId } : undefined,
+  );
   const [withdraw, { isLoading: withdrawing }] = useWithdrawBookingRequestMutation();
   const [respond, { isLoading: responding }] = useRespondBookingRequestMutation();
   const [actionError, setActionError] = React.useState<string | null>(null);

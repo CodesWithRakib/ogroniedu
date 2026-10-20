@@ -2,13 +2,12 @@ import {
   Injectable,
   NotFoundException,
   BadRequestException,
-  ConflictException,
   Inject,
   Optional,
   forwardRef,
 } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
-import { DataSource, In, Repository } from 'typeorm';
+import { DataSource, Repository } from 'typeorm';
 import { BookingSessionSeriesEntity } from '../entities/booking-session-series.entity';
 import { BookingSessionEntity } from '../entities/booking-session.entity';
 import { OutboxEventEntity } from '../entities/outbox-event.entity';

@@ -34,6 +34,8 @@ import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { formatWeekdayDate, formatBDTMinor } from '@/lib/format';
 import { useBookingRequests } from '../hooks/use-booking-requests';
+import { useChildScope } from '@/features/guardian/hooks/use-child-scope';
+import { ChildScopeSelect } from '@/features/guardian/components/ChildScopeSelect';
 import type { BookingRequestItem } from '@/store/services/bookings-api';
 
 type FilterStatus = 'all' | 'requested' | 'accepted' | 'closed';
@@ -45,7 +47,8 @@ type FilterStatus = 'all' | 'requested' | 'accepted' | 'closed';
  */
 export function RequestsPage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
-  const req = useBookingRequests(locale);
+  const scope = useChildScope();
+  const req = useBookingRequests(locale, scope.selectedStudentId);
   const { items } = req;
   const [activeFilter, setActiveFilter] = useState<FilterStatus>('all');
 
@@ -53,13 +56,16 @@ export function RequestsPage({ locale }: { locale: Locale }) {
     return items.filter((item) => {
       if (activeFilter === 'all') return true;
       if (activeFilter === 'requested') return item.status === 'requested';
-      if (activeFilter === 'accepted') return item.status === 'accepted';
+      if (activeFilter === 'accepted') {
+        return ['accepted', 'awaiting_payment', 'confirmed', 'in_progress'].includes(item.status);
+      }
       if (activeFilter === 'closed') {
         return (
           item.status === 'declined' ||
           item.status === 'withdrawn' ||
           item.status === 'cancelled' ||
-          item.status === 'expired'
+          item.status === 'expired' ||
+          item.status === 'completed'
         );
       }
       return true;
@@ -70,9 +76,11 @@ export function RequestsPage({ locale }: { locale: Locale }) {
     return {
       all: items.length,
       requested: items.filter((i) => i.status === 'requested').length,
-      accepted: items.filter((i) => i.status === 'accepted').length,
+      accepted: items.filter((i) =>
+        ['accepted', 'awaiting_payment', 'confirmed', 'in_progress'].includes(i.status),
+      ).length,
       closed: items.filter((i) =>
-        ['declined', 'withdrawn', 'cancelled', 'expired'].includes(i.status),
+        ['declined', 'withdrawn', 'cancelled', 'expired', 'completed'].includes(i.status),
       ).length,
     };
   }, [items]);
@@ -80,10 +88,26 @@ export function RequestsPage({ locale }: { locale: Locale }) {
   function getStatusBadge(status: string) {
     switch (status) {
       case 'accepted':
+      case 'awaiting_payment':
+        return (
+          <Badge variant="warning" className="flex items-center gap-1">
+            <CreditCard className="w-3 h-3" />
+            <span>{locale === 'bn' ? 'পেমেন্ট বাকি' : 'Payment due'}</span>
+          </Badge>
+        );
+      case 'confirmed':
+      case 'in_progress':
         return (
           <Badge variant="success" className="flex items-center gap-1">
             <CheckCircle2 className="w-3 h-3" />
-            <span>{locale === 'bn' ? 'অনুমোদিত' : 'Accepted'}</span>
+            <span>{locale === 'bn' ? 'নিশ্চিত' : 'Confirmed'}</span>
+          </Badge>
+        );
+      case 'completed':
+        return (
+          <Badge variant="outline" className="flex items-center gap-1">
+            <CheckCircle2 className="w-3 h-3" />
+            <span>{locale === 'bn' ? 'সম্পন্ন' : 'Completed'}</span>
           </Badge>
         );
       case 'requested':
@@ -100,6 +124,14 @@ export function RequestsPage({ locale }: { locale: Locale }) {
             <span>{locale === 'bn' ? 'প্রত্যাখ্যাত' : 'Declined'}</span>
           </Badge>
         );
+      case 'cancelled':
+      case 'expired':
+        return (
+          <Badge variant="destructive" className="flex items-center gap-1">
+            <XCircle className="w-3 h-3" />
+            <span>{locale === 'bn' ? 'বাতিল' : 'Cancelled'}</span>
+          </Badge>
+        );
       case 'withdrawn':
         return (
           <Badge variant="outline" className="flex items-center gap-1 text-muted-foreground">
@@ -108,7 +140,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           </Badge>
         );
       default:
-        return <Badge variant="outline">{status}</Badge>;
+        return <Badge variant="outline">{status.replace(/_/g, ' ')}</Badge>;
     }
   }
 
@@ -146,29 +178,53 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           : 'Track new tuition bookings, manage tutor confirmations and progress'
       }
     >
-      {/* Top Banner & Quick Actions */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 bg-card p-6 rounded-2xl border border-border shadow-xs">
-        <div>
-          <h2 className="text-xl sm:text-2xl font-extrabold text-foreground tracking-tight">
-            {locale === 'bn' ? 'আপনার টিউশন অনুরোধসমূহ' : 'Your Tutoring Inquiries'}
-          </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-xl font-normal leading-relaxed">
-            {locale === 'bn'
-              ? 'শিক্ষকের উত্তর পাওয়ার সাথে সাথে আপনাকে নোটিফিকেশন ও এসএমএস পাঠানো হয়।'
-              : 'You will receive instant notifications when the tutor responds.'}
-          </p>
+      {/* Hero banner — same visual language as home / tutor discovery */}
+      <div className="mb-6 relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-5 sm:p-7 shadow-xs">
+        <div className="absolute -top-16 -right-10 w-64 h-64 rounded-full bg-brand-soft blur-3xl pointer-events-none" />
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+          <div className="space-y-2.5 max-w-2xl">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-soft px-3 py-1 text-[11px] font-bold text-primary">
+              <BookOpen className="w-3.5 h-3.5" />
+              {locale === 'bn' ? 'বুকিং ওয়ার্কস্পেস' : 'Booking workspace'}
+            </div>
+            <h2 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-foreground">
+              {locale === 'bn' ? (
+                <>
+                  আপনার টিউশন{' '}
+                  <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
+                    অনুরোধসমূহ
+                  </span>
+                </>
+              ) : (
+                <>
+                  Your tutoring{' '}
+                  <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
+                    inquiries
+                  </span>
+                </>
+              )}
+            </h2>
+            <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed max-w-xl">
+              {locale === 'bn'
+                ? 'শিক্ষকের উত্তর, পেমেন্টের অবস্থা ও ক্লাসের অগ্রগতি এক জায়গায় ট্র্যাক করুন।'
+                : 'Track tutor responses, payment status and class progress in one place.'}
+            </p>
+          </div>
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            <ChildScopeSelect locale={locale} scope={scope} />
+            {!req.isTutor && (
+              <Link href={withLocale('/tutors', locale)}>
+                <Button
+                  size="sm"
+                  className="bg-primary hover:bg-primary-hover text-white shadow-xs rounded-xl font-semibold"
+                >
+                  <Search className="w-4 h-4 mr-1.5" />
+                  {locale === 'bn' ? 'নতুন শিক্ষক খুঁজুন' : 'Find a Tutor'}
+                </Button>
+              </Link>
+            )}
+          </div>
         </div>
-        {!req.isTutor && (
-          <Link href={withLocale('/tutors', locale)}>
-            <Button
-              size="sm"
-              className="bg-primary hover:bg-primary-hover text-white shadow-xs rounded-xl font-semibold shrink-0"
-            >
-              <Search className="w-4 h-4 mr-1.5" />
-              {locale === 'bn' ? 'নতুন শিক্ষক খুঁজুন' : 'Find a Tutor'}
-            </Button>
-          </Link>
-        )}
       </div>
 
       {/* Filter Tabs */}
@@ -404,7 +460,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                         </Button>
                       )}
 
-                      {r.status === 'accepted' && (
+                      {['accepted', 'awaiting_payment'].includes(r.status) && (
                         <div className="flex flex-wrap items-center gap-2 w-full justify-end">
                           <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
                             <Button size="sm" variant="outline" className="text-xs font-semibold">
@@ -424,6 +480,22 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                             >
                               <CreditCard className="w-3.5 h-3.5 mr-1" />
                               {locale === 'bn' ? 'পেমেন্ট করুন' : 'Make Payment'}
+                            </Button>
+                          </Link>
+                        </div>
+                      )}
+
+                      {['confirmed', 'in_progress', 'completed'].includes(r.status) && (
+                        <div className="flex flex-wrap items-center gap-2 w-full justify-end">
+                          <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
+                            <Button size="sm" variant="outline" className="text-xs font-semibold">
+                              {locale === 'bn' ? 'বিস্তারিত' : 'Details'}
+                            </Button>
+                          </Link>
+                          <Link href={withLocale('/dashboard/student/sessions', locale)}>
+                            <Button size="sm" className="text-xs font-bold">
+                              <Video className="w-3.5 h-3.5 mr-1" />
+                              {locale === 'bn' ? 'ক্লাস সময়সূচি' : 'Classes'}
                             </Button>
                           </Link>
                         </div>
@@ -470,7 +542,9 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                           </Button>
                         </div>
                       )}
-                      {r.status === 'accepted' && (
+                      {['accepted', 'awaiting_payment', 'confirmed', 'in_progress'].includes(
+                        r.status,
+                      ) && (
                         <Link
                           href={withLocale('/dashboard/tutor/sessions', locale)}
                           className="ml-auto"

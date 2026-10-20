@@ -85,7 +85,8 @@
 
 ### Payment boundary
 
-- [ ] `POST /payments/orders/:id/sandbox-confirm` no longer exists.
+- [ ] Legacy `POST /payments/orders/:id/sandbox-confirm` returns `410 Gone`;
+  no client-side path can mark a payment successful.
 - [ ] Unsigned webhooks are rejected for SSLCOMMERZ and bKash.
 - [ ] Provider query failure cannot produce a successful verification.
 - [ ] Amount/currency mismatch is rejected against both webhook and provider.
