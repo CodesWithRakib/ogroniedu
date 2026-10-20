@@ -5,10 +5,7 @@ import { CheckCircle2, Play } from 'lucide-react';
 import { Alert, AlertDescription, Button } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { normalizeApiError, normalizeUnknownError } from '@/lib/api-error';
-import {
-  useCompleteSessionMutation,
-  useStartSessionMutation,
-} from '@/store/services/sessions-api';
+import { useCompleteSessionMutation, useStartSessionMutation } from '@/store/services/sessions-api';
 
 /**
  * Lifecycle controls are rendered only for the assigned tutor or an admin.
@@ -57,7 +54,10 @@ export function SessionLifecycleActions({
   }
 
   return (
-    <div className="flex flex-col gap-2 sm:flex-row sm:items-center" data-testid="session-lifecycle">
+    <div
+      className="flex flex-col gap-2 sm:flex-row sm:items-center"
+      data-testid="session-lifecycle"
+    >
       {error && (
         <Alert variant="destructive" className="w-full">
           <AlertDescription role="alert">{error}</AlertDescription>

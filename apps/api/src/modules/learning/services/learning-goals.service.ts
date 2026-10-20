@@ -14,11 +14,7 @@ import { AuditService } from '../../audit/audit.service';
 import { NotificationService } from '../../notifications/notification.service';
 import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { LearningAccessService } from './learning-access.service';
-import {
-  CreateLearningGoalDto,
-  UpdateLearningGoalDto,
-  StudentScopedListQueryDto,
-} from '../dto';
+import { CreateLearningGoalDto, UpdateLearningGoalDto, StudentScopedListQueryDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { isAdminRole } from '../../../common/auth/role.utils';
 import { toPageSize } from '../../../common/pagination';
@@ -178,7 +174,10 @@ export class LearningGoalsService {
     if (query.from) qb.andWhere('goal.createdAt >= :from', { from: new Date(query.from) });
     if (query.to) qb.andWhere('goal.createdAt <= :to', { to: new Date(query.to) });
 
-    const [rows, total] = await qb.skip((page - 1) * pageSize).take(pageSize).getManyAndCount();
+    const [rows, total] = await qb
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
     return { items: rows.map((row) => this.toView(row)), totalItems: total, page, pageSize };
   }
 
@@ -197,10 +196,7 @@ export class LearningGoalsService {
     return goal;
   }
 
-  private async notifyStatusChange(
-    goal: LearningGoalEntity,
-    studentUserId: string,
-  ): Promise<void> {
+  private async notifyStatusChange(goal: LearningGoalEntity, studentUserId: string): Promise<void> {
     if (!this.notificationService) return;
     const payload = {
       goalId: goal.id,

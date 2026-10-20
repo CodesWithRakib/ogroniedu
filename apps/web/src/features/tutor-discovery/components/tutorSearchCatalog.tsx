@@ -290,7 +290,8 @@ export function TutorSearchCatalog({
     activeChips.push({
       key: 'subjectId',
       label:
-        subjectOptions.find((o) => o.id === filters.subjectId)?.label ?? (isBn ? 'বিষয়' : 'Subject'),
+        subjectOptions.find((o) => o.id === filters.subjectId)?.label ??
+        (isBn ? 'বিষয়' : 'Subject'),
     });
   }
   if (filters.educationLevelId) {
@@ -308,11 +309,11 @@ export function TutorSearchCatalog({
   if (filters.modeFilter) {
     const modeLabel =
       filters.modeFilter === 'in_person'
-        ? (dict.tutor?.modeInPerson || 'In-person')
+        ? dict.tutor?.modeInPerson || 'In-person'
         : filters.modeFilter === 'online'
-          ? (dict.tutor?.modeOnline || 'Online')
+          ? dict.tutor?.modeOnline || 'Online'
           : filters.modeFilter === 'hybrid'
-            ? (dict.tutor?.modeHybrid || 'Hybrid')
+            ? dict.tutor?.modeHybrid || 'Hybrid'
             : filters.modeFilter;
     activeChips.push({ key: 'modeFilter', label: modeLabel });
   }
@@ -329,7 +330,8 @@ export function TutorSearchCatalog({
     activeChips.push({ key: 'availableWeekday', label: isBn ? day?.bn : day?.en });
   }
   if (filters.districtCode) {
-    const distName = districtOptions.find((d) => d.id === filters.districtCode)?.label ?? filters.districtCode;
+    const distName =
+      districtOptions.find((d) => d.id === filters.districtCode)?.label ?? filters.districtCode;
     activeChips.push({ key: 'districtCode', label: distName });
   }
   if (filters.radiusKm) {
@@ -398,12 +400,20 @@ export function TutorSearchCatalog({
                 )
               )}
               {locationError && (
-                <span className="text-warning-soft-foreground text-[11px]" data-testid="location-error" role="alert">
+                <span
+                  className="text-warning-soft-foreground text-[11px]"
+                  data-testid="location-error"
+                  role="alert"
+                >
                   {locationError}
                 </span>
               )}
               {saveError && (
-                <span className="text-destructive text-[11px]" data-testid="save-tutor-error" role="alert">
+                <span
+                  className="text-destructive text-[11px]"
+                  data-testid="save-tutor-error"
+                  role="alert"
+                >
                   {saveError}
                 </span>
               )}

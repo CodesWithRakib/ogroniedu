@@ -135,13 +135,7 @@ export class PaymentWebhooksService {
         return await this.handleFailure(eventRecord, order, event, provider);
       }
 
-      const result = await this.handleSuccess(
-        eventRecord,
-        order,
-        event,
-        provider,
-        requestId,
-      );
+      const result = await this.handleSuccess(eventRecord, order, event, provider, requestId);
       if (!result) {
         return { received: true, processed: false, orderId: order.id, status: 'succeeded' };
       }

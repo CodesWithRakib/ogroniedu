@@ -42,7 +42,9 @@ export function LessonPlannerPage({ locale }: { locale: Locale }) {
   const t = getDictionary(locale).learning;
   const requests = useGetBookingRequestsQuery();
   const bookings = React.useMemo(() => {
-    const items = requests.data ? parseOffsetCollection<{ id: string; subject?: { name?: string } }>(requests.data).items : [];
+    const items = requests.data
+      ? parseOffsetCollection<{ id: string; subject?: { name?: string } }>(requests.data).items
+      : [];
     return items;
   }, [requests.data]);
 
@@ -63,9 +65,9 @@ export function LessonPlannerPage({ locale }: { locale: Locale }) {
   const [description, setDescription] = React.useState('');
   const [objectives, setObjectives] = React.useState('');
   const [error, setError] = React.useState<string | null>(null);
-  const [linkDrafts, setLinkDrafts] = React.useState<Record<string, { title: string; url: string }>>(
-    {},
-  );
+  const [linkDrafts, setLinkDrafts] = React.useState<
+    Record<string, { title: string; url: string }>
+  >({});
   const fileInputs = React.useRef<Record<string, HTMLInputElement | null>>({});
 
   const failure = (err: unknown) => setError(normalizeUnknownError(err, locale).message);

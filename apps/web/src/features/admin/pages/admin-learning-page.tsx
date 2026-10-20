@@ -15,7 +15,10 @@ import {
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { normalizeApiError } from '@/lib/api-error';
 import { parseOffsetCollection } from '@/lib/api/parse';
-import { useGetAdminLmsOverviewQuery, useGetAdminLmsSessionsQuery } from '@/store/services/learning-api';
+import {
+  useGetAdminLmsOverviewQuery,
+  useGetAdminLmsSessionsQuery,
+} from '@/store/services/learning-api';
 
 interface AdminLmsSessionRow {
   id: string;
@@ -81,7 +84,11 @@ export function AdminLearningPage({ locale }: { locale: Locale }) {
   const [page, setPage] = React.useState(1);
 
   const overview = useGetAdminLmsOverviewQuery();
-  const sessions = useGetAdminLmsSessionsQuery({ status: status || undefined, page, pageSize: PAGE_SIZE });
+  const sessions = useGetAdminLmsSessionsQuery({
+    status: status || undefined,
+    page,
+    pageSize: PAGE_SIZE,
+  });
 
   const parsed = React.useMemo(() => {
     if (!sessions.data) return { items: [] as AdminLmsSessionRow[], totalItems: 0, totalPages: 1 };
@@ -185,7 +192,11 @@ export function AdminLearningPage({ locale }: { locale: Locale }) {
             >
               {STATUS_OPTIONS.map((option) => (
                 <option key={option} value={option}>
-                  {option === '' ? (isBn ? 'সব সেশন' : 'All statuses') : statusLabel(locale, option)}
+                  {option === ''
+                    ? isBn
+                      ? 'সব সেশন'
+                      : 'All statuses'
+                    : statusLabel(locale, option)}
                 </option>
               ))}
             </NativeSelect>
@@ -227,10 +238,13 @@ export function AdminLearningPage({ locale }: { locale: Locale }) {
                   {parsed.items.map((row) => (
                     <tr key={row.id} className="border-b border-border/60 last:border-0">
                       <td className="py-2.5 pr-3 whitespace-nowrap text-foreground">
-                        {new Date(row.startsAt).toLocaleString(locale === 'bn' ? 'bn-BD' : 'en-GB', {
-                          dateStyle: 'medium',
-                          timeStyle: 'short',
-                        })}
+                        {new Date(row.startsAt).toLocaleString(
+                          locale === 'bn' ? 'bn-BD' : 'en-GB',
+                          {
+                            dateStyle: 'medium',
+                            timeStyle: 'short',
+                          },
+                        )}
                       </td>
                       <td className="py-2.5 pr-3">{row.subjectName ?? '—'}</td>
                       <td className="py-2.5 pr-3">{row.tutorName ?? '—'}</td>
@@ -260,7 +274,8 @@ export function AdminLearningPage({ locale }: { locale: Locale }) {
                 {isBn ? 'পূর্ববর্তী' : 'Previous'}
               </Button>
               <span className="text-xs text-muted-foreground">
-                {formatLocalizedNumber(page, locale)} / {formatLocalizedNumber(parsed.totalPages, locale)}
+                {formatLocalizedNumber(page, locale)} /{' '}
+                {formatLocalizedNumber(parsed.totalPages, locale)}
               </span>
               <Button
                 type="button"

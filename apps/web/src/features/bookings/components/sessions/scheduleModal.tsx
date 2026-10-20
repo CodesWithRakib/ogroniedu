@@ -67,9 +67,7 @@ export function ScheduleSessionModal({
       if (mode === 'recurring') {
         if (!startDate || !startLocal) {
           setError(
-            isBn
-              ? 'শুরুর তারিখ ও সময় লিখুন।'
-              : 'Enter the start date and local start time.',
+            isBn ? 'শুরুর তারিখ ও সময় লিখুন।' : 'Enter the start date and local start time.',
           );
           return;
         }

@@ -85,9 +85,7 @@ describe('Finance RBAC and role permission matrix', () => {
     ['organization admin', ['organization_admin']],
     ['organization owner', ['organization_owner']],
   ])('denies %s from platform finance routes', (_label, roles) => {
-    expect(() => rolesGuard.canActivate(context({ id: 'x', roles }))).toThrow(
-      ForbiddenException,
-    );
+    expect(() => rolesGuard.canActivate(context({ id: 'x', roles }))).toThrow(ForbiddenException);
   });
 
   it('denies a role-less request', () => {
@@ -103,9 +101,9 @@ describe('Finance RBAC and role permission matrix', () => {
     );
     const guard = new RolesGuard(reflector);
 
-    expect(() => guard.canActivate(context({ id: 's1', roles: ['student'] }, TutorFinanceController))).toThrow(
-      ForbiddenException,
-    );
+    expect(() =>
+      guard.canActivate(context({ id: 's1', roles: ['student'] }, TutorFinanceController)),
+    ).toThrow(ForbiddenException);
     expect(guard.canActivate(context({ id: 't1', roles: ['tutor'] }, TutorFinanceController))).toBe(
       true,
     );

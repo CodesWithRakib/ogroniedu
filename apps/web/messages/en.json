@@ -341,7 +341,7 @@
     "downloadAction": "Download",
     "startSessionAction": "Start class",
     "completeSessionAction": "Complete class",
-"attendanceCorrectionReason": "Correction reason",
+    "attendanceCorrectionReason": "Correction reason",
     "correctionRequired": "A reason is required to correct attendance.",
     "newHomework": "New homework",
     "dueAtLabel": "Due date",

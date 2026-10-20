@@ -127,10 +127,7 @@ describe('PaymentsController', () => {
   });
 
   it('reads a single refund with record-level authorization', async () => {
-    const res = await controller.getRefund(
-      mockUser,
-      'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-    );
+    const res = await controller.getRefund(mockUser, 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
 
     expect(res.success).toBe(true);
     expect(mockRefundsService.getRefund).toHaveBeenCalledWith(
@@ -159,10 +156,7 @@ describe('PaymentsController', () => {
   });
 
   it('returns a JSON invoice', async () => {
-    const res = await controller.getInvoice(
-      mockUser,
-      'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-    );
+    const res = await controller.getInvoice(mockUser, 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa');
 
     expect(res.success).toBe(true);
     expect(res.data.invoiceNumber).toBe('INV-2026-000001');
@@ -173,11 +167,7 @@ describe('PaymentsController', () => {
   });
 
   it('renders printable invoice HTML in the requested locale', async () => {
-    await controller.printInvoice(
-      mockUser,
-      'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
-      'bn',
-    );
+    await controller.printInvoice(mockUser, 'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa', 'bn');
 
     expect(mockInvoicesService.renderInvoiceHtml).toHaveBeenCalledWith(
       mockUser,

@@ -812,7 +812,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                               variant="ghost"
                               size="sm"
                               onClick={() => openEditModal(lvl)}
-                              aria-label={isBn ? `সম্পাদনা করুন: ${lvl.nameEn}` : `Edit: ${lvl.nameEn}`}
+                              aria-label={
+                                isBn ? `সম্পাদনা করুন: ${lvl.nameEn}` : `Edit: ${lvl.nameEn}`
+                              }
                               className="h-8 w-8 p-0 rounded-full hover:bg-surface"
                             >
                               <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
@@ -821,7 +823,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleDelete(lvl.id, lvl.nameEn)}
-                              aria-label={isBn ? `মুছে ফেলুন: ${lvl.nameEn}` : `Delete: ${lvl.nameEn}`}
+                              aria-label={
+                                isBn ? `মুছে ফেলুন: ${lvl.nameEn}` : `Delete: ${lvl.nameEn}`
+                              }
                               className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 text-destructive"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -912,7 +916,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                               variant="ghost"
                               size="sm"
                               onClick={() => openEditModal(curr)}
-                              aria-label={isBn ? `সম্পাদনা করুন: ${curr.nameEn}` : `Edit: ${curr.nameEn}`}
+                              aria-label={
+                                isBn ? `সম্পাদনা করুন: ${curr.nameEn}` : `Edit: ${curr.nameEn}`
+                              }
                               className="h-8 w-8 p-0 rounded-full hover:bg-surface"
                             >
                               <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
@@ -921,7 +927,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleDelete(curr.id, curr.nameEn)}
-                              aria-label={isBn ? `মুছে ফেলুন: ${curr.nameEn}` : `Delete: ${curr.nameEn}`}
+                              aria-label={
+                                isBn ? `মুছে ফেলুন: ${curr.nameEn}` : `Delete: ${curr.nameEn}`
+                              }
                               className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 text-destructive"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -1012,7 +1020,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                               variant="ghost"
                               size="sm"
                               onClick={() => openEditModal(st)}
-                              aria-label={isBn ? `সম্পাদনা করুন: ${st.nameEn}` : `Edit: ${st.nameEn}`}
+                              aria-label={
+                                isBn ? `সম্পাদনা করুন: ${st.nameEn}` : `Edit: ${st.nameEn}`
+                              }
                               className="h-8 w-8 p-0 rounded-full hover:bg-surface"
                             >
                               <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
@@ -1021,7 +1031,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleDelete(st.id, st.nameEn)}
-                              aria-label={isBn ? `মুছে ফেলুন: ${st.nameEn}` : `Delete: ${st.nameEn}`}
+                              aria-label={
+                                isBn ? `মুছে ফেলুন: ${st.nameEn}` : `Delete: ${st.nameEn}`
+                              }
                               className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 text-destructive"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -1117,7 +1129,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                               variant="ghost"
                               size="sm"
                               onClick={() => openEditModal(inst)}
-                              aria-label={isBn ? `সম্পাদনা করুন: ${inst.nameEn}` : `Edit: ${inst.nameEn}`}
+                              aria-label={
+                                isBn ? `সম্পাদনা করুন: ${inst.nameEn}` : `Edit: ${inst.nameEn}`
+                              }
                               className="h-8 w-8 p-0 rounded-full hover:bg-surface"
                             >
                               <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
@@ -1126,7 +1140,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleDelete(inst.id, inst.nameEn)}
-                              aria-label={isBn ? `মুছে ফেলুন: ${inst.nameEn}` : `Delete: ${inst.nameEn}`}
+                              aria-label={
+                                isBn ? `মুছে ফেলুন: ${inst.nameEn}` : `Delete: ${inst.nameEn}`
+                              }
                               className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 text-destructive"
                             >
                               <Trash2 className="h-3.5 w-3.5" />
@@ -1217,7 +1233,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                               variant="ghost"
                               size="sm"
                               onClick={() => openEditModal(subj)}
-                              aria-label={isBn ? `সম্পাদনা করুন: ${subj.nameEn}` : `Edit: ${subj.nameEn}`}
+                              aria-label={
+                                isBn ? `সম্পাদনা করুন: ${subj.nameEn}` : `Edit: ${subj.nameEn}`
+                              }
                               className="h-8 w-8 p-0 rounded-full hover:bg-surface"
                             >
                               <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
@@ -1226,7 +1244,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                               variant="ghost"
                               size="sm"
                               onClick={() => handleDelete(subj.id, subj.nameEn)}
-                              aria-label={isBn ? `মুছে ফেলুন: ${subj.nameEn}` : `Delete: ${subj.nameEn}`}
+                              aria-label={
+                                isBn ? `মুছে ফেলুন: ${subj.nameEn}` : `Delete: ${subj.nameEn}`
+                              }
                               className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 text-destructive"
                             >
                               <Trash2 className="h-3.5 w-3.5" />

@@ -27,10 +27,7 @@ export class LearningOversightController {
   }
 
   @Get('overview')
-  async getOverview(
-    @CurrentUser() user: AuthenticatedUser,
-    @Query() query: AdminOverviewQueryDto,
-  ) {
+  async getOverview(@CurrentUser() user: AuthenticatedUser, @Query() query: AdminOverviewQueryDto) {
     const overview = await this.oversight.getOverview(user, query);
     return { success: true, data: overview };
   }

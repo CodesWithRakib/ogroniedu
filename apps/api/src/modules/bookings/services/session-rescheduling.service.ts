@@ -10,10 +10,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  BookingSessionEntity,
-  CancellationAssessment,
-} from '../entities/booking-session.entity';
+import { BookingSessionEntity, CancellationAssessment } from '../entities/booking-session.entity';
 import { BookingEntity } from '../entities/booking.entity';
 import { OutboxEventEntity } from '../entities/outbox-event.entity';
 import { AuditService } from '../../audit/audit.service';
@@ -112,11 +109,7 @@ export class SessionReschedulingService {
     }
 
     if (this.availability) {
-      await this.availability.assertWithinAvailability(
-        session.tutorUserId,
-        newStartsAt,
-        newEndsAt,
-      );
+      await this.availability.assertWithinAvailability(session.tutorUserId, newStartsAt, newEndsAt);
     }
 
     await assertNoTutorOverlap(
@@ -291,7 +284,9 @@ export class SessionReschedulingService {
     const isTutor = user.id === session.tutorUserId;
     const isAdmin = user.roles.some((r) => ['admin', 'super_admin'].includes(r));
     if (!isTutor && !isAdmin) {
-      throw new ForbiddenException('Only the assigned tutor or an administrator can start a session.');
+      throw new ForbiddenException(
+        'Only the assigned tutor or an administrator can start a session.',
+      );
     }
 
     if (session.booking && !['confirmed', 'in_progress'].includes(session.booking.status)) {
@@ -320,9 +315,8 @@ export class SessionReschedulingService {
       safeMetadata: { actualStartedAt: saved.actualStartedAt?.toISOString() },
     });
 
-    const guardianUserIds = (await this.guardianAccess?.findActiveGuardianIds(
-      saved.studentUserId,
-    )) ?? [];
+    const guardianUserIds =
+      (await this.guardianAccess?.findActiveGuardianIds(saved.studentUserId)) ?? [];
     await this.recordLifecycleEvent('session.started', saved, {
       subjectName: saved.booking?.subject?.nameEn || 'Tutoring Session',
       startTime: saved.startsAt.toISOString(),
@@ -388,9 +382,8 @@ export class SessionReschedulingService {
 
     await this.maybeCompleteBooking(session.bookingId, user, notes);
 
-    const guardianUserIds = (await this.guardianAccess?.findActiveGuardianIds(
-      saved.studentUserId,
-    )) ?? [];
+    const guardianUserIds =
+      (await this.guardianAccess?.findActiveGuardianIds(saved.studentUserId)) ?? [];
     await this.recordLifecycleEvent('session.completed', saved, {
       subjectName: saved.booking?.subject?.nameEn || 'Tutoring Session',
       guardianUserIds,

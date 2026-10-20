@@ -67,9 +67,7 @@ export class LedgerService {
     params: PostJournalParams,
     manager?: EntityManager,
   ): Promise<LedgerJournalEntity> {
-    const journalRepo = manager
-      ? manager.getRepository(LedgerJournalEntity)
-      : this.journalRepo;
+    const journalRepo = manager ? manager.getRepository(LedgerJournalEntity) : this.journalRepo;
     const accountRepo = manager ? manager.getRepository(LedgerAccountEntity) : this.accountRepo;
 
     // 1. Idempotency check (fast path).
@@ -173,7 +171,9 @@ export class LedgerService {
           relations: { entries: { account: true } },
         });
         if (winner) {
-          this.logger.log(`Concurrent duplicate journal collapsed for key: ${params.idempotencyKey}`);
+          this.logger.log(
+            `Concurrent duplicate journal collapsed for key: ${params.idempotencyKey}`,
+          );
           return winner;
         }
       }

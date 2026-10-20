@@ -21,16 +21,16 @@ unverified rather than inferred from code.
 
 The full audit is in `AUDIT.md`. The highest-impact baseline problems were:
 
-| ID | Finding | Resolution |
-| --- | --- | --- |
+| ID   | Finding                                                                                                       | Resolution                                                                                                          |
+| ---- | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
 | B-01 | `PaymentsService.sandboxConfirmOrder()` fabricated provider success and was exposed to any authenticated user | Removed service method; route returns `410 Gone`; all success now comes from verified webhooks/authoritative status |
-| B-02 | Booking status was assigned inline with no transition map or per-booking history | Central booking/session transition maps + `booking_status_events` |
-| B-03 | Tutor availability was stored but never enforced; no date-specific blocks | Availability service, blocked-period table/endpoints, enforcement on create and reschedule |
-| B-04 | Recurring sessions were an unbounded loop, not idempotent, hard-coded timezone behavior | Bounded series entity, DST-safe zoned-time utility, deterministic idempotency, transactional generation |
-| B-05 | Outbox worker and `session.reminder` were dormant | Outbox scheduler + idempotent 30-minute reminder generator/scheduler |
-| B-06 | Guardian child filtering existed for detail reads but not consistently for lists | Server-side child revalidation and RTK cache keys for requests/sessions |
-| B-07 | ICS export had weak update/cancellation semantics | Stable UID, `SEQUENCE`, `LAST-MODIFIED`, cancelled status, raw `text/calendar` download, no meeting token |
-| B-08 | Paid bookings could be confirmed by scheduling/frontend actions | Payment webhook is the confirmation path; frontend polls backend booking/order status |
+| B-02 | Booking status was assigned inline with no transition map or per-booking history                              | Central booking/session transition maps + `booking_status_events`                                                   |
+| B-03 | Tutor availability was stored but never enforced; no date-specific blocks                                     | Availability service, blocked-period table/endpoints, enforcement on create and reschedule                          |
+| B-04 | Recurring sessions were an unbounded loop, not idempotent, hard-coded timezone behavior                       | Bounded series entity, DST-safe zoned-time utility, deterministic idempotency, transactional generation             |
+| B-05 | Outbox worker and `session.reminder` were dormant                                                             | Outbox scheduler + idempotent 30-minute reminder generator/scheduler                                                |
+| B-06 | Guardian child filtering existed for detail reads but not consistently for lists                              | Server-side child revalidation and RTK cache keys for requests/sessions                                             |
+| B-07 | ICS export had weak update/cancellation semantics                                                             | Stable UID, `SEQUENCE`, `LAST-MODIFIED`, cancelled status, raw `text/calendar` download, no meeting token           |
+| B-08 | Paid bookings could be confirmed by scheduling/frontend actions                                               | Payment webhook is the confirmation path; frontend polls backend booking/order status                               |
 
 Baseline before changes: API **65 files / 649 tests**, web **33 files / 207
 tests**, typechecks clean, local PostgreSQL with 18 migrations. Final results are
@@ -40,20 +40,20 @@ in §16–17.
 
 ## 2. Scope and requirement mapping
 
-| Requirement | Status | Evidence |
-| --- | --- | --- |
-| Booking lifecycle with server-owned transitions | implemented, automated-tested | `booking-status-transitions.ts`, `booking-lifecycle.ts`, service guards, §5 |
-| One-off and recurring scheduling | implemented, automated-tested | `/sessions`, `/sessions/recurring`, series service, §6–7 |
-| IANA timezone and DST-safe local-time intent | implemented, automated-tested | `zoned-time.ts`, DST tests, §7 |
-| Availability and blocked periods | implemented, automated-tested | `TutorAvailabilityService`, endpoints, tests, §6 |
-| DB-level overlap prevention | implemented, automated-tested at constraint level | GiST `ex_tutor_session_overlap`, schema tests; live parallel race not run, §6 |
-| Guardian 0/1/many children; no cross-child leakage | implemented, automated-tested, manually-verified | server 403 + child-scoped RTK args; live forged-child request returned 403, §8 |
-| Cancellation/rescheduling with history and slot release | implemented, automated-tested | transition guards, policy helper, series scopes, §9 |
-| ICS export with stable IDs/update/cancel semantics | implemented, automated-tested, manually-verified | unit output + live `200 text/calendar`, §10 |
-| Notifications for booking/session events | implemented, automated-tested | existing registry dispatch + outbox mappings, §11 |
-| 30-minute reminders, idempotent | implemented, automated-tested; scheduler startup manually observed | `session-reminder.service.ts`, duplicate-key test, §11 |
-| Payment boundary; no frontend confirmation | implemented, automated-tested, manually-verified for removed path | webhook-only confirmation; sandbox route live `410`, §12 |
-| No escrow/accounting work started | respected | no payout/refund/ledger reconciliation changes beyond existing modules |
+| Requirement                                             | Status                                                             | Evidence                                                                       |
+| ------------------------------------------------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------ |
+| Booking lifecycle with server-owned transitions         | implemented, automated-tested                                      | `booking-status-transitions.ts`, `booking-lifecycle.ts`, service guards, §5    |
+| One-off and recurring scheduling                        | implemented, automated-tested                                      | `/sessions`, `/sessions/recurring`, series service, §6–7                       |
+| IANA timezone and DST-safe local-time intent            | implemented, automated-tested                                      | `zoned-time.ts`, DST tests, §7                                                 |
+| Availability and blocked periods                        | implemented, automated-tested                                      | `TutorAvailabilityService`, endpoints, tests, §6                               |
+| DB-level overlap prevention                             | implemented, automated-tested at constraint level                  | GiST `ex_tutor_session_overlap`, schema tests; live parallel race not run, §6  |
+| Guardian 0/1/many children; no cross-child leakage      | implemented, automated-tested, manually-verified                   | server 403 + child-scoped RTK args; live forged-child request returned 403, §8 |
+| Cancellation/rescheduling with history and slot release | implemented, automated-tested                                      | transition guards, policy helper, series scopes, §9                            |
+| ICS export with stable IDs/update/cancel semantics      | implemented, automated-tested, manually-verified                   | unit output + live `200 text/calendar`, §10                                    |
+| Notifications for booking/session events                | implemented, automated-tested                                      | existing registry dispatch + outbox mappings, §11                              |
+| 30-minute reminders, idempotent                         | implemented, automated-tested; scheduler startup manually observed | `session-reminder.service.ts`, duplicate-key test, §11                         |
+| Payment boundary; no frontend confirmation              | implemented, automated-tested, manually-verified for removed path  | webhook-only confirmation; sandbox route live `410`, §12                       |
+| No escrow/accounting work started                       | respected                                                          | no payout/refund/ledger reconciliation changes beyond existing modules         |
 
 Non-goals confirmed: escrow release, refund execution, tutor payout,
 reconciliation, live payment-provider certification, admin booking analytics,
@@ -551,13 +551,13 @@ certification and an unexecuted live parallel-overlap race.
 
 Commands run from the repository root after the final code changes:
 
-| Command | Result |
-| --- | --- |
-| `pnpm --filter @ogroniedu/api test` | **66 files / 665 tests passed** (49.02 s) |
-| `pnpm --filter @ogroniedu/web test` | **33 files / 207 tests passed** (35.66 s) |
-| `pnpm --filter @ogroniedu/database test` | **4 files / 33 tests passed** (25.91 s) |
-| `pnpm --filter @ogroniedu/api typecheck` | passed (`tsc --noEmit`, no output) |
-| `pnpm --filter @ogroniedu/web typecheck` | passed (`tsc --noEmit`, no output) |
+| Command                                  | Result                                    |
+| ---------------------------------------- | ----------------------------------------- |
+| `pnpm --filter @ogroniedu/api test`      | **66 files / 665 tests passed** (49.02 s) |
+| `pnpm --filter @ogroniedu/web test`      | **33 files / 207 tests passed** (35.66 s) |
+| `pnpm --filter @ogroniedu/database test` | **4 files / 33 tests passed** (25.91 s)   |
+| `pnpm --filter @ogroniedu/api typecheck` | passed (`tsc --noEmit`, no output)        |
+| `pnpm --filter @ogroniedu/web typecheck` | passed (`tsc --noEmit`, no output)        |
 
 New focused coverage in `apps/api/test/booking-phase04.spec.ts` (12 tests):
 
@@ -609,13 +609,13 @@ checks.
 
 ### Lint / build / docs
 
-| Command | Result |
-| --- | --- |
-| `pnpm --filter @ogroniedu/api lint` | passed (`oxlint src test --deny-warnings`) |
-| `pnpm --filter @ogroniedu/web lint` | passed |
-| `pnpm --filter @ogroniedu/api build` | passed (`tsc -p tsconfig.build.json`) |
-| `pnpm --filter @ogroniedu/web build` | passed; Next.js 16.4.0 compiled in 30.1 s, TypeScript 8.5 s |
-| `pnpm docs:validate` | **PASSED** — 226 Markdown/Mermaid/SQL files, 26 canonical docs |
+| Command                              | Result                                                         |
+| ------------------------------------ | -------------------------------------------------------------- |
+| `pnpm --filter @ogroniedu/api lint`  | passed (`oxlint src test --deny-warnings`)                     |
+| `pnpm --filter @ogroniedu/web lint`  | passed                                                         |
+| `pnpm --filter @ogroniedu/api build` | passed (`tsc -p tsconfig.build.json`)                          |
+| `pnpm --filter @ogroniedu/web build` | passed; Next.js 16.4.0 compiled in 30.1 s, TypeScript 8.5 s    |
+| `pnpm docs:validate`                 | **PASSED** — 226 Markdown/Mermaid/SQL files, 26 canonical docs |
 
 The only lint defect found in the final pass was two unused imports in
 `session-series.service.ts`; they were removed and lint re-ran clean.
@@ -646,24 +646,24 @@ this closing pass; the tree is left for review/approval.
 
 ### Acceptance checklist
 
-| Criterion | Result |
-| --- | --- |
-| Server-owned booking/session transitions with history | **PASS** — implemented + tests |
-| Auth, role, ownership, guardian-child enforcement | **PASS** — tests + live 403/401 |
-| Backend/DB conflict prevention incl. cancelled-slot reuse | **PASS at constraint level** — GiST + tests; live parallel race not run |
-| Instants `timestamptz`, IANA timezone, DST-safe recurrence | **PASS** — tests |
-| Bounded/idempotent recurring series, no silent skips | **PASS** — tests |
-| Scoped series cancel/reschedule preserving history | **PASS** — implementation + tests |
-| Guardian 0/1/many children, no cache leakage | **PASS** — shared scope + tests + live check |
-| Policy-based cancellation/reschedule, no automatic refunds | **PASS** — assessment only |
-| Valid ICS with updates/cancellations/no token leakage | **PASS** — tests + live 200 |
-| Booking/session notifications persisted before emit | **PASS** — existing service + outbox mappings |
-| 30-minute reminders idempotent | **PASS** — unit test; live scheduler start observed |
-| Payment-required booking not confirmable by frontend | **PASS** — webhook only + live 410 |
-| No fake payments/escrow/accounting | **PASS** — simulation removed; projected copy |
-| Later-phase features untouched | **PASS** — escrow/payout/refund execution absent |
-| Required docs + final report | **PASS** — six phase docs + this 18-section report |
-| Full validation commands | **PASS** — §16–17; Docker/live providers unverified |
+| Criterion                                                  | Result                                                                  |
+| ---------------------------------------------------------- | ----------------------------------------------------------------------- |
+| Server-owned booking/session transitions with history      | **PASS** — implemented + tests                                          |
+| Auth, role, ownership, guardian-child enforcement          | **PASS** — tests + live 403/401                                         |
+| Backend/DB conflict prevention incl. cancelled-slot reuse  | **PASS at constraint level** — GiST + tests; live parallel race not run |
+| Instants `timestamptz`, IANA timezone, DST-safe recurrence | **PASS** — tests                                                        |
+| Bounded/idempotent recurring series, no silent skips       | **PASS** — tests                                                        |
+| Scoped series cancel/reschedule preserving history         | **PASS** — implementation + tests                                       |
+| Guardian 0/1/many children, no cache leakage               | **PASS** — shared scope + tests + live check                            |
+| Policy-based cancellation/reschedule, no automatic refunds | **PASS** — assessment only                                              |
+| Valid ICS with updates/cancellations/no token leakage      | **PASS** — tests + live 200                                             |
+| Booking/session notifications persisted before emit        | **PASS** — existing service + outbox mappings                           |
+| 30-minute reminders idempotent                             | **PASS** — unit test; live scheduler start observed                     |
+| Payment-required booking not confirmable by frontend       | **PASS** — webhook only + live 410                                      |
+| No fake payments/escrow/accounting                         | **PASS** — simulation removed; projected copy                           |
+| Later-phase features untouched                             | **PASS** — escrow/payout/refund execution absent                        |
+| Required docs + final report                               | **PASS** — six phase docs + this 18-section report                      |
+| Full validation commands                                   | **PASS** — §16–17; Docker/live providers unverified                     |
 
 ### Known limitations / blocked dependencies
 

@@ -4,19 +4,19 @@
 
 `requested → accepted | awaiting_payment | declined | cancelled | expired`
 
-| From | Allowed to |
-| --- | --- |
-| `requested` | `accepted`, `awaiting_payment`, `declined`, `cancelled`, `expired` |
-| `accepted` | `awaiting_payment`, `confirmed`, `cancelled`, `declined`, `expired` |
-| `awaiting_payment` | `confirmed`, `cancelled`, `expired` |
-| `confirmed` | `in_progress`, `completed`, `cancelled`, `disputed`, `replacement_requested` |
-| `in_progress` | `completed`, `cancelled`, `disputed`, `replacement_requested` |
-| `completed` | `disputed`, `replacement_requested` |
-| `disputed` | `completed`, `cancelled`, `replacement_requested` |
-| `replacement_requested` | `confirmed`, `cancelled`, `completed` |
-| `declined` | terminal |
-| `cancelled` | terminal |
-| `expired` | terminal |
+| From                    | Allowed to                                                                   |
+| ----------------------- | ---------------------------------------------------------------------------- |
+| `requested`             | `accepted`, `awaiting_payment`, `declined`, `cancelled`, `expired`           |
+| `accepted`              | `awaiting_payment`, `confirmed`, `cancelled`, `declined`, `expired`          |
+| `awaiting_payment`      | `confirmed`, `cancelled`, `expired`                                          |
+| `confirmed`             | `in_progress`, `completed`, `cancelled`, `disputed`, `replacement_requested` |
+| `in_progress`           | `completed`, `cancelled`, `disputed`, `replacement_requested`                |
+| `completed`             | `disputed`, `replacement_requested`                                          |
+| `disputed`              | `completed`, `cancelled`, `replacement_requested`                            |
+| `replacement_requested` | `confirmed`, `cancelled`, `completed`                                        |
+| `declined`              | terminal                                                                     |
+| `cancelled`             | terminal                                                                     |
+| `expired`               | terminal                                                                     |
 
 Rules:
 
@@ -38,14 +38,14 @@ Rules:
 `booking_sessions.status`: `scheduled | in_progress | completed | cancelled |
 no_show | reschedule_pending`
 
-| From | Allowed to |
-| --- | --- |
-| `scheduled` | `in_progress`, `cancelled`, `reschedule_pending` |
-| `reschedule_pending` | `scheduled`, `cancelled` |
-| `in_progress` | `completed`, `cancelled` |
-| `completed` | terminal |
-| `cancelled` | terminal |
-| `no_show` | terminal |
+| From                 | Allowed to                                       |
+| -------------------- | ------------------------------------------------ |
+| `scheduled`          | `in_progress`, `cancelled`, `reschedule_pending` |
+| `reschedule_pending` | `scheduled`, `cancelled`                         |
+| `in_progress`        | `completed`, `cancelled`                         |
+| `completed`          | terminal                                         |
+| `cancelled`          | terminal                                         |
+| `no_show`            | terminal                                         |
 
 Rules:
 

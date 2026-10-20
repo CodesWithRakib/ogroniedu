@@ -24,10 +24,7 @@ export class SessionSeriesController {
   ) {}
 
   @Get(':id')
-  async getSeries(
-    @CurrentUser() user: AuthenticatedUser,
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
+  async getSeries(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUUIDPipe) id: string) {
     const result = await this.seriesService.getSeries(id, user);
     return { success: true, data: result };
   }

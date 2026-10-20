@@ -20,14 +20,14 @@ Stored in `payment_orders.status`. The TypeScript union also allows `created`,
 but `PaymentOrdersService.createPaymentOrder()` inserts new orders directly as
 `pending`.
 
-| From | Trigger | To | Side effects |
-| --- | --- | --- | --- |
-| — | `POST /api/v1/payments/orders` | `pending` | Booking must be `accepted` or `awaiting_payment`; amount = `bookings.price_per_session_minor`; active commission policy snapshotted; provider checkout session stored as `provider_reference`; audit `payment.order_created` |
-| `pending` | Verified success webhook for this order | `succeeded` | One transaction: provider transaction row, `escrow_holds` row, journal Dr `1000` / Cr `2100`, invoice issue, booking `confirmed`, outbox `payment.succeeded`, webhook event `processed` |
-| `pending` | Verified failure webhook | `failed` | Failed transaction row, webhook event `processed`, `payment.failed` notification |
-| `succeeded` | Duplicate success webhook | `succeeded` | No new journal, no new hold; event recorded `duplicate`; response `processed: false` |
-| `failed` | Later verified success webhook | `succeeded` | Allowed recovery path; the provider is still authoritative and the payment is posted once under the ledger idempotency key |
-| `pending` | Expiry / cancellation | `expired` / `cancelled` | **Not implemented.** No scheduler or route performs this. Stale orders remain `pending` until a provider event arrives |
+| From        | Trigger                                 | To                      | Side effects                                                                                                                                                                                                                 |
+| ----------- | --------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| —           | `POST /api/v1/payments/orders`          | `pending`               | Booking must be `accepted` or `awaiting_payment`; amount = `bookings.price_per_session_minor`; active commission policy snapshotted; provider checkout session stored as `provider_reference`; audit `payment.order_created` |
+| `pending`   | Verified success webhook for this order | `succeeded`             | One transaction: provider transaction row, `escrow_holds` row, journal Dr `1000` / Cr `2100`, invoice issue, booking `confirmed`, outbox `payment.succeeded`, webhook event `processed`                                      |
+| `pending`   | Verified failure webhook                | `failed`                | Failed transaction row, webhook event `processed`, `payment.failed` notification                                                                                                                                             |
+| `succeeded` | Duplicate success webhook               | `succeeded`             | No new journal, no new hold; event recorded `duplicate`; response `processed: false`                                                                                                                                         |
+| `failed`    | Later verified success webhook          | `succeeded`             | Allowed recovery path; the provider is still authoritative and the payment is posted once under the ledger idempotency key                                                                                                   |
+| `pending`   | Expiry / cancellation                   | `expired` / `cancelled` | **Not implemented.** No scheduler or route performs this. Stale orders remain `pending` until a provider event arrives                                                                                                       |
 
 Hard rules:
 
@@ -115,13 +115,13 @@ requested ──review──┤
               provider failure ──> failed (terminal for this request)
 ```
 
-| From | Trigger | To | Notes |
-| --- | --- | --- | --- |
-| — | `POST /api/v1/payments/refunds` | `requested` | Payer, student, requester, active linked guardian or admin; order must be `succeeded`; amount ≥ 100 poisha and ≤ refundable; reserves the amount; eligibility snapshot persisted; audit + notification |
-| `requested` | `POST /admin/finance/refunds/:id/decide` | `approved` / `rejected` | Finance only; decision note stored; rejection releases the reservation by status |
-| `approved` | `POST /admin/finance/refunds/:id/process` | `succeeded` / `failed` / unchanged | Adapter success finalizes; adapter `unsupported` leaves `approved` with `provider_status = unsupported` and returns `manualConfirmationRequired: true`; adapter exception marks `failed` |
-| `approved` | `POST /admin/finance/refunds/:id/confirm-manual` | `succeeded` | Requires a non-empty external transfer reference; locks refund, order and hold; re-checks the hold bound; posts journal; writes outbox `refund.processed` |
-| `approved` / `processing` | Finalization | `succeeded` | Idempotent: an already-succeeded refund is returned unchanged |
+| From                      | Trigger                                          | To                                 | Notes                                                                                                                                                                                                  |
+| ------------------------- | ------------------------------------------------ | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| —                         | `POST /api/v1/payments/refunds`                  | `requested`                        | Payer, student, requester, active linked guardian or admin; order must be `succeeded`; amount ≥ 100 poisha and ≤ refundable; reserves the amount; eligibility snapshot persisted; audit + notification |
+| `requested`               | `POST /admin/finance/refunds/:id/decide`         | `approved` / `rejected`            | Finance only; decision note stored; rejection releases the reservation by status                                                                                                                       |
+| `approved`                | `POST /admin/finance/refunds/:id/process`        | `succeeded` / `failed` / unchanged | Adapter success finalizes; adapter `unsupported` leaves `approved` with `provider_status = unsupported` and returns `manualConfirmationRequired: true`; adapter exception marks `failed`               |
+| `approved`                | `POST /admin/finance/refunds/:id/confirm-manual` | `succeeded`                        | Requires a non-empty external transfer reference; locks refund, order and hold; re-checks the hold bound; posts journal; writes outbox `refund.processed`                                              |
+| `approved` / `processing` | Finalization                                     | `succeeded`                        | Idempotent: an already-succeeded refund is returned unchanged                                                                                                                                          |
 
 `processing` is an accepted state for a future asynchronous provider flow. The
 current synchronous adapters move `approved` directly to `succeeded`, `failed`
@@ -163,13 +163,13 @@ requested ──approve──> approved ──mark-paid──> paid (terminal)
 `processing` and `cancelled` exist in the union but no route currently writes
 them. They are reserved for an asynchronous disbursement integration.
 
-| From | Trigger | To | Notes |
-| --- | --- | --- | --- |
-| — | `POST /api/v1/tutor/finance/payouts` | `requested` | Tutor only; amount ≥ active policy `min_payout_minor` (500 BDT by default); amount ≤ ledger payable minus active payouts; serialization row locked; destination masked and hashed; reservation recorded |
-| `requested` | `POST /admin/finance/payouts/:id/approve` | `approved` | Reservation stays; reviewer and timestamp recorded |
-| `requested` / `approved` | `POST /admin/finance/payouts/:id/reject` | `rejected` | Reservation recomputed from active payouts and released |
-| `approved` | `POST /admin/finance/payouts/:id/mark-paid` | `paid` | External reference mandatory before the transaction; tutor payable re-checked under lock; journal Dr `2000` / Cr `1100`; reservation released; notification |
-| `approved` | `POST /admin/finance/payouts/:id/mark-failed` | `failed` | Reservation released; reason stored |
+| From                     | Trigger                                       | To          | Notes                                                                                                                                                                                                   |
+| ------------------------ | --------------------------------------------- | ----------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| —                        | `POST /api/v1/tutor/finance/payouts`          | `requested` | Tutor only; amount ≥ active policy `min_payout_minor` (500 BDT by default); amount ≤ ledger payable minus active payouts; serialization row locked; destination masked and hashed; reservation recorded |
+| `requested`              | `POST /admin/finance/payouts/:id/approve`     | `approved`  | Reservation stays; reviewer and timestamp recorded                                                                                                                                                      |
+| `requested` / `approved` | `POST /admin/finance/payouts/:id/reject`      | `rejected`  | Reservation recomputed from active payouts and released                                                                                                                                                 |
+| `approved`               | `POST /admin/finance/payouts/:id/mark-paid`   | `paid`      | External reference mandatory before the transaction; tutor payable re-checked under lock; journal Dr `2000` / Cr `1100`; reservation released; notification                                             |
+| `approved`               | `POST /admin/finance/payouts/:id/mark-failed` | `failed`    | Reservation released; reason stored                                                                                                                                                                     |
 
 Invariants:
 

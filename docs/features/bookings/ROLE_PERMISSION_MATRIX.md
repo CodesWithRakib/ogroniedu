@@ -3,28 +3,28 @@
 Legend: ✅ allowed · ❌ denied · ◐ allowed only for an authorized child /
 resource · — not applicable.
 
-| Action | Student | Guardian | Tutor | Admin | Enforcement |
-| --- | --- | --- | --- | --- | --- |
-| Create booking request for self | ✅ | — | — | — | `BookingsService.createRequest` |
-| Create booking request for child | — | ◐ active link | — | — | `GuardianAccessService` / active link |
-| List booking requests | ✅ own | ◐ linked children | ✅ assigned | ✅ all | `getRequests(studentId?)` |
-| View booking detail | ✅ own | ◐ linked child | ✅ assigned | ✅ all | `assertCanAccessBooking` |
-| Withdraw request | ✅ requester | ◐ requester (guardian) | ❌ | ❌ | requester-only guard |
-| Accept / decline request | ❌ | ❌ | ✅ assigned | ❌ | tutor-only guard |
-| Create payment order | ✅ payer | ◐ payer | ❌ | ❌ | order service ownership |
-| Confirm booking | ❌ client | ❌ client | ❌ client | ✅ explicit | payment webhook / server transition |
-| Schedule one-off session | ❌ | ◐ child booking | ✅ assigned | ✅ | `assertCanManageSessions` |
-| Schedule recurring series | ❌ | ◐ child booking | ✅ assigned | ✅ | `assertCanManageSessions` |
-| Reschedule session | ❌ | ◐ child booking | ✅ assigned | ✅ | `assertCanManageSessions` |
-| Cancel session | ❌ | ◐ child booking | ✅ assigned | ✅ | `assertCanManageSessions` |
-| Series cancel/reschedule | ❌ | ◐ child booking | ✅ assigned | ✅ | series booking access |
-| Start session | ✅ participant | ❌ | ✅ assigned | ✅ | participant check |
-| Complete session | ❌ | ❌ | ✅ assigned | ✅ | tutor/admin check |
-| Update meeting URL | ❌ | ❌ | ✅ assigned | ✅ | tutor/admin check |
-| List sessions | ✅ own | ◐ linked children | ✅ own | ✅ all | scoped query + explicit child check |
-| Export calendar | ✅ own | ◐ linked children | ✅ own | ✅ all | same query scope |
-| Manage own availability | — | — | ✅ self | ✅ | tutor self endpoint |
-| Manage blocked periods | — | — | ✅ self | ✅ | tutor self endpoint |
+| Action                           | Student        | Guardian               | Tutor       | Admin       | Enforcement                           |
+| -------------------------------- | -------------- | ---------------------- | ----------- | ----------- | ------------------------------------- |
+| Create booking request for self  | ✅             | —                      | —           | —           | `BookingsService.createRequest`       |
+| Create booking request for child | —              | ◐ active link          | —           | —           | `GuardianAccessService` / active link |
+| List booking requests            | ✅ own         | ◐ linked children      | ✅ assigned | ✅ all      | `getRequests(studentId?)`             |
+| View booking detail              | ✅ own         | ◐ linked child         | ✅ assigned | ✅ all      | `assertCanAccessBooking`              |
+| Withdraw request                 | ✅ requester   | ◐ requester (guardian) | ❌          | ❌          | requester-only guard                  |
+| Accept / decline request         | ❌             | ❌                     | ✅ assigned | ❌          | tutor-only guard                      |
+| Create payment order             | ✅ payer       | ◐ payer                | ❌          | ❌          | order service ownership               |
+| Confirm booking                  | ❌ client      | ❌ client              | ❌ client   | ✅ explicit | payment webhook / server transition   |
+| Schedule one-off session         | ❌             | ◐ child booking        | ✅ assigned | ✅          | `assertCanManageSessions`             |
+| Schedule recurring series        | ❌             | ◐ child booking        | ✅ assigned | ✅          | `assertCanManageSessions`             |
+| Reschedule session               | ❌             | ◐ child booking        | ✅ assigned | ✅          | `assertCanManageSessions`             |
+| Cancel session                   | ❌             | ◐ child booking        | ✅ assigned | ✅          | `assertCanManageSessions`             |
+| Series cancel/reschedule         | ❌             | ◐ child booking        | ✅ assigned | ✅          | series booking access                 |
+| Start session                    | ✅ participant | ❌                     | ✅ assigned | ✅          | participant check                     |
+| Complete session                 | ❌             | ❌                     | ✅ assigned | ✅          | tutor/admin check                     |
+| Update meeting URL               | ❌             | ❌                     | ✅ assigned | ✅          | tutor/admin check                     |
+| List sessions                    | ✅ own         | ◐ linked children      | ✅ own      | ✅ all      | scoped query + explicit child check   |
+| Export calendar                  | ✅ own         | ◐ linked children      | ✅ own      | ✅ all      | same query scope                      |
+| Manage own availability          | —              | —                      | ✅ self     | ✅          | tutor self endpoint                   |
+| Manage blocked periods           | —              | —                      | ✅ self     | ✅          | tutor self endpoint                   |
 
 ## Backend rules
 

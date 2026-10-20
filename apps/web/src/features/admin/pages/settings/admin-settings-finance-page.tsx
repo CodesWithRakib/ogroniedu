@@ -67,9 +67,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
         typeof err === 'object' && err !== null && 'data' in err
           ? ((err as { data?: { error?: { message?: string } } }).data?.error?.message ?? null)
           : null;
-      setError(
-        message ?? (isBn ? 'পলিসি সংরক্ষণ করা যায়নি।' : 'Could not save the policy.'),
-      );
+      setError(message ?? (isBn ? 'পলিসি সংরক্ষণ করা যায়নি।' : 'Could not save the policy.'));
     }
   }
 
@@ -245,7 +243,9 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
                 maxLength={500}
                 className="w-full px-4 py-2 rounded-xl bg-surface border border-border text-foreground text-sm"
                 placeholder={
-                  isBn ? 'যেমন: ত্রৈমাসিক প্ল্যাটফর্ম পলিসি পর্যালোচনা' : 'e.g. quarterly platform policy review'
+                  isBn
+                    ? 'যেমন: ত্রৈমাসিক প্ল্যাটফর্ম পলিসি পর্যালোচনা'
+                    : 'e.g. quarterly platform policy review'
                 }
               />
             </div>
@@ -267,7 +267,9 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
                     <p className="font-bold">{(activePolicy.platformFeeBps / 100).toFixed(2)}%</p>
                   </div>
                   <div>
-                    <p className="text-muted-foreground">{isBn ? 'ন্যূনতম পে-আউট' : 'Min payout'}</p>
+                    <p className="text-muted-foreground">
+                      {isBn ? 'ন্যূনতম পে-আউট' : 'Min payout'}
+                    </p>
                     <p className="font-bold">
                       {formatBDTMinor(activePolicy.minPayoutMinor, locale)}
                     </p>

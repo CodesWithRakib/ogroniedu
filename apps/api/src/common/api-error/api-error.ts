@@ -29,7 +29,12 @@ export interface ApiErrorEnvelope {
     message: string;
     details?: ApiErrorDetail[];
   };
-  meta: { requestId?: string };
+  meta: {
+    requestId?: string;
+    timestamp?: string;
+    path?: string;
+    method?: string;
+  };
 }
 
 const STATUS_TO_CODE: Record<number, ApiErrorCode> = {
@@ -55,7 +60,16 @@ export function errorEnvelope(args: {
   message: string;
   details?: ApiErrorDetail[];
   requestId?: string;
+  timestamp?: string;
+  path?: string;
+  method?: string;
 }): ApiErrorEnvelope {
+  const meta: ApiErrorEnvelope['meta'] = {};
+  if (args.requestId) meta.requestId = args.requestId;
+  if (args.timestamp) meta.timestamp = args.timestamp;
+  if (args.path) meta.path = args.path;
+  if (args.method) meta.method = args.method;
+
   return {
     success: false,
     error: {
@@ -63,7 +77,7 @@ export function errorEnvelope(args: {
       message: args.message,
       ...(args.details !== undefined ? { details: args.details } : {}),
     },
-    meta: args.requestId ? { requestId: args.requestId } : {},
+    meta,
   };
 }
 

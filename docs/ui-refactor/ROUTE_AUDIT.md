@@ -157,12 +157,12 @@ Viewport coverage post-fix: the full 64-route audit ran at desktop 1440×900; th
 
 Expected redirects (verified as intended):
 
-| Requested route                | Final route                                           | Reason                                          |
-| :----------------------------- | :---------------------------------------------------- | :---------------------------------------------- |
-| `/[locale]/dashboard`          | `/[locale]/dashboard/student`                         | Role landing redirect                           |
-| `/[locale]/payments/[id]`      | `/[locale]/dashboard/student/payments?orderId=…`      | Canonical payments hub                          |
-| `/[locale]/tutor/bookings/[id]`| `/[locale]/dashboard/tutor/requests`                  | Tutor booking entry alias                       |
-| `/[locale]/admin`              | `/[locale]/dashboard/admin`                           | Legacy admin alias                              |
+| Requested route                 | Final route                                      | Reason                    |
+| :------------------------------ | :----------------------------------------------- | :------------------------ |
+| `/[locale]/dashboard`           | `/[locale]/dashboard/student`                    | Role landing redirect     |
+| `/[locale]/payments/[id]`       | `/[locale]/dashboard/student/payments?orderId=…` | Canonical payments hub    |
+| `/[locale]/tutor/bookings/[id]` | `/[locale]/dashboard/tutor/requests`             | Tutor booking entry alias |
+| `/[locale]/admin`               | `/[locale]/dashboard/admin`                      | Legacy admin alias        |
 
 Notes on the audit allow-list:
 

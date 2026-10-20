@@ -16,16 +16,16 @@ revenue and disbursement. No screen or cached column may override it.
 Seeded in `packages/database/src/seeds/initial_seed.ts`; account `2200` is added
 by migration `022`. All accounts are BDT.
 
-| Code | Name | Type | Normal balance | Used by |
-| --- | --- | --- | --- | --- |
-| `1000` | Escrow Holding Pool (bKash/Nagad/Bank) | asset | debit | Verified payment debit; refund credit |
-| `1100` | Platform Operating Bank Account | asset | debit | Payout credit |
-| `2000` | Tutor Earnings Payable Liability | liability | credit | Tutor net credit (party-scoped); payout debit |
-| `2100` | Student Advance Escrow Deposit Liability | liability | credit | Payment credit; settlement/refund debit |
-| `2200` | Tutor Payouts In Transit | liability | credit | Seeded for asynchronous payouts; **not posted today** |
-| `3000` | Platform Capital / Retained Earnings | equity | credit | Seeded; not used by Phase 05 flows |
-| `4000` | Tutoring Platform Service Fee Revenue | revenue | credit | Commission credit at settlement |
-| `5000` | Mobile Financial Services (MFS) Gateway Fees Expense | expense | debit | Seeded; provider fees are not yet recorded |
+| Code   | Name                                                 | Type      | Normal balance | Used by                                               |
+| ------ | ---------------------------------------------------- | --------- | -------------- | ----------------------------------------------------- |
+| `1000` | Escrow Holding Pool (bKash/Nagad/Bank)               | asset     | debit          | Verified payment debit; refund credit                 |
+| `1100` | Platform Operating Bank Account                      | asset     | debit          | Payout credit                                         |
+| `2000` | Tutor Earnings Payable Liability                     | liability | credit         | Tutor net credit (party-scoped); payout debit         |
+| `2100` | Student Advance Escrow Deposit Liability             | liability | credit         | Payment credit; settlement/refund debit               |
+| `2200` | Tutor Payouts In Transit                             | liability | credit         | Seeded for asynchronous payouts; **not posted today** |
+| `3000` | Platform Capital / Retained Earnings                 | equity    | credit         | Seeded; not used by Phase 05 flows                    |
+| `4000` | Tutoring Platform Service Fee Revenue                | revenue   | credit         | Commission credit at settlement                       |
+| `5000` | Mobile Financial Services (MFS) Gateway Fees Expense | expense   | debit          | Seeded; provider fees are not yet recorded            |
 
 `ledger_entries.tutor_user_id` is the party dimension. It is nullable because
 platform-level legs (cash, escrow liability, revenue) have no tutor party.
@@ -53,12 +53,12 @@ journals that reverse the original effect.
 
 ## 3. Journal catalogue
 
-| Flow | Source type | Idempotency key | Debit | Credit |
-| --- | --- | --- | --- | --- |
-| Verified payment | `payment_order` | `ledger:payment:{orderId}` | `1000` full amount | `2100` full amount |
-| Session settlement | `session_milestone` | `ledger:settlement:session:{sessionId}` | `2100` gross | `2000` tutor net (party) + `4000` commission |
-| Refund | `payment_refund` | `ledger:refund:{refundId}` | `2100` refund amount | `1000` refund amount |
-| Payout disbursement | `payout` | `ledger:payout:{payoutId}` | `2000` payout amount (party) | `1100` payout amount |
+| Flow                | Source type         | Idempotency key                         | Debit                        | Credit                                       |
+| ------------------- | ------------------- | --------------------------------------- | ---------------------------- | -------------------------------------------- |
+| Verified payment    | `payment_order`     | `ledger:payment:{orderId}`              | `1000` full amount           | `2100` full amount                           |
+| Session settlement  | `session_milestone` | `ledger:settlement:session:{sessionId}` | `2100` gross                 | `2000` tutor net (party) + `4000` commission |
+| Refund              | `payment_refund`    | `ledger:refund:{refundId}`              | `2100` refund amount         | `1000` refund amount                         |
+| Payout disbursement | `payout`            | `ledger:payout:{payoutId}`              | `2000` payout amount (party) | `1100` payout amount                         |
 
 Each journal is balanced by construction:
 
@@ -158,14 +158,14 @@ reserved column cannot create spendable money.
 
 ## 6. Transaction and concurrency model
 
-| Operation | Rows locked | Additional protection |
-| --- | --- | --- |
-| Payment success | `payment_orders` | Unique `webhook_events(provider, event_id)`; unique ledger key |
-| Settlement | `booking_sessions`, `escrow_holds`, `tutor_financial_accounts` | `UNIQUE(session_id)` on settlements; unique ledger key |
-| Refund request | `payment_orders`, `escrow_holds` | Sum of succeeded + reserved refunds checked inside the transaction |
-| Refund finalization | refund, order, hold | Unique ledger key; bound re-check while locked |
-| Payout request | `tutor_financial_accounts` | Payable recomputed from ledger; active payout sum |
-| Payout paid | payout, `tutor_financial_accounts` | Payable re-check; unique ledger key |
+| Operation           | Rows locked                                                    | Additional protection                                              |
+| ------------------- | -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| Payment success     | `payment_orders`                                               | Unique `webhook_events(provider, event_id)`; unique ledger key     |
+| Settlement          | `booking_sessions`, `escrow_holds`, `tutor_financial_accounts` | `UNIQUE(session_id)` on settlements; unique ledger key             |
+| Refund request      | `payment_orders`, `escrow_holds`                               | Sum of succeeded + reserved refunds checked inside the transaction |
+| Refund finalization | refund, order, hold                                            | Unique ledger key; bound re-check while locked                     |
+| Payout request      | `tutor_financial_accounts`                                     | Payable recomputed from ledger; active payout sum                  |
+| Payout paid         | payout, `tutor_financial_accounts`                             | Payable re-check; unique ledger key                                |
 
 Lock ordering is consistent (order/payout → hold → tutor account) because each
 service acquires its locks in one direction and never calls back into a service

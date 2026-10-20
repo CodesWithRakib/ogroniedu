@@ -55,8 +55,7 @@ export function computeAttendanceMetrics(
   const attended = counts.present + counts.late;
   const rate = recorded > 0 ? Number(((attended / recorded) * 100).toFixed(2)) : null;
   const safeEligible = Math.max(0, eligibleSessions);
-  const coverage =
-    safeEligible > 0 ? Number(((recorded / safeEligible) * 100).toFixed(2)) : null;
+  const coverage = safeEligible > 0 ? Number(((recorded / safeEligible) * 100).toFixed(2)) : null;
 
   return {
     ...counts,

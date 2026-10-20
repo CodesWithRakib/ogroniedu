@@ -229,7 +229,8 @@ export class LearningAssignmentsService {
         where: { id: assignment.bookingId },
         relations: { subject: true },
       });
-      if (booking) await this.notifyAssignmentPublished(assignment, booking, 'assignment.published');
+      if (booking)
+        await this.notifyAssignmentPublished(assignment, booking, 'assignment.published');
     }
     return this.getAssignmentById(user, assignmentId);
   }
@@ -271,11 +272,7 @@ export class LearningAssignmentsService {
     if (query.bookingId) {
       const booking = await this.bookingRepo.findOne({ where: { id: query.bookingId } });
       if (!booking) throw new NotFoundException(`Booking ${query.bookingId} not found`);
-      await this.access?.assertCanAccessStudentRecords(
-        user,
-        booking.studentUserId,
-        booking.id,
-      );
+      await this.access?.assertCanAccessStudentRecords(user, booking.studentUserId, booking.id);
       qb.andWhere('assignment.bookingId = :bookingId', { bookingId: query.bookingId });
     }
     if (query.sessionId) {
@@ -308,7 +305,10 @@ export class LearningAssignmentsService {
       qb.andWhere('assignment.status = :status', { status: query.status });
     }
 
-    const [rows, total] = await qb.skip((page - 1) * pageSize).take(pageSize).getManyAndCount();
+    const [rows, total] = await qb
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
     const views = rows.map((assignment) => {
       const ownSubmission = this.pickVisibleSubmission(assignment, user);
       return this.toAssignmentView(assignment, ownSubmission);
@@ -316,10 +316,7 @@ export class LearningAssignmentsService {
     return { items: views, totalItems: total, page, pageSize };
   }
 
-  async getAssignmentById(
-    user: AuthenticatedUser,
-    assignmentId: string,
-  ): Promise<AssignmentView> {
+  async getAssignmentById(user: AuthenticatedUser, assignmentId: string): Promise<AssignmentView> {
     const assignment = await this.assignmentRepo.findOne({
       where: { id: assignmentId },
       relations: {
@@ -580,10 +577,7 @@ export class LearningAssignmentsService {
     return this.toSubmissionView(saved, assignment);
   }
 
-  async getSubmissionById(
-    user: AuthenticatedUser,
-    submissionId: string,
-  ): Promise<SubmissionView> {
+  async getSubmissionById(user: AuthenticatedUser, submissionId: string): Promise<SubmissionView> {
     const submission = await this.submissionRepo.findOne({
       where: { id: submissionId },
       relations: { assignment: true, studentUser: true },
@@ -598,8 +592,7 @@ export class LearningAssignmentsService {
         submission.assignment.bookingId,
       );
     }
-    const isOwner =
-      isAdminRole(user) || submission.assignment.tutorUserId === user.id;
+    const isOwner = isAdminRole(user) || submission.assignment.tutorUserId === user.id;
     if (!isOwner && submission.assignment.status !== 'published') {
       throw new NotFoundException(`Submission ${submissionId} not found`);
     }
@@ -679,7 +672,10 @@ export class LearningAssignmentsService {
       averageScore: computeAverageScorePercent(
         reviewed.map((s) => ({
           score: s.score !== null ? Number(s.score) : null,
-          maxScore: s.maxScore !== null ? Number(s.maxScore) : Number(assignments.find((a) => a.id === s.assignmentId)?.maxScore ?? 0),
+          maxScore:
+            s.maxScore !== null
+              ? Number(s.maxScore)
+              : Number(assignments.find((a) => a.id === s.assignmentId)?.maxScore ?? 0),
         })),
       ),
     };
@@ -690,9 +686,7 @@ export class LearningAssignmentsService {
     assignment: AssignmentEntity,
   ): Promise<void> {
     if (isAdminRole(user) || assignment.tutorUserId === user.id) return;
-    throw new ForbiddenException(
-      'Only the assigned tutor or admin can manage this assignment',
-    );
+    throw new ForbiddenException('Only the assigned tutor or admin can manage this assignment');
   }
 
   private async getAssignmentOrFail(assignmentId: string): Promise<AssignmentEntity> {
@@ -776,9 +770,7 @@ export class LearningAssignmentsService {
       dueAt: assignment.dueAt ? new Date(assignment.dueAt).toISOString() : null,
       maxScore: Number(assignment.maxScore),
       status: assignment.status,
-      publishedAt: assignment.publishedAt
-        ? new Date(assignment.publishedAt).toISOString()
-        : null,
+      publishedAt: assignment.publishedAt ? new Date(assignment.publishedAt).toISOString() : null,
       resubmissionAllowed: assignment.resubmissionAllowed ?? true,
       lateSubmissionAllowed: assignment.lateSubmissionAllowed ?? true,
       maxAttempts: assignment.maxAttempts ?? 3,
@@ -820,9 +812,7 @@ export class LearningAssignmentsService {
       tutorFeedback: submission.tutorFeedback,
       returnReason: submission.returnReason,
       reviewedBy: submission.reviewedBy,
-      reviewedAt: submission.reviewedAt
-        ? new Date(submission.reviewedAt).toISOString()
-        : null,
+      reviewedAt: submission.reviewedAt ? new Date(submission.reviewedAt).toISOString() : null,
       canSubmitAgain,
     };
   }

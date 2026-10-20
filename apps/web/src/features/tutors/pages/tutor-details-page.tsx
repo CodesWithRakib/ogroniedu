@@ -35,7 +35,10 @@ import { useGetLinkedChildrenQuery } from '@/store/services/guardians-api';
 import { useAppSelector } from '@/store';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { withLocale } from '@/lib/auth';
-import { WEEKDAY_LABELS, type TutorCardData } from '@/features/tutor-discovery/types/tutor-discovery.types';
+import {
+  WEEKDAY_LABELS,
+  type TutorCardData,
+} from '@/features/tutor-discovery/types/tutor-discovery.types';
 import { BookingRequestModal } from '@/features/tutor-discovery/components/bookingRequestModal';
 
 const DAY_MAP: Record<string, number> = {
@@ -66,7 +69,9 @@ function SectionCard({
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs shrink-0">
             {icon}
           </div>
-          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 tracking-tight">{title}</h2>
+          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 tracking-tight">
+            {title}
+          </h2>
         </div>
         {badge}
       </div>
@@ -591,7 +596,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                           </span>
                         </div>
                         <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
-                          {[qInstitution, q.issuedYear ? formatLocalizedNumber(q.issuedYear, locale) : null]
+                          {[
+                            qInstitution,
+                            q.issuedYear ? formatLocalizedNumber(q.issuedYear, locale) : null,
+                          ]
                             .filter(Boolean)
                             .join(' · ')}
                         </p>
@@ -629,7 +637,8 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                     </div>
                     {s.rateMinor && (
                       <span className="shrink-0 text-xs font-black text-blue-800 bg-blue-50 border border-blue-200 px-3 py-1.5 rounded-xl">
-                        ৳{formatLocalizedNumber(Number(s.rateMinor) / 100, locale)}/{isBn ? 'ঘণ্টা' : 'hr'}
+                        ৳{formatLocalizedNumber(Number(s.rateMinor) / 100, locale)}/
+                        {isBn ? 'ঘণ্টা' : 'hr'}
                       </span>
                     )}
                   </div>
@@ -646,7 +655,8 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
               profile.totalReviews > 0 ? (
                 <span className="flex items-center gap-1.5 text-xs font-bold text-amber-900 bg-amber-50 px-3 py-1 rounded-full border border-amber-300">
                   <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-600" />
-                  {formatLocalizedNumber(profile.ratingAverage ?? 5, locale)} / {isBn ? '৫.০' : '5.0'}
+                  {formatLocalizedNumber(profile.ratingAverage ?? 5, locale)} /{' '}
+                  {isBn ? '৫.০' : '5.0'}
                 </span>
               ) : undefined
             }
@@ -716,7 +726,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                       {replyText && (
                         <div className="rounded-2xl bg-blue-50/80 border border-blue-200 p-3.5 text-xs text-slate-800 space-y-1.5">
                           <div className="flex items-center gap-1.5 font-bold text-blue-900">
-                            <MessageSquare className="w-3.5 h-3.5 text-blue-700" aria-hidden="true" />
+                            <MessageSquare
+                              className="w-3.5 h-3.5 text-blue-700"
+                              aria-hidden="true"
+                            />
                             <span>{isBn ? 'শিক্ষকের উত্তর' : 'Tutor Reply'}</span>
                           </div>
                           <p className="text-slate-700 leading-relaxed">{replyText}</p>
@@ -761,7 +774,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                           <MapPin className="w-3.5 h-3.5 text-blue-700 shrink-0" />
                           <span>
                             {areaLocality}
-                            {area.radiusKm ? ` · ${formatLocalizedNumber(area.radiusKm, locale)} ${isBn ? 'কিমি' : 'km'}` : ''}
+                            {area.radiusKm
+                              ? ` · ${formatLocalizedNumber(area.radiusKm, locale)} ${isBn ? 'কিমি' : 'km'}`
+                              : ''}
                           </span>
                         </span>
                       );
@@ -1008,7 +1023,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 <div className="rounded-2xl bg-slate-50 p-3.5 space-y-1.5 text-[11px] text-slate-600 border border-slate-200">
                   <div className="flex items-center gap-1.5 font-bold text-slate-800">
                     <Lock className="w-3.5 h-3.5 text-blue-700" />
-                    <span>{isBn ? 'অগ্রণী এসক্রো পেমেন্ট সুরক্ষা' : 'Ogroni Escrow Security Guarantee'}</span>
+                    <span>
+                      {isBn ? 'অগ্রণী এসক্রো পেমেন্ট সুরক্ষা' : 'Ogroni Escrow Security Guarantee'}
+                    </span>
                   </div>
                   <p className="leading-relaxed">
                     {isBn

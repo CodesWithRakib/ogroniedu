@@ -388,7 +388,9 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
               </p>
               <p className="flex items-center gap-1.5">
                 <Clock className="w-3.5 h-3.5" />
-                {isBn ? 'সাধারণত ২ কর্মদিবসের মধ্যে পর্যালোচনা' : 'Usually reviewed within 2 business days'}
+                {isBn
+                  ? 'সাধারণত ২ কর্মদিবসের মধ্যে পর্যালোচনা'
+                  : 'Usually reviewed within 2 business days'}
               </p>
             </CardContent>
           </Card>

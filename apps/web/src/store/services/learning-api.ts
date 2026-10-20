@@ -291,7 +291,10 @@ export const learningApi = baseApi.injectEndpoints({
         { type: 'Notification', id: 'LIST' },
       ],
     }),
-    listAssignments: builder.query<ApiSuccessEnvelope<AssignmentRecord[]>, LearningListParams | void>({
+    listAssignments: builder.query<
+      ApiSuccessEnvelope<AssignmentRecord[]>,
+      LearningListParams | void
+    >({
       query: (params) => `/api/v1/learning/assignments${toQueryString(params ?? {})}`,
       providesTags: (result) =>
         result
@@ -395,7 +398,10 @@ export const learningApi = baseApi.injectEndpoints({
       query: (body) => ({ url: '/api/v1/learning/lesson-plans', method: 'POST', body }),
       invalidatesTags: [{ type: 'LessonPlan', id: 'LIST' }],
     }),
-    listLessonPlans: builder.query<ApiSuccessEnvelope<LessonPlanRecord[]>, LearningListParams | void>({
+    listLessonPlans: builder.query<
+      ApiSuccessEnvelope<LessonPlanRecord[]>,
+      LearningListParams | void
+    >({
       query: (params) => `/api/v1/learning/lesson-plans${toQueryString(params ?? {})}`,
       providesTags: [{ type: 'LessonPlan', id: 'LIST' }],
     }),

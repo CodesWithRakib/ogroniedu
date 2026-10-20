@@ -9,11 +9,7 @@ import {
 } from 'class-validator';
 
 export type LearningGoalStatusValue =
-  | 'open'
-  | 'in_progress'
-  | 'achieved'
-  | 'not_achieved'
-  | 'cancelled';
+  'open' | 'in_progress' | 'achieved' | 'not_achieved' | 'cancelled';
 
 export class CreateLearningGoalDto {
   @IsUUID()

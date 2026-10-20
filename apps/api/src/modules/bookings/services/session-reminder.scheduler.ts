@@ -44,9 +44,7 @@ export class SessionReminderScheduler implements OnApplicationBootstrap, OnModul
       this.logger.log('Session reminder scheduler is disabled for this runtime.');
       return;
     }
-    this.logger.log(
-      `Session reminder scheduler started (every ${resolveReminderIntervalMs()}ms).`,
-    );
+    this.logger.log(`Session reminder scheduler started (every ${resolveReminderIntervalMs()}ms).`);
     this.arm(resolveReminderIntervalMs());
   }
 

@@ -71,9 +71,7 @@ export function formatTime(iso: string | Date | null | undefined, locale: Locale
  * Format an ISO instant for a native `datetime-local` control in the browser's
  * local timezone. Native controls do not understand ISO strings with `Z`.
  */
-export function toDateTimeLocalValue(
-  iso: string | Date | null | undefined,
-): string {
+export function toDateTimeLocalValue(iso: string | Date | null | undefined): string {
   if (!iso) return '';
   const d = iso instanceof Date ? iso : new Date(iso);
   if (Number.isNaN(d.getTime())) return '';

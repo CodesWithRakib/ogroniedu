@@ -9,10 +9,7 @@ import {
   useScheduleRecurringSessionsMutation,
 } from '@/store/services/sessions-api';
 import { schedulableBookings } from '../utils/session-mappers';
-import type {
-  ScheduleRecurringInput,
-  ScheduleSessionInput,
-} from '../types/session.types';
+import type { ScheduleRecurringInput, ScheduleSessionInput } from '../types/session.types';
 
 /** Scheduling: eligible-booking options + one-off/recurring create actions. */
 export function useScheduleSession(locale: Locale, studentId?: string) {

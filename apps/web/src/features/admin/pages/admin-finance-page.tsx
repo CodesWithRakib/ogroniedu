@@ -200,7 +200,9 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
       setManualRefund(null);
       setManualReference('');
       reportResult(
-        isBn ? 'রিফান্ড নিশ্চিত ও লেজারে রিভার্সাল পোস্ট হয়েছে।' : 'Refund confirmed and reversal posted.',
+        isBn
+          ? 'রিফান্ড নিশ্চিত ও লেজারে রিভার্সাল পোস্ট হয়েছে।'
+          : 'Refund confirmed and reversal posted.',
       );
     } catch (err) {
       reportError(
@@ -446,11 +448,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                         )}
                         {refund.status === 'approved' && (
                           <>
-                            <Button
-                              size="sm"
-                              disabled={busy}
-                              onClick={() => handleProcess(refund)}
-                            >
+                            <Button size="sm" disabled={busy} onClick={() => handleProcess(refund)}>
                               {isBn ? 'প্রক্রিয়া করুন' : 'Process'}
                             </Button>
                             <Button
@@ -592,7 +590,11 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                       : 'Debit = credit verification, order/refund/payout cross-checks and current balances.'}
                   </CardDescription>
                 </div>
-                <Button size="sm" disabled={reconciliationState.isLoading} onClick={handleRunReconciliation}>
+                <Button
+                  size="sm"
+                  disabled={reconciliationState.isLoading}
+                  onClick={handleRunReconciliation}
+                >
                   <Play className="w-3.5 h-3.5 mr-1" />
                   {isBn ? 'রিকনসিলিয়েশন চালান' : 'Run reconciliation'}
                 </Button>
@@ -666,7 +668,9 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
             {report && (
               <Card>
                 <CardHeader>
-                  <CardTitle>{isBn ? 'সর্বশেষ রিকনসিলিয়েশন রান' : 'Latest Reconciliation Run'}</CardTitle>
+                  <CardTitle>
+                    {isBn ? 'সর্বশেষ রিকনসিলিয়েশন রান' : 'Latest Reconciliation Run'}
+                  </CardTitle>
                   <CardDescription>{formatDateTime(report.reconciledAt, locale)}</CardDescription>
                 </CardHeader>
                 <CardContent className="space-y-3">
@@ -773,7 +777,9 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
       <Dialog open={!!manualRefund} onOpenChange={(open) => !open && setManualRefund(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>{isBn ? 'ম্যানুয়াল রিফান্ড নিশ্চিতকরণ' : 'Confirm Manual Refund'}</DialogTitle>
+            <DialogTitle>
+              {isBn ? 'ম্যানুয়াল রিফান্ড নিশ্চিতকরণ' : 'Confirm Manual Refund'}
+            </DialogTitle>
             <DialogDescription>
               {isBn
                 ? 'প্রকৃত ব্যাংক/প্রদানকারী স্থানান্তর সম্পন্ন করার পর তার রেফারেন্স দিন। সার্ভার নিজে কোনো রেফারেন্স তৈরি করে না।'
@@ -782,7 +788,9 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
           </DialogHeader>
           <form onSubmit={handleConfirmManual} className="space-y-3">
             <div className="space-y-1">
-              <Label htmlFor="refund-ref">{isBn ? 'বাহ্যিক রেফারেন্স' : 'External reference'}</Label>
+              <Label htmlFor="refund-ref">
+                {isBn ? 'বাহ্যিক রেফারেন্স' : 'External reference'}
+              </Label>
               <Input
                 id="refund-ref"
                 value={manualReference}
@@ -792,7 +800,13 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
               />
             </div>
             <Button type="submit" disabled={confirmState.isLoading} className="w-full">
-              {confirmState.isLoading ? <LoadingSpinner /> : isBn ? 'নিশ্চিত করুন' : 'Confirm refund'}
+              {confirmState.isLoading ? (
+                <LoadingSpinner />
+              ) : isBn ? (
+                'নিশ্চিত করুন'
+              ) : (
+                'Confirm refund'
+              )}
             </Button>
           </form>
         </DialogContent>
@@ -802,7 +816,9 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
       <Dialog open={!!payPayout} onOpenChange={(open) => !open && setPayPayout(null)}>
         <DialogContent className="max-w-md">
           <DialogHeader>
-            <DialogTitle>{isBn ? 'পে-আউট পরিশোধ নিশ্চিতকরণ' : 'Confirm Payout Transfer'}</DialogTitle>
+            <DialogTitle>
+              {isBn ? 'পে-আউট পরিশোধ নিশ্চিতকরণ' : 'Confirm Payout Transfer'}
+            </DialogTitle>
             <DialogDescription>
               {isBn
                 ? 'প্রকৃত স্থানান্তরের রেফারেন্স দিন। এটি ছাড়া পে-আউট পরিশোধিত হিসেবে গণ্য হবে না।'
@@ -811,7 +827,9 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
           </DialogHeader>
           <form onSubmit={handleMarkPaid} className="space-y-3">
             <div className="space-y-1">
-              <Label htmlFor="payout-ref">{isBn ? 'ব্যাংক/ওয়ালেট রেফারেন্স' : 'Bank/wallet reference'}</Label>
+              <Label htmlFor="payout-ref">
+                {isBn ? 'ব্যাংক/ওয়ালেট রেফারেন্স' : 'Bank/wallet reference'}
+              </Label>
               <Input
                 id="payout-ref"
                 value={transferReference}
@@ -821,7 +839,13 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
               />
             </div>
             <Button type="submit" disabled={markPaidState.isLoading} className="w-full">
-              {markPaidState.isLoading ? <LoadingSpinner /> : isBn ? 'পরিশোধিত নিশ্চিত করুন' : 'Confirm paid'}
+              {markPaidState.isLoading ? (
+                <LoadingSpinner />
+              ) : isBn ? (
+                'পরিশোধিত নিশ্চিত করুন'
+              ) : (
+                'Confirm paid'
+              )}
             </Button>
           </form>
         </DialogContent>
@@ -855,7 +879,13 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
               disabled={markFailedState.isLoading}
               className="w-full"
             >
-              {markFailedState.isLoading ? <LoadingSpinner /> : isBn ? 'ব্যর্থ চিহ্নিত করুন' : 'Mark failed'}
+              {markFailedState.isLoading ? (
+                <LoadingSpinner />
+              ) : isBn ? (
+                'ব্যর্থ চিহ্নিত করুন'
+              ) : (
+                'Mark failed'
+              )}
             </Button>
           </form>
         </DialogContent>
@@ -874,7 +904,9 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
           </DialogHeader>
           <form onSubmit={handleCreatePolicy} className="space-y-3">
             <div className="space-y-1">
-              <Label htmlFor="policy-fee">{isBn ? 'প্ল্যাটফর্ম কমিশন (%)' : 'Platform commission (%)'}</Label>
+              <Label htmlFor="policy-fee">
+                {isBn ? 'প্ল্যাটফর্ম কমিশন (%)' : 'Platform commission (%)'}
+              </Label>
               <Input
                 id="policy-fee"
                 type="number"
@@ -887,7 +919,9 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
               />
             </div>
             <div className="space-y-1">
-              <Label htmlFor="policy-min">{isBn ? 'ন্যূনতম পে-আউট (BDT)' : 'Minimum payout (BDT)'}</Label>
+              <Label htmlFor="policy-min">
+                {isBn ? 'ন্যূনতম পে-আউট (BDT)' : 'Minimum payout (BDT)'}
+              </Label>
               <Input
                 id="policy-min"
                 type="text"
@@ -907,7 +941,13 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
               />
             </div>
             <Button type="submit" disabled={policyState.isLoading} className="w-full">
-              {policyState.isLoading ? <LoadingSpinner /> : isBn ? 'সংস্করণ সক্রিয় করুন' : 'Activate version'}
+              {policyState.isLoading ? (
+                <LoadingSpinner />
+              ) : isBn ? (
+                'সংস্করণ সক্রিয় করুন'
+              ) : (
+                'Activate version'
+              )}
             </Button>
           </form>
         </DialogContent>

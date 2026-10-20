@@ -30,14 +30,14 @@ booking reads, so a guardian cannot request a refund for an unrelated student.
 
 ### 1.2 When a refund can be requested
 
-| Condition | Requirement |
-| --- | --- |
-| Order status | `succeeded` |
+| Condition                        | Requirement                                                                                              |
+| -------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| Order status                     | `succeeded`                                                                                              |
 | Order has a verified transaction | Required before automated processing; manual confirmation also requires the refund to have been approved |
-| Amount | Integer poisha, ≥ 100 (BDT 1.00) |
-| Refundable balance | `order.amount - succeeded refunds - reserved refunds - released_to_tutor` |
-| Booking access | Caller must be payer/student/requester/linked guardian/admin |
-| Released earnings | A non-admin request is rejected if **any** amount has been released to the tutor |
+| Amount                           | Integer poisha, ≥ 100 (BDT 1.00)                                                                         |
+| Refundable balance               | `order.amount - succeeded refunds - reserved refunds - released_to_tutor`                                |
+| Booking access                   | Caller must be payer/student/requester/linked guardian/admin                                             |
+| Released earnings                | A non-admin request is rejected if **any** amount has been released to the tutor                         |
 
 The eligibility figures are snapshotted onto the refund row at request time
 (`eligibility_snapshot`), including order amount, released amount, previously
@@ -96,15 +96,15 @@ requested for refund at any later date, subject to the released-earnings rule.
 
 The product cancellation matrix is:
 
-| Initiator | Timing | Customer refund | Tutor compensation | Platform fee |
-| --- | --- | --- | --- | --- |
-| Guardian/Student | > 24h before session | 100% | 0% | Retained as platform credit |
-| Guardian/Student | 4–24h before session | 80% | 20% base compensation | Waived |
-| Guardian/Student | < 4h before session | 0% | 80% minus commission | 20% retained |
-| Guardian/Student | No-show (> 15 min) | 0% | 80% | 20% retained |
-| Tutor | > 24h before session | 100% + free reschedule | 0% | Full refund |
-| Tutor | < 24h before session | 100% + priority replacement | 0% | Full refund |
-| Tutor | No-show (> 15 min) | 100% + instant replacement | 0% | Full refund |
+| Initiator        | Timing               | Customer refund             | Tutor compensation    | Platform fee                |
+| ---------------- | -------------------- | --------------------------- | --------------------- | --------------------------- |
+| Guardian/Student | > 24h before session | 100%                        | 0%                    | Retained as platform credit |
+| Guardian/Student | 4–24h before session | 80%                         | 20% base compensation | Waived                      |
+| Guardian/Student | < 4h before session  | 0%                          | 80% minus commission  | 20% retained                |
+| Guardian/Student | No-show (> 15 min)   | 0%                          | 80%                   | 20% retained                |
+| Tutor            | > 24h before session | 100% + free reschedule      | 0%                    | Full refund                 |
+| Tutor            | < 24h before session | 100% + priority replacement | 0%                    | Full refund                 |
+| Tutor            | No-show (> 15 min)   | 100% + instant replacement  | 0%                    | Full refund                 |
 
 **Implementation status:** the matrix is policy guidance, not an automated
 calculator. A refund request carries an operator/customer-entered amount within
@@ -179,13 +179,13 @@ pricing and checkout semantics and needs approval.
 
 A payout can be requested when:
 
-| Condition | Requirement |
-| --- | --- |
-| Role | `tutor` |
-| Amount | Integer poisha, ≥ active policy `min_payout_minor` (default 50000 = BDT 500) |
-| Available balance | `ledger payable (2000, party) - active payouts` |
-| Account reference | 4–64 characters; masked and hashed before persistence |
-| Idempotency | 8–120 character key, unique per tutor |
+| Condition         | Requirement                                                                  |
+| ----------------- | ---------------------------------------------------------------------------- |
+| Role              | `tutor`                                                                      |
+| Amount            | Integer poisha, ≥ active policy `min_payout_minor` (default 50000 = BDT 500) |
+| Available balance | `ledger payable (2000, party) - active payouts`                              |
+| Account reference | 4–64 characters; masked and hashed before persistence                        |
+| Idempotency       | 8–120 character key, unique per tutor                                        |
 
 Active payouts are `requested`, `approved` and `processing`. `paid`, `rejected`,
 `failed` and `cancelled` do not reserve funds.

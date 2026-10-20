@@ -92,7 +92,42 @@ describe('RequestIdMiddleware and AllExceptionsFilter Tests', () => {
       expect(responseBody.error.code).toBe('VALIDATION_ERROR');
       expect(responseBody.error.message).toBe('Invalid payload submitted');
       expect(responseBody.meta.requestId).toBe('req-test-999');
+      expect(responseBody.meta.path).toBe('/api/v1/notifications');
+      expect(responseBody.meta.method).toBe('POST');
+      expect(responseBody.meta.timestamp).toBeDefined();
+      expect(new Date(responseBody.meta.timestamp).getTime()).not.toBeNaN();
       expect(responseBody).not.toHaveProperty('stack');
+    });
+
+    it('sanitizes sensitive query parameters from meta.path in error envelopes', () => {
+      let responseBody: any = null;
+      const mockRes: Partial<Response> = {
+        status: () =>
+          ({
+            json: (b: any) => {
+              responseBody = b;
+            },
+          }) as any,
+      };
+      const mockReq: Partial<Request> = {
+        url: '/api/v1/auth/reset?token=supersecret123&email=user%40example.com',
+        method: 'GET',
+        requestId: 'req-clean-1',
+      };
+      const mockHost = {
+        switchToHttp: () => ({
+          getRequest: () => mockReq as Request,
+          getResponse: () => mockRes as Response,
+        }),
+      } as any;
+
+      filter.catch(new BadRequestException('Link expired'), mockHost);
+
+      expect(responseBody.meta.path).toContain('token=%5BREDACTED%5D');
+      expect(responseBody.meta.path).not.toContain('supersecret123');
+      expect(responseBody.meta.path).toContain('email=');
+      expect(responseBody.meta.method).toBe('GET');
+      expect(responseBody.meta.requestId).toBe('req-clean-1');
     });
 
     it('should sanitize generic unhandled errors to 500 status code', () => {

@@ -7,12 +7,12 @@ repositories, which is how every prior phase is tested.
 
 ## 0. Environment constraints
 
-| Constraint | Impact |
-| --- | --- |
+| Constraint                                                                                            | Impact                                                                                                                  |
+| ----------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
 | Local PostgreSQL unreachable (`password authentication failed for user "postgres"`, no Docker daemon) | Migration `023` cannot be applied here; DB-level invariants are covered by SQL review + unit tests of the service rules |
-| No Redis | Nothing in the LMS depends on Redis |
-| No running API/web stack | Playwright journeys cannot execute in this environment; recorded as not run |
-| No malware scanner | Not claimed; tests assert `malware_scan_status='not_required'` |
+| No Redis                                                                                              | Nothing in the LMS depends on Redis                                                                                     |
+| No running API/web stack                                                                              | Playwright journeys cannot execute in this environment; recorded as not run                                             |
+| No malware scanner                                                                                    | Not claimed; tests assert `malware_scan_status='not_required'`                                                          |
 
 ## 1. Unit tests (API)
 

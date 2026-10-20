@@ -15,7 +15,8 @@ import { UserEntity } from '../../auth/entities/user.entity';
 export type SubmissionStatus = 'submitted' | 'late' | 'reviewed' | 'returned';
 
 /** UI projection that never replaces the stored status. */
-export type SubmissionWorkflowState = 'submitted' | 'under_review' | 'reviewed' | 'returned' | 'late';
+export type SubmissionWorkflowState =
+  'submitted' | 'under_review' | 'reviewed' | 'returned' | 'late';
 
 @Entity('assignment_submissions')
 @Unique(['assignmentId', 'studentUserId'])

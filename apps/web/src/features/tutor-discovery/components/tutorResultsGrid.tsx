@@ -89,10 +89,7 @@ export function TutorResultsGrid({
 
   return (
     <>
-      <div
-        className="flex flex-col gap-4 sm:gap-5 w-full"
-        data-testid="tutors-grid"
-      >
+      <div className="flex flex-col gap-4 sm:gap-5 w-full" data-testid="tutors-grid">
         {tutors.map((tutor) => (
           <TutorCard
             key={tutor.id}

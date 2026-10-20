@@ -113,7 +113,11 @@ export function LearningPage({ locale }: { locale: Locale }) {
       {role === 'tutor' && records.activeBookingId && (
         <Card className="mb-4">
           <CardContent className="py-4">
-            <form onSubmit={handleCreateAssignment} className="space-y-3" data-testid="create-assignment-form">
+            <form
+              onSubmit={handleCreateAssignment}
+              className="space-y-3"
+              data-testid="create-assignment-form"
+            >
               <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
                 <div className="sm:col-span-2 space-y-1">
                   <Label htmlFor="assignment-title" className="text-xs font-medium">
@@ -177,7 +181,12 @@ export function LearningPage({ locale }: { locale: Locale }) {
                     <option value="false">{dict.learning.saveAsDraft}</option>
                   </NativeSelect>
                 </div>
-                <Button type="submit" size="sm" isLoading={records.creating} data-testid="create-assignment-btn">
+                <Button
+                  type="submit"
+                  size="sm"
+                  isLoading={records.creating}
+                  data-testid="create-assignment-btn"
+                >
                   {dict.learning.createAssignment}
                 </Button>
               </div>
@@ -224,22 +233,22 @@ export function LearningPage({ locale }: { locale: Locale }) {
             />
           )}
           <LearningManagementView
-          locale={locale}
-          userRole={role}
-          initialAttendance={records.attendance}
-          initialAssignments={records.assignments}
-          initialReports={records.reports}
-          onMarkAttendance={(data) =>
-            records.markAttendance(
-              data.sessionId,
-              data.participantUserId,
-              data.attendanceStatus,
-              data.notes,
-            )
-          }
-          onSubmitAssignment={records.submitAssignment}
-          onGradeSubmission={records.gradeSubmission}
-          onGenerateReport={records.generateReport}
+            locale={locale}
+            userRole={role}
+            initialAttendance={records.attendance}
+            initialAssignments={records.assignments}
+            initialReports={records.reports}
+            onMarkAttendance={(data) =>
+              records.markAttendance(
+                data.sessionId,
+                data.participantUserId,
+                data.attendanceStatus,
+                data.notes,
+              )
+            }
+            onSubmitAssignment={records.submitAssignment}
+            onGradeSubmission={records.gradeSubmission}
+            onGenerateReport={records.generateReport}
           />
         </div>
       )}

@@ -406,16 +406,47 @@ export async function runInitialSeed(
            institution_en = EXCLUDED.institution_en,
            institution_bn = EXCLUDED.institution_bn,
            review_status = EXCLUDED.review_status;`,
-      [q.id, q.type, q.title, q.titleEn, q.titleBn, q.institution, q.institutionEn, q.institutionBn, q.year, q.status],
+      [
+        q.id,
+        q.type,
+        q.title,
+        q.titleEn,
+        q.titleBn,
+        q.institution,
+        q.institutionEn,
+        q.institutionBn,
+        q.year,
+        q.status,
+      ],
     );
   }
 
   // Seed service areas for Rashed Karim
-  await client.query(`DELETE FROM tutor_service_areas WHERE tutor_user_id = '22222222-2222-4222-b222-222222222222'`);
+  await client.query(
+    `DELETE FROM tutor_service_areas WHERE tutor_user_id = '22222222-2222-4222-b222-222222222222'`,
+  );
   const demoAreas = [
-    { district: 'dhaka', locality: 'ধানমন্ডি ও কলাবাগান', localityEn: 'Dhanmondi & Kalabagan', localityBn: 'ধানমন্ডি ও কলাবাগান', radius: 5 },
-    { district: 'dhaka', locality: 'মোহাম্মদপুর ও লালমাটিয়া', localityEn: 'Mohammadpur & Lalmatia', localityBn: 'মোহাম্মদপুর ও লালমাটিয়া', radius: 6 },
-    { district: 'dhaka', locality: 'ফার্মগেট ও গ্রিন রোড', localityEn: 'Farmgate & Green Road', localityBn: 'ফার্মগেট ও গ্রিন রোড', radius: 4.5 },
+    {
+      district: 'dhaka',
+      locality: 'ধানমন্ডি ও কলাবাগান',
+      localityEn: 'Dhanmondi & Kalabagan',
+      localityBn: 'ধানমন্ডি ও কলাবাগান',
+      radius: 5,
+    },
+    {
+      district: 'dhaka',
+      locality: 'মোহাম্মদপুর ও লালমাটিয়া',
+      localityEn: 'Mohammadpur & Lalmatia',
+      localityBn: 'মোহাম্মদপুর ও লালমাটিয়া',
+      radius: 6,
+    },
+    {
+      district: 'dhaka',
+      locality: 'ফার্মগেট ও গ্রিন রোড',
+      localityEn: 'Farmgate & Green Road',
+      localityBn: 'ফার্মগেট ও গ্রিন রোড',
+      radius: 4.5,
+    },
   ];
   for (const a of demoAreas) {
     await client.query(
@@ -426,7 +457,9 @@ export async function runInitialSeed(
   }
 
   // Seed availability for Rashed Karim
-  await client.query(`DELETE FROM tutor_availability WHERE tutor_user_id = '22222222-2222-4222-b222-222222222222'`);
+  await client.query(
+    `DELETE FROM tutor_availability WHERE tutor_user_id = '22222222-2222-4222-b222-222222222222'`,
+  );
   const demoAvailabilities = [
     { weekday: 6, start: '17:00', end: '21:00' }, // Sat
     { weekday: 1, start: '17:00', end: '21:00' }, // Mon
@@ -588,4 +621,3 @@ export async function runInitialSeed(
     [REVIEW_ID, BOOKING_ID],
   );
 }
-

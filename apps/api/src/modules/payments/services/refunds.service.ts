@@ -23,11 +23,7 @@ import { PaymentAdapterFactory } from '../adapters/adapter.factory';
 import { AuditService } from '../../audit/audit.service';
 import { NotificationService } from '../../notifications/notification.service';
 import { GuardianAccessService } from '../../guardians/guardian-access.service';
-import {
-  ConfirmManualRefundDto,
-  DecideRefundDto,
-  RequestRefundDto,
-} from '../dto';
+import { ConfirmManualRefundDto, DecideRefundDto, RequestRefundDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { isAdminRole } from '../../../common/auth/role.utils';
 import { parseMinor } from '../../../common/money/money';
@@ -149,7 +145,7 @@ export class RefundsService {
         reason: dto.reason,
         status: 'requested',
         refundNumber: `RFD-${new Date().getUTCFullYear()}-${sequence.padStart(6, '0')}`,
-        initiatedByRole: isAdminRole(user) ? 'admin' : user.roles?.[0] ?? 'user',
+        initiatedByRole: isAdminRole(user) ? 'admin' : (user.roles?.[0] ?? 'user'),
         requestedBy: user.id,
         idempotencyKey: dto.idempotencyKey ?? null,
         eligibilitySnapshot: {
@@ -296,17 +292,13 @@ export class RefundsService {
       return { refund: failed, manualConfirmationRequired: false };
     }
 
-    const finalized = await this.finalize(
-      user,
-      refund.id,
-      {
-        providerRefundId: result.providerRefundId ?? null,
-        externalReference: result.providerRefundId ?? null,
-        providerStatus: 'succeeded',
-        confirmedAt: new Date(),
-        note: 'Provider-confirmed automated refund',
-      },
-    );
+    const finalized = await this.finalize(user, refund.id, {
+      providerRefundId: result.providerRefundId ?? null,
+      externalReference: result.providerRefundId ?? null,
+      providerStatus: 'succeeded',
+      confirmedAt: new Date(),
+      note: 'Provider-confirmed automated refund',
+    });
     return { refund: finalized, manualConfirmationRequired: false };
   }
 

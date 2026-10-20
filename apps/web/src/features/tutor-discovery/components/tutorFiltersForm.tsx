@@ -57,8 +57,22 @@ export const EMPTY_FILTERS: TutorFiltersValue = {
   radiusKm: '',
 };
 
-export const POPULAR_SUBJECTS_BN = ['পদার্থবিজ্ঞান', 'গণিত', 'ইংরেজি', 'রসায়ন', 'আইসিটি', 'জীববিজ্ঞান'];
-export const POPULAR_SUBJECTS_EN = ['Physics', 'Mathematics', 'English', 'Chemistry', 'ICT', 'Biology'];
+export const POPULAR_SUBJECTS_BN = [
+  'পদার্থবিজ্ঞান',
+  'গণিত',
+  'ইংরেজি',
+  'রসায়ন',
+  'আইসিটি',
+  'জীববিজ্ঞান',
+];
+export const POPULAR_SUBJECTS_EN = [
+  'Physics',
+  'Mathematics',
+  'English',
+  'Chemistry',
+  'ICT',
+  'Biology',
+];
 
 const RADIUS_OPTIONS = [5, 10, 20, 50, 100];
 
@@ -130,11 +144,11 @@ export function TutorFiltersForm({
   if (value.modeFilter) {
     const modeLabel =
       value.modeFilter === 'in_person'
-        ? (dict.tutor?.modeInPerson || 'In-person')
+        ? dict.tutor?.modeInPerson || 'In-person'
         : value.modeFilter === 'online'
-          ? (dict.tutor?.modeOnline || 'Online')
+          ? dict.tutor?.modeOnline || 'Online'
           : value.modeFilter === 'hybrid'
-            ? (dict.tutor?.modeHybrid || 'Hybrid')
+            ? dict.tutor?.modeHybrid || 'Hybrid'
             : value.modeFilter;
     activeChips.push({ key: 'modeFilter', label: modeLabel });
   }
@@ -151,7 +165,8 @@ export function TutorFiltersForm({
     activeChips.push({ key: 'availableWeekday', label: isBn ? day?.bn : day?.en });
   }
   if (value.districtCode) {
-    const distName = districtOptions.find((d) => d.id === value.districtCode)?.label ?? value.districtCode;
+    const distName =
+      districtOptions.find((d) => d.id === value.districtCode)?.label ?? value.districtCode;
     activeChips.push({ key: 'districtCode', label: distName });
   }
   if (value.radiusKm) {
@@ -391,7 +406,10 @@ export function TutorFiltersForm({
                 className="block text-[11px] text-warning-soft-foreground bg-warning/10 px-2.5 py-1 rounded-lg"
                 data-testid="radius-needs-location"
               >
-                ⚠️ {isBn ? 'সঠিক দূরত্বের জন্য লোকেশন শেয়ার করুন' : 'Share location for accurate distance'}
+                ⚠️{' '}
+                {isBn
+                  ? 'সঠিক দূরত্বের জন্য লোকেশন শেয়ার করুন'
+                  : 'Share location for accurate distance'}
               </span>
             )}
           </div>
@@ -566,7 +584,10 @@ export function TutorFiltersForm({
 
         {/* 8. Active Filter Chips Inside Sidebar */}
         {activeChips.length > 0 && (
-          <div className="pt-2 border-t border-border space-y-1.5" data-testid="active-filter-chips">
+          <div
+            className="pt-2 border-t border-border space-y-1.5"
+            data-testid="active-filter-chips"
+          >
             <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
               {isBn ? 'সক্রিয় ফিল্টার:' : 'Active Filters:'}
             </span>
@@ -582,7 +603,10 @@ export function TutorFiltersForm({
                   className="inline-flex items-center gap-1 rounded-full border border-border bg-background/80 px-2 py-0.5 text-[10px] font-medium text-foreground hover:border-primary/40 transition-colors"
                 >
                   <span>{chip.label}</span>
-                  <X className="h-2.5 w-2.5 text-muted-foreground hover:text-foreground" aria-hidden="true" />
+                  <X
+                    className="h-2.5 w-2.5 text-muted-foreground hover:text-foreground"
+                    aria-hidden="true"
+                  />
                 </button>
               ))}
             </div>
@@ -625,7 +649,9 @@ export function TutorFiltersForm({
             className="w-full rounded-xl font-extrabold text-xs gap-1.5 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/20 hover:shadow-xs transition-all duration-150 cursor-pointer"
           >
             <Filter className="w-3.5 h-3.5" />
-            <span>{dict.discovery?.applyFilters || (isBn ? 'ফিল্টার প্রয়োগ করুন' : 'Apply Filters')}</span>
+            <span>
+              {dict.discovery?.applyFilters || (isBn ? 'ফিল্টার প্রয়োগ করুন' : 'Apply Filters')}
+            </span>
           </Button>
         </div>
       </form>

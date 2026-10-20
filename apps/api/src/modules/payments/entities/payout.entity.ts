@@ -9,13 +9,7 @@ import {
 } from 'typeorm';
 
 export type PayoutStatus =
-  | 'requested'
-  | 'approved'
-  | 'processing'
-  | 'paid'
-  | 'rejected'
-  | 'cancelled'
-  | 'failed';
+  'requested' | 'approved' | 'processing' | 'paid' | 'rejected' | 'cancelled' | 'failed';
 
 export type PayoutMethod = 'bkash' | 'nagad' | 'rocket' | 'bank' | 'other';
 

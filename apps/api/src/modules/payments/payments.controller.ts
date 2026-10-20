@@ -84,10 +84,7 @@ export class PaymentsController {
   @Post('refunds')
   @UseGuards(AuthGuard)
   @HttpCode(HttpStatus.CREATED)
-  async requestRefund(
-    @CurrentUser() user: AuthenticatedUser,
-    @Body() dto: RequestRefundDto,
-  ) {
+  async requestRefund(@CurrentUser() user: AuthenticatedUser, @Body() dto: RequestRefundDto) {
     const refund = await this.refundsService.requestRefund(user, dto);
     return {
       success: true,
@@ -182,10 +179,6 @@ export class PaymentsController {
     @Param('invoiceId', ParseUUIDPipe) invoiceId: string,
     @Query('locale') locale?: string,
   ) {
-    return this.invoicesService.renderInvoiceHtml(
-      user,
-      invoiceId,
-      locale === 'bn' ? 'bn' : 'en',
-    );
+    return this.invoicesService.renderInvoiceHtml(user, invoiceId, locale === 'bn' ? 'bn' : 'en');
   }
 }

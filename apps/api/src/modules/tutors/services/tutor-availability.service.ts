@@ -119,11 +119,7 @@ export class TutorAvailabilityService {
    * Enforce weekly availability + blocked periods for an instant range.
    * Throws `ConflictException` with a human-readable reason.
    */
-  async assertWithinAvailability(
-    tutorUserId: string,
-    startsAt: Date,
-    endsAt: Date,
-  ): Promise<void> {
+  async assertWithinAvailability(tutorUserId: string, startsAt: Date, endsAt: Date): Promise<void> {
     if (endsAt <= startsAt) {
       throw new BadRequestException('Session end time must be strictly after start time.');
     }

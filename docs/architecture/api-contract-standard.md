@@ -1,4 +1,4 @@
-# API Contract Standard (Phase 22) — normative for `apps/api` + `apps/web`
+# API Contract Standard (Phase 22 / Phase 05 Observability Hardened) — normative for `apps/api` + `apps/web`
 
 ## 1. Success — single resource
 
@@ -7,7 +7,12 @@
   "success": true,
   "data": { "id": "uuid" },
   "message": "Optional human message.",
-  "meta": { "requestId": "req-..." }
+  "meta": {
+    "requestId": "req-...",
+    "timestamp": "2026-10-20T14:35:00.000Z",
+    "path": "/api/v1/learning/bookings/uuid",
+    "method": "GET"
+  }
 }
 ```
 
@@ -21,6 +26,9 @@
   "data": [],
   "meta": {
     "requestId": "req-...",
+    "timestamp": "2026-10-20T14:35:00.000Z",
+    "path": "/api/v1/tutors?page=1&pageSize=20",
+    "method": "GET",
     "pagination": {
       "strategy": "offset",
       "page": 1,
@@ -46,6 +54,9 @@ Migration: legacy top-level `total`, `page`, `limit`, `totalPages` are still sen
   "data": [],
   "meta": {
     "requestId": "req-...",
+    "timestamp": "2026-10-20T14:35:00.000Z",
+    "path": "/api/v1/bookings/uuid/messages?pageSize=20",
+    "method": "GET",
     "pagination": {
       "strategy": "cursor",
       "nextCursor": "opaque-or-null",
@@ -71,11 +82,16 @@ Query params: `cursor` (opaque, base64url of `[lastCreatedAt, lastId]`), `pageSi
       { "field": "email", "code": "INVALID_FORMAT", "message": "Enter a valid email address." }
     ]
   },
-  "meta": { "requestId": "req-..." }
+  "meta": {
+    "requestId": "req-...",
+    "timestamp": "2026-10-20T14:35:00.000Z",
+    "path": "/api/v1/auth/login",
+    "method": "POST"
+  }
 }
 ```
 
-Stable codes: `VALIDATION_ERROR`, `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `CONFLICT`, `RATE_LIMITED`, `INVALID_CURSOR`, `SORT_NOT_ALLOWED`, `PAYMENT_REQUIRED`, `UPSTREAM_ERROR`, `INTERNAL_ERROR`. HTTP status still carries the primary signal (400/401/403/404/409/422/429/500); `code` is for i18n + field mapping. `details[]` is for 400/422 only. Never send stack traces, SQL, secrets, or full user objects in errors. Non-production may add `meta.debugId` (never `stack`).
+Stable codes: `VALIDATION_ERROR`, `UNAUTHORIZED`, `FORBIDDEN`, `NOT_FOUND`, `CONFLICT`, `RATE_LIMITED`, `INVALID_CURSOR`, `SORT_NOT_ALLOWED`, `PAYMENT_REQUIRED`, `UPSTREAM_ERROR`, `INTERNAL_ERROR`. HTTP status still carries the primary signal (400/401/403/404/409/422/429/500); `code` is for i18n + field mapping. `details[]` is for 400/422 only. Never send stack traces, SQL, secrets, or full user objects in errors. Sensitive query string parameters (passwords, tokens, api keys, secrets) are strictly redacted from `meta.path` before serialization. Non-production may add `meta.debugId` (never `stack`).
 
 Legacy compat: `AllExceptionsFilter` previously returned `{statusCode, error, message, timestamp, path}`. The new filter returns the canonical shape; `lib/api/parse.ts:normalizeApiError` accepts both (legacy branch marked `@deprecated`, removed after cutover).
 

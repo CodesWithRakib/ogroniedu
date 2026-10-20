@@ -117,19 +117,12 @@ export function buildSeriesIdempotencyKey(input: {
     return `client:${input.clientKey.trim()}`;
   }
   const normalizedSlots = [...input.slots]
-    .map(
-      (s) =>
-        `${s.weekday}:${normalizeLocalTime(s.startLocal)}:${s.durationMinutes || 0}`,
-    )
+    .map((s) => `${s.weekday}:${normalizeLocalTime(s.startLocal)}:${s.durationMinutes || 0}`)
     .sort()
     .join('|');
-  const raw = [
-    input.bookingId,
-    input.startDate,
-    input.timezone,
-    input.count,
-    normalizedSlots,
-  ].join('::');
+  const raw = [input.bookingId, input.startDate, input.timezone, input.count, normalizedSlots].join(
+    '::',
+  );
   return `auto:${crypto.createHash('sha256').update(raw).digest('hex')}`;
 }
 

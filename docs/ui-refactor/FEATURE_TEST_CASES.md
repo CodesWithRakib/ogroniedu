@@ -8,14 +8,14 @@ This document catalogs the test cases that prove each feature flow works. Every 
 
 ## 1. How to run the suites
 
-| Layer                | Command (repo root)                                                                          | Scope                                                                       |
-| -------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
-| Web unit/component   | `pnpm --filter @ogroniedu/web test`                                                          | 33 files · 207 tests — components, hooks, contracts, i18n parity            |
-| API unit/integration | `pnpm --filter @ogroniedu/api test`                                                          | 65 files · 649 tests — services, controllers, guards, ledger, adapters      |
+| Layer                | Command (repo root)                                                                          | Scope                                                                                  |
+| -------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| Web unit/component   | `pnpm --filter @ogroniedu/web test`                                                          | 33 files · 207 tests — components, hooks, contracts, i18n parity                       |
+| API unit/integration | `pnpm --filter @ogroniedu/api test`                                                          | 65 files · 649 tests — services, controllers, guards, ledger, adapters                 |
 | Database             | `pnpm --filter @ogroniedu/database test`                                                     | 4 files · 31 tests — migrations + invariants (ledger balance, constraints, BCDR drill) |
-| E2E (anonymous)      | `pnpm --filter @ogroniedu/web e2e`                                                           | public smoke, responsive matrix, keyboard a11y, auth guards                 |
-| E2E (credentialed)   | set `E2E_BASE_URL`, `E2E_API_URL`, `E2E_STUDENT_/TUTOR_/ADMIN_EMAIL+PASSWORD` then run e2e   | booking journey, tutor verification/evidence, admin console, session revoke |
-| Typecheck / Lint     | `pnpm --filter @ogroniedu/web typecheck && pnpm --filter @ogroniedu/web lint` (same for api) | static gates                                                                |
+| E2E (anonymous)      | `pnpm --filter @ogroniedu/web e2e`                                                           | public smoke, responsive matrix, keyboard a11y, auth guards                            |
+| E2E (credentialed)   | set `E2E_BASE_URL`, `E2E_API_URL`, `E2E_STUDENT_/TUTOR_/ADMIN_EMAIL+PASSWORD` then run e2e   | booking journey, tutor verification/evidence, admin console, session revoke            |
+| Typecheck / Lint     | `pnpm --filter @ogroniedu/web typecheck && pnpm --filter @ogroniedu/web lint` (same for api) | static gates                                                                           |
 
 Credentialed E2E must never silently pass: `scripts/check-e2e-skips.mjs` fails CI when credentialed specs are reported skipped.
 
@@ -38,17 +38,17 @@ Credentialed E2E must never silently pass: `scripts/check-e2e-skips.mjs` fails C
 
 ### TC-DISC — Tutor Discovery & Booking Request
 
-| ID         | Scenario                   | Steps                                                                                            | Expected                                           | Automation                      |
-| ---------- | -------------------------- | ------------------------------------------------------------------------------------------------ | -------------------------------------------------- | ------------------------------- |
-| TC-DISC-01 | Search privacy             | `GET /tutors/search`                                                                             | Published+verified only, no private contact fields | `discovery.search.spec.ts`      |
-| TC-DISC-02 | Unpublished tutor excluded | Unpublish a tutor, search                                                                        | Tutor absent (NEGATIVE)                            | `discovery.search.spec.ts`      |
-| TC-DISC-03 | Filters & ranking          | Keyword/mode/district/subject + price sort                                                       | Deterministic ordering, explainable score          | `discovery.search.spec.ts`      |
-| TC-DISC-04 | Booking request journey    | Login as student → `/bn/tutors` → card CTA → pick level + subject (Radix) → day → notes → submit | Modal closes; request exists for tutor             | e2e `journey.booking.spec.ts`   |
-| TC-DISC-05 | Tutor inbox                | Login as tutor → `/bn/requests`                                                                  | Request list visible                               | e2e `journey.booking.spec.ts`   |
-| TC-DISC-06 | Withdraw request           | Open request → withdraw                                                                          | Status withdrawn; cannot re-withdraw               | `bookings.service.spec.ts` (17) |
+| ID         | Scenario                   | Steps                                                                                            | Expected                                                                                                           | Automation                                                             |
+| ---------- | -------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| TC-DISC-01 | Search privacy             | `GET /tutors/search`                                                                             | Published+verified only, no private contact fields                                                                 | `discovery.search.spec.ts`                                             |
+| TC-DISC-02 | Unpublished tutor excluded | Unpublish a tutor, search                                                                        | Tutor absent (NEGATIVE)                                                                                            | `discovery.search.spec.ts`                                             |
+| TC-DISC-03 | Filters & ranking          | Keyword/mode/district/subject + price sort                                                       | Deterministic ordering, explainable score                                                                          | `discovery.search.spec.ts`                                             |
+| TC-DISC-04 | Booking request journey    | Login as student → `/bn/tutors` → card CTA → pick level + subject (Radix) → day → notes → submit | Modal closes; request exists for tutor                                                                             | e2e `journey.booking.spec.ts`                                          |
+| TC-DISC-05 | Tutor inbox                | Login as tutor → `/bn/requests`                                                                  | Request list visible                                                                                               | e2e `journey.booking.spec.ts`                                          |
+| TC-DISC-06 | Withdraw request           | Open request → withdraw                                                                          | Status withdrawn; cannot re-withdraw                                                                               | `bookings.service.spec.ts` (17)                                        |
 | TC-DISC-07 | Bilingual copy resolution  | Open `/bn/tutors` then `/en/tutors`; inspect cards and profiles                                  | Bangla UI prefers Bangla copy, English UI prefers English; missing Bangla falls back to English (never fabricated) | `tutor-localization.spec.ts` (8), e2e `tutor.localization.spec.ts` (4) |
-| TC-DISC-08 | Tutor editor round-trip    | Tutor → `/bn/dashboard/tutor/profile` → edit both languages → save → reopen public profile      | Both languages persist; each locale renders its copy; blank copy stored as `NULL` | e2e `tutor.localization.spec.ts`, `tutors.service.spec.ts` |
-| TC-DISC-09 | Avatar URL serialization   | Search/profile responses for a tutor with and without `avatarUrl`                                | Real URL when present, `null` otherwise (migration `018`); UI renders image or initials | Live API check (no fabricated URL) |
+| TC-DISC-08 | Tutor editor round-trip    | Tutor → `/bn/dashboard/tutor/profile` → edit both languages → save → reopen public profile       | Both languages persist; each locale renders its copy; blank copy stored as `NULL`                                  | e2e `tutor.localization.spec.ts`, `tutors.service.spec.ts`             |
+| TC-DISC-09 | Avatar URL serialization   | Search/profile responses for a tutor with and without `avatarUrl`                                | Real URL when present, `null` otherwise (migration `018`); UI renders image or initials                            | Live API check (no fabricated URL)                                     |
 
 ### TC-BOOK — Bookings & Sessions
 
@@ -145,14 +145,14 @@ Credentialed E2E must never silently pass: `scripts/check-e2e-skips.mjs` fails C
 
 ### TC-PROF — Profile & Settings
 
-| ID         | Scenario        | Steps                                 | Expected                                    | Automation                               |
-| ---------- | --------------- | ------------------------------------- | ------------------------------------------- | ---------------------------------------- |
-| TC-PROF-01 | Personal update | PATCH `/users/me`                     | Persisted; locale switch works              | `users.service.spec.ts`                  |
-| TC-PROF-02 | Academic upsert | PUT student-profile                   | Upsert + minor status computed              | `users.service.spec.ts`                  |
-| TC-PROF-03 | Export          | GET `/users/me/export`                | Structured, incl. sessions/links, no hashes | `security-and-privacy-hardening.spec.ts` |
-| TC-PROF-04 | Delete blocked  | Delete account with active booking    | Rejected                                    | `security-and-privacy-hardening.spec.ts` |
-| TC-PROF-05 | Delete allowed  | Delete with no active bookings        | `deletion_pending`, sessions revoked        | `users.service.spec.ts`                  |
-| TC-PROF-06 | Onboarding gate | Access `/dashboard` before onboarding | Redirect to onboarding; step posts accepted | `onboarding.service.spec.ts` (13)        |
+| ID         | Scenario                | Steps                                                             | Expected                                                                       | Automation                                                                                  |
+| ---------- | ----------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------- |
+| TC-PROF-01 | Personal update         | PATCH `/users/me`                                                 | Persisted; locale switch works                                                 | `users.service.spec.ts`                                                                     |
+| TC-PROF-02 | Academic upsert         | PUT student-profile                                               | Upsert + minor status computed                                                 | `users.service.spec.ts`                                                                     |
+| TC-PROF-03 | Export                  | GET `/users/me/export`                                            | Structured, incl. sessions/links, no hashes                                    | `security-and-privacy-hardening.spec.ts`                                                    |
+| TC-PROF-04 | Delete blocked          | Delete account with active booking                                | Rejected                                                                       | `security-and-privacy-hardening.spec.ts`                                                    |
+| TC-PROF-05 | Delete allowed          | Delete with no active bookings                                    | `deletion_pending`, sessions revoked                                           | `users.service.spec.ts`                                                                     |
+| TC-PROF-06 | Onboarding gate         | Access `/dashboard` before onboarding                             | Redirect to onboarding; step posts accepted                                    | `onboarding.service.spec.ts` (13)                                                           |
 | TC-PROF-07 | Tutor bilingual profile | Tutor → `/[locale]/dashboard/tutor/profile` → save both languages | Persisted independently; legacy English stays in sync; blanks stored as `NULL` | `tutors.service.spec.ts`, `onboarding-validators.spec.ts`, e2e `tutor.localization.spec.ts` |
 
 ### TC-ADMIN — Admin Console

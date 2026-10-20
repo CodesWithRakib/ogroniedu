@@ -1,16 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  Index,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index } from 'typeorm';
 
-export type ReconciliationStatus =
-  | 'running'
-  | 'reconciled'
-  | 'discrepancy_detected'
-  | 'failed';
+export type ReconciliationStatus = 'running' | 'reconciled' | 'discrepancy_detected' | 'failed';
 
 /** Durable record of a reconciliation execution (not just a live computation). */
 @Entity('reconciliation_runs')

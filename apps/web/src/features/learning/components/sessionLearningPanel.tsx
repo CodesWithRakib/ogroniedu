@@ -26,13 +26,7 @@ import {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
-export function SessionLearningPanel({
-  locale,
-  sessionId,
-}: {
-  locale: Locale;
-  sessionId: string;
-}) {
+export function SessionLearningPanel({ locale, sessionId }: { locale: Locale; sessionId: string }) {
   const t = getDictionary(locale).learning;
   const token = useAppSelector((state) => state.auth.token);
   const plan = useGetSessionLessonPlanQuery(sessionId);
@@ -43,10 +37,13 @@ export function SessionLearningPanel({
   const download = async (material: LearningMaterialRecord) => {
     setDownloadError(null);
     try {
-      const response = await fetch(`${API_BASE_URL}/api/v1/learning/materials/${material.id}/download`, {
-        credentials: 'include',
-        headers: token ? { authorization: `Bearer ${token}` } : undefined,
-      });
+      const response = await fetch(
+        `${API_BASE_URL}/api/v1/learning/materials/${material.id}/download`,
+        {
+          credentials: 'include',
+          headers: token ? { authorization: `Bearer ${token}` } : undefined,
+        },
+      );
       if (!response.ok) {
         throw new Error(t.downloadAction);
       }
@@ -133,9 +130,7 @@ export function SessionLearningPanel({
                 className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-border p-3"
               >
                 <div className="min-w-0">
-                  <p className="text-xs font-semibold text-foreground truncate">
-                    {material.title}
-                  </p>
+                  <p className="text-xs font-semibold text-foreground truncate">{material.title}</p>
                   {material.description && (
                     <p className="text-[11px] text-muted-foreground">{material.description}</p>
                   )}

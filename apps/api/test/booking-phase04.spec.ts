@@ -114,10 +114,12 @@ describe('Phase 04 booking/session invariants', () => {
   });
 
   describe('session reminders', () => {
-    function makeService(overrides: {
-      due?: any[];
-      saveOutbox?: ReturnType<typeof vi.fn>;
-    } = {}) {
+    function makeService(
+      overrides: {
+        due?: any[];
+        saveOutbox?: ReturnType<typeof vi.fn>;
+      } = {},
+    ) {
       const chain: any = {
         leftJoinAndSelect: vi.fn(() => chain),
         where: vi.fn(() => chain),
@@ -251,9 +253,12 @@ describe('Phase 04 booking/session invariants', () => {
       guardianAccess.findActiveStudentIds = vi.fn().mockResolvedValue(['child-1']);
 
       await expect(
-        service.getSessions({ id: 'guardian-1', roles: ['guardian'] } as any, {
-          studentId: 'child-2',
-        } as any),
+        service.getSessions(
+          { id: 'guardian-1', roles: ['guardian'] } as any,
+          {
+            studentId: 'child-2',
+          } as any,
+        ),
       ).rejects.toThrow(ForbiddenException);
     });
   });

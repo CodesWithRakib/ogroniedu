@@ -157,8 +157,7 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
     ? booking?.subject?.nameBn || booking?.subject?.name
     : booking?.subject?.name || booking?.subject?.nameBn;
   const tutorUser = booking?.tutorProfile?.user as
-    | { displayName?: string | null; fullName?: string | null }
-    | undefined;
+    { displayName?: string | null; fullName?: string | null } | undefined;
   const tutorName = tutorUser?.displayName || tutorUser?.fullName || (isBn ? 'শিক্ষক' : 'Tutor');
   const displaySubject = subjectName || (isBn ? 'সাধারণ বিষয়' : 'General Subject');
 
@@ -234,22 +233,20 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                       </span>
                     </>
                   )
+                ) : isBn ? (
+                  <>
+                    ক্লাস শুরু করার আগে{' '}
+                    <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
+                      পেমেন্ট সম্পন্ন করুন
+                    </span>
+                  </>
                 ) : (
-                  isBn ? (
-                    <>
-                      ক্লাস শুরু করার আগে{' '}
-                      <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
-                        পেমেন্ট সম্পন্ন করুন
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      Complete your payment{' '}
-                      <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
-                        before class starts
-                      </span>
-                    </>
-                  )
+                  <>
+                    Complete your payment{' '}
+                    <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
+                      before class starts
+                    </span>
+                  </>
                 )}
               </h1>
               <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
@@ -353,7 +350,9 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                   </div>
                   <div>
                     <h2 className="text-base font-extrabold text-foreground">
-                      {isBn ? 'প্রোভাইডার নিশ্চিতকরণের অপেক্ষায়' : 'Waiting for provider confirmation'}
+                      {isBn
+                        ? 'প্রোভাইডার নিশ্চিতকরণের অপেক্ষায়'
+                        : 'Waiting for provider confirmation'}
                     </h2>
                     <p className="text-xs text-muted-foreground">
                       {isBn
@@ -387,7 +386,9 @@ export default function BookingPayPage({ params }: BookingPayPageProps) {
                     onClick={() => void refetch()}
                     disabled={isFetching}
                   >
-                    <RefreshCw className={`w-3.5 h-3.5 mr-1.5 ${isFetching ? 'animate-spin' : ''}`} />
+                    <RefreshCw
+                      className={`w-3.5 h-3.5 mr-1.5 ${isFetching ? 'animate-spin' : ''}`}
+                    />
                     {isBn ? 'স্ট্যাটাস যাচাই করুন' : 'Check status'}
                   </Button>
                 </div>

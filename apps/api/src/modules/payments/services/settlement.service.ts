@@ -149,10 +149,7 @@ export class SettlementService {
         );
       }
 
-      const { platformFeeMinor, tutorNetMinor } = splitCommission(
-        gross,
-        hold.commissionRateBps,
-      );
+      const { platformFeeMinor, tutorNetMinor } = splitCommission(gross, hold.commissionRateBps);
 
       const journal = await this.ledgerService.postJournal(
         {
@@ -182,8 +179,7 @@ export class SettlementService {
       const newReleased = BigInt(hold.releasedMinor) + gross;
       hold.releasedMinor = newReleased.toString();
       const totalConsumed = newReleased + BigInt(hold.refundedMinor);
-      hold.status =
-        totalConsumed === BigInt(hold.amountMinor) ? 'released' : 'partially_released';
+      hold.status = totalConsumed === BigInt(hold.amountMinor) ? 'released' : 'partially_released';
       if (hold.status === 'released') hold.closedAt = new Date();
       await manager.save(hold);
 
@@ -319,9 +315,7 @@ export class SettlementService {
         });
       }
 
-      savedRun.status = ledgerIntegrity.isBalanced
-        ? 'reconciled'
-        : 'discrepancy_detected';
+      savedRun.status = ledgerIntegrity.isBalanced ? 'reconciled' : 'discrepancy_detected';
       savedRun.finishedAt = new Date();
       savedRun.ordersChecked = orders.length;
       savedRun.transactionsChecked = transactions.length;

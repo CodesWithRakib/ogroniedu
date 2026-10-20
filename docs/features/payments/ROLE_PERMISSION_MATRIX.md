@@ -18,35 +18,35 @@ Legend: **Yes** = allowed; **Scoped** = allowed only for records the caller owns
 or is linked to; **No** = denied; **n/a** = no legitimate use case in the current
 product.
 
-| Capability | student | guardian | tutor | support_agent | compliance_reviewer | admin | super_admin | organization_owner | organization_staff |
-| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
-| Create a payment order for a booking | Scoped | Scoped (active link) | Scoped | No | No | Yes | Yes | No | No |
-| View own payment orders and receipts | Scoped | Scoped | No | No | No | Yes (all) | Yes (all) | No | No |
-| View an invoice | Scoped | Scoped | No | No | No | Yes (all) | Yes (all) | No | No |
-| Request a refund | Scoped | Scoped (active link) | Scoped | No | No | Yes | Yes | No | No |
-| View own/linked refunds | Scoped | Scoped | Scoped | No | No | Yes (all) | Yes (all) | No | No |
-| List the finance refund queue | No | No | No | No | No | Yes | Yes | No | No |
-| Approve/reject a refund | No | No | No | No | No | Yes | Yes | No | No |
-| Process or manually confirm a refund | No | No | No | No | No | Yes | Yes | No | No |
-| Approve a completed session for settlement | Scoped | **No** | **No** | No | No | Yes | Yes | No | No |
-| Read tutor finance summary | No | No | Scoped (self) | No | No | No | No | No | No |
-| Request a tutor payout | No | No | Scoped (self) | No | No | No | No | No | No |
-| View own payout history | No | No | Scoped (self) | No | No | No | No | No | No |
-| List the finance payout queue | No | No | No | No | No | Yes | Yes | No | No |
-| Approve/reject/mark paid/mark failed a payout | No | No | No | No | No | Yes | Yes | No | No |
-| Read commission policy versions | No | No | No | No | No | Yes | Yes | No | No |
-| Create a commission policy version | No | No | No | No | No | Yes | Yes | No | No |
-| Run reconciliation | No | No | No | No | No | Yes | Yes | No | No |
-| Read platform ledger balances | No | No | No | No | No | Yes | Yes | No | No |
+| Capability                                    | student | guardian             | tutor         | support_agent | compliance_reviewer | admin     | super_admin | organization_owner | organization_staff |
+| --------------------------------------------- | ------- | -------------------- | ------------- | ------------- | ------------------- | --------- | ----------- | ------------------ | ------------------ |
+| Create a payment order for a booking          | Scoped  | Scoped (active link) | Scoped        | No            | No                  | Yes       | Yes         | No                 | No                 |
+| View own payment orders and receipts          | Scoped  | Scoped               | No            | No            | No                  | Yes (all) | Yes (all)   | No                 | No                 |
+| View an invoice                               | Scoped  | Scoped               | No            | No            | No                  | Yes (all) | Yes (all)   | No                 | No                 |
+| Request a refund                              | Scoped  | Scoped (active link) | Scoped        | No            | No                  | Yes       | Yes         | No                 | No                 |
+| View own/linked refunds                       | Scoped  | Scoped               | Scoped        | No            | No                  | Yes (all) | Yes (all)   | No                 | No                 |
+| List the finance refund queue                 | No      | No                   | No            | No            | No                  | Yes       | Yes         | No                 | No                 |
+| Approve/reject a refund                       | No      | No                   | No            | No            | No                  | Yes       | Yes         | No                 | No                 |
+| Process or manually confirm a refund          | No      | No                   | No            | No            | No                  | Yes       | Yes         | No                 | No                 |
+| Approve a completed session for settlement    | Scoped  | **No**               | **No**        | No            | No                  | Yes       | Yes         | No                 | No                 |
+| Read tutor finance summary                    | No      | No                   | Scoped (self) | No            | No                  | No        | No          | No                 | No                 |
+| Request a tutor payout                        | No      | No                   | Scoped (self) | No            | No                  | No        | No          | No                 | No                 |
+| View own payout history                       | No      | No                   | Scoped (self) | No            | No                  | No        | No          | No                 | No                 |
+| List the finance payout queue                 | No      | No                   | No            | No            | No                  | Yes       | Yes         | No                 | No                 |
+| Approve/reject/mark paid/mark failed a payout | No      | No                   | No            | No            | No                  | Yes       | Yes         | No                 | No                 |
+| Read commission policy versions               | No      | No                   | No            | No            | No                  | Yes       | Yes         | No                 | No                 |
+| Create a commission policy version            | No      | No                   | No            | No            | No                  | Yes       | Yes         | No                 | No                 |
+| Run reconciliation                            | No      | No                   | No            | No            | No                  | Yes       | Yes         | No                 | No                 |
+| Read platform ledger balances                 | No      | No                   | No            | No            | No                  | Yes       | Yes         | No                 | No                 |
 
 ## 2. Controller-level enforcement
 
-| Surface | Route prefix | Roles |
-| --- | --- | --- |
-| Customer/payer payments | `/api/v1/payments/*` | Authenticated; record-scoped per handler |
-| Provider callbacks | `/api/v1/payments/webhook/:provider` | Public, but signature verification is mandatory |
-| Tutor finance | `/api/v1/tutor/finance/*` | `tutor` only |
-| Admin finance | `/api/v1/admin/finance/*` | `admin`, `super_admin` only |
+| Surface                 | Route prefix                         | Roles                                           |
+| ----------------------- | ------------------------------------ | ----------------------------------------------- |
+| Customer/payer payments | `/api/v1/payments/*`                 | Authenticated; record-scoped per handler        |
+| Provider callbacks      | `/api/v1/payments/webhook/:provider` | Public, but signature verification is mandatory |
+| Tutor finance           | `/api/v1/tutor/finance/*`            | `tutor` only                                    |
+| Admin finance           | `/api/v1/admin/finance/*`            | `admin`, `super_admin` only                     |
 
 Notable route details:
 
@@ -68,17 +68,17 @@ Notable route details:
 
 Role membership alone is not sufficient on the customer surface.
 
-| Action | Record-level rule |
-| --- | --- |
-| Pay for a booking | Caller is requester or student, or an active guardian of the student, or admin |
-| Read receipt | Caller is payer, student, requester or admin |
-| Request refund | Caller has booking access via the guardian-access service, or is admin |
-| Read refund | Admin, the requester, or someone with booking access |
-| Read invoice | Payer, student or admin |
-| Settle session | Student, requester or admin; tutor and guardian are denied |
-| Tutor summary/payout | `payout.tutor_user_id === caller.id`; enforced by query scope and an explicit ownership guard |
-| Payout decision | Finance roles only; no tutor can act on their own payout |
-| Refund decision | Finance roles only; the requester cannot approve their own request by virtue of being the requester |
+| Action               | Record-level rule                                                                                   |
+| -------------------- | --------------------------------------------------------------------------------------------------- |
+| Pay for a booking    | Caller is requester or student, or an active guardian of the student, or admin                      |
+| Read receipt         | Caller is payer, student, requester or admin                                                        |
+| Request refund       | Caller has booking access via the guardian-access service, or is admin                              |
+| Read refund          | Admin, the requester, or someone with booking access                                                |
+| Read invoice         | Payer, student or admin                                                                             |
+| Settle session       | Student, requester or admin; tutor and guardian are denied                                          |
+| Tutor summary/payout | `payout.tutor_user_id === caller.id`; enforced by query scope and an explicit ownership guard       |
+| Payout decision      | Finance roles only; no tutor can act on their own payout                                            |
+| Refund decision      | Finance roles only; the requester cannot approve their own request by virtue of being the requester |
 
 ## 4. Gaps and deliberate denials
 
@@ -131,18 +131,18 @@ Recommended follow-up (not implemented):
 Every finance mutation writes an audit record with actor, action, resource,
 request id where available and safe metadata:
 
-| Action | Audit action |
-| --- | --- |
-| Order created | `payment.order_created` |
-| Payment succeeded | `payment.order_succeeded` |
-| Session settled | `payment.milestone_settled` |
-| Refund requested | `finance.refund_requested` |
-| Refund decided | `finance.refund_approved` / `finance.refund_rejected` |
-| Refund completed | `finance.refund_succeeded` |
-| Payout requested | `finance.payout_requested` |
-| Payout approved/rejected | `finance.payout_approved` / `finance.payout_rejected` |
-| Payout paid/failed | `finance.payout_paid` / `finance.payout_failed` |
-| Commission policy version created | `finance.commission_policy_created` |
+| Action                            | Audit action                                          |
+| --------------------------------- | ----------------------------------------------------- |
+| Order created                     | `payment.order_created`                               |
+| Payment succeeded                 | `payment.order_succeeded`                             |
+| Session settled                   | `payment.milestone_settled`                           |
+| Refund requested                  | `finance.refund_requested`                            |
+| Refund decided                    | `finance.refund_approved` / `finance.refund_rejected` |
+| Refund completed                  | `finance.refund_succeeded`                            |
+| Payout requested                  | `finance.payout_requested`                            |
+| Payout approved/rejected          | `finance.payout_approved` / `finance.payout_rejected` |
+| Payout paid/failed                | `finance.payout_paid` / `finance.payout_failed`       |
+| Commission policy version created | `finance.commission_policy_created`                   |
 
 Audit metadata never includes full payout account numbers, signatures or raw
 provider payloads.

@@ -21,12 +21,7 @@ import { LedgerService } from '../ledger.service';
 import { AuditService } from '../../audit/audit.service';
 import { NotificationService } from '../../notifications/notification.service';
 import { CommissionPolicyService } from './commission-policy.service';
-import {
-  MarkPayoutFailedDto,
-  MarkPayoutPaidDto,
-  RejectPayoutDto,
-  RequestPayoutDto,
-} from '../dto';
+import { MarkPayoutFailedDto, MarkPayoutPaidDto, RejectPayoutDto, RequestPayoutDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import {
   hashAccountReference,
@@ -402,7 +397,9 @@ export class PayoutsService {
       });
       if (!locked) throw new NotFoundException('Payout not found');
       if (locked.status !== 'approved' && locked.status !== 'processing') {
-        throw new BadRequestException(`Payout in status '${locked.status}' cannot be marked failed`);
+        throw new BadRequestException(
+          `Payout in status '${locked.status}' cannot be marked failed`,
+        );
       }
       return this.releaseAndClose(manager, locked, 'failed', dto.reason, user.id);
     });
@@ -453,10 +450,7 @@ export class PayoutsService {
       },
     });
 
-    const settlementsNet = settlements.reduce(
-      (sum, s) => sum + BigInt(s.tutorNetMinor),
-      0n,
-    );
+    const settlementsNet = settlements.reduce((sum, s) => sum + BigInt(s.tutorNetMinor), 0n);
     const adjustmentNet = adjustments.reduce((sum, a) => {
       const amount = BigInt(a.amountMinor);
       return a.direction === 'credit' ? sum + amount : sum - amount;
@@ -493,11 +487,7 @@ export class PayoutsService {
 
   private async notify(
     userId: string,
-    eventType:
-      | 'payout.requested'
-      | 'payout.approved'
-      | 'payout.rejected'
-      | 'payout.paid',
+    eventType: 'payout.requested' | 'payout.approved' | 'payout.rejected' | 'payout.paid',
     payload: Record<string, string | number>,
   ): Promise<void> {
     if (!this.notificationService) return;

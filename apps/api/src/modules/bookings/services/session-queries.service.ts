@@ -150,11 +150,7 @@ export class SessionQueriesService {
       d.toISOString().replace(/[-:]/g, '').split('.')[0] + 'Z';
 
     const escapeIcs = (str: string): string =>
-      str
-        .replace(/\\/g, '\\\\')
-        .replace(/;/g, '\\;')
-        .replace(/,/g, '\\,')
-        .replace(/\r?\n/g, '\\n');
+      str.replace(/\\/g, '\\\\').replace(/;/g, '\\;').replace(/,/g, '\\,').replace(/\r?\n/g, '\\n');
 
     const foldLine = (line: string): string => {
       // RFC 5545: lines SHOULD be no longer than 75 octets. Continuation lines

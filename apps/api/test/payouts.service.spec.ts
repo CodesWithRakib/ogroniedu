@@ -1,10 +1,7 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import { PayoutsService } from '../src/modules/payments/services/payouts.service';
-import {
-  PayoutEntity,
-  TutorFinancialAccountEntity,
-} from '../src/modules/payments/entities';
+import { PayoutEntity, TutorFinancialAccountEntity } from '../src/modules/payments/entities';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
 describe('PayoutsService: reservation, lifecycle and tutor summary', () => {
@@ -227,9 +224,9 @@ describe('PayoutsService: reservation, lifecycle and tutor summary', () => {
     });
 
     it('requires an external transfer reference before marking a payout paid', async () => {
-      await expect(
-        service.markPaid(admin, payoutId, { externalReference: '' }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.markPaid(admin, payoutId, { externalReference: '' })).rejects.toThrow(
+        BadRequestException,
+      );
       expect(mockLedgerService.postJournal).not.toHaveBeenCalled();
     });
 
@@ -237,11 +234,10 @@ describe('PayoutsService: reservation, lifecycle and tutor summary', () => {
       payout.status = 'approved';
       mockDataSource.transaction.mockImplementationOnce(async (cb: any) =>
         cb(
-          managerWith([
-            insertBuilder(),
-            rawBuilder({ balance: '30000' }),
-            rawBuilder({ total: '0' }),
-          ], { payout }),
+          managerWith(
+            [insertBuilder(), rawBuilder({ balance: '30000' }), rawBuilder({ total: '0' })],
+            { payout },
+          ),
         ),
       );
 
@@ -255,11 +251,10 @@ describe('PayoutsService: reservation, lifecycle and tutor summary', () => {
       payout.status = 'approved';
       mockDataSource.transaction.mockImplementationOnce(async (cb: any) =>
         cb(
-          managerWith([
-            insertBuilder(),
-            rawBuilder({ balance: '100000' }),
-            rawBuilder({ total: '0' }),
-          ], { payout }),
+          managerWith(
+            [insertBuilder(), rawBuilder({ balance: '100000' }), rawBuilder({ total: '0' })],
+            { payout },
+          ),
         ),
       );
 
@@ -302,9 +297,7 @@ describe('PayoutsService: reservation, lifecycle and tutor summary', () => {
     it('denies reading another tutor’s payout', async () => {
       mockPayoutRepo.findOne.mockResolvedValue({ ...payout, tutorUserId: 'other-tutor' });
 
-      await expect(service.getPayoutForTutor(tutor, payoutId)).rejects.toThrow(
-        ForbiddenException,
-      );
+      await expect(service.getPayoutForTutor(tutor, payoutId)).rejects.toThrow(ForbiddenException);
     });
 
     it('derives the tutor summary from settlements, ledger and payouts', async () => {

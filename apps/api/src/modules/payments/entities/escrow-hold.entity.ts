@@ -8,12 +8,7 @@ import {
 } from 'typeorm';
 
 export type EscrowHoldStatus =
-  | 'held'
-  | 'partially_released'
-  | 'released'
-  | 'partially_refunded'
-  | 'refunded'
-  | 'closed';
+  'held' | 'partially_released' | 'released' | 'partially_refunded' | 'refunded' | 'closed';
 
 /**
  * Funds actually received for one payment order. Settlement and refunds consume

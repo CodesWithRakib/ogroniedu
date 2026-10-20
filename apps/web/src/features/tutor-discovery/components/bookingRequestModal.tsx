@@ -68,16 +68,22 @@ export function BookingRequestModal({
     { key: 'sunday', label: dict.bookingRequest?.daysSunday || (isBn ? 'রবিবার' : 'Sunday') },
     { key: 'monday', label: dict.bookingRequest?.daysMonday || (isBn ? 'সোমবার' : 'Monday') },
     { key: 'tuesday', label: dict.bookingRequest?.daysTuesday || (isBn ? 'মঙ্গলবার' : 'Tuesday') },
-    { key: 'wednesday', label: dict.bookingRequest?.daysWednesday || (isBn ? 'বুধবার' : 'Wednesday') },
-    { key: 'thursday', label: dict.bookingRequest?.daysThursday || (isBn ? 'বৃহস্পতিবার' : 'Thursday') },
+    {
+      key: 'wednesday',
+      label: dict.bookingRequest?.daysWednesday || (isBn ? 'বুধবার' : 'Wednesday'),
+    },
+    {
+      key: 'thursday',
+      label: dict.bookingRequest?.daysThursday || (isBn ? 'বৃহস্পতিবার' : 'Thursday'),
+    },
     { key: 'friday', label: dict.bookingRequest?.daysFriday || (isBn ? 'শুক্রবার' : 'Friday') },
     { key: 'saturday', label: dict.bookingRequest?.daysSaturday || (isBn ? 'শনিবার' : 'Saturday') },
   ];
 
   // Resolve unique subject entry key for Radix UI Select
-  const selectedSubjectEntry = tutor.subjects.find(
-    (s) => s.id === value.subjectId || s.subjectId === value.subjectId,
-  ) ?? tutor.subjects[0];
+  const selectedSubjectEntry =
+    tutor.subjects.find((s) => s.id === value.subjectId || s.subjectId === value.subjectId) ??
+    tutor.subjects[0];
   const selectedSubjectEntryKey = selectedSubjectEntry?.id || selectedSubjectEntry?.subjectId || '';
 
   return (
@@ -88,7 +94,8 @@ export function BookingRequestModal({
       >
         <DialogHeader className="space-y-1 border-b border-slate-200 pb-3 text-left">
           <DialogTitle className="font-black text-slate-900 text-base sm:text-lg">
-            {dict.bookingRequest?.modalTitle || (isBn ? 'টিউটরিং ক্লাসের অনুরোধ পাঠান' : 'Request Tutoring Session')}
+            {dict.bookingRequest?.modalTitle ||
+              (isBn ? 'টিউটরিং ক্লাসের অনুরোধ পাঠান' : 'Request Tutoring Session')}
           </DialogTitle>
           <DialogDescription className="text-xs font-semibold text-blue-700">
             {isBn
@@ -123,7 +130,8 @@ export function BookingRequestModal({
             {studentOptions.length > 0 ? (
               <div className="space-y-1.5">
                 <Label className="font-bold text-slate-800 text-xs">
-                  {dict.bookingRequest?.selectStudent || (isBn ? 'শিক্ষার্থী নির্বাচন করুন' : 'Select Student')}
+                  {dict.bookingRequest?.selectStudent ||
+                    (isBn ? 'শিক্ষার্থী নির্বাচন করুন' : 'Select Student')}
                 </Label>
                 <Select
                   value={value.studentId}
@@ -134,7 +142,10 @@ export function BookingRequestModal({
                     data-testid="booking-student-select"
                   >
                     <SelectValue
-                      placeholder={dict.bookingRequest?.selectStudent || (isBn ? 'শিক্ষার্থী নির্বাচন করুন' : 'Select Student')}
+                      placeholder={
+                        dict.bookingRequest?.selectStudent ||
+                        (isBn ? 'শিক্ষার্থী নির্বাচন করুন' : 'Select Student')
+                      }
                     />
                   </SelectTrigger>
                   <SelectContent>
@@ -170,14 +181,20 @@ export function BookingRequestModal({
             {levelOptions.length > 0 && (
               <div className="space-y-1.5">
                 <Label className="font-bold text-slate-800 text-xs">
-                  {dict.bookingRequest?.selectLevel || (isBn ? 'শ্রেণি / স্তর নির্বাচন করুন' : 'Select Level')}
+                  {dict.bookingRequest?.selectLevel ||
+                    (isBn ? 'শ্রেণি / স্তর নির্বাচন করুন' : 'Select Level')}
                 </Label>
                 <Select value={value.levelId} onValueChange={(val) => onChange({ levelId: val })}>
                   <SelectTrigger
                     className="w-full rounded-xl bg-white border-slate-300 text-xs text-slate-900"
                     data-testid="booking-level-select"
                   >
-                    <SelectValue placeholder={dict.bookingRequest?.selectLevel || (isBn ? 'লেভেল নির্বাচন করুন' : 'Select Level')} />
+                    <SelectValue
+                      placeholder={
+                        dict.bookingRequest?.selectLevel ||
+                        (isBn ? 'লেভেল নির্বাচন করুন' : 'Select Level')
+                      }
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {levelOptions.map((l) => (
@@ -192,7 +209,8 @@ export function BookingRequestModal({
 
             <div className="space-y-1.5">
               <Label className="font-bold text-slate-800 text-xs">
-                {dict.bookingRequest?.selectSubject || (isBn ? 'বিষয় নির্বাচন করুন' : 'Select Subject')}
+                {dict.bookingRequest?.selectSubject ||
+                  (isBn ? 'বিষয় নির্বাচন করুন' : 'Select Subject')}
               </Label>
               <Select
                 value={selectedSubjectEntryKey}
@@ -210,7 +228,10 @@ export function BookingRequestModal({
                   data-testid="booking-subject-select"
                 >
                   <SelectValue
-                    placeholder={dict.bookingRequest?.selectSubject || (isBn ? 'বিষয় নির্বাচন করুন' : 'Select Subject')}
+                    placeholder={
+                      dict.bookingRequest?.selectSubject ||
+                      (isBn ? 'বিষয় নির্বাচন করুন' : 'Select Subject')
+                    }
                   />
                 </SelectTrigger>
                 <SelectContent>
@@ -245,18 +266,23 @@ export function BookingRequestModal({
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>
-                  <SelectItem value="online">{dict.tutor?.modeOnline || (isBn ? 'অনলাইন' : 'Online')}</SelectItem>
+                  <SelectItem value="online">
+                    {dict.tutor?.modeOnline || (isBn ? 'অনলাইন' : 'Online')}
+                  </SelectItem>
                   <SelectItem value="in_person">
                     {dict.tutor?.modeInPerson || (isBn ? 'হোম টিউশন' : 'In-person')}
                   </SelectItem>
-                  <SelectItem value="hybrid">{dict.tutor?.modeHybrid || (isBn ? 'হাইব্রিড' : 'Hybrid')}</SelectItem>
+                  <SelectItem value="hybrid">
+                    {dict.tutor?.modeHybrid || (isBn ? 'হাইব্রিড' : 'Hybrid')}
+                  </SelectItem>
                 </SelectContent>
               </Select>
             </div>
 
             <div className="space-y-1.5">
               <Label className="font-bold text-slate-800 text-xs">
-                {dict.bookingRequest?.preferredDaysLabel || (isBn ? 'পছন্দের বার' : 'Preferred Days')}
+                {dict.bookingRequest?.preferredDaysLabel ||
+                  (isBn ? 'পছন্দের বার' : 'Preferred Days')}
               </Label>
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {daysList.map((d) => {
@@ -284,14 +310,18 @@ export function BookingRequestModal({
 
             <div className="space-y-1.5">
               <Label className="font-bold text-slate-800 text-xs">
-                {dict.bookingRequest?.notesLabel || (isBn ? 'প্রয়োজনীয় নির্দেশনা বা লক্ষ্য' : 'Notes / Learning Goals')}
+                {dict.bookingRequest?.notesLabel ||
+                  (isBn ? 'প্রয়োজনীয় নির্দেশনা বা লক্ষ্য' : 'Notes / Learning Goals')}
               </Label>
               <Textarea
                 rows={3}
                 value={value.notes}
                 onChange={(e) => onChange({ notes: e.target.value })}
                 placeholder={
-                  dict.bookingRequest?.notesPlaceholder || (isBn ? 'নির্দিষ্ট অধ্যায়, লক্ষ্য বা পড়ার বিষয় উল্লেখ করুন...' : 'Describe syllabus chapters or goals...')
+                  dict.bookingRequest?.notesPlaceholder ||
+                  (isBn
+                    ? 'নির্দিষ্ট অধ্যায়, লক্ষ্য বা পড়ার বিষয় উল্লেখ করুন...'
+                    : 'Describe syllabus chapters or goals...')
                 }
                 data-testid="booking-notes-input"
                 className="rounded-xl border-slate-300 bg-white text-xs text-slate-900 resize-none placeholder:text-slate-400"

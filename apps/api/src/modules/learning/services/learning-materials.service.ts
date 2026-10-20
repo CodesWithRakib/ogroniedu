@@ -30,7 +30,6 @@ import {
   UploadLearningMaterialDto,
 } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
-import { isAdminRole } from '../../../common/auth/role.utils';
 import { toPageSize } from '../../../common/pagination';
 import {
   ALLOWED_LEARNING_EXTENSIONS_BY_MIME,
@@ -341,7 +340,12 @@ export class LearningMaterialsService {
     user: AuthenticatedUser,
     bookingId: string,
     query: LearningListQueryDto,
-  ): Promise<{ items: LearningMaterialView[]; totalItems: number; page: number; pageSize: number }> {
+  ): Promise<{
+    items: LearningMaterialView[];
+    totalItems: number;
+    page: number;
+    pageSize: number;
+  }> {
     const booking = await this.access.loadBookingOrFail(bookingId);
     const canSeeDrafts = this.access.isLearningOwner(user, booking);
     if (!canSeeDrafts) {
@@ -358,10 +362,14 @@ export class LearningMaterialsService {
       .addOrderBy('material.id', 'DESC');
 
     if (!canSeeDrafts) qb.andWhere("material.status = 'published'");
-    if (query.sessionId) qb.andWhere('material.sessionId = :sessionId', { sessionId: query.sessionId });
+    if (query.sessionId)
+      qb.andWhere('material.sessionId = :sessionId', { sessionId: query.sessionId });
     if (query.status) qb.andWhere('material.status = :status', { status: query.status });
 
-    const [rows, total] = await qb.skip((page - 1) * pageSize).take(pageSize).getManyAndCount();
+    const [rows, total] = await qb
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
     return {
       items: rows.map((row) => this.toView(row, row.fileAsset ?? null)),
       totalItems: total,
@@ -398,10 +406,7 @@ export class LearningMaterialsService {
    * Authorized byte stream. The caller's link to the booking and the material's
    * publication state are checked before the filesystem is touched.
    */
-  async downloadMaterial(
-    user: AuthenticatedUser,
-    materialId: string,
-  ): Promise<MaterialDownload> {
+  async downloadMaterial(user: AuthenticatedUser, materialId: string): Promise<MaterialDownload> {
     const material = await this.getMaterialOrFail(materialId);
     const booking = await this.access.loadBookingOrFail(material.bookingId);
     const isOwner = this.access.isLearningOwner(user, booking);
@@ -464,10 +469,7 @@ export class LearningMaterialsService {
     return rows.map((row) => this.toView(row, row.fileAsset ?? null));
   }
 
-  async assertParticipantFileAssets(
-    studentUserId: string,
-    assetIds: string[],
-  ): Promise<void> {
+  async assertParticipantFileAssets(studentUserId: string, assetIds: string[]): Promise<void> {
     if (assetIds.length === 0) return;
     const assets = await this.fileRepo.find({ where: { id: In(assetIds) } });
     const found = new Set(assets.map((asset) => asset.id));
@@ -513,12 +515,7 @@ export class LearningMaterialsService {
   }
 
   private sanitizeFilename(raw: string): string {
-    if (
-      raw.includes('..') ||
-      raw.includes('/') ||
-      raw.includes('\\') ||
-      raw.includes('\0')
-    ) {
+    if (raw.includes('..') || raw.includes('/') || raw.includes('\\') || raw.includes('\0')) {
       throw new BadRequestException('Invalid filename: path traversal sequences are not allowed');
     }
     const cleaned = raw.replace(/[^a-zA-Z0-9._-]/g, '_').slice(0, 180);
@@ -532,7 +529,6 @@ export class LearningMaterialsService {
     buffer: Buffer,
     sanitizedFilename: string,
   ): Promise<{ storageKey: string; absolutePath: string }> {
-    const root = this.getUploadRoot();
     const now = new Date();
     const folder = `${now.getUTCFullYear()}/${String(now.getUTCMonth() + 1).padStart(2, '0')}`;
     const storageKey = path.posix.join(folder, `${randomUUID()}-${sanitizedFilename}`);
@@ -617,7 +613,8 @@ export class LearningMaterialsService {
           : null,
       publishedAt: material.publishedAt ? new Date(material.publishedAt).toISOString() : null,
       createdAt: new Date(material.createdAt).toISOString(),
-      downloadUrl: material.kind === 'file' ? `/api/v1/learning/materials/${material.id}/download` : null,
+      downloadUrl:
+        material.kind === 'file' ? `/api/v1/learning/materials/${material.id}/download` : null,
     };
   }
 

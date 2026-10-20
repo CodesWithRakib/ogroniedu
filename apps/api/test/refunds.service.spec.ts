@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import {
-  BadRequestException,
-  ConflictException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { BadRequestException, ConflictException, ForbiddenException } from '@nestjs/common';
 import { RefundsService } from '../src/modules/payments/services/refunds.service';
 import {
   EscrowHoldEntity,
@@ -301,9 +297,9 @@ describe('RefundsService state machine and escrow bounds', () => {
         cb(transactionManager({ refund: { ...refund, status: 'succeeded' } })),
       );
 
-      await expect(
-        service.decide(admin, refundId, { decision: 'approve' }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.decide(admin, refundId, { decision: 'approve' })).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 
@@ -402,10 +398,7 @@ describe('RefundsService state machine and escrow bounds', () => {
       mockRefundRepo.findOne.mockResolvedValue({ ...refund, requestedBy: 'someone-else' });
 
       await expect(
-        service.getRefund(
-          { id: strangerId, email: 'x@example.com', roles: ['student'] },
-          refundId,
-        ),
+        service.getRefund({ id: strangerId, email: 'x@example.com', roles: ['student'] }, refundId),
       ).rejects.toThrow(ForbiddenException);
     });
 

@@ -87,7 +87,10 @@ export class InvoicesService {
     return invoice;
   }
 
-  async getInvoiceForOrder(user: AuthenticatedUser, orderId: string): Promise<InvoiceEntity | null> {
+  async getInvoiceForOrder(
+    user: AuthenticatedUser,
+    orderId: string,
+  ): Promise<InvoiceEntity | null> {
     const invoice = await this.invoiceRepo.findOne({ where: { paymentOrderId: orderId } });
     if (!invoice) return null;
     this.assertCanRead(user, invoice);
@@ -117,7 +120,10 @@ export class InvoicesService {
       [isBn ? 'পরিশোধকারী' : 'Paid by', snapshot.payerName ?? '—'],
       [isBn ? 'সাবটোটাল' : 'Subtotal', `BDT ${total}`],
       [isBn ? 'মোট' : 'Total', `BDT ${total}`],
-      [isBn ? 'প্ল্যাটফর্ম কমিশন (রেকর্ডের জন্য)' : 'Platform commission (record only)', `BDT ${commission}`],
+      [
+        isBn ? 'প্ল্যাটফর্ম কমিশন (রেকর্ডের জন্য)' : 'Platform commission (record only)',
+        `BDT ${commission}`,
+      ],
       [isBn ? 'শিক্ষকের প্রাপ্য (রেকর্ডের জন্য)' : 'Tutor net (record only)', `BDT ${tutorNet}`],
     ];
 

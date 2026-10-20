@@ -30,10 +30,7 @@ import {
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { GuardianAccessService } from '../guardians/guardian-access.service';
 import { isAdminRole } from '../../common/auth/role.utils';
-import {
-  applyBookingTransition,
-  transitionHistoryValues,
-} from './utils/booking-lifecycle';
+import { applyBookingTransition, transitionHistoryValues } from './utils/booking-lifecycle';
 import { isZeroPriceBooking } from './constants/booking-status-transitions';
 
 @Injectable()
@@ -179,15 +176,19 @@ export class BookingsService {
       throw err;
     }
 
-    await this.recordStatusEvent(saved.id, {
-      from: null,
-      to: 'requested',
-      changed: true,
-    }, {
-      actorUserId: requester.id,
-      actorRole: requester.roles?.[0] ?? 'student',
-      metadata: { tutorId: dto.tutorId, studentId: dto.studentId },
-    });
+    await this.recordStatusEvent(
+      saved.id,
+      {
+        from: null,
+        to: 'requested',
+        changed: true,
+      },
+      {
+        actorUserId: requester.id,
+        actorRole: requester.roles?.[0] ?? 'student',
+        metadata: { tutorId: dto.tutorId, studentId: dto.studentId },
+      },
+    );
 
     await this.auditService.record({
       actorUserId: requester.id,

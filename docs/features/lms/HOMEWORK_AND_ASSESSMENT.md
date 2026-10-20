@@ -8,11 +8,11 @@ draft ──publish──▶ published ──archive──▶ archived
   └──────archive──────┘
 ```
 
-| State | Visible to students/guardians | Submittable |
-| --- | --- | --- |
-| `draft` | no | no |
-| `published` | yes | yes (if due rules allow) |
-| `archived` | no new work; existing submissions readable by tutor/admin | no |
+| State       | Visible to students/guardians                             | Submittable              |
+| ----------- | --------------------------------------------------------- | ------------------------ |
+| `draft`     | no                                                        | no                       |
+| `published` | yes                                                       | yes (if due rules allow) |
+| `archived`  | no new work; existing submissions readable by tutor/admin | no                       |
 
 Rules:
 
@@ -47,16 +47,16 @@ requirement.
 
 ### Submission rules
 
-| Rule | Behaviour |
-| --- | --- |
-| Ownership | Only `student_user_id === assignment.student_user_id` may submit. Guardians cannot submit for a child. |
-| Assignment state | Must be `published`; drafts/archived → 400. |
-| Due date | After `due_at`: allowed only when `late_submission_allowed`; status becomes `late`. |
-| Attempts | `attempt_count` increments on each submission; capped by `max_attempts` (default 3). |
-| Resubmission | Allowed when `resubmission_allowed` and the previous state is `returned` or `submitted`/`late` before review; not allowed after `reviewed` unless the tutor returned it. |
-| History | The previous attempt is copied to `assignment_revisions` before the live row is overwritten. Revisions are immutable. |
-| Attachments | Every `assetId` must exist, be owned by the submitting student, and have a learning purpose (`assignment_submission`). Otherwise 400. |
-| Concurrency | The live submission row is written in a transaction with a `pessimistic_write` lock; two racing submissions serialize and the second becomes the next attempt. |
+| Rule             | Behaviour                                                                                                                                                                |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| Ownership        | Only `student_user_id === assignment.student_user_id` may submit. Guardians cannot submit for a child.                                                                   |
+| Assignment state | Must be `published`; drafts/archived → 400.                                                                                                                              |
+| Due date         | After `due_at`: allowed only when `late_submission_allowed`; status becomes `late`.                                                                                      |
+| Attempts         | `attempt_count` increments on each submission; capped by `max_attempts` (default 3).                                                                                     |
+| Resubmission     | Allowed when `resubmission_allowed` and the previous state is `returned` or `submitted`/`late` before review; not allowed after `reviewed` unless the tutor returned it. |
+| History          | The previous attempt is copied to `assignment_revisions` before the live row is overwritten. Revisions are immutable.                                                    |
+| Attachments      | Every `assetId` must exist, be owned by the submitting student, and have a learning purpose (`assignment_submission`). Otherwise 400.                                    |
+| Concurrency      | The live submission row is written in a transaction with a `pessimistic_write` lock; two racing submissions serialize and the second becomes the next attempt.           |
 
 ## 3. Review lifecycle
 

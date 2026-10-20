@@ -119,7 +119,7 @@ export function useStudentDashboard(locale: Locale = 'bn') {
   const pendingAssignments = React.useMemo(() => {
     return assignments.filter((asgn) => {
       const sub = asgn.submission;
-      return !sub || sub.status === 'assigned';
+      return !sub || sub.status === 'returned';
     });
   }, [assignments]);
 

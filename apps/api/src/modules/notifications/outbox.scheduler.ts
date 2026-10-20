@@ -49,9 +49,7 @@ export class OutboxScheduler implements OnApplicationBootstrap, OnModuleDestroy 
       this.logger.log('Outbox scheduler is disabled for this runtime.');
       return;
     }
-    this.logger.log(
-      `Outbox scheduler started (poll every ${resolveOutboxPollIntervalMs()}ms).`,
-    );
+    this.logger.log(`Outbox scheduler started (poll every ${resolveOutboxPollIntervalMs()}ms).`);
     this.arm(resolveOutboxPollIntervalMs());
   }
 
@@ -95,9 +93,7 @@ export class OutboxScheduler implements OnApplicationBootstrap, OnModuleDestroy 
       if (!rows?.[0]?.locked) return null;
       return async () => {
         try {
-          await this.dataSource!.query('SELECT pg_advisory_unlock($1)', [
-            OUTBOX_WORKER_LOCK_KEY,
-          ]);
+          await this.dataSource!.query('SELECT pg_advisory_unlock($1)', [OUTBOX_WORKER_LOCK_KEY]);
         } catch (err) {
           this.logger.warn(`Failed to release outbox lock: ${String(err)}`);
         }

@@ -11,19 +11,19 @@ reconciliation for the payments module.
 
 ## 1. Threats considered
 
-| Threat | Control |
-| --- | --- |
-| Forged provider callback | Mandatory signature over the raw body; provider-specific normalization; server-to-server verification before success |
-| Replayed callback | 5-minute timestamp window where a timestamp is supplied; durable unique `(provider, provider_event_id)` |
-| Duplicate concurrent callback | Insert-first event row; order row lock; unique ledger idempotency key |
-| Amount tampering | Amount comes from the order and booking; webhook amount, provider-verified amount and order amount must all match |
-| Currency substitution | Currency must match the order and the provider-verified result |
-| Client-forged success | Sandbox confirmation route returns 410; browser redirect is ignored; only a verified webhook can succeed an order |
-| Refund abuse | Request/review separation; finance roles only can execute; refundable bound re-checked under lock |
-| Payout overdraw | Ledger-derived payable minus active payouts, checked under a locked tutor account row |
-| Privilege escalation | RolesGuard metadata; record-level checks; privileged roles are provision-only, not self-signup |
-| Sensitive data leakage | Redacted webhook payloads; masked/hashed payout destination; escaped invoice HTML; no secrets in audit metadata |
-| SQL/HTML injection in invoices | Snapshot values are escaped; invoice HTML is generated with an explicit escaper |
+| Threat                         | Control                                                                                                              |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| Forged provider callback       | Mandatory signature over the raw body; provider-specific normalization; server-to-server verification before success |
+| Replayed callback              | 5-minute timestamp window where a timestamp is supplied; durable unique `(provider, provider_event_id)`              |
+| Duplicate concurrent callback  | Insert-first event row; order row lock; unique ledger idempotency key                                                |
+| Amount tampering               | Amount comes from the order and booking; webhook amount, provider-verified amount and order amount must all match    |
+| Currency substitution          | Currency must match the order and the provider-verified result                                                       |
+| Client-forged success          | Sandbox confirmation route returns 410; browser redirect is ignored; only a verified webhook can succeed an order    |
+| Refund abuse                   | Request/review separation; finance roles only can execute; refundable bound re-checked under lock                    |
+| Payout overdraw                | Ledger-derived payable minus active payouts, checked under a locked tutor account row                                |
+| Privilege escalation           | RolesGuard metadata; record-level checks; privileged roles are provision-only, not self-signup                       |
+| Sensitive data leakage         | Redacted webhook payloads; masked/hashed payout destination; escaped invoice HTML; no secrets in audit metadata      |
+| SQL/HTML injection in invoices | Snapshot values are escaped; invoice HTML is generated with an explicit escaper                                      |
 
 ## 2. Webhook verification
 
@@ -99,17 +99,17 @@ a retry safe even if the previous attempt partially progressed.
 
 ## 3. Idempotency summary
 
-| Operation | Durable key |
-| --- | --- |
-| Payment order | `UNIQUE(payer_user_id, idempotency_key)` |
-| Webhook event | `UNIQUE(provider, provider_event_id)` |
-| Ledger journal | `ledger_journals.idempotency_key` unique |
-| Refund request | `UNIQUE(requested_by, idempotency_key)` where key is not null |
-| Refund execution | `ledger:refund:{refundId}` plus refund status short-circuit |
+| Operation          | Durable key                                                       |
+| ------------------ | ----------------------------------------------------------------- |
+| Payment order      | `UNIQUE(payer_user_id, idempotency_key)`                          |
+| Webhook event      | `UNIQUE(provider, provider_event_id)`                             |
+| Ledger journal     | `ledger_journals.idempotency_key` unique                          |
+| Refund request     | `UNIQUE(requested_by, idempotency_key)` where key is not null     |
+| Refund execution   | `ledger:refund:{refundId}` plus refund status short-circuit       |
 | Session settlement | `UNIQUE(session_id)` plus `ledger:settlement:session:{sessionId}` |
-| Payout request | `UNIQUE(tutor_user_id, idempotency_key)` |
-| Payout payment | `ledger:payout:{payoutId}` plus `paid` short-circuit |
-| Invoice | `UNIQUE(payment_order_id)` and `UNIQUE(invoice_number)` |
+| Payout request     | `UNIQUE(tutor_user_id, idempotency_key)`                          |
+| Payout payment     | `ledger:payout:{payoutId}` plus `paid` short-circuit              |
+| Invoice            | `UNIQUE(payment_order_id)` and `UNIQUE(invoice_number)`           |
 
 Known nuance: a concurrent duplicate refund request can hit the unique index and
 surface as a database conflict instead of returning the winning row, because the
@@ -133,14 +133,14 @@ service already does.
 
 ## 5. Sensitive data handling
 
-| Data | Storage |
-| --- | --- |
+| Data                   | Storage                                                                                                                                |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
 | Provider event payload | `payload_redacted` with order reference, transaction id, amount, currency, status only; a SHA-256 `payload_hash` is kept for integrity |
-| Payout destination | `account_reference_masked` (last four) + SHA-256 `account_reference_hash`; full value not persisted |
-| Invoice customer names | Snapshot on the invoice; access restricted to payer/student/admin |
-| Receipt names | Read from real relations; missing values render as `—`, never invented |
-| Logs | Provider errors are logged without full payloads or secrets |
-| HTML invoice | All dynamic values escaped with `&`, `<`, `>`, `"`, `'` replacements |
+| Payout destination     | `account_reference_masked` (last four) + SHA-256 `account_reference_hash`; full value not persisted                                    |
+| Invoice customer names | Snapshot on the invoice; access restricted to payer/student/admin                                                                      |
+| Receipt names          | Read from real relations; missing values render as `—`, never invented                                                                 |
+| Logs                   | Provider errors are logged without full payloads or secrets                                                                            |
+| HTML invoice           | All dynamic values escaped with `&`, `<`, `>`, `"`, `'` replacements                                                                   |
 
 ## 6. Reconciliation
 

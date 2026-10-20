@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { BadRequestException, ForbiddenException, ConflictException } from '@nestjs/common';
+import { BadRequestException, ForbiddenException } from '@nestjs/common';
 import {
   computeAttendanceMetrics,
   computeAverageScorePercent,
@@ -19,7 +19,6 @@ import { SessionReschedulingService } from '../src/modules/bookings/services/ses
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
 const STUDENT = '11111111-1111-4111-8111-111111111111';
-const OTHER_STUDENT = '99999999-9999-4999-8999-999999999999';
 const TUTOR = '22222222-2222-4222-8222-222222222222';
 const OTHER_TUTOR = '88888888-8888-4888-8888-888888888888';
 const ADMIN = '44444444-4444-4444-8444-444444444444';
@@ -138,7 +137,11 @@ describe('Phase 06 — session lifecycle', () => {
   });
 
   it('starts a session once, recording the actual start and a durable event', async () => {
-    sessionRepo.findOne.mockResolvedValue({ ...sessionRow, status: 'scheduled', booking: { ...bookingRow, subject: { nameEn: 'Physics' } } });
+    sessionRepo.findOne.mockResolvedValue({
+      ...sessionRow,
+      status: 'scheduled',
+      booking: { ...bookingRow, subject: { nameEn: 'Physics' } },
+    });
     const service = new SessionReschedulingService(
       sessionRepo,
       outboxRepo,
@@ -452,11 +455,9 @@ describe('Phase 06 — homework lifecycle', () => {
       assignment,
     });
     await expect(
-      service.gradeSubmission(
-        { id: OTHER_TUTOR, email: 'o@x.com', roles: ['tutor'] },
-        SUBMISSION,
-        { score: 10 },
-      ),
+      service.gradeSubmission({ id: OTHER_TUTOR, email: 'o@x.com', roles: ['tutor'] }, SUBMISSION, {
+        score: 10,
+      }),
     ).rejects.toThrow(ForbiddenException);
   });
 
@@ -469,9 +470,9 @@ describe('Phase 06 — homework lifecycle', () => {
       score: null,
       assignment,
     });
-    await expect(
-      service.gradeSubmission(tutorUser, SUBMISSION, { score: 150 }),
-    ).rejects.toThrow(BadRequestException);
+    await expect(service.gradeSubmission(tutorUser, SUBMISSION, { score: 150 })).rejects.toThrow(
+      BadRequestException,
+    );
   });
 
   it('is idempotent when the same review is submitted twice', async () => {
@@ -498,7 +499,10 @@ describe('Phase 06 — homework lifecycle', () => {
 describe('Phase 06 — learning materials validation', () => {
   it('rejects traversal filenames, MIME mismatches, and replies 404 for unrelated downloads', async () => {
     const bookingRepo = { findOne: vi.fn().mockResolvedValue(bookingRow) };
-    const linkRepo = { findOne: vi.fn().mockResolvedValue(null), find: vi.fn().mockResolvedValue([]) };
+    const linkRepo = {
+      findOne: vi.fn().mockResolvedValue(null),
+      find: vi.fn().mockResolvedValue([]),
+    };
     const access = accessWith(linkRepo, bookingRepo);
     const materialRepo = { findOne: vi.fn().mockResolvedValue(null) };
     const service = new LearningMaterialsService(

@@ -594,9 +594,9 @@ describe('Payments domain: orders, verified webhooks, settlement and reconciliat
       // Only 500.00 BDT was funded but the session costs 1000.00 BDT.
       stubSettlementManager({ ...hold, amountMinor: '50000' });
 
-      await expect(
-        service.settleMilestone(studentUser, { sessionId: 'sess-123' }),
-      ).rejects.toThrow(ConflictException);
+      await expect(service.settleMilestone(studentUser, { sessionId: 'sess-123' })).rejects.toThrow(
+        ConflictException,
+      );
       expect(mockLedgerService.postJournal).not.toHaveBeenCalled();
     });
   });
@@ -635,7 +635,9 @@ describe('Payments domain: orders, verified webhooks, settlement and reconciliat
     });
 
     it('flags a paid payout that has no external reference', async () => {
-      mockPayoutRepo.find.mockResolvedValue([{ id: 'payout-1', status: 'paid', externalReference: null }]);
+      mockPayoutRepo.find.mockResolvedValue([
+        { id: 'payout-1', status: 'paid', externalReference: null },
+      ]);
 
       const report = await service.runReconciliation(studentUser);
 

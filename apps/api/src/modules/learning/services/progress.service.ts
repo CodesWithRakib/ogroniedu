@@ -10,7 +10,10 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { SessionAttendanceEntity, type AttendanceStatus } from '../entities/session-attendance.entity';
+import {
+  SessionAttendanceEntity,
+  type AttendanceStatus,
+} from '../entities/session-attendance.entity';
 import { AssignmentEntity } from '../entities/assignment.entity';
 import { AssignmentSubmissionEntity } from '../entities/assignment-submission.entity';
 import { ProgressReportEntity } from '../entities/progress-report.entity';
@@ -403,8 +406,7 @@ export class LearningProgressService {
     });
     const eligible = inPeriod.filter(
       (session) =>
-        !['cancelled', 'no_show'].includes(session.status) &&
-        new Date(session.startsAt) <= now,
+        !['cancelled', 'no_show'].includes(session.status) && new Date(session.startsAt) <= now,
     );
     const sessionById = new Map(inPeriod.map((session) => [session.id, session]));
 
@@ -614,7 +616,8 @@ export class LearningProgressService {
       })
       .catch((err) => this.logger.warn(`Student report notification failed: ${String(err)}`));
 
-    const guardianIds = (await this.guardianAccess?.findActiveGuardianIds(report.studentUserId)) ?? [];
+    const guardianIds =
+      (await this.guardianAccess?.findActiveGuardianIds(report.studentUserId)) ?? [];
     for (const guardianId of guardianIds) {
       await this.notificationService
         .dispatch({

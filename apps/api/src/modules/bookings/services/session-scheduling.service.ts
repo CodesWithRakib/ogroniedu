@@ -17,17 +17,11 @@ import { OutboxEventEntity } from '../entities/outbox-event.entity';
 import { AuditService } from '../../audit/audit.service';
 import { NotificationService } from '../../notifications/notification.service';
 import { TutorAvailabilityService } from '../../tutors/services/tutor-availability.service';
-import {
-  assertNoTutorOverlap,
-  recordOutboxEvent,
-} from './session-booking.helpers';
+import { assertNoTutorOverlap, recordOutboxEvent } from './session-booking.helpers';
 import { CreateSessionDto, CreateRecurringSessionsDto } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { SessionQueriesService } from './session-queries.service';
-import {
-  applyBookingTransition,
-  transitionHistoryValues,
-} from '../utils/booking-lifecycle';
+import { applyBookingTransition, transitionHistoryValues } from '../utils/booking-lifecycle';
 import {
   buildSeriesIdempotencyKey,
   computeHorizonEndDate,

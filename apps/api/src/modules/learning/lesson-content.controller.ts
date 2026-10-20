@@ -56,10 +56,7 @@ export class LessonContentController {
 
   @Get('lesson-plans')
   @UseGuards(AuthGuard)
-  async listPlans(
-    @CurrentUser() user: AuthenticatedUser,
-    @Query() query: LearningListQueryDto,
-  ) {
+  async listPlans(@CurrentUser() user: AuthenticatedUser, @Query() query: LearningListQueryDto) {
     const result = await this.plans.listLessonPlans(user, query);
     return paginated(result.items, {
       page: result.page,
@@ -70,10 +67,7 @@ export class LessonContentController {
 
   @Get('lesson-plans/:id')
   @UseGuards(AuthGuard)
-  async getPlan(
-    @CurrentUser() user: AuthenticatedUser,
-    @Param('id', ParseUUIDPipe) id: string,
-  ) {
+  async getPlan(@CurrentUser() user: AuthenticatedUser, @Param('id', ParseUUIDPipe) id: string) {
     const plan = await this.plans.getLessonPlan(user, id);
     return { success: true, data: plan };
   }

@@ -115,9 +115,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
         this.logger.warn(`SSLCOMMERZ API returned non-success: ${JSON.stringify(data)}`);
       }
     } catch (err: unknown) {
-      this.logger.warn(
-        `Failed to reach SSLCOMMERZ gateway directly (${readErrorMessage(err)}).`,
-      );
+      this.logger.warn(`Failed to reach SSLCOMMERZ gateway directly (${readErrorMessage(err)}).`);
       throw new ServiceUnavailableException(
         'The payment gateway could not create a checkout session. Please try again later.',
       );
@@ -215,7 +213,8 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
     const providerTransactionId = valId || bankTranId || read('tran_id');
     const orderReference = read('tran_id', 'tranId');
     const amountText = read('amount', 'currency_amount') || '0';
-    const eventId = read('event_id', 'eventId') || `${valId || bankTranId || orderReference}:${rawStatus}`;
+    const eventId =
+      read('event_id', 'eventId') || `${valId || bankTranId || orderReference}:${rawStatus}`;
 
     let amountMinor = '0';
     try {
@@ -239,7 +238,8 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
   /**
    * 3. Server-to-Server Validation Query
    */
-  async queryTransaction(providerTransactionId: string): Promise<ProviderTransactionResult> {    this.logger.log(`Validating SSLCOMMERZ transaction server-to-server: ${providerTransactionId}`);
+  async queryTransaction(providerTransactionId: string): Promise<ProviderTransactionResult> {
+    this.logger.log(`Validating SSLCOMMERZ transaction server-to-server: ${providerTransactionId}`);
 
     try {
       const validationUrl = `${this.validationApiUrl}?val_id=${encodeURIComponent(providerTransactionId)}&store_id=${encodeURIComponent(this.storeId)}&store_passwd=${encodeURIComponent(this.storePasswd)}&format=json`;

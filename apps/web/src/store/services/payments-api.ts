@@ -5,12 +5,7 @@ export const API_ORIGIN = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4
 export type PaymentProvider = 'bkash' | 'nagad' | 'sslcommerz';
 export type PayoutMethod = 'bkash' | 'nagad' | 'rocket' | 'bank' | 'other';
 export type RefundStatus =
-  | 'requested'
-  | 'approved'
-  | 'processing'
-  | 'succeeded'
-  | 'failed'
-  | 'rejected';
+  'requested' | 'approved' | 'processing' | 'succeeded' | 'failed' | 'rejected';
 export type PayoutStatus = 'requested' | 'approved' | 'processing' | 'paid' | 'rejected' | 'failed';
 
 export interface CreatePaymentOrderRequest {

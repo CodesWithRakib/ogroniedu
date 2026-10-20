@@ -155,14 +155,18 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                   <div className="h-6 w-6 rounded-lg bg-warning-soft text-warning flex items-center justify-center shrink-0">
                     <RefreshCw className="w-3.5 h-3.5" />
                   </div>
-                  <p className="text-xs text-muted-foreground font-semibold truncate">{t('replacementQueue')}</p>
+                  <p className="text-xs text-muted-foreground font-semibold truncate">
+                    {t('replacementQueue')}
+                  </p>
                 </div>
                 <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition-transform group-hover:translate-x-0.5 shrink-0" />
               </div>
               <p className="text-2xl sm:text-3xl font-extrabold text-foreground mt-3 font-sans tabular-nums">
                 {formatLocalizedNumber(admin.metrics.activeReplacementCases, locale)}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1 font-medium">{t('captionActiveCases')}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 font-medium">
+                {t('captionActiveCases')}
+              </p>
             </Link>
 
             <Link
@@ -174,14 +178,18 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                   <div className="h-6 w-6 rounded-lg bg-destructive-soft text-destructive flex items-center justify-center shrink-0">
                     <ShieldAlert className="w-3.5 h-3.5" />
                   </div>
-                  <p className="text-xs text-muted-foreground font-semibold truncate">{t('safetyQueue')}</p>
+                  <p className="text-xs text-muted-foreground font-semibold truncate">
+                    {t('safetyQueue')}
+                  </p>
                 </div>
                 <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition-transform group-hover:translate-x-0.5 shrink-0" />
               </div>
               <p className="text-2xl sm:text-3xl font-extrabold text-foreground mt-3 font-sans tabular-nums">
                 {formatLocalizedNumber(admin.metrics.openSafetyReports, locale)}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1 font-medium">{t('captionOpenReports')}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 font-medium">
+                {t('captionOpenReports')}
+              </p>
             </Link>
 
             <Link
@@ -193,14 +201,18 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                   <div className="h-6 w-6 rounded-lg bg-success-soft text-success flex items-center justify-center shrink-0">
                     <Calendar className="w-3.5 h-3.5" />
                   </div>
-                  <p className="text-xs text-muted-foreground font-semibold truncate">{t('activeBookings')}</p>
+                  <p className="text-xs text-muted-foreground font-semibold truncate">
+                    {t('activeBookings')}
+                  </p>
                 </div>
                 <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition-transform group-hover:translate-x-0.5 shrink-0" />
               </div>
               <p className="text-2xl sm:text-3xl font-extrabold text-foreground mt-3 font-sans tabular-nums">
                 {formatLocalizedNumber(admin.metrics.activeBookingsCount, locale)}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1 font-medium">{t('captionInProgress')}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 font-medium">
+                {t('captionInProgress')}
+              </p>
             </Link>
 
             <Link
@@ -212,14 +224,18 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                   <div className="h-6 w-6 rounded-lg bg-primary-soft text-primary flex items-center justify-center shrink-0">
                     <Users className="w-3.5 h-3.5" />
                   </div>
-                  <p className="text-xs text-muted-foreground font-semibold truncate">{t('totalUsers')}</p>
+                  <p className="text-xs text-muted-foreground font-semibold truncate">
+                    {t('totalUsers')}
+                  </p>
                 </div>
                 <ArrowRight className="w-3.5 h-3.5 text-muted-foreground/60 group-hover:text-primary transition-transform group-hover:translate-x-0.5 shrink-0" />
               </div>
               <p className="text-2xl sm:text-3xl font-extrabold text-foreground mt-3 font-sans tabular-nums">
                 {formatLocalizedNumber(admin.metrics.totalRegisteredUsers, locale)}
               </p>
-              <p className="text-[11px] text-muted-foreground mt-1 font-medium">{t('captionTotalCatalog')}</p>
+              <p className="text-[11px] text-muted-foreground mt-1 font-medium">
+                {t('captionTotalCatalog')}
+              </p>
             </Link>
           </div>
 

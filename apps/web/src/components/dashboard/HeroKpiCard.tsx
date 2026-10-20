@@ -71,9 +71,7 @@ export function HeroKpiCard({
         <p
           className={cn(
             'tracking-tight text-foreground font-sans tabular-nums leading-tight',
-            isLongText
-              ? 'text-xl sm:text-2xl font-bold'
-              : 'text-3xl sm:text-4xl font-extrabold',
+            isLongText ? 'text-xl sm:text-2xl font-bold' : 'text-3xl sm:text-4xl font-extrabold',
           )}
         >
           {value}

@@ -200,10 +200,7 @@ export class LessonPlansService {
     return this.hydrateView(plan, true);
   }
 
-  async getLessonPlan(
-    user: AuthenticatedUser,
-    planId: string,
-  ): Promise<LessonPlanView> {
+  async getLessonPlan(user: AuthenticatedUser, planId: string): Promise<LessonPlanView> {
     const plan = await this.getPlanEntity(planId);
     const canSeeDrafts = isAdminRole(user) || plan.tutorUserId === user.id;
     if (!canSeeDrafts && plan.status !== 'published') {
@@ -242,11 +239,7 @@ export class LessonPlansService {
     } else if (query.bookingId) {
       const booking = await this.access.loadBookingOrFail(query.bookingId);
       if (booking.tutorUserId !== user.id) {
-        await this.access.assertCanAccessStudentRecords(
-          user,
-          booking.studentUserId,
-          booking.id,
-        );
+        await this.access.assertCanAccessStudentRecords(user, booking.studentUserId, booking.id);
         qb.andWhere("plan.status = 'published'");
       }
     } else {
@@ -259,7 +252,10 @@ export class LessonPlansService {
       );
     }
 
-    const [rows, total] = await qb.skip((page - 1) * pageSize).take(pageSize).getManyAndCount();
+    const [rows, total] = await qb
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
     const plans = await this.attachMaterials(rows);
     const views = plans.map(({ plan, materials }) =>
       this.toView(plan, materials, isAdminRole(user) || plan.tutorUserId === user.id),
@@ -372,9 +368,7 @@ export class LessonPlansService {
           material.fileAsset?.sizeBytes !== undefined && material.fileAsset?.sizeBytes !== null
             ? String(material.fileAsset.sizeBytes)
             : null,
-        publishedAt: material.publishedAt
-          ? new Date(material.publishedAt).toISOString()
-          : null,
+        publishedAt: material.publishedAt ? new Date(material.publishedAt).toISOString() : null,
       })),
     };
   }

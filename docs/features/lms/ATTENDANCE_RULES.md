@@ -2,24 +2,24 @@
 
 ## 1. Ownership
 
-| Operation | student | guardian | tutor | admin / super_admin | support_agent | compliance_reviewer | organization_* |
-| --- | --- | --- | --- | --- | --- | --- | --- |
-| Read own attendance | yes | — | — | yes | no | no | no |
-| Read child attendance | — | active link only | — | yes | no | no | no |
-| Read session attendance | own session | linked child's session | own session | yes | no | no | no |
-| Write / correct | **no** | **no** | assigned tutor only | yes | no | no | no |
+| Operation               | student     | guardian               | tutor               | admin / super_admin | support_agent | compliance_reviewer | organization_* |
+| ----------------------- | ----------- | ---------------------- | ------------------- | ------------------- | ------------- | ------------------- | -------------- |
+| Read own attendance     | yes         | —                      | —                   | yes                 | no            | no                  | no             |
+| Read child attendance   | —           | active link only       | —                   | yes                 | no            | no                  | no             |
+| Read session attendance | own session | linked child's session | own session         | yes                 | no            | no                  | no             |
+| Write / correct         | **no**      | **no**                 | assigned tutor only | yes                 | no            | no                  | no             |
 
 Every write re-derives the session from the database; the participant is never
 taken on trust.
 
 ## 2. States
 
-| State | Meaning | Counted as attendance? |
-| --- | --- | --- |
-| `present` | Attended for the session | yes |
-| `late` | Attended, arrived late | yes (documented policy) |
-| `absent` | Did not attend | no |
-| `excused` | Absent with an accepted reason | excluded from the denominator |
+| State          | Meaning                                   | Counted as attendance?        |
+| -------------- | ----------------------------------------- | ----------------------------- |
+| `present`      | Attended for the session                  | yes                           |
+| `late`         | Attended, arrived late                    | yes (documented policy)       |
+| `absent`       | Did not attend                            | no                            |
+| `excused`      | Absent with an accepted reason            | excluded from the denominator |
 | `not_recorded` | No row exists for the participant/session | excluded from the denominator |
 
 `not_recorded` is **derived**, never stored. Missing attendance is never
@@ -71,13 +71,13 @@ rate       = recorded === 0 ? null : round(attended / recorded * 100, 2)
 
 ## 5. Reporting endpoints
 
-| Endpoint | Who | Result |
-| --- | --- | --- |
-| `GET /api/v1/learning/attendance/summary?studentId=&bookingId=&from=&to=` | student self, active guardian, assigned tutor, admin | counts, rate, coverage, period |
-| `GET /api/v1/learning/students/:studentId/attendance?page=&pageSize=&from=&to=` | same | offset-paginated history with session subject/time |
-| `GET /api/v1/learning/students/:studentId/progress` | same | attendance block + trend + assignment/score/goals |
-| `GET /api/v1/learning/sessions/:sessionId/attendance` | session participants, active guardian, admin | rows for the session |
-| `GET /api/v1/learning/admin/sessions` | admin / super_admin | platform session oversight with filters |
+| Endpoint                                                                        | Who                                                  | Result                                             |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------- |
+| `GET /api/v1/learning/attendance/summary?studentId=&bookingId=&from=&to=`       | student self, active guardian, assigned tutor, admin | counts, rate, coverage, period                     |
+| `GET /api/v1/learning/students/:studentId/attendance?page=&pageSize=&from=&to=` | same                                                 | offset-paginated history with session subject/time |
+| `GET /api/v1/learning/students/:studentId/progress`                             | same                                                 | attendance block + trend + assignment/score/goals  |
+| `GET /api/v1/learning/sessions/:sessionId/attendance`                           | session participants, active guardian, admin         | rows for the session                               |
+| `GET /api/v1/learning/admin/sessions`                                           | admin / super_admin                                  | platform session oversight with filters            |
 
 ## 6. Online meeting evidence
 

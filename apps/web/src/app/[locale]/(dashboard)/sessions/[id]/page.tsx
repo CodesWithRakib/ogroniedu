@@ -327,7 +327,9 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
         sessionId={sessionId}
         status={session.status || 'scheduled'}
         canManage={
-          Boolean(currentUser?.roles?.includes('admin') || currentUser?.roles?.includes('super_admin')) ||
+          Boolean(
+            currentUser?.roles?.includes('admin') || currentUser?.roles?.includes('super_admin'),
+          ) ||
           (Boolean(isTutor) && session.tutorUserId === currentUser?.id)
         }
       />

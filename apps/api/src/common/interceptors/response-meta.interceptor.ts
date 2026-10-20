@@ -3,6 +3,7 @@ import type { Request, Response } from 'express';
 import { Observable } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { randomUUID } from 'node:crypto';
+import { sanitizeRequestPath } from '../utils/request-sanitizer';
 
 /**
  * Standardizes API success responses into the canonical contract:
@@ -54,6 +55,20 @@ export class ResponseMetaInterceptor implements NestInterceptor {
       return next.handle();
     }
 
+    const path = sanitizeRequestPath(request.originalUrl || request.url);
+    const method = request.method || 'GET';
+    const timestamp = new Date().toISOString();
+
+    const buildMeta = (existingMeta?: Record<string, unknown>) => ({
+      ...existingMeta,
+      requestId:
+        (typeof existingMeta?.requestId === 'string' && existingMeta.requestId) || requestId,
+      timestamp:
+        (typeof existingMeta?.timestamp === 'string' && existingMeta.timestamp) || timestamp,
+      path: (typeof existingMeta?.path === 'string' && existingMeta.path) || path,
+      method: (typeof existingMeta?.method === 'string' && existingMeta.method) || method,
+    });
+
     return next.handle().pipe(
       map((body: unknown) => {
         // Leave streams / Buffers untouched (e.g. file downloads)
@@ -72,7 +87,7 @@ export class ResponseMetaInterceptor implements NestInterceptor {
           return {
             success: true,
             data: null,
-            meta: { requestId },
+            meta: buildMeta(),
           };
         }
 
@@ -81,7 +96,7 @@ export class ResponseMetaInterceptor implements NestInterceptor {
           return {
             success: true,
             data: body,
-            meta: { requestId },
+            meta: buildMeta(),
           };
         }
 
@@ -101,13 +116,9 @@ export class ResponseMetaInterceptor implements NestInterceptor {
                 ? (record.meta as Record<string, unknown>)
                 : {};
 
-            if (typeof existingMeta.requestId === 'string') {
-              return body;
-            }
-
             return {
               ...record,
-              meta: { ...existingMeta, requestId },
+              meta: buildMeta(existingMeta),
             };
           }
 
@@ -115,7 +126,7 @@ export class ResponseMetaInterceptor implements NestInterceptor {
           return {
             success: true,
             data: body,
-            meta: { requestId },
+            meta: buildMeta(),
             ...record,
           };
         }
@@ -124,7 +135,7 @@ export class ResponseMetaInterceptor implements NestInterceptor {
         return {
           success: true,
           data: body,
-          meta: { requestId },
+          meta: buildMeta(),
         };
       }),
     );

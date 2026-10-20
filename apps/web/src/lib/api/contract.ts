@@ -6,6 +6,10 @@
 
 export interface RequestMeta {
   requestId?: string;
+  timestamp?: string;
+  path?: string;
+  method?: string;
+  [key: string]: unknown;
 }
 
 export interface OffsetPaginationMeta {

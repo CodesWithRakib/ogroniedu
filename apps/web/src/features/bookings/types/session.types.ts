@@ -48,5 +48,4 @@ export interface ScheduleRecurringInput {
 }
 
 export type ScheduleSessionInput =
-  | ({ mode: 'one_off' } & ScheduleOneOffInput)
-  | ({ mode: 'recurring' } & ScheduleRecurringInput);
+  ({ mode: 'one_off' } & ScheduleOneOffInput) | ({ mode: 'recurring' } & ScheduleRecurringInput);

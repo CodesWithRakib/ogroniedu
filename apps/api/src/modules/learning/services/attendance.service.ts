@@ -20,10 +20,7 @@ import { AttendanceSummaryQueryDto, MarkAttendanceDto, StudentScopedListQueryDto
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { isAdminRole } from '../../../common/auth/role.utils';
 import { toPageSize } from '../../../common/pagination';
-import {
-  computeAttendanceMetrics,
-  type AttendanceSummaryMetrics,
-} from '../utils/learning-metrics';
+import { computeAttendanceMetrics, type AttendanceSummaryMetrics } from '../utils/learning-metrics';
 
 /** Tutors may correct their own attendance for this long after the session. */
 export const ATTENDANCE_EDIT_WINDOW_HOURS = 72;
@@ -154,11 +151,7 @@ export class LearningAttendanceService {
       });
 
       if (previousStatus !== dto.attendanceStatus) {
-        await this.notifyAttendance(
-          session,
-          dto.participantUserId,
-          dto.attendanceStatus,
-        );
+        await this.notifyAttendance(session, dto.participantUserId, dto.attendanceStatus);
       }
       return saved;
     }
@@ -307,7 +300,10 @@ export class LearningAttendanceService {
       qb.andWhere('session.startsAt <= :to', { to: new Date(query.to) });
     }
 
-    const [rows, total] = await qb.skip((page - 1) * pageSize).take(pageSize).getManyAndCount();
+    const [rows, total] = await qb
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
 
     return {
       items: rows.map((row) => ({
@@ -323,9 +319,7 @@ export class LearningAttendanceService {
           ? new Date(row.session.startsAt).toISOString()
           : null,
         subjectName:
-          row.session?.booking?.subject?.nameEn ??
-          row.session?.booking?.subject?.nameBn ??
-          null,
+          row.session?.booking?.subject?.nameEn ?? row.session?.booking?.subject?.nameBn ?? null,
       })),
       totalItems: total,
       page,
@@ -355,7 +349,9 @@ export class LearningAttendanceService {
         eventType: 'attendance.marked',
         payload,
       })
-      .catch((err) => this.logger.warn(`Failed to dispatch student attendance notification: ${err}`));
+      .catch((err) =>
+        this.logger.warn(`Failed to dispatch student attendance notification: ${err}`),
+      );
 
     const guardianIds = await this.guardianAccess.findActiveGuardianIds(participantUserId);
     for (const guardianId of guardianIds) {

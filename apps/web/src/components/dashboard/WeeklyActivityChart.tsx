@@ -24,13 +24,70 @@ export interface WeeklyActivityChartProps {
 }
 
 const DEFAULT_DAYS: DayActivity[] = [
-  { day: 'S', shortBn: 'রবি', shortEn: 'Sun', fullDayBn: 'রবিবার', fullDayEn: 'Sunday', percentage: 45, count: 2 },
-  { day: 'M', shortBn: 'সোম', shortEn: 'Mon', fullDayBn: 'সোমবার', fullDayEn: 'Monday', percentage: 70, count: 4 },
-  { day: 'T', shortBn: 'মঙ্গল', shortEn: 'Tue', fullDayBn: 'মঙ্গলবার', fullDayEn: 'Tuesday', percentage: 88, count: 5, isPeak: true },
-  { day: 'W', shortBn: 'বুধ', shortEn: 'Wed', fullDayBn: 'বুধবার', fullDayEn: 'Wednesday', percentage: 95, count: 6 },
-  { day: 'T', shortBn: 'বৃহঃ', shortEn: 'Thu', fullDayBn: 'বৃহস্পতিবার', fullDayEn: 'Thursday', percentage: 60, count: 3 },
-  { day: 'F', shortBn: 'শুক্র', shortEn: 'Fri', fullDayBn: 'শুক্রবার', fullDayEn: 'Friday', percentage: 35, count: 1 },
-  { day: 'S', shortBn: 'শনি', shortEn: 'Sat', fullDayBn: 'শনিবার', fullDayEn: 'Saturday', percentage: 50, count: 2 },
+  {
+    day: 'S',
+    shortBn: 'রবি',
+    shortEn: 'Sun',
+    fullDayBn: 'রবিবার',
+    fullDayEn: 'Sunday',
+    percentage: 45,
+    count: 2,
+  },
+  {
+    day: 'M',
+    shortBn: 'সোম',
+    shortEn: 'Mon',
+    fullDayBn: 'সোমবার',
+    fullDayEn: 'Monday',
+    percentage: 70,
+    count: 4,
+  },
+  {
+    day: 'T',
+    shortBn: 'মঙ্গল',
+    shortEn: 'Tue',
+    fullDayBn: 'মঙ্গলবার',
+    fullDayEn: 'Tuesday',
+    percentage: 88,
+    count: 5,
+    isPeak: true,
+  },
+  {
+    day: 'W',
+    shortBn: 'বুধ',
+    shortEn: 'Wed',
+    fullDayBn: 'বুধবার',
+    fullDayEn: 'Wednesday',
+    percentage: 95,
+    count: 6,
+  },
+  {
+    day: 'T',
+    shortBn: 'বৃহঃ',
+    shortEn: 'Thu',
+    fullDayBn: 'বৃহস্পতিবার',
+    fullDayEn: 'Thursday',
+    percentage: 60,
+    count: 3,
+  },
+  {
+    day: 'F',
+    shortBn: 'শুক্র',
+    shortEn: 'Fri',
+    fullDayBn: 'শুক্রবার',
+    fullDayEn: 'Friday',
+    percentage: 35,
+    count: 1,
+  },
+  {
+    day: 'S',
+    shortBn: 'শনি',
+    shortEn: 'Sat',
+    fullDayBn: 'শনিবার',
+    fullDayEn: 'Saturday',
+    percentage: 50,
+    count: 2,
+  },
 ];
 
 export function WeeklyActivityChart({
@@ -98,7 +155,9 @@ export function WeeklyActivityChart({
               <span
                 className={cn(
                   'mt-3 text-[11px] sm:text-xs font-semibold transition-colors',
-                  isHighest ? 'text-primary font-bold' : 'text-muted-foreground group-hover:text-foreground',
+                  isHighest
+                    ? 'text-primary font-bold'
+                    : 'text-muted-foreground group-hover:text-foreground',
                 )}
                 title={isBn ? item.fullDayBn : item.fullDayEn}
               >

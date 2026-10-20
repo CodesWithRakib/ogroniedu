@@ -16,17 +16,17 @@ production data are labelled **unverified**.
 
 ## 1. What already existed
 
-| Area | Existing implementation | Assessment |
-| --- | --- | --- |
-| Payment orders | `payment_orders` table, `PaymentOrdersService`, idempotency on `(payer_user_id, idempotency_key)` | Reusable base; amount correctly taken from the booking, not the client |
-| Provider adapters | `SslcommerzSandboxAdapter`, `BkashSandboxAdapter`, factory | Signature verification is HMAC-based and mandatory; refund methods fabricated success |
-| Webhooks | Verified HMAC, 5-minute timestamp window, amount/currency checks, server-to-server `queryTransaction`, atomic order + ledger + outbox + booking transaction | The most mature part of the module, but idempotency was not durable at the event level and the order lookup could fall back to “most recent pending order” |
-| Ledger | Balancing invariant, immutable journals, idempotency key, seeded accounts 1000/1100/2000/2100/3000/4000/5000 | Sound double-entry core; no party dimension, no transaction-manager participation |
-| Refunds | `payment_refunds` table and immediate `processRefund` | Status column existed but no request/approval workflow; any authenticated payer could execute a refund; provider result was fabricated |
-| Settlement | `settleMilestone` posts 92/8 split | No escrow-hold record, no per-session reservation, could credit the tutor more than the customer paid across multiple sessions |
-| Reconciliation | `GET /payments/reconciliation`, admin overview | Read-only recomputation; no durable reconciliation run, no refund/payout coverage, endpoints open to any authenticated user |
-| Notifications | Registry + outbox, `payment.succeeded`, `payment.failed`, `refund.processed` | No refund requested/approved/rejected, payout, or invoice events |
-| Frontend | Checkout, receipt dialog, payment history | Tutor earnings page used hardcoded balances, fake payout history and `setTimeout` success; admin finance settings were not persisted |
+| Area              | Existing implementation                                                                                                                                     | Assessment                                                                                                                                                 |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Payment orders    | `payment_orders` table, `PaymentOrdersService`, idempotency on `(payer_user_id, idempotency_key)`                                                           | Reusable base; amount correctly taken from the booking, not the client                                                                                     |
+| Provider adapters | `SslcommerzSandboxAdapter`, `BkashSandboxAdapter`, factory                                                                                                  | Signature verification is HMAC-based and mandatory; refund methods fabricated success                                                                      |
+| Webhooks          | Verified HMAC, 5-minute timestamp window, amount/currency checks, server-to-server `queryTransaction`, atomic order + ledger + outbox + booking transaction | The most mature part of the module, but idempotency was not durable at the event level and the order lookup could fall back to “most recent pending order” |
+| Ledger            | Balancing invariant, immutable journals, idempotency key, seeded accounts 1000/1100/2000/2100/3000/4000/5000                                                | Sound double-entry core; no party dimension, no transaction-manager participation                                                                          |
+| Refunds           | `payment_refunds` table and immediate `processRefund`                                                                                                       | Status column existed but no request/approval workflow; any authenticated payer could execute a refund; provider result was fabricated                     |
+| Settlement        | `settleMilestone` posts 92/8 split                                                                                                                          | No escrow-hold record, no per-session reservation, could credit the tutor more than the customer paid across multiple sessions                             |
+| Reconciliation    | `GET /payments/reconciliation`, admin overview                                                                                                              | Read-only recomputation; no durable reconciliation run, no refund/payout coverage, endpoints open to any authenticated user                                |
+| Notifications     | Registry + outbox, `payment.succeeded`, `payment.failed`, `refund.processed`                                                                                | No refund requested/approved/rejected, payout, or invoice events                                                                                           |
+| Frontend          | Checkout, receipt dialog, payment history                                                                                                                   | Tutor earnings page used hardcoded balances, fake payout history and `setTimeout` success; admin finance settings were not persisted                       |
 
 ## 2. Findings and risk
 
@@ -38,7 +38,7 @@ supplied `paymentOrderId`, `amountMinor` and `reason`. A student, guardian or
 unrelated authenticated account could attempt to move money out of escrow.
 
 **Resolution:** refunds become a request → review → approval → processing →
-provider-confirmed state machine. Customer callers may only *request* refunds
+provider-confirmed state machine. Customer callers may only _request_ refunds
 for orders they can already read. Only finance operators may approve, reject,
 process, or manually confirm.
 
@@ -91,6 +91,7 @@ wallet column. Payout requests reserve funds under a row lock; approval,
 rejection, paid and failure transitions post or release the reservation.
 
 ### P-06 — Reconciliation endpoints exposed to every authenticated user
+
 (high)
 
 `GET /api/v1/payments/reconciliation` and `GET
@@ -164,6 +165,7 @@ snapshot, never the current policy. The active policy is exposed to admin
 finance settings and enforced server-side.
 
 ### P-12 — No per-session price or commission breakdown in receipts
+
 (medium)
 
 Booking sessions carry no amount; receipts could not show gross, commission and
@@ -172,13 +174,13 @@ policy id, and is unique per session.
 
 ## 3. External blockers confirmed
 
-| Blocker | Impact | Handling |
-| --- | --- | --- |
-| No live SSLCOMMERZ/bKash credentials or registered IPN URLs | Real payment, refund and status-sync calls cannot be verified end-to-end | Adapters fail closed; webhook success requires server-to-server validation; refund automation reports `unsupported`; manual confirmation requires an external reference |
-| Providers do not expose a payout/disbursement API in the configured contracts | Automated tutor payout is impossible | Manual, audited payout workflow; the system records the external reference supplied by the operator and never invents one |
-| Business decision: one payment funds one session or the whole booking? | Settlement of later sessions | Implemented fail-safe: one payment hold funds the sessions it can cover; later sessions require additional funding. Needs product approval |
-| No PDF dependency (`pdfkit`/`pdf-lib`) | Downloadable PDF invoice | Printable HTML with print CSS; Bangla relies on system fonts. Documented in the report |
-| No organization tenancy tables | `organization_owner` / `organization_staff` finance scope | Both roles are denied finance access by default in the matrix; revisit when tenancy lands |
+| Blocker                                                                       | Impact                                                                   | Handling                                                                                                                                                                |
+| ----------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| No live SSLCOMMERZ/bKash credentials or registered IPN URLs                   | Real payment, refund and status-sync calls cannot be verified end-to-end | Adapters fail closed; webhook success requires server-to-server validation; refund automation reports `unsupported`; manual confirmation requires an external reference |
+| Providers do not expose a payout/disbursement API in the configured contracts | Automated tutor payout is impossible                                     | Manual, audited payout workflow; the system records the external reference supplied by the operator and never invents one                                               |
+| Business decision: one payment funds one session or the whole booking?        | Settlement of later sessions                                             | Implemented fail-safe: one payment hold funds the sessions it can cover; later sessions require additional funding. Needs product approval                              |
+| No PDF dependency (`pdfkit`/`pdf-lib`)                                        | Downloadable PDF invoice                                                 | Printable HTML with print CSS; Bangla relies on system fonts. Documented in the report                                                                                  |
+| No organization tenancy tables                                                | `organization_owner` / `organization_staff` finance scope                | Both roles are denied finance access by default in the matrix; revisit when tenancy lands                                                                               |
 
 ## 4. Baseline commands
 

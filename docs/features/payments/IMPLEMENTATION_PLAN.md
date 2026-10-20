@@ -35,23 +35,23 @@ create a second payment architecture.
 
 ## 2. Data model changes (migration `022_payments_escrow_payouts.sql`)
 
-| Table / column | Purpose |
-| --- | --- |
-| `commission_policies` | Versioned `platform_fee_bps`, `min_payout_minor`, effective window, active flag. Seeds the 8% policy. |
-| `payment_orders.commission_rate_bps` | Snapshot of the policy at order creation. |
-| `payment_orders.escrow_hold_id` | Link to the funded hold. |
-| `escrow_holds` | One row per successful payment: amount, released, refunded, remaining, status. |
-| `webhook_events` | Durable provider event log with `UNIQUE(provider, provider_event_id)`. |
-| `payment_refunds` new columns | Refund number, booking, initiator role, decision, provider status/reference, eligibility snapshot, ledger journal, idempotency key. |
-| `session_settlements` | Unique per session; gross, fee, net, policy snapshot, journal, actor, reversal. |
-| `tutor_financial_accounts` | Per-tutor serialization row + reserved amount. |
-| `tutor_earning_adjustments` | Audited manual corrections (reversals, dispute deductions). |
-| `payouts` | Tutor payout lifecycle, amount, method, masked account, reviewer, external reference, idempotency. |
-| `invoices` | Durable invoice number, payment order, snapshot, totals, status. |
-| `reconciliation_runs` | Durable audit of each reconciliation execution. |
-| `ledger_entries.tutor_user_id` | Party dimension so tutor payable is ledger-derived. |
-| Account `2200` | “Payouts In Transit” clearing liability. |
-| Indexes | Party ledger lookups, refund/payout queues, invoice lookup. |
+| Table / column                       | Purpose                                                                                                                             |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `commission_policies`                | Versioned `platform_fee_bps`, `min_payout_minor`, effective window, active flag. Seeds the 8% policy.                               |
+| `payment_orders.commission_rate_bps` | Snapshot of the policy at order creation.                                                                                           |
+| `payment_orders.escrow_hold_id`      | Link to the funded hold.                                                                                                            |
+| `escrow_holds`                       | One row per successful payment: amount, released, refunded, remaining, status.                                                      |
+| `webhook_events`                     | Durable provider event log with `UNIQUE(provider, provider_event_id)`.                                                              |
+| `payment_refunds` new columns        | Refund number, booking, initiator role, decision, provider status/reference, eligibility snapshot, ledger journal, idempotency key. |
+| `session_settlements`                | Unique per session; gross, fee, net, policy snapshot, journal, actor, reversal.                                                     |
+| `tutor_financial_accounts`           | Per-tutor serialization row + reserved amount.                                                                                      |
+| `tutor_earning_adjustments`          | Audited manual corrections (reversals, dispute deductions).                                                                         |
+| `payouts`                            | Tutor payout lifecycle, amount, method, masked account, reviewer, external reference, idempotency.                                  |
+| `invoices`                           | Durable invoice number, payment order, snapshot, totals, status.                                                                    |
+| `reconciliation_runs`                | Durable audit of each reconciliation execution.                                                                                     |
+| `ledger_entries.tutor_user_id`       | Party dimension so tutor payable is ledger-derived.                                                                                 |
+| Account `2200`                       | “Payouts In Transit” clearing liability.                                                                                            |
+| Indexes                              | Party ledger lookups, refund/payout queues, invoice lookup.                                                                         |
 
 ## 3. Backend work
 
@@ -85,7 +85,7 @@ create a second payment architecture.
   payload, no rigid DTO whitelist.
 - Adapter gains `normalizeWebhook(headers, body)` returning
   `{ eventId, providerTransactionId, orderReference, amountMinor, currency,
-  status }`.
+status }`.
 - Insert `webhook_events` first; `UNIQUE` violation means duplicate → return
   `processed: false`.
 - Resolve the order strictly by `orderReference` (no fallback).
@@ -171,15 +171,15 @@ logged, never rolled back into the money transaction.
 
 ## 4. Frontend work
 
-| Screen | Change |
-| --- | --- |
-| `features/payments/pages/payments-page.tsx` | Refund button becomes “request refund”; show request status; link invoice print |
-| `features/tutors/pages/tutor-earnings-page.tsx` | Remove hardcoded balances/history/`setTimeout`; read summary, settlements and payouts; submit real payout request |
-| `features/admin/pages/settings/admin-settings-finance-page.tsx` | Load/save commission policy through the API; no fake local save |
-| New `features/admin/pages/admin-finance-page.tsx` | Refund queue, payout queue, escrow summary, reconciliation run |
-| New route `dashboard/admin/finance` | Admin finance operations |
-| `store/services/payments-api.ts` | Typed endpoints for refunds, payouts, tutor summary, invoices, admin finance |
-| Admin nav | Add Finance entry for finance roles |
+| Screen                                                          | Change                                                                                                            |
+| --------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `features/payments/pages/payments-page.tsx`                     | Refund button becomes “request refund”; show request status; link invoice print                                   |
+| `features/tutors/pages/tutor-earnings-page.tsx`                 | Remove hardcoded balances/history/`setTimeout`; read summary, settlements and payouts; submit real payout request |
+| `features/admin/pages/settings/admin-settings-finance-page.tsx` | Load/save commission policy through the API; no fake local save                                                   |
+| New `features/admin/pages/admin-finance-page.tsx`               | Refund queue, payout queue, escrow summary, reconciliation run                                                    |
+| New route `dashboard/admin/finance`                             | Admin finance operations                                                                                          |
+| `store/services/payments-api.ts`                                | Typed endpoints for refunds, payouts, tutor summary, invoices, admin finance                                      |
+| Admin nav                                                       | Add Finance entry for finance roles                                                                               |
 
 All new copy is bilingual. No production screen shows invented amounts.
 

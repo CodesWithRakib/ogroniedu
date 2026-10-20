@@ -14,6 +14,7 @@ import {
   toErrorDetails,
   type ApiErrorCode,
 } from '../api-error/api-error';
+import { sanitizeRequestPath } from '../utils/request-sanitizer';
 
 /**
  * Middleware-level failures raised before Nest's exception layer (e.g. the
@@ -61,6 +62,10 @@ export class AllExceptionsFilter implements ExceptionFilter {
     if (!request.requestId && typeof response.setHeader === 'function') {
       response.setHeader('x-request-id', requestId);
     }
+
+    const path = sanitizeRequestPath(request.originalUrl || request.url);
+    const method = request.method || 'GET';
+    const timestamp = new Date().toISOString();
 
     const status = resolveHttpStatus(exception);
 
@@ -113,14 +118,24 @@ export class AllExceptionsFilter implements ExceptionFilter {
       const detail =
         exception instanceof Error ? `${exception.message}\n${exception.stack}` : String(exception);
       this.logger.error(
-        `[${requestId || 'no-id'}] ${request.method} ${request.url} - ${status} ${code}: ${detail}`,
+        `[${requestId || 'no-id'}] ${method} ${path} - ${status} ${code}: ${detail}`,
       );
     } else {
       this.logger.warn(
-        `[${requestId || 'no-id'}] ${request.method} ${request.url} - ${status} ${code}: ${message}`,
+        `[${requestId || 'no-id'}] ${method} ${path} - ${status} ${code}: ${message}`,
       );
     }
 
-    response.status(status).json(errorEnvelope({ code, message, details, requestId }));
+    response.status(status).json(
+      errorEnvelope({
+        code,
+        message,
+        details,
+        requestId,
+        timestamp,
+        path,
+        method,
+      }),
+    );
   }
 }

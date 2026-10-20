@@ -133,9 +133,7 @@ export function StudentProgressPanel({
               {t.attendanceRate}
             </p>
             <p className="text-2xl font-black text-foreground">
-              {attendanceRate === null
-                ? '—'
-                : `${formatLocalizedNumber(attendanceRate, locale)}%`}
+              {attendanceRate === null ? '—' : `${formatLocalizedNumber(attendanceRate, locale)}%`}
             </p>
             <p className="text-[11px] text-muted-foreground">
               {attendanceRate === null
@@ -313,7 +311,10 @@ export function StudentProgressPanel({
           )}
 
           {canManageGoals && bookingId && (
-            <form onSubmit={handleCreateGoal} className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2">
+            <form
+              onSubmit={handleCreateGoal}
+              className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2"
+            >
               <div className="space-y-1">
                 <Label htmlFor="goal-title" className="text-[11px]">
                   {t.goalTitleLabel}
@@ -338,7 +339,12 @@ export function StudentProgressPanel({
                 />
               </div>
               <div className="flex items-end">
-                <Button type="submit" size="sm" isLoading={creating} disabled={goalTitle.trim().length < 3}>
+                <Button
+                  type="submit"
+                  size="sm"
+                  isLoading={creating}
+                  disabled={goalTitle.trim().length < 3}
+                >
                   {t.createGoal}
                 </Button>
               </div>

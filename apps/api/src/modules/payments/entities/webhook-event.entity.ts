@@ -1,18 +1,6 @@
-import {
-  Entity,
-  PrimaryGeneratedColumn,
-  Column,
-  CreateDateColumn,
-  Index,
-  Unique,
-} from 'typeorm';
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, Index, Unique } from 'typeorm';
 
-export type WebhookEventStatus =
-  | 'received'
-  | 'processed'
-  | 'duplicate'
-  | 'rejected'
-  | 'failed';
+export type WebhookEventStatus = 'received' | 'processed' | 'duplicate' | 'rejected' | 'failed';
 
 /**
  * Durable provider event log. The unique (provider, provider_event_id) index is

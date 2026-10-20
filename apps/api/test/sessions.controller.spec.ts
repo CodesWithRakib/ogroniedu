@@ -93,7 +93,7 @@ describe('SessionsController Unit Tests', () => {
     const res = await controller.scheduleSession(mockUser, dto);
     expect(res.success).toBe(true);
     expect(res.data.id).toBe('session-1');
-    expect(mockService.scheduleSession).toHaveBeenCalledWith(mockUser, dto);
+    expect(mockService.scheduleSession).toHaveBeenCalledWith(mockUser, dto, undefined);
   });
 
   it('should schedule recurring sessions', async () => {

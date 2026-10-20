@@ -32,11 +32,7 @@ export class LearningReportsController {
     @Param('studentUserId', ParseUUIDPipe) studentUserId: string,
     @Query() query: StudentScopedListQueryDto,
   ) {
-    const result = await this.attendance.getStudentAttendanceHistory(
-      user,
-      studentUserId,
-      query,
-    );
+    const result = await this.attendance.getStudentAttendanceHistory(user, studentUserId, query);
     return paginated(result.items, {
       page: result.page,
       pageSize: result.pageSize,

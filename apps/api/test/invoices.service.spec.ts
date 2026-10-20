@@ -103,14 +103,20 @@ describe('InvoicesService', () => {
     it('allows the payer, the student, and admins', async () => {
       await expect(service.getInvoice(payer, 'invoice-1')).resolves.toBe(invoice);
       await expect(
-        service.getInvoice({ id: studentId, email: 's@example.com', roles: ['student'] }, 'invoice-1'),
+        service.getInvoice(
+          { id: studentId, email: 's@example.com', roles: ['student'] },
+          'invoice-1',
+        ),
       ).resolves.toBe(invoice);
       await expect(service.getInvoice(admin, 'invoice-1')).resolves.toBe(invoice);
     });
 
     it('denies an unrelated user', async () => {
       await expect(
-        service.getInvoice({ id: strangerId, email: 'x@example.com', roles: ['student'] }, 'invoice-1'),
+        service.getInvoice(
+          { id: strangerId, email: 'x@example.com', roles: ['student'] },
+          'invoice-1',
+        ),
       ).rejects.toThrow(ForbiddenException);
     });
 

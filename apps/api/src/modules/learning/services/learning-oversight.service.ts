@@ -60,13 +60,15 @@ export class LearningOversightService {
     if (query.from) qb.andWhere('session.startsAt >= :from', { from: new Date(query.from) });
     if (query.to) qb.andWhere('session.startsAt <= :to', { to: new Date(query.to) });
 
-    const [rows, total] = await qb.skip((page - 1) * pageSize).take(pageSize).getManyAndCount();
+    const [rows, total] = await qb
+      .skip((page - 1) * pageSize)
+      .take(pageSize)
+      .getManyAndCount();
 
     return {
       items: rows.map((session) => {
-        const record = (
-          session as unknown as { attendanceRecord?: SessionAttendanceEntity | null }
-        ).attendanceRecord;
+        const record = (session as unknown as { attendanceRecord?: SessionAttendanceEntity | null })
+          .attendanceRecord;
         return {
           id: session.id,
           bookingId: session.bookingId,
@@ -74,8 +76,7 @@ export class LearningOversightService {
           endsAt: new Date(session.endsAt).toISOString(),
           timezone: session.timezone,
           status: session.status,
-          subjectName:
-            session.booking?.subject?.nameEn ?? session.booking?.subject?.nameBn ?? null,
+          subjectName: session.booking?.subject?.nameEn ?? session.booking?.subject?.nameBn ?? null,
           tutorName: session.tutorProfile?.user?.displayName ?? null,
           studentName: session.studentUser?.displayName ?? null,
           attendanceStatus: record?.attendanceStatus ?? null,

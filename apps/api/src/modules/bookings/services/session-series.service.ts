@@ -14,10 +14,7 @@ import { OutboxEventEntity } from '../entities/outbox-event.entity';
 import { AuditService } from '../../audit/audit.service';
 import { TutorAvailabilityService } from '../../tutors/services/tutor-availability.service';
 import { SessionQueriesService } from './session-queries.service';
-import {
-  assertNoTutorOverlapExcluding,
-  recordOutboxEvent,
-} from './session-booking.helpers';
+import { assertNoTutorOverlapExcluding, recordOutboxEvent } from './session-booking.helpers';
 import { SeriesCancelDto, SeriesRescheduleDto, SeriesScope } from '../dto';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { assessCancellation, CancellationInitiator } from '../utils/cancellation-policy';
@@ -109,8 +106,7 @@ export class SessionSeriesService {
         await sessionRepo.save(session);
       }
 
-      series.status =
-        dto.scope === 'entire_series' ? 'cancelled' : series.status;
+      series.status = dto.scope === 'entire_series' ? 'cancelled' : series.status;
       if (dto.scope === 'this_and_future' && dto.anchorSessionId) {
         const anchor = allSessions.find((s) => s.id === dto.anchorSessionId);
         if (anchor) {
@@ -315,9 +311,7 @@ export class SessionSeriesService {
       return sessions;
     }
     if (!anchorSessionId) {
-      throw new BadRequestException(
-        `anchorSessionId is required for scope '${scope}'.`,
-      );
+      throw new BadRequestException(`anchorSessionId is required for scope '${scope}'.`);
     }
     const anchor = sessions.find((s) => s.id === anchorSessionId);
     if (!anchor) {
