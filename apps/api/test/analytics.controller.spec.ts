@@ -16,6 +16,14 @@ describe('AnalyticsController & RBAC Security Specifications (Phase 15)', () => 
     getTutorPerformanceAnalytics: vi.fn().mockResolvedValue({ topTutors: [] }),
     getRetentionAnalytics: vi.fn().mockResolvedValue({ retentionRate: 40 }),
     getMyTutorAnalytics: vi.fn().mockResolvedValue({ inquiries: { acceptanceRate: 90 } }),
+    getFunnelAnalytics: vi.fn().mockResolvedValue({ stages: [] }),
+    getActivationAnalytics: vi.fn().mockResolvedValue({ student: {}, guardian: {}, tutor: {} }),
+    getLearningEngagementAnalytics: vi.fn().mockResolvedValue({ sessions: {}, homework: {} }),
+    getOrganizationAnalytics: vi.fn().mockResolvedValue({ organization: { id: 'org-1' }, metrics: {} }),
+  };
+
+  const mockEventTrackingService = {
+    trackClientEvent: vi.fn().mockResolvedValue({ recorded: true }),
   };
 
   function createMockExecutionContext(user: AuthenticatedUser | undefined): ExecutionContext {
@@ -32,7 +40,11 @@ describe('AnalyticsController & RBAC Security Specifications (Phase 15)', () => 
 
   beforeEach(() => {
     vi.clearAllMocks();
-    controller = new AnalyticsController(mockAnalyticsService as any, mockAnalyticsService as any);
+    controller = new AnalyticsController(
+      mockAnalyticsService as any,
+      mockAnalyticsService as any,
+      mockEventTrackingService as any,
+    );
     reflector = new Reflector();
     rolesGuard = new RolesGuard(reflector);
   });
@@ -129,6 +141,39 @@ describe('AnalyticsController & RBAC Security Specifications (Phase 15)', () => 
       const res = await controller.getMyTutorAnalytics(tutorUser, {});
       expect(res.success).toBe(true);
       expect(mockAnalyticsService.getMyTutorAnalytics).toHaveBeenCalledWith(tutorUser.id, {});
+    });
+
+    it('should invoke trackEvent endpoint', async () => {
+      const res = await controller.trackEvent(
+        { eventName: 'tutor_search_performed' as any, sessionId: 'sess-1' },
+        tutorUser,
+      );
+      expect(res.success).toBe(true);
+      expect(mockEventTrackingService.trackClientEvent).toHaveBeenCalled();
+    });
+
+    it('should invoke getFunnelAnalytics endpoint', async () => {
+      const res = await controller.getFunnelAnalytics({});
+      expect(res.success).toBe(true);
+      expect(mockAnalyticsService.getFunnelAnalytics).toHaveBeenCalled();
+    });
+
+    it('should invoke getActivationAnalytics endpoint', async () => {
+      const res = await controller.getActivationAnalytics({});
+      expect(res.success).toBe(true);
+      expect(mockAnalyticsService.getActivationAnalytics).toHaveBeenCalled();
+    });
+
+    it('should invoke getLearningEngagementAnalytics endpoint', async () => {
+      const res = await controller.getLearningEngagementAnalytics({});
+      expect(res.success).toBe(true);
+      expect(mockAnalyticsService.getLearningEngagementAnalytics).toHaveBeenCalled();
+    });
+
+    it('should invoke getOrganizationAnalytics endpoint with organization ID', async () => {
+      const res = await controller.getOrganizationAnalytics('org-123', {}, tutorUser);
+      expect(res.success).toBe(true);
+      expect(mockAnalyticsService.getOrganizationAnalytics).toHaveBeenCalledWith('org-123', {}, tutorUser);
     });
   });
 });

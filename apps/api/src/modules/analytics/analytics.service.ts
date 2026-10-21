@@ -1,4 +1,4 @@
-import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
+import { Injectable, Logger, Inject, Optional, ForbiddenException, NotFoundException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { LedgerService } from '../payments/ledger.service';
@@ -322,6 +322,325 @@ export class AnalyticsService {
       repeatLearners,
       loyalLearners,
       retentionRate,
+    };
+  }
+
+  /**
+   * 4b. Multi-Stage Booking & Discovery Funnel Analysis
+   * Stages: Search -> Profile View -> Booking Started -> Request Submitted -> Confirmed -> Paid -> Completed
+   */
+  async getFunnelAnalytics(query: AnalyticsTimeQueryDto) {
+    const { start, end } = this.parseTimeBounds(query);
+
+    const eventCountsRes = await this.dataSource.query(
+      `SELECT 
+         COUNT(id) FILTER (WHERE event_name = 'tutor_search_performed')::int as search_count,
+         COUNT(id) FILTER (WHERE event_name = 'tutor_profile_viewed')::int as profile_views_count,
+         COUNT(id) FILTER (WHERE event_name = 'booking_started')::int as booking_started_count
+       FROM product_analytics_events
+       WHERE created_at BETWEEN $1 AND $2;`,
+      [start, end],
+    );
+
+    const zeroResultSearchesRes = await this.dataSource.query(
+      `SELECT 
+         COUNT(id)::int as zero_result_count
+       FROM product_analytics_events
+       WHERE event_name = 'tutor_search_performed' 
+         AND (properties->>'result_count')::int = 0
+         AND created_at BETWEEN $1 AND $2;`,
+      [start, end],
+    );
+
+    const bookingsRes = await this.dataSource.query(
+      `SELECT 
+         COUNT(id)::int as total_requested,
+         COUNT(id) FILTER (WHERE status IN ('confirmed', 'in_progress', 'completed'))::int as confirmed
+       FROM bookings
+       WHERE created_at BETWEEN $1 AND $2;`,
+      [start, end],
+    );
+
+    const paymentsRes = await this.dataSource.query(
+      `SELECT COUNT(id)::int as succeeded_payments
+       FROM payment_orders
+       WHERE status = 'succeeded' AND created_at BETWEEN $1 AND $2;`,
+      [start, end],
+    );
+
+    const sessionsRes = await this.dataSource.query(
+      `SELECT COUNT(id)::int as completed_sessions
+       FROM booking_sessions
+       WHERE status = 'completed' AND starts_at BETWEEN $1 AND $2;`,
+      [start, end],
+    );
+
+    const searchCount = eventCountsRes[0]?.search_count || 0;
+    const profileViews = eventCountsRes[0]?.profile_views_count || 0;
+    const bookingStarted = eventCountsRes[0]?.booking_started_count || 0;
+    const requestsSubmitted = bookingsRes[0]?.total_requested || 0;
+    const bookingsConfirmed = bookingsRes[0]?.confirmed || 0;
+    const paymentsSucceeded = paymentsRes[0]?.succeeded_payments || 0;
+    const sessionsCompleted = sessionsRes[0]?.completed_sessions || 0;
+
+    const zeroResultCount = zeroResultSearchesRes[0]?.zero_result_count || 0;
+    const zeroResultRate = searchCount > 0 ? Number(((zeroResultCount / searchCount) * 100).toFixed(2)) : 0;
+
+    const rawStages = [
+      { key: 'tutor_search', label: 'Tutor Searches', count: searchCount },
+      { key: 'profile_view', label: 'Profile Views', count: profileViews },
+      { key: 'booking_started', label: 'Bookings Started', count: bookingStarted },
+      { key: 'booking_submitted', label: 'Requests Submitted', count: requestsSubmitted },
+      { key: 'booking_confirmed', label: 'Bookings Confirmed', count: bookingsConfirmed },
+      { key: 'payment_completed', label: 'Payments Captured', count: paymentsSucceeded },
+      { key: 'lesson_completed', label: 'First Lessons Completed', count: sessionsCompleted },
+    ];
+
+    const baseline = searchCount > 0 ? searchCount : (profileViews > 0 ? profileViews : requestsSubmitted);
+
+    const stages = rawStages.map((stage, idx) => {
+      const prevCount = idx === 0 ? stage.count : rawStages[idx - 1].count;
+      const conversionFromPrev = prevCount > 0 ? Number(((stage.count / prevCount) * 100).toFixed(2)) : 0;
+      const overallConversion = baseline > 0 ? Number(((stage.count / baseline) * 100).toFixed(2)) : 0;
+      const dropOffRate = Number(Math.max(0, 100 - conversionFromPrev).toFixed(2));
+
+      return {
+        stageIndex: idx + 1,
+        stageKey: stage.key,
+        label: stage.label,
+        count: stage.count,
+        conversionRateFromPrevious: conversionFromPrev,
+        overallConversionRate: overallConversion,
+        dropOffRate,
+      };
+    });
+
+    return {
+      timeWindow: {
+        startDate: start.toISOString(),
+        endDate: end.toISOString(),
+      },
+      stages,
+      zeroResultSearches: {
+        totalSearches: searchCount,
+        zeroResultCount,
+        zeroResultRate,
+      },
+    };
+  }
+
+  /**
+   * 4c. Role-Specific User Activation Metrics (Student, Guardian, Tutor)
+   */
+  async getActivationAnalytics(query: AnalyticsTimeQueryDto) {
+    const { start, end } = this.parseTimeBounds(query);
+
+    const studentRes = await this.dataSource.query(
+      `SELECT 
+         COUNT(u.id)::int as registered_students,
+         COUNT(u.id) FILTER (WHERE u.is_onboarded = true)::int as onboarded_students,
+         COUNT(DISTINCT b.student_user_id)::int as active_students
+       FROM users u
+       LEFT JOIN bookings b ON b.student_user_id = u.id AND b.created_at BETWEEN $1 AND $2
+       WHERE u.role = 'student' AND u.created_at BETWEEN $1 AND $2;`,
+      [start, end],
+    );
+
+    const guardianRes = await this.dataSource.query(
+      `SELECT 
+         COUNT(u.id)::int as registered_guardians,
+         COUNT(DISTINCT gsl.guardian_user_id)::int as linked_guardians,
+         COUNT(DISTINCT b.student_user_id)::int as active_guardians
+       FROM users u
+       LEFT JOIN guardian_student_links gsl ON gsl.guardian_user_id = u.id AND gsl.is_verified = true
+       LEFT JOIN bookings b ON b.student_user_id = gsl.student_user_id AND b.created_at BETWEEN $1 AND $2
+       WHERE u.role = 'guardian' AND u.created_at BETWEEN $1 AND $2;`,
+      [start, end],
+    );
+
+    const tutorRes = await this.dataSource.query(
+      `SELECT 
+         COUNT(u.id)::int as registered_tutors,
+         COUNT(tp.user_id) FILTER (WHERE tp.publication_status = 'published')::int as published_tutors,
+         COUNT(tp.user_id) FILTER (WHERE tp.verification_status = 'verified')::int as verified_tutors,
+         COUNT(DISTINCT b.tutor_user_id) FILTER (WHERE b.status IN ('confirmed', 'in_progress', 'completed'))::int as active_tutors
+       FROM users u
+       JOIN tutor_profiles tp ON tp.user_id = u.id
+       LEFT JOIN bookings b ON b.tutor_user_id = u.id AND b.created_at BETWEEN $1 AND $2
+       WHERE u.role = 'tutor' AND u.created_at BETWEEN $1 AND $2;`,
+      [start, end],
+    );
+
+    const regStudents = studentRes[0]?.registered_students || 0;
+    const actStudents = studentRes[0]?.active_students || 0;
+    const regGuardians = guardianRes[0]?.registered_guardians || 0;
+    const actGuardians = guardianRes[0]?.active_guardians || 0;
+    const regTutors = tutorRes[0]?.registered_tutors || 0;
+    const verTutors = tutorRes[0]?.verified_tutors || 0;
+    const actTutors = tutorRes[0]?.active_tutors || 0;
+
+    return {
+      timeWindow: {
+        startDate: start.toISOString(),
+        endDate: end.toISOString(),
+      },
+      student: {
+        registered: regStudents,
+        onboarded: studentRes[0]?.onboarded_students || 0,
+        activeWithBookings: actStudents,
+        activationRate: regStudents > 0 ? Number(((actStudents / regStudents) * 100).toFixed(2)) : 0,
+      },
+      guardian: {
+        registered: regGuardians,
+        withLinkedChildren: guardianRes[0]?.linked_guardians || 0,
+        activeWithChildBookings: actGuardians,
+        activationRate: regGuardians > 0 ? Number(((actGuardians / regGuardians) * 100).toFixed(2)) : 0,
+      },
+      tutor: {
+        registered: regTutors,
+        published: tutorRes[0]?.published_tutors || 0,
+        verified: verTutors,
+        activeWithConfirmedBookings: actTutors,
+        verificationRate: regTutors > 0 ? Number(((verTutors / regTutors) * 100).toFixed(2)) : 0,
+        activationRate: regTutors > 0 ? Number(((actTutors / regTutors) * 100).toFixed(2)) : 0,
+      },
+    };
+  }
+
+  /**
+   * 4d. Learning Engagement & Homework Submission Metrics
+   */
+  async getLearningEngagementAnalytics(query: AnalyticsTimeQueryDto) {
+    const { start, end } = this.parseTimeBounds(query);
+
+    const sessionsRes = await this.dataSource.query(
+      `SELECT 
+         COUNT(id)::int as total_sessions,
+         COUNT(id) FILTER (WHERE status = 'completed')::int as completed_sessions,
+         COUNT(id) FILTER (WHERE status = 'cancelled')::int as cancelled_sessions,
+         COUNT(id) FILTER (WHERE status = 'no_show')::int as no_show_sessions,
+         COUNT(id) FILTER (WHERE status = 'scheduled')::int as scheduled_sessions
+       FROM booking_sessions
+       WHERE starts_at BETWEEN $1 AND $2;`,
+      [start, end],
+    );
+
+    const assignmentsRes = await this.dataSource.query(
+      `SELECT 
+         COUNT(a.id)::int as total_assignments,
+         COUNT(sub.id)::int as total_submissions,
+         COUNT(sub.id) FILTER (WHERE sub.status = 'reviewed')::int as reviewed_submissions,
+         COALESCE(ROUND(AVG(sub.score)::numeric, 1), 0) as average_score
+       FROM assignments a
+       LEFT JOIN assignment_submissions sub ON sub.assignment_id = a.id
+       WHERE a.created_at BETWEEN $1 AND $2;`,
+      [start, end],
+    );
+
+    const totalSessions = sessionsRes[0]?.total_sessions || 0;
+    const completedSessions = sessionsRes[0]?.completed_sessions || 0;
+    const noShowSessions = sessionsRes[0]?.no_show_sessions || 0;
+    const attendedDenominator = completedSessions + noShowSessions;
+    const attendanceRate = attendedDenominator > 0 ? Number(((completedSessions / attendedDenominator) * 100).toFixed(2)) : 0;
+
+    const totalAssignments = assignmentsRes[0]?.total_assignments || 0;
+    const totalSubmissions = assignmentsRes[0]?.total_submissions || 0;
+    const reviewedSubmissions = assignmentsRes[0]?.reviewed_submissions || 0;
+
+    const submissionRate = totalAssignments > 0 ? Number(((totalSubmissions / totalAssignments) * 100).toFixed(2)) : 0;
+    const reviewRate = totalSubmissions > 0 ? Number(((reviewedSubmissions / totalSubmissions) * 100).toFixed(2)) : 0;
+
+    return {
+      timeWindow: {
+        startDate: start.toISOString(),
+        endDate: end.toISOString(),
+      },
+      sessions: {
+        totalSessions,
+        completedSessions,
+        cancelledSessions: sessionsRes[0]?.cancelled_sessions || 0,
+        noShowSessions,
+        scheduledSessions: sessionsRes[0]?.scheduled_sessions || 0,
+        attendanceRate,
+      },
+      homework: {
+        totalAssignments,
+        totalSubmissions,
+        reviewedSubmissions,
+        averageScore: Number(assignmentsRes[0]?.average_score || 0),
+        submissionRate,
+        reviewRate,
+      },
+    };
+  }
+
+  /**
+   * 4e. Tenant-Isolated Organization Analytics
+   */
+  async getOrganizationAnalytics(organizationId: string, query: AnalyticsTimeQueryDto, actor: AuthenticatedUser) {
+    const { start, end } = this.parseTimeBounds(query);
+
+    const roles = Array.isArray(actor.roles) ? actor.roles : (actor as any).role ? [(actor as any).role] : [];
+    const isPlatformAdmin = roles.includes('admin') || roles.includes('super_admin');
+    if (!isPlatformAdmin) {
+      const membership = await this.dataSource.query(
+        `SELECT role FROM organization_members WHERE organization_id = $1 AND user_id = $2
+         UNION
+         SELECT 'owner' as role FROM organizations WHERE id = $1 AND owner_user_id = $2;`,
+        [organizationId, actor.id],
+      );
+      if (membership.length === 0) {
+        throw new ForbiddenException('Access denied: You do not have permission to view analytics for this organization.');
+      }
+    }
+
+    const orgRes = await this.dataSource.query(
+      `SELECT id, name, slug, status FROM organizations WHERE id = $1;`,
+      [organizationId],
+    );
+    if (orgRes.length === 0) {
+      throw new NotFoundException(`Organization with ID ${organizationId} not found.`);
+    }
+
+    const statsRes = await this.dataSource.query(
+      `SELECT 
+         COUNT(DISTINCT tp.user_id)::int as member_tutors_count,
+         COUNT(b.id)::int as total_bookings,
+         COUNT(b.id) FILTER (WHERE b.status IN ('confirmed', 'in_progress', 'completed'))::int as confirmed_bookings,
+         COUNT(DISTINCT b.student_user_id)::int as unique_students_served,
+         COALESCE(SUM(b.total_price_minor) FILTER (WHERE b.status = 'completed'), 0)::bigint as completed_volume_minor
+       FROM tutor_profiles tp
+       LEFT JOIN bookings b ON b.tutor_user_id = tp.user_id AND b.created_at BETWEEN $1 AND $2
+       WHERE tp.organization_id = $3;`,
+      [start, end, organizationId],
+    );
+
+    const org = orgRes[0];
+    const stats = statsRes[0];
+    const totalBookings = stats?.total_bookings || 0;
+    const confirmedBookings = stats?.confirmed_bookings || 0;
+    const conversionRate = totalBookings > 0 ? Number(((confirmedBookings / totalBookings) * 100).toFixed(2)) : 0;
+    const completedVolumeBdt = Number(BigInt(stats?.completed_volume_minor || 0)) / 100;
+
+    return {
+      organization: {
+        id: org.id,
+        name: org.name,
+        slug: org.slug,
+        status: org.status,
+      },
+      timeWindow: {
+        startDate: start.toISOString(),
+        endDate: end.toISOString(),
+      },
+      metrics: {
+        memberTutorsCount: stats?.member_tutors_count || 0,
+        totalBookings,
+        confirmedBookings,
+        conversionRate,
+        uniqueStudentsServed: stats?.unique_students_served || 0,
+        completedVolumeBdt,
+      },
     };
   }
 

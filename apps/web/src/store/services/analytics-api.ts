@@ -77,6 +77,48 @@ export const analyticsApi = baseApi.injectEndpoints({
       query: (params) => `/api/v1/analytics/tutors/me${toQuery(params)}`,
       providesTags: [{ type: 'Analytics', id: 'ME' }],
     }),
+    getFunnelAnalytics: builder.query<ApiSuccessEnvelope<unknown>, AnalyticsTimeParams | void>({
+      query: (params) => `/api/v1/analytics/funnel${toQuery(params)}`,
+      providesTags: [{ type: 'Analytics', id: 'FUNNEL' }],
+    }),
+    getActivationAnalytics: builder.query<ApiSuccessEnvelope<unknown>, AnalyticsTimeParams | void>({
+      query: (params) => `/api/v1/analytics/activation${toQuery(params)}`,
+      providesTags: [{ type: 'Analytics', id: 'ACTIVATION' }],
+    }),
+    getLearningEngagementAnalytics: builder.query<
+      ApiSuccessEnvelope<unknown>,
+      AnalyticsTimeParams | void
+    >({
+      query: (params) => `/api/v1/analytics/learning${toQuery(params)}`,
+      providesTags: [{ type: 'Analytics', id: 'LEARNING' }],
+    }),
+    getOrganizationAnalytics: builder.query<
+      ApiSuccessEnvelope<unknown>,
+      { organizationId: string; params?: AnalyticsTimeParams }
+    >({
+      query: ({ organizationId, params }) =>
+        `/api/v1/analytics/organizations/${organizationId}${toQuery(params)}`,
+      providesTags: (_res, _err, { organizationId }) => [
+        { type: 'Analytics', id: `ORG_${organizationId}` },
+      ],
+    }),
+    trackAnalyticsEvent: builder.mutation<
+      ApiSuccessEnvelope<{ recorded: boolean }>,
+      {
+        eventName: string;
+        sessionId?: string;
+        entityType?: string;
+        entityId?: string;
+        properties?: Record<string, unknown>;
+        clientTimestamp?: string;
+      }
+    >({
+      query: (body) => ({
+        url: '/api/v1/analytics/events',
+        method: 'POST',
+        body,
+      }),
+    }),
   }),
   overrideExisting: false,
 });
@@ -87,4 +129,9 @@ export const {
   useGetTutorPerformanceAnalyticsQuery,
   useGetRetentionAnalyticsQuery,
   useGetMyTutorAnalyticsQuery,
+  useGetFunnelAnalyticsQuery,
+  useGetActivationAnalyticsQuery,
+  useGetLearningEngagementAnalyticsQuery,
+  useGetOrganizationAnalyticsQuery,
+  useTrackAnalyticsEventMutation,
 } = analyticsApi;

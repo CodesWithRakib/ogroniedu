@@ -43,7 +43,7 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
     const executed = await runner.runMigrations();
 
     // Verify all 22 ordered migrations were replayed from WAL / migration log
-    expect(executed).toHaveLength(29);
+    expect(executed).toHaveLength(30);
     expect(executed).toEqual([
       '001_initial_schema.sql',
       '002_auth_verification_codes.sql',
@@ -74,13 +74,14 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
       '027_organizations_and_platform_governance.sql',
       '028_search_performance_and_production_readiness.sql',
       '029_beta_testing_and_feedback.sql',
+      '030_product_analytics_events.sql',
     ]);
 
     // Verify schema_migrations ledger records all 22 entries
     const migrationRecords = await client.query<{ name: string; id: number }>(
       'SELECT id, name FROM schema_migrations ORDER BY id ASC;',
     );
-    expect(migrationRecords.rows).toHaveLength(29);
+    expect(migrationRecords.rows).toHaveLength(30);
     expect(migrationRecords.rows[0].name).toBe('001_initial_schema.sql');
     expect(migrationRecords.rows[21].name).toBe('022_payments_escrow_payouts.sql');
   });
@@ -176,7 +177,7 @@ describe('NFR-006: Database BCDR Disaster Recovery & Migration Replay Drill', ()
 
     const status = await runner.getStatus();
     expect(status.pending).toHaveLength(0);
-    expect(status.applied).toHaveLength(29);
+    expect(status.applied).toHaveLength(30);
   });
 
   it('STAGE 5: Double-entry ledger balance conservation invariant drill', async () => {
