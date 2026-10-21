@@ -39,6 +39,28 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
       inject: [ConfigService],
       useFactory: (config: ConfigService) => {
         const isTest = process.env.NODE_ENV === 'test';
+        const databaseUrl = config.get<string>('DATABASE_URL');
+        const dbSsl = config.get<string>('DB_SSL');
+        const isSsl =
+          dbSsl === 'true' ||
+          Boolean(databaseUrl && databaseUrl.includes('sslmode=require')) ||
+          config.get<string>('NODE_ENV') === 'production';
+
+        const sslOption = isSsl ? { rejectUnauthorized: false } : false;
+
+        if (databaseUrl) {
+          return {
+            type: 'postgres',
+            url: databaseUrl,
+            ssl: sslOption,
+            entities: [],
+            synchronize: false,
+            autoLoadEntities: true,
+            retryAttempts: isTest ? 1 : 3,
+            retryDelay: 1000,
+          };
+        }
+
         return {
           type: 'postgres',
           host: config.get<string>('DB_HOST', 'localhost'),
@@ -46,6 +68,7 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
           username: config.get<string>('DB_USERNAME', 'postgres'),
           password: config.get<string>('DB_PASSWORD', 'password'),
           database: config.get<string>('DB_NAME', 'ogroniedu_dev'),
+          ssl: sslOption,
           // Entities are registered by feature modules via TypeOrmModule.forFeature
           // and picked up automatically (autoLoadEntities). The root module owns
           // wiring only — never the entity list (backlog B-6).

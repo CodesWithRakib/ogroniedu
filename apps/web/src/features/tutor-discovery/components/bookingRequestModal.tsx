@@ -328,13 +328,13 @@ export function BookingRequestModal({
               />
             </div>
 
-            <div className="flex items-center justify-end gap-3 pt-2">
+            <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={onClose}
-                className="rounded-xl px-5 border-slate-300 text-slate-700 font-semibold"
+                className="rounded-xl px-5 border-slate-200 text-slate-700 font-bold text-xs"
               >
                 {dict.common?.cancel || (isBn ? 'বাতিল করুন' : 'Cancel')}
               </Button>
@@ -345,7 +345,7 @@ export function BookingRequestModal({
                 isLoading={isSubmitting}
                 disabled={studentOptions.length === 0}
                 data-testid="submit-booking-request"
-                className="rounded-xl px-6 bg-blue-600 hover:bg-blue-700 text-white font-bold shadow-xs"
+                className="rounded-xl px-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-xs shadow-blue-500/25"
               >
                 {dict.bookingRequest?.submitButton || (isBn ? 'অনুরোধ পাঠান' : 'Send Request')}
               </Button>

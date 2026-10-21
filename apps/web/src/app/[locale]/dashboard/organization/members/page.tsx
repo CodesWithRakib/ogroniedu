@@ -18,6 +18,14 @@ import {
   useRemoveOrganizationMemberMutation,
 } from '@/store/services/organizations-api';
 import type { OrganizationRecord } from '@ogroniedu/contracts';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/Button';
 
 export default function OrganizationMembersPage() {
   const { data: myOrgsData, isLoading: orgsLoading } = useGetMyOrganizationsQuery();
@@ -214,31 +222,35 @@ export default function OrganizationMembersPage() {
 
       {/* Invite Modal */}
       {showInviteModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-card w-full max-w-md rounded-2xl border border-border shadow-xl p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center shrink-0">
-                <Mail className="w-5 h-5" />
+        <Dialog open={showInviteModal} onOpenChange={(open) => !open && setShowInviteModal(false)}>
+          <DialogContent className="bg-white w-full max-w-md rounded-3xl border border-slate-200 shadow-2xl p-6 space-y-4 text-left">
+            <DialogHeader className="border-b border-slate-100 pb-3 text-left">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 flex items-center justify-center shrink-0">
+                  <Mail className="w-5 h-5" />
+                </div>
+                <div>
+                  <DialogTitle className="text-base font-black text-slate-900">
+                    Invite Member or Tutor
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-slate-600">
+                    Send an official invitation to join{' '}
+                    <span className="font-semibold text-slate-900">{currentOrg.name}</span>.
+                  </DialogDescription>
+                </div>
               </div>
-              <div>
-                <h3 className="text-base font-bold text-foreground">Invite Member or Tutor</h3>
-                <p className="text-xs text-muted-foreground">
-                  Send an official invitation to join{' '}
-                  <span className="font-semibold text-foreground">{currentOrg.name}</span>.
-                </p>
-              </div>
-            </div>
+            </DialogHeader>
 
             {inviteSuccess && (
-              <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-lg flex items-center gap-2">
-                <CheckCircle className="w-4 h-4 text-emerald-600" />
-                Invitation sent successfully! Token generated.
+              <div className="p-3 bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs rounded-xl flex items-center gap-2">
+                <CheckCircle className="w-4 h-4 text-emerald-600 shrink-0" />
+                <span>Invitation sent successfully! Token generated.</span>
               </div>
             )}
 
             <form onSubmit={handleInviteSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-foreground mb-1">
+                <label className="block text-xs font-bold text-slate-800 mb-1">
                   Invitee Email Address
                 </label>
                 <input
@@ -247,18 +259,18 @@ export default function OrganizationMembersPage() {
                   placeholder="tutor@example.com"
                   value={inviteEmail}
                   onChange={(e) => setInviteEmail(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-lg border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-medium text-foreground mb-1">
+                <label className="block text-xs font-bold text-slate-800 mb-1">
                   Assigned Organizational Role
                 </label>
                 <select
                   value={inviteRole}
                   onChange={(e) => setInviteRole(e.target.value as any)}
-                  className="w-full text-xs p-2.5 rounded-lg border border-border bg-surface text-foreground"
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 >
                   <option value="tutor">Affiliated Tutor (Delivers institutional sessions)</option>
                   <option value="staff">Academic Staff (Coordinates schedules)</option>
@@ -266,25 +278,29 @@ export default function OrganizationMembersPage() {
                 </select>
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <button
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => setShowInviteModal(false)}
-                  className="px-3.5 py-2 text-xs font-medium text-muted-foreground hover:text-foreground bg-surface border border-border rounded-lg transition"
+                  className="rounded-xl border-slate-200 text-slate-700"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  disabled={isInviting}
-                  className="px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 transition"
+                  size="sm"
+                  isLoading={isInviting}
+                  variant="primary"
+                  className="rounded-xl font-bold"
                 >
-                  {isInviting ? 'Sending...' : 'Send Invitation'}
-                </button>
+                  Send Invitation
+                </Button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

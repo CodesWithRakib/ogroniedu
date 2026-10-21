@@ -11,6 +11,8 @@ export interface MigrationConfig {
   user?: string;
   password?: string;
   database?: string;
+  connectionString?: string;
+  ssl?: boolean | { rejectUnauthorized?: boolean };
 }
 
 export class MigrationRunner {
@@ -18,16 +20,35 @@ export class MigrationRunner {
 
   constructor(config: MigrationConfig = {}) {
     this.config = {
+      connectionString: config.connectionString || process.env.DATABASE_URL,
       host: config.host || process.env.DB_HOST || 'localhost',
       port: config.port || Number(process.env.DB_PORT) || 5432,
       user: config.user || process.env.DB_USERNAME || 'postgres',
       password: config.password || process.env.DB_PASSWORD || 'password',
       database: config.database || process.env.DB_NAME || 'ogroniedu_dev',
+      ssl: config.ssl,
     };
   }
 
   private async getClient(): Promise<pg.Client> {
-    const client = new Client(this.config);
+    const connectionString = this.config.connectionString;
+    const isSsl =
+      Boolean(this.config.ssl) ||
+      process.env.DB_SSL === 'true' ||
+      Boolean(connectionString && connectionString.includes('sslmode=require'));
+    const ssl = isSsl ? { rejectUnauthorized: false } : undefined;
+
+    const client = connectionString
+      ? new Client({ connectionString, ssl })
+      : new Client({
+          host: this.config.host,
+          port: this.config.port,
+          user: this.config.user,
+          password: this.config.password,
+          database: this.config.database,
+          ssl,
+        });
+
     await client.connect();
     return client;
   }

@@ -98,15 +98,15 @@ export function TutorReplacementModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="tutor-replacement-modal"
-        className="w-full max-w-xl rounded-2xl border border-primary/30 bg-card p-6 text-foreground shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-xl rounded-3xl border border-blue-200 bg-white p-6 text-slate-900 shadow-2xl max-h-[90vh] overflow-y-auto text-left"
       >
         {isSuccess ? (
           <div className="py-10 text-center space-y-4">
-            <CheckCircle2 className="w-16 h-16 text-primary mx-auto animate-bounce" />
-            <h3 className="text-xl font-bold text-foreground">
+            <CheckCircle2 className="w-16 h-16 text-emerald-600 mx-auto animate-bounce" />
+            <h3 className="text-xl font-black text-slate-900">
               {isBn ? 'রিপ্লেসমেন্ট দাবি সফলভাবে গৃহীত হয়েছে' : 'Guarantee Request Active'}
             </h3>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            <p className="text-sm text-slate-600 max-w-md mx-auto">
               {isBn
                 ? '৪৮ ঘণ্টার কাউন্টডাউন শুরু হয়েছে। আমাদের ম্যাচিং টিম আপনার সাথে যোগাযোগ করবে।'
                 : 'The 48-hour guarantee clock has started. Our team is curating matching replacement tutors.'}
@@ -114,18 +114,18 @@ export function TutorReplacementModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            <DialogHeader className="border-b border-primary/20 pb-4 text-left">
+            <DialogHeader className="border-b border-slate-100 pb-4 text-left">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-primary/15 border border-primary/25 text-primary flex items-center justify-center shrink-0">
+                <div className="h-10 w-10 rounded-2xl bg-blue-50 border border-blue-200/80 text-blue-600 flex items-center justify-center shrink-0">
                   <RefreshCw className="w-5 h-5" />
                 </div>
                 <div>
-                  <DialogTitle className="text-lg font-bold text-foreground">
+                  <DialogTitle className="text-lg font-black text-slate-900">
                     {isBn
                       ? '৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি'
                       : '48-Hour Tutor Replacement Guarantee'}
                   </DialogTitle>
-                  <DialogDescription className="text-xs text-muted-foreground mt-0.5">
+                  <DialogDescription className="text-xs font-semibold text-blue-700 mt-0.5">
                     {tutorName && subjectName
                       ? isBn
                         ? `${tutorName} (${subjectName})-এর বিকল্প শিক্ষক দাবি করুন`

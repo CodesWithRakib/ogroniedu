@@ -1,8 +1,15 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { PhoneCall, ShieldAlert, AlertTriangle, X, Lock } from 'lucide-react';
-import { Button } from '@/components/ui';
+import { PhoneCall, ShieldAlert, AlertTriangle, Lock } from 'lucide-react';
+import { Button } from '@/components/ui/Button';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 
 interface EmergencySosModalProps {
@@ -71,46 +78,37 @@ export function EmergencySosModal({
       titleEn: 'OgroniEdu Safety Triage Desk',
       subtitleBn: 'অনুপযুক্ত শিক্ষক আচরণ, ব্ল্যাকমেইল বা অবৈধ লেনদেন রোধে সরাসরি সহায়তা',
       subtitleEn: 'Dedicated Platform Incident & Immediate Escalation Team',
-      color: 'border-info/40 bg-info-soft text-info-soft-foreground',
+      color: 'border-blue-200 bg-blue-50/70 text-blue-900',
       badge: isBn ? 'প্ল্যাটফর্ম হেল্প' : 'Platform Support',
     },
   ];
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/85 backdrop-blur-md animate-in fade-in">
-      <div
-        className="w-full max-w-xl bg-surface-muted border border-destructive/40 rounded-2xl p-6 md:p-8 space-y-6 text-foreground max-h-[90vh] overflow-y-auto"
+    <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
+      <DialogContent
         data-testid="emergency-sos-modal"
+        className="w-full max-w-xl bg-white border border-slate-200 rounded-3xl p-6 md:p-8 space-y-6 text-slate-900 max-h-[90vh] overflow-y-auto shadow-2xl text-left"
       >
         {/* Header */}
-        <div className="flex items-center justify-between border-b border-destructive/40 pb-4">
+        <DialogHeader className="border-b border-slate-100 pb-4 text-left">
           <div className="flex items-center gap-3 text-destructive">
-            <div className="p-2.5 rounded-2xl bg-destructive/20 border border-destructive/40 animate-pulse">
+            <div className="p-2.5 rounded-2xl bg-destructive/10 border border-destructive/30 animate-pulse">
               <ShieldAlert className="w-6 h-6" />
             </div>
             <div>
-              <h3 className="text-xl font-black text-foreground flex items-center gap-2">
+              <DialogTitle className="text-xl font-black text-slate-900 flex items-center gap-2">
                 <span>
                   {isBn ? 'জরুরি নিরাপত্তা ও এসওএস হেল্পলাইন' : 'Emergency SOS & Safety Hub'}
                 </span>
-              </h3>
-              <p className="text-xs text-destructive-soft-foreground font-medium">
+              </DialogTitle>
+              <DialogDescription className="text-xs text-destructive font-medium mt-0.5">
                 {isBn
                   ? 'শিশুর শারীরিক, মানসিক ও আর্থিক সুরক্ষায় যেকোনো মুহূর্তে সরাসরি যোগাযোগ করুন'
                   : 'Zero-tolerance safeguarding: instant access to emergency law enforcement & hotlines'}
-              </p>
+              </DialogDescription>
             </div>
           </div>
-
-          <button
-            type="button"
-            onClick={onClose}
-            className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors duration-150 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
-            aria-label="Close"
-          >
-            <X className="w-5 h-5" aria-hidden="true" />
-          </button>
-        </div>
+        </DialogHeader>
 
         {/* Hotlines Grid */}
         <div className="space-y-3">
@@ -121,24 +119,24 @@ export function EmergencySosModal({
             >
               <div className="space-y-1">
                 <div className="flex items-center gap-2">
-                  <span className="text-2xl font-black text-foreground tracking-wider font-mono tabular-nums">
+                  <span className="text-2xl font-black text-slate-900 tracking-wider font-mono tabular-nums">
                     {item.number}
                   </span>
-                  <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-muted text-foreground">
+                  <span className="text-[10px] uppercase font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200">
                     {item.badge}
                   </span>
                 </div>
-                <h4 className="text-xs font-bold text-foreground">
+                <h4 className="text-xs font-bold text-slate-900">
                   {isBn ? item.titleBn : item.titleEn}
                 </h4>
-                <p className="text-[11px] text-muted-foreground leading-relaxed">
+                <p className="text-[11px] text-slate-600 leading-relaxed">
                   {isBn ? item.subtitleBn : item.subtitleEn}
                 </p>
               </div>
 
               <a
                 href={`tel:${item.telNumber}`}
-                className="shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 bg-destructive hover:bg-destructive/90 text-white font-black text-xs rounded-xl transition-[background-color,transform] duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive"
+                className="shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 bg-destructive hover:bg-destructive/90 text-white font-black text-xs rounded-xl transition-[background-color,transform] duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-destructive shadow-xs"
                 data-testid={`dial-${item.telNumber}`}
               >
                 <PhoneCall className="w-4 h-4" aria-hidden="true" />
@@ -149,17 +147,17 @@ export function EmergencySosModal({
         </div>
 
         {/* File Immediate Incident Report CTA */}
-        <div className="p-4 rounded-2xl bg-card border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="p-4 rounded-2xl bg-white border border-slate-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div className="space-y-0.5">
-            <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
-              <AlertTriangle className="w-4 h-4 text-warning-soft-foreground" />
+            <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+              <AlertTriangle className="w-4 h-4 text-amber-600" />
               <span>
                 {isBn
                   ? 'প্ল্যাটফর্মে আনুষ্ঠানিক নিরাপত্তা অভিযোগ'
                   : 'Formal Safety Incident Report'}
               </span>
             </span>
-            <p className="text-[11px] text-muted-foreground">
+            <p className="text-[11px] text-slate-600">
               {isBn
                 ? 'অনুপযুক্ত চ্যাট, হয়রানি বা অবৈধ ফি দাবির প্রমাণ সহ সরাসরি অ্যাডমিনের কাছে অভিযোগ দাখিল করুন।'
                 : 'Escalate abusive conduct, child safety, or off-platform payment threats to admin triage.'}
@@ -173,7 +171,7 @@ export function EmergencySosModal({
               onClose();
               if (onOpenFileReport) onOpenFileReport();
             }}
-            className="shrink-0 bg-destructive hover:bg-destructive/90 text-white font-bold text-xs rounded-xl"
+            className="shrink-0 bg-destructive hover:bg-destructive/90 text-white font-bold text-xs rounded-xl shadow-xs"
             data-testid="open-incident-form-btn"
           >
             {isBn ? 'অভিযোগ ফর্ম খুলুন' : 'File Incident Report'}
@@ -181,9 +179,9 @@ export function EmergencySosModal({
         </div>
 
         {/* Footer & Privacy Assurance */}
-        <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t border-border">
+        <div className="flex items-center justify-between text-[11px] text-slate-500 pt-2 border-t border-slate-100">
           <span className="flex items-center gap-1">
-            <Lock className="w-3.5 h-3.5 text-success-soft-foreground" />
+            <Lock className="w-3.5 h-3.5 text-emerald-600" />
             <span>
               {isBn
                 ? 'সকল অভিযোগ ১০০% কঠোর গোপনীয়তায় সংরক্ষিত'
@@ -195,12 +193,12 @@ export function EmergencySosModal({
             variant="outline"
             size="sm"
             onClick={onClose}
-            className="border-border text-muted-foreground text-xs rounded-xl h-8"
+            className="border-slate-200 text-slate-700 text-xs rounded-xl h-8"
           >
             {isBn ? 'বন্ধ করুন' : 'Close'}
           </Button>
         </div>
-      </div>
-    </div>
+      </DialogContent>
+    </Dialog>
   );
 }

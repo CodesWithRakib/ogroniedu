@@ -9,13 +9,15 @@ export const buttonVariants = cva(
   {
     variants: {
       variant: {
-        primary: 'bg-primary text-primary-foreground hover:bg-primary-hover active:opacity-95',
-        default: 'bg-primary text-primary-foreground hover:bg-primary-hover active:opacity-95',
+        primary:
+          'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 active:opacity-95',
+        default:
+          'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 active:opacity-95',
         secondary:
-          'bg-surface-muted text-foreground hover:bg-surface-hover border border-transparent active:bg-surface-muted',
+          'bg-blue-50 text-blue-700 hover:bg-blue-100/80 border border-blue-200/80 active:bg-blue-100 shadow-2xs font-semibold',
         outline:
-          'border border-border bg-card text-foreground hover:bg-surface-hover hover:border-input active:bg-surface-muted',
-        ghost: 'bg-transparent text-foreground hover:bg-surface-hover hover:text-foreground',
+          'border border-slate-200 bg-white text-slate-800 hover:bg-slate-50 hover:border-blue-300 hover:text-blue-700 active:bg-slate-100 shadow-2xs',
+        ghost: 'bg-transparent text-foreground hover:bg-slate-100 hover:text-blue-700',
         destructive: 'bg-destructive text-white hover:bg-destructive/90 active:opacity-95',
         warning: 'bg-warning text-white hover:bg-warning/90 active:opacity-95',
         link: 'text-interactive underline-offset-4 hover:underline p-0 h-auto font-medium',

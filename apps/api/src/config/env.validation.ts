@@ -51,6 +51,30 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsOptional()
+  DATABASE_URL?: string;
+
+  @IsString()
+  @IsOptional()
+  DB_SSL?: string;
+
+  @IsString()
+  @IsOptional()
+  SUPABASE_URL?: string;
+
+  @IsString()
+  @IsOptional()
+  SUPABASE_PUBLISHABLE_KEY?: string;
+
+  @IsString()
+  @IsOptional()
+  SUPABASE_SECRET_KEY?: string;
+
+  @IsString()
+  @IsOptional()
+  SUPABASE_JWKS_URL?: string;
+
+  @IsString()
+  @IsOptional()
   @MinLength(16, { message: 'JWT_SECRET must be at least 16 characters long' })
   JWT_SECRET: string = 'super-secret-jwt-key-replace-in-production';
 }

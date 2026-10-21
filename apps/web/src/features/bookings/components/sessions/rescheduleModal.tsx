@@ -42,10 +42,10 @@ export function RescheduleModal({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="reschedule-modal"
-        className="bg-card border border-border rounded-2xl max-w-md w-full p-6 shadow-2xl space-y-4"
+        className="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 text-left"
       >
-        <DialogHeader className="border-b border-border pb-3 text-left">
-          <DialogTitle className="font-bold text-foreground">
+        <DialogHeader className="border-b border-slate-100 pb-3 text-left">
+          <DialogTitle className="font-black text-slate-900 text-lg">
             {dict.scheduling?.reschedule || 'Reschedule Session'}
           </DialogTitle>
           <DialogDescription className="sr-only">

@@ -1,8 +1,7 @@
 import { MigrationRunner } from '../dist/index.js';
 
-const runner = new MigrationRunner({
-  database: process.env.DB_NAME || 'ogroniedu_dev',
-});
+const targetDb = process.env.DB_NAME || (process.env.DATABASE_URL ? 'configured database' : 'ogroniedu_dev');
+const runner = new MigrationRunner(process.env.DATABASE_URL ? {} : { database: targetDb });
 
 async function main() {
   console.log(`Starting migrations on database: ${process.env.DB_NAME || 'ogroniedu_dev'}...`);

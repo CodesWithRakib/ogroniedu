@@ -101,15 +101,15 @@ export function SafetyReportModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="safety-report-modal"
-        className="w-full max-w-xl rounded-2xl border border-destructive/40 bg-card p-6 text-foreground shadow-2xl max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-xl rounded-3xl border border-rose-200 bg-white p-6 md:p-8 text-slate-900 shadow-2xl max-h-[90vh] overflow-y-auto text-left"
       >
         {isSuccess ? (
           <div className="py-10 text-center space-y-4">
-            <CheckCircle2 className="w-16 h-16 text-primary mx-auto animate-bounce" />
-            <h3 className="text-xl font-bold text-foreground">
+            <CheckCircle2 className="w-16 h-16 text-emerald-600 mx-auto animate-bounce" />
+            <h3 className="text-xl font-black text-slate-900">
               {isBn ? 'রিপোর্ট সফলভাবে গৃহীত হয়েছে' : 'Report Filed Successfully'}
             </h3>
-            <p className="text-sm text-muted-foreground max-w-md mx-auto">
+            <p className="text-sm text-slate-600 max-w-md mx-auto">
               {isBn
                 ? 'আমাদের নিরাপত্তা টিম অবিলম্বে ব্যবস্থা নিচ্ছে। আপনার যেকোনো প্রয়োজনে ২৪/৭ হটলাইনে যোগাযোগ করুন।'
                 : 'Our security ops team is taking immediate action. We will contact you shortly.'}
@@ -117,16 +117,16 @@ export function SafetyReportModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-4">
-            <DialogHeader className="border-b border-destructive/30 pb-4 text-left">
+            <DialogHeader className="border-b border-rose-100 pb-4 text-left">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-xl bg-destructive/15 border border-destructive/30 text-destructive flex items-center justify-center shrink-0">
+                <div className="h-10 w-10 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
                   <ShieldAlert className="w-5 h-5" />
                 </div>
                 <div>
-                  <DialogTitle className="text-lg font-bold text-foreground">
+                  <DialogTitle className="text-lg font-black text-slate-900">
                     {isBn ? 'শিশু সুরক্ষা ও নিরাপত্তা সতর্কতা' : 'Child Safety & Protection Alert'}
                   </DialogTitle>
-                  <DialogDescription className="text-xs text-destructive mt-0.5">
+                  <DialogDescription className="text-xs text-rose-700 font-semibold mt-0.5">
                     {reportedUserName
                       ? isBn
                         ? `${reportedUserName}-এর বিরুদ্ধে জরুরি রিপোর্ট`

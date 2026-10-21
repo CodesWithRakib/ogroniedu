@@ -16,6 +16,14 @@ import {
   useAdminUpdateOrganizationStatusMutation,
 } from '@/store/services/organizations-api';
 import type { OrganizationStatus, OrganizationRecord } from '@ogroniedu/contracts';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import { Button } from '@/components/ui/Button';
 
 export default function AdminOrganizationsPage() {
   const searchParams = useSearchParams();
@@ -253,35 +261,37 @@ export default function AdminOrganizationsPage() {
 
       {/* Confirmation Modal */}
       {selectedOrg && actionStatus && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 p-4">
-          <div className="bg-card w-full max-w-md rounded-2xl border border-border shadow-xl p-6 space-y-4">
-            <div className="flex items-center gap-3">
-              <div
-                className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
-                  actionStatus === 'active'
-                    ? 'bg-emerald-50 text-emerald-600'
-                    : 'bg-rose-50 text-rose-600'
-                }`}
-              >
-                {actionStatus === 'active' ? (
-                  <ShieldCheck className="w-5 h-5" />
-                ) : (
-                  <AlertTriangle className="w-5 h-5" />
-                )}
+        <Dialog open={true} onOpenChange={(open) => !open && setSelectedOrg(null)}>
+          <DialogContent className="bg-white w-full max-w-md rounded-3xl border border-slate-200 shadow-2xl p-6 space-y-4 text-left">
+            <DialogHeader className="border-b border-slate-100 pb-3 text-left">
+              <div className="flex items-center gap-3">
+                <div
+                  className={`w-10 h-10 rounded-xl flex items-center justify-center shrink-0 ${
+                    actionStatus === 'active'
+                      ? 'bg-emerald-50 text-emerald-600 border border-emerald-200'
+                      : 'bg-rose-50 text-rose-600 border border-rose-200'
+                  }`}
+                >
+                  {actionStatus === 'active' ? (
+                    <ShieldCheck className="w-5 h-5" />
+                  ) : (
+                    <AlertTriangle className="w-5 h-5" />
+                  )}
+                </div>
+                <div>
+                  <DialogTitle className="text-base font-black text-slate-900">
+                    {actionStatus === 'active' ? 'Approve Organization' : 'Suspend Organization'}
+                  </DialogTitle>
+                  <DialogDescription className="text-xs text-slate-600">
+                    Target: <span className="font-semibold text-slate-900">{selectedOrg.name}</span>
+                  </DialogDescription>
+                </div>
               </div>
-              <div>
-                <h3 className="text-base font-bold text-foreground">
-                  {actionStatus === 'active' ? 'Approve Organization' : 'Suspend Organization'}
-                </h3>
-                <p className="text-xs text-muted-foreground">
-                  Target: <span className="font-semibold text-foreground">{selectedOrg.name}</span>
-                </p>
-              </div>
-            </div>
+            </DialogHeader>
 
             <form onSubmit={handleActionSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-medium text-foreground mb-1">
+                <label className="block text-xs font-bold text-slate-800 mb-1">
                   Reason & Verification Notes
                 </label>
                 <textarea
@@ -294,37 +304,37 @@ export default function AdminOrganizationsPage() {
                   }
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  className="w-full text-xs p-2.5 rounded-lg border border-border bg-surface text-foreground placeholder:text-muted-foreground focus:outline-none focus:ring-1 focus:ring-primary"
+                  className="w-full text-xs p-2.5 rounded-xl border border-slate-200 bg-white text-slate-900 placeholder:text-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500"
                 />
               </div>
 
-              <div className="flex items-center justify-end gap-2 pt-2">
-                <button
+              <div className="flex items-center justify-end gap-2 pt-2 border-t border-slate-100">
+                <Button
                   type="button"
+                  variant="outline"
+                  size="sm"
                   onClick={() => {
                     setSelectedOrg(null);
                     setActionStatus(null);
                     setReason('');
                   }}
-                  className="px-3.5 py-2 text-xs font-medium text-muted-foreground hover:text-foreground bg-surface border border-border rounded-lg transition"
+                  className="rounded-xl border-slate-200 text-slate-700"
                 >
                   Cancel
-                </button>
-                <button
+                </Button>
+                <Button
                   type="submit"
-                  disabled={isUpdating}
-                  className={`px-4 py-2 text-xs font-semibold text-white rounded-lg shadow-xs transition ${
-                    actionStatus === 'active'
-                      ? 'bg-emerald-600 hover:bg-emerald-700'
-                      : 'bg-rose-600 hover:bg-rose-700'
-                  }`}
+                  size="sm"
+                  isLoading={isUpdating}
+                  variant={actionStatus === 'active' ? 'primary' : 'destructive'}
+                  className="rounded-xl font-bold"
                 >
-                  {isUpdating ? 'Updating...' : `Confirm ${actionStatus === 'active' ? 'Approval' : 'Suspension'}`}
-                </button>
+                  Confirm {actionStatus === 'active' ? 'Approval' : 'Suspension'}
+                </Button>
               </div>
             </form>
-          </div>
-        </div>
+          </DialogContent>
+        </Dialog>
       )}
     </div>
   );

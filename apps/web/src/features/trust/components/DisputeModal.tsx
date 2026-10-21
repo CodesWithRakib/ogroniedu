@@ -87,9 +87,10 @@ export function DisputeModal({
         setClaimedAmount('');
         onClose();
       }, 1500);
-    } catch (err: any) {
+    } catch (err: unknown) {
+      const errObj = err as { data?: { error?: { message?: string } } } | undefined;
       setErrorMessage(
-        err?.data?.error?.message ||
+        errObj?.data?.error?.message ||
           (isBn ? 'বিরোধ জমা দেওয়া যায়নি।' : 'Failed to submit dispute.'),
       );
     }
@@ -97,19 +98,23 @@ export function DisputeModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md p-6 bg-card border-border rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
-        <DialogHeader className="space-y-2">
-          <div className="flex items-center gap-2 text-warning">
-            <Scale className="w-5 h-5" />
-            <DialogTitle className="text-lg font-bold text-foreground">
-              {isBn ? 'বুকিং বিরোধ ও অভিযোগ দায়ের' : 'File Booking Dispute & Complaint'}
-            </DialogTitle>
+      <DialogContent className="sm:max-w-md p-6 bg-white border border-slate-200 rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto text-left">
+        <DialogHeader className="space-y-1.5 border-b border-slate-100 pb-3.5 text-left">
+          <div className="flex items-center gap-2.5 text-amber-500">
+            <div className="p-2.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600">
+              <Scale className="w-5 h-5" />
+            </div>
+            <div>
+              <DialogTitle className="text-lg font-black text-slate-900">
+                {isBn ? 'বুকিং বিরোধ ও অভিযোগ দায়ের' : 'File Booking Dispute & Complaint'}
+              </DialogTitle>
+              <DialogDescription className="text-xs font-semibold text-blue-700 leading-relaxed">
+                {isBn
+                  ? `শিক্ষক ${tutorName ? `(${tutorName})` : ''}-এর সাথে ক্লাস বা লেনদেন সংক্রান্ত বিরোধ রিপোর্ট করুন।`
+                  : `Open a formal dispute regarding session delivery or fees for this booking.`}
+              </DialogDescription>
+            </div>
           </div>
-          <DialogDescription className="text-xs text-muted-foreground leading-relaxed">
-            {isBn
-              ? `শিক্ষক ${tutorName ? `(${tutorName})` : ''}-এর সাথে ক্লাস বা লেনদেন সংক্রান্ত বিরোধ রিপোর্ট করুন।`
-              : `Open a formal dispute regarding session delivery or fees for this booking.`}
-          </DialogDescription>
         </DialogHeader>
 
         {isSuccess ? (

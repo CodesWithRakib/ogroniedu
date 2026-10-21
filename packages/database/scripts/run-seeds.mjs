@@ -1,8 +1,7 @@
 import { SeedRunner } from '../dist/index.js';
 
-const runner = new SeedRunner({
-  database: process.env.DB_NAME || 'ogroniedu_dev',
-});
+const targetDb = process.env.DB_NAME || (process.env.DATABASE_URL ? 'configured database' : 'ogroniedu_dev');
+const runner = new SeedRunner(process.env.DATABASE_URL ? {} : { database: targetDb });
 
 async function main() {
   console.log(`Starting seed data execution on database: ${process.env.DB_NAME || 'ogroniedu_dev'}...`);

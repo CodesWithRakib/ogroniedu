@@ -51,10 +51,10 @@ export function GradingModal({
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-card rounded-2xl max-w-lg w-full p-6 border border-border shadow-2xl space-y-4">
-        <DialogHeader className="border-b border-border pb-3 text-left">
-          <DialogTitle className="text-base font-bold text-foreground flex items-center gap-2">
-            <Edit3 className="w-5 h-5 text-primary" />
+      <DialogContent className="bg-white rounded-3xl max-w-lg w-full p-6 border border-slate-200 shadow-2xl space-y-4 text-left">
+        <DialogHeader className="border-b border-slate-100 pb-3 text-left">
+          <DialogTitle className="text-base font-black text-slate-900 flex items-center gap-2">
+            <Edit3 className="w-5 h-5 text-blue-600" />
             <span>{hasPreviousScore ? t.reviseScore : t.gradeAction}</span>
           </DialogTitle>
           <DialogDescription className="sr-only">

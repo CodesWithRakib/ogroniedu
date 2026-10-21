@@ -27,11 +27,11 @@ export function ScoreBreakdownModal({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="score-breakdown-modal"
-        className="max-w-md w-full p-6 space-y-4 rounded-2xl bg-card border-border shadow-2xl"
+        className="max-w-md w-full p-6 space-y-4 rounded-3xl bg-white border border-slate-200 shadow-2xl text-left"
       >
-        <DialogHeader className="border-b border-border pb-3 text-left">
-          <DialogTitle className="flex items-center gap-2 font-bold text-foreground">
-            <Sparkles className="w-5 h-5 text-primary" />
+        <DialogHeader className="border-b border-slate-100 pb-3 text-left">
+          <DialogTitle className="flex items-center gap-2 font-black text-slate-900">
+            <Sparkles className="w-5 h-5 text-blue-600" />
             <span>{dict.discovery?.scoreBreakdownTitle || 'Ranking Factors'}</span>
           </DialogTitle>
           <DialogDescription className="sr-only">
@@ -40,28 +40,28 @@ export function ScoreBreakdownModal({
         </DialogHeader>
 
         <div>
-          <p className="text-sm font-semibold text-foreground">{tutor.displayName}</p>
-          <p className="text-xs text-primary font-bold mt-0.5">
+          <p className="text-sm font-bold text-slate-900">{tutor.displayName}</p>
+          <p className="text-xs text-blue-700 font-extrabold mt-0.5">
             Total Score: {formatLocalizedNumber(tutor.matchScore, locale)} Points
           </p>
         </div>
 
         <div className="space-y-2 pt-1 text-xs">
-          <p className="text-muted-foreground">
+          <p className="text-slate-600">
             OgroniEdu scores tutors using transparent, deterministic verification &amp; quality
             signals:
           </p>
-          <ul className="space-y-2 border border-border rounded-xl p-3 bg-muted/40">
+          <ul className="space-y-2 border border-slate-200 rounded-2xl p-3.5 bg-slate-50/60">
             {tutor.rankingReasons.map((reason, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-foreground">
-                <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
+              <li key={idx} className="flex items-start gap-2 text-slate-800">
+                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
                 <span>{reason}</span>
               </li>
             ))}
           </ul>
         </div>
 
-        <Button variant="outline" size="sm" className="w-full rounded-xl" onClick={onClose}>
+        <Button variant="primary" size="sm" className="w-full rounded-xl font-bold" onClick={onClose}>
           {dict.common?.confirm || 'Understood'}
         </Button>
       </DialogContent>
