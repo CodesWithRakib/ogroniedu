@@ -254,7 +254,7 @@ export function TutorVerificationPage({ locale }: { locale: Locale }) {
                   <Link
                     href={withLocale(`/tutors/${prof?.id ?? ''}`, locale)}
                     target="_blank"
-                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-primary hover:bg-primary-hover text-white text-xs font-bold transition-colors"
+                    className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-xs shadow-blue-500/25 transition-all"
                   >
                     <ExternalLink className="w-3.5 h-3.5" />
                     <span>{isBn ? 'পাবলিক প্রোফাইল দেখুন' : 'View Public Profile'}</span>

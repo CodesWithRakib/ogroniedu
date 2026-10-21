@@ -391,7 +391,7 @@ export default function BookingDetailPage({ params }: BookingDetailPageProps) {
                     size="sm"
                     disabled={responding}
                     onClick={() => handleTutorResponse('accept')}
-                    className="bg-primary hover:bg-primary-hover text-white font-semibold text-xs"
+                    className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-xs shadow-blue-500/25"
                     data-testid="tutor-accept-booking-btn"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />

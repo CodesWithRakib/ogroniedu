@@ -394,7 +394,7 @@ export default function GuardianChildDetailPage({
                 </p>
                 <Link
                   href={withLocale('/tutors', locale)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-bold shadow-xs hover:bg-primary-hover"
+                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-xs shadow-blue-500/25 transition-all"
                 >
                   {isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}
                 </Link>
@@ -539,7 +539,7 @@ export default function GuardianChildDetailPage({
                         size="sm"
                         disabled={isSettling}
                         onClick={() => handleSettleMilestone(s.id)}
-                        className="gap-1.5 text-xs bg-primary hover:bg-primary-hover text-white font-bold h-8 px-3 rounded-xl"
+                        className="gap-1.5 text-xs bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold h-8 px-3 rounded-xl shadow-xs shadow-blue-500/25"
                         id={`btn-settle-${s.id}`}
                       >
                         <CreditCard className="w-3.5 h-3.5" />

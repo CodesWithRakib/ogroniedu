@@ -65,7 +65,7 @@ export function SessionCard({
               href={session.meetingUrl}
               target="_blank"
               rel="noreferrer"
-              className="px-3 py-1.5 bg-primary hover:bg-primary-hover text-white rounded-lg font-bold text-xs shadow-xs transition-colors flex items-center gap-1.5 shrink-0"
+              className="px-3 py-1.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-lg font-bold text-xs shadow-xs shadow-blue-500/25 transition-all flex items-center gap-1.5 shrink-0"
             >
               <Video className="w-3.5 h-3.5" />
               <span>

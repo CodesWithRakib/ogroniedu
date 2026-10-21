@@ -377,7 +377,7 @@ function AssignmentDetailPage({ locale, assignmentId }: { locale: Locale; assign
                   type="submit"
                   size="sm"
                   isLoading={isSubmitting}
-                  className="w-full bg-primary hover:bg-primary-hover text-white text-xs font-bold rounded-xl"
+                  className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs shadow-blue-500/25"
                   data-testid="submit-solution-btn"
                 >
                   <Send className="w-3.5 h-3.5 mr-1.5" />

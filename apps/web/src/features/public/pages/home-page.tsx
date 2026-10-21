@@ -762,7 +762,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <Button
                   asChild
                   size="lg"
-                  className="rounded-full px-7 py-3.5 h-auto text-xs font-bold bg-primary hover:bg-primary-hover text-white shadow-xs shadow-primary/30"
+                  className="rounded-full px-7 py-3.5 h-auto text-xs font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25"
                 >
                   <Link href={`/${locale}/register`} className="flex items-center gap-2">
                     <span>{isBn ? 'নিবন্ধন করুন' : 'Get Started'}</span>

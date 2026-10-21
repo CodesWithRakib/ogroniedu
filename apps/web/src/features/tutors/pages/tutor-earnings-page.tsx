@@ -225,7 +225,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
           size="sm"
           onClick={openWithdrawModal}
           disabled={!hasAvailable}
-          className="bg-primary hover:bg-primary-hover text-white font-bold text-xs gap-1.5"
+          className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs gap-1.5 shadow-xs shadow-blue-500/25"
           data-testid="open-withdraw-modal-btn"
         >
           <ArrowUpRight className="w-3.5 h-3.5" />
@@ -571,7 +571,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
               <Button
                 type="submit"
                 disabled={requestState.isLoading}
-                className="bg-primary hover:bg-primary-hover text-white font-bold text-xs"
+                className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-xs shadow-blue-500/25"
                 data-testid="confirm-withdraw-btn"
               >
                 {requestState.isLoading ? (

@@ -152,7 +152,7 @@ export function CheckoutMethodPicker({
         <Button
           onClick={onPay}
           disabled={isProcessing || Boolean(payDisabledReason) || order.status !== 'pending'}
-          className="w-full bg-primary hover:bg-primary-hover text-white font-semibold py-3 text-base flex items-center justify-center gap-2"
+          className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 text-base flex items-center justify-center gap-2 shadow-xs shadow-blue-500/25"
           data-testid="pay-now-btn"
         >
           {isProcessing ? (

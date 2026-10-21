@@ -83,7 +83,7 @@ export function Navbar({ locale }: NavbarProps) {
                 href={link.href}
                 className={`relative px-4 py-1.5 rounded-full text-xs font-semibold transition-[background-color,color,box-shadow] duration-150 ${
                   active
-                    ? 'bg-primary text-primary-foreground shadow-xs'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/20'
                     : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
                 }`}
               >
@@ -119,7 +119,7 @@ export function Navbar({ locale }: NavbarProps) {
             ) : (
               <Link
                 href={withLocale('/login', locale)}
-                className="inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold bg-primary text-primary-foreground hover:bg-primary-hover shadow-xs transition-[transform,background-color,box-shadow] duration-150 hover:scale-[1.03] active:scale-[0.98]"
+                className="inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 transition-[transform,background-color,box-shadow] duration-150 hover:scale-[1.03] active:scale-[0.98]"
                 data-testid="navbar-login-link"
               >
                 <span>{isBn ? 'লগইন' : 'Login'}</span>
@@ -206,7 +206,7 @@ export function Navbar({ locale }: NavbarProps) {
                 <Button
                   variant="primary"
                   size="sm"
-                  className="w-full justify-center rounded-xl shadow-xs font-bold"
+                  className="w-full justify-center rounded-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25"
                 >
                   {dict.nav.login}
                 </Button>

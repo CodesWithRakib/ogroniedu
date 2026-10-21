@@ -327,7 +327,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             </Button>
             <Link
               href={withLocale('/tutors', locale)}
-              className="inline-flex items-center gap-2 rounded-xl bg-blue-600 px-4 py-2 text-sm font-semibold text-white shadow-xs hover:bg-blue-700 transition-colors"
+              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-xs shadow-blue-500/20 transition-all"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               {isBn ? 'শিক্ষক তালিকায় ফিরুন' : 'Back to tutors'}
@@ -862,7 +862,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                     : 'Sign in to send a direct tutoring booking request to this educator.'}
                 </p>
                 <Link href={withLocale('/login', locale)} className="block">
-                  <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 rounded-2xl shadow-xs">
+                  <Button className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 rounded-2xl shadow-xs shadow-blue-500/25">
                     {isBn ? 'লগইন করুন' : 'Sign in'}
                   </Button>
                 </Link>
@@ -958,7 +958,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                           aria-pressed={isSelected}
                           className={`rounded-xl border px-3 py-1.5 text-xs font-bold transition-all ${
                             isSelected
-                              ? 'border-blue-600 bg-blue-600 text-white shadow-xs'
+                              ? 'border-transparent bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs'
                               : 'border-slate-300 bg-white text-slate-700 hover:border-blue-500 hover:text-slate-900'
                           }`}
                         >

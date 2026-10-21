@@ -57,7 +57,7 @@ const Toaster = ({
             'group-[.toaster]:border-border ',
           description: 'text-xs text-muted-foreground font-normal leading-relaxed mt-0.5',
           actionButton:
-            'rounded-xl bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-xs transition hover:bg-primary-hover active:scale-95',
+            'rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 px-3 py-1.5 text-xs font-semibold transition active:scale-95',
           cancelButton:
             'rounded-xl bg-surface-muted px-3 py-1.5 text-xs font-medium text-foreground hover:bg-surface-hover',
           closeButton: 'border-none bg-transparent text-muted-foreground hover:text-foreground',

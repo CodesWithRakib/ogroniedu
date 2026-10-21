@@ -54,7 +54,7 @@ export function AdminReconciliationTab({
           <button
             onClick={handleRun}
             disabled={running}
-            className="px-4 py-2 bg-primary hover:bg-primary-hover text-primary-foreground rounded-xl text-xs font-bold shadow-xs transition disabled:opacity-60 inline-flex items-center gap-1.5"
+            className="px-4 py-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs shadow-blue-500/25 transition disabled:opacity-60 inline-flex items-center gap-1.5"
             data-testid="rerun-audit-btn"
           >
             {running && <Loader2 className="w-3.5 h-3.5 animate-spin" />}

@@ -337,7 +337,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                       <Button
                         type="button"
                         onClick={() => pay.selectBookingForPayment(b.id)}
-                        className="bg-primary hover:bg-primary-hover text-white text-xs font-bold h-10 px-5 rounded-xl shadow-xs flex items-center gap-1.5"
+                        className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold h-10 px-5 rounded-xl shadow-xs shadow-blue-500/25 flex items-center gap-1.5"
                       >
                         <CreditCard className="w-4 h-4" />
                         <span>{isBn ? 'এখনই পরিশোধ করুন' : 'Pay Now'}</span>
@@ -647,7 +647,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                         type="submit"
                         isLoading={pay.creating}
                         data-testid="create-order-btn"
-                        className="bg-primary hover:bg-primary-hover text-white px-8 text-xs font-bold h-11 rounded-xl shadow-xs"
+                        className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white px-8 text-xs font-bold h-11 rounded-xl shadow-xs shadow-blue-500/25"
                       >
                         <CreditCard className="w-4 h-4 mr-2" />
                         {isBn ? 'পেমেন্ট গেটওয়েতে যান' : 'Proceed to Checkout'}

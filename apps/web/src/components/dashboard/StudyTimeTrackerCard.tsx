@@ -77,7 +77,7 @@ export function StudyTimeTrackerCard({ locale, title, subtitle }: StudyTimeTrack
         <button
           type="button"
           onClick={() => setIsRunning(!isRunning)}
-          className="h-10 w-10 rounded-full bg-primary text-primary-foreground flex items-center justify-center font-bold hover:bg-primary-hover hover:scale-105 active:scale-95 transition-transform cursor-pointer"
+          className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-xs shadow-blue-500/25 hover:from-blue-700 hover:to-indigo-700 hover:scale-105 active:scale-95 transition-all cursor-pointer"
           aria-label={isRunning ? 'Pause timer' : 'Start timer'}
           title={isRunning ? 'Pause' : 'Start'}
         >

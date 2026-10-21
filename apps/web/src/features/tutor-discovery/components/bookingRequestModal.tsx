@@ -170,7 +170,7 @@ export function BookingRequestModal({
                 </p>
                 <Link
                   href={withLocale('/login', locale)}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold px-3.5 py-1.5 text-xs shadow-xs transition-colors"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold px-4 py-2 text-xs shadow-xs shadow-blue-500/20 transition-all"
                 >
                   <LogIn className="w-3.5 h-3.5" />
                   <span>{isBn ? 'লগইন করুন' : 'Sign in now'}</span>
@@ -297,7 +297,7 @@ export function BookingRequestModal({
                       data-testid={`day-toggle-${d.key}`}
                       className={`rounded-xl text-[11px] h-7 font-bold transition-all ${
                         isSelected
-                          ? 'bg-blue-600 text-white border-blue-600 shadow-xs'
+                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs'
                           : 'border-slate-300 bg-white text-slate-700 hover:border-blue-500'
                       }`}
                     >

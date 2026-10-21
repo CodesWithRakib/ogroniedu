@@ -310,7 +310,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                   type="submit"
                   size="sm"
                   disabled={resolving}
-                  className="text-xs rounded-xl font-bold bg-primary hover:bg-primary-hover text-primary-foreground"
+                  className="text-xs rounded-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25"
                   data-testid="confirm-resolve-dispute-btn"
                 >
                   {resolving ? (isBn ? 'প্রক্রিয়াধীন...' : 'Processing...') : isBn ? 'নিষ্পত্তি নিশ্চিত করুন' : 'Confirm Resolution'}

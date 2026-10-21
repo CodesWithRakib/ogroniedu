@@ -215,7 +215,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         </Link>
         <Link
           href={withLocale('/tutors', locale)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-primary hover:bg-primary-hover text-primary-foreground text-xs font-semibold shadow-xs transition-colors sm:ml-auto"
+          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-semibold shadow-xs shadow-blue-500/25 transition-all sm:ml-auto"
         >
           <Search className="w-3.5 h-3.5" />
           <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>

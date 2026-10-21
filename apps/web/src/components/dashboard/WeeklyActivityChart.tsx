@@ -144,7 +144,7 @@ export function WeeklyActivityChart({
               >
                 {isHighest ? (
                   /* Solid active pill bar */
-                  <div className="w-full h-full bg-primary rounded-full group-hover:bg-primary-hover shadow-xs shadow-primary/25 transition-colors" />
+                  <div className="w-full h-full bg-gradient-to-t from-blue-600 to-indigo-600 rounded-full shadow-xs shadow-blue-500/25 transition-all" />
                 ) : (
                   /* Soft neutral pill bar */
                   <div className="w-full h-full rounded-full bg-surface-muted group-hover:bg-primary-soft transition-colors" />

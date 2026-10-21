@@ -116,7 +116,7 @@ export function PWARegister({ locale }: { locale: Locale }) {
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={handleInstallClick}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-3.5 py-2 shadow-xs transition-transform active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs px-3.5 py-2 shadow-xs shadow-blue-500/25 transition-transform active:scale-95 cursor-pointer"
           >
             <Download className="h-3.5 w-3.5 stroke-[2.5]" />
             <span>{isBn ? 'ইনস্টল' : 'Install'}</span>

@@ -400,7 +400,7 @@ export function ClassroomWorkspace({
                 size="sm"
                 onClick={handleStartClass}
                 isLoading={isStarting}
-                className="bg-primary hover:bg-primary-hover text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl"
+                className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-xs shadow-blue-500/25"
                 data-testid="start-class-btn"
               >
                 <Play className="w-4 h-4 mr-1.5 fill-current" />

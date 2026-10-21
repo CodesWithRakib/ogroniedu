@@ -62,7 +62,7 @@ export function SessionReminderCard({
             href={roomUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs sm:text-sm py-3 px-4 shadow-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm py-3 px-4 shadow-xs shadow-blue-500/25 transition-all hover:scale-[1.01] active:scale-[0.99]"
           >
             <Video className="h-4 w-4" />
             <span>{isBn ? 'লাইভ ক্লাসে যোগ দিন' : 'Start / Join Meeting'}</span>
@@ -70,7 +70,7 @@ export function SessionReminderCard({
         ) : (
           <Link
             href={withLocale('/sessions', locale)}
-            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-primary hover:bg-primary-hover text-primary-foreground font-bold text-xs sm:text-sm py-3 px-4 shadow-primary/20 transition-all hover:scale-[1.01] active:scale-[0.99]"
+            className="w-full flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm py-3 px-4 shadow-xs shadow-blue-500/25 transition-all hover:scale-[1.01] active:scale-[0.99]"
           >
             <Calendar className="h-4 w-4" />
             <span>{isBn ? 'ক্লাস শিডিউল দেখুন' : 'View Session Schedule'}</span>

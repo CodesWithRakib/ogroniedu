@@ -216,7 +216,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
               <Link href={withLocale('/tutors', locale)}>
                 <Button
                   size="sm"
-                  className="bg-primary hover:bg-primary-hover text-white shadow-xs rounded-xl font-semibold"
+                  className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 rounded-xl font-semibold"
                 >
                   <Search className="w-4 h-4 mr-1.5" />
                   {locale === 'bn' ? 'নতুন শিক্ষক খুঁজুন' : 'Find a Tutor'}
@@ -476,7 +476,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                           <Link href={withLocale(`/dashboard/bookings/${r.id}/pay`, locale)}>
                             <Button
                               size="sm"
-                              className="bg-primary hover:bg-primary-hover text-white text-xs font-bold shadow-xs"
+                              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-xs shadow-blue-500/25"
                             >
                               <CreditCard className="w-3.5 h-3.5 mr-1" />
                               {locale === 'bn' ? 'পেমেন্ট করুন' : 'Make Payment'}
@@ -536,7 +536,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                             disabled={req.responding}
                             onClick={() => req.handleRespond(r.id, 'accept')}
                             data-testid={`accept-btn-${r.id}`}
-                            className="bg-primary hover:bg-primary-hover text-white text-xs"
+                            className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-xs shadow-blue-500/25"
                           >
                             {dict.bookingRequest.acceptButton}
                           </Button>

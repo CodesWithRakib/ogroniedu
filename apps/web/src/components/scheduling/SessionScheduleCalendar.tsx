@@ -221,7 +221,7 @@ export function SessionScheduleCalendar({
               size="sm"
               onClick={() => setScheduleOpen(true)}
               data-testid="schedule-open-btn"
-              className="bg-primary hover:bg-primary-hover text-white shadow-xs"
+              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25"
             >
               <Plus className="w-4 h-4 mr-1" />
               {dict.scheduling.scheduleSession}
