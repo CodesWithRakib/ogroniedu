@@ -271,22 +271,22 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
   };
 
   return (
-    <div className="max-w-5xl mx-auto px-4 py-8 space-y-6">
+    <div className="w-full space-y-6">
       {/* Navigation */}
       <div className="flex items-center justify-between">
         <Link
           href={withLocale('/sessions', locale)}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors"
           data-testid="back-to-sessions-btn"
         >
           <ArrowLeft className="w-4 h-4" />
-          {locale === 'bn' ? 'সব ক্লাসের সময়সূচী' : 'All Class Schedules'}
+          <span>{locale === 'bn' ? 'সব ক্লাসের সময়সূচী' : 'All Class Schedules'}</span>
         </Link>
         <div className="flex items-center gap-2">
           {session.bookingId && (
             <Link
               href={withLocale(`/bookings/${session.bookingId}`, locale)}
-              className="text-xs text-primary-soft-foreground hover:text-primary-soft-foreground underline font-medium"
+              className="text-xs text-primary hover:underline font-bold"
             >
               {locale === 'bn' ? 'বুকিং বিবরণ দেখুন' : 'View Booking Details'}
             </Link>
@@ -295,10 +295,10 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
       </div>
 
       {/* Live Interactive Classroom Workspace Launch Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-card border border-interactive/25 p-6 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="space-y-1 text-center md:text-left">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-interactive/20 text-info-soft-foreground text-xs font-bold border border-info/40">
-            <Radio className="w-3.5 h-3.5 text-info-soft-foreground animate-pulse" />
+      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-card via-card/90 to-primary-soft/30 border border-primary/25 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
+        <div className="space-y-1.5 text-center md:text-left max-w-2xl">
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-soft text-primary text-xs font-bold border border-primary/30">
+            <Radio className="w-3.5 h-3.5 text-primary animate-pulse" />
             <span>{locale === 'bn' ? 'স্মার্ট ক্লাসরুম হাব' : 'Smart Classroom Hub'}</span>
           </div>
           <h2 className="text-xl md:text-2xl font-black text-foreground">
@@ -306,7 +306,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
               ? 'ইন্টারেক্টিভ ডিজিটাল হোয়াইটবোর্ড ও লাইভ স্টাডি রুম'
               : 'Interactive Whiteboard & Live Study Room'}
           </h2>
-          <p className="text-xs text-muted-foreground max-w-xl">
+          <p className="text-xs text-muted-foreground leading-relaxed">
             {locale === 'bn'
               ? 'ইন-ব্রাউজার ডিজিটাল হোয়াইটবোর্ড, পদার্থ ও গণিতের ফর্মুলা চিটশিট এবং লাইভ সেশন টাইমার সহ সরাসরি ক্লাসরুমে প্রবেশ করুন।'
               : 'Enter collaborative whiteboard with NCTB formula sheets, drawing tools, and real-time session controls.'}
@@ -314,7 +314,7 @@ function SessionDetailPage({ locale, sessionId }: { locale: Locale; sessionId: s
         </div>
         <Link
           href={withLocale(`/classroom/${sessionId}`, locale)}
-          className="shrink-0 flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-brand to-brand-accent text-foreground text-xs font-black rounded-2xl transition-all transform hover:scale-105"
+          className="shrink-0 flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-md shadow-blue-500/25 transition-all transform hover:scale-105 active:scale-95"
           data-testid="enter-live-classroom-btn"
         >
           <Sparkles className="w-4 h-4 fill-current" />

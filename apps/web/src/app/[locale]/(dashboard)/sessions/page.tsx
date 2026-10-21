@@ -10,7 +10,7 @@ export default function SessionsRoute({ params }: { params: Promise<{ locale: st
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
   return (
     <RequireAuth locale={locale}>
-      <div className="py-6">
+      <div className="w-full">
         <SessionsPage locale={locale} />
       </div>
     </RequireAuth>
