@@ -105,7 +105,7 @@ export class FeedbackService {
   async getFeedbackById(id: string, user: AuthenticatedUser): Promise<BetaFeedbackEntity> {
     const item = await this.feedbackRepo.findOne({
       where: { id },
-      relations: ['reporter', 'assignee'],
+      relations: { reporter: true, assignee: true },
     });
 
     if (!item) {

@@ -9,6 +9,7 @@ import { NotificationCenter } from '@/components/notifications/NotificationCente
 import { Toaster } from '@/components/ui/sonner';
 import { BottomNavbar } from '@/components/shell/BottomNavbar';
 import { PWARegister } from '@/components/pwa/PWARegister';
+import { BetaFeedbackModal } from '@/components/feedback/BetaFeedbackModal';
 import { fontVariables } from '@/lib/fonts';
 import bnMessages from '../../../messages/bn.json';
 import enMessages from '../../../messages/en.json';
@@ -46,6 +47,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
                 <Toaster />
                 <BottomNavbar locale={locale} />
                 <PWARegister locale={locale} />
+                <BetaFeedbackModal locale={locale} />
               </NotificationProvider>
             </NextIntlClientProvider>
           </AuthBootstrap>
