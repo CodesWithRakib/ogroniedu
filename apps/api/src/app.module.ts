@@ -25,6 +25,7 @@ import { PublicModule } from './modules/public/public.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
+import { FeedbackModule } from './modules/feedback/feedback.module';
 
 @Module({
   imports: [
@@ -76,6 +77,7 @@ import { OrganizationsModule } from './modules/organizations/organizations.modul
     AdminModule,
     AnalyticsModule,
     OrganizationsModule,
+    FeedbackModule,
   ],
   providers: [StructuredLoggerService],
   exports: [StructuredLoggerService],

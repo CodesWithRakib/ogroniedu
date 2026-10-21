@@ -14,3 +14,4 @@ export * from './analytics-files.js';
 export * from './tutors.js';
 export * from './messaging.js';
 export * from './organizations.js';
+export * from './feedback.js';

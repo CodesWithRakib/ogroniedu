@@ -18,6 +18,9 @@ export const PlatformRoles = [
   'organization_staff',
 ] as const;
 
+export type PlatformRole = (typeof PlatformRoles)[number];
+export type CanonicalRole = PlatformRole;
+
 export const SelfSignupRoles = ['student', 'guardian', 'tutor'] as const;
 export const SupportedLocales = ['bn', 'en'] as const;
 export const ApprovedConsentPolicy = 'v1.0-bd-minor-consent';

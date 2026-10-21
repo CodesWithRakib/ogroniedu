@@ -4,7 +4,7 @@ import createNextIntlPlugin from 'next-intl/plugin';
 const nextConfig = {
   transpilePackages: ['@ogroniedu/contracts'],
   reactStrictMode: true,
-  output: 'standalone',
+  output: process.env.DOCKER_BUILD ? 'standalone' : undefined,
   experimental: {
     optimizePackageImports: [
       'lucide-react',
