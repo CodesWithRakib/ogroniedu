@@ -22,6 +22,7 @@ export class AuditService {
         action: params.action,
         resourceType: params.resourceType,
         resourceId: params.resourceId ?? null,
+        organizationId: params.organizationId ?? null,
         requestId: params.requestId ?? null,
         reason: params.reason ?? null,
         safeMetadata: params.safeMetadata ?? {},
@@ -58,6 +59,17 @@ export class AuditService {
   async getUserAuditHistory(actorUserId: string, limit = 50): Promise<AuditLogEntity[]> {
     return this.auditRepository.find({
       where: { actorUserId },
+      order: { createdAt: 'DESC' },
+      take: limit,
+    });
+  }
+
+  async getOrganizationAuditHistory(
+    organizationId: string,
+    limit = 50,
+  ): Promise<AuditLogEntity[]> {
+    return this.auditRepository.find({
+      where: { organizationId },
       order: { createdAt: 'DESC' },
       take: limit,
     });

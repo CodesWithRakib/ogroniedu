@@ -14,6 +14,7 @@ import { GuardianAccessService } from '../guardians/guardian-access.service';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { AuditService } from '../audit/audit.service';
 import { NotificationService } from './notification.service';
+import { NotificationGateway } from './notification.gateway';
 import { SendBookingMessageDto } from './dto/send-booking-message.dto';
 import { GetMessagesQueryDto } from './dto/get-messages-query.dto';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
@@ -23,6 +24,8 @@ import {
   type CursorCollectionEnvelope,
 } from '../../common/api-response/api-response';
 import { decodeCursor, encodeCursor } from '../../common/pagination/pagination';
+import { inspectAndRedactContent } from './utils/content-safety.util';
+import type { ConversationInboxItem } from '@ogroniedu/contracts';
 
 /** Default chat history page size (preserves the previous take:100 cap via max 100). */
 const DEFAULT_MESSAGES_PAGE_SIZE = 50;
@@ -64,12 +67,6 @@ function resolveParticipantDisplayName(user: AuthenticatedUser, fallback: string
 export class BookingMessagesService {
   private readonly logger = new Logger(BookingMessagesService.name);
 
-  // Content safety regex for Bangladeshi phone numbers & off-platform channels
-  private readonly phoneRegex = /(?:\+?880\s?|0)1[3-9]\d{2}[\s-]?\d{6}/gi;
-  private readonly paymentSolicitationRegex =
-    /(?:bkash\s+personal|nagad\s+personal|send\s+money|হাতে\s+হাতে\s+টাকা|বিকাশ\s+পার্সোনাল|নগদ\s+পার্সোনাল)/gi;
-  private readonly externalLinkRegex = /(?:https?:\/\/|www\.)[^\s]+(?:\.com|\.me|\.org|\.net)/gi;
-
   constructor(
     @InjectRepository(BookingMessageEntity)
     private readonly messageRepo: Repository<BookingMessageEntity>,
@@ -83,6 +80,8 @@ export class BookingMessagesService {
     private readonly auditService: AuditService,
     @Inject(NotificationService)
     private readonly notificationService: NotificationService,
+    @Inject(forwardRef(() => NotificationGateway))
+    private readonly notificationGateway?: NotificationGateway,
   ) {}
 
   /**
@@ -106,14 +105,22 @@ export class BookingMessagesService {
       throw new NotFoundException(`Booking ${bookingId} not found`);
     }
 
-    // ABAC Check: User must be student, requester guardian, or tutor of the booking
+    // ABAC Check: User must be student, requester guardian, linked guardian, tutor, or admin
     const tutorUserId = resolveBookingTutorUserId(booking);
     const isStudent = user.id === booking.studentUserId;
     const isRequester = user.id === booking.requesterUserId;
     const isTutor = user.id === tutorUserId;
     const isAdmin = isAdminRole(user);
 
+    let isGuardian = false;
     if (!isStudent && !isRequester && !isTutor && !isAdmin) {
+      const activeGuardianIds = await this.guardianAccess.findActiveGuardianIds(
+        booking.studentUserId,
+      );
+      isGuardian = activeGuardianIds.includes(user.id);
+    }
+
+    if (!isStudent && !isRequester && !isTutor && !isGuardian && !isAdmin) {
       throw new ForbiddenException(
         'Access denied: You are not an authorized participant in this booking',
       );
@@ -131,33 +138,10 @@ export class BookingMessagesService {
     }
 
     // 2. Content Safety & Direct Contact Redaction Inspection
-    let sanitizedContent = dto.content;
-    let isRedacted = false;
-    let redactionReason: string | null = null;
-
-    if (this.phoneRegex.test(sanitizedContent)) {
-      sanitizedContent = sanitizedContent.replace(this.phoneRegex, '[REDACTED CONTACT NUMBER]');
-      isRedacted = true;
-      redactionReason = 'Direct phone number sharing restricted for escrow and child safety';
-    }
-
-    if (this.paymentSolicitationRegex.test(sanitizedContent)) {
-      sanitizedContent = sanitizedContent.replace(
-        this.paymentSolicitationRegex,
-        '[REDACTED PAYMENT SOLICITATION]',
-      );
-      isRedacted = true;
-      redactionReason = 'Direct off-platform payment solicitations strictly prohibited';
-    }
-
-    if (this.externalLinkRegex.test(sanitizedContent)) {
-      sanitizedContent = sanitizedContent.replace(
-        this.externalLinkRegex,
-        '[REDACTED EXTERNAL LINK]',
-      );
-      isRedacted = true;
-      redactionReason = 'External links restricted for platform safety';
-    }
+    const safetyResult = inspectAndRedactContent(dto.content);
+    const sanitizedContent = safetyResult.sanitizedContent;
+    const isRedacted = safetyResult.isRedacted;
+    const redactionReason = safetyResult.redactionReason;
 
     // 3. Persist Message
     const message = this.messageRepo.create({
@@ -167,6 +151,8 @@ export class BookingMessagesService {
       content: sanitizedContent,
       isRedacted,
       redactionReason,
+      attachmentAssetIds: dto.attachmentAssetIds || [],
+      metadata: dto.metadata || {},
     });
 
     const savedMessage = await this.messageRepo.save(message);
@@ -181,6 +167,7 @@ export class BookingMessagesService {
         senderUserId: user.id,
         recipientUserId,
         isRedacted,
+        hasAttachments: (dto.attachmentAssetIds?.length ?? 0) > 0,
       },
     });
     await this.outboxRepo.save(outbox);
@@ -196,11 +183,15 @@ export class BookingMessagesService {
         safeMetadata: {
           bookingId: booking.id,
           reason: redactionReason,
+          violationCodes: safetyResult.violationCodes,
         },
       });
     }
 
-    // 6. Asynchronous Notification to Recipient
+    // 6. Real-Time Socket.IO Broadcast to Active Room & Recipient
+    this.notificationGateway?.broadcastChatMessage(booking.id, savedMessage, recipientUserId);
+
+    // 7. Asynchronous Notification to Recipient
     await this.notificationService
       .dispatch({
         userId: recipientUserId,
@@ -240,10 +231,6 @@ export class BookingMessagesService {
 
   /**
    * 2. Get Messages for a Booking (ABAC Scoped, cursor-backward history).
-   * No cursor → latest `pageSize` messages. With cursor → messages strictly
-   * older than the cursor edge. Internal order is (created_at DESC, id DESC)
-   * via bound query-builder parameters; `data` is returned ASC
-   * (oldest→newest) for display compat.
    */
   async getMessages(
     user: AuthenticatedUser,
@@ -264,7 +251,15 @@ export class BookingMessagesService {
     const isTutor = user.id === tutorUserId;
     const isAdmin = isAdminRole(user);
 
+    let isGuardian = false;
     if (!isStudent && !isRequester && !isTutor && !isAdmin) {
+      const activeGuardianIds = await this.guardianAccess.findActiveGuardianIds(
+        booking.studentUserId,
+      );
+      isGuardian = activeGuardianIds.includes(user.id);
+    }
+
+    if (!isStudent && !isRequester && !isTutor && !isGuardian && !isAdmin) {
       throw new ForbiddenException(
         'Access denied: You are not authorized to view this communication thread',
       );
@@ -326,6 +321,145 @@ export class BookingMessagesService {
     }
 
     message.readAt = new Date();
-    return this.messageRepo.save(message);
+    const saved = await this.messageRepo.save(message);
+
+    // Broadcast live read receipt
+    this.notificationGateway?.broadcastReadReceipt(
+      message.bookingId,
+      user.id,
+      message.id,
+      message.readAt,
+    );
+
+    return saved;
+  }
+
+  /**
+   * 4. Mark All Unread Messages in Booking as Read
+   */
+  async markAllInBookingAsRead(
+    user: AuthenticatedUser,
+    bookingId: string,
+  ): Promise<{ updatedCount: number }> {
+    const unread = await this.messageRepo.find({
+      where: {
+        bookingId,
+        recipientUserId: user.id,
+        readAt: null as unknown as undefined,
+      },
+    });
+
+    const now = new Date();
+    for (const msg of unread) {
+      msg.readAt = now;
+      await this.messageRepo.save(msg);
+      this.notificationGateway?.broadcastReadReceipt(bookingId, user.id, msg.id, now);
+    }
+
+    return { updatedCount: unread.length };
+  }
+
+  /**
+   * 5. Get Conversations Inbox for Authenticated User
+   */
+  async getConversationsInbox(user: AuthenticatedUser): Promise<ConversationInboxItem[]> {
+    let studentIds: string[] = [];
+    if (user.roles?.includes('guardian')) {
+      studentIds = await this.guardianAccess.findActiveStudentIds(user.id).catch(() => []);
+    }
+
+    const qb = this.bookingRepo
+      .createQueryBuilder('b')
+      .leftJoinAndSelect('b.studentUser', 'studentUser')
+      .leftJoinAndSelect('b.tutorProfile', 'tutorProfile')
+      .leftJoinAndSelect('tutorProfile.user', 'tutorUser')
+      .leftJoinAndSelect('b.subject', 'subject')
+      .leftJoinAndSelect('b.educationLevel', 'educationLevel')
+      .where(
+        '(b.student_user_id = :userId OR b.requester_user_id = :userId OR b.tutor_user_id = :userId)',
+        { userId: user.id },
+      );
+
+    if (studentIds.length > 0) {
+      qb.orWhere('b.student_user_id IN (:...studentIds)', { studentIds });
+    }
+
+    const bookings = await qb.getMany();
+    if (bookings.length === 0) {
+      return [];
+    }
+
+    const bookingIds = bookings.map((b) => b.id);
+
+    // Fetch latest messages for each booking
+    const messages = await this.messageRepo
+      .createQueryBuilder('m')
+      .where('m.booking_id IN (:...bookingIds)', { bookingIds })
+      .orderBy('m.created_at', 'DESC')
+      .getMany();
+
+    const latestByBooking = new Map<string, BookingMessageEntity>();
+    for (const m of messages) {
+      if (!latestByBooking.has(m.bookingId)) {
+        latestByBooking.set(m.bookingId, m);
+      }
+    }
+
+    // Count unread for user
+    const unreadRaw = await this.messageRepo
+      .createQueryBuilder('m')
+      .select('m.booking_id', 'bookingId')
+      .addSelect('COUNT(m.id)', 'count')
+      .where('m.booking_id IN (:...bookingIds)', { bookingIds })
+      .andWhere('m.recipient_user_id = :userId', { userId: user.id })
+      .andWhere('m.read_at IS NULL')
+      .groupBy('m.booking_id')
+      .getRawMany<{ bookingId: string; count: string }>();
+
+    const unreadMap = new Map<string, number>();
+    for (const r of unreadRaw) {
+      unreadMap.set(r.bookingId, parseInt(r.count, 10) || 0);
+    }
+
+    const items: ConversationInboxItem[] = bookings.map((b) => {
+      const isCallerTutor = user.id === b.tutorUserId;
+      const partner = isCallerTutor
+        ? {
+            id: b.studentUserId,
+            displayName: b.studentUser?.displayName || 'Student',
+            avatarUrl: b.studentUser?.avatarUrl || null,
+            role: 'student' as const,
+          }
+        : {
+            id: b.tutorUserId,
+            displayName: b.tutorProfile?.user?.displayName || 'Tutor',
+            avatarUrl: b.tutorProfile?.avatarUrl || null,
+            role: 'tutor' as const,
+          };
+
+      const lastMsg = latestByBooking.get(b.id);
+      return {
+        bookingId: b.id,
+        subjectName: b.subject?.nameEn || b.subject?.nameBn || 'Tuition Class',
+        educationLevelName: b.educationLevel?.nameEn || b.educationLevel?.nameBn,
+        status: b.status,
+        partnerUser: partner,
+        lastMessage: lastMsg
+          ? {
+              id: lastMsg.id,
+              content: lastMsg.content,
+              isRedacted: lastMsg.isRedacted,
+              createdAt: lastMsg.createdAt.toISOString(),
+              isMine: lastMsg.senderUserId === user.id,
+              readAt: lastMsg.readAt ? lastMsg.readAt.toISOString() : null,
+            }
+          : null,
+        unreadCount: unreadMap.get(b.id) || 0,
+        updatedAt: (lastMsg?.createdAt || b.updatedAt || b.createdAt).toISOString(),
+      };
+    });
+
+    items.sort((a, b) => new Date(b.updatedAt).getTime() - new Date(a.updatedAt).getTime());
+    return items;
   }
 }

@@ -18,6 +18,10 @@ export class AuditLogEntity {
   @Column({ name: 'resource_id', type: 'text', nullable: true })
   resourceId!: string | null;
 
+  @Index('ix_audit_logs_organization')
+  @Column({ name: 'organization_id', type: 'uuid', nullable: true })
+  organizationId?: string | null;
+
   @Column({ name: 'request_id', type: 'text', nullable: true })
   requestId!: string | null;
 

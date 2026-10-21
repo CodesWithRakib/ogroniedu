@@ -16,6 +16,7 @@ import { BookingMessagesService } from './booking-messages.service';
 import { NotificationGateway } from './notification.gateway';
 import { NotificationController } from './notification.controller';
 import { BookingMessagesController } from './booking-messages.controller';
+import { ConversationsController } from './conversations.controller';
 import { AuditModule } from '../audit/audit.module';
 import { GuardiansModule } from '../guardians/guardians.module';
 
@@ -32,7 +33,11 @@ import { GuardiansModule } from '../guardians/guardians.module';
     AuditModule,
     GuardiansModule,
   ],
-  controllers: [NotificationController, BookingMessagesController],
+  controllers: [
+    NotificationController,
+    BookingMessagesController,
+    ConversationsController,
+  ],
   providers: [
     NotificationService,
     NotificationPreferencesService,

@@ -12,3 +12,5 @@ export * from './support.js';
 export * from './admin.js';
 export * from './analytics-files.js';
 export * from './tutors.js';
+export * from './messaging.js';
+export * from './organizations.js';

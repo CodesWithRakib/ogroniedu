@@ -8,10 +8,15 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Logger, Inject, forwardRef } from '@nestjs/common';
+import { Logger, Inject, Optional, forwardRef } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import jwt from 'jsonwebtoken';
 import type { NotificationItemDto, UnreadCountResponseDto } from '@ogroniedu/contracts';
 import { NotificationService } from './notification.service';
+import { BookingEntity } from '../bookings/entities/booking.entity';
+import { BookingMessageEntity } from './entities/booking-message.entity';
+import { GuardianAccessService } from '../guardians/guardian-access.service';
 import { isTestAuthBypassEnabled } from '../../common/auth/test-auth';
 
 function readString(value: unknown): string | undefined {
@@ -36,6 +41,12 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
   constructor(
     @Inject(forwardRef(() => NotificationService))
     private readonly notificationService: NotificationService,
+    @Optional()
+    @InjectRepository(BookingEntity)
+    private readonly bookingRepo?: Repository<BookingEntity>,
+    @Optional()
+    @Inject(GuardianAccessService)
+    private readonly guardianAccess?: GuardianAccessService,
   ) {}
 
   async handleConnection(client: Socket) {
@@ -122,6 +133,38 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     this.server.to(room).emit('unread_count', { unreadCount });
   }
 
+  /**
+   * Broadcast new message to active booking chat room AND direct recipient user room
+   */
+  broadcastChatMessage(bookingId: string, message: BookingMessageEntity, recipientUserId: string) {
+    if (!this.server) return;
+    const bookingRoom = `booking_chat:${bookingId}`;
+    const userRoom = `user:${recipientUserId}`;
+
+    // Emit to booking room for users with active chat thread open
+    this.server.to(bookingRoom).emit('new_chat_message', message);
+
+    // Also emit to recipient's personal user room for toast / badge updates
+    this.server.to(userRoom).emit('new_chat_message', message);
+
+    this.logger.log(`Broadcast chat message #${message.id} to room ${bookingRoom} and ${userRoom}`);
+  }
+
+  /**
+   * Broadcast read receipts to active booking chat room
+   */
+  broadcastReadReceipt(bookingId: string, readerUserId: string, messageId: string, readAt: Date) {
+    if (!this.server) return;
+    const bookingRoom = `booking_chat:${bookingId}`;
+    this.server.to(bookingRoom).emit('messages_read', {
+      bookingId,
+      readerUserId,
+      messageId,
+      readAt: readAt.toISOString(),
+    });
+    this.logger.log(`Broadcast read receipt for message #${messageId} to room ${bookingRoom}`);
+  }
+
   @SubscribeMessage('get_unread_count')
   async handleGetUnreadCount(@ConnectedSocket() client: Socket): Promise<UnreadCountResponseDto> {
     const userId = client.data.userId;
@@ -149,5 +192,88 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     const result = await this.notificationService.markAllAsRead(userId);
     this.broadcastUnreadCount(userId, result.unreadCount);
     this.server.to(`user:${userId}`).emit('notifications_all_read', { unreadCount: 0 });
+  }
+
+  /**
+   * Real-time Chat Room Subscriptions:
+   * Client joins booking_chat:${bookingId} after server-side ABAC authorization verification.
+   */
+  @SubscribeMessage('join_booking_chat')
+  async handleJoinBookingChat(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { bookingId: string },
+  ) {
+    const userId = client.data.userId;
+    if (!userId || !data?.bookingId) {
+      return { success: false, error: 'Unauthorized or missing bookingId' };
+    }
+
+    if (!this.bookingRepo) {
+      const room = `booking_chat:${data.bookingId}`;
+      await client.join(room);
+      return { success: true, bookingId: data.bookingId };
+    }
+
+    const booking = await this.bookingRepo.findOne({
+      where: { id: data.bookingId },
+    });
+
+    if (!booking) {
+      return { success: false, error: 'Booking not found' };
+    }
+
+    // ABAC verification
+    const isStudent = userId === booking.studentUserId;
+    const isRequester = userId === booking.requesterUserId;
+    const isTutor = userId === booking.tutorUserId;
+
+    let isGuardian = false;
+    if (!isStudent && !isRequester && !isTutor && this.guardianAccess) {
+      const activeGuardianIds = await this.guardianAccess.findActiveGuardianIds(
+        booking.studentUserId,
+      );
+      isGuardian = activeGuardianIds.includes(userId);
+    }
+
+    if (!isStudent && !isRequester && !isTutor && !isGuardian) {
+      this.logger.warn(
+        `User ${userId} denied joining chat room for booking ${data.bookingId} (not a participant)`,
+      );
+      return { success: false, error: 'Forbidden: You are not a participant in this booking' };
+    }
+
+    const room = `booking_chat:${data.bookingId}`;
+    await client.join(room);
+    this.logger.log(`User ${userId} joined real-time chat room ${room}`);
+    return { success: true, bookingId: data.bookingId };
+  }
+
+  @SubscribeMessage('leave_booking_chat')
+  async handleLeaveBookingChat(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { bookingId: string },
+  ) {
+    if (!data?.bookingId) return { success: false };
+    const room = `booking_chat:${data.bookingId}`;
+    await client.leave(room);
+    this.logger.log(`User ${client.data?.userId} left real-time chat room ${room}`);
+    return { success: true, bookingId: data.bookingId };
+  }
+
+  @SubscribeMessage('chat_typing')
+  handleChatTyping(
+    @ConnectedSocket() client: Socket,
+    @MessageBody() data: { bookingId: string; isTyping: boolean; userName?: string },
+  ) {
+    const userId = client.data?.userId;
+    if (!userId || !data?.bookingId) return;
+    const room = `booking_chat:${data.bookingId}`;
+    // Broadcast typing indicator to other participants in the room
+    client.to(room).emit('user_typing', {
+      bookingId: data.bookingId,
+      userId,
+      userName: data.userName || 'Participant',
+      isTyping: Boolean(data.isTyping),
+    });
   }
 }

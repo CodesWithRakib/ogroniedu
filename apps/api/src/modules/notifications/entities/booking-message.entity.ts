@@ -50,6 +50,12 @@ export class BookingMessageEntity {
   @Column({ name: 'read_at', type: 'timestamptz', nullable: true })
   readAt?: Date | null;
 
+  @Column('uuid', { array: true, name: 'attachment_asset_ids', default: () => "'{}'" })
+  attachmentAssetIds!: string[];
+
+  @Column({ type: 'jsonb', nullable: true, default: () => "'{}'" })
+  metadata?: Record<string, unknown> | null;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 }

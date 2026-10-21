@@ -180,6 +180,7 @@ export const baseApi = createApi({
     'Taxonomy',
     'FileAsset',
     'Onboarding',
+    'Organizations',
   ],
   endpoints: () => ({}),
 });

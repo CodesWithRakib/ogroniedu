@@ -1,4 +1,4 @@
-import { Injectable, Logger, Inject } from '@nestjs/common';
+import { Injectable, Logger, Inject, Optional } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { LedgerService } from '../payments/ledger.service';
@@ -6,6 +6,10 @@ import { AnalyticsTimeQueryDto } from './dto';
 import type { TimeBounds } from './interfaces/time-bounds.interface';
 import { AnalyticsTutorService } from './services/analytics-tutor.service';
 import { asSqlRows, toNumber, resolveTimeBounds } from './utils/analytics-sql.util';
+import { arrayToCsv } from './utils/csv-sanitizer.util';
+import { AuditService } from '../audit/audit.service';
+import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import type { ExportReportDto } from './dto';
 
 export type { TimeBounds } from './interfaces/time-bounds.interface';
 
@@ -20,6 +24,9 @@ export class AnalyticsService {
     private readonly ledgerService: LedgerService,
     @Inject(AnalyticsTutorService)
     private readonly tutorAnalytics: AnalyticsTutorService,
+    @Optional()
+    @Inject(AuditService)
+    private readonly auditService?: AuditService,
   ) {}
 
   /**
@@ -324,5 +331,140 @@ export class AnalyticsService {
    */
   async getMyTutorAnalytics(tutorUserId: string, query: AnalyticsTimeQueryDto) {
     return this.tutorAnalytics.getMyTutorAnalytics(tutorUserId, query);
+  }
+
+  /**
+   * 6. Administrative Safe CSV Report Exporter
+   * Generates formula-safe CSV streams with anti-formula injection sanitization.
+   */
+  async exportReport(
+    adminUser: AuthenticatedUser,
+    dto: ExportReportDto,
+  ): Promise<{ csv: string; filename: string; rowCount: number }> {
+    const fromDate = dto.from ? new Date(dto.from) : new Date(Date.now() - 30 * 86400000);
+    const toDate = dto.to ? new Date(dto.to) : new Date();
+    const limit = dto.limit || 1000;
+
+    let columns: Array<{ key: string; header: string }> = [];
+    let rows: Array<Record<string, unknown>> = [];
+
+    switch (dto.reportType) {
+      case 'users': {
+        columns = [
+          { key: 'id', header: 'User ID' },
+          { key: 'display_name', header: 'Display Name' },
+          { key: 'email', header: 'Email' },
+          { key: 'phone_e164', header: 'Phone' },
+          { key: 'status', header: 'Account Status' },
+          { key: 'created_at', header: 'Registered At' },
+        ];
+        rows = await this.dataSource.query(
+          `SELECT id, display_name, email, phone_e164, status, created_at 
+           FROM users 
+           WHERE created_at BETWEEN $1 AND $2 AND deleted_at IS NULL 
+           ORDER BY created_at DESC LIMIT $3;`,
+          [fromDate, toDate, limit],
+        );
+        break;
+      }
+      case 'bookings': {
+        columns = [
+          { key: 'id', header: 'Booking ID' },
+          { key: 'status', header: 'Status' },
+          { key: 'student_user_id', header: 'Student ID' },
+          { key: 'tutor_user_id', header: 'Tutor ID' },
+          { key: 'created_at', header: 'Created At' },
+        ];
+        rows = await this.dataSource.query(
+          `SELECT id, status, student_user_id, tutor_user_id, created_at 
+           FROM bookings 
+           WHERE created_at BETWEEN $1 AND $2 
+           ORDER BY created_at DESC LIMIT $3;`,
+          [fromDate, toDate, limit],
+        );
+        break;
+      }
+      case 'financial': {
+        columns = [
+          { key: 'id', header: 'Order ID' },
+          { key: 'booking_id', header: 'Booking ID' },
+          { key: 'amount_poisha', header: 'Amount (Poisha)' },
+          { key: 'provider', header: 'Provider' },
+          { key: 'status', header: 'Status' },
+          { key: 'created_at', header: 'Date' },
+        ];
+        rows = await this.dataSource.query(
+          `SELECT id, booking_id, amount_poisha, provider, status, created_at 
+           FROM payment_orders 
+           WHERE created_at BETWEEN $1 AND $2 
+           ORDER BY created_at DESC LIMIT $3;`,
+          [fromDate, toDate, limit],
+        );
+        break;
+      }
+      case 'tutors': {
+        columns = [
+          { key: 'user_id', header: 'Tutor User ID' },
+          { key: 'headline', header: 'Headline' },
+          { key: 'hourly_rate_minor', header: 'Hourly Rate' },
+          { key: 'verification_status', header: 'Verification Status' },
+          { key: 'publication_status', header: 'Publication Status' },
+          { key: 'organization_id', header: 'Organization ID' },
+          { key: 'created_at', header: 'Registered At' },
+        ];
+        rows = await this.dataSource.query(
+          `SELECT user_id, headline, hourly_rate_minor, verification_status, publication_status, organization_id, created_at 
+           FROM tutor_profiles 
+           WHERE created_at BETWEEN $1 AND $2 
+           ORDER BY created_at DESC LIMIT $3;`,
+          [fromDate, toDate, limit],
+        );
+        break;
+      }
+      case 'organizations': {
+        columns = [
+          { key: 'id', header: 'Organization ID' },
+          { key: 'name', header: 'Name' },
+          { key: 'slug', header: 'Slug' },
+          { key: 'type', header: 'Type' },
+          { key: 'status', header: 'Status' },
+          { key: 'contact_email', header: 'Contact Email' },
+          { key: 'trade_license_number', header: 'Trade License' },
+          { key: 'created_at', header: 'Registered At' },
+        ];
+        rows = await this.dataSource.query(
+          `SELECT id, name, slug, type, status, contact_email, trade_license_number, created_at 
+           FROM organizations 
+           WHERE created_at BETWEEN $1 AND $2 
+           ORDER BY created_at DESC LIMIT $3;`,
+          [fromDate, toDate, limit],
+        );
+        break;
+      }
+    }
+
+    const csv = arrayToCsv(columns, rows);
+    const dateStr = new Date().toISOString().split('T')[0];
+    const filename = `report-${dto.reportType}-${dateStr}.csv`;
+
+    if (this.auditService) {
+      await this.auditService.record({
+        actorUserId: adminUser.id,
+        action: 'admin.report.exported',
+        resourceType: 'analytics',
+        safeMetadata: {
+          reportType: dto.reportType,
+          rowCount: rows.length,
+          from: fromDate.toISOString(),
+          to: toDate.toISOString(),
+        },
+      });
+    }
+
+    return {
+      csv,
+      filename,
+      rowCount: rows.length,
+    };
   }
 }

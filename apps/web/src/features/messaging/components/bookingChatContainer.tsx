@@ -69,6 +69,8 @@ export function BookingChatContainer({
         subjectName={subjectName}
         currentUserId={currentUserId}
         messages={items}
+        typingUser={chat.typingUser}
+        onTyping={chat.emitTyping}
         onSendMessage={chat.send}
       />
     </div>

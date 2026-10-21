@@ -150,6 +150,11 @@ describe('BookingMessagesService ABAC & Content Safety Tests (Phase 12)', () => 
       dispatch: vi.fn().mockResolvedValue({ id: 'notif-1' }),
     };
 
+    const mockNotificationGateway: any = {
+      broadcastChatMessage: vi.fn(),
+      broadcastReadReceipt: vi.fn(),
+    };
+
     service = new BookingMessagesService(
       mockMessageRepo,
       mockBookingRepo,
@@ -157,6 +162,7 @@ describe('BookingMessagesService ABAC & Content Safety Tests (Phase 12)', () => 
       mockOutboxRepo,
       mockAuditService,
       mockNotificationService,
+      mockNotificationGateway,
     );
   });
 
@@ -366,6 +372,56 @@ describe('BookingMessagesService ABAC & Content Safety Tests (Phase 12)', () => 
       await expect(service.getMessages(studentUser, bookingId, {})).rejects.toThrow(
         NotFoundException,
       );
+    });
+  });
+
+  describe('Phase 08: Real-Time & Attachments Enhancements', () => {
+    it('should support sending message with file attachment asset IDs', async () => {
+      const attId = '11111111-2222-4333-8444-555555555555';
+      const msg = await service.sendMessage(studentUser, bookingId, {
+        content: 'Please find attached my physics assignment solution.',
+        attachmentAssetIds: [attId],
+      });
+
+      expect(msg).toBeDefined();
+      expect(msg.attachmentAssetIds).toContain(attId);
+      expect(mockMessageRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          attachmentAssetIds: [attId],
+        }),
+      );
+    });
+
+    it('should allow verified linked guardian to send message in student booking', async () => {
+      const guardianId = '00000000-0000-4000-8000-000000000088';
+      const guardianUser: AuthenticatedUser = {
+        id: guardianId,
+        email: 'guardian@example.com',
+        roles: ['guardian'],
+      };
+      // Active guardian link
+      mockGuardianLinkRepo.find.mockResolvedValue([{ guardianUserId: guardianId, status: 'active' }]);
+
+      const msg = await service.sendMessage(guardianUser, bookingId, {
+        content: 'Hello, I am the guardian. The class time is confirmed.',
+      });
+
+      expect(msg).toBeDefined();
+      expect(msg.senderUserId).toBe(guardianId);
+    });
+
+    it('should mark all unread messages in a booking as read', async () => {
+      const unreadMsgs = [
+        { id: 'msg-1', bookingId, recipientUserId: studentId, readAt: null },
+        { id: 'msg-2', bookingId, recipientUserId: studentId, readAt: null },
+      ];
+      mockMessageRepo.find = vi.fn().mockResolvedValue(unreadMsgs);
+      mockMessageRepo.save = vi.fn((m) => Promise.resolve(m));
+
+      const res = await service.markAllInBookingAsRead(studentUser, bookingId);
+      expect(res.updatedCount).toBe(2);
+      expect(unreadMsgs[0].readAt).toBeInstanceOf(Date);
+      expect(unreadMsgs[1].readAt).toBeInstanceOf(Date);
     });
   });
 });

@@ -100,6 +100,9 @@ export class TutorProfileEntity {
   @Column({ name: 'safety_hold_reason', type: 'text', nullable: true })
   safetyHoldReason?: string | null;
 
+  @Column({ name: 'organization_id', type: 'uuid', nullable: true })
+  organizationId?: string | null;
+
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 

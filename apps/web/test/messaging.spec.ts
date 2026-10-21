@@ -82,4 +82,20 @@ describe('Messaging feature (cursor chat)', () => {
     expect(page.nextCursor).toBeNull();
     expect(page.hasNextPage).toBe(false);
   });
+
+  it('maps attachment asset IDs and metadata accurately', () => {
+    const withAttachment: BookingMessage = {
+      id: 'm-att',
+      bookingId: 'b1',
+      senderUserId: 'tutor-1',
+      content: 'Here is the syllabus document',
+      attachmentAssetIds: ['00000000-0000-4000-8000-000000000010'],
+      metadata: { fileType: 'pdf' },
+      createdAt: '2026-01-01T10:10:00Z',
+    };
+    const mapped = mapToChatItems([withAttachment], 'student-1');
+    expect(mapped[0].attachmentAssetIds).toHaveLength(1);
+    expect(mapped[0].attachmentAssetIds![0]).toBe('00000000-0000-4000-8000-000000000010');
+    expect(mapped[0].metadata).toEqual({ fileType: 'pdf' });
+  });
 });

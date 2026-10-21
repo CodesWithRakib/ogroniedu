@@ -312,7 +312,7 @@ describe('contracts parity (zod ↔ class-validator)', () => {
         'update-safety-report',
         UpdateSafetyReportSchema,
         { status: 'escalated', escalationLevel: 'urgent_child_safety' },
-        { status: 'closed', escalationLevel: 'urgent_child_safety' },
+        { status: 'invalid_status_value', escalationLevel: 'urgent_child_safety' },
       ],
       [
         'update-replacement-case',

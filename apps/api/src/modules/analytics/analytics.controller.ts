@@ -1,4 +1,5 @@
-import { Controller, Get, Query, UseGuards, Inject } from '@nestjs/common';
+import { Controller, Get, Query, UseGuards, Inject, Res } from '@nestjs/common';
+import type { Response } from 'express';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -6,7 +7,7 @@ import { ADMIN_ROLES } from '../../common/auth/role.utils';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { AnalyticsService } from './analytics.service';
 import { AnalyticsTutorService } from './services/analytics-tutor.service';
-import { AnalyticsTimeQueryDto } from './dto';
+import { AnalyticsTimeQueryDto, ExportReportDto } from './dto';
 
 @Controller('api/v1/analytics')
 @UseGuards(AuthGuard, RolesGuard)
@@ -84,5 +85,22 @@ export class AnalyticsController {
       success: true,
       data,
     };
+  }
+
+  /**
+   * 6. Administrative CSV Report Export with Anti-Formula Injection
+   */
+  @Get('reports/export')
+  @Roles(...ADMIN_ROLES)
+  async exportReport(
+    @CurrentUser() adminUser: AuthenticatedUser,
+    @Query() dto: ExportReportDto,
+    @Res() res: Response,
+  ) {
+    const { csv, filename } = await this.analyticsService.exportReport(adminUser, dto);
+
+    res.setHeader('Content-Type', 'text/csv; charset=utf-8');
+    res.setHeader('Content-Disposition', `attachment; filename="${filename}"`);
+    return res.status(200).send(csv);
   }
 }

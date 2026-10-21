@@ -24,6 +24,7 @@ import { SupportModule } from './modules/support/support.module';
 import { PublicModule } from './modules/public/public.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
+import { OrganizationsModule } from './modules/organizations/organizations.module';
 
 @Module({
   imports: [
@@ -74,6 +75,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
     PublicModule,
     AdminModule,
     AnalyticsModule,
+    OrganizationsModule,
   ],
   providers: [StructuredLoggerService],
   exports: [StructuredLoggerService],

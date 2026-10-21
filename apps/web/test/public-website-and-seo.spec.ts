@@ -13,13 +13,13 @@ import TermsPage from '../src/app/[locale]/(public)/terms/page';
 import PrivacyPage from '../src/app/[locale]/(public)/privacy/page';
 
 describe('Phase 16 — Public Website, SEO & Route Layout Separation Tests', () => {
-  it('should generate valid bilingual sitemap covering all 9 public routes across bn and en', () => {
-    const entries = sitemap();
+  it('should generate valid bilingual sitemap covering all 9 public routes across bn and en', async () => {
+    const entries = await sitemap();
     expect(entries).toBeDefined();
     expect(Array.isArray(entries)).toBe(true);
 
-    // 9 routes * 2 locales = 18 URL entries
-    expect(entries).toHaveLength(18);
+    // 9 routes * 2 locales = at least 18 URL entries (plus dynamic public tutors)
+    expect(entries.length).toBeGreaterThanOrEqual(18);
 
     const urls = entries.map((e) => e.url);
 
@@ -62,6 +62,11 @@ describe('Phase 16 — Public Website, SEO & Route Layout Separation Tests', () 
     expect(disallowed).toContain('/*/admin');
     expect(disallowed).toContain('/*/analytics');
     expect(disallowed).toContain('/*/payments');
+    expect(disallowed).toContain('/*/dashboard');
+    expect(disallowed).toContain('/*/dashboard/*');
+    expect(disallowed).toContain('/*/messages');
+    expect(disallowed).toContain('/*/notifications');
+    expect(disallowed).toContain('/*/safety-reports');
     expect(disallowed).toContain('/api/*');
   });
 

@@ -4,9 +4,10 @@ import { AnalyticsTutorService } from './services/analytics-tutor.service';
 import { AnalyticsController } from './analytics.controller';
 import { PaymentsModule } from '../payments/payments.module';
 import { AuthModule } from '../auth/auth.module';
+import { AuditModule } from '../audit/audit.module';
 
 @Module({
-  imports: [AuthModule, PaymentsModule],
+  imports: [AuthModule, PaymentsModule, AuditModule],
   controllers: [AnalyticsController],
   providers: [AnalyticsService, AnalyticsTutorService],
   exports: [AnalyticsService, AnalyticsTutorService],

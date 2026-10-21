@@ -1,5 +1,5 @@
-import { IsNotEmpty, IsString, MaxLength } from 'class-validator';
-import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString, MaxLength, IsOptional, IsArray, IsUUID } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class SendBookingMessageDto {
   @ApiProperty({
@@ -10,4 +10,19 @@ export class SendBookingMessageDto {
   @IsNotEmpty()
   @MaxLength(2000)
   content!: string;
+
+  @ApiPropertyOptional({
+    description: 'Optional file asset IDs (documents, images, homework) attached to message',
+    type: [String],
+  })
+  @IsOptional()
+  @IsArray()
+  @IsUUID('4', { each: true })
+  attachmentAssetIds?: string[];
+
+  @ApiPropertyOptional({
+    description: 'Optional metadata for message formatting or client context',
+  })
+  @IsOptional()
+  metadata?: Record<string, unknown>;
 }

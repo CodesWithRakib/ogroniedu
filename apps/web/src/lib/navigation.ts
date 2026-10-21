@@ -437,6 +437,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             testId: 'nav-users',
           },
           {
+            href: '/dashboard/admin/organizations',
+            labelBn: 'প্রাতিষ্ঠানিক অর্গানাইজেশন',
+            labelEn: 'Organizations',
+            icon: Users,
+            testId: 'nav-organizations',
+          },
+          {
             href: '/dashboard/admin/finance',
             labelBn: 'আর্থিক অপারেশন',
             labelEn: 'Finance Operations',
@@ -496,6 +503,53 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             labelEn: role === 'support_agent' ? 'Support Console' : 'Compliance Console',
             icon: ShieldCheck,
             testId: 'nav-admin',
+          },
+        ],
+      },
+    ];
+  }
+
+  if (role === 'organization_owner' || role === 'organization_staff') {
+    return [
+      {
+        id: 'overview',
+        titleBn: 'অর্গানাইজেশন হাব',
+        titleEn: 'Organization Hub',
+        items: [
+          {
+            href: '/dashboard/organization',
+            labelBn: 'প্রতিষ্ঠান ড্যাশবোর্ড',
+            labelEn: 'Agency Dashboard',
+            icon: LayoutDashboard,
+            testId: 'nav-organization',
+          },
+          {
+            href: '/dashboard/organization/members',
+            labelBn: 'স্টাফ ও শিক্ষক রোস্টার',
+            labelEn: 'Staff & Tutors',
+            icon: Users,
+            testId: 'nav-org-members',
+          },
+        ],
+      },
+      {
+        id: 'teaching',
+        titleBn: 'ক্লাস ও বুকিং',
+        titleEn: 'Classes & Bookings',
+        items: [
+          {
+            href: '/messages',
+            labelBn: 'ইনস্টিটিউশনাল মেসেজিং',
+            labelEn: 'Messages',
+            icon: MessageSquare,
+            testId: 'nav-messages',
+          },
+          {
+            href: '/notifications',
+            labelBn: 'বিজ্ঞপ্তি',
+            labelEn: 'Alerts',
+            icon: MessageSquare,
+            testId: 'nav-notifications',
           },
         ],
       },
@@ -615,6 +669,36 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
       descEn: 'Policy & data-retention oversight',
       icon: ShieldCheck,
       accentColor: 'text-destructive',
+    },
+  },
+  organization_owner: {
+    badgeBn: 'অর্গানাইজেশন প্রধান',
+    badgeEn: 'Organization Owner',
+    badgeClasses: 'bg-primary/10 text-primary border-primary/25',
+    portalTitleBn: 'প্রতিষ্ঠান পোর্টাল',
+    portalTitleEn: 'Agency Portal',
+    widget: {
+      titleBn: 'প্রাতিষ্ঠানিক নেটওয়ার্ক',
+      titleEn: 'Institutional Network',
+      descBn: 'কোচিং সেন্টার ও এজেন্সি ম্যানেজমেন্ট',
+      descEn: 'Coaching center & agency roster',
+      icon: Users,
+      accentColor: 'text-primary',
+    },
+  },
+  organization_staff: {
+    badgeBn: 'অর্গানাইজেশন স্টাফ',
+    badgeEn: 'Organization Staff',
+    badgeClasses: 'bg-info/10 text-info border-info/25',
+    portalTitleBn: 'স্টাফ পোর্টাল',
+    portalTitleEn: 'Staff Portal',
+    widget: {
+      titleBn: 'একাডেমিক সমন্বয়',
+      titleEn: 'Academic Coordination',
+      descBn: 'ক্লাস শিডিউল ও শিক্ষক মনিটরিং',
+      descEn: 'Session scheduling & tutor monitoring',
+      icon: GraduationCap,
+      accentColor: 'text-info',
     },
   },
 };

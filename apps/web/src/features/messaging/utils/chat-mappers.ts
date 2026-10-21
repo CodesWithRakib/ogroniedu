@@ -25,6 +25,8 @@ export function mapToChatItems(
       content: m.body ?? m.content,
       isRedacted: m.isRedacted ?? false,
       redactionReason: m.redactionReason ?? null,
+      attachmentAssetIds: m.attachmentAssetIds ?? [],
+      metadata: m.metadata ?? null,
       readAt: m.readAt ?? null,
       createdAt: m.createdAt,
     };
