@@ -10,7 +10,7 @@ import {
 } from '@nestjs/terminus';
 
 @ApiTags('Health')
-@Controller('health')
+@Controller(['health', 'api/health'])
 export class HealthController {
   constructor(
     @Inject(HealthCheckService)
@@ -22,8 +22,8 @@ export class HealthController {
     private readonly dataSource?: DataSource,
   ) {}
 
-  @Get('live')
-  @ApiOperation({ summary: 'Liveness check for container orchestrators (k8s / ECS)' })
+  @Get(['', 'live', 'liveness'])
+  @ApiOperation({ summary: 'Liveness check for container orchestrators (k8s / ECS / Docker)' })
   @ApiResponse({ status: 200, description: 'Application process is alive and responsive' })
   checkLiveness(): { status: string; uptime: number; timestamp: string } {
     return {
@@ -33,13 +33,15 @@ export class HealthController {
     };
   }
 
-  @Get('ready')
+  @Get(['ready', 'readiness'])
   @HealthCheck()
   @ApiOperation({ summary: 'Readiness check verifying database and resource health' })
   @ApiResponse({ status: 200, description: 'Application is ready to accept incoming traffic' })
+  @ApiResponse({ status: 503, description: 'Application dependencies (DB/Memory) unavailable' })
   async checkReadiness(): Promise<
     HealthCheckResult | { status: string; info: Record<string, unknown> }
   > {
+    const isProduction = process.env.NODE_ENV === 'production';
     try {
       return await this.health.check([
         async () => {
@@ -47,11 +49,17 @@ export class HealthController {
             await this.dataSource.query('SELECT 1');
             return { database: { status: 'up' } };
           }
+          if (isProduction) {
+            throw new Error('Database connection is not initialized');
+          }
           return { database: { status: 'up' } };
         },
         () => this.memory.checkHeap('memory_heap', 300 * 1024 * 1024), // 300MB heap limit
       ]);
-    } catch {
+    } catch (err) {
+      if (isProduction) {
+        throw err;
+      }
       // In development / local testing environments without an initialized DB schema,
       // return degraded/available fallback status for local smoke tests
       return {

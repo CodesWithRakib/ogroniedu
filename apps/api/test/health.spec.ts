@@ -43,6 +43,8 @@ describe('Health & Readiness Probes Tests', () => {
   });
 
   it('should fallback gracefully when database is unavailable in offline testing', async () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'test';
     const mockHealthService = {
       check: vi.fn().mockRejectedValue(new Error('Connection refused')),
     } as unknown as HealthCheckService;
@@ -53,5 +55,18 @@ describe('Health & Readiness Probes Tests', () => {
     expect(result.status).toBe('ok');
     expect(result.info).toBeDefined();
     expect((result.info as any).database.status).toBe('mock_fallback_available');
+    process.env.NODE_ENV = originalEnv;
+  });
+
+  it('should throw and fail readiness check in production when dependencies fail', async () => {
+    const originalEnv = process.env.NODE_ENV;
+    process.env.NODE_ENV = 'production';
+    const mockHealthService = {
+      check: vi.fn().mockRejectedValue(new Error('Database unavailable')),
+    } as unknown as HealthCheckService;
+
+    const controller = new HealthController(mockHealthService, null as any, null as any);
+    await expect(controller.checkReadiness()).rejects.toThrow('Database unavailable');
+    process.env.NODE_ENV = originalEnv;
   });
 });

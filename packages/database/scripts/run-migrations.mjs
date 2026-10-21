@@ -1,3 +1,27 @@
+import { fileURLToPath } from 'node:url';
+import path from 'node:path';
+import fs from 'node:fs';
+
+// Auto-load root .env if environment variables are not preloaded
+if (!process.env.DATABASE_URL && !process.env.DB_HOST) {
+  const currentDir = path.dirname(fileURLToPath(import.meta.url));
+  const candidateEnvs = [
+    path.resolve(currentDir, '..', '..', '.env'),
+    path.resolve(currentDir, '..', '.env'),
+    path.resolve(process.cwd(), '.env'),
+  ];
+  for (const envPath of candidateEnvs) {
+    if (fs.existsSync(envPath)) {
+      try {
+        process.loadEnvFile(envPath);
+        break;
+      } catch {
+        // ignore load errors
+      }
+    }
+  }
+}
+
 import { MigrationRunner } from '../dist/index.js';
 
 const targetDb = process.env.DB_NAME || (process.env.DATABASE_URL ? 'configured database' : 'ogroniedu_dev');
