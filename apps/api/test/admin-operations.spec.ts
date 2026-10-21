@@ -194,7 +194,14 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
 
   describe('Operational Dashboard & Verification Queues', () => {
     it('should aggregate queue counts and ledger integrity metrics', async () => {
-      mockDataSource.query.mockResolvedValueOnce([{ count: 4 }]); // pending tutors
+      mockDataSource.query.mockImplementation(async (query: string) => {
+        if (query.includes('pending_review')) return [{ count: 4 }];
+        if (query.includes('gmv')) return [{ gmv: '500000' }];
+        if (query.includes('escrow')) return [{ escrow: '200000' }];
+        if (query.includes('tutor_profiles')) return [{ count: 12 }];
+        if (query.includes('student_profiles')) return [{ count: 45 }];
+        return [{ count: 0 }];
+      });
       mockReplacementCaseRepo.count.mockResolvedValueOnce(2);
       mockSafetyReportRepo.count.mockResolvedValueOnce(1);
       mockBookingRepo.count.mockResolvedValueOnce(15);
@@ -207,6 +214,10 @@ describe('Admin Operations & Security Specifications (Phase 14)', () => {
       expect(dashboard.openSafetyReports).toBe(1);
       expect(dashboard.activeBookingsCount).toBe(15);
       expect(dashboard.totalRegisteredUsers).toBe(120);
+      expect(dashboard.gmvMinor).toBe('500000');
+      expect(dashboard.escrowPoolMinor).toBe('200000');
+      expect(dashboard.verifiedTutorsCount).toBe(12);
+      expect(dashboard.activeStudentsCount).toBe(45);
       expect(dashboard.ledgerIntegrity.isBalanced).toBe(true);
       expect(dashboard.ledgerIntegrity.discrepancy).toBe('0');
     });

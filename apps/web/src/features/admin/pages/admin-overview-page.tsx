@@ -128,10 +128,20 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           {/* 1. Platform Operational & Financial Telemetry */}
           <AdminPlatformTelemetryGrid
             locale={locale}
-            totalGmvBdt={485000}
-            activeEscrowPoolBdt={64200}
-            verifiedTutorsCount={28}
-            activeStudentsCount={114}
+            totalGmvBdt={
+              admin.metrics.gmvMinor
+                ? Math.round(Number(admin.metrics.gmvMinor) / 100)
+                : 0
+            }
+            activeEscrowPoolBdt={
+              admin.metrics.escrowPoolMinor
+                ? Math.round(Number(admin.metrics.escrowPoolMinor) / 100)
+                : 0
+            }
+            verifiedTutorsCount={admin.metrics.verifiedTutorsCount ?? 4}
+            activeStudentsCount={
+              admin.metrics.activeStudentsCount ?? admin.metrics.totalRegisteredUsers
+            }
             isLedgerBalanced={admin.reconciliation?.isBalanced ?? true}
           />
 

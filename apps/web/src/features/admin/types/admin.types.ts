@@ -110,6 +110,10 @@ export interface AdminDashboardMetrics {
   openSafetyReports: number;
   activeBookingsCount: number;
   totalRegisteredUsers: number;
+  gmvMinor?: string;
+  escrowPoolMinor?: string;
+  verifiedTutorsCount?: number;
+  activeStudentsCount?: number;
 }
 
 export const EMPTY_METRICS: AdminDashboardMetrics = {

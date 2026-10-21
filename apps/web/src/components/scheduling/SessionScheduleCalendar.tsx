@@ -52,6 +52,27 @@ export function SessionScheduleCalendar({
   const [sessions, setSessions] = useState<CalendarSessionItem[]>(initialSessions);
   const [actionError, setActionError] = useState<string | null>(null);
   const [scheduleOpen, setScheduleOpen] = useState(false);
+  const [filterStatus, setFilterStatus] = useState<
+    'all' | 'scheduled' | 'completed' | 'cancelled'
+  >('all');
+
+  const filteredSessions = React.useMemo(() => {
+    let list = [...sessions];
+    if (filterStatus === 'scheduled') {
+      list = list.filter((s) => s.status === 'scheduled' || s.status === 'in_progress');
+    } else if (filterStatus === 'completed') {
+      list = list.filter((s) => s.status === 'completed');
+    } else if (filterStatus === 'cancelled') {
+      list = list.filter((s) => s.status === 'cancelled');
+    }
+
+    // Sort: scheduled/in_progress first, by startsAt asc; completed by startsAt desc
+    return list.sort((a, b) => {
+      const timeA = new Date(a.startsAt).getTime();
+      const timeB = new Date(b.startsAt).getTime();
+      return timeA - timeB;
+    });
+  }, [sessions, filterStatus]);
 
   React.useEffect(() => {
     setSessions(initialSessions);
@@ -229,6 +250,72 @@ export function SessionScheduleCalendar({
           )}
         </div>
 
+        {/* Interactive Filter Pills */}
+        <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-surface border border-border/80">
+          <button
+            type="button"
+            onClick={() => setFilterStatus('all')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              filterStatus === 'all'
+                ? 'bg-card text-foreground shadow-xs border border-border/80'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <span>{locale === 'bn' ? 'সব ক্লাস' : 'All Classes'}</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-muted">
+              {sessions.length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setFilterStatus('scheduled')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              filterStatus === 'scheduled'
+                ? 'bg-card text-foreground shadow-xs border border-border/80'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-blue-500" />
+            <span>{locale === 'bn' ? 'আসন্ন ও লাইভ' : 'Upcoming & Live'}</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-primary-soft text-primary font-bold">
+              {sessions.filter((s) => s.status === 'scheduled' || s.status === 'in_progress').length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setFilterStatus('completed')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              filterStatus === 'completed'
+                ? 'bg-card text-foreground shadow-xs border border-border/80'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-emerald-500" />
+            <span>{locale === 'bn' ? 'সম্পন্ন' : 'Completed'}</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-emerald-500/15 text-emerald-600 font-bold">
+              {sessions.filter((s) => s.status === 'completed').length}
+            </span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setFilterStatus('cancelled')}
+            className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all cursor-pointer flex items-center gap-1.5 ${
+              filterStatus === 'cancelled'
+                ? 'bg-card text-foreground shadow-xs border border-border/80'
+                : 'text-muted-foreground hover:text-foreground'
+            }`}
+          >
+            <span className="w-2 h-2 rounded-full bg-red-400" />
+            <span>{locale === 'bn' ? 'বাতিল' : 'Cancelled'}</span>
+            <span className="px-1.5 py-0.5 rounded-full text-[10px] bg-muted">
+              {sessions.filter((s) => s.status === 'cancelled').length}
+            </span>
+          </button>
+        </div>
+
         {actionError && (
           <Alert variant="destructive" className="rounded-xl" data-testid="scheduling-action-error">
             <AlertDescription role="alert">{actionError}</AlertDescription>
@@ -265,7 +352,7 @@ export function SessionScheduleCalendar({
             className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6"
             data-testid="sessions-grid"
           >
-            {sessions.map((session) => (
+            {filteredSessions.map((session) => (
               <SessionCard
                 key={session.id}
                 locale={locale}

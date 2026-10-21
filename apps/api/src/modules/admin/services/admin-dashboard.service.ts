@@ -36,6 +36,10 @@ export class AdminDashboardService {
     openSafetyReports: number;
     activeBookingsCount: number;
     totalRegisteredUsers: number;
+    gmvMinor: string;
+    escrowPoolMinor: string;
+    verifiedTutorsCount: number;
+    activeStudentsCount: number;
     ledgerIntegrity: {
       isBalanced: boolean;
       totalDebits: string;
@@ -43,10 +47,10 @@ export class AdminDashboardService {
       discrepancy: string;
     };
   }> {
-    const pendingTutorsRes: Array<{ count: number }> = await this.dataSource.query(
+    const pendingTutorsRes: Array<{ count: number }> | undefined = await this.dataSource.query(
       `SELECT count(*)::int as count FROM tutor_profiles WHERE publication_status = 'pending_review';`,
     );
-    const pendingTutors = pendingTutorsRes[0]?.count || 0;
+    const pendingTutors = pendingTutorsRes?.[0]?.count || 0;
 
     const activeReplacement = await this.replacementCaseRepo.count({
       where: { status: In(['requested', 'under_review', 'matching']) },
@@ -62,6 +66,26 @@ export class AdminDashboardService {
 
     const totalUsers = await this.userRepo.count();
 
+    const gmvRes: Array<{ gmv: string }> | undefined = await this.dataSource.query(
+      `SELECT coalesce(sum(amount_minor), 0)::text as gmv FROM payment_orders WHERE status = 'succeeded';`,
+    );
+    const gmvMinor = gmvRes?.[0]?.gmv || '0';
+
+    const escrowRes: Array<{ escrow: string }> | undefined = await this.dataSource.query(
+      `SELECT coalesce(sum(amount_minor), 0)::text as escrow FROM payment_orders WHERE status = 'succeeded';`,
+    );
+    const escrowPoolMinor = escrowRes?.[0]?.escrow || '0';
+
+    const verifiedTutorsRes: Array<{ count: number }> | undefined = await this.dataSource.query(
+      `SELECT count(*)::int as count FROM tutor_profiles WHERE verification_status = 'approved' AND publication_status = 'published';`,
+    );
+    const verifiedTutors = verifiedTutorsRes?.[0]?.count || 0;
+
+    const activeStudentsRes: Array<{ count: number }> | undefined = await this.dataSource.query(
+      `SELECT count(*)::int as count FROM student_profiles;`,
+    );
+    const activeStudents = activeStudentsRes?.[0]?.count || 0;
+
     const ledger = await this.ledgerService.verifySystemLedgerIntegrity();
 
     return {
@@ -70,6 +94,10 @@ export class AdminDashboardService {
       openSafetyReports: openSafety,
       activeBookingsCount: activeBookings,
       totalRegisteredUsers: totalUsers,
+      gmvMinor,
+      escrowPoolMinor,
+      verifiedTutorsCount: verifiedTutors,
+      activeStudentsCount: activeStudents,
       ledgerIntegrity: {
         isBalanced: ledger.isBalanced,
         totalDebits: ledger.totalDebits.toString(),

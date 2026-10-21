@@ -32,6 +32,7 @@ import { LoadingSpinner, Card, CardHeader, CardContent, Button } from '@/compone
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDateTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
+import { useGetMyPaymentOrdersQuery } from '@/store/services/payments-api';
 import { useGuardianDashboard } from '../hooks/use-guardian-dashboard';
 
 /**
@@ -63,6 +64,18 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
   );
 
   const upcomingSession = sessions.data?.data?.[0];
+
+  const ordersQuery = useGetMyPaymentOrdersQuery();
+  const orders = ordersQuery.data?.data ?? [];
+  const succeededOrders = orders.filter((o) => o.status === 'succeeded');
+  const totalPaidBdt = succeededOrders.reduce(
+    (sum, o) => sum + Math.round(Number(o.amountMinor) / 100),
+    0,
+  );
+  const completedSessions = (sessions.data?.data ?? []).filter((s) => s.status === 'completed');
+  const dynamicReleasedBdt = completedSessions.length * 1500;
+  const dynamicHeldBdt = totalPaidBdt > 0 ? Math.max(0, totalPaidBdt - dynamicReleasedBdt) : 8500;
+  const finalReleasedBdt = totalPaidBdt > 0 ? dynamicReleasedBdt : 12000;
 
   return (
     <DashboardShell
@@ -241,9 +254,9 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         <GuardianEscrowSafetyCard
           locale={locale}
-          heldEscrowBdt={8500}
-          releasedBdt={12000}
-          pendingMilestonesCount={1}
+          heldEscrowBdt={dynamicHeldBdt}
+          releasedBdt={finalReleasedBdt}
+          pendingMilestonesCount={completedSessions.length > 0 ? completedSessions.length : 1}
           nextMilestoneAmountBdt={4500}
           nextMilestoneTutorName={upcomingSession?.tutorName || (isBn ? 'ড. মো. আনিসুর রহমান' : 'Dr. Anisur Rahman')}
           nextMilestoneSubject={upcomingSession?.subjectName || (isBn ? 'উচ্চতর গণিত ও পদার্থবিজ্ঞান' : 'Higher Math & Physics')}

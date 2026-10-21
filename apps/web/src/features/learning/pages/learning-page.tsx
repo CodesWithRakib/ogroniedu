@@ -19,7 +19,12 @@ import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { useAppSelector } from '@/store';
-import { LearningManagementView } from '../components/learningManagementView';
+import {
+  LearningManagementView,
+  StudyRoomStudentCockpit,
+  TutorStudioDeskHeader,
+  GuardianLearningOversightHeader,
+} from '../components';
 import { StudentProgressPanel } from '../components/studentProgressPanel';
 import { ChildScopeSelect } from '@/features/guardian/components/ChildScopeSelect';
 import { useChildScope } from '@/features/guardian/hooks/use-child-scope';
@@ -38,6 +43,8 @@ export function LearningPage({ locale }: { locale: Locale }) {
 
   const scope = useChildScope();
   const records = useLearningRecords(locale, scope.selectedStudentId);
+  const activeBooking = records.bookingOptions.find((b) => b.id === records.activeBookingId);
+  const [showCreateForm, setShowCreateForm] = React.useState(false);
   const [formError, setFormError] = React.useState<string | null>(null);
   const [assignmentTitle, setAssignmentTitle] = React.useState('');
   const [assignmentMax, setAssignmentMax] = React.useState('100');
@@ -67,6 +74,52 @@ export function LearningPage({ locale }: { locale: Locale }) {
 
   return (
     <DashboardShell locale={locale}>
+      {/* 1. Persona-specific Study Room & Learning Studio Cockpits */}
+      {role === 'student' && (
+        <StudyRoomStudentCockpit
+          locale={locale}
+          activeSubjectName={
+            activeBooking?.subjectName ||
+            (locale === 'bn' ? 'সাধারণ পাঠ্যক্রম ও স্টাডি রুম' : 'Study Room Hub')
+          }
+          tutorName={
+            activeBooking?.tutorName || (locale === 'bn' ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor')
+          }
+        />
+      )}
+
+      {role === 'tutor' && (
+        <TutorStudioDeskHeader
+          locale={locale}
+          activeCourseName={
+            activeBooking?.subjectName || (locale === 'bn' ? 'টিউশন কোর্স' : 'Tuition Course')
+          }
+          enrolledStudentsCount={records.bookingOptions.length || 1}
+          pendingGradingCount={
+            records.assignments.filter((a) => a.submission && a.submission.status === 'submitted')
+              .length
+          }
+          showCreateForm={showCreateForm}
+          onCreateAssignmentClick={() => setShowCreateForm((prev) => !prev)}
+        />
+      )}
+
+      {role === 'guardian' && (
+        <GuardianLearningOversightHeader
+          locale={locale}
+          childName={
+            activeBooking?.studentName || (locale === 'bn' ? 'আপনার সন্তান' : 'Your Child')
+          }
+          activeCourseName={
+            activeBooking?.subjectName || (locale === 'bn' ? 'চলতি কোর্স' : 'Active Course')
+          }
+          completedTasksCount={
+            records.assignments.filter((a) => a.submission && a.submission.status === 'reviewed')
+              .length
+          }
+        />
+      )}
+
       {scope.isGuardian && (
         <div className="mb-4">
           <ChildScopeSelect locale={locale} scope={scope} />
@@ -110,8 +163,8 @@ export function LearningPage({ locale }: { locale: Locale }) {
         </Alert>
       )}
 
-      {role === 'tutor' && records.activeBookingId && (
-        <Card className="mb-4">
+      {role === 'tutor' && records.activeBookingId && (showCreateForm || records.assignments.length === 0) && (
+        <Card className="mb-6 border-primary/30 shadow-xs">
           <CardContent className="py-4">
             <form
               onSubmit={handleCreateAssignment}
