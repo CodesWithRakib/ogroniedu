@@ -44,7 +44,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         {notice && (
           <div
             role="status"
-            className="flex items-start gap-2.5 rounded-xl border border-primary/25 bg-primary-soft p-3 text-xs font-medium text-primary animate-in fade-in"
+            className="flex items-start gap-2.5 rounded-2xl border border-primary/25 bg-primary-soft/80 p-3.5 text-xs font-semibold text-primary animate-in fade-in"
             data-testid="login-notice"
           >
             <CheckCircle2 className="h-4 w-4 shrink-0 text-primary mt-0.5" />
@@ -54,7 +54,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
 
         {/* Error Alert */}
         {formError && (
-          <Alert variant="destructive" className="rounded-xl" data-testid="login-error">
+          <Alert variant="destructive" className="rounded-2xl" data-testid="login-error">
             <AlertDescription>{formError}</AlertDescription>
           </Alert>
         )}
@@ -63,10 +63,10 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         <div className="space-y-1.5 text-left">
           <Label
             htmlFor="login-identifier"
-            className="text-xs font-semibold text-foreground flex items-center justify-between"
+            className="text-xs font-bold text-foreground flex items-center justify-between"
           >
             <span>{isBn ? 'ইমেইল অথবা মোবাইল নম্বর' : 'Email or Mobile Number'}</span>
-            <span className="text-[11px] text-muted-foreground font-normal">
+            <span className="text-[11px] text-muted-foreground font-semibold">
               {isBn ? 'বাধ্যতামূলক' : 'Required'}
             </span>
           </Label>
@@ -79,7 +79,8 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
               isBn ? '+8801XXXXXXXXX অথবা you@mail.com' : '+8801XXXXXXXXX or you@mail.com'
             }
             autoComplete="username"
-            leadingIcon={<Mail className="h-4 w-4" />}
+            leadingIcon={<Mail className="h-4 w-4 text-muted-foreground" />}
+            className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold"
             data-testid="login-identifier-input"
           />
         </div>
@@ -87,12 +88,12 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         {/* Password Input */}
         <div className="space-y-1.5 text-left">
           <div className="flex items-center justify-between">
-            <Label htmlFor="login-password" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="login-password" className="text-xs font-bold text-foreground">
               {t.passwordLabel}
             </Label>
             <Link
               href={withLocale('/forgot-password', locale)}
-              className="text-xs font-medium text-interactive hover:underline"
+              className="text-xs font-bold text-primary hover:underline hover:text-primary-hover transition-colors"
             >
               {isBn ? 'পাসওয়ার্ড ভুলে গেছেন?' : 'Forgot password?'}
             </Link>
@@ -105,14 +106,14 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
               onChange={(e) => setPassword(e.target.value)}
               placeholder="••••••••"
               autoComplete="current-password"
-              leadingIcon={<Lock className="h-4 w-4" />}
-              className="pr-11"
+              leadingIcon={<Lock className="h-4 w-4 text-muted-foreground" />}
+              className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold pr-11"
               data-testid="login-password-input"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-lg transition-colors cursor-pointer z-10"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-xl transition-colors cursor-pointer z-10 active:scale-90"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
@@ -120,27 +121,26 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
           </div>
         </div>
 
-        {/* Primary Submit Button */}
+        {/* Primary Submit Button with Hero Gradient */}
         <div className="pt-2">
           <Button
             type="submit"
-            variant="primary"
             size="lg"
             isLoading={isLoading}
-            className="w-full font-semibold rounded-full"
+            className="w-full h-12 rounded-2xl font-black text-xs sm:text-sm gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
             data-testid="login-submit-btn"
           >
             <span>{dict.nav.login}</span>
-            <ArrowRight className="h-4 w-4 ml-1" />
+            <ArrowRight className="h-4 w-4 stroke-[2.5] transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
 
         {/* Switch to Register */}
-        <p className="text-center text-xs text-muted-foreground pt-4">
+        <p className="text-center text-xs text-muted-foreground pt-3 font-medium">
           <span>{isBn ? 'অ্যাকাউন্ট নেই? ' : "Don't have an account? "}</span>
           <Link
             href={withLocale('/register', locale)}
-            className="font-semibold text-primary hover:underline ml-1"
+            className="font-bold text-primary hover:underline hover:text-primary-hover ml-1"
           >
             {isBn ? 'নতুন নিবন্ধন করুন' : 'Sign up'}
           </Link>

@@ -69,140 +69,151 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className="mx-auto w-full max-w-md px-4 py-10" data-testid="forgot-password-page">
-      <header className="mb-6 space-y-1 text-center">
-        <div className="mx-auto mb-3 flex h-11 w-11 items-center justify-center rounded-2xl bg-primary-soft text-primary">
-          <KeyRound className="h-5 w-5" />
-        </div>
-        <h1 className="text-lg font-bold text-foreground">
-          {isBn ? 'পাসওয়ার্ড রিসেট করুন' : 'Reset your password'}
-        </h1>
-        <p className="text-xs text-muted-foreground">
-          {isBn
-            ? 'নিবন্ধিত ইমেইল বা মোবাইল নম্বর দিয়ে রিকভারি কোড নিন।'
-            : 'Request a recovery code using your registered email or mobile number.'}
+    <div className="relative mx-auto w-full max-w-md px-4 py-8" data-testid="forgot-password-page">
+      {/* Container Card */}
+      <div className="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-card">
+        <header className="mb-6 space-y-1.5 text-center">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/25">
+            <KeyRound className="h-6 w-6 stroke-[2.2]" />
+          </div>
+          <h1 className="text-xl sm:text-2xl font-black text-foreground font-bengali">
+            {isBn ? 'পাসওয়ার্ড রিসেট করুন' : 'Reset your password'}
+          </h1>
+          <p className="text-xs text-muted-foreground leading-relaxed">
+            {isBn
+              ? 'নিবন্ধিত ইমেইল বা মোবাইল নম্বর দিয়ে রিকভারি কোড নিন।'
+              : 'Request a recovery code using your registered email or mobile number.'}
+          </p>
+        </header>
+
+        {error && (
+          <Alert
+            variant="destructive"
+            className="mb-4 rounded-2xl"
+            data-testid="forgot-password-error"
+          >
+            <AlertDescription>{error}</AlertDescription>
+          </Alert>
+        )}
+
+        {notice && stage === 'reset' && (
+          <div
+            role="status"
+            className="mb-4 flex items-start gap-2.5 rounded-2xl border border-primary/25 bg-primary-soft/80 p-3.5 text-xs font-semibold text-primary"
+          >
+            <ShieldCheck className="h-4 w-4 shrink-0 text-primary mt-0.5" />
+            <span>
+              {isBn
+                ? 'কোড পাঠানো হয়েছে (যদি অ্যাকাউন্ট থাকে)। ইমেইল/এসএমএস দেখুন।'
+                : 'A code was sent if the account exists. Check your email/SMS.'}
+            </span>
+          </div>
+        )}
+
+        {stage === 'request' && (
+          <form onSubmit={handleRequest} className="space-y-4">
+            <div className="space-y-1.5 text-left">
+              <Label htmlFor="recovery-contact" className="text-xs font-bold text-foreground">
+                {isBn ? 'ইমেইল অথবা মোবাইল নম্বর' : 'Email or mobile number'}
+              </Label>
+              <Input
+                id="recovery-contact"
+                type="text"
+                value={contact}
+                onChange={(e) => setContact(e.target.value)}
+                required
+                autoComplete="username"
+                leadingIcon={<Mail className="h-4 w-4 text-muted-foreground" />}
+                className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold"
+                data-testid="forgot-password-contact"
+              />
+            </div>
+            <div className="pt-2">
+              <Button
+                type="submit"
+                disabled={contactError}
+                isLoading={isRequesting}
+                size="lg"
+                className="w-full h-12 rounded-2xl font-black text-xs sm:text-sm gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
+                data-testid="forgot-password-request-btn"
+              >
+                <span>{isBn ? 'রিকভারি কোড পাঠান' : 'Send recovery code'}</span>
+              </Button>
+            </div>
+          </form>
+        )}
+
+        {stage === 'reset' && (
+          <form onSubmit={handleReset} className="space-y-4">
+            <div className="space-y-1.5 text-left">
+              <Label htmlFor="recovery-code" className="text-xs font-bold text-foreground">
+                {isBn ? '৬-ডিজিট কোড' : '6-digit code'}
+              </Label>
+              <Input
+                id="recovery-code"
+                type="text"
+                inputMode="numeric"
+                pattern="\d{6}"
+                maxLength={6}
+                value={code}
+                onChange={(e) => setCode(e.target.value)}
+                required
+                className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold tracking-[0.4em]"
+                data-testid="forgot-password-code"
+              />
+            </div>
+            <div className="space-y-1.5 text-left">
+              <Label htmlFor="recovery-password" className="text-xs font-bold text-foreground">
+                {isBn ? 'নতুন পাসওয়ার্ড' : 'New password'}
+              </Label>
+              <Input
+                id="recovery-password"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                autoComplete="new-password"
+                className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold"
+                data-testid="forgot-password-new-password"
+              />
+            </div>
+            <div className="pt-2">
+              <Button
+                type="submit"
+                isLoading={isResetting}
+                size="lg"
+                className="w-full h-12 rounded-2xl font-black text-xs sm:text-sm gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
+                data-testid="forgot-password-reset-btn"
+              >
+                <span>{isBn ? 'পাসওয়ার্ড রিসেট করুন' : 'Reset password'}</span>
+              </Button>
+            </div>
+          </form>
+        )}
+
+        {stage === 'done' && (
+          <div
+            className="flex items-start gap-2.5 rounded-2xl border border-primary/25 bg-primary-soft/80 p-4 text-xs font-semibold text-primary"
+            data-testid="forgot-password-done"
+          >
+            <CheckCircle2 className="h-4 w-4 shrink-0 text-primary mt-0.5" />
+            <span>
+              {isBn
+                ? 'পাসওয়ার্ড পরিবর্তন হয়েছে। আপনার সব সেশন সাইন-আউট করা হয়েছে। এখন নতুন পাসওয়ার্ডে লগইন করুন।'
+                : 'Password updated. All your sessions were signed out. Please sign in with your new password.'}
+            </span>
+          </div>
+        )}
+
+        <p className="mt-6 text-center text-xs text-muted-foreground font-medium">
+          <Link
+            href={withLocale('/login', locale)}
+            className="font-bold text-primary hover:underline hover:text-primary-hover"
+          >
+            {isBn ? 'লগইনে ফিরে যান' : 'Back to sign in'}
+          </Link>
         </p>
-      </header>
-
-      {error && (
-        <Alert
-          variant="destructive"
-          className="mb-4 rounded-xl"
-          data-testid="forgot-password-error"
-        >
-          <AlertDescription>{error}</AlertDescription>
-        </Alert>
-      )}
-
-      {notice && stage === 'reset' && (
-        <div
-          role="status"
-          className="mb-4 flex items-start gap-2.5 rounded-xl border border-primary/25 bg-primary-soft p-3 text-xs text-primary"
-        >
-          <ShieldCheck className="h-4 w-4 shrink-0 text-primary mt-0.5" />
-          <span>
-            {isBn
-              ? 'কোড পাঠানো হয়েছে (যদি অ্যাকাউন্ট থাকে)। ইমেইল/এসএমএস দেখুন।'
-              : 'A code was sent if the account exists. Check your email/SMS.'}
-          </span>
-        </div>
-      )}
-
-      {stage === 'request' && (
-        <form onSubmit={handleRequest} className="space-y-4">
-          <div className="space-y-1.5 text-left">
-            <Label htmlFor="recovery-contact" className="text-xs font-semibold text-foreground">
-              {isBn ? 'ইমেইল অথবা মোবাইল নম্বর' : 'Email or mobile number'}
-            </Label>
-            <Input
-              id="recovery-contact"
-              type="text"
-              value={contact}
-              onChange={(e) => setContact(e.target.value)}
-              required
-              autoComplete="username"
-              leadingIcon={<Mail className="h-4 w-4" />}
-              data-testid="forgot-password-contact"
-            />
-          </div>
-          <Button
-            type="submit"
-            disabled={contactError}
-            isLoading={isRequesting}
-            className="w-full font-semibold"
-            data-testid="forgot-password-request-btn"
-          >
-            {isBn ? 'রিকভারি কোড পাঠান' : 'Send recovery code'}
-          </Button>
-        </form>
-      )}
-
-      {stage === 'reset' && (
-        <form onSubmit={handleReset} className="space-y-4">
-          <div className="space-y-1.5 text-left">
-            <Label htmlFor="recovery-code" className="text-xs font-semibold text-foreground">
-              {isBn ? '৬-ডিজিট কোড' : '6-digit code'}
-            </Label>
-            <Input
-              id="recovery-code"
-              type="text"
-              inputMode="numeric"
-              pattern="\d{6}"
-              maxLength={6}
-              value={code}
-              onChange={(e) => setCode(e.target.value)}
-              required
-              className="tracking-[0.4em]"
-              data-testid="forgot-password-code"
-            />
-          </div>
-          <div className="space-y-1.5 text-left">
-            <Label htmlFor="recovery-password" className="text-xs font-semibold text-foreground">
-              {isBn ? 'নতুন পাসওয়ার্ড' : 'New password'}
-            </Label>
-            <Input
-              id="recovery-password"
-              type="password"
-              value={newPassword}
-              onChange={(e) => setNewPassword(e.target.value)}
-              required
-              autoComplete="new-password"
-              data-testid="forgot-password-new-password"
-            />
-          </div>
-          <Button
-            type="submit"
-            isLoading={isResetting}
-            className="w-full font-semibold"
-            data-testid="forgot-password-reset-btn"
-          >
-            {isBn ? 'পাসওয়ার্ড রিসেট করুন' : 'Reset password'}
-          </Button>
-        </form>
-      )}
-
-      {stage === 'done' && (
-        <div
-          className="flex items-start gap-2.5 rounded-xl border border-primary/25 bg-primary-soft p-4 text-xs font-medium text-primary"
-          data-testid="forgot-password-done"
-        >
-          <CheckCircle2 className="h-4 w-4 shrink-0 text-primary mt-0.5" />
-          <span>
-            {isBn
-              ? 'পাসওয়ার্ড পরিবর্তন হয়েছে। আপনার সব সেশন সাইন-আউট করা হয়েছে। এখন নতুন পাসওয়ার্ডে লগইন করুন।'
-              : 'Password updated. All your sessions were signed out. Please sign in with your new password.'}
-          </span>
-        </div>
-      )}
-
-      <p className="mt-6 text-center text-xs text-muted-foreground">
-        <Link
-          href={withLocale('/login', locale)}
-          className="font-bold text-primary hover:underline"
-        >
-          {isBn ? 'লগইনে ফিরে যান' : 'Back to sign in'}
-        </Link>
-      </p>
+      </div>
     </div>
   );
 }
