@@ -267,12 +267,13 @@ export function TutorsPage({ locale }: { locale: Locale }) {
   }, [locationsQuery.data, locale]);
 
   const resultSnapshot = React.useMemo<SearchCatalogResponse>(() => {
+    const pagination = searchQuery.data?.meta?.pagination;
     return {
       data: items.map(toCard),
-      total: searchQuery.data?.total ?? 0,
-      page: searchQuery.data?.page ?? 1,
-      limit: searchQuery.data?.limit ?? 12,
-      totalPages: searchQuery.data?.totalPages ?? 1,
+      total: pagination?.totalItems ?? 0,
+      page: pagination?.page ?? 1,
+      limit: pagination?.pageSize ?? 12,
+      totalPages: pagination?.totalPages ?? 1,
     };
   }, [items, searchQuery.data]);
 

@@ -20,6 +20,7 @@ import { ADMIN_ROLES } from '../../common/auth/role.utils';
 import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { TutorReplacementService } from './tutor-replacement.service';
+import { paginated } from '../../common/api-response/api-response';
 import {
   CreateReplacementCaseDto,
   ExtendReplacementDeadlineDto,
@@ -60,7 +61,12 @@ export class TutorReplacementController {
   @Get()
   @ApiOperation({ summary: 'List replacement cases (staff queue or participant history)' })
   async listCases(@CurrentUser() user: AuthenticatedUser, @Query() query: ReplacementCaseQueryDto) {
-    return { success: true, ...(await this.replacementService.listCases(user, query)) };
+    const res = await this.replacementService.listCases(user, query);
+    return paginated(res.data, {
+      page: res.page,
+      pageSize: res.pageSize,
+      totalItems: res.total,
+    });
   }
 
   @Get(':id/candidates')

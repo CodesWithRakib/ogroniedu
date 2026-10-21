@@ -45,14 +45,6 @@ export interface OffsetCollectionEnvelope<T> {
   data: T[];
   message?: string;
   meta: RequestMeta & { pagination: OffsetPaginationMeta };
-  /** @deprecated Legacy compat — read meta.pagination instead. Removed after frontend cutover. */
-  total?: number;
-  /** @deprecated Legacy compat. */
-  page?: number;
-  /** @deprecated Legacy compat. */
-  limit?: number;
-  /** @deprecated Legacy compat. */
-  totalPages?: number;
 }
 
 export interface CursorCollectionEnvelope<T> {
@@ -87,7 +79,7 @@ export function ok<T>(data: T, message?: string): Omit<SuccessEnvelope<T>, 'meta
   return message === undefined ? { success: true, data } : { success: true, data, message };
 }
 
-/** Offset collection envelope with both canonical meta and legacy top-level fields (compat). */
+/** Offset collection envelope with canonical meta.pagination. */
 export function paginated<T>(
   data: T[],
   args: { page: number; pageSize: number; totalItems: number },
@@ -98,10 +90,6 @@ export function paginated<T>(
     success: true,
     data,
     meta: { pagination },
-    total: pagination.totalItems,
-    page: pagination.page,
-    limit: pagination.pageSize,
-    totalPages: pagination.totalPages,
   };
   if (message !== undefined) envelope.message = message;
   return envelope;

@@ -56,11 +56,6 @@ export class TutorsController {
       success: true,
       data: results.data,
       meta: { pagination },
-      // Legacy compat (deprecated): kept until frontend cutover to meta.pagination.
-      total: results.total,
-      page: results.page,
-      limit: results.limit,
-      totalPages: results.totalPages,
     };
   }
 

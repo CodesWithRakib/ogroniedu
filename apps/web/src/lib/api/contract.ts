@@ -42,14 +42,6 @@ export interface OffsetCollectionEnvelope<T> {
   data: T[];
   message?: string;
   meta?: RequestMeta & { pagination?: OffsetPaginationMeta };
-  /** @deprecated Legacy compat — prefer meta.pagination. */
-  total?: number;
-  /** @deprecated */
-  page?: number;
-  /** @deprecated */
-  limit?: number;
-  /** @deprecated */
-  totalPages?: number;
 }
 
 export interface CursorCollectionEnvelope<T> {

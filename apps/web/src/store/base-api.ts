@@ -5,7 +5,7 @@ import {
   type FetchArgs,
   type FetchBaseQueryError,
 } from '@reduxjs/toolkit/query/react';
-import type { RootState } from './store';
+import type { BaseApiState } from './store.types';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
 
@@ -21,7 +21,7 @@ const rawBaseQuery = fetchBaseQuery({
       }
     }
 
-    const state = getState() as RootState;
+    const state = getState() as BaseApiState;
     const token = state?.auth?.token;
     if (token) {
       headers.set('authorization', `Bearer ${token.trim()}`);
@@ -56,7 +56,7 @@ function refreshCredentials(api: {
   if (!refreshInFlight) {
     refreshInFlight = (async () => {
       try {
-        const state = api.getState() as RootState;
+        const state = api.getState() as BaseApiState;
         const body = state?.auth?.refreshToken ? { refreshToken: state.auth.refreshToken } : {};
         const refreshResult = await rawBaseQuery(
           { url: '/api/v1/auth/refresh', method: 'POST', body },
@@ -106,7 +106,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
       requestUrl.includes('/api/v1/auth/magic-link');
 
     if (!isAuthRoute) {
-      const state = api.getState() as RootState;
+      const state = api.getState() as BaseApiState;
       const refreshed = await refreshCredentials(api);
 
       if (refreshed && state?.auth?.user) {

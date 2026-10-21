@@ -84,12 +84,12 @@ describe('Beta Feedback Controllers (Phase 12)', () => {
     });
 
     it('GET /api/v1/feedback/my returns paginated user feedback', async () => {
-      const res = await controller.getMyFeedback(studentUser, '1', '10', mockRequest);
+      const res = await controller.getMyFeedback(studentUser, '1', '10');
 
       expect(res.success).toBe(true);
       expect(res.data).toHaveLength(1);
-      expect(res.meta?.page).toBe(1);
-      expect(res.meta?.limit).toBe(10);
+      expect(res.meta?.pagination?.page).toBe(1);
+      expect(res.meta?.pagination?.pageSize).toBe(10);
     });
 
     it('GET /api/v1/feedback/:id returns feedback item', async () => {
@@ -102,11 +102,11 @@ describe('Beta Feedback Controllers (Phase 12)', () => {
 
   describe('AdminFeedbackController (Staff Triage)', () => {
     it('GET /api/v1/admin/feedback queries triage queue with metadata', async () => {
-      const res = await adminController.queryFeedback({ page: 1, limit: 20 }, mockRequest);
+      const res = await adminController.queryFeedback({ page: 1, limit: 20 });
 
       expect(res.success).toBe(true);
       expect(res.data).toHaveLength(1);
-      expect(res.meta?.total).toBe(1);
+      expect(res.meta?.pagination?.totalItems).toBe(1);
     });
 
     it('PATCH /api/v1/admin/feedback/:id/triage updates feedback status and severity', async () => {

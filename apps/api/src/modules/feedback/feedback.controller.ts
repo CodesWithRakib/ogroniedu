@@ -21,6 +21,7 @@ import { FeedbackService } from './feedback.service';
 import { CreateFeedbackDto } from './dto/create-feedback.dto';
 import { TriageFeedbackDto } from './dto/triage-feedback.dto';
 import { QueryFeedbackDto } from './dto/query-feedback.dto';
+import { paginated } from '../../common/api-response';
 
 @Controller('api/v1/feedback')
 export class FeedbackController {
@@ -55,22 +56,15 @@ export class FeedbackController {
     @CurrentUser() user: AuthenticatedUser,
     @Query('page') page?: string,
     @Query('limit') limit?: string,
-    @Req() req?: Request,
   ) {
     const pageNum = page ? parseInt(page, 10) : 1;
     const limitNum = limit ? parseInt(limit, 10) : 20;
     const result = await this.feedbackService.getMyFeedback(user.id, pageNum, limitNum);
-    return {
-      success: true,
-      data: result.items,
-      meta: {
-        page: result.page,
-        limit: result.limit,
-        total: result.total,
-        timestamp: new Date().toISOString(),
-      },
-      requestId: (req as any)?.requestId || 'feedback-my-req',
-    };
+    return paginated(result.items, {
+      page: result.page,
+      pageSize: result.limit,
+      totalItems: result.total,
+    });
   }
 
   /**
@@ -102,20 +96,13 @@ export class AdminFeedbackController {
    * Administrative query of all beta feedback items with filtering.
    */
   @Get()
-  async queryFeedback(@Query() query: QueryFeedbackDto, @Req() req: Request) {
+  async queryFeedback(@Query() query: QueryFeedbackDto) {
     const result = await this.feedbackService.queryAdminFeedback(query);
-    return {
-      success: true,
-      data: result.items,
-      meta: {
-        page: result.page,
-        limit: result.limit,
-        total: result.total,
-        totalPages: result.totalPages,
-        timestamp: new Date().toISOString(),
-      },
-      requestId: (req as any).requestId || 'admin-feedback-req',
-    };
+    return paginated(result.items, {
+      page: result.page,
+      pageSize: result.limit,
+      totalItems: result.total,
+    });
   }
 
   /**

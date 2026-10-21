@@ -72,10 +72,17 @@ export interface ReplacementCaseDetailView {
 
 export interface ReplacementCaseListResponse {
   data: ReplacementCaseView[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
+  meta: {
+    pagination: {
+      strategy: 'offset';
+      page: number;
+      pageSize: number;
+      totalItems: number;
+      totalPages: number;
+      hasNextPage: boolean;
+      hasPreviousPage: boolean;
+    };
+  };
 }
 
 export interface EligibleBookingItem {

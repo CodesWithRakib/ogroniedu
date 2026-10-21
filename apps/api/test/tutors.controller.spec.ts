@@ -46,6 +46,13 @@ describe('TutorsController & AdminTutorsController Unit Tests', () => {
       verifyQualification: vi.fn(
         async (reviewer, id, qid, status) => ({ id: qid, reviewStatus: status }) as any,
       ),
+      searchTutors: vi.fn(async () => ({
+        data: [{ id: 'tutor-1' }] as any,
+        total: 1,
+        page: 1,
+        limit: 12,
+        totalPages: 1,
+      })),
     };
 
     tutorsController = new TutorsController(mockTutorsService as TutorsService);
@@ -95,6 +102,25 @@ describe('TutorsController & AdminTutorsController Unit Tests', () => {
       );
       expect(subj.success).toBe(true);
       expect(subj).toHaveProperty('data', null);
+    });
+
+    it('searchTutors returns canonical meta.pagination without legacy root total/page/limit/totalPages', async () => {
+      const res = await tutorsController.searchTutors({ page: 1, pageSize: 12 });
+      expect(res.success).toBe(true);
+      expect(res.data).toHaveLength(1);
+      expect(res.meta.pagination).toEqual({
+        strategy: 'offset',
+        page: 1,
+        pageSize: 12,
+        totalItems: 1,
+        totalPages: 1,
+        hasNextPage: false,
+        hasPreviousPage: false,
+      });
+      expect(res).not.toHaveProperty('total');
+      expect(res).not.toHaveProperty('page');
+      expect(res).not.toHaveProperty('limit');
+      expect(res).not.toHaveProperty('totalPages');
     });
   });
 

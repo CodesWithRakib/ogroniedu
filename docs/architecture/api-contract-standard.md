@@ -44,7 +44,7 @@
 
 Query params: `page` (1-based, default 1), `pageSize` (default 20, max 100; tutor search max 50 preserved), `search`, `sortBy` (whitelisted per resource), `sortOrder` (`asc|desc`), domain filters. Backend validates via `OffsetPaginationQueryDto`; unknown `sortBy` → `SORT_NOT_ALLOWED` (400), never SQL-interpolated.
 
-Migration: legacy top-level `total`, `page`, `limit`, `totalPages` are still sent alongside `meta.pagination` until frontend cutover (see backlog B-C1), then removed. Frontend must read `meta.pagination` first, fall back to legacy fields only via `parseOffsetCollection()`.
+Migration status: legacy top-level `total`, `page`, `limit`, `totalPages` have been completely removed across the system. All offset collection responses now strictly adhere to canonical `meta.pagination`.
 
 ## 3. Success — cursor collection
 

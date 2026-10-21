@@ -14,6 +14,7 @@ import { OutboxWorkerService } from './outbox-worker.service';
 import { OutboxScheduler } from './outbox.scheduler';
 import { BookingMessagesService } from './booking-messages.service';
 import { NotificationGateway } from './notification.gateway';
+import { NOTIFICATION_BROADCASTER } from './interfaces/notification-broadcaster.interface';
 import { NotificationController } from './notification.controller';
 import { BookingMessagesController } from './booking-messages.controller';
 import { ConversationsController } from './conversations.controller';
@@ -42,6 +43,10 @@ import { GuardiansModule } from '../guardians/guardians.module';
     NotificationService,
     NotificationPreferencesService,
     NotificationGateway,
+    {
+      provide: NOTIFICATION_BROADCASTER,
+      useExisting: NotificationGateway,
+    },
     OutboxWorkerService,
     OutboxScheduler,
     BookingMessagesService,
@@ -50,6 +55,7 @@ import { GuardiansModule } from '../guardians/guardians.module';
     NotificationService,
     NotificationPreferencesService,
     NotificationGateway,
+    NOTIFICATION_BROADCASTER,
     OutboxWorkerService,
     OutboxScheduler,
     BookingMessagesService,

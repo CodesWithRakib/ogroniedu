@@ -15,6 +15,7 @@ import { CurrentUser } from '../../common/decorators/current-user.decorator';
 import type { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { DisputesService } from './disputes.service';
 import { CreateDisputeDto, ResolveDisputeDto, QueryDisputesDto } from './dto';
+import { paginated } from '../../common/api-response/api-response';
 
 @ApiTags('Trust & Booking Disputes')
 @ApiBearerAuth()
@@ -43,7 +44,12 @@ export class DisputesController {
     @CurrentUser() user: AuthenticatedUser,
     @Query() query: QueryDisputesDto,
   ) {
-    return this.disputesService.listDisputes(user, query);
+    const res = await this.disputesService.listDisputes(user, query);
+    return paginated(res.data, {
+      page: res.page,
+      pageSize: res.pageSize,
+      totalItems: res.total,
+    });
   }
 
   @Get(':id')

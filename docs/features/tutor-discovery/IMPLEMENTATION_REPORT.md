@@ -171,7 +171,7 @@ rounded to two decimals. Missing coordinates yield `distanceKm: null` and are ex
 explicit radius query. No marker offsets or overlap hiding exist; there is no map component.
 
 Pagination is offset-based, page size 1–50, with a separate bounded `COUNT`; pagination metadata is
-returned in `meta.pagination` plus legacy top-level fields.
+returned strictly in canonical `meta.pagination`.
 
 ## 7. Database migrations and indexes
 

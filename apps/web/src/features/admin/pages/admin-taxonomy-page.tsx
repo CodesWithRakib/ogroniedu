@@ -20,15 +20,6 @@ import {
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/Card';
 import { Button, Input, LoadingSpinner } from '@/components/ui';
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogDescription,
-  DialogFooter,
-} from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import {
   Select,
@@ -39,6 +30,12 @@ import {
 } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import type { Locale } from '@/lib/i18n';
+import { EducationLevelsTable } from '../components/taxonomy/EducationLevelsTable';
+import { CurriculaTable } from '../components/taxonomy/CurriculaTable';
+import { StreamsTable } from '../components/taxonomy/StreamsTable';
+import { InstitutionsTable } from '../components/taxonomy/InstitutionsTable';
+import { SubjectsTable } from '../components/taxonomy/SubjectsTable';
+import { TaxonomyModal } from '../components/taxonomy/TaxonomyModal';
 import {
   useGetEducationLevelsQuery,
   useGetCurriculaQuery,
@@ -735,725 +732,87 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-border">
-                {activeTab === 'levels' &&
-                  (levelsLoading ? (
-                    <tr>
-                      <td colSpan={7} className="py-12 text-center text-muted-foreground">
-                        <LoadingSpinner className="mx-auto h-6 w-6 text-primary" />
-                      </td>
-                    </tr>
-                  ) : levels.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="py-12 text-center text-muted-foreground">
-                        {isBn ? 'কোনো শ্রেণি পাওয়া যায়নি' : 'No education levels found'}
-                      </td>
-                    </tr>
-                  ) : (
-                    levels.map((lvl, index) => (
-                      <tr
-                        key={lvl.id}
-                        className={`transition-colors ${
-                          lvl.isActive !== false
-                            ? 'hover:bg-surface-hover/50'
-                            : 'bg-muted/15 opacity-75 hover:opacity-100 hover:bg-muted/30'
-                        }`}
-                      >
-                        <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
-                        <td className="py-3 px-4 font-mono font-medium text-foreground">
-                          {lvl.code}
-                        </td>
-                        <td className="py-3 px-4 font-semibold text-foreground">
-                          {lvl.nameEn}
-                          {lvl.isActive === false && (
-                            <span className="ml-2 text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-normal">
-                              {isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-muted-foreground">{lvl.nameBn}</td>
-                        <td className="py-3 px-4 text-center">
-                          <button
-                            type="button"
-                            onClick={() => handleToggleActive(lvl)}
-                            title={
-                              lvl.isActive !== false
-                                ? isBn
-                                  ? 'ক্লিক করে নিষ্ক্রিয় করুন'
-                                  : 'Click to deactivate'
-                                : isBn
-                                  ? 'ক্লিক করে সক্রিয় করুন'
-                                  : 'Click to activate'
-                            }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
-                              lvl.isActive !== false
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
-                                : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
-                            }`}
-                          >
-                            {lvl.isActive !== false ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-                            ) : (
-                              <XCircle className="h-3.5 w-3.5 text-destructive" />
-                            )}
-                            <span>
-                              {lvl.isActive !== false
-                                ? isBn
-                                  ? 'সক্রিয়'
-                                  : 'Active'
-                                : isBn
-                                  ? 'নিষ্ক্রিয়'
-                                  : 'Inactive'}
-                            </span>
-                          </button>
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openEditModal(lvl)}
-                              aria-label={
-                                isBn ? `সম্পাদনা করুন: ${lvl.nameEn}` : `Edit: ${lvl.nameEn}`
-                              }
-                              className="h-8 w-8 p-0 rounded-full hover:bg-surface"
-                            >
-                              <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDelete(lvl.id, lvl.nameEn)}
-                              aria-label={
-                                isBn ? `মুছে ফেলুন: ${lvl.nameEn}` : `Delete: ${lvl.nameEn}`
-                              }
-                              className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 text-destructive"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ))}
+                {activeTab === 'levels' && (
+                  <EducationLevelsTable
+                    levels={levels}
+                    isLoading={levelsLoading}
+                    isBn={isBn}
+                    onToggleActive={handleToggleActive}
+                    onEdit={openEditModal}
+                    onDelete={handleDelete}
+                  />
+                )}
 
-                {activeTab === 'curricula' &&
-                  (curriculaLoading ? (
-                    <tr>
-                      <td colSpan={7} className="py-12 text-center text-muted-foreground">
-                        <LoadingSpinner className="mx-auto h-6 w-6 text-primary" />
-                      </td>
-                    </tr>
-                  ) : curricula.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="py-12 text-center text-muted-foreground">
-                        {isBn ? 'কোনো কারিকুলাম পাওয়া যায়নি' : 'No curricula found'}
-                      </td>
-                    </tr>
-                  ) : (
-                    curricula.map((curr, index) => (
-                      <tr
-                        key={curr.id}
-                        className={`transition-colors ${
-                          curr.isActive !== false
-                            ? 'hover:bg-surface-hover/50'
-                            : 'bg-muted/15 opacity-75 hover:opacity-100 hover:bg-muted/30'
-                        }`}
-                      >
-                        <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
-                        <td className="py-3 px-4 font-mono font-medium text-foreground">
-                          {curr.code}
-                        </td>
-                        <td className="py-3 px-4 font-semibold text-foreground">
-                          {curr.nameEn}
-                          {curr.isActive === false && (
-                            <span className="ml-2 text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-normal">
-                              {isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-muted-foreground">{curr.nameBn}</td>
-                        <td className="py-3 px-4 text-xs text-muted-foreground">
-                          {curr.boardName || '—'}
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <button
-                            type="button"
-                            onClick={() => handleToggleActive(curr)}
-                            title={
-                              curr.isActive !== false
-                                ? isBn
-                                  ? 'ক্লিক করে নিষ্ক্রিয় করুন'
-                                  : 'Click to deactivate'
-                                : isBn
-                                  ? 'ক্লিক করে সক্রিয় করুন'
-                                  : 'Click to activate'
-                            }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
-                              curr.isActive !== false
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
-                                : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
-                            }`}
-                          >
-                            {curr.isActive !== false ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-                            ) : (
-                              <XCircle className="h-3.5 w-3.5 text-destructive" />
-                            )}
-                            <span>
-                              {curr.isActive !== false
-                                ? isBn
-                                  ? 'সক্রিয়'
-                                  : 'Active'
-                                : isBn
-                                  ? 'নিষ্ক্রিয়'
-                                  : 'Inactive'}
-                            </span>
-                          </button>
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openEditModal(curr)}
-                              aria-label={
-                                isBn ? `সম্পাদনা করুন: ${curr.nameEn}` : `Edit: ${curr.nameEn}`
-                              }
-                              className="h-8 w-8 p-0 rounded-full hover:bg-surface"
-                            >
-                              <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDelete(curr.id, curr.nameEn)}
-                              aria-label={
-                                isBn ? `মুছে ফেলুন: ${curr.nameEn}` : `Delete: ${curr.nameEn}`
-                              }
-                              className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 text-destructive"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ))}
+                {activeTab === 'curricula' && (
+                  <CurriculaTable
+                    curricula={curricula}
+                    isLoading={curriculaLoading}
+                    isBn={isBn}
+                    onToggleActive={handleToggleActive}
+                    onEdit={openEditModal}
+                    onDelete={handleDelete}
+                  />
+                )}
 
-                {activeTab === 'streams' &&
-                  (streamsLoading ? (
-                    <tr>
-                      <td colSpan={7} className="py-12 text-center text-muted-foreground">
-                        <LoadingSpinner className="mx-auto h-6 w-6 text-primary" />
-                      </td>
-                    </tr>
-                  ) : streams.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="py-12 text-center text-muted-foreground">
-                        {isBn ? 'কোনো শাখা/বিভাগ পাওয়া যায়নি' : 'No streams found'}
-                      </td>
-                    </tr>
-                  ) : (
-                    streams.map((st, index) => (
-                      <tr
-                        key={st.id}
-                        className={`transition-colors ${
-                          st.isActive !== false
-                            ? 'hover:bg-surface-hover/50'
-                            : 'bg-muted/15 opacity-75 hover:opacity-100 hover:bg-muted/30'
-                        }`}
-                      >
-                        <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
-                        <td className="py-3 px-4 font-mono font-medium text-foreground">
-                          {st.code}
-                        </td>
-                        <td className="py-3 px-4 font-semibold text-foreground">
-                          {st.nameEn}
-                          {st.isActive === false && (
-                            <span className="ml-2 text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-normal">
-                              {isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-muted-foreground">{st.nameBn}</td>
-                        <td className="py-3 px-4 text-xs text-muted-foreground">
-                          {st.description || '—'}
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <button
-                            type="button"
-                            onClick={() => handleToggleActive(st)}
-                            title={
-                              st.isActive !== false
-                                ? isBn
-                                  ? 'ক্লিক করে নিষ্ক্রিয় করুন'
-                                  : 'Click to deactivate'
-                                : isBn
-                                  ? 'ক্লিক করে সক্রিয় করুন'
-                                  : 'Click to activate'
-                            }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
-                              st.isActive !== false
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
-                                : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
-                            }`}
-                          >
-                            {st.isActive !== false ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-                            ) : (
-                              <XCircle className="h-3.5 w-3.5 text-destructive" />
-                            )}
-                            <span>
-                              {st.isActive !== false
-                                ? isBn
-                                  ? 'সক্রিয়'
-                                  : 'Active'
-                                : isBn
-                                  ? 'নিষ্ক্রিয়'
-                                  : 'Inactive'}
-                            </span>
-                          </button>
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openEditModal(st)}
-                              aria-label={
-                                isBn ? `সম্পাদনা করুন: ${st.nameEn}` : `Edit: ${st.nameEn}`
-                              }
-                              className="h-8 w-8 p-0 rounded-full hover:bg-surface"
-                            >
-                              <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDelete(st.id, st.nameEn)}
-                              aria-label={
-                                isBn ? `মুছে ফেলুন: ${st.nameEn}` : `Delete: ${st.nameEn}`
-                              }
-                              className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 text-destructive"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ))}
+                {activeTab === 'streams' && (
+                  <StreamsTable
+                    streams={streams}
+                    isLoading={streamsLoading}
+                    isBn={isBn}
+                    onToggleActive={handleToggleActive}
+                    onEdit={openEditModal}
+                    onDelete={handleDelete}
+                  />
+                )}
 
-                {activeTab === 'institutions' &&
-                  (institutionsLoading ? (
-                    <tr>
-                      <td colSpan={8} className="py-12 text-center text-muted-foreground">
-                        <LoadingSpinner className="mx-auto h-6 w-6 text-primary" />
-                      </td>
-                    </tr>
-                  ) : institutions.length === 0 ? (
-                    <tr>
-                      <td colSpan={8} className="py-12 text-center text-muted-foreground">
-                        {isBn ? 'কোনো শিক্ষা প্রতিষ্ঠান পাওয়া যায়নি' : 'No institutions found'}
-                      </td>
-                    </tr>
-                  ) : (
-                    institutions.map((inst, index) => (
-                      <tr
-                        key={inst.id}
-                        className={`transition-colors ${
-                          inst.isActive !== false
-                            ? 'hover:bg-surface-hover/50'
-                            : 'bg-muted/15 opacity-75 hover:opacity-100 hover:bg-muted/30'
-                        }`}
-                      >
-                        <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
-                        <td className="py-3 px-4 font-mono font-medium text-foreground">
-                          {inst.code}
-                        </td>
-                        <td className="py-3 px-4 font-semibold text-foreground">
-                          {inst.nameEn}
-                          {inst.isActive === false && (
-                            <span className="ml-2 text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-normal">
-                              {isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-muted-foreground">{inst.nameBn}</td>
-                        <td className="py-3 px-4">
-                          <span className="px-2 py-0.5 rounded-full text-[11px] font-medium bg-info-soft text-info-soft-foreground border border-info/30 capitalize">
-                            {inst.type.replace(/_/g, ' ')}
-                          </span>
-                        </td>
-                        <td className="py-3 px-4 text-xs text-muted-foreground">
-                          {inst.district || '—'}
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <button
-                            type="button"
-                            onClick={() => handleToggleActive(inst)}
-                            title={
-                              inst.isActive !== false
-                                ? isBn
-                                  ? 'ক্লিক করে নিষ্ক্রিয় করুন'
-                                  : 'Click to deactivate'
-                                : isBn
-                                  ? 'ক্লিক করে সক্রিয় করুন'
-                                  : 'Click to activate'
-                            }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
-                              inst.isActive !== false
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
-                                : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
-                            }`}
-                          >
-                            {inst.isActive !== false ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-                            ) : (
-                              <XCircle className="h-3.5 w-3.5 text-destructive" />
-                            )}
-                            <span>
-                              {inst.isActive !== false
-                                ? isBn
-                                  ? 'সক্রিয়'
-                                  : 'Active'
-                                : isBn
-                                  ? 'নিষ্ক্রিয়'
-                                  : 'Inactive'}
-                            </span>
-                          </button>
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openEditModal(inst)}
-                              aria-label={
-                                isBn ? `সম্পাদনা করুন: ${inst.nameEn}` : `Edit: ${inst.nameEn}`
-                              }
-                              className="h-8 w-8 p-0 rounded-full hover:bg-surface"
-                            >
-                              <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDelete(inst.id, inst.nameEn)}
-                              aria-label={
-                                isBn ? `মুছে ফেলুন: ${inst.nameEn}` : `Delete: ${inst.nameEn}`
-                              }
-                              className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 text-destructive"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ))}
+                {activeTab === 'institutions' && (
+                  <InstitutionsTable
+                    institutions={institutions}
+                    isLoading={institutionsLoading}
+                    isBn={isBn}
+                    onToggleActive={handleToggleActive}
+                    onEdit={openEditModal}
+                    onDelete={handleDelete}
+                  />
+                )}
 
-                {activeTab === 'subjects' &&
-                  (subjectsLoading ? (
-                    <tr>
-                      <td colSpan={7} className="py-12 text-center text-muted-foreground">
-                        <LoadingSpinner className="mx-auto h-6 w-6 text-primary" />
-                      </td>
-                    </tr>
-                  ) : subjects.length === 0 ? (
-                    <tr>
-                      <td colSpan={7} className="py-12 text-center text-muted-foreground">
-                        {isBn ? 'কোনো বিষয় পাওয়া যায়নি' : 'No subjects found'}
-                      </td>
-                    </tr>
-                  ) : (
-                    subjects.map((subj, index) => (
-                      <tr
-                        key={subj.id}
-                        className={`transition-colors ${
-                          subj.isActive !== false
-                            ? 'hover:bg-surface-hover/50'
-                            : 'bg-muted/15 opacity-75 hover:opacity-100 hover:bg-muted/30'
-                        }`}
-                      >
-                        <td className="py-3 px-4 font-mono text-muted-foreground">{index + 1}</td>
-                        <td className="py-3 px-4 font-mono font-medium text-foreground">
-                          {subj.code}
-                        </td>
-                        <td className="py-3 px-4 font-semibold text-foreground">
-                          {subj.nameEn}
-                          {subj.isActive === false && (
-                            <span className="ml-2 text-[10px] text-destructive bg-destructive/10 px-1.5 py-0.5 rounded font-normal">
-                              {isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
-                            </span>
-                          )}
-                        </td>
-                        <td className="py-3 px-4 text-muted-foreground">{subj.nameBn}</td>
-                        <td className="py-3 px-4 text-xs text-muted-foreground">
-                          {subj.category || '—'}
-                        </td>
-                        <td className="py-3 px-4 text-center">
-                          <button
-                            type="button"
-                            onClick={() => handleToggleActive(subj)}
-                            title={
-                              subj.isActive !== false
-                                ? isBn
-                                  ? 'ক্লিক করে নিষ্ক্রিয় করুন'
-                                  : 'Click to deactivate'
-                                : isBn
-                                  ? 'ক্লিক করে সক্রিয় করুন'
-                                  : 'Click to activate'
-                            }
-                            className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-medium border transition-all cursor-pointer ${
-                              subj.isActive !== false
-                                ? 'bg-success-soft text-success-soft-foreground border-success/30 hover:bg-success/20'
-                                : 'bg-muted/70 text-muted-foreground border-border hover:bg-muted hover:text-foreground'
-                            }`}
-                          >
-                            {subj.isActive !== false ? (
-                              <CheckCircle2 className="h-3.5 w-3.5 text-success" />
-                            ) : (
-                              <XCircle className="h-3.5 w-3.5 text-destructive" />
-                            )}
-                            <span>
-                              {subj.isActive !== false
-                                ? isBn
-                                  ? 'সক্রিয়'
-                                  : 'Active'
-                                : isBn
-                                  ? 'নিষ্ক্রিয়'
-                                  : 'Inactive'}
-                            </span>
-                          </button>
-                        </td>
-                        <td className="py-3 px-4 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => openEditModal(subj)}
-                              aria-label={
-                                isBn ? `সম্পাদনা করুন: ${subj.nameEn}` : `Edit: ${subj.nameEn}`
-                              }
-                              className="h-8 w-8 p-0 rounded-full hover:bg-surface"
-                            >
-                              <Pencil className="h-3.5 w-3.5 text-muted-foreground hover:text-foreground" />
-                            </Button>
-                            <Button
-                              variant="ghost"
-                              size="sm"
-                              onClick={() => handleDelete(subj.id, subj.nameEn)}
-                              aria-label={
-                                isBn ? `মুছে ফেলুন: ${subj.nameEn}` : `Delete: ${subj.nameEn}`
-                              }
-                              className="h-8 w-8 p-0 rounded-full hover:bg-destructive/10 text-destructive"
-                            >
-                              <Trash2 className="h-3.5 w-3.5" />
-                            </Button>
-                          </div>
-                        </td>
-                      </tr>
-                    ))
-                  ))}
+                {activeTab === 'subjects' && (
+                  <SubjectsTable
+                    subjects={subjects}
+                    isLoading={subjectsLoading}
+                    isBn={isBn}
+                    onToggleActive={handleToggleActive}
+                    onEdit={openEditModal}
+                    onDelete={handleDelete}
+                  />
+                )}
               </tbody>
             </table>
           </div>
         </Card>
 
         {/* CREATE / EDIT MODAL */}
-        <Dialog open={modalMode !== null} onOpenChange={(open) => !open && resetForm()}>
-          <DialogContent className="sm:max-w-md">
-            <DialogHeader>
-              <DialogTitle className="text-lg font-bold">
-                {modalMode === 'create'
-                  ? isBn
-                    ? 'নতুন আইটেম যোগ করুন'
-                    : 'Add New Taxonomy Item'
-                  : isBn
-                    ? 'আইটেম সম্পাদনা করুন'
-                    : 'Edit Taxonomy Item'}
-              </DialogTitle>
-              <DialogDescription className="text-xs">
-                {isBn
-                  ? 'সব তথ্য সঠিকভাবে প্রদান করুন। পরিবর্তন সাথে সাথে সিস্টেমে প্রযোজ্য হবে।'
-                  : 'Provide required fields. Changes take effect across the platform immediately.'}
-              </DialogDescription>
-            </DialogHeader>
-
-            <form onSubmit={handleSave} className="space-y-4 pt-2">
-              {modalMode === 'create' && (
-                <div className="space-y-1.5">
-                  <Label htmlFor="form-code" className="text-xs font-semibold">
-                    {isBn ? 'ইউনিক কোড (e.g. lvl-class-9, stream-science)' : 'Unique Code'}
-                  </Label>
-                  <Input
-                    id="form-code"
-                    value={formCode}
-                    onChange={(e) => setFormCode(e.target.value)}
-                    placeholder="e.g. lvl-class-12, stream-vocational"
-                    required
-                  />
-                </div>
-              )}
-
-              <div className="space-y-1.5">
-                <Label htmlFor="form-name-en" className="text-xs font-semibold">
-                  {isBn ? 'ইংরেজি নাম' : 'Name (English)'}
-                </Label>
-                <Input
-                  id="form-name-en"
-                  value={formNameEn}
-                  onChange={(e) => setFormNameEn(e.target.value)}
-                  placeholder="e.g. Higher Secondary (HSC), Science"
-                  required
-                />
-              </div>
-
-              <div className="space-y-1.5">
-                <Label htmlFor="form-name-bn" className="text-xs font-semibold">
-                  {isBn ? 'বাংলা নাম' : 'Name (Bangla)'}
-                </Label>
-                <Input
-                  id="form-name-bn"
-                  value={formNameBn}
-                  onChange={(e) => setFormNameBn(e.target.value)}
-                  placeholder="যেমন: উচ্চ মাধ্যমিক (এইচএসসি), বিজ্ঞান বিভাগ"
-                  required
-                />
-              </div>
-
-              {activeTab === 'curricula' && (
-                <div className="space-y-1.5">
-                  <Label htmlFor="form-extra" className="text-xs font-semibold">
-                    {isBn ? 'বোর্ড / পরীক্ষা নিয়ন্ত্রক সংস্থা' : 'Board / Examination Authority'}
-                  </Label>
-                  <Input
-                    id="form-extra"
-                    value={formExtra}
-                    onChange={(e) => setFormExtra(e.target.value)}
-                    placeholder="e.g. Dhaka Education Board, Cambridge Assessment"
-                  />
-                </div>
-              )}
-
-              {activeTab === 'streams' && (
-                <div className="space-y-1.5">
-                  <Label htmlFor="form-extra" className="text-xs font-semibold">
-                    {isBn ? 'বিবরণ / লক্ষ্য' : 'Description'}
-                  </Label>
-                  <Input
-                    id="form-extra"
-                    value={formExtra}
-                    onChange={(e) => setFormExtra(e.target.value)}
-                    placeholder="যেমন: পদার্থ, রসায়ন, গণিত ও জীববিদ্যা বিষয়ক"
-                  />
-                </div>
-              )}
-
-              {activeTab === 'institutions' && (
-                <>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="form-extra" className="text-xs font-semibold">
-                      {isBn ? 'প্রতিষ্ঠানের ধরন' : 'Institution Type'}
-                    </Label>
-                    <Select
-                      value={formExtra || 'school'}
-                      onValueChange={(val) => setFormExtra(val)}
-                    >
-                      <SelectTrigger
-                        id="form-extra"
-                        className="rounded-2xl bg-card border-border text-sm"
-                      >
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="school">{isBn ? 'স্কুল (School)' : 'School'}</SelectItem>
-                        <SelectItem value="college">
-                          {isBn ? 'কলেজ (College)' : 'College'}
-                        </SelectItem>
-                        <SelectItem value="school_and_college">
-                          {isBn ? 'স্কুল অ্যান্ড কলেজ' : 'School & College'}
-                        </SelectItem>
-                        <SelectItem value="university">
-                          {isBn ? 'বিশ্ববিদ্যালয় (University)' : 'University'}
-                        </SelectItem>
-                        <SelectItem value="madrasah">
-                          {isBn ? 'মাদ্রাসা (Madrasah)' : 'Madrasah'}
-                        </SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div className="space-y-1.5">
-                    <Label htmlFor="form-extra-2" className="text-xs font-semibold">
-                      {isBn ? 'জেলা (District)' : 'District'}
-                    </Label>
-                    <Input
-                      id="form-extra-2"
-                      value={formExtra2}
-                      onChange={(e) => setFormExtra2(e.target.value)}
-                      placeholder="e.g. Dhaka, Chittagong, Sylhet"
-                    />
-                  </div>
-                </>
-              )}
-
-              {activeTab === 'subjects' && (
-                <div className="space-y-1.5">
-                  <Label htmlFor="form-extra" className="text-xs font-semibold">
-                    {isBn ? 'বিষয় বিভাগ / ক্যাটাগরি' : 'Subject Category'}
-                  </Label>
-                  <Input
-                    id="form-extra"
-                    value={formExtra}
-                    onChange={(e) => setFormExtra(e.target.value)}
-                    placeholder="e.g. Science, Commerce, Language"
-                  />
-                </div>
-              )}
-
-              <div className="flex items-center justify-between pt-2">
-                <div className="flex items-center gap-2">
-                  <Checkbox
-                    id="form-is-active"
-                    checked={formIsActive}
-                    onCheckedChange={(checked) => setFormIsActive(Boolean(checked))}
-                  />
-                  <Label htmlFor="form-is-active" className="text-xs font-semibold cursor-pointer">
-                    {isBn
-                      ? 'সক্রিয় থাকবে (শিক্ষার্থী ও শিক্ষকরা নির্বাচন করতে পারবেন)'
-                      : 'Is Active'}
-                  </Label>
-                </div>
-              </div>
-
-              <DialogFooter className="pt-3">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={resetForm}
-                  disabled={isSaving}
-                  className="rounded-full px-4"
-                >
-                  {isBn ? 'বাতিল' : 'Cancel'}
-                </Button>
-                <Button
-                  type="submit"
-                  isLoading={isSaving}
-                  className="rounded-full px-5 font-semibold"
-                >
-                  {modalMode === 'create'
-                    ? isBn
-                      ? 'সংরক্ষণ করুন'
-                      : 'Create'
-                    : isBn
-                      ? 'আপডেট করুন'
-                      : 'Update'}
-                </Button>
-              </DialogFooter>
-            </form>
-          </DialogContent>
-        </Dialog>
+        <TaxonomyModal
+          isOpen={modalMode !== null}
+          onClose={resetForm}
+          modalMode={modalMode}
+          activeTab={activeTab}
+          isBn={isBn}
+          formCode={formCode}
+          setFormCode={setFormCode}
+          formNameEn={formNameEn}
+          setFormNameEn={setFormNameEn}
+          formNameBn={formNameBn}
+          setFormNameBn={setFormNameBn}
+          formExtra={formExtra}
+          setFormExtra={setFormExtra}
+          formExtra2={formExtra2}
+          setFormExtra2={setFormExtra2}
+          formIsActive={formIsActive}
+          setFormIsActive={setFormIsActive}
+          isSaving={isSaving}
+          onSave={handleSave}
+        />
       </div>
     </AdminLayout>
   );

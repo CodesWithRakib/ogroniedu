@@ -89,11 +89,6 @@ export interface SearchTutorsParams {
 export interface SearchTutorsResponse {
   success: boolean;
   data: TutorSearchItem[];
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-  /** Canonical pagination (preferred over legacy top-level fields). */
   meta?: {
     requestId?: string;
     pagination?: {

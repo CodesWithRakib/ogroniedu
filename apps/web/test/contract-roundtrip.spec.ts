@@ -13,7 +13,7 @@ import { normalizeUnknownError } from '../src/lib/api-error';
  * normalization. Guards the API↔web contract without a live backend.
  */
 describe('contract round-trips per resource', () => {
-  it('tutor search: canonical meta.pagination and legacy fields both parse', () => {
+  it('tutor search: canonical meta.pagination parses correctly without legacy fields', () => {
     const canonical = {
       success: true,
       data: [{ id: 't-1' }],
@@ -29,14 +29,14 @@ describe('contract round-trips per resource', () => {
           hasPreviousPage: true,
         },
       },
-      total: 25,
-      page: 2,
-      limit: 10,
-      totalPages: 3,
     };
     const parsed = parseOffsetCollection(canonical);
     expect(parsed.items).toHaveLength(1);
     expect(parsed.pagination).toMatchObject({ page: 2, pageSize: 10, totalItems: 25 });
+    expect(canonical).not.toHaveProperty('total');
+    expect(canonical).not.toHaveProperty('page');
+    expect(canonical).not.toHaveProperty('limit');
+    expect(canonical).not.toHaveProperty('totalPages');
 
     const legacy = {
       success: true,

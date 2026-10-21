@@ -6,7 +6,7 @@ import type {
   ChildItem,
   GuardianChildrenCallbacks,
   GuardianRelationship,
-} from './GuardianChildrenManager';
+} from './guardian-children.types';
 
 export type LinkChildFieldError = 'IDENTIFIER_REQUIRED' | 'CONSENT_REQUIRED';
 

@@ -4,7 +4,6 @@ import {
   NotFoundException,
   ForbiddenException,
   Inject,
-  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
@@ -39,7 +38,7 @@ import {
 import { NotificationEntity } from './entities/notification.entity';
 import { NotificationDeliveryEntity } from './entities/notification-delivery.entity';
 import { NotificationPreferenceEntity } from './entities/notification-preference.entity';
-import { NotificationGateway } from './notification.gateway';
+import { NOTIFICATION_BROADCASTER, type INotificationBroadcaster } from './interfaces/notification-broadcaster.interface';
 import { Optional } from '@nestjs/common';
 import { decodeCursor, encodeCursor, type CursorPayload } from '../../common/pagination/pagination';
 
@@ -80,8 +79,9 @@ export class NotificationService {
     private readonly notificationRepo: Repository<NotificationEntity>,
     @InjectRepository(NotificationDeliveryEntity)
     private readonly deliveryRepo: Repository<NotificationDeliveryEntity>,
-    @Inject(forwardRef(() => NotificationGateway))
-    private readonly gateway: NotificationGateway,
+    @Optional()
+    @Inject(NOTIFICATION_BROADCASTER)
+    private readonly gateway?: INotificationBroadcaster,
     @Optional()
     @Inject(NotificationPreferencesService)
     prefs?: NotificationPreferencesService,

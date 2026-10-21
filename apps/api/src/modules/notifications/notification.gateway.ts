@@ -8,11 +8,13 @@ import {
   ConnectedSocket,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
-import { Logger, Inject, Optional, forwardRef } from '@nestjs/common';
+import { Logger, Inject, Optional } from '@nestjs/common';
+import { ModuleRef } from '@nestjs/core';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import jwt from 'jsonwebtoken';
 import type { NotificationItemDto, UnreadCountResponseDto } from '@ogroniedu/contracts';
+import type { INotificationBroadcaster } from './interfaces/notification-broadcaster.interface';
 import { NotificationService } from './notification.service';
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { BookingMessageEntity } from './entities/booking-message.entity';
@@ -30,7 +32,7 @@ function readString(value: unknown): string | undefined {
     credentials: true,
   },
 })
-export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect {
+export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect, INotificationBroadcaster {
   private readonly logger = new Logger(NotificationGateway.name);
   private readonly jwtSecret =
     process.env.JWT_SECRET || 'ogroniedu-super-secure-jwt-secret-key-2026-bangladesh';
@@ -38,16 +40,50 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
   @WebSocketServer()
   server!: Server;
 
+  private _notificationService?: NotificationService;
+  private readonly moduleRef?: ModuleRef;
+
   constructor(
-    @Inject(forwardRef(() => NotificationService))
-    private readonly notificationService: NotificationService,
+    @Optional()
+    @Inject(ModuleRef)
+    moduleRefOrService?: ModuleRef | NotificationService,
+    @Optional()
+    notificationService?: NotificationService,
     @Optional()
     @InjectRepository(BookingEntity)
     private readonly bookingRepo?: Repository<BookingEntity>,
     @Optional()
     @Inject(GuardianAccessService)
     private readonly guardianAccess?: GuardianAccessService,
-  ) {}
+  ) {
+    if (moduleRefOrService) {
+      if (
+        moduleRefOrService instanceof NotificationService ||
+        'getUnreadCount' in (moduleRefOrService as unknown as Record<string, unknown>)
+      ) {
+        this._notificationService = moduleRefOrService as NotificationService;
+      } else {
+        this.moduleRef = moduleRefOrService as ModuleRef;
+      }
+    }
+    if (notificationService) {
+      this._notificationService = notificationService;
+    }
+  }
+
+  private get notificationService(): NotificationService {
+    if (this._notificationService) {
+      return this._notificationService;
+    }
+    if (this.moduleRef) {
+      const resolved = this.moduleRef.get(NotificationService, { strict: false });
+      if (resolved) {
+        this._notificationService = resolved;
+        return this._notificationService;
+      }
+    }
+    throw new Error('NotificationService is not available in NotificationGateway');
+  }
 
   async handleConnection(client: Socket) {
     try {

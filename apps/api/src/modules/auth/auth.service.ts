@@ -36,6 +36,12 @@ import {
   hashMagicLinkToken,
   resolveSafeRedirectPath,
 } from './utils/magic-link.utils';
+import {
+  isAccountBlocked,
+  generateSecureOtpCode,
+  calculateOtpExpiry,
+  isOtpMaxAttemptsExceeded,
+} from './utils/auth-policy.util';
 import type { AuthMeta, AuthResponse } from './interfaces/auth-response.interface';
 
 export type { TokenPayload, AuthResponse, AuthMeta } from './interfaces/auth-response.interface';
@@ -69,8 +75,7 @@ interface LoginUserRow {
   auth_epoch: number | string | null;
 }
 
-/** Account statuses that must never authenticate or refresh. */
-const BLOCKED_STATUSES: readonly string[] = ['suspended', 'deactivated', 'deletion_pending'];
+
 
 function isUniqueViolation(err: unknown): boolean {
   return (
@@ -348,7 +353,7 @@ export class AuthService {
       throw new UnauthorizedException('Invalid email/phone or password');
     }
 
-    if (BLOCKED_STATUSES.includes(user.status)) {
+    if (isAccountBlocked(user.status)) {
       await this.recordAudit({
         actorUserId: user.id,
         action: 'auth.login.blocked',
@@ -492,7 +497,7 @@ export class AuthService {
        WHERE u.id = $1 AND u.deleted_at IS NULL;`,
       [session.user_id],
     );
-    if (userRows.length === 0 || BLOCKED_STATUSES.includes(userRows[0].status)) {
+    if (userRows.length === 0 || isAccountBlocked(userRows[0].status)) {
       throw new UnauthorizedException('User account is invalid or suspended');
     }
     const user = userRows[0];
@@ -600,9 +605,9 @@ export class AuthService {
 
     const contact = dto.contact.trim();
     const isEmail = contact.includes('@');
-    const code = crypto.randomInt(100000, 999999).toString();
+    const code = generateSecureOtpCode(6);
     const codeHash = hashToken(code);
-    const expiresAt = new Date(Date.now() + OTP_TTL_SECONDS * 1000);
+    const expiresAt = calculateOtpExpiry(OTP_TTL_SECONDS);
 
     // Find user if exists
     const candidates = isEmail ? [contact.toLowerCase()] : getPhoneSearchCandidates(contact);
@@ -725,7 +730,7 @@ export class AuthService {
 
     const rec = records[0];
 
-    if (rec.attempts >= OTP_MAX_ATTEMPTS) {
+    if (isOtpMaxAttemptsExceeded(rec.attempts, OTP_MAX_ATTEMPTS)) {
       throw new BadRequestException('Too many failed attempts. This code is invalidated.');
     }
 
@@ -881,7 +886,7 @@ export class AuthService {
       [email],
     );
 
-    if (userRes.length === 0 || BLOCKED_STATUSES.includes(userRes[0].status)) {
+    if (userRes.length === 0 || isAccountBlocked(userRes[0].status)) {
       // Do not reveal whether the account exists.
       return genericResponse;
     }
@@ -988,7 +993,7 @@ export class AuthService {
        WHERE u.id = $1 AND u.deleted_at IS NULL;`,
       [link.user_id],
     );
-    if (userRows.length === 0 || BLOCKED_STATUSES.includes(userRows[0].status)) {
+    if (userRows.length === 0 || isAccountBlocked(userRows[0].status)) {
       throw new UnauthorizedException('Account is not permitted to sign in');
     }
     const user = userRows[0];

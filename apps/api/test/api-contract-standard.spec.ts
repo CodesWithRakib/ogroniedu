@@ -20,7 +20,7 @@ describe('API contract standard (Phase 22)', () => {
     expect(res).toEqual({ success: true, data: { id: 'r1' }, message: 'Created.' });
   });
 
-  it('paginated() carries canonical meta.pagination plus legacy compat fields', () => {
+  it('paginated() carries canonical meta.pagination without legacy root fields', () => {
     const res = paginated([{ id: 'a' }], { page: 2, pageSize: 20, totalItems: 45 });
     expect(res.success).toBe(true);
     expect(res.meta.pagination).toMatchObject({
@@ -32,8 +32,10 @@ describe('API contract standard (Phase 22)', () => {
       hasNextPage: true,
       hasPreviousPage: true,
     });
-    expect(res.total).toBe(45);
-    expect(res.page).toBe(2);
+    expect(res).not.toHaveProperty('total');
+    expect(res).not.toHaveProperty('page');
+    expect(res).not.toHaveProperty('limit');
+    expect(res).not.toHaveProperty('totalPages');
   });
 
   it('buildOffsetMeta() handles empty collections without zero-page math', () => {
