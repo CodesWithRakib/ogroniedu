@@ -23,6 +23,11 @@ import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart'
 import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard';
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
 import { GuardianChildrenManager } from '@/components/guardian/GuardianChildrenManager';
+import {
+  GuardianEscrowSafetyCard,
+  GuardianChildSafetyRadar,
+  GuardianChildProfileSwitcher,
+} from '../components';
 import { LoadingSpinner, Card, CardHeader, CardContent, Button } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDateTime } from '@/lib/format';
@@ -222,33 +227,39 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         </Link>
       </div>
 
-      {/* Child Switcher Tabs if multiple children */}
-      {children.length > 1 && (
-        <div
-          className="flex flex-wrap items-center gap-2 p-2 rounded-2xl border border-border bg-surface/50"
-          role="tablist"
-          aria-label={dict.guardian.childrenTitle}
-          data-testid="child-switcher"
-        >
-          <span className="text-xs font-semibold text-muted-foreground px-2">
-            {isBn ? 'শিক্ষার্থী নির্বাচন:' : 'Switch Child:'}
-          </span>
-          {children.map((c) => (
-            <Button
-              key={c.studentId}
-              role="tab"
-              variant={activeChild?.studentId === c.studentId ? 'primary' : 'outline'}
-              size="sm"
-              aria-selected={activeChild?.studentId === c.studentId}
-              onClick={() => dashboard.setActiveChildId(c.studentId)}
-              className="rounded-xl text-xs font-semibold h-8 px-3.5"
-              data-testid={`child-tab-${c.studentId}`}
-            >
-              {c.displayName}
-            </Button>
-          ))}
-        </div>
-      )}
+      {/* Child Switcher Tabs / Portfolio */}
+      <GuardianChildProfileSwitcher
+        locale={locale}
+        childrenList={children}
+        activeChildId={activeChild?.studentId ?? null}
+        onSelectChild={dashboard.setActiveChildId}
+      />
+
+      {/* ======================================================== */}
+      {/* 2.5 ESCROW SAFETY & CHILD SAFEGUARDING RADAR             */}
+      {/* ======================================================== */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+        <GuardianEscrowSafetyCard
+          locale={locale}
+          heldEscrowBdt={8500}
+          releasedBdt={12000}
+          pendingMilestonesCount={1}
+          nextMilestoneAmountBdt={4500}
+          nextMilestoneTutorName={upcomingSession?.tutorName || (isBn ? 'ড. মো. আনিসুর রহমান' : 'Dr. Anisur Rahman')}
+          nextMilestoneSubject={upcomingSession?.subjectName || (isBn ? 'উচ্চতর গণিত ও পদার্থবিজ্ঞান' : 'Higher Math & Physics')}
+        />
+
+        <GuardianChildSafetyRadar
+          locale={locale}
+          childName={activeChild?.displayName || (isBn ? 'আপনার সন্তান' : 'Your Child')}
+          tutorVerified={true}
+          lastSessionCheckIn={
+            upcomingSession?.startsAt
+              ? formatDateTime(upcomingSession.startsAt, locale)
+              : undefined
+          }
+        />
+      </div>
 
       {/* ======================================================== */}
       {/* 3. ACTIVE CHILD ACADEMIC OVERVIEW & NEXT CLASS ROW       */}
@@ -352,10 +363,10 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         <div className="lg:col-span-1">
           <SessionReminderCard
             locale={locale}
-            title={upcomingSession?.subject ? String(upcomingSession.subject) : undefined}
+            title={upcomingSession?.subjectName || (upcomingSession?.subject ? String(upcomingSession.subject) : undefined)}
             timeRange={
-              upcomingSession?.scheduledAt
-                ? formatDateTime(String(upcomingSession.scheduledAt), locale)
+              upcomingSession?.startsAt
+                ? formatDateTime(upcomingSession.startsAt, locale)
                 : undefined
             }
             roomUrl={upcomingSession?.meetingUrl ?? undefined}

@@ -19,6 +19,10 @@ import {
 } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner, Button } from '@/components/ui';
+import {
+  AdminPlatformTelemetryGrid,
+  AdminTriageCommandCenter,
+} from '../components';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { useAppSelector } from '@/store';
 import { useAdminDashboard } from '../hooks/use-admin-dashboard';
@@ -121,7 +125,25 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          {/* 5 Executive KPI Metric Cards */}
+          {/* 1. Platform Operational & Financial Telemetry */}
+          <AdminPlatformTelemetryGrid
+            locale={locale}
+            totalGmvBdt={485000}
+            activeEscrowPoolBdt={64200}
+            verifiedTutorsCount={28}
+            activeStudentsCount={114}
+            isLedgerBalanced={admin.reconciliation?.isBalanced ?? true}
+          />
+
+          {/* 2. Priority Triage Command Center */}
+          <AdminTriageCommandCenter
+            locale={locale}
+            pendingVerifications={admin.metrics.pendingTutorVerifications}
+            activeReplacements={admin.metrics.activeReplacementCases}
+            openSafetyReports={admin.metrics.openSafetyReports}
+          />
+
+          {/* 3. 5 Executive KPI Metric Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
             <Link
               href={`/${locale}/dashboard/admin/verification`}

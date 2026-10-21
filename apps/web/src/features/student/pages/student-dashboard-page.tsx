@@ -28,6 +28,8 @@ import {
   StudentUpcomingClassesCard,
   StudentMyTutorsCard,
   StudentPendingAssignmentsCard,
+  StudentNextClassHero,
+  StudentSubjectMasteryCard,
 } from '../components';
 
 /** Production-ready Student dashboard: Donezo/Shopeers-inspired aesthetic with full real student API data. */
@@ -43,6 +45,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
     unread,
     myRequests,
     upcomingSessions,
+    nextSession,
     activeTutors,
     metrics,
     assignments,
@@ -82,6 +85,15 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
         </div>
       }
     >
+      {/* ======================================================== */}
+      {/* 0. STUDENT NEXT CLASS HERO ACTION COUNTDOWN              */}
+      {/* ======================================================== */}
+      <StudentNextClassHero
+        locale={locale}
+        nextSession={nextSession}
+        isLoading={sessions.isLoading}
+      />
+
       {/* ======================================================== */}
       {/* 1. DONEZO 4-CARD HERO KPI GRID                           */}
       {/* ======================================================== */}
@@ -233,39 +245,50 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* ======================================================== */}
-      {/* 4. VISUAL ANALYTICS & TIMERS ROW                         */}
+      {/* 4. VISUAL ANALYTICS & SUBJECT MASTERY                    */}
       {/* ======================================================== */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
-        <WeeklyActivityChart
-          locale={locale}
-          title={isBn ? 'সাপ্তাহিক পড়াশোনার সময়' : 'Weekly Study Analytics'}
-          subtitle={
-            isBn
-              ? 'সপ্তাহের বিভিন্ন দিনে সম্পন্ন করা ক্লাস ও টাস্ক'
-              : 'Study and session volume across the week'
-          }
-        />
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+        <div className="lg:col-span-1">
+          <StudentSubjectMasteryCard
+            locale={locale}
+            averageScore={metrics?.averageScore}
+          />
+        </div>
 
-        <ProgressGaugeCard
-          locale={locale}
-          percentage={Math.round(attendancePercentage)}
-          title={isBn ? 'উপস্থিতি ও সিলেবাস অগ্রগতি' : 'Attendance & Progress'}
-          subtitle={
-            metrics
-              ? isBn
-                ? `${formatLocalizedNumber(metrics.assignmentsCompleted, locale)}/${formatLocalizedNumber(metrics.assignmentsAssigned, locale)} অ্যাসাইনমেন্ট সম্পন্ন`
-                : `${metrics.assignmentsCompleted}/${metrics.assignmentsAssigned} assignments done`
-              : isBn
-                ? 'অধ্যায় ও অ্যাসাইনমেন্ট সম্পন্ন'
-                : 'Chapters & assignments finished'
-          }
-        />
+        <div className="lg:col-span-1">
+          <WeeklyActivityChart
+            locale={locale}
+            title={isBn ? 'সাপ্তাহিক পড়াশোনার সময়' : 'Weekly Study Analytics'}
+            subtitle={
+              isBn
+                ? 'সপ্তাহের বিভিন্ন দিনে সম্পন্ন করা ক্লাস ও টাস্ক'
+                : 'Study and session volume across the week'
+            }
+          />
+        </div>
 
-        <StudyTimeTrackerCard
-          locale={locale}
-          title={isBn ? 'ফোকাস সেশন টাইমার' : 'Study Time Tracker'}
-          subtitle={isBn ? 'ধারাবাহিক মনোযোগ ও রিভিশন' : 'Continuous focus timer'}
-        />
+        <div className="lg:col-span-1 flex flex-col gap-5">
+          <ProgressGaugeCard
+            locale={locale}
+            percentage={Math.round(attendancePercentage)}
+            title={isBn ? 'উপস্থিতি ও সিলেবাস অগ্রগতি' : 'Attendance & Progress'}
+            subtitle={
+              metrics
+                ? isBn
+                  ? `${formatLocalizedNumber(metrics.assignmentsCompleted, locale)}/${formatLocalizedNumber(metrics.assignmentsAssigned, locale)} অ্যাসাইনমেন্ট সম্পন্ন`
+                  : `${metrics.assignmentsCompleted}/${metrics.assignmentsAssigned} assignments done`
+                : isBn
+                  ? 'অধ্যায় ও অ্যাসাইনমেন্ট সম্পন্ন'
+                  : 'Chapters & assignments finished'
+            }
+          />
+
+          <StudyTimeTrackerCard
+            locale={locale}
+            title={isBn ? 'ফোকাস সেশন টাইমার' : 'Study Time Tracker'}
+            subtitle={isBn ? 'ধারাবাহিক মনোযোগ ও রিভিশন' : 'Continuous focus timer'}
+          />
+        </div>
       </div>
 
       {/* ======================================================== */}
