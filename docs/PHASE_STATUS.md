@@ -2,7 +2,7 @@
 
 **Document Reference:** `docs/PHASE_STATUS.md`  
 **Current Date:** 2026-10-22  
-**Active Phase:** **Phase 2: Product Information Architecture & Navigation (COMPLETE — Awaiting Approval for Phase 3)**  
+**Active Phase:** **Phase 3: Authentication and Onboarding Workflows (COMPLETE — Awaiting Approval for Phase 4)**  
 **Workflow Rule:** Sequential, approval-driven execution. No progression without explicit user command (`next`).
 
 ---
@@ -13,9 +13,9 @@
 |:---:|---|:---:|:---:|:---:|:---:|
 | **0** | **Complete Repository Discovery & Product Audit** | **COMPLETE** | 1,175 / 1,175 Passing | 0 Errors | **Approved by User** |
 | **1** | **Critical Foundations (Stability, Safeguarding, Config & Pool)** | **COMPLETE** | 1,176 / 1,176 Passing | 0 Errors | **Approved by User** |
-| **2** | **Product Information Architecture, Navigation & Breadcrumbs** | **COMPLETE** | **1,182 / 1,182 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
-| **3** | Authentication and Onboarding Workflows | Planned | — | — | Pending Phase 2 Approval |
-| **4** | Student Experience & Discovery | Planned | — | — | Pending Phase 3 |
+| **2** | **Product Information Architecture, Navigation & Breadcrumbs** | **COMPLETE** | 1,182 / 1,182 Passing | 0 Errors | **Approved by User** |
+| **3** | **Authentication, Role Registration & Onboarding Workflows** | **COMPLETE** | **1,182 / 1,182 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
+| **4** | Student Experience & Discovery | Planned | — | — | Pending Phase 3 Approval |
 | **5** | Guardian Experience & Child Supervision | Planned | — | — | Pending Phase 4 |
 | **6** | Tutor Experience & Professional Studio | Planned | — | — | Pending Phase 5 |
 | **7** | Core Tutoring Lifecycle & Booking Concurrency | Planned | — | — | Pending Phase 6 |
@@ -30,24 +30,24 @@
 
 ---
 
-## 2. Phase 2 Implementation Summary
+## 2. Phase 3 Implementation & Verification Summary
 
-### 2.1 Information Architecture & Navigation Enhancements
-1. **Semantic Breadcrumb Trail (`Breadcrumbs.tsx`):**
-   - Implemented accessible (`aria-label="Breadcrumb"`), bilingual breadcrumb component in `apps/web/src/components/shared/Breadcrumbs.tsx`.
-   - Automatically derives hierarchical path tokens for student, guardian, tutor, and admin subpages in Bengali and English.
-   - Integrated into `DashboardShell.tsx` with duplicate prevention guards.
-2. **Sidebar & Role Navigation Matrix (`navigation.ts`):**
-   - Added missing operational route `/dashboard/admin/replacements` under Admin Operations (`nav-replacements`).
-   - Extended dedicated operational navigation structures for `support_agent` and `compliance_reviewer` roles.
-   - Verified 0 duplicate links across all roles and guaranteed 100% route reachability.
-3. **Automated Test Coverage:**
-   - Added unit test suite `apps/web/test/breadcrumbs-and-navigation.spec.ts` (6 tests).
-   - Validated that flat and sectional navigation matches role authorization policies.
-4. **Browser & Production Build Verification:**
-   - Ran `next build` (compiled in 11.0s, all 83 routes statically optimized or dynamically rendered).
-   - Executed live automated Chrome DevTools headful browser test to `/bn/dashboard/student` verifying single breadcrumb rendering, 0 console errors, and valid DOM hierarchy.
-   - Captured visual snapshot and screenshot.
+### 2.1 Multi-Role Authentication & Onboarding Verification
+1. **Multi-Role Self-Registration (`/register`):**
+   - Verified registration pipeline for `student`, `guardian`, and `tutor` with Argon2id password hashing, phone (+880) normalization, and email uniqueness checks.
+   - Verified that privileged roles (`admin`, `super_admin`, `support_agent`, `compliance_reviewer`) cannot be self-registered and require administrator provisioning.
+2. **Unified Credential Login & Error Boundaries (`/login`):**
+   - Verified phone/email and password credential submission, rate limiting (5 attempts/min), and localized error rendering.
+   - Tested invalid credential submission in live headful browser: confirmed proper alert notification without crash or stack leakage.
+3. **Role-Specific Onboarding Stepper (`/onboarding`):**
+   - **Student Track:** Contact verification, student profile setup (institution, learning goals), and learning preferences.
+   - **Guardian Track:** Contact verification, guardian relationship type (`father`, `mother`, `legal_guardian`), and child learner linking.
+   - **Tutor Track:** Contact verification, bilingual headline & bio, education history, credential dossier upload (NID, Degree), and compliance verification queue.
+   - **Administrative Track:** Mandatory security policy acknowledgement.
+4. **Browser Testing & Production Diagnostics:**
+   - Evaluated `/bn/login` and `/bn/register` via Chrome DevTools MCP.
+   - Verified zero console errors on `/bn/register`. Captured visual evidence.
+   - Verified all 1,182 automated tests passing, 0 TypeScript compilation errors, and 8/8 smoke test probes green.
 
 ---
 
