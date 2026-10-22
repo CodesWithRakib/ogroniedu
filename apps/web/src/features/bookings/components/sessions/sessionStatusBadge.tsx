@@ -1,7 +1,7 @@
 'use client';
 
 import { Badge } from '@/components/ui';
-import { CheckCircle2, Clock, XCircle, RotateCcw } from 'lucide-react';
+import { CheckCircle2, Clock, XCircle, RotateCcw, AlertCircle } from 'lucide-react';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import type { SessionItemStatus } from '../../types/session.types';
 
@@ -41,6 +41,13 @@ export function SessionStatusBadge({
         <Badge variant="cancelled" className="gap-1.5">
           <XCircle className="w-3 h-3" />
           {dict.scheduling?.statusCancelled || 'Cancelled'}
+        </Badge>
+      );
+    case 'no_show':
+      return (
+        <Badge variant="destructive" className="gap-1.5">
+          <AlertCircle className="w-3 h-3" />
+          {locale === 'bn' ? 'অনুপস্থিত (No-show)' : 'No Show'}
         </Badge>
       );
     case 'reschedule_pending':

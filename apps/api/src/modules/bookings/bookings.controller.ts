@@ -10,10 +10,15 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   Inject,
+  Optional,
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
+import { RolesGuard } from '../../common/guards/roles.guard';
+import { Roles } from '../../common/decorators/roles.decorator';
+import { ADMIN_ROLES } from '../../common/auth/role.utils';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { BookingsService } from './bookings.service';
+import { BookingExpiryService } from './services/booking-expiry.service';
 import {
   CreateBookingRequestDto,
   GetBookingRequestsQueryDto,
@@ -27,6 +32,9 @@ export class BookingsController {
   constructor(
     @Inject(BookingsService)
     private readonly bookingsService: BookingsService,
+    @Optional()
+    @Inject(BookingExpiryService)
+    private readonly bookingExpiryService?: BookingExpiryService,
   ) {}
 
   @Post()
@@ -103,6 +111,26 @@ export class BookingsController {
       success: true,
       message: `Tutoring request marked as '${booking.status}'.`,
       data: booking,
+    };
+  }
+
+  @Post('sweep-expired')
+  @UseGuards(RolesGuard)
+  @Roles(...ADMIN_ROLES)
+  @HttpCode(HttpStatus.OK)
+  async sweepExpired(@CurrentUser() _user: AuthenticatedUser) {
+    if (!this.bookingExpiryService) {
+      return {
+        success: true,
+        message: 'Booking expiry service is not configured.',
+        data: { expiredRequests: 0, expiredPayments: 0, totalExpired: 0 },
+      };
+    }
+    const result = await this.bookingExpiryService.sweepExpiredBookings();
+    return {
+      success: true,
+      message: `Booking expiry sweep completed. ${result.totalExpired} booking(s) expired.`,
+      data: result,
     };
   }
 }

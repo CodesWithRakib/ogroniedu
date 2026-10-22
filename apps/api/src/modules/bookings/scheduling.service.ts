@@ -84,4 +84,7 @@ export class SchedulingService {
   updateMeetingUrl(sessionId: string, user: AuthenticatedUser, meetingUrl: string) {
     return this.rescheduling.updateMeetingUrl(sessionId, user, meetingUrl);
   }
+  markNoShow(sessionId: string, user: AuthenticatedUser, dto?: { reason?: string }) {
+    return this.rescheduling.markNoShow(sessionId, user, dto);
+  }
 }

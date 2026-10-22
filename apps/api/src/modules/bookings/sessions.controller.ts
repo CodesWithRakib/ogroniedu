@@ -205,6 +205,22 @@ export class SessionsController {
     };
   }
 
+  @Post('sessions/:id/no-show')
+  @UseGuards(AuthGuard)
+  @HttpCode(HttpStatus.OK)
+  async markNoShow(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto?: { reason?: string },
+  ) {
+    const session = await this.schedulingService.markNoShow(id, user, dto);
+    return {
+      success: true,
+      message: 'Tutoring session marked as no-show.',
+      data: session,
+    };
+  }
+
   @Get('tutors/:tutorId/calendar')
   async getTutorCalendar(
     @Param('tutorId', ParseUUIDPipe) tutorId: string,

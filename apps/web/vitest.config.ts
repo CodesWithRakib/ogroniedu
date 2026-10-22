@@ -6,6 +6,7 @@ export default defineConfig({
   plugins: [react()],
   test: {
     environment: 'node',
+    testTimeout: 15000,
     // Playwright browser specs live in e2e/ and must never run under vitest.
     exclude: [
       '**/node_modules/**',

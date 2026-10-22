@@ -91,7 +91,7 @@ export function SessionScheduleCalendar({
     } else if (filterStatus === 'completed') {
       list = list.filter((s) => s.status === 'completed');
     } else if (filterStatus === 'cancelled') {
-      list = list.filter((s) => s.status === 'cancelled');
+      list = list.filter((s) => s.status === 'cancelled' || s.status === 'no_show');
     }
 
     // Sort: upcoming & in_progress first by startsAt asc; completed by startsAt desc

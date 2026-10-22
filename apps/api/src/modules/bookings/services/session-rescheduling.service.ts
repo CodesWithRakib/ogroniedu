@@ -481,6 +481,89 @@ export class SessionReschedulingService {
     return saved;
   }
 
+  async markNoShow(
+    sessionId: string,
+    user: AuthenticatedUser,
+    dto?: { reason?: string },
+  ): Promise<BookingSessionEntity> {
+    const session = await this.sessionRepo.findOne({
+      where: { id: sessionId },
+      relations: { booking: { subject: true } },
+    });
+    if (!session) {
+      throw new NotFoundException(`Session ${sessionId} not found`);
+    }
+
+    if (session.booking) {
+      await this.queries.assertCanManageSessions(user, session.booking);
+    }
+
+    if (session.status === 'no_show') {
+      return session;
+    }
+
+    assertSessionTransition(session.status, 'no_show');
+
+    const now = new Date();
+    if (now < new Date(session.startsAt)) {
+      throw new BadRequestException(
+        'Cannot mark a session as no-show before its scheduled start time.',
+      );
+    }
+
+    session.status = 'no_show';
+    session.cancellationReason = dto?.reason || 'Participant marked as no-show';
+    session.statusChangedAt = now;
+    session.statusChangedBy = user.id;
+    session.version += 1;
+
+    const saved = await this.sessionRepo.save(session);
+
+    await this.auditService.record({
+      actorUserId: user.id,
+      action: 'session.no_show',
+      resourceType: 'booking_session',
+      resourceId: saved.id,
+      reason: dto?.reason,
+      safeMetadata: {
+        startsAt: saved.startsAt.toISOString(),
+        endsAt: saved.endsAt.toISOString(),
+      },
+    });
+
+    await recordOutboxEvent(
+      this.outboxRepo,
+      'session.no_show',
+      'session',
+      saved.id,
+      {
+        sessionId: saved.id,
+        bookingId: saved.bookingId,
+        tutorUserId: saved.tutorUserId,
+        studentUserId: saved.studentUserId,
+        reason: dto?.reason || 'Participant marked as no-show',
+      },
+      `session.no_show:${saved.id}:${saved.version}`,
+    );
+
+    const notifyRecipientId =
+      user.id === session.tutorUserId ? session.studentUserId : session.tutorUserId;
+    const recipientRole = user.id === session.tutorUserId ? 'student' : 'tutor';
+    dispatchNotificationSafe(
+      this.logger,
+      this.notificationService,
+      notifyRecipientId,
+      'booking.cancelled',
+      recipientRole,
+      {
+        bookingId: session.bookingId,
+        reason: dto?.reason || 'Session marked as no-show',
+      },
+    );
+
+    return saved;
+  }
+
   /**
    * When no active sessions remain, move the booking to `completed` through
    * the transition map. Failures here never undo the session completion.

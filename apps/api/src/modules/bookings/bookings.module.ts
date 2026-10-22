@@ -22,6 +22,8 @@ import { SessionQueriesService } from './services/session-queries.service';
 import { SessionSeriesService } from './services/session-series.service';
 import { SessionReminderService } from './services/session-reminder.service';
 import { SessionReminderScheduler } from './services/session-reminder.scheduler';
+import { BookingExpiryService } from './services/booking-expiry.service';
+import { BookingExpiryScheduler } from './services/booking-expiry.scheduler';
 import { SessionsController } from './sessions.controller';
 import { SessionSeriesController } from './session-series.controller';
 import { AuthModule } from '../auth/auth.module';
@@ -63,6 +65,8 @@ import { TutorsModule } from '../tutors/tutors.module';
     SessionSeriesService,
     SessionReminderService,
     SessionReminderScheduler,
+    BookingExpiryService,
+    BookingExpiryScheduler,
   ],
   exports: [
     BookingsService,
@@ -72,6 +76,7 @@ import { TutorsModule } from '../tutors/tutors.module';
     SessionQueriesService,
     SessionSeriesService,
     SessionReminderService,
+    BookingExpiryService,
     TypeOrmModule,
   ],
 })

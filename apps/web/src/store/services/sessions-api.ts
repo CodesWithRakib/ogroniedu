@@ -143,6 +143,21 @@ export const sessionsApi = baseApi.injectEndpoints({
         { type: 'Session', id: 'LIST' },
       ],
     }),
+    markNoShow: builder.mutation<
+      ApiSuccessEnvelope<SessionItem>,
+      { id: string; reason?: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/api/v1/sessions/${id}/no-show`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [
+        { type: 'Session', id },
+        { type: 'Session', id: 'LIST' },
+        { type: 'Notification', id: 'LIST' },
+      ],
+    }),
     getTutorCalendar: builder.query<
       ApiSuccessEnvelope<Array<Record<string, unknown>>>,
       { tutorId: string; from?: string; to?: string }
@@ -180,6 +195,7 @@ export const {
   useStartSessionMutation,
   useCompleteSessionMutation,
   useUpdateMeetingUrlMutation,
+  useMarkNoShowMutation,
   useGetTutorCalendarQuery,
   useGetIcsCalendarQuery,
   useLazyGetIcsCalendarQuery,

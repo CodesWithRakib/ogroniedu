@@ -45,6 +45,11 @@ const SEGMENT_LABELS: Record<string, { bn: string; en: string }> = {
   progress: { bn: 'অগ্রগতি', en: 'Progress' },
 };
 
+const SEGMENT_HREF_OVERRIDES: Record<string, string> = {
+  classroom: '/sessions',
+  assignments: '/learning',
+};
+
 export function Breadcrumbs({ locale, className = '', customCrumbs }: BreadcrumbsProps) {
   const pathname = usePathname();
   const isBn = locale === 'bn';
@@ -98,13 +103,14 @@ export function Breadcrumbs({ locale, className = '', customCrumbs }: Breadcrumb
 
   segments.forEach((segment, index) => {
     accumulatedHref += `/${segment}`;
+    const resolvedHref = SEGMENT_HREF_OVERRIDES[segment] ?? accumulatedHref;
     const isLast = index === segments.length - 1;
     const labelObj = SEGMENT_LABELS[segment];
     const label = labelObj ? (isBn ? labelObj.bn : labelObj.en) : segment.replace(/-/g, ' ');
 
     crumbs.push({
       label: label.charAt(0).toUpperCase() + label.slice(1),
-      href: accumulatedHref,
+      href: resolvedHref,
       isLast,
     });
   });

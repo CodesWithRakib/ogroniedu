@@ -2,9 +2,9 @@ import { BadRequestException } from '@nestjs/common';
 import type { SessionStatus } from '../entities/booking-session.entity';
 
 export const SESSION_TRANSITIONS: Readonly<Record<SessionStatus, readonly SessionStatus[]>> = {
-  scheduled: ['in_progress', 'cancelled', 'reschedule_pending'],
+  scheduled: ['in_progress', 'cancelled', 'reschedule_pending', 'no_show'],
   reschedule_pending: ['scheduled', 'cancelled'],
-  in_progress: ['completed', 'cancelled'],
+  in_progress: ['completed', 'cancelled', 'no_show'],
   completed: [],
   cancelled: [],
   no_show: [],
