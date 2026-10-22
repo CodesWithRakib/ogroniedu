@@ -2,7 +2,7 @@
 
 **Document Reference:** `docs/PHASE_STATUS.md`  
 **Current Date:** 2026-10-22  
-**Active Phase:** **Phase 9: Communication & Real-Time Notifications (COMPLETE — Awaiting Approval for Phase 10)**  
+**Active Phase:** **Phase 10: Financial, Escrow & Supporting Workflows (COMPLETE — Awaiting Approval for Phase 11)**  
 **Workflow Rule:** Sequential, approval-driven execution. No progression without explicit user command (`next`).
 
 ---
@@ -20,9 +20,9 @@
 | **6** | **Tutor Experience & Professional Studio** | **COMPLETE** | 1,200 / 1,200 Passing | 0 Errors | **Approved by User** |
 | **7** | **Core Tutoring Lifecycle & Booking Concurrency** | **COMPLETE** | 1,251 / 1,251 Passing | 0 Errors | **Approved by User** |
 | **8** | **Admin & Super Admin Governance** | **COMPLETE** | 1,277 / 1,277 Passing | 0 Errors | **Approved by User** |
-| **9** | **Communication & Real-Time Notifications** | **COMPLETE** | **1,298 / 1,298 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
-| **10** | Financial, Escrow & Supporting Workflows | Planned | — | — | Pending Phase 9 Approval |
-| **11** | Frontend UX, Fluid Layouts & Accessibility | Planned | — | — | Pending Phase 10 |
+| **9** | **Communication & Real-Time Notifications** | **COMPLETE** | 1,298 / 1,298 Passing | 0 Errors | **Approved by User** |
+| **10** | **Financial, Escrow & Supporting Workflows** | **COMPLETE** | **1,314 / 1,314 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
+| **11** | Frontend UX, Fluid Layouts & Accessibility | Planned | — | — | Pending Phase 10 Approval |
 | **12** | Security, Data Isolation & Performance | Planned | — | — | Pending Phase 11 |
 | **13** | End-to-End Browser UAT Automation | Planned | — | — | Pending Phase 12 |
 | **14** | Product Analytics & Retention Optimization | Planned | — | — | Pending Phase 13 |
@@ -202,10 +202,57 @@
 
 ---
 
-## 6. Operational Environment Status
+## 6. Phase 10 Implementation & Verification Summary
+
+### 6.1 Double-Entry General Ledger & Accounting Invariants
+1. **Mathematical Invariants & Balanced Journal Entries:**
+   - Double-entry balance invariant strictly enforced: $\sum \text{Debits} = \sum \text{Credits}$. Unbalanced transactions rejected with `400 Bad Request`.
+   - Zero and negative amounts rejected: All journal line entries must strictly satisfy $\text{amount} > 0$.
+   - Validated Chart of Accounts: Validates against catalog (`1010_CASH_SSLCOMMERZ`, `1020_CASH_BKASH`, `2010_STUDENT_ESCROW`, `2000_TUTOR_PAYABLE`, `4000_PLATFORM_REVENUE`). Missing account codes rejected (`400 Bad Request`).
+   - Integrity checks (`POST /api/v1/ledger/check-integrity`): Validates entire historical journal entry set to ensure zero system-wide drift.
+
+### 6.2 Escrow Milestone Settlement & Platform Commission
+1. **Escrow Holding & Milestone Settlement:**
+   - Upfront tuition payments credited to student escrow liability (`2010_STUDENT_ESCROW`).
+   - Session milestone release prerequisite: Escrow milestone release requires session status to be strictly `completed`. Uncompleted or in-progress sessions rejected (`400 Bad Request`).
+   - Platform Commission Policy (v1: 8.00% / 800 bps): Slices commission (`4000_PLATFORM_REVENUE`) and allocates remaining net funds to tutor payable (`2000_TUTOR_PAYABLE`).
+
+### 6.3 Tutor Payout Lifecycle & Minimum Withdrawal Rules
+1. **Payout Governance & Thresholds:**
+   - Minimum payout threshold: 50,000 poisha (BDT 500). Payout requests below this limit are rejected (`400 Bad Request`).
+   - Payout balance validation: Tutor available payable balance must be greater than or equal to requested amount.
+   - Payout lifecycle states: `pending` → `approved` → `processed` / `rejected`.
+
+### 6.4 Multi-Channel Checkout, Receipts & Live Browser UAT
+1. **Student Checkout & Consumer Safety (`/dashboard/student/payments`):**
+   - Multi-channel gateway integration: bKash, Nagad, and SSLCommerz.
+   - Consumer guarantee banner: 100% money-back escrow guarantee under Bangladesh Bank guidelines.
+   - Dual-state payment dashboard: Pending payments breakdown and historical paid receipts with printable vouchers.
+2. **Tutor Earnings Cockpit (`/dashboard/tutor/payments`):**
+   - 4-card telemetry: Net lifetime earnings, available withdrawal balance, escrow pending, and settled payouts.
+   - Integrated withdrawal trigger respecting the BDT 500 minimum payout policy.
+3. **Admin Financial Operations (`/dashboard/admin/finance`):**
+   - Tabbed financial workstation: Refund queues, Tutor Payout approvals, Commission Policy management, and Ledger Reconciliation.
+   - Real-time audit trail integration and policy inspection (`v1 · 8.00%`).
+
+### 6.5 Automated Testing & Verification
+- **Test Coverage:**
+  - `@ogroniedu/api`: Added `apps/api/test/financial-escrow-phase10.spec.ts` (11 tests passing).
+  - `@ogroniedu/web`: Added `apps/web/test/financial-escrow-phase10.spec.ts` (5 tests passing).
+- **Monorepo Tests:** **1,314 / 1,314 tests passing (100%)**:
+  - `@ogroniedu/api`: 993 / 993 passed (93 test files)
+  - `@ogroniedu/web`: 288 / 288 passed (46 test files)
+  - `@ogroniedu/database`: 33 / 33 passed (4 test files)
+- **TypeScript:** 0 compilation errors (`turbo run typecheck` clean across all 5 packages).
+- **Smoke Probes:** 8/8 local probes green (`node scripts/smoke-test.mjs --target local`).
+- **Browser Verification:** Authenticated as seeded tutor (`tutor.demo@ogroniedu.com`), student (`student.demo@ogroniedu.com`), and admin (`admin.demo@ogroniedu.com`) and verified `/bn/dashboard/tutor/payments`, `/bn/dashboard/student/payments`, and `/bn/dashboard/admin/finance` with **zero console errors** and 200 HTTP API responses.
+
+---
+
+## 7. Operational Environment Status
 
 - **Web Server:** Next.js 16.4.0 running on `http://localhost:5000` (Daemon Task `task-9667`, healthy).
 - **API Server:** NestJS 12.1.2 running on `http://localhost:4000/api/v1` (Daemon Task `task-9663`, healthy).
 - **Database:** PostgreSQL 18 running on port `5432` (`ogroniedu_dev`, 80 tables).
 - **Smoke Probes:** 8/8 local probes green (`node scripts/smoke-test.mjs --target local`).
-- **Monorepo Test Pass Rate:** 1,298 / 1,298 tests passing (100%).
+- **Monorepo Test Pass Rate:** 1,314 / 1,314 tests passing (100%).
