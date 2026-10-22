@@ -2,7 +2,7 @@
 
 **Document Reference:** `docs/PHASE_STATUS.md`  
 **Current Date:** 2026-10-22  
-**Active Phase:** **Phase 4: Student Experience & Discovery (COMPLETE — Awaiting Approval for Phase 5)**  
+**Active Phase:** **Phase 5: Guardian Experience & Child Supervision (COMPLETE — Awaiting Approval for Phase 6)**  
 **Workflow Rule:** Sequential, approval-driven execution. No progression without explicit user command (`next`).
 
 ---
@@ -15,9 +15,9 @@
 | **1** | **Critical Foundations (Stability, Safeguarding, Config & Pool)** | **COMPLETE** | 1,176 / 1,176 Passing | 0 Errors | **Approved by User** |
 | **2** | **Product Information Architecture, Navigation & Breadcrumbs** | **COMPLETE** | 1,182 / 1,182 Passing | 0 Errors | **Approved by User** |
 | **3** | **Authentication, Role Registration & Onboarding Workflows** | **COMPLETE** | 1,182 / 1,182 Passing | 0 Errors | **Approved by User** |
-| **4** | **Student Experience & Discovery** | **COMPLETE** | **1,189 / 1,189 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
-| **5** | Guardian Experience & Child Supervision | Planned | — | — | Pending Phase 4 Approval |
-| **6** | Tutor Experience & Professional Studio | Planned | — | — | Pending Phase 5 |
+| **4** | **Student Experience & Discovery** | **COMPLETE** | 1,189 / 1,189 Passing | 0 Errors | **Approved by User** |
+| **5** | **Guardian Experience & Child Supervision** | **COMPLETE** | **1,195 / 1,195 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
+| **6** | Tutor Experience & Professional Studio | Planned | — | — | Pending Phase 5 Approval |
 | **7** | Core Tutoring Lifecycle & Booking Concurrency | Planned | — | — | Pending Phase 6 |
 | **8** | Admin & Super Admin Governance | Planned | — | — | Pending Phase 7 |
 | **9** | Communication & Real-Time Notifications | Planned | — | — | Pending Phase 8 |
@@ -30,50 +30,46 @@
 
 ---
 
-## 2. Phase 4 Implementation & Verification Summary
+## 2. Phase 5 Implementation & Verification Summary
 
-### 2.1 Public Tutor Discovery Engine (`/tutors` & `/tutors/[id]`)
-1. **Faceted Full-Text Search:**
-   - Multi-criteria filtering supporting Subject, Grade/Class, Curriculum (Bangla Medium, English Version, English Medium, Madrasah), District/City, Fee slider, and Tutoring Mode (`in_person`, `online`, `hybrid`).
-   - Verified that tutor search results compute explainable match scores (e.g., base profile, NID verification, degree verification, experience factor, response time) and verified badges.
-2. **Tutor Profile & Availability:**
-   - Detailed tutor profile page (`/tutors/[id]`) rendering qualifications, subject specialties with hourly rates, verified credential badges, and direct booking modal.
-3. **Booking Request Lifecycle:**
-   - Booking modal prevents arbitrary tutor booking; validates selected student, subject, education level, and tutoring mode.
+### 2.1 Multi-Child Guardianship & Relationship Engine
+1. **Multi-Child Linking & Oversight (`/dashboard/guardian/children`):**
+   - Verified multi-child profile linking via phone (+880 E.164) or student identifier.
+   - Enforced normalized guardianship relationships (`father`, `mother`, `legal_guardian`).
+   - Displayed active child cards with institution, class level, relationship badge, and minor consent policy version (`v1.0-bd-minor-consent`).
+2. **Safeguarding Minor Invariant Enforcement:**
+   - Active booking hold invariant on unlinking: guardian unlinking is strictly blocked with `HTTP 409 Conflict` if the student has active tutoring bookings in `('awaiting_payment', 'confirmed', 'in_progress', 'dispute')`.
+3. **Child Deep-Dive Detail View (`/dashboard/guardian/children/[studentId]`):**
+   - Verified 4 integrated tabs: Enrolled Tutors & Subjects, Live Schedule & Sessions, Study Room & Learning Progress, and Child Safety & Support.
+   - Direct action triggers for Safety Reports (`SafetyReportModal`), Tutor Replacement (`TutorReplacementModal`), and milestone settlements.
 
-### 2.2 Student Dashboard & Learning Workflows
-1. **Student Cockpit (`/dashboard/student`):**
-   - **Academic Profile Card:** Student institution, curriculum, education level, and guardian linkage status.
-   - **Next Class Hero Card:** Dynamic banner rendering upcoming live class with direct "ক্লাসরুমে যোগ দিন / Join Classroom" action or motivational study streak (`X দিনের সক্রিয় স্টাডি স্ট্রিক 🔥`).
-   - **Enrolled Tutors Card:** Active instructors list with subject and hourly rate formatting.
-   - **Live Class Schedule Card:** Upcoming classes with date, time, and classroom access.
-   - **Syllabus Coverage / Subject Mastery Card:** Progress percentages across key academic disciplines.
-2. **Study Room Cockpit (`/dashboard/student/learning`):**
-   - Pomodoro Focus Timer (`25:00` countdown with play/reset).
-   - Subject & tutoring session selector.
-   - Tabbed workspace for Homework/Assignments, Attendance, and Progress Tracking.
-3. **Student Sessions & Calendar (`/dashboard/student/sessions`):**
-   - Timetable view of booked sessions with status tracking.
-4. **Student Booking Requests (`/dashboard/student/requests`):**
-   - Lifecycle state machine tracking (`requested`, `awaiting_payment`, `confirmed`, `completed`).
-5. **Student Payments & Escrow (`/dashboard/student/payments`):**
-   - Escrow tuition guarantee status, bKash/Nagad/SSLCommerz payment badges, and transaction breakdown.
+### 2.2 Guardian Cockpit & Trust Safeguards (`/dashboard/guardian/*`)
+1. **Guardian Cockpit (`/dashboard/guardian`):**
+   - **Child Profile Switcher:** Fast toggle between linked student profiles with institution details.
+   - **Hero KPI Cards:** Active linked children counter, upcoming live classes, active booking requests, and escrow status.
+   - **GuardianChildSafetyRadar:** Background check indicators (100% NID & degree verified), national emergency hotlines (`1098` Child Helpline, `999` National Emergency), and direct safety reporting.
+   - **GuardianEscrowSafetyCard:** 100% Escrow tuition protection status, held vs. released amounts, and milestone release authorization.
+2. **Dedicated Operational Workflows:**
+   - **Learning Oversight (`/dashboard/guardian/learning`):** Monitored attendance rates, completed chapters, and homework submissions.
+   - **Payments & Escrow (`/dashboard/guardian/payments`):** Succeeded payment orders, held escrow balances, and milestone payouts.
+   - **Booking Requests (`/dashboard/guardian/requests`):** State machine tracking for child tutoring requests.
+   - **Live Sessions (`/dashboard/guardian/sessions`):** Timetable calendar with join classroom access.
 
 ### 2.3 Automated Testing & Headful Browser Verification
-- **Test Coverage:** Added `apps/web/test/student-experience-phase04.spec.ts` covering `StudentNextClassHero`, `StudentMyTutorsCard`, `StudentUpcomingClassesCard`, and `StudentSubjectMasteryCard`.
-- **Monorepo Tests:** **1,189 / 1,189 tests passing (100%)**:
+- **Test Coverage:** Added `apps/web/test/guardian-experience-phase05.spec.ts` covering `GuardianChildProfileSwitcher`, `GuardianChildSafetyRadar`, `GuardianEscrowSafetyCard`, and guardianship relationship invariants.
+- **Monorepo Tests:** **1,195 / 1,195 tests passing (100%)**:
   - `@ogroniedu/api`: 939 / 939 passed (89 test files)
-  - `@ogroniedu/web`: 250 / 250 passed (40 test files)
+  - `@ogroniedu/web`: 256 / 256 passed (41 test files)
 - **TypeScript:** 0 compilation errors across all packages (`turbo run typecheck` clean).
 - **Smoke Probes:** 8/8 local probes green (`node scripts/smoke-test.mjs --target local`).
-- **Browser Verification:** Tested `/bn/tutors`, `/bn/dashboard/student`, `/bn/dashboard/student/learning`, `/bn/dashboard/student/sessions`, `/bn/dashboard/student/requests`, `/bn/dashboard/student/payments`, and `/bn/tutors/[id]` via Chrome DevTools MCP with **zero runtime console errors**.
+- **Browser Verification:** Authenticated as seeded guardian (`guardian.demo@ogroniedu.com`) and navigated `/bn/dashboard/guardian`, `/bn/dashboard/guardian/children`, `/bn/dashboard/guardian/children/[studentId]`, `/bn/dashboard/guardian/learning`, `/bn/dashboard/guardian/payments`, `/bn/dashboard/guardian/requests`, `/bn/dashboard/guardian/sessions` with **zero runtime console errors**.
 
 ---
 
 ## 3. Operational Environment Status
 
-- **Web Server:** Next.js 16.4.0 running on `http://localhost:5000` (Daemon Task `task-7854`, healthy).
+- **Web Server:** Next.js 16.4.0 running on `http://localhost:5000` (Daemon Task `task-8513`, healthy).
 - **API Server:** NestJS 12.1.2 running on `http://localhost:4000/api/v1` (Daemon Task `task-7705`, healthy).
 - **Database:** PostgreSQL 18 running on port `5432` (`ogroniedu_dev`, 80 tables).
 - **Smoke Probes:** 8/8 local probes green (`node scripts/smoke-test.mjs --target local`).
-- **Monorepo Test Pass Rate:** 1,189 / 1,189 tests passing (100%).
+- **Monorepo Test Pass Rate:** 1,195 / 1,195 tests passing (100%).

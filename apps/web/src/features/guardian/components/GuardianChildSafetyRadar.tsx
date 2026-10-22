@@ -59,7 +59,7 @@ export function GuardianChildSafetyRadar({
         </div>
 
         <Link
-          href={withLocale('/help', locale)}
+          href={withLocale('/safety', locale)}
           className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
         >
           <span>{isBn ? 'নিরাপত্তা নীতিমালা' : 'Safety Rules'}</span>
@@ -161,7 +161,7 @@ export function GuardianChildSafetyRadar({
           {isBn ? 'অপ্রীতিকর আচরণ তাৎক্ষণিক রিপোর্ট করুন' : 'Report misconduct 24/7 anonymously'}
         </span>
         <Link
-          href={withLocale('/help', locale)}
+          href={withLocale('/safety', locale)}
           className="font-semibold text-primary hover:underline flex items-center gap-1"
         >
           <Headphones className="w-3.5 h-3.5" />
