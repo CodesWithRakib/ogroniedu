@@ -11,3 +11,4 @@ export * from './DataTable';
 export * from './TablePagination';
 export * from './ConfirmDialog';
 export * from './FormField';
+export * from './Breadcrumbs';

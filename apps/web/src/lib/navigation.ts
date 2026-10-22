@@ -18,6 +18,7 @@ import {
   CheckCircle2,
   FileText,
   GraduationCap,
+  RefreshCw,
 } from 'lucide-react';
 import type { UserRole } from '@/store/slices/auth-slice';
 
@@ -422,6 +423,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             icon: BookOpen,
             testId: 'nav-lms-oversight',
           },
+          {
+            href: '/dashboard/admin/replacements',
+            labelBn: 'রিপ্লেসমেন্ট ক্লেইম',
+            labelEn: 'Tutor Replacements',
+            icon: RefreshCw,
+            testId: 'nav-replacements',
+          },
         ],
       },
       {
@@ -490,19 +498,115 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
     ];
   }
 
-  if (role === 'support_agent' || role === 'compliance_reviewer') {
+  if (role === 'support_agent') {
     return [
       {
         id: 'overview',
-        titleBn: 'কনসোল',
-        titleEn: 'Console',
+        titleBn: 'সারসংক্ষেপ',
+        titleEn: 'Overview',
         items: [
           {
             href: '/dashboard/admin',
-            labelBn: role === 'support_agent' ? 'সাপোর্ট কনসোল' : 'কমপ্লায়েন্স কনসোল',
-            labelEn: role === 'support_agent' ? 'Support Console' : 'Compliance Console',
+            labelBn: 'সাপোর্ট কনসোল',
+            labelEn: 'Support Console',
             icon: ShieldCheck,
             testId: 'nav-admin',
+          },
+        ],
+      },
+      {
+        id: 'support_ops',
+        titleBn: 'সাপোর্ট কার্যক্রম',
+        titleEn: 'Support Operations',
+        items: [
+          {
+            href: '/dashboard/admin/bookings',
+            labelBn: 'টিউশন বুকিংস',
+            labelEn: 'Tuition Bookings',
+            icon: Calendar,
+            testId: 'nav-bookings',
+          },
+          {
+            href: '/dashboard/admin/replacements',
+            labelBn: 'রিপ্লেসমেন্ট ক্লেইম',
+            labelEn: 'Replacements',
+            icon: RefreshCw,
+            testId: 'nav-replacements',
+          },
+          {
+            href: '/dashboard/admin/disputes',
+            labelBn: 'ডিসপিউট সাপোর্ট',
+            labelEn: 'Disputes',
+            icon: CreditCard,
+            testId: 'nav-disputes',
+          },
+          {
+            href: '/dashboard/admin/users',
+            labelBn: 'ইউজার ডিরেক্টরি',
+            labelEn: 'Users Directory',
+            icon: Users,
+            testId: 'nav-users',
+          },
+          {
+            href: '/notifications',
+            labelBn: 'বিজ্ঞপ্তি',
+            labelEn: 'Alerts',
+            icon: MessageSquare,
+            testId: 'nav-notifications',
+          },
+        ],
+      },
+    ];
+  }
+
+  if (role === 'compliance_reviewer') {
+    return [
+      {
+        id: 'overview',
+        titleBn: 'সারসংক্ষেপ',
+        titleEn: 'Overview',
+        items: [
+          {
+            href: '/dashboard/admin',
+            labelBn: 'কমপ্লায়েন্স কনসোল',
+            labelEn: 'Compliance Console',
+            icon: ShieldCheck,
+            testId: 'nav-admin',
+          },
+        ],
+      },
+      {
+        id: 'compliance_ops',
+        titleBn: 'কমপ্লায়েন্স কার্যক্রম',
+        titleEn: 'Compliance Review',
+        items: [
+          {
+            href: '/dashboard/admin/verification',
+            labelBn: 'শিক্ষক যাচাই ও সনদ',
+            labelEn: 'Tutor Verification',
+            icon: ShieldCheck,
+            testId: 'nav-verification',
+          },
+          {
+            href: '/dashboard/admin/audit-logs',
+            labelBn: 'অডিট ও নিরাপত্তা লগ',
+            labelEn: 'Audit Logs',
+            icon: FileText,
+            testId: 'nav-audit',
+          },
+          {
+            href: '/dashboard/admin/disputes',
+            labelBn: 'ডিসপিউট পর্যবেক্ষণ',
+            labelEn: 'Disputes Review',
+            icon: CreditCard,
+            testId: 'nav-disputes',
+          },
+          {
+            href: '/notifications',
+            labelBn: 'বিজ্ঞপ্তি',
+            labelEn: 'Alerts',
+            icon: MessageSquare,
+            testId: 'nav-notifications',
           },
         ],
       },

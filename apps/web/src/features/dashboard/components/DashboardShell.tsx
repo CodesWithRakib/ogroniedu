@@ -8,6 +8,7 @@ import { primaryRole, logout, type UserRole } from '@/store/slices/auth-slice';
 import { useLogoutMutation } from '@/store/services/auth-api';
 import type { Locale } from '@/lib/i18n';
 import { navForRole, navSectionsForRole, ROLE_PRESETS } from '@/lib/navigation';
+import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { DashboardSidebar } from './DashboardSidebar';
 import { DashboardTopbar } from './DashboardTopbar';
 import { DashboardMobileNav } from '@/components/dashboard/DashboardMobileNav';
@@ -171,6 +172,9 @@ export function DashboardShell({
             tabIndex={-1}
             className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 bg-background focus-visible:outline-none pb-24 lg:pb-8"
           >
+            {/* Breadcrumb Navigation Trail */}
+            <Breadcrumbs locale={locale} className="mb-2" />
+
             {(title || subtitle) && (
               <div className="mb-2">
                 {title && (

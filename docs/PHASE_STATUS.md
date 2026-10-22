@@ -2,7 +2,7 @@
 
 **Document Reference:** `docs/PHASE_STATUS.md`  
 **Current Date:** 2026-10-22  
-**Active Phase:** **Phase 1: Critical Foundations (COMPLETE — Awaiting Approval for Phase 2)**  
+**Active Phase:** **Phase 2: Product Information Architecture & Navigation (COMPLETE — Awaiting Approval for Phase 3)**  
 **Workflow Rule:** Sequential, approval-driven execution. No progression without explicit user command (`next`).
 
 ---
@@ -12,9 +12,9 @@
 | Phase | Phase Name | Status | Automated Tests | TypeScript / Lint | Approval Status |
 |:---:|---|:---:|:---:|:---:|:---:|
 | **0** | **Complete Repository Discovery & Product Audit** | **COMPLETE** | 1,175 / 1,175 Passing | 0 Errors | **Approved by User** |
-| **1** | **Critical Foundations (Stability, Safeguarding, Config & Pool)** | **COMPLETE** | **1,176 / 1,176 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
-| **2** | Product Information Architecture & Navigation | Planned | — | — | Pending Phase 1 Approval |
-| **3** | Authentication and Onboarding Workflows | Planned | — | — | Pending Phase 2 |
+| **1** | **Critical Foundations (Stability, Safeguarding, Config & Pool)** | **COMPLETE** | 1,176 / 1,176 Passing | 0 Errors | **Approved by User** |
+| **2** | **Product Information Architecture, Navigation & Breadcrumbs** | **COMPLETE** | **1,182 / 1,182 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
+| **3** | Authentication and Onboarding Workflows | Planned | — | — | Pending Phase 2 Approval |
 | **4** | Student Experience & Discovery | Planned | — | — | Pending Phase 3 |
 | **5** | Guardian Experience & Child Supervision | Planned | — | — | Pending Phase 4 |
 | **6** | Tutor Experience & Professional Studio | Planned | — | — | Pending Phase 5 |
@@ -30,33 +30,31 @@
 
 ---
 
-## 2. Phase 1 Implementation Summary
+## 2. Phase 2 Implementation Summary
 
-### 2.1 Critical Foundations Resolved & Verified
-1. **Safeguarding Minor Unlink Guard (ISSUE-02):**
-   - Implemented transactional guard in `GuardiansService.revokeLink()`: Checks if the linked student has any active bookings in status `('awaiting_payment', 'confirmed', 'in_progress', 'dispute')`.
-   - If active bookings exist, the operation is rejected with `HTTP 409 Conflict`, preventing orphaning active minor bookings.
-   - Added automated negative test in `apps/api/test/guardians.service.spec.ts`.
-2. **Database Connection Pool Resilience:**
-   - Configured TypeORM PostgreSQL connection pool options in `apps/api/src/app.module.ts`:
-     - `poolOptions.max`: dynamically configurable via `DB_POOL_MAX` (defaults to 20).
-     - `poolOptions.connectionTimeoutMillis`: 5000ms.
-     - `poolOptions.idleTimeoutMillis`: 30000ms.
-   - Added `DB_POOL_MAX` validation to `apps/api/src/config/env.validation.ts`.
-3. **Contracts & Parity Verification:**
-   - Verified `@ogroniedu/contracts` builds cleanly (`pnpm --filter @ogroniedu/contracts build`).
-   - Ran `test/contracts-parity.spec.ts` (55 tests) and `test/contract-roundtrip.spec.ts` (11 tests) — 100% passing.
-4. **Zero Regressions Quality Gate:**
-   - Monorepo test pass rate: **1,176 / 1,176 tests passing (100%)**:
-     - `apps/api`: **939 tests passing** (+1 new safeguarding test).
-     - `apps/web`: **237 tests passing**.
-   - TypeScript compilation: **0 errors across all 6 workspaces**.
-   - Smoke test probes: **8 / 8 probes green**.
+### 2.1 Information Architecture & Navigation Enhancements
+1. **Semantic Breadcrumb Trail (`Breadcrumbs.tsx`):**
+   - Implemented accessible (`aria-label="Breadcrumb"`), bilingual breadcrumb component in `apps/web/src/components/shared/Breadcrumbs.tsx`.
+   - Automatically derives hierarchical path tokens for student, guardian, tutor, and admin subpages in Bengali and English.
+   - Integrated into `DashboardShell.tsx` with duplicate prevention guards.
+2. **Sidebar & Role Navigation Matrix (`navigation.ts`):**
+   - Added missing operational route `/dashboard/admin/replacements` under Admin Operations (`nav-replacements`).
+   - Extended dedicated operational navigation structures for `support_agent` and `compliance_reviewer` roles.
+   - Verified 0 duplicate links across all roles and guaranteed 100% route reachability.
+3. **Automated Test Coverage:**
+   - Added unit test suite `apps/web/test/breadcrumbs-and-navigation.spec.ts` (6 tests).
+   - Validated that flat and sectional navigation matches role authorization policies.
+4. **Browser & Production Build Verification:**
+   - Ran `next build` (compiled in 11.0s, all 83 routes statically optimized or dynamically rendered).
+   - Executed live automated Chrome DevTools headful browser test to `/bn/dashboard/student` verifying single breadcrumb rendering, 0 console errors, and valid DOM hierarchy.
+   - Captured visual snapshot and screenshot.
 
 ---
 
 ## 3. Operational Environment Status
 
-- **Web Server:** Next.js 16.4.0 running on `http://localhost:5000` (Daemon Task `task-7497`, healthy).
+- **Web Server:** Next.js 16.4.0 running on `http://localhost:5000` (Daemon Task `task-7854`, healthy).
 - **API Server:** NestJS 12.1.2 running on `http://localhost:4000/api/v1` (Daemon Task `task-7705`, healthy).
-- **Database:** PostgreSQL 18 running on port `5432` (`ogroniedu_dev`, 80 tables, 31 migrations).
+- **Database:** PostgreSQL 18 running on port `5432` (`ogroniedu_dev`, 80 tables).
+- **Smoke Probes:** 8/8 local probes green (`node scripts/smoke-test.mjs --target local`).
+- **Monorepo Test Pass Rate:** 1,182 / 1,182 tests passing (100%).
