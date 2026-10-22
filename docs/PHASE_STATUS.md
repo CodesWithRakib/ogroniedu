@@ -2,7 +2,7 @@
 
 **Document Reference:** `docs/PHASE_STATUS.md`  
 **Current Date:** 2026-10-22  
-**Active Phase:** **Phase 8: Admin & Super Admin Governance (COMPLETE — Awaiting Approval for Phase 9)**  
+**Active Phase:** **Phase 9: Communication & Real-Time Notifications (COMPLETE — Awaiting Approval for Phase 10)**  
 **Workflow Rule:** Sequential, approval-driven execution. No progression without explicit user command (`next`).
 
 ---
@@ -19,9 +19,9 @@
 | **5** | **Guardian Experience & Child Supervision** | **COMPLETE** | 1,195 / 1,195 Passing | 0 Errors | **Approved by User** |
 | **6** | **Tutor Experience & Professional Studio** | **COMPLETE** | 1,200 / 1,200 Passing | 0 Errors | **Approved by User** |
 | **7** | **Core Tutoring Lifecycle & Booking Concurrency** | **COMPLETE** | 1,251 / 1,251 Passing | 0 Errors | **Approved by User** |
-| **8** | **Admin & Super Admin Governance** | **COMPLETE** | **1,277 / 1,277 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
-| **9** | Communication & Real-Time Notifications | Planned | — | — | Pending Phase 8 Approval |
-| **10** | Financial, Escrow & Supporting Workflows | Planned | — | — | Pending Phase 9 |
+| **8** | **Admin & Super Admin Governance** | **COMPLETE** | 1,277 / 1,277 Passing | 0 Errors | **Approved by User** |
+| **9** | **Communication & Real-Time Notifications** | **COMPLETE** | **1,298 / 1,298 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
+| **10** | Financial, Escrow & Supporting Workflows | Planned | — | — | Pending Phase 9 Approval |
 | **11** | Frontend UX, Fluid Layouts & Accessibility | Planned | — | — | Pending Phase 10 |
 | **12** | Security, Data Isolation & Performance | Planned | — | — | Pending Phase 11 |
 | **13** | End-to-End Browser UAT Automation | Planned | — | — | Pending Phase 12 |
@@ -159,10 +159,53 @@
 
 ---
 
-## 5. Operational Environment Status
+## 5. Phase 9 Implementation & Verification Summary
 
-- **Web Server:** Next.js 16.4.0 running on `http://localhost:5000` (Daemon Task `task-9168`, healthy).
-- **API Server:** NestJS 12.1.2 running on `http://localhost:4000/api/v1` (Daemon Task `task-9489`, healthy).
+### 5.1 Real-Time Notifications & WebSocket Gateway
+1. **Socket.IO Gateway Architecture (`/notifications`):**
+   - Cryptographic JWT handshake validation: unauthenticated or invalid tokens rejected (`auth_error`) with immediate connection termination.
+   - User-scoped isolated room routing: client automatically joins `user:${userId}` room upon verified connection and receives immediate `unread_count` synchronization.
+   - Dual-channel real-time dispatch: `sendToUser` broadcasts typed `notification` items and updated `unread_count` to the target user's active device sessions.
+   - Bi-directional client events: `get_unread_count`, `mark_as_read`, `mark_all_as_read` with real-time fanout across connected browser tabs.
+
+### 5.2 Secure In-App Messaging & ABAC Chat Isolation
+1. **ABAC Chat Room Security:**
+   - Real-time room joining (`join_booking_chat`) enforces strict participant verification: only authorized student, requester guardian, verified linked guardian, or assigned tutor can join `booking_chat:${bookingId}`. Non-participants rejected with `HTTP 403 Forbidden`.
+   - Real-time typing indicators (`chat_typing` -> `user_typing`) and live read receipts (`broadcastReadReceipt` -> `messages_read`) with automatic timeout resets.
+2. **Automated Content Safety & Child Protection Safeguards:**
+   - Built under The Children Act 2013 and platform escrow protections.
+   - Bangladeshi phone number circumvention detection (`PHONE_NUMBER`): recognizes ASCII phone numbers (`013...019`, `+8801...`), interspersed spaces/dashes, and Bengali numeral sequences (`০-৯`) with automatic replacement by `[REDACTED CONTACT NUMBER]`.
+   - Off-platform payment solicitation prevention (`OFF_PLATFORM_PAYMENT`): detects bKash, Nagad, Rocket, Upay, Cellfin, send money, and cash in hand (`হাতে হাতে টাকা`, `ক্যাশ টাকা`) with replacement by `[REDACTED PAYMENT SOLICITATION]`.
+   - Social circumvention link masking (`EXTERNAL_LINK`): filters `wa.me`, `chat.whatsapp.com`, `facebook.com`, `t.me` with `[REDACTED EXTERNAL LINK]`.
+   - Safety audit log record (`message.safety_redacted`) generated with violation codes whenever redaction occurs.
+   - Non-violating academic tutoring messages preserved without false positives.
+
+### 5.3 Communication Frontend Hubs & Live Browser UAT
+1. **Notification Center & Live Bell Indicator (`/notifications`):**
+   - `NotificationBell`: Dynamic unread count in Bengali numerals (`১`, `২`, `২৫`, `৯৯+`), accessible localized `aria-label`, and WebSocket connection health dot (green when live, amber when offline).
+   - `NotificationsPage`: All / Unread filter switcher, unread badges, mark individual as read, mark all read, and empty state.
+2. **Conversations Inbox (`/messages`):**
+   - Responsive split-pane layout: searchable conversation list on the left, active chat workspace on the right.
+   - Partner role badges (Tutor / Student), unread counter badges, audited secure channel banner, and empty state guidance.
+
+### 5.4 Automated Testing & Verification
+- **Test Coverage:**
+  - `@ogroniedu/api`: Added `apps/api/test/communication-notifications-phase09.spec.ts` (15 tests passing).
+  - `@ogroniedu/web`: Added `apps/web/test/communication-notifications-phase09.spec.ts` (6 tests passing).
+- **Monorepo Tests:** **1,298 / 1,298 tests passing (100%)**:
+  - `@ogroniedu/api`: 982 / 982 passed (92 test files)
+  - `@ogroniedu/web`: 283 / 283 passed (45 test files)
+  - `@ogroniedu/database`: 33 / 33 passed (4 test files)
+- **TypeScript:** 0 compilation errors (`turbo run typecheck` clean across all 5 packages).
+- **Smoke Probes:** 8/8 local probes green (`node scripts/smoke-test.mjs --target local`).
+- **Browser Verification:** Authenticated as seeded student (`student.demo@ogroniedu.com`) and verified `/bn/notifications` and `/bn/messages` with **zero console errors** and 200 HTTP API responses.
+
+---
+
+## 6. Operational Environment Status
+
+- **Web Server:** Next.js 16.4.0 running on `http://localhost:5000` (Daemon Task `task-9667`, healthy).
+- **API Server:** NestJS 12.1.2 running on `http://localhost:4000/api/v1` (Daemon Task `task-9663`, healthy).
 - **Database:** PostgreSQL 18 running on port `5432` (`ogroniedu_dev`, 80 tables).
 - **Smoke Probes:** 8/8 local probes green (`node scripts/smoke-test.mjs --target local`).
-- **Monorepo Test Pass Rate:** 1,277 / 1,277 tests passing (100%).
+- **Monorepo Test Pass Rate:** 1,298 / 1,298 tests passing (100%).
