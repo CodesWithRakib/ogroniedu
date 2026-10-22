@@ -338,6 +338,20 @@ export class GuardiansService {
       throw new NotFoundException('Active guardian link not found');
     }
 
+    // Safeguarding Invariant (ISSUE-02): Prohibit unlinking minor/student with active bookings
+    const targetStudentId = link.studentUserId;
+    const activeBookings = await this.dataSource.query(
+      `SELECT count(*)::int as count FROM bookings WHERE student_user_id = $1 AND status IN ('awaiting_payment', 'confirmed', 'in_progress', 'dispute')`,
+      [targetStudentId],
+    );
+
+    const activeCount = Number(activeBookings?.[0]?.count ?? 0);
+    if (activeCount > 0) {
+      throw new ConflictException(
+        `Cannot revoke guardian relationship while the student has ${activeCount} active tutoring booking(s) in progress, awaiting payment, or in dispute. Please complete or cancel active bookings first.`,
+      );
+    }
+
     link.status = 'revoked';
     link.updatedAt = new Date();
     await this.linkRepository.save(link);

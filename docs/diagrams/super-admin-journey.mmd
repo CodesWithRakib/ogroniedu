@@ -1,0 +1,23 @@
+flowchart TD
+  Start(["Super Admin Authentication"]) --> SuperLogin["Sign In (/login)"]
+  SuperLogin --> MfaCheck{"MFA / Privilege Check"}
+  MfaCheck --> SuperAdminConsole["Executive Console (/dashboard/admin)"]
+
+  SuperAdminConsole --> PlatformPillars{"Executive Controls"}
+
+  PlatformPillars -- "Financial Governance" --> FinanceHub["Financial Ledger & Escrow Pool (/dashboard/admin/finance)"]
+  FinanceHub --> LedgerIntegrity["Run Double-Entry Ledger Mathematical Proof: Debits == Credits"]
+  FinanceHub --> ReviewPayouts["Audit & Approve Batch Tutor Payouts"]
+  FinanceHub --> ReconcileOrders["Execute Gateway Reconciliation vs SSLCommerz/bKash"]
+
+  PlatformPillars -- "Access & Roles" --> RoleManagement["Staff & Administrator Role Assignment (/dashboard/admin/users/admins)"]
+  RoleManagement --> GrantStaffRole["Assign support_agent, compliance_reviewer, or admin Roles"]
+  RoleManagement --> AuditSecurityTrail["Review Admin Privilege Grants in Immutable Audit Log"]
+
+  PlatformPillars -- "Platform Settings" --> SettingsHub["System Settings & Feature Flags (/dashboard/admin/settings)"]
+  SettingsHub --> UpdateCommission["Configure Platform Commission BPS & Payout Thresholds"]
+  SettingsHub --> ToggleFeatureFlags["Enable / Disable Modular Features with Zero Downtime"]
+
+  PlatformPillars -- "Audited Impersonation" --> ImpersonationProtocol["Time-Limited User Impersonation (Max 15 min)"]
+  ImpersonationProtocol --> DebugCustomerIssue["Investigate Critical Account Bug / Financial Discrepancy"]
+  DebugCustomerIssue --> EndImpersonation["Revoke Ephemeral Token & Write Full Security Audit Entry"]

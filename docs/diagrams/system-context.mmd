@@ -1,0 +1,73 @@
+flowchart TB
+  subgraph Public["Public & Client Tier"]
+    Student["Student (Learner)"]
+    Guardian["Guardian (Parent)"]
+    Tutor["Tutor (Educator)"]
+    Admin["Admin / Moderator"]
+    SuperAdmin["Super Admin (Executive)"]
+    Browser["Next.js Web Client (Bilingual BN/EN, App Router)"]
+  end
+
+  subgraph Gateway["Edge & Gateway Tier"]
+    Ingress["Reverse Proxy & Static Asset Server"]
+    SocketGateway["Socket.IO Realtime Gateway (/notifications)"]
+    HttpApi["NestJS Core API (/api/v1)"]
+  end
+
+  subgraph CoreModules["NestJS Modular Monolith Services"]
+    AuthService["Auth & Session Security (JWT, MFA, Magic Links)"]
+    TutorsService["Tutor Discovery & 3-Tier Verification"]
+    BookingsService["Bookings, Matching & Scheduling"]
+    LearningService["LMS, Study Room & Attendance"]
+    PaymentsService["Escrow Orders & Financial Ledger"]
+    TrustService["Safeguarding, Disputes & Replacement"]
+    AdminService["Admin Operations, Impersonation & Audit"]
+    AnalyticsService["Product Analytics & Daily Funnel"]
+  end
+
+  subgraph DataTier["Data & Event Persistence"]
+    Postgres[("PostgreSQL 18 Source of Truth (80 Tables)")]
+    OutboxTable[("Outbox & Idempotency Key Journal")]
+    AuditLedger[("Immutable Double-Entry Ledger Journal")]
+  end
+
+  subgraph ExternalProviders["External Gateways & Services"]
+    PaymentGateways["SSLCommerz / bKash / Nagad Sandboxes"]
+    NotificationChannels["SMS Gateway / Email SMTP Provider"]
+    ObjectStorage["Cloud File Storage (Private Dossiers & Evidence)"]
+  end
+
+  Student --> Browser
+  Guardian --> Browser
+  Tutor --> Browser
+  Admin --> Browser
+  SuperAdmin --> Browser
+
+  Browser --> Ingress
+  Ingress --> HttpApi
+  Ingress --> SocketGateway
+
+  HttpApi --> AuthService
+  HttpApi --> TutorsService
+  HttpApi --> BookingsService
+  HttpApi --> LearningService
+  HttpApi --> PaymentsService
+  HttpApi --> TrustService
+  HttpApi --> AdminService
+  HttpApi --> AnalyticsService
+
+  AuthService --> Postgres
+  TutorsService --> Postgres
+  BookingsService --> Postgres
+  LearningService --> Postgres
+  PaymentsService --> Postgres
+  PaymentsService --> AuditLedger
+  TrustService --> Postgres
+  AdminService --> Postgres
+  AnalyticsService --> Postgres
+
+  PaymentsService --> OutboxTable
+  TrustService --> OutboxTable
+  OutboxTable --> PaymentGateways
+  OutboxTable --> NotificationChannels
+  TutorsService --> ObjectStorage

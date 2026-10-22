@@ -49,6 +49,12 @@ export class EnvironmentVariables {
   @IsOptional()
   DB_NAME: string = 'ogroniedu';
 
+  @Type(() => Number)
+  @IsNumber()
+  @IsInt()
+  @IsOptional()
+  DB_POOL_MAX: number = 20;
+
   @IsString()
   @IsOptional()
   DATABASE_URL?: string;

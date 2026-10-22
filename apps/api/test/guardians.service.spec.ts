@@ -102,7 +102,7 @@ describe('GuardiansService Unit & Ownership Tests', () => {
           }),
         },
       })),
-      query: vi.fn(),
+      query: vi.fn().mockResolvedValue([{ count: 0 }]),
     };
 
     service = new GuardiansService(
@@ -356,6 +356,23 @@ describe('GuardiansService Unit & Ownership Tests', () => {
           actorUserId: guardianUser.id,
         }),
       );
+    });
+
+    it('NEGATIVE TEST / Safeguarding: should reject revoking link if student has active bookings in progress or dispute', async () => {
+      const activeLink = {
+        id: 'link-active-1',
+        guardianUserId: guardianUser.id,
+        studentUserId: studentUser.id,
+        status: 'active',
+      };
+      mockLinkRepo.findOne.mockResolvedValue(activeLink);
+      mockDataSource.query.mockResolvedValue([{ count: 2 }]);
+
+      await expect(
+        service.revokeLink(guardianUser.id, studentUser.id, {
+          reason: 'Child transferred to independent study',
+        }),
+      ).rejects.toThrow(ConflictException);
     });
   });
 });

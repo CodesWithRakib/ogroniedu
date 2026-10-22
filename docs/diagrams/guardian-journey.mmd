@@ -1,0 +1,34 @@
+flowchart TD
+  Start(["Guardian Arrives at OgroniEdu"]) --> RegisterGuardian["Register Account (Guardian Role)"]
+  RegisterGuardian --> GuardianLogin["Sign In (/login)"]
+  GuardianLogin --> GuardianDashboard["Enter Guardian Dashboard (/dashboard/guardian)"]
+
+  GuardianDashboard --> MultiChild{"Family Management"}
+  MultiChild -- "Add Child" --> LinkChild["Add Child Profile (/dashboard/guardian/children)"]
+  LinkChild --> SetConsent["Provide Minor Consent & Academic Level"]
+  SetConsent --> ChildReady["Child Profile Linked in Guardian Scope"]
+
+  MultiChild -- "Tutor Search" --> FindTutor["Find Tutor for Child (/tutors)"]
+  FindTutor --> FilterTutors["Filter: Female Tutors, In-Person / Online, Budget"]
+  FilterTutors --> SendBooking["Submit Tuition Booking on Behalf of Child"]
+  SendBooking --> TutorAccepts{"Tutor Response"}
+  TutorAccepts -- "Declined" --> FindAlternative["System Suggests Verified Matches"]
+  TutorAccepts -- "Accepted" --> CheckoutEscrow["Payment Checkout via bKash/Nagad/SSL (/bookings/:id/pay)"]
+
+  CheckoutEscrow --> EscrowHeld["100% Escrow Deposited & Held Safely"]
+  EscrowHeld --> OversightHub["Monitor Child Academics (/dashboard/guardian/learning)"]
+  
+  OversightHub --> TrackAttendance["View Attendance Reports & Punctuality"]
+  OversightHub --> ReviewGrades["Inspect Graded Assignments & Tutor Notes"]
+  OversightHub --> ClassSchedule["Monitor Class Schedules & Calendar (/dashboard/guardian/sessions)"]
+
+  TrackAttendance --> MilestoneVerified{"Session Satisfactory?"}
+  MilestoneVerified -- "Yes" --> EscrowReleased["Escrow Milestone Disbursed to Tutor Ledger"]
+  MilestoneVerified -- "Unsatisfied / Issue" --> IssueChoice{"Resolution Path"}
+  IssueChoice -- "Tutor Replacement" --> RequestReplacement["Request Free Tutor Replacement within 3 Sessions"]
+  IssueChoice -- "Financial Dispute" --> OpenDispute["Open Financial Dispute (/dashboard/guardian/payments)"]
+  IssueChoice -- "Safety Concern" --> SubmitSafetyAlert["Trigger Child Safety / SOS Emergency Alert"]
+
+  RequestReplacement --> AdminArbitration["Admin Review & Matching"]
+  OpenDispute --> AdminArbitration
+  SubmitSafetyAlert --> ImmediateHold["Automated Tutor Hold & Urgent Triage"]

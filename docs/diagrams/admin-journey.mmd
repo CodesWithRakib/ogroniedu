@@ -1,0 +1,28 @@
+flowchart TD
+  Start(["Admin Authentication"]) --> AdminLogin["Sign In with Administrative Role (/login)"]
+  AdminLogin --> CheckPrivileges{"Role Evaluation"}
+  CheckPrivileges -- "admin" --> OperationsConsole["Master Operations Console (/dashboard/admin)"]
+  CheckPrivileges -- "support_agent" --> SupportConsole["Support & Dispute Triage Queue (/dashboard/admin/disputes)"]
+  CheckPrivileges -- "compliance_reviewer" --> VerificationQueue["Tutor Verification Queue (/dashboard/admin/verification)"]
+
+  OperationsConsole --> DailyTelemetry["Review GMV, Escrow Balance, Active Students & Tutors"]
+  
+  OperationsConsole --> AdminTasks{"Operational Workflows"}
+  
+  AdminTasks -- "Tutor Verification" --> ReviewDossiers["Inspect NID & University Degree Evidence (/dashboard/admin/verification)"]
+  ReviewDossiers --> VerifyDecision{"Verification Action"}
+  VerifyDecision -- "Approve" --> GrantVerificationBadge["Issue Verified Badge & Publish Tutor Profile"]
+  VerifyDecision -- "Reject" --> DocumentRejectionReason["Log Justification & Notify Tutor for Re-upload"]
+
+  AdminTasks -- "Safety & Complaints" --> SafetyQueue["Audit Child Safety Reports & SOS Alerts (/dashboard/admin/disputes)"]
+  SafetyQueue --> TakeProtectiveAction["Apply Protective Safety Hold / Suspend Tutor Account"]
+
+  AdminTasks -- "Replacement Arbitrations" --> ReplacementQueue["Manage Free Tutor Replacement Cases (/dashboard/admin/replacements)"]
+  ReplacementQueue --> MatchReplacementTutor["Identify & Match New Vetted Tutor for Guardian"]
+
+  AdminTasks -- "Taxonomy Management" --> ManageSubjects["Update Subjects, Education Levels & Streams (/dashboard/admin/taxonomy)"]
+  
+  AdminTasks -- "User Oversight" --> UserDirectory["Search & Filter Users, View Audit Trails (/dashboard/admin/users)"]
+  UserDirectory --> AccountAction{"User Action"}
+  AccountAction -- "Suspend" --> SuspendUser["Suspend Malicious or Fraudulent Account with Audit Reason"]
+  AccountAction -- "Reactivate" --> ReactivateUser["Reactivate Cleared User Account"]

@@ -1,16 +1,32 @@
 stateDiagram-v2
- [*] --> Requested
- Requested --> Accepted
- Requested --> Declined
- Requested --> Expired
- Accepted --> AwaitingPayment: payment required
- Accepted --> Confirmed: no upfront payment
- AwaitingPayment --> Confirmed: verified payment
- AwaitingPayment --> Expired
- Confirmed --> InProgress
- Confirmed --> Cancelled
- InProgress --> Completed
- Completed --> Disputed
- Confirmed --> ReplacementRequested
- ReplacementRequested --> Confirmed
- ReplacementRequested --> Cancelled
+  [*] --> requested: Student/Guardian creates tuition request
+  requested --> accepted: Tutor accepts request
+  requested --> declined: Tutor rejects request
+  requested --> expired: 48h timeout without response
+  
+  declined --> [*]
+  expired --> [*]
+
+  accepted --> awaiting_payment: Escrow order generated
+  awaiting_payment --> confirmed: Payment succeeded & deposited in Escrow
+  awaiting_payment --> expired: Payment window expires (24h)
+
+  confirmed --> in_progress: First session begins
+  confirmed --> cancelled: Cancelled prior to first session
+  
+  in_progress --> completed: All scheduled sessions executed & attendance marked
+  in_progress --> replacement_requested: Guardian requests replacement within 3 sessions
+  in_progress --> disputed: Guardian opens dispute on attendance or quality
+  in_progress --> safety_hold: Critical safeguarding alert triggered
+
+  replacement_requested --> confirmed: New matched tutor assigned
+  replacement_requested --> cancelled: Replacement rejected by guardian (refund issued)
+
+  disputed --> completed: Dispute settled in tutor favor
+  disputed --> cancelled: Dispute resolved with refund to guardian
+
+  safety_hold --> in_progress: Safety report dismissed after review
+  safety_hold --> cancelled: Safety violation confirmed & tutor suspended
+
+  completed --> [*]: Funds released to tutor balance
+  cancelled --> [*]: Applicable refund calculated & disbursed

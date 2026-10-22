@@ -48,11 +48,18 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
 
         const sslOption = isSsl ? { rejectUnauthorized: false } : false;
 
+        const poolOptions = {
+          max: Number(config.get<string | number>('DB_POOL_MAX', 20)),
+          connectionTimeoutMillis: 5000,
+          idleTimeoutMillis: 30000,
+        };
+
         if (databaseUrl) {
           return {
             type: 'postgres',
             url: databaseUrl,
             ssl: sslOption,
+            extra: poolOptions,
             entities: [],
             synchronize: false,
             autoLoadEntities: true,
@@ -69,6 +76,7 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
           password: config.get<string>('DB_PASSWORD', 'password'),
           database: config.get<string>('DB_NAME', 'ogroniedu_dev'),
           ssl: sslOption,
+          extra: poolOptions,
           // Entities are registered by feature modules via TypeOrmModule.forFeature
           // and picked up automatically (autoLoadEntities). The root module owns
           // wiring only — never the entity list (backlog B-6).

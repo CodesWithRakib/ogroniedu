@@ -1,0 +1,29 @@
+flowchart TD
+  Start(["Discovery on Public Website"]) --> BrowseTutors["Browse Tutors by Subject, Level, Division"]
+  BrowseTutors --> ViewProfile["View Tutor Public Dossier & Hourly Rate"]
+  ViewProfile --> RegisterStudent["Register Account (Student Role, 18+ or Minor)"]
+  RegisterStudent --> StudentLogin["Sign In with Email/Phone & Password"]
+  StudentLogin --> OnboardingCheck{"Is Profile Completed?"}
+  OnboardingCheck -- No --> CompleteProfile["Set Grade Level, Preferred Medium, Division & City"]
+  CompleteProfile --> DashboardDirect["Redirect to Student Dashboard (/dashboard/student)"]
+  OnboardingCheck -- Yes --> DashboardDirect
+
+  DashboardDirect --> ActionChoice{"Student Activity"}
+  
+  ActionChoice -- "Send Booking Request" --> RequestTuition["Create Booking Request (/tutors/:id)"]
+  RequestTuition --> WaitTutor{"Tutor Acceptance & Payment"}
+  WaitTutor -- "Declined" --> SearchAlternative["Browse Alternative Tutors / Replacement"]
+  WaitTutor -- "Accepted" --> GuardianPays["Payment Escrow Held (By Guardian or Student)"]
+  
+  GuardianPays --> SessionSchedule["Sessions Scheduled in Calendar (/sessions)"]
+  SessionSchedule --> JoinClassroom["1-Click Enter Digital Classroom (/classroom/:id)"]
+  JoinClassroom --> InteractiveWhiteboard["Interactive Whiteboard, Formula Sheets & Video Room"]
+  InteractiveWhiteboard --> AttendanceLogged["Attendance Logged by Tutor (Present/Absent/Late)"]
+  
+  ActionChoice -- "Study Room Cockpit" --> EnterStudyRoom["Enter Study Room Hub (/dashboard/student/learning)"]
+  EnterStudyRoom --> PomodoroTimer["Run 25-Min Pomodoro Focus Timer"]
+  EnterStudyRoom --> SubmitHomework["Submit Homework Solution (/assignments/:id)"]
+  EnterStudyRoom --> ViewNotes["Download Lecture Notes & Resources"]
+
+  AttendanceLogged --> SubmitReview["Review & Rate Tutor (1-5 Stars, Written Feedback)"]
+  SubmitReview --> EndJourney(["Continuous Learning & Study Streak Tracked"])

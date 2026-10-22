@@ -1,17 +1,32 @@
 sequenceDiagram
- participant U as User
- participant A as API
- participant P as Provider
- participant D as PostgreSQL
- participant Q as Worker/Outbox
- U->>A: Create order + idempotency key
- A->>D: Persist pending order
- A-->>U: Checkout instructions
- U->>P: Checkout
- P->>A: Signed webhook
- A->>A: Verify signature/replay
- A->>P: Verify transaction if required
- A->>D: Transaction: payment + ledger + outbox
- A-->>P: Acknowledge
- Q->>D: Read outbox
- Q-->>U: Receipt/notification
+  autonumber
+  actor User as Guardian / Student
+  participant Web as Web Frontend (/pay)
+  participant API as Payments API (/payments/checkout)
+  participant Gateway as Payment Gateway (SSLCommerz / bKash)
+  participant Webhook as Webhook Controller
+  participant Ledger as Double-Entry Ledger Service
+  participant Escrow as Escrow Hold Pool
+
+  User->>Web: Select payment method & click Pay
+  Web->>API: POST /api/v1/payments/checkout (bookingId, amount)
+  API->>Gateway: Initialize payment session
+  Gateway-->>API: Return transaction URL
+  API-->>Web: Redirect to secure payment gateway
+  Web->>Gateway: Customer completes OTP / PIN authentication
+  Gateway->>Webhook: POST /api/v1/payments/webhook (verified signature)
+  
+  activate Webhook
+  Webhook->>Webhook: Verify SHA256 signature & amount match
+  Webhook->>API: Mark payment_order as succeeded
+  Webhook->>Ledger: Post balanced double-entry journal
+  Note over Ledger: DR: Gateway Receivable Account<br/>CR: Customer Escrow Liability Account
+  Webhook->>Escrow: Create Escrow Hold record (status: held)
+  Webhook-->>Gateway: HTTP 200 OK
+  deactivate Webhook
+
+  Note over User, Escrow: Tutoring sessions conducted & verified
+  API->>Escrow: Milestone session completed & confirmed
+  API->>Ledger: Post milestone disbursement journal
+  Note over Ledger: DR: Customer Escrow Liability Account<br/>CR: Tutor Payable Account<br/>CR: Platform Revenue (Commission BPS)
+  API->>Escrow: Release milestone funds to Tutor Balance

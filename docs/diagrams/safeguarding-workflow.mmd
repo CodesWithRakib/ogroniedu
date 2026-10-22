@@ -1,0 +1,18 @@
+flowchart TD
+  Incident(["Safety Incident or Policy Violation"]) --> UserReport["Student / Guardian Submits Safety Report or SOS Alert"]
+  UserReport --> AutoTriage{"Category & Severity Evaluation"}
+
+  AutoTriage -- "Critical (child_safety / physical_safety)" --> UrgentPath["Immediate Automated Protection"]
+  UrgentPath --> AutoHold["Apply tutor_safety_hold on Tutor Account"]
+  AutoHold --> FreezeBookings["Freeze Active Bookings & Cancel Upcoming Sessions"]
+  AutoHold --> NotifyAdmins["Dispatch High-Priority SMS & WebSocket Alert to Admins"]
+
+  AutoTriage -- "Medium/Low (billing / punctuality)" --> StandardPath["Route to Support Dispute Queue"]
+  
+  NotifyAdmins --> AdminInvestigation["Admin / Compliance Officer Opens Investigation Dossier"]
+  AdminInvestigation --> EvidenceAudit["Review Redacted Chat Transcripts & Session Timestamps"]
+  EvidenceAudit --> InvestigationFinding{"Investigation Finding"}
+
+  InvestigationFinding -- "Substantiated Violation" --> PermanentSanction["Permanent Suspension, Law Enforcement Referral & Full Refund"]
+  InvestigationFinding -- "Unsubstantiated / False Report" --> ClearTutor["Lift Safety Hold, Restore Profile & Archive Dossier with Audit Log"]
+  InvestigationFinding -- "Minor Dispute" --> MediateResolution["Offer Free Tutor Replacement & Issue Partial Credit"]

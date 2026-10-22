@@ -1,0 +1,34 @@
+flowchart TD
+  Start(["Educator Registration"]) --> RegisterTutor["Sign Up with Tutor Role (/register)"]
+  RegisterTutor --> TutorLogin["Sign In (/login)"]
+  TutorLogin --> Onboarding["Tutor Onboarding Wizard (/onboarding)"]
+  
+  Onboarding --> ProfileBasics["Set Headline, Bio, Institution (BUET/DU/DMC) & Hourly Rate"]
+  ProfileBasics --> SelectTaxonomy["Select Subjects (Class 1-12, Admission) & Teaching Medium"]
+  SelectTaxonomy --> AvailabilityGrid["Configure Weekly Availability Schedule Slots"]
+  AvailabilityGrid --> VerificationDossier["Submit Verification Dossier (/dashboard/tutor/verification)"]
+
+  VerificationDossier --> Level1Doc["Level 1: Upload National ID / Smart NID"]
+  Level1Doc --> Level2Doc["Level 2: Upload Academic Certificate & University ID"]
+  Level2Doc --> Level3Doc["Level 3: Optional Background & Address Verification"]
+  Level3Doc --> ComplianceReview{"Compliance Review"}
+
+  ComplianceReview -- "Rejected / Need Info" --> RequestCorrections["Notification to Re-upload Legible Document"]
+  RequestCorrections --> Level1Doc
+  ComplianceReview -- "Approved" --> ProfilePublished["Profile Published in Tutor Search Directory"]
+
+  ProfilePublished --> TutorDashboard["Tutor Dashboard Overview (/dashboard/tutor)"]
+  
+  TutorDashboard --> ReceiveBookings["Receive Inbound Student Requests (/dashboard/tutor/requests)"]
+  ReceiveBookings --> AcceptBooking["Accept Tuition Request"]
+  AcceptBooking --> ScheduleSessions["Schedule Interactive Sessions (/dashboard/tutor/sessions)"]
+
+  ScheduleSessions --> TeachingStudio["Enter Teaching Studio (/dashboard/tutor/learning)"]
+  TeachingStudio --> LiveClassroom["Launch Video & Interactive Whiteboard Room (/classroom/:id)"]
+  LiveClassroom --> MarkAttendance["Mark Attendance (Present / Absent / Late)"]
+  TeachingStudio --> CreateAssignment["Publish Homework Assignment & Deadlines"]
+  TeachingStudio --> GradeSubmissions["Grade Submitted Work & Provide Feedback"]
+
+  MarkAttendance --> SessionMilestoneDisbursed["Session Complete: Funds Credited to Tutor Ledger"]
+  SessionMilestoneDisbursed --> RequestPayout["Request Payout to bKash / Bank (/dashboard/tutor/payments)"]
+  RequestPayout --> FinanceDisbursement["Finance Audit & Instant Settlement"]
