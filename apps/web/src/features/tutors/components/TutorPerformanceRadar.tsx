@@ -56,7 +56,7 @@ export function TutorPerformanceRadar({
         </div>
 
         <Link
-          href={withLocale('/dashboard/tutor/analytics', locale)}
+          href={withLocale('/dashboard/tutor', locale)}
           className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
         >
           <span>{isBn ? 'অ্যানালিটিক্স' : 'Analytics'}</span>

@@ -104,7 +104,7 @@ export function TutorEarningsCommandBar({
         {/* Action Button: Direct Payout Launcher */}
         <div className="flex flex-col sm:flex-row lg:flex-col items-stretch lg:items-end gap-2 shrink-0">
           <Link
-            href={withLocale('/dashboard/tutor/finance', locale)}
+            href={withLocale('/dashboard/tutor/payments', locale)}
             className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
           >
             <CreditCard className="w-4 h-4" />
@@ -113,7 +113,7 @@ export function TutorEarningsCommandBar({
           </Link>
 
           <Link
-            href={withLocale('/dashboard/tutor/finance', locale)}
+            href={withLocale('/dashboard/tutor/payments', locale)}
             className="text-xs text-muted-foreground hover:text-foreground text-center lg:text-right font-medium hover:underline py-0.5"
           >
             {isBn ? 'পেমেন্ট মেথড ও হিস্ট্রি →' : 'Payment Methods & History →'}
