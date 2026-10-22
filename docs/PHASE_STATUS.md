@@ -2,7 +2,7 @@
 
 **Document Reference:** `docs/PHASE_STATUS.md`  
 **Current Date:** 2026-10-22  
-**Active Phase:** **Phase 7: Core Tutoring Lifecycle & Booking Concurrency (COMPLETE — Awaiting Approval for Phase 8)**  
+**Active Phase:** **Phase 8: Admin & Super Admin Governance (COMPLETE — Awaiting Approval for Phase 9)**  
 **Workflow Rule:** Sequential, approval-driven execution. No progression without explicit user command (`next`).
 
 ---
@@ -18,9 +18,9 @@
 | **4** | **Student Experience & Discovery** | **COMPLETE** | 1,189 / 1,189 Passing | 0 Errors | **Approved by User** |
 | **5** | **Guardian Experience & Child Supervision** | **COMPLETE** | 1,195 / 1,195 Passing | 0 Errors | **Approved by User** |
 | **6** | **Tutor Experience & Professional Studio** | **COMPLETE** | 1,200 / 1,200 Passing | 0 Errors | **Approved by User** |
-| **7** | **Core Tutoring Lifecycle & Booking Concurrency** | **COMPLETE** | **1,251 / 1,251 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
-| **8** | Admin & Super Admin Governance | Planned | — | — | Pending Phase 7 Approval |
-| **9** | Communication & Real-Time Notifications | Planned | — | — | Pending Phase 8 |
+| **7** | **Core Tutoring Lifecycle & Booking Concurrency** | **COMPLETE** | 1,251 / 1,251 Passing | 0 Errors | **Approved by User** |
+| **8** | **Admin & Super Admin Governance** | **COMPLETE** | **1,277 / 1,277 Passing** | **0 Errors** | **Awaiting Approval (`next`)** |
+| **9** | Communication & Real-Time Notifications | Planned | — | — | Pending Phase 8 Approval |
 | **10** | Financial, Escrow & Supporting Workflows | Planned | — | — | Pending Phase 9 |
 | **11** | Frontend UX, Fluid Layouts & Accessibility | Planned | — | — | Pending Phase 10 |
 | **12** | Security, Data Isolation & Performance | Planned | — | — | Pending Phase 11 |
@@ -112,10 +112,57 @@
 
 ---
 
-## 4. Operational Environment Status
+## 4. Phase 8 Implementation & Verification Summary
+
+### 4.1 Admin Governance & Role Invariants
+1. **Least-Privilege RBAC Invariants:**
+   - Role updates (`PUT /api/v1/admin/users/:id/roles`), system settings updates (`PUT /api/v1/admin/settings/:key`), feature flag updates (`PUT /api/v1/admin/feature-flags/:key`), and impersonation (`POST /api/v1/admin/impersonation/start`) are strictly restricted to `super_admin`. Unauthorized roles rejected (`HTTP 403 Forbidden`).
+   - Self-suspension protection: Administrators cannot suspend their own account (`HTTP 400 Bad Request`).
+   - Sole super-admin protection: Cannot revoke `super_admin` from the last active super-admin in the system.
+   - Non-super-admin operators are prohibited from suspending a super-admin.
+   - Defensive catalog mapping: Role assignments guard against undefined role catalog rows and non-existent role codes.
+
+### 4.2 Impersonation Protocol & Security Invariants
+1. **Audited Time-Capped Impersonation:**
+   - Exclusively restricted to `super_admin`.
+   - Cannot impersonate another `super_admin` (preventing peer impersonation and privilege escalation).
+   - Session duration strictly capped at 15 minutes (`900s`).
+   - Issues short-lived signed JWT containing `isImpersonated: true`, `impersonatorUserId`, `impersonationReason`, and target roles.
+   - High-priority audit record logged for every impersonation session started.
+2. **Automated PII & Credential Sanitization:**
+   - Hardened `redactSensitiveData` utility regex to mask `nid`, `national_id`, `passport`, `ssn`, `password`, `token`, `secret`, `cvv`, `pan`, `card`, `pin`, `hash`, and `api_key`.
+   - Protects audit logs query endpoint (`GET /api/v1/admin/audit-logs`) and dossier lookups from exposing credentials or national identification data.
+
+### 4.3 Operational Hubs & Live Browser UAT
+1. **Executive Telemetry & Command Center (`/dashboard/admin`):**
+   - Telemetry Grid: Gross volume (GMV), active escrow pool, double-entry ledger balance status, approved tutors and active students ecosystem metrics.
+   - Triage Command Center: Pending tutor verifications queue, replacement cases, and child safety alerts with direct workflow routing.
+2. **Full Admin Control Suites:**
+   - User Directory & Governance (`/dashboard/admin/users`): Account search, status filters, suspension, role assignment, and impersonation triggers.
+   - Tutor Verification (`/dashboard/admin/verification`): 3-tier credentials review (NID, Degree, Experience).
+   - Disputes & Escalation (`/dashboard/admin/disputes`): Booking dispute triage and child safety escalation.
+   - Financial Ledger & Reconciliation (`/dashboard/admin/finance`): Double-entry ledger audit, payouts, and refund processing.
+   - Audit Trail (`/dashboard/admin/audit-logs`): Immutable audit trail with automated PII redaction.
+   - Settings & Feature Flags (`/dashboard/admin/settings`): Canary feature toggles and system reference parameters.
+
+### 4.4 Automated Testing & Verification
+- **Test Coverage:**
+  - `@ogroniedu/api`: Added `apps/api/test/admin-governance-phase08.spec.ts` (18 tests passing).
+  - `@ogroniedu/web`: Added `apps/web/test/admin-governance-phase08.spec.ts` (8 tests passing).
+- **Monorepo Tests:** **1,277 / 1,277 tests passing (100%)**:
+  - `@ogroniedu/api`: 967 / 967 passed (91 test files)
+  - `@ogroniedu/web`: 277 / 277 passed (44 test files)
+  - `@ogroniedu/database`: 33 / 33 passed (4 test files)
+- **TypeScript:** 0 compilation errors (`turbo run typecheck` clean across all 5 packages).
+- **Smoke Probes:** 8/8 local probes green (`node scripts/smoke-test.mjs --target local`).
+- **Browser Verification:** Authenticated as seeded super admin (`admin.demo@ogroniedu.com`) and verified `/bn/dashboard/admin`, `/bn/dashboard/admin/users`, `/bn/dashboard/admin/verification`, `/bn/dashboard/admin/disputes`, `/bn/dashboard/admin/finance`, `/bn/dashboard/admin/audit-logs`, `/bn/dashboard/admin/settings` with **zero console errors** and 200 HTTP API responses.
+
+---
+
+## 5. Operational Environment Status
 
 - **Web Server:** Next.js 16.4.0 running on `http://localhost:5000` (Daemon Task `task-9168`, healthy).
-- **API Server:** NestJS 12.1.2 running on `http://localhost:4000/api/v1` (Daemon Task `task-9163`, healthy).
+- **API Server:** NestJS 12.1.2 running on `http://localhost:4000/api/v1` (Daemon Task `task-9489`, healthy).
 - **Database:** PostgreSQL 18 running on port `5432` (`ogroniedu_dev`, 80 tables).
 - **Smoke Probes:** 8/8 local probes green (`node scripts/smoke-test.mjs --target local`).
-- **Monorepo Test Pass Rate:** 1,251 / 1,251 tests passing (100%).
+- **Monorepo Test Pass Rate:** 1,277 / 1,277 tests passing (100%).

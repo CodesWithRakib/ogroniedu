@@ -15,7 +15,7 @@ export function redactSensitiveData<T>(obj: T): T {
   }
   const redacted: Record<string, unknown> = {};
   const sensitiveKeyRegex =
-    /(password|token|secret|cvv|pan|card|pin|hash|credential|api_?key|^key$)/i;
+    /(password|token|secret|cvv|pan|card|pin|hash|credential|api_?key|^key$|nid|national_?id|passport|ssn)/i;
 
   for (const [key, value] of Object.entries(obj as Record<string, unknown>)) {
     if (sensitiveKeyRegex.test(key)) {
