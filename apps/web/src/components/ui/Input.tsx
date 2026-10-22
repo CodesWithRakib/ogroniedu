@@ -52,6 +52,7 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
         <input
           ref={ref}
           id={inputId}
+          name={props.name || inputId}
           type={resolvedType}
           required={required}
           aria-invalid={hasError}

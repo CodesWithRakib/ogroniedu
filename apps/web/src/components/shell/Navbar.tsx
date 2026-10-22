@@ -135,7 +135,7 @@ export function Navbar({ locale }: NavbarProps) {
             aria-expanded={mobileMenuOpen}
             aria-label={isBn ? 'মোবাইল মেনু খুলুন/বন্ধ করুন' : 'Toggle mobile menu'}
             onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-            className="md:hidden text-muted-foreground rounded-xl"
+            className="md:hidden text-muted-foreground rounded-xl min-h-[44px] min-w-[44px]"
           >
             {mobileMenuOpen ? (
               <X className="h-5 w-5" aria-hidden="true" />

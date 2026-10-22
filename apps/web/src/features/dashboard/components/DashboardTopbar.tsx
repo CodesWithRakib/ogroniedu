@@ -44,7 +44,7 @@ export function DashboardTopbar({
           <button
             type="button"
             onClick={onOpenDrawer}
-            className="lg:hidden p-2 rounded-xl border border-border bg-card hover:bg-surface-hover text-foreground transition-colors shrink-0 cursor-pointer"
+            className="lg:hidden min-h-[44px] min-w-[44px] inline-flex items-center justify-center rounded-xl border border-border bg-card hover:bg-surface-hover text-foreground transition-colors shrink-0 cursor-pointer"
             aria-label={isBn ? 'মেনু খুলুন' : 'Open menu'}
           >
             <Menu className="h-5 w-5" />
@@ -81,8 +81,9 @@ export function DashboardTopbar({
           <button
             type="button"
             onClick={() => setIsSosOpen(true)}
-            className="flex items-center gap-1 px-2.5 sm:px-3 py-1.5 rounded-full border border-destructive/30 bg-destructive-soft hover:bg-destructive/15 text-xs font-bold text-destructive transition-all cursor-pointer hover:scale-105"
+            className="flex items-center justify-center gap-1 min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-full border border-destructive/30 bg-destructive-soft hover:bg-destructive/15 text-xs font-bold text-destructive transition-all cursor-pointer hover:scale-105"
             title={isBn ? 'জরুরি এসওএস ও শিশু সুরক্ষা' : 'Emergency SOS & Safeguarding'}
+            aria-label={isBn ? 'জরুরি এসওএস ও শিশু সুরক্ষা' : 'Emergency SOS & Safeguarding'}
             data-testid="sos-emergency-trigger-btn"
           >
             <ShieldAlert className="h-3.5 w-3.5 text-destructive animate-pulse" />
@@ -92,7 +93,7 @@ export function DashboardTopbar({
           {/* Language Switcher Pill */}
           <Link
             href={targetPath}
-            className="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover hover:border-primary/40 text-xs font-semibold text-foreground transition-all shadow-2xs"
+            className="flex items-center justify-center gap-1.5 min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-full border border-border bg-card hover:bg-surface-hover hover:border-primary/40 text-xs font-semibold text-foreground transition-all shadow-2xs"
             title={isBn ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
             aria-label={isBn ? 'Switch to English' : 'বাংলায় পরিবর্তন করুন'}
           >

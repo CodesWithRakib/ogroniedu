@@ -248,7 +248,7 @@ describe('Phase 10: Financial, Escrow & Supporting Workflows Verification', () =
     it('INVARIANT: Rejects payout request below minimum threshold (50,000 poisha)', async () => {
       await expect(
         payoutsService.requestPayout(tutorUser, {
-          amountMinor: '25000', // 250 BDT, below 500 BDT minimum
+          amountMinor: 25000, // 250 BDT, below 500 BDT minimum
           method: 'bkash',
           accountReference: '01712345678',
           idempotencyKey: 'payout-idem-1',
@@ -283,7 +283,7 @@ describe('Phase 10: Financial, Escrow & Supporting Workflows Verification', () =
 
       await expect(
         payoutsService.requestPayout(tutorUser, {
-          amountMinor: '100000', // Requesting 1000 BDT when only 600 BDT available
+          amountMinor: 100000, // Requesting 1000 BDT when only 600 BDT available
           method: 'bkash',
           accountReference: '01712345678',
           idempotencyKey: 'payout-idem-2',
@@ -323,7 +323,7 @@ describe('Phase 10: Financial, Escrow & Supporting Workflows Verification', () =
       });
 
       const payout = await payoutsService.requestPayout(tutorUser, {
-        amountMinor: '80000', // 800 BDT
+        amountMinor: 80000, // 800 BDT
         method: 'bkash',
         accountReference: '01712345678',
         idempotencyKey: 'payout-idem-3',

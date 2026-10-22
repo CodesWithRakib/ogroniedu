@@ -19,23 +19,30 @@ export interface NativeSelectProps extends React.SelectHTMLAttributes<HTMLSelect
  * elements, form autofill, and automation `selectOption` compatibility).
  */
 export const NativeSelect = React.forwardRef<HTMLSelectElement, NativeSelectProps>(
-  ({ className, wrapperClassName, children, ...props }, ref) => (
-    <div className={cn('relative flex w-full items-center', wrapperClassName)}>
-      <select
-        ref={ref}
-        className={cn(
-          'h-10 w-full cursor-pointer appearance-none rounded-xl border border-input bg-card pl-3.5 pr-9 text-sm text-foreground outline-none transition-colors duration-150 hover:border-muted-foreground/40 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/35 disabled:cursor-not-allowed disabled:opacity-50',
-          className,
-        )}
-        {...props}
-      >
-        {children}
-      </select>
-      <ChevronDown
-        aria-hidden="true"
-        className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-muted-foreground/70"
-      />
-    </div>
-  ),
+  ({ className, wrapperClassName, children, id, name, ...props }, ref) => {
+    const generatedId = React.useId();
+    const selectId = id || generatedId;
+
+    return (
+      <div className={cn('relative flex w-full items-center', wrapperClassName)}>
+        <select
+          ref={ref}
+          id={selectId}
+          name={name || selectId}
+          className={cn(
+            'h-10 w-full cursor-pointer appearance-none rounded-xl border border-input bg-card pl-3.5 pr-9 text-sm text-foreground outline-none transition-colors duration-150 hover:border-muted-foreground/40 focus-visible:border-ring focus-visible:ring-2 focus-visible:ring-ring/35 disabled:cursor-not-allowed disabled:opacity-50',
+            className,
+          )}
+          {...props}
+        >
+          {children}
+        </select>
+        <ChevronDown
+          aria-hidden="true"
+          className="pointer-events-none absolute top-1/2 right-3 h-4 w-4 -translate-y-1/2 text-muted-foreground/70"
+        />
+      </div>
+    );
+  },
 );
 NativeSelect.displayName = 'NativeSelect';
