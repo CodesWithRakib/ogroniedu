@@ -30,6 +30,15 @@
 
 ---
 
+## 1.5 Post-Implementation Product Re-Audit (Phase A) — 2026-10-22
+
+- **Independent fresh test verification:** 1,367 / 1,367 passing re-confirmed with `turbo run test --force` (API 1,026 / 96 files · web 308 / 48 files · database 33 / 4 files, 0 cached). A concurrent-run flake in `@ogroniedu/database#test` (migration.spec beforeAll timeout vs. BCDR wipe test) was reproduced once and resolved by package-isolated re-run — tracked as test-isolation finding RLD-005.
+- **Environment:** both dev servers were DOWN at audit start (stale "healthy" daemon claims), restarted and verified: web `200` on `/bn`, API `200` on `/api/v1/public/stats`; smoke probes 7/8 + 1 dev-cold-start artifact (robots.txt/sitemap.xml verified 200 after warm-up). DB: 78 tables + 2 views (=80), 30 migration files.
+- **New findings (P1):** RLD-001 evidence-file retrieval dead end (metadata-only upload + signed URL to nonexistent `GET /api/v1/files/:id/download`) and RLD-002 unauthenticated-recipient notification `test-dispatch` spoofing endpoint. Plus P2/P3: whiteboard sync does not exist (RLD-003), phantom routes in USER_JOURNEYS/ROUTE_AND_NAVIGATION_MAP (RLD-004), secret fallback hardening (RLD-006), stale doc counts (RLD-007).
+- **Report:** `POST_IMPLEMENTATION_AUDIT.md` (root) — read-only audit, no application code modified. Phase B gate pending user approval.
+
+---
+
 ## 2. Phase 6 Implementation & Verification Summary
 
 ### 2.1 Tutor Cockpit & Teaching Studio (`/dashboard/tutor`)
