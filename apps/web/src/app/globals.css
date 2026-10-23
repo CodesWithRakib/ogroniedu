@@ -256,6 +256,8 @@ html {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  /* Prevent layout shift when scrollbars appear or modal/dropdown overlays open */
+  scrollbar-gutter: stable;
 }
 
 body {
@@ -266,6 +268,21 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   text-rendering: optimizeLegibility;
+}
+
+/*
+ * Prevent Radix UI / shadcn from removing scrollbars and injecting padding-right or margin-right
+ * on <body> and fixed/sticky containers (which causes jarring horizontal layout jumps).
+ */
+html body[data-scroll-locked] {
+  overflow: visible !important;
+  margin-right: 0 !important;
+  padding-right: 0 !important;
+}
+
+body[style*="pointer-events: none"] {
+  padding-right: 0 !important;
+  margin-right: 0 !important;
 }
 
 /* ==========================================================================

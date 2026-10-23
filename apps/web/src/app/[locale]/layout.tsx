@@ -47,7 +47,7 @@ export default async function LocaleLayout({ children, params }: LocaleLayoutPro
                 <Toaster />
                 <BottomNavbar locale={locale} />
                 <PWARegister locale={locale} />
-                <BetaFeedbackModal locale={locale} />
+                {/* <BetaFeedbackModal locale={locale} /> */}
               </NotificationProvider>
             </NextIntlClientProvider>
           </AuthBootstrap>

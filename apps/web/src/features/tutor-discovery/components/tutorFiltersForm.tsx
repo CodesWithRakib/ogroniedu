@@ -2,8 +2,6 @@
 
 import React from 'react';
 import {
-  Search,
-  Sparkles,
   Filter,
   RotateCcw,
   X,
@@ -13,7 +11,6 @@ import {
   MapPin,
   Banknote,
   Calendar,
-  ArrowUpDown,
 } from 'lucide-react';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { Button } from '@/components/ui/Button';
@@ -201,18 +198,20 @@ export function TutorFiltersForm({
           </div>
 
           <div className="flex items-center gap-2">
-            <Button
-              type="button"
-              variant="ghost"
-              size="xs"
-              onClick={onReset}
-              data-testid="reset-filters-button"
-              className="text-xs text-muted-foreground hover:text-foreground h-7 px-2 gap-1"
-              title={dict.discovery?.resetFilters || 'Reset'}
-            >
-              <RotateCcw className="w-3 h-3" />
-              <span>{isBn ? 'রিসেট' : 'Reset'}</span>
-            </Button>
+            {activeCount > 0 && (
+              <Button
+                type="button"
+                variant="ghost"
+                size="xs"
+                onClick={onReset}
+                data-testid="reset-filters-button"
+                className="text-xs text-muted-foreground hover:text-foreground h-7 px-2 gap-1"
+                title={dict.discovery?.resetFilters || 'Reset'}
+              >
+                <RotateCcw className="w-3 h-3" />
+                <span>{isBn ? 'রিসেট' : 'Reset'}</span>
+              </Button>
+            )}
             {isMobileDrawer && onCloseDrawer && (
               <Button
                 type="button"
@@ -225,29 +224,6 @@ export function TutorFiltersForm({
                 <X className="w-4 h-4" />
               </Button>
             )}
-          </div>
-        </div>
-
-        {/* 1. Search Query Input */}
-        <div className="space-y-1.5">
-          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-            <Search className="w-3 h-3 text-primary" />
-            <span>{isBn ? 'শিক্ষক বা বিষয় দিয়ে খুঁজুন' : 'Search by Name / Subject'}</span>
-          </label>
-          <div className="relative">
-            <Input
-              type="text"
-              placeholder={
-                dict.discovery?.searchPlaceholder ||
-                'Search by tutor name, subject or university...'
-              }
-              value={value.query}
-              onChange={(e) => onChange({ query: e.target.value })}
-              aria-label={isBn ? 'শিক্ষক খুঁজুন' : 'Search tutors'}
-              data-testid="search-query-input"
-              leadingIcon={<Search className="w-4 h-4 text-primary" />}
-              className="rounded-xl h-10 text-xs sm:text-sm bg-background/60"
-            />
           </div>
         </div>
 
@@ -542,103 +518,9 @@ export function TutorFiltersForm({
           </div>
         </div>
 
-        {/* 7. Sort By */}
-        <div className="space-y-2 pt-2 border-t border-border">
-          <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-            <ArrowUpDown className="w-3 h-3 text-primary" />
-            <span>{isBn ? 'সাজানোর নিয়ম' : 'Sort By'}</span>
-          </label>
-          <Select
-            value={value.sortBy || 'recommended'}
-            onValueChange={(val) => onChange({ sortBy: val as TutorSortKey })}
-          >
-            <SelectTrigger
-              className="w-full rounded-xl bg-background/60 border-border text-xs h-9.5"
-              data-testid="sort-by-select"
-              aria-label={isBn ? 'সাজানোর নিয়ম' : 'Sort by'}
-            >
-              <SelectValue />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectItem value="recommended">
-                {dict.discovery?.sortRecommended || 'Recommended (Match Score)'}
-              </SelectItem>
-              <SelectItem value="nearest" disabled={!hasLocation}>
-                {isBn ? 'নিকটতম প্রথমে' : 'Nearest first'}
-              </SelectItem>
-              <SelectItem value="price_asc">
-                {dict.discovery?.sortPriceAsc || 'Price: Low to High'}
-              </SelectItem>
-              <SelectItem value="price_desc">
-                {dict.discovery?.sortPriceDesc || 'Price: High to Low'}
-              </SelectItem>
-              <SelectItem value="experience_desc">
-                {dict.discovery?.sortExpDesc || 'Experience: Most to Least'}
-              </SelectItem>
-              <SelectItem value="rating_desc">
-                {isBn ? 'রেটিং: সর্বোচ্চ প্রথমে' : 'Rating: Highest'}
-              </SelectItem>
-            </SelectContent>
-          </Select>
-        </div>
 
-        {/* 8. Active Filter Chips Inside Sidebar */}
-        {activeChips.length > 0 && (
-          <div
-            className="pt-2 border-t border-border space-y-1.5"
-            data-testid="active-filter-chips"
-          >
-            <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider">
-              {isBn ? 'সক্রিয় ফিল্টার:' : 'Active Filters:'}
-            </span>
-            <div className="flex flex-wrap items-center gap-1.5">
-              {activeChips.map((chip) => (
-                <button
-                  key={chip.key}
-                  type="button"
-                  onClick={() => {
-                    onChange({ [chip.key]: chip.key === 'sortBy' ? 'recommended' : '' });
-                    onSubmit();
-                  }}
-                  className="inline-flex items-center gap-1 rounded-full border border-border bg-background/80 px-2 py-0.5 text-[10px] font-medium text-foreground hover:border-primary/40 transition-colors"
-                >
-                  <span>{chip.label}</span>
-                  <X
-                    className="h-2.5 w-2.5 text-muted-foreground hover:text-foreground"
-                    aria-hidden="true"
-                  />
-                </button>
-              ))}
-            </div>
-          </div>
-        )}
 
-        {/* 9. Popular Quick Tags in Sidebar */}
-        <div className="pt-2 border-t border-border space-y-1.5">
-          <span className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
-            <Sparkles className="w-3 h-3 text-primary" />
-            <span>{isBn ? 'জনপ্রিয় বিষয়:' : 'Popular Subjects:'}</span>
-          </span>
-          <div className="flex flex-wrap gap-1">
-            {popularSubjects.slice(0, 4).map((subject) => (
-              <button
-                key={subject}
-                type="button"
-                onClick={() => {
-                  onChange({ query: subject });
-                  onSubmit();
-                }}
-                className={`text-[10px] px-2 py-0.5 rounded-md border transition-all ${
-                  value.query === subject
-                    ? 'bg-primary text-primary-foreground border-primary font-bold'
-                    : 'bg-background/40 hover:bg-muted text-muted-foreground border-border'
-                }`}
-              >
-                {subject}
-              </button>
-            ))}
-          </div>
-        </div>
+
 
         {/* Submit Action */}
         <div className="pt-2">

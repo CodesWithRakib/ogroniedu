@@ -343,24 +343,18 @@ export function TutorSearchCatalog({
 
   return (
     <div
-      className="w-full max-w-7xl mx-auto px-4 pt-4 sm:pt-6 pb-24 sm:pb-12 space-y-6"
+      className="w-full max-w-7xl mx-auto px-4 pt-3 sm:pt-4 pb-24 sm:pb-12 space-y-4"
       data-testid="tutor-discovery-container"
     >
-      {/* 1. Header Hero Banner */}
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-5 sm:p-8 backdrop-blur-xl shadow-xs">
+      {/* 1. Header Hero Banner - Compact & Clean */}
+      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-4 sm:p-5 backdrop-blur-xl shadow-xs">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 bg-brand-soft rounded-full blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4">
-          <div className="space-y-2 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary-soft border border-primary/20 rounded-full text-xs font-bold text-primary">
-              <Sparkles className="w-3.5 h-3.5" />
-              <span>
-                {isBn ? 'যাচাইকৃত শিক্ষক — বাস্তব প্রোফাইল' : 'Verified educators — real profiles'}
-              </span>
-            </div>
-            <h1 className="text-xl sm:text-3xl font-black tracking-tight text-foreground">
+        <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
+          <div className="space-y-1 max-w-2xl">
+            <h1 className="text-lg sm:text-2xl font-black tracking-tight text-foreground">
               {dict.discovery?.searchHeading || 'যাচাইকৃত অভিজ্ঞ গৃহশিক্ষক খুঁজুন'}
             </h1>
-            <p className="text-muted-foreground text-xs sm:text-sm leading-relaxed">
+            <p className="text-muted-foreground text-xs sm:text-xs leading-relaxed">
               {dict.discovery?.searchSubheading ||
                 'স্বচ্ছ ফি এবং শিক্ষাগত যোগ্যতার বিবরণসহ বাংলাদেশের শীর্ষ শিক্ষকদের তালিকা'}
             </p>
@@ -370,7 +364,7 @@ export function TutorSearchCatalog({
           {(onUseMyLocation || locationActive) && (
             <div className="flex flex-wrap items-center gap-2 self-start md:self-auto shrink-0 text-xs">
               {locationActive ? (
-                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1.5 font-semibold text-foreground shadow-xs">
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-card/80 px-3 py-1 font-semibold text-foreground shadow-xs">
                   <MapPin className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                   <span data-testid="location-active">
                     {isBn ? 'আপনার লোকেশন সক্রিয়' : 'Using your location'}
@@ -392,7 +386,7 @@ export function TutorSearchCatalog({
                     type="button"
                     onClick={onUseMyLocation}
                     data-testid="use-my-location"
-                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/80 px-3 py-1.5 font-semibold text-foreground hover:border-primary/40 hover:text-primary transition-colors shadow-xs"
+                    className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card/80 px-3 py-1 font-semibold text-foreground hover:border-primary/40 hover:text-primary transition-colors shadow-xs"
                   >
                     <LocateFixed className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                     <span>{isBn ? 'নিকটবর্তী শিক্ষক খুঁজুন' : 'Find tutors near me'}</span>
@@ -422,8 +416,8 @@ export function TutorSearchCatalog({
         </div>
       </div>
 
-      {/* 2. Top Interactive Bar (Quick search, Mobile filter trigger, Quick pills) */}
-      <div className="space-y-3">
+      {/* 2. Top Interactive Bar - Sticky on scroll */}
+      <div className="sticky top-16 z-30 space-y-2.5 bg-background/95 backdrop-blur-md py-2 -mx-4 px-4 border-b border-border/40 sm:border-transparent transition-all">
         {/* Search input + Mobile Filter Trigger */}
         <div className="flex items-center gap-2.5">
           <div className="relative flex-1">
@@ -473,7 +467,7 @@ export function TutorSearchCatalog({
         </div>
 
         {/* Quick Horizontal Scrollable Chips Bar */}
-        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 text-xs">
+        <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5 text-xs">
           <button
             type="button"
             onClick={() => {
@@ -486,7 +480,7 @@ export function TutorSearchCatalog({
                 : 'bg-card border-border text-foreground hover:border-primary/40'
             }`}
           >
-            {isBn ? '🔥 সকল শিক্ষক' : '🔥 All Tutors'}
+            {isBn ? 'সকল শিক্ষক' : 'All Tutors'}
           </button>
 
           {/* Popular Subjects */}
@@ -525,7 +519,7 @@ export function TutorSearchCatalog({
                 : 'bg-card border-border text-foreground hover:border-primary/40'
             }`}
           >
-            🌐 {isBn ? 'অনলাইন' : 'Online'}
+            {isBn ? 'অনলাইন' : 'Online'}
           </button>
           <button
             type="button"
@@ -540,13 +534,16 @@ export function TutorSearchCatalog({
                 : 'bg-card border-border text-foreground hover:border-primary/40'
             }`}
           >
-            🏠 {isBn ? 'হোম টিউশন' : 'Home Tutoring'}
+            {isBn ? 'হোম টিউশন' : 'Home Tutoring'}
           </button>
         </div>
 
         {/* Active Filter Chips Strip (Top Bar) */}
         {activeChips.length > 0 && (
-          <div className="flex flex-wrap items-center gap-1.5 pt-1 text-xs">
+          <div
+            className="flex flex-wrap items-center gap-1.5 pt-1 text-xs"
+            data-testid="active-filter-chips"
+          >
             <span className="text-[11px] font-semibold text-muted-foreground mr-1">
               {isBn ? 'ফিল্টার সক্রিয়:' : 'Active:'}
             </span>
@@ -578,7 +575,7 @@ export function TutorSearchCatalog({
       {/* 3. Main Discovery Grid Layout (2-Column on Desktop) */}
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 xl:gap-8 items-start">
         {/* Left Column: Desktop Sticky Filter Sidebar */}
-        <aside className="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-20">
+        <aside className="hidden lg:block lg:col-span-4 xl:col-span-3 sticky top-40">
           <TutorFiltersForm
             locale={locale}
             value={filters}
@@ -623,7 +620,11 @@ export function TutorSearchCatalog({
                   handleFilterSubmit();
                 }}
               >
-                <SelectTrigger className="h-8.5 rounded-xl bg-card border-border text-xs px-2.5 min-w-[130px] sm:min-w-[160px]">
+                <SelectTrigger
+                  data-testid="sort-by-select"
+                  aria-label={isBn ? 'সাজানোর নিয়ম' : 'Sort by'}
+                  className="h-8.5 rounded-xl bg-card border-border text-xs px-2.5 min-w-[130px] sm:min-w-[160px]"
+                >
                   <SelectValue />
                 </SelectTrigger>
                 <SelectContent>

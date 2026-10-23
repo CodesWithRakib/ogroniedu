@@ -230,7 +230,6 @@ export function TutorCard({
               {/* Subjects Preview */}
               {subjectsPreview && (
                 <div className="flex items-center gap-1.5 bg-surface/90 rounded-xl px-2.5 py-1 border border-border/70 text-foreground/85">
-                  <BookOpen className="h-3.5 w-3.5 text-blue-600 shrink-0" aria-hidden="true" />
                   <span className="truncate max-w-xs">{subjectsPreview}</span>
                 </div>
               )}
