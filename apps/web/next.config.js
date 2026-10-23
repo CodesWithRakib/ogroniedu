@@ -6,6 +6,7 @@ const nextConfig = {
   reactStrictMode: true,
   output: process.env.DOCKER_BUILD ? 'standalone' : undefined,
   experimental: {
+    agentUpgrade: 'security',
     optimizePackageImports: [
       'lucide-react',
       'date-fns',
