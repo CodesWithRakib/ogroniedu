@@ -476,7 +476,7 @@ export function TutorSearchCatalog({
             }}
             className={`shrink-0 rounded-full px-3 py-1 font-semibold transition-all border ${
               !filters.query && !filters.subjectId && !filters.modeFilter
-                ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs shadow-blue-500/20'
                 : 'bg-card border-border text-foreground hover:border-primary/40'
             }`}
           >
@@ -496,7 +496,7 @@ export function TutorSearchCatalog({
                 }}
                 className={`shrink-0 rounded-full px-3 py-1 font-semibold transition-all border ${
                   isSelected
-                    ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs shadow-blue-500/20'
                     : 'bg-card border-border text-foreground hover:border-primary/40'
                 }`}
               >
@@ -515,7 +515,7 @@ export function TutorSearchCatalog({
             }}
             className={`shrink-0 rounded-full px-3 py-1 font-semibold transition-all border ${
               filters.modeFilter === 'online'
-                ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs shadow-blue-500/20'
                 : 'bg-card border-border text-foreground hover:border-primary/40'
             }`}
           >
@@ -530,7 +530,7 @@ export function TutorSearchCatalog({
             }}
             className={`shrink-0 rounded-full px-3 py-1 font-semibold transition-all border ${
               filters.modeFilter === 'in_person'
-                ? 'bg-primary text-primary-foreground border-primary shadow-xs'
+                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs shadow-blue-500/20'
                 : 'bg-card border-border text-foreground hover:border-primary/40'
             }`}
           >

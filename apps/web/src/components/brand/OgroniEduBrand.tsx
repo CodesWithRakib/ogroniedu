@@ -22,7 +22,7 @@ export function OgroniEduBrand({
       className={`inline-flex items-center gap-2.5 group transition-all duration-200 ${className}`}
       aria-label="Ogroni Home"
     >
-      {/* Brand Icon: Sovereign Shield & Golden Spark (Variation 3.B) */}
+      {/* Brand Icon: Sovereign Shield with vibrant blue-indigo gradient & Golden Spark */}
       <div className="relative flex h-10 w-10 shrink-0 items-center justify-center transition-transform duration-300 group-hover:scale-105">
         <svg
           viewBox="0 0 100 100"
@@ -34,7 +34,7 @@ export function OgroniEduBrand({
           <defs>
             <linearGradient id="brandShieldGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#2563eb" />
-              <stop offset="100%" stopColor="#1e40af" />
+              <stop offset="100%" stopColor="#4f46e5" />
             </linearGradient>
             <linearGradient id="brandSparkGrad" x1="0%" y1="0%" x2="100%" y2="100%">
               <stop offset="0%" stopColor="#fbbf24" />
@@ -53,7 +53,7 @@ export function OgroniEduBrand({
             fill="none"
             stroke="#ffffff"
             strokeWidth="1"
-            strokeOpacity="0.2"
+            strokeOpacity="0.25"
           />
           {/* Mortarboard Diamond Top */}
           <path d="M50 25L20 40L50 55L80 40L50 25Z" fill="#ffffff" />
@@ -80,17 +80,12 @@ export function OgroniEduBrand({
         </svg>
       </div>
 
-      {/* Brand Typography: "Ogroni" ONLY - no "Edu" */}
+      {/* Brand Typography: Bengali strictly for bn, English strictly for en */}
       <div className="flex flex-col text-left leading-tight">
         <div className="flex items-center gap-1.5">
           <span className="text-xl font-black tracking-tight text-foreground font-sans transition-colors group-hover:text-primary">
-            Ogroni
+            {isBn ? 'অগ্রণী' : 'Ogroni'}
           </span>
-          {isBn && (
-            <span className="text-[10px] font-bold text-primary px-1.5 py-0.5 rounded-md bg-primary-soft border border-primary/20">
-              অগ্রণী
-            </span>
-          )}
         </div>
         {showSubtitle && (
           <span className="text-[10px] font-medium text-muted-foreground tracking-normal font-sans">

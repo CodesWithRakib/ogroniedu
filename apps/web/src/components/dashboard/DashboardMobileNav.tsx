@@ -78,7 +78,7 @@ export function DashboardMobileNav({
                             className={cn(
                               'flex items-center gap-3 rounded-xl px-3 min-h-[44px] text-xs font-semibold transition-colors',
                               active
-                                ? 'bg-primary text-primary-foreground shadow-xs'
+                                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/20'
                                 : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground',
                             )}
                           >
@@ -105,7 +105,7 @@ export function DashboardMobileNav({
                         className={cn(
                           'flex items-center gap-3 rounded-xl px-3 min-h-[44px] text-xs font-semibold transition-colors',
                           active
-                            ? 'bg-primary text-primary-foreground shadow-xs'
+                            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/20'
                             : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground',
                         )}
                       >

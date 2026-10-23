@@ -436,7 +436,7 @@ export function TutorFiltersForm({
               onClick={() => onChange({ minPrice: '', maxPrice: '500' })}
               className={`text-[10px] px-2 py-0.5 rounded-full border border-border transition-colors ${
                 value.maxPrice === '500' && !value.minPrice
-                  ? 'bg-primary text-primary-foreground border-primary font-bold'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent font-bold shadow-xs'
                   : 'bg-background/40 hover:bg-muted text-muted-foreground'
               }`}
             >
@@ -447,7 +447,7 @@ export function TutorFiltersForm({
               onClick={() => onChange({ minPrice: '500', maxPrice: '1000' })}
               className={`text-[10px] px-2 py-0.5 rounded-full border border-border transition-colors ${
                 value.minPrice === '500' && value.maxPrice === '1000'
-                  ? 'bg-primary text-primary-foreground border-primary font-bold'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent font-bold shadow-xs'
                   : 'bg-background/40 hover:bg-muted text-muted-foreground'
               }`}
             >
@@ -458,7 +458,7 @@ export function TutorFiltersForm({
               onClick={() => onChange({ minPrice: '1000', maxPrice: '' })}
               className={`text-[10px] px-2 py-0.5 rounded-full border border-border transition-colors ${
                 value.minPrice === '1000' && !value.maxPrice
-                  ? 'bg-primary text-primary-foreground border-primary font-bold'
+                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent font-bold shadow-xs'
                   : 'bg-background/40 hover:bg-muted text-muted-foreground'
               }`}
             >
