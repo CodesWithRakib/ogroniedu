@@ -13,6 +13,7 @@ import {
   ShieldCheck,
   BarChart3,
   MessageSquare,
+  Mail,
   User,
   Sparkles,
   CheckCircle2,
@@ -166,6 +167,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             testId: 'nav-payments',
           },
           {
+            href: '/dashboard/student/messages',
+            labelBn: 'বার্তা',
+            labelEn: 'Messages',
+            icon: Mail,
+            testId: 'nav-messages',
+          },
+          {
             href: '/notifications',
             labelBn: 'বিজ্ঞপ্তি',
             labelEn: 'Alerts',
@@ -252,6 +260,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             labelEn: 'Tuition & Escrow',
             icon: CreditCard,
             testId: 'nav-payments',
+          },
+          {
+            href: '/dashboard/guardian/messages',
+            labelBn: 'বার্তা',
+            labelEn: 'Messages',
+            icon: Mail,
+            testId: 'nav-messages',
           },
           {
             href: '/notifications',
@@ -348,6 +363,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
         titleBn: 'অ্যাকাউন্ট',
         titleEn: 'Account',
         items: [
+          {
+            href: '/dashboard/tutor/messages',
+            labelBn: 'বার্তা',
+            labelEn: 'Messages',
+            icon: Mail,
+            testId: 'nav-messages',
+          },
           {
             href: '/notifications',
             labelBn: 'বিজ্ঞপ্তি',
@@ -487,9 +509,16 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             testId: 'nav-settings',
           },
           {
+            href: '/dashboard/admin/messages',
+            labelBn: 'বার্তা',
+            labelEn: 'Messages',
+            icon: Mail,
+            testId: 'nav-messages',
+          },
+          {
             href: '/notifications',
             labelBn: 'সিস্টেম নোটিফিকেশন',
-            labelEn: 'Messages & Alerts',
+            labelEn: 'System Alerts',
             icon: MessageSquare,
             testId: 'nav-notifications',
           },
@@ -548,6 +577,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             testId: 'nav-users',
           },
           {
+            href: '/dashboard/admin/messages',
+            labelBn: 'বার্তা',
+            labelEn: 'Messages',
+            icon: Mail,
+            testId: 'nav-messages',
+          },
+          {
             href: '/notifications',
             labelBn: 'বিজ্ঞপ্তি',
             labelEn: 'Alerts',
@@ -602,6 +638,13 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
             testId: 'nav-disputes',
           },
           {
+            href: '/dashboard/admin/messages',
+            labelBn: 'বার্তা',
+            labelEn: 'Messages',
+            icon: Mail,
+            testId: 'nav-messages',
+          },
+          {
             href: '/notifications',
             labelBn: 'বিজ্ঞপ্তি',
             labelEn: 'Alerts',
@@ -642,7 +685,7 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
         titleEn: 'Classes & Bookings',
         items: [
           {
-            href: '/messages',
+            href: '/dashboard/organization/messages',
             labelBn: 'ইনস্টিটিউশনাল মেসেজিং',
             labelEn: 'Messages',
             icon: MessageSquare,

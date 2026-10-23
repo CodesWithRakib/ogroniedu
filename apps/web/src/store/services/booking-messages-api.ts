@@ -3,12 +3,23 @@ import { toQueryString } from '@/lib/api/query';
 import type { CursorCollectionEnvelope } from '@/lib/api/contract';
 import type { ConversationInboxItem } from '@ogroniedu/contracts';
 
+export interface MessageReader {
+  userId: string;
+  name: string;
+  seenAt: string;
+}
+
 export interface BookingMessage {
   id: string;
   bookingId: string;
   senderUserId: string;
   senderUser?: { displayName?: string | null; avatarUrl?: string | null } | null;
   senderName?: string;
+  recipientUserId?: string;
+  recipientUser?: { displayName?: string | null; avatarUrl?: string | null } | null;
+  readByName?: string | null;
+  readByUserId?: string | null;
+  seenBy?: MessageReader[];
   content: string;
   /** @deprecated Backend field is `content`. Kept for backward compatibility. */
   body?: string;

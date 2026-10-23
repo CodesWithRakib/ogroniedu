@@ -4,6 +4,7 @@ import React from 'react';
 import {
   useGetBookingMessagesQuery,
   useSendBookingMessageMutation,
+  useMarkAllBookingMessagesAsReadMutation,
   type BookingMessage,
 } from '@/store/services/booking-messages-api';
 import { parseCursorCollection } from '@/lib/api/parse';
@@ -14,47 +15,81 @@ import { useNotifications } from '@/components/notifications/NotificationProvide
 const HISTORY_PAGE_SIZE = 30;
 
 /**
- * Real-time + Cursor-backed chat history:
- * - Listens on authenticated Socket.IO room (booking_chat:${bookingId})
- * - Immediate live message append & typing indicators
- * - Cursor history: latest page first, "load older" appends previous pages
+ * WhatsApp/Messenger-style chat hook:
+ *
+ * 1. ONE initial API fetch on mount → populates first page of history
+ * 2. ALL subsequent updates via Socket.IO (zero polling):
+ *    - `new_chat_message` → live message append with dedup
+ *    - `user_typing`      → typing indicator with auto-clear
+ *    - `messages_read`    → read receipt update
+ * 3. Cursor-backward pagination for older messages (loaded on-demand only)
+ * 4. Optimistic send: message appears instantly, socket echo is deduped
+ * 5. Socket reconnect: refetches current page to fill gaps
  */
 export function useBookingChat(bookingId: string, locale: Locale) {
-  const { socket } = useNotifications();
+  const { socket, isConnected } = useNotifications();
   const [cursor, setCursor] = React.useState<string | null>(null);
   const [older, setOlder] = React.useState<BookingMessage[]>([]);
   const [olderCursor, setOlderCursor] = React.useState<string | null>(null);
   const [liveAppends, setLiveAppends] = React.useState<BookingMessage[]>([]);
+  const [readReceipts, setReadReceipts] = React.useState<
+    Map<string, { readAt: string; readers: Map<string, { userId: string; name: string; seenAt: string }> }>
+  >(new Map());
   const [typingUser, setTypingUser] = React.useState<string | null>(null);
   const typingTimerRef = React.useRef<NodeJS.Timeout | null>(null);
+  const prevConnectedRef = React.useRef(false);
 
-  const query = useGetBookingMessagesQuery({ bookingId, pageSize: HISTORY_PAGE_SIZE });
+  // ──────────────────────────────────────────────────────
+  // 1. INITIAL API FETCH ONLY (no polling, no refetchOnFocus)
+  // ──────────────────────────────────────────────────────
+  const query = useGetBookingMessagesQuery(
+    { bookingId, pageSize: HISTORY_PAGE_SIZE },
+    {
+      // No polling — socket handles real-time updates
+      pollingInterval: 0,
+      refetchOnFocus: false,
+      refetchOnMountOrArgChange: true,
+    },
+  );
   const [sendMutation, sendState] = useSendBookingMessageMutation();
+  const [markAllRead] = useMarkAllBookingMessagesAsReadMutation();
 
-  // New thread → drop accumulated older pages and live appends
+  // ──────────────────────────────────────────────────────
+  // 2. RESET STATE on booking change
+  // ──────────────────────────────────────────────────────
   React.useEffect(() => {
     setOlder([]);
     setLiveAppends([]);
+    setReadReceipts(new Map());
     setCursor(null);
     setOlderCursor(null);
     setTypingUser(null);
   }, [bookingId]);
 
-  // Real-Time Socket.IO Room Joining & Event Handling
+  // ──────────────────────────────────────────────────────
+  // 3. SOCKET.IO REAL-TIME — the ONLY source of live updates
+  // ──────────────────────────────────────────────────────
   React.useEffect(() => {
     if (!socket || !bookingId) return;
 
-    // Join room
+    // Join the booking-specific chat room
     socket.emit('join_booking_chat', { bookingId });
 
-    // Handle new incoming messages
+    // ── New message handler (dedup by ID) ──
     const handleNewMessage = (msg: BookingMessage) => {
       if (msg.bookingId === bookingId) {
-        setLiveAppends((prev) => (prev.some((m) => m.id === msg.id) ? prev : [...prev, msg]));
+        setLiveAppends((prev) => {
+          if (prev.some((m) => m.id === msg.id)) return prev;
+          return [...prev, msg];
+        });
+
+        // If the viewer is actively on this chat screen and receives a message from peer,
+        // mark it as read immediately via API so the peer receives real-time blue checkmarks!
+        markAllRead(bookingId).catch(() => {});
       }
     };
 
-    // Handle typing indicators
+    // ── Typing indicator with auto-clear ──
     const handleUserTyping = (data: {
       bookingId: string;
       userId: string;
@@ -72,18 +107,60 @@ export function useBookingChat(bookingId: string, locale: Locale) {
       }
     };
 
-    // Handle live read receipts
+    // ── Read receipt handler — track multiple viewers per message ──
     const handleMessagesRead = (data: {
       bookingId: string;
       readerUserId: string;
+      readerName?: string;
       messageId: string;
       readAt: string;
     }) => {
       if (data.bookingId === bookingId) {
+        setReadReceipts((prev) => {
+          const next = new Map(prev);
+          const current = next.get(data.messageId) || {
+            readAt: data.readAt,
+            readers: new Map(),
+          };
+          const readersCopy = new Map(current.readers);
+          readersCopy.set(data.readerUserId, {
+            userId: data.readerUserId,
+            name: data.readerName || 'Participant',
+            seenAt: data.readAt,
+          });
+          next.set(data.messageId, {
+            readAt: current.readAt || data.readAt,
+            readers: readersCopy,
+          });
+          return next;
+        });
+
         setLiveAppends((prev) =>
-          prev.map((m) =>
-            m.id === data.messageId || !m.readAt ? { ...m, readAt: data.readAt } : m,
-          ),
+          prev.map((m) => {
+            if (m.id === data.messageId || (!m.readAt && data.readAt)) {
+              const currentSeenBy = m.seenBy || [];
+              const exists = currentSeenBy.some((r) => r.userId === data.readerUserId);
+              const updatedSeenBy = exists
+                ? currentSeenBy
+                : [
+                    ...currentSeenBy,
+                    {
+                      userId: data.readerUserId,
+                      name: data.readerName || 'Participant',
+                      seenAt: data.readAt,
+                    },
+                  ];
+
+              return {
+                ...m,
+                readAt: m.readAt || data.readAt,
+                readByName: data.readerName || m.readByName,
+                readByUserId: data.readerUserId || m.readByUserId,
+                seenBy: updatedSeenBy,
+              };
+            }
+            return m;
+          }),
         );
       }
     };
@@ -101,6 +178,21 @@ export function useBookingChat(bookingId: string, locale: Locale) {
     };
   }, [socket, bookingId]);
 
+  // ──────────────────────────────────────────────────────
+  // 4. RECONNECT RECOVERY — refetch to fill gaps
+  //    (like WhatsApp: when phone comes back online, sync)
+  // ──────────────────────────────────────────────────────
+  React.useEffect(() => {
+    // Only trigger on reconnect (was disconnected → now connected)
+    if (isConnected && !prevConnectedRef.current && bookingId) {
+      query.refetch();
+    }
+    prevConnectedRef.current = isConnected;
+  }, [isConnected, bookingId, query]);
+
+  // ──────────────────────────────────────────────────────
+  // 5. PARSE API RESPONSE
+  // ──────────────────────────────────────────────────────
   const latest = React.useMemo(() => {
     if (!query.data) return [];
     try {
@@ -119,7 +211,9 @@ export function useBookingChat(bookingId: string, locale: Locale) {
     }
   }, [query.data]);
 
-  // Older pages are fetched on demand
+  // ──────────────────────────────────────────────────────
+  // 6. OLDER PAGES — cursor pagination (on-demand only)
+  // ──────────────────────────────────────────────────────
   const olderQuery = useGetBookingMessagesQuery(
     { bookingId, cursor: olderCursor ?? '', pageSize: HISTORY_PAGE_SIZE },
     { skip: olderCursor === null },
@@ -144,14 +238,47 @@ export function useBookingChat(bookingId: string, locale: Locale) {
 
   const canLoadOlder = (older.length === 0 ? nextCursor : cursor) !== null;
 
-  // Unified message stream: older + latest fetched + real-time live appends
+  // ──────────────────────────────────────────────────────
+  // 7. UNIFIED MESSAGE STREAM with dedup
+  //    older + API latest + socket live appends + real-time read receipts
+  // ──────────────────────────────────────────────────────
   const allMessages = React.useMemo(() => {
     const base = [...older, ...latest];
     const existingIds = new Set(base.map((m) => m.id));
     const fresh = liveAppends.filter((m) => !existingIds.has(m.id));
-    return [...base, ...fresh];
-  }, [older, latest, liveAppends]);
+    const combined = [...base, ...fresh];
 
+    if (readReceipts.size === 0) return combined;
+
+    return combined.map((m) => {
+      const receipt = readReceipts.get(m.id);
+      if (!receipt) return m;
+
+      const currentSeenBy = m.seenBy || [];
+      const mergedReadersMap = new Map<string, { userId: string; name: string; seenAt: string }>();
+      for (const r of currentSeenBy) {
+        mergedReadersMap.set(r.userId, r);
+      }
+      for (const [uid, r] of receipt.readers) {
+        mergedReadersMap.set(uid, r);
+      }
+
+      const readersList = Array.from(mergedReadersMap.values());
+      const firstReader = readersList[0];
+
+      return {
+        ...m,
+        readAt: m.readAt || receipt.readAt,
+        readByName: m.readByName || firstReader?.name,
+        readByUserId: m.readByUserId || firstReader?.userId,
+        seenBy: readersList,
+      };
+    });
+  }, [older, latest, liveAppends, readReceipts]);
+
+  // ──────────────────────────────────────────────────────
+  // 8. OPTIMISTIC SEND — instant local + socket echo dedup
+  // ──────────────────────────────────────────────────────
   const send = React.useCallback(
     async (
       content: string,
@@ -166,6 +293,7 @@ export function useBookingChat(bookingId: string, locale: Locale) {
           metadata,
         }).unwrap();
         if (res?.data) {
+          // Add to live appends (will be deduped against socket echo)
           setLiveAppends((prev) =>
             prev.some((m) => m.id === res.data.id) ? prev : [...prev, res.data],
           );
@@ -177,6 +305,9 @@ export function useBookingChat(bookingId: string, locale: Locale) {
     [sendMutation, bookingId, locale],
   );
 
+  // ──────────────────────────────────────────────────────
+  // 9. TYPING EMISSION (debounced by caller)
+  // ──────────────────────────────────────────────────────
   const emitTyping = React.useCallback(
     (isTyping: boolean, userName?: string) => {
       if (socket?.connected) {

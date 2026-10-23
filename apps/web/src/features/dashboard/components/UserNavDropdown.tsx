@@ -12,6 +12,7 @@ import {
   GraduationCap,
   Users,
   ShieldCheck,
+  MessageSquare,
 } from 'lucide-react';
 import {
   DropdownMenu,
@@ -215,6 +216,28 @@ export function UserNavDropdown({ authUser, locale, role, onLogout }: UserNavDro
           >
             <CreditCard className="h-4 w-4 text-success-soft-foreground" />
             <span>{isBn ? 'পেমেন্টস ও এসক্রো লেজার' : 'Payments & Escrow'}</span>
+          </Link>
+        </DropdownMenuItem>
+
+        {/* Messages Link */}
+        <DropdownMenuItem asChild>
+          <Link
+            href={withLocale(
+              roleKey === 'tutor'
+                ? '/dashboard/tutor/messages'
+                : roleKey === 'guardian'
+                  ? '/dashboard/guardian/messages'
+                  : roleKey === 'admin' || roleKey === 'super_admin'
+                    ? '/dashboard/admin/messages'
+                    : roleKey === 'organization_owner' || roleKey === 'organization_staff'
+                      ? '/dashboard/organization/messages'
+                      : '/dashboard/student/messages',
+              locale,
+            )}
+            className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold rounded-xl text-foreground hover:text-primary hover:bg-card/70 cursor-pointer transition-colors"
+          >
+            <MessageSquare className="h-4 w-4 text-primary" />
+            <span>{isBn ? 'বার্তালাপ' : 'Messages'}</span>
           </Link>
         </DropdownMenuItem>
 

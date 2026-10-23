@@ -12,9 +12,29 @@ import {
   FileText,
   X,
   Eye,
+  Clock,
+  Users,
 } from 'lucide-react';
-import { Button, Card, CardContent, CardFooter, Badge, Input } from '@/components/ui';
+import {
+  Button,
+  Card,
+  CardContent,
+  CardFooter,
+  Badge,
+  Input,
+  Tooltip,
+  TooltipTrigger,
+  TooltipContent,
+  TooltipProvider,
+} from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
+import { formatTime } from '@/lib/format';
+
+export interface MessageReader {
+  userId: string;
+  name: string;
+  seenAt: string;
+}
 
 export interface ChatMessageItem {
   id: string;
@@ -27,6 +47,9 @@ export interface ChatMessageItem {
   attachmentAssetIds?: string[];
   metadata?: Record<string, unknown> | null;
   readAt?: string | null;
+  readByName?: string | null;
+  readByUserId?: string | null;
+  seenBy?: MessageReader[];
   createdAt: string;
 }
 
@@ -203,12 +226,7 @@ export function BookingChatView({
                       {msg.senderName}
                     </span>
                     <span>•</span>
-                    <span>
-                      {new Date(msg.createdAt).toLocaleTimeString([], {
-                        hour: '2-digit',
-                        minute: '2-digit',
-                      })}
-                    </span>
+                    <span>{formatTime(msg.createdAt, locale)}</span>
                   </div>
 
                   <div
@@ -252,12 +270,88 @@ export function BookingChatView({
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1 text-[10px] text-muted-foreground mt-0.5 px-1">
+                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground mt-0.5 px-1">
                     {isMine &&
                       (msg.readAt ? (
-                        <CheckCheck className="w-3.5 h-3.5 text-success-soft-foreground" />
+                        <TooltipProvider delayDuration={150}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button
+                                type="button"
+                                className="flex items-center gap-1 p-0.5 rounded-full hover:bg-blue-500/10 transition-colors cursor-help focus:outline-none"
+                                aria-label="Message read receipt details"
+                              >
+                                <CheckCheck className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400 stroke-[2.5]" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="top"
+                              align="end"
+                              className="bg-slate-900/95 dark:bg-slate-950/95 backdrop-blur-md text-white border border-slate-700/60 shadow-xl rounded-xl p-2.5 text-xs max-w-xs z-50 animate-in fade-in-0 zoom-in-95"
+                            >
+                              <div className="space-y-1.5">
+                                <div className="flex items-center gap-1.5 font-semibold text-[11px] text-blue-400 border-b border-white/10 pb-1">
+                                  <Users className="w-3.5 h-3.5" />
+                                  <span>{locale === 'bn' ? 'কারা দেখেছেন' : 'Seen by'}</span>
+                                  {msg.seenBy && msg.seenBy.length > 0 && (
+                                    <span className="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.2 rounded-full font-mono">
+                                      {msg.seenBy.length}
+                                    </span>
+                                  )}
+                                </div>
+
+                                {msg.seenBy && msg.seenBy.length > 0 ? (
+                                  <div className="space-y-1 pt-0.5">
+                                    {msg.seenBy.map((reader, idx) => (
+                                      <div
+                                        key={reader.userId || idx}
+                                        className="flex items-center justify-between gap-3 text-[11px]"
+                                      >
+                                        <span className="font-medium text-slate-200 truncate max-w-[140px]">
+                                          {reader.name}
+                                        </span>
+                                        <span className="text-[10px] text-slate-400 flex items-center gap-1 shrink-0">
+                                          <Clock className="w-2.5 h-2.5 opacity-70" />
+                                          {formatTime(reader.seenAt, locale)}
+                                        </span>
+                                      </div>
+                                    ))}
+                                  </div>
+                                ) : (
+                                  <div className="text-[11px] text-slate-300 flex items-center justify-between gap-3">
+                                    <span className="font-medium">
+                                      {msg.readByName || (locale === 'bn' ? 'অংশগ্রহণকারী' : 'Participant')}
+                                    </span>
+                                    <span className="text-[10px] text-slate-400 flex items-center gap-1">
+                                      <Clock className="w-2.5 h-2.5 opacity-70" />
+                                      {formatTime(msg.readAt, locale)}
+                                    </span>
+                                  </div>
+                                )}
+                              </div>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       ) : (
-                        <Check className="w-3.5 h-3.5 text-muted-foreground" />
+                        <TooltipProvider delayDuration={150}>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <span
+                                className="flex items-center p-0.5 rounded-full hover:bg-muted/50 transition-colors cursor-help"
+                                aria-label="Message delivered"
+                              >
+                                <CheckCheck className="w-3.5 h-3.5 text-muted-foreground/70" />
+                              </span>
+                            </TooltipTrigger>
+                            <TooltipContent
+                              side="top"
+                              align="end"
+                              className="bg-slate-900/95 dark:bg-slate-950/95 backdrop-blur-md text-white border border-slate-700/60 shadow-xl rounded-lg px-2.5 py-1 text-[11px] z-50"
+                            >
+                              <span>{locale === 'bn' ? 'প্রেরিত (পৌঁছেছে)' : 'Delivered'}</span>
+                            </TooltipContent>
+                          </Tooltip>
+                        </TooltipProvider>
                       ))}
                   </div>
                 </div>

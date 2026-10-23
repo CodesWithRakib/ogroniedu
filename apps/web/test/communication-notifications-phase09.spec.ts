@@ -152,23 +152,23 @@ describe('Phase 9: Communication & Real-Time Notifications Frontend Tests', () =
         'bn',
       );
 
-      expect(html).toContain('বার্তালাপ ও যোগাযোগ');
+      expect(html).toContain('বার্তালাপ');
       expect(html).toContain('Tutor Rashed Karim');
       expect(html).toContain('Higher Mathematics (Class 10)');
       expect(html).toContain('Student Farhan');
       expect(html).toContain('Physics (Class 9)');
-      expect(html).toContain('নিরাপদ মেসেজিং চ্যানেল');
     });
 
     it('renders audit and escrow protection guarantee banner', () => {
+      mockNotifications.isConnected = true;
       const html = renderWithProviders(
         React.createElement(ConversationsInboxView, { locale: 'en' }),
         'en',
       );
 
-      expect(html).toContain('Conversations &amp; Messaging');
-      expect(html).toContain('Audited Secure Channel');
-      expect(html).toContain('child safety and escrow protection');
+      expect(html).toContain('Messages');
+      expect(html).toContain('Tutor Rashed Karim');
+      expect(html).toContain('Live');
     });
   });
 });

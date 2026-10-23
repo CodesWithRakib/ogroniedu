@@ -20,6 +20,8 @@ export function BookingChatContainer({
   currentUserId,
   ownRole = 'student',
   peerRole = 'tutor',
+  peerName,
+  ownName,
   testId = 'booking-chat',
 }: {
   locale: Locale;
@@ -28,12 +30,14 @@ export function BookingChatContainer({
   currentUserId: string;
   ownRole?: ChatRole;
   peerRole?: ChatRole;
+  peerName?: string;
+  ownName?: string;
   testId?: string;
 }) {
   const chat = useBookingChat(bookingId, locale);
   const items: ChatMessageItem[] = React.useMemo(
-    () => mapToChatItems(chat.messages, currentUserId, { ownRole, peerRole }),
-    [chat.messages, currentUserId, ownRole, peerRole],
+    () => mapToChatItems(chat.messages, currentUserId, { ownRole, peerRole, peerName, ownName, locale }),
+    [chat.messages, currentUserId, ownRole, peerRole, peerName, ownName, locale],
   );
 
   if (chat.isLoading) return <LoadingState testId={`${testId}-loading`} />;

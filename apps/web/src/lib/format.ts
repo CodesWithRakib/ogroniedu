@@ -20,12 +20,13 @@ export function formatDateTime(
   if (!iso) return '—';
   const d = iso instanceof Date ? iso : new Date(iso);
   if (Number.isNaN(d.getTime())) return '—';
-  return d.toLocaleString(locale === 'bn' ? 'bn-BD' : 'en-GB', {
+  return d.toLocaleString(locale === 'bn' ? 'bn-BD' : 'en-US', {
     year: 'numeric',
     month: 'short',
     day: 'numeric',
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
+    hour12: true,
   });
 }
 
@@ -56,14 +57,15 @@ export function formatWeekdayDate(
   });
 }
 
-/** Hour:minute time for schedule cards (matches SessionCard display). */
+/** Hour:minute 12-hour time for schedule cards and message timestamps. */
 export function formatTime(iso: string | Date | null | undefined, locale: Locale = 'bn'): string {
   if (!iso) return '—';
   const d = iso instanceof Date ? iso : new Date(iso);
   if (Number.isNaN(d.getTime())) return '—';
   return d.toLocaleTimeString(locale === 'bn' ? 'bn-BD' : 'en-US', {
-    hour: '2-digit',
+    hour: 'numeric',
     minute: '2-digit',
+    hour12: true,
   });
 }
 

@@ -170,35 +170,70 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
   }
 
   /**
-   * Broadcast new message to active booking chat room AND direct recipient user room
+   * Broadcast new message to:
+   * 1. Booking-specific chat room (active chat thread participants)
+   * 2. Recipient's user room (inbox update + toast on any page)
+   * 3. Sender's user room (multi-tab/device inbox sync — like WhatsApp)
+   * Client-side dedup by message ID prevents double display.
    */
   broadcastChatMessage(bookingId: string, message: BookingMessageEntity, recipientUserId: string) {
     if (!this.server) return;
     const bookingRoom = `booking_chat:${bookingId}`;
-    const userRoom = `user:${recipientUserId}`;
+    const recipientRoom = `user:${recipientUserId}`;
+    const senderRoom = `user:${message.senderUserId}`;
 
-    // Emit to booking room for users with active chat thread open
+    // 1. Emit to booking room for users with active chat thread open
     this.server.to(bookingRoom).emit('new_chat_message', message);
 
-    // Also emit to recipient's personal user room for toast / badge updates
-    this.server.to(userRoom).emit('new_chat_message', message);
+    // 2. Emit to recipient's personal user room for inbox / toast updates
+    this.server.to(recipientRoom).emit('new_chat_message', message);
 
-    this.logger.log(`Broadcast chat message #${message.id} to room ${bookingRoom} and ${userRoom}`);
+    // 3. Emit to sender's personal user room for multi-tab inbox sync
+    if (senderRoom !== recipientRoom) {
+      this.server.to(senderRoom).emit('new_chat_message', message);
+    }
+
+    this.logger.log(
+      `Broadcast chat message #${message.id} to rooms: ${bookingRoom}, ${recipientRoom}, ${senderRoom}`,
+    );
   }
 
   /**
-   * Broadcast read receipts to active booking chat room
+   * Broadcast read receipts to active booking chat room and sender's user room
    */
-  broadcastReadReceipt(bookingId: string, readerUserId: string, messageId: string, readAt: Date) {
+  broadcastReadReceipt(
+    bookingId: string,
+    readerUserId: string,
+    messageId: string,
+    readAt: Date,
+    readerName?: string,
+    senderUserId?: string,
+  ) {
     if (!this.server) return;
     const bookingRoom = `booking_chat:${bookingId}`;
-    this.server.to(bookingRoom).emit('messages_read', {
+    const payload: Record<string, unknown> = {
       bookingId,
       readerUserId,
       messageId,
       readAt: readAt.toISOString(),
-    });
-    this.logger.log(`Broadcast read receipt for message #${messageId} to room ${bookingRoom}`);
+    };
+    if (readerName) {
+      payload.readerName = readerName;
+    }
+
+    // 1. Emit to active booking room (anyone currently looking at this conversation)
+    this.server.to(bookingRoom).emit('messages_read', payload);
+
+    // 2. Also emit directly to the sender's user room (ensures real-time double blue checkmark update across tabs)
+    if (senderUserId) {
+      this.server.to(`user:${senderUserId}`).emit('messages_read', payload);
+    }
+
+    this.logger.log(
+      `Broadcast read receipt for message #${messageId} by ${readerUserId} to room ${bookingRoom}${
+        senderUserId ? ` and user:${senderUserId}` : ''
+      }`,
+    );
   }
 
   @SubscribeMessage('get_unread_count')
@@ -252,16 +287,19 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
 
     const booking = await this.bookingRepo.findOne({
       where: { id: data.bookingId },
+      relations: { tutorProfile: true },
     });
 
     if (!booking) {
       return { success: false, error: 'Booking not found' };
     }
 
-    // ABAC verification
+    // ABAC verification (handles tutorProfile.userId fallback as well)
     const isStudent = userId === booking.studentUserId;
     const isRequester = userId === booking.requesterUserId;
-    const isTutor = userId === booking.tutorUserId;
+    const isTutor =
+      userId === booking.tutorUserId ||
+      (booking.tutorProfile && (booking.tutorProfile as unknown as { userId?: string }).userId === userId);
 
     let isGuardian = false;
     if (!isStudent && !isRequester && !isTutor && this.guardianAccess) {

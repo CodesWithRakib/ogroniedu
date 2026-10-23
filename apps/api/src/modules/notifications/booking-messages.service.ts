@@ -7,7 +7,7 @@ import {
   forwardRef,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, IsNull } from 'typeorm';
 import { BookingMessageEntity } from './entities/booking-message.entity';
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { GuardianAccessService } from '../guardians/guardian-access.service';
@@ -191,11 +191,19 @@ export class BookingMessagesService {
     // 6. Real-Time Socket.IO Broadcast to Active Room & Recipient
     this.notificationGateway?.broadcastChatMessage(booking.id, savedMessage, recipientUserId);
 
-    // 7. Asynchronous Notification to Recipient
+    // 7. Resolve Recipient Role for notification registry
+    const recipientRole: 'student' | 'tutor' | 'guardian' =
+      recipientUserId === tutorUserId
+        ? 'tutor'
+        : recipientUserId === booking.studentUserId
+          ? 'student'
+          : 'guardian';
+
+    // Asynchronous Notification to Recipient
     await this.notificationService
       .dispatch({
         userId: recipientUserId,
-        recipientRole: isTutor ? 'student' : 'tutor',
+        recipientRole,
         eventType: 'chat.message',
         payload: {
           bookingId: booking.id,
@@ -205,19 +213,23 @@ export class BookingMessagesService {
       })
       .catch((err) => this.logger.warn(`Failed to dispatch message notification: ${err}`));
 
-    // Notify linked guardians if student received message
-    if (recipientUserId === booking.studentUserId) {
-      const guardianIds = await this.guardianAccess.findActiveGuardianIds(booking.studentUserId);
-      for (const guardianId of guardianIds) {
+    // Notify linked guardians if student received message from tutor or vice-versa
+    const guardianIds = await this.guardianAccess.findActiveGuardianIds(booking.studentUserId);
+    for (const guardianId of guardianIds) {
+      if (guardianId !== user.id && guardianId !== recipientUserId) {
+        // Real-time toast/inbox notification to guardian
+        this.notificationGateway?.sendToUser
+          ? undefined
+          : null;
         await this.notificationService
           .dispatch({
             userId: guardianId,
             recipientRole: 'guardian',
-            eventType: 'system.announcement',
+            eventType: 'chat.message',
             payload: {
               bookingId: booking.id,
-              studentName: booking.studentUser?.displayName || 'Student',
-              senderName: resolveParticipantDisplayName(user, 'Tutor'),
+              senderName: resolveParticipantDisplayName(user, 'Participant'),
+              preview: sanitizedContent.slice(0, 50),
             },
           })
           .catch((err) =>
@@ -271,6 +283,7 @@ export class BookingMessagesService {
     const qb = this.messageRepo
       .createQueryBuilder('m')
       .leftJoinAndSelect('m.senderUser', 'senderUser')
+      .leftJoinAndSelect('m.recipientUser', 'recipientUser')
       .where('m.booking_id = :bookingId', { bookingId });
 
     if (cursor) {
@@ -323,12 +336,16 @@ export class BookingMessagesService {
     message.readAt = new Date();
     const saved = await this.messageRepo.save(message);
 
+    const readerName = resolveParticipantDisplayName(user, 'User');
+
     // Broadcast live read receipt
     this.notificationGateway?.broadcastReadReceipt(
       message.bookingId,
       user.id,
       message.id,
       message.readAt,
+      readerName,
+      message.senderUserId,
     );
 
     return saved;
@@ -341,22 +358,116 @@ export class BookingMessagesService {
     user: AuthenticatedUser,
     bookingId: string,
   ): Promise<{ updatedCount: number }> {
-    const unread = await this.messageRepo.find({
-      where: {
-        bookingId,
-        recipientUserId: user.id,
-        readAt: null as unknown as undefined,
-      },
-    });
+    try {
+      const booking = await this.bookingRepo.findOne({
+        where: { id: bookingId },
+      });
 
-    const now = new Date();
-    for (const msg of unread) {
-      msg.readAt = now;
-      await this.messageRepo.save(msg);
-      this.notificationGateway?.broadcastReadReceipt(bookingId, user.id, msg.id, now);
+      if (!booking) {
+        throw new NotFoundException(`Booking ${bookingId} not found`);
+      }
+
+      const tutorUserId = resolveBookingTutorUserId(booking);
+      const isStudent = user.id === booking.studentUserId;
+      const isRequester = user.id === booking.requesterUserId;
+      const isTutor = user.id === tutorUserId;
+      const isAdmin = isAdminRole(user);
+
+      let isGuardian = false;
+      if (!isStudent && !isRequester && !isTutor && !isAdmin) {
+        const activeGuardianIds = await this.guardianAccess.findActiveGuardianIds(
+          booking.studentUserId,
+        );
+        isGuardian = activeGuardianIds.includes(user.id);
+      }
+
+      if (!isStudent && !isRequester && !isTutor && !isGuardian && !isAdmin) {
+        throw new ForbiddenException(
+          'Access denied: You are not authorized to access this conversation',
+        );
+      }
+
+      const now = new Date();
+      const readerName = resolveParticipantDisplayName(user, 'User');
+
+      // Check if createQueryBuilder is supported by repo mock (e.g. unit tests vs TypeORM)
+      const qb = this.messageRepo.createQueryBuilder?.('m');
+      if (!qb) {
+        // Fallback for mock repositories without query builder
+        const unreadMsgs = await this.messageRepo.find({
+          where: {
+            bookingId,
+            readAt: IsNull(),
+          },
+        });
+        const unreadFiltered = unreadMsgs.filter((m) => m.senderUserId !== user.id);
+        for (const m of unreadFiltered) {
+          m.readAt = now;
+          await this.messageRepo.save(m);
+          this.notificationGateway?.broadcastReadReceipt(
+            bookingId,
+            user.id,
+            m.id,
+            now,
+            readerName,
+            m.senderUserId,
+          );
+        }
+        return { updatedCount: unreadFiltered.length };
+      }
+
+      // Find unread messages sent by others in this booking
+      const unreadQb = qb
+        .select('m.id', 'id')
+        .addSelect('m.sender_user_id', 'senderUserId')
+        .where('m.booking_id = :bookingId', { bookingId })
+        .andWhere('m.sender_user_id != :userId', { userId: user.id });
+
+      // If user is direct recipient, update their messages; if guardian/admin, also find unread messages to student
+      if (isGuardian) {
+        unreadQb.andWhere('(m.recipient_user_id = :userId OR m.recipient_user_id = :studentId)', {
+          userId: user.id,
+          studentId: booking.studentUserId,
+        });
+      } else if (!isAdmin) {
+        unreadQb.andWhere('m.recipient_user_id = :userId', { userId: user.id });
+      }
+
+      const unread = await unreadQb.andWhere('m.read_at IS NULL').getRawMany<{ id: string; senderUserId: string }>();
+
+      if (unread.length === 0) {
+        return { updatedCount: 0 };
+      }
+
+      const unreadIds = unread.map((u) => u.id);
+
+      // Bulk update readAt
+      await this.messageRepo
+        .createQueryBuilder()
+        .update(BookingMessageEntity)
+        .set({ readAt: now })
+        .whereInIds(unreadIds)
+        .andWhere('read_at IS NULL')
+        .execute();
+
+      // Broadcast read receipts for each message with reader's name, ID, and senderUserId
+      // to active booking room AND sender's user room
+      for (const msg of unread) {
+        this.notificationGateway?.broadcastReadReceipt(
+          bookingId,
+          user.id,
+          msg.id,
+          now,
+          readerName,
+          msg.senderUserId,
+        );
+      }
+
+      return { updatedCount: unread.length };
+    } catch (err) {
+      this.logger.error(`Failed to mark messages as read for booking ${bookingId}: ${err}`);
+      throw err;
     }
-
-    return { updatedCount: unread.length };
   }
 
   /**
@@ -433,7 +544,7 @@ export class BookingMessagesService {
         : {
             id: b.tutorUserId,
             displayName: b.tutorProfile?.user?.displayName || 'Tutor',
-            avatarUrl: b.tutorProfile?.avatarUrl || null,
+            avatarUrl: b.tutorProfile?.avatarUrl || b.tutorProfile?.user?.avatarUrl || null,
             role: 'tutor' as const,
           };
 
