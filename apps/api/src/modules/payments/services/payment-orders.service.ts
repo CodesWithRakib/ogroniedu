@@ -3,6 +3,8 @@ import {
   NotFoundException,
   BadRequestException,
   ForbiddenException,
+  HttpException,
+  ServiceUnavailableException,
   Logger,
   Inject,
   forwardRef,
@@ -194,12 +196,31 @@ export class PaymentOrdersService {
 
     const savedOrder = await this.orderRepo.save(order);
 
-    const sessionResult = await adapter.createCheckoutSession(
-      savedOrder.id,
-      Number(amountMinor),
-      savedOrder.currency,
-      user.phone,
-    );
+    let sessionResult: { checkoutUrl: string; providerOrderId: string };
+    try {
+      sessionResult = await adapter.createCheckoutSession(
+        savedOrder.id,
+        Number(amountMinor),
+        savedOrder.currency,
+        user.phone,
+      );
+    } catch (err) {
+      // Mark the order as failed so it doesn't block future attempts
+      savedOrder.status = 'failed';
+      await this.orderRepo.save(savedOrder);
+
+      this.logger.error(
+        `Checkout session creation failed for order ${savedOrder.id}: ${err instanceof Error ? err.message : String(err)}`,
+      );
+
+      // Re-throw HttpExceptions (ServiceUnavailableException, etc.) as-is
+      if (err instanceof HttpException) throw err;
+
+      // Wrap unexpected errors so they don't leak internals
+      throw new ServiceUnavailableException(
+        'The payment gateway could not create a checkout session. Please try again later.',
+      );
+    }
 
     savedOrder.providerReference = sessionResult.providerOrderId;
     await this.orderRepo.save(savedOrder);

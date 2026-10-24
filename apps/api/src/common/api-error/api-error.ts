@@ -46,6 +46,7 @@ const STATUS_TO_CODE: Record<number, ApiErrorCode> = {
   409: 'CONFLICT',
   422: 'VALIDATION_ERROR',
   429: 'RATE_LIMITED',
+  503: 'UPSTREAM_ERROR',
 };
 
 export function codeForStatus(status: number): ApiErrorCode {

@@ -30,18 +30,38 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
   readonly providerName = 'sslcommerz';
   private readonly logger = new Logger(SslcommerzSandboxAdapter.name);
 
-  private readonly storeId = process.env.SSLCOMMERZ_STORE_ID || 'ogron6ac9fcef6d321';
-  private readonly storePasswd = process.env.SSLCOMMERZ_STORE_PASSWD || 'ogron6ac9fcef6d321@ssl';
-  private readonly isLive = process.env.SSLCOMMERZ_IS_LIVE === 'true';
-  private readonly sessionApiUrl =
-    process.env.SSLCOMMERZ_SESSION_URL || 'https://sandbox.sslcommerz.com/gwprocess/v4/process.php';
-  private readonly validationApiUrl =
-    process.env.SSLCOMMERZ_VALIDATION_URL ||
-    'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php';
-  private readonly tunnelBaseUrl =
-    process.env.PAYMENT_TUNNEL_URL ||
-    process.env.NGROK_TUNNEL_URL ||
-    'https://undone-unsure-twisting.ngrok-free.dev';
+  private get storeId(): string {
+    return process.env.SSLCOMMERZ_STORE_ID || 'ogron6ac9fcef6d321';
+  }
+
+  private get storePasswd(): string {
+    return process.env.SSLCOMMERZ_STORE_PASSWD || 'ogron6ac9fcef6d321@ssl';
+  }
+
+  private get isLive(): boolean {
+    return process.env.SSLCOMMERZ_IS_LIVE === 'true';
+  }
+
+  private get sessionApiUrl(): string {
+    return (
+      process.env.SSLCOMMERZ_SESSION_URL || 'https://sandbox.sslcommerz.com/gwprocess/v4/api.php'
+    );
+  }
+
+  private get validationApiUrl(): string {
+    return (
+      process.env.SSLCOMMERZ_VALIDATION_URL ||
+      'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php'
+    );
+  }
+
+  private get tunnelBaseUrl(): string {
+    return (
+      process.env.PAYMENT_TUNNEL_URL ||
+      process.env.NGROK_TUNNEL_URL ||
+      'https://undone-unsure-twisting.ngrok-free.dev'
+    );
+  }
 
   /**
    * Helper: Generate a valid signature for webhook validation and testing
@@ -86,11 +106,11 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
 
     try {
       this.logger.log(
-        `Calling SSLCOMMERZ Sandbox Session API for order ${orderId} (${amountBdt} BDT)`,
+        `Calling SSLCOMMERZ Sandbox Session API at ${this.sessionApiUrl} for order ${orderId} (${amountBdt} BDT)`,
       );
 
       const controller = new AbortController();
-      const timeoutId = setTimeout(() => controller.abort(), 2000);
+      const timeoutId = setTimeout(() => controller.abort(), 15_000);
 
       const response = await fetch(this.sessionApiUrl, {
         method: 'POST',
@@ -103,27 +123,78 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
 
       clearTimeout(timeoutId);
 
-      if (response.ok) {
-        const data = (await response.json()) as SslcommerzSessionResponse;
-        if (data.status === 'SUCCESS' && data.GatewayPageURL) {
-          this.logger.log(`SSLCOMMERZ Session Created Successfully: ${data.sessionkey}`);
-          return {
-            checkoutUrl: data.GatewayPageURL,
-            providerOrderId: data.sessionkey || orderId,
-          };
-        }
-        this.logger.warn(`SSLCOMMERZ API returned non-success: ${JSON.stringify(data)}`);
+      if (!response.ok) {
+        this.logger.warn(
+          `SSLCOMMERZ API returned HTTP ${response.status}: ${response.statusText}`,
+        );
+        throw new ServiceUnavailableException(
+          `Payment gateway returned HTTP ${response.status}. Please try again later.`,
+        );
       }
-    } catch (err: unknown) {
-      this.logger.warn(`Failed to reach SSLCOMMERZ gateway directly (${readErrorMessage(err)}).`);
+
+      let rawText = '';
+      let data: SslcommerzSessionResponse;
+      try {
+        if (typeof response.text === 'function') {
+          rawText = await response.text();
+          data = JSON.parse(rawText) as SslcommerzSessionResponse;
+        } else if (typeof response.json === 'function') {
+          data = (await response.json()) as SslcommerzSessionResponse;
+        } else {
+          throw new Error('No body parser on response');
+        }
+      } catch {
+        if (typeof response.json === 'function') {
+          try {
+            data = (await response.json()) as SslcommerzSessionResponse;
+          } catch {
+            this.logger.warn(
+              `SSLCOMMERZ API returned non-JSON response. First 500 chars: ${rawText.slice(0, 500)}`,
+            );
+            throw new ServiceUnavailableException(
+              'Payment gateway returned an unexpected response. Please try again later.',
+            );
+          }
+        } else {
+          this.logger.warn(
+            `SSLCOMMERZ API returned non-JSON response. First 500 chars: ${rawText.slice(0, 500)}`,
+          );
+          throw new ServiceUnavailableException(
+            'Payment gateway returned an unexpected response. Please try again later.',
+          );
+        }
+      }
+
+      if (data.status === 'SUCCESS' && data.GatewayPageURL) {
+        this.logger.log(`SSLCOMMERZ Session Created Successfully: ${data.sessionkey}`);
+        return {
+          checkoutUrl: data.GatewayPageURL,
+          providerOrderId: data.sessionkey || orderId,
+        };
+      }
+
+      const failInfo = data.status
+        ? `status=${data.status}`
+        : JSON.stringify(data).slice(0, 200);
+      this.logger.warn(`SSLCOMMERZ API returned non-success: ${failInfo}`);
       throw new ServiceUnavailableException(
-        'The payment gateway could not create a checkout session. Please try again later.',
+        `Payment gateway rejected the request (${data.status || 'unknown'}). Please verify store credentials and try again.`,
+      );
+    } catch (err: unknown) {
+      // Re-throw NestJS HTTP exceptions as-is
+      if (err instanceof ServiceUnavailableException) throw err;
+
+      const msg = readErrorMessage(err);
+      const isTimeout = msg.includes('abort') || msg.includes('timeout');
+      this.logger.warn(
+        `Failed to reach SSLCOMMERZ gateway: ${msg}${isTimeout ? ' (timeout after 15s)' : ''}`,
+      );
+      throw new ServiceUnavailableException(
+        isTimeout
+          ? 'Payment gateway timed out. Please check your network and try again.'
+          : 'Could not connect to the payment gateway. Please try again later.',
       );
     }
-
-    throw new ServiceUnavailableException(
-      'The payment gateway rejected the checkout session request. Please try again later.',
-    );
   }
 
   /**
@@ -133,27 +204,77 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
     headers: Record<string, string | string[] | undefined>,
     rawBody: string | Record<string, unknown>,
   ): boolean {
-    const rawSignature =
-      headers['x-sslcommerz-signature'] ||
-      headers['X-SSLCOMMERZ-SIGNATURE'] ||
-      (typeof rawBody === 'object' &&
-        ((rawBody.verify_sign as string | undefined) || (rawBody.signature as string | undefined)));
+    const headerSignature =
+      headers['x-sslcommerz-signature'] || headers['X-SSLCOMMERZ-SIGNATURE'];
+
+    let bodyObj: Record<string, unknown> = {};
+    if (typeof rawBody === 'string') {
+      try {
+        bodyObj = JSON.parse(rawBody) as Record<string, unknown>;
+      } catch {
+        // May be URL encoded form data
+        try {
+          const params = new URLSearchParams(rawBody);
+          bodyObj = Object.fromEntries(params.entries());
+        } catch {
+          bodyObj = {};
+        }
+      }
+    } else if (typeof rawBody === 'object' && rawBody !== null) {
+      bodyObj = rawBody;
+    }
+
+    const verifySign =
+      (bodyObj.verify_sign as string | undefined) ||
+      (bodyObj.signature as string | undefined) ||
+      (typeof headerSignature === 'string' ? headerSignature : undefined);
 
     // Signature is mandatory. An unsigned body is never trusted, even when it
     // claims status VALID/succeeded.
-    if (!rawSignature || typeof rawSignature !== 'string') {
+    if (!verifySign || typeof verifySign !== 'string') {
+      this.logger.warn('SSLCOMMERZ webhook rejected: No verify_sign or signature found');
       return false;
     }
 
+    // A. Official SSLCOMMERZ IPN verification algorithm:
+    // Uses verify_key (comma-separated list of keys), maps values, appends md5(store_passwd),
+    // and compares md5(queryString) with verify_sign.
+    const verifyKey = bodyObj.verify_key as string | undefined;
+    if (verifyKey && typeof verifyKey === 'string') {
+      const keys = verifyKey.split(',').map((k) => k.trim()).filter(Boolean);
+      keys.push('store_passwd');
+
+      const parts: string[] = [];
+      const storePasswdMd5 = crypto.createHash('md5').update(this.storePasswd).digest('hex');
+
+      for (const k of keys) {
+        if (k === 'store_passwd') {
+          parts.push(`store_passwd=${storePasswdMd5}`);
+        } else {
+          const val = bodyObj[k] !== undefined && bodyObj[k] !== null ? String(bodyObj[k]) : '';
+          parts.push(`${k}=${val}`);
+        }
+      }
+
+      const hashString = parts.join('&');
+      const generatedMd5 = crypto.createHash('md5').update(hashString).digest('hex');
+
+      if (generatedMd5.toLowerCase() === verifySign.toLowerCase()) {
+        this.logger.log('SSLCOMMERZ webhook verified via official verify_sign/verify_key algorithm');
+        return true;
+      }
+    }
+
+    // B. Fallback / Test Harness verification: HMAC-SHA256 signature
     const payloadString =
       typeof rawBody === 'string'
         ? rawBody
         : JSON.stringify(
-            Object.keys(rawBody)
+            Object.keys(bodyObj)
               .filter((k) => k !== 'verify_sign' && k !== 'signature')
               .sort()
               .reduce<Record<string, unknown>>((obj, key) => {
-                obj[key] = rawBody[key];
+                obj[key] = bodyObj[key];
                 return obj;
               }, {}),
           );
@@ -164,12 +285,17 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       .digest('hex');
 
     try {
-      const sigBuf = Buffer.from(rawSignature.toLowerCase(), 'utf-8');
+      const sigBuf = Buffer.from(verifySign.toLowerCase(), 'utf-8');
       const expBuf = Buffer.from(expectedHmac.toLowerCase(), 'utf-8');
-      return sigBuf.length === expBuf.length && crypto.timingSafeEqual(sigBuf, expBuf);
+      if (sigBuf.length === expBuf.length && crypto.timingSafeEqual(sigBuf, expBuf)) {
+        return true;
+      }
     } catch {
-      return false;
+      // Fall through
     }
+
+    this.logger.warn(`SSLCOMMERZ webhook signature verification failed for signature: ${verifySign.slice(0, 10)}...`);
+    return false;
   }
 
   /**
