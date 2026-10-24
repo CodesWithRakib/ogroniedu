@@ -35,12 +35,6 @@ describe('Phase 12: Security, Data Isolation & Performance', () => {
       roles: ['organization_owner'],
     };
 
-    const userBeta: AuthenticatedUser = {
-      id: userBetaId,
-      email: 'owner@beta-coaching.com',
-      roles: ['organization_owner'],
-    };
-
     beforeEach(() => {
       mockOrgRepo = {
         findOne: vi.fn(async ({ where }: any) => {

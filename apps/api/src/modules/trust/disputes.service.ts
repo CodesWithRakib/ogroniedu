@@ -1,3 +1,4 @@
+import type { DisputeListResponse } from './interfaces/disputes.interfaces';
 import {
   Injectable,
   NotFoundException,
@@ -26,13 +27,7 @@ import type { AuthenticatedUser } from '../../common/decorators/current-user.dec
 import { isAdminRole } from '../../common/auth/role.utils';
 import { CreateDisputeDto, ResolveDisputeDto, QueryDisputesDto } from './dto';
 
-export interface DisputeListResponse {
-  data: BookingDisputeEntity[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
+export type { DisputeListResponse } from './interfaces/disputes.interfaces';
 
 @Injectable()
 export class DisputesService {

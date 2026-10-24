@@ -84,7 +84,7 @@ export class FilesService {
     const expiresAt = new Date(expiresAtMs).toISOString();
     const payload = `${fileId}:${userId}:${expiresAtMs}`;
     if (!process.env.JWT_SECRET) {
-      throw new Error('JWT_SECRET environment variable is required in production');
+      throw new Error('JWT_SECRET environment variable is required');
     }
     const signature = crypto.createHmac('sha256', process.env.JWT_SECRET).update(payload).digest('hex');
     const accessToken = Buffer.from(`${payload}:${signature}`).toString('base64url');
@@ -237,5 +237,79 @@ export class FilesService {
     }
     const token = this.generateSignedAccessToken(file.id, actorUserId, ttlSeconds);
     return { file, signedUrl: token.signedUrl, expiresAt: token.expiresAt };
+  }
+
+  /**
+   * Verify HMAC-signed download token or fallback to authenticated owner/admin
+   */
+  async verifyDownloadAccess(
+    fileId: string,
+    token?: string,
+    user?: AuthenticatedUser,
+  ): Promise<{ file: FileAssetEntity; isDirectTokenAccess: boolean }> {
+    const file = await this.fileRepo.findOne({
+      where: { id: fileId },
+    });
+
+    if (!file || file.deletedAt) {
+      throw new NotFoundException(`File asset not found: ${fileId}`);
+    }
+
+    if (token) {
+      let decoded: string;
+      try {
+        decoded = Buffer.from(token, 'base64url').toString('utf8');
+      } catch {
+        throw new ForbiddenException('Invalid download token encoding');
+      }
+
+      const parts = decoded.split(':');
+      if (parts.length !== 4) {
+        throw new ForbiddenException('Malformed download token format');
+      }
+
+      const [tokenFileId, tokenUserId, expiresAtMsStr, tokenSig] = parts;
+      const expiresAtMs = Number(expiresAtMsStr);
+
+      if (tokenFileId !== fileId) {
+        throw new ForbiddenException('Token file ID mismatch');
+      }
+
+      if (Number.isNaN(expiresAtMs) || Date.now() > expiresAtMs) {
+        throw new ForbiddenException('Download token has expired');
+      }
+
+      const secret = process.env.JWT_SECRET;
+      if (!secret) {
+        throw new Error('JWT_SECRET environment variable is required');
+      }
+
+      const payload = `${tokenFileId}:${tokenUserId}:${expiresAtMsStr}`;
+      const expectedSig = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+
+      const expectedBuf = Buffer.from(expectedSig, 'utf8');
+      const actualBuf = Buffer.from(tokenSig, 'utf8');
+
+      if (expectedBuf.length !== actualBuf.length || !crypto.timingSafeEqual(expectedBuf, actualBuf)) {
+        throw new ForbiddenException('Invalid download token signature');
+      }
+
+      return { file, isDirectTokenAccess: true };
+    }
+
+    if (!user) {
+      throw new ForbiddenException('Authentication or valid signed download token required');
+    }
+
+    const isOwner = file.ownerUserId === user.id;
+    const isAdmin = isAdminRole(user);
+
+    if (!isOwner && !isAdmin) {
+      throw new ForbiddenException(
+        'Access denied: Private evidence files are restricted to the owner and compliance reviewers.',
+      );
+    }
+
+    return { file, isDirectTokenAccess: false };
   }
 }

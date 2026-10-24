@@ -1,3 +1,4 @@
+import type { ReminderGenerationResult } from '../interfaces/session-reminder.interfaces';
 import { Injectable, Logger, Optional, Inject } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
@@ -8,11 +9,7 @@ import { formatZonedDateTime } from '../utils/zoned-time';
 
 export const REMINDER_WINDOW_MINUTES = 30;
 
-export interface ReminderGenerationResult {
-  scanned: number;
-  created: number;
-  skipped: number;
-}
+export type { ReminderGenerationResult } from '../interfaces/session-reminder.interfaces';
 
 /**
  * Idempotent 30-minute session reminder generation.

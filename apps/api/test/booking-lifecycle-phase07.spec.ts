@@ -12,11 +12,7 @@ import {
   assertNoTutorOverlap,
   ACTIVE_SESSION_STATUSES,
 } from '../src/modules/bookings/services/session-booking.helpers';
-import {
-  BookingExpiryService,
-  BOOKING_REQUEST_TTL_HOURS,
-  BOOKING_PAYMENT_TTL_HOURS,
-} from '../src/modules/bookings/services/booking-expiry.service';
+import { BookingExpiryService } from '../src/modules/bookings/services/booking-expiry.service';
 import type { BookingEntity } from '../src/modules/bookings/entities/booking.entity';
 
 describe('Phase 7: Core Tutoring Lifecycle & Booking Concurrency', () => {

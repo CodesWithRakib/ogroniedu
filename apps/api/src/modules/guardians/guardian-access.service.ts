@@ -1,3 +1,4 @@
+import type { BookingParties } from './interfaces/guardian-access.interfaces';
 import { ForbiddenException, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -6,11 +7,7 @@ import { AuthenticatedUser } from '../../common/decorators/current-user.decorato
 import { isAdminRole } from '../../common/auth/role.utils';
 
 /** Structural booking parties needed for access checks (entity or subset). */
-export interface BookingParties {
-  tutorUserId: string | null;
-  requesterUserId: string;
-  studentUserId: string;
-}
+export type { BookingParties } from './interfaces/guardian-access.interfaces';
 
 /**
  * Single home for guardian-link + booking-participant access checks

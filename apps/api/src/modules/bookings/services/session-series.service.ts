@@ -1,3 +1,4 @@
+import type { SeriesMutationResult } from '../interfaces/session-series.interfaces';
 import {
   Injectable,
   NotFoundException,
@@ -24,10 +25,7 @@ import {
   RESCHEDULABLE_SESSION_STATUSES,
 } from '../constants/session-status-transitions';
 
-export interface SeriesMutationResult {
-  series: BookingSessionSeriesEntity;
-  sessions: BookingSessionEntity[];
-}
+export type { SeriesMutationResult } from '../interfaces/session-series.interfaces';
 
 /**
  * Series-scoped cancel/reschedule. Every operation preserves history:

@@ -30,7 +30,7 @@ describe('Messaging feature (cursor chat)', () => {
     expect(items).toHaveLength(2);
     expect(items[0].senderRole).toBe('tutor');
     expect(items[0].senderName).toBe('Participant');
-    expect(items[1].senderName).toBe('Me');
+    expect(items[1].senderName).toBe('You');
     expect(items[1].isRedacted).toBe(true);
     expect(items[1].redactionReason).toBe('phone');
   });

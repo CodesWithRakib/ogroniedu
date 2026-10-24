@@ -1,3 +1,4 @@
+import type { LearningBookingScope } from '../interfaces/learning-access.interfaces';
 import { ForbiddenException, Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -7,12 +8,7 @@ import { isAdminRole } from '../../../common/auth/role.utils';
 import { GuardianAccessService } from '../../guardians/guardian-access.service';
 
 /** Minimal booking shape needed for learning authorization. */
-export interface LearningBookingScope {
-  id: string;
-  tutorUserId: string;
-  studentUserId: string;
-  requesterUserId: string;
-}
+export type { LearningBookingScope } from '../interfaces/learning-access.interfaces';
 
 /**
  * Ownership / access checks for student learning records: admin bypass,

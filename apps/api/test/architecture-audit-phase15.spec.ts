@@ -1,8 +1,8 @@
-import { describe, it, expect, vi } from 'vitest';
-import { ok, paginated, cursorPaginated, buildOffsetMeta } from '../src/common/api-response/api-response';
+import { describe, it, expect } from 'vitest';
+import { ok, paginated, cursorPaginated } from '../src/common/api-response/api-response';
 import { codeForStatus, errorEnvelope } from '../src/common/api-error/api-error';
 import { AllExceptionsFilter } from '../src/common/filters/http-exception.filter';
-import { HttpException, HttpStatus } from '@nestjs/common';
+import { HttpStatus } from '@nestjs/common';
 import { calculateReplacementRefundShare } from '../src/modules/trust/utils/replacement-policy.util';
 import { generateSecureOtpCode, isAccountBlocked } from '../src/modules/auth/utils/auth-policy.util';
 import { sanitizeAnalyticsProperties } from '../src/modules/analytics/utils/event-sanitizer.util';

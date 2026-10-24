@@ -73,12 +73,12 @@ Phase 08 successfully delivers a production-grade, secure, and auditable **Real-
 
 1. **Inbox Navigation (`/en/messages`):**
    - Verified split-pane layout with search bar, partner list, and unread counters.
-   - Screen captured: [`messaging-inbox.png`](file:///C:/Sofof_tech_2026/ogroniedu/messaging-inbox.png).
+   - Screen captured and verified via Chrome DevTools MCP.
 2. **Active Chat & Redaction Verification:**
    - Clean message posted and rendered in chat bubble.
    - Sensitive message containing phone number and bKash transfer submitted.
    - Server immediately redacted to `[REDACTED CONTACT NUMBER]` and `[REDACTED PAYMENT SOLICITATION]`.
-   - Screen captured: [`messaging-active-chat-redaction.png`](file:///C:/Sofof_tech_2026/ogroniedu/messaging-active-chat-redaction.png).
+   - Screen captured and verified via Chrome DevTools MCP.
 3. **Browser Console Health:**
    - 0 runtime JavaScript errors.
 

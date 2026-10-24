@@ -1,3 +1,4 @@
+import type { VerificationExpirySweepResult } from '../interfaces/tutor-verification-expiry.interfaces';
 import { Inject, Injectable, Logger, Optional, forwardRef } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, LessThanOrEqual, Repository } from 'typeorm';
@@ -13,15 +14,7 @@ import {
 import { TUTOR_VERIFICATION_POLICY_VERSION } from '../constants/tutor.constants';
 import { TutorVerificationStatusService } from './tutor-verification-status.service';
 
-export interface VerificationExpirySweepResult {
-  scannedAt: string;
-  expiredLevels: number;
-  expiredDocuments: number;
-  remindersSent: number;
-  alreadyNotified: number;
-  notifiedTutors: string[];
-  failures: Array<{ subject: string; reason: string }>;
-}
+export type { VerificationExpirySweepResult } from '../interfaces/tutor-verification-expiry.interfaces';
 
 const MS_PER_DAY = 86_400_000;
 

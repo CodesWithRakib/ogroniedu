@@ -9,6 +9,8 @@ export * from './pages/admin-learning-page';
 export * from './pages/admin-audit-logs-page';
 export * from './pages/admin-settings-page';
 export * from './pages/admin-taxonomy-page';
+export * from './pages/admin-organizations-page';
+export * from './pages/admin-replacement-detail-page';
 
 // Modular Settings Hub & Sub-pages
 export * from './pages/admin-settings-hub-page';

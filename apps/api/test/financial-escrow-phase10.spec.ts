@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { BadRequestException, NotFoundException } from '@nestjs/common';
+import { BadRequestException } from '@nestjs/common';
 import { LedgerService } from '../src/modules/payments/ledger.service';
 import { PayoutsService } from '../src/modules/payments/services/payouts.service';
 import { SettlementService } from '../src/modules/payments/services/settlement.service';

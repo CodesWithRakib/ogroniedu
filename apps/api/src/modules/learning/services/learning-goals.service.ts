@@ -1,3 +1,4 @@
+import type { LearningGoalView } from '../interfaces/learning-goals.interfaces';
 import {
   BadRequestException,
   Injectable,
@@ -20,20 +21,7 @@ import { isAdminRole } from '../../../common/auth/role.utils';
 import { toPageSize } from '../../../common/pagination';
 import { assertGoalTransition, isTerminalGoal } from '../utils/learning-goal-transitions';
 
-export interface LearningGoalView {
-  id: string;
-  bookingId: string;
-  studentUserId: string;
-  tutorUserId: string;
-  title: string;
-  description: string | null;
-  targetDate: string | null;
-  status: LearningGoalStatus;
-  evidence: string | null;
-  achievedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-}
+export type { LearningGoalView } from '../interfaces/learning-goals.interfaces';
 
 const EVIDENCE_REQUIRED_STATUSES: readonly LearningGoalStatus[] = ['achieved', 'not_achieved'];
 

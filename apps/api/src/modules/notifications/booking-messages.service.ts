@@ -218,9 +218,6 @@ export class BookingMessagesService {
     for (const guardianId of guardianIds) {
       if (guardianId !== user.id && guardianId !== recipientUserId) {
         // Real-time toast/inbox notification to guardian
-        this.notificationGateway?.sendToUser
-          ? undefined
-          : null;
         await this.notificationService
           .dispatch({
             userId: guardianId,

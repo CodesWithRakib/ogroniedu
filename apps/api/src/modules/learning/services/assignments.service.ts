@@ -1,3 +1,4 @@
+import type { AssignmentView, SubmissionView } from '../interfaces/assignments.interfaces';
 import {
   Injectable,
   NotFoundException,
@@ -11,11 +12,8 @@ import {
 } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
-import { AssignmentEntity, type AssignmentStatus } from '../entities/assignment.entity';
-import {
-  AssignmentSubmissionEntity,
-  SubmissionStatus,
-} from '../entities/assignment-submission.entity';
+import { AssignmentEntity } from '../entities/assignment.entity';
+import { AssignmentSubmissionEntity } from '../entities/assignment-submission.entity';
 import { AssignmentRevisionEntity } from '../entities/assignment-revision.entity';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
 import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
@@ -36,45 +34,7 @@ import { isAdminRole } from '../../../common/auth/role.utils';
 import { toPageSize } from '../../../common/pagination';
 import { computeAverageScorePercent, computeCompletionRate } from '../utils/learning-metrics';
 
-export interface AssignmentView {
-  id: string;
-  bookingId: string;
-  sessionId: string | null;
-  tutorUserId: string;
-  studentUserId: string;
-  subjectId: string | null;
-  title: string;
-  topic: string | null;
-  instructions: string | null;
-  dueAt: string | null;
-  maxScore: number;
-  status: AssignmentStatus;
-  publishedAt: string | null;
-  resubmissionAllowed: boolean;
-  lateSubmissionAllowed: boolean;
-  maxAttempts: number;
-  createdAt: string;
-  submission: SubmissionView | null;
-}
-
-export interface SubmissionView {
-  id: string;
-  assignmentId: string;
-  studentUserId: string;
-  submissionText: string | null;
-  assetIds: string[];
-  submittedAt: string;
-  status: SubmissionStatus;
-  workflowState: 'submitted' | 'under_review' | 'reviewed' | 'returned' | 'late';
-  attemptCount: number;
-  score: number | null;
-  maxScore: number | null;
-  tutorFeedback: string | null;
-  returnReason: string | null;
-  reviewedBy: string | null;
-  reviewedAt: string | null;
-  canSubmitAgain: boolean;
-}
+export type { AssignmentView, SubmissionView } from '../interfaces/assignments.interfaces';
 
 /**
  * Homework lifecycle. Attachments are validated against `file_assets`

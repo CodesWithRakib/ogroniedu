@@ -1,3 +1,4 @@
+import type { BookingExpirySweepResult } from '../interfaces/booking-expiry.interfaces';
 import {
   Injectable,
   Logger,
@@ -17,12 +18,7 @@ export const BOOKING_EXPIRY_LOCK_KEY = 913_402_308;
 export const BOOKING_REQUEST_TTL_HOURS = 48;
 export const BOOKING_PAYMENT_TTL_HOURS = 24;
 
-export interface BookingExpirySweepResult {
-  expiredRequests: number;
-  expiredPayments: number;
-  totalExpired: number;
-  skippedDueToLock?: boolean;
-}
+export type { BookingExpirySweepResult } from '../interfaces/booking-expiry.interfaces';
 
 @Injectable()
 export class BookingExpiryService {

@@ -1,3 +1,4 @@
+import type { ConfirmedPayment } from '../interfaces/payment-webhooks.interfaces';
 import {
   Injectable,
   NotFoundException,
@@ -31,11 +32,7 @@ import type { NormalizedWebhookEvent } from '../adapters/payment-provider.interf
 
 type WebhookHeaderMap = Record<string, string | string[] | undefined>;
 
-interface ConfirmedPayment {
-  order: PaymentOrderEntity;
-  booking: BookingEntity | null;
-  invoice: InvoiceEntity | null;
-}
+
 
 function isUniqueViolation(error: unknown): boolean {
   return (

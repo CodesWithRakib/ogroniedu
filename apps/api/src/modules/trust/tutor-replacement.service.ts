@@ -1,3 +1,4 @@
+import type { ReplacementRepos, ReplacementListResponse } from './interfaces/tutor-replacement.interfaces';
 import {
   Injectable,
   NotFoundException,
@@ -68,21 +69,7 @@ import type {
   ReplacementCaseView,
 } from './interfaces/replacement-case-view.interface';
 
-interface ReplacementRepos {
-  caseRepo: Repository<TutorReplacementCaseEntity>;
-  bookingRepo: Repository<BookingEntity>;
-  outboxRepo: Repository<OutboxEventEntity>;
-  auditRepo: Repository<AuditLogEntity>;
-  eventRepo: Repository<TutorReplacementCaseEventEntity>;
-}
-
-export interface ReplacementListResponse {
-  data: ReplacementCaseView[];
-  total: number;
-  page: number;
-  pageSize: number;
-  totalPages: number;
-}
+export type { ReplacementRepos, ReplacementListResponse } from './interfaces/tutor-replacement.interfaces';
 
 @Injectable()
 export class TutorReplacementService {

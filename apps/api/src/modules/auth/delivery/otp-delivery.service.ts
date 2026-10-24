@@ -9,17 +9,14 @@ import {
   type OtpDeliveryProvider,
   type OtpDeliveryResult,
   type OtpMessage,
+  type OtpDeliveryConfiguration,
 } from './otp-delivery.types';
 import { OTP_DEFAULT_PROVIDER_NAME, OTP_PROVIDER_CHAIN } from './otp-provider.factory';
 
 /** Provider names that are only ever valid outside production. */
 const DEV_PROVIDER_NAME = 'dev';
 
-export interface OtpDeliveryConfiguration {
-  provider: string;
-  channel: OtpDeliveryChannel;
-  configured: boolean;
-}
+export type { OtpDeliveryConfiguration } from './otp-delivery.types';
 
 /**
  * Delivers OTPs through a configuration-selected provider with a configured

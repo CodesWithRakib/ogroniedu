@@ -1,3 +1,4 @@
+import type { LessonPlanView } from '../interfaces/lesson-plans.interfaces';
 import {
   BadRequestException,
   Injectable,
@@ -7,11 +8,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, Repository } from 'typeorm';
-import {
-  LessonPlanEntity,
-  type LessonPlanStatus,
-  type LessonPlanStep,
-} from '../entities/lesson-plan.entity';
+import { LessonPlanEntity } from '../entities/lesson-plan.entity';
 import { LearningMaterialEntity } from '../entities/learning-material.entity';
 import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
 import { AuditService } from '../../audit/audit.service';
@@ -22,33 +19,7 @@ import { AuthenticatedUser } from '../../../common/decorators/current-user.decor
 import { isAdminRole } from '../../../common/auth/role.utils';
 import { toPageSize } from '../../../common/pagination';
 
-export interface LessonPlanView {
-  id: string;
-  bookingId: string;
-  sessionId: string | null;
-  tutorUserId: string;
-  subjectId: string | null;
-  title: string;
-  description: string | null;
-  objectives: string[];
-  steps: LessonPlanStep[];
-  status: LessonPlanStatus;
-  publishedAt: string | null;
-  createdAt: string;
-  updatedAt: string;
-  materials: Array<{
-    id: string;
-    kind: 'file' | 'link';
-    title: string;
-    description: string | null;
-    status: string;
-    externalUrl: string | null;
-    fileName: string | null;
-    mediaType: string | null;
-    sizeBytes: string | null;
-    publishedAt: string | null;
-  }>;
-}
+export type { LessonPlanView } from '../interfaces/lesson-plans.interfaces';
 
 @Injectable()
 export class LessonPlansService {

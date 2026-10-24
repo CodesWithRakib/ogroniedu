@@ -1,3 +1,4 @@
+import type { PaymentReceiptDto } from '../interfaces/payment-orders.interfaces';
 import {
   Injectable,
   NotFoundException,
@@ -24,24 +25,7 @@ import { AuthenticatedUser } from '../../../common/decorators/current-user.decor
 import { isAdminRole } from '../../../common/auth/role.utils';
 import { minorToBdtString, parseMinor } from '../../../common/money/money';
 
-export interface PaymentReceiptDto {
-  receiptId: string;
-  invoiceId: string | null;
-  invoiceNumber: string | null;
-  orderId: string;
-  bookingId: string;
-  payerName: string;
-  studentName: string;
-  tutorName: string;
-  subjectName: string;
-  amountBdt: string;
-  amountMinor: number;
-  currency: string;
-  status: PaymentOrderStatus;
-  paymentMethod: string;
-  provider: string;
-  paidAt: string;
-}
+export type { PaymentReceiptDto } from '../interfaces/payment-orders.interfaces';
 
 /**
  * Payment order lifecycle: creation with idempotency protection plus

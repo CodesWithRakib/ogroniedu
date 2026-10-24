@@ -1,3 +1,4 @@
+import type { VerificationReviewerRecipient } from '../interfaces/tutor-verification-reviewer.interfaces';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { In, IsNull, Repository } from 'typeorm';
@@ -7,12 +8,7 @@ import { RoleEntity } from '../../auth/entities/role.entity';
 import { UserRoleEntity } from '../../auth/entities/user-role.entity';
 import { TUTOR_REVIEW_ROLES } from '../../../common/auth/role.utils';
 
-export interface VerificationReviewerRecipient {
-  userId: string;
-  roles: string[];
-  /** Role claimed on the notification, must be eligible for the event type. */
-  notificationRole: NotificationRole;
-}
+export type { VerificationReviewerRecipient } from '../interfaces/tutor-verification-reviewer.interfaces';
 
 /**
  * Resolves the *recipients* of tutor-verification queue notifications from the

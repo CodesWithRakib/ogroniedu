@@ -1,13 +1,10 @@
+import type { AccountAccessSnapshot } from '../interfaces/account-access.interfaces';
 import { Injectable } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
 
 /** Minimal trusted server-side account state used for token invalidation. */
-export interface AccountAccessSnapshot {
-  id: string;
-  status: string;
-  authEpoch: number;
-}
+export type { AccountAccessSnapshot } from '../interfaces/account-access.interfaces';
 
 /**
  * Authoritative read of the account row behind an access token.

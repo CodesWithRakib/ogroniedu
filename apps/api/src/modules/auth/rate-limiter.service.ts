@@ -1,8 +1,7 @@
+import type { RateLimitRecord } from './interfaces/rate-limit-record.interface';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
-interface RateLimitRecord {
-  timestamps: number[];
-}
+
 
 @Injectable()
 export class RateLimiterService {

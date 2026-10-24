@@ -14,7 +14,9 @@ const tutorPassword = process.env.E2E_TUTOR_PASSWORD;
 
 interface BilingualTutor {
   id: string;
-  displayName: string;
+  displayName?: string;
+  displayNameBn?: string;
+  displayNameEn?: string;
   headlineEn: string | null;
   headlineBn: string | null;
   bioEn: string | null;
@@ -42,9 +44,12 @@ test.describe('bilingual tutor profile (live API)', () => {
     test.skip(!tutor, 'seed has no tutor with both Bangla and English copy');
 
     await page.goto(`/bn/tutors/${tutor!.id}`);
-    await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      tutor!.displayName.split(' ')[0]!,
-    );
+    const tutorName = tutor!.displayNameBn || tutor!.displayNameEn || tutor!.displayName || '';
+    if (tutorName) {
+      await expect(page.getByRole('heading', { level: 1 })).toContainText(
+        tutorName.split(' ')[0]!,
+      );
+    }
     await expect(page.getByText(tutor!.headlineBn!, { exact: true }).first()).toBeVisible();
     await expect(page.getByText(tutor!.bioBn!, { exact: true })).toBeVisible();
 

@@ -4,7 +4,6 @@ import { EventTrackingService } from '../src/modules/analytics/services/event-tr
 import { AnalyticsService } from '../src/modules/analytics/analytics.service';
 import { AnalyticsTutorService } from '../src/modules/analytics/services/analytics-tutor.service';
 import { AllowedAnalyticsEvent, type TrackEventDto } from '../src/modules/analytics/dto/track-event.dto';
-import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
 /**
  * Phase 14: Product Analytics & Retention Optimization Test Suite

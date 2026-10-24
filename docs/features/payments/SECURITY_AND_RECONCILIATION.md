@@ -3,7 +3,7 @@
 **Date:** 2026-10-20
 **Scope:** Webhook trust, idempotency, authorization, sensitive data, audit and
 reconciliation for the payments module.
-**Prerequisite reading:** [../../SECURITY_AND_PRIVACY.md](../../SECURITY_AND_PRIVACY.md),
+**Prerequisite reading:** [../../production-modernization/07-SECURITY-AUDIT.md](../../production-modernization/07-SECURITY-AUDIT.md),
 [LEDGER_DESIGN.md](LEDGER_DESIGN.md),
 [ROLE_PERMISSION_MATRIX.md](ROLE_PERMISSION_MATRIX.md).
 

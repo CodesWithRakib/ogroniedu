@@ -6,3 +6,4 @@ export * from './components/checkoutMethodPicker';
 export * from './components/paymentReceipt';
 export * from './components/checkoutLedger';
 export * from './pages/payments-page';
+export * from './pages/booking-pay-page';

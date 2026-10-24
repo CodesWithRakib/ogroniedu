@@ -1,3 +1,4 @@
+import type { BlockedPeriodInput } from '../interfaces/tutor-availability.interfaces';
 import { BadRequestException, ConflictException, Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, LessThan, MoreThan } from 'typeorm';
@@ -11,19 +12,7 @@ import {
   toDateString,
 } from '../../bookings/utils/zoned-time';
 
-export interface AvailabilitySlotInput {
-  weekday: number;
-  startLocal: string;
-  endLocal: string;
-  timezone?: string;
-}
-
-export interface BlockedPeriodInput {
-  startsAt: string;
-  endsAt: string;
-  timezone?: string;
-  reason?: string;
-}
+export type { AvailabilitySlotInput, BlockedPeriodInput } from '../interfaces/tutor-availability.interfaces';
 
 /**
  * Single home for tutor availability rules.

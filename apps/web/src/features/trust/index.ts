@@ -8,3 +8,7 @@ export * from './components/tutorReplacementModal';
 export * from './components/ReviewModal';
 export * from './components/EmergencySosModal';
 export * from './components/DisputeModal';
+export * from './pages/safety-reports-page';
+export * from './pages/tutor-replacement-create-page';
+export * from './pages/tutor-replacements-list-page';
+export * from './pages/tutor-replacement-detail-page';

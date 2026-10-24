@@ -43,6 +43,7 @@ import {
   isOtpMaxAttemptsExceeded,
 } from './utils/auth-policy.util';
 import type { AuthMeta, AuthResponse } from './interfaces/auth-response.interface';
+import type { LoginUserRow } from './interfaces/login-user-row.interface';
 
 export type { TokenPayload, AuthResponse, AuthMeta } from './interfaces/auth-response.interface';
 
@@ -64,16 +65,7 @@ const PG_UNIQUE_VIOLATION = '23505';
 /** Per-step statuses recorded in user_onboarding.pending_steps. */
 const ONBOARDING_STATUS_IN_PROGRESS = 'in_progress';
 
-interface LoginUserRow {
-  id: string;
-  email: string | null;
-  phone_e164: string | null;
-  password_hash: string | null;
-  display_name: string;
-  preferred_locale: 'bn' | 'en' | null;
-  status: string;
-  auth_epoch: number | string | null;
-}
+
 
 
 

@@ -117,4 +117,92 @@ describe('FilesService Unit & Ownership Tests', () => {
       await expect(service.getFileAccess('file-999', ownerUser)).rejects.toThrow(NotFoundException);
     });
   });
+
+  describe('HMAC Token Verification for Downloads (SEC-001)', () => {
+    const fileRecord: Partial<FileAssetEntity> = {
+      id: 'file-123',
+      ownerUserId: ownerUser.id,
+      originalFilename: 'nid.pdf',
+      mediaType: 'application/pdf',
+      sizeBytes: 2048,
+      visibility: 'private',
+      storageProvider: 'local_secure',
+      createdAt: new Date(),
+    };
+
+    it('should grant download access using a valid HMAC-signed access token', async () => {
+      mockFileRepo.findOne.mockResolvedValue(fileRecord);
+
+      const tokenObj = service.generateSignedAccessToken('file-123', ownerUser.id, 3600);
+      const result = await service.verifyDownloadAccess('file-123', tokenObj.accessToken);
+
+      expect(result.file.id).toBe('file-123');
+      expect(result.isDirectTokenAccess).toBe(true);
+    });
+
+    it('NEGATIVE TEST: should reject expired HMAC download token', async () => {
+      mockFileRepo.findOne.mockResolvedValue(fileRecord);
+
+      // Token generated with negative TTL (already expired)
+      const tokenObj = service.generateSignedAccessToken('file-123', ownerUser.id, -10);
+      await expect(
+        service.verifyDownloadAccess('file-123', tokenObj.accessToken),
+      ).rejects.toThrow(/expired/i);
+    });
+
+    it('NEGATIVE TEST: should reject tampered HMAC signature', async () => {
+      mockFileRepo.findOne.mockResolvedValue(fileRecord);
+
+      const tokenObj = service.generateSignedAccessToken('file-123', ownerUser.id, 3600);
+      const decoded = Buffer.from(tokenObj.accessToken, 'base64url').toString('utf8');
+      const parts = decoded.split(':');
+      parts[3] = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
+      const tamperedToken = Buffer.from(parts.join(':')).toString('base64url');
+
+      await expect(
+        service.verifyDownloadAccess('file-123', tamperedToken),
+      ).rejects.toThrow(/signature/i);
+    });
+
+    it('NEGATIVE TEST: should reject token for mismatched fileId', async () => {
+      mockFileRepo.findOne.mockResolvedValue(fileRecord);
+
+      const tokenObj = service.generateSignedAccessToken('other-file-999', ownerUser.id, 3600);
+      await expect(
+        service.verifyDownloadAccess('file-123', tokenObj.accessToken),
+      ).rejects.toThrow(/mismatch/i);
+    });
+
+    it('should allow authenticated owner to download directly without token', async () => {
+      mockFileRepo.findOne.mockResolvedValue(fileRecord);
+
+      const result = await service.verifyDownloadAccess('file-123', undefined, ownerUser);
+      expect(result.file.id).toBe('file-123');
+      expect(result.isDirectTokenAccess).toBe(false);
+    });
+
+    it('should allow authenticated admin to download directly without token', async () => {
+      mockFileRepo.findOne.mockResolvedValue(fileRecord);
+
+      const result = await service.verifyDownloadAccess('file-123', undefined, adminUser);
+      expect(result.file.id).toBe('file-123');
+      expect(result.isDirectTokenAccess).toBe(false);
+    });
+
+    it('NEGATIVE TEST: should reject unauthenticated request without token', async () => {
+      mockFileRepo.findOne.mockResolvedValue(fileRecord);
+
+      await expect(service.verifyDownloadAccess('file-123', undefined, undefined)).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+
+    it('NEGATIVE TEST: should reject unauthorized non-owner without token', async () => {
+      mockFileRepo.findOne.mockResolvedValue(fileRecord);
+
+      await expect(service.verifyDownloadAccess('file-123', undefined, unrelatedUser)).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
+  });
 });

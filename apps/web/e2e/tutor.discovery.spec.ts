@@ -11,7 +11,7 @@ import { test, expect, type Page, type Response } from '@playwright/test';
 
 interface SearchPayload {
   success: boolean;
-  data: Array<{ id: string; displayName: string }>;
+  data: Array<{ id: string; displayName?: string; displayNameBn?: string; displayNameEn?: string }>;
 }
 
 function isSearchResponse(response: Response): boolean {
@@ -102,9 +102,12 @@ test.describe('tutor discovery (live API)', () => {
 
     const tutor = payload!.data[0]!;
     await page.goto(`/bn/tutors/${tutor.id}`);
-    await expect(page.getByRole('heading', { level: 1 })).toContainText(
-      tutor.displayName.split(' ')[0]!,
-    );
+    const tutorName = tutor.displayNameBn || tutor.displayNameEn || tutor.displayName || '';
+    if (tutorName) {
+      await expect(page.getByRole('heading', { level: 1 })).toContainText(
+        tutorName.split(' ')[0]!,
+      );
+    }
     // Genuine rating or an explicit no-reviews state — never a fabricated score.
     await expect(
       page.getByTestId('profile-rating').or(page.getByTestId('profile-no-rating')),

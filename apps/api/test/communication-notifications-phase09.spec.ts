@@ -1,6 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { NotificationGateway } from '../src/modules/notifications/notification.gateway';
-import { NotificationService } from '../src/modules/notifications/notification.service';
 import {
   inspectAndRedactContent,
   normalizeBengaliDigits,

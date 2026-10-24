@@ -3,6 +3,7 @@ import {
   Post,
   Get,
   Param,
+  Query,
   Body,
   UseGuards,
   HttpCode,
@@ -12,6 +13,7 @@ import {
 } from '@nestjs/common';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
+import { Public } from '../../common/decorators/public.decorator';
 import { FilesService } from './files.service';
 import { UploadEvidenceFileDto } from '../tutors/dto/upload-evidence-file.dto';
 
@@ -67,19 +69,22 @@ export class FilesController {
     };
   }
 
+  @Public()
   @Get(':fileId/download')
   async downloadFile(
-    @CurrentUser() user: AuthenticatedUser,
     @Param('fileId', ParseUUIDPipe) fileId: string,
+    @Query('token') token?: string,
+    @CurrentUser() user?: AuthenticatedUser,
   ) {
-    const file = await this.filesService.getFileAccess(fileId, user);
+    const { file } = await this.filesService.verifyDownloadAccess(fileId, token, user);
     return {
       success: true,
       fileId: file.id,
       originalFilename: file.originalFilename,
       mediaType: file.mediaType,
-      signedUrl: file.signedAccessUrl,
-      expiresAt: file.expiresAt,
+      sizeBytes: file.sizeBytes,
+      storageKey: file.storageKey,
+      storageProvider: file.storageProvider,
     };
   }
 }

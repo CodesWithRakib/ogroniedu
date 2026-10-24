@@ -1,3 +1,4 @@
+import type { SavedTutorItemDto } from '../interfaces/saved-tutors.interfaces';
 import { BadRequestException, Inject, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -5,12 +6,7 @@ import { SavedTutorEntity } from '../entities/saved-tutor.entity';
 import { TutorSearchService } from './tutor-search.service';
 import type { TutorPublicProfileDto } from '../dto';
 
-export interface SavedTutorItemDto {
-  tutorId: string;
-  savedAt: string;
-  /** Null when the tutor is no longer publicly discoverable. */
-  profile: TutorPublicProfileDto | null;
-}
+export type { SavedTutorItemDto } from '../interfaces/saved-tutors.interfaces';
 
 /**
  * User-private tutor shortlist. Every query is scoped to the authenticated

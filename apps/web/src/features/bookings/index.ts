@@ -12,3 +12,5 @@ export * from './components/sessions/cancelModal';
 export * from './components/sessions/scheduleModal';
 export * from './pages/requests-page';
 export * from './pages/sessions-page';
+export * from './pages/booking-detail-page';
+export * from './pages/session-detail-page';

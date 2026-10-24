@@ -1,3 +1,4 @@
+import type { AttendanceSummary } from '../interfaces/attendance.interfaces';
 import {
   Injectable,
   NotFoundException,
@@ -20,7 +21,7 @@ import { AttendanceSummaryQueryDto, MarkAttendanceDto, StudentScopedListQueryDto
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { isAdminRole } from '../../../common/auth/role.utils';
 import { toPageSize } from '../../../common/pagination';
-import { computeAttendanceMetrics, type AttendanceSummaryMetrics } from '../utils/learning-metrics';
+import { computeAttendanceMetrics } from '../utils/learning-metrics';
 
 /** Tutors may correct their own attendance for this long after the session. */
 export const ATTENDANCE_EDIT_WINDOW_HOURS = 72;
@@ -28,14 +29,7 @@ export const ATTENDANCE_EDIT_WINDOW_HOURS = 72;
 /** Sessions in these states cannot receive attendance. */
 const NON_ATTENDANCE_SESSION_STATUSES: readonly string[] = ['cancelled', 'no_show'];
 
-export interface AttendanceSummary {
-  studentId: string;
-  bookingId: string | null;
-  periodStart: string;
-  periodEnd: string;
-  sessionsInPeriod: number;
-  metrics: AttendanceSummaryMetrics;
-}
+export type { AttendanceSummary } from '../interfaces/attendance.interfaces';
 
 @Injectable()
 export class LearningAttendanceService {

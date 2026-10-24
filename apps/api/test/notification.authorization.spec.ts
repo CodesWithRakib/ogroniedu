@@ -1,7 +1,8 @@
 import { describe, it, expect, beforeEach } from 'vitest';
 import { NotificationService } from '../src/modules/notifications/notification.service';
+import { NotificationController } from '../src/modules/notifications/notification.controller';
 import { AuthGuard } from '../src/common/guards/auth.guard';
-import { ExecutionContext, UnauthorizedException } from '@nestjs/common';
+import { ExecutionContext, UnauthorizedException, ForbiddenException } from '@nestjs/common';
 
 describe('Notification Authorization & Cross-User Security Tests', () => {
   let service: NotificationService;
@@ -116,6 +117,62 @@ describe('Notification Authorization & Cross-User Security Tests', () => {
       // User A sees their own notifications
       expect(listA.total).toBeGreaterThanOrEqual(2);
       expect(listA.items.every((item) => item.userId === userA)).toBe(true);
+    });
+  });
+
+  describe('Test Dispatch Gating (SEC-002)', () => {
+    let controller: NotificationController;
+
+    beforeEach(() => {
+      controller = new NotificationController(service);
+    });
+
+    it('NEGATIVE TEST: should throw 403 Forbidden when TEST_DISPATCH_ENABLED is not set', async () => {
+      delete process.env.TEST_DISPATCH_ENABLED;
+
+      const user: any = { id: userA, roles: ['super_admin'] };
+      const dto: any = {
+        userId: userA,
+        eventType: 'system.announcement',
+        recipientRole: 'admin',
+        payload: {},
+      };
+
+      await expect(controller.testDispatch(user, dto)).rejects.toThrow(ForbiddenException);
+    });
+
+    it('NEGATIVE TEST: should throw 403 Forbidden when non-admin accesses test-dispatch even if enabled', async () => {
+      process.env.TEST_DISPATCH_ENABLED = 'true';
+
+      const studentUser: any = { id: userA, roles: ['student'] };
+      const dto: any = {
+        userId: userA,
+        eventType: 'system.announcement',
+        recipientRole: 'student',
+        payload: {},
+      };
+
+      await expect(controller.testDispatch(studentUser, dto)).rejects.toThrow(
+        /Insufficient permissions/,
+      );
+    });
+
+    it('should allow super_admin to dispatch when TEST_DISPATCH_ENABLED=true', async () => {
+      process.env.TEST_DISPATCH_ENABLED = 'true';
+
+      const adminUser: any = { id: userA, roles: ['super_admin'] };
+      const dto: any = {
+        userId: userA,
+        eventType: 'system.announcement',
+        recipientRole: 'admin',
+        payload: { messageEn: 'Admin test dispatch' },
+      };
+
+      const result = await controller.testDispatch(adminUser, dto);
+      expect(result).toBeDefined();
+      expect(result.userId).toBe(userA);
+
+      delete process.env.TEST_DISPATCH_ENABLED;
     });
   });
 });

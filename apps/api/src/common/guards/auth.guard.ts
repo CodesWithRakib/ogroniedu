@@ -103,6 +103,48 @@ export class AuthGuard implements CanActivate {
         context.getClass(),
       ]);
       if (isPublic) {
+        try {
+          const req = context.switchToHttp().getRequest();
+          const authHdr = req.headers['authorization'];
+          const uidHdr = req.headers['x-user-id'];
+          if (isTestAuthBypassEnabled() && uidHdr) {
+            const rolesHdr = req.headers['x-user-roles'];
+            req.user = {
+              id: String(uidHdr),
+              roles: rolesHdr ? String(rolesHdr).split(',') : ['guardian'],
+              preferredLocale: 'bn',
+            };
+          } else if (typeof authHdr === 'string') {
+            const m = authHdr.trim().match(/^bearer\s+(.+)$/i);
+            if (m && m[1]) {
+              const t = m[1].trim();
+              if (isTestAuthBypassEnabled() && t.startsWith('mock:')) {
+                const parts = t.split(':');
+                req.user = {
+                  id: parts[1] || '00000000-0000-0000-0000-000000000001',
+                  roles: [parts[2] || 'guardian'],
+                  preferredLocale: 'bn',
+                };
+              } else {
+                const claims = toAccessTokenClaims(
+                  jwt.verify(t, this.jwtSecret, { algorithms: [ACCESS_TOKEN_ALGORITHM] }),
+                );
+                const uid = claims.sub || claims.id;
+                if (uid) {
+                  req.user = {
+                    id: uid,
+                    email: claims.email,
+                    phone: claims.phone,
+                    roles: claims.roles || [],
+                    preferredLocale: claims.preferredLocale || 'bn',
+                  };
+                }
+              }
+            }
+          }
+        } catch {
+          // Public routes safely proceed without rejecting
+        }
         return true;
       }
     }

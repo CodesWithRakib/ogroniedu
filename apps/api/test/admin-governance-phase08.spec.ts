@@ -7,7 +7,6 @@ import {
 import jwt from 'jsonwebtoken';
 import { AdminUsersService } from '../src/modules/admin/services/admin-users.service';
 import { AdminPlatformService } from '../src/modules/admin/services/admin-platform.service';
-import { AdminDashboardService } from '../src/modules/admin/services/admin-dashboard.service';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
 
 describe('Phase 8: Admin & Super Admin Governance Verification', () => {

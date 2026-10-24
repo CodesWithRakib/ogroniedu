@@ -74,3 +74,9 @@ export function maskDestination(destination: string): string {
   if (destination.length <= 4) return '***';
   return `${destination.slice(0, 3)}****${destination.slice(-2)}`;
 }
+
+export interface OtpDeliveryConfiguration {
+  provider: string;
+  channel: OtpDeliveryChannel;
+  configured: boolean;
+}

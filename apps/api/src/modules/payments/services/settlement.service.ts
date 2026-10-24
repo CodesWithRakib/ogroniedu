@@ -1,3 +1,4 @@
+import type { ReconciliationReport } from '../interfaces/settlement.interfaces';
 import {
   Injectable,
   NotFoundException,
@@ -31,19 +32,7 @@ import { AuthenticatedUser } from '../../../common/decorators/current-user.decor
 import { isAdminRole } from '../../../common/auth/role.utils';
 import { parseMinor, splitCommission } from '../../../common/money/money';
 
-export interface ReconciliationReport {
-  runId: string | null;
-  reconciledAt: string;
-  totalOrders: number;
-  succeededOrders: number;
-  totalTransactions: number;
-  totalRefunds: number;
-  totalPayouts: number;
-  isLedgerBalanced: boolean;
-  ledgerTotalDebitsPoisha: string;
-  ledgerTotalCreditsPoisha: string;
-  unreconciledDiscrepancies: Array<{ reference: string; reason: string }>;
-}
+export type { ReconciliationReport } from '../interfaces/settlement.interfaces';
 
 /**
  * Post-payment settlement. A completed session releases funds from a specific

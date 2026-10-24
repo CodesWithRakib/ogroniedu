@@ -12,3 +12,6 @@ export * from './components/modals/homeworkSubmitModal';
 export * from './components/modals/gradingModal';
 export * from './components/learningManagementView';
 export * from './pages/learning-page';
+export * from './pages/assignment-detail-page';
+export * from './pages/assignment-submissions-page';
+export * from './pages/progress-detail-page';
