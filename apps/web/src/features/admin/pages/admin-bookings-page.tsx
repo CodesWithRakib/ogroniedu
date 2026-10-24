@@ -117,6 +117,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
             <AdminBookingsTab
               bookings={actions.bookings}
               onRequestCancel={view.setSelectedBookingForCancel}
+              locale={locale}
             />
           </div>
 

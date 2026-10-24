@@ -8,6 +8,7 @@ import {
   MessageSquare,
   Mail,
   User,
+  KeyRound,
 } from 'lucide-react';
 import type { NavSection } from './types';
 
@@ -63,27 +64,27 @@ export const TUTOR_NAV_SECTIONS: NavSection[] = [
   },
   {
     id: 'credentials',
-    titleBn: 'সনদ ও আয়',
-    titleEn: 'Credentials & Earnings',
+    titleBn: 'প্রোফাইল ও সনদ',
+    titleEn: 'Profile & Credentials',
     items: [
       {
         href: '/dashboard/tutor/profile',
-        labelBn: 'আমার প্রোফাইল',
-        labelEn: 'My Profile',
+        labelBn: 'প্রোফাইল ও তথ্য',
+        labelEn: 'Profile & Info',
         icon: User,
         testId: 'nav-tutor-profile',
       },
       {
         href: '/dashboard/tutor/verification',
         labelBn: 'সনদ ও ভেরিফিকেশন',
-        labelEn: 'Verification',
+        labelEn: 'Verification & Dossier',
         icon: ShieldCheck,
         testId: 'nav-verification',
       },
       {
         href: '/dashboard/tutor/payments',
         labelBn: 'আয় ও উত্তোলন',
-        labelEn: 'Earnings',
+        labelEn: 'Earnings & Payouts',
         icon: CreditCard,
         testId: 'nav-payments',
       },
@@ -110,9 +111,9 @@ export const TUTOR_NAV_SECTIONS: NavSection[] = [
       },
       {
         href: '/profile',
-        labelBn: 'প্রোফাইল',
-        labelEn: 'Profile',
-        icon: User,
+        labelBn: 'অ্যাকাউন্ট ও নিরাপত্তা',
+        labelEn: 'Account & Security',
+        icon: KeyRound,
         testId: 'nav-profile',
       },
     ],

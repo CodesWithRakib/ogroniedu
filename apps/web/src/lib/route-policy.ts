@@ -42,6 +42,8 @@ export const ADMIN_FAMILY_ROLES: UserRole[] = [
 export const ROUTE_POLICIES: RoutePolicy[] = [
   { prefix: '/admin', allow: ADMIN_FAMILY_ROLES, requiresOnboarding: true },
   { prefix: '/dashboard/admin', allow: ADMIN_FAMILY_ROLES, requiresOnboarding: true },
+  { prefix: '/dashboard/tutor/verification', allow: ['tutor'], requiresOnboarding: false },
+  { prefix: '/dashboard/tutor/profile', allow: ['tutor'], requiresOnboarding: false },
   { prefix: '/dashboard/tutor', allow: ['tutor'], requiresOnboarding: true },
   { prefix: '/dashboard/guardian', allow: ['guardian'], requiresOnboarding: true },
   { prefix: '/dashboard/student', allow: ['student'], requiresOnboarding: true },

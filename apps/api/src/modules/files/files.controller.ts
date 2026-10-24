@@ -10,7 +10,9 @@ import {
   HttpStatus,
   ParseUUIDPipe,
   Inject,
+  Res,
 } from '@nestjs/common';
+import type { Response } from 'express';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { Public } from '../../common/decorators/public.decorator';
@@ -73,18 +75,11 @@ export class FilesController {
   @Get(':fileId/download')
   async downloadFile(
     @Param('fileId', ParseUUIDPipe) fileId: string,
+    @Res() res: Response,
     @Query('token') token?: string,
     @CurrentUser() user?: AuthenticatedUser,
   ) {
     const { file } = await this.filesService.verifyDownloadAccess(fileId, token, user);
-    return {
-      success: true,
-      fileId: file.id,
-      originalFilename: file.originalFilename,
-      mediaType: file.mediaType,
-      sizeBytes: file.sizeBytes,
-      storageKey: file.storageKey,
-      storageProvider: file.storageProvider,
-    };
+    this.filesService.streamFile(file, res);
   }
 }

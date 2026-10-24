@@ -13,6 +13,7 @@
     "lint": "oxlint src test e2e -A no-unused-vars --deny-warnings"
   },
   "dependencies": {
+    "@hookform/resolvers": "^6.0.0",
     "@ogroniedu/contracts": "workspace:*",
     "@radix-ui/react-slot": "^1.4.0",
     "@reduxjs/toolkit": "^2.13.0",
@@ -26,10 +27,12 @@
     "radix-ui": "^1.7.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0",
+    "react-hook-form": "^7.90.0",
     "react-redux": "^9.3.0",
     "socket.io-client": "^4.8.4",
     "sonner": "^2.0.8",
-    "tailwind-merge": "^3.7.0"
+    "tailwind-merge": "^3.7.0",
+    "zod": "^4.6.7"
   },
   "devDependencies": {
     "@ogroniedu/tsconfig": "workspace:*",

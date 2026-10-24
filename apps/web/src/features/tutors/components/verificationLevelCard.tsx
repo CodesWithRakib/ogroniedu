@@ -22,8 +22,14 @@ import {
   CardTitle,
   Label,
   Input,
-  NativeSelect,
 } from '@/components/ui';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { formatDate } from '@/lib/format';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { normalizeUnknownError } from '@/lib/api-error';
@@ -356,19 +362,25 @@ export function VerificationLevelCard({
                 >
                   {isBn ? 'নথির ধরন' : 'Document type'}
                 </Label>
-                <NativeSelect
-                  id={`document-type-${record.level}`}
+                <Select
                   value={documentType}
-                  onChange={(e) => setDocumentType(e.target.value as VerificationDocumentType)}
-                  className="h-9 text-xs"
-                  data-testid={`document-type-${record.level}`}
+                  onValueChange={(val) => setDocumentType(val as VerificationDocumentType)}
                 >
-                  {allowedTypes.map((type) => (
-                    <option key={type} value={type}>
-                      {documentTypeLabel(type, locale)}
-                    </option>
-                  ))}
-                </NativeSelect>
+                  <SelectTrigger
+                    id={`document-type-${record.level}`}
+                    className="h-9 text-xs"
+                    data-testid={`document-type-${record.level}`}
+                  >
+                    <SelectValue placeholder={isBn ? 'নথির ধরন নির্বাচন করুন' : 'Select document type'} />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {allowedTypes.map((type) => (
+                      <SelectItem key={type} value={type}>
+                        {documentTypeLabel(type, locale)}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
               </div>
               <div className="space-y-1">
                 <Label

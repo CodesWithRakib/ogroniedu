@@ -2,6 +2,7 @@ export * from './pages/admin-page';
 export * from './pages/admin-overview-page';
 export * from './pages/admin-users-page';
 export * from './pages/admin-verification-page';
+export * from './pages/admin-tutor-verification-detail-page';
 export * from './pages/admin-disputes-page';
 export * from './pages/admin-finance-page';
 export * from './pages/admin-bookings-page';
@@ -11,6 +12,7 @@ export * from './pages/admin-settings-page';
 export * from './pages/admin-taxonomy-page';
 export * from './pages/admin-organizations-page';
 export * from './pages/admin-replacement-detail-page';
+export * from './pages/admin-booking-detail-page';
 
 // Modular Settings Hub & Sub-pages
 export * from './pages/admin-settings-hub-page';

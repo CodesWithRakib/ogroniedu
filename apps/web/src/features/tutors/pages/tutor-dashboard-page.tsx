@@ -11,7 +11,7 @@ import {
   Sparkles,
   CreditCard,
   BookOpen,
-  TrendingUp,
+  TrendingUp, Clock, CheckCircle2, AlertCircle, ExternalLink, RefreshCw,
 } from 'lucide-react';
 import { TutorLayout } from '@/layouts/tutor/TutorLayout';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
@@ -19,7 +19,7 @@ import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart'
 import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard';
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
 import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
-import { LoadingSpinner, Alert, AlertDescription } from '@/components/ui';
+import { LoadingSpinner, Alert, AlertDescription, Badge } from '@/components/ui';
 import { Button } from '@/components/ui/Button';
 import { TutorVerificationStatusCard } from '@/components/tutor/TutorVerificationStatusCard';
 import {
@@ -33,7 +33,9 @@ import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDateTime } from '@/lib/format';
 import { normalizeApiError } from '@/lib/api-error';
 import { withLocale } from '@/lib/auth';
-import { useAppSelector } from '@/store';
+import { useAppSelector, useAppDispatch } from '@/store';
+import { enqueueToast } from '@/store/slices/ui-slice';
+import { playAudioTone } from '@/lib/audio/notification-sound';
 import {
   useGetOwnTutorProfileQuery,
   useSubmitTutorVerificationMutation,
@@ -68,8 +70,10 @@ function toVerificationStatus(raw: unknown): VerificationStatus {
  * executive analytics cards, Quick Actions bar, and verification workflow.
  */
 export function TutorDashboardPage({ locale }: { locale: Locale }) {
+  const dispatch = useAppDispatch();
   const user = useAppSelector((s) => s.auth.user);
-  const profile = useGetOwnTutorProfileQuery();
+  const profile = useGetOwnTutorProfileQuery(undefined, { pollingInterval: 4000 });
+  const [isPublishing, setIsPublishing] = React.useState(false);
   const requests = useGetBookingRequestsQuery();
   const sessions = useGetSessionsQuery();
   const analytics = useGetMyTutorAnalyticsQuery();
@@ -92,6 +96,63 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       : rawPublication === 'unpublished'
         ? 'unpublished'
         : 'draft';
+
+  const prevStatusRef = React.useRef<VerificationStatus | null>(null);
+  React.useEffect(() => {
+    if (prevStatusRef.current && prevStatusRef.current !== verificationStatus) {
+      if (verificationStatus === 'approved') {
+        playAudioTone('success');
+        dispatch(
+          enqueueToast({
+            title: isBn ? '🎉 ভেরিফিকেশন অনুমোদিত!' : '🎉 Verification Approved!',
+            message: isBn
+              ? 'অভিনন্দন! আপনার প্রোফাইল ভেরিফিকেশন সফলভাবে অনুমোদিত হয়েছে।'
+              : 'Your profile verification has been approved.',
+            type: 'success',
+          }),
+        );
+      } else if (verificationStatus === 'needs_information') {
+        playAudioTone('alert');
+        dispatch(
+          enqueueToast({
+            title: isBn ? '⚠️ তথ্যে সংশোধন প্রয়োজন' : '⚠️ Action Required',
+            message: isBn
+              ? 'অ্যাডমিন টিম আপনার নথিপত্রে কিছু সংশোধনের অনুরোধ করেছেন।'
+              : 'Admin requested changes to your verification documents.',
+            type: 'warning',
+          }),
+        );
+      }
+    }
+    prevStatusRef.current = verificationStatus;
+  }, [verificationStatus, isBn, dispatch]);
+
+  async function handlePublishProfile() {
+    setIsPublishing(true);
+    try {
+      await setPublication({ publicationStatus: 'published' }).unwrap();
+      playAudioTone('success');
+      dispatch(
+        enqueueToast({
+          title: isBn ? 'প্রোফাইল প্রকাশিত!' : 'Profile published!',
+          message: isBn
+            ? 'আপনার প্রোফাইল এখন প্ল্যাটফর্মের সকল শিক্ষার্থী দেখতে পাবে।'
+            : 'Your profile is now live on the marketplace.',
+          type: 'success',
+        }),
+      );
+    } catch {
+      dispatch(
+        enqueueToast({
+          title: isBn ? 'প্রকাশ করতে ব্যর্থ' : 'Failed to publish',
+          message: isBn ? 'অনুগ্রহ করে পুনরায় চেষ্টা করুন।' : 'Please try again.',
+          type: 'error',
+        }),
+      );
+    } finally {
+      setIsPublishing(false);
+    }
+  }
   const rawQualifications = (prof as { qualifications?: unknown } | undefined)?.qualifications;
   const qualifications = Array.isArray(rawQualifications)
     ? rawQualifications.flatMap((q) => {
@@ -180,6 +241,167 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 0. TUTOR EARNINGS & PAYOUT READINESS COMMAND BAR         */}
       {/* ======================================================== */}
+      {/* ======================================================== */}
+      {/* REAL-TIME VERIFICATION & COMPLIANCE STATUS BANNER        */}
+      {/* ======================================================== */}
+      {verificationStatus === 'under_review' || verificationStatus === 'submitted' ? (
+        <div
+          className="rounded-2xl border border-primary/30 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
+          data-testid="tutor-verification-banner-under-review"
+        >
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0 mt-0.5">
+              <Clock className="w-5 h-5 animate-pulse" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-foreground">
+                  {isBn ? 'আপনার ভেরিফিকেশন আবেদন পর্যালোচনায় রয়েছে' : 'Verification Under Review'}
+                </h3>
+                <Badge variant="warning" className="text-[10px]">
+                  {isBn ? 'পর্যালোচনাধীন' : 'In Review'}
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 max-w-2xl leading-relaxed">
+                {isBn
+                  ? 'আমাদের অ্যাডমিন ও কমপ্লায়েন্স টিম আপনার জাতীয় পরিচয়পত্র ও শিক্ষাগত সনদ যাচাই করছে। অনুমোদন সম্পন্ন হলে আপনার প্রোফাইল স্বয়ংক্রিয়ভাবে মার্কেটপ্লেসে লাইভ করার উপযুক্ত হবে।'
+                  : 'Our compliance team is verifying your national ID and educational credentials. You will be notified immediately upon approval.'}
+              </p>
+            </div>
+          </div>
+          <Button asChild size="sm" variant="outline" className="shrink-0 rounded-xl text-xs">
+            <Link href={withLocale('/dashboard/tutor/verification', locale)}>
+              {isBn ? 'ডসিয়ারের বিবরণ দেখুন' : 'View Verification Dossier'}
+            </Link>
+          </Button>
+        </div>
+      ) : verificationStatus === 'needs_information' ? (
+        <div
+          className="rounded-2xl border border-warning/40 bg-warning/10 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
+          data-testid="tutor-verification-banner-needs-info"
+        >
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-warning/20 border border-warning/30 flex items-center justify-center text-warning shrink-0 mt-0.5">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-foreground">
+                  {isBn ? '⚠️ নথিপত্রে তথ্য সংশোধন প্রয়োজন' : '⚠️ Action Required: Additional Information Needed'}
+                </h3>
+                <Badge variant="destructive" className="text-[10px]">
+                  {isBn ? 'সংশোধন প্রয়োজন' : 'Action Required'}
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 max-w-2xl leading-relaxed">
+                {(prof as Record<string, unknown>)?.applicantFeedback
+                  ? String((prof as Record<string, unknown>).applicantFeedback)
+                  : isBn
+                    ? 'অ্যাডমিন টিম আপনার নথিপত্রে কিছু অসঙ্গতি খুঁজে পেয়েছে। অনুগ্রহ করে সঠিক প্রমাণপত্র পুনরায় আপলোড করুন।'
+                    : 'The compliance team found issues with your documents. Please review and re-upload valid evidence.'}
+              </p>
+            </div>
+          </div>
+          <Button
+            asChild
+            size="sm"
+            className="shrink-0 rounded-xl text-xs bg-warning hover:bg-warning/90 text-warning-foreground font-bold shadow-xs"
+          >
+            <Link href={withLocale('/dashboard/tutor/verification', locale)}>
+              {isBn ? 'নথি সংশোধন ও আপলোড' : 'Fix & Re-upload'}
+            </Link>
+          </Button>
+        </div>
+      ) : verificationStatus === 'rejected' ? (
+        <div
+          className="rounded-2xl border border-destructive/40 bg-destructive/10 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
+          data-testid="tutor-verification-banner-rejected"
+        >
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-destructive/20 border border-destructive/30 flex items-center justify-center text-destructive shrink-0 mt-0.5">
+              <AlertCircle className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-foreground">
+                  {isBn ? 'ভেরিফিকেশন আবেদন প্রত্যাখ্যাত হয়েছে' : 'Verification Rejected'}
+                </h3>
+                <Badge variant="destructive" className="text-[10px]">
+                  {isBn ? 'বাতিল' : 'Rejected'}
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 max-w-2xl leading-relaxed">
+                {(prof as Record<string, unknown>)?.applicantFeedback
+                  ? String((prof as Record<string, unknown>).applicantFeedback)
+                  : isBn
+                    ? 'আপনার জমা দেওয়া তথ্য ও প্রমাণাদি নীতিমালার সাথে সংগতিপূর্ণ নয়। প্রয়োজনে সাপোর্টে যোগাযোগ করুন।'
+                    : 'Your submitted evidence did not satisfy our verification criteria. Contact support if you need assistance.'}
+              </p>
+            </div>
+          </div>
+          <Button asChild size="sm" variant="outline" className="shrink-0 rounded-xl text-xs">
+            <Link href={withLocale('/support', locale)}>
+              {isBn ? 'সাপোর্টে যোগাযোগ' : 'Contact Support'}
+            </Link>
+          </Button>
+        </div>
+      ) : verificationStatus === 'approved' && publicationStatus !== 'published' ? (
+        <div
+          className="rounded-2xl border border-primary/30 bg-primary/10 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
+          data-testid="tutor-verification-banner-publish-cta"
+        >
+          <div className="flex items-start gap-3.5">
+            <div className="w-10 h-10 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center text-primary shrink-0 mt-0.5">
+              <CheckCircle2 className="w-5 h-5" />
+            </div>
+            <div>
+              <div className="flex items-center gap-2">
+                <h3 className="text-sm font-bold text-foreground">
+                  {isBn ? '🎉 অভিনন্দন! আপনার শিক্ষক প্রোফাইল ভেরিফাইড হয়েছে' : '🎉 Congratulations! Your Profile is Verified'}
+                </h3>
+                <Badge variant="success" className="text-[10px]">
+                  {isBn ? 'ভেরিফাইড' : 'Verified'}
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground mt-1 max-w-2xl leading-relaxed">
+                {isBn
+                  ? 'আপনার সমস্ত সনদ ও পরিচয় সফলভাবে যাচাই সম্পন্ন হয়েছে। শিক্ষার্থীরা যাতে আপনাকে খুঁজে পেতে পারে, এখনই মার্কেটপ্লেসে আপনার প্রোফাইলটি প্রকাশ করুন।'
+                  : 'Your credentials have been successfully approved. Publish your profile now so students can find and book lessons with you.'}
+              </p>
+            </div>
+          </div>
+          <Button
+            onClick={handlePublishProfile}
+            size="sm"
+            disabled={isPublishing}
+            isLoading={isPublishing}
+            className="shrink-0 rounded-xl text-xs font-bold shadow-xs"
+          >
+            <Sparkles className="w-3.5 h-3.5 mr-1" />
+            {isBn ? 'মার্কেটপ্লেসে প্রোফাইল প্রকাশ করুন' : 'Publish Profile Now'}
+          </Button>
+        </div>
+      ) : verificationStatus === 'approved' && publicationStatus === 'published' ? (
+        <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 flex items-center justify-between text-xs">
+          <div className="flex items-center gap-2 text-primary font-medium">
+            <CheckCircle2 className="h-4 w-4" />
+            <span>
+              {isBn
+                ? 'আপনার শিক্ষক প্রোফাইল ভেরিফাইড এবং মার্কেটপ্লেসে সক্রিয় রয়েছে।'
+                : 'Your profile is verified and live on the marketplace.'}
+            </span>
+          </div>
+          <Link
+            href={withLocale(`/tutors/${user?.id}`, locale)}
+            target="_blank"
+            className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
+          >
+            <span>{isBn ? 'পাবলিক প্রোফাইল দেখুন' : 'View Public Profile'}</span>
+            <ExternalLink className="h-3 w-3" />
+          </Link>
+        </div>
+      ) : null}
+
       <TutorEarningsCommandBar
         locale={locale}
         availableBdt={availableBdt}

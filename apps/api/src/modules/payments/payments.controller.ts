@@ -14,8 +14,9 @@ import {
   Inject,
   GoneException,
   Header,
+  Res,
 } from '@nestjs/common';
-import type { Request } from 'express';
+import type { Request, Response } from 'express';
 import { AuthGuard } from '../../common/guards/auth.guard';
 import { CurrentUser, AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 import { PaymentsService } from './payments.service';
@@ -64,6 +65,7 @@ export class PaymentsController {
     @Headers() headers: Record<string, string>,
     @Body() body: Record<string, unknown>,
     @Req() req: Request & { rawBody?: Buffer },
+    @Res({ passthrough: true }) res: Response,
     @Headers('x-request-id') requestId?: string,
   ) {
     const rawBody = req.rawBody?.toString('utf8');
@@ -74,6 +76,19 @@ export class PaymentsController {
       requestId,
       rawBody,
     );
+
+    const isBrowserPost =
+      headers['accept']?.includes('text/html') ||
+      headers['sec-fetch-dest'] === 'document' ||
+      headers['content-type']?.includes('application/x-www-form-urlencoded');
+
+    if (isBrowserPost && res) {
+      const frontendUrl = process.env.FRONTEND_URL?.split(',')[0] || 'http://localhost:5000';
+      return res.redirect(
+        `${frontendUrl}/bn/dashboard/student/requests?payment=success&orderId=${result.orderId || ''}`,
+      );
+    }
+
     return {
       success: true,
       message: 'Webhook processed successfully.',

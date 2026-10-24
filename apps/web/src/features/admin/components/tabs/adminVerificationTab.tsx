@@ -1,6 +1,8 @@
 'use client';
 
 import React from 'react';
+import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { useLocale } from 'next-intl';
 import {
   ShieldCheck,
@@ -45,6 +47,7 @@ import { LoadingState } from '@/components/shared/LoadingState';
 import { ErrorState } from '@/components/shared/ErrorState';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDate } from '@/lib/format';
+import { withLocale } from '@/lib/auth';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { normalizeApiError } from '@/lib/api-error';
 import {
@@ -184,14 +187,13 @@ export function VerificationQueueTable({
                 {row.submittedAt ? formatDate(row.submittedAt, locale) : '—'}
               </TableCell>
               <TableCell className="px-4 py-3 text-right">
-                <Button
-                  size="sm"
-                  onClick={() => onOpen(row)}
+                <Link
+                  href={withLocale(`/dashboard/admin/verification/${row.tutorUserId}`, locale)}
                   data-testid={`review-tutor-btn-${row.tutorUserId}-${row.level}`}
-                  className="rounded-xl font-semibold"
+                  className="inline-flex items-center justify-center rounded-xl bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow hover:bg-primary/90 transition-colors"
                 >
                   {isBn ? 'পর্যালোচনা' : 'Review'}
-                </Button>
+                </Link>
               </TableCell>
             </TableRow>
           ))}
@@ -220,6 +222,7 @@ function docStatusLabel(status: string, isBn: boolean): string {
  * assignment scope, mandatory evidence, self-approval and the level version.
  */
 export function AdminVerificationTab() {
+  const router = useRouter();
   const locale: Locale = useLocale() === 'bn' ? 'bn' : 'en';
   const isBn = locale === 'bn';
 
@@ -242,7 +245,7 @@ export function AdminVerificationTab() {
 
   const queue = useGetVerificationQueueQuery({
     q: search || undefined,
-    status: statusFilter === 'all' ? undefined : (statusFilter as never),
+    status: statusFilter,
     level: levelFilter === 'all' ? undefined : levelFilter,
     assignment: assignment === 'any' ? undefined : assignment,
     page,
@@ -271,14 +274,7 @@ export function AdminVerificationTab() {
   const totalPages = pagination?.totalPages ?? 1;
 
   function openDossier(row: VerificationQueueRow) {
-    setSelected(row);
-    setSelectedLevel(row.level);
-    setDecision('approved');
-    setReasonCode('nid_verified_match');
-    setApplicantFeedback('');
-    setInternalNotes('');
-    setFormError(null);
-    setPreview(null);
+    router.push(withLocale(`/dashboard/admin/verification/${row.tutorUserId}`, locale));
   }
 
   const dossierLevels = dossier.data?.data?.levels ?? [];
@@ -411,7 +407,7 @@ export function AdminVerificationTab() {
                   ? isBn
                     ? 'সব অবস্থা'
                     : 'All statuses'
-                  : levelStatusLabel(status as never, locale)}
+                  : levelStatusLabel(status, locale)}
               </option>
             ))}
           </NativeSelect>

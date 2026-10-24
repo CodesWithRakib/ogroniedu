@@ -43,8 +43,8 @@ self.addEventListener('activate', (event) => {
 self.addEventListener('fetch', (event) => {
   const { request } = event;
 
-  // Only handle GET requests
-  if (request.method !== 'GET') {
+  // Only handle GET requests with HTTP/HTTPS schemes (reject chrome-extension, file, etc.)
+  if (request.method !== 'GET' || (!request.url.startsWith('http://') && !request.url.startsWith('https://'))) {
     return;
   }
 
@@ -67,8 +67,8 @@ self.addEventListener('fetch', (event) => {
           if (networkResponse && networkResponse.status === 200) {
             const responseClone = networkResponse.clone();
             caches.open(CACHE_NAME).then((cache) => {
-              cache.put(request, responseClone);
-            });
+              cache.put(request, responseClone).catch(() => {});
+            }).catch(() => {});
           }
           return networkResponse;
         })
@@ -101,8 +101,8 @@ self.addEventListener('fetch', (event) => {
             if (networkResponse && networkResponse.status === 200) {
               const responseClone = networkResponse.clone();
               caches.open(CACHE_NAME).then((cache) => {
-                cache.put(request, responseClone);
-              });
+                cache.put(request, responseClone).catch(() => {});
+              }).catch(() => {});
             }
             return networkResponse;
           })

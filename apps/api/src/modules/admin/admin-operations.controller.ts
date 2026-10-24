@@ -149,6 +149,13 @@ export class AdminOperationsController {
     return paginated(result.bookings, { page, pageSize, totalItems: result.total });
   }
 
+  @Get('bookings/:id')
+  @Roles(...ADMIN_ROLES)
+  async getBookingDetail(@Param('id', ParseUUIDPipe) bookingId: string) {
+    const detail = await this.adminService.getBookingDetail(bookingId);
+    return { success: true, data: detail };
+  }
+
   @Post('bookings/:id/cancel')
   @HttpCode(HttpStatus.OK)
   @Roles(...ADMIN_ROLES)

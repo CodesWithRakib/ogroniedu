@@ -120,11 +120,12 @@ export function NotificationProvider({
 
     const socketInstance: Socket = io(`${apiUrl}/notifications`, {
       auth: { token: `Bearer ${token}` },
-      transports: ['websocket', 'polling'],
+      transports: ['polling', 'websocket'],
+      withCredentials: true,
       reconnection: true,
-      reconnectionAttempts: 10,
-      reconnectionDelay: 1000,
-      reconnectionDelayMax: 5000,
+      reconnectionAttempts: 5,
+      reconnectionDelay: 2000,
+      reconnectionDelayMax: 10000,
     });
 
     socketInstance.on('connect', () => {
@@ -132,7 +133,13 @@ export function NotificationProvider({
       socketInstance.emit('get_unread_count');
     });
     socketInstance.on('disconnect', () => setIsConnected(false));
-    socketInstance.on('connect_error', () => setIsConnected(false));
+    socketInstance.on('connect_error', () => {
+      setIsConnected(false);
+    });
+    socketInstance.on('auth_error', () => {
+      setIsConnected(false);
+      socketInstance.disconnect();
+    });
 
     socketInstance.on('notification', (item: NotificationItemDto) => {
       setNotifications((prev) => {

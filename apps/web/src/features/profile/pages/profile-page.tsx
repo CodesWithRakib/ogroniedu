@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import {
@@ -626,6 +627,33 @@ export function ProfilePage({ locale }: { locale: Locale }) {
               </div>
             </div>
           </Card>
+
+          {/* Tutor Credentials Command Center Banner */}
+          {isTutor && (
+            <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
+                  <ShieldCheck className="w-5 h-5" />
+                </div>
+                <div>
+                  <p className="text-xs font-bold text-foreground">
+                    {isBn ? 'আপনি একজন শিক্ষক (Tutor)' : 'You are a registered Tutor'}
+                  </p>
+                  <p className="text-[11px] text-muted-foreground">
+                    {isBn
+                      ? 'আপনার টিচিং বায়ো, বিষয়ভিত্তিক ফি, সাপ্তাহিক সময়সূচি, ৩-স্তর ভেরিফিকেশন এবং লাইভ মার্কেটপ্লেস প্রিভিউ পরিচালনা করুন।'
+                      : 'Manage your teaching bio, hourly rate, subjects, weekly schedule, 3-tier verification dossier and live marketplace preview.'}
+                  </p>
+                </div>
+              </div>
+              <Link
+                href={withLocale('/dashboard/tutor/profile', locale)}
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors shrink-0"
+              >
+                <span>{isBn ? 'শিক্ষক প্রোফাইল ও সনদ কেন্দ্র →' : 'Tutor Credentials Center →'}</span>
+              </Link>
+            </div>
+          )}
 
           {/* Tab Navigation Controls */}
           <div className="flex flex-wrap p-1 bg-surface-muted rounded-2xl border border-border gap-1">

@@ -86,6 +86,10 @@ export class TutorVerificationStatusService {
     profile.verificationExpiresAt = overall === 'approved' ? earliestExpiry : null;
     if (overall === 'approved') {
       profile.verifiedAt = profile.verifiedAt ?? new Date();
+      await this.profileRepo.manager.query(
+        `UPDATE users SET status = 'active', email_verified_at = COALESCE(email_verified_at, NOW()), updated_at = NOW() WHERE id = $1 AND status = 'pending_verification'`,
+        [userId],
+      );
     } else {
       profile.verifiedAt = null;
       if (

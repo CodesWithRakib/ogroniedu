@@ -6,6 +6,7 @@ import {
   ForbiddenException,
   Inject,
   Optional,
+  Logger,
 } from '@nestjs/common';
 import { DataSource } from 'typeorm';
 import { InjectDataSource } from '@nestjs/typeorm';
@@ -32,6 +33,8 @@ const TRACK_COMPLETED: OnboardingTrackStatus = 'completed';
 
 @Injectable()
 export class OnboardingService {
+  private readonly logger = new Logger(OnboardingService.name);
+
   constructor(
     @InjectDataSource() private readonly dataSource: DataSource,
     @Optional() @Inject(AuditService) private readonly audit?: AuditService,
@@ -103,6 +106,285 @@ export class OnboardingService {
     } else {
       completedSteps.add(stepKey);
       pendingSteps.delete(stepKey);
+    }
+
+    if (role === 'tutor' && payload && typeof payload === 'object') {
+      const rec = payload as Record<string, unknown>;
+
+      // 1. Profile Step: Persist directly into tutor_profiles
+      if (stepKey === 'profile') {
+        try {
+          const headlineEn = String(rec.headlineEn || rec.headline || '').trim();
+          const headlineBn = String(rec.headlineBn || '').trim();
+          const bioEn = String(rec.bioEn || rec.bio || '').trim();
+          const bioBn = String(rec.bioBn || '').trim();
+          const years = rec.yearsExperience ? Number(rec.yearsExperience) : null;
+          const rawModes = Array.isArray(rec.teachingModes) ? rec.teachingModes : ['online'];
+          const mappedModes: string[] = [];
+          for (const m of rawModes) {
+            if (m === 'student_home' || m === 'tutor_home' || m === 'in_person') {
+              mappedModes.push('in_person');
+            } else if (m === 'online') {
+              mappedModes.push('online');
+            } else if (m === 'hybrid') {
+              mappedModes.push('hybrid');
+            }
+          }
+          const modes = [...new Set(mappedModes)];
+          const finalModes = modes.length > 0 ? modes : ['online'];
+          const rateMinor = rec.hourlyRateMinor
+            ? Number(rec.hourlyRateMinor)
+            : rec.hourlyRate
+              ? Math.round(Number(rec.hourlyRate) * 100)
+              : null;
+
+          await this.dataSource.query(
+            `INSERT INTO tutor_profiles (
+              user_id, headline, headline_en, headline_bn, bio, bio_en, bio_bn,
+              years_experience, teaching_modes, hourly_rate_minor, currency, verification_status, publication_status, safety_hold_status, created_at, updated_at
+            )
+            VALUES (
+              $1, $2, $2, $3, $4, $4, $5,
+              $6, $7, $8, 'BDT', 'not_submitted', 'draft', 'clear', NOW(), NOW()
+            )
+            ON CONFLICT (user_id) DO UPDATE SET
+              headline = EXCLUDED.headline,
+              headline_en = EXCLUDED.headline_en,
+              headline_bn = EXCLUDED.headline_bn,
+              bio = EXCLUDED.bio,
+              bio_en = EXCLUDED.bio_en,
+              bio_bn = EXCLUDED.bio_bn,
+              years_experience = EXCLUDED.years_experience,
+              teaching_modes = EXCLUDED.teaching_modes,
+              hourly_rate_minor = EXCLUDED.hourly_rate_minor,
+              updated_at = NOW();`,
+            [userId, headlineEn, headlineBn, bioEn, bioBn, years, finalModes, rateMinor],
+          );
+
+          if (this.audit) {
+            await this.audit.record({
+              actorUserId: userId,
+              action: 'tutor.onboarding.profile_persisted',
+              resourceType: 'tutor_profile',
+              resourceId: userId,
+              safeMetadata: { headlineEn, headlineBn, years, rateMinor },
+            });
+          }
+        } catch (profileErr) {
+          this.logger.error(`Failed to persist tutor profile during onboarding: ${profileErr}`);
+        }
+      }
+
+      // 2. Education Step: Persist into tutor_qualifications
+      if (stepKey === 'education') {
+        try {
+          const qualificationsList = Array.isArray(rec.qualifications)
+            ? rec.qualifications
+            : [rec];
+
+          for (const item of qualificationsList) {
+            const row = item as Record<string, unknown>;
+            const degreeTitle = String(row.degree || row.title || '').trim();
+            const qualType = String(row.type || row.qualificationType || 'degree').trim();
+            const institution = String(row.institution || '').trim();
+            const year = row.passingYear || row.year || row.issuedYear
+              ? Number(row.passingYear || row.year || row.issuedYear)
+              : null;
+
+            if (degreeTitle) {
+              await this.dataSource.query(
+                `INSERT INTO tutor_qualifications (
+                  id, tutor_user_id, qualification_type, title, title_en, title_bn,
+                  institution, institution_en, institution_bn, issued_year, review_status, created_at
+                )
+                VALUES (
+                  gen_random_uuid(), $1, $2, $3, $3, $3,
+                  $4, $4, $4, $5, 'pending', NOW()
+                );`,
+                [userId, qualType, degreeTitle, institution, year],
+              );
+            }
+          }
+
+          if (this.audit) {
+            await this.audit.record({
+              actorUserId: userId,
+              action: 'tutor.onboarding.education_persisted',
+              resourceType: 'tutor_qualification',
+              resourceId: userId,
+              safeMetadata: { qualificationCount: qualificationsList.length },
+            });
+          }
+        } catch (eduErr) {
+          this.logger.error(`Failed to persist tutor education during onboarding: ${eduErr}`);
+        }
+      }
+
+      // 3. Subjects Step: Persist into tutor_subjects
+      if (stepKey === 'subjects') {
+        try {
+          const subjects = Array.isArray(rec.subjects)
+            ? rec.subjects
+            : rec.subjectId && rec.educationLevelId
+              ? [rec]
+              : [];
+
+          for (const s of subjects) {
+            const subjectId = String(s.subjectId);
+            const levelId = String(s.educationLevelId);
+            const rateMinor = s.hourlyRateMinor
+              ? Number(s.hourlyRateMinor)
+              : s.rateMinor
+                ? Number(s.rateMinor)
+                : s.rate
+                  ? Math.round(Number(s.rate) * 100)
+                  : null;
+
+            await this.dataSource.query(
+              `INSERT INTO tutor_subjects (
+                id, tutor_user_id, subject_id, education_level_id, rate_minor, currency, created_at
+              )
+              VALUES (gen_random_uuid(), $1, $2, $3, $4, 'BDT', NOW())
+              ON CONFLICT DO NOTHING;`,
+              [userId, subjectId, levelId, rateMinor],
+            );
+          }
+
+          if (this.audit) {
+            await this.audit.record({
+              actorUserId: userId,
+              action: 'tutor.onboarding.subjects_persisted',
+              resourceType: 'tutor_subject',
+              resourceId: userId,
+              safeMetadata: { subjectCount: subjects.length },
+            });
+          }
+        } catch (subErr) {
+          this.logger.error(`Failed to persist tutor subjects during onboarding: ${subErr}`);
+        }
+      }
+
+      // 4. Availability Step: Persist into tutor_availability
+      if (stepKey === 'availability') {
+        try {
+          const slots = Array.isArray(rec.slots) ? rec.slots : [];
+          if (slots.length > 0) {
+            await this.dataSource.query(
+              `DELETE FROM tutor_availability WHERE tutor_user_id = $1;`,
+              [userId],
+            );
+
+            for (const slot of slots) {
+              await this.dataSource.query(
+                `INSERT INTO tutor_availability (
+                  id, tutor_user_id, weekday, start_local, end_local, timezone, is_active
+                )
+                VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, true);`,
+                [userId, Number(slot.weekday), String(slot.startLocal), String(slot.endLocal), String(slot.timezone || 'Asia/Dhaka')],
+              );
+            }
+
+            if (this.audit) {
+              await this.audit.record({
+                actorUserId: userId,
+                action: 'tutor.onboarding.availability_persisted',
+                resourceType: 'tutor_availability',
+                resourceId: userId,
+                safeMetadata: { slotCount: slots.length },
+              });
+            }
+          }
+        } catch (availErr) {
+          this.logger.error(`Failed to persist tutor availability during onboarding: ${availErr}`);
+        }
+      }
+
+      // 5. Documents Step: Link to tutor_verification_documents & tutor_verification_levels
+      if (stepKey === 'documents') {
+        try {
+          const docs: Array<{ fileAssetId: string; documentType: string; level?: string }> = [];
+          if (Array.isArray(rec.documents)) {
+            docs.push(...rec.documents);
+          } else if (rec.fileAssetId) {
+            docs.push({
+              fileAssetId: String(rec.fileAssetId),
+              documentType: String(rec.documentType || 'nid'),
+            });
+          }
+
+          const affectedLevels = new Set<string>();
+
+          for (const doc of docs) {
+            let docType = doc.documentType;
+            let level = doc.level;
+
+            if (docType === 'nid_back') {
+              docType = 'nid_back';
+              level = 'identity';
+            } else if (docType === 'nid' || docType === 'nid_front') {
+              docType = 'nid_front';
+              level = 'identity';
+            } else if (docType === 'degree' || docType === 'academic_certificate') {
+              docType = 'academic_certificate';
+              level = 'educational';
+            } else if (docType === 'transcript') {
+              docType = 'transcript';
+              level = 'educational';
+            } else if (docType === 'experience' || docType === 'professional_certificate') {
+              docType = 'professional_certificate';
+              level = 'institutional';
+            } else if (docType === 'institution_letter') {
+              docType = 'institution_letter';
+              level = 'institutional';
+            } else if (docType === 'employment_letter') {
+              docType = 'employment_letter';
+              level = 'institutional';
+            } else {
+              docType = 'other_supporting';
+              level = level || 'institutional';
+            }
+
+            affectedLevels.add(level);
+
+            await this.dataSource.query(
+              `INSERT INTO tutor_verification_documents (
+                id, tutor_user_id, level, document_type, file_asset_id, review_status, created_at, updated_at
+              )
+              VALUES (gen_random_uuid(), $1, $2, $3, $4, 'pending', NOW(), NOW());`,
+              [userId, level, docType, doc.fileAssetId],
+            );
+          }
+
+          for (const lvl of affectedLevels) {
+            await this.dataSource.query(
+              `INSERT INTO tutor_verification_levels (
+                id, tutor_user_id, level, status, policy_version, submission_count, first_submitted_at, last_submitted_at, created_at, updated_at
+              )
+              VALUES (gen_random_uuid(), $1, $2, 'submitted', 'v1.0-bd-tutor-verification', 1, NOW(), NOW(), NOW(), NOW())
+              ON CONFLICT (tutor_user_id, level) DO UPDATE
+              SET status = 'submitted', last_submitted_at = NOW(), submission_count = tutor_verification_levels.submission_count + 1, updated_at = NOW();`,
+              [userId, lvl],
+            );
+          }
+
+          await this.dataSource.query(
+            `UPDATE tutor_profiles SET verification_status = 'under_review', updated_at = NOW() WHERE user_id = $1;`,
+            [userId],
+          );
+
+          if (this.audit) {
+            await this.audit.record({
+              actorUserId: userId,
+              action: 'tutor.onboarding.documents_submitted',
+              resourceType: 'tutor_verification_level',
+              resourceId: userId,
+              safeMetadata: { documentCount: docs.length, affectedLevels: [...affectedLevels] },
+            });
+          }
+        } catch (docErr) {
+          this.logger.error(`Failed to link onboarding documents to verification levels: ${docErr}`);
+        }
+      }
     }
 
     const context = await this.fetchSystemStepContext(userId, role);

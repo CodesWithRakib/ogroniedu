@@ -75,7 +75,7 @@ const TUTOR_PROFILE_FIELDS: StepField[] = [
     labelEn: 'Headline (English)',
     kind: 'text',
     required: true,
-    placeholder: 'Physics teacher for Class 9–12',
+    placeholder: 'Experienced Physics & Math Tutor',
   },
   {
     name: 'headlineBn',
@@ -83,21 +83,23 @@ const TUTOR_PROFILE_FIELDS: StepField[] = [
     labelEn: 'Headline (Bangla)',
     kind: 'text',
     required: true,
-    placeholder: 'নবম–দ্বাদশ শ্রেণির পদার্থবিজ্ঞান শিক্ষক',
+    placeholder: 'নবম–দ্বাদশ শ্রেণির পদার্থবিজ্ঞান ও গণিত শিক্ষক',
   },
   {
     name: 'bio',
-    labelBn: 'পরিচিতি (ইংরেজি)',
-    labelEn: 'Biography (English)',
+    labelBn: 'পরিচিতি (ইংরেজি - কমপক্ষে ২০ অক্ষর)',
+    labelEn: 'Biography (English - at least 20 chars)',
     kind: 'textarea',
     required: true,
+    placeholder: 'Passionate educator with over 5 years of experience helping students excel in STEM subjects.',
   },
   {
     name: 'bioBn',
-    labelBn: 'পরিচিতি (বাংলা)',
-    labelEn: 'Biography (Bangla)',
+    labelBn: 'পরিচিতি (বাংলা - কমপক্ষে ২০ অক্ষর)',
+    labelEn: 'Biography (Bangla - at least 20 chars)',
     kind: 'textarea',
     required: true,
+    placeholder: 'আমি গত ৫ বছর ধরে শিক্ষার্থীদের পদার্থবিজ্ঞান ও গণিত সহজ পদ্ধতিতে পাঠদান করছি।',
   },
   {
     name: 'yearsExperience',
@@ -105,6 +107,15 @@ const TUTOR_PROFILE_FIELDS: StepField[] = [
     labelEn: 'Years of experience',
     kind: 'number',
     required: false,
+    placeholder: '3',
+  },
+  {
+    name: 'hourlyRate',
+    labelBn: 'ঘণ্টাপ্রতি বেসিক ফি (টাকা/ঘণ্টা)',
+    labelEn: 'Base hourly rate (BDT/hour)',
+    kind: 'number',
+    required: false,
+    placeholder: '500',
   },
 ];
 
@@ -194,6 +205,23 @@ export function buildStepPayload(
     const value = values[name];
     return typeof value === 'string' && value.trim() !== '' ? value.trim() : undefined;
   };
+
+  if (stepKey === 'profile') {
+    const payload: Record<string, unknown> = {};
+    for (const [key, value] of Object.entries(values)) {
+      if (value === undefined || value === '') continue;
+      if (key === 'yearsExperience' || key === 'hourlyRate') {
+        const num = toNumberOrUndefined(value);
+        if (num !== undefined) payload[key] = num;
+      } else {
+        payload[key] = value;
+      }
+    }
+    if (payload.hourlyRate && !payload.hourlyRateMinor) {
+      payload.hourlyRateMinor = String(Math.round(Number(payload.hourlyRate) * 100));
+    }
+    return payload;
+  }
 
   if (stepKey === 'education') {
     return {

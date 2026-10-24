@@ -98,8 +98,8 @@ export interface VerificationQueueRow {
 }
 
 export interface VerificationQueueParams {
-  status?: VerificationLevelStatus;
-  overallStatus?: VerificationLevelStatus;
+  status?: VerificationLevelStatus | 'all';
+  overallStatus?: VerificationLevelStatus | 'all';
   level?: TutorVerificationLevel;
   assignment?: VerificationQueueAssignment;
   q?: string;
@@ -243,6 +243,10 @@ export const adminApi = baseApi.injectEndpoints({
       query: (params) =>
         `/api/v1/admin/bookings${toQuery((params ?? {}) as Record<string, string | number | undefined>)}`,
       providesTags: [{ type: 'AdminBooking', id: 'LIST' }],
+    }),
+    getAdminBookingDetail: builder.query<ApiSuccessEnvelope<any>, string>({
+      query: (id) => `/api/v1/admin/bookings/${id}`,
+      providesTags: (_r, _e, id) => [{ type: 'AdminBooking', id }],
     }),
     adminCancelBooking: builder.mutation<
       unknown,
@@ -441,6 +445,7 @@ export const {
   useReactivateUserMutation,
   useUpdateUserRolesMutation,
   useListAdminBookingsQuery,
+  useGetAdminBookingDetailQuery,
   useAdminCancelBookingMutation,
   useGetAdminReconciliationQuery,
   useGetSystemSettingsQuery,

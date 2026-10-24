@@ -25,10 +25,22 @@ function readString(value: unknown): string | undefined {
   return typeof value === 'string' ? value : undefined;
 }
 
+const allowedWsOrigins = (process.env.FRONTEND_URL || 'http://localhost:5000')
+  .split(',')
+  .map((o) => o.trim())
+  .filter(Boolean);
+
 @WebSocketGateway({
   namespace: '/notifications',
   cors: {
-    origin: '*',
+    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+      if (!origin) return callback(null, true);
+      const isAllowed =
+        allowedWsOrigins.includes(origin) ||
+        origin.startsWith('http://localhost:') ||
+        origin.startsWith('http://127.0.0.1:');
+      callback(null, isAllowed);
+    },
     credentials: true,
   },
 })
@@ -98,12 +110,19 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
       let userId: string | null = null;
 
       // 1. Verify a real JWT signature; never trust an unsigned/decoded token.
-      const rawToken =
+      let rawToken =
         typeof auth.token === 'string'
           ? auth.token.replace(/^Bearer\s+/i, '')
           : typeof headers.authorization === 'string'
             ? headers.authorization.replace(/^Bearer\s+/i, '')
             : null;
+
+      if (!rawToken && typeof headers.cookie === 'string') {
+        const match = headers.cookie.match(/(?:^|;\s*)access_token=([^;]+)/);
+        if (match) {
+          rawToken = decodeURIComponent(match[1]);
+        }
+      }
 
       if (rawToken && rawToken.includes('.')) {
         try {

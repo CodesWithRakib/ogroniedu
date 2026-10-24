@@ -17,6 +17,7 @@ import {
   PaymentTransactionEntity,
   EscrowHoldEntity,
 } from '../entities';
+import { BookingEntity } from '../../bookings/entities/booking.entity';
 import { OutboxEventEntity } from '../../bookings/entities/outbox-event.entity';
 import { LedgerService } from '../ledger.service';
 import { PaymentAdapterFactory } from '../adapters/adapter.factory';
@@ -81,21 +82,28 @@ export class RefundsService {
 
       const order = await manager.findOne(PaymentOrderEntity, {
         where: { id: dto.paymentOrderId },
-        relations: {
-          booking: {
-            studentUser: true,
-            requesterUser: true,
-            tutorProfile: { user: true },
-          },
-        },
         lock: { mode: 'pessimistic_write' },
       });
       if (!order) throw new NotFoundException('Payment order not found');
 
-      if (!order.booking) throw new NotFoundException('Booking for payment order not found');
+      const booking =
+        order.booking ??
+        (order.bookingId
+          ? await manager.findOne(BookingEntity, {
+              where: { id: order.bookingId },
+              relations: {
+                studentUser: true,
+                requesterUser: true,
+                tutorProfile: { user: true },
+              },
+            })
+          : null);
+      if (!booking) throw new NotFoundException('Booking for payment order not found');
+      order.booking = booking;
+
       await this.guardianAccess.assertCanAccessBooking(
         user,
-        order.booking,
+        booking,
         'Access denied: only the payer, student, requester, linked guardian or an administrator may request this refund',
       );
 

@@ -9,6 +9,7 @@ import {
   TUTOR_VERIFICATION_POLICY,
   VERIFICATION_DOCUMENT_TYPE_LABELS,
   type TutorVerificationLevel,
+  type TutorVerificationStatus,
   type VerificationDocumentType,
   type VerificationLevelStatus,
   type VerificationNextAction,
@@ -76,33 +77,48 @@ export function levelLabel(level: TutorVerificationLevel, locale: Locale): strin
     : TUTOR_VERIFICATION_POLICY[level].labelEn;
 }
 
-export function levelStatusLabel(status: VerificationLevelStatus, locale: Locale): string {
-  const labels: Record<VerificationLevelStatus, { en: string; bn: string }> = {
-    not_started: { en: 'Not started', bn: 'শুরু হয়নি' },
-    draft: { en: 'Draft', bn: 'খসড়া' },
-    submitted: { en: 'Submitted', bn: 'জমা দেওয়া হয়েছে' },
+export function levelStatusLabel(
+  status: VerificationLevelStatus | TutorVerificationStatus | string | undefined | null,
+  locale: Locale,
+): string {
+  const isBn = locale === 'bn';
+  const labels: Record<string, { en: string; bn: string }> = {
+    not_started: { en: 'Not started', bn: 'শুরু হয়নি' },
+    not_submitted: { en: 'Not submitted', bn: 'জমা দেওয়া হয়নি' },
+    draft: { en: 'Draft', bn: 'খসড়া' },
+    submitted: { en: 'Submitted', bn: 'জমা দেওয়া হয়েছে' },
     under_review: { en: 'Under review', bn: 'পর্যালোচনাধীন' },
-    needs_information: { en: 'Information needed', bn: 'তথ্য প্রয়োজন' },
+    needs_information: { en: 'Information needed', bn: 'তথ্য প্রয়োজন' },
+    changes_requested: { en: 'Changes requested', bn: 'সংশোধন প্রয়োজন' },
     approved: { en: 'Approved', bn: 'অনুমোদিত' },
     rejected: { en: 'Rejected', bn: 'প্রত্যাখ্যাত' },
     suspended: { en: 'Suspended', bn: 'স্থগিত' },
-    expired: { en: 'Expired', bn: 'মেয়াদোত্তীর্ণ' },
+    expired: { en: 'Expired', bn: 'মেয়াদোত্তীর্ণ' },
+    active: { en: 'Active', bn: 'সক্রিয়' },
+    pending: { en: 'Pending', bn: 'অপেক্ষমাণ' },
   };
-  return labels[status][locale];
+  const key = String(status || '').toLowerCase();
+  const entry = labels[key];
+  if (entry) return isBn ? entry.bn : entry.en;
+  return status ? String(status) : isBn ? 'অনির্ধারিত' : 'Unspecified';
 }
 
 export function levelStatusTone(
-  status: VerificationLevelStatus,
+  status: VerificationLevelStatus | TutorVerificationStatus | string | undefined | null,
 ): 'success' | 'warning' | 'info' | 'destructive' | 'default' {
-  switch (status) {
+  switch (String(status || '').toLowerCase()) {
     case 'approved':
+    case 'active':
       return 'success';
     case 'submitted':
     case 'under_review':
       return 'info';
     case 'needs_information':
+    case 'changes_requested':
     case 'draft':
     case 'not_started':
+    case 'not_submitted':
+    case 'pending':
       return 'warning';
     case 'rejected':
     case 'suspended':

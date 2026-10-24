@@ -1,11 +1,18 @@
 import { Injectable, Inject, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, In } from 'typeorm';
 import { UserEntity } from '../../auth/entities/user.entity';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
+import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
 import { TutorReplacementCaseEntity } from '../../trust/entities/tutor-replacement-case.entity';
 import { SafetyReportEntity } from '../../trust/entities/safety-report.entity';
+import { BookingDisputeEntity } from '../../trust/entities/booking-dispute.entity';
 import { PaymentOrderEntity } from '../../payments/entities/payment-order.entity';
+import { EscrowHoldEntity } from '../../payments/entities/escrow-hold.entity';
+import { InvoiceEntity } from '../../payments/entities/invoice.entity';
+import { LedgerJournalEntity } from '../../payments/entities/ledger-journal.entity';
+import { LedgerEntryEntity } from '../../payments/entities/ledger-entry.entity';
+import { PaymentRefundEntity } from '../../payments/entities/payment-refund.entity';
 import { AuditService } from '../../audit/audit.service';
 import { RefundsService } from '../../payments/services/refunds.service';
 import type { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
@@ -54,6 +61,7 @@ export class AdminBookingsService {
       .leftJoinAndSelect('booking.requesterUser', 'requester')
       .leftJoinAndSelect('booking.studentUser', 'student')
       .leftJoinAndSelect('booking.tutorProfile', 'tutorProfile')
+      .leftJoinAndSelect('tutorProfile.user', 'tutorUser')
       .leftJoinAndSelect('booking.subject', 'subject')
       .leftJoinAndSelect('booking.educationLevel', 'level')
       .orderBy('booking.createdAt', 'DESC')
@@ -72,6 +80,77 @@ export class AdminBookingsService {
 
     const [bookings, total] = await qb.getManyAndCount();
     return { bookings, total };
+  }
+
+  async getBookingDetail(bookingId: string) {
+    const booking = await this.bookingRepo
+      .createQueryBuilder('booking')
+      .leftJoinAndSelect('booking.requesterUser', 'requester')
+      .leftJoinAndSelect('booking.studentUser', 'student')
+      .leftJoinAndSelect('booking.tutorProfile', 'tutorProfile')
+      .leftJoinAndSelect('tutorProfile.user', 'tutorUser')
+      .leftJoinAndSelect('booking.subject', 'subject')
+      .leftJoinAndSelect('booking.educationLevel', 'level')
+      .where('booking.id = :bookingId', { bookingId })
+      .getOne();
+
+    if (!booking) {
+      throw new NotFoundException(`Booking ${bookingId} not found`);
+    }
+
+    const sessions = await this.bookingRepo.manager.find(BookingSessionEntity, {
+      where: { bookingId },
+      order: { startsAt: 'ASC' },
+    });
+
+    const escrowHolds = await this.bookingRepo.manager.find(EscrowHoldEntity, {
+      where: { bookingId },
+      order: { createdAt: 'ASC' },
+    });
+
+    const paymentOrders = await this.bookingRepo.manager.find(PaymentOrderEntity, {
+      where: { bookingId },
+      relations: { transactions: true },
+      order: { createdAt: 'ASC' },
+    });
+
+    const invoices = await this.bookingRepo.manager.find(InvoiceEntity, {
+      where: { bookingId },
+      order: { issuedAt: 'ASC' },
+    });
+
+    const sourceIds = [bookingId, ...paymentOrders.map((o) => o.id), ...sessions.map((s) => s.id)];
+    const journals = await this.bookingRepo.manager.find(LedgerJournalEntity, {
+      where: { sourceId: In(sourceIds) },
+      relations: { entries: { account: true } },
+      order: { postedAt: 'ASC' },
+    });
+
+    const refunds = await this.bookingRepo.manager.find(PaymentRefundEntity, {
+      where: { bookingId },
+      order: { createdAt: 'ASC' },
+    });
+
+    const replacementCase = await this.replacementCaseRepo.findOne({
+      where: { bookingId },
+      relations: { requester: true, replacementTutor: true, assignee: true },
+    });
+
+    const dispute = await this.bookingRepo.manager.findOne(BookingDisputeEntity, {
+      where: { bookingId },
+    });
+
+    return {
+      booking,
+      sessions,
+      escrowHolds,
+      paymentOrders,
+      invoices,
+      journals,
+      refunds,
+      replacementCase,
+      dispute,
+    };
   }
 
   async adminCancelBooking(

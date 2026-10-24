@@ -23,6 +23,7 @@ import {
   TutorFinancialAccountEntity,
   ReconciliationRunEntity,
 } from '../entities';
+import { BookingEntity } from '../../bookings/entities/booking.entity';
 import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
 import { LedgerService } from '../ledger.service';
 import { AuditService } from '../../audit/audit.service';
@@ -79,7 +80,6 @@ export class SettlementService {
     const result = await this.dataSource.transaction(async (manager) => {
       const session = await manager.findOne(BookingSessionEntity, {
         where: { id: dto.sessionId },
-        relations: { booking: true },
         lock: { mode: 'pessimistic_write' },
       });
       if (!session) throw new NotFoundException(`Session ${dto.sessionId} not found`);
@@ -87,7 +87,13 @@ export class SettlementService {
         throw new BadRequestException('Only completed sessions can be settled');
       }
 
-      const booking = session.booking;
+      const booking =
+        session.booking ??
+        (session.bookingId
+          ? await manager.findOne(BookingEntity, {
+              where: { id: session.bookingId },
+            })
+          : null);
       if (!booking) throw new NotFoundException('Associated booking not found');
 
       if (booking.status === 'disputed') {
@@ -122,13 +128,24 @@ export class SettlementService {
         throw new BadRequestException('Booking has no payable session amount');
       }
 
-      const hold = await manager
-        .createQueryBuilder(EscrowHoldEntity, 'hold')
-        .where('hold.booking_id = :bookingId', { bookingId: booking.id })
-        .andWhere("hold.status IN ('held', 'partially_released')")
-        .orderBy('hold.held_at', 'ASC')
-        .setLock('pessimistic_write')
-        .getOne();
+      const hold =
+        typeof manager.query === 'function'
+          ? await (async () => {
+              const holdRows = await manager.query<Array<{ id: string }>>(
+                "SELECT id FROM escrow_holds WHERE booking_id = $1 AND status IN ('held', 'partially_released') ORDER BY held_at ASC LIMIT 1 FOR UPDATE",
+                [booking.id],
+              );
+              return holdRows[0]
+                ? await manager.findOne(EscrowHoldEntity, { where: { id: holdRows[0].id } })
+                : null;
+            })()
+          : await manager
+              .createQueryBuilder(EscrowHoldEntity, 'hold')
+              .setLock('pessimistic_write')
+              .where('hold.bookingId = :bookingId', { bookingId: booking.id })
+              .andWhere('hold.status IN (:...statuses)', { statuses: ['held', 'partially_released'] })
+              .orderBy('hold.createdAt', 'ASC')
+              .getOne();
 
       if (!hold) {
         throw new ConflictException(

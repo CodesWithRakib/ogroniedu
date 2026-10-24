@@ -16,6 +16,8 @@ export interface AdminBookingItem {
   status: 'requested' | 'confirmed' | 'in_progress' | 'completed' | 'cancelled';
   priceBdt: number;
   mode: 'online' | 'in_person';
+  escrowStatus?: string | null;
+  createdAt?: string;
 }
 
 export interface PendingTutorItem {

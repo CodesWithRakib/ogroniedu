@@ -120,11 +120,11 @@ export class TutorVerificationService {
       .innerJoin('users', 'u', 'u.id = lvl.tutor_user_id')
       .where('u.deleted_at IS NULL');
 
-    if (query.status) {
+    if (query.status && query.status !== 'all') {
       qb.andWhere('lvl.status = :status', { status: query.status });
-    } else if (query.overallStatus) {
+    } else if (query.overallStatus && query.overallStatus !== 'all') {
       qb.andWhere('p.verification_status = :overall', { overall: query.overallStatus });
-    } else {
+    } else if (query.status !== 'all') {
       qb.andWhere('lvl.status IN (:...statuses)', { statuses: [...QUEUE_DEFAULT_STATUSES] });
     }
     if (query.level) qb.andWhere('lvl.level = :level', { level: query.level });
@@ -256,6 +256,10 @@ export class TutorVerificationService {
     });
   }
 
+  private async resolveTutorUserId(tutorId: string): Promise<string> {
+    return tutorId;
+  }
+
   /* ------------------------------------------------------------------ */
   /* Dossier                                                            */
   /* ------------------------------------------------------------------ */
@@ -266,7 +270,7 @@ export class TutorVerificationService {
    * the Phase-02 data. Internal notes are only ever returned here.
    */
   async getReviewDossier(tutorId: string, reviewer?: AuthenticatedUser) {
-    const profile = await this.profileRepo.findOne({
+    let profile = await this.profileRepo.findOne({
       where: { userId: tutorId },
       relations: {
         qualifications: { evidenceAsset: true },
@@ -276,11 +280,23 @@ export class TutorVerificationService {
       },
     });
     if (!profile) {
-      throw new NotFoundException(`Tutor profile not found for user: ${tutorId}`);
+      const existingUser = await this.userRepo.findOne({ where: { id: tutorId } });
+      if (existingUser) {
+        profile = await this.profileRepo.save(
+          this.profileRepo.create({
+            userId: tutorId,
+            verificationStatus: 'not_submitted',
+            publicationStatus: 'draft',
+          }),
+        );
+      } else {
+        throw new NotFoundException(`Tutor profile not found for user: ${tutorId}`);
+      }
     }
-    const user = await this.userRepo.findOne({ where: { id: tutorId } });
+    const effectiveUserId = profile.userId;
+    const user = await this.userRepo.findOne({ where: { id: effectiveUserId } });
     const reviewHistory = await this.reviewRepo.find({
-      where: { tutorUserId: tutorId },
+      where: { tutorUserId: effectiveUserId },
       order: { createdAt: 'DESC' },
     });
     const base = {
@@ -302,12 +318,12 @@ export class TutorVerificationService {
     if (!this.levelRepo || !this.statusService) return base;
 
     const levels = await this.statusService.ensureLevels(
-      tutorId,
+      effectiveUserId,
       profile.verificationPolicyVersion ?? TUTOR_VERIFICATION_POLICY_VERSION,
     );
     const documents = this.documentRepo
       ? await this.documentRepo.find({
-          where: { tutorUserId: tutorId, deletedAt: IsNull() },
+          where: { tutorUserId: effectiveUserId, deletedAt: IsNull() },
           relations: { fileAsset: true },
           order: { createdAt: 'DESC' },
         })
@@ -382,12 +398,13 @@ export class TutorVerificationService {
     if (!this.levelRepo || !this.statusService) {
       throw new BadRequestException('Verification levels are not available in this environment.');
     }
-    if (reviewer.id === tutorId) {
+    const effectiveUserId = await this.resolveTutorUserId(tutorId);
+    if (reviewer.id === effectiveUserId) {
       throw new ForbiddenException(
         'Self-approval denial: Reviewer cannot decide verification on their own tutor profile.',
       );
     }
-    const levelRow = await this.statusService.getLevel(tutorId, level);
+    const levelRow = await this.statusService.getLevel(effectiveUserId, level);
     if (!levelRow) {
       throw new NotFoundException(`Verification level '${level}' not found for tutor: ${tutorId}`);
     }
@@ -416,8 +433,27 @@ export class TutorVerificationService {
       );
     }
     if (targetStatus === 'approved' && this.documentRepo) {
+      // Auto-approve pending documents for this level upon reviewer level approval
+      if (typeof (this.documentRepo as unknown as { update?: unknown }).update === 'function') {
+        await this.documentRepo.update(
+          { tutorUserId: effectiveUserId, level, reviewStatus: 'pending', deletedAt: IsNull() },
+          { reviewStatus: 'approved', reviewedByUserId: reviewer.id, reviewedAt: new Date() },
+        );
+      }
+
+      // Auto-approve pending qualifications when educational level is approved
+      if (
+        level === 'educational' &&
+        typeof (this.qualificationRepo as unknown as { update?: unknown }).update === 'function'
+      ) {
+        await this.qualificationRepo.update(
+          { tutorUserId: effectiveUserId, reviewStatus: 'pending' },
+          { reviewStatus: 'approved' },
+        );
+      }
+
       const documents = await this.documentRepo.find({
-        where: { tutorUserId: tutorId, level, deletedAt: IsNull() },
+        where: { tutorUserId: effectiveUserId, level, deletedAt: IsNull() },
       });
       const requirements = evaluateLevelRequirements(
         level,
@@ -433,7 +469,7 @@ export class TutorVerificationService {
           ...(requirements.anyOfSatisfied ? [] : requirements.anyOfDocumentTypes),
         ];
         throw new BadRequestException(
-          `The ${level} level cannot be approved while mandatory evidence is unapproved: ${missing.join(', ')}.`,
+          `The ${level} level cannot be approved while mandatory evidence is unapproved or missing: ${missing.join(', ')}.`,
         );
       }
     }
@@ -455,7 +491,7 @@ export class TutorVerificationService {
 
     await this.reviewRepo.save(
       this.reviewRepo.create({
-        tutorUserId: tutorId,
+        tutorUserId: effectiveUserId,
         reviewerUserId: reviewer.id,
         decision: dto.decision === 'reinstated' ? 'reinstated' : dto.decision,
         reasonCode: dto.reasonCode,
@@ -469,7 +505,7 @@ export class TutorVerificationService {
       }),
     );
 
-    const profile = await this.statusService.recomputeDerivedStatus(tutorId, policyVersion);
+    const profile = await this.statusService.recomputeDerivedStatus(effectiveUserId, policyVersion);
 
     await this.auditService.record({
       actorUserId: reviewer.id,
@@ -478,7 +514,7 @@ export class TutorVerificationService {
       resourceId: savedLevel.id,
       reason: dto.reasonCode,
       safeMetadata: {
-        tutorId,
+        tutorId: effectiveUserId,
         level,
         decision: dto.decision,
         fromStatus,
@@ -489,7 +525,7 @@ export class TutorVerificationService {
     });
 
     await this.notifyLevelDecision(
-      tutorId,
+      effectiveUserId,
       level,
       dto.decision,
       targetStatus,
@@ -508,13 +544,14 @@ export class TutorVerificationService {
     if (!this.documentRepo || !this.statusService) {
       throw new BadRequestException('Dossier documents are not available in this environment.');
     }
-    if (reviewer.id === tutorId) {
+    const effectiveUserId = await this.resolveTutorUserId(tutorId);
+    if (reviewer.id === effectiveUserId) {
       throw new ForbiddenException(
         'Self-approval denial: Reviewer cannot verify evidence on their own profile.',
       );
     }
     const document = await this.documentRepo.findOne({
-      where: { id: documentId, tutorUserId: tutorId, deletedAt: IsNull() },
+      where: { id: documentId, tutorUserId: effectiveUserId, deletedAt: IsNull() },
     });
     if (!document) {
       throw new NotFoundException(
@@ -524,7 +561,7 @@ export class TutorVerificationService {
     if (document.reviewStatus === 'superseded') {
       throw new ConflictException('A superseded document can no longer be reviewed.');
     }
-    const levelRow = await this.statusService.getLevel(tutorId, document.level);
+    const levelRow = await this.statusService.getLevel(effectiveUserId, document.level);
     if (levelRow) this.assertReviewerCanDecide(reviewer, levelRow);
 
     const wasApproved = document.reviewStatus === 'approved';

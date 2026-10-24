@@ -320,15 +320,6 @@ export class PaymentWebhooksService {
     const confirmed = await this.dataSource.transaction(async (manager) => {
       const locked = await manager.findOne(PaymentOrderEntity, {
         where: { id: order.id },
-        relations: {
-          payerUser: true,
-          booking: {
-            subject: true,
-            studentUser: true,
-            requesterUser: true,
-            tutorProfile: { user: true },
-          },
-        },
         lock: { mode: 'pessimistic_write' },
       });
       if (!locked) throw new NotFoundException('Payment order not found');
@@ -338,7 +329,20 @@ export class PaymentWebhooksService {
         return null;
       }
 
-      const booking = locked.booking ?? null;
+      const orderWithRelations = await manager.findOne(PaymentOrderEntity, {
+        where: { id: order.id },
+        relations: {
+          payerUser: true,
+          booking: {
+            subject: true,
+            studentUser: true,
+            requesterUser: true,
+            tutorProfile: { user: true },
+          },
+        },
+      });
+
+      const booking = orderWithRelations?.booking ?? null;
 
       const existingTxn = await manager.findOne(PaymentTransactionEntity, {
         where: { provider, providerEventId: event.eventId },

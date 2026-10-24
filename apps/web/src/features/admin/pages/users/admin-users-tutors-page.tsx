@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { ArrowLeft, Search, GraduationCap, ShieldCheck, Star } from 'lucide-react';
+import { ArrowLeft, ArrowRight, Search, GraduationCap, ShieldCheck, Star } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner } from '@/components/ui';
 import { withLocale } from '@/lib/auth';
@@ -93,18 +93,21 @@ export function AdminUsersTutorsPage({ locale }: { locale: Locale }) {
                   <th scope="col" className="px-5 py-3.5">
                     {isBn ? 'যোগদানের তারিখ' : 'JOINED'}
                   </th>
+                  <th scope="col" className="px-5 py-3.5 text-right">
+                    {isBn ? 'অ্যাকশন' : 'ACTION'}
+                  </th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-border/50">
                 {admin.loading && !filtered.length ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-12 text-center">
+                    <td colSpan={6} className="px-5 py-12 text-center">
                       <LoadingSpinner />
                     </td>
                   </tr>
                 ) : filtered.length === 0 ? (
                   <tr>
-                    <td colSpan={5} className="px-5 py-10 text-center text-muted-foreground">
+                    <td colSpan={6} className="px-5 py-10 text-center text-muted-foreground">
                       {isBn ? 'কোন শিক্ষক পাওয়া যায়নি' : 'No tutors found'}
                     </td>
                   </tr>
@@ -150,6 +153,16 @@ export function AdminUsersTutorsPage({ locale }: { locale: Locale }) {
 
                       <td className="px-5 py-4 text-muted-foreground font-mono text-[11px]">
                         {new Date(tutor.createdAt).toLocaleDateString(locale)}
+                      </td>
+
+                      <td className="px-5 py-4 text-right">
+                        <Link
+                          href={withLocale(`/dashboard/admin/verification/${tutor.id}`, locale)}
+                          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary/10 text-primary hover:bg-primary hover:text-primary-foreground font-semibold text-xs transition-colors"
+                        >
+                          <span>{isBn ? 'পূর্ণ প্রোফাইল ও সনদ পরিদর্শন' : 'Inspect 360°'}</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
                       </td>
                     </tr>
                   ))

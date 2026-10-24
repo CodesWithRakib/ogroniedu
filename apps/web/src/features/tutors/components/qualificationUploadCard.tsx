@@ -9,8 +9,14 @@ import {
   Button,
   Input,
   Label,
-  NativeSelect,
 } from '@/components/ui';
+import {
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from '@/components/ui/select';
 import { type Locale } from '@/lib/i18n';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { useUploadEvidenceMutation, type EvidencePurpose } from '@/store/services/files-api';
@@ -151,18 +157,27 @@ export function QualificationUploadCard({
             <Label htmlFor="qual-doc-type" className="text-xs font-medium">
               {isBn ? 'সনদের ধরন' : 'Document type'}
             </Label>
-            <NativeSelect
-              id="qual-doc-type"
+            <Select
               value={docType}
-              onChange={(e) => setDocType(e.target.value as typeof docType)}
-              data-testid="qualification-type-select"
+              onValueChange={(val) => setDocType(val as typeof docType)}
             >
-              <option value="nid">{isBn ? 'জাতীয় পরিচয়পত্র (NID)' : 'National ID (NID)'}</option>
-              <option value="academic_certificate">
-                {isBn ? 'একাডেমিক সনদপত্র' : 'Academic certificate'}
-              </option>
-              <option value="degree">{isBn ? 'ডিগ্রি' : 'Degree'}</option>
-            </NativeSelect>
+              <SelectTrigger
+                id="qual-doc-type"
+                className="h-9 text-xs"
+                data-testid="qualification-type-select"
+              >
+                <SelectValue placeholder={isBn ? 'সনদের ধরন নির্বাচন করুন' : 'Select document type'} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="nid">
+                  {isBn ? 'জাতীয় পরিচয়পত্র (NID)' : 'National ID (NID)'}
+                </SelectItem>
+                <SelectItem value="academic_certificate">
+                  {isBn ? 'একাডেমিক সনদপত্র' : 'Academic certificate'}
+                </SelectItem>
+                <SelectItem value="degree">{isBn ? 'ডিগ্রি' : 'Degree'}</SelectItem>
+              </SelectContent>
+            </Select>
           </div>
           <div className="space-y-1">
             <Label htmlFor="qual-title" className="text-xs font-medium">

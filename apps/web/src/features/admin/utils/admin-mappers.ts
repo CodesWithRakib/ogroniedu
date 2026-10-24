@@ -32,15 +32,44 @@ export function mapAdminUsers(rows: unknown[]): AdminUserItem[] {
 }
 
 export function mapAdminBookings(rows: unknown[]): AdminBookingItem[] {
-  return (rows as UnknownRecord[]).map((b) => ({
-    id: String(b.id),
-    studentName: str(b.studentName ?? b.studentId, '—'),
-    tutorName: str(b.tutorName ?? b.tutorId, '—'),
-    subjectName: str(b.subjectName, '—'),
-    status: (b.status as AdminBookingItem['status']) ?? 'requested',
-    priceBdt: Number(b.priceBdt ?? b.amountMinor ?? 0),
-    mode: b.mode === 'in_person' ? 'in_person' : 'online',
-  }));
+  return (rows as UnknownRecord[]).map((b) => {
+    const studentUser = b.studentUser as UnknownRecord | undefined;
+    const requesterUser = b.requesterUser as UnknownRecord | undefined;
+    const student = studentUser ?? requesterUser;
+    const studentName = str(
+      student?.displayName ?? student?.fullName ?? student?.email ?? b.studentName ?? b.studentId,
+      '—',
+    );
+
+    const tutorProfile = b.tutorProfile as UnknownRecord | undefined;
+    const tutorUser = (tutorProfile?.user ?? b.tutorUser) as UnknownRecord | undefined;
+    const tutorName = str(
+      tutorUser?.displayName ?? tutorUser?.fullName ?? tutorUser?.email ?? b.tutorName ?? b.tutorId,
+      '—',
+    );
+
+    const subject = b.subject as UnknownRecord | undefined;
+    const subjectName = str(
+      subject?.nameBn ?? subject?.name ?? b.subjectName,
+      '—',
+    );
+
+    const priceBdt = b.pricePerSessionMinor != null
+      ? Number(b.pricePerSessionMinor) / 100
+      : Number(b.priceBdt ?? b.amountMinor ?? 0);
+
+    return {
+      id: String(b.id),
+      studentName,
+      tutorName,
+      subjectName,
+      status: (b.status as AdminBookingItem['status']) ?? 'requested',
+      priceBdt,
+      mode: b.mode === 'in_person' ? 'in_person' : 'online',
+      escrowStatus: strOrNull(b.escrowStatus as string),
+      createdAt: str(b.createdAt as string, ''),
+    };
+  });
 }
 
 export function mapAuditLogs(rows: unknown[]): AdminAuditLogItem[] {

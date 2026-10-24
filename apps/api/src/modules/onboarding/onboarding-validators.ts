@@ -14,6 +14,8 @@ export type OnboardingStepValidatorKey =
   | 'guardian_profile'
   | 'tutor_profile'
   | 'tutor_education'
+  | 'tutor_subjects'
+  | 'tutor_availability'
   | 'tutor_documents'
   | 'security_setup'
   | 'organization_profile';
@@ -96,6 +98,14 @@ const TUTOR_PROFILE: OnboardingPayloadValidator = (payload) => {
 const TUTOR_EDUCATION: OnboardingPayloadValidator = (payload) => {
   const record = asRecord(payload);
   if (!record) return 'payload must be an object';
+
+  if (record.degree || record.title) {
+    if (!nonEmptyString(record.degree ?? record.title, 2)) {
+      return 'degree title is required';
+    }
+    return null;
+  }
+
   const qualifications = record.qualifications;
   if (!Array.isArray(qualifications) || qualifications.length === 0) {
     return 'at least one qualification is required';
@@ -109,9 +119,60 @@ const TUTOR_EDUCATION: OnboardingPayloadValidator = (payload) => {
   return null;
 };
 
+const TUTOR_SUBJECTS: OnboardingPayloadValidator = (payload) => {
+  const record = asRecord(payload);
+  if (!record) return 'payload must be an object';
+
+  if (record.subjectId && record.educationLevelId) {
+    if (!nonEmptyString(record.subjectId, 8)) return 'subjectId is required';
+    if (!nonEmptyString(record.educationLevelId, 8)) return 'educationLevelId is required';
+    return null;
+  }
+
+  const subjects = record.subjects;
+  if (!Array.isArray(subjects) || subjects.length === 0) {
+    return 'at least one teaching subject is required';
+  }
+  for (const item of subjects) {
+    const entry = asRecord(item);
+    if (!entry) return 'each subject must be an object';
+    if (!nonEmptyString(entry.subjectId, 8)) return 'each subject needs a valid subjectId';
+    if (!nonEmptyString(entry.educationLevelId, 8)) return 'each subject needs an educationLevelId';
+  }
+  return null;
+};
+
+const TUTOR_AVAILABILITY: OnboardingPayloadValidator = (payload) => {
+  const record = asRecord(payload);
+  if (!record) return 'payload must be an object';
+
+  const slots = record.slots;
+  if (!Array.isArray(slots) || slots.length === 0) {
+    return 'at least one availability slot is required';
+  }
+  for (const item of slots) {
+    const entry = asRecord(item);
+    if (!entry) return 'each slot must be an object';
+    if (typeof entry.weekday !== 'number' || entry.weekday < 0 || entry.weekday > 6) {
+      return 'weekday must be an integer between 0 and 6';
+    }
+    if (!nonEmptyString(entry.startLocal, 4) || !nonEmptyString(entry.endLocal, 4)) {
+      return 'startLocal and endLocal are required in format HH:mm';
+    }
+  }
+  return null;
+};
+
 const TUTOR_DOCUMENTS: OnboardingPayloadValidator = (payload) => {
   const record = asRecord(payload);
   if (!record) return 'payload must be an object';
+
+  if (record.fileAssetId && record.documentType) {
+    if (!nonEmptyString(record.fileAssetId, 8)) return 'document needs a valid fileAssetId';
+    if (!nonEmptyString(record.documentType, 2)) return 'document needs a documentType';
+    return null;
+  }
+
   const documents = record.documents;
   if (!Array.isArray(documents) || documents.length === 0) {
     return 'at least one verification document reference is required';
@@ -153,6 +214,8 @@ export const ONBOARDING_PAYLOAD_VALIDATORS: Record<
   guardian_profile: GUARDIAN_PROFILE,
   tutor_profile: TUTOR_PROFILE,
   tutor_education: TUTOR_EDUCATION,
+  tutor_subjects: TUTOR_SUBJECTS,
+  tutor_availability: TUTOR_AVAILABILITY,
   tutor_documents: TUTOR_DOCUMENTS,
   security_setup: SECURITY_SETUP,
   organization_profile: ORGANIZATION_PROFILE,

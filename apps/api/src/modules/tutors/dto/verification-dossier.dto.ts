@@ -99,13 +99,13 @@ export class AssignVerificationLevelDto {
 /** Server-validated queue filters for the admin/compliance verification queue. */
 export class VerificationQueueQueryDto {
   @IsOptional()
-  @IsIn([...TutorVerificationStatusValues])
-  status?: (typeof TutorVerificationStatusValues)[number];
+  @IsIn([...TutorVerificationStatusValues, 'all'])
+  status?: (typeof TutorVerificationStatusValues)[number] | 'all';
 
   /** Derived profile status filter (used when no single level status is set). */
   @IsOptional()
-  @IsIn([...TutorVerificationStatusValues])
-  overallStatus?: (typeof TutorVerificationStatusValues)[number];
+  @IsIn([...TutorVerificationStatusValues, 'all'])
+  overallStatus?: (typeof TutorVerificationStatusValues)[number] | 'all';
 
   @IsOptional()
   @IsIn([...TutorVerificationLevelValues])
