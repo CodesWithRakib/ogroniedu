@@ -193,7 +193,7 @@ describe('Admin Operations & Control Center Frontend Tests (Phase 14)', () => {
     expect(html).toContain('verification-row-tutor-pending-1-identity');
     expect(html).toContain('review-tutor-btn-tutor-pending-1-identity');
     expect(html).toContain('পরিচয় যাচাইকরণ');
-    expect(html).toContain('জমা দেওয়া হয়েছে');
+    expect(html).toContain('জমা দেওয়া হয়েছে');
   });
 
   it('should render the verification empty state when the queue is clear', () => {

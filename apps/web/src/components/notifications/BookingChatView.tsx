@@ -63,6 +63,9 @@ interface BookingChatViewProps {
   typingUser?: string | null;
   onTyping?: (isTyping: boolean) => void;
   isGuardianViewer?: boolean;
+  showHeader?: boolean;
+  showSafetyNotice?: boolean;
+  onDismissSafetyNotice?: () => void;
   onSendMessage?: (content: string, attachmentAssetIds?: string[]) => Promise<void>;
 }
 
@@ -76,6 +79,9 @@ export function BookingChatView({
   typingUser,
   onTyping,
   isGuardianViewer,
+  showHeader = true,
+  showSafetyNotice = true,
+  onDismissSafetyNotice,
   onSendMessage,
 }: BookingChatViewProps) {
   const dict = getDictionary(locale);
@@ -161,49 +167,66 @@ export function BookingChatView({
   const messages = controlledMessages ?? localMessages;
 
   return (
-    <div className="max-w-3xl mx-auto space-y-4 py-4 px-4 sm:px-6">
+    <div className="w-full h-full flex flex-col min-h-0 space-y-2.5 p-2 sm:p-3">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
-        <div>
-          <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
-            <GraduationCap className="w-5 h-5 text-success-soft-foreground" />
-            {n.chatTitle}
-          </h2>
-          <p className="text-xs text-muted-foreground mt-0.5">
-            {subjectName} • Booking #{bookingId.slice(0, 8)}
-          </p>
-        </div>
-        <div className="flex items-center gap-2 flex-wrap">
-          {isGuardianViewer && (
+      {showHeader && (
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3 shrink-0">
+          <div>
+            <h2 className="text-xl font-bold tracking-tight text-foreground flex items-center gap-2">
+              <GraduationCap className="w-5 h-5 text-success-soft-foreground" />
+              {n.chatTitle}
+            </h2>
+            <p className="text-xs text-muted-foreground mt-0.5">
+              {subjectName} • Booking #{bookingId.slice(0, 8)}
+            </p>
+          </div>
+          <div className="flex items-center gap-2 flex-wrap">
+            {isGuardianViewer && (
+              <Badge
+                variant="outline"
+                className="w-fit text-[11px] font-normal border-warning/50 bg-warning/10 text-warning"
+              >
+                <Eye className="w-3.5 h-3.5 mr-1" />
+                {locale === 'bn' ? 'অভিভাবক পর্যবেক্ষণ মোড' : 'Guardian Monitor Mode'}
+              </Badge>
+            )}
             <Badge
               variant="outline"
-              className="w-fit text-[11px] font-normal border-warning/50 bg-warning/10 text-warning"
+              className="w-fit text-[11px] font-normal border-primary/40 text-success-soft-foreground"
             >
-              <Eye className="w-3.5 h-3.5 mr-1" />
-              {locale === 'bn' ? 'অভিভাবক পর্যবেক্ষণ মোড' : 'Guardian Monitor Mode'}
+              <ShieldCheck className="w-3.5 h-3.5 mr-1 text-success-soft-foreground" />
+              ABAC Encrypted & Audited
             </Badge>
+          </div>
+        </div>
+      )}
+
+      {/* Safety Notice Banner (Dismissible & User-Persistent) */}
+      {showSafetyNotice && (
+        <div className="bg-warning/10 border border-warning/35 rounded-xl p-2.5 sm:p-3 text-xs text-warning flex items-start justify-between gap-2.5 shrink-0 transition-all">
+          <div className="flex items-start gap-2.5">
+            <ShieldAlert className="w-4 h-4 text-warning shrink-0 mt-0.5" />
+            <div className="space-y-0.5">
+              <span className="font-semibold block">{n.safetyNotice}</span>
+              <span className="text-[11px] opacity-90">{n.guardianOversightNote}</span>
+            </div>
+          </div>
+          {onDismissSafetyNotice && (
+            <button
+              type="button"
+              onClick={onDismissSafetyNotice}
+              className="p-1 rounded-lg text-warning/70 hover:text-warning hover:bg-warning/20 transition-colors shrink-0 cursor-pointer"
+              title={locale === 'bn' ? 'বিজ্ঞপ্তি বন্ধ করুন' : 'Dismiss notice'}
+              aria-label="Dismiss safety notice"
+            >
+              <X className="w-4 h-4" />
+            </button>
           )}
-          <Badge
-            variant="outline"
-            className="w-fit text-[11px] font-normal border-primary/40 text-success-soft-foreground"
-          >
-            <ShieldCheck className="w-3.5 h-3.5 mr-1 text-success-soft-foreground" />
-            ABAC Encrypted & Audited
-          </Badge>
         </div>
-      </div>
+      )}
 
-      {/* Safety Notice Banner */}
-      <div className="bg-warning/10 border border-warning/40 rounded-xl p-3 text-xs text-warning flex items-start gap-2.5">
-        <ShieldAlert className="w-4 h-4 text-warning shrink-0 mt-0.5" />
-        <div className="space-y-0.5">
-          <span className="font-semibold block">{n.safetyNotice}</span>
-          <span className="text-[11px] opacity-90">{n.guardianOversightNote}</span>
-        </div>
-      </div>
-
-      {/* Messages Thread Container */}
-      <Card className="border border-border flex flex-col h-[480px]">
+      {/* Messages Thread Container (Full Available Height) */}
+      <Card className="border border-border flex flex-col flex-1 min-h-0 overflow-hidden shadow-xs">
         <CardContent className="flex-1 overflow-y-auto p-4 space-y-3">
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center text-xs text-muted-foreground">

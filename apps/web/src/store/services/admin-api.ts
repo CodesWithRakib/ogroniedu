@@ -216,6 +216,37 @@ export const adminApi = baseApi.injectEndpoints({
         { type: 'AdminUser', id: 'LIST' },
       ],
     }),
+    banUser: builder.mutation<unknown, { id: string; reason: string }>({
+      query: ({ id, ...body }) => ({
+        url: `/api/v1/admin/users/${id}/ban`,
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: (_r, _e, { id }) => [
+        { type: 'AdminUser', id },
+        { type: 'AdminUser', id: 'LIST' },
+      ],
+    }),
+    getUserSafetyStrikes: builder.query<
+      ApiSuccessEnvelope<{
+        actions: Array<{
+          id: string;
+          action_type: string;
+          reason: string;
+          applied_by: string;
+          expires_at: string | null;
+          revoked_at: string | null;
+          created_at: string;
+        }>;
+        activeStrikes: number;
+        isBlacklisted: boolean;
+        status: string;
+      }>,
+      string
+    >({
+      query: (id) => `/api/v1/admin/users/${id}/strikes`,
+      providesTags: (_r, _e, id) => [{ type: 'AdminUser', id }],
+    }),
     reactivateUser: builder.mutation<unknown, string>({
       query: (id) => ({ url: `/api/v1/admin/users/${id}/reactivate`, method: 'POST', body: {} }),
       invalidatesTags: (_r, _e, id) => [
@@ -442,6 +473,8 @@ export const {
   useLazyListAdminUsersQuery,
   useGetUserDossierQuery,
   useSuspendUserMutation,
+  useBanUserMutation,
+  useGetUserSafetyStrikesQuery,
   useReactivateUserMutation,
   useUpdateUserRolesMutation,
   useListAdminBookingsQuery,

@@ -48,6 +48,12 @@ export class AdminOperationsService {
   suspendUser(adminUser: AuthenticatedUser, targetUserId: string, dto: SuspendUserDto) {
     return this.users.suspendUser(adminUser, targetUserId, dto);
   }
+  banUser(adminUser: AuthenticatedUser, targetUserId: string, dto: { reason: string }) {
+    return this.users.banUser(adminUser, targetUserId, dto);
+  }
+  getUserSafetyStrikes(userId: string) {
+    return this.users.getUserSafetyStrikes(userId);
+  }
   reactivateUser(adminUser: AuthenticatedUser, targetUserId: string) {
     return this.users.reactivateUser(adminUser, targetUserId);
   }

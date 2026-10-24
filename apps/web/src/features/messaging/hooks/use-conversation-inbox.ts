@@ -30,9 +30,16 @@ export function useConversationInbox(currentUserId: string, activeBookingId?: st
   const [markAllRead] = useMarkAllBookingMessagesAsReadMutation();
   const prevConnectedRef = React.useRef(false);
   const activeBookingIdRef = React.useRef(activeBookingId);
+  // Synchronously update ref during render to guarantee zero lag
+  activeBookingIdRef.current = activeBookingId;
 
+  // Clear unread count immediately in local state when a conversation becomes active
   React.useEffect(() => {
-    activeBookingIdRef.current = activeBookingId;
+    if (activeBookingId) {
+      setConversations((prev) =>
+        prev.map((c) => (c.bookingId === activeBookingId ? { ...c, unreadCount: 0 } : c)),
+      );
+    }
   }, [activeBookingId]);
 
   // ──────────────────────────────────────────────────────
@@ -128,15 +135,16 @@ export function useConversationInbox(currentUserId: string, activeBookingId?: st
       messageId: string;
       readAt: string;
     }) => {
-      // Only update if WE are the reader (our unread count changed)
-      if (data.readerUserId === currentUserId) {
+      // If WE are the reader OR the message is in our currently active conversation, reset unread count
+      if (data.readerUserId === currentUserId || activeBookingIdRef.current === data.bookingId) {
         setConversations((prev) =>
           prev.map((c) =>
             c.bookingId === data.bookingId ? { ...c, unreadCount: 0 } : c,
           ),
         );
-      } else {
-        // Partner read our message — update read receipt on last message
+      }
+      // Partner read our message — update read receipt on last message
+      if (data.readerUserId !== currentUserId) {
         setConversations((prev) =>
           prev.map((c) => {
             if (c.bookingId === data.bookingId && c.lastMessage?.id === data.messageId) {

@@ -6,3 +6,4 @@ export * from './safety-action.entity';
 export * from './tutor-replacement-case.entity';
 export * from './tutor-replacement-case-event.entity';
 export * from './booking-dispute.entity';
+export * from './banned-identity.entity';

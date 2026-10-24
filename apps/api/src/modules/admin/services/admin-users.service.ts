@@ -158,7 +158,14 @@ export class AdminUsersService {
     }
 
     targetUser.status = 'suspended';
+    targetUser.authEpoch = (targetUser.authEpoch || 0) + 1;
     const saved = await this.userRepo.save(targetUser);
+
+    await this.dataSource.query(
+      `INSERT INTO safety_actions (id, target_user_id, action_type, reason, applied_by, created_at)
+       VALUES (gen_random_uuid(), $1, 'temporary_suspension', $2, $3, NOW())`,
+      [targetUserId, dto.reason, adminUser.id],
+    );
 
     await this.auditService.record({
       actorUserId: adminUser.id,
@@ -174,6 +181,55 @@ export class AdminUsersService {
   }
 
   /**
+   * 4b. Ban User Permanently and Blacklist Identity
+   */
+  async banUser(
+    adminUser: AuthenticatedUser,
+    targetUserId: string,
+    dto: { reason: string },
+  ): Promise<UserEntity> {
+    if (adminUser.id === targetUserId) {
+      throw new BadRequestException('Administrators cannot ban their own account');
+    }
+
+    const targetUser = await this.userRepo.findOne({ where: { id: targetUserId } });
+    if (!targetUser) {
+      throw new NotFoundException(`User ${targetUserId} not found`);
+    }
+
+    targetUser.status = 'banned';
+    targetUser.authEpoch = (targetUser.authEpoch || 0) + 1;
+    const saved = await this.userRepo.save(targetUser);
+
+    await this.dataSource.query(
+      `INSERT INTO safety_actions (id, target_user_id, action_type, reason, applied_by, created_at)
+       VALUES (gen_random_uuid(), $1, 'permanent_ban', $2, $3, NOW())`,
+      [targetUserId, dto.reason, adminUser.id],
+    );
+
+    // Insert into banned_identities
+    await this.dataSource.query(
+      `INSERT INTO banned_identities (id, banned_user_id, phone_e164, email, reason, severity, banned_by, created_at, updated_at)
+       VALUES (gen_random_uuid(), $1, $2, $3, $4, 'permanent', $5, NOW(), NOW())`,
+      [targetUserId, targetUser.phoneE164, targetUser.email, dto.reason, adminUser.id],
+    );
+
+    await this.auditService.record({
+      actorUserId: adminUser.id,
+      action: 'admin.user.banned',
+      resourceType: 'users',
+      resourceId: targetUserId,
+      reason: dto.reason,
+      safeMetadata: { previousStatus: targetUser.status },
+    });
+
+    this.logger.warn(
+      `User ${targetUserId} permanently banned by admin ${adminUser.id}: ${dto.reason}`,
+    );
+    return saved;
+  }
+
+  /**
    * 5. Reactivate User
    */
   async reactivateUser(adminUser: AuthenticatedUser, targetUserId: string): Promise<UserEntity> {
@@ -185,16 +241,61 @@ export class AdminUsersService {
     targetUser.status = 'active';
     const saved = await this.userRepo.save(targetUser);
 
+    // Revoke any active safety actions
+    await this.dataSource.query(
+      `UPDATE safety_actions SET revoked_at = NOW(), revoked_by = $1, revocation_reason = 'Admin pardon'
+       WHERE target_user_id = $2 AND revoked_at IS NULL`,
+      [adminUser.id, targetUserId],
+    );
+
+    // Remove from banned_identities
+    await this.dataSource.query(
+      `DELETE FROM banned_identities WHERE banned_user_id = $1`,
+      [targetUserId],
+    );
+
     await this.auditService.record({
       actorUserId: adminUser.id,
       action: 'admin.user.reactivated',
       resourceType: 'users',
       resourceId: targetUserId,
-      reason: 'Administrative account reactivation',
+      reason: 'Administrative account reactivation and strike pardon',
     });
 
     this.logger.log(`User ${targetUserId} reactivated by admin ${adminUser.id}`);
     return saved;
+  }
+
+  /**
+   * 5b. Get User Safety Strikes & Blacklist Dossier
+   */
+  async getUserSafetyStrikes(userId: string) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) throw new NotFoundException(`User ${userId} not found`);
+
+    const actions: Array<Record<string, unknown>> = await this.dataSource.query(
+      `SELECT id, action_type, reason, applied_by, expires_at, revoked_at, created_at
+       FROM safety_actions
+       WHERE target_user_id = $1
+       ORDER BY created_at DESC`,
+      [userId],
+    );
+
+    const isBlacklisted: Array<{ count: number }> = await this.dataSource.query(
+      `SELECT count(*)::int as count FROM banned_identities WHERE banned_user_id = $1`,
+      [userId],
+    );
+
+    return {
+      userId,
+      displayName: user.displayName,
+      email: user.email,
+      phone: user.phoneE164,
+      status: user.status,
+      strikeCount: actions.filter((a) => !a.revoked_at).length,
+      actions,
+      isBlacklisted: (isBlacklisted[0]?.count || 0) > 0,
+    };
   }
 
   /**

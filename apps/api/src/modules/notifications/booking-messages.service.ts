@@ -26,6 +26,8 @@ import {
 import { decodeCursor, encodeCursor } from '../../common/pagination/pagination';
 import { inspectAndRedactContent } from './utils/content-safety.util';
 import type { ConversationInboxItem } from '@ogroniedu/contracts';
+import { UserEntity } from '../auth/entities/user.entity';
+import { UserSafetyEnforcementService } from '../trust/services/user-safety-enforcement.service';
 
 /** Default chat history page size (preserves the previous take:100 cap via max 100). */
 const DEFAULT_MESSAGES_PAGE_SIZE = 50;
@@ -82,6 +84,10 @@ export class BookingMessagesService {
     private readonly notificationService: NotificationService,
     @Inject(forwardRef(() => NotificationGateway))
     private readonly notificationGateway?: NotificationGateway,
+    @InjectRepository(UserEntity)
+    private readonly userRepo?: Repository<UserEntity>,
+    @Inject(forwardRef(() => UserSafetyEnforcementService))
+    private readonly safetyEnforcement?: UserSafetyEnforcementService,
   ) {}
 
   /**
@@ -93,6 +99,15 @@ export class BookingMessagesService {
     dto: SendBookingMessageDto,
     requestId?: string,
   ): Promise<BookingMessageEntity> {
+    // 0. Verify sender is not suspended or banned
+    if (this.userRepo) {
+      const sender = await this.userRepo.findOne({ where: { id: user.id } });
+      if (sender && (sender.status === 'suspended' || sender.status === 'banned')) {
+        throw new ForbiddenException(
+          'আপনার অ্যাকাউন্ট নীতি লঙ্ঘনের কারণে স্থগিত বা নিষিদ্ধ অবস্থায় রয়েছে। কোনো বার্তা পাঠানো সম্ভব নয়।',
+        );
+      }
+    }
     const booking = await this.bookingRepo.findOne({
       where: { id: bookingId },
       relations: {
@@ -128,7 +143,9 @@ export class BookingMessagesService {
 
     // Determine recipient user ID
     let recipientUserId: string;
-    if (isTutor) {
+    if (isAdmin) {
+      recipientUserId = booking.studentUserId;
+    } else if (isTutor) {
       recipientUserId = booking.studentUserId;
     } else {
       if (!tutorUserId) {
@@ -152,7 +169,12 @@ export class BookingMessagesService {
       isRedacted,
       redactionReason,
       attachmentAssetIds: dto.attachmentAssetIds || [],
-      metadata: dto.metadata || {},
+      metadata: {
+        ...(dto.metadata || {}),
+        ...(isAdmin
+          ? { isStaffIntervention: true, senderRole: 'admin', staffTitle: 'অগ্রণী সাপোর্ট ডেস্ক' }
+          : {}),
+      },
     });
 
     const savedMessage = await this.messageRepo.save(message);
@@ -186,12 +208,38 @@ export class BookingMessagesService {
           violationCodes: safetyResult.violationCodes,
         },
       });
+
+      // 5.1 Automated Strike & Punishment Escalation Ladder for Inappropriate / Abusive / Threatening Language
+      if (
+        this.safetyEnforcement &&
+        (safetyResult.hasAbusiveLanguage ||
+          safetyResult.hasThreatOrHarassment ||
+          safetyResult.violationCodes.includes('OFF_PLATFORM_PAYMENT'))
+      ) {
+        await this.safetyEnforcement
+          .handleViolationAndEnforce(user.id, {
+            violationCodes: safetyResult.violationCodes,
+            reason: redactionReason || 'Content policy violation',
+            bookingId: booking.id,
+            messageId: savedMessage.id,
+            severity: safetyResult.severity === 'none' ? undefined : safetyResult.severity,
+          })
+          .catch((err) => this.logger.warn(`Failed to execute automated safety strike: ${err}`));
+      }
     }
 
-    // 6. Real-Time Socket.IO Broadcast to Active Room & Recipient
-    this.notificationGateway?.broadcastChatMessage(booking.id, savedMessage, recipientUserId);
+    // 6. Find all active linked guardians of the student
+    const guardianIds = await this.guardianAccess.findActiveGuardianIds(booking.studentUserId);
 
-    // 7. Resolve Recipient Role for notification registry
+    // 7. Real-Time Socket.IO Broadcast to Active Room, Recipient, Sender, ALL Linked Guardians & Admin Oversight!
+    this.notificationGateway?.broadcastChatMessage(
+      booking.id,
+      savedMessage,
+      recipientUserId,
+      guardianIds,
+    );
+
+    // 8. Resolve Recipient Role for notification registry
     const recipientRole: 'student' | 'tutor' | 'guardian' =
       recipientUserId === tutorUserId
         ? 'tutor'
@@ -213,8 +261,23 @@ export class BookingMessagesService {
       })
       .catch((err) => this.logger.warn(`Failed to dispatch message notification: ${err}`));
 
+    // If sent by admin, also notify tutor directly
+    if (isAdmin && tutorUserId && recipientUserId !== tutorUserId) {
+      await this.notificationService
+        .dispatch({
+          userId: tutorUserId,
+          recipientRole: 'tutor',
+          eventType: 'chat.message',
+          payload: {
+            bookingId: booking.id,
+            senderName: 'অগ্রণী প্ল্যাটফর্ম মডারেটর',
+            preview: sanitizedContent.slice(0, 50),
+          },
+        })
+        .catch((err) => this.logger.warn(`Failed to dispatch tutor admin notification: ${err}`));
+    }
+
     // Notify linked guardians if student received message from tutor or vice-versa
-    const guardianIds = await this.guardianAccess.findActiveGuardianIds(booking.studentUserId);
     for (const guardianId of guardianIds) {
       if (guardianId !== user.id && guardianId !== recipientUserId) {
         // Real-time toast/inbox notification to guardian
@@ -468,11 +531,12 @@ export class BookingMessagesService {
   }
 
   /**
-   * 5. Get Conversations Inbox for Authenticated User
+   * 5. Get Conversations Inbox for Authenticated User (and Omniscient Staff/Admin View)
    */
   async getConversationsInbox(user: AuthenticatedUser): Promise<ConversationInboxItem[]> {
+    const isAdmin = isAdminRole(user);
     let studentIds: string[] = [];
-    if (user.roles?.includes('guardian')) {
+    if (!isAdmin && user.roles?.includes('guardian')) {
       studentIds = await this.guardianAccess.findActiveStudentIds(user.id).catch(() => []);
     }
 
@@ -482,17 +546,20 @@ export class BookingMessagesService {
       .leftJoinAndSelect('b.tutorProfile', 'tutorProfile')
       .leftJoinAndSelect('tutorProfile.user', 'tutorUser')
       .leftJoinAndSelect('b.subject', 'subject')
-      .leftJoinAndSelect('b.educationLevel', 'educationLevel')
-      .where(
+      .leftJoinAndSelect('b.educationLevel', 'educationLevel');
+
+    if (!isAdmin) {
+      qb.where(
         '(b.student_user_id = :userId OR b.requester_user_id = :userId OR b.tutor_user_id = :userId)',
         { userId: user.id },
       );
 
-    if (studentIds.length > 0) {
-      qb.orWhere('b.student_user_id IN (:...studentIds)', { studentIds });
+      if (studentIds.length > 0) {
+        qb.orWhere('b.student_user_id IN (:...studentIds)', { studentIds });
+      }
     }
 
-    const bookings = await qb.getMany();
+    const bookings = await qb.orderBy('b.updated_at', 'DESC').take(isAdmin ? 100 : 50).getMany();
     if (bookings.length === 0) {
       return [];
     }
@@ -513,16 +580,28 @@ export class BookingMessagesService {
       }
     }
 
-    // Count unread for user
-    const unreadRaw = await this.messageRepo
+    const isGuardian = !isAdmin && user.roles?.includes('guardian');
+
+    // Count unread for user (or for guardian viewing student's messages)
+    const unreadQb = this.messageRepo
       .createQueryBuilder('m')
       .select('m.booking_id', 'bookingId')
       .addSelect('COUNT(m.id)', 'count')
       .where('m.booking_id IN (:...bookingIds)', { bookingIds })
-      .andWhere('m.recipient_user_id = :userId', { userId: user.id })
-      .andWhere('m.read_at IS NULL')
-      .groupBy('m.booking_id')
-      .getRawMany<{ bookingId: string; count: string }>();
+      .andWhere('m.read_at IS NULL');
+
+    if (isAdmin) {
+      unreadQb.andWhere('m.sender_user_id != :userId', { userId: user.id });
+    } else if (isGuardian && studentIds.length > 0) {
+      unreadQb.andWhere(
+        '(m.recipient_user_id = :userId OR m.recipient_user_id IN (:...studentIds)) AND m.sender_user_id != :userId',
+        { userId: user.id, studentIds },
+      );
+    } else {
+      unreadQb.andWhere('m.recipient_user_id = :userId', { userId: user.id });
+    }
+
+    const unreadRaw = await unreadQb.groupBy('m.booking_id').getRawMany<{ bookingId: string; count: string }>();
 
     const unreadMap = new Map<string, number>();
     for (const r of unreadRaw) {
@@ -531,19 +610,36 @@ export class BookingMessagesService {
 
     const items: ConversationInboxItem[] = bookings.map((b) => {
       const isCallerTutor = user.id === b.tutorUserId;
-      const partner = isCallerTutor
-        ? {
-            id: b.studentUserId,
-            displayName: b.studentUser?.displayName || 'Student',
-            avatarUrl: b.studentUser?.avatarUrl || null,
-            role: 'student' as const,
-          }
-        : {
-            id: b.tutorUserId,
-            displayName: b.tutorProfile?.user?.displayName || 'Tutor',
-            avatarUrl: b.tutorProfile?.avatarUrl || b.tutorProfile?.user?.avatarUrl || null,
-            role: 'tutor' as const,
-          };
+      let partner;
+      if (isAdmin) {
+        partner = {
+          id: b.tutorUserId,
+          displayName: `${b.studentUser?.displayName || 'Student'} ↔ ${b.tutorProfile?.user?.displayName || 'Tutor'}`,
+          avatarUrl: b.tutorProfile?.avatarUrl || b.tutorProfile?.user?.avatarUrl || null,
+          role: 'tutor' as const,
+        };
+      } else if (isGuardian && b.studentUserId !== user.id) {
+        partner = {
+          id: b.tutorUserId,
+          displayName: `${b.tutorProfile?.user?.displayName || 'Tutor'} (${b.studentUser?.displayName || 'Student'})`,
+          avatarUrl: b.tutorProfile?.avatarUrl || b.tutorProfile?.user?.avatarUrl || null,
+          role: 'tutor' as const,
+        };
+      } else if (isCallerTutor) {
+        partner = {
+          id: b.studentUserId,
+          displayName: b.studentUser?.displayName || 'Student',
+          avatarUrl: b.studentUser?.avatarUrl || null,
+          role: 'student' as const,
+        };
+      } else {
+        partner = {
+          id: b.tutorUserId,
+          displayName: b.tutorProfile?.user?.displayName || 'Tutor',
+          avatarUrl: b.tutorProfile?.avatarUrl || b.tutorProfile?.user?.avatarUrl || null,
+          role: 'tutor' as const,
+        };
+      }
 
       const lastMsg = latestByBooking.get(b.id);
       return {
@@ -552,6 +648,14 @@ export class BookingMessagesService {
         educationLevelName: b.educationLevel?.nameEn || b.educationLevel?.nameBn,
         status: b.status,
         partnerUser: partner,
+        studentUser: {
+          id: b.studentUserId,
+          displayName: b.studentUser?.displayName || 'Student',
+        },
+        tutorUser: {
+          id: b.tutorUserId,
+          displayName: b.tutorProfile?.user?.displayName || 'Tutor',
+        },
         lastMessage: lastMsg
           ? {
               id: lastMsg.id,

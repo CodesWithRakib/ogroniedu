@@ -6,6 +6,7 @@ import {
   SafetyCaseMessageEntity,
   SafetyCaseEventEntity,
   SafetyActionEntity,
+  BannedIdentityEntity,
   TutorReplacementCaseEntity,
   TutorReplacementCaseEventEntity,
   BookingDisputeEntity,
@@ -15,6 +16,7 @@ import { BookingSessionEntity } from '../bookings/entities/booking-session.entit
 import { TutorProfileEntity } from '../tutors/entities/tutor-profile.entity';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
 import { AuditLogEntity } from '../audit/entities/audit-log.entity';
+import { UserEntity } from '../auth/entities/user.entity';
 import { NotificationsModule } from '../notifications/notifications.module';
 import { TutorsModule } from '../tutors/tutors.module';
 import { PaymentsModule } from '../payments/payments.module';
@@ -23,6 +25,7 @@ import { ReviewsService } from './reviews.service';
 import { SafetyReportsService } from './safety-reports.service';
 import { TutorReplacementService } from './tutor-replacement.service';
 import { DisputesService } from './disputes.service';
+import { UserSafetyEnforcementService } from './services/user-safety-enforcement.service';
 import { ReviewsController } from './reviews.controller';
 import { SafetyReportsController } from './safety-reports.controller';
 import { TutorReplacementController } from './tutor-replacement.controller';
@@ -38,6 +41,7 @@ import { TutorReplacementDeadlineScheduler } from './services/tutor-replacement-
       SafetyCaseMessageEntity,
       SafetyCaseEventEntity,
       SafetyActionEntity,
+      BannedIdentityEntity,
       TutorReplacementCaseEntity,
       TutorReplacementCaseEventEntity,
       BookingDisputeEntity,
@@ -46,8 +50,9 @@ import { TutorReplacementDeadlineScheduler } from './services/tutor-replacement-
       TutorProfileEntity,
       OutboxEventEntity,
       AuditLogEntity,
+      UserEntity,
     ]),
-    NotificationsModule,
+    forwardRef(() => NotificationsModule),
     TutorsModule,
     FilesModule,
     forwardRef(() => PaymentsModule),
@@ -63,6 +68,7 @@ import { TutorReplacementDeadlineScheduler } from './services/tutor-replacement-
     SafetyReportsService,
     TutorReplacementService,
     DisputesService,
+    UserSafetyEnforcementService,
     TutorReplacementNotifier,
     TutorReplacementDeadlineScheduler,
   ],
@@ -71,6 +77,7 @@ import { TutorReplacementDeadlineScheduler } from './services/tutor-replacement-
     SafetyReportsService,
     TutorReplacementService,
     DisputesService,
+    UserSafetyEnforcementService,
     TutorReplacementNotifier,
   ],
 })

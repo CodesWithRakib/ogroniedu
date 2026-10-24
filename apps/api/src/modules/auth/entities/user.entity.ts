@@ -37,7 +37,10 @@ export class UserEntity {
   avatarUrl!: string | null;
 
   @Column({ type: 'text', default: 'pending_verification' })
-  status!: 'pending_verification' | 'active' | 'suspended' | 'deactivated' | 'deletion_pending';
+  status!: 'pending_verification' | 'active' | 'suspended' | 'banned' | 'deactivated' | 'deletion_pending';
+
+  @Column({ name: 'auth_epoch', type: 'integer', default: 0 })
+  authEpoch!: number;
 
   @Column({ name: 'email_verified_at', type: 'timestamptz', nullable: true })
   emailVerifiedAt!: Date | null;

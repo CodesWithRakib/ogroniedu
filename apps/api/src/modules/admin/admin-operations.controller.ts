@@ -23,6 +23,7 @@ import { paginated } from '../../common/api-response/api-response';
 import { fromOffsetLimit } from '../../common/pagination/pagination.dto';
 import {
   SuspendUserDto,
+  BanUserDto,
   UpdateUserRolesDto,
   UpdateSystemSettingDto,
   UpdateFeatureFlagDto,
@@ -93,6 +94,32 @@ export class AdminOperationsController {
       success: true,
       message: `User ${user.displayName} (${user.id}) has been suspended.`,
       data: user,
+    };
+  }
+
+  @Post('users/:id/ban')
+  @HttpCode(HttpStatus.OK)
+  @Roles(...ADMIN_ROLES)
+  async banUser(
+    @CurrentUser() adminUser: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) targetUserId: string,
+    @Body() dto: BanUserDto,
+  ) {
+    const user = await this.adminService.banUser(adminUser, targetUserId, dto);
+    return {
+      success: true,
+      message: `ব্যবহারকারী ${user.displayName} (${user.id}) কে স্থায়ীভাবে নিষিদ্ধ ও ব্ল্যাকলিস্ট করা হয়েছে।`,
+      data: user,
+    };
+  }
+
+  @Get('users/:id/strikes')
+  @Roles(...ADMIN_ROLES)
+  async getUserSafetyStrikes(@Param('id', ParseUUIDPipe) userId: string) {
+    const data = await this.adminService.getUserSafetyStrikes(userId);
+    return {
+      success: true,
+      data,
     };
   }
 

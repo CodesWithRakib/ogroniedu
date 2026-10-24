@@ -1,6 +1,7 @@
 /**
- * Content Safety & Anti-Circumvention Utilities for OgroniEdu.
- * Protects children under The Children Act 2013 and maintains escrow financial integrity.
+ * Content Safety, Anti-Abuse & Anti-Circumvention Utilities for OgroniEdu.
+ * Protects children under The Children Act 2013, prevents harassment/abuse,
+ * and maintains escrow financial integrity.
  */
 
 const BENGALI_DIGITS: Record<string, string> = {
@@ -38,16 +39,40 @@ const SOCIAL_BYPASS_PATTERN =
 // External URLs
 const EXTERNAL_LINK_PATTERN = /(?:https?:\/\/|www\.)[^\s]+(?:\.com|\.me|\.org|\.net|\.xyz|\.io)/gi;
 
+// Profanity, vulgar slurs, abusive language (Bengali & Banglish)
+const BENGALI_PROFANITY_PATTERN =
+  /(?:কুত্তা|শুয়োর|খানকি(?:র\s*ছেলে|র\s*পো)?|হারামজাদা|হারামখোর|চোদ(?:া|ি|ানি)?|মাদারচোদ|ভোদ(?:া)?|মারা\s*খা|বাল(?:ছাল)?|মাগি|বেশ্যা|নটির\s*পো|জারজ|দালাল|চিটার|বাটপার)/gi;
+
+// Severe Threat / Violence / Harassment pattern
+const THREAT_PATTERN =
+  /(?:খুন\s*করব|মেরে\s*ফেলব|উড়িয়ে\s*দেব|ধ্বংস\s*করে\s*দেব|kill\s+you|threaten\s+you|beat\s+you\s+up)/gi;
+
+// Profanity, vulgarity, offensive insults (English)
+const ENGLISH_PROFANITY_PATTERN =
+  /\b(?:fuck(?:ing|er)?|bitch|bastard|asshole|whore|slut|cunt|dick|pussy|scammer|fraudster)\b/gi;
+
+export type SafetyViolationCode =
+  | 'PHONE_NUMBER'
+  | 'OFF_PLATFORM_PAYMENT'
+  | 'EXTERNAL_LINK'
+  | 'PROFANITY_ABUSE'
+  | 'THREAT_HARASSMENT';
+
 export interface SafetyCheckResult {
   sanitizedContent: string;
   isRedacted: boolean;
   redactionReason: string | null;
-  violationCodes: ('PHONE_NUMBER' | 'OFF_PLATFORM_PAYMENT' | 'EXTERNAL_LINK')[];
+  violationCodes: SafetyViolationCode[];
+  hasAbusiveLanguage: boolean;
+  hasThreatOrHarassment: boolean;
+  severity: 'none' | 'warning' | 'severe';
 }
 
 export function inspectAndRedactContent(content: string): SafetyCheckResult {
-  const violations: ('PHONE_NUMBER' | 'OFF_PLATFORM_PAYMENT' | 'EXTERNAL_LINK')[] = [];
+  const violations: SafetyViolationCode[] = [];
   const reasons: string[] = [];
+  let hasAbusiveLanguage = false;
+  let hasThreatOrHarassment = false;
 
   // 1. Bengali digit normalization for inspection
   const normalizedForDigits = normalizeBengaliDigits(content);
@@ -55,9 +80,7 @@ export function inspectAndRedactContent(content: string): SafetyCheckResult {
 
   // 2. Check for phone number circumvention (using normalized version to locate matches)
   if (PHONE_PATTERN.test(normalizedForDigits)) {
-    // Reset regex index
     PHONE_PATTERN.lastIndex = 0;
-    // Replace on original with converted awareness
     sanitized = normalizeBengaliDigits(sanitized).replace(
       PHONE_PATTERN,
       '[REDACTED CONTACT NUMBER]',
@@ -85,13 +108,44 @@ export function inspectAndRedactContent(content: string): SafetyCheckResult {
     reasons.push('External communication channels restricted for platform safety');
   }
 
+  // 5. Check for Violent Threats / Harassment
+  if (THREAT_PATTERN.test(sanitized)) {
+    THREAT_PATTERN.lastIndex = 0;
+    sanitized = sanitized.replace(THREAT_PATTERN, '[REDACTED THREAT / HARASSMENT]');
+    violations.push('THREAT_HARASSMENT');
+    reasons.push('Threats of violence, intimidation or severe harassment strictly prohibited');
+    hasThreatOrHarassment = true;
+  }
+
+  // 6. Check for Profanity, Vulgar Words & Abusive Slurs
+  if (BENGALI_PROFANITY_PATTERN.test(sanitized) || ENGLISH_PROFANITY_PATTERN.test(sanitized)) {
+    BENGALI_PROFANITY_PATTERN.lastIndex = 0;
+    ENGLISH_PROFANITY_PATTERN.lastIndex = 0;
+    sanitized = sanitized
+      .replace(BENGALI_PROFANITY_PATTERN, '[REDACTED INAPPROPRIATE CONTENT]')
+      .replace(ENGLISH_PROFANITY_PATTERN, '[REDACTED INAPPROPRIATE CONTENT]');
+    violations.push('PROFANITY_ABUSE');
+    reasons.push('Inappropriate, vulgar or abusive language strictly prohibited on OgroniEdu');
+    hasAbusiveLanguage = true;
+  }
+
   const isRedacted = violations.length > 0;
   const redactionReason = isRedacted ? reasons.join('; ') : null;
+  const severity: 'none' | 'warning' | 'severe' = hasThreatOrHarassment
+    ? 'severe'
+    : hasAbusiveLanguage || violations.includes('OFF_PLATFORM_PAYMENT')
+      ? 'warning'
+      : isRedacted
+        ? 'warning'
+        : 'none';
 
   return {
     sanitizedContent: sanitized,
     isRedacted,
     redactionReason,
     violationCodes: violations,
+    hasAbusiveLanguage,
+    hasThreatOrHarassment,
+    severity,
   };
 }

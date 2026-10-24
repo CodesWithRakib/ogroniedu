@@ -22,6 +22,9 @@ export function BookingChatContainer({
   peerRole = 'tutor',
   peerName,
   ownName,
+  showHeader = false,
+  showSafetyNotice = true,
+  onDismissSafetyNotice,
   testId = 'booking-chat',
 }: {
   locale: Locale;
@@ -32,6 +35,9 @@ export function BookingChatContainer({
   peerRole?: ChatRole;
   peerName?: string;
   ownName?: string;
+  showHeader?: boolean;
+  showSafetyNotice?: boolean;
+  onDismissSafetyNotice?: () => void;
   testId?: string;
 }) {
   const chat = useBookingChat(bookingId, locale);
@@ -47,15 +53,16 @@ export function BookingChatContainer({
     );
 
   return (
-    <div data-testid={testId} className="space-y-3">
+    <div data-testid={testId} className="h-full flex flex-col min-h-0">
       {chat.canLoadOlder && (
-        <div className="flex justify-center">
+        <div className="flex justify-center py-1.5 shrink-0">
           <Button
             size="sm"
             variant="outline"
             onClick={chat.loadOlder}
             disabled={chat.isFetchingOlder}
             data-testid={`${testId}-load-older`}
+            className="h-7 text-xs rounded-lg px-2.5"
           >
             {chat.isFetchingOlder
               ? locale === 'bn'
@@ -76,6 +83,9 @@ export function BookingChatContainer({
         typingUser={chat.typingUser}
         onTyping={chat.emitTyping}
         onSendMessage={chat.send}
+        showHeader={showHeader}
+        showSafetyNotice={showSafetyNotice}
+        onDismissSafetyNotice={onDismissSafetyNotice}
       />
     </div>
   );

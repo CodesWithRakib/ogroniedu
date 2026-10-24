@@ -41,6 +41,7 @@ export class AccountAccessService {
 /** Account statuses that must never be able to use an existing session. */
 export const BLOCKED_ACCOUNT_STATUSES: readonly string[] = [
   'suspended',
+  'banned',
   'deactivated',
   'deletion_pending',
 ];

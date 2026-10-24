@@ -132,6 +132,9 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
           const claims = jwt.verify(rawToken, this.jwtSecret);
           if (typeof claims !== 'string') {
             userId = readString(claims.sub) ?? readString(claims.id) ?? null;
+            if (Array.isArray((claims as Record<string, unknown>).roles)) {
+              client.data.roles = (claims as Record<string, unknown>).roles;
+            }
           }
         } catch {
           userId = null;
@@ -160,6 +163,12 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
       await client.join(room);
       client.data.userId = userId;
       this.logger.log(`Socket ${client.id} authenticated for user ${userId} in room ${room}`);
+
+      const userRoles = Array.isArray(client.data.roles) ? (client.data.roles as string[]) : [];
+      if (userRoles.some((r) => ['admin', 'super_admin', 'staff'].includes(r))) {
+        await client.join('admin_oversight');
+        this.logger.log(`Socket ${client.id} joined admin_oversight room`);
+      }
 
       // Send initial unread count immediately upon connection
       const { unreadCount } = await this.notificationService.getUnreadCount(userId);
@@ -203,7 +212,12 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
    * 3. Sender's user room (multi-tab/device inbox sync — like WhatsApp)
    * Client-side dedup by message ID prevents double display.
    */
-  broadcastChatMessage(bookingId: string, message: BookingMessageEntity, recipientUserId: string) {
+  broadcastChatMessage(
+    bookingId: string,
+    message: BookingMessageEntity,
+    recipientUserId: string,
+    guardianUserIds: string[] = [],
+  ) {
     if (!this.server) return;
     const bookingRoom = `booking_chat:${bookingId}`;
     const recipientRoom = `user:${recipientUserId}`;
@@ -220,8 +234,31 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
       this.server.to(senderRoom).emit('new_chat_message', message);
     }
 
+    // 4. Emit directly to all linked guardian user rooms for real-time guardian inbox updates
+    if (Array.isArray(guardianUserIds) && guardianUserIds.length > 0) {
+      for (const gId of guardianUserIds) {
+        if (gId && gId !== message.senderUserId) {
+          this.server.to(`user:${gId}`).emit('new_chat_message', message);
+        }
+      }
+    }
+
+    // 5. Emit to admin oversight room for live platform monitoring
+    this.server.to('admin_oversight').emit('new_chat_message', message);
+
+    // 6. Emit safety alert to admin oversight room if message contains redacted content
+    if (message.isRedacted) {
+      this.server.to('admin_oversight').emit('safety_flagged_message', {
+        bookingId,
+        messageId: message.id,
+        senderUserId: message.senderUserId,
+        redactionReason: message.redactionReason,
+        createdAt: message.createdAt,
+      });
+    }
+
     this.logger.log(
-      `Broadcast chat message #${message.id} to rooms: ${bookingRoom}, ${recipientRoom}, ${senderRoom}`,
+      `Broadcast chat message #${message.id} to rooms: ${bookingRoom}, ${recipientRoom}, ${senderRoom}, admin_oversight, and ${guardianUserIds.length} guardian rooms`,
     );
   }
 
@@ -255,6 +292,9 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     if (senderUserId) {
       this.server.to(`user:${senderUserId}`).emit('messages_read', payload);
     }
+
+    // 3. Emit directly to reader's user room (ensures multi-tab / inbox sidebar unread badges clear immediately)
+    this.server.to(`user:${readerUserId}`).emit('messages_read', payload);
 
     this.logger.log(
       `Broadcast read receipt for message #${messageId} by ${readerUserId} to room ${bookingRoom}${
@@ -336,7 +376,10 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
       isGuardian = activeGuardianIds.includes(userId);
     }
 
-    if (!isStudent && !isRequester && !isTutor && !isGuardian) {
+    const userRoles: string[] = Array.isArray(client.data.roles) ? client.data.roles : [];
+    const isAdmin = userRoles.some((r) => ['admin', 'super_admin', 'staff'].includes(r));
+
+    if (!isStudent && !isRequester && !isTutor && !isGuardian && !isAdmin) {
       this.logger.warn(
         `User ${userId} denied joining chat room for booking ${data.bookingId} (not a participant)`,
       );
@@ -345,7 +388,11 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
 
     const room = `booking_chat:${data.bookingId}`;
     await client.join(room);
-    this.logger.log(`User ${userId} joined real-time chat room ${room}`);
+    this.logger.log(
+      isAdmin
+        ? `Admin/staff user ${userId} joined real-time chat room ${room} for oversight`
+        : `User ${userId} joined real-time chat room ${room}`,
+    );
     return { success: true, bookingId: data.bookingId };
   }
 

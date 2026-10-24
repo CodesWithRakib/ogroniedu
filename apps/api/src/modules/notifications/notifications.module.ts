@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { Module, forwardRef } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   NotificationEntity,
@@ -8,6 +8,7 @@ import {
 } from './entities';
 import { BookingEntity } from '../bookings/entities/booking.entity';
 import { OutboxEventEntity } from '../bookings/entities/outbox-event.entity';
+import { UserEntity } from '../auth/entities/user.entity';
 import { NotificationService } from './notification.service';
 import { NotificationPreferencesService } from './notification-preferences.service';
 import { OutboxWorkerService } from './outbox-worker.service';
@@ -20,6 +21,7 @@ import { BookingMessagesController } from './booking-messages.controller';
 import { ConversationsController } from './conversations.controller';
 import { AuditModule } from '../audit/audit.module';
 import { GuardiansModule } from '../guardians/guardians.module';
+import { TrustModule } from '../trust/trust.module';
 
 @Module({
   imports: [
@@ -30,9 +32,11 @@ import { GuardiansModule } from '../guardians/guardians.module';
       BookingMessageEntity,
       BookingEntity,
       OutboxEventEntity,
+      UserEntity,
     ]),
     AuditModule,
     GuardiansModule,
+    forwardRef(() => TrustModule),
   ],
   controllers: [
     NotificationController,

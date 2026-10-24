@@ -21,9 +21,18 @@ export function mapToChatItems(
 
   return messages.map((m) => {
     const isOwn = m.senderUserId === currentUserId;
-    const senderName = isOwn
-      ? (opts?.ownName || defaultOwnName)
-      : (m.senderName || m.senderUser?.displayName || opts?.peerName || defaultPeerName);
+    const isStaff =
+      (m.metadata as Record<string, unknown> | null)?.isStaffIntervention === true ||
+      (m.metadata as Record<string, unknown> | null)?.senderRole === 'admin';
+
+    const computedRole: ChatRole = isStaff ? 'admin' : isOwn ? ownRole : peerRole;
+    const senderName = isStaff
+      ? isBn
+        ? 'অগ্রণী প্ল্যাটফর্ম মডারেটর'
+        : 'Ogroni Platform Moderator'
+      : isOwn
+        ? opts?.ownName || defaultOwnName
+        : m.senderName || m.senderUser?.displayName || opts?.peerName || defaultPeerName;
 
     const readByName = isOwn && m.readAt
       ? (m.readByName || m.recipientUser?.displayName || opts?.peerName || null)
@@ -46,7 +55,7 @@ export function mapToChatItems(
       id: m.id,
       senderId: m.senderUserId,
       senderName,
-      senderRole: isOwn ? ownRole : peerRole,
+      senderRole: computedRole,
       content: m.body ?? m.content,
       isRedacted: m.isRedacted ?? false,
       redactionReason: m.redactionReason ?? null,

@@ -72,6 +72,26 @@ export const notificationsApi = baseApi.injectEndpoints({
         { type: 'UnreadCount', id: 'COUNT' },
       ],
     }),
+
+    getPreferences: builder.query<
+      Array<{ category: string; channel: string; isEnabled: boolean }>,
+      void
+    >({
+      query: () => '/api/v1/notifications/preferences',
+      providesTags: [{ type: 'Notification' as const, id: 'PREFERENCES' }],
+    }),
+
+    updatePreferences: builder.mutation<
+      Array<{ category: string; channel: string; isEnabled: boolean }>,
+      { preferences: Array<{ category: string; channel: string; isEnabled: boolean }> }
+    >({
+      query: (body) => ({
+        url: '/api/v1/notifications/preferences',
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: [{ type: 'Notification' as const, id: 'PREFERENCES' }],
+    }),
   }),
   overrideExisting: false,
 });
@@ -82,4 +102,6 @@ export const {
   useMarkAsReadMutation,
   useMarkAllAsReadMutation,
   useDispatchNotificationMutation,
+  useGetPreferencesQuery,
+  useUpdatePreferencesMutation,
 } = notificationsApi;

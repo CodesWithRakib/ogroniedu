@@ -4,6 +4,7 @@ import {
   UnauthorizedException,
   NotFoundException,
   ConflictException,
+  ForbiddenException,
   Inject,
   Optional,
 } from '@nestjs/common';
@@ -156,6 +157,20 @@ export class AuthService {
 
     const normalizedEmail = dto.email ? dto.email.trim().toLowerCase() : null;
     const phone = dto.phone ? normalizePhone(dto.phone) : null;
+
+    // Blacklist check: verify phone or email is not permanently blacklisted
+    const bannedMatch = await this.dataSource.query(
+      `SELECT reason FROM banned_identities 
+       WHERE (phone_e164 IS NOT NULL AND phone_e164 = $1)
+          OR (email IS NOT NULL AND lower(email) = lower($2))
+       LIMIT 1;`,
+      [phone, normalizedEmail],
+    );
+    if (bannedMatch.length > 0) {
+      throw new ForbiddenException(
+        'নিরাপত্তা সতর্কতা: এই ফোন নম্বর বা ইমেইল পূর্বে গুরুতর নিয়ম লঙ্ঘনের কারণে স্থায়ীভাবে নিষিদ্ধ (Blacklisted) করা হয়েছে। নতুন অ্যাকাউন্ট তৈরি সম্ভব নয়।',
+      );
+    }
 
     // Friendly pre-checks (the unique indexes remain the authoritative guard).
     if (normalizedEmail) {

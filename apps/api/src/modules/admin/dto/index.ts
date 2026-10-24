@@ -1,4 +1,5 @@
 export * from './suspend-user.dto';
+export * from './ban-user.dto';
 export * from './update-user-roles.dto';
 export * from './update-system-setting.dto';
 export * from './update-feature-flag.dto';

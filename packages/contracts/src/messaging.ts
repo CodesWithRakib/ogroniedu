@@ -39,6 +39,14 @@ export interface ConversationInboxItem {
     avatarUrl?: string | null;
     role: 'student' | 'tutor' | 'guardian';
   };
+  studentUser?: {
+    id: string;
+    displayName: string;
+  };
+  tutorUser?: {
+    id: string;
+    displayName: string;
+  };
   lastMessage?: {
     id: string;
     content: string;

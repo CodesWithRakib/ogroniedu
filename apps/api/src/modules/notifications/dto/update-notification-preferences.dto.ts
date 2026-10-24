@@ -5,11 +5,11 @@ import { ApiProperty } from '@nestjs/swagger';
 export class NotificationPreferenceItemDto {
   @ApiProperty({
     example: 'booking',
-    enum: ['booking', 'schedule', 'payment', 'learning', 'system', 'marketing'],
+    enum: ['booking', 'schedule', 'payment', 'learning', 'system', 'marketing', 'safety_notice'],
   })
-  @IsIn(['booking', 'schedule', 'payment', 'learning', 'system', 'marketing'])
+  @IsIn(['booking', 'schedule', 'payment', 'learning', 'system', 'marketing', 'safety_notice'])
   @IsNotEmpty()
-  category!: 'booking' | 'schedule' | 'payment' | 'learning' | 'system' | 'marketing';
+  category!: 'booking' | 'schedule' | 'payment' | 'learning' | 'system' | 'marketing' | 'safety_notice';
 
   @ApiProperty({
     example: 'in_app',

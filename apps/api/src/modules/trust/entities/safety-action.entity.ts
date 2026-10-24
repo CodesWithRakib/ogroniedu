@@ -10,10 +10,12 @@ import { UserEntity } from '../../auth/entities/user.entity';
 import { SafetyReportEntity } from './safety-report.entity';
 
 export type SafetyActionType =
+  | 'warning'
   | 'tutor_safety_hold'
   | 'contact_restriction'
   | 'messaging_disabled'
   | 'temporary_suspension'
+  | 'permanent_ban'
   | 'flagged_for_review';
 
 @Entity('safety_actions')
