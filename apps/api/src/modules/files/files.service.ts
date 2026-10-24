@@ -83,8 +83,10 @@ export class FilesService {
     const expiresAtMs = Date.now() + ttlSeconds * 1000;
     const expiresAt = new Date(expiresAtMs).toISOString();
     const payload = `${fileId}:${userId}:${expiresAtMs}`;
-    const secret = process.env.JWT_SECRET || 'secure-jwt-secret-dev';
-    const signature = crypto.createHmac('sha256', secret).update(payload).digest('hex');
+    if (!process.env.JWT_SECRET) {
+      throw new Error('JWT_SECRET environment variable is required in production');
+    }
+    const signature = crypto.createHmac('sha256', process.env.JWT_SECRET).update(payload).digest('hex');
     const accessToken = Buffer.from(`${payload}:${signature}`).toString('base64url');
     const signedUrl = `/api/v1/files/${fileId}/download?token=${accessToken}&expires=${expiresAtMs}`;
 
@@ -164,7 +166,7 @@ export class FilesService {
       checksumSha256: checksum,
       visibility: 'private',
       purpose: dto.purpose,
-      malwareScanStatus: 'clean',
+      malwareScanStatus: 'pending', // Set to 'pending' for actual malware scanning
     });
 
     return await this.fileRepo.save(fileAsset);

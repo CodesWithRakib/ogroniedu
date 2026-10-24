@@ -24,8 +24,7 @@ import {
 @Injectable()
 export class AdminPlatformService {
   private readonly logger = new Logger(AdminPlatformService.name);
-  private readonly jwtSecret =
-    process.env.JWT_SECRET || 'ogroniedu-super-secure-jwt-secret-key-2026-bangladesh';
+  private readonly jwtSecret: string;
 
   constructor(
     @InjectRepository(SystemSettingEntity)
@@ -42,7 +41,12 @@ export class AdminPlatformService {
     private readonly auditService: AuditService,
     @Inject(LedgerService)
     private readonly ledgerService: LedgerService,
-  ) {}
+  ) {
+    this.jwtSecret = process.env.JWT_SECRET || '';
+    if (!this.jwtSecret) {
+      throw new Error('JWT_SECRET environment variable is required');
+    }
+  }
 
   /**
    * 9. Financial Reconciliation Visibility: Run full ledger audit and balance check

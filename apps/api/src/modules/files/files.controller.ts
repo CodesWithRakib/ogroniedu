@@ -66,4 +66,20 @@ export class FilesController {
       },
     };
   }
+
+  @Get(':fileId/download')
+  async downloadFile(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('fileId', ParseUUIDPipe) fileId: string,
+  ) {
+    const file = await this.filesService.getFileAccess(fileId, user);
+    return {
+      success: true,
+      fileId: file.id,
+      originalFilename: file.originalFilename,
+      mediaType: file.mediaType,
+      signedUrl: file.signedAccessUrl,
+      expiresAt: file.expiresAt,
+    };
+  }
 }

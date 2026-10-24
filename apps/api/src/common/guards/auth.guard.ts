@@ -82,15 +82,19 @@ function assertIssuerAndAudience(claims: AccessTokenClaims): void {
 
 @Injectable()
 export class AuthGuard implements CanActivate {
-  private jwtSecret =
-    process.env.JWT_SECRET || 'ogroniedu-super-secure-jwt-secret-key-2026-bangladesh';
+  private jwtSecret: string;
 
   constructor(
     @Optional() @Inject(Reflector) private readonly reflector?: Reflector,
     @Optional()
     @Inject(AccountAccessService)
     private readonly accountAccess?: AccountAccessService,
-  ) {}
+  ) {
+    this.jwtSecret = process.env.JWT_SECRET || '';
+    if (!this.jwtSecret) {
+      throw new Error('JWT_SECRET environment variable is required');
+    }
+  }
 
   canActivate(context: ExecutionContext): boolean | Promise<boolean> {
     if (this.reflector) {

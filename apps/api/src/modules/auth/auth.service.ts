@@ -88,8 +88,7 @@ function isUniqueViolation(err: unknown): boolean {
 
 @Injectable()
 export class AuthService {
-  private jwtSecret =
-    process.env.JWT_SECRET || 'ogroniedu-super-secure-jwt-secret-key-2026-bangladesh';
+  private jwtSecret: string;
   private accessTokenExpirySeconds = 900; // 15 minutes
   private refreshTokenExpiryDays = 7;
 
@@ -99,7 +98,12 @@ export class AuthService {
     @Inject(StructuredLoggerService) private logger: StructuredLoggerService,
     @Optional() @Inject(AuditService) private audit?: AuditService,
     @Optional() @Inject(OtpDeliveryService) private otpDelivery?: OtpDeliveryService,
-  ) {}
+  ) {
+    this.jwtSecret = process.env.JWT_SECRET || '';
+    if (!this.jwtSecret) {
+      throw new Error('JWT_SECRET environment variable is required');
+    }
+  }
 
   /** Fire-and-forget security audit event; never breaks the auth flow. */
   private async recordAudit(params: {

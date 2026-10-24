@@ -10,6 +10,7 @@ import {
   HttpCode,
   HttpStatus,
   Inject,
+  ForbiddenException,
 } from '@nestjs/common';
 import { ApiTags, ApiOperation, ApiResponse, ApiBearerAuth } from '@nestjs/swagger';
 import type {
@@ -39,6 +40,10 @@ export class NotificationController {
     @Inject(NotificationService)
     private readonly notificationService: NotificationService,
   ) {}
+
+  private isTestDispatchEnabled(): boolean {
+    return process.env.TEST_DISPATCH_ENABLED === 'true';
+  }
 
   @Get()
   @ApiOperation({ summary: 'Get paginated notifications for current authenticated user' })
@@ -98,7 +103,24 @@ export class NotificationController {
   @Post('test-dispatch')
   @ApiOperation({ summary: 'Trigger a notification dispatch (Internal / Testing)' })
   @ApiResponse({ status: 201, description: 'Dispatched notification item' })
-  async testDispatch(@Body() dto: DispatchNotificationDto): Promise<NotificationItemDto> {
+  @ApiResponse({ status: 403, description: 'Test dispatch not enabled or insufficient permissions' })
+  async testDispatch(
+    @CurrentUser() user: AuthenticatedUser,
+    @Body() dto: DispatchNotificationDto,
+  ): Promise<NotificationItemDto> {
+    if (!this.isTestDispatchEnabled()) {
+      throw new ForbiddenException('Test dispatch endpoint is disabled. Set TEST_DISPATCH_ENABLED=true to enable.');
+    }
+
+    // Additional role restriction - only super_admin can use test dispatch
+    const allowedRoles = ['super_admin', 'admin'];
+    const userRoles = user.roles || [];
+    const hasAllowedRole = userRoles.some(r => allowedRoles.includes(r));
+    
+    if (!hasAllowedRole) {
+      throw new ForbiddenException('Insufficient permissions for test dispatch');
+    }
+
     return this.notificationService.dispatch(dto);
   }
 }

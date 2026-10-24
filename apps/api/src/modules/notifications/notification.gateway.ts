@@ -34,8 +34,7 @@ function readString(value: unknown): string | undefined {
 })
 export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect, INotificationBroadcaster {
   private readonly logger = new Logger(NotificationGateway.name);
-  private readonly jwtSecret =
-    process.env.JWT_SECRET || 'ogroniedu-super-secure-jwt-secret-key-2026-bangladesh';
+  private readonly jwtSecret: string | undefined = process.env.JWT_SECRET;
 
   @WebSocketServer()
   server!: Server;
@@ -87,6 +86,12 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
 
   async handleConnection(client: Socket) {
     try {
+      if (!this.jwtSecret && process.env.NODE_ENV !== 'test') {
+        this.logger.error('JWT_SECRET environment variable is required for WebSocket authentication');
+        client.emit('auth_error', { message: 'Server configuration error' });
+        client.disconnect(true);
+        return;
+      }
       const auth = client.handshake.auth || {};
       const headers = client.handshake.headers || {};
       const allowBypass = isTestAuthBypassEnabled();
@@ -102,6 +107,9 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
 
       if (rawToken && rawToken.includes('.')) {
         try {
+          if (!this.jwtSecret) {
+            throw new Error('JWT_SECRET environment variable is required for token verification');
+          }
           const claims = jwt.verify(rawToken, this.jwtSecret);
           if (typeof claims !== 'string') {
             userId = readString(claims.sub) ?? readString(claims.id) ?? null;
