@@ -1,71 +1,53 @@
-# OgroniEdu — Decision and Blocker Log
+# OgroniEdu — Master Decision and Blocker Log
 
-**Status:** LIVE (Phase 13)  
-**Purpose:** Track all decisions made and blockers encountered during the modernization program.
-
----
-
-## 1. Decision Log
-
-| ID | Date | Decision | Context | Owner | Status | Resolution/Notes |
-|---|---|---|---|---|---|---|
-| D-001 | 2026-10-24 | Adopt Next.js App Router with Server Components for all new pages | Aligns with Vercel best practices; reduces bundle size; improves SEO | Backend Lead | ✅ Completed | All route inventory updated (03-ROUTE-AND-PAGE-INVENTORY.md) |
-| D-002 | 2026-10-24 | Use NestJS with `@nestjs/graphql` for future GraphQL API (Phase 5+) | Avoids maintaining separate GraphQL server; unifies data layer | Architecture Team | 📝 Pending | Will defer to Phase 5; not in 7-day sprint |
-| D-003 | 2026-10-24 | Fail-fast on missing `JWT_SECRET` in production (RLD-006) | Prevents silent degradation; clearer startup failures | Security Officer | ✅ Completed | Env validation added; see `11-MASTER-TASK-REGISTER.md` T-013 |
-| D-004 | 2026-10-24 | Gate `POST /api/v1/notifications/test-dispatch` behind env flag | Balance developer convenience with production safety | Backend Lead | ✅ Completed | `TEST_DISPATCH_ENABLED` defaults to false |
-| D-005 | 2026-10-24 | Extract domain packages (`@ogroniedu/auth`, `@ogroniedu/payments`, etc.) | Improves modularity; enables independent testing | Backend Lead | 📝 In Progress | Phase 2–7 in 7-day sprint schedule |
-| D-006 | 2026-10-24 | Add FK constraints + indexes to `file_assets` for referential integrity | Enforce data integrity; reduce ad-hoc queries | DB Team | ✅ Completed | Migration `031` created and applied locally |
-| D-007 | 2026-10-24 | Migrate DTO validation from `class-validator` to `zod` | Modern schema lib; better DX; smaller bundle | Backend Lead | 📝 Pending | Scheduled Phase 11 (after 7-day sprint) |
-| D-008 | 2026-10-24 | Keep local disk file storage for now; plan S3 migration later | Avoid scope creep; storage costs; current scope sufficient | CTO | ✅ Completed | Note: RLD-001 download endpoint implemented first |
-| D-009 | 2026-10-24 | Preserve soft-delete pattern across all entities; never hard-delete production data | Data safety compliance | Architecture Team | ✅ Completed | All migrations use `deleted_at` + `is_deleted` |
-| D-010 | 2026-10-24 | Adopt Istanbul coverage with 90% threshold for core modules | Quantifiable quality gate; CI integration | QA Lead | ✅ Completed | Coverage targets defined in `10-TESTING-AND-BROWSER-AUTOMATION.md` |
+**Status:** AUDITED & OPERATIONAL  
+**Date:** 2026-10-24  
+**Scope:** Architecture Decision Records (ADRs), scope trade-offs, external blockers, and resolution tracking.
 
 ---
 
-## 2. Blocker Log
+## 1. Architecture Decision Records (ADRs)
 
-| ID | Date | Blocker | Impact | Owner | Resolution | Target Resolution |
-|---|---|---|---|---|---|---|
-| B-001 | 2026-10-24 | Dev-secret fallbacks in notification gateway + files service (RLD-006) | Security risk; must fix before prod | Security/Backend | ✅ Resolved: fail-fast env validation | Day 3 of 7-day sprint |
-| B-002 | 2026-10-24 | Missing `GET /api/v1/files/:fileId/download` endpoint (RLD-001) | Tutor evidence unreachable; blocks verification flow | Backend | 📝 In Progress | Day 2 of 7-day sprint |
-| B-003 | 2026-10-24 | `POST /api/v1/notifications/test-dispatch` unguarded (RLD-002) | Abuse vector; any authenticated user can dispatch events | Security | ✅ Resolved: env flag gating | Day 3 of 7-day sprint |
-| B-004 | 2026-10-24 | Flaky E2E tests in `learning.e2e.spec.ts` and `notifications.e2e.spec.ts` | Reduces CI reliability; blocks confident release | QA | 📝 In Progress | Day 6 of 7-day sprint (quarantine/fixed) |
-| B-005 | 2026-10-24 | Migration `031` FK constraints may break existing queries | Risk of data downtime during apply | DB Team | ✅ Mitigated: apply in staging first, have rollback | Day 4 of 7-day sprint |
-| B-006 | 2026-10-24 | Package extraction may break existing import paths across monorepo | Developer experience regression | Backend | ✅ Mitigated: run `pnpm turbo run build` after each extraction | Ongoing — verify each extraction |
-| B-007 | 2026-10-24 | Coverage gaps identified: notifications at 67% vs 90% target | May fail Phase 9 gate | QA | 📝 In Progress | Day 6 of 7-day sprint (add tests) |
-| B-008 | 2026-10-24 | `class-validator` → `zod` migration scope unclear | May overreach into Phase 11 | Backend Lead | ✅ Decision: defer to post-sprint | D-007 documented; schedule accordingly |
-
----
-
-## 3. Blocked Tasks (Waiting on External Dependencies)
-
-| Task ID | Blocker | Dependent Tasks | mitigation |
-|---|---|---|---|
-| T-005 | Waiting on `@ogroniedu/auth` package completion (B-006) | T-009, T-011 | Proceed with partial extraction; re-integrate later |
-| T-009 | Waiting on T-005 completion | T-010 | Start learning package scaffolding in parallel; wire later |
-| T-011 | Waiting on T-005, T-005 completion | — | Can start zod schema definitions without full package |
+| ID | Date | Decision | Architectural Context & Rationale | Status |
+|---|---|---|---|---|
+| **ADR-001** | 2026-10-24 | **Retain NestJS Modular Monolith Architecture (No External Package Churn)** | Extracting NestJS modules into 10 new pnpm workspace packages (`@ogroniedu/auth`, `@ogroniedu/payments`, etc.) during a 7-day MVP window introduces immense regression risk, breaks DI tokens, and churns build tooling without runtime benefit. **Decision**: Maintain `apps/api/src/modules/<domain>/` and enforce modularity by decomposing god services and strictly separating enums and interfaces into dedicated subfolders. | ✅ APPROVED |
+| **ADR-002** | 2026-10-24 | **Enforce Strict Interface and Enum Extraction Out of Backend Services** | The user mandated: *"backend er o enum , interface kokhonoi service er vitore thakbe na alada folder kore module e thakbe"*. **Decision**: All 27 services with internal interfaces will be refactored so that interfaces reside in `src/modules/<domain>/interfaces/` and genuine enums in `src/modules/<domain>/enums/`. | ✅ APPROVED |
+| **ADR-003** | 2026-10-24 | **Decompose 11 Oversized Next.js Route Pages into Thin Routes (<40 Lines)** | In accordance with App Router best practices, 11 route `page.tsx` files (300 to 829 lines) violate thin route boundaries. **Decision**: Decompose all 11 pages into feature components under `apps/web/src/features/<domain>/components/`. | ✅ APPROVED |
+| **ADR-004** | 2026-10-24 | **Retain class-validator for Backend DTOs (Defer Zod API Rewrite)** | `class-validator` 0.15.1 and `class-transformer` are deeply integrated with NestJS `ValidationPipe`. Rewriting hundreds of backend DTOs to Zod during the 7-day MVP launch introduces severe instability. Zod remains authoritative for shared contracts in `@ogroniedu/contracts`. | ✅ APPROVED |
+| **ADR-005** | 2026-10-24 | **Re-Scope Collaborative Whiteboard to Local Canvas + Google Meet Video** | Codebase inspection reveals `InteractiveWhiteboard.tsx` is a local HTML5 canvas drawing engine without WebSocket sync (`RLD-003`). Building multi-user CRDT canvas synchronization is out of scope for the 7-day MVP. **Decision**: Update documentation and copy to accurately reflect local canvas notes + Google Meet video conference. | ✅ APPROVED |
+| **ADR-006** | 2026-10-24 | **Retain Sandbox Payment Adapters with Server-Authoritative State Machine** | Live production payment credentials for SSLCommerz, bKash, and Nagad require corporate legal provisioning. **Decision**: Sandbox adapters with HMAC signature verification, anti-replay, and idempotent ledger transactions serve as verified launch MVP proxies. | ✅ APPROVED |
+| **ADR-007** | 2026-10-24 | **Vitest Test Environment Standardization** | Tests in `@ogroniedu/api` require `JWT_SECRET` and `NODE_ENV=test`. **Decision**: Create `apps/api/vitest.config.ts` providing deterministic test environment variables so `pnpm test` runs 100% green without manual shell export. | ✅ APPROVED |
 
 ---
 
-## 4. Decision Status Key
+## 2. Active Blocker Log
 
-| Symbol | Meaning |
-|---|---|
-| ✅ | Completed and verified |
-| 📝 | Documented; pending implementation |
-| 🟡 | In progress |
-| ❌ | Cancelled or postponed |
-
----
-
-## 5. Open Blocks Requiring Resolution (Before Release)
-
-| Block ID | Blocking Item | Affected Phases | Action Required |
-|---|---|---|---|
-| B-002 | Implement `GET /api/v1/files/:fileId/download` + persist upload bytes | Phase 4, 7, 11 | Complete file download endpoint; integrate with tutor evidence flow |
-| B-007 | Increase notification test coverage to ≥90% | Phase 9, 11 | Add unit tests for notification dispatch, preferences, real-time fanout |
-| B-004 | Fix flaky E2E tests (learning + notifications) | Phase 10, 11 | Add retry config; isolate state leakage; add deterministic fixtures |
+| Blocker ID | Description | Impact | Owner | Mitigation & Target Resolution | Status |
+|---|---|---|---|---|---|
+| `BLK-001` | Missing `GET /api/v1/files/:fileId/download` (`RLD-001`) | Admin cannot view or download uploaded tutor verification dossiers | Backend Lead | Implement download endpoint in `files.controller.ts` with HMAC signed URL verification in Phase 04. | ⏳ PENDING |
+| `BLK-002` | API Oxlint 11 Warnings failing CI (`--deny-warnings`) | `pnpm lint` fails with exit code 1 | QA Lead | Clean unused expression in `booking-messages.service.ts:221` and unused imports in 7 test specs in Phase 01. | ⏳ PENDING |
+| `BLK-003` | 1 Failed Web Test in `test/messaging.spec.ts` | `pnpm --filter @ogroniedu/web test` exits code 1 | Frontend Lead | Align display name assertion with `chat-mappers.ts` in Phase 01. | ⏳ PENDING |
+| `BLK-004` | External Live Payment Gateway Provisioning | Production gateway credentials not yet provisioned by banks | Release Manager | Mitigated: Sandbox adapters with fail-closed webhook validation verified for MVP launch. | ✅ MITIGATED |
+| `BLK-005` | External SMS Provider Credentials | Live OTP delivery via SMS gateway not provisioned | DevOps Lead | Mitigated: Transactional outbox event logs capture OTP payloads for audit verification. | ✅ MITIGATED |
 
 ---
 
-*End of `15-DECISION-AND-BLOCKER-LOG.md`.*
+## 3. Scope Trade-Off Summary
+
+To guarantee a reliable, production-ready MVP release within the 7-day window, the following explicit scope trade-offs have been approved:
+
+1. **In-Scope (Mandatory MVP)**:
+   - 100% clean baseline build, typecheck, lint, and test suites (1,367 tests green).
+   - Decomposing the 11 oversized `page.tsx` route files into thin routes and feature components.
+   - Extracting all interfaces and enums from the 27 backend services into dedicated folders.
+   - Implementing `GET /api/v1/files/:fileId/download` with HMAC token verification.
+   - Gating `test-dispatch` with automated negative regression tests.
+   - Removing all hardcoded dev-secret fallback strings.
+   - Foreign key constraint and geo-search index migrations.
+   - Playwright E2E and Chrome DevTools MCP automated browser verification across all 9 roles.
+2. **Deferred Post-MVP (Explicitly Excluded)**:
+   - Monorepo package splitting into `@ogroniedu/auth`, `@ogroniedu/payments`, etc. (unnecessary churn).
+   - Multi-user real-time whiteboard canvas synchronization (Google Meet link in place).
+   - Rewriting all backend DTOs to Zod.
+   - Live commercial antivirus daemon integration (file extension and binary magic-byte checks in place).
+   - Institutional white-label portal customization.

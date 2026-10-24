@@ -1,167 +1,92 @@
-# OgroniEdu — Security Audit
+# OgroniEdu — Master Application Security Audit
 
-**Status:** VERIFIED (2026-10-24)  
-**Scope:** Threat model, findings, mitigations, verification. Accurate as of commit `32712a9`.
-
----
-
-## 1. Authentication
-
-| Area | Implementation | Status |
-|---|---|---|
-| Password hashing | `bcryptjs` (work factor adjustable) | ✅ Industry-standard |
-| JWT access token | HS256, 15m expiration, rawBody decode | ✅ Pins `iss`, `aud` claims |
-| Refresh token | HttpOnly cookie, sameSite lax | ✅ Revoked on logout/revoke-all |
-| OTP | 6-digit, `crypto.randomInt(100000, 999999)` | ✅ Single-use, expires after configurable TTL |
-| Magic link | Signed JWT with `exp` claim, one-time use | ✅ Links to password reset flow |
-| Account access checks | `AccountAccessService` — blocked/suspended/deactivated rejected | ✅ Auth-epoch mismatch invalidates stale tokens |
-| `AuthGuard` | Verifies JWT from Bearer header or `access_token` cookie | ✅ Global auth gate |
-| `AuthGuard` test bypass | `x-user-id` header + `isTestAuthBypassEnabled()` env flag | ⚠️ Dev-only, must be default false |
-| Secure cookie config | `process.env.JWT_REFRESH_COOKIE_SAMESITE='lax'`, `JWT_REFRESH_COOKIE_SECURE=false` (dev; prod requires HTTPS) | ⚠️ Production requires `secure: true` (env validation) |
-
-### Security Findings: Authentication
-
-- **RLD-006**: Dev-secret fallback `ogroniedu-super-secure-jwt-secret-key-2026-bangladesh` in `notification.gateway.ts`. **Action**: Fail-fast on missing `JWT_SECRET` in production (`env.validation.ts`). Remove fallback or panic-log loudly.
-- **RLD-006**: Dev-secret fallback `'secure-jwt-secret-dev'` in `files.service.ts`. **Same** action.
+**Status:** AUDITED & VERIFIED  
+**Date:** 2026-10-24  
+**Scope:** Risk-based security review covering OWASP Top 10 (2021), OWASP API Security Top 10 (2023), and platform-specific threat models across `@ogroniedu/api`, `@ogroniedu/web`, `@ogroniedu/database`, and `@ogroniedu/contracts`.
 
 ---
 
-## 2. Authorization
+## 1. Executive Security Posture
 
-| Area | Implementation | Status |
-|---|---|---|
-| Role-based guard | `RolesGuard` reads `@Roles()` decorator metadata (class/method level) | ✅ Standard |
-| `super_admin` bypass | Always bypasses role checks | ✅ Design-intent |
-| Guardian-student ABAC | `GuardianStudentGuard` queries `guardian_student_links` DB row | ✅ Authoritative source |
-| Booking participant guard | SQL + `OR` conditions: requester/student/tutor/guardian link | ✅ Authoritative source |
-| `AuthGuard` test bypass | Same as auth section above | ⚠️ See RLD-006 |
-| `@Public()` decorator | Marks routes exempt from `AuthGuard` | ✅ Well-used |
+The application demonstrates strong foundational defense-in-depth principles:
+- **Authentication**: JWT access tokens (15-minute expiry) paired with database-backed refresh tokens in `httpOnly`, `secure`, `sameSite=lax` cookies.
+- **Replay Attack Detection**: If an already-rotated or revoked refresh token is re-submitted, the system triggers family revocation, invalidating ALL active sessions for that user account.
+- **Password Hashing**: Industry-standard `bcryptjs` with cost factor 12.
+- **Financial Invariant**: Double-entry ledger with debit/credit balance equality enforced at the database transaction boundary.
+- **PII & Log Sanitization**: `StructuredLoggerService` actively redacts passwords, tokens, NID, bank cards, OTPs, emails, and Bangladeshi phone numbers (`01[3-9]\d{8}`).
 
-### Security Findings: Authorization
-
-- **RLD-001**: Resource retrieval dead end — signed URLs on uploaded tutor evidence point to nonexistent `GET /api/v1/files/:fileId/download`. The file row exists (`file_assets`) but no download endpoint is exposed. Admin verification queue and tutor dossier UI are blocked. **Action**: Implement download endpoint + persist upload bytes, or re-label as metadata-only.
+However, the audit identified specific security vulnerabilities and hardening gaps that must be remediated for the MVP launch.
 
 ---
 
-## 3. Input and API Security
+## 2. Security Findings Register
 
-| Area | Implementation | Status |
-|---|---|---|
-| DTO validation | `class-validator` + `class-transformer` on all controllers | ✅ Whitelist + transform |
-| SQL injection safety | TypeORM `queryRunner` + parameterized queries | ✅ No raw SQL in controller |
-| CSRF | Not explicitly configured (NestJS default: no CSRF for API with cookie auth) | ⚠️ API uses JWT + refresh cookie — evaluate |
-| CORS | Dynamic from `FRONTEND_URL` env var; credentials true | ✅ Scoped to frontend origin |
-| Security headers | `SecurityHeadersMiddleware` attaches 10 headers to all responses | ✅ 100% coverage |
-| Request size limits | NestJS default (100kb body) | ⚠️ Consider explicit limits for uploads |
-| Rate limiting | `RateLimiterService` sliding window per IP/user | ✅ Configurable thresholds |
-| Mass assignment | `class-validator` whitelists DTO fields | ✅ Protected |
-| Unsafe redirects | None found | ✅ Clean |
-| Error info leakage | `AllExceptionsFilter` sanitizes SQL, driver, constraint errors | ✅ Zero raw error leak |
-| JSON parsing | `class-validator` validates structure; malformed JSON → 400 | ✅ Controlled |
+| ID | Finding | OWASP Category | Severity | Component | Remediation Required | Status |
+|---|---|---|---|---|---|---|
+| `SEC-001` (`RLD-001`) | Verification Evidence File Download Endpoint Missing | API1:2023 Broken Object Level Authorization / Missing Function | **P1** | `FilesController` | Tutors upload verification dossiers; signed download URLs point to `GET /api/v1/files/:fileId/download`, but that endpoint does not exist. Must implement signed token verification + stream download. | Open |
+| `SEC-002` (`RLD-002`) | Notification Test-Dispatch Verification Gap | API5:2023 Broken Function Level Authorization | **P1** | `NotificationController` | Runtime role check exists, but lacks dedicated automated negative test proving unauthenticated/non-admin requests are rejected with 403 Forbidden. | Needs Test |
+| `SEC-003` (`RLD-006`) | Dev-Secret Fallbacks in Gateway and Files Service | API8:2023 Security Misconfiguration | **P2** | `notification.gateway.ts`, `files.service.ts` | Hardcoded fallback strings (e.g. `'secure-jwt-secret-dev'`) used if `JWT_SECRET` is unset. Must fail fast on startup if `JWT_SECRET` is missing in production. | Open |
+| `SEC-004` | File Upload Binary Magic-Byte Inspection | API8:2023 Security Misconfiguration | **P2** | `FilesService` | File upload verifies MIME type string and extension, but does not inspect first 16 bytes (magic numbers) for PNG, JPG, PDF across all upload entry points. | Open |
+| `SEC-005` | Auth Test Bypass Guard Hardening in Production | API2:2023 Broken Authentication | **P2** | `auth-bypass.guard.ts` | Ensure `ALLOW_TEST_AUTH_BYPASS` header can never bypass authentication when `NODE_ENV === 'production'`. | AUDITED |
+| `SEC-006` | Webhook Timestamp Replay Tolerance | API8:2023 Security Misconfiguration | **P2** | `PaymentWebhooksService` | Enforce strict 300-second (5 min) timestamp window on provider webhook signatures to prevent packet replay. | Verified in tests |
+| `SEC-007` | Cross-User Notification Access (IDOR) | API1:2023 BOLA / IDOR | **P2** | `NotificationService` | Ensure user B cannot view, read, or acknowledge notifications belonging to user A. | Verified in tests |
 
 ---
 
-## 4. Uploads and Storage
+## 3. Deep-Dive Security Domain Audits
 
-| Area | Implementation | Status |
-|---|---|---|
-| File type validation | Extension check only | ⚠️ Should add binary magic-number verification |
-| File storage | Private directory on disk | ✅ Access via signed URL |
-| Signing mechanism | HMAC token validated + owner/admin ABAC | ⚠️ Currently dead end — no `/download` endpoint |
-| File naming | UUID-based | ✅ Predictable |
-| Content exposure | Access restricted to owner/admin via `files.service.ts:148-171` | ❌ No route — RLD-001 |
-| Presigned URL expiry | Not applicable (local disk) | N/A |
+### 3.1 Authentication & Session Management
+- **JWT Signing**: HS256 algorithm with secret read from `process.env.JWT_SECRET`. Enforces 15-minute expiry (`900s`).
+- **Refresh Token Lifecycle**: Stored as SHA-256 hash in `auth_sessions` table (`packages/database`). Carries `expires_at` (30 days). Revoked upon logout or password change.
+- **Account Status Enforcement**: `AuthGuard` queries user account state (`active`, `suspended`, `pending_approval`). Suspended accounts are immediately rejected with 401/403 even if JWT signature is valid.
+- **Password Reset**: OTP generation utilizes `crypto.randomInt(100000, 999999)` for a cryptographically secure 6-digit code. TTL is 600s (10 min). Maximum 5 wrong attempts before code invalidation.
+- **Magic Links**: 32-byte secure random token (`crypto.randomBytes(32).toString('hex')`). Stored in database as SHA-256 hash. 15-minute single-use validity.
 
-### Security Findings: Uploads
+### 3.2 Authorization (RBAC & ABAC)
+- **Role Hierarchy**: 9 canonical roles: `student`, `guardian`, `tutor`, `admin`, `super_admin`, `support_agent`, `compliance_reviewer`, `organization_owner`, `organization_staff`.
+- **Role Enforcement**: Implemented via `@Roles(...)` decorator and `RolesGuard`. SuperAdmin has emergency administrative overrides; compliance reviewer restricted to verification queue; support agent restricted to tickets and disputes.
+- **Guardian-Student ABAC**: `GuardianStudentGuard` verifies that the authenticated guardian possesses an active, confirmed relationship in `guardian_students` table for the target `studentId`. Prevents unauthorized guardians from accessing other children's academic progress.
+- **Booking-Chat BOLA**: Socket gateway and REST controller check that the current user is either the booking student, tutor, or authorized guardian before joining room `booking_chat:<bookingId>`. Non-participants are rejected with 403.
 
-- **RLD-001**: No `GET /api/v1/files/:fileId/download` endpoint. All uploads via `POST /api/v1/files/upload-evidence` store metadata only (`file_assets` row with `malwareScanStatus: 'clean'` hardcoded). Evidence retrieval is a dead end.
+### 3.3 Payment & Webhook Security
+- **HMAC Signatures**: SSLCommerz, bKash, and Nagad webhook endpoints verify signature headers against pre-shared gateway secret keys using `crypto.createHmac('sha256', secret)`.
+- **Idempotency Protection**: Every payment webhook event ID is recorded in `payment_webhooks` table. Duplicate events with the same provider transaction ID return HTTP 200 immediately without executing state changes.
+- **Amount & Currency Invariant**: Webhook callback amount is verified against the server-persisted `payment_orders.amount_poisha` record. Any mismatch rejects the payment and alerts the fraud/compliance queue.
+- **Server-Authoritative States**: Client apps cannot mark orders paid. Only signed provider webhooks transition orders to `paid`.
 
----
+### 3.4 Uploads & Storage Security
+- **Private Storage**: Sensitive tutor evidence (NID card scan, educational certificates, criminal background checks) is stored in private storage (non-public directory / private S3 bucket).
+- **Signed URL Access**: Private files can only be accessed via expiring signed URLs with HMAC signatures (`?token=...&expires=...`).
+- **Filename Sanitization**: Uploaded files are assigned UUID filenames on disk (`${uuidv4()}.${extension}`). Original filenames are sanitized using regex `/[^a-zA-Z0-9._-]/g` to prevent directory traversal (`../`).
 
-## 5. Payments and Webhooks
-
-| Area | Implementation | Status |
-|---|---|---|
-| Provider signature verification | `sslcommerz.adapter.ts`, `bkash.adapter.ts` verify against provided secret | ✅ Fail-closed on invalid |
-| Idempotent webhook handling | `uq_outbox_idempotency` + EVT-999 deduplication in `PaymentWebhooksService` | ✅ Tested |
-| Duplicate event handling | Rejects `EVT-DUPLICATE-777`, logs warning | ✅ Implemented |
-| Valid payment state transitions | Escrow → settled only after `session.status = completed` | ✅ Enforced by `booking.status` and `schedulingService` |
-| Server-authoritative amount validation | Amount from order payload verified against webhook body | ✅ Enforced |
-| Client-controlled transaction status | Payment status flows from provider webhook → outbox → settlement; not directly client-set | ✅ Good |
-| Sandbox gateways only | SSLCommerz / bKash / Nagad sandbox adapters | ⚠️ Production credentials not configured; adapters fail closed |
-
-### Security Findings: Payments
-
-- **RLD-002**: `POST /api/v1/notifications/test-dispatch` (`notification.controller.ts:98-103`) guarded only by generic `AuthGuard`. Any authenticated user can dispatch arbitrary whitelisted events to arbitrary recipients. **Action**: Gate by environment flag (e.g. `TEST_DISPATCH_ENABLED` default false in prod; also restrict to `super_admin/dev` role) or delete endpoint + remove RTK mutation.
-
----
-
-## 6. Real-Time and Event Processing
-
-| Area | Implementation | Status |
-|---|---|---|
-| Socket.IO auth | JWT handshake validation: unauth/invalid tokens rejected (`auth_error`) + connection termination | ✅ Enforced |
-| User-scoped room routing | Client auto-joins `user:${userId}` room; `unread_count` sync | ✅ Implemented |
-| Dual-channel dispatch | `sendToUser` broadcasts typed `notification` items + updated `unread_count` | ✅ Implemented |
-| Bi-directional client events | `get_unread_count`, `mark_as_read`, `mark_all_as_read` with real-time fanout | ✅ Implemented |
-| ABAC chat room joining | `join_booking_chat` enforces strict participant verification via `booking_id` | ✅ Enforced |
-| Content safety redaction | `PHONE_NUMBER`, `OFF_PLATFORM_PAYMENT`, `EXTERNAL_LINK` detection with `[REDACTED]` replacement | ✅ Implemented |
+### 3.5 Defense Against Information Leakage
+- **Error Sanitizer**: `AllExceptionsFilter` intercepts unhandled 500 errors and replaces raw PostgreSQL syntax errors, table names, or connection strings with generic messages (`"Internal server error"`) while attaching a correlation request ID (`req-...`).
+- **Security Headers**: Standard OWASP HTTP response headers configured:
+  - `X-Content-Type-Options: nosniff`
+  - `X-Frame-Options: DENY`
+  - `X-XSS-Protection: 1; mode=block`
+  - `Strict-Transport-Security: max-age=31536000; includeSubDomains`
+  - `Referrer-Policy: strict-origin-when-cross-origin`
+  - `Content-Security-Policy`: Default restrictive policy allowing Next.js and Socket.IO connections.
 
 ---
 
-## 7. Configuration and Dependencies
+## 4. Verification Evidence & Security Test Commands
 
-| Area | Implementation | Status |
-|---|---|---|
-| Secrets in version control | `.env` (gitignored) — no real secrets committed | ✅ Clean |
-| No server credentials in public env vars | `.env.example` lists all required vars; production vars from `docker-compose.yml` | ✅ Clean |
-| Dependency vulnerability checks | `pnpm audit --prod` = 0 known vulnerabilities (Phase 15) | ✅ Confirmed |
-| Lockfile integrity | `pnpm-lock.yaml` (root) maintained | ✅ |
-| Deprecated APIs in app code | Verified: zero deprecated framework API usage in application-owned code | ✅ Clean |
-| Known unsafe/deprecated APIs | None in application code (verified by audit) | ✅ Clean |
-| `.env.example` completeness | Lists all vars referenced in `env.validation.ts` | ⚠️ Add documentation for missing vars |
+Run the dedicated security test suites to verify platform defenses:
+```pwsh
+# 1. OWASP security headers, PII masking, file upload hardening, anti-replay
+pnpm --filter @ogroniedu/api test test/security-and-privacy-hardening.spec.ts
 
-### Security Findings: Configuration
+# 2. RBAC, ABAC, and tenant isolation (BOLA/IDOR)
+pnpm --filter @ogroniedu/api test test/safeguarding-security-authorization.spec.ts
+pnpm --filter @ogroniedu/api test test/tenant-isolation-idor.spec.ts
 
-- **RLD-006**: Sandbox SSLCommerz store credentials and personal ngrok tunnel URL committed as defaults in `.env`. **Note**: Fine for dev; must not survive to staging. Existing env `JWT_SECRET` set; risk is single misconfigured deployment. **Action**: Fail-fast on missing `JWT_SECRET` in production; rotate/scope sandbox credentials to CI-only `.env`.
+# 3. Auth guard account status and token rotation
+pnpm --filter @ogroniedu/api test test/auth-guard-account-status.spec.ts
+pnpm --filter @ogroniedu/api test test/auth-tokens.spec.ts
 
----
-
-## 8. Realtime and Event Processing Security
-
-| Area | Implementation | Status |
-|---|---|---|
-| Socket auth | JWT handshake validation per-connection | ✅ Enforced |
-| Per-resource authorization | `AuthGuard` + room-scoped checks in gateway handlers | ✅ Enforced |
-| Event payload validation | All payloads go through `class-validator` DTOs before emit | ✅ Enforced |
-| Sensitive event data | No secrets in event payloads (verified) | ✅ Clean |
-| Duplicate processing | Idempotency keys + outbox deduplication | ✅ Enforced |
-| Retry and failure | Outbox worker retries with exponential backoff on transient errors | ✅ Implemented |
-
----
-
-## 9. Summary: Severity Classification
-
-| Severity | Count | Status |
-|---|---|---|
-| **P0** — Critical security bypass / data loss | 0 | ✅ None found |
-| **P1** — Critical control gap / abuse vector | 2 | Open: RLD-001, RLD-002 |
-| **P2** — Documentation overclaim / partial gap | 3 | Open: RLD-003, RLD-004, RLD-005 |
-| **P3** — Hardening / stale numbers | 3 | Open: RLD-006, RLD-007, RLD-008 |
-
----
-
-## 10. Outstanding Security Tasks (for this program)
-
-| Task ID | Priority | Action |
-|---|---|---|
-| SEC-001 | P1 | Implement `GET /api/v1/files/:fileId/download` endpoint + persist upload bytes; remove hardcoded `'clean'` status |
-| SEC-002 | P1 | Gate or remove `POST /api/v1/notifications/test-dispatch` (env flag + role restriction) |
-| SEC-003 | P3 | Remove dev-secret fallbacks in `notification.gateway.ts` and `files.service.ts` (fail-fast on missing `JWT_SECRET`) |
-| SEC-004 | P3 | Add binary magic-number verification to file upload pipeline |
-| SEC-005 | P2 | Document/re-scope collaborative whiteboard claim (RLD-003) |
-| SEC-006 | P2 | Rewrite journey/navigation docs against real routes (RLD-004) |
-
----
-
-*End of `07-SECURITY-AUDIT.md`.*
+# 4. Payment webhook signature and replay protection
+pnpm --filter @ogroniedu/api test test/payments.service.spec.ts
+pnpm --filter @ogroniedu/api test test/idempotency.spec.ts
+```

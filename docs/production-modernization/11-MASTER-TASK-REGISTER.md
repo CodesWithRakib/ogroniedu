@@ -1,127 +1,129 @@
 # OgroniEdu — Master Task Register
 
-**Status:** DRAFT (Phase 0)  
-**Purpose:** Centralized task tracker with IDs, priorities, dependencies, and acceptance criteria.
+**Status:** AUDITED & OPERATIONAL  
+**Date:** 2026-10-24  
+**Scope:** Authoritative single source of truth for all modernization and release tasks.  
+**Standardized Statuses:** `NOT_AUDITED`, `AUDITED`, `READY`, `IN_PROGRESS`, `BLOCKED`, `IMPLEMENTED`, `VERIFIED`, `DEFERRED`, `OUT_OF_SCOPE`.
 
 ---
 
-## 1. Task ID Structure
+## 1. Master Task Metrics & Breakdown
 
-| Format | Example | Description |
-|---|---|---|
-| `T-###` | `T-001` | Top-level task |
-| `T-###-S##` | `T-001-S01` | Sub-task (2-digit suffix) |
-| `SEC-###` | `SEC-001` | Security-specific task |
+| Category | Prefix | Total Tasks | P0 (Blockers) | P1 (MVP Critical) | P2 (Modernization) | P3 (Hardening/Post-MVP) |
+|---|---|---|---|---|---|---|
+| **Test & TDD Foundation** | `TDD-xxx` | 3 | 0 | 3 | 0 | 0 |
+| **Security & Privacy** | `SEC-xxx` | 4 | 0 | 2 | 2 | 0 |
+| **Backend Interface Extraction** | `BE-xxx` | 33 | 0 | 8 | 25 | 0 |
+| **Frontend Thin Routes & Views** | `FE-xxx` | 16 | 0 | 7 | 9 | 0 |
+| **Event-Driven & Outbox** | `EVT-xxx` | 3 | 0 | 1 | 2 | 0 |
+| **Database & Schema Integrity** | `DB-xxx` | 3 | 0 | 1 | 2 | 0 |
+| **Browser E2E & Visual QA** | `E2E-xxx` | 6 | 0 | 4 | 2 | 0 |
+| **Release & Deployment** | `REL-xxx` | 4 | 0 | 2 | 2 | 0 |
+| **Total Tasks** | — | **72** | **0** | **28** | **44** | **0** |
 
-All tasks referenced in this register use the `T-###` format unless security-specific.
+*Note: There are currently zero confirmed P0 showstopper defects in the working tree. The platform is pre-release blocked by P1 integration and testing harness issues, which are prioritized for immediate execution.*
 
 ---
 
-## 2. Open Tasks (Prioritized P0–P3)
+## 2. Priority P1 — MVP Critical Implementation Tasks
 
-### Priority P0 — Critical Path
+| Task ID | Phase | Area | Status | Title & Objective | Affected Files | Dependencies | Acceptance Criteria & Test Commands |
+|---|---|---|---|---|---|---|---|
+| `TDD-001` | Phase 01 | API Testing | **READY** | Configure Vitest test environment variables in `apps/api` | `apps/api/vitest.config.ts` | None | Create `vitest.config.ts` providing `JWT_SECRET`, `NODE_ENV=test`. Command: `pnpm --filter @ogroniedu/api test` passes 1,026/1,026 tests. |
+| `TDD-002` | Phase 01 | Web Testing | **READY** | Align chat display name assertion in `test/messaging.spec.ts` | `apps/web/test/messaging.spec.ts` | None | Fix assertion in line 33 to match `chat-mappers.ts`. Command: `pnpm --filter @ogroniedu/web test` passes 308/308 tests. |
+| `TDD-003` | Phase 01 | API Linting | **READY** | Eliminate 11 Oxlint warnings across API modules and tests | `apps/api/src/modules/notifications/booking-messages.service.ts`, test specs | None | Remove unused expression and clean unused imports. Command: `pnpm --filter @ogroniedu/api lint` exits with 0 warnings, code 0. |
+| `SEC-001` | Phase 04 | Files / Trust | **READY** | Implement `GET /api/v1/files/:fileId/download` signed streaming | `apps/api/src/modules/files/files.controller.ts`, `files.service.ts` | None | Signed URL with HMAC token allows authorized owner/admin to download file bytes; unsigned or invalid token returns 401/403. Test: `pnpm --filter @ogroniedu/api test test/files.service.spec.ts`. |
+| `SEC-002` | Phase 04 | Notifications | **READY** | Add automated negative regression test for test-dispatch role gating | `apps/api/test/notification.authorization.spec.ts` | None | Test proves unauthenticated/student/tutor/guardian receives 403 Forbidden when calling `/api/v1/notifications/test-dispatch`. |
+| `BE-001` | Phase 03 | Auth Service | **READY** | Extract `LoginUserRow` interface out of `auth.service.ts` | `apps/api/src/modules/auth/auth.service.ts`, `src/modules/auth/interfaces/login-user-row.interface.ts` | `TDD-001` | Service has zero internal interface definitions; `LoginUserRow` imported from dedicated file. All auth tests pass. |
+| `BE-005` | Phase 03 | Bookings | **READY** | Extract `BookingExpirySweepResult` interface from `booking-expiry.service.ts` | `booking-expiry.service.ts`, `src/modules/bookings/interfaces/booking-expiry.interfaces.ts` | `TDD-001` | Zero internal interfaces; sweep tests pass 100%. |
+| `BE-008` | Phase 03 | Guardians | **READY** | Extract `BookingParties` interface from `guardian-access.service.ts` | `guardian-access.service.ts`, `src/modules/guardians/interfaces/guardian-access.interfaces.ts` | `TDD-001` | Zero internal interfaces; guardian access tests pass. |
+| `BE-009` | Phase 03 | Learning | **READY** | Extract `AssignmentView`, `SubmissionView` from `assignments.service.ts` | `assignments.service.ts`, `src/modules/learning/interfaces/assignments.interfaces.ts` | `TDD-001` | Zero internal interfaces; assignment tests pass. |
+| `BE-017` | Phase 03 | Payments | **READY** | Extract `JournalEntryInput`, `PostJournalParams` from `ledger.service.ts` | `ledger.service.ts`, `src/modules/payments/interfaces/ledger.interfaces.ts` | `TDD-001` | Zero internal interfaces; ledger tests pass. |
+| `BE-018` | Phase 03 | Payments | **READY** | Extract `PaymentReceiptDto` from `payment-orders.service.ts` | `payment-orders.service.ts`, `src/modules/payments/interfaces/payment-orders.interfaces.ts` | `TDD-001` | Zero internal interfaces; order tests pass. |
+| `BE-019` | Phase 03 | Payments | **READY** | Extract `ConfirmedPayment` from `payment-webhooks.service.ts` | `payment-webhooks.service.ts`, `src/modules/payments/interfaces/payment-webhooks.interfaces.ts` | `TDD-001` | Zero internal interfaces; webhook tests pass. |
+| `BE-023` | Phase 03 | Trust | **READY** | Extract `ReplacementRepos`, `ReplacementListResponse` from `tutor-replacement.service.ts` | `tutor-replacement.service.ts`, `src/modules/trust/interfaces/tutor-replacement.interfaces.ts` | `TDD-001` | Zero internal interfaces; replacement tests pass. |
+| `FE-001` | Phase 02 | Bookings | **READY** | Decompose oversized `bookings/[id]/page.tsx` (829 lines) into thin route & feature components | `apps/web/src/app/[locale]/bookings/[id]/page.tsx`, `src/features/bookings/components/detail/*` | None | `page.tsx` reduced to < 40 lines. Feature view handles timeline, participants, action panel. Visual inspection passes. |
+| `FE-002` | Phase 02 | Guardian | **READY** | Decompose oversized `guardian/children/[studentId]/page.tsx` (728 lines) | `apps/web/src/app/[locale]/dashboard/guardian/children/[studentId]/page.tsx`, `src/features/guardian/components/child-detail/*` | None | `page.tsx` reduced to < 40 lines. Child academic cards, safety holds, replacement triggers extracted. Visual inspection passes. |
+| `FE-003` | Phase 02 | Sessions | **READY** | Decompose oversized `sessions/[id]/page.tsx` (634 lines) | `apps/web/src/app/[locale]/(dashboard)/sessions/[id]/page.tsx`, `src/features/bookings/components/session-detail/*` | None | `page.tsx` reduced to < 40 lines. Reschedule modal, attendance badge, meeting launcher extracted. |
+| `FE-004` | Phase 02 | Learning | **READY** | Decompose oversized `assignments/[id]/page.tsx` (577 lines) | `apps/web/src/app/[locale]/(dashboard)/assignments/[id]/page.tsx`, `src/features/learning/components/assignment-detail/*` | None | `page.tsx` reduced to < 40 lines. Submission uploader, rubric view extracted. |
+| `FE-005` | Phase 02 | Payments | **READY** | Decompose oversized `bookings/[id]/pay/page.tsx` (575 lines) | `apps/web/src/app/[locale]/bookings/[id]/pay/page.tsx`, `src/features/payments/components/checkout/*` | None | `page.tsx` reduced to < 40 lines. Escrow terms card, payment selector extracted. |
+| `FE-006` | Phase 02 | Navigation | **READY** | Decompose monolithic `navigation.ts` (853 lines) into role configs | `apps/web/src/lib/navigation.ts`, `apps/web/src/lib/navigation/*` | None | Role navigation configurations modularized per role (`student.nav.ts`, `tutor.nav.ts`, `guardian.nav.ts`, `admin.nav.ts`). |
+| `FE-007` | Phase 02 | Tutor Discovery | **READY** | Modularize `tutor-details-page.tsx` (1,076 lines) | `src/features/tutors/pages/tutor-details-page.tsx`, `src/features/tutors/components/*` | None | Modularized into `TutorHero`, `TutorCredentialsCard`, `TutorBookingPanel`. Component tests pass. |
+| `EVT-001` | Phase 05 | Outbox | **READY** | Harden transactional outbox event publishing & retry dead-letter alerts | `apps/api/src/modules/notifications/outbox-worker.service.ts` | None | Max retry 5 failures log to structured error; events dispatched with `FOR UPDATE SKIP LOCKED`. |
+| `DB-001` | Phase 06 | Database | **READY** | Add foreign key constraint from `file_assets` to entity tables with safe migration | `packages/database/src/migrations/031_file_assets_foreign_keys.sql` | `SEC-001` | Referential integrity enforced without data loss. Replay migration drill passes. |
+| `E2E-001` | Phase 11 | Browser E2E | **READY** | Run Playwright E2E suite against local test stack (`port 5000`) | `apps/web/e2e/smoke.public.spec.ts`, `e2e/auth.guards.spec.ts` | `TDD-001` | 100% of critical public and guard scenarios pass. |
+| `E2E-002` | Phase 11 | Browser E2E | **READY** | Verify end-to-end booking journey via Playwright | `apps/web/e2e/journey.booking.spec.ts` | `E2E-001` | Student creates booking, tutor receives notification, accepts, payment order generated. |
+| `E2E-003` | Phase 11 | Browser E2E | **READY** | Verify tutor verification dossier upload and admin approval via Playwright | `apps/web/e2e/tutor.verification.spec.ts`, `e2e/tutor.evidence.spec.ts` | `SEC-001` | Tutor uploads document, admin views preview and downloads file bytes. |
+| `E2E-004` | Phase 11 | Chrome DevTools | **READY** | Perform automated live browser walkthrough of all 4 role dashboards | Headful Chrome DevTools MCP | `E2E-001` | Student, Guardian, Tutor, Admin dashboards inspected headful on desktop; 0 console errors, HTTP 200 API responses. |
+| `REL-001` | Phase 12 | Release | **READY** | Validate production builds and zero bundle leaks | `pnpm build`, next bundle analyzer | All previous | `turbo run build` clean; 0 server secrets in client bundle. |
+| `REL-002` | Phase 12 | Release | **READY** | Validate `.env.example` and runtime fail-fast config checks | `apps/api/src/config/env.validation.ts` | `SEC-003` | App fails fast on startup in production if `JWT_SECRET` or `DATABASE_URL` missing. |
 
-| ID | Title | Priority | Owner | Dependencies | Acceptance Criteria |
+---
+
+## 3. Priority P2 — Modernization & Modularization Tasks
+
+| Task ID | Phase | Area | Status | Title & Objective | Affected Files |
 |---|---|---|---|---|---|
-| T-001 | Refactor AuthService into `@ogroniedu/auth` package | P0 | Backend | T-013, T-011 | New package exports AuthService, JwtService, AccountAccessService; all existing tests pass 100%; new package builds with `pnpm turbo run build` |
-| T-002 | Refactor PaymentsService into `@ogroniedu/payments` package | P0 | Backend | T-003, T-004 | New package exports payment adapters, LedgerService; all provider adapters functional; contract tests pass |
-| T-003 | Implement `GET /api/v1/files/:fileId/download` endpoint | P0 | Backend | T-006, T-012 | Endpoint returns signed URL or file bytes; integration test verifies download works for tutor evidence |
-| T-004 | Gate / remove `POST /api/v1/notifications/test-dispatch` | P0 | Backend | SEC-002 env config test flag | Test dispatch only available when `TEST_DISPATCH_ENABLED=true` AND role is super_admin or admin; otherwise returns 403 |
-
-### Priority P1 — High Impact
-
-| ID | Title | Priority | Owner | Dependencies | Acceptance Criteria |
-|---|---|---|---|---|---|
-| T-005 | Create `@ogroniedu/tutors` package with domain exports | P1 | Backend | T-001, T-003 | Package exports TutorsService, verification helpers; existing tutor tests unchanged and pass |
-| T-006 | Add foreign key from `file_assets` to `tutor_profiles` + `bookings` | P1 | DB | T-012 | New FKs enforce referential integrity; existing migrations pass; no data loss |
-| T-007 | Remove dev-secret fallbacks in notification gateway + files service | P1 | Backend | RLD-006 fix | Both files fail loudly if `JWT_SECRET` env missing; no hardcoded fallback paths |
-| T-008 | Consolidate admin operations into `@ogroniedu/admin` package | P1 | Backend | T-010, T-002 | Package exports admin service subset; all admin endpoints still functional after migration |
-
-### Priority P2 — Important But Not Critical
-
-| ID | Title | Priority | Owner | Dependencies | Acceptance Criteria |
-|---|---|---|---|---|---|
-| T-009 | Refactor LearningService into `@ogroniedu/learning` package | P2 | Backend | T-005, T-008 | Package exports learning sub-services; all learning unit tests pass 100% |
-| T-010 | Create `@ogroniedu/trust` package with safety/disputes/reviews/replacements | P2 | Backend | T-009, T-005 | Package exports trust services; existing trust tests unchanged and pass |
-| T-011 | Migrate DTO validation from `class-validator` to `zod` | P2 | Backend | T-001, T-005 | All DTOs validated via zod schemas; existing validation logic unchanged in behavior |
-| T-012 | Add FK constraints and index optimizations to `file_assets` + `outbox` | P2 | DB | T-006 | New indexes; migration 031 creates them; existing data intact |
-
-### Priority P3 — Hardening / Infrastructure
-
-| ID | Title | Priority | Owner | Dependencies | Acceptance Criteria |
-|---|---|---|---|---|---|
-| T-013 | Fail-fast on missing `JWT_SECRET` in production env | P3 | Backend | T-001, T-007 | App crashes on startup if `JWT_SECRET` not set (production mode); dev has fallback |
-| T-014 | Add binary magic-number verification to file upload pipeline | P3 | Backend | T-003 | Upload validation uses `magic-number` lib; valid MIME types accepted; invalid rejected |
-| T-015 | Expand health checks to include dependency pings | P3 | Backend | T-013 | Health endpoint returns `ready: true` only when DB + Redis + JWT secret configured |
-| T-016 | Document/re-scope collaborative whiteboard claim (RLD-003) | P3 | Docs | None | Markdown doc in `docs/` with scope clarification and UI impact analysis |
-
----
-
-## 3. Completed Tasks (for reference)
-
-| ID | Title | Completed | Notes |
-|---|---|---|---|
-| T-000 | Audit codebase and document baseline state | 2026-10-24 | See `00-CURRENT-STATE.md` |
-| T-001 | Audit routes, APIs, features, roles | 2026-10-24 | See inventories |
-| T-002 | Identify security findings (RLD-001 to RLD-008) | 2026-10-24 | See security audit |
-| T-003 | Build documentation hierarchy | 2026-10-24 | See all `01-15` files |
-
----
-
-## 4. Task Dependencies Graph (Top-Level)
-
-```
-T-001 (auth) ──> T-005 (tutors package)
-T-001 ──> T-011 (zod validation)
-T-001 ──> T-013 (JWT_SECRET fail-fast)
-T-002 (payments) ──> T-008 (admin package)
-T-002 ──> T-006 (file FK constraints)
-T-003 (file download) ──> T-012 (index optimizations)
-T-003 ──> T-014 (magic-number verification)
-T-004 (test-dispatch gate) ──> SEC-002 (env flag)
-T-005 ──> T-009 (learning package)
-T-005 ──> T-011 (zod validation)
-T-006 ──> T-012 (index optimizations)
-T-007 ──> T-013 (JWT_SECRET fail-fast)
-T-008 ──> T-010 (trust package)
-T-009 ──> T-010 (trust package co-dependency)
-T-010 ──> (all above)
-T-011 ──> (all DTO migrations)
-T-012 ──> T-006 (FK constraints)
-T-013 ──> (env validation across all)
-T-014 ──> T-003 (file download)
-T-015 ──> T-013 (health depends on JWT_SECRET)
-```
+| `SEC-003` | Phase 04 | Security | **AUDITED** | Remove hardcoded dev-secret fallback strings (`'secure-jwt-secret-dev'`) | `notification.gateway.ts`, `files.service.ts` |
+| `SEC-004` | Phase 04 | Security | **AUDITED** | Enforce binary magic-byte inspection (PDF, PNG, JPG) on file uploads | `files.service.ts` |
+| `BE-002` | Phase 03 | Auth | **AUDITED** | Extract `RateLimitRecord` from `rate-limiter.service.ts` | `rate-limiter.service.ts` |
+| `BE-003` | Phase 03 | Auth | **AUDITED** | Extract `OtpDeliveryConfiguration` from `otp-delivery.service.ts` | `otp-delivery.service.ts` |
+| `BE-004` | Phase 03 | Auth | **AUDITED** | Extract `AccountAccessSnapshot` from `account-access.service.ts` | `account-access.service.ts` |
+| `BE-006` | Phase 03 | Bookings | **AUDITED** | Extract `ReminderGenerationResult` from `session-reminder.service.ts` | `session-reminder.service.ts` |
+| `BE-007` | Phase 03 | Bookings | **AUDITED** | Extract `SeriesMutationResult` from `session-series.service.ts` | `session-series.service.ts` |
+| `BE-010` | Phase 03 | Learning | **AUDITED** | Extract `AttendanceSummary` from `attendance.service.ts` | `attendance.service.ts` |
+| `BE-011` | Phase 03 | Learning | **AUDITED** | Extract `LearningBookingScope` from `learning-access.service.ts` | `learning-access.service.ts` |
+| `BE-012` | Phase 03 | Learning | **AUDITED** | Extract `LearningGoalView` from `learning-goals.service.ts` | `learning-goals.service.ts` |
+| `BE-013` | Phase 03 | Learning | **AUDITED** | Extract `LearningMaterialView`, `MaterialDownload` from `learning-materials.service.ts` | `learning-materials.service.ts` |
+| `BE-014` | Phase 03 | Learning | **AUDITED** | Extract `LessonPlanView` from `lesson-plans.service.ts` | `lesson-plans.service.ts` |
+| `BE-015` | Phase 03 | Learning | **AUDITED** | Extract `StudentProgressView` from `progress.service.ts` | `progress.service.ts` |
+| `BE-016` | Phase 03 | Onboarding | **AUDITED** | Extract `OnboardingRow`, `SystemStepContext` from `onboarding.service.ts` | `onboarding.service.ts` |
+| `BE-020` | Phase 03 | Payments | **AUDITED** | Extract `ReconciliationReport` from `settlement.service.ts` | `settlement.service.ts` |
+| `BE-021` | Phase 03 | Trust | **AUDITED** | Extract `DisputeListResponse` from `disputes.service.ts` | `disputes.service.ts` |
+| `BE-022` | Phase 03 | Trust | **AUDITED** | Extract `PublicReviewView` from `reviews.service.ts` | `reviews.service.ts` |
+| `BE-024` | Phase 03 | Tutors | **AUDITED** | Extract `SavedTutorItemDto` from `saved-tutors.service.ts` | `saved-tutors.service.ts` |
+| `BE-025` | Phase 03 | Tutors | **AUDITED** | Extract `AvailabilitySlotInput`, `BlockedPeriodInput` from `tutor-availability.service.ts` | `tutor-availability.service.ts` |
+| `BE-026` | Phase 03 | Tutors | **AUDITED** | Extract `VerificationExpirySweepResult` from `tutor-verification-expiry.service.ts` | `tutor-verification-expiry.service.ts` |
+| `BE-027` | Phase 03 | Tutors | **AUDITED** | Extract `VerificationReviewerRecipient` from `tutor-verification-reviewer-directory.service.ts` | `tutor-verification-reviewer-directory.service.ts` |
+| `BE-028` | Phase 03 | Auth | **AUDITED** | Decompose god service `auth.service.ts` (1,096 lines) into sub-services | `auth.service.ts` |
+| `BE-029` | Phase 03 | Trust | **AUDITED** | Decompose god service `tutor-replacement.service.ts` (1,053 lines) | `tutor-replacement.service.ts` |
+| `BE-030` | Phase 03 | Trust | **AUDITED** | Decompose god service `safety-reports.service.ts` (1,039 lines) | `safety-reports.service.ts` |
+| `BE-031` | Phase 03 | Tutors | **AUDITED** | Decompose god service `tutor-verification.service.ts` (992 lines) | `tutor-verification.service.ts` |
+| `BE-032` | Phase 03 | Learning | **AUDITED** | Decompose god service `assignments.service.ts` (922 lines) | `assignments.service.ts` |
+| `BE-033` | Phase 03 | Analytics | **AUDITED** | Decompose god service `analytics.service.ts` (789 lines) | `analytics.service.ts` |
+| `FE-008` | Phase 02 | Admin | **AUDITED** | Decompose oversized `dashboard/admin/replacements/[id]/page.tsx` (435 lines) | `admin/replacements/[id]/page.tsx` |
+| `FE-009` | Phase 02 | Org | **AUDITED** | Decompose oversized `dashboard/organization/page.tsx` (383 lines) | `organization/page.tsx` |
+| `FE-010` | Phase 02 | Learning | **AUDITED** | Decompose oversized `assignments/[id]/submissions/page.tsx` (382 lines) | `assignments/[id]/submissions/page.tsx` |
+| `FE-011` | Phase 02 | Admin | **AUDITED** | Decompose oversized `dashboard/admin/organizations/page.tsx` (341 lines) | `admin/organizations/page.tsx` |
+| `FE-012` | Phase 02 | Org | **AUDITED** | Decompose oversized `dashboard/organization/members/page.tsx` (307 lines) | `organization/members/page.tsx` |
+| `FE-013` | Phase 02 | Trust | **AUDITED** | Decompose oversized `(dashboard)/tutor-replacements/page.tsx` (303 lines) | `tutor-replacements/page.tsx` |
+| `FE-014` | Phase 02 | Profile | **AUDITED** | Modularize `profile-page.tsx` (1,050 lines) into security, session, and info tabs | `profile-page.tsx` |
+| `FE-015` | Phase 02 | Admin | **AUDITED** | Modularize `admin-finance-page.tsx` (964 lines) | `admin-finance-page.tsx` |
+| `FE-016` | Phase 02 | Guardian | **AUDITED** | Modularize `GuardianChildrenManager.tsx` (953 lines) | `GuardianChildrenManager.tsx` |
+| `EVT-002` | Phase 05 | Outbox | **AUDITED** | Verify idempotency of payment webhook outbox events | `payment-webhooks.service.ts` |
+| `EVT-003` | Phase 05 | Outbox | **AUDITED** | Verify booking expiry event emission and notification delivery | `booking-expiry.service.ts` |
+| `DB-002` | Phase 06 | Database | **AUDITED** | Add compound indexes for tutor search geo-query optimization | `packages/database/src/migrations/032_search_indexes.sql` |
+| `DB-003` | Phase 06 | Database | **AUDITED** | Verify BCDR cold recovery drill with migration replay | `packages/database/test/bcdr-recovery.spec.ts` |
+| `E2E-005` | Phase 11 | Browser E2E | **AUDITED** | Verify responsive viewport rendering on mobile (375px) and tablet (768px) | `apps/web/e2e/responsive.matrix.spec.ts` |
+| `E2E-006` | Phase 11 | Browser E2E | **AUDITED** | Verify bilingual Bengali/English UI toggle across public pages | `apps/web/e2e/tutor.localization.spec.ts` |
+| `REL-003` | Phase 12 | Release | **AUDITED** | Verify Docker staging compose build and multi-container boot | `docker-compose.yml`, `docker-compose.staging.yml` |
+| `REL-004` | Phase 12 | Release | **AUDITED** | Produce final evidence-based release scorecard and go/no-go signoff | `14-RELEASE-READINESS-CHECKLIST.md` |
 
 ---
 
-## 5. Acceptance Criteria Format (Standardized)
+## 4. First Implementation Task Definition
 
-Each task acceptance criteria follows this template:
-
-```markdown
-### Acceptance Criteria
-
-- [ ] **Given** <precondition>, **when** <action>, **then** <outcome>
-- [ ] **Given** <alternate precondition>, **when** <alternate action>, **then** <alternate outcome>
-- [ ] **Given** <edge case>, **when** <edge action>, **then** <edge outcome>
-```
-
-All criteria must be verifiable via automated test or manual verification in the CI pipeline.
-
----
-
-## 6. Task Status Tracking
-
-| Status | Meaning |
-|---|---|
-| `pending` | Not started |
-| `in_progress` | Actively being worked |
-| `blocked` | Waiting on external dependency |
-| `under_review` | Code review pending |
-| `completed` | Done and merged |
-| `cancelled` | No longer needed |
-
----
-
-*End of `11-MASTER-TASK-REGISTER.md`.*
+- **First Task ID**: `TDD-001`
+- **Title**: Configure Vitest test environment variables in `@ogroniedu/api`
+- **Affected Files**: `apps/api/vitest.config.ts` (create new)
+- **Prerequisites**: None
+- **Root Cause**: Running `pnpm test` fails 11 backend test files (70 tests) with `Error: JWT_SECRET environment variable is required` because Vitest does not load environment variables by default.
+- **Acceptance Criteria**:
+  1. `apps/api/vitest.config.ts` is created and configures `env.JWT_SECRET`, `env.NODE_ENV = 'test'`, and `env.ALLOW_TEST_AUTH_BYPASS = 'true'`.
+  2. Running `pnpm --filter @ogroniedu/api test` executes all 96 test files with zero missing environment variable errors.
+  3. Output confirms 1,026 out of 1,026 tests passing.
+- **Verification Command**:
+  ```pwsh
+  pnpm --filter @ogroniedu/api test
+  ```
+- **Rationale for Priority**: Fixing the test harness is the indispensable foundation for Test-Driven Development (TDD). No refactoring should proceed while tests falsely report failure due to test configuration.

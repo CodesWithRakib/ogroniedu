@@ -1,200 +1,149 @@
-# OgroniEdu — API and Backend Operation Inventory
+# OgroniEdu — Master API and Backend Operation Inventory
 
-**Status:** VERIFIED (2026-10-24)  
-**Scope:** All NestJS controllers, services, events, webhooks, background jobs. Accurate as of commit `32712a9`.
-
----
-
-## 1. Controller Inventory (36 Controllers)
-
-| Module | Controller | Route Prefix | Endpoints | Guards |
-|---|---|---|---|---|
-| auth | `AuthController` | `/api/v1/auth` | 12 | `@Public()` on register/login/refresh/logout/request-code/magic-link/verify-code/reset-password; `@UseGuards(AuthGuard)` on me, logout, revoke-all; `@Roles(...ADMIN_ROLES)` on admin-only |
-| bookings | `BookingsController` | `/api/v1/requests` | 7 | `@UseGuards(AuthGuard)` class-level; `@Roles(...ADMIN_ROLES)` on sweep-expired |
-| bookings | `SessionsController` | `/api/v1` | 14 | `@UseGuards(AuthGuard)` on all except tutor calendar GET |
-| bookings | `SessionSeriesController` | `/api/v1/session-series` | 3 | `@UseGuards(AuthGuard)` class-level |
-| payments | `PaymentsController` | `/api/v1/payments` | 11 | `@UseGuards(AuthGuard)` on all except webhook; webhook has rawBody |
-| payments | `TutorFinanceController` | `/api/v1/tutor/finance` | 4 | `@UseGuards(AuthGuard, RolesGuard)` + `@Roles('tutor')` class-level |
-| payments | `AdminFinanceController` | `/api/v1/admin/finance` | 11 | `@UseGuards(AuthGuard, RolesGuard)` + `@Roles(...ADMIN_ROLES)` class-level |
-| tutors | `TutorsController` | `/api/v1/tutors` | 27 | `@Public()` on search, public/:id; `@UseGuards(AuthGuard)` on me/* |
-| tutors | `SavedTutorsController` | `/api/v1/saved-tutors` | 3 | `@UseGuards(AuthGuard)` class-level |
-| tutors | `AdminTutorsController` | `/api/v1/admin/tutors` | 10 | `@UseGuards(AuthGuard, RolesGuard)` + `@Roles(...ADMIN_ROLES)` class-level; `@Roles(...TUTOR_REVIEW_ROLES)` on verification queue |
-| learning | `LearningController` | `/api/v1/learning` | 20 | `@UseGuards(AuthGuard)` class-level |
-| learning | `LessonContentController` | `/api/v1/learning` | 17 | `@UseGuards(AuthGuard)` class-level |
-| learning | `LearningReportsController` | `/api/v1/learning/admin` | 2 | `@UseGuards(AuthGuard)` class-level |
-| learning | `LearningGoalsController` | `/api/v1/learning/goals` | 3 | `@UseGuards(AuthGuard)` class-level |
-| notifications | `NotificationController` | `/api/v1/notifications` | 8 | `@UseGuards(AuthGuard)` class-level |
-| notifications | `ConversationsController` | `/api/v1/conversations` | 3 | `@UseGuards(AuthGuard)` class-level |
-| notifications | `BookingMessagesController` | `/api/v1/bookings/:bookingId/messages` | 3 | `@UseGuards(AuthGuard)` class-level |
-| admin | `AdminOperationsController` | `/api/v1/admin` | 17 | `@UseGuards(AuthGuard, RolesGuard)` class-level; `@Roles(...ADMIN_ROLES)` on most; `@Roles(SUPER_ADMIN_ROLE)` on roles, settings, impersonation |
-| support | `SupportController` | `/api/v1/support/tickets` | 2 | `@Public()` on create; `@UseGuards(AuthGuard)` on mine |
-| support | `AdminSupportController` | `/api/v1/admin/support-tickets` | 2 | `@UseGuards(AuthGuard, RolesGuard)` + `@Roles(...SUPPORT_TRIAGE_ROLES)` |
-| trust | `DisputesController` | `/api/v1/disputes` | 4 | `@UseGuards(AuthGuard)` class-level |
-| trust | `ReviewsController` | `/api/v1/reviews` | 4 | `@Public()` on tutor reviews GET; `@UseGuards(AuthGuard)` on create/reply/moderate |
-| trust | `SafetyReportsController` | `/api/v1/safety-reports` | 14 | `@UseGuards(AuthGuard)` class-level |
-| trust | `TutorReplacementController` | `/api/v1/tutor-replacements` | 10 | `@UseGuards(AuthGuard)` class-level; `@Roles(...ADMIN_ROLES)` on admin endpoints |
-| health | `HealthController` | `/health`, `/api/health` | 5 | `@Public()`; `@HealthCheck()` on readiness |
-| taxonomy | `TaxonomyController` | `/api/v1/taxonomy` | 18 | `@Public()` on GET; `@UseGuards(AuthGuard, RolesGuard)` + `@Roles(...ADMIN_ROLES)` on mutations |
-| organizations | `OrganizationsController` | `/api/v1/organizations` | 8 | `@UseGuards(AuthGuard)` class-level |
-| organizations | `AdminOrganizationsController` | `/api/v1/admin/organizations` | 2 | `@UseGuards(AuthGuard, RolesGuard)` + `@Roles(...ADMIN_ROLES)` |
-| files | `FilesController` | `/api/v1/files` | 2 | `@UseGuards(AuthGuard)` class-level |
-| feedback | `FeedbackController` | `/api/v1/feedback` | 3 | `@UseGuards(AuthGuard)` on create/my/:id |
-| feedback | `AdminFeedbackController` | `/api/v1/admin/feedback` | 2 | `@UseGuards(AuthGuard, RolesGuard)` + `@Roles('admin','super_admin','support_agent')` |
-| public | `PublicController` | `/api/v1/public` | 1 | `@Public()` |
-| analytics | `AnalyticsController` | `/api/v1/analytics` | 11 | `@UseGuards(AuthGuard, RolesGuard)`; `@Public()` on events POST; `@Roles('tutor')` on tutors/me; `@Roles(...ADMIN_ROLES)` on admin endpoints |
-| guardians | `GuardiansController` | `/api/v1/guardians` | 7 | `@UseGuards(AuthGuard, RolesGuard)`; `@Roles('guardian',...ADMIN_ROLES)` on children; `@Roles('student',...ADMIN_ROLES)` on my-guardians; `@UseGuards(GuardianStudentGuard)` on children/:studentId |
-| onboarding | `OnboardingController` | `/api/v1/onboarding` | 2 | `@UseGuards(AuthGuard)` class-level |
-| users | `UsersController` | `/api/v1/users` | 5 | `@UseGuards(AuthGuard)` class-level |
-
-**Total: 227 endpoints** (approximate count across all controllers).
+**Status:** AUDITED & VERIFIED  
+**Date:** 2026-10-24  
+**Scope:** Complete inventory of all NestJS controllers, services, repositories, events, websockets, background workers, and schedulers in `@ogroniedu/api` (NestJS 12.1.2).  
+**Core Architectural Mandate:** *"backend er o enum , interface kokhonoi service er vitore thakbe na alada folder kore module e thakbe"* — All enums, interfaces, and types must be extracted out of services into dedicated module subfolders (`interfaces/`, `enums/`, `types/`, `contracts/`, `dto/`).
 
 ---
 
-## 2. Non-HTTP Entry Points
+## 1. Backend Architecture Topology
 
-| Type | Source | Handler / Consumer | Purpose |
+`@ogroniedu/api` is built as a **domain-driven modular monolith** with 20 registered domain modules in `src/modules/`:
+- **Modules (20)**: `auth`, `onboarding`, `users`, `guardians`, `files`, `taxonomy`, `tutors`, `bookings`, `learning`, `payments`, `notifications`, `trust`, `support`, `public`, `admin`, `analytics`, `organizations`, `feedback`, `health`, `audit`.
+- **Controllers (36)**: Handling HTTP requests under `/api/v1` (and `/health`).
+- **Services (54)**: Housing core domain logic, TypeORM query orchestration, and external integration adapters.
+- **WebSocket Gateway (1)**: `NotificationGateway` handling `/notifications` namespace.
+- **Background Schedulers (4)**: Booking expiry (5m), tutor verification sweep (daily), tutor verification expiry (daily), tutor replacement sweep (30m).
+- **Outbox Worker (1)**: `OutboxWorkerService` dispatching reliable events every 10s.
+
+---
+
+## 2. Complete Controller & Endpoint Inventory (36 Controllers, 227 Endpoints)
+
+| Module | Controller Class | File Location | Route Prefix | Endpoints | Key Guards & Roles |
+|---|---|---|---|---|---|
+| **admin** | `AdminOperationsController` | `src/modules/admin/admin-operations.controller.ts` | `/api/v1/admin` | 17 | `AuthGuard`, `RolesGuard` (`super_admin`, `admin`, `compliance_reviewer`, `support_agent`) |
+| **analytics** | `AnalyticsController` | `src/modules/analytics/analytics.controller.ts` | `/api/v1/analytics` | 11 | `AuthGuard`, `RolesGuard` (`admin`, `super_admin`, `tutor`, `@Public()` on track-events) |
+| **auth** | `AuthController` | `src/modules/auth/auth.controller.ts` | `/api/v1/auth` | 12 | `@Public()` on register/login/refresh/magic-link; `AuthGuard` on `/me`, `/logout`, `/revoke-all` |
+| **bookings** | `BookingsController` | `src/modules/bookings/bookings.controller.ts` | `/api/v1/requests` | 7 | `AuthGuard` on all booking requests (create, accept, decline, withdraw) |
+| **bookings** | `SessionsController` | `src/modules/bookings/sessions.controller.ts` | `/api/v1` | 14 | `AuthGuard` on reschedule, cancel, complete, attendance, notes |
+| **bookings** | `SessionSeriesController` | `src/modules/bookings/session-series.controller.ts` | `/api/v1/session-series` | 3 | `AuthGuard` on recurring session series generation |
+| **feedback** | `FeedbackController` | `src/modules/feedback/feedback.controller.ts` | `/api/v1/feedback` | 5 | `AuthGuard` on feedback submission; `RolesGuard` on admin feedback triage |
+| **files** | `FilesController` | `src/modules/files/files.controller.ts` | `/api/v1/files` | 2 | `AuthGuard` on upload-evidence, getFileAccess (**NEEDS DOWNLOAD ENDPOINT — RLD-001**) |
+| **guardians** | `GuardiansController` | `src/modules/guardians/guardians.controller.ts` | `/api/v1/guardians` | 7 | `AuthGuard`, `RolesGuard`, `GuardianStudentGuard` (ABAC child isolation) |
+| **health** | `HealthController` | `src/modules/health/health.controller.ts` | `/health`, `/api/health` | 5 | `@Public()` on liveness and Terminus readiness probes |
+| **learning** | `LearningController` | `src/modules/learning/learning.controller.ts` | `/api/v1/learning` | 20 | `AuthGuard` on assignments, submissions, grading, rubrics |
+| **learning** | `LessonContentController` | `src/modules/learning/lesson-content.controller.ts` | `/api/v1/learning` | 17 | `AuthGuard` on lesson plans, teaching materials, topics |
+| **learning** | `LearningReportsController` | `src/modules/learning/learning-reports.controller.ts` | `/api/v1/learning/admin` | 2 | `AuthGuard`, `RolesGuard` (`admin`, `super_admin`) on academic audits |
+| **learning** | `LearningGoalsController` | `src/modules/learning/learning-goals.controller.ts` | `/api/v1/learning/goals` | 3 | `AuthGuard` on student learning goal milestones |
+| **notifications** | `NotificationController` | `src/modules/notifications/notification.controller.ts` | `/api/v1/notifications` | 8 | `AuthGuard` on bell notifications, preferences, mark-read, test-dispatch (gated) |
+| **notifications** | `ConversationsController` | `src/modules/notifications/conversations.controller.ts` | `/api/v1/conversations` | 3 | `AuthGuard` on booking chat conversation lists |
+| **notifications** | `BookingMessagesController` | `src/modules/notifications/booking-messages.controller.ts` | `/api/v1/bookings/:bookingId/messages`| 3 | `AuthGuard` on booking chat history and posting |
+| **onboarding** | `OnboardingController` | `src/modules/onboarding/onboarding.controller.ts` | `/api/v1/onboarding` | 2 | `AuthGuard` on step-based role onboarding progress |
+| **organizations**| `OrganizationsController` | `src/modules/organizations/organizations.controller.ts` | `/api/v1/organizations` | 8 | `AuthGuard` on institution profiles, branch locations, tutor rosters |
+| **organizations**| `AdminOrganizationsController` | `src/modules/organizations/admin-organizations.controller.ts`| `/api/v1/admin/organizations`| 2 | `AuthGuard`, `RolesGuard` (`admin`, `super_admin`) on org approval queue |
+| **payments** | `PaymentsController` | `src/modules/payments/payments.controller.ts` | `/api/v1/payments` | 11 | `AuthGuard` on checkout, orders, receipts; `@Public()` on `/webhook/:provider` |
+| **payments** | `TutorFinanceController` | `src/modules/payments/tutor-finance.controller.ts` | `/api/v1/tutor/finance` | 4 | `AuthGuard`, `RolesGuard` (`tutor`) on payout requests, earnings history |
+| **payments** | `AdminFinanceController` | `src/modules/payments/admin-finance.controller.ts` | `/api/v1/admin/finance` | 11 | `AuthGuard`, `RolesGuard` (`admin`, `super_admin`) on payout approvals, commission policy |
+| **public** | `PublicController` | `src/modules/public/public.controller.ts` | `/api/v1/public` | 1 | `@Public()` on platform stats (tutor count, session count) |
+| **support** | `SupportController` | `src/modules/support/support.controller.ts` | `/api/v1/support/tickets` | 2 | `@Public()` on ticket creation; `AuthGuard` on `/mine` |
+| **support** | `AdminSupportController` | `src/modules/support/admin-support.controller.ts` | `/api/v1/admin/support-tickets` | 2 | `AuthGuard`, `RolesGuard` (`support_agent`, `admin`, `super_admin`) |
+| **taxonomy** | `TaxonomyController` | `src/modules/taxonomy/taxonomy.controller.ts` | `/api/v1/taxonomy` | 18 | `@Public()` on curricula, grades, subjects, divisions, districts, areas; `RolesGuard` on mutations |
+| **trust** | `DisputesController` | `src/modules/trust/disputes.controller.ts` | `/api/v1/disputes` | 4 | `AuthGuard` on dispute creation, mediation responses, arbitration |
+| **trust** | `ReviewsController` | `src/modules/trust/reviews.controller.ts` | `/api/v1/reviews` | 4 | `@Public()` on tutor public reviews; `AuthGuard` on create review, reply, moderate |
+| **trust** | `SafetyReportsController` | `src/modules/trust/safety-reports.controller.ts` | `/api/v1/safety-reports` | 14 | `AuthGuard` on safety report filing, emergency holds, guardian safety notifications |
+| **trust** | `TutorReplacementController` | `src/modules/trust/tutor-replacement.controller.ts` | `/api/v1/tutor-replacements`| 10 | `AuthGuard` on replacement guarantee claims, candidate selection, admin arbitration |
+| **tutors** | `TutorsController` | `src/modules/tutors/tutors.controller.ts` | `/api/v1/tutors` | 27 | `@Public()` on search, public profiles; `AuthGuard` on tutor profile, availability, dossier |
+| **tutors** | `SavedTutorsController` | `src/modules/tutors/saved-tutors.controller.ts` | `/api/v1/saved-tutors` | 3 | `AuthGuard` on bookmarks/favorites |
+| **tutors** | `AdminTutorsController` | `src/modules/tutors/admin-tutors.controller.ts` | `/api/v1/admin/tutors` | 10 | `AuthGuard`, `RolesGuard` (`admin`, `compliance_reviewer`) on verification dossier review |
+| **users** | `UsersController` | `src/modules/users/users.controller.ts` | `/api/v1/users` | 5 | `AuthGuard` on user profile, avatar upload, emergency contacts |
+
+---
+
+## 3. The 27 Services Requiring Interface/Enum Extraction
+
+To satisfy the non-negotiable rule (*"backend er o enum , interface kokhonoi service er vitore thakbe na"*), each of the following 27 services will be refactored to move internal interfaces into dedicated module directories:
+
+| # | Service File | Module | Interfaces Found Inside Service | Target Dedicated Location | Priority |
+|---|---|---|---|---|---|
+| 1 | `auth.service.ts` | auth | `LoginUserRow` | `src/modules/auth/interfaces/login-user-row.interface.ts` | **P1** |
+| 2 | `rate-limiter.service.ts` | auth | `RateLimitRecord` | `src/modules/auth/interfaces/rate-limit-record.interface.ts` | **P2** |
+| 3 | `otp-delivery.service.ts` | auth | `OtpDeliveryConfiguration` | `src/modules/auth/interfaces/otp-delivery.interfaces.ts` | **P2** |
+| 4 | `account-access.service.ts` | auth | `AccountAccessSnapshot` | `src/modules/auth/interfaces/account-access.interfaces.ts` | **P2** |
+| 5 | `booking-expiry.service.ts` | bookings | `BookingExpirySweepResult` | `src/modules/bookings/interfaces/booking-expiry.interfaces.ts` | **P1** |
+| 6 | `session-reminder.service.ts` | bookings | `ReminderGenerationResult` | `src/modules/bookings/interfaces/session-reminder.interfaces.ts` | **P2** |
+| 7 | `session-series.service.ts` | bookings | `SeriesMutationResult` | `src/modules/bookings/interfaces/session-series.interfaces.ts` | **P2** |
+| 8 | `guardian-access.service.ts` | guardians | `BookingParties` | `src/modules/guardians/interfaces/guardian-access.interfaces.ts` | **P1** |
+| 9 | `assignments.service.ts` | learning | `AssignmentView`, `SubmissionView` | `src/modules/learning/interfaces/assignments.interfaces.ts` | **P1** |
+| 10 | `attendance.service.ts` | learning | `AttendanceSummary` | `src/modules/learning/interfaces/attendance.interfaces.ts` | **P2** |
+| 11 | `learning-access.service.ts` | learning | `LearningBookingScope` | `src/modules/learning/interfaces/learning-access.interfaces.ts` | **P2** |
+| 12 | `learning-goals.service.ts` | learning | `LearningGoalView` | `src/modules/learning/interfaces/learning-goals.interfaces.ts` | **P2** |
+| 13 | `learning-materials.service.ts`| learning | `LearningMaterialView`, `MaterialDownload` | `src/modules/learning/interfaces/learning-materials.interfaces.ts` | **P2** |
+| 14 | `lesson-plans.service.ts` | learning | `LessonPlanView` | `src/modules/learning/interfaces/lesson-plans.interfaces.ts` | **P2** |
+| 15 | `progress.service.ts` | learning | `StudentProgressView` | `src/modules/learning/interfaces/progress.interfaces.ts` | **P2** |
+| 16 | `onboarding.service.ts` | onboarding | `OnboardingRow`, `SystemStepContext` | `src/modules/onboarding/interfaces/onboarding.interfaces.ts` | **P2** |
+| 17 | `ledger.service.ts` | payments | `JournalEntryInput`, `PostJournalParams`, `LedgerIntegrityCheckResult` | `src/modules/payments/interfaces/ledger.interfaces.ts` | **P1** |
+| 18 | `payment-orders.service.ts` | payments | `PaymentReceiptDto` | `src/modules/payments/interfaces/payment-orders.interfaces.ts` | **P1** |
+| 19 | `payment-webhooks.service.ts` | payments | `ConfirmedPayment` | `src/modules/payments/interfaces/payment-webhooks.interfaces.ts` | **P1** |
+| 20 | `settlement.service.ts` | payments | `ReconciliationReport` | `src/modules/payments/interfaces/settlement.interfaces.ts` | **P2** |
+| 21 | `disputes.service.ts` | trust | `DisputeListResponse` | `src/modules/trust/interfaces/disputes.interfaces.ts` | **P2** |
+| 22 | `reviews.service.ts` | trust | `PublicReviewView` | `src/modules/trust/interfaces/reviews.interfaces.ts` | **P2** |
+| 23 | `tutor-replacement.service.ts` | trust | `ReplacementRepos`, `ReplacementListResponse` | `src/modules/trust/interfaces/tutor-replacement.interfaces.ts` | **P1** |
+| 24 | `saved-tutors.service.ts` | tutors | `SavedTutorItemDto` | `src/modules/tutors/interfaces/saved-tutors.interfaces.ts` | **P2** |
+| 25 | `tutor-availability.service.ts`| tutors | `AvailabilitySlotInput`, `BlockedPeriodInput` | `src/modules/tutors/interfaces/tutor-availability.interfaces.ts` | **P2** |
+| 26 | `tutor-verification-expiry.service.ts` | tutors | `VerificationExpirySweepResult` | `src/modules/tutors/interfaces/tutor-verification-expiry.interfaces.ts` | **P2** |
+| 27 | `tutor-verification-reviewer-directory.service.ts` | tutors | `VerificationReviewerRecipient` | `src/modules/tutors/interfaces/tutor-verification.interfaces.ts` | **P2** |
+
+---
+
+## 4. Oversized Backend God Services Requiring Decomposition
+
+The following services exceed 600 lines and contain multiple orthogonal responsibilities:
+
+1. **`auth.service.ts` (1,096 lines)**: Handles registration, login, bcrypt password hashing, token generation, token rotation, session invalidation, OTP generation, OTP verification, magic links, rate limit integration, and audit logging.
+   - *Decomposition Plan*: Split into `AuthRegistrationService`, `AuthSessionService`, `AuthOtpService`, `AuthMagicLinkService`.
+2. **`tutor-replacement.service.ts` (1,053 lines)**: Handles replacement guarantee requests, eligible candidate scoring, candidate invitation, student acceptance, dispute arbitration, and refund recalculation.
+   - *Decomposition Plan*: Split into `TutorReplacementScorerService`, `TutorReplacementCaseService`, `TutorReplacementArbitrationService`.
+3. **`safety-reports.service.ts` (1,039 lines)**: Handles report filing, content redaction, child safety flagging, immediate tutor hold application, guardian emergency notification, case resolution.
+   - *Decomposition Plan*: Split into `SafetyIncidentService`, `SafetyActionService`, `SafetyNotificationService`.
+4. **`tutor-verification.service.ts` (992 lines)**: Handles 3-tier dossier submission, document metadata storage, reviewer assignment, level determination, badge assignment.
+   - *Decomposition Plan*: Split into `TutorDossierService`, `TutorReviewerService`, `TutorVerificationStatusService`.
+5. **`assignments.service.ts` (922 lines)**: Handles assignment creation, publishing, student submission, plagiarism scan, grading, rubric evaluation.
+   - *Decomposition Plan*: Split into `AssignmentsService`, `SubmissionsService`, `GradingService`.
+6. **`analytics.service.ts` (789 lines)**: Handles platform metrics, funnel tracking, revenue calculations, tutor leaderboards, guardian activity stats.
+   - *Decomposition Plan*: Split into `OperationalAnalyticsService`, `FinancialAnalyticsService`, `RetentionAnalyticsService`.
+
+---
+
+## 5. Event-Driven Architecture & Outbox Worker
+
+### 5.1 Outbox Invariant
+All mutating operations that trigger side effects (notifications, payments, ledger entries, emails, socket broadcasts) MUST insert an event row into the PostgreSQL `outbox` table within the same database transaction.
+
+### 5.2 Outbox Worker
+`OutboxWorkerService` runs on a 10-second interval:
+- Queries `outbox` for `status = 'pending'` ordered by `created_at ASC` with `FOR UPDATE SKIP LOCKED`.
+- Dispatches event payloads to registered domain handlers.
+- Marks row as `status = 'dispatched'`, recording timestamp.
+- On handler error, increments `retry_count`. If `retry_count >= 5`, sets `status = 'failed'` and logs dead-letter alert.
+
+### 5.3 Registered Domain Events
+- **Bookings**: `booking.requested`, `booking.accepted`, `booking.declined`, `booking.confirmed`, `booking.completed`, `booking.cancelled`, `session.rescheduled`, `session.no_show`
+- **Payments**: `payment.order_created`, `payment.succeeded`, `payment.failed`, `ledger.balance_changed`, `payout.requested`, `payout.processed`
+- **Trust & Safety**: `safety.report.created`, `safety.hold.applied`, `dispute.opened`, `dispute.resolved`, `replacement.requested`, `replacement.candidate_matched`
+- **Tutors**: `tutor.dossier_submitted`, `tutor.verified`, `tutor.level_upgraded`, `tutor.profile_updated`
+- **Learning**: `assignment.created`, `assignment.submitted`, `assignment.graded`, `attendance.recorded`
+- **Auth**: `auth.registered`, `auth.password_reset`, `auth.session_revoked`, `auth.account_suspended`
+
+---
+
+## 6. Scheduled Sweepers & Background Jobs
+
+| Job Name | Cron Expression / Interval | Implementation Service | Purpose & Safeguards |
 |---|---|---|---|
-| WebSocket | `/notifications` namespace | `NotificationGateway` | Real-time notification dispatch, chat room join/leave, typing indicators, read receipts |
-| Scheduled Job | `BookingExpiryScheduler` (cron: every 5 min) | `BookingExpiryService.sweepExpiredBookings()` | 48h unaccepted request expiry, 24h payment TTL expiry |
-| Scheduled Job | `TutorVerificationExpiryScheduler` (cron: daily) | `TutorVerificationExpiryService.sweep()` | Level/document expiry, reminder notifications |
-| Scheduled Job | `TutorVerificationSweepScheduler` (cron: daily) | `TutorsService.runVerificationExpirySweep()` | Advisory-lock protected sweep |
-| Scheduled Job | `TutorReplacementScheduler` (cron: every 30 min) | `TutorReplacementService.runOverdueSweep()` | Overdue replacement case sweep |
-| Outbox Worker | `OutboxWorkerService` (interval: 10s) | Event dispatch loop | Transactional outbox pattern: reads pending events, dispatches to handlers |
-| Webhook | `/api/v1/payments/webhook/:provider` | `PaymentWebhooksService.handleWebhook()` | SSLCommerz / bKash / Nagad callbacks, signature verification, idempotency |
-| Queue Consumer | `NotificationService` (via outbox) | `NotificationGateway.sendToUser()`, in-app notification creation | Async notification delivery |
-
----
-
-## 3. Service Dependency Map (Key Services)
-
-| Service | Module | Key Dependencies | Key Events Emitted |
-|---|---|---|---|
-| `AuthService` | auth | UsersService, JwtService, ConfigService | `auth.login`, `auth.logout`, `auth.password_reset` |
-| `BookingsService` | bookings | BookingsRepository, TutorsService, UsersService, NotificationService | `booking.requested`, `booking.accepted`, `booking.confirmed`, `booking.completed` |
-| `SchedulingService` | bookings | SessionsRepository, BookingsService, TutorsService, NotificationService | `session.scheduled`, `session.rescheduled`, `session.cancelled`, `session.completed`, `session.no_show` |
-| `PaymentsService` | payments | PaymentOrdersRepository, LedgerService, TutorsService, UsersService | `payment.order_created`, `payment.succeeded`, `payment.failed`, `payment.refund_requested` |
-| `LedgerService` | payments | LedgerEntriesRepository | `ledger.balance_changed` |
-| `PayoutsService` | payments | PayoutsRepository, LedgerService, TutorsService | `payout.requested`, `payout.approved`, `payout.processed` |
-| `TutorsService` | tutors | TutorsRepository, FilesService, TaxonomyService, LearningService | `tutor.profile_updated`, `tutor.verification_submitted`, `tutor.verified` |
-| `LearningService` | learning | AssignmentsRepository, SubmissionsRepository, LessonsRepository, MaterialsRepository | `assignment.created`, `assignment.published`, `submission.submitted`, `submission.graded`, `progress_report.generated` |
-| `NotificationService` | notifications | NotificationsRepository, NotificationGateway | `notification.dispatched` |
-| `BookingMessagesService` | notifications | MessagesRepository, NotificationGateway | `message.sent`, `message.read`, `message.typing` |
-| `DisputesService` | trust | DisputesRepository, BookingsService, PaymentsService, NotificationService | `dispute.opened`, `dispute.resolved` |
-| `SafetyReportsService` | trust | SafetyReportsRepository, TutorsService, NotificationService | `safety.report.created`, `safety.hold.applied`, `safety.case.resolved` |
-| `TutorReplacementService` | trust | ReplacementCasesRepository, BookingsService, TutorsService, NotificationService | `replacement.requested`, `replacement.accepted`, `replacement.completed` |
-| `OnboardingService` | onboarding | UsersRepository, OnboardingStepsRepository | `onboarding.step_completed` |
-| `FilesService` | files | FileAssetsRepository | `file.uploaded` |
-| `AnalyticsService` | analytics | ProductAnalyticsEventsRepository | `analytics.event_tracked` |
-| `AdminOperationsService` | admin | UsersService, BookingsService, TutorsService, PaymentsService | `admin.user_suspended`, `admin.impersonation.started`, `admin.settings_updated` |
-
----
-
-## 4. Domain Events (Contract Summary)
-
-All events are emitted via the transactional outbox (`outbox` table). Handlers consume via `OutboxWorkerService`.
-
-| Event | Payload | Consumers |
-|---|---|---|
-| `booking.requested` | `{ bookingId, studentId, tutorId, subject, requesterType }` | NotificationService → guardian/student, tutor |
-| `booking.accepted` | `{ bookingId, tutorId, studentId }` | NotificationService → student, guardian |
-| `booking.confirmed` | `{ bookingId, paymentOrderId }` | PaymentsService (escrow release), NotificationService |
-| `booking.completed` | `{ bookingId, sessionId }` | PaymentsService (settle milestone), NotificationService |
-| `session.scheduled` | `{ sessionId, bookingId, tutorId, studentId, startAt, endAt }` | NotificationService → both parties |
-| `session.completed` | `{ sessionId, bookingId }` | PaymentsService, LearningService |
-| `session.no_show` | `{ sessionId, bookingId, reason }` | NotificationService, AnalyticsService |
-| `payment.succeeded` | `{ paymentOrderId, userId, amount }` | NotificationService, LedgerService |
-| `tutor.verified` | `{ tutorUserId, level }` | NotificationService → tutor |
-| `replacement.requested` | `{ caseId, studentId, originalTutorId }` | NotificationService → admin, tutors |
-| `safety.hold.applied` | `{ tutorId, reason, adminId }` | NotificationService → tutor, admin |
-| `message.sent` | `{ messageId, bookingId, senderId, content }` | NotificationGateway (real-time chat), NotificationService |
-| `auth.login` | `{ userId, ip }` | AuditModule |
-
----
-
-## 5. DTOs and Validation (Contract Layer)
-
-Shared DTOs in `@ogroniedu/contracts`. Key categories:
-
-- **Auth**: `RegisterDto`, `LoginDto`, `RefreshTokenDto`, `RequestCodeDto`, `RequestMagicLinkDto`, `ConsumeMagicLinkDto`, `VerifyCodeDto`, `ResetPasswordDto`
-- **Bookings**: `CreateBookingRequestDto`, `RespondBookingRequestDto`, `WithdrawBookingRequestDto`, `CreateSessionDto`, `CreateRecurringSessionsDto`, `RescheduleSessionDto`, `CancelSessionDto`, `CompleteSessionDto`, `UpdateMeetingUrlDto`, `SeriesCancelDto`, `SeriesRescheduleDto`
-- **Payments**: `CreatePaymentOrderDto`, `RequestRefundDto`, `SettleMilestoneDto`, `DecideRefundDto`, `ConfirmManualRefundDto`, `RequestPayoutDto`, `ApprovePayoutDto`, `RejectPayoutDto`, `MarkPayoutPaidDto`, `MarkPayoutFailedDto`
-- **Tutors**: `UpdateTutorProfileDto`, `AddVerificationDocumentDto`, `SubmitVerificationLevelDto`, `ReviewerDecisionDto`, `AssignVerificationLevelDto`, `VerifyVerificationDocumentDto`, `AddTutorQualificationDto`, `AddTutorSubjectDto`, `SetServiceAreasDto`, `SetAvailabilityDto`, `CreateBlockedPeriodDto`
-- **Learning**: `MarkAttendanceDto`, `CreateAssignmentDto`, `SubmitAssignmentDto`, `GradeSubmissionDto`, `CreateLessonPlanDto`, `UpdateLessonPlanDto`, `UploadLearningMaterialDto`, `CreateLinkMaterialDto`
-- **Trust**: `CreateDisputeDto`, `ResolveDisputeDto`, `CreateReviewDto`, `TutorReplyDto`, `ModerateReviewDto`, `CreateSafetyReportDto`, `UpdateCaseStatusDto`, `AssignCaseDto`, `CreateCaseMessageDto`, `ApplySafetyActionDto`, `RevokeSafetyActionDto`, `ResolveSafetyCaseDto`, `CreateReplacementCaseDto`, `UpdateReplacementCaseDto`, `ExtendReplacementDeadlineDto`
-- **Notifications**: `UpdateNotificationPreferencesDto`, `DispatchNotificationDto`, `SendBookingMessageDto`
-- **Guardians**: `RegisterChildDto`, `LinkChildRequestDto`, `VerifyLinkDto`, `RevokeLinkDto`
-- **Onboarding**: `CompleteOnboardingStepDto`
-- **Users**: `UpdateProfileDto`, `UpsertStudentProfileDto`, `DeleteAccountDto`
-- **Files**: `UploadEvidenceFileDto`
-
----
-
-## 6. Background Jobs & Schedulers
-
-| Job | Schedule | Module | Advisory Lock |
-|---|---|---|---|
-| `BookingExpiryScheduler` | Every 5 minutes | bookings | `BOOKING_EXPIRY_LOCK_KEY = 913402308` |
-| `TutorVerificationExpiryScheduler` | Daily 02:00 | tutors | `TUTOR_VERIFICATION_LOCK_KEY` |
-| `TutorVerificationSweepScheduler` | Daily 03:00 | tutors | `TUTOR_VERIFICATION_SWEEP_LOCK_KEY` |
-| `TutorReplacementScheduler` | Every 30 minutes | trust | `REPLACEMENT_SWEEP_LOCK_KEY` |
-| `OutboxWorkerService` | Every 10 seconds | notifications | None (polls DB) |
-
----
-
-## 7. Error Handling Conventions
-
-| Layer | Convention |
-|---|---|
-| Global | `AllExceptionsFilter` catches all, wraps in `{ success: false, error: { code, message, details? }, meta: { requestId, timestamp } }` |
-| Validation | `ValidationPipe` with `whitelist: true, forbidNonWhitelisted: true, transform: true` |
-| SQL Errors | Redacted to `INTERNAL_ERROR` (table/column names never exposed) |
-| Unauthorized | `401 UNAUTHORIZED` with `Unauthorized access token` |
-| Forbidden | `403 FORBIDDEN` with `Insufficient permissions` |
-| Not Found | `404 NOT_FOUND` with `Resource not found` |
-| Conflict | `409 CONFLICT` with `Resource conflict` (e.g., double-booking) |
-| Rate Limited | `429 TOO_MANY_REQUESTS` with `retryAfter` seconds |
-
----
-
-## 8. Security Headers (Middleware)
-
-`SecurityHeadersMiddleware` applies to all routes:
-
-- `X-Content-Type-Options: nosniff`
-- `X-Frame-Options: DENY`
-- `Strict-Transport-Security: max-age=31536000; includeSubDomains; preload`
-- `Referrer-Policy: strict-origin-when-cross-origin`
-- `Permissions-Policy: camera=(), microphone=(), geolocation=(), payment=()`
-- `Content-Security-Policy: default-src 'self' ...`
-
----
-
-## 9. API Contract Standard (Phase 15 Verified)
-
-**Success Envelope:**
-```json
-{ "success": true, "data": T, "message?": string, "meta": { "requestId": string, "pagination?": PaginationMeta } }
-```
-
-**Error Envelope:**
-```json
-{ "success": false, "error": { "code": string, "message": string, "details?": any }, "meta": { "requestId": string, "timestamp": string } }
-```
-
-**Pagination Meta:**
-- Offset: `{ strategy: 'offset', page, pageSize, totalItems, totalPages, hasNextPage, hasPreviousPage }`
-- Cursor: `{ strategy: 'cursor', nextCursor, hasNextPage, pageSize }`
-
----
-
-## 10. Known Gaps / Weaknesses
-
-| Gap | Location | Impact |
-|---|---|---|
-| Missing `GET /api/v1/files/:fileId/download` | `FilesController` | RLD-001 — tutor evidence retrieval broken |
-| `test-dispatch` endpoint unguarded | `NotificationController` | RLD-002 — spoofing vector |
-| Dev JWT fallbacks in gateway/service | `notification.gateway.ts`, `files.service.ts` | RLD-006 — prod secret hardening needed |
-
----
-
-*End of `04-API-AND-BACKEND-INVENTORY.md`.*
+| **Booking Expiry Sweeper** | `*/5 * * * *` (Every 5 min) | `BookingExpiryService.sweepExpiredBookings()` | Cancels booking requests pending > 48 hours; cancels unpaid bookings pending > 24 hours. Emits notifications. |
+| **Verification Expiry Sweeper** | `0 2 * * *` (Daily at 02:00) | `TutorVerificationExpiryService.sweep()` | Sweeps expiring document verifications; triggers renewal reminder notifications at 30, 14, and 3 days. |
+| **Tutor Verification Advisory Sweeper** | `0 3 * * *` (Daily at 03:00) | `TutorsService.runVerificationExpirySweep()` | Uses PostgreSQL advisory locks (`pg_try_advisory_lock`) to prevent multi-instance concurrency collisions. |
+| **Replacement Case Overdue Sweeper** | `*/30 * * * *` (Every 30 min) | `TutorReplacementService.runOverdueSweep()` | Checks pending replacement guarantee cases exceeding SLA; escalates to admin arbitration queue. |
+| **Outbox Event Dispatcher** | Every 10 seconds | `OutboxWorkerService.pollAndDispatch()` | Polls `outbox` table, ensures at-least-once reliable delivery to event subscribers. |

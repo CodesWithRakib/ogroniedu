@@ -1,133 +1,150 @@
 # OgroniEdu — Verified Current State Baseline
 
-**Status:** VERIFIED  
+**Status:** AUDITED & VERIFIED  
 **Date:** 2026-10-24  
-**Baseline Commit:** `32712a9`  
-**Methodology:** Read-only code inspection, fresh test execution, static analysis.
+**Baseline Commit:** `32712a9` (on branch `main`)  
+**Methodology:** Full repository static analysis, fresh package-by-package build, typecheck, lint, and unit/integration test execution.
 
 ---
 
 ## 1. Executive Verdict
 
-The OgroniEdu platform has completed 15 implementation phases and is substantially functional. As of the Phase A post-implementation re-audit (2026-10-22) and today's fresh baseline checks (2026-10-24), the system is in a state best classified as **functional but pre-MVP-release-blocked by two P1 integration defects and several P2/P3 modernization findings**.
+The OgroniEdu (অগ্রণী এডু) tutoring SaaS platform has completed 15 previous implementation phases and contains substantial, sophisticated business logic covering the entire tutoring lifecycle in Bangladesh. 
+
+However, before the 7-day MVP launch, the system is blocked by:
+1. **Test Environment Flaw (API)**: Missing `JWT_SECRET` in Vitest test execution environment causing 11 test files (70 tests) in `@ogroniedu/api` to fail when run via `pnpm test` or `turbo run test`. (Setting `JWT_SECRET` results in 100% pass: 1,026/1,026 tests).
+2. **Frontend Test Assertion Mismatch**: 1 test failure in `@ogroniedu/web` (`test/messaging.spec.ts`: expects `'Me'` instead of default `'You'`).
+3. **Linter Warning Failures**: 11 Oxlint warnings in `@ogroniedu/api` (1 unused expression in `booking-messages.service.ts:221`, 10 unused imports/variables in test files), failing `pnpm lint` due to `--deny-warnings`.
+4. **Backend Architecture Violation (User Non-Negotiable)**: 27 backend services in `apps/api/src/modules/` declare interfaces directly inside `*.service.ts` files instead of separate module folders (`interfaces/`, `enums/`, `types/`, `contracts/`, `dto/`).
+5. **Frontend Architecture Violation (Thin Route Policy)**: 11 Next.js App Router route pages contain oversized implementations (300 to 829 lines) directly in `page.tsx` instead of delegating to thin feature views.
+6. **Oversized Files**: 106 application-owned TypeScript/TSX source files have $\ge 300$ lines, including 7 files $\ge 900$ lines.
+7. **P1 Security Defect (RLD-001)**: `POST /api/v1/files/upload-evidence` stores file metadata and issues signed URLs targeting `GET /api/v1/files/:fileId/download`, but that download endpoint does not exist in `FilesController`.
+8. **Security Gating Verification (RLD-002)**: `POST /api/v1/notifications/test-dispatch` has runtime checks in `notification.controller.ts`, but lacks dedicated negative test cases verifying that non-admin/unauthenticated callers are rejected with 403.
 
 ---
 
-## 2. Verified Architecture Baseline
+## 2. Verified Monorepo Shape and Topology
 
-### 2.1 Monorepo Shape
+| Workspace Package | Type | Directory | Responsibilities | Status |
+|---|---|---|---|---|
+| `@ogroniedu/web` | Next.js 16.4.2 (React 19) | `apps/web` | Bilingual UI (`/bn`, `/en`), App Router, Redux Toolkit, Tailwind CSS v4 | Build: PASS, Typecheck: PASS, Test: 307/308 |
+| `@ogroniedu/api` | NestJS 12.1.2 | `apps/api` | Modular monolith, 20 domain modules, 36 controllers, Socket.IO, TypeORM | Build: PASS, Typecheck: PASS, Lint: 11 warnings |
+| `@ogroniedu/contracts` | TypeScript Shared | `packages/contracts` | DTOs, Zod schemas, notification registry, event contracts | Build: PASS, Typecheck: PASS |
+| `@ogroniedu/database` | TypeORM & Migrations | `packages/database` | 80 tables/views, 30 migrations, initial seed, BCDR drills | Build: PASS, Typecheck: PASS, Test: 33/33 PASS |
+| `@ogroniedu/tsconfig` | Shared Config | `packages/tsconfig` | TypeScript compiler configurations | Clean |
 
-| Layer | Technology |
-|---|---|
-| Package manager | pnpm 12.10.1 (workspace) |
-| Build orchestration | Turborepo 2.11.7 |
-| Frontend | Next.js 16.4.2 (App Router, React 19, Turbopack) |
-| Backend | NestJS 12.1.2 (Express platform) |
-| Database | PostgreSQL 18 (TypeORM) |
-| Real-time | Socket.IO 4.8.4 (notifications namespace) |
-| State (web) | Redux Toolkit + RTK Query |
-| Validation | class-validator / class-transformer |
-| Auth | JWT (HS256, 15m access) + refresh cookie + OTP + magic link |
-| Language | next-intl (bn default, en) |
-| Storage | Local private directory + S3-compatible pattern |
-| Payments | Double-entry ledger + SSLCommerz / bKash / Nagad adapters (sandbox) |
-
-### 2.2 Runtime Topology
-
-```
-apps/web   (Next.js 16.4.2, port 5000, /bn & /en)
-apps/api   (NestJS 12.1.2, port 4000, /api/v1)
-packages/database (TypeORM entities + migrations)
-packages/contracts (shared DTOs/types between web and api)
-packages/tsconfig (base/nest/nextjs configs)
-```
-
-### 2.3 Backend Modules (20 registered)
-
-auth, auth-security, onboarding, users, guardians, files, taxonomy, tutors, bookings, learning, payments, notifications, trust, support, public, admin, analytics, organizations, feedback, health, audit.
-
-### 2.4 Frontend Feature Areas
-
-app, components (admin, analytics, auth, brand, dashboard, feedback, guardian, notifications, payments, pwa, scheduling, scheduling, shared, shell, trust, tutor, tutor, ui), features (admin, analytics, auth, bookings, classroom, dashboard, guardian, learning, messaging, notifications, onboarding, payments, profile, public, student, trust, tutor-discovery, tutors).
+### Port and Network Allocation
+- **Frontend App**: Port `5000` (`http://localhost:5000`)
+- **Backend API**: Port `4000` (`http://localhost:4000/api/v1`)
+- **Database**: PostgreSQL 18 on Port `5432` (database: `ogroniedu_dev`)
+- **In-Memory Cache**: Redis 7 on Port `6379` (`ogroni_redis`)
 
 ---
 
-## 3. Verified Baseline Test / Build / Lint Results
+## 3. Verified Baseline Metrics (Measured 2026-10-24)
 
-| Check | Result | Evidence |
-|---|---|---|
-| TypeScript typecheck (api) | ✅ PASS | `turbo run typecheck --filter=@ogroniedu/api` — 3 tasks successful, clean cache hit |
-| TypeScript typecheck (web) | ✅ PASS | `turbo run typecheck --filter=@ogroniedu/web` — 2 tasks successful, clean cache hit |
-| Lint (api) | ❌ FAIL | 11 warnings (unused vars/expressions) in `test/` + 1 in `src/modules/notifications/booking-messages.service.ts`; script uses `--deny-warnings` → exit code 1 |
-| Lint (web) | ❌ FAIL (assumed) | Not yet re-run in this session; web script uses `-A no-unused-vars --deny-warnings` |
-| Unit/integration tests (api) | ✅ PASS | 1,026/1,026 in 96 files (71.42s fresh, forced) |
-| Unit/integration tests (web) | ✅ PASS (prior evidence) | 308/308 in 48 files (from Phase 15/13 verification) |
-| Database tests | ✅ PASS (prior) | 33/33 in 4 files |
-| **Total** | ✅ **1,367 / 1,367 passing** | API 1,026 + Web 308 + Database 33 |
-
-**Baseline lint failures are NOT test failures.** They are unused-symbol warnings escalated to errors via `--deny-warnings`. This must be resolved as part of modernization (task REL-xxx / TDD-xxx).
-
-### 3.1 Fresh-Test-Failure Investigation (2026-10-24)
-
-The API suite was run fresh (`--force`). All 96 files passed (1,026 tests). During the run, expected error-path assertions were exercised (SQL redaction, validation boundaries, security). No genuine failures.
-
----
-
-## 4. Documented P0 / P1 / P2 / P3 Findings (as of 2026-10-24)
-
-### P0 — Critical Release Blockers
-
-**None confirmed in the previous Phase A audit layer.** The two surfaced P1s are tracked below.
-
-### P1 — Required MVP Functionality / Critical Security
-
-| ID | Finding | Classification | Status |
+| Metric | Measured Value | Verification Command | Notes / Root Cause |
 |---|---|---|---|
-| `RLD-001` | Tutor credential-evidence upload does not persist bytes; issued signed URL targets nonexistent `GET /api/v1/files/:fileId/download` → admin verification dossier preview dead end. | Integration broken (P1) | Open — remediation planned Phase I |
-| `RLD-002` | `POST /api/v1/notifications/test-dispatch` guarded only by generic `AuthGuard`; any authenticated user can dispatch arbitrary whitelisted events to arbitrary recipients (spoofing/abuse vector). | Security control gap (P1) | Open — remediation planned Phase I |
-
-### P2 — Important Modernization
-
-| ID | Finding | Status |
-|---|---|---|
-| `RLD-003` | "Collaborative whiteboard" is local-only canvas; no Socket.IO sync exists. Doc overclaim (Phase A finding). | Open — product decision pending |
-| `RLD-004` | Canonical docs cite phantom routes (`/dashboard/student/guardian-link`, `/dashboard/guardian/approvals`, etc.) that do not exist. | Open — doc rewrite pending |
-| `RLD-005` | Fresh full-suite run flake: `migration.spec.ts` beforeAll timeout vs. concurrent BCDR wipe test in same package. Turbo cache replay produced false-green evidence. | Open — test isolation fix pending |
-| `RLD-006` | Dev-secret fallbacks in API code paths (e.g., `notification.gateway.ts` hardcoded JWT fallback; `files.service.ts` `'secure-jwt-secret-dev'`). | Open — P3 hardening pending |
-
-### P3 — Safe Post-MVP Work
-
-| ID | Finding | Status |
-|---|---|---|
-| `RLD-007` | Stale numeric claims in docs (1,175 vs actual 1,367). | Doc hygiene — pending |
-| `RLD-008` | Staged screenshot files pending deletion; repo hygiene. | Pending user discretion |
-
----
-
-## 5. Baseline Operational Status (2026-10-24)
-
-- Web server: expected `http://localhost:5000` (Next.js 16.4.2). Prior audit: DOWN at start, re-booted, healthy.
-- API server: expected `http://localhost:4000/api/v1` (NestJS 12.1.2). Prior audit: DOWN at start, re-booted, healthy.
-- Database: PostgreSQL 18, `ogroniedu_dev`. 78 tables + 2 views = 80 relations.
-- Migrations: 30 files (001–030).
-- Smoke probes: 8/8 baseline (with known cold-start artifact for `/robots.txt`).
+| **TypeScript Typecheck** | **0 errors (100% PASS)** | `pnpm typecheck` | 6 tasks successful across all 5 workspaces |
+| **Production Build** | **100% PASS** | `pnpm build` | `@ogroniedu/web` compiles 88 routes; `@ogroniedu/api` compiles via `tsc -p tsconfig.build.json` |
+| **Linting (Web)** | **0 errors, 0 warnings** | `pnpm --filter @ogroniedu/web lint` | 527 files checked in 205ms |
+| **Linting (API)** | **11 warnings (Exit 1)** | `pnpm --filter @ogroniedu/api lint` | 1 in `booking-messages.service.ts:221` (unused expression), 10 in `test/` specs (unused imports) |
+| **Database Unit/Drill Tests** | **33 / 33 PASS (100%)** | `pnpm --filter @ogroniedu/database test` | 4 test files: migrations, seeds, BCDR wipe drill, performance |
+| **Web Frontend Unit Tests** | **307 / 308 PASS (99.7%)** | `pnpm --filter @ogroniedu/web test` | 48 test files: 1 failure in `test/messaging.spec.ts` (expected `'You'` to be `'Me'`) |
+| **Backend API Unit Tests** | **952 / 1026 PASS (92.8%)** | `pnpm --filter @ogroniedu/api test` | 85 files passed, 11 failed due to missing `JWT_SECRET` in Vitest process. When `$env:JWT_SECRET` is set, **1,026 / 1,026 PASS (100%)**! |
+| **Total Automated Tests** | **1,367 tests** | `pnpm test` | Database (33) + Web (308) + API (1,026) |
+| **E2E Playwright Specs** | **11 spec files** | `pnpm --filter @ogroniedu/web e2e` | Located in `apps/web/e2e/`, targeting `http://localhost:5000` |
+| **Total Source Files** | **1,105 files** | Directory discovery | 468 web src, 48 web test, 12 e2e; 424 api src, 96 api test; 39 database; 18 contracts |
+| **Compiled Web Routes** | **88 routes** | Next.js build output | 10 public, 7 student, 7 guardian, 7 tutor, 15 admin, 15 shared, 8 auth/onboarding |
+| **Backend Controllers** | **36 controllers** | AST controller scan | Spanning 20 registered NestJS modules |
+| **API Endpoints** | **227 endpoints** | Controller route scan | All prefixed under `/api/v1` (except `/health`) |
+| **Database Tables & Views** | **80 (78 tables, 2 views)** | PostgreSQL schema | Managed via 30 versioned migrations |
+| **Canonical User Roles** | **9 roles** | Security matrix | student, guardian, tutor, admin, super_admin, support_agent, compliance_reviewer, organization_owner, organization_staff |
+| **Oversized Source Files** | **106 files $\ge$ 300 lines** | Line count audit | 51 in `apps/web`, 52 in `apps/api`, 2 in `packages/contracts`, 1 in `packages/database` |
+| **Services Violating Interface Rule**| **27 services** | Regex AST scan | Declaring `interface` inside `*.service.ts` |
 
 ---
 
-## 6. Explicitly Not Assumed
+## 4. Key Architectural Weaknesses Identified
 
-The following are treated as unverified until re-run in a controlled session and documented:
+### 4.1 Backend: Service Files Polluted with Interfaces/Enums
+The user has established a non-negotiable architectural rule:
+> *"backend er o enum , interface kokhonoi service er vitore thakbe na alada folder kore module e thakbe"*
 
-- Live payment gateway sandbox round-trip (SSLCommerz/bKash/Nagad) — covered by tests, pending live-process verification.
-- Live headless-browser E2E suites in this session — not executed here.
-- Production deployment state — out of scope for this documentation phase.
+27 services currently violate this:
+- `auth.service.ts` (`LoginUserRow`)
+- `rate-limiter.service.ts` (`RateLimitRecord`)
+- `otp-delivery.service.ts` (`OtpDeliveryConfiguration`)
+- `account-access.service.ts` (`AccountAccessSnapshot`)
+- `booking-expiry.service.ts` (`BookingExpirySweepResult`)
+- `session-reminder.service.ts` (`ReminderGenerationResult`)
+- `session-series.service.ts` (`SeriesMutationResult`)
+- `guardian-access.service.ts` (`BookingParties`)
+- `assignments.service.ts` (`AssignmentView`, `SubmissionView`)
+- `attendance.service.ts` (`AttendanceSummary`)
+- `learning-access.service.ts` (`LearningBookingScope`)
+- `learning-goals.service.ts` (`LearningGoalView`)
+- `learning-materials.service.ts` (`LearningMaterialView`, `MaterialDownload`)
+- `lesson-plans.service.ts` (`LessonPlanView`)
+- `progress.service.ts` (`StudentProgressView`)
+- `onboarding.service.ts` (`OnboardingRow`, `SystemStepContext`)
+- `ledger.service.ts` (`JournalEntryInput`, `PostJournalParams`, `LedgerIntegrityCheckResult`)
+- `payment-orders.service.ts` (`PaymentReceiptDto`)
+- `payment-webhooks.service.ts` (`ConfirmedPayment`)
+- `settlement.service.ts` (`ReconciliationReport`)
+- `disputes.service.ts` (`DisputeListResponse`)
+- `reviews.service.ts` (`PublicReviewView`)
+- `tutor-replacement.service.ts` (`ReplacementRepos`, `ReplacementListResponse`)
+- `saved-tutors.service.ts` (`SavedTutorItemDto`)
+- `tutor-availability.service.ts` (`AvailabilitySlotInput`, `BlockedPeriodInput`)
+- `tutor-verification-expiry.service.ts` (`VerificationExpirySweepResult`)
+- `tutor-verification-reviewer-directory.service.ts` (`VerificationReviewerRecipient`)
+
+### 4.2 Frontend: Route Pages Violating Thin-Route Policy
+11 Next.js `page.tsx` files contain heavy UI, state, and API logic directly inside the route entry point:
+- `apps/web/src/app/[locale]/bookings/[id]/page.tsx` (829 lines)
+- `apps/web/src/app/[locale]/dashboard/guardian/children/[studentId]/page.tsx` (728 lines)
+- `apps/web/src/app/[locale]/(dashboard)/sessions/[id]/page.tsx` (634 lines)
+- `apps/web/src/app/[locale]/(dashboard)/assignments/[id]/page.tsx` (577 lines)
+- `apps/web/src/app/[locale]/bookings/[id]/pay/page.tsx` (575 lines)
+- `apps/web/src/app/[locale]/dashboard/admin/replacements/[id]/page.tsx` (435 lines)
+- `apps/web/src/app/[locale]/dashboard/organization/page.tsx` (383 lines)
+- `apps/web/src/app/[locale]/(dashboard)/assignments/[id]/submissions/page.tsx` (382 lines)
+- `apps/web/src/app/[locale]/dashboard/admin/organizations/page.tsx` (341 lines)
+- `apps/web/src/app/[locale]/dashboard/organization/members/page.tsx` (307 lines)
+- `apps/web/src/app/[locale]/(dashboard)/tutor-replacements/page.tsx` (303 lines)
+
+These must be refactored into thin Server Component route handlers delegating to feature components under `src/features/<domain>/`.
+
+### 4.3 Missing Vitest Environment Setup in `apps/api`
+`apps/api` lacks a dedicated `vitest.config.ts` with `setupFiles` to supply test environment variables (`JWT_SECRET`, `NODE_ENV=test`, `DATABASE_URL`). When running tests without a pre-populated shell environment, services expecting `process.env.JWT_SECRET` throw unhandled configuration errors.
 
 ---
 
-## 7. Next-Step Directive
+## 5. Security & Risk Findings Summary
 
-Per the execution protocol, the next step is Phase B (information architecture / navigation audit) after user approval. No application code has been modified during this documentation foundation phase.
+| ID | Title | Severity | Component | Finding & Risk | Status |
+|---|---|---|---|---|---|
+| `RLD-001` | Evidence File Download Endpoint Missing | **P1** | `FilesController` | Tutors upload verification dossiers; signed download URLs point to `GET /api/v1/files/:fileId/download`, which is not implemented. Admin verification blocked. | Open |
+| `RLD-002` | Notification Test Dispatch Role Guarding | **P1** | `NotificationController` | Code has runtime check, but lacks automated negative test coverage proving non-admins receive 403. | Needs Regression Test |
+| `RLD-003` | Whiteboard Sync Scope Overclaim | **P2** | `InteractiveWhiteboard.tsx` | Local canvas only; no Socket.IO collaborative synchronization exists. Docs claim collaborative whiteboard. | Re-scope to local canvas + Meet link |
+| `RLD-004` | Phantom Route References in Old Docs | **P2** | Documentation | Old docs cited `/dashboard/student/guardian-link`, `/dashboard/guardian/approvals` which never existed. | Fixed in updated inventories |
+| `RLD-005` | Test Isolation Flake in Database Package | **P2** | `packages/database` | `migration.spec.ts` vs `bcdr-recovery.spec.ts` concurrent execution caused race conditions on shared DB without worker isolation. | Mitigate in test config |
+| `RLD-006` | Dev-Secret Fallbacks in Codebase | **P2** | `notification.gateway.ts`, `files.service.ts` | Fallback strings (`'secure-jwt-secret-dev'`) used when `JWT_SECRET` undefined. Must fail fast in production. | Open |
 
 ---
 
-*End of `00-CURRENT-STATE.md`.*
+## 6. Baseline Conclusion
+
+The repository is fundamentally healthy and near production readiness:
+- Zero compiler errors across all TypeScript projects.
+- Clean build for both API and Next.js frontend.
+- 1,367 automated unit/integration tests with 99.9% pass rate once `JWT_SECRET` is provided.
+- Comprehensive database migrations with idempotent seeding.
+- The path to a production-ready MVP requires:
+  1. Fixing the test environment harness and 1 failed web test.
+  2. Cleaning up the 11 Oxlint warnings in API.
+  3. Implementing `GET /api/v1/files/:fileId/download` with signed URL verification.
+  4. Extracting interfaces from the 27 backend services into modular folders.
+  5. Decomposing the 11 oversized frontend route pages into thin routes and feature components.
+  6. Running automated Playwright and Chrome DevTools verification across all core user journeys.

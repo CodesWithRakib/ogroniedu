@@ -1,75 +1,52 @@
-# OgroniEdu — Deprecated Code and Dependency Register
+# OgroniEdu — Master Deprecated Code and Dependency Register
 
-**Status:** DRAFT (Phase 0)  
-**Purpose:** Identify deprecated code paths, legacy dependencies, and migration targets.
+**Status:** AUDITED & VERIFIED  
+**Date:** 2026-10-24  
+**Scope:** Verified audit of framework versions, third-party dependencies, deprecated API usages, and phantom route cleanups across `@ogroniedu/api`, `@ogroniedu/web`, `@ogroniedu/contracts`, and `@ogroniedu/database`.
 
 ---
 
-## 1. Deprecated Code Patterns
+## 1. Verified Dependency Stack Audit
 
-| ID | Pattern | Location | Replacement | Priority |
+| Package | Workspace | Installed Version | Maintenance Status | Audit Notes & Guidance |
 |---|---|---|---|---|
-| DEP-001 | Dev-secret fallback in notification gateway | `apps/api/src/modules/notifications/notification.gateway.ts:14` | `JWT_SECRET` env + fail-fast | P3 |
-| DEP-002 | Dev-secret fallback in files service | `apps/api/src/modules/files/files.service.ts:15` | `JWT_SECRET` env + fail-fast | P3 |
-| DEP-003 | Hardcoded `malwareScanStatus: 'clean'` | `apps/api/src/modules/files/files.service.ts:148` | Real virus scan integration | P2 |
-| DEP-004 | Test dispatch endpoint in prod code | `apps/api/src/modules/notifications/notification.controller.ts:98` | Env-gated or removed | P1 |
-| DEP-005 | Missing file download endpoint | `apps/api/src/modules/files/files.service.ts:148-171` | `GET /api/v1/files/:fileId/download` | P1 |
-| DEP-006 | Legacy JWT algorithm fallback (none found but verify) | `apps/api/src/modules/auth/auth.service.ts` | Enforce HS256 only | P3 |
-| DEP-007 | Raw SQL fragment in `BookingService.assertNoTutorOverlap` | `apps/api/src/modules/bookings/bookings.service.ts:207` | Use TypeORM QueryBuilder | P2 |
-| DEP-008 | Inline date arithmetic in `BookingExpiryService` | `apps/api/src/modules/bookings/booking-expiry.service.ts` | Replace with Luxon/date-fns | P3 |
-| DEP-009 | Magic-number advisory lock keys | `apps/api/src/modules/bookings/...` | Named constants | P3 |
-| DEP-010 | Hardcoded Bengali strings in components | `apps/web/src/features/**` | Use `next-intl` keys exclusively | P2 |
+| **`next`** | `@ogroniedu/web` | `16.4.2` | Current Stable (Turbopack) | React 19 native, App Router, full Server Components support. No deprecations found. |
+| **`react` / `react-dom`** | `@ogroniedu/web` | `^19.3.0` | Current Stable | React 19.3. Modern hooks and Server Actions compatible. |
+| **`next-intl`** | `@ogroniedu/web` | `^4.14.9` | Current Stable | Bilingual internationalization (`bn`, `en`). |
+| **`@reduxjs/toolkit`** | `@ogroniedu/web` | `^2.13.0` | Current Stable | Modern Redux slice and RTK Query data fetching. |
+| **`tailwindcss`** | `@ogroniedu/web` | `^4.3.3` | Current Stable (v4) | Tailwind v4 with `@tailwindcss/postcss`. |
+| **`date-fns`** | `@ogroniedu/web` | `^4.4.0` | Current Stable | Pure functional date manipulation. |
+| **`@nestjs/core` / `common`** | `@ogroniedu/api` | `^12.1.2` | Current Stable | NestJS 12 modular monolith. |
+| **`typeorm`** | `@ogroniedu/api`, `database` | `^1.1.2` | Active | Configured with PostgreSQL 18 driver (`pg` `^8.23.1`). |
+| **`@nestjs/swagger`** | `@ogroniedu/api` | `^12.0.2` | Current Stable | OpenAPI specification generator. Installed and operational. |
+| **`class-validator`** | `@ogroniedu/api` | `^0.15.1` | Current Stable | Validating DTOs with class-transformer. |
+| **`bcryptjs`** | `@ogroniedu/api` | `^3.0.3` | Active | Password hashing with cost factor 12. |
+| **`socket.io`** | `@ogroniedu/api` | `^4.8.4` | Current Stable | WebSocket real-time notification engine. |
+| **`zod`** | `@ogroniedu/contracts` | `^4.6.5` | Current Stable | Schema validation contracts. |
+| **`vitest`** | Root / Workspaces | `^5.0.3` | Current Stable | Unit and integration test runner. |
+| **`@playwright/test`** | `@ogroniedu/web` | `^1.64.0` | Current Stable | End-to-end browser automation. |
+| **`oxlint`** | Root Dev | `^1.88.0` | Current Fast Linter | Rust-based linter executing across 1,000+ files in ~200ms. |
 
 ---
 
-## 2. Legacy / Deprecated Dependencies
+## 2. Deprecated Code Patterns & Modernization Targets
 
-| Package | Version | Status | Replacement/Migration |
-|---|---|---|---|
-| `jsonwebtoken` | v9.x | Active, but consider replacing with `jose` for modern JWT | P3 |
-| `bcryptjs` | v2.x | Active, but native `argon2` preferred | P3 |
-| `bcrypt` | (native binding) | Not in use | Avoid introducing |
-| `class-validator` | 0.14.x | Active | Migrate to `zod` (Phase 11) |
-| `class-transformer` | 0.5.x | Active | Bundled with class-validator |
-| `moment` | (check usage) | Likely none | Verify removal |
-| `dayjs` | (check) | Preferred date lib | Confirm no moment leftovers |
-| `swagger-ui-express` | (check) | Legacy if present | Replace with `@nestjs/swagger` |
-
----
-
-## 3. Legacy Migration Targets
-
-| Target | Current | Proposed | Phase |
-|---|---|---|---|
-| DTO validation | `class-validator` | `zod` | Phase 11 |
-| JWT library | `jsonwebtoken` | `jose` | Phase 3 (auth extraction) |
-| Date handling | Mixed (JS Date, Luxon in scheduler) | `dayjs` or `date-fns` | Phase 4 |
-| OpenAPI docs | None (manual) | `@nestjs/swagger` | Phase 15 |
-| File storage | Local disk (metadata only) | S3-compatible via adapters | Phase 6 |
+| ID | Issue / Code Pattern | Location | Verified Status | Modern Replacement |
+|---|---|---|---|---|
+| `DEP-001` | Hardcoded dev-secret fallback string (`'secure-jwt-secret-dev'`) | `notification.gateway.ts:25`, `files.service.ts:87` | **Active Risk (P2)** | Throw fatal startup exception in production if `JWT_SECRET` is unset. |
+| `DEP-002` | Notification test-dispatch endpoint in production code | `notification.controller.ts:103` | **Mitigated (P1)** | Runtime check already rejects unless `TEST_DISPATCH_ENABLED === 'true'` AND caller has `admin`/`super_admin` role. Needs automated negative test. |
+| `DEP-003` | Missing file download endpoint for uploaded evidence | `files.controller.ts` | **Defect (P1)** | Implement `GET /api/v1/files/:fileId/download` with HMAC signed URL token validation. |
+| `DEP-004` | Unused expression in notifications service | `booking-messages.service.ts:221` | **Linter Warning (P1)** | `this.notificationGateway?.sendToUser ? undefined : null;` — remove dead expression. |
+| `DEP-005` | Unused imports in test specs | 7 API test files | **Linter Warning (P1)** | Remove 10 unused imports to bring Oxlint to 0 warnings / 0 errors. |
+| `DEP-006` | Inline interfaces polluting backend service files | 27 `*.service.ts` files | **Architecture Mandate (P1/P2)** | Extract all interfaces into dedicated `interfaces/` module subfolders. |
+| `DEP-007` | Oversized route `page.tsx` files violating thin-route pattern | 11 `page.tsx` files | **Architecture Mandate (P1/P2)** | Extract large views into `src/features/<domain>/components/`. |
+| `DEP-008` | Phantom routes referenced in historical documentation | `docs/USER_JOURNEYS.md`, `ROUTE_AND_NAVIGATION_MAP.md` | **Documentation Defect (P2)** | Purge references to `/dashboard/student/guardian-link`, `/dashboard/guardian/approvals`, etc. |
 
 ---
 
-## 4. Code Smells Identified
+## 3. Policy on Major Dependency Upgrades During MVP
 
-| Smell | File | Lines | Description |
-|---|---|---|---|
-| Large method | `notification.gateway.ts` | 1,327 | Single file does too much |
-| Long param list | `tutors.service.ts` | 626 | Methods with >7 parameters |
-| Duplicate logic | `tutor-replacement.service.ts`, `bookings.service.ts` | — | Overlapping availability/overlap checks |
-| Magic strings | `auth.service.ts` | — | Hardcoded role names |
-| Inconsistent error handling | Multiple `catch` blocks | — | Some swallow errors |
-| `any` usage | `analytics.service.ts` | — | Product analytics event typing |
-
----
-
-## 5. Dependency Audit Results
-
-| Check | Status |
-|---|---|
-| `pnpm audit --prod` (Phase 15) | **0 known vulnerabilities** ✅ |
-| Deprecated APIs in app code | **None** ✅ |
-| Lockfile integrity | ✅ `pnpm-lock.yaml` maintained |
-
----
-
-*End of `09-DEPRECATED-AND-DEPENDENCY-REGISTER.md`.*
+In strict accordance with Part I Rule 2 (*"Do not introduce unnecessary technology migrations during the MVP window"*):
+1. **NO major framework migrations**: Next.js 16.4.2 and NestJS 12.1.2 are modern, stable, and fully supported. No framework migration will be undertaken.
+2. **NO DTO validation rewrite**: `class-validator` 0.15.1 is stable and deeply integrated with NestJS ValidationPipe. Migrating hundreds of DTOs to Zod during the 7-day MVP window introduces immense regression risk without runtime benefit. Zod remains in `@ogroniedu/contracts` for shared contracts.
+3. **Focused, Safe Upgrades Only**: Only patch and minor updates addressing verified security vulnerabilities will be applied during the 7-day window.
