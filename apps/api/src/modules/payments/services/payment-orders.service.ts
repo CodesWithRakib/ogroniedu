@@ -252,10 +252,15 @@ export class PaymentOrdersService {
       throw new NotFoundException(`Payment order ${orderId} not found`);
     }
 
+    const isLinkedGuardian =
+      order.booking?.studentUserId &&
+      (await this.guardianAccess.hasActiveLink(user.id, order.booking.studentUserId));
+
     if (
       user.id !== order.payerUserId &&
       user.id !== order.booking?.studentUserId &&
       user.id !== order.booking?.requesterUserId &&
+      !isLinkedGuardian &&
       !isAdminRole(user)
     ) {
       throw new ForbiddenException('Access denied to payment receipt');

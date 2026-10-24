@@ -54,13 +54,20 @@ export function mapAttendanceRecords(rows: AttendanceRecord[]): AttendanceRecord
 }
 
 export function mapAssignmentRecords(rows: AssignmentRecord[]): AssignmentItem[] {
-  return rows.map((row) => ({
-    ...row,
-    status: toAssignmentStatus(row.status),
-    submission: row.submission
-      ? { ...row.submission, status: toSubmissionStatus(row.submission.status) }
-      : null,
-  }));
+  return rows.map((row) => {
+    const rawSub =
+      row.submission ||
+      ((row as unknown as { submissions?: Array<Record<string, unknown>> }).submissions?.[0] as
+        | AssignmentRecord['submission']
+        | undefined);
+    return {
+      ...row,
+      status: toAssignmentStatus(row.status),
+      submission: rawSub
+        ? { ...rawSub, status: toSubmissionStatus(rawSub.status) }
+        : null,
+    };
+  });
 }
 
 export function mapProgressReports(rows: ProgressReportRecord[]): ProgressReportItem[] {

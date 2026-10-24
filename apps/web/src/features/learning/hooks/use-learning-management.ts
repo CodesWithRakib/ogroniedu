@@ -70,11 +70,12 @@ export function useLearningManagement({
   const dict = getDictionary(locale);
   const t = dict.learning as Record<string, string>;
 
-  const [attendanceList] = useState<AttendanceRecordItem[]>(initialAttendance);
+  const [attendanceList, setAttendanceList] = useState<AttendanceRecordItem[]>(initialAttendance);
   const [assignmentList, setAssignmentList] = useState<AssignmentItem[]>(initialAssignments);
   const [reportList, setReportList] = useState<ProgressReportItem[]>(initialReports);
   const [isPending, startTransition] = useTransition();
 
+  React.useEffect(() => setAttendanceList(initialAttendance), [initialAttendance]);
   React.useEffect(() => setAssignmentList(initialAssignments), [initialAssignments]);
   React.useEffect(() => setReportList(initialReports), [initialReports]);
 

@@ -1,8 +1,9 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import { Injectable, NotFoundException, ForbiddenException, Inject, Optional } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager } from 'typeorm';
 import { InvoiceEntity, PaymentOrderEntity } from '../entities';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
+import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 import { isAdminRole } from '../../../common/auth/role.utils';
 import { minorToBdtString, splitCommission } from '../../../common/money/money';
@@ -25,6 +26,9 @@ export class InvoicesService {
   constructor(
     @InjectRepository(InvoiceEntity)
     private readonly invoiceRepo: Repository<InvoiceEntity>,
+    @Optional()
+    @Inject(GuardianAccessService)
+    private readonly guardianAccess?: GuardianAccessService,
   ) {}
 
   async createForOrder(
@@ -74,16 +78,20 @@ export class InvoicesService {
     return manager.save(invoice);
   }
 
-  private assertCanRead(user: AuthenticatedUser, invoice: InvoiceEntity): void {
+  private async assertCanRead(user: AuthenticatedUser, invoice: InvoiceEntity): Promise<void> {
     if (isAdminRole(user)) return;
     if (user.id === invoice.payerUserId || user.id === invoice.studentUserId) return;
+    if (this.guardianAccess && invoice.studentUserId) {
+      const isLinked = await this.guardianAccess.hasActiveLink(user.id, invoice.studentUserId);
+      if (isLinked) return;
+    }
     throw new ForbiddenException('Access denied to this invoice');
   }
 
   async getInvoice(user: AuthenticatedUser, invoiceId: string): Promise<InvoiceEntity> {
     const invoice = await this.invoiceRepo.findOne({ where: { id: invoiceId } });
     if (!invoice) throw new NotFoundException('Invoice not found');
-    this.assertCanRead(user, invoice);
+    await this.assertCanRead(user, invoice);
     return invoice;
   }
 
@@ -93,7 +101,7 @@ export class InvoicesService {
   ): Promise<InvoiceEntity | null> {
     const invoice = await this.invoiceRepo.findOne({ where: { paymentOrderId: orderId } });
     if (!invoice) return null;
-    this.assertCanRead(user, invoice);
+    await this.assertCanRead(user, invoice);
     return invoice;
   }
 

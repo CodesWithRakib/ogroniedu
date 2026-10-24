@@ -92,7 +92,8 @@ describe('PaymentsController', () => {
     };
     const req = { rawBody: Buffer.from(JSON.stringify(body)) } as any;
 
-    const res = await controller.handleWebhook('bkash', {}, body, req, 'req-2');
+    const mockRes = { redirect: vi.fn() } as any;
+    const res = (await controller.handleWebhook('bkash', {}, body, req, mockRes, 'req-2')) as any;
 
     expect(res.success).toBe(true);
     expect(res.data.status).toBe('succeeded');

@@ -414,8 +414,8 @@ export function TutorProfileSettingsPage({
 
     const slots = selectedDays.map((weekday) => ({
       weekday,
-      startLocal: `${startTime}:00`,
-      endLocal: `${endTime}:00`,
+      startLocal: startTime.slice(0, 5),
+      endLocal: endTime.slice(0, 5),
     }));
 
     try {

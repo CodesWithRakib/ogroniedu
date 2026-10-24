@@ -303,7 +303,6 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             nameEn: formNameEn.trim(),
             nameBn: formNameBn.trim(),
             category: formExtra.trim() || undefined,
-            sortOrder: Number(formSortOrder),
             isActive: formIsActive,
           }).unwrap();
           setFeedback({
@@ -316,7 +315,6 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             nameEn: formNameEn.trim(),
             nameBn: formNameBn.trim(),
             category: formExtra.trim() || undefined,
-            sortOrder: Number(formSortOrder),
             isActive: formIsActive,
           }).unwrap();
           setFeedback({
