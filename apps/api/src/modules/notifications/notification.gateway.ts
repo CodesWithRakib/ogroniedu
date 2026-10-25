@@ -124,6 +124,10 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
         }
       }
 
+      if (!rawToken && typeof client.handshake.query?.token === 'string') {
+        rawToken = client.handshake.query.token.replace(/^Bearer\s+/i, '');
+      }
+
       if (rawToken && rawToken.includes('.')) {
         try {
           if (!this.jwtSecret) {
@@ -208,45 +212,52 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
   /**
    * Broadcast new message to:
    * 1. Booking-specific chat room (active chat thread participants)
-   * 2. Recipient's user room (inbox update + toast on any page)
-   * 3. Sender's user room (multi-tab/device inbox sync — like WhatsApp)
+   * 2. Every participant's user room (Student, Tutor, Requester, Sender, All Guardians)
+   * 3. Admin oversight room (platform compliance / monitoring)
    * Client-side dedup by message ID prevents double display.
    */
   broadcastChatMessage(
     bookingId: string,
     message: BookingMessageEntity,
-    recipientUserId: string,
+    recipientOrTargetIds: string | string[],
     guardianUserIds: string[] = [],
   ) {
     if (!this.server) return;
     const bookingRoom = `booking_chat:${bookingId}`;
-    const recipientRoom = `user:${recipientUserId}`;
-    const senderRoom = `user:${message.senderUserId}`;
+
+    // Collect all unique participant user rooms
+    const targetRoomSet = new Set<string>();
+
+    if (Array.isArray(recipientOrTargetIds)) {
+      for (const uid of recipientOrTargetIds) {
+        if (uid) targetRoomSet.add(`user:${uid}`);
+      }
+    } else if (typeof recipientOrTargetIds === 'string' && recipientOrTargetIds) {
+      targetRoomSet.add(`user:${recipientOrTargetIds}`);
+    }
+
+    if (message.senderUserId) {
+      targetRoomSet.add(`user:${message.senderUserId}`);
+    }
+
+    if (Array.isArray(guardianUserIds)) {
+      for (const gId of guardianUserIds) {
+        if (gId) targetRoomSet.add(`user:${gId}`);
+      }
+    }
 
     // 1. Emit to booking room for users with active chat thread open
     this.server.to(bookingRoom).emit('new_chat_message', message);
 
-    // 2. Emit to recipient's personal user room for inbox / toast updates
-    this.server.to(recipientRoom).emit('new_chat_message', message);
-
-    // 3. Emit to sender's personal user room for multi-tab inbox sync
-    if (senderRoom !== recipientRoom) {
-      this.server.to(senderRoom).emit('new_chat_message', message);
+    // 2. Emit to every participant user room for instant inbox / sidebar / multi-tab / device sync
+    for (const room of targetRoomSet) {
+      this.server.to(room).emit('new_chat_message', message);
     }
 
-    // 4. Emit directly to all linked guardian user rooms for real-time guardian inbox updates
-    if (Array.isArray(guardianUserIds) && guardianUserIds.length > 0) {
-      for (const gId of guardianUserIds) {
-        if (gId && gId !== message.senderUserId) {
-          this.server.to(`user:${gId}`).emit('new_chat_message', message);
-        }
-      }
-    }
-
-    // 5. Emit to admin oversight room for live platform monitoring
+    // 3. Emit to admin oversight room for live platform monitoring
     this.server.to('admin_oversight').emit('new_chat_message', message);
 
-    // 6. Emit safety alert to admin oversight room if message contains redacted content
+    // 4. Emit safety alert to admin oversight room if message contains redacted content
     if (message.isRedacted) {
       this.server.to('admin_oversight').emit('safety_flagged_message', {
         bookingId,
@@ -258,7 +269,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     }
 
     this.logger.log(
-      `Broadcast chat message #${message.id} to rooms: ${bookingRoom}, ${recipientRoom}, ${senderRoom}, admin_oversight, and ${guardianUserIds.length} guardian rooms`,
+      `Broadcast chat message #${message.id} to rooms: ${bookingRoom}, admin_oversight, and ${targetRoomSet.size} user rooms: [${Array.from(targetRoomSet).join(', ')}]`,
     );
   }
 
@@ -272,6 +283,7 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     readAt: Date,
     readerName?: string,
     senderUserId?: string,
+    participantUserIds: string[] = [],
   ) {
     if (!this.server) return;
     const bookingRoom = `booking_chat:${bookingId}`;
@@ -285,21 +297,25 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
       payload.readerName = readerName;
     }
 
+    const targetRoomSet = new Set<string>();
+    targetRoomSet.add(`user:${readerUserId}`);
+    if (senderUserId) targetRoomSet.add(`user:${senderUserId}`);
+    if (Array.isArray(participantUserIds)) {
+      for (const pId of participantUserIds) {
+        if (pId) targetRoomSet.add(`user:${pId}`);
+      }
+    }
+
     // 1. Emit to active booking room (anyone currently looking at this conversation)
     this.server.to(bookingRoom).emit('messages_read', payload);
 
-    // 2. Also emit directly to the sender's user room (ensures real-time double blue checkmark update across tabs)
-    if (senderUserId) {
-      this.server.to(`user:${senderUserId}`).emit('messages_read', payload);
+    // 2. Emit to all participant user rooms (clears unread count, updates checkmarks across all tabs/devices)
+    for (const room of targetRoomSet) {
+      this.server.to(room).emit('messages_read', payload);
     }
 
-    // 3. Emit directly to reader's user room (ensures multi-tab / inbox sidebar unread badges clear immediately)
-    this.server.to(`user:${readerUserId}`).emit('messages_read', payload);
-
     this.logger.log(
-      `Broadcast read receipt for message #${messageId} by ${readerUserId} to room ${bookingRoom}${
-        senderUserId ? ` and user:${senderUserId}` : ''
-      }`,
+      `Broadcast read receipt for message #${messageId} by ${readerUserId} to room ${bookingRoom} and ${targetRoomSet.size} user rooms`,
     );
   }
 

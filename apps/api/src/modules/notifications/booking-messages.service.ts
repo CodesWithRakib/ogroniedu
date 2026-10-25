@@ -60,8 +60,9 @@ function resolveBookingTutorUserId(booking: BookingEntity): string | undefined {
 function resolveParticipantDisplayName(user: AuthenticatedUser, fallback: string): string {
   const record = user as unknown as Record<string, unknown>;
   const displayName = record.displayName;
-  if (typeof displayName === 'string' && displayName.length > 0) return displayName;
-  if (typeof user.email === 'string' && user.email.length > 0) return user.email;
+  if (typeof displayName === 'string' && displayName.trim().length > 0 && !displayName.includes('@')) {
+    return displayName.trim();
+  }
   return fallback;
 }
 
@@ -99,10 +100,14 @@ export class BookingMessagesService {
     dto: SendBookingMessageDto,
     requestId?: string,
   ): Promise<BookingMessageEntity> {
-    // 0. Verify sender is not suspended or banned
+    // 0. Verify sender is not suspended or banned & resolve database profile
+    let senderUserRecord: UserEntity | null = null;
     if (this.userRepo) {
-      const sender = await this.userRepo.findOne({ where: { id: user.id } });
-      if (sender && (sender.status === 'suspended' || sender.status === 'banned')) {
+      senderUserRecord = await this.userRepo.findOne({
+        where: { id: user.id },
+        select: { id: true, displayName: true, avatarUrl: true, status: true, email: true },
+      });
+      if (senderUserRecord && (senderUserRecord.status === 'suspended' || senderUserRecord.status === 'banned')) {
         throw new ForbiddenException(
           'আপনার অ্যাকাউন্ট নীতি লঙ্ঘনের কারণে স্থগিত বা নিষিদ্ধ অবস্থায় রয়েছে। কোনো বার্তা পাঠানো সম্ভব নয়।',
         );
@@ -161,6 +166,19 @@ export class BookingMessagesService {
     const redactionReason = safetyResult.redactionReason;
 
     // 3. Persist Message
+    const resolvedSenderRole: 'student' | 'guardian' | 'tutor' | 'admin' =
+      isAdmin
+        ? 'admin'
+        : isTutor
+          ? 'tutor'
+          : isGuardian
+            ? 'guardian'
+            : 'student';
+
+    const senderDisplayName = isAdmin
+      ? 'অগ্রণী প্ল্যাটফর্ম মডারেটর'
+      : (senderUserRecord?.displayName || resolveParticipantDisplayName(user, 'User'));
+
     const message = this.messageRepo.create({
       bookingId: booking.id,
       senderUserId: user.id,
@@ -171,13 +189,22 @@ export class BookingMessagesService {
       attachmentAssetIds: dto.attachmentAssetIds || [],
       metadata: {
         ...(dto.metadata || {}),
+        senderRole: resolvedSenderRole,
+        senderName: senderDisplayName,
         ...(isAdmin
-          ? { isStaffIntervention: true, senderRole: 'admin', staffTitle: 'অগ্রণী সাপোর্ট ডেস্ক' }
+          ? { isStaffIntervention: true, staffTitle: 'অগ্রণী সাপোর্ট ডেস্ক' }
           : {}),
       },
     });
 
     const savedMessage = await this.messageRepo.save(message);
+
+    // Attach senderUser identity so live socket broadcasts have immediate user display info
+    savedMessage.senderUser = {
+      id: user.id,
+      displayName: senderDisplayName,
+      avatarUrl: senderUserRecord?.avatarUrl || ((user as unknown as Record<string, unknown>).avatarUrl as string | null | undefined),
+    } as UserEntity;
 
     // 4. Outbox Event (Transactional)
     const outbox = this.outboxRepo.create({
@@ -229,72 +256,48 @@ export class BookingMessagesService {
     }
 
     // 6. Find all active linked guardians of the student
-    const guardianIds = await this.guardianAccess.findActiveGuardianIds(booking.studentUserId);
+    const guardianIds = (await this.guardianAccess?.findActiveGuardianIds(booking.studentUserId)) || [];
 
-    // 7. Real-Time Socket.IO Broadcast to Active Room, Recipient, Sender, ALL Linked Guardians & Admin Oversight!
+    // 7. Collect ALL participant user IDs: Student, Tutor, Requester, Sender, All Guardians
+    const allParticipantIds = new Set<string>();
+    if (booking.studentUserId) allParticipantIds.add(booking.studentUserId);
+    if (tutorUserId) allParticipantIds.add(tutorUserId);
+    if (booking.requesterUserId) allParticipantIds.add(booking.requesterUserId);
+    if (user.id) allParticipantIds.add(user.id);
+    for (const gId of guardianIds) {
+      if (gId) allParticipantIds.add(gId);
+    }
+
+    // 8. Real-Time Socket.IO Broadcast to Active Room, Admin Oversight, and EVERY Participant's User Room
     this.notificationGateway?.broadcastChatMessage(
       booking.id,
       savedMessage,
-      recipientUserId,
+      Array.from(allParticipantIds),
       guardianIds,
     );
 
-    // 8. Resolve Recipient Role for notification registry
-    const recipientRole: 'student' | 'tutor' | 'guardian' =
-      recipientUserId === tutorUserId
-        ? 'tutor'
-        : recipientUserId === booking.studentUserId
-          ? 'student'
-          : 'guardian';
+    // 9. Asynchronous Notification to all other participants
+    for (const targetUid of allParticipantIds) {
+      if (targetUid !== user.id) {
+        const targetRole: 'student' | 'tutor' | 'guardian' =
+          targetUid === tutorUserId
+            ? 'tutor'
+            : targetUid === booking.studentUserId
+              ? 'student'
+              : 'guardian';
 
-    // Asynchronous Notification to Recipient
-    await this.notificationService
-      .dispatch({
-        userId: recipientUserId,
-        recipientRole,
-        eventType: 'chat.message',
-        payload: {
-          bookingId: booking.id,
-          senderName: resolveParticipantDisplayName(user, 'Participant'),
-          preview: sanitizedContent.slice(0, 50),
-        },
-      })
-      .catch((err) => this.logger.warn(`Failed to dispatch message notification: ${err}`));
-
-    // If sent by admin, also notify tutor directly
-    if (isAdmin && tutorUserId && recipientUserId !== tutorUserId) {
-      await this.notificationService
-        .dispatch({
-          userId: tutorUserId,
-          recipientRole: 'tutor',
-          eventType: 'chat.message',
-          payload: {
-            bookingId: booking.id,
-            senderName: 'অগ্রণী প্ল্যাটফর্ম মডারেটর',
-            preview: sanitizedContent.slice(0, 50),
-          },
-        })
-        .catch((err) => this.logger.warn(`Failed to dispatch tutor admin notification: ${err}`));
-    }
-
-    // Notify linked guardians if student received message from tutor or vice-versa
-    for (const guardianId of guardianIds) {
-      if (guardianId !== user.id && guardianId !== recipientUserId) {
-        // Real-time toast/inbox notification to guardian
-        await this.notificationService
+        this.notificationService
           .dispatch({
-            userId: guardianId,
-            recipientRole: 'guardian',
+            userId: targetUid,
+            recipientRole: targetRole,
             eventType: 'chat.message',
             payload: {
               bookingId: booking.id,
-              senderName: resolveParticipantDisplayName(user, 'Participant'),
+              senderName: senderDisplayName,
               preview: sanitizedContent.slice(0, 50),
             },
           })
-          .catch((err) =>
-            this.logger.warn(`Failed to dispatch guardian message notification: ${err}`),
-          );
+          .catch((err) => this.logger.warn(`Failed to dispatch message notification: ${err}`));
       }
     }
 
@@ -510,8 +513,17 @@ export class BookingMessagesService {
         .andWhere('read_at IS NULL')
         .execute();
 
-      // Broadcast read receipts for each message with reader's name, ID, and senderUserId
-      // to active booking room AND sender's user room
+      // Broadcast read receipts to active booking room, reader's room, sender's room, and all participant user rooms
+      const guardianIds = (await this.guardianAccess?.findActiveGuardianIds(booking.studentUserId)) || [];
+      const allParticipantIds = new Set<string>();
+      if (booking.studentUserId) allParticipantIds.add(booking.studentUserId);
+      if (tutorUserId) allParticipantIds.add(tutorUserId);
+      if (booking.requesterUserId) allParticipantIds.add(booking.requesterUserId);
+      if (user.id) allParticipantIds.add(user.id);
+      for (const gId of guardianIds) {
+        if (gId) allParticipantIds.add(gId);
+      }
+
       for (const msg of unread) {
         this.notificationGateway?.broadcastReadReceipt(
           bookingId,
@@ -520,6 +532,7 @@ export class BookingMessagesService {
           now,
           readerName,
           msg.senderUserId,
+          Array.from(allParticipantIds),
         );
       }
 

@@ -243,25 +243,49 @@ export function BookingChatView({
                     isMine ? 'ml-auto' : 'mr-auto'
                   }`}
                 >
-                  <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground mb-1 px-1">
-                    <span className="font-medium flex items-center gap-1">
-                      {isGuardian && <span className="text-warning text-[10px]">🛡️</span>}
-                      {msg.senderName}
+                  <div className={`flex items-center gap-1.5 text-[11px] mb-1 px-1 ${isMine ? 'justify-end' : 'justify-start'}`}>
+                    <span className="font-semibold text-slate-800 flex items-center gap-1.5">
+                      <span>{msg.senderName}</span>
+                      {msg.senderRole === 'admin' && (
+                        <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-purple-100 text-purple-900 font-bold border border-purple-300">
+                          {locale === 'bn' ? 'মডারেটর' : 'Moderator'}
+                        </span>
+                      )}
+                      {msg.senderRole === 'guardian' && (
+                        <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-amber-100 text-amber-950 font-bold border border-amber-300 flex items-center gap-0.5">
+                          <span>🛡️</span>
+                          <span>{locale === 'bn' ? 'অভিভাবক' : 'Guardian'}</span>
+                        </span>
+                      )}
+                      {msg.senderRole === 'tutor' && (
+                        <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-blue-100 text-blue-950 font-bold border border-blue-300 flex items-center gap-0.5">
+                          <span>🎓</span>
+                          <span>{locale === 'bn' ? 'শিক্ষক' : 'Tutor'}</span>
+                        </span>
+                      )}
+                      {msg.senderRole === 'student' && (
+                        <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-emerald-100 text-emerald-950 font-bold border border-emerald-300 flex items-center gap-0.5">
+                          <span>📚</span>
+                          <span>{locale === 'bn' ? 'শিক্ষার্থী' : 'Student'}</span>
+                        </span>
+                      )}
                     </span>
-                    <span>•</span>
-                    <span>{formatTime(msg.createdAt, locale)}</span>
+                    <span className="text-slate-400">•</span>
+                    <span className="text-slate-500 font-medium text-[10px]">{formatTime(msg.createdAt, locale)}</span>
                   </div>
 
                   <div
-                    className={`rounded-2xl px-4 py-2.5 text-sm space-y-2 ${
+                    className={`rounded-2xl px-4 py-2.5 text-sm space-y-2 shadow-2xs ${
                       isMine
-                        ? 'bg-primary text-white rounded-tr-none'
-                        : isGuardian
-                          ? 'bg-warning/10 border border-warning/30 text-foreground rounded-tl-none'
-                          : 'bg-muted text-foreground rounded-tl-none'
+                        ? 'bg-blue-600 text-white rounded-tr-none'
+                        : msg.senderRole === 'admin'
+                          ? 'bg-purple-50 border border-purple-200 text-purple-950 rounded-tl-none'
+                          : isGuardian
+                            ? 'bg-amber-50/80 border border-amber-200 text-amber-950 rounded-tl-none'
+                            : 'bg-slate-100 border border-slate-200/80 text-slate-900 rounded-tl-none'
                     }`}
                   >
-                    <p className="leading-relaxed whitespace-pre-wrap">{msg.content}</p>
+                    <p className="leading-relaxed whitespace-pre-wrap font-normal">{msg.content}</p>
 
                     {/* Attachments rendering */}
                     {msg.attachmentAssetIds && msg.attachmentAssetIds.length > 0 && (
@@ -293,7 +317,7 @@ export function BookingChatView({
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground mt-0.5 px-1">
+                  <div className="flex items-center gap-1.5 text-[10px] text-slate-500 mt-0.5 px-1">
                     {isMine &&
                       (msg.readAt ? (
                         <TooltipProvider delayDuration={150}>
@@ -304,7 +328,7 @@ export function BookingChatView({
                                 className="flex items-center gap-1 p-0.5 rounded-full hover:bg-blue-500/10 transition-colors cursor-help focus:outline-none"
                                 aria-label="Message read receipt details"
                               >
-                                <CheckCheck className="w-3.5 h-3.5 text-blue-500 dark:text-blue-400 stroke-[2.5]" />
+                                <CheckCheck className="w-3.5 h-3.5 text-blue-600 stroke-[2.5]" />
                               </button>
                             </TooltipTrigger>
                             <TooltipContent

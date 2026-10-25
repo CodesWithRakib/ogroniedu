@@ -120,12 +120,12 @@ export function NotificationProvider({
 
     const socketInstance: Socket = io(`${apiUrl}/notifications`, {
       auth: { token: `Bearer ${token}` },
-      transports: ['polling', 'websocket'],
+      transports: ['websocket', 'polling'],
       withCredentials: true,
       reconnection: true,
-      reconnectionAttempts: 5,
-      reconnectionDelay: 2000,
-      reconnectionDelayMax: 10000,
+      reconnectionAttempts: Infinity,
+      reconnectionDelay: 1000,
+      reconnectionDelayMax: 5000,
     });
 
     socketInstance.on('connect', () => {
@@ -136,9 +136,9 @@ export function NotificationProvider({
     socketInstance.on('connect_error', () => {
       setIsConnected(false);
     });
-    socketInstance.on('auth_error', () => {
+    socketInstance.on('auth_error', (err) => {
+      console.warn('Socket auth warning:', err);
       setIsConnected(false);
-      socketInstance.disconnect();
     });
 
     socketInstance.on('notification', (item: NotificationItemDto) => {

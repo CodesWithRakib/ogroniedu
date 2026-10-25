@@ -63,8 +63,9 @@ function deduplicateByPartner(
   for (const item of items) {
     const partnerId = item.partnerUser.id;
     const existing = seen.get(partnerId);
+    const isItemSelected = selectedBookingId && item.bookingId === selectedBookingId;
     if (!existing) {
-      seen.set(partnerId, item);
+      seen.set(partnerId, isItemSelected ? { ...item, unreadCount: 0 } : item);
     } else {
       const existingTime = new Date(existing.updatedAt).getTime();
       const currentTime = new Date(item.updatedAt).getTime();
@@ -401,20 +402,20 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                           <span
                             className={`text-xs truncate ${
                               hasUnread
-                                ? 'font-bold text-foreground'
-                                : 'font-medium text-foreground'
+                                ? 'font-bold text-slate-900'
+                                : 'font-semibold text-slate-800'
                             }`}
                           >
                             {c.partnerUser.displayName}
                           </span>
-                          <span className="text-[10px] text-muted-foreground shrink-0">
+                          <span className="text-[10px] text-slate-500 shrink-0">
                             {c.lastMessage?.createdAt
                               ? relativeTime(c.lastMessage.createdAt, locale)
                               : ''}
                           </span>
                         </div>
 
-                        <p className="text-[11px] font-medium text-primary/70 truncate mb-0.5">
+                        <p className="text-[11px] font-medium text-blue-700 truncate mb-0.5">
                           {c.subjectName}
                           {c.educationLevelName && ` · ${c.educationLevelName}`}
                         </p>
@@ -423,8 +424,8 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                           <p
                             className={`text-[11px] truncate max-w-[190px] ${
                               hasUnread
-                                ? 'text-foreground font-semibold'
-                                : 'text-muted-foreground'
+                                ? 'text-slate-950 font-semibold'
+                                : 'text-slate-600 font-normal'
                             }`}
                           >
                             {c.lastMessage ? (
@@ -498,12 +499,12 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <p className="text-xs sm:text-sm font-bold text-foreground truncate">
+                      <p className="text-xs sm:text-sm font-bold text-slate-900 truncate">
                         {activeConversation.partnerUser.displayName}
                       </p>
                       <Badge
                         variant="outline"
-                        className="text-[10px] py-0 px-1.5 border-primary/30 text-primary shrink-0 hidden sm:inline-flex"
+                        className="text-[10px] py-0 px-1.5 border-blue-300 text-blue-700 bg-blue-50/50 font-semibold shrink-0 hidden sm:inline-flex"
                       >
                         {activeConversation.partnerUser.role === 'tutor'
                           ? locale === 'bn'
@@ -518,11 +519,11 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                               : 'Student'}
                       </Badge>
                     </div>
-                    <p className="text-[11px] text-muted-foreground truncate">
+                    <p className="text-[11px] text-slate-600 font-medium truncate">
                       {activeConversation.subjectName}
                       {activeConversation.educationLevelName &&
                         ` · ${activeConversation.educationLevelName}`}
-                      <span className="opacity-60 ml-1.5">
+                      <span className="opacity-70 ml-1.5 text-slate-500">
                         • #{activeConversation.bookingId.slice(0, 8)}
                       </span>
                     </p>
@@ -532,7 +533,7 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                       size="sm"
                       variant="outline"
                       onClick={() => setIsSafetyModalOpen(true)}
-                      className="border-red-500/40 text-red-600 hover:bg-red-500/10 hover:text-red-700 dark:hover:bg-red-950/30 text-xs font-semibold h-7 px-2.5 rounded-lg flex items-center gap-1.5 shadow-2xs shrink-0 cursor-pointer"
+                      className="border-red-500/40 text-red-600 hover:bg-red-500/10 hover:text-red-700 text-xs font-semibold h-7 px-2.5 rounded-lg flex items-center gap-1.5 shadow-2xs shrink-0 cursor-pointer"
                     >
                       <ShieldAlert className="w-3.5 h-3.5 text-red-600" />
                       <span>{locale === 'bn' ? 'সেফগার্ড অ্যাকশন' : 'Safety Action'}</span>
@@ -540,9 +541,9 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                   )}
                   <Badge
                     variant="outline"
-                    className="text-[10px] border-emerald-500/40 text-emerald-600 dark:text-emerald-400 shrink-0 hidden lg:flex items-center gap-1 px-2 py-0.5"
+                    className="text-[10px] border-emerald-500/40 text-emerald-800 bg-emerald-50/60 font-medium shrink-0 hidden lg:flex items-center gap-1 px-2 py-0.5"
                   >
-                    <ShieldCheck className="w-3 h-3 text-emerald-500" />
+                    <ShieldCheck className="w-3 h-3 text-emerald-600" />
                     <span>ABAC Audited</span>
                   </Badge>
                 </div>
@@ -565,6 +566,10 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                     }
                     peerRole={activeConversation.partnerUser.role}
                     peerName={activeConversation.partnerUser.displayName}
+                    studentName={activeConversation.studentUser?.displayName}
+                    tutorName={activeConversation.tutorUser?.displayName}
+                    studentUserId={activeConversation.studentUser?.id}
+                    tutorUserId={activeConversation.tutorUser?.id}
                     ownName={
                       isAdminView
                         ? locale === 'bn'

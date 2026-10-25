@@ -72,8 +72,13 @@ export function useBookingChat(bookingId: string, locale: Locale) {
   React.useEffect(() => {
     if (!socket || !bookingId) return;
 
-    // Join the booking-specific chat room
-    socket.emit('join_booking_chat', { bookingId });
+    // Join the booking-specific chat room (and rejoin automatically on reconnect)
+    const joinRoom = () => {
+      socket.emit('join_booking_chat', { bookingId });
+    };
+
+    joinRoom();
+    socket.on('connect', joinRoom);
 
     // ── New message handler (dedup by ID) ──
     const handleNewMessage = (msg: BookingMessage) => {
@@ -170,6 +175,7 @@ export function useBookingChat(bookingId: string, locale: Locale) {
     socket.on('messages_read', handleMessagesRead);
 
     return () => {
+      socket.off('connect', joinRoom);
       socket.emit('leave_booking_chat', { bookingId });
       socket.off('new_chat_message', handleNewMessage);
       socket.off('user_typing', handleUserTyping);

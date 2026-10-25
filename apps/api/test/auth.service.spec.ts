@@ -71,7 +71,9 @@ describe('AuthService Unit Tests', () => {
     });
 
     it('NEGATIVE TEST: should reject registration if email already exists', async () => {
-      mockDataSource.query.mockResolvedValueOnce([{ id: 'existing-id' }]); // duplicate email found
+      mockDataSource.query
+        .mockResolvedValueOnce([]) // banned identities check: not banned
+        .mockResolvedValueOnce([{ id: 'existing-id' }]); // duplicate email found
 
       await expect(
         authService.register({
@@ -81,6 +83,19 @@ describe('AuthService Unit Tests', () => {
           role: 'student',
         }),
       ).rejects.toThrow('A user with this email address already exists.');
+    });
+
+    it('NEGATIVE TEST: should reject registration if email is blacklisted', async () => {
+      mockDataSource.query.mockResolvedValueOnce([{ reason: 'Violations' }]); // blacklisted match
+
+      await expect(
+        authService.register({
+          displayName: 'Banned User',
+          email: 'banned@test.com',
+          password: 'Password123!',
+          role: 'student',
+        }),
+      ).rejects.toThrow('স্থায়ীভাবে নিষিদ্ধ');
     });
   });
 
