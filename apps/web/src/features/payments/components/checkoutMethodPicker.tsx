@@ -1,6 +1,7 @@
 'use client';
 
-import { CreditCard, Lock } from 'lucide-react';
+import React from 'react';
+import { CreditCard, Lock, ShieldCheck, Check } from 'lucide-react';
 import {
   Button,
   Card,
@@ -10,7 +11,6 @@ import {
   CardFooter,
   Alert,
   AlertDescription,
-  Badge,
 } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import {
@@ -30,7 +30,7 @@ export interface CheckoutMethodPickerProps {
   payDisabledReason?: string | null;
 }
 
-/** Gateway selection (bKash / Nagad / SSLCommerz) plus pay action. */
+/** Gateway selection (SSLCommerz / bKash / Nagad) plus pay action. */
 export function CheckoutMethodPicker({
   order,
   locale,
@@ -43,128 +43,191 @@ export function CheckoutMethodPicker({
 }: CheckoutMethodPickerProps) {
   const dict = getDictionary(locale);
   const p = dict.payments;
+  const isBn = locale === 'bn';
   const amountBdt = orderAmountBdt(order);
 
   return (
-    <Card className="border border-border">
-      <CardHeader className="pb-3">
-        <CardTitle className="text-lg font-semibold flex items-center gap-2">
-          <CreditCard className="w-5 h-5 text-interactive" />
-          {p.selectGateway}
-        </CardTitle>
+    <Card className="border border-slate-200 bg-white rounded-3xl shadow-sm overflow-hidden text-slate-900">
+      <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/60">
+        <div className="flex items-center justify-between">
+          <CardTitle className="text-base sm:text-lg font-black flex items-center gap-2 text-slate-900">
+            <CreditCard className="w-5 h-5 text-blue-600" />
+            <span>{p.selectGateway}</span>
+          </CardTitle>
+          <span className="text-xs font-bold text-slate-600 flex items-center gap-1">
+            <Lock className="w-3.5 h-3.5 text-emerald-600" />
+            <span>{isBn ? 'এনক্রিপ্টেড ও সুরক্ষিত' : 'Encrypted & Secure'}</span>
+          </span>
+        </div>
       </CardHeader>
-      <CardContent className="space-y-3">
+
+      <CardContent className="pt-5 space-y-3">
         {/* SSLCOMMERZ (Recommended) */}
         <div
           onClick={() => onSelectGateway('sslcommerz')}
-          className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
+          className={`cursor-pointer rounded-2xl border-2 p-4 transition-all flex items-center justify-between ${
             selectedGateway === 'sslcommerz'
-              ? 'border-info/40 bg-interactive/10 ring-2 ring-info/30'
-              : 'border-border hover:border-border '
+              ? 'border-blue-600 bg-blue-50/60 ring-2 ring-blue-500/20 shadow-xs'
+              : 'border-slate-200 bg-white hover:border-slate-300'
           }`}
           data-testid="gateway-picker-sslcommerz"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-gradient-to-br from-interactive to-interactive-accent text-interactive-foreground font-black flex items-center justify-center text-[10px] tracking-tight">
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-black flex items-center justify-center text-xs tracking-tight shadow-xs">
               SSL
             </div>
             <div>
-              <div className="flex items-center gap-2">
-                <span className="font-semibold text-foreground">{p.sslTitle}</span>
-                <Badge variant="primary" className="text-[10px] font-bold">
-                  {locale === 'bn' ? 'সুপারিশকৃত' : 'Recommended'}
-                </Badge>
+              <div className="flex items-center gap-2 flex-wrap">
+                <span className="font-extrabold text-slate-900 text-sm">{p.sslTitle}</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-900 border border-blue-200">
+                  {isBn ? 'সর্বাধিক জনপ্রিয় ও সুপারিশকৃত' : 'Recommended & Most Popular'}
+                </span>
               </div>
-              <div className="text-xs text-muted-foreground mt-0.5">{p.sslDesc}</div>
+              <div className="text-xs text-slate-600 font-medium mt-1">
+                {isBn
+                  ? 'বিকাশ, নগদ, রকেট, ডেবিট/ক্রেডিট কার্ড ও ইন্টারনেট ব্যাংকিং সমর্থিত'
+                  : 'Instant pay via bKash, Nagad, Rocket, Visa, Mastercard & Internet Banking'}
+              </div>
             </div>
           </div>
-          <input
-            type="radio"
-            name="gateway"
-            checked={selectedGateway === 'sslcommerz'}
-            onChange={() => onSelectGateway('sslcommerz')}
-            className="w-4 h-4 text-info-soft-foreground"
-          />
+          <div className="shrink-0 pl-2">
+            <div
+              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                selectedGateway === 'sslcommerz'
+                  ? 'border-blue-600 bg-blue-600 text-white'
+                  : 'border-slate-300 bg-white'
+              }`}
+            >
+              {selectedGateway === 'sslcommerz' && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+            </div>
+          </div>
         </div>
 
         {/* bKash */}
         <div
           onClick={() => onSelectGateway('bkash')}
-          className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
+          className={`cursor-pointer rounded-2xl border-2 p-4 transition-all flex items-center justify-between ${
             selectedGateway === 'bkash'
-              ? 'border-pink-500 bg-pink-500/5 ring-2 ring-pink-500/30'
-              : 'border-border hover:border-border'
+              ? 'border-rose-600 bg-rose-50/60 ring-2 ring-rose-500/20 shadow-xs'
+              : 'border-slate-200 bg-white hover:border-slate-300'
           }`}
           data-testid="gateway-picker-bkash"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-pink-600 text-white font-bold flex items-center justify-center text-sm">
-              বিকাশ
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-pink-600 text-white font-black flex items-center justify-center text-xs tracking-tight shadow-xs">
+              bKash
             </div>
             <div>
-              <div className="font-semibold text-foreground">{p.bkashTitle}</div>
-              <div className="text-xs text-muted-foreground">{p.bkashDesc}</div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-slate-900 text-sm">{p.bkashTitle}</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-pink-100 text-pink-900 border border-pink-200">
+                  MFS
+                </span>
+              </div>
+              <div className="text-xs text-slate-600 font-medium mt-1">
+                {isBn
+                  ? 'সরাসরি বিকাশ গেটওয়ে চেকআউট'
+                  : 'Direct bKash payment gateway checkout'}
+              </div>
             </div>
           </div>
-          <input
-            type="radio"
-            name="gateway"
-            checked={selectedGateway === 'bkash'}
-            onChange={() => onSelectGateway('bkash')}
-            className="w-4 h-4 text-pink-600"
-          />
+          <div className="shrink-0 pl-2">
+            <div
+              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                selectedGateway === 'bkash'
+                  ? 'border-pink-600 bg-pink-600 text-white'
+                  : 'border-slate-300 bg-white'
+              }`}
+            >
+              {selectedGateway === 'bkash' && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+            </div>
+          </div>
         </div>
 
         {/* Nagad */}
         <div
           onClick={() => onSelectGateway('nagad')}
-          className={`cursor-pointer rounded-xl border p-4 transition-all flex items-center justify-between ${
+          className={`cursor-pointer rounded-2xl border-2 p-4 transition-all flex items-center justify-between ${
             selectedGateway === 'nagad'
-              ? 'border-warning/40 bg-warning/5 ring-2 ring-warning/30'
-              : 'border-border hover:border-border'
+              ? 'border-amber-600 bg-amber-50/60 ring-2 ring-amber-500/20 shadow-xs'
+              : 'border-slate-200 bg-white hover:border-slate-300'
           }`}
           data-testid="gateway-picker-nagad"
         >
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-lg bg-warning text-white font-bold flex items-center justify-center text-sm">
-              নগদ
+          <div className="flex items-center gap-3.5">
+            <div className="w-11 h-11 rounded-xl bg-amber-600 text-white font-black flex items-center justify-center text-xs tracking-tight shadow-xs">
+              Nagad
             </div>
             <div>
-              <div className="font-semibold text-foreground">{p.nagadTitle}</div>
-              <div className="text-xs text-muted-foreground">{p.nagadDesc}</div>
+              <div className="flex items-center gap-2">
+                <span className="font-extrabold text-slate-900 text-sm">{p.nagadTitle}</span>
+                <span className="px-2 py-0.5 rounded-full text-[10px] font-bold bg-amber-100 text-amber-900 border border-amber-200">
+                  MFS
+                </span>
+              </div>
+              <div className="text-xs text-slate-600 font-medium mt-1">
+                {isBn
+                  ? 'ডাক বিভাগের ডিজিটাল লেনদেন সেবা নগদ'
+                  : 'Bangladesh Post Office Digital Financial Service Nagad'}
+              </div>
             </div>
           </div>
-          <input
-            type="radio"
-            name="gateway"
-            checked={selectedGateway === 'nagad'}
-            onChange={() => onSelectGateway('nagad')}
-            className="w-4 h-4 text-warning-soft-foreground"
-          />
+          <div className="shrink-0 pl-2">
+            <div
+              className={`w-6 h-6 rounded-full border-2 flex items-center justify-center transition-colors ${
+                selectedGateway === 'nagad'
+                  ? 'border-amber-600 bg-amber-600 text-white'
+                  : 'border-slate-300 bg-white'
+              }`}
+            >
+              {selectedGateway === 'nagad' && <Check className="w-3.5 h-3.5 stroke-[3]" />}
+            </div>
+          </div>
         </div>
-      </CardContent>
-      <CardFooter className="pt-2 flex-col items-stretch">
+
+        {/* Errors & Alerts */}
         {payError && (
-          <Alert variant="destructive" className="mb-3 w-full" data-testid="payment-error">
-            <AlertDescription role="alert">{payError}</AlertDescription>
+          <Alert variant="destructive" className="rounded-2xl border-rose-200 bg-rose-50 text-rose-900">
+            <AlertDescription role="alert" className="font-semibold text-xs">
+              {payError}
+            </AlertDescription>
           </Alert>
         )}
+
+        {payDisabledReason && (
+          <Alert className="rounded-2xl border-amber-200 bg-amber-50 text-amber-900">
+            <AlertDescription className="text-xs font-semibold">
+              {payDisabledReason}
+            </AlertDescription>
+          </Alert>
+        )}
+      </CardContent>
+
+      <CardFooter className="pt-2 pb-5 flex flex-col sm:flex-row items-center justify-between gap-4 border-t border-slate-100 bg-slate-50/50">
+        <div className="text-xs font-semibold text-slate-600 flex items-center gap-1.5 self-start sm:self-auto">
+          <ShieldCheck className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>
+            {isBn
+              ? 'নিরাপদ এসক্রো ডিপোজিট: টিউশন সন্তোষজনক না হলে শতভাগ ফেরত'
+              : 'Escrow Guarantee: 100% refund if session is not conducted'}
+          </span>
+        </div>
+
         <Button
+          type="button"
           onClick={onPay}
-          disabled={isProcessing || Boolean(payDisabledReason) || order.status !== 'pending'}
-          className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold py-3 text-base flex items-center justify-center gap-2 shadow-xs shadow-blue-500/25"
-          data-testid="pay-now-btn"
+          disabled={isProcessing || !!payDisabledReason}
+          isLoading={isProcessing}
+          data-testid="pay-submit-btn"
+          className="w-full sm:w-auto bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-extrabold text-sm h-11 px-8 rounded-2xl shadow-md shadow-blue-500/20 active:scale-95 transition-all"
         >
-          {isProcessing ? (
-            <span>{dict.common.loading}</span>
-          ) : payDisabledReason ? (
-            <span className="text-sm">{payDisabledReason}</span>
-          ) : (
-            <>
-              <Lock className="w-4 h-4" />
-              {p.payNow} (৳ {formatLocalizedNumber(amountBdt, locale)})
-            </>
-          )}
+          {isProcessing
+            ? isBn
+              ? 'পেমেন্ট প্রক্রিয়াধীন...'
+              : 'Processing...'
+            : isBn
+              ? `৳ ${formatLocalizedNumber(amountBdt, locale)} পরিশোধ করুন`
+              : `Pay ৳ ${formatLocalizedNumber(amountBdt, locale)} Now`}
         </Button>
       </CardFooter>
     </Card>

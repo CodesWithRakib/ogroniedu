@@ -179,7 +179,7 @@ export class PaymentsController {
   @UseGuards(AuthGuard)
   async getInvoice(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('invoiceId', ParseUUIDPipe) invoiceId: string,
+    @Param('invoiceId') invoiceId: string,
   ) {
     const invoice = await this.invoicesService.getInvoice(user, invoiceId);
     return { success: true, data: invoice };
@@ -191,7 +191,7 @@ export class PaymentsController {
   @Header('Content-Type', 'text/html; charset=utf-8')
   async printInvoice(
     @CurrentUser() user: AuthenticatedUser,
-    @Param('invoiceId', ParseUUIDPipe) invoiceId: string,
+    @Param('invoiceId') invoiceId: string,
     @Query('locale') locale?: string,
   ) {
     return this.invoicesService.renderInvoiceHtml(user, invoiceId, locale === 'bn' ? 'bn' : 'en');

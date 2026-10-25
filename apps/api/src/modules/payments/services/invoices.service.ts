@@ -88,8 +88,12 @@ export class InvoicesService {
     throw new ForbiddenException('Access denied to this invoice');
   }
 
-  async getInvoice(user: AuthenticatedUser, invoiceId: string): Promise<InvoiceEntity> {
-    const invoice = await this.invoiceRepo.findOne({ where: { id: invoiceId } });
+  async getInvoice(user: AuthenticatedUser, invoiceIdOrNumber: string): Promise<InvoiceEntity> {
+    const isUuid =
+      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(invoiceIdOrNumber);
+    const invoice = await this.invoiceRepo.findOne({
+      where: isUuid ? { id: invoiceIdOrNumber } : { invoiceNumber: invoiceIdOrNumber },
+    });
     if (!invoice) throw new NotFoundException('Invoice not found');
     await this.assertCanRead(user, invoice);
     return invoice;
