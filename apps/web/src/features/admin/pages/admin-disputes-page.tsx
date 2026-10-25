@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import { useSearchParams } from 'next/navigation';
 import { useTranslations } from 'next-intl';
 import { CreditCard, LifeBuoy, CheckCircle2, ArrowUpDown, Scale, ShieldAlert } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
@@ -13,12 +14,31 @@ import { AdminSupportTab } from '../components/tabs/adminSupportTab';
 import { AdminDisputesTab } from '../components/tabs/adminDisputesTab';
 import { AdminSafetyTab } from '../components/tabs/adminSafetyTab';
 
-export function AdminDisputesPage({ locale }: { locale: Locale }) {
+export function AdminDisputesPage({
+  locale,
+  initialSub,
+}: {
+  locale: Locale;
+  initialSub?: 'disputes' | 'safety' | 'reconciliation' | 'support';
+}) {
   const t = useTranslations('admin');
+  const searchParams = useSearchParams();
+  const subParam = searchParams?.get('sub') || searchParams?.get('tab');
+  const resolvedSub =
+    subParam === 'safety'
+      ? 'safety'
+      : subParam === 'reconciliation'
+        ? 'reconciliation'
+        : subParam === 'support'
+          ? 'support'
+          : subParam === 'disputes'
+            ? 'disputes'
+            : initialSub || 'disputes';
+
   const admin = useAdminDashboard(locale);
   const [subSection, setSubSection] = React.useState<
     'disputes' | 'safety' | 'reconciliation' | 'support'
-  >('disputes');
+  >(resolvedSub);
 
   const actions = useAdminActions({
     initialReconciliation: admin.reconciliation,

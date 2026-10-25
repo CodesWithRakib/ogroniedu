@@ -49,6 +49,7 @@ export const ROUTE_POLICIES: RoutePolicy[] = [
   { prefix: '/dashboard/student', allow: ['student'], requiresOnboarding: true },
   { prefix: '/dashboard', allow: ALL_AUTHENTICATED_ROLES, requiresOnboarding: true },
   { prefix: '/saved-tutors', allow: ['student', 'guardian'], requiresOnboarding: true },
+  { prefix: '/safety-reports', allow: ALL_AUTHENTICATED_ROLES, requiresOnboarding: true },
   { prefix: '/bookings', allow: ['student', 'guardian', 'tutor'], requiresOnboarding: true },
   { prefix: '/requests', allow: ['student', 'guardian', 'tutor'], requiresOnboarding: true },
   {

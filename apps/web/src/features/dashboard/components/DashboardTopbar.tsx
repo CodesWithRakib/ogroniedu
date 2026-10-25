@@ -2,12 +2,14 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import { Menu, Search, Globe, ShieldAlert } from 'lucide-react';
 import type { Locale } from '@/lib/i18n';
 import { NotificationBell } from '@/components/notifications/NotificationBell';
 import { UserNavDropdown } from './UserNavDropdown';
 import { EmergencySosModal } from '@/features/trust';
 import { Input } from '@/components/ui/Input';
+import { withLocale } from '@/lib/auth';
 import type { AuthUser, UserRole } from '@/store/slices/auth-slice';
 
 export interface DashboardTopbarProps {
@@ -35,6 +37,7 @@ export function DashboardTopbar({
   onLogout,
 }: DashboardTopbarProps) {
   const [isSosOpen, setIsSosOpen] = useState(false);
+  const router = useRouter();
 
   return (
     <>
@@ -81,12 +84,12 @@ export function DashboardTopbar({
           <button
             type="button"
             onClick={() => setIsSosOpen(true)}
-            className="flex items-center justify-center gap-1 min-h-[40px] px-2.5 sm:px-3 py-1.5 rounded-full border border-destructive/30 bg-destructive-soft hover:bg-destructive/15 text-xs font-bold text-destructive transition-all cursor-pointer hover:scale-105"
+            className="flex items-center justify-center gap-1.5 min-h-[40px] px-3 py-1.5 rounded-full border border-rose-200 bg-rose-50 hover:bg-rose-100 text-xs font-bold text-rose-700 transition-all cursor-pointer hover:scale-105 shadow-2xs"
             title={isBn ? 'জরুরি এসওএস ও শিশু সুরক্ষা' : 'Emergency SOS & Safeguarding'}
             aria-label={isBn ? 'জরুরি এসওএস ও শিশু সুরক্ষা' : 'Emergency SOS & Safeguarding'}
             data-testid="sos-emergency-trigger-btn"
           >
-            <ShieldAlert className="h-3.5 w-3.5 text-destructive animate-pulse" />
+            <ShieldAlert className="h-3.5 w-3.5 text-rose-600 animate-pulse" />
             <span className="hidden xs:inline">{isBn ? 'এসওএস' : 'SOS'}</span>
           </button>
 
@@ -110,7 +113,16 @@ export function DashboardTopbar({
       </header>
 
       {/* Emergency SOS Hotline Modal */}
-      <EmergencySosModal isOpen={isSosOpen} onClose={() => setIsSosOpen(false)} locale={locale} />
+      <EmergencySosModal
+        isOpen={isSosOpen}
+        onClose={() => setIsSosOpen(false)}
+        locale={locale}
+        onOpenFileReport={() => {
+          setIsSosOpen(false);
+          const target = role === 'guardian' ? '/dashboard/guardian/safety-reports' : '/safety-reports';
+          router.push(withLocale(target, locale));
+        }}
+      />
     </>
   );
 }
