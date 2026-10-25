@@ -29,6 +29,7 @@ import {
   useWithdrawBookingRequestMutation,
 } from '@/store/services/bookings-api';
 import { useGetSessionsQuery, useLazyGetIcsCalendarQuery } from '@/store/services/sessions-api';
+import { useGetDisputesQuery } from '@/store/services/trust-api';
 import { SafetyReportModal, TutorReplacementModal, ReviewModal, DisputeModal } from '@/features/trust';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
@@ -39,6 +40,15 @@ export interface BookingDetailPageProps {
   bookingId: string;
   locale: Locale;
 }
+
+const DISPUTE_REASONS: Record<string, { bn: string; en: string }> = {
+  tutor_no_show: { bn: 'শিক্ষক ক্লাসে অনুপস্থিত (No-Show)', en: 'Tutor No-Show' },
+  poor_quality: { bn: 'ক্লাসের মান আশানুরূপ নয়', en: 'Substandard Teaching Quality' },
+  misconduct: { bn: 'অশোভন আচরণ বা নীতিবিরুদ্ধ কর্মকাণ্ড', en: 'Misconduct or Inappropriate Behavior' },
+  incomplete_curriculum: { bn: 'নির্ধারিত পাঠ্যক্রম সম্পন্ন করা হয়নি', en: 'Incomplete Curriculum Coverage' },
+  technical_failure: { bn: 'কারিগরি ত্রুটির কারণে ক্লাস সম্পন্ন হয়নি', en: 'Technical Failure / Connection Lost' },
+  other: { bn: 'অন্যান্য সুনির্দিষ্ট কারণ', en: 'Other' },
+};
 
 const WEEKDAY_NAMES_BN = [
   'রবিবার',
@@ -72,6 +82,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
     refetch: refetchBooking,
   } = useGetBookingRequestByIdQuery(bookingId);
   const { data: sessionsData } = useGetSessionsQuery({ bookingId });
+  const { data: disputesData, refetch: refetchDisputes } = useGetDisputesQuery({ bookingId });
 
   const [respondBooking, { isLoading: responding }] = useRespondBookingRequestMutation();
   const [withdrawBooking, { isLoading: withdrawing }] = useWithdrawBookingRequestMutation();
@@ -86,6 +97,8 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
 
   const booking = bookingData?.data;
   const sessions = sessionsData?.data || [];
+  const dispute =
+    disputesData?.data?.find((d) => d.bookingId === bookingId) || disputesData?.data?.[0];
 
   const status = booking?.status || 'requested';
   const priceBdt = booking?.pricePerSessionMinor
@@ -255,7 +268,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           : `ID: #${bookingId.slice(0, 8)} | Status: ${status.replace(/_/g, ' ')}`
       }
     >
-      <div className="max-w-6xl mx-auto space-y-6" data-testid="booking-dossier-page">
+      <div className="w-full space-y-6" data-testid="booking-dossier-page">
         {/* Navigation Breadcrumb */}
         <div className="flex items-center justify-between">
           <Link
@@ -267,12 +280,12 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   : '/dashboard/student/requests',
               locale,
             )}
-            className="inline-flex items-center gap-2 text-xs text-muted-foreground hover:text-foreground font-medium transition-colors"
+            className="inline-flex items-center gap-2 text-xs text-slate-700 hover:text-slate-900 font-bold transition-colors"
           >
             <ArrowLeft className="w-4 h-4" />
             <span>{isBn ? 'অনুরোধ তালিকায় ফিরে যান' : 'Back to Requests Overview'}</span>
           </Link>
-          <span className="font-mono text-xs text-muted-foreground bg-surface/80 border border-border px-3 py-1 rounded-full">
+          <span className="font-mono text-xs text-slate-800 bg-slate-100 border border-slate-300 font-bold px-3 py-1 rounded-full">
             ID: #{bookingId.slice(0, 8)}
           </span>
         </div>
@@ -281,10 +294,10 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
         {actionMessage && (
           <div
             role="status"
-            className="rounded-2xl border border-success/30 bg-success-soft p-4 text-xs text-success-soft-foreground flex items-center gap-2.5"
+            className="rounded-2xl border border-emerald-300 bg-emerald-50 p-4 text-xs font-semibold text-emerald-950 flex items-center gap-2.5"
             data-testid="booking-success-banner"
           >
-            <CheckCircle2 className="w-4 h-4 shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
             <span>{actionMessage}</span>
           </div>
         )}
@@ -296,75 +309,93 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
         )}
 
         {/* Hero Card */}
-        <div className="relative overflow-hidden rounded-2xl border border-border bg-gradient-to-br from-card via-card/95 to-primary/5 p-6 sm:p-8">
+        <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-card via-card/95 to-primary/5 p-6 sm:p-8 shadow-xs">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="space-y-3">
               <div className="flex flex-wrap items-center gap-2.5">
-                <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-primary/10 text-primary border border-primary/20">
+                <span className="px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider bg-blue-50 text-blue-900 border border-blue-200">
                   {educationLevelName}
                 </span>
                 {status === 'requested' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-warning/15 text-warning-soft-foreground border border-warning/40 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-warning animate-pulse" />
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse" />
                     {isBn ? 'অনুরোধ অপেক্ষমান' : 'Pending Response'}
                   </span>
                 )}
                 {status === 'accepted' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-interactive/15 text-info-soft-foreground border border-info/40 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-info animate-pulse" />
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-blue-100 text-blue-950 border border-blue-300 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-blue-600 animate-pulse" />
                     {isBn ? 'গৃহীত — পেমেন্ট প্রয়োজন' : 'Accepted — Payment Required'}
                   </span>
                 )}
                 {status === 'awaiting_payment' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-warning/15 text-warning-soft-foreground border border-warning/40 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-warning animate-pulse" />
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-amber-600 animate-pulse" />
                     {isBn ? 'পেমেন্টের অপেক্ষায়' : 'Awaiting Payment'}
                   </span>
                 )}
                 {status === 'confirmed' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-success-soft text-success-soft-foreground border border-success/30 flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-950 border border-emerald-300 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
                     {isBn ? 'নিশ্চিতকৃত বুকিং' : 'Confirmed & Active'}
                   </span>
                 )}
                 {status === 'in_progress' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-success-soft text-success-soft-foreground border border-success/30 flex items-center gap-1.5">
-                    <span className="w-2 h-2 rounded-full bg-success animate-pulse" />
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-950 border border-emerald-300 flex items-center gap-1.5">
+                    <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse" />
                     {isBn ? 'ক্লাস চলছে' : 'In Progress'}
                   </span>
                 )}
                 {status === 'completed' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-surface text-foreground border border-border flex items-center gap-1.5">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-slate-100 text-slate-900 border border-slate-300 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-slate-700" />
                     {isBn ? 'সম্পন্ন' : 'Completed'}
                   </span>
                 )}
                 {status === 'cancelled' && (
-                  <span className="px-3 py-1 rounded-full text-xs font-semibold bg-destructive/15 text-destructive-soft-foreground border border-destructive/40">
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-rose-100 text-rose-950 border border-rose-300">
                     {isBn ? 'বাতিলকৃত' : 'Cancelled'}
+                  </span>
+                )}
+                {status === 'disputed' && (
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300 flex items-center gap-1.5">
+                    <Scale className="w-3.5 h-3.5 text-amber-800 animate-pulse" />
+                    {isBn ? 'বিরোধ তদন্তাধীন' : 'Dispute Under Review'}
+                  </span>
+                )}
+                {status === 'replacement_requested' && (
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-purple-100 text-purple-950 border border-purple-300 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-purple-800 animate-pulse" />
+                    {isBn ? 'রিপ্লেসমেন্ট প্রক্রিয়াধীন' : 'Replacement in Progress'}
+                  </span>
+                )}
+                {dispute?.status === 'resolved_refund' && (
+                  <span className="px-3 py-1 rounded-full text-xs font-bold bg-emerald-100 text-emerald-950 border border-emerald-300 flex items-center gap-1.5">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                    {isBn ? '১০০% রিফান্ড সম্পন্ন' : '100% Refund Settled'}
                   </span>
                 )}
               </div>
 
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+              <h2 className="text-2xl sm:text-3xl font-black text-slate-900 tracking-tight">
                 {subjectName}
               </h2>
 
-              <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+              <div className="flex flex-wrap items-center gap-4 text-xs text-slate-700 font-semibold">
                 <span className="flex items-center gap-1.5">
-                  <User className="w-3.5 h-3.5 text-info-soft-foreground" />
+                  <User className="w-3.5 h-3.5 text-blue-700" />
                   {isBn ? 'শিক্ষক:' : 'Tutor:'}{' '}
-                  <strong className="text-foreground">{tutorName}</strong>
+                  <strong className="text-slate-900 font-bold">{tutorName}</strong>
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1.5">
-                  <GraduationCap className="w-3.5 h-3.5 text-success-soft-foreground" />
+                  <GraduationCap className="w-3.5 h-3.5 text-emerald-700" />
                   {isBn ? 'শিক্ষার্থী:' : 'Student:'}{' '}
-                  <strong className="text-foreground">{studentName}</strong>
+                  <strong className="text-slate-900 font-bold">{studentName}</strong>
                 </span>
                 <span>•</span>
                 <span className="flex items-center gap-1.5">
-                  <Calendar className="w-3.5 h-3.5 text-interactive" />
+                  <Calendar className="w-3.5 h-3.5 text-blue-700" />
                   {formatDate(booking?.createdAt || new Date(), locale)}
                 </span>
               </div>
@@ -375,7 +406,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
               {(status === 'accepted' || status === 'awaiting_payment') && (
                 <Link
                   href={withLocale(`/dashboard/bookings/${bookingId}/pay`, locale)}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-brand to-brand-accent text-foreground font-bold text-sm transition-all hover:scale-102"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm shadow-xs shadow-blue-500/25 transition-all hover:scale-102"
                   data-testid="pay-escrow-cta-btn"
                 >
                   <CreditCard className="w-4 h-4" />
@@ -400,10 +431,10 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                     variant="outline"
                     disabled={responding}
                     onClick={() => handleTutorResponse('decline')}
-                    className="border-destructive/40 text-destructive-soft-foreground hover:bg-destructive/10 text-xs"
+                    className="border-rose-300 text-rose-800 hover:bg-rose-50 font-bold text-xs"
                     data-testid="tutor-decline-booking-btn"
                   >
-                    <XCircle className="w-3.5 h-3.5 mr-1.5" />
+                    <XCircle className="w-3.5 h-3.5 mr-1.5 text-rose-700" />
                     {isBn ? 'প্রত্যাখ্যান' : 'Decline'}
                   </Button>
                 </>
@@ -415,7 +446,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   variant="outline"
                   disabled={withdrawing}
                   onClick={handleWithdraw}
-                  className="border-destructive/40 text-destructive-soft-foreground hover:bg-destructive/10 text-xs"
+                  className="border-rose-300 text-rose-800 hover:bg-rose-50 font-bold text-xs"
                   data-testid="withdraw-booking-btn"
                 >
                   {isBn ? 'অনুরোধ প্রত্যাহার' : 'Withdraw Request'}
@@ -426,9 +457,9 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                 size="sm"
                 variant="outline"
                 onClick={() => setSafetyModalOpen(true)}
-                className="border-border text-xs"
+                className="border-slate-300 text-slate-800 hover:bg-slate-100 font-bold text-xs"
               >
-                <ShieldCheck className="w-3.5 h-3.5 mr-1.5 text-destructive-soft-foreground" />
+                <ShieldCheck className="w-3.5 h-3.5 mr-1.5 text-rose-700" />
                 {isBn ? 'সুরক্ষা রিপোর্ট' : 'Report Issue'}
               </Button>
 
@@ -436,9 +467,9 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                 size="sm"
                 variant="outline"
                 onClick={() => setReplacementModalOpen(true)}
-                className="border-border text-xs"
+                className="border-slate-300 text-slate-800 hover:bg-slate-100 font-bold text-xs"
               >
-                <Sparkles className="w-3.5 h-3.5 mr-1.5 text-warning-soft-foreground" />
+                <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-600" />
                 {isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacement'}
               </Button>
 
@@ -447,10 +478,10 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   size="sm"
                   variant="outline"
                   onClick={() => setDisputeModalOpen(true)}
-                  className="border-warning/50 text-warning hover:bg-warning/10 text-xs"
+                  className="border-amber-400 text-amber-900 bg-amber-50 hover:bg-amber-100 font-bold text-xs"
                   data-testid="open-dispute-modal-btn"
                 >
-                  <Scale className="w-3.5 h-3.5 mr-1.5" />
+                  <Scale className="w-3.5 h-3.5 mr-1.5 text-amber-700" />
                   {isBn ? 'বিরোধ দায়ের / রিফান্ড' : 'File Dispute'}
                 </Button>
               )}
@@ -460,10 +491,10 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   size="sm"
                   variant="outline"
                   onClick={() => setReviewModalOpen(true)}
-                  className="border-warning/40 text-warning-soft-foreground hover:bg-warning/10 text-xs"
+                  className="border-amber-400 text-amber-950 bg-amber-50/70 hover:bg-amber-100 font-bold text-xs"
                   data-testid="open-review-modal-btn"
                 >
-                  <Star className="w-3.5 h-3.5 mr-1.5 text-warning-soft-foreground fill-current" />
+                  <Star className="w-3.5 h-3.5 mr-1.5 text-amber-600 fill-current" />
                   {isBn ? 'শিক্ষককে রিভিউ দিন' : 'Rate Tutor'}
                 </Button>
               )}
@@ -471,42 +502,181 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           </div>
         </div>
 
-        {/* Active Dispute Warning Banner */}
-        {status === 'disputed' && (
+        {/* Dispute Investigation / Resolution Dossier Card */}
+        {(dispute || status === 'disputed') && (
           <div
-            className="p-4 rounded-2xl border border-warning/40 bg-warning/10 text-foreground flex items-center gap-3 animate-in fade-in"
-            data-testid="booking-disputed-banner"
+            className={`rounded-2xl border p-5 sm:p-6 shadow-xs transition-all ${
+              dispute?.status?.startsWith('resolved_')
+                ? 'border-emerald-300 bg-gradient-to-br from-emerald-50/90 via-card to-emerald-50/30'
+                : 'border-amber-300 bg-gradient-to-br from-amber-50/90 via-card to-amber-50/30'
+            }`}
+            data-testid="booking-dispute-dossier-card"
           >
-            <Scale className="w-5 h-5 text-warning shrink-0" />
-            <div className="space-y-0.5 text-xs">
-              <span className="font-bold text-warning-foreground">
-                {isBn ? 'সক্রিয় বিরোধ পর্যালোচনা চলছে' : 'Active Dispute Under Review'}
-              </span>
-              <p className="text-muted-foreground text-[11px] leading-relaxed">
-                {isBn
-                  ? 'এই বুকিংটির বিপরীতে একটি বিরোধ অভিযোগ তদন্তাধীন রয়েছে। সমাধান না হওয়া পর্যন্ত সমস্ত আর্থিক এসক্রো রিলিজ স্থগিত থাকবে।'
-                  : 'A formal dispute is being investigated for this booking. Escrow releases to the tutor are frozen until resolved.'}
-              </p>
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-border/60">
+              <div className="flex items-start gap-3">
+                <div
+                  className={`p-2.5 rounded-xl shrink-0 ${
+                    dispute?.status?.startsWith('resolved_')
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : 'bg-amber-100 text-amber-800'
+                  }`}
+                >
+                  <Scale className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="font-extrabold text-base text-slate-900">
+                      {dispute?.status?.startsWith('resolved_')
+                        ? isBn
+                          ? 'বিরোধ নিষ্পত্তি রিপোর্ট ও সিদ্ধান্ত'
+                          : 'Dispute Resolution & Verdict Dossier'
+                        : isBn
+                          ? 'সক্রিয় বিরোধ পর্যালোচনা চলছে'
+                          : 'Active Dispute Under Review'}
+                    </h3>
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                        dispute?.status === 'resolved_refund'
+                          ? 'bg-emerald-100 text-emerald-950 border-emerald-300'
+                          : dispute?.status === 'resolved_partial_refund'
+                            ? 'bg-blue-100 text-blue-950 border-blue-300'
+                            : dispute?.status === 'resolved_tutor_upheld'
+                              ? 'bg-purple-100 text-purple-950 border-purple-300'
+                              : dispute?.status === 'dismissed'
+                                ? 'bg-slate-100 text-slate-800 border-slate-300'
+                                : 'bg-amber-100 text-amber-950 border-amber-300 animate-pulse'
+                      }`}
+                    >
+                      {dispute?.status === 'resolved_refund'
+                        ? isBn
+                          ? '১০০% রিফান্ড কার্যকর'
+                          : '100% Refund Approved'
+                        : dispute?.status === 'resolved_partial_refund'
+                          ? isBn
+                            ? 'আংশিক রিফান্ড অনুমোদিত'
+                            : 'Partial Refund Approved'
+                          : dispute?.status === 'resolved_tutor_upheld'
+                            ? isBn
+                              ? 'শিক্ষকের পক্ষে নিষ্পত্তি'
+                              : 'Tutor Upheld'
+                            : dispute?.status === 'dismissed'
+                              ? isBn
+                                ? 'অভিযোগ খারিজ'
+                                : 'Dismissed'
+                              : isBn
+                                ? 'তদন্তাধীন'
+                                : 'Under Investigation'}
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-700 mt-1 leading-relaxed font-medium">
+                    {dispute?.status?.startsWith('resolved_')
+                      ? isBn
+                        ? 'অগ্রণী এডু ট্রাস্ট অ্যান্ড সেফটি টিম বিরোধ তদন্ত সম্পন্ন করেছে এবং নিষ্পত্তি সিদ্ধান্ত কার্যকর করেছে।'
+                        : 'OgroniEdu Trust & Safety Team has completed the audit and executed the final resolution.'
+                      : isBn
+                        ? 'এই বুকিংটির বিপরীতে একটি আনুষ্ঠানিক বিরোধ দায়ের করা হয়েছে। নিষ্পত্তি না হওয়া পর্যন্ত এসক্রো ফান্ড থেকে শিক্ষকের অর্থ ছাড় স্থগিত থাকবে।'
+                        : 'A formal dispute has been submitted for this booking. Escrow releases remain frozen until resolved.'}
+                  </p>
+                </div>
+              </div>
+
+              {dispute?.resolvedAt && (
+                <span className="text-xs font-bold text-slate-800 shrink-0 bg-white/90 border border-slate-200 px-3 py-1 rounded-full">
+                  {isBn ? 'মীমাংসার তারিখ: ' : 'Resolved: '}
+                  {formatDate(dispute.resolvedAt, locale)}
+                </span>
+              )}
+            </div>
+
+            {/* Dispute Specifics Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
+              <div className="p-3 rounded-xl bg-white/90 border border-slate-200">
+                <span className="text-[11px] font-bold text-slate-600 block uppercase tracking-wider">
+                  {isBn ? 'অভিযোগের কারণ' : 'Dispute Reason'}
+                </span>
+                <span className="text-xs font-bold text-slate-900 mt-0.5 block">
+                  {dispute?.reasonCode
+                    ? DISPUTE_REASONS[dispute.reasonCode]?.[locale] || dispute.reasonCode
+                    : isBn
+                      ? 'শিক্ষক অনুপস্থিত'
+                      : 'Tutor No-Show'}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-white/90 border border-slate-200">
+                <span className="text-[11px] font-bold text-slate-600 block uppercase tracking-wider">
+                  {isBn ? 'দাবীকৃত রিফান্ড' : 'Claimed Refund'}
+                </span>
+                <span className="text-xs font-black text-slate-900 mt-0.5 block font-mono">
+                  ৳{formatLocalizedNumber(dispute?.disputedAmountMinor ? Math.round(Number(dispute.disputedAmountMinor) / 100) : priceBdt, locale)}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-white/90 border border-slate-200">
+                <span className="text-[11px] font-bold text-slate-600 block uppercase tracking-wider">
+                  {isBn ? 'রিফান্ড নিষ্পত্তি' : 'Settled Amount'}
+                </span>
+                <span className="text-xs font-black text-emerald-900 mt-0.5 block font-mono">
+                  {dispute?.status === 'resolved_refund' || dispute?.resolutionType === 'refund'
+                    ? `৳${formatLocalizedNumber(dispute?.disputedAmountMinor ? Math.round(Number(dispute.disputedAmountMinor) / 100) : priceBdt, locale)}`
+                    : dispute?.status === 'resolved_tutor_upheld' || dispute?.status === 'dismissed'
+                      ? '৳০'
+                      : isBn
+                        ? 'বিবেচনাধীন'
+                        : 'Pending'}
+                </span>
+              </div>
+
+              <div className="p-3 rounded-xl bg-white/90 border border-slate-200">
+                <span className="text-[11px] font-bold text-slate-600 block uppercase tracking-wider">
+                  {isBn ? 'তদন্তকারী কর্তৃপক্ষ' : 'Audit Authority'}
+                </span>
+                <span className="text-xs font-bold text-slate-900 mt-0.5 block">
+                  {dispute?.resolver?.displayName || (isBn ? 'অগ্রণী অডিট টিম' : 'Ogroni Audit Team')}
+                </span>
+              </div>
+            </div>
+
+            {/* Statement & Investigation Notes */}
+            <div className="space-y-3 mt-4">
+              {dispute?.description && (
+                <div className="p-3.5 rounded-xl bg-white/80 border border-slate-200 text-xs">
+                  <span className="font-bold text-slate-800 block mb-1">
+                    {isBn ? 'অভিযোগকারীর বক্তব্য:' : 'Complainant Statement:'}
+                  </span>
+                  <p className="text-slate-800 italic leading-relaxed">"{dispute.description}"</p>
+                </div>
+              )}
+
+              {dispute?.resolutionNotes && (
+                <div className="p-3.5 rounded-xl bg-emerald-100/60 border border-emerald-300 text-xs">
+                  <div className="flex items-center gap-1.5 font-bold text-emerald-950 mb-1">
+                    <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
+                    <span>{isBn ? 'অ্যাডমিন অডিট রিপোর্ট ও নিষ্পত্তির কারণ:' : 'Admin Audit Verdict & Resolution Notes:'}</span>
+                  </div>
+                  <p className="text-emerald-950 leading-relaxed font-semibold">{dispute.resolutionNotes}</p>
+                </div>
+              )}
             </div>
           </div>
         )}
 
         {/* 4 KPI Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="rounded-2xl border border-border bg-card p-4.5 space-y-1">
-            <p className="text-xs text-muted-foreground font-medium">
+          <div className="rounded-2xl border border-slate-200 bg-card p-4.5 space-y-1 shadow-xs">
+            <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">
               {isBn ? 'সেশন ফি (প্রতি ক্লাস)' : 'Fee Per Session'}
             </p>
-            <p className="text-xl sm:text-2xl font-black text-foreground font-mono">
+            <p className="text-xl sm:text-2xl font-black text-slate-900 font-mono">
               ৳{formatLocalizedNumber(priceBdt, locale)}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4.5 space-y-1">
-            <p className="text-xs text-muted-foreground font-medium">
+          <div className="rounded-2xl border border-slate-200 bg-card p-4.5 space-y-1 shadow-xs">
+            <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">
               {isBn ? 'ক্লাসের মাধ্যম' : 'Tutoring Mode'}
             </p>
-            <p className="text-base font-bold text-info-soft-foreground capitalize">
+            <p className="text-base font-bold text-slate-900 capitalize">
               {booking?.mode === 'in_person'
                 ? isBn
                   ? 'বাসায় গিয়ে (In-Person)'
@@ -517,22 +687,22 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4.5 space-y-1">
-            <p className="text-xs text-muted-foreground font-medium">
+          <div className="rounded-2xl border border-slate-200 bg-card p-4.5 space-y-1 shadow-xs">
+            <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">
               {isBn ? 'সেশন ব্যাপ্তি' : 'Duration'}
             </p>
-            <p className="text-base font-bold text-success-soft-foreground font-mono">
+            <p className="text-base font-bold text-slate-900 font-mono">
               {formatLocalizedNumber(Number(booking?.durationMinutes) || 60, locale)}{' '}
               {isBn ? 'মিনিট' : 'Mins'}
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4.5 space-y-1">
-            <p className="text-xs text-muted-foreground font-medium">
+          <div className="rounded-2xl border border-slate-200 bg-card p-4.5 space-y-1 shadow-xs">
+            <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">
               {isBn ? 'এসক্রো নিরাপত্তা' : 'Escrow Protection'}
             </p>
-            <p className="text-base font-bold text-primary-soft-foreground flex items-center gap-1.5">
-              <ShieldCheck className="w-4 h-4 shrink-0" />
+            <p className="text-base font-bold text-emerald-900 flex items-center gap-1.5">
+              <ShieldCheck className="w-4 h-4 text-emerald-700 shrink-0" />
               <span>{isBn ? '১০০% সুরক্ষিত' : '100% Guaranteed'}</span>
             </p>
           </div>
@@ -543,15 +713,15 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           {/* Left Column (2 Cols wide) */}
           <div className="lg:col-span-2 space-y-6">
             {/* Preferred Weekly Routine & Schedule Slots */}
-            <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+            <div className="rounded-2xl border border-slate-200 bg-card p-6 space-y-4 shadow-xs">
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
-                  <Calendar className="w-4 h-4 text-primary" />
-                  <h3 className="font-bold text-sm text-foreground">
+                  <Calendar className="w-4 h-4 text-blue-700" />
+                  <h3 className="font-extrabold text-base text-slate-900">
                     {isBn ? 'সাপ্তাহিক ক্লাসের পছন্দের দিন ও রুটিন' : 'Weekly Class Routine'}
                   </h3>
                 </div>
-                <span className="text-xs text-muted-foreground font-mono">
+                <span className="text-xs text-slate-700 font-mono font-bold">
                   {preferredDays.length > 0
                     ? `${formatLocalizedNumber(preferredDays.length, locale)} ${isBn ? 'দিন/সপ্তাহ' : 'days/wk'}`
                     : isBn
@@ -565,15 +735,15 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   {preferredDays.map((dayNum) => (
                     <span
                       key={dayNum}
-                      className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-primary/10 text-primary border border-primary/20 flex items-center gap-1.5"
+                      className="px-3.5 py-1.5 rounded-xl text-xs font-bold bg-blue-50 text-blue-900 border border-blue-200 flex items-center gap-1.5"
                     >
-                      <Clock className="w-3.5 h-3.5" />
+                      <Clock className="w-3.5 h-3.5 text-blue-700" />
                       <span>{weekdayLabels[dayNum] || `Day ${dayNum}`}</span>
                     </span>
                   ))}
                 </div>
               ) : (
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-slate-700 font-medium">
                   {isBn
                     ? 'শিক্ষক ও শিক্ষার্থী আলোচনার মাধ্যমে নিয়মিত শিডিউল নির্ধারণ করবেন।'
                     : 'Flexible schedule as coordinated between tutor and student.'}
@@ -585,11 +755,11 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                 booking?.messageNotes ||
                 (booking?.serviceAgreementSnapshot as Record<string, unknown> | undefined)?.message,
               ) && (
-                <div className="rounded-2xl border border-border bg-surface/60 p-4 space-y-1.5">
-                  <p className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">
+                <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4 space-y-1.5">
+                  <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                     {isBn ? 'শিক্ষার্থীর প্রয়োজন ও শিক্ষকের জন্য নোট:' : 'Learning Goals & Notes:'}
                   </p>
-                  <p className="text-xs text-foreground leading-relaxed">
+                  <p className="text-xs text-slate-800 font-medium leading-relaxed">
                     "
                     {String(
                       booking?.messageNotes ||
@@ -604,28 +774,28 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
             </div>
 
             {/* Scheduled Sessions Breakdown */}
-            <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+            <div className="rounded-2xl border border-slate-200 bg-card p-6 space-y-4 shadow-xs">
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
-                  <Clock className="w-4 h-4 text-interactive" />
-                  <h3 className="font-bold text-sm text-foreground">
+                  <Clock className="w-4 h-4 text-blue-700" />
+                  <h3 className="font-extrabold text-base text-slate-900">
                     {isBn ? 'ক্লাস সূচি ও লাইভ সেশনসমূহ' : 'Class Schedule & Live Sessions'}
                   </h3>
                 </div>
-                <span className="text-xs font-mono text-muted-foreground">
+                <span className="text-xs font-mono font-bold text-slate-700">
                   {formatLocalizedNumber(sessions.length, locale)} {isBn ? 'টি সেশন' : 'Sessions'}
                 </span>
               </div>
 
               {sessions.length === 0 ? (
-                <div className="py-8 text-center text-xs text-muted-foreground space-y-2">
-                  <p>
+                <div className="py-8 text-center text-xs text-slate-600 space-y-2">
+                  <p className="font-medium">
                     {isBn
                       ? 'এখনও কোনো লাইভ সেশন শিডিউল করা হয়নি।'
                       : 'No live sessions scheduled yet for this booking.'}
                   </p>
                   {status === 'confirmed' && isTutor && (
-                    <p className="text-[11px] text-info-soft-foreground">
+                    <p className="text-xs font-bold text-blue-900">
                       {isBn
                         ? 'সেশন প্যানেল থেকে শিক্ষার্থীদের সাথে নতুন সেশন শিডিউল করুন।'
                         : 'Schedule sessions from your tutor sessions management panel.'}
@@ -637,36 +807,36 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   {sessions.map((session, idx) => (
                     <div
                       key={session.id}
-                      className="p-4 rounded-xl border border-border bg-surface/50 hover:bg-surface flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors"
+                      className="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors shadow-xs"
                       data-testid={`booking-session-item-${idx}`}
                     >
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="font-bold text-xs text-foreground">
+                          <span className="font-bold text-xs text-slate-900">
                             {isBn ? `সেশন #${idx + 1}` : `Session #${idx + 1}`}
                           </span>
                           <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-semibold uppercase ${
+                            className={`px-2.5 py-0.5 rounded-full text-[10px] font-bold uppercase border ${
                               session.status === 'completed'
-                                ? 'bg-success-soft text-success-soft-foreground'
+                                ? 'bg-emerald-100 text-emerald-950 border-emerald-300'
                                 : session.status === 'in_progress'
-                                  ? 'bg-interactive/20 text-info-soft-foreground'
+                                  ? 'bg-blue-100 text-blue-950 border-blue-300'
                                   : session.status === 'scheduled'
-                                    ? 'bg-warning/15 text-warning-soft-foreground'
-                                    : 'bg-surface text-muted-foreground'
+                                    ? 'bg-amber-100 text-amber-950 border-amber-300'
+                                    : 'bg-slate-100 text-slate-800 border-slate-300'
                             }`}
                           >
                             {session.status}
                           </span>
                         </div>
-                        <p className="text-xs text-muted-foreground flex items-center gap-3">
+                        <p className="text-xs text-slate-700 font-semibold flex items-center gap-3">
                           <span className="flex items-center gap-1">
-                            <Calendar className="w-3 h-3 text-interactive" />
+                            <Calendar className="w-3 h-3 text-blue-700" />
                             {formatDate(session.startsAt, locale)}
                           </span>
                           <span>•</span>
                           <span className="flex items-center gap-1">
-                            <Clock className="w-3 h-3 text-info-soft-foreground" />
+                            <Clock className="w-3 h-3 text-blue-700" />
                             {new Date(session.startsAt).toLocaleTimeString(
                               locale === 'bn' ? 'bn-BD' : 'en-US',
                               { hour: '2-digit', minute: '2-digit' },
@@ -681,20 +851,20 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                             href={session.meetingUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-interactive/15 text-info-soft-foreground hover:bg-interactive/25 border border-info/40 font-medium text-xs transition-colors"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-xs"
                           >
                             <Video className="w-3.5 h-3.5" />
                             <span>{isBn ? 'ক্লাসে যোগ দিন' : 'Join Class'}</span>
                             <ExternalLink className="w-3 h-3 ml-0.5" />
                           </a>
                         ) : (
-                          <span className="text-[11px] text-muted-foreground italic">
+                          <span className="text-[11px] text-slate-600 italic font-medium">
                             {isBn ? 'লিংক তৈরির অপেক্ষায়' : 'Link Pending'}
                           </span>
                         )}
                         <Link
                           href={withLocale(`/sessions/${session.id}`, locale)}
-                          className="px-3 py-1.5 rounded-xl border border-border hover:bg-surface text-foreground font-medium text-xs transition-colors"
+                          className="px-3 py-1.5 rounded-xl border border-slate-300 hover:bg-slate-100 text-slate-900 font-bold text-xs transition-colors"
                         >
                           {isBn ? 'বিস্তারিত' : 'Details'}
                         </Link>
@@ -709,15 +879,15 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           {/* Right Column (1 Col wide) */}
           <div className="space-y-6">
             {/* Calendar Synchronization Hub */}
-            <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+            <div className="rounded-2xl border border-slate-200 bg-card p-6 space-y-4 shadow-xs">
               <div className="flex items-center gap-2 pb-3 border-b border-border">
-                <Calendar className="w-4 h-4 text-interactive" />
-                <h3 className="font-bold text-sm text-foreground">
+                <Calendar className="w-4 h-4 text-blue-700" />
+                <h3 className="font-extrabold text-base text-slate-900">
                   {isBn ? 'ক্যালেন্ডার সিঙ্ক ও রুটিন' : 'Calendar Synchronization'}
                 </h3>
               </div>
 
-              <p className="text-xs text-muted-foreground leading-relaxed">
+              <p className="text-xs text-slate-700 leading-relaxed font-medium">
                 {isBn
                   ? 'আপনার Google, Apple বা Outlook ক্যালেন্ডারের সাথে ক্লাসের সময়সূচী স্বয়ংক্রিয়ভাবে যুক্ত করুন।'
                   : 'Sync tuition class schedule with your personal Google, Apple, or Outlook calendar.'}
@@ -729,10 +899,10 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                     href={googleCalUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-surface/80 hover:bg-surface border border-border text-foreground font-semibold text-xs transition-all hover:border-primary/40"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-900 font-bold text-xs transition-all hover:border-blue-400"
                     data-testid="google-calendar-sync-btn"
                   >
-                    <ExternalLink className="w-3.5 h-3.5 text-info-soft-foreground" />
+                    <ExternalLink className="w-3.5 h-3.5 text-blue-700" />
                     <span>{isBn ? 'Google Calendar-এ যোগ করুন' : 'Add to Google Calendar'}</span>
                   </a>
                 )}
@@ -742,10 +912,10 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   variant="outline"
                   onClick={handleDownloadIcs}
                   disabled={downloadingIcs}
-                  className="w-full justify-center text-xs h-10 border-border hover:bg-surface"
+                  className="w-full justify-center text-xs h-10 border-slate-300 hover:bg-slate-100 font-bold text-slate-900"
                   data-testid="download-ics-calendar-btn"
                 >
-                  <Download className="w-3.5 h-3.5 mr-1.5 text-interactive" />
+                  <Download className="w-3.5 h-3.5 mr-1.5 text-blue-700" />
                   <span>
                     {downloadingIcs
                       ? isBn
@@ -760,17 +930,17 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
             </div>
 
             {/* Escrow Guarantee & Trust Seal */}
-            <div className="rounded-2xl border border-border bg-card p-6 space-y-4">
+            <div className="rounded-2xl border border-slate-200 bg-card p-6 space-y-4 shadow-xs">
               <div className="flex items-center gap-2 pb-3 border-b border-border">
-                <ShieldCheck className="w-4 h-4 text-success-soft-foreground" />
-                <h3 className="font-bold text-sm text-foreground">
+                <ShieldCheck className="w-4 h-4 text-emerald-700" />
+                <h3 className="font-extrabold text-base text-slate-900">
                   {isBn ? 'অগ্রণী এডু আর্থিক ট্রাস্ট নিশ্চয়তা' : 'OgroniEdu Escrow Protection'}
                 </h3>
               </div>
 
-              <ul className="space-y-2.5 text-xs text-muted-foreground">
+              <ul className="space-y-2.5 text-xs text-slate-800 font-medium">
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? 'ক্লাস সন্তোষজনকভাবে সম্পন্ন না হওয়া পর্যন্ত শিক্ষকের কাছে টাকা ছাড় করা হয় না।'
@@ -778,7 +948,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? '৪৮ ঘণ্টার ফ্রি টিউটর রিপ্লেসমেন্ট নিশ্চয়তা কার্যকর।'
@@ -786,7 +956,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   </span>
                 </li>
                 <li className="flex items-start gap-2">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700 shrink-0 mt-0.5" />
                   <span>
                     {isBn
                       ? '২৪/৭ জাতীয় হেল্পলাইন ১০৯৮ ও প্ল্যাটফর্ম সাপোর্ট টিম সংযুক্ত।'
@@ -831,6 +1001,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           onClose={() => {
             setDisputeModalOpen(false);
             refetchBooking();
+            refetchDisputes();
           }}
           bookingId={bookingId}
           tutorName={tutorName}

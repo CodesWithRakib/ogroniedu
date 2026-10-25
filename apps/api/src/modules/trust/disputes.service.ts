@@ -181,7 +181,9 @@ export class DisputesService {
         booking: {
           tutorProfile: { user: true },
           studentUser: true,
+          requesterUser: true,
           subject: true,
+          educationLevel: true,
         },
         disputant: true,
         assignedStaff: true,
@@ -225,6 +227,9 @@ export class DisputesService {
       .createQueryBuilder('dispute')
       .leftJoinAndSelect('dispute.booking', 'booking')
       .leftJoinAndSelect('booking.subject', 'subject')
+      .leftJoinAndSelect('booking.educationLevel', 'educationLevel')
+      .leftJoinAndSelect('booking.studentUser', 'studentUser')
+      .leftJoinAndSelect('booking.requesterUser', 'requesterUser')
       .leftJoinAndSelect('booking.tutorProfile', 'tutorProfile')
       .leftJoinAndSelect('tutorProfile.user', 'tutorUser')
       .leftJoinAndSelect('dispute.disputant', 'disputant')
@@ -239,6 +244,10 @@ export class DisputesService {
 
     if (query.status) {
       qb.andWhere('dispute.status = :status', { status: query.status });
+    }
+
+    if (query.bookingId) {
+      qb.andWhere('dispute.booking_id = :bookingId', { bookingId: query.bookingId });
     }
 
     qb.orderBy('dispute.created_at', 'DESC').skip(skip).take(pageSize);

@@ -269,7 +269,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
         <div className="flex items-center gap-2">
           {session.bookingId && (
             <Link
-              href={withLocale(`/bookings/${session.bookingId}`, locale)}
+              href={withLocale(`/dashboard/bookings/${session.bookingId}`, locale)}
               className="text-xs text-primary hover:underline font-bold"
             >
               {locale === 'bn' ? 'বুকিং বিবরণ দেখুন' : 'View Booking Details'}

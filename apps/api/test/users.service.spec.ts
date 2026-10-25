@@ -23,6 +23,7 @@ describe('UsersService Unit Tests', () => {
     passwordHash: 'hash',
     preferredLocale: 'bn',
     status: 'active',
+    authEpoch: 1,
     emailVerifiedAt: new Date(),
     phoneVerifiedAt: new Date(),
     lastLoginAt: new Date(),

@@ -196,9 +196,9 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
           : 'Payment status is verified directly with the backend'
       }
     >
-      <div className="w-full max-w-6xl mx-auto space-y-6">
+      <div className="w-full space-y-6">
         <Link
-          href={withLocale(`/bookings/${bookingId}`, locale)}
+          href={withLocale(`/dashboard/bookings/${bookingId}`, locale)}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
         >
           <ArrowLeft className="w-3.5 h-3.5" />
@@ -328,7 +328,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                   </div>
                 </dl>
                 <div className="flex flex-wrap gap-2">
-                  <Link href={withLocale(`/bookings/${bookingId}`, locale)}>
+                  <Link href={withLocale(`/dashboard/bookings/${bookingId}`, locale)}>
                     <Button size="sm" className="rounded-xl font-semibold">
                       {isBn ? 'বুকিং দেখুন' : 'View booking'}
                     </Button>

@@ -175,7 +175,10 @@ export interface BookingDisputeView {
     studentUserId: string;
     requesterUserId: string;
     tutorUserId: string;
-    subject?: { name: string; nameBn?: string };
+    subject?: { name?: string; nameBn?: string; nameEn?: string };
+    educationLevel?: { nameBn?: string; nameEn?: string };
+    studentUser?: { displayName?: string };
+    requesterUser?: { displayName?: string };
     tutorProfile?: { user?: { displayName?: string } };
   };
   disputant?: { id: string; displayName: string };
@@ -370,7 +373,7 @@ export const trustApi = baseApi.injectEndpoints({
     }),
     getDisputes: builder.query<
       { success: boolean; data: BookingDisputeView[]; total: number; page: number; pageSize: number },
-      { status?: string; page?: number; pageSize?: number } | void
+      { status?: string; bookingId?: string; page?: number; pageSize?: number } | void
     >({
       query: (params) => ({ url: '/api/v1/disputes', params: params ?? undefined }),
       providesTags: [{ type: 'BookingDispute' as any, id: 'LIST' }],

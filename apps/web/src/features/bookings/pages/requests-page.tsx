@@ -16,6 +16,8 @@ import {
   ArrowRight,
   CreditCard,
   Video,
+  Scale,
+  Sparkles,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import {
@@ -38,7 +40,7 @@ import { useChildScope } from '@/features/guardian/hooks/use-child-scope';
 import { ChildScopeSelect } from '@/features/guardian/components/ChildScopeSelect';
 import type { BookingRequestItem } from '@/store/services/bookings-api';
 
-type FilterStatus = 'all' | 'requested' | 'accepted' | 'closed';
+type FilterStatus = 'all' | 'requested' | 'accepted' | 'disputed' | 'closed';
 
 /**
  * Production-ready Tutoring Requests Management:
@@ -58,6 +60,9 @@ export function RequestsPage({ locale }: { locale: Locale }) {
       if (activeFilter === 'requested') return item.status === 'requested';
       if (activeFilter === 'accepted') {
         return ['accepted', 'awaiting_payment', 'confirmed', 'in_progress'].includes(item.status);
+      }
+      if (activeFilter === 'disputed') {
+        return item.status === 'disputed' || item.status === 'replacement_requested';
       }
       if (activeFilter === 'closed') {
         return (
@@ -79,6 +84,9 @@ export function RequestsPage({ locale }: { locale: Locale }) {
       accepted: items.filter((i) =>
         ['accepted', 'awaiting_payment', 'confirmed', 'in_progress'].includes(i.status),
       ).length,
+      disputed: items.filter((i) =>
+        ['disputed', 'replacement_requested'].includes(i.status),
+      ).length,
       closed: items.filter((i) =>
         ['declined', 'withdrawn', 'cancelled', 'expired', 'completed'].includes(i.status),
       ).length,
@@ -87,55 +95,69 @@ export function RequestsPage({ locale }: { locale: Locale }) {
 
   function getStatusBadge(status: string) {
     switch (status) {
+      case 'disputed':
+        return (
+          <Badge variant="warning" className="flex items-center gap-1 bg-amber-100 text-amber-950 border border-amber-300 font-bold">
+            <Scale className="w-3 h-3 text-amber-700" />
+            <span>{locale === 'bn' ? 'বিরোধ চলছে' : 'Disputed'}</span>
+          </Badge>
+        );
+      case 'replacement_requested':
+        return (
+          <Badge variant="outline" className="flex items-center gap-1 bg-purple-50 text-purple-950 border border-purple-300 font-bold">
+            <Sparkles className="w-3 h-3 text-purple-700" />
+            <span>{locale === 'bn' ? 'রিপ্লেসমেন্ট অনুরোধ' : 'Replacement'}</span>
+          </Badge>
+        );
       case 'accepted':
       case 'awaiting_payment':
         return (
-          <Badge variant="warning" className="flex items-center gap-1">
-            <CreditCard className="w-3 h-3" />
+          <Badge variant="warning" className="flex items-center gap-1 bg-amber-100 text-amber-950 border border-amber-300 font-bold">
+            <CreditCard className="w-3 h-3 text-amber-700" />
             <span>{locale === 'bn' ? 'পেমেন্ট বাকি' : 'Payment due'}</span>
           </Badge>
         );
       case 'confirmed':
       case 'in_progress':
         return (
-          <Badge variant="success" className="flex items-center gap-1">
-            <CheckCircle2 className="w-3 h-3" />
+          <Badge variant="success" className="flex items-center gap-1 bg-emerald-100 text-emerald-950 border border-emerald-300 font-bold">
+            <CheckCircle2 className="w-3 h-3 text-emerald-700" />
             <span>{locale === 'bn' ? 'নিশ্চিত' : 'Confirmed'}</span>
           </Badge>
         );
       case 'completed':
         return (
-          <Badge variant="outline" className="flex items-center gap-1">
-            <CheckCircle2 className="w-3 h-3" />
+          <Badge variant="outline" className="flex items-center gap-1 bg-slate-100 text-slate-900 border border-slate-300 font-bold">
+            <CheckCircle2 className="w-3 h-3 text-slate-700" />
             <span>{locale === 'bn' ? 'সম্পন্ন' : 'Completed'}</span>
           </Badge>
         );
       case 'requested':
         return (
-          <Badge variant="warning" className="flex items-center gap-1 animate-pulse">
-            <Clock className="w-3 h-3" />
+          <Badge variant="warning" className="flex items-center gap-1 bg-amber-100 text-amber-950 border border-amber-300 font-bold animate-pulse">
+            <Clock className="w-3 h-3 text-amber-700" />
             <span>{locale === 'bn' ? 'বিবেচনাধীন' : 'Pending'}</span>
           </Badge>
         );
       case 'declined':
         return (
-          <Badge variant="destructive" className="flex items-center gap-1">
-            <XCircle className="w-3 h-3" />
+          <Badge variant="destructive" className="flex items-center gap-1 bg-rose-100 text-rose-950 border border-rose-300 font-bold">
+            <XCircle className="w-3 h-3 text-rose-700" />
             <span>{locale === 'bn' ? 'প্রত্যাখ্যাত' : 'Declined'}</span>
           </Badge>
         );
       case 'cancelled':
       case 'expired':
         return (
-          <Badge variant="destructive" className="flex items-center gap-1">
-            <XCircle className="w-3 h-3" />
+          <Badge variant="destructive" className="flex items-center gap-1 bg-rose-100 text-rose-950 border border-rose-300 font-bold">
+            <XCircle className="w-3 h-3 text-rose-700" />
             <span>{locale === 'bn' ? 'বাতিল' : 'Cancelled'}</span>
           </Badge>
         );
       case 'withdrawn':
         return (
-          <Badge variant="outline" className="flex items-center gap-1 text-muted-foreground">
-            <AlertCircle className="w-3 h-3" />
+          <Badge variant="outline" className="flex items-center gap-1 bg-slate-100 text-slate-800 border border-slate-300 font-bold">
+            <AlertCircle className="w-3 h-3 text-slate-600" />
             <span>{locale === 'bn' ? 'প্রত্যাহারকৃত' : 'Withdrawn'}</span>
           </Badge>
         );
@@ -147,22 +169,22 @@ export function RequestsPage({ locale }: { locale: Locale }) {
   function getModeLabel(mode: string) {
     if (mode === 'online') {
       return (
-        <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-info-soft  text-info-soft-foreground  border border-info/20 ">
-          <Wifi className="w-3 h-3" />
+        <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-blue-50 text-blue-900 border border-blue-200 font-bold">
+          <Wifi className="w-3 h-3 text-blue-700" />
           {locale === 'bn' ? 'অনলাইন' : 'Online'}
         </span>
       );
     }
     if (mode === 'in_person') {
       return (
-        <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-primary-soft  text-success-soft-foreground  border border-primary/20 ">
-          <MapPin className="w-3 h-3" />
+        <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-emerald-50 text-emerald-950 border border-emerald-200 font-bold">
+          <MapPin className="w-3 h-3 text-emerald-700" />
           {locale === 'bn' ? 'সরাসরি (ইন-পার্সন)' : 'In Person'}
         </span>
       );
     }
     return (
-      <span className="inline-flex items-center gap-1 text-xs px-2 py-0.5 rounded-full bg-interactive-soft  text-interactive  border border-interactive/20 ">
+      <span className="inline-flex items-center gap-1 text-xs px-2.5 py-0.5 rounded-full bg-purple-50 text-purple-950 border border-purple-200 font-bold">
         {locale === 'bn' ? 'হাইব্রিড' : 'Hybrid'}
       </span>
     );
@@ -285,6 +307,26 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           </span>
         </button>
         <button
+          onClick={() => setActiveFilter('disputed')}
+          className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
+            activeFilter === 'disputed'
+              ? 'bg-amber-600 text-white shadow-xs'
+              : 'bg-amber-50 text-amber-950 hover:bg-amber-100 border border-amber-300'
+          }`}
+        >
+          <Scale className="w-3.5 h-3.5" />
+          <span>{locale === 'bn' ? 'বিরোধ / ডিসপিউট' : 'Disputed'}</span>
+          <span
+            className={`px-1.5 py-0.2 rounded-full text-[10px] font-bold ${
+              activeFilter === 'disputed'
+                ? 'bg-white/20 text-white'
+                : 'bg-white text-amber-950 border border-amber-200'
+            }`}
+          >
+            {counts.disputed}
+          </span>
+        </button>
+        <button
           onClick={() => setActiveFilter('closed')}
           className={`px-3.5 py-1.5 rounded-xl text-xs font-bold transition-all flex items-center gap-2 ${
             activeFilter === 'closed'
@@ -341,7 +383,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           actionHref={req.isTutor ? undefined : withLocale('/tutors', locale)}
         />
       ) : (
-        <div className="grid grid-cols-1 gap-5 md:grid-cols-2" data-testid="requests-list">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-5" data-testid="requests-list">
           {filteredItems.map((r: BookingRequestItem) => {
             const tutorUser = r.tutorProfile?.user;
             const tutorName =
@@ -373,11 +415,11 @@ export function RequestsPage({ locale }: { locale: Locale }) {
               <Card
                 key={r.id}
                 data-testid={`request-card-${r.id}`}
-                className="flex flex-col justify-between bg-card border border-border hover:border-primary/40 text-foreground hover:shadow-xs transition-all rounded-2xl overflow-hidden shadow-xs"
+                className="flex flex-col justify-between bg-card border border-slate-200 hover:border-blue-400 text-foreground hover:shadow-xs transition-all rounded-2xl overflow-hidden shadow-xs"
               >
                 <CardHeader className="space-y-3 pb-3">
                   <div className="flex items-center justify-between gap-2">
-                    <span className="font-mono text-xs font-semibold text-muted-foreground">
+                    <span className="font-mono text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-lg">
                       ID: #{r.id.slice(0, 8)}
                     </span>
                     {getStatusBadge(r.status)}
@@ -385,7 +427,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
 
                   <div className="flex items-start justify-between gap-3">
                     <div>
-                      <h3 className="text-base font-extrabold text-foreground tracking-tight">
+                      <h3 className="text-base font-black text-slate-900 tracking-tight">
                         {req.isTutor
                           ? locale === 'bn'
                             ? `শিক্ষার্থী: ${otherPartyName}`
@@ -395,17 +437,17 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                             : `Tutor: ${otherPartyName}`}
                       </h3>
                       {r.tutorProfile?.headline && !req.isTutor && (
-                        <p className="text-xs text-muted-foreground font-medium line-clamp-1 mt-0.5">
+                        <p className="text-xs text-slate-700 font-medium line-clamp-1 mt-0.5">
                           {r.tutorProfile.headline}
                         </p>
                       )}
                     </div>
                     {rateFormatted && (
                       <div className="text-right shrink-0">
-                        <span className="text-base font-black text-foreground">
+                        <span className="text-base font-black text-slate-900 font-mono">
                           {rateFormatted}
                         </span>
-                        <span className="block text-[10px] font-semibold text-muted-foreground">
+                        <span className="block text-[10px] font-bold text-slate-600">
                           {locale === 'bn' ? '/সেশন' : '/session'}
                         </span>
                       </div>
@@ -415,13 +457,13 @@ export function RequestsPage({ locale }: { locale: Locale }) {
 
                 <CardContent className="space-y-3 text-xs pt-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
-                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-surface text-foreground border border-border font-medium text-xs">
-                      <BookOpen className="w-3.5 h-3.5 text-primary" />
+                    <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-50 text-blue-900 border border-blue-200 font-bold text-xs">
+                      <BookOpen className="w-3.5 h-3.5 text-blue-700" />
                       {subjectTitle}
                     </span>
                     {levelTitle && (
-                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-surface text-foreground border border-border font-medium text-xs">
-                        <GraduationCap className="w-3.5 h-3.5 text-interactive" />
+                      <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-100 text-slate-900 border border-slate-200 font-bold text-xs">
+                        <GraduationCap className="w-3.5 h-3.5 text-blue-700" />
                         {levelTitle}
                       </span>
                     )}
@@ -429,13 +471,13 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                   </div>
 
                   {r.messageNotes && (
-                    <div className="p-3 rounded-xl bg-surface border border-border text-foreground text-xs leading-relaxed italic">
+                    <div className="p-3 rounded-xl bg-slate-50 border border-slate-200 text-slate-800 text-xs leading-relaxed italic font-medium">
                       "{r.messageNotes}"
                     </div>
                   )}
 
-                  <div className="flex items-center gap-1.5 text-xs text-muted-foreground pt-1">
-                    <Calendar className="w-3.5 h-3.5 text-muted-foreground" />
+                  <div className="flex items-center gap-1.5 text-xs text-slate-700 font-semibold pt-1">
+                    <Calendar className="w-3.5 h-3.5 text-blue-700" />
                     <span>
                       {locale === 'bn' ? 'অনুরোধের তারিখ:' : 'Requested on:'}{' '}
                       {formatWeekdayDate(r.createdAt, locale)}
@@ -448,28 +490,35 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                   {!req.isTutor && (
                     <>
                       {r.status === 'requested' && (
-                        <Button
-                          size="sm"
-                          variant="outline"
-                          disabled={req.withdrawing}
-                          onClick={() => req.handleWithdraw(r.id)}
-                          data-testid={`withdraw-btn-${r.id}`}
-                          className="text-destructive hover:bg-destructive-soft border-destructive/30 hover:border-destructive text-xs font-semibold"
-                        >
-                          {dict.bookingRequest.withdrawButton}
-                        </Button>
+                        <div className="flex items-center justify-between w-full">
+                          <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
+                            <Button size="sm" variant="outline" className="text-xs font-bold border-slate-300 text-slate-900 hover:bg-slate-100">
+                              {locale === 'bn' ? 'বিস্তারিত' : 'Details'}
+                            </Button>
+                          </Link>
+                          <Button
+                            size="sm"
+                            variant="outline"
+                            disabled={req.withdrawing}
+                            onClick={() => req.handleWithdraw(r.id)}
+                            data-testid={`withdraw-btn-${r.id}`}
+                            className="text-rose-800 hover:bg-rose-50 border-rose-300 hover:border-rose-400 text-xs font-bold"
+                          >
+                            {dict.bookingRequest.withdrawButton}
+                          </Button>
+                        </div>
                       )}
 
                       {['accepted', 'awaiting_payment'].includes(r.status) && (
                         <div className="flex flex-wrap items-center gap-2 w-full justify-end">
                           <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
-                            <Button size="sm" variant="outline" className="text-xs font-semibold">
+                            <Button size="sm" variant="outline" className="text-xs font-bold border-slate-300 text-slate-900 hover:bg-slate-100">
                               {locale === 'bn' ? 'বিস্তারিত' : 'Details'}
                             </Button>
                           </Link>
                           <Link href={withLocale('/dashboard/student/sessions', locale)}>
-                            <Button size="sm" variant="outline" className="text-xs font-semibold">
-                              <Video className="w-3.5 h-3.5 mr-1 text-primary" />
+                            <Button size="sm" variant="outline" className="text-xs font-bold border-slate-300 text-slate-900 hover:bg-slate-100">
+                              <Video className="w-3.5 h-3.5 mr-1 text-blue-700" />
                               {locale === 'bn' ? 'ক্লাস সময়সূচি' : 'Classes'}
                             </Button>
                           </Link>
@@ -488,12 +537,12 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                       {['confirmed', 'in_progress', 'completed'].includes(r.status) && (
                         <div className="flex flex-wrap items-center gap-2 w-full justify-end">
                           <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
-                            <Button size="sm" variant="outline" className="text-xs font-semibold">
+                            <Button size="sm" variant="outline" className="text-xs font-bold border-slate-300 text-slate-900 hover:bg-slate-100">
                               {locale === 'bn' ? 'বিস্তারিত' : 'Details'}
                             </Button>
                           </Link>
                           <Link href={withLocale('/dashboard/student/sessions', locale)}>
-                            <Button size="sm" className="text-xs font-bold">
+                            <Button size="sm" className="text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white">
                               <Video className="w-3.5 h-3.5 mr-1" />
                               {locale === 'bn' ? 'ক্লাস সময়সূচি' : 'Classes'}
                             </Button>
@@ -501,17 +550,38 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                         </div>
                       )}
 
-                      {['declined', 'withdrawn', 'cancelled'].includes(r.status) && (
-                        <Link href={withLocale('/tutors', locale)} className="ml-auto">
-                          <Button
-                            size="sm"
-                            variant="ghost"
-                            className="text-xs font-semibold text-primary hover:text-primary hover:bg-primary-soft"
-                          >
-                            {locale === 'bn' ? 'অন্য শিক্ষক খুঁজুন' : 'Search Other Tutors'}
-                            <ArrowRight className="w-3.5 h-3.5 ml-1" />
-                          </Button>
-                        </Link>
+                      {['disputed', 'replacement_requested'].includes(r.status) && (
+                        <div className="flex flex-wrap items-center gap-2 w-full justify-end">
+                          <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
+                            <Button
+                              size="sm"
+                              className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs flex items-center gap-1.5"
+                            >
+                              <Scale className="w-3.5 h-3.5" />
+                              <span>{locale === 'bn' ? 'বিরোধ বিবরণ দেখুন' : 'View Dispute Dossier'}</span>
+                            </Button>
+                          </Link>
+                        </div>
+                      )}
+
+                      {['declined', 'withdrawn', 'cancelled', 'expired'].includes(r.status) && (
+                        <div className="flex items-center justify-between w-full">
+                          <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
+                            <Button size="sm" variant="outline" className="text-xs font-bold border-slate-300 text-slate-900 hover:bg-slate-100">
+                              {locale === 'bn' ? 'বুকিং বিবরণ' : 'Booking Details'}
+                            </Button>
+                          </Link>
+                          <Link href={withLocale('/tutors', locale)}>
+                            <Button
+                              size="sm"
+                              variant="ghost"
+                              className="text-xs font-bold text-primary hover:text-primary hover:bg-primary-soft"
+                            >
+                              {locale === 'bn' ? 'অন্য শিক্ষক খুঁজুন' : 'Search Other Tutors'}
+                              <ArrowRight className="w-3.5 h-3.5 ml-1" />
+                            </Button>
+                          </Link>
+                        </div>
                       )}
                     </>
                   )}
@@ -521,13 +591,18 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                     <>
                       {r.status === 'requested' && (
                         <div className="flex items-center gap-2 ml-auto">
+                          <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
+                            <Button size="sm" variant="outline" className="text-xs font-bold border-slate-300 text-slate-900 hover:bg-slate-100">
+                              {locale === 'bn' ? 'বিস্তারিত' : 'Details'}
+                            </Button>
+                          </Link>
                           <Button
                             size="sm"
                             variant="outline"
                             disabled={req.responding}
                             onClick={() => req.handleRespond(r.id, 'decline')}
                             data-testid={`decline-btn-${r.id}`}
-                            className="text-xs"
+                            className="text-rose-800 hover:bg-rose-50 border-rose-300 text-xs font-bold"
                           >
                             {dict.bookingRequest.declineButton}
                           </Button>
@@ -545,12 +620,42 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                       {['accepted', 'awaiting_payment', 'confirmed', 'in_progress'].includes(
                         r.status,
                       ) && (
+                        <div className="flex items-center gap-2 ml-auto">
+                          <Link href={withLocale(`/dashboard/bookings/${r.id}`, locale)}>
+                            <Button size="sm" variant="outline" className="text-xs font-bold border-slate-300 text-slate-900 hover:bg-slate-100">
+                              {locale === 'bn' ? 'বিস্তারিত' : 'Details'}
+                            </Button>
+                          </Link>
+                          <Link
+                            href={withLocale('/dashboard/tutor/sessions', locale)}
+                          >
+                            <Button size="sm" variant="outline" className="text-xs font-bold border-slate-300 text-slate-900 hover:bg-slate-100">
+                              {locale === 'bn' ? 'শিডিউল দেখুন' : 'View Schedule'}
+                            </Button>
+                          </Link>
+                        </div>
+                      )}
+                      {['disputed', 'replacement_requested'].includes(r.status) && (
                         <Link
-                          href={withLocale('/dashboard/tutor/sessions', locale)}
+                          href={withLocale(`/dashboard/bookings/${r.id}`, locale)}
                           className="ml-auto"
                         >
-                          <Button size="sm" variant="outline" className="text-xs">
-                            {locale === 'bn' ? 'শিডিউল দেখুন' : 'View Schedule'}
+                          <Button
+                            size="sm"
+                            className="bg-amber-600 hover:bg-amber-700 text-white text-xs font-bold shadow-xs flex items-center gap-1.5"
+                          >
+                            <Scale className="w-3.5 h-3.5" />
+                            <span>{locale === 'bn' ? 'বিরোধ বিবরণ দেখুন' : 'View Dispute'}</span>
+                          </Button>
+                        </Link>
+                      )}
+                      {['declined', 'withdrawn', 'cancelled', 'completed', 'expired'].includes(r.status) && (
+                        <Link
+                          href={withLocale(`/dashboard/bookings/${r.id}`, locale)}
+                          className="ml-auto"
+                        >
+                          <Button size="sm" variant="outline" className="text-xs font-bold border-slate-300 text-slate-900 hover:bg-slate-100">
+                            {locale === 'bn' ? 'বুকিং বিবরণ' : 'Booking Details'}
                           </Button>
                         </Link>
                       )}

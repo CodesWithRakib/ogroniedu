@@ -1,9 +1,14 @@
-import { IsOptional, IsIn, IsInt, Min, Max } from 'class-validator';
+import { IsOptional, IsIn, IsInt, Min, Max, IsUUID } from 'class-validator';
 import { Type } from 'class-transformer';
 import { ApiPropertyOptional } from '@nestjs/swagger';
 import type { DisputeStatus } from '../entities/booking-dispute.entity';
 
 export class QueryDisputesDto {
+  @ApiPropertyOptional({ description: 'Filter disputes by booking ID' })
+  @IsOptional()
+  @IsUUID('4')
+  bookingId?: string;
+
   @ApiPropertyOptional({
     description: 'Filter disputes by status',
     enum: [

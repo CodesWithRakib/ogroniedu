@@ -1,15 +1,12 @@
-'use client';
-
-import { use } from 'react';
-import { BookingDetailPage } from '@/features/bookings/pages/booking-detail-page';
+import { redirect } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
 
 interface BookingDetailPageProps {
   params: Promise<{ locale: string; id: string }>;
 }
 
-export default function BookingDetailPageWrapper({ params }: BookingDetailPageProps) {
-  const resolved = use(params);
+export default async function BookingDetailPageWrapper({ params }: BookingDetailPageProps) {
+  const resolved = await params;
   const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
-  return <BookingDetailPage bookingId={resolved.id} locale={locale} />;
+  redirect(`/${locale}/dashboard/bookings/${resolved.id}`);
 }
