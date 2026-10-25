@@ -18,6 +18,8 @@ import {
   ArrowLeft,
   ShieldCheck,
   Radio,
+  LayoutGrid,
+  Columns,
 } from 'lucide-react';
 import {
   Button,
@@ -43,8 +45,10 @@ import {
   useMarkAttendanceMutation,
   type AttendanceStatus,
 } from '@/store/services/learning-api';
+import { useAppSelector } from '@/store';
 import { InteractiveWhiteboard } from './InteractiveWhiteboard';
 import { ClassroomFormulasDrawer } from './ClassroomFormulasDrawer';
+import { JitsiClassroomMeeting } from './JitsiClassroomMeeting';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
 import { parseItem } from '@/lib/api/parse';
 import { withLocale } from '@/lib/auth';
@@ -53,16 +57,21 @@ interface ClassroomWorkspaceProps {
   session: SessionItem;
   locale?: 'bn' | 'en';
   isTutor?: boolean;
+  initialTab?: 'video' | 'whiteboard' | 'formulas' | 'attendance';
 }
 
 export function ClassroomWorkspace({
   session,
   locale = 'bn',
   isTutor = false,
+  initialTab = 'video',
 }: ClassroomWorkspaceProps) {
-  const [activeTab, setActiveTab] = useState<'whiteboard' | 'formulas' | 'attendance'>(
-    'whiteboard',
-  );
+  const isBn = locale === 'bn';
+  const currentUser = useAppSelector((s) => s.auth.user);
+
+  // Default to initialTab ('video' or caller specified)
+  const [activeTab, setActiveTab] = useState<'video' | 'whiteboard' | 'formulas' | 'attendance'>(initialTab);
+  const [isSplitMode, setIsSplitMode] = useState(false);
 
   // Mutations
   const [startSession, { isLoading: isStarting }] = useStartSessionMutation();
@@ -93,6 +102,7 @@ export function ClassroomWorkspace({
   const [selectedAttendanceStatus, setSelectedAttendanceStatus] =
     useState<AttendanceStatus>('present');
   const [attendanceNotes, setAttendanceNotes] = useState('');
+  const [correctionReason, setCorrectionReason] = useState('');
   const [attendanceSuccess, setAttendanceSuccess] = useState(false);
 
   const existingAttendance = React.useMemo(() => {
@@ -139,7 +149,7 @@ export function ClassroomWorkspace({
     try {
       await startSession(session.id).unwrap();
       setActionSuccess(
-        locale === 'bn'
+        isBn
           ? 'ক্লাস সফলভাবে শুরু হয়েছে! লাইভ সেশন চলছে।'
           : 'Session started! Live classroom is now in progress.',
       );
@@ -163,7 +173,7 @@ export function ClassroomWorkspace({
       }).unwrap();
       setShowCompletionModal(false);
       setActionSuccess(
-        locale === 'bn'
+        isBn
           ? 'ক্লাস সফলভাবে সম্পন্ন হয়েছে এবং সংরক্ষিত হয়েছে!'
           : 'Session successfully marked as completed!',
       );
@@ -187,7 +197,7 @@ export function ClassroomWorkspace({
       }).unwrap();
       setIsEditingMeetingUrl(false);
       setActionSuccess(
-        locale === 'bn'
+        isBn
           ? 'মিটিং লিংক সফলভাবে আপডেট করা হয়েছে!'
           : 'Classroom meeting URL updated successfully!',
       );
@@ -198,6 +208,23 @@ export function ClassroomWorkspace({
             'Failed to update meeting URL')
           : 'Failed to update meeting URL';
       setActionError(msg);
+    }
+  };
+
+  // Auto-save generated Jitsi URL handler
+  const handleMeetingUrlGenerated = async (url: string) => {
+    try {
+      await updateMeetingUrl({
+        id: session.id,
+        meetingUrl: url,
+      }).unwrap();
+      setActionSuccess(
+        isBn
+          ? 'অগ্রণী জিটসি ক্লাসরুম লিংক সেশনের মূল মিটিং লিংক হিসেবে সংরক্ষিত হয়েছে!'
+          : 'Ogroni Jitsi Classroom link saved as the primary session meeting URL!',
+      );
+    } catch {
+      // ignore
     }
   };
 
@@ -217,14 +244,21 @@ export function ClassroomWorkspace({
 
     if (!participantUserId) return;
 
+    if (latestAttendance && !correctionReason.trim()) {
+      setActionError(isBn ? 'উপস্থিতি সংশোধনের জন্য কারণ লিখুন।' : 'A reason is required to correct attendance.');
+      return;
+    }
+
     try {
       await markAttendance({
         sessionId: session.id,
         participantUserId,
         attendanceStatus: selectedAttendanceStatus,
         notes: attendanceNotes.trim() || undefined,
+        correctionReason: correctionReason.trim() || undefined,
       }).unwrap();
       setAttendanceSuccess(true);
+      setCorrectionReason('');
       refetchAttendance();
       setTimeout(() => setAttendanceSuccess(false), 3000);
     } catch {
@@ -235,89 +269,85 @@ export function ClassroomWorkspace({
   const subjectTitle =
     (session.booking as { subject?: { nameBn?: string; nameEn?: string } })?.subject?.nameBn ||
     session.subjectName ||
-    (locale === 'bn' ? 'টিউটরিং ক্লাস' : 'Tutoring Class');
+    (isBn ? 'টিউটরিং ক্লাস' : 'Tutoring Class');
 
   const tutorName =
     session.tutorName ||
     (session.tutorProfile as { user?: { displayName?: string } })?.user?.displayName ||
-    (locale === 'bn' ? 'শিক্ষক' : 'Tutor');
+    (isBn ? 'শিক্ষক' : 'Tutor');
 
   const studentName =
     session.studentName ||
     (session.studentUser as { displayName?: string })?.displayName ||
-    (locale === 'bn' ? 'শিক্ষার্থী' : 'Student');
+    (isBn ? 'শিক্ষার্থী' : 'Student');
+
+  const activeParticipantName = currentUser?.displayName || (isTutor ? tutorName : studentName);
+  const activeParticipantEmail = currentUser?.email || undefined;
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6">
+    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 text-slate-900">
       {/* Top Breadcrumb & Status */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <Link
           href={withLocale(`/sessions/${session.id}`, locale)}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
+          className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-600 hover:text-slate-900 transition-colors"
           data-testid="back-to-session-detail"
         >
-          <ArrowLeft className="w-4 h-4" />
-          <span>{locale === 'bn' ? 'সেশন বিবরণে ফিরে যান' : 'Back to Session Details'}</span>
+          <ArrowLeft className="w-4 h-4 text-slate-500" />
+          <span>{isBn ? 'সেশন বিবরণে ফিরে যান' : 'Back to Session Details'}</span>
         </Link>
 
         {/* Live Status Pill & Timer */}
         <div className="flex items-center gap-3">
           {session.status === 'in_progress' ? (
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-interactive/10 border border-info/40 text-info-soft-foreground text-xs font-bold animate-pulse">
-              <Radio className="w-3.5 h-3.5 text-info-soft-foreground" />
-              <span>{locale === 'bn' ? 'লাইভ ক্লাস চলছে' : 'Live Session Active'}</span>
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-blue-50 border border-blue-300 text-blue-900 text-xs font-black animate-pulse">
+              <Radio className="w-3.5 h-3.5 text-blue-600" />
+              <span>{isBn ? 'লাইভ ক্লাস চলছে' : 'Live Session Active'}</span>
               <span>•</span>
               <span className="font-mono">{formatTimer(secondsElapsed)}</span>
             </div>
           ) : session.status === 'completed' ? (
-            <Badge className="bg-interactive/10 text-info-soft-foreground border border-interactive/40 text-xs px-3 py-1">
-              {locale === 'bn' ? 'ক্লাস সম্পন্ন' : 'Completed'}
+            <Badge className="bg-emerald-100 text-emerald-900 border border-emerald-300 text-xs font-bold px-3 py-1">
+              {isBn ? 'ক্লাস সম্পন্ন' : 'Completed'}
             </Badge>
           ) : (
-            <Badge className="bg-success-soft text-success-soft-foreground border border-success/30 text-xs px-3 py-1">
-              {locale === 'bn' ? 'ক্লাসের জন্য নির্ধারিত' : 'Scheduled'}
+            <Badge className="bg-blue-50 text-blue-900 border border-blue-200 text-xs font-bold px-3 py-1">
+              {isBn ? 'ক্লাসের জন্য নির্ধারিত' : 'Scheduled'}
             </Badge>
           )}
         </div>
       </div>
 
       {/* Main Header Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-brand-soft border border-brand/30 p-6 md:p-8">
-        <div className="absolute top-0 right-0 w-80 h-80 bg-interactive/10 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-sm p-6 md:p-8 text-slate-900">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-3">
-            <div className="flex items-center gap-2 text-xs text-info-soft-foreground font-semibold">
-              <Sparkles className="w-4 h-4 text-info-soft-foreground" />
+          <div className="space-y-2.5">
+            <div className="flex items-center gap-2 text-xs text-blue-700 font-bold">
+              <Sparkles className="w-4 h-4 text-blue-600" />
               <span>
-                {locale === 'bn'
-                  ? 'অগ্রণী এডু ইন্টারেক্টিভ লাইভ ক্লাসরুম'
-                  : 'OgroniEdu Live Interactive Classroom'}
+                {isBn
+                  ? 'অগ্রণী এডু ইন্টারেক্টিভ লাইভ ক্লাসরুম ও ভিডিও স্টুডিও'
+                  : 'OgroniEdu Live Interactive Classroom & Video Studio'}
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-foreground tracking-tight">
+            <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
               {subjectTitle}
             </h1>
-            <div className="flex flex-wrap items-center gap-4 text-xs text-muted-foreground">
+            <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-600">
               <span className="flex items-center gap-1.5">
-                <span className="text-muted-foreground">
-                  {locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'}
-                </span>
-                <strong className="text-foreground font-bold">{tutorName}</strong>
+                <span className="text-slate-500 font-semibold">{isBn ? 'শিক্ষক:' : 'Tutor:'}</span>
+                <strong className="text-slate-900 font-bold">{tutorName}</strong>
               </span>
               <span>•</span>
               <span className="flex items-center gap-1.5">
-                <span className="text-muted-foreground">
-                  {locale === 'bn' ? 'শিক্ষার্থী:' : 'Student:'}
-                </span>
-                <strong className="text-foreground font-bold">{studentName}</strong>
+                <span className="text-slate-500 font-semibold">{isBn ? 'শিক্ষার্থী:' : 'Student:'}</span>
+                <strong className="text-slate-900 font-bold">{studentName}</strong>
               </span>
               <span>•</span>
-              <span className="flex items-center gap-1 text-info-soft-foreground">
-                <Clock className="w-3.5 h-3.5" />
+              <span className="flex items-center gap-1.5 text-slate-700 font-semibold">
+                <Clock className="w-3.5 h-3.5 text-blue-600" />
                 <span>
-                  {formatWeekdayDate(session.startsAt, locale)} (
-                  {formatTime(session.startsAt, locale)})
+                  {formatWeekdayDate(session.startsAt, locale)} ({formatTime(session.startsAt, locale)})
                 </span>
               </span>
             </div>
@@ -325,31 +355,29 @@ export function ClassroomWorkspace({
 
           {/* Action Hub for Tutor / Student */}
           <div className="flex flex-wrap items-center gap-2.5">
-            {/* Join Video Conference */}
-            {session.meetingUrl ? (
+            {/* Join Video Conference Button */}
+            <Button
+              type="button"
+              size="sm"
+              onClick={() => setActiveTab('video')}
+              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-2xl shadow-xs"
+              data-testid="launch-meeting-btn"
+            >
+              <Video className="w-4 h-4" />
+              <span>{isBn ? 'লাইভ ভিডিও ক্লাসরুম' : 'Live Video Classroom'}</span>
+            </Button>
+
+            {/* If meetingUrl exists, also allow external launch */}
+            {session.meetingUrl && (
               <a
                 href={session.meetingUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-brand to-brand-accent text-brand-foreground text-xs font-bold rounded-2xl transition-all"
-                data-testid="launch-meeting-btn"
+                className="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors text-xs flex items-center gap-1"
+                title={isBn ? 'বাইরে মিটিং লিংক খুলুন' : 'Open meeting link externally'}
               >
-                <Video className="w-4 h-4" />
-                <span>{locale === 'bn' ? 'গুগল মিট চালু করুন' : 'Launch Google Meet'}</span>
-                <ExternalLink className="w-3.5 h-3.5 opacity-80" />
+                <ExternalLink className="w-4 h-4 text-slate-600" />
               </a>
-            ) : (
-              isTutor && (
-                <Button
-                  size="sm"
-                  onClick={() => setIsEditingMeetingUrl(true)}
-                  className="bg-interactive hover:bg-interactive-hover text-white text-xs font-bold rounded-2xl"
-                  data-testid="set-meeting-url-btn"
-                >
-                  <Video className="w-4 h-4 mr-1.5" />
-                  {locale === 'bn' ? 'মিটিং লিংক সেট করুন' : 'Attach Meeting Link'}
-                </Button>
-              )
             )}
 
             {/* Share / Copy Meeting Link */}
@@ -358,22 +386,22 @@ export function ClassroomWorkspace({
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  className="p-2.5 rounded-2xl bg-muted hover:bg-surface-hover text-muted-foreground border border-border transition-all text-xs flex items-center gap-1.5"
-                  title={locale === 'bn' ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
-                  aria-label={locale === 'bn' ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
+                  className="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors text-xs flex items-center gap-1.5 font-bold"
+                  title={isBn ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
+                  aria-label={isBn ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
                   data-testid="copy-meeting-link-btn"
                 >
                   {copiedLink ? (
-                    <Check className="w-4 h-4 text-success-soft-foreground" />
+                    <Check className="w-4 h-4 text-emerald-600" />
                   ) : (
-                    <Copy className="w-4 h-4" />
+                    <Copy className="w-4 h-4 text-slate-700" />
                   )}
                   <span className="hidden sm:inline">
                     {copiedLink
-                      ? locale === 'bn'
+                      ? isBn
                         ? 'কপি হয়েছে'
                         : 'Copied'
-                      : locale === 'bn'
+                      : isBn
                         ? 'লিংক কপি'
                         : 'Copy'}
                   </span>
@@ -381,13 +409,13 @@ export function ClassroomWorkspace({
 
                 <a
                   href={`https://api.whatsapp.com/send?text=${encodeURIComponent(
-                    `${locale === 'bn' ? 'অগ্রণী এডু ক্লাসরুম লিংক:' : 'OgroniEdu Class Link:'} ${session.meetingUrl}`,
+                    `${isBn ? 'অগ্রণী এডু ক্লাসরুম লিংক:' : 'OgroniEdu Class Link:'} ${session.meetingUrl}`,
                   )}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2.5 rounded-2xl bg-success-soft hover:bg-primary/30 text-success-soft-foreground border border-success/30 transition-all text-xs flex items-center gap-1"
-                  title={locale === 'bn' ? 'হোয়াটসঅ্যাপে শেয়ার করুন' : 'Share on WhatsApp'}
-                  aria-label={locale === 'bn' ? 'হোয়াটসঅ্যাপে শেয়ার করুন' : 'Share on WhatsApp'}
+                  className="p-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 transition-colors text-xs flex items-center gap-1"
+                  title={isBn ? 'হোয়াটসঅ্যাপে শেয়ার করুন' : 'Share on WhatsApp'}
+                  aria-label={isBn ? 'হোয়াটসঅ্যাপে শেয়ার করুন' : 'Share on WhatsApp'}
                 >
                   <Share2 className="w-4 h-4" />
                 </a>
@@ -400,11 +428,11 @@ export function ClassroomWorkspace({
                 size="sm"
                 onClick={handleStartClass}
                 isLoading={isStarting}
-                className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-xs shadow-blue-500/25"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-xs"
                 data-testid="start-class-btn"
               >
                 <Play className="w-4 h-4 mr-1.5 fill-current" />
-                {locale === 'bn' ? 'ক্লাস শুরু করুন' : 'Start Class'}
+                {isBn ? 'ক্লাস শুরু করুন' : 'Start Class'}
               </Button>
             )}
 
@@ -413,21 +441,22 @@ export function ClassroomWorkspace({
                 size="sm"
                 onClick={() => setShowCompletionModal(true)}
                 isLoading={isCompleting}
-                className="bg-interactive hover:bg-interactive-hover text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl"
+                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-xs"
                 data-testid="complete-class-btn"
               >
-                <CheckCircle2 className="w-4 h-4 mr-1.5" />
-                {locale === 'bn' ? 'ক্লাস সম্পন্ন করুন' : 'Mark Completed'}
+                <CheckCircle2 className="w-4 h-4 mr-1.5 text-emerald-400" />
+                {isBn ? 'ক্লাস সম্পন্ন করুন' : 'Mark Completed'}
               </Button>
             )}
 
-            {isTutor && session.meetingUrl && (
+            {isTutor && (
               <button
                 type="button"
                 onClick={() => setIsEditingMeetingUrl(!isEditingMeetingUrl)}
-                className="p-2.5 rounded-2xl bg-muted hover:bg-surface-hover text-muted-foreground hover:text-foreground border border-border"
-                title={locale === 'bn' ? 'মিটিং লিংক পরিবর্তন করুন' : 'Edit Meeting Link'}
-                aria-label={locale === 'bn' ? 'মিটিং লিংক পরিবর্তন করুন' : 'Edit Meeting Link'}
+                className="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300"
+                title={isBn ? 'মিটিং লিংক পরিবর্তন করুন' : 'Edit Meeting Link'}
+                aria-label={isBn ? 'মিটিং লিংক পরিবর্তন করুন' : 'Edit Meeting Link'}
+                data-testid="set-meeting-url-btn"
               >
                 <Edit2 className="w-4 h-4" />
               </button>
@@ -439,15 +468,15 @@ export function ClassroomWorkspace({
         {isEditingMeetingUrl && (
           <form
             onSubmit={handleSaveMeetingUrl}
-            className="mt-4 pt-4 border-t border-border flex flex-col sm:flex-row items-center gap-2"
+            className="mt-4 pt-4 border-t border-slate-200 flex flex-col sm:flex-row items-center gap-2"
           >
             <Input
               type="url"
               required
               value={meetingUrlInput}
               onChange={(e) => setMeetingUrlInput(e.target.value)}
-              placeholder="https://meet.google.com/xxx-yyyy-zzz"
-              className="flex-1 h-9 rounded-xl"
+              placeholder="https://meet.jit.si/ogroni-... or https://meet.google.com/..."
+              className="flex-1 h-9 rounded-xl border-slate-300 text-slate-900 bg-white"
               data-testid="meeting-url-input"
             />
             <div className="flex items-center gap-2 w-full sm:w-auto">
@@ -455,19 +484,19 @@ export function ClassroomWorkspace({
                 type="submit"
                 size="sm"
                 isLoading={isUpdatingUrl}
-                className="bg-interactive hover:bg-interactive-hover text-white text-xs font-bold rounded-xl h-9 px-4"
+                className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-bold rounded-xl h-9 px-4"
                 data-testid="save-meeting-url-btn"
               >
-                {locale === 'bn' ? 'সংরক্ষণ' : 'Save'}
+                {isBn ? 'সংরক্ষণ' : 'Save'}
               </Button>
               <Button
                 type="button"
                 size="sm"
                 variant="outline"
                 onClick={() => setIsEditingMeetingUrl(false)}
-                className="border-border text-muted-foreground text-xs rounded-xl h-9 px-3"
+                className="border-slate-300 text-slate-700 text-xs rounded-xl h-9 px-3"
               >
-                {locale === 'bn' ? 'বাতিল' : 'Cancel'}
+                {isBn ? 'বাতিল' : 'Cancel'}
               </Button>
             </div>
           </form>
@@ -475,250 +504,190 @@ export function ClassroomWorkspace({
 
         {/* Action Status Feedback */}
         {actionSuccess && (
-          <div className="mt-4 p-3 rounded-2xl bg-success-soft border border-success/30 text-success-soft-foreground text-xs flex items-center gap-2">
-            <CheckCircle2 className="w-4 h-4 shrink-0 text-success-soft-foreground" />
+          <div className="mt-4 p-3 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-semibold flex items-center gap-2">
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-700" />
             <span>{actionSuccess}</span>
           </div>
         )}
         {actionError && (
-          <div className="mt-4 p-3 rounded-2xl bg-destructive/10 border border-destructive/40 text-destructive-soft-foreground text-xs">
+          <div className="mt-4 p-3 rounded-2xl bg-rose-50 border border-rose-300 text-rose-900 text-xs font-semibold">
             {actionError}
           </div>
         )}
       </div>
 
-      {/* Navigation Tabs */}
-      <div className="flex items-center gap-2 border-b border-border pb-2">
-        <button
-          type="button"
-          onClick={() => setActiveTab('whiteboard')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
-            activeTab === 'whiteboard'
-              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40'
-              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
-          }`}
-          data-testid="tab-whiteboard"
-        >
-          <Sparkles className="w-4 h-4 text-info-soft-foreground" />
-          <span>{locale === 'bn' ? 'ইন্টারেক্টিভ হোয়াইটবোর্ড' : 'Interactive Whiteboard'}</span>
-        </button>
+      {/* Navigation Tabs & Split Screen Toggle */}
+      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
+        <div className="flex flex-wrap items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setActiveTab('video')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
+              activeTab === 'video'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+            }`}
+            data-testid="tab-video"
+          >
+            <Video className="w-4 h-4 text-blue-400" />
+            <span>{isBn ? 'লাইভ ভিডিও ক্লাস (Jitsi Meet)' : 'Live Video Class (Jitsi)'}</span>
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveTab('formulas')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
-            activeTab === 'formulas'
-              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40'
-              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
-          }`}
-          data-testid="tab-formulas"
-        >
-          <BookOpen className="w-4 h-4 text-info-soft-foreground" />
-          <span>{locale === 'bn' ? 'ফর্মুলা ও স্টাডি নোটস' : 'Formulas & Study Notes'}</span>
-        </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('whiteboard')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
+              activeTab === 'whiteboard'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+            }`}
+            data-testid="tab-whiteboard"
+          >
+            <Sparkles className="w-4 h-4 text-indigo-400" />
+            <span>{isBn ? 'ইন্টারেক্টিভ হোয়াইটবোর্ড' : 'Interactive Whiteboard'}</span>
+          </button>
 
-        <button
-          type="button"
-          onClick={() => setActiveTab('attendance')}
-          className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
-            activeTab === 'attendance'
-              ? 'bg-interactive/20 text-info-soft-foreground border border-info/40'
-              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
-          }`}
-          data-testid="tab-attendance"
-        >
-          <UserCheck className="w-4 h-4 text-info-soft-foreground" />
-          <span>{locale === 'bn' ? 'উপস্থিতি ও ক্লাস বিবরণ' : 'Attendance & Details'}</span>
-        </button>
+          <button
+            type="button"
+            onClick={() => setActiveTab('formulas')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
+              activeTab === 'formulas'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+            }`}
+            data-testid="tab-formulas"
+          >
+            <BookOpen className="w-4 h-4 text-emerald-400" />
+            <span>{isBn ? 'ফর্মুলা ও স্টাডি নোটস' : 'Formulas & Study Notes'}</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => setActiveTab('attendance')}
+            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
+              activeTab === 'attendance'
+                ? 'bg-slate-900 text-white shadow-xs'
+                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+            }`}
+            data-testid="tab-attendance"
+          >
+            <UserCheck className="w-4 h-4 text-amber-400" />
+            <span>{isBn ? 'উপস্থিতি ও বিবরণ' : 'Attendance & Details'}</span>
+          </button>
+        </div>
+
+        {/* Split Screen Button */}
+        <div className="flex items-center gap-2">
+          <button
+            type="button"
+            onClick={() => setIsSplitMode(!isSplitMode)}
+            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+              isSplitMode
+                ? 'bg-blue-50 border-blue-300 text-blue-900'
+                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
+            }`}
+            title={isBn ? 'ভিডিও ও হোয়াইটবোর্ড একসাথে দেখুন' : 'View video and tools side-by-side'}
+            data-testid="split-mode-toggle"
+          >
+            <Columns className="w-3.5 h-3.5 text-blue-600" />
+            <span>{isSplitMode ? (isBn ? 'স্প্লিট মোড চালু' : 'Split View Active') : (isBn ? 'স্প্লিট স্ক্রিন ভিউ' : 'Split Screen')}</span>
+          </button>
+        </div>
       </div>
 
-      {/* Workspace Views */}
-      {activeTab === 'whiteboard' && (
-        <InteractiveWhiteboard locale={locale} sessionTitle={subjectTitle} />
-      )}
-
-      {activeTab === 'formulas' && <ClassroomFormulasDrawer locale={locale} />}
-
-      {activeTab === 'attendance' && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          {/* Attendance Status Card */}
-          <Card className="bg-card border border-border text-foreground rounded-2xl p-6">
-            <h3 className="text-base font-bold text-foreground mb-2 flex items-center gap-2">
-              <UserCheck className="w-5 h-5 text-info-soft-foreground" />
-              <span>
-                {locale === 'bn' ? 'শিক্ষার্থীর হাজিরা / উপস্থিতি' : 'Student Attendance'}
-              </span>
-            </h3>
-            <p className="text-xs text-muted-foreground mb-4">
-              {locale === 'bn'
-                ? 'উপস্থিতি নিশ্চিত করলে অভিভাবক এসএমএস/নোটিফিকেশন পাবেন।'
-                : 'Recorded attendance triggers automated notifications to student & guardians.'}
-            </p>
-
-            {latestAttendance && (
-              <div className="p-4 bg-surface-muted rounded-2xl border border-border mb-4 space-y-2 text-xs">
-                <div className="flex items-center justify-between">
-                  <span className="text-muted-foreground">
-                    {locale === 'bn' ? 'রেকর্ডকৃত স্ট্যাটাস:' : 'Recorded Status:'}
-                  </span>
-                  <Badge className="bg-success-soft text-success-soft-foreground border border-success/30 uppercase font-bold">
-                    {latestAttendance.attendanceStatus}
-                  </Badge>
-                </div>
-                {latestAttendance.notes && (
-                  <p className="text-muted-foreground italic">"{latestAttendance.notes}"</p>
-                )}
-                <div className="text-[10px] text-muted-foreground text-right">
-                  {new Date(latestAttendance.recordedAt).toLocaleString(
-                    locale === 'bn' ? 'bn-BD' : 'en-US',
-                  )}
-                </div>
-              </div>
+      {/* Workspace Content: Split View or Standalone Tab */}
+      {isSplitMode ? (
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
+          <div className="w-full">
+            <JitsiClassroomMeeting
+              sessionId={session.id}
+              bookingId={session.bookingId}
+              meetingUrl={session.meetingUrl}
+              locale={locale}
+              displayName={activeParticipantName}
+              userEmail={activeParticipantEmail}
+              isTutor={isTutor}
+              onMeetingUrlGenerated={handleMeetingUrlGenerated}
+            />
+          </div>
+          <div className="w-full">
+            {activeTab === 'formulas' ? (
+              <ClassroomFormulasDrawer locale={locale} />
+            ) : activeTab === 'attendance' ? (
+              <AttendanceSection
+                session={session}
+                locale={locale}
+                isTutor={isTutor}
+                latestAttendance={latestAttendance}
+                selectedAttendanceStatus={selectedAttendanceStatus}
+                setSelectedAttendanceStatus={setSelectedAttendanceStatus}
+                attendanceNotes={attendanceNotes}
+                setAttendanceNotes={setAttendanceNotes}
+                correctionReason={correctionReason}
+                setCorrectionReason={setCorrectionReason}
+                attendanceSuccess={attendanceSuccess}
+                handleMarkAttendance={handleMarkAttendance}
+                isMarkingAttendance={isMarkingAttendance}
+              />
+            ) : (
+              <InteractiveWhiteboard locale={locale} sessionTitle={subjectTitle} />
             )}
-
-            {isTutor && (
-              <form
-                onSubmit={handleMarkAttendance}
-                className="space-y-3"
-                data-testid="classroom-mark-attendance-form"
-              >
-                <Label className="text-xs font-semibold text-muted-foreground block">
-                  {locale === 'bn' ? 'উপস্থিতি নির্ধারণ করুন:' : 'Mark Attendance:'}
-                </Label>
-                <div className="grid grid-cols-4 gap-2">
-                  {(['present', 'late', 'absent', 'excused'] as AttendanceStatus[]).map((st) => (
-                    <button
-                      type="button"
-                      key={st}
-                      onClick={() => setSelectedAttendanceStatus(st)}
-                      className={`py-2 text-xs font-bold rounded-xl border transition-all ${
-                        selectedAttendanceStatus === st
-                          ? 'bg-interactive border-info/40 text-white'
-                          : 'bg-muted border-border text-muted-foreground hover:bg-surface-hover'
-                      }`}
-                      data-testid={`classroom-attendance-${st}`}
-                    >
-                      {st === 'present'
-                        ? locale === 'bn'
-                          ? 'উপস্থিত'
-                          : 'Present'
-                        : st === 'late'
-                          ? locale === 'bn'
-                            ? 'দেরি'
-                            : 'Late'
-                          : st === 'absent'
-                            ? locale === 'bn'
-                              ? 'অনুপস্থিত'
-                              : 'Absent'
-                            : locale === 'bn'
-                              ? 'ছুটি'
-                              : 'Excused'}
-                    </button>
-                  ))}
-                </div>
-
-                <div className="space-y-1">
-                  <Label htmlFor="notes-inp" className="text-xs text-muted-foreground">
-                    {locale === 'bn' ? 'ক্লাসের সক্রিয়তা বা মন্তব্য:' : 'Session remarks:'}
-                  </Label>
-                  <Input
-                    id="notes-inp"
-                    type="text"
-                    value={attendanceNotes}
-                    onChange={(e) => setAttendanceNotes(e.target.value)}
-                    placeholder={
-                      locale === 'bn' ? 'যেমন: পাঠে মনোযোগ ছিল...' : 'e.g. Participated actively...'
-                    }
-                    className="w-full h-9 rounded-xl border-input bg-card text-xs text-foreground placeholder:text-muted-foreground"
-                    data-testid="attendance-notes-input"
-                  />
-                </div>
-
-                {attendanceSuccess && (
-                  <div className="p-2.5 rounded-xl bg-success-soft border border-success/30 text-success-soft-foreground text-xs flex items-center gap-1.5">
-                    <CheckCircle2 className="w-4 h-4 text-success-soft-foreground" />
-                    <span>
-                      {locale === 'bn' ? 'উপস্থিতি সফলভাবে সংরক্ষিত!' : 'Attendance marked!'}
-                    </span>
-                  </div>
-                )}
-
-                <Button
-                  type="submit"
-                  size="sm"
-                  isLoading={isMarkingAttendance}
-                  className="w-full bg-interactive hover:bg-interactive-hover text-white text-xs font-bold rounded-xl"
-                  data-testid="classroom-save-attendance-btn"
-                >
-                  {locale === 'bn' ? 'উপস্থিতি হালনাগাদ করুন' : 'Confirm Attendance'}
-                </Button>
-              </form>
-            )}
-          </Card>
-
-          {/* Session Safety & Security Card */}
-          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col justify-between">
-            <div className="space-y-4">
-              <h3 className="text-base font-bold text-foreground flex items-center gap-2">
-                <ShieldCheck className="w-5 h-5 text-success-soft-foreground" />
-                <span>
-                  {locale === 'bn'
-                    ? 'নিরাপত্তা ও এস্ক্রো প্রতিশ্রুতি'
-                    : 'Safety & Escrow Protection'}
-                </span>
-              </h3>
-              <p className="text-xs text-muted-foreground leading-relaxed">
-                {locale === 'bn'
-                  ? 'অগ্রণী এডুর ক্লাসরুম সেশন এন্ড-টু-এন্ড সুরক্ষিত। সেশন সম্পন্ন হওয়ার পর শিক্ষক ও শিক্ষার্থীর রিভিউয়ের ভিত্তিতে এস্ক্রো ফান্ড রিলিজ কার্যকর হয়।'
-                  : 'All sessions are monitored under OgroniEdu safety standards. Escrow milestone releases are executed upon verified session completion.'}
-              </p>
-
-              <div className="p-3.5 rounded-2xl bg-surface-muted border border-border space-y-2 text-xs">
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span>{locale === 'bn' ? 'বুকিং আইডি:' : 'Booking ID:'}</span>
-                  <span className="font-mono text-info-soft-foreground">
-                    {session.bookingId?.substring(0, 8)}...
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span>{locale === 'bn' ? 'ক্লাস আইডি:' : 'Session ID:'}</span>
-                  <span className="font-mono text-info-soft-foreground">
-                    {session.id.substring(0, 8)}...
-                  </span>
-                </div>
-                <div className="flex items-center justify-between text-muted-foreground">
-                  <span>{locale === 'bn' ? 'টাইমজোন:' : 'Timezone:'}</span>
-                  <span className="text-foreground font-semibold">Asia/Dhaka (BST)</span>
-                </div>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-border">
-              <Link
-                href={withLocale('/safety-reports', locale)}
-                className="text-xs text-destructive-soft-foreground hover:text-destructive-soft-foreground font-semibold inline-flex items-center gap-1"
-              >
-                {locale === 'bn'
-                  ? 'জরুরি রিপোর্ট বা সহায়তা প্রয়োজন?'
-                  : 'Need to file a safety report?'}
-              </Link>
-            </div>
-          </Card>
+          </div>
         </div>
+      ) : (
+        /* Standalone View */
+        <>
+          {activeTab === 'video' && (
+            <JitsiClassroomMeeting
+              sessionId={session.id}
+              bookingId={session.bookingId}
+              meetingUrl={session.meetingUrl}
+              locale={locale}
+              displayName={activeParticipantName}
+              userEmail={activeParticipantEmail}
+              isTutor={isTutor}
+              onMeetingUrlGenerated={handleMeetingUrlGenerated}
+            />
+          )}
+
+          {activeTab === 'whiteboard' && (
+            <InteractiveWhiteboard locale={locale} sessionTitle={subjectTitle} />
+          )}
+
+          {activeTab === 'formulas' && <ClassroomFormulasDrawer locale={locale} />}
+
+          {activeTab === 'attendance' && (
+            <AttendanceSection
+              session={session}
+              locale={locale}
+              isTutor={isTutor}
+              latestAttendance={latestAttendance}
+              selectedAttendanceStatus={selectedAttendanceStatus}
+              setSelectedAttendanceStatus={setSelectedAttendanceStatus}
+              attendanceNotes={attendanceNotes}
+              setAttendanceNotes={setAttendanceNotes}
+              correctionReason={correctionReason}
+              setCorrectionReason={setCorrectionReason}
+              attendanceSuccess={attendanceSuccess}
+              handleMarkAttendance={handleMarkAttendance}
+              isMarkingAttendance={isMarkingAttendance}
+            />
+          )}
+        </>
       )}
 
       {/* Class Completion Modal */}
       <Dialog open={showCompletionModal} onOpenChange={setShowCompletionModal}>
-        <DialogContent className="max-w-md w-full space-y-4">
+        <DialogContent className="max-w-md w-full space-y-4 bg-white text-slate-900 border border-slate-200 rounded-3xl p-6 shadow-2xl">
           <DialogHeader className="text-left space-y-1">
-            <div className="flex items-center gap-2 text-primary">
-              <CheckCircle2 className="w-5 h-5 text-primary" />
-              <DialogTitle className="text-lg font-bold text-foreground">
-                {locale === 'bn' ? 'ক্লাস সম্পন্ন করার নিশ্চিতকরণ' : 'Complete Tutoring Class'}
+            <div className="flex items-center gap-2 text-slate-900">
+              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              <DialogTitle className="text-lg font-black text-slate-900">
+                {isBn ? 'ক্লাস সম্পন্ন করার নিশ্চিতকরণ' : 'Complete Tutoring Class'}
               </DialogTitle>
             </div>
-            <DialogDescription className="text-xs text-muted-foreground">
-              {locale === 'bn'
+            <DialogDescription className="text-xs text-slate-600 font-medium leading-relaxed">
+              {isBn
                 ? 'আপনি কি ক্লাসটি সম্পন্ন হিসেবে চিহ্নিত করতে চান? ক্লাসের উপর কোনো মন্তব্য বা অগ্রগতি নোট থাকলে লিখুন।'
                 : 'Mark this session as completed. You may optionally add summary feedback or study recommendations.'}
             </DialogDescription>
@@ -727,9 +696,9 @@ export function ClassroomWorkspace({
           <div className="space-y-1.5">
             <Label
               htmlFor="completion-notes-modal"
-              className="text-xs text-muted-foreground font-medium"
+              className="text-xs text-slate-700 font-bold"
             >
-              {locale === 'bn' ? 'ক্লাস রিভিউ ও মন্তব্য (ঐচ্ছিক):' : 'Session Notes (Optional):'}
+              {isBn ? 'ক্লাস রিভিউ ও মন্তব্য (ঐচ্ছিক):' : 'Session Notes (Optional):'}
             </Label>
             <Textarea
               id="completion-notes-modal"
@@ -737,10 +706,11 @@ export function ClassroomWorkspace({
               value={completionNotes}
               onChange={(e) => setCompletionNotes(e.target.value)}
               placeholder={
-                locale === 'bn'
+                isBn
                   ? 'যেমন: আজকের ক্লাসে গতিবিদ্যার গাণিতিক সমাধান অনুশীলন করা হয়েছে...'
                   : 'e.g. Covered kinematics problem set and Newton laws...'
               }
+              className="border-slate-300 text-slate-900 text-xs rounded-xl"
               data-testid="completion-notes-textarea"
             />
           </div>
@@ -751,21 +721,250 @@ export function ClassroomWorkspace({
               variant="outline"
               size="sm"
               onClick={() => setShowCompletionModal(false)}
+              className="border-slate-300 text-slate-700 font-bold rounded-xl text-xs h-9"
             >
-              {locale === 'bn' ? 'বাতিল' : 'Cancel'}
+              {isBn ? 'বাতিল' : 'Cancel'}
             </Button>
             <Button
               type="button"
               size="sm"
               onClick={handleCompleteClass}
               isLoading={isCompleting}
+              className="bg-slate-900 hover:bg-slate-800 text-white font-bold rounded-xl text-xs h-9 px-4"
               data-testid="confirm-complete-class-btn"
             >
-              {locale === 'bn' ? 'সম্পন্ন নিশ্চিত করুন' : 'Confirm Completion'}
+              {isBn ? 'সম্পন্ন নিশ্চিত করুন' : 'Confirm Completion'}
             </Button>
           </div>
         </DialogContent>
       </Dialog>
+    </div>
+  );
+}
+
+interface AttendanceSectionProps {
+  session: SessionItem;
+  locale: 'bn' | 'en';
+  isTutor: boolean;
+  latestAttendance: {
+    id: string;
+    attendanceStatus: AttendanceStatus;
+    recordedAt: string;
+    notes?: string | null;
+  } | null;
+  selectedAttendanceStatus: AttendanceStatus;
+  setSelectedAttendanceStatus: (st: AttendanceStatus) => void;
+  attendanceNotes: string;
+  setAttendanceNotes: (n: string) => void;
+  correctionReason: string;
+  setCorrectionReason: (r: string) => void;
+  attendanceSuccess: boolean;
+  handleMarkAttendance: (e: React.FormEvent) => Promise<void>;
+  isMarkingAttendance: boolean;
+}
+
+function AttendanceSection({
+  session,
+  locale,
+  isTutor,
+  latestAttendance,
+  selectedAttendanceStatus,
+  setSelectedAttendanceStatus,
+  attendanceNotes,
+  setAttendanceNotes,
+  correctionReason,
+  setCorrectionReason,
+  attendanceSuccess,
+  handleMarkAttendance,
+  isMarkingAttendance,
+}: AttendanceSectionProps) {
+  const isBn = locale === 'bn';
+
+  return (
+    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {/* Attendance Status Card */}
+      <Card className="bg-white border border-slate-200 text-slate-900 rounded-3xl p-6 shadow-sm">
+        <h3 className="text-base font-black text-slate-900 mb-2 flex items-center gap-2">
+          <UserCheck className="w-5 h-5 text-blue-600" />
+          <span>
+            {isBn ? 'শিক্ষার্থীর হাজিরা / উপস্থিতি' : 'Student Attendance'}
+          </span>
+        </h3>
+        <p className="text-xs text-slate-600 font-medium mb-4">
+          {isBn
+            ? 'উপস্থিতি নিশ্চিত করলে অভিভাবক ও শিক্ষার্থী অ্যাকাউন্টে তাৎক্ষণিক নোটিফিকেশন পাবেন।'
+            : 'Recorded attendance triggers automated notifications to student & guardians.'}
+        </p>
+
+        {latestAttendance && (
+          <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 mb-4 space-y-2 text-xs">
+            <div className="flex items-center justify-between">
+              <span className="text-slate-600 font-bold">
+                {isBn ? 'সর্বশেষ রেকর্ডকৃত স্ট্যাটাস:' : 'Recorded Status:'}
+              </span>
+              <Badge className="bg-emerald-100 text-emerald-900 border border-emerald-300 uppercase font-bold">
+                {latestAttendance.attendanceStatus}
+              </Badge>
+            </div>
+            {latestAttendance.notes && (
+              <p className="text-slate-700 italic font-medium">"{latestAttendance.notes}"</p>
+            )}
+            <div className="text-[10px] text-slate-500 font-medium text-right">
+              {new Date(latestAttendance.recordedAt).toLocaleString(
+                isBn ? 'bn-BD' : 'en-US',
+              )}
+            </div>
+          </div>
+        )}
+
+        {isTutor && (
+          <form
+            onSubmit={handleMarkAttendance}
+            className="space-y-3"
+            data-testid="classroom-mark-attendance-form"
+          >
+            <Label className="text-xs font-bold text-slate-700 block">
+              {isBn ? 'উপস্থিতি নির্ধারণ করুন:' : 'Mark Attendance:'}
+            </Label>
+            <div className="grid grid-cols-4 gap-2">
+              {(['present', 'late', 'absent', 'excused'] as AttendanceStatus[]).map((st) => (
+                <button
+                  type="button"
+                  key={st}
+                  onClick={() => setSelectedAttendanceStatus(st)}
+                  className={`py-2 text-xs font-bold rounded-xl border transition-all ${
+                    selectedAttendanceStatus === st
+                      ? 'bg-blue-600 border-blue-600 text-white shadow-xs'
+                      : 'bg-slate-100 border-slate-200 text-slate-700 hover:bg-slate-200'
+                  }`}
+                  data-testid={`classroom-attendance-${st}`}
+                >
+                  {st === 'present'
+                    ? isBn
+                      ? 'উপস্থিত'
+                      : 'Present'
+                    : st === 'late'
+                      ? isBn
+                        ? 'দেরি'
+                        : 'Late'
+                      : st === 'absent'
+                        ? isBn
+                          ? 'অনুপস্থিত'
+                          : 'Absent'
+                        : isBn
+                          ? 'ছুটি'
+                          : 'Excused'}
+                </button>
+              ))}
+            </div>
+
+            {latestAttendance && (
+              <div className="space-y-1">
+                <Label htmlFor="attendance-correction-reason" className="text-xs font-bold text-slate-700">
+                  {isBn ? 'সংশোধনের কারণ (আবশ্যক):' : 'Correction reason (required):'}
+                </Label>
+                <Input
+                  id="attendance-correction-reason"
+                  type="text"
+                  required
+                  value={correctionReason}
+                  onChange={(e) => setCorrectionReason(e.target.value)}
+                  placeholder={
+                    isBn ? 'উপস্থিতি সংশোধনের কারণ লিখুন...' : 'Reason for updating attendance...'
+                  }
+                  className="w-full h-9 rounded-xl border-slate-300 bg-white text-xs text-slate-900 placeholder:text-slate-400"
+                  data-testid="attendance-correction-reason-input"
+                />
+              </div>
+            )}
+
+            <div className="space-y-1">
+              <Label htmlFor="notes-inp" className="text-xs font-bold text-slate-700">
+                {isBn ? 'ক্লাসের সক্রিয়তা বা মন্তব্য:' : 'Session remarks:'}
+              </Label>
+              <Input
+                id="notes-inp"
+                type="text"
+                value={attendanceNotes}
+                onChange={(e) => setAttendanceNotes(e.target.value)}
+                placeholder={
+                  isBn ? 'যেমন: পাঠে মনোযোগ ছিল...' : 'e.g. Participated actively...'
+                }
+                className="w-full h-9 rounded-xl border-slate-300 bg-white text-xs text-slate-900 placeholder:text-slate-400"
+                data-testid="attendance-notes-input"
+              />
+            </div>
+
+            {attendanceSuccess && (
+              <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-semibold flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4 text-emerald-600" />
+                <span>
+                  {isBn ? 'উপস্থিতি সফলভাবে সংরক্ষিত!' : 'Attendance marked!'}
+                </span>
+              </div>
+            )}
+
+            <Button
+              type="submit"
+              size="sm"
+              isLoading={isMarkingAttendance}
+              className="w-full bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl h-9"
+              data-testid="classroom-save-attendance-btn"
+            >
+              {isBn ? 'উপস্থিতি হালনাগাদ করুন' : 'Confirm Attendance'}
+            </Button>
+          </form>
+        )}
+      </Card>
+
+      {/* Session Safety & Security Card */}
+      <Card className="bg-white border border-slate-200 text-slate-900 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+        <div className="space-y-4">
+          <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-emerald-600" />
+            <span>
+              {isBn
+                ? 'নিরাপত্তা ও এস্ক্রো প্রতিশ্রুতি'
+                : 'Safety & Escrow Protection'}
+            </span>
+          </h3>
+          <p className="text-xs text-slate-600 font-medium leading-relaxed">
+            {isBn
+              ? 'অগ্রণী এডুর ক্লাসরুম সেশন এন্ড-টু-এন্ড সুরক্ষিত। সেশন সম্পন্ন হওয়ার পর শিক্ষক ও শিক্ষার্থীর রিভিউয়ের ভিত্তিতে এস্ক্রো ফান্ড রিলিজ কার্যকর হয়।'
+              : 'All sessions are monitored under OgroniEdu safety standards. Escrow milestone releases are executed upon verified session completion.'}
+          </p>
+
+          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs font-medium">
+            <div className="flex items-center justify-between text-slate-600">
+              <span>{isBn ? 'বুকিং আইডি:' : 'Booking ID:'}</span>
+              <span className="font-mono text-slate-900 font-bold">
+                {session.bookingId?.substring(0, 8)}...
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-slate-600">
+              <span>{isBn ? 'ক্লাস আইডি:' : 'Session ID:'}</span>
+              <span className="font-mono text-slate-900 font-bold">
+                {session.id.substring(0, 8)}...
+              </span>
+            </div>
+            <div className="flex items-center justify-between text-slate-600">
+              <span>{isBn ? 'টাইমজোন:' : 'Timezone:'}</span>
+              <span className="text-slate-900 font-bold">Asia/Dhaka (BST)</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="pt-4 border-t border-slate-200">
+          <Link
+            href={withLocale('/safety-reports', locale)}
+            className="text-xs text-rose-700 hover:text-rose-900 font-bold inline-flex items-center gap-1"
+          >
+            {isBn
+              ? 'জরুরি রিপোর্ট বা সহায়তা প্রয়োজন?'
+              : 'Need to file a safety report?'}
+          </Link>
+        </div>
+      </Card>
     </div>
   );
 }

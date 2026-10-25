@@ -279,21 +279,21 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       </div>
 
       {/* Live Interactive Classroom Workspace Launch Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-r from-card via-card/90 to-primary-soft/30 border border-primary/25 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6 shadow-xs">
+      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="space-y-1.5 text-center md:text-left max-w-2xl">
-          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-soft text-primary text-xs font-bold border border-primary/30">
-            <Radio className="w-3.5 h-3.5 text-primary animate-pulse" />
+          <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-800 text-xs font-bold border border-blue-200">
+            <Radio className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
             <span>{locale === 'bn' ? 'স্মার্ট ক্লাসরুম হাব' : 'Smart Classroom Hub'}</span>
           </div>
-          <h2 className="text-xl md:text-2xl font-black text-foreground">
+          <h2 className="text-xl md:text-2xl font-black text-slate-900">
             {locale === 'bn'
-              ? 'ইন্টারেক্টিভ ডিজিটাল হোয়াইটবোর্ড ও লাইভ স্টাডি রুম'
-              : 'Interactive Whiteboard & Live Study Room'}
+              ? 'ইন্টারেক্টিভ লাইভ ক্লাসরুম (Jitsi Meet) ও ডিজিটাল হোয়াইটবোর্ড'
+              : 'Interactive Live Classroom (Jitsi) & Whiteboard'}
           </h2>
-          <p className="text-xs text-muted-foreground leading-relaxed">
+          <p className="text-xs text-slate-600 font-medium leading-relaxed">
             {locale === 'bn'
-              ? 'ইন-ব্রাউজার ডিজিটাল হোয়াইটবোর্ড, পদার্থ ও গণিতের ফর্মুলা চিটশিট এবং লাইভ সেশন টাইমার সহ সরাসরি ক্লাসরুমে প্রবেশ করুন।'
-              : 'Enter collaborative whiteboard with NCTB formula sheets, drawing tools, and real-time session controls.'}
+              ? 'ইন-ব্রাউজার লাইভ ভিডিও মিটিং, ইন্টারেক্টিভ ডিজিটাল হোয়াইটবোর্ড, এনসিটিবি ফর্মুলা চিটশিট এবং সেশন এটেনডেন্স ট্র্যাকিং সহ সরাসরি ক্লাসরুমে প্রবেশ করুন।'
+              : 'Enter collaborative live video classroom with interactive whiteboard, NCTB formula sheets, and real-time session controls.'}
           </p>
         </div>
         <Link
@@ -319,40 +319,38 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       />
 
       {/* Main Session Banner */}
-      <div className="relative overflow-hidden rounded-2xl bg-card border border-brand/25 p-8">
-        <div className="absolute top-0 right-0 -mt-10 -mr-10 w-64 h-64 bg-primary/10 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200 p-8 shadow-sm text-slate-900">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="space-y-3">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-success-soft border border-success/30 rounded-full text-xs font-medium text-success-soft-foreground">
-                <Clock className="w-3.5 h-3.5" />
+              <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-300 rounded-full text-xs font-bold text-emerald-900">
+                <Clock className="w-3.5 h-3.5 text-emerald-700" />
                 <span>{locale === 'bn' ? 'বাংলাদেশ সময় (BST / UTC+6)' : 'BST / UTC+6'}</span>
               </span>
               {statusBadge()}
             </div>
-            <h1 className="text-3xl font-extrabold text-foreground tracking-tight flex items-center gap-3">
-              <BookOpen className="w-7 h-7 text-success-soft-foreground shrink-0" />
+            <h1 className="text-3xl font-black text-slate-900 tracking-tight flex items-center gap-3">
+              <BookOpen className="w-7 h-7 text-blue-600 shrink-0" />
               <span>{subjectName}</span>
             </h1>
-            <p className="text-sm text-primary-soft-foreground flex items-center gap-4">
+            <p className="text-sm font-medium text-slate-600 flex items-center gap-4">
               <span>
-                {locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'}{' '}
-                <strong className="text-foreground">{tutorName}</strong>
+                <span className="text-slate-500">{locale === 'bn' ? 'শিক্ষক:' : 'Tutor:'}</span>{' '}
+                <strong className="text-slate-900 font-bold">{tutorName}</strong>
               </span>
               <span>•</span>
               <span>
-                {locale === 'bn' ? 'শিক্ষার্থী:' : 'Student:'}{' '}
-                <strong className="text-foreground">{studentName}</strong>
+                <span className="text-slate-500">{locale === 'bn' ? 'শিক্ষার্থী:' : 'Student:'}</span>{' '}
+                <strong className="text-slate-900 font-bold">{studentName}</strong>
               </span>
             </p>
           </div>
 
-          <div className="bg-card border border-primary/40 rounded-2xl p-5 shrink-0 text-center space-y-1">
-            <div className="text-xs uppercase tracking-wider font-bold text-success-soft-foreground">
+          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 shrink-0 text-center space-y-1">
+            <div className="text-xs uppercase tracking-wider font-bold text-slate-600">
               {formatWeekdayDate(startsAt, locale)}
             </div>
-            <div className="text-xl font-black text-foreground">
+            <div className="text-xl font-black text-slate-900">
               {formatTime(startsAt, locale)} - {formatTime(endsAt, locale)}
             </div>
           </div>
@@ -362,33 +360,33 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       {/* Grid: Classroom Link & Attendance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Live Classroom Card */}
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col justify-between">
+        <Card className="bg-white border border-slate-200 text-slate-900 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
           <CardHeader className="p-0 pb-4">
-            <div className="flex items-center gap-2 text-success-soft-foreground mb-1">
-              <Video className="w-5 h-5" />
-              <CardTitle className="text-lg font-bold">
+            <div className="flex items-center gap-2 text-blue-700 mb-1">
+              <Video className="w-5 h-5 text-blue-600" />
+              <CardTitle className="text-lg font-black text-slate-900">
                 {locale === 'bn' ? 'অনলাইন ক্লাসরুম' : 'Online Classroom'}
               </CardTitle>
             </div>
-            <p className="text-xs text-muted-foreground">
+            <p className="text-xs text-slate-600 font-medium">
               {locale === 'bn'
-                ? 'ক্লাস চলাকালীন গুগল মিট বা সরাসরি অনলাইন লিংকে প্রবেশ করুন।'
+                ? 'ক্লাস চলাকালীন ইন-ব্রাউজার জিটসি ক্লাসরুম বা সরাসরি অনলাইন লিংকে প্রবেশ করুন।'
                 : 'Join live video session via secure meeting link.'}
             </p>
           </CardHeader>
 
           <CardContent className="p-0 space-y-4 pt-2">
             {meetingUrl ? (
-              <div className="p-4 bg-primary-soft border border-primary/40 rounded-2xl space-y-3">
-                <div className="flex items-center gap-2 text-xs text-success-soft-foreground">
-                  <ShieldCheck className="w-4 h-4 text-success-soft-foreground" />
+              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+                <div className="flex items-center gap-2 text-xs font-bold text-emerald-800">
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
                   <span>
                     {locale === 'bn'
                       ? 'অনুমোদিত নিরাপদ ক্লাসরুম লিংক'
                       : 'Verified Secure Classroom Link'}
                   </span>
                 </div>
-                <div className="text-xs text-muted-foreground font-mono break-all truncate">
+                <div className="text-xs text-slate-700 font-mono break-all truncate">
                   {meetingUrl}
                 </div>
                 <a
@@ -399,36 +397,40 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
                   data-testid="join-classroom-btn"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  {locale === 'bn' ? 'ক্লাসরুমে যোগ দিন (গুগল মিট)' : 'Join Live Classroom'}
+                  {locale === 'bn'
+                    ? meetingUrl.includes('meet.jit.si')
+                      ? 'সরাসরি জিটসি ক্লাসরুমে যোগ দিন'
+                      : 'ক্লাসরুমে যোগ দিন'
+                    : 'Join Live Video Classroom'}
                 </a>
 
                 <Link
                   href={withLocale(`/classroom/${sessionId}`, locale)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-interactive/20 hover:bg-interactive/30 text-info-soft-foreground border border-info/40 text-xs font-bold rounded-xl transition-all"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all"
                   data-testid="open-whiteboard-card-btn"
                 >
-                  <Sparkles className="w-4 h-4 text-info-soft-foreground" />
+                  <Sparkles className="w-4 h-4 text-blue-400" />
                   {locale === 'bn'
-                    ? 'হোয়াইটবোর্ড ও স্টাডি রুম খুলুন'
-                    : 'Open Whiteboard & Study Room'}
+                    ? 'স্মার্ট ক্লাসরুম ও স্টাডি হাব খুলুন'
+                    : 'Open Smart Classroom & Whiteboard'}
                 </Link>
               </div>
             ) : (
-              <div className="p-5 bg-muted border border-border rounded-2xl text-center space-y-3">
-                <Video className="w-8 h-8 mx-auto text-muted-foreground" />
-                <p className="text-xs text-muted-foreground">
+              <div className="p-5 bg-slate-50 border border-slate-200 rounded-2xl text-center space-y-3">
+                <Video className="w-8 h-8 mx-auto text-slate-400" />
+                <p className="text-xs text-slate-600 font-medium">
                   {locale === 'bn'
-                    ? 'ক্লাসের মিটিং লিংক শিক্ষক কর্তৃক নির্ধারিত হবে।'
-                    : 'Meeting link has not been attached yet. The tutor will provide it before class.'}
+                    ? 'ক্লাসের মিটিং লিংক প্রস্তুত আছে। আপনি ইন-ব্রাউজার ক্লাসরুমে প্রবেশ করতে পারেন।'
+                    : 'Classroom is ready. You can enter the in-browser smart classroom.'}
                 </p>
                 <Link
                   href={withLocale(`/classroom/${sessionId}`, locale)}
-                  className="inline-flex items-center justify-center gap-2 px-4 py-2 bg-interactive/20 hover:bg-interactive/30 text-info-soft-foreground border border-info/40 text-xs font-bold rounded-xl transition-all"
+                  className="inline-flex items-center justify-center gap-2 px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold rounded-xl transition-all"
                 >
-                  <Sparkles className="w-4 h-4 text-info-soft-foreground" />
+                  <Sparkles className="w-4 h-4 text-blue-400" />
                   {locale === 'bn'
-                    ? 'ইন-ব্রাউজার হোয়াইটবোর্ড ব্যবহার করুন'
-                    : 'Use In-Browser Whiteboard'}
+                    ? 'ইন-ব্রাউজার ক্লাসরুমে প্রবেশ করুন'
+                    : 'Enter In-Browser Classroom'}
                 </Link>
               </div>
             )}
