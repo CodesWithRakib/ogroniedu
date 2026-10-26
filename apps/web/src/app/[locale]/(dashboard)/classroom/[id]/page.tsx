@@ -45,9 +45,9 @@ function ClassroomPageContent({ locale, sessionId }: { locale: Locale; sessionId
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 w-screen h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-center space-y-3 z-50">
+      <div className="fixed inset-0 w-screen h-[100dvh] bg-slate-50 text-slate-900 flex flex-col items-center justify-center space-y-3 z-50">
         <LoadingSpinner />
-        <p className="text-xs text-slate-300 font-medium">
+        <p className="text-xs text-slate-600 font-medium">
           {locale === 'bn' ? 'লাইভ ক্লাসরুম লোড হচ্ছে...' : 'Loading live interactive classroom...'}
         </p>
       </div>
@@ -56,8 +56,8 @@ function ClassroomPageContent({ locale, sessionId }: { locale: Locale; sessionId
 
   if (error || !session) {
     return (
-      <div className="fixed inset-0 w-screen h-[100dvh] bg-slate-950 text-white flex items-center justify-center p-4 z-50">
-        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+      <div className="fixed inset-0 w-screen h-[100dvh] bg-slate-50 text-slate-900 flex items-center justify-center p-4 z-50">
+        <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-6 shadow-xl">
           <EmptyState
             title={locale === 'bn' ? 'ক্লাসরুম পাওয়া যায়নি' : 'Classroom Not Found'}
             description={
@@ -65,7 +65,7 @@ function ClassroomPageContent({ locale, sessionId }: { locale: Locale; sessionId
                 ? 'অনুরোধকৃত ক্লাস সেশনের আইডি সঠিক নয় অথবা আপনার এই সেশনে প্রবেশের অনুমতি নেই।'
                 : 'The requested classroom session could not be found or you may lack authorized access.'
             }
-            icon={<AlertCircle className="h-6 w-6 text-rose-400" />}
+            icon={<AlertCircle className="h-6 w-6 text-rose-500" />}
             actionLabel={locale === 'bn' ? 'সব ক্লাসের সূচীতে ফিরুন' : 'Back to Sessions'}
             actionHref={withLocale('/sessions', locale)}
           />

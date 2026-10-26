@@ -75,7 +75,12 @@ interface FloatingReaction {
   leftPercent: number;
 }
 
-export function LiveKitClassroomMeeting({
+const LIVEKIT_ROOM_OPTIONS = {
+  adaptiveStream: true,
+  dynacast: true,
+} as const;
+
+function LiveKitClassroomMeetingBase({
   sessionId,
   bookingId,
   locale = 'bn',
@@ -88,6 +93,8 @@ export function LiveKitClassroomMeeting({
   subjectTitle,
 }: LiveKitClassroomMeetingProps) {
   const isBn = locale === 'bn';
+
+
 
   // Join mutation & attendees query
   const [joinClassroom, { isLoading: isJoining, error: joinError }] = useJoinClassroomMutation();
@@ -228,6 +235,11 @@ export function LiveKitClassroomMeeting({
     }
   };
 
+  const handleDisconnected = useCallback(() => {
+    setHasJoined(false);
+    onMeetingEnded?.();
+  }, [onMeetingEnded]);
+
   if (kickedNotice) {
     return (
       <div
@@ -282,8 +294,8 @@ export function LiveKitClassroomMeeting({
   }
 
   const containerClasses = isTheaterMode || isStandalone
-    ? `relative w-full h-full flex-1 rounded-none border-none bg-slate-950 flex flex-col overflow-hidden ${className}`
-    : `relative w-full h-[58vh] sm:h-[68vh] lg:h-[75vh] min-h-[360px] max-h-[85vh] bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-800 flex flex-col ${className}`;
+    ? `relative w-full h-full flex-1 rounded-none border-none bg-slate-100 flex flex-col overflow-hidden ${className}`
+    : `relative w-full h-[58vh] sm:h-[68vh] lg:h-[75vh] min-h-[360px] max-h-[85vh] bg-slate-100 rounded-3xl overflow-hidden shadow-xl border-2 border-slate-200 flex flex-col ${className}`;
 
   // Active LiveKit Classroom Session
   return (
@@ -294,16 +306,10 @@ export function LiveKitClassroomMeeting({
         connect={true}
         video={initialSettings.videoEnabled && joinPayload.canPublish}
         audio={initialSettings.audioEnabled && joinPayload.canPublish}
-        options={{
-          adaptiveStream: true,
-          dynacast: true,
-        }}
+        options={LIVEKIT_ROOM_OPTIONS}
         data-lk-theme="default"
         className="flex-1 flex flex-col relative w-full h-full overflow-hidden"
-        onDisconnected={() => {
-          setHasJoined(false);
-          onMeetingEnded?.();
-        }}
+        onDisconnected={handleDisconnected}
       >
         <RoomAudioRenderer />
 
@@ -339,6 +345,8 @@ export function LiveKitClassroomMeeting({
     </div>
   );
 }
+
+export const LiveKitClassroomMeeting = React.memo(LiveKitClassroomMeetingBase);
 
 /**
  * Inner component inside LiveKitRoom context
@@ -560,13 +568,13 @@ function ClassroomSessionContent({
   return (
     <>
       {/* Top Header Overlay Bar */}
-      <div className="absolute top-0 inset-x-0 p-3 sm:p-4 bg-gradient-to-b from-slate-950/90 via-slate-950/60 to-transparent flex items-center justify-between text-white z-20 pointer-events-none">
+      <div className="absolute top-0 inset-x-0 p-3 sm:p-4 bg-gradient-to-b from-white/95 via-white/80 to-transparent flex items-center justify-between text-slate-900 z-20 pointer-events-none">
         <div className="flex items-center gap-2 pointer-events-auto">
           <span className="w-3 h-3 rounded-full bg-rose-500 ring-4 ring-rose-500/20 animate-pulse" />
-          <span className="text-xs sm:text-sm font-black tracking-wide text-white drop-shadow-md">
+          <span className="text-xs sm:text-sm font-black tracking-wide text-slate-900">
             {joinPayload.subjectTitle || (isBn ? 'লাইভ ক্লাসরুম' : 'Live Classroom')}
           </span>
-          <span className="text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full font-black bg-slate-900/90 border border-slate-700 text-blue-300 shadow-md">
+          <span className="text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full font-black bg-white/90 border border-slate-200 text-blue-700 shadow-xs">
             {joinPayload.mode === 'LARGE_BATCH'
               ? isBn
                 ? 'ওয়েবিনার মোড'
@@ -580,12 +588,12 @@ function ClassroomSessionContent({
           <button
             type="button"
             onClick={() => setIsNetworkModalOpen(true)}
-            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-slate-200 shadow-md transition-all active:scale-95"
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-white/90 hover:bg-slate-100 border border-slate-200 text-xs font-bold text-slate-800 shadow-xs transition-all active:scale-95"
             title={isBn ? 'নেটওয়ার্ক ডায়াগনস্টিকস ও স্থিতি' : 'Network Diagnostics'}
             data-testid="network-telemetry-pill"
           >
-            <Wifi className="w-3.5 h-3.5 text-emerald-400" />
-            <span className="text-[11px] font-black text-emerald-300">২৮ ms</span>
+            <Wifi className="w-3.5 h-3.5 text-emerald-600" />
+            <span className="text-[11px] font-black text-emerald-700">২৮ ms</span>
           </button>
 
           {/* Active Poll Badge in Header if Poll running */}
@@ -603,8 +611,8 @@ function ClassroomSessionContent({
 
           {/* Theater Mode Indicator */}
           {isTheaterMode && (
-            <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-900/90 border border-indigo-400 text-indigo-200 text-xs font-black shadow-md">
-              <Tv className="w-3.5 h-3.5 text-indigo-300" />
+            <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-50 border border-indigo-200 text-indigo-700 text-xs font-black shadow-xs">
+              <Tv className="w-3.5 h-3.5 text-indigo-600" />
               <span>{isBn ? 'সিনেমা মোড' : 'Theater'}</span>
             </span>
           )}
@@ -615,24 +623,24 @@ function ClassroomSessionContent({
           <button
             type="button"
             onClick={togglePictureInPicture}
-            className="p-2 sm:p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 transition-colors shadow-md active:scale-95"
+            className="p-2 sm:p-2.5 rounded-xl bg-white/90 hover:bg-slate-100 text-slate-700 border border-slate-200 transition-colors shadow-xs active:scale-95"
             title={isBn ? 'পিকচার-ইন-পিকচার (PiP)' : 'Picture-in-Picture'}
             aria-label="Picture-in-Picture"
             data-testid="toggle-pip-btn"
           >
-            <PictureInPicture2 className="w-4 h-4 text-slate-300" />
+            <PictureInPicture2 className="w-4 h-4 text-slate-700" />
           </button>
 
           {/* Fullscreen Toggle */}
           <button
             type="button"
             onClick={toggleFullscreen}
-            className="p-2 sm:p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 transition-colors shadow-md active:scale-95"
+            className="p-2 sm:p-2.5 rounded-xl bg-white/90 hover:bg-slate-100 text-slate-700 border border-slate-200 transition-colors shadow-xs active:scale-95"
             title={isBn ? 'ফুলস্ক্রিন' : 'Fullscreen'}
             aria-label="Fullscreen"
             data-testid="toggle-fullscreen-btn"
           >
-            {fullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+            {fullscreen ? <Minimize2 className="w-4 h-4 text-slate-700" /> : <Maximize2 className="w-4 h-4 text-slate-700" />}
           </button>
         </div>
       </div>
@@ -774,10 +782,10 @@ function EnhancedParticipantTile({
     <div
       className={`relative w-full h-full rounded-2xl overflow-hidden border-2 transition-all ${
         isSpeaking
-          ? 'border-emerald-400 ring-4 ring-emerald-500/50 shadow-xl shadow-emerald-500/20'
+          ? 'border-emerald-500 ring-4 ring-emerald-500/50 shadow-xl shadow-emerald-500/20'
           : isPinned
             ? 'border-amber-400 ring-4 ring-amber-500/40 shadow-xl'
-            : 'border-slate-800'
+            : 'border-slate-300'
       }`}
     >
       <TrackRefContext.Provider value={trackRef}>
@@ -796,7 +804,7 @@ function EnhancedParticipantTile({
             className={`p-1.5 rounded-lg backdrop-blur-md transition-all shadow-md active:scale-90 ${
               isPinned
                 ? 'bg-amber-400 text-slate-950 font-black ring-2 ring-amber-300'
-                : 'bg-slate-950/80 text-slate-300 hover:text-white hover:bg-slate-900 border border-slate-700/60'
+                : 'bg-white/90 text-slate-700 hover:text-slate-950 hover:bg-white border border-slate-200'
             }`}
             title={isPinned ? 'আনপিন করুন' : 'স্পটলাইটে পিন করুন'}
             data-testid={`pin-tile-${participant.identity}`}
@@ -804,17 +812,17 @@ function EnhancedParticipantTile({
             {isPinned ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5" />}
           </button>
         )}
-        <div className="bg-slate-950/80 backdrop-blur-xs px-2 py-1.5 rounded-lg border border-slate-700/60 flex items-center gap-1">
-          <Wifi className="w-3 h-3 text-emerald-400" />
+        <div className="bg-white/90 backdrop-blur-xs px-2 py-1.5 rounded-lg border border-slate-200 flex items-center gap-1 shadow-xs">
+          <Wifi className="w-3 h-3 text-emerald-600" />
         </div>
       </div>
 
       {/* High-Contrast Participant Name Pill */}
-      <div className="absolute bottom-2.5 left-2.5 bg-slate-950/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/80 text-white flex items-center gap-2 shadow-lg z-10">
+      <div className="absolute bottom-2.5 left-2.5 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-200 text-slate-900 flex items-center gap-2 shadow-md z-10">
         {isAudioMuted ? (
-          <MicOff className="w-3.5 h-3.5 text-rose-400" />
+          <MicOff className="w-3.5 h-3.5 text-rose-600" />
         ) : (
-          <Mic className={`w-3.5 h-3.5 ${isSpeaking ? 'text-emerald-400 animate-pulse' : 'text-slate-300'}`} />
+          <Mic className={`w-3.5 h-3.5 ${isSpeaking ? 'text-emerald-600 animate-pulse' : 'text-slate-600'}`} />
         )}
         <span className="text-xs font-black truncate max-w-[120px] sm:max-w-[180px]">
           {displayName}

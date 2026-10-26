@@ -186,18 +186,18 @@ export function ClassroomControlBar({
 
   return (
     <div
-      className="relative w-full flex items-center justify-between px-3 sm:px-6 py-3 bg-slate-950/98 backdrop-blur-xl border-t-2 border-slate-800 text-white rounded-b-3xl shadow-2xl z-30 select-none"
+      className="relative w-full flex items-center justify-between px-3 sm:px-6 py-3 bg-white/95 backdrop-blur-xl border-t border-slate-200 text-slate-800 shadow-xl z-30 select-none"
       data-testid="classroom-control-bar"
     >
       {/* Floating Emoji Picker Popup */}
       {showEmojiPicker && (
-        <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-slate-900/95 border-2 border-slate-700 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-2xl animate-in zoom-in-95 duration-150 z-50">
+        <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-white border-2 border-slate-200 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-2xl animate-in zoom-in-95 duration-150 z-50">
           {REACTION_EMOJIS.map((emoji) => (
             <button
               key={emoji}
               type="button"
               onClick={() => handleEmojiClick(emoji)}
-              className="text-xl sm:text-2xl hover:scale-125 active:scale-95 transition-transform p-1 rounded-full hover:bg-slate-800"
+              className="text-xl sm:text-2xl hover:scale-125 active:scale-95 transition-transform p-1 rounded-full hover:bg-slate-100"
               title={emoji}
             >
               {emoji}
@@ -206,7 +206,7 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={() => setShowEmojiPicker(false)}
-            className="text-slate-400 hover:text-white p-1 ml-1"
+            className="text-slate-500 hover:text-slate-800 p-1 ml-1"
           >
             <X className="w-4 h-4" />
           </button>
@@ -220,14 +220,14 @@ export function ClassroomControlBar({
           onClick={onToggleLowDataMode}
           className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black border-2 transition-all active:scale-95 ${
             lowDataMode
-              ? 'bg-amber-500/20 border-amber-400 text-amber-300'
-              : 'bg-slate-800/90 border-slate-700 text-slate-200 hover:bg-slate-700'
+              ? 'bg-amber-50 border-amber-300 text-amber-800'
+              : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
           }`}
           title={isBn ? 'লো-ডাটা মোড' : 'Low Data Mode'}
           aria-label={isBn ? 'লো-ডাটা মোড' : 'Low Data Mode'}
           data-testid="low-data-mode-toggle"
         >
-          {lowDataMode ? <WifiOff className="w-4 h-4 text-amber-400" /> : <Wifi className="w-4 h-4 text-emerald-400" />}
+          {lowDataMode ? <WifiOff className="w-4 h-4 text-amber-600" /> : <Wifi className="w-4 h-4 text-emerald-600" />}
           <span className="hidden md:inline font-bold">
             {lowDataMode ? (isBn ? 'লো-ডাটা' : 'Low-Data') : isBn ? 'এইচডি' : 'HD'}
           </span>
@@ -236,12 +236,12 @@ export function ClassroomControlBar({
         <div
           className={`hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black border-2 ${
             wakeLockActive
-              ? 'bg-blue-500/20 border-blue-400 text-blue-300'
-              : 'bg-slate-800/90 border-slate-700 text-slate-400'
+              ? 'bg-blue-50 border-blue-300 text-blue-700'
+              : 'bg-slate-100 border-slate-200 text-slate-600'
           }`}
           title={isBn ? 'স্ক্রিন অন রাখা হয়েছে' : 'Screen Wake Lock Active'}
         >
-          <Sun className="w-4 h-4 text-amber-300" />
+          <Sun className="w-4 h-4 text-amber-500" />
           <span className="hidden lg:inline">{isBn ? 'স্ক্রিন অন' : 'WakeLock'}</span>
         </div>
       </div>
@@ -253,12 +253,12 @@ export function ClassroomControlBar({
           type="button"
           disabled={!canPublish}
           onClick={() => localParticipant.setMicrophoneEnabled(!isMicrophoneEnabled)}
-          className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center ${
+          className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-center ${
             !canPublish
-              ? 'bg-slate-800 text-slate-500 cursor-not-allowed opacity-50'
+              ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50'
               : isMicrophoneEnabled
-                ? 'bg-slate-800 hover:bg-slate-700 text-white ring-2 ring-emerald-500/80'
-                : 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-900/50'
+                ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 ring-2 ring-emerald-500/80 border border-slate-200'
+                : 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-600/30'
           }`}
           title={
             !canPublish
@@ -276,7 +276,7 @@ export function ClassroomControlBar({
           aria-label={isMicrophoneEnabled ? 'Mute Mic' : 'Unmute Mic'}
           data-testid="control-mic-toggle"
         >
-          {isMicrophoneEnabled ? <Mic className="w-5 h-5 text-emerald-400" /> : <MicOff className="w-5 h-5 text-white" />}
+          {isMicrophoneEnabled ? <Mic className="w-5 h-5 text-emerald-600" /> : <MicOff className="w-5 h-5 text-white" />}
         </button>
 
         {/* Camera Toggle */}
@@ -284,12 +284,12 @@ export function ClassroomControlBar({
           type="button"
           disabled={!canPublish}
           onClick={() => localParticipant.setCameraEnabled(!isCameraEnabled)}
-          className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-lg active:scale-95 flex items-center justify-center ${
+          className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-center ${
             !canPublish
-              ? 'bg-slate-800 text-slate-500 cursor-not-allowed opacity-50'
+              ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50'
               : isCameraEnabled
-                ? 'bg-slate-800 hover:bg-slate-700 text-white ring-2 ring-blue-500/80'
-                : 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-900/50'
+                ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 ring-2 ring-blue-500/80 border border-slate-200'
+                : 'bg-rose-600 hover:bg-rose-700 text-white shadow-rose-600/30'
           }`}
           title={
             !canPublish
@@ -307,7 +307,7 @@ export function ClassroomControlBar({
           aria-label={isCameraEnabled ? 'Turn Off Camera' : 'Turn On Camera'}
           data-testid="control-camera-toggle"
         >
-          {isCameraEnabled ? <VideoIcon className="w-5 h-5 text-blue-400" /> : <VideoOff className="w-5 h-5 text-white" />}
+          {isCameraEnabled ? <VideoIcon className="w-5 h-5 text-blue-600" /> : <VideoOff className="w-5 h-5 text-white" />}
         </button>
 
         {/* Mobile Camera Flip Switch */}
@@ -315,12 +315,12 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={handleCameraFlip}
-            className="min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-100 transition-colors shadow-md sm:hidden active:scale-95 flex items-center justify-center border border-slate-700"
+            className="min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-xs sm:hidden active:scale-95 flex items-center justify-center border border-slate-200"
             title={isBn ? 'ক্যামেরা পরিবর্তন করুন' : 'Flip Camera'}
             aria-label={isBn ? 'ক্যামেরা পরিবর্তন করুন' : 'Flip Camera'}
             data-testid="control-flip-camera"
           >
-            <SwitchCamera className="w-5 h-5 text-indigo-300" />
+            <SwitchCamera className="w-5 h-5 text-indigo-600" />
           </button>
         )}
 
@@ -329,10 +329,10 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={() => localParticipant.setScreenShareEnabled(!isScreenShareEnabled, { audio: true })}
-            className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-lg hidden sm:flex items-center justify-center active:scale-95 ${
+            className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md hidden sm:flex items-center justify-center active:scale-95 ${
               isScreenShareEnabled
-                ? 'bg-blue-600 hover:bg-blue-700 text-white ring-4 ring-blue-400'
-                : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                ? 'bg-blue-600 hover:bg-blue-700 text-white ring-4 ring-blue-300'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
             }`}
             title={isBn ? 'স্ক্রিন শেয়ার করুন' : 'Share Screen'}
             aria-label={isBn ? 'স্ক্রিন শেয়ার করুন' : 'Share Screen'}
@@ -346,15 +346,15 @@ export function ClassroomControlBar({
         <button
           type="button"
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md flex items-center justify-center active:scale-95 ${
+          className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-xs flex items-center justify-center active:scale-95 ${
             showEmojiPicker
-              ? 'bg-amber-500 text-slate-950 font-black ring-2 ring-amber-300'
-              : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+              ? 'bg-amber-400 text-slate-950 font-black ring-2 ring-amber-300'
+              : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
           }`}
           title={isBn ? 'প্রতিক্রিয়া জানান' : 'Send Reaction'}
           aria-label={isBn ? 'প্রতিক্রিয়া জানান' : 'Send Reaction'}
         >
-          <Smile className="w-5 h-5 text-amber-400" />
+          <Smile className="w-5 h-5 text-amber-500" />
         </button>
 
         {/* Student Raise Hand Flow */}
@@ -362,16 +362,16 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={handleHandRaiseClick}
-            className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-lg flex items-center gap-1.5 active:scale-95 ${
+            className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md flex items-center gap-1.5 active:scale-95 ${
               isHandRaised
                 ? 'bg-amber-400 hover:bg-amber-500 text-slate-950 font-black animate-bounce ring-4 ring-amber-300 shadow-amber-500/40'
-                : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
             }`}
             title={isHandRaised ? (isBn ? 'হাত নামান' : 'Lower Hand') : isBn ? 'কথা বলার জন্য হাত তুলুন' : 'Raise Hand to Speak'}
             aria-label={isHandRaised ? 'Lower Hand' : 'Raise Hand'}
             data-testid="control-raise-hand"
           >
-            <Hand className="w-5 h-5" />
+            <Hand className="w-5 h-5 text-amber-600" />
             <span className="hidden md:inline text-xs font-black">
               {isHandRaised ? (isBn ? 'হাত তোলা আছে' : 'Hand Raised') : isBn ? 'হাত তুলুন' : 'Raise Hand'}
             </span>
@@ -383,16 +383,16 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={onTogglePollModal}
-            className={`relative min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md flex items-center justify-center active:scale-95 ${
+            className={`relative min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-xs flex items-center justify-center active:scale-95 ${
               hasActivePoll
-                ? 'bg-blue-600 text-white font-black ring-4 ring-blue-400/60 shadow-blue-500/30'
-                : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+                ? 'bg-blue-600 text-white font-black ring-4 ring-blue-300'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
             }`}
             title={isBn ? 'ইন-ক্লাস পোল ও কুইজ' : 'In-Class Polls & Quiz'}
             aria-label={isBn ? 'ইন-ক্লাস পোল ও কুইজ' : 'In-Class Polls & Quiz'}
             data-testid="control-poll-toggle"
           >
-            <BarChart3 className="w-5 h-5 text-amber-300" />
+            <BarChart3 className="w-5 h-5 text-amber-500" />
             {hasActivePoll && (
               <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full border-2 border-slate-900 animate-ping" />
             )}
@@ -404,7 +404,7 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={onToggleModeration}
-            className="relative min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold transition-all shadow-lg shadow-indigo-600/30 flex items-center gap-1.5 active:scale-95"
+            className="relative min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold transition-all shadow-md shadow-indigo-600/30 flex items-center gap-1.5 active:scale-95"
             title={isBn ? 'মডারেশন ও হাত তোলার তালিকা' : 'Host Moderation Hub'}
             aria-label={isBn ? 'মডারেশন ও হাত তোলার তালিকা' : 'Host Moderation Hub'}
             data-testid="control-moderation-toggle"
@@ -412,7 +412,7 @@ export function ClassroomControlBar({
             <Users className="w-5 h-5" />
             <span className="hidden md:inline text-xs font-bold">{isBn ? 'মডারেশন' : 'Manage'}</span>
             {handRaiseCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-amber-400 text-slate-950 font-black text-[11px] w-6 h-6 rounded-full flex items-center justify-center animate-pulse border-2 border-slate-950 shadow-md">
+              <span className="absolute -top-2 -right-2 bg-amber-400 text-slate-950 font-black text-[11px] w-6 h-6 rounded-full flex items-center justify-center animate-pulse border-2 border-white shadow-md">
                 {handRaiseCount}
               </span>
             )}
@@ -426,16 +426,16 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={onToggleTheaterMode}
-            className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md border flex items-center justify-center active:scale-95 ${
+            className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-xs border flex items-center justify-center active:scale-95 ${
               isTheaterMode
-                ? 'bg-indigo-600 border-indigo-400 text-white ring-2 ring-indigo-400'
-                : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+                ? 'bg-indigo-600 border-indigo-400 text-white ring-2 ring-indigo-300'
+                : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
             }`}
             title={isBn ? (isTheaterMode ? 'স্বাভাবিক ভিউতে ফিরুন' : 'সিনেমা / থিয়েটার ভিউ') : isTheaterMode ? 'Exit Theater' : 'Theater View'}
             aria-label={isTheaterMode ? 'Exit Theater' : 'Theater View'}
             data-testid="control-theater-toggle"
           >
-            <Tv className="w-5 h-5 text-indigo-300" />
+            <Tv className="w-5 h-5 text-indigo-600" />
           </button>
         )}
 
@@ -443,30 +443,30 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={onOpenSettings}
-            className="min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-100 transition-colors shadow-md border border-slate-700 flex items-center justify-center active:scale-95"
+            className="min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-xs border border-slate-200 flex items-center justify-center active:scale-95"
             title={isBn ? 'মিডিয়া ও সাউন্ড সেটিংস' : 'Media & Sound Settings'}
             aria-label={isBn ? 'মিডিয়া ও সাউন্ড সেটিংস' : 'Media & Sound Settings'}
             data-testid="control-settings-toggle"
           >
-            <Settings className="w-5 h-5 text-slate-300" />
+            <Settings className="w-5 h-5 text-slate-600" />
           </button>
         )}
 
         <button
           type="button"
           onClick={onToggleChat}
-          className="min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-100 transition-colors shadow-md border border-slate-700 flex items-center justify-center active:scale-95"
+          className="min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-xs border border-slate-200 flex items-center justify-center active:scale-95"
           title={isBn ? 'ক্লাস চ্যাট' : 'In-Class Chat'}
           aria-label={isBn ? 'ক্লাস চ্যাট' : 'In-Class Chat'}
           data-testid="control-chat-toggle"
         >
-          <MessageSquare className="w-5 h-5 text-blue-400" />
+          <MessageSquare className="w-5 h-5 text-blue-600" />
         </button>
 
         <button
           type="button"
           onClick={onLeave}
-          className="min-w-[46px] min-h-[46px] p-3 px-3.5 sm:px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs flex items-center gap-1.5 transition-all shadow-lg shadow-rose-600/40 active:scale-95"
+          className="min-w-[46px] min-h-[46px] p-3 px-3.5 sm:px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs flex items-center gap-1.5 transition-all shadow-md shadow-rose-600/30 active:scale-95"
           title={isTutor ? (isBn ? 'সবার জন্য ক্লাস শেষ করুন' : 'End Class for All') : isBn ? 'ক্লাসরুম ত্যাগ করুন' : 'Leave Classroom'}
           aria-label={isTutor ? 'End Class' : 'Leave Classroom'}
           data-testid="control-leave-btn"

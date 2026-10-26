@@ -197,39 +197,25 @@ export function PreJoinLobby({
     });
   };
 
-  const cardBgClass = isStandalone
-    ? 'w-full max-w-5xl mx-auto p-4 sm:p-8 bg-slate-900/95 rounded-3xl border-2 border-slate-800 shadow-2xl overflow-hidden text-white'
-    : 'w-full max-w-4xl mx-auto p-4 sm:p-7 bg-white rounded-3xl border-2 border-slate-200 shadow-xl overflow-hidden';
+  const cardBgClass =
+    'w-full max-w-5xl mx-auto p-4 sm:p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-xl overflow-hidden text-slate-900';
 
-  const headingTextClass = isStandalone
-    ? 'text-xl sm:text-2xl font-black text-white tracking-tight'
-    : 'text-xl sm:text-2xl font-black text-slate-900 tracking-tight';
+  const headingTextClass = 'text-xl sm:text-2xl font-black text-slate-900 tracking-tight';
 
-  const subTextClass = isStandalone
-    ? 'text-xs sm:text-sm font-semibold text-slate-300 mt-1'
-    : 'text-xs sm:text-sm font-semibold text-slate-700 mt-1';
+  const subTextClass = 'text-xs sm:text-sm font-semibold text-slate-700 mt-1';
 
-  const readinessCardClass = isStandalone
-    ? 'p-4 bg-slate-950/80 rounded-2xl border-2 border-slate-800 space-y-2.5'
-    : 'p-4 bg-slate-50 rounded-2xl border-2 border-slate-200/90 space-y-2.5';
+  const readinessCardClass = 'p-4 bg-slate-50 rounded-2xl border-2 border-slate-200/90 space-y-2.5';
 
-  const readinessLabelClass = isStandalone
-    ? 'text-xs font-black text-slate-300 uppercase tracking-wider block'
-    : 'text-xs font-black text-slate-800 uppercase tracking-wider block';
+  const readinessLabelClass = 'text-xs font-black text-slate-800 uppercase tracking-wider block';
 
-  const readinessRowClass = isStandalone
-    ? 'flex items-center justify-between text-xs sm:text-sm font-bold text-slate-200'
-    : 'flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800';
+  const readinessRowClass = 'flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800';
 
-  const lowDataBoxClass = isStandalone
-    ? 'flex items-center justify-between p-3.5 bg-slate-950/80 hover:bg-slate-950 border-2 border-slate-800 rounded-2xl cursor-pointer transition-colors shadow-2xs'
-    : 'flex items-center justify-between p-3.5 bg-blue-50/80 hover:bg-blue-50 border-2 border-blue-200 rounded-2xl cursor-pointer transition-colors shadow-2xs';
+  const lowDataBoxClass =
+    'flex items-center justify-between p-3.5 bg-blue-50/80 hover:bg-blue-50 border-2 border-blue-200 rounded-2xl cursor-pointer transition-colors shadow-2xs';
 
   const settingsBtnClass = showSettings
     ? 'bg-blue-600 border-blue-600 text-white shadow-md'
-    : isStandalone
-      ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700'
-      : 'bg-slate-50 border-slate-300 text-slate-800 hover:bg-slate-100';
+    : 'bg-slate-50 border-slate-300 text-slate-800 hover:bg-slate-100';
 
   return (
     <div
@@ -237,7 +223,7 @@ export function PreJoinLobby({
       data-testid="prejoin-lobby"
     >
       {/* Header */}
-      <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 mb-5 ${isStandalone ? 'border-slate-800' : 'border-slate-200'}`}>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 mb-5 border-slate-200">
         <div>
           <div className="flex items-center gap-2.5">
             <span className="w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse" />
@@ -283,7 +269,7 @@ export function PreJoinLobby({
       {/* Main Grid: Preview on Left, Join Actions on Right */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
         {/* Video Preview Box */}
-        <div className="md:col-span-7 relative w-full aspect-video min-h-[220px] sm:min-h-[280px] bg-slate-950 rounded-2xl overflow-hidden shadow-2xl border-2 border-slate-800 flex items-center justify-center">
+        <div className="md:col-span-7 relative w-full aspect-video min-h-[220px] sm:min-h-[280px] bg-slate-900 rounded-2xl overflow-hidden shadow-xl border-2 border-slate-200 flex items-center justify-center">
           {videoEnabled ? (
             <video
               ref={videoRef}
@@ -308,38 +294,38 @@ export function PreJoinLobby({
           )}
 
           {/* Audio Level Indicator overlay */}
-          <div className="absolute top-3 left-3 bg-slate-900/90 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 border border-slate-700 shadow-md">
+          <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 border border-slate-200 shadow-md">
             {audioEnabled ? (
-              <Mic className="w-4 h-4 text-emerald-400 animate-pulse" />
+              <Mic className="w-4 h-4 text-emerald-600 animate-pulse" />
             ) : (
-              <MicOff className="w-4 h-4 text-rose-400" />
+              <MicOff className="w-4 h-4 text-rose-600" />
             )}
-            <div className="w-20 h-2 bg-slate-800 rounded-full overflow-hidden border border-slate-700">
+            <div className="w-20 h-2 bg-slate-200 rounded-full overflow-hidden border border-slate-300">
               <div
-                className="h-full bg-gradient-to-r from-emerald-400 via-green-400 to-emerald-500 transition-all duration-75"
+                className="h-full bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 transition-all duration-75"
                 style={{ width: `${audioEnabled ? audioLevel : 0}%` }}
               />
             </div>
-            <span className="text-[10px] font-black text-slate-200 min-w-7">
+            <span className="text-[10px] font-black text-slate-800 min-w-7">
               {audioEnabled ? `${audioLevel}%` : (isBn ? 'মিউট' : 'Muted')}
             </span>
           </div>
 
           {/* Quick toggle overlay on preview */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-slate-900/90 backdrop-blur-md px-4 py-2 rounded-full border border-slate-700 shadow-xl">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200 shadow-xl">
             <button
               type="button"
               onClick={toggleAudio}
               className={`p-3 rounded-full transition-all shadow-md active:scale-95 ${
                 audioEnabled
-                  ? 'bg-slate-800 hover:bg-slate-700 text-white ring-2 ring-emerald-500/60'
+                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 ring-2 ring-emerald-500/80 border border-slate-200'
                   : 'bg-rose-600 hover:bg-rose-700 text-white ring-2 ring-rose-400'
               }`}
               title={audioEnabled ? (isBn ? 'মাইক বন্ধ করুন' : 'Mute') : isBn ? 'মাইক চালু করুন' : 'Unmute'}
               aria-label={audioEnabled ? 'Mute' : 'Unmute'}
               data-testid="lobby-mic-toggle"
             >
-              {audioEnabled ? <Mic className="w-5 h-5 text-emerald-400" /> : <MicOff className="w-5 h-5 text-white" />}
+              {audioEnabled ? <Mic className="w-5 h-5 text-emerald-600" /> : <MicOff className="w-5 h-5 text-white" />}
             </button>
 
             <button
@@ -347,14 +333,14 @@ export function PreJoinLobby({
               onClick={toggleVideo}
               className={`p-3 rounded-full transition-all shadow-md active:scale-95 ${
                 videoEnabled
-                  ? 'bg-slate-800 hover:bg-slate-700 text-white ring-2 ring-blue-500/60'
+                  ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 ring-2 ring-blue-500/80 border border-slate-200'
                   : 'bg-rose-600 hover:bg-rose-700 text-white ring-2 ring-rose-400'
               }`}
               title={videoEnabled ? (isBn ? 'ক্যামেরা বন্ধ করুন' : 'Turn Off Camera') : isBn ? 'ক্যামেরা চালু করুন' : 'Turn On Camera'}
               aria-label={videoEnabled ? 'Turn Off Camera' : 'Turn On Camera'}
               data-testid="lobby-camera-toggle"
             >
-              {videoEnabled ? <Camera className="w-5 h-5 text-blue-400" /> : <CameraOff className="w-5 h-5 text-white" />}
+              {videoEnabled ? <Camera className="w-5 h-5 text-blue-600" /> : <CameraOff className="w-5 h-5 text-white" />}
             </button>
           </div>
         </div>
@@ -369,21 +355,21 @@ export function PreJoinLobby({
 
               <div className={readinessRowClass}>
                 <span className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-500" />
+                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
                   {isBn ? 'ভূমিকা' : 'Role'}
                 </span>
-                <span className="px-2.5 py-1 bg-blue-600/30 text-blue-400 border border-blue-500/40 rounded-lg font-black text-xs">
+                <span className="px-2.5 py-1 bg-blue-100 text-blue-900 border border-blue-200 rounded-lg font-black text-xs">
                   {isTutor ? (isBn ? 'শিক্ষক / হোস্ট' : 'Tutor / Host') : isBn ? 'শিক্ষার্থী' : 'Student'}
                 </span>
               </div>
 
               <div className={readinessRowClass}>
                 <span className="flex items-center gap-2">
-                  <Wifi className="w-4 h-4 text-indigo-400" />
+                  <Wifi className="w-4 h-4 text-indigo-600" />
                   {isBn ? 'ক্লাউড নেটওয়ার্ক' : 'Network Mode'}
                 </span>
-                <span className="text-emerald-400 font-black text-xs flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
+                <span className="text-emerald-700 font-black text-xs flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                   {isBn ? 'এসএফইউ প্রস্তুত' : 'SFU Cloud Ready'}
                 </span>
               </div>
@@ -392,10 +378,10 @@ export function PreJoinLobby({
             {/* Mobile Data Saver Toggle */}
             <label className={lowDataBoxClass}>
               <div className="pr-2">
-                <p className="text-xs sm:text-sm font-black text-blue-300">
+                <p className="text-xs sm:text-sm font-black text-blue-950">
                   {isBn ? 'লো-ডাটা / অডিও-ফার্স্ট মোড' : 'Low-Data / Audio First'}
                 </p>
-                <p className="text-xs text-slate-300 font-semibold mt-0.5">
+                <p className="text-xs text-blue-800/90 font-semibold mt-0.5">
                   {isBn ? 'দুর্বল ৩জি/৪জি মোবাইল ডাটাতে ব্যান্ডউইথ সাশ্রয় করুন' : 'Conserves bandwidth on 3G/4G networks'}
                 </p>
               </div>

@@ -118,21 +118,21 @@ export function ClassroomPollModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/70 backdrop-blur-sm animate-fade-in"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-fade-in"
       data-testid="classroom-poll-modal"
     >
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border-2 border-slate-300 overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border-2 border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-gradient-to-r from-blue-900 to-indigo-900 text-white border-b border-blue-800">
+        <div className="flex items-center justify-between px-6 py-4 bg-slate-50 text-slate-900 border-b border-slate-200">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 bg-blue-700/60 rounded-xl">
-              <BarChart3 className="w-5 h-5 text-amber-300" />
+            <div className="p-2 bg-amber-50 border border-amber-200 rounded-xl">
+              <BarChart3 className="w-5 h-5 text-amber-600" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-black tracking-tight text-white">
+              <h3 className="text-base sm:text-lg font-black tracking-tight text-slate-900">
                 {isBn ? 'ইন-ক্লাস পোল ও তাৎক্ষণিক কুইজ' : 'In-Class Polls & Quick Quiz'}
               </h3>
-              <p className="text-xs text-blue-200 font-medium">
+              <p className="text-xs text-slate-500 font-medium">
                 {isTutor
                   ? isBn
                     ? 'শিক্ষার্থীদের তাৎক্ষণিক যাচাই করুন'
@@ -146,7 +146,7 @@ export function ClassroomPollModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-2 rounded-xl text-blue-200 hover:text-white hover:bg-white/10 transition-colors"
+            className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors"
             data-testid="close-poll-modal-btn"
             aria-label={isBn ? 'বন্ধ করুন' : 'Close'}
           >

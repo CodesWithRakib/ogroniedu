@@ -29,7 +29,7 @@ export function RequireAuth({
     }
   }, [hydrated, isAuthenticated, isLoading, token, user, router, locale, fallbackPath]);
 
-  if (!hydrated || isLoading) {
+  if (!hydrated || (isLoading && !user)) {
     return (
       <div
         className="flex min-h-[40vh] items-center justify-center"
