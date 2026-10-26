@@ -143,7 +143,7 @@ export class ClassroomService {
       user,
     );
 
-    // Time window validation (15 mins early to 120 mins late)
+    // Time window validation (15 mins early to 120 mins late for attendees; hosts/admins can enter early to prepare)
     const now = new Date();
     const startsAt = new Date(bookingSession.startsAt);
     const endsAt = new Date(bookingSession.endsAt);
@@ -154,13 +154,15 @@ export class ClassroomService {
       endsAt.getTime() + CLASSROOM_CONFIG.ALLOW_LATE_JOIN_MINUTES * 60 * 1000,
     );
 
-    if (now < earliestJoin && classroom.status !== 'LIVE') {
+    const isHostOrAdmin = userRole === 'HOST' || userRole === 'CO_HOST';
+
+    if (!isHostOrAdmin && now < earliestJoin && classroom.status !== 'LIVE') {
       throw new BadRequestException(
         `Classroom is not open yet. Doors open at ${earliestJoin.toLocaleTimeString()}.`,
       );
     }
 
-    if (now > latestJoin && classroom.status !== 'LIVE') {
+    if (!isHostOrAdmin && now > latestJoin && classroom.status !== 'LIVE') {
       throw new BadRequestException('This classroom session window has expired.');
     }
 

@@ -236,6 +236,28 @@ describe('ClassroomService Unit & Integration Tests', () => {
         service.joinClassroom('session-uuid-101', studentUser),
       ).rejects.toThrow(BadRequestException);
     });
+
+    it('TC-CLS-006B: should allow host/tutor to join classroom early to prepare and start session', async () => {
+      mockBookingSessionRepo.findOne.mockResolvedValue({
+        ...mockBookingSession,
+        startsAt: new Date(Date.now() + 60 * 60 * 1000), // starts in 1 hour
+        status: 'scheduled',
+      });
+      mockClassroomRepo.findOne.mockResolvedValue({
+        id: 'classroom-uuid-301',
+        roomName: 'ogroni-session-session-uuid-101',
+        mode: 'SMALL_GROUP',
+        status: 'SCHEDULED',
+      });
+      mockUserRepo.findOne.mockResolvedValue({ displayName: 'Tutor Rashed' });
+      mockAttendeeRepo.findOne.mockResolvedValue(null);
+
+      const payload = await service.joinClassroom('session-uuid-101', tutorUser);
+      expect(payload).toBeDefined();
+      expect(payload.role).toBe('HOST');
+      expect(payload.canPublish).toBe(true);
+      expect(payload.token).toBe('mock-livekit-jwt-token-xyz');
+    });
   });
 
   describe('Interactive Stage Promotion & Moderation', () => {

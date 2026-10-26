@@ -499,7 +499,7 @@ export function renderLandingPageHtml(config: LandingPageConfig): string {
 
       <h1 class="hero-h1">Enterprise Tutoring Marketplace<br/>&amp; LMS Core Engine</h1>
       <p class="hero-desc">
-        High-concurrency NestJS 12 REST API, double-entry financial escrow ledger, Jitsi video classrooms, and real-time Socket.IO notification streaming.
+        High-concurrency NestJS 12 REST API, double-entry financial escrow ledger, LiveKit video classrooms, and real-time Socket.IO notification streaming.
       </p>
 
       <div class="hero-actions">
@@ -605,7 +605,7 @@ export function renderLandingPageHtml(config: LandingPageConfig): string {
           <span class="brand-tag">Classroom</span>
         </div>
         <h3 class="card-title">Live Video &amp; Whiteboard</h3>
-        <p class="card-desc">Option 6 Jitsi live video meeting room provisioning, synchronized whiteboard collaboration, and attendance logging.</p>
+        <p class="card-desc">Interactive LiveKit WebRTC video meeting room provisioning, synchronized whiteboard collaboration, and attendance logging.</p>
         <div class="endpoints-list">
           <div class="endpoint-item"><span class="method-badge method-get">GET</span><span class="endpoint-path">/api/v1/learning/sessions</span></div>
           <div class="endpoint-item"><span class="method-badge method-post">POST</span><span class="endpoint-path">/api/v1/learning/sessions/:id/complete</span></div>

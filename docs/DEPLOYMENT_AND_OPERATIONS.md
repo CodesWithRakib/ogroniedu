@@ -240,7 +240,7 @@ The repository root includes a production Blueprint specification (`render.yaml`
 | `NEXT_PUBLIC_APP_URL`                  | Vercel  | Public |            Yes             | Frontend URL: `https://ogroniedu.vercel.app`                                           |
 | `NEXT_PUBLIC_SUPABASE_URL`             | Vercel  | Public |            Yes             | Supabase endpoint: `https://<ref>.supabase.co`                                         |
 | `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Vercel  | Public |            Yes             | Supabase client publishable key                                                        |
-| `NEXT_PUBLIC_JITSI_DOMAIN`             | Vercel  | Public | No (default `meet.jit.si`) | Jitsi classroom domain                                                                 |
+| `NEXT_PUBLIC_LIVEKIT_URL`              | Vercel  | Public | Yes                        | LiveKit WebRTC SFU WebSocket endpoint                                                  |
 | `PORT`                                 | Render  | Server |         Yes (Auto)         | Port assigned by Render (e.g. 10000)                                                   |
 | `NODE_ENV`                             | Both    | Server |            Yes             | `production`                                                                           |
 | `DATABASE_URL`                         | Render  | Secret |            Yes             | Postgres connection string with `sslmode=require`                                      |

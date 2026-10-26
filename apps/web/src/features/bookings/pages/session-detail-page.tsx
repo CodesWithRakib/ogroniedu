@@ -365,8 +365,8 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
           </div>
           <h2 className="text-xl md:text-2xl font-black text-slate-900">
             {locale === 'bn'
-              ? 'ইন্টারেক্টিভ লাইভ ক্লাসরুম (Jitsi Meet) ও ডিজিটাল হোয়াইটবোর্ড'
-              : 'Interactive Live Classroom (Jitsi) & Whiteboard'}
+              ? 'ইন্টারেক্টিভ লাইভ ক্লাসরুম (LiveKit) ও ডিজিটাল হোয়াইটবোর্ড'
+              : 'Interactive Live Classroom (LiveKit) & Whiteboard'}
           </h2>
           <p className="text-xs text-slate-600 font-medium leading-relaxed">
             {locale === 'bn'
@@ -572,7 +572,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
             </div>
             <p className="text-xs text-slate-600 font-medium">
               {locale === 'bn'
-                ? 'ক্লাস চলাকালীন ইন-ব্রাউজার জিটসি ক্লাসরুম বা সরাসরি অনলাইন লিংকে প্রবেশ করুন।'
+                ? 'ক্লাস চলাকালীন ইন-ব্রাউজার লাইভ ক্লাসরুম বা সরাসরি অনলাইন লিংকে প্রবেশ করুন।'
                 : 'Join live video session via secure meeting link.'}
             </p>
           </CardHeader>
@@ -591,20 +591,14 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
                 <div className="text-xs text-slate-700 font-mono break-all truncate">
                   {meetingUrl}
                 </div>
-                <a
-                  href={meetingUrl}
-                  target="_blank"
-                  rel="noreferrer"
+                <Link
+                  href={withLocale(`/classroom/${sessionId}`, locale)}
                   className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs shadow-blue-500/25 transition-all"
                   data-testid="join-classroom-btn"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  {locale === 'bn'
-                    ? meetingUrl.includes('meet.jit.si')
-                      ? 'সরাসরি জিটসি ক্লাসরুমে যোগ দিন'
-                      : 'ক্লাসরুমে যোগ দিন'
-                    : 'Join Live Video Classroom'}
-                </a>
+                  {locale === 'bn' ? 'সরাসরি লাইভ ক্লাসরুমে প্রবেশ করুন' : 'Join Live Video Classroom'}
+                </Link>
 
                 <Link
                   href={withLocale(`/classroom/${sessionId}`, locale)}

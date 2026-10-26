@@ -48,7 +48,6 @@ import {
 import { useAppSelector } from '@/store';
 import { InteractiveWhiteboard } from './InteractiveWhiteboard';
 import { ClassroomFormulasDrawer } from './ClassroomFormulasDrawer';
-import { JitsiClassroomMeeting } from './JitsiClassroomMeeting';
 import { LiveKitClassroomMeeting } from './LiveKitClassroomMeeting';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
 import { parseItem } from '@/lib/api/parse';
@@ -211,23 +210,6 @@ export function ClassroomWorkspace({
             'Failed to update meeting URL')
           : 'Failed to update meeting URL';
       setActionError(msg);
-    }
-  };
-
-  // Auto-save generated Jitsi URL handler
-  const handleMeetingUrlGenerated = async (url: string) => {
-    try {
-      await updateMeetingUrl({
-        id: session.id,
-        meetingUrl: url,
-      }).unwrap();
-      setActionSuccess(
-        isBn
-          ? 'অগ্রণী জিটসি ক্লাসরুম লিংক সেশনের মূল মিটিং লিংক হিসেবে সংরক্ষিত হয়েছে!'
-          : 'Ogroni Jitsi Classroom link saved as the primary session meeting URL!',
-      );
-    } catch {
-      // ignore
     }
   };
 
@@ -530,7 +512,7 @@ export function ClassroomWorkspace({
             data-testid="tab-video"
           >
             <Video className="w-4 h-4 text-blue-400" />
-            <span>{isBn ? 'লাইভ ভিডিও ক্লাস (Jitsi Meet)' : 'Live Video Class (LiveKit / Jitsi)'}</span>
+            <span>{isBn ? 'লাইভ ভিডিও ক্লাসরুম (LiveKit)' : 'Live Video Classroom (LiveKit)'}</span>
           </button>
 
           <button

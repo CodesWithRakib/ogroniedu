@@ -25,7 +25,6 @@ import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
 import { playAudioTone } from '@/lib/audio/notification-sound';
-import { useLazyGetIcsCalendarQuery } from '@/store/services/sessions-api';
 import type {
   CalendarSessionItem,
   CancelAssessmentView,
@@ -155,17 +154,22 @@ export function SessionScheduleCalendar({
     useState<CalendarSessionItem | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [triggerGetIcs, { isFetching: isDownloadingIcs }] = useLazyGetIcsCalendarQuery();
+  const [isDownloadingIcs, setIsDownloadingIcs] = useState(false);
 
   const handleDownloadIcsCalendar = async () => {
     try {
-      const res = await triggerGetIcs().unwrap();
-      if (res?.data?.icsContent) {
-        const blob = new Blob([res.data.icsContent], { type: 'text/calendar;charset=utf-8' });
+      setIsDownloadingIcs(true);
+      const res = await fetch('/api/v1/sessions/calendar/ical', {
+        headers: { Accept: 'application/json' },
+        credentials: 'include',
+      });
+      const json = await res.json();
+      if (json?.data?.icsContent) {
+        const blob = new Blob([json.data.icsContent], { type: 'text/calendar;charset=utf-8' });
         const url = URL.createObjectURL(blob);
         const link = document.createElement('a');
         link.href = url;
-        link.setAttribute('download', res.data.filename || 'ogroniedu-classes.ics');
+        link.setAttribute('download', json.data.filename || 'ogroniedu-classes.ics');
         document.body.appendChild(link);
         link.click();
         document.body.removeChild(link);
@@ -179,6 +183,8 @@ export function SessionScheduleCalendar({
           ? 'ক্যালেন্ডার (.ics) ফাইল ডাউনলোড করতে ব্যর্থ হয়েছে।'
           : 'Failed to export calendar (.ics) file.',
       );
+    } finally {
+      setIsDownloadingIcs(false);
     }
   };
 
