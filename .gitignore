@@ -12,13 +12,20 @@ out/
 *.tsbuildinfo
 uploads/
 
-# Environment variables & secrets (preserve .env.example)
+# Environment variables & secrets (preserve template examples)
 .env
-.env.local
-.env.development.local
-.env.test.local
-.env.production.local
+.env.*
+.env.prod
+.env.production
+*.env
+*.env.*
 *.env.local
+*.env.production
+*.env.prod
+!**/.env.example
+!**/.env.*.example
+!deploy/env/vercel.production.env
+!deploy/env/render.production.env
 
 # Logs
 logs/
