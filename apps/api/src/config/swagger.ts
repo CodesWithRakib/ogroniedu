@@ -6,5 +6,8 @@
  * Development, test and other non-production harnesses keep it for DX and QA.
  */
 export function isSwaggerEnabled(env: NodeJS.ProcessEnv = process.env): boolean {
+  if (env.ENABLE_SWAGGER === 'true') {
+    return true;
+  }
   return env.NODE_ENV !== 'production';
 }

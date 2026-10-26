@@ -21,6 +21,9 @@ export class ResponseMetaInterceptor implements NestInterceptor {
   private isExemptRoute(url: string | undefined): boolean {
     if (!url) return false;
     return (
+      url === '/' ||
+      url === '' ||
+      url.startsWith('/?') ||
       url.startsWith('/health') ||
       url.startsWith('/api/docs') ||
       url.includes('/webhook') ||

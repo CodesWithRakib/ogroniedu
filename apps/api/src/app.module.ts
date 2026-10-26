@@ -26,6 +26,7 @@ import { AdminModule } from './modules/admin/admin.module';
 import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -110,6 +111,7 @@ import { FeedbackModule } from './modules/feedback/feedback.module';
     OrganizationsModule,
     FeedbackModule,
   ],
+  controllers: [AppController],
   providers: [StructuredLoggerService],
   exports: [StructuredLoggerService],
 })
