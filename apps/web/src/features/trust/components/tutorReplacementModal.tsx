@@ -19,23 +19,24 @@ import { playAudioTone } from '@/lib/audio/notification-sound';
 import { toast } from 'sonner';
 import type { Locale } from '@/lib/i18n';
 
-interface TutorReplacementModalProps {
+export interface TutorReplacementModalProps {
   isOpen: boolean;
   onClose: () => void;
   locale: Locale;
   bookingId: string;
   tutorName?: string | null;
   subjectName?: string | null;
+  onSuccess?: () => void;
 }
 
-export function TutorReplacementModal({
-  isOpen,
+export function TutorReplacementModalForm({
   onClose,
   locale,
   bookingId,
   tutorName,
   subjectName,
-}: TutorReplacementModalProps) {
+  onSuccess,
+}: Omit<TutorReplacementModalProps, 'isOpen'>) {
   const isBn = locale === 'bn';
   const [createReplacementCase, { isLoading }] = useCreateReplacementCaseMutation();
 
@@ -43,8 +44,6 @@ export function TutorReplacementModal({
   const [explanation, setExplanation] = useState<string>('');
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
-
-  if (!isOpen) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -76,6 +75,7 @@ export function TutorReplacementModal({
       });
 
       setIsSuccess(true);
+      onSuccess?.();
       setTimeout(() => {
         setIsSuccess(false);
         onClose();
@@ -95,174 +95,188 @@ export function TutorReplacementModal({
   };
 
   return (
+    <div data-testid="tutor-replacement-modal-content" className="space-y-4">
+      {isSuccess ? (
+        <div className="py-10 text-center space-y-4">
+          <CheckCircle2 className="w-16 h-16 text-emerald-600 mx-auto animate-bounce" />
+          <h3 className="text-xl font-black text-slate-900">
+            {isBn ? 'রিপ্লেসমেন্ট দাবি সফলভাবে গৃহীত হয়েছে' : 'Guarantee Request Active'}
+          </h3>
+          <p className="text-sm text-slate-600 max-w-md mx-auto">
+            {isBn
+              ? '৪৮ ঘণ্টার কাউন্টডাউন শুরু হয়েছে। আমাদের ম্যাচিং টিম আপনার সাথে যোগাযোগ করবে।'
+              : 'The 48-hour guarantee clock has started. Our team is curating matching replacement tutors.'}
+          </p>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="space-y-4">
+          <div className="border-b border-slate-100 pb-4 text-left">
+            <div className="flex items-center gap-3">
+              <div className="h-10 w-10 rounded-2xl bg-blue-50 border border-blue-200/80 text-blue-600 flex items-center justify-center shrink-0">
+                <RefreshCw className="w-5 h-5" />
+              </div>
+              <div>
+                <h3 className="text-lg font-black text-slate-900">
+                  {isBn
+                    ? '৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি'
+                    : '48-Hour Tutor Replacement Guarantee'}
+                </h3>
+                <p className="text-xs font-semibold text-blue-700 mt-0.5">
+                  {tutorName && subjectName
+                    ? isBn
+                      ? `${tutorName} (${subjectName})-এর বিকল্প শিক্ষক দাবি করুন`
+                      : `Request alternative tutor for ${tutorName} (${subjectName})`
+                    : isBn
+                      ? 'অসন্তোষজনক অভিজ্ঞতা হলে বিনামূল্যে শিক্ষক পরিবর্তন বা ১০০% রিফান্ড'
+                      : 'Free replacement matching or 100% money-back guarantee'}
+                </p>
+              </div>
+            </div>
+          </div>
+
+          {/* SLA Guarantee Banner */}
+          <Alert className="flex items-center justify-between p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-slate-900">
+            <div className="flex items-center gap-2">
+              <ShieldCheck className="w-4 h-4 text-blue-700 shrink-0" />
+              <AlertDescription className="text-xs text-slate-800 font-medium">
+                {isBn
+                  ? '১০০% অভিভাবক সুরক্ষা: ৪৮ ঘণ্টার মধ্যে নতুন যাচাইকৃত শিক্ষক অথবা সম্পূর্ণ ফান্ড ফেরত।'
+                  : '100% Trust Guarantee: New verified tutor within 48h or full escrow refund.'}
+              </AlertDescription>
+            </div>
+            <div className="flex items-center gap-1 font-bold text-blue-700 shrink-0">
+              <Clock className="w-3.5 h-3.5" />
+              <span>৪৮ ঘণ্টা</span>
+            </div>
+          </Alert>
+
+          {/* Reason Code Select */}
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="replacement-reason-select"
+              className="text-xs font-semibold text-foreground"
+            >
+              {isBn ? 'পরিবর্তন চাওয়ার কারণ:' : 'Reason for Replacement:'}
+            </Label>
+            <NativeSelect
+              value={reasonCode}
+              onChange={(e) => setReasonCode(e.target.value)}
+              className="text-xs"
+              id="replacement-reason-select"
+            >
+              <option value="teaching_mismatch">
+                {isBn
+                  ? 'পাঠদান পদ্ধতি শিক্ষার্থীর সাথে মিলছে না (Teaching Style Mismatch)'
+                  : 'Teaching Style Mismatch'}
+              </option>
+              <option value="tutor_no_show">
+                {isBn
+                  ? 'শিক্ষক নির্ধারিত ক্লাসে অনুপস্থিত ছিলেন (Tutor No-Show)'
+                  : 'Tutor No-Show'}
+              </option>
+              <option value="frequent_tutor_cancellation">
+                {isBn
+                  ? 'ঘন ঘন ক্লাস বাতিল বা সময় পরিবর্তন (Frequent Reschedules)'
+                  : 'Frequent Cancellations & Rescheduling'}
+              </option>
+              <option value="unprofessional_conduct">
+                {isBn
+                  ? 'পেশাগত দায়িত্বহীনতা বা অসদাচরণ (Unprofessional Conduct)'
+                  : 'Unprofessional Conduct'}
+              </option>
+              <option value="trial_dissatisfaction">
+                {isBn
+                  ? 'প্রথম/ট্রায়াল ক্লাসের ফলাফল সন্তোষজনক নয় (Trial Dissatisfaction)'
+                  : 'Trial Class Dissatisfaction'}
+              </option>
+              <option value="other">{isBn ? 'অন্যান্য কারণ (Other)' : 'Other Reason'}</option>
+            </NativeSelect>
+          </div>
+
+          {/* Explanation Textarea */}
+          <div className="space-y-1.5">
+            <Label
+              htmlFor="replacement-explanation-input"
+              className="text-xs font-semibold text-foreground"
+            >
+              {isBn
+                ? 'বিস্তারিত প্রত্যাশা ও বিবরণ (কী ধরণের শিক্ষক চাচ্ছেন?):'
+                : 'Requirements for New Tutor:'}
+            </Label>
+            <Textarea
+              value={explanation}
+              onChange={(e) => setExplanation(e.target.value)}
+              rows={4}
+              placeholder={
+                isBn
+                  ? 'নতুন শিক্ষকের কাছ থেকে আপনার নির্দিষ্ট প্রত্যাশা, সময়সূচি বা কোনো অগ্রাধিকার উল্লেখ করুন...'
+                  : 'Specify preferred background, schedule adjustments, or pedagogical style...'
+              }
+              className="w-full rounded-xl bg-card border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus:border-primary"
+              id="replacement-explanation-input"
+            />
+          </div>
+
+          {errorMessage && (
+            <Alert
+              variant="destructive"
+              className="flex items-center gap-2 p-3 rounded-xl text-xs"
+            >
+              <AlertTriangle className="w-4 h-4 shrink-0" />
+              <AlertDescription>{errorMessage}</AlertDescription>
+            </Alert>
+          )}
+
+          <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={onClose}
+              className="text-xs rounded-xl"
+            >
+              {isBn ? 'বাতিল' : 'Cancel'}
+            </Button>
+            <Button
+              type="submit"
+              variant="primary"
+              size="sm"
+              disabled={isLoading}
+              className="gap-1.5 text-xs font-bold px-4 rounded-xl"
+              id="btn-submit-replacement-request"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>
+                {isLoading
+                  ? isBn
+                    ? 'জমা হচ্ছে...'
+                    : 'Submitting...'
+                  : isBn
+                    ? 'রিপ্লেসমেন্ট ক্লেইম করুন'
+                    : 'Claim Replacement'}
+              </span>
+            </Button>
+          </div>
+        </form>
+      )}
+    </div>
+  );
+}
+
+export function TutorReplacementModal({
+  isOpen,
+  onClose,
+  ...rest
+}: TutorReplacementModalProps) {
+  if (!isOpen) return null;
+
+  return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="tutor-replacement-modal"
         className="w-full max-w-xl rounded-3xl border border-blue-200 bg-white p-6 text-slate-900 shadow-2xl max-h-[90vh] overflow-y-auto text-left"
       >
-        {isSuccess ? (
-          <div className="py-10 text-center space-y-4">
-            <CheckCircle2 className="w-16 h-16 text-emerald-600 mx-auto animate-bounce" />
-            <h3 className="text-xl font-black text-slate-900">
-              {isBn ? 'রিপ্লেসমেন্ট দাবি সফলভাবে গৃহীত হয়েছে' : 'Guarantee Request Active'}
-            </h3>
-            <p className="text-sm text-slate-600 max-w-md mx-auto">
-              {isBn
-                ? '৪৮ ঘণ্টার কাউন্টডাউন শুরু হয়েছে। আমাদের ম্যাচিং টিম আপনার সাথে যোগাযোগ করবে।'
-                : 'The 48-hour guarantee clock has started. Our team is curating matching replacement tutors.'}
-            </p>
-          </div>
-        ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <DialogHeader className="border-b border-slate-100 pb-4 text-left">
-              <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-2xl bg-blue-50 border border-blue-200/80 text-blue-600 flex items-center justify-center shrink-0">
-                  <RefreshCw className="w-5 h-5" />
-                </div>
-                <div>
-                  <DialogTitle className="text-lg font-black text-slate-900">
-                    {isBn
-                      ? '৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি'
-                      : '48-Hour Tutor Replacement Guarantee'}
-                  </DialogTitle>
-                  <DialogDescription className="text-xs font-semibold text-blue-700 mt-0.5">
-                    {tutorName && subjectName
-                      ? isBn
-                        ? `${tutorName} (${subjectName})-এর বিকল্প শিক্ষক দাবি করুন`
-                        : `Request alternative tutor for ${tutorName} (${subjectName})`
-                      : isBn
-                        ? 'অসন্তোষজনক অভিজ্ঞতা হলে বিনামূল্যে শিক্ষক পরিবর্তন বা ১০০% রিফান্ড'
-                        : 'Free replacement matching or 100% money-back guarantee'}
-                  </DialogDescription>
-                </div>
-              </div>
-            </DialogHeader>
-
-            {/* SLA Guarantee Banner */}
-            <Alert className="flex items-center justify-between p-3 rounded-xl bg-primary-soft border border-primary/25 text-xs text-primary-soft-foreground">
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
-                <AlertDescription className="text-xs">
-                  {isBn
-                    ? '১০০% অভিভাবক সুরক্ষা: ৪৮ ঘণ্টার মধ্যে নতুন যাচাইকৃত শিক্ষক অথবা সম্পূর্ণ ফান্ড ফেরত।'
-                    : '100% Trust Guarantee: New verified tutor within 48h or full escrow refund.'}
-                </AlertDescription>
-              </div>
-              <div className="flex items-center gap-1 font-bold text-primary shrink-0">
-                <Clock className="w-3.5 h-3.5" />
-                <span>৪৮ ঘণ্টা</span>
-              </div>
-            </Alert>
-
-            {/* Reason Code Select */}
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="replacement-reason-select"
-                className="text-xs font-semibold text-foreground"
-              >
-                {isBn ? 'পরিবর্তন চাওয়ার কারণ:' : 'Reason for Replacement:'}
-              </Label>
-              <NativeSelect
-                value={reasonCode}
-                onChange={(e) => setReasonCode(e.target.value)}
-                className="text-xs"
-                id="replacement-reason-select"
-              >
-                <option value="teaching_mismatch">
-                  {isBn
-                    ? 'পাঠদান পদ্ধতি শিক্ষার্থীর সাথে মিলছে না (Teaching Style Mismatch)'
-                    : 'Teaching Style Mismatch'}
-                </option>
-                <option value="tutor_no_show">
-                  {isBn
-                    ? 'শিক্ষক নির্ধারিত ক্লাসে অনুপস্থিত ছিলেন (Tutor No-Show)'
-                    : 'Tutor No-Show'}
-                </option>
-                <option value="frequent_tutor_cancellation">
-                  {isBn
-                    ? 'ঘন ঘন ক্লাস বাতিল বা সময় পরিবর্তন (Frequent Reschedules)'
-                    : 'Frequent Cancellations & Rescheduling'}
-                </option>
-                <option value="unprofessional_conduct">
-                  {isBn
-                    ? 'পেশাগত দায়িত্বহীনতা বা অসদাচরণ (Unprofessional Conduct)'
-                    : 'Unprofessional Conduct'}
-                </option>
-                <option value="trial_dissatisfaction">
-                  {isBn
-                    ? 'প্রথম/ট্রায়াল ক্লাসের ফলাফল সন্তোষজনক নয় (Trial Dissatisfaction)'
-                    : 'Trial Class Dissatisfaction'}
-                </option>
-                <option value="other">{isBn ? 'অন্যান্য কারণ (Other)' : 'Other Reason'}</option>
-              </NativeSelect>
-            </div>
-
-            {/* Explanation Textarea */}
-            <div className="space-y-1.5">
-              <Label
-                htmlFor="replacement-explanation-input"
-                className="text-xs font-semibold text-foreground"
-              >
-                {isBn
-                  ? 'বিস্তারিত প্রত্যাশা ও বিবরণ (কী ধরণের শিক্ষক চাচ্ছেন?):'
-                  : 'Requirements for New Tutor:'}
-              </Label>
-              <Textarea
-                value={explanation}
-                onChange={(e) => setExplanation(e.target.value)}
-                rows={4}
-                placeholder={
-                  isBn
-                    ? 'নতুন শিক্ষকের কাছ থেকে আপনার নির্দিষ্ট প্রত্যাশা, সময়সূচি বা কোনো অগ্রাধিকার উল্লেখ করুন...'
-                    : 'Specify preferred background, schedule adjustments, or pedagogical style...'
-                }
-                className="w-full rounded-xl bg-card border border-border p-3 text-xs text-foreground placeholder:text-muted-foreground focus-visible:outline-none focus:border-primary"
-                id="replacement-explanation-input"
-              />
-            </div>
-
-            {errorMessage && (
-              <Alert
-                variant="destructive"
-                className="flex items-center gap-2 p-3 rounded-xl text-xs"
-              >
-                <AlertTriangle className="w-4 h-4 shrink-0" />
-                <AlertDescription>{errorMessage}</AlertDescription>
-              </Alert>
-            )}
-
-            <div className="flex items-center justify-end gap-3 pt-3 border-t border-border">
-              <Button
-                type="button"
-                variant="outline"
-                size="sm"
-                onClick={onClose}
-                className="text-xs rounded-xl"
-              >
-                {isBn ? 'বাতিল' : 'Cancel'}
-              </Button>
-              <Button
-                type="submit"
-                variant="primary"
-                size="sm"
-                disabled={isLoading}
-                className="gap-1.5 text-xs font-bold px-4 rounded-xl"
-                id="btn-submit-replacement-request"
-              >
-                <Send className="w-3.5 h-3.5" />
-                <span>
-                  {isLoading
-                    ? isBn
-                      ? 'জমা হচ্ছে...'
-                      : 'Submitting...'
-                    : isBn
-                      ? 'রিপ্লেসমেন্ট ক্লেইম করুন'
-                      : 'Claim Replacement'}
-                </span>
-              </Button>
-            </div>
-          </form>
-        )}
+        <TutorReplacementModalForm onClose={onClose} {...rest} />
       </DialogContent>
     </Dialog>
   );

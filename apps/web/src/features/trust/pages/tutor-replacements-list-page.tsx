@@ -63,16 +63,16 @@ export function CaseCard({
   const isBn = locale === 'bn';
   return (
     <Card
-      className="rounded-2xl border-border bg-card p-5 space-y-4"
+      className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4 shadow-xs"
       data-testid={`replacement-case-${item.id}`}
     >
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
         <div className="space-y-1">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-bold text-muted-foreground">
+            <span className="font-mono text-xs font-black text-slate-900">
               #{item.id.slice(0, 8)}
             </span>
-            <Badge variant="outline" className="text-xs capitalize">
+            <Badge variant="outline" className="text-xs capitalize font-semibold border-slate-300 text-slate-800 bg-slate-50">
               {item.reasonCode.replace(/_/g, ' ')}
             </Badge>
             {item.isOverdue && (
@@ -81,14 +81,14 @@ export function CaseCard({
               </Badge>
             )}
           </div>
-          <span className="text-[11px] text-muted-foreground">
+          <span className="text-[11px] text-slate-600 font-medium">
             {isBn ? 'দায়ের:' : 'Filed:'} {formatDateTime(item.createdAt, locale)}
           </span>
         </div>
         <StatusBadge status={item.status} locale={locale} />
       </div>
 
-      <p className="text-xs rounded-xl bg-card border border-border p-3 text-foreground">
+      <p className="text-xs rounded-xl bg-slate-50 border border-slate-200 p-3 text-slate-900 font-medium">
         {item.explanation}
       </p>
 
@@ -96,15 +96,18 @@ export function CaseCard({
         !['accepted', 'rejected', 'closed', 'refund_eligible', 'cancelled'].includes(
           item.status,
         ) && (
-          <div className="flex items-center gap-2 text-xs text-muted-foreground">
-            <Clock className="w-4 h-4" aria-hidden="true" />
-            {isBn ? 'সময়সীমা:' : 'Deadline:'} {formatDateTime(item.deadlineAt, locale)}
+          <div className="flex items-center gap-2 text-xs text-purple-900 font-semibold bg-purple-50 border border-purple-200 rounded-lg px-2.5 py-1.5 w-fit">
+            <Clock className="w-4 h-4 text-purple-700" aria-hidden="true" />
+            <span>
+              {isBn ? 'ম্যাচিং সময়সীমা:' : 'Matching Deadline:'}{' '}
+              {formatDateTime(item.deadlineAt, locale)}
+            </span>
           </div>
         )}
 
       {item.userVisibleNote && (
-        <p className="text-xs text-muted-foreground">
-          <span className="font-semibold text-foreground">
+        <p className="text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-2 font-medium">
+          <span className="font-bold text-slate-900">
             {isBn ? 'সর্বশেষ আপডেট: ' : 'Latest update: '}
           </span>
           {item.userVisibleNote}
@@ -112,30 +115,40 @@ export function CaseCard({
       )}
 
       {item.refundEligibility === 'eligible' && (
-        <Alert className="rounded-xl" data-testid={`refund-eligible-${item.id}`}>
-          <AlertDescription className="text-xs">
+        <Alert className="rounded-xl border-emerald-300 bg-emerald-50 text-emerald-950" data-testid={`refund-eligible-${item.id}`}>
+          <AlertDescription className="text-xs font-semibold">
             {isBn
-              ? 'এই কেসটি রিফান্ড পর্যালোচনার জন্য যোগ্য হিসেবে চিহ্নিত। প্রকৃত ফেরত পেমেন্ট আলাদা প্রক্রিয়ায় সম্পন্ন হয়।'
-              : 'This case is marked eligible for refund review. The actual refund is executed by the payment process, not here.'}
+              ? 'এই কেসটি রিফান্ড পর্যালোচনার জন্য যোগ্য হিসেবে চিহ্নিত। ১০০% মানিব্যাক গ্যারান্টি অনুসারে এসক্রো রিফান্ড প্রক্রিয়াধীন।'
+              : 'This case is marked eligible for refund review under the 100% money-back guarantee.'}
           </AlertDescription>
         </Alert>
       )}
 
       {item.status === 'offered' && item.replacementTutor && (
         <div
-          className="p-4 rounded-2xl bg-primary/10 border border-primary/30 space-y-3"
+          className="p-4 rounded-2xl bg-blue-50 border border-blue-300 space-y-3"
           data-testid={`offer-${item.id}`}
         >
-          <p className="text-sm font-semibold text-foreground">
-            {isBn ? 'বিকল্প শিক্ষক প্রস্তাব:' : 'Proposed replacement tutor:'}{' '}
-            {item.replacementTutor.displayName}
+          <div className="flex items-center justify-between">
+            <p className="text-sm font-black text-slate-900">
+              {isBn ? 'বিকল্প শিক্ষক প্রস্তাব:' : 'Proposed replacement tutor:'}{' '}
+              <span className="text-blue-700 font-bold">{item.replacementTutor.displayName}</span>
+            </p>
+            <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-600 text-white">
+              {isBn ? 'যাচাইকৃত' : 'Verified'}
+            </span>
+          </div>
+          <p className="text-xs text-slate-700 font-medium">
+            {isBn
+              ? 'শিক্ষকের প্রোফাইল ও পড়ানোর সময় যাচাই করে গ্রহণ বা প্রত্যাখ্যান করুন।'
+              : 'Review tutor profile and schedule to accept or decline.'}
           </p>
-          <div className="flex gap-2">
+          <div className="flex gap-2 pt-1">
             <Button
               size="sm"
               disabled={isMutating}
               onClick={() => onAccept(item.id)}
-              className="gap-1 text-xs"
+              className="gap-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
               data-testid={`accept-offer-${item.id}`}
             >
               <UserCheck className="w-3.5 h-3.5" aria-hidden="true" />
@@ -146,22 +159,22 @@ export function CaseCard({
               variant="outline"
               disabled={isMutating}
               onClick={() => onDecline(item.id)}
-              className="gap-1 text-xs"
+              className="gap-1.5 text-xs font-bold border-slate-300 bg-white hover:bg-slate-100 text-slate-800"
               data-testid={`decline-offer-${item.id}`}
             >
-              <X className="w-3.5 h-3.5" aria-hidden="true" />
+              <X className="w-3.5 h-3.5 text-rose-600" aria-hidden="true" />
               {isBn ? 'প্রত্যাখ্যান' : 'Decline'}
             </Button>
           </div>
         </div>
       )}
 
-      <div className="flex items-center justify-between text-xs">
+      <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
         <Link
           href={withLocale(`/tutor-replacements/${item.id}`, locale)}
-          className="font-semibold text-primary hover:underline"
+          className="font-bold text-blue-700 hover:underline inline-flex items-center gap-1"
         >
-          {isBn ? 'বিস্তারিত ও ইতিহাস' : 'Details & history'}
+          {isBn ? 'বিস্তারিত ও ইতিহাস দেখুন' : 'View details & history'}
         </Link>
         {['requested', 'under_review'].includes(item.status) && (
           <Button
@@ -169,7 +182,7 @@ export function CaseCard({
             variant="ghost"
             disabled={isMutating}
             onClick={() => onCancel(item.id)}
-            className="text-xs text-muted-foreground hover:text-destructive"
+            className="text-xs text-slate-600 hover:text-rose-700"
           >
             {isBn ? 'অনুরোধ প্রত্যাহার' : 'Withdraw request'}
           </Button>
@@ -232,13 +245,20 @@ export function TutorReplacementsListPage({ locale }: TutorReplacementsListPageP
         </Link>
       }
     >
-      <div className="p-5 rounded-2xl border border-border bg-card flex items-start gap-4">
-        <RefreshCw className="w-6 h-6 text-primary shrink-0" aria-hidden="true" />
-        <p className="text-xs text-muted-foreground leading-relaxed">
-          {isBn
-            ? 'যোগ্য বুকিংয়ের জন্য আপনি বিকল্প যাচাইকৃত শিক্ষক চাইতে পারেন। অপারেশনস টিম নির্ধারিত সময়ের মধ্যে শিক্ষক খুঁজে দেয়; সময়ের মধ্যে বিকল্প না মিললে কেসটি রিফান্ড পর্যালোচনার জন্য চিহ্নিত হতে পারে। প্রকৃত রিফান্ড পেমেন্ট সিস্টেম সম্পন্ন করে।'
-            : 'For an eligible booking you can request a verified replacement tutor. Operations matches within the policy window; if no replacement is accepted the case can be marked for refund review. The actual refund is executed by the payment system.'}
-        </p>
+      <div className="p-5 rounded-2xl border border-blue-200 bg-blue-50/70 flex items-start gap-4 shadow-xs">
+        <RefreshCw className="w-6 h-6 text-blue-700 shrink-0 mt-0.5" aria-hidden="true" />
+        <div className="space-y-1">
+          <h4 className="text-sm font-black text-slate-900">
+            {isBn
+              ? '১০০% অভিভাবক সুরক্ষা ও ৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি'
+              : '100% Trust & 48-Hour Tutor Replacement Guarantee'}
+          </h4>
+          <p className="text-xs text-slate-700 leading-relaxed font-medium">
+            {isBn
+              ? 'যোগ্য বুকিংয়ের জন্য আপনি বিকল্প যাচাইকৃত শিক্ষক চাইতে পারেন। অপারেশনস টিম নির্ধারিত ৪৮ ঘণ্টার মধ্যে উপযুক্ত শিক্ষক খুঁজে দেয়; বিকল্প না মিললে সম্পূর্ণ এসক্রো ফি রিফান্ডের আওতায় আসবে।'
+              : 'For an eligible booking you can request a verified replacement tutor. Operations matches within the 48-hour policy window; if no replacement is accepted, the case can proceed to a full escrow refund review.'}
+          </p>
+        </div>
       </div>
 
       {actionError && (

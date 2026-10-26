@@ -83,58 +83,65 @@ export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCas
             </Alert>
           )}
 
-          <Card className="rounded-2xl bg-card p-5 space-y-4">
+          <Card className="rounded-2xl bg-white border border-slate-200 p-5 space-y-4 shadow-xs">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="capitalize">
+                <Badge variant="outline" className="capitalize border-slate-300 text-slate-800 bg-slate-50 font-semibold">
                   {item.reasonCode.replace(/_/g, ' ')}
                 </Badge>
                 {item.isOverdue && (
                   <Badge variant="destructive">{isBn ? 'সময়সীমা অতিক্রান্ত' : 'Overdue'}</Badge>
                 )}
               </div>
-              <Badge variant="primary" className="capitalize">
+              <Badge variant="primary" className="capitalize font-bold">
                 {item.status.replace(/_/g, ' ')}
               </Badge>
             </div>
 
-            <p className="text-sm text-foreground rounded-xl border border-border p-3">
+            <p className="text-sm text-slate-900 rounded-xl border border-slate-200 bg-slate-50 p-3.5 font-medium">
               {item.explanation}
             </p>
 
             {item.deadlineAt && (
-              <p className="text-xs text-muted-foreground flex items-center gap-2">
-                <Clock className="w-4 h-4" aria-hidden="true" />
-                {isBn ? 'ম্যাচিং সময়সীমা:' : 'Matching deadline:'}{' '}
-                {formatDateTime(item.deadlineAt, locale)}
+              <p className="text-xs text-purple-900 font-semibold bg-purple-50 border border-purple-200 rounded-lg px-2.5 py-1.5 w-fit flex items-center gap-2">
+                <Clock className="w-4 h-4 text-purple-700" aria-hidden="true" />
+                <span>
+                  {isBn ? 'ম্যাচিং সময়সীমা:' : 'Matching deadline:'}{' '}
+                  <strong className="text-slate-900">{formatDateTime(item.deadlineAt, locale)}</strong>
+                </span>
               </p>
             )}
             {item.userVisibleNote && (
-              <p className="text-xs text-muted-foreground">{item.userVisibleNote}</p>
+              <p className="text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-2 font-medium">
+                <span className="font-bold text-slate-900">
+                  {isBn ? 'সর্বশেষ আপডেট: ' : 'Latest update: '}
+                </span>
+                {item.userVisibleNote}
+              </p>
             )}
             {item.refundEligibility === 'eligible' && (
-              <Alert className="rounded-xl">
+              <Alert className="rounded-xl border-emerald-300 bg-emerald-50 text-emerald-950 font-semibold">
                 <AlertDescription className="text-xs">
                   {isBn
-                    ? 'রিফান্ড পর্যালোচনার জন্য যোগ্য। প্রকৃত ফেরত পেমেন্ট আলাদা প্রক্রিয়ায় সম্পন্ন হয়।'
-                    : 'Eligible for refund review. The actual refund is executed separately by the payment system.'}
+                    ? 'রিফান্ড পর্যালোচনার জন্য যোগ্য। ১০০% মানিব্যাক গ্যারান্টি অনুসারে এসক্রো রিফান্ড প্রক্রিয়াধীন।'
+                    : 'Eligible for refund review. Escrow refund processing under the 100% money-back guarantee.'}
                 </AlertDescription>
               </Alert>
             )}
           </Card>
 
           {item.status === 'offered' && item.replacementTutor && (
-            <Card className="rounded-2xl bg-card p-5 space-y-3" data-testid="case-offer">
-              <p className="text-sm font-semibold text-foreground">
+            <Card className="rounded-2xl bg-blue-50 border border-blue-300 p-5 space-y-3 shadow-xs" data-testid="case-offer">
+              <p className="text-sm font-black text-slate-900">
                 {isBn ? 'প্রস্তাবিত বিকল্প শিক্ষক:' : 'Offered replacement tutor:'}{' '}
-                {item.replacementTutor.displayName}
+                <span className="text-blue-700 underline font-bold">{item.replacementTutor.displayName}</span>
               </p>
-              <div className="flex gap-2">
+              <div className="flex gap-2 pt-1">
                 <Button
                   size="sm"
                   disabled={isMutating}
                   onClick={() => void run(() => acceptOffer(caseId).unwrap())}
-                  className="gap-1 text-xs"
+                  className="gap-1.5 text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white"
                 >
                   <UserCheck className="w-3.5 h-3.5" aria-hidden="true" />
                   {isBn ? 'গ্রহণ করুন' : 'Accept'}
@@ -144,33 +151,33 @@ export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCas
                   variant="outline"
                   disabled={isMutating}
                   onClick={() => void run(() => declineOffer(caseId).unwrap())}
-                  className="gap-1 text-xs"
+                  className="gap-1.5 text-xs font-bold border-slate-300 bg-white hover:bg-slate-100 text-slate-800"
                 >
-                  <X className="w-3.5 h-3.5" aria-hidden="true" />
+                  <X className="w-3.5 h-3.5 text-rose-600" aria-hidden="true" />
                   {isBn ? 'প্রত্যাখ্যান' : 'Decline'}
                 </Button>
               </div>
             </Card>
           )}
 
-          <Card className="rounded-2xl bg-card p-5 space-y-3">
-            <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
-              <History className="w-4 h-4 text-primary" aria-hidden="true" />
+          <Card className="rounded-2xl bg-white border border-slate-200 p-5 space-y-3 shadow-xs">
+            <h3 className="text-sm font-black text-slate-900 flex items-center gap-2">
+              <History className="w-4 h-4 text-blue-700" aria-hidden="true" />
               {isBn ? 'কেস ইতিহাস' : 'Case history'}
             </h3>
             {(detail?.history ?? []).length === 0 ? (
-              <p className="text-xs text-muted-foreground">
+              <p className="text-xs text-slate-500 font-medium">
                 {isBn ? 'কোনো ইতিহাস নেই।' : 'No history yet.'}
               </p>
             ) : (
-              <ul className="space-y-2" data-testid="case-history">
+              <ul className="space-y-2.5" data-testid="case-history">
                 {detail!.history.map((event) => (
-                  <li key={event.id} className="text-xs border-l-2 border-border pl-3 space-y-0.5">
-                    <p className="text-foreground">
+                  <li key={event.id} className="text-xs border-l-2 border-slate-300 pl-3 space-y-0.5">
+                    <p className="text-slate-900 font-bold">
                       {event.userVisibleNote ??
                         event.eventType.replace(/_/g, ' ').replace(/\./g, ' ')}
                     </p>
-                    <p className="text-muted-foreground">
+                    <p className="text-slate-600 font-medium">
                       {event.toStatus ? `${event.toStatus.replace(/_/g, ' ')} · ` : ''}
                       {formatDateTime(event.createdAt, locale)}
                     </p>

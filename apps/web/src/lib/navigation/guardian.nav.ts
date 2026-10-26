@@ -11,6 +11,7 @@ import {
   MessageSquare,
   Mail,
   User,
+  RefreshCw,
 } from 'lucide-react';
 import type { NavSection } from './types';
 
@@ -89,6 +90,13 @@ export const GUARDIAN_NAV_SECTIONS: NavSection[] = [
         labelEn: 'Shortlisted Tutors',
         icon: Bookmark,
         testId: 'nav-guardian-bookmarks',
+      },
+      {
+        href: '/tutor-replacements',
+        labelBn: 'শিক্ষক পরিবর্তন গ্যারান্টি',
+        labelEn: 'Tutor Replacement',
+        icon: RefreshCw,
+        testId: 'nav-guardian-tutor-replacements',
       },
     ],
   },

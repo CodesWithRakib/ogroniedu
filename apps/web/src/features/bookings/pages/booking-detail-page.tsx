@@ -19,6 +19,9 @@ import {
   Sparkles,
   Star,
   Scale,
+  RefreshCw,
+  UserCheck,
+  X,
 } from 'lucide-react';
 import { useAppSelector } from '@/store';
 import { Button, LoadingSpinner, EmptyState, Alert, AlertDescription } from '@/components/ui';
@@ -29,7 +32,12 @@ import {
   useWithdrawBookingRequestMutation,
 } from '@/store/services/bookings-api';
 import { useGetSessionsQuery, useLazyGetIcsCalendarQuery } from '@/store/services/sessions-api';
-import { useGetDisputesQuery } from '@/store/services/trust-api';
+import {
+  useGetDisputesQuery,
+  useGetReplacementCasesQuery,
+  useAcceptReplacementOfferMutation,
+  useDeclineReplacementOfferMutation,
+} from '@/store/services/trust-api';
 import {
   SafetyReportModal,
   TutorReplacementModal,
@@ -97,6 +105,9 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
   } = useGetBookingRequestByIdQuery(bookingId);
   const { data: sessionsData } = useGetSessionsQuery({ bookingId });
   const { data: disputesData, refetch: refetchDisputes } = useGetDisputesQuery({ bookingId });
+  const { data: replacementData, refetch: refetchReplacements } = useGetReplacementCasesQuery();
+  const [acceptReplacementOffer, { isLoading: acceptingOffer }] = useAcceptReplacementOfferMutation();
+  const [declineReplacementOffer, { isLoading: decliningOffer }] = useDeclineReplacementOfferMutation();
 
   const [respondBooking, { isLoading: responding }] = useRespondBookingRequestMutation();
   const [withdrawBooking, { isLoading: withdrawing }] = useWithdrawBookingRequestMutation();
@@ -110,6 +121,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
   const booking = bookingData?.data;
+  const activeReplacementCase = replacementData?.data?.find((c) => c.bookingId === bookingId);
   const sessions = sessionsData?.data || [];
   const dispute =
     disputesData?.data?.find((d) => d.bookingId === bookingId) || disputesData?.data?.[0];
@@ -477,15 +489,21 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                 {isBn ? 'সুরক্ষা রিপোর্ট' : 'Report Issue'}
               </Button>
 
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => setReplacementModalOpen(true)}
-                className="border-slate-300 text-slate-800 hover:bg-slate-100 font-bold text-xs"
-              >
-                <Sparkles className="w-3.5 h-3.5 mr-1.5 text-amber-600" />
-                {isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacement'}
-              </Button>
+              {!isTutor &&
+                ['accepted', 'awaiting_payment', 'confirmed', 'in_progress', 'disputed', 'replacement_requested'].includes(
+                  status,
+                ) && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setReplacementModalOpen(true)}
+                    className="border-blue-300 text-blue-900 bg-blue-50/70 hover:bg-blue-100 font-bold text-xs"
+                    data-testid="open-replacement-modal-btn"
+                  >
+                    <RefreshCw className="w-3.5 h-3.5 mr-1.5 text-blue-700" />
+                    {isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacement Guarantee'}
+                  </Button>
+                )}
 
               {!isTutor && ['confirmed', 'in_progress', 'completed'].includes(status) && (
                 <Button
@@ -515,6 +533,213 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
             </div>
           </div>
         </div>
+
+        {/* Tutor Replacement Guarantee Dossier Card */}
+        {(activeReplacementCase || status === 'replacement_requested') && (
+          <div
+            className={`rounded-2xl border p-5 sm:p-6 shadow-xs transition-all ${
+              activeReplacementCase?.status === 'accepted'
+                ? 'border-emerald-300 bg-gradient-to-br from-emerald-50/90 via-white to-emerald-50/30'
+                : activeReplacementCase?.status === 'offered'
+                  ? 'border-blue-300 bg-gradient-to-br from-blue-50/90 via-white to-blue-50/30'
+                  : 'border-purple-300 bg-gradient-to-br from-purple-50/90 via-white to-purple-50/30'
+            }`}
+            data-testid="booking-replacement-dossier-card"
+          >
+            <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-border/60">
+              <div className="flex items-start gap-3">
+                <div
+                  className={`p-2.5 rounded-xl shrink-0 ${
+                    activeReplacementCase?.status === 'accepted'
+                      ? 'bg-emerald-100 text-emerald-800'
+                      : activeReplacementCase?.status === 'offered'
+                        ? 'bg-blue-100 text-blue-800'
+                        : 'bg-purple-100 text-purple-800'
+                  }`}
+                >
+                  <RefreshCw className="w-5 h-5" />
+                </div>
+                <div>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <h3 className="font-extrabold text-base text-slate-900">
+                      {isBn
+                        ? '৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি ট্র্যাকার'
+                        : '48-Hour Tutor Replacement Guarantee Dossier'}
+                    </h3>
+                    <span
+                      className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${
+                        activeReplacementCase?.status === 'accepted'
+                          ? 'bg-emerald-100 text-emerald-950 border-emerald-300'
+                          : activeReplacementCase?.status === 'offered'
+                            ? 'bg-blue-100 text-blue-950 border-blue-300'
+                            : activeReplacementCase?.status === 'matching'
+                              ? 'bg-amber-100 text-amber-950 border-amber-300'
+                              : 'bg-purple-100 text-purple-950 border-purple-300'
+                      }`}
+                    >
+                      {activeReplacementCase?.status === 'accepted'
+                        ? isBn
+                          ? 'বিকল্প শিক্ষক গৃহীত ও বুকিং সক্রিয়'
+                          : 'Replacement Accepted'
+                        : activeReplacementCase?.status === 'offered'
+                          ? isBn
+                            ? 'নতুন বিকল্প শিক্ষক প্রস্তাবিত'
+                            : 'Alternative Tutor Offered'
+                          : activeReplacementCase?.status === 'matching'
+                            ? isBn
+                              ? 'বিকল্প শিক্ষক খোঁজা হচ্ছে'
+                              : 'Matching Alternative Tutor'
+                            : isBn
+                              ? 'অনুরোধ পর্যালোচনাধীন'
+                              : 'Under Review'}
+                    </span>
+                    {activeReplacementCase?.isOverdue && (
+                      <span className="px-2 py-0.5 rounded-full text-xs font-bold bg-rose-100 text-rose-900 border border-rose-300">
+                        {isBn ? 'সময়সীমা অতিক্রান্ত' : 'Overdue'}
+                      </span>
+                    )}
+                  </div>
+                  <p className="text-xs text-slate-700 mt-1">
+                    {isBn
+                      ? 'অসন্তোষজনক অভিজ্ঞতা হলে বিনামূল্যে বিকল্প শিক্ষক অথবা ১০০% এসক্রো রিফান্ড গ্যারান্টি।'
+                      : 'Free verified replacement matching or 100% money-back escrow guarantee.'}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2 shrink-0">
+                {activeReplacementCase && (
+                  <Link
+                    href={withLocale(`/tutor-replacements/${activeReplacementCase.id}`, locale)}
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-900 text-xs font-bold shadow-2xs"
+                  >
+                    <ExternalLink className="w-3.5 h-3.5 text-blue-600" />
+                    <span>{isBn ? 'কেস ডিটেইলস ও ইতিহাস' : 'Case Details'}</span>
+                  </Link>
+                )}
+              </div>
+            </div>
+
+            <div className="pt-4 space-y-3">
+              {activeReplacementCase?.explanation && (
+                <div className="rounded-xl border border-slate-200 bg-slate-50 p-3">
+                  <p className="text-xs font-bold text-slate-800 mb-1">
+                    {isBn ? 'পরিবর্তন চাওয়ার কারণ ও বিবরণ:' : 'Reason & Details:'}
+                  </p>
+                  <p className="text-xs text-slate-900">{activeReplacementCase.explanation}</p>
+                </div>
+              )}
+
+              {activeReplacementCase?.deadlineAt &&
+                !['accepted', 'rejected', 'closed'].includes(activeReplacementCase.status) && (
+                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 bg-white border border-slate-200 rounded-xl px-3 py-2">
+                    <Clock className="w-4 h-4 text-purple-700 shrink-0" />
+                    <span>
+                      {isBn ? 'ম্যাচিং গ্যারান্টি সময়সীমা:' : 'Matching Guarantee Deadline:'}{' '}
+                      <strong className="text-slate-900">
+                        {formatDate(activeReplacementCase.deadlineAt, locale)}
+                      </strong>
+                    </span>
+                  </div>
+                )}
+
+              {/* Offered Alternative Tutor Action Block */}
+              {activeReplacementCase?.status === 'offered' &&
+                activeReplacementCase.replacementTutor && (
+                  <div
+                    className="rounded-2xl border border-blue-300 bg-blue-50/90 p-4 space-y-3"
+                    data-testid="booking-replacement-offer-card"
+                  >
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <span className="text-[11px] font-bold uppercase tracking-wider text-blue-900">
+                          {isBn ? 'প্রস্তাবিত নতুন শিক্ষক' : 'Proposed Alternative Tutor'}
+                        </span>
+                        <h4 className="text-base font-extrabold text-slate-900">
+                          {activeReplacementCase.replacementTutor.displayName}
+                        </h4>
+                      </div>
+                      <span className="px-2.5 py-1 rounded-full text-xs font-bold bg-blue-600 text-white">
+                        {isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor'}
+                      </span>
+                    </div>
+
+                    <p className="text-xs text-slate-800">
+                      {isBn
+                        ? 'এই শিক্ষককে গ্রহণ করলে আপনার পূর্ববর্তী বুকিং ও অবশিষ্ট ক্লাসগুলো স্বয়ংক্রিয়ভাবে নতুন শিক্ষকের সাথে সংযুক্ত হবে।'
+                        : 'Accepting this alternative tutor will automatically reassign remaining sessions to them.'}
+                    </p>
+
+                    <div className="flex flex-wrap items-center gap-3 pt-1">
+                      <Button
+                        size="sm"
+                        disabled={acceptingOffer || decliningOffer}
+                        onClick={async () => {
+                          try {
+                            await acceptReplacementOffer(activeReplacementCase.id).unwrap();
+                            playAudioTone('chime');
+                            refetchBooking();
+                            refetchReplacements();
+                          } catch {
+                            setErrorMessage(
+                              isBn
+                                ? 'শিক্ষক গ্রহণ প্রক্রিয়া ব্যর্থ হয়েছে।'
+                                : 'Failed to accept offer.',
+                            );
+                          }
+                        }}
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs gap-1.5 shadow-xs"
+                        data-testid="booking-accept-replacement-offer-btn"
+                      >
+                        <UserCheck className="w-4 h-4" />
+                        <span>
+                          {acceptingOffer
+                            ? isBn
+                              ? 'গ্রহণ হচ্ছে...'
+                              : 'Accepting...'
+                            : isBn
+                              ? 'বিকল্প শিক্ষক গ্রহণ করুন'
+                              : 'Accept Tutor'}
+                        </span>
+                      </Button>
+
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        disabled={acceptingOffer || decliningOffer}
+                        onClick={async () => {
+                          try {
+                            await declineReplacementOffer(activeReplacementCase.id).unwrap();
+                            playAudioTone('alert');
+                            refetchReplacements();
+                          } catch {
+                            setErrorMessage(
+                              isBn
+                                ? 'শিক্ষক প্রত্যাখ্যান প্রক্রিয়া ব্যর্থ হয়েছে।'
+                                : 'Failed to decline offer.',
+                            );
+                          }
+                        }}
+                        className="border-slate-300 bg-white hover:bg-slate-100 text-slate-800 font-bold text-xs gap-1.5"
+                        data-testid="booking-decline-replacement-offer-btn"
+                      >
+                        <X className="w-4 h-4 text-rose-600" />
+                        <span>
+                          {decliningOffer
+                            ? isBn
+                              ? 'প্রত্যাখ্যান হচ্ছে...'
+                              : 'Declining...'
+                            : isBn
+                              ? 'প্রত্যাখ্যান করুন'
+                              : 'Decline'}
+                        </span>
+                      </Button>
+                    </div>
+                  </div>
+                )}
+            </div>
+          </div>
+        )}
 
         {/* Dispute Investigation / Resolution Dossier Card */}
         {(dispute || status === 'disputed') && (
@@ -1012,6 +1237,10 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           tutorName={tutorName}
           subjectName={subjectName}
           locale={locale}
+          onSuccess={() => {
+            refetchBooking();
+            refetchReplacements();
+          }}
         />
 
         <ReviewModal

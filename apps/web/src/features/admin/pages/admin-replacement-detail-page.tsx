@@ -201,7 +201,7 @@ export function AdminReplacementDetailPageView({
                   </p>
                 )}
                 {item.outcomeNotes && (
-                  <p className="text-warning-soft-foreground">
+                  <p className="text-amber-900 bg-amber-50 border border-amber-200 rounded-lg p-2 font-medium">
                     {isBn ? 'অভ্যন্তরীণ নোট: ' : 'Internal notes: '}
                     {item.outcomeNotes}
                   </p>
@@ -224,7 +224,7 @@ export function AdminReplacementDetailPageView({
                       <p className="text-muted-foreground">{event.userVisibleNote}</p>
                     )}
                     {event.internalNote && (
-                      <p className="text-warning-soft-foreground">
+                      <p className="text-amber-900 bg-amber-50 border border-amber-200 rounded-lg p-1.5 font-medium">
                         {isBn ? 'অভ্যন্তরীণ: ' : 'Internal: '}
                         {event.internalNote}
                       </p>

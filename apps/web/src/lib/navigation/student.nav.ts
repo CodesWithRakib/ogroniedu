@@ -9,6 +9,7 @@ import {
   MessageSquare,
   Mail,
   User,
+  RefreshCw,
 } from 'lucide-react';
 import type { NavSection } from './types';
 
@@ -73,6 +74,13 @@ export const STUDENT_NAV_SECTIONS: NavSection[] = [
         labelEn: 'Saved Tutors',
         icon: Bookmark,
         testId: 'nav-bookmarks',
+      },
+      {
+        href: '/tutor-replacements',
+        labelBn: 'শিক্ষক পরিবর্তন গ্যারান্টি',
+        labelEn: 'Tutor Replacement',
+        icon: RefreshCw,
+        testId: 'nav-student-tutor-replacements',
       },
     ],
   },
