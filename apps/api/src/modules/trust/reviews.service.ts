@@ -82,10 +82,10 @@ export class ReviewsService {
     }
 
     // Eligible Booking Status
-    const eligibleStatuses = ['completed', 'confirmed', 'in_progress'];
+    const eligibleStatuses = ['completed', 'confirmed', 'in_progress', 'accepted'];
     if (!eligibleStatuses.includes(booking.status)) {
       throw new BadRequestException(
-        `Booking status '${booking.status}' is not eligible for review. Must be confirmed or completed.`,
+        `Booking status '${booking.status}' is not eligible for review. Must be accepted, confirmed or completed.`,
       );
     }
 
@@ -215,6 +215,112 @@ export class ReviewsService {
       reviewerDisplayNameEn: review.reviewer?.displayNameEn ?? review.reviewer?.displayName ?? null,
       reviewerDisplayNameBn: review.reviewer?.displayNameBn ?? review.reviewer?.displayName ?? null,
       ...(allowAll ? { moderationStatus: review.moderationStatus } : {}),
+    }));
+  }
+
+  /**
+   * 2b. Get review for a specific booking.
+   * Authorized for booking participants (student, guardian, tutor) or staff.
+   */
+  async getBookingReview(
+    user: AuthenticatedUser,
+    bookingId: string,
+  ): Promise<PublicReviewView | null> {
+    const booking = await this.bookingRepo.findOne({
+      where: { id: bookingId },
+    });
+
+    if (!booking) {
+      throw new NotFoundException(`Booking ${bookingId} not found`);
+    }
+
+    const tutorUserId = booking.tutorUserId || booking.tutorProfile?.userId;
+    const isParticipant =
+      user.id === booking.studentUserId ||
+      user.id === booking.requesterUserId ||
+      user.id === tutorUserId ||
+      isAdminRole(user);
+
+    if (!isParticipant) {
+      throw new ForbiddenException('Not authorized to access review for this booking');
+    }
+
+    const review = await this.reviewRepo.findOne({
+      where: { bookingId },
+      relations: { reviewer: true },
+    });
+
+    if (!review) {
+      return null;
+    }
+
+    return {
+      id: review.id,
+      rating: review.rating,
+      punctualityRating: review.punctualityRating ?? null,
+      teachingClarityRating: review.teachingClarityRating ?? null,
+      subjectMasteryRating: review.subjectMasteryRating ?? null,
+      comment: review.comment,
+      commentEn: review.commentEn ?? review.comment,
+      commentBn: review.commentBn ?? review.comment,
+      isVerifiedBooking: review.isVerifiedBooking,
+      tutorResponse: review.tutorResponse ?? null,
+      tutorResponseEn: review.tutorResponseEn ?? review.tutorResponse ?? null,
+      tutorResponseBn: review.tutorResponseBn ?? review.tutorResponse ?? null,
+      tutorRespondedAt: review.tutorRespondedAt
+        ? new Date(review.tutorRespondedAt).toISOString()
+        : null,
+      createdAt: new Date(review.createdAt).toISOString(),
+      reviewerDisplayName: review.reviewer?.displayName ?? null,
+      reviewerDisplayNameEn: review.reviewer?.displayNameEn ?? review.reviewer?.displayName ?? null,
+      reviewerDisplayNameBn: review.reviewer?.displayNameBn ?? review.reviewer?.displayName ?? null,
+      moderationStatus: review.moderationStatus,
+    };
+  }
+
+  /**
+   * 2c. Get all reviews across platform for staff moderation.
+   */
+  async getAdminReviews(
+    user: AuthenticatedUser,
+    status?: string,
+  ): Promise<PublicReviewView[]> {
+    if (!isAdminRole(user)) {
+      throw new ForbiddenException('Admin privileges required');
+    }
+
+    const where: FindOptionsWhere<ReviewEntity> = status
+      ? { moderationStatus: status as any }
+      : {};
+
+    const reviews = await this.reviewRepo.find({
+      where,
+      relations: { reviewer: true },
+      order: { createdAt: 'DESC' },
+      take: 100,
+    });
+
+    return reviews.map((review) => ({
+      id: review.id,
+      rating: review.rating,
+      punctualityRating: review.punctualityRating ?? null,
+      teachingClarityRating: review.teachingClarityRating ?? null,
+      subjectMasteryRating: review.subjectMasteryRating ?? null,
+      comment: review.comment,
+      commentEn: review.commentEn ?? review.comment,
+      commentBn: review.commentBn ?? review.comment,
+      isVerifiedBooking: review.isVerifiedBooking,
+      tutorResponse: review.tutorResponse ?? null,
+      tutorResponseEn: review.tutorResponseEn ?? review.tutorResponse ?? null,
+      tutorResponseBn: review.tutorResponseBn ?? review.tutorResponse ?? null,
+      tutorRespondedAt: review.tutorRespondedAt
+        ? new Date(review.tutorRespondedAt).toISOString()
+        : null,
+      createdAt: new Date(review.createdAt).toISOString(),
+      reviewerDisplayName: review.reviewer?.displayName ?? null,
+      reviewerDisplayNameEn: review.reviewer?.displayNameEn ?? review.reviewer?.displayName ?? null,
+      reviewerDisplayNameBn: review.reviewer?.displayNameBn ?? review.reviewer?.displayName ?? null,
+      moderationStatus: review.moderationStatus,
     }));
   }
 

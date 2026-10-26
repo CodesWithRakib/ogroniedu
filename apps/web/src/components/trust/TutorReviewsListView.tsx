@@ -49,35 +49,21 @@ export function TutorReviewsListView({
   };
 
   return (
-    <div style={{ marginTop: '24px' }}>
-      <h3
-        style={{
-          fontSize: '1.2rem',
-          fontWeight: 800,
-          marginBottom: '16px',
-          color: 'var(--foreground)',
-        }}
-      >
-        {t('reviewsTitle')} ({localReviews.length})
+    <div className="mt-6 space-y-4">
+      <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+        <span>{t('reviewsTitle')}</span>
+        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+          {localReviews.length}
+        </span>
       </h3>
 
       {localReviews.length === 0 ? (
-        <div
-          style={{
-            padding: '24px',
-            textAlign: 'center',
-            backgroundColor: 'var(--surface-muted)',
-            borderRadius: '12px',
-            border: '1px dashed #cbd5e1',
-            color: 'var(--muted-foreground)',
-            fontSize: '0.9rem',
-          }}
-        >
+        <div className="p-6 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-300 text-slate-600 text-sm">
           No reviews yet. Completed session students and guardians will be able to leave feedback
           here.
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
+        <div className="flex flex-col gap-4">
           {localReviews.map((rev) => (
             <ReviewCard
               key={rev.id}

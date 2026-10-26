@@ -719,6 +719,25 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                         </div>
                       </div>
 
+                      {/* Multi-Criteria Breakdown Badges */}
+                      <div className="flex flex-wrap gap-2 pt-0.5">
+                        {review.punctualityRating != null && (
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-800 border border-slate-200 shadow-2xs">
+                            ⏱ {isBn ? 'সময়নিষ্ঠতা' : 'Punctuality'}: {formatLocalizedNumber(review.punctualityRating, locale)}/5
+                          </span>
+                        )}
+                        {review.teachingClarityRating != null && (
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-800 border border-slate-200 shadow-2xs">
+                            💡 {isBn ? 'পাঠদান স্পষ্টতা' : 'Clarity'}: {formatLocalizedNumber(review.teachingClarityRating, locale)}/5
+                          </span>
+                        )}
+                        {review.subjectMasteryRating != null && (
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-800 border border-slate-200 shadow-2xs">
+                            📚 {isBn ? 'বিষয় দক্ষতা' : 'Mastery'}: {formatLocalizedNumber(review.subjectMasteryRating, locale)}/5
+                          </span>
+                        )}
+                      </div>
+
                       <p className="text-sm text-slate-800 leading-relaxed font-normal">
                         "{commentText}"
                       </p>

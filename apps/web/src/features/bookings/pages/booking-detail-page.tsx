@@ -37,13 +37,17 @@ import {
   useGetReplacementCasesQuery,
   useAcceptReplacementOfferMutation,
   useDeclineReplacementOfferMutation,
+  useGetBookingReviewQuery,
+  useReplyToReviewMutation,
 } from '@/store/services/trust-api';
 import {
   SafetyReportModal,
   TutorReplacementModal,
   ReviewModal,
   DisputeModal,
+  ReviewCard,
 } from '@/features/trust';
+import { toast } from 'sonner';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDate } from '@/lib/format';
@@ -106,6 +110,50 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
   const { data: sessionsData } = useGetSessionsQuery({ bookingId });
   const { data: disputesData, refetch: refetchDisputes } = useGetDisputesQuery({ bookingId });
   const { data: replacementData, refetch: refetchReplacements } = useGetReplacementCasesQuery();
+  const { data: reviewResponse, refetch: refetchBookingReview } = useGetBookingReviewQuery(
+    { bookingId },
+    { skip: !bookingId },
+  );
+  const [replyToReview, { isLoading: replyingToReview }] = useReplyToReviewMutation();
+  const [activeReply, setActiveReply] = useState(false);
+  const [tutorReplyText, setTutorReplyText] = useState('');
+  const [replyError, setReplyError] = useState<string | null>(null);
+
+  const bookingReview =
+    reviewResponse && typeof reviewResponse === 'object' && 'data' in reviewResponse
+      ? (reviewResponse as { data: any }).data
+      : (reviewResponse as any);
+  const hasReviewed = Boolean(bookingReview);
+
+  const handlePostTutorReply = async () => {
+    if (!bookingReview?.id || !tutorReplyText.trim()) return;
+    setReplyError(null);
+    try {
+      await replyToReview({
+        id: bookingReview.id,
+        reply: tutorReplyText.trim(),
+        bookingId,
+      }).unwrap();
+      setActiveReply(false);
+      setTutorReplyText('');
+      playAudioTone('success');
+      toast.success(
+        isBn
+          ? 'আপনার প্রতিক্রিয়া সফলভাবে প্রকাশ করা হয়েছে!'
+          : 'Reply posted successfully!',
+      );
+      refetchBookingReview();
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === 'object' && 'data' in err
+          ? ((err as { data?: { message?: string } }).data?.message ?? 'Failed to post reply')
+          : err instanceof Error
+            ? err.message
+            : 'Failed to post reply';
+      setReplyError(msg);
+    }
+  };
+
   const [acceptReplacementOffer, { isLoading: acceptingOffer }] = useAcceptReplacementOfferMutation();
   const [declineReplacementOffer, { isLoading: decliningOffer }] = useDeclineReplacementOfferMutation();
 
@@ -518,7 +566,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                 </Button>
               )}
 
-              {!isTutor && (
+              {!isTutor && !hasReviewed && ['confirmed', 'in_progress', 'completed', 'accepted'].includes(status) && (
                 <Button
                   size="sm"
                   variant="outline"
@@ -529,6 +577,16 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   <Star className="w-3.5 h-3.5 mr-1.5 text-amber-600 fill-current" />
                   {isBn ? 'শিক্ষককে রিভিউ দিন' : 'Rate Tutor'}
                 </Button>
+              )}
+
+              {!isTutor && hasReviewed && (
+                <span
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-950 font-bold text-xs"
+                  data-testid="review-already-submitted-badge"
+                >
+                  <Star className="w-3.5 h-3.5 text-amber-600 fill-current" />
+                  {isBn ? 'রিভিউ প্রদত্ত হয়েছে' : 'Review Submitted'}
+                </span>
               )}
             </div>
           </div>
@@ -913,6 +971,60 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           </div>
         )}
 
+        {/* Verified Review Dossier Card */}
+        {bookingReview && (
+          <div
+            data-testid="booking-review-dossier-card"
+            className="rounded-2xl border border-amber-300 bg-gradient-to-br from-amber-50/70 via-white to-amber-50/30 p-5 sm:p-6 shadow-xs space-y-4"
+          >
+            <div className="flex items-center justify-between gap-3 border-b border-amber-200 pb-3">
+              <div className="flex items-center gap-2.5">
+                <div className="p-2 rounded-xl bg-amber-100 text-amber-700 border border-amber-300">
+                  <Star className="w-5 h-5 fill-amber-500 text-amber-600" />
+                </div>
+                <div>
+                  <h3 className="text-base font-black text-slate-900">
+                    {!isTutor
+                      ? isBn
+                        ? 'আপনার প্রদত্ত ভেরিফাইড রিভিউ'
+                        : 'Your Verified Review'
+                      : isBn
+                        ? 'শিক্ষার্থীর ভেরিফাইড রিভিউ'
+                        : 'Student Verified Review'}
+                  </h3>
+                  <p className="text-xs font-semibold text-slate-700">
+                    {isBn
+                      ? '১০০% যাচাইকৃত বুকিং সেশন ও শিক্ষক মূল্যায়ন'
+                      : 'Verified booking session appraisal'}
+                  </p>
+                </div>
+              </div>
+              <div className="flex items-center gap-1.5 px-3 py-1 rounded-full bg-amber-100 border border-amber-300 text-amber-950 font-black text-xs">
+                <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-600" />
+                <span>{bookingReview.rating}.0 / 5.0</span>
+              </div>
+            </div>
+
+            <ReviewCard
+              review={bookingReview}
+              isCurrentTutor={Boolean(isTutor)}
+              locale={locale}
+              replying={activeReply}
+              replyText={tutorReplyText}
+              isPostingReply={replyingToReview}
+              replyError={replyError}
+              onReplyTextChange={setTutorReplyText}
+              onOpenReply={() => setActiveReply(true)}
+              onCancelReply={() => {
+                setActiveReply(false);
+                setTutorReplyText('');
+                setReplyError(null);
+              }}
+              onPostReply={handlePostTutorReply}
+            />
+          </div>
+        )}
+
         {/* 4 KPI Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
           <div className="rounded-2xl border border-slate-200 bg-card p-4.5 space-y-1 shadow-xs">
@@ -1250,6 +1362,10 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           tutorName={tutorName}
           subjectName={subjectName}
           locale={locale}
+          onSuccess={() => {
+            refetchBooking();
+            refetchBookingReview();
+          }}
         />
 
         <DisputeModal

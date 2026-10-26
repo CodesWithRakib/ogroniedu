@@ -45,6 +45,30 @@ export class ReviewsController {
     return this.reviewsService.getTutorReviews(tutorId, all === 'true', viewer);
   }
 
+  @Get('bookings/:bookingId')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get review for a specific booking' })
+  @ApiResponse({ status: 200, description: 'Review for booking or null if none' })
+  async getBookingReview(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('bookingId') bookingId: string,
+  ) {
+    return this.reviewsService.getBookingReview(user, bookingId);
+  }
+
+  @Get('admin/all')
+  @UseGuards(AuthGuard)
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Admin view of all reviews for moderation' })
+  @ApiResponse({ status: 200, description: 'List of reviews' })
+  async getAdminReviews(
+    @CurrentUser() user: AuthenticatedUser,
+    @Query('status') status?: string,
+  ) {
+    return this.reviewsService.getAdminReviews(user, status);
+  }
+
   @Post(':id/reply')
   @UseGuards(AuthGuard)
   @ApiBearerAuth()

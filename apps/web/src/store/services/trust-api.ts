@@ -130,6 +130,9 @@ export interface CreateSafetyReportRequest {
 export interface TutorReviewItem {
   id: string;
   rating: number;
+  punctualityRating?: number | null;
+  teachingClarityRating?: number | null;
+  subjectMasteryRating?: number | null;
   comment: string;
   commentEn?: string | null;
   commentBn?: string | null;
@@ -142,6 +145,7 @@ export interface TutorReviewItem {
   tutorResponseEn?: string | null;
   tutorResponseBn?: string | null;
   tutorRespondedAt: string | null;
+  moderationStatus?: string;
 }
 
 export interface CreateReplacementRequest {
@@ -273,8 +277,10 @@ export const trustApi = baseApi.injectEndpoints({
     }),
     createReview: builder.mutation<unknown, CreateReviewRequest>({
       query: (body) => ({ url: '/api/v1/reviews', method: 'POST', body }),
-      invalidatesTags: [
+      invalidatesTags: (_result, _error, body) => [
         { type: 'Review', id: 'LIST' },
+        { type: 'Review', id: 'ADMIN_LIST' },
+        { type: 'Review', id: `booking-${body.bookingId}` },
         { type: 'Notification', id: 'LIST' },
       ],
     }),
@@ -286,24 +292,46 @@ export const trustApi = baseApi.injectEndpoints({
         `/api/v1/reviews/tutors/${tutorId}${includeAll ? '?all=true' : ''}`,
       providesTags: (_r, _e, arg) => [{ type: 'Review', id: arg.tutorId }],
     }),
-    replyToReview: builder.mutation<unknown, { id: string; reply: string }>({
+    getBookingReview: builder.query<
+      { success: boolean; data: TutorReviewItem | null } | TutorReviewItem | null,
+      { bookingId: string }
+    >({
+      query: ({ bookingId }) => `/api/v1/reviews/bookings/${bookingId}`,
+      providesTags: (_r, _e, arg) => [{ type: 'Review', id: `booking-${arg.bookingId}` }],
+    }),
+    getAdminReviews: builder.query<
+      { success: boolean; data: TutorReviewItem[] } | TutorReviewItem[],
+      { status?: string } | void
+    >({
+      query: (arg) => `/api/v1/reviews/admin/all${arg && arg.status ? `?status=${arg.status}` : ''}`,
+      providesTags: [{ type: 'Review', id: 'ADMIN_LIST' }],
+    }),
+    replyToReview: builder.mutation<unknown, { id: string; reply: string; bookingId?: string }>({
       query: ({ id, reply }) => ({
         url: `/api/v1/reviews/${id}/reply`,
         method: 'POST',
         body: { reply },
       }),
-      invalidatesTags: [{ type: 'Review', id: 'LIST' }],
+      invalidatesTags: (_res, _err, arg) => [
+        { type: 'Review', id: 'LIST' },
+        { type: 'Review', id: 'ADMIN_LIST' },
+        ...(arg.bookingId ? [{ type: 'Review' as const, id: `booking-${arg.bookingId}` }] : []),
+      ],
     }),
     moderateReview: builder.mutation<
       unknown,
-      { id: string; status: 'pending' | 'published' | 'flagged' | 'hidden'; reason?: string }
+      { id: string; status: 'pending' | 'published' | 'flagged' | 'hidden'; reason?: string; bookingId?: string }
     >({
       query: ({ id, status, reason }) => ({
         url: `/api/v1/reviews/${id}/moderate`,
         method: 'PATCH',
         body: reason ? { status, reason } : { status },
       }),
-      invalidatesTags: [{ type: 'Review', id: 'LIST' }],
+      invalidatesTags: (_res, _err, arg) => [
+        { type: 'Review', id: 'LIST' },
+        { type: 'Review', id: 'ADMIN_LIST' },
+        ...(arg.bookingId ? [{ type: 'Review' as const, id: `booking-${arg.bookingId}` }] : []),
+      ],
     }),
     createSafetyReport: builder.mutation<SafetyReportRecord, CreateSafetyReportRequest>({
       query: (body) => ({ url: '/api/v1/safety-reports', method: 'POST', body }),
@@ -532,6 +560,8 @@ export const trustApi = baseApi.injectEndpoints({
 export const {
   useCreateReviewMutation,
   useGetTutorReviewsQuery,
+  useGetBookingReviewQuery,
+  useGetAdminReviewsQuery,
   useReplyToReviewMutation,
   useModerateReviewMutation,
   useCreateSafetyReportMutation,

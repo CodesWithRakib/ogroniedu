@@ -1,17 +1,28 @@
 export interface ReviewItem {
   id: string;
+  bookingId?: string;
   rating: number;
   punctualityRating?: number | null;
   teachingClarityRating?: number | null;
   subjectMasteryRating?: number | null;
   comment: string;
+  commentEn?: string | null;
+  commentBn?: string | null;
   isVerifiedBooking: boolean;
   tutorResponse?: string | null;
+  tutorResponseEn?: string | null;
+  tutorResponseBn?: string | null;
   tutorRespondedAt?: string | null;
   createdAt: string;
   reviewer?: {
     displayName?: string;
+    displayNameEn?: string;
+    displayNameBn?: string;
   };
+  reviewerDisplayName?: string | null;
+  reviewerDisplayNameEn?: string | null;
+  reviewerDisplayNameBn?: string | null;
+  moderationStatus?: string;
 }
 
 export interface TutorReviewsListViewProps {
