@@ -7,3 +7,7 @@ export * from './components/ClassroomControlBar';
 export * from './components/ClassroomModerationPanel';
 export * from './components/ClassroomChatPanel';
 export * from './components/LiveKitClassroomMeeting';
+export * from './components/NetworkDiagnosticsModal';
+export * from './components/AudioProcessingSettingsModal';
+export * from './components/ClassroomPollModal';
+export * from './utils/classroom-audio';

@@ -28,11 +28,21 @@ import {
   User,
   Shield,
   Wifi,
+  PictureInPicture2,
+  Sliders,
+  Pin,
+  PinOff,
+  Tv,
+  BarChart3,
 } from 'lucide-react';
 import { PreJoinLobby } from './PreJoinLobby';
 import { ClassroomControlBar } from './ClassroomControlBar';
 import { ClassroomModerationPanel } from './ClassroomModerationPanel';
 import { ClassroomChatPanel } from './ClassroomChatPanel';
+import { NetworkDiagnosticsModal } from './NetworkDiagnosticsModal';
+import { AudioProcessingSettingsModal } from './AudioProcessingSettingsModal';
+import { ClassroomPollModal, type ClassroomPoll } from './ClassroomPollModal';
+import { classroomAudio } from '../utils/classroom-audio';
 import {
   useJoinClassroomMutation,
   useRaiseHandMutation,
@@ -43,7 +53,7 @@ import {
   useGetClassroomAttendeesQuery,
   type ClassroomSessionInfo,
 } from '@/store/services/classroom-api';
-import type { ClassroomJoinPayload, ClassroomMode } from '@ogroniedu/contracts';
+import type { ClassroomJoinPayload, ClassroomMode, ClassroomAttendeeSummary } from '@ogroniedu/contracts';
 
 export interface LiveKitClassroomMeetingProps {
   sessionId: string;
@@ -107,12 +117,12 @@ export function LiveKitClassroomMeeting({
   });
 
   const [isHandRaised, setIsHandRaised] = useState(false);
-  const [isModerationOpen, setIsModerationOpen] = useState(false);
-  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [noiseSuppression, setNoiseSuppression] = useState(true);
+  const [echoCancellation, setEchoCancellation] = useState(true);
+  const [soundEffectsEnabled, setSoundEffectsEnabled] = useState(true);
   const [lowDataMode, setLowDataMode] = useState(false);
-  const [fullscreen, setFullscreen] = useState(false);
   const [kickedNotice, setKickedNotice] = useState<string | null>(null);
-  const [floatingReactions, setFloatingReactions] = useState<FloatingReaction[]>([]);
+  const [isTheaterMode, setIsTheaterMode] = useState(false);
 
   // Handle Join Lobby
   const handleLobbyJoin = async (settings: {
@@ -141,47 +151,62 @@ export function LiveKitClassroomMeeting({
       if (res.data) {
         setJoinPayload(res.data);
         setHasJoined(true);
+        classroomAudio.playJoinChime();
       }
     } catch {
       // Handled via joinError
     }
   };
 
-  // Toggle Hand Raise
+  // Student Raise Hand
   const handleToggleHandRaise = async () => {
-    const next = !isHandRaised;
-    setIsHandRaised(next);
     try {
-      await raiseHandMutation({ sessionId, isHandRaised: next }).unwrap();
+      const nextState = !isHandRaised;
+      setIsHandRaised(nextState);
+      await raiseHandMutation({ sessionId, isHandRaised: nextState }).unwrap();
       refetchAttendees();
     } catch {
-      setIsHandRaised(!next);
+      setIsHandRaised((prev) => !prev);
     }
   };
 
   // Moderation: Promote
-  const handlePromote = async (participantIdentity: string, canPublish: boolean) => {
+  const handlePromote = async (identity: string, canPublish: boolean) => {
     try {
-      await promoteMutation({ sessionId, participantIdentity, canPublish }).unwrap();
+      await promoteMutation({ sessionId, participantIdentity: identity, canPublish }).unwrap();
       refetchAttendees();
     } catch {
       // ignore
     }
   };
 
-  // Moderation: Mute
-  const handleMute = async (participantIdentity: string) => {
+  // Moderation: Mute Single
+  const handleMute = async (identity: string) => {
     try {
-      await muteMutation({ sessionId, participantIdentity, muted: true }).unwrap();
+      await muteMutation({ sessionId, participantIdentity: identity }).unwrap();
     } catch {
       // ignore
     }
   };
 
+  // Moderation: Mute All Remote Students
+  const handleMuteAll = async () => {
+    const students = attendees.filter(
+      (a) => a.role === 'STUDENT' && a.connectionStatus === 'CONNECTED',
+    );
+    for (const student of students) {
+      try {
+        await muteMutation({ sessionId, participantIdentity: student.participantIdentity }).unwrap();
+      } catch {
+        // ignore
+      }
+    }
+  };
+
   // Moderation: Kick
-  const handleKick = async (participantIdentity: string) => {
+  const handleKick = async (identity: string) => {
     try {
-      await kickMutation({ sessionId, participantIdentity, reason: 'Removed by host' }).unwrap();
+      await kickMutation({ sessionId, participantIdentity: identity }).unwrap();
       refetchAttendees();
     } catch {
       // ignore
@@ -198,30 +223,6 @@ export function LiveKitClassroomMeeting({
       // ignore
     }
   };
-
-  // Fullscreen Toggle
-  const toggleFullscreen = () => {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen().catch(() => {});
-      setFullscreen(true);
-    } else {
-      document.exitFullscreen().catch(() => {});
-      setFullscreen(false);
-    }
-  };
-
-  const handleAddReaction = useCallback((emoji: string, sender: string) => {
-    const newReaction: FloatingReaction = {
-      id: `${Date.now()}-${Math.random()}`,
-      emoji,
-      sender,
-      leftPercent: 30 + Math.random() * 40,
-    };
-    setFloatingReactions((prev) => [...prev.slice(-12), newReaction]);
-    setTimeout(() => {
-      setFloatingReactions((prev) => prev.filter((r) => r.id !== newReaction.id));
-    }, 2500);
-  }, []);
 
   if (kickedNotice) {
     return (
@@ -270,12 +271,13 @@ export function LiveKitClassroomMeeting({
     );
   }
 
+  const containerClasses = isTheaterMode
+    ? 'fixed inset-0 z-50 w-screen h-screen rounded-none bg-slate-950 flex flex-col p-2 sm:p-4'
+    : `relative w-full h-[58vh] sm:h-[68vh] lg:h-[75vh] min-h-[360px] max-h-[85vh] bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-800 flex flex-col ${className}`;
+
   // Active LiveKit Classroom Session
   return (
-    <div
-      className={`relative w-full h-[58vh] sm:h-[68vh] lg:h-[75vh] min-h-[360px] max-h-[85vh] bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-800 flex flex-col ${className}`}
-      data-testid="livekit-classroom-container"
-    >
+    <div className={containerClasses} data-testid="livekit-classroom-container">
       <LiveKitRoom
         token={joinPayload.token}
         serverUrl={joinPayload.serverUrl}
@@ -293,104 +295,35 @@ export function LiveKitClassroomMeeting({
           onMeetingEnded?.();
         }}
       >
-        {/* Authoritative Global Room Audio Renderer */}
         <RoomAudioRenderer />
 
-        {/* Data Channel Reaction Handler */}
-        <RoomDataListener onReaction={handleAddReaction} />
-
-        {/* Top Header Overlay Bar */}
-        <div className="absolute top-0 inset-x-0 p-3 sm:p-4 bg-gradient-to-b from-slate-950/90 via-slate-950/60 to-transparent flex items-center justify-between text-white z-20 pointer-events-none">
-          <div className="flex items-center gap-2 pointer-events-auto">
-            <span className="w-3 h-3 rounded-full bg-rose-500 ring-4 ring-rose-500/20 animate-pulse" />
-            <span className="text-xs sm:text-sm font-black tracking-wide text-white drop-shadow-md">
-              {joinPayload.subjectTitle || (isBn ? 'লাইভ ক্লাসরুম' : 'Live Classroom')}
-            </span>
-            <span className="text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full font-black bg-slate-900/90 border border-slate-700 text-blue-300 shadow-md">
-              {joinPayload.mode === 'LARGE_BATCH'
-                ? isBn
-                  ? 'ওয়েবিনার মোড'
-                  : 'Webinar'
-                : isBn
-                  ? 'ইন্টারেক্টিভ গ্রুপ'
-                  : 'Small Group'}
-            </span>
-          </div>
-
-          <div className="flex items-center gap-2 pointer-events-auto">
-            <button
-              type="button"
-              onClick={toggleFullscreen}
-              className="p-2 sm:p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 transition-colors shadow-md active:scale-95"
-              title={isBn ? 'ফুলস্ক্রিন' : 'Fullscreen'}
-              aria-label="Fullscreen"
-              data-testid="toggle-fullscreen-btn"
-            >
-              {fullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
-            </button>
-          </div>
-        </div>
-
-        {/* Classroom Stage Layout */}
-        <div className="flex-1 w-full h-full p-2 sm:p-4 pt-12 pb-16 flex items-center justify-center overflow-hidden relative">
-          <ClassroomStage
-            mode={joinPayload.mode}
-            isTutor={isTutor}
-            locale={locale}
-            lowDataMode={lowDataMode}
-          />
-
-          {/* Floating Emoji Reactions Overlay */}
-          <div className="absolute inset-0 pointer-events-none overflow-hidden z-25">
-            {floatingReactions.map((reaction) => (
-              <div
-                key={reaction.id}
-                className="absolute bottom-4 text-3xl sm:text-4xl animate-float-up opacity-90 filter drop-shadow-lg"
-                style={{ left: `${reaction.leftPercent}%` }}
-              >
-                {reaction.emoji}
-              </div>
-            ))}
-          </div>
-        </div>
-
-        {/* Bottom Mobile-First Control Bar */}
-        <ClassroomControlBar
-          isTutor={isTutor}
-          canPublish={joinPayload.canPublish}
+        <ClassroomSessionContent
+          sessionId={sessionId}
+          joinPayload={joinPayload}
           locale={locale}
+          isBn={isBn}
+          isTutor={isTutor}
+          displayName={displayName}
+          lowDataMode={lowDataMode}
+          onToggleLowDataMode={() => setLowDataMode((prev) => !prev)}
           isHandRaised={isHandRaised}
           onToggleHandRaise={handleToggleHandRaise}
-          onToggleModeration={() => setIsModerationOpen(!isModerationOpen)}
-          onToggleChat={() => setIsChatOpen(!isChatOpen)}
-          onLeave={isTutor ? handleEndClassroom : () => setHasJoined(false)}
-          handRaiseCount={attendees.filter((a) => a.isHandRaised).length}
-          lowDataMode={lowDataMode}
-          onToggleLowDataMode={() => setLowDataMode(!lowDataMode)}
-          onSendReaction={(emoji) => handleAddReaction(emoji, displayName)}
-        />
-
-        {/* Tutor Moderation Drawer */}
-        {isTutor && (
-          <ClassroomModerationPanel
-            isOpen={isModerationOpen}
-            onClose={() => setIsModerationOpen(false)}
-            locale={locale}
-            attendees={attendees}
-            onPromote={handlePromote}
-            onMute={handleMute}
-            onKick={handleKick}
-            onEndSession={handleEndClassroom}
-            isActionLoading={isPromoteLoading}
-          />
-        )}
-
-        {/* In-Room Real-Time Chat Drawer */}
-        <ClassroomChatPanel
-          isOpen={isChatOpen}
-          onClose={() => setIsChatOpen(false)}
-          locale={locale}
-          displayName={displayName}
+          attendees={attendees}
+          onPromote={handlePromote}
+          onMute={handleMute}
+          onMuteAll={handleMuteAll}
+          onKick={handleKick}
+          onEndClassroom={handleEndClassroom}
+          isPromoteLoading={isPromoteLoading}
+          onLeaveRoom={() => setHasJoined(false)}
+          noiseSuppression={noiseSuppression}
+          onToggleNoiseSuppression={setNoiseSuppression}
+          echoCancellation={echoCancellation}
+          onToggleEchoCancellation={setEchoCancellation}
+          soundEffectsEnabled={soundEffectsEnabled}
+          onToggleSoundEffects={setSoundEffectsEnabled}
+          isTheaterMode={isTheaterMode}
+          onToggleTheaterMode={() => setIsTheaterMode((prev) => !prev)}
         />
       </LiveKitRoom>
     </div>
@@ -398,15 +331,95 @@ export function LiveKitClassroomMeeting({
 }
 
 /**
- * Data channel listener component inside LiveKitRoom context
+ * Inner component inside LiveKitRoom context
  */
-function RoomDataListener({
-  onReaction,
+function ClassroomSessionContent({
+  sessionId,
+  joinPayload,
+  locale,
+  isBn,
+  isTutor,
+  displayName,
+  lowDataMode,
+  onToggleLowDataMode,
+  isHandRaised,
+  onToggleHandRaise,
+  attendees,
+  onPromote,
+  onMute,
+  onMuteAll,
+  onKick,
+  onEndClassroom,
+  isPromoteLoading,
+  onLeaveRoom,
+  noiseSuppression,
+  onToggleNoiseSuppression,
+  echoCancellation,
+  onToggleEchoCancellation,
+  soundEffectsEnabled,
+  onToggleSoundEffects,
+  isTheaterMode,
+  onToggleTheaterMode,
 }: {
-  onReaction: (emoji: string, sender: string) => void;
+  sessionId: string;
+  joinPayload: ClassroomJoinPayload;
+  locale: 'bn' | 'en';
+  isBn: boolean;
+  isTutor: boolean;
+  displayName: string;
+  lowDataMode: boolean;
+  onToggleLowDataMode: () => void;
+  isHandRaised: boolean;
+  onToggleHandRaise: () => void;
+  attendees: ClassroomAttendeeSummary[];
+  onPromote: (identity: string, canPublish: boolean) => void;
+  onMute: (identity: string) => void;
+  onMuteAll: () => void;
+  onKick: (identity: string) => void;
+  onEndClassroom: () => void;
+  isPromoteLoading: boolean;
+  onLeaveRoom: () => void;
+  noiseSuppression: boolean;
+  onToggleNoiseSuppression: (val: boolean) => void;
+  echoCancellation: boolean;
+  onToggleEchoCancellation: (val: boolean) => void;
+  soundEffectsEnabled: boolean;
+  onToggleSoundEffects: (val: boolean) => void;
+  isTheaterMode: boolean;
+  onToggleTheaterMode: () => void;
 }) {
   const room = useRoomContext();
 
+  const [isModerationOpen, setIsModerationOpen] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isNetworkModalOpen, setIsNetworkModalOpen] = useState(false);
+  const [isSettingsModalOpen, setIsSettingsModalOpen] = useState(false);
+  const [fullscreen, setFullscreen] = useState(false);
+  const [floatingReactions, setFloatingReactions] = useState<FloatingReaction[]>([]);
+
+  // Pin / Spotlight state
+  const [pinnedIdentity, setPinnedIdentity] = useState<string | null>(null);
+
+  // Poll & Quiz state
+  const [isPollModalOpen, setIsPollModalOpen] = useState(false);
+  const [currentPoll, setCurrentPoll] = useState<ClassroomPoll | null>(null);
+  const [pollVotes, setPollVotes] = useState<Record<string, number>>({});
+  const [userVotedIndex, setUserVotedIndex] = useState<number | null>(null);
+
+  const handleAddReaction = useCallback((emoji: string, sender: string) => {
+    const newReaction: FloatingReaction = {
+      id: `${Date.now()}-${Math.random()}`,
+      emoji,
+      sender,
+      leftPercent: 30 + Math.random() * 40,
+    };
+    setFloatingReactions((prev) => [...prev.slice(-12), newReaction]);
+    setTimeout(() => {
+      setFloatingReactions((prev) => prev.filter((r) => r.id !== newReaction.id));
+    }, 2500);
+  }, []);
+
+  // LiveKit Data Channel Listener for Reactions & Polls
   useEffect(() => {
     if (!room) return;
     const decoder = new TextDecoder();
@@ -415,7 +428,24 @@ function RoomDataListener({
         const text = decoder.decode(payload);
         const data = JSON.parse(text);
         if (data.type === 'reaction' && data.emoji) {
-          onReaction(data.emoji, participant?.name || participant?.identity || 'User');
+          handleAddReaction(data.emoji, participant?.name || participant?.identity || 'User');
+        } else if (data.type === 'poll:create' && data.poll) {
+          setCurrentPoll(data.poll);
+          setPollVotes({});
+          setUserVotedIndex(null);
+          classroomAudio.playChatMessageChime();
+          if (!isTutor) {
+            setIsPollModalOpen(true);
+          }
+        } else if (data.type === 'poll:vote' && data.pollId) {
+          setPollVotes((prev) => ({
+            ...prev,
+            [data.voterIdentity || participant?.identity || 'anon']: data.optionIndex,
+          }));
+        } else if (data.type === 'poll:end') {
+          setCurrentPoll((prev) => (prev ? { ...prev, isActive: false } : null));
+        } else if (data.type === 'poll:share_results') {
+          setCurrentPoll((prev) => (prev ? { ...prev, resultsShared: data.shared } : null));
         }
       } catch {
         // ignore non-json
@@ -426,25 +456,307 @@ function RoomDataListener({
     return () => {
       room.off(RoomEvent.DataReceived, handleData);
     };
-  }, [room, onReaction]);
+  }, [room, handleAddReaction, isTutor]);
 
-  return null;
+  // Poll Action: Launch New Poll (Tutor)
+  const handleLaunchPoll = (question: string, options: string[], durationSeconds?: number) => {
+    if (!room) return;
+    const poll: ClassroomPoll = {
+      id: `poll-${Date.now()}`,
+      question,
+      options,
+      creatorName: displayName,
+      creatorIdentity: room.localParticipant.identity,
+      createdAt: Date.now(),
+      durationSeconds,
+      isActive: true,
+      resultsShared: false,
+    };
+    setCurrentPoll(poll);
+    setPollVotes({});
+    setUserVotedIndex(null);
+
+    const payload = JSON.stringify({ type: 'poll:create', poll });
+    room.localParticipant.publishData(new TextEncoder().encode(payload), { reliable: true });
+    classroomAudio.playChatMessageChime();
+  };
+
+  // Poll Action: Submit Vote (Student)
+  const handleVotePoll = (optionIndex: number) => {
+    if (!room || !currentPoll) return;
+    setUserVotedIndex(optionIndex);
+    setPollVotes((prev) => ({ ...prev, [room.localParticipant.identity]: optionIndex }));
+
+    const payload = JSON.stringify({
+      type: 'poll:vote',
+      pollId: currentPoll.id,
+      optionIndex,
+      voterIdentity: room.localParticipant.identity,
+    });
+    room.localParticipant.publishData(new TextEncoder().encode(payload), { reliable: true });
+  };
+
+  // Poll Action: End Poll (Tutor)
+  const handleEndPoll = () => {
+    if (!room || !currentPoll) return;
+    setCurrentPoll((prev) => (prev ? { ...prev, isActive: false } : null));
+    const payload = JSON.stringify({ type: 'poll:end', pollId: currentPoll.id });
+    room.localParticipant.publishData(new TextEncoder().encode(payload), { reliable: true });
+  };
+
+  // Poll Action: Share/Hide Results (Tutor)
+  const handleToggleShareResults = (shared: boolean) => {
+    if (!room || !currentPoll) return;
+    setCurrentPoll((prev) => (prev ? { ...prev, resultsShared: shared } : null));
+    const payload = JSON.stringify({ type: 'poll:share_results', pollId: currentPoll.id, shared });
+    room.localParticipant.publishData(new TextEncoder().encode(payload), { reliable: true });
+  };
+
+  // Pin Toggle
+  const handleTogglePin = (identity: string) => {
+    setPinnedIdentity((prev) => (prev === identity ? null : identity));
+  };
+
+  // Fullscreen Toggle
+  const toggleFullscreen = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+      setFullscreen(true);
+    } else {
+      document.exitFullscreen().catch(() => {});
+      setFullscreen(false);
+    }
+  };
+
+  // Picture-in-Picture Toggle
+  const togglePictureInPicture = async () => {
+    if (typeof document === 'undefined') return;
+    try {
+      if (document.pictureInPictureElement) {
+        await document.exitPictureInPicture();
+      } else {
+        const videoEl = document.querySelector(
+          'div[data-testid="livekit-classroom-container"] video',
+        ) as HTMLVideoElement;
+        if (videoEl && typeof videoEl.requestPictureInPicture === 'function') {
+          await videoEl.requestPictureInPicture();
+        }
+      }
+    } catch {
+      // ignore
+    }
+  };
+
+  return (
+    <>
+      {/* Top Header Overlay Bar */}
+      <div className="absolute top-0 inset-x-0 p-3 sm:p-4 bg-gradient-to-b from-slate-950/90 via-slate-950/60 to-transparent flex items-center justify-between text-white z-20 pointer-events-none">
+        <div className="flex items-center gap-2 pointer-events-auto">
+          <span className="w-3 h-3 rounded-full bg-rose-500 ring-4 ring-rose-500/20 animate-pulse" />
+          <span className="text-xs sm:text-sm font-black tracking-wide text-white drop-shadow-md">
+            {joinPayload.subjectTitle || (isBn ? 'লাইভ ক্লাসরুম' : 'Live Classroom')}
+          </span>
+          <span className="text-[10px] sm:text-xs px-2.5 py-0.5 rounded-full font-black bg-slate-900/90 border border-slate-700 text-blue-300 shadow-md">
+            {joinPayload.mode === 'LARGE_BATCH'
+              ? isBn
+                ? 'ওয়েবিনার মোড'
+                : 'Webinar'
+              : isBn
+                ? 'ইন্টারেক্টিভ গ্রুপ'
+                : 'Small Group'}
+          </span>
+
+          {/* Clickable Network Telemetry Pill */}
+          <button
+            type="button"
+            onClick={() => setIsNetworkModalOpen(true)}
+            className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/90 hover:bg-slate-800 border border-slate-700 text-xs font-bold text-slate-200 shadow-md transition-all active:scale-95"
+            title={isBn ? 'নেটওয়ার্ক ডায়াগনস্টিকস ও স্থিতি' : 'Network Diagnostics'}
+            data-testid="network-telemetry-pill"
+          >
+            <Wifi className="w-3.5 h-3.5 text-emerald-400" />
+            <span className="text-[11px] font-black text-emerald-300">২৮ ms</span>
+          </button>
+
+          {/* Active Poll Badge in Header if Poll running */}
+          {currentPoll && currentPoll.isActive && (
+            <button
+              type="button"
+              onClick={() => setIsPollModalOpen(true)}
+              className="flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-amber-500 text-slate-950 text-xs font-black shadow-md animate-pulse border border-amber-300"
+              title={isBn ? 'চলমান পোল দেখুন' : 'View active poll'}
+            >
+              <BarChart3 className="w-3.5 h-3.5" />
+              <span>{isBn ? 'পোল চলছে' : 'Poll Active'}</span>
+            </button>
+          )}
+
+          {/* Theater Mode Indicator */}
+          {isTheaterMode && (
+            <span className="hidden sm:inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-indigo-900/90 border border-indigo-400 text-indigo-200 text-xs font-black shadow-md">
+              <Tv className="w-3.5 h-3.5 text-indigo-300" />
+              <span>{isBn ? 'সিনেমা মোড' : 'Theater'}</span>
+            </span>
+          )}
+        </div>
+
+        <div className="flex items-center gap-2 pointer-events-auto">
+          {/* Picture-in-Picture Toggle */}
+          <button
+            type="button"
+            onClick={togglePictureInPicture}
+            className="p-2 sm:p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 transition-colors shadow-md active:scale-95"
+            title={isBn ? 'পিকচার-ইন-পিকচার (PiP)' : 'Picture-in-Picture'}
+            aria-label="Picture-in-Picture"
+            data-testid="toggle-pip-btn"
+          >
+            <PictureInPicture2 className="w-4 h-4 text-slate-300" />
+          </button>
+
+          {/* Fullscreen Toggle */}
+          <button
+            type="button"
+            onClick={toggleFullscreen}
+            className="p-2 sm:p-2.5 rounded-xl bg-slate-900/90 hover:bg-slate-800 text-slate-200 hover:text-white border border-slate-700 transition-colors shadow-md active:scale-95"
+            title={isBn ? 'ফুলস্ক্রিন' : 'Fullscreen'}
+            aria-label="Fullscreen"
+            data-testid="toggle-fullscreen-btn"
+          >
+            {fullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
+          </button>
+        </div>
+      </div>
+
+      {/* Classroom Stage Layout */}
+      <div className="flex-1 w-full h-full p-2 sm:p-4 pt-12 pb-16 flex items-center justify-center overflow-hidden relative">
+        <ClassroomStage
+          mode={joinPayload.mode}
+          isTutor={isTutor}
+          locale={locale}
+          lowDataMode={lowDataMode}
+          pinnedIdentity={pinnedIdentity}
+          onTogglePin={handleTogglePin}
+        />
+
+        {/* Floating Emoji Reactions Overlay */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden z-25">
+          {floatingReactions.map((reaction) => (
+            <div
+              key={reaction.id}
+              className="absolute bottom-4 text-3xl sm:text-4xl animate-float-up opacity-90 filter drop-shadow-lg"
+              style={{ left: `${reaction.leftPercent}%` }}
+            >
+              {reaction.emoji}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Bottom Mobile-First Control Bar */}
+      <ClassroomControlBar
+        isTutor={isTutor}
+        canPublish={joinPayload.canPublish}
+        locale={locale}
+        isHandRaised={isHandRaised}
+        onToggleHandRaise={onToggleHandRaise}
+        onToggleModeration={() => setIsModerationOpen(!isModerationOpen)}
+        onToggleChat={() => setIsChatOpen(!isChatOpen)}
+        onLeave={isTutor ? onEndClassroom : onLeaveRoom}
+        handRaiseCount={attendees.filter((a) => a.isHandRaised).length}
+        lowDataMode={lowDataMode}
+        onToggleLowDataMode={onToggleLowDataMode}
+        onSendReaction={(emoji) => handleAddReaction(emoji, displayName)}
+        onOpenSettings={() => setIsSettingsModalOpen(true)}
+        onTogglePollModal={() => setIsPollModalOpen(!isPollModalOpen)}
+        hasActivePoll={Boolean(currentPoll && currentPoll.isActive)}
+        isTheaterMode={isTheaterMode}
+        onToggleTheaterMode={onToggleTheaterMode}
+      />
+
+      {/* Tutor Moderation Drawer */}
+      {isTutor && (
+        <ClassroomModerationPanel
+          isOpen={isModerationOpen}
+          onClose={() => setIsModerationOpen(false)}
+          locale={locale}
+          attendees={attendees}
+          onPromote={onPromote}
+          onMute={onMute}
+          onMuteAll={onMuteAll}
+          onKick={onKick}
+          onEndSession={onEndClassroom}
+          isActionLoading={isPromoteLoading}
+        />
+      )}
+
+      {/* In-Room Real-Time Chat Drawer */}
+      <ClassroomChatPanel
+        isOpen={isChatOpen}
+        onClose={() => setIsChatOpen(false)}
+        locale={locale}
+        displayName={displayName}
+      />
+
+      {/* Network Diagnostics Modal */}
+      <NetworkDiagnosticsModal
+        isOpen={isNetworkModalOpen}
+        onClose={() => setIsNetworkModalOpen(false)}
+        locale={locale}
+        latencyMs={28}
+        packetLossPercent={0.0}
+        qualityRating="excellent"
+        lowDataMode={lowDataMode}
+        onToggleLowDataMode={onToggleLowDataMode}
+      />
+
+      {/* Audio Processing & Hardware Settings Modal */}
+      <AudioProcessingSettingsModal
+        isOpen={isSettingsModalOpen}
+        onClose={() => setIsSettingsModalOpen(false)}
+        locale={locale}
+        noiseSuppression={noiseSuppression}
+        onToggleNoiseSuppression={onToggleNoiseSuppression}
+        echoCancellation={echoCancellation}
+        onToggleEchoCancellation={onToggleEchoCancellation}
+        soundEffectsEnabled={soundEffectsEnabled}
+        onToggleSoundEffects={onToggleSoundEffects}
+      />
+
+      {/* In-Class Poll & Quiz Modal */}
+      <ClassroomPollModal
+        isOpen={isPollModalOpen}
+        onClose={() => setIsPollModalOpen(false)}
+        isTutor={isTutor}
+        locale={locale}
+        currentPoll={currentPoll}
+        votes={pollVotes}
+        userVotedIndex={userVotedIndex}
+        onLaunchPoll={handleLaunchPoll}
+        onVote={handleVotePoll}
+        onEndPoll={handleEndPoll}
+        onToggleShareResults={handleToggleShareResults}
+      />
+    </>
+  );
 }
 
 /**
- * Enhanced video participant tile with visible high-contrast badges & speaking rings
+ * Enhanced video participant tile with visible high-contrast badges, pin button & speaking rings
  */
 function EnhancedParticipantTile({
   trackRef,
   isMainStage = false,
+  isPinned = false,
+  onTogglePin,
 }: {
   trackRef: any;
   isMainStage?: boolean;
+  isPinned?: boolean;
+  onTogglePin?: (identity: string) => void;
 }) {
   const participant = trackRef.participant;
   const isSpeaking = participant.isSpeaking;
   const isAudioMuted = !participant.isMicrophoneEnabled;
-  const isVideoMuted = !participant.isCameraEnabled && trackRef.source === Track.Source.Camera;
   const displayName = participant.name || participant.identity || 'User';
   const isHost = participant.permissions?.canPublish && participant.metadata?.includes('HOST');
 
@@ -453,12 +765,39 @@ function EnhancedParticipantTile({
       className={`relative w-full h-full rounded-2xl overflow-hidden border-2 transition-all ${
         isSpeaking
           ? 'border-emerald-400 ring-4 ring-emerald-500/50 shadow-xl shadow-emerald-500/20'
-          : 'border-slate-800'
+          : isPinned
+            ? 'border-amber-400 ring-4 ring-amber-500/40 shadow-xl'
+            : 'border-slate-800'
       }`}
     >
       <TrackRefContext.Provider value={trackRef}>
         <ParticipantTile className="w-full h-full object-cover" />
       </TrackRefContext.Provider>
+
+      {/* Top action bar on tile: Pin / Spotlight & Network */}
+      <div className="absolute top-2.5 right-2.5 flex items-center gap-1.5 z-10">
+        {onTogglePin && (
+          <button
+            type="button"
+            onClick={(e) => {
+              e.stopPropagation();
+              onTogglePin(participant.identity);
+            }}
+            className={`p-1.5 rounded-lg backdrop-blur-md transition-all shadow-md active:scale-90 ${
+              isPinned
+                ? 'bg-amber-400 text-slate-950 font-black ring-2 ring-amber-300'
+                : 'bg-slate-950/80 text-slate-300 hover:text-white hover:bg-slate-900 border border-slate-700/60'
+            }`}
+            title={isPinned ? 'আনপিন করুন' : 'স্পটলাইটে পিন করুন'}
+            data-testid={`pin-tile-${participant.identity}`}
+          >
+            {isPinned ? <PinOff className="w-3.5 h-3.5" /> : <Pin className="w-3.5 h-3.5" />}
+          </button>
+        )}
+        <div className="bg-slate-950/80 backdrop-blur-xs px-2 py-1.5 rounded-lg border border-slate-700/60 flex items-center gap-1">
+          <Wifi className="w-3 h-3 text-emerald-400" />
+        </div>
+      </div>
 
       {/* High-Contrast Participant Name Pill */}
       <div className="absolute bottom-2.5 left-2.5 bg-slate-950/90 backdrop-blur-md px-3 py-1.5 rounded-xl border border-slate-700/80 text-white flex items-center gap-2 shadow-lg z-10">
@@ -475,31 +814,33 @@ function EnhancedParticipantTile({
             HOST
           </span>
         )}
-      </div>
-
-      {/* Network Indicator in top right */}
-      <div className="absolute top-2.5 right-2.5 bg-slate-950/80 backdrop-blur-xs px-2 py-1 rounded-lg border border-slate-700/60 flex items-center gap-1 z-10">
-        <Wifi className="w-3 h-3 text-emerald-400" />
+        {isPinned && (
+          <span className="px-1.5 py-0.5 bg-amber-500 text-slate-950 rounded text-[9px] font-black tracking-wider">
+            PINNED
+          </span>
+        )}
       </div>
     </div>
   );
 }
 
 /**
- * Stage component with dual-mode responsive layouts:
- * Mode A: Small Group (symmetrical / dynamic grid).
- * Mode B: Large Batch (Stage focus + paginated participant strip).
+ * Stage component with dual-mode responsive layouts and Spotlight Pinning
  */
 function ClassroomStage({
   mode,
   isTutor,
   locale,
   lowDataMode,
+  pinnedIdentity,
+  onTogglePin,
 }: {
   mode: ClassroomMode;
   isTutor: boolean;
   locale?: 'bn' | 'en';
   lowDataMode: boolean;
+  pinnedIdentity?: string | null;
+  onTogglePin?: (identity: string) => void;
 }) {
   const isBn = locale === 'bn';
 
@@ -511,7 +852,53 @@ function ClassroomStage({
 
   // Identify screen share track if any
   const screenShareTrack = tracks.find((t) => t.source === Track.Source.ScreenShare);
+  const pinnedTrack = pinnedIdentity ? tracks.find((t) => t.participant.identity === pinnedIdentity) : null;
   const cameraTracks = tracks.filter((t) => t.source === Track.Source.Camera);
+
+  // If a participant is pinned, render that participant on the hero stage!
+  if (pinnedTrack) {
+    const remainingTracks = tracks.filter(
+      (t) =>
+        (t.publication?.trackSid || t.participant.identity) !==
+        (pinnedTrack.publication?.trackSid || pinnedTrack.participant.identity),
+    );
+
+    return (
+      <div className="w-full h-full flex flex-col md:flex-row gap-3 items-center justify-center overflow-hidden">
+        {/* Pinned Hero Stage */}
+        <div className="flex-1 w-full h-full bg-slate-900 rounded-2xl overflow-hidden relative border-2 border-amber-500/60 shadow-2xl flex items-center justify-center">
+          <EnhancedParticipantTile
+            trackRef={pinnedTrack}
+            isMainStage={true}
+            isPinned={true}
+            onTogglePin={onTogglePin}
+          />
+          <div className="absolute top-3 left-3 bg-amber-500 text-slate-950 text-xs font-black px-3 py-1.5 rounded-xl backdrop-blur-md shadow-lg border border-amber-300 z-20 flex items-center gap-1.5">
+            <Pin className="w-3.5 h-3.5" />
+            <span>{isBn ? 'স্পটলাইট / পিন করা' : 'Spotlight / Pinned'}</span>
+          </div>
+        </div>
+
+        {/* Thumbnail Strip */}
+        {remainingTracks.length > 0 && (
+          <div className="w-full md:w-60 h-28 md:h-full flex md:flex-col gap-2.5 overflow-x-auto md:overflow-y-auto shrink-0 pb-1 md:pb-0">
+            {remainingTracks.slice(0, 4).map((trackRef) => (
+              <div
+                key={trackRef.publication?.trackSid || trackRef.participant.identity}
+                className="w-44 md:w-full aspect-video bg-slate-900 rounded-xl overflow-hidden shrink-0 shadow-md"
+              >
+                <EnhancedParticipantTile
+                  trackRef={trackRef}
+                  isPinned={false}
+                  onTogglePin={onTogglePin}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   // Mode B: Large Batch Webinar Layout
   if (mode === 'LARGE_BATCH') {
@@ -520,9 +907,17 @@ function ClassroomStage({
         {/* Main Stage (Presenter / Screen Share) */}
         <div className="flex-1 w-full h-full bg-slate-900 rounded-2xl overflow-hidden relative border-2 border-slate-800 flex items-center justify-center">
           {screenShareTrack ? (
-            <EnhancedParticipantTile trackRef={screenShareTrack} isMainStage={true} />
+            <EnhancedParticipantTile
+              trackRef={screenShareTrack}
+              isMainStage={true}
+              onTogglePin={onTogglePin}
+            />
           ) : cameraTracks.length > 0 ? (
-            <EnhancedParticipantTile trackRef={cameraTracks[0]} isMainStage={true} />
+            <EnhancedParticipantTile
+              trackRef={cameraTracks[0]}
+              isMainStage={true}
+              onTogglePin={onTogglePin}
+            />
           ) : (
             <div className="flex flex-col items-center justify-center text-slate-300 p-6 text-center">
               <Radio className="w-12 h-12 text-indigo-400 animate-pulse mb-3" />
@@ -550,7 +945,10 @@ function ClassroomStage({
                 key={trackRef.publication?.trackSid || trackRef.participant.identity}
                 className="w-44 md:w-full aspect-video bg-slate-900 rounded-xl overflow-hidden shrink-0 shadow-md"
               >
-                <EnhancedParticipantTile trackRef={trackRef} />
+                <EnhancedParticipantTile
+                  trackRef={trackRef}
+                  onTogglePin={onTogglePin}
+                />
               </div>
             ))}
           </div>
@@ -586,7 +984,11 @@ function ClassroomStage({
             key={trackRef.publication?.trackSid || trackRef.participant.identity}
             className="w-full h-full max-h-[75vh] bg-slate-900 rounded-2xl overflow-hidden shadow-xl relative"
           >
-            <EnhancedParticipantTile trackRef={trackRef} />
+            <EnhancedParticipantTile
+              trackRef={trackRef}
+              isPinned={pinnedIdentity === trackRef.participant.identity}
+              onTogglePin={onTogglePin}
+            />
           </div>
         ))
       )}

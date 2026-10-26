@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import {
   X,
   Shield,
@@ -18,6 +18,7 @@ import {
 } from 'lucide-react';
 import { Button } from '@/components/ui';
 import type { ClassroomAttendeeSummary } from '@ogroniedu/contracts';
+import { classroomAudio } from '../utils/classroom-audio';
 
 export interface ClassroomModerationPanelProps {
   isOpen: boolean;
@@ -26,6 +27,7 @@ export interface ClassroomModerationPanelProps {
   attendees: ClassroomAttendeeSummary[];
   onPromote: (identity: string, canPublish: boolean) => void;
   onMute: (identity: string) => void;
+  onMuteAll?: () => void;
   onKick: (identity: string) => void;
   onEndSession: () => void;
   isActionLoading?: boolean;
@@ -38,6 +40,7 @@ export function ClassroomModerationPanel({
   attendees,
   onPromote,
   onMute,
+  onMuteAll,
   onKick,
   onEndSession,
   isActionLoading = false,
@@ -51,6 +54,14 @@ export function ClassroomModerationPanel({
   const audienceAttendees = attendees.filter(
     (a) => !a.isStagePromoted && a.role === 'STUDENT' && !a.isHandRaised,
   );
+
+  const prevHandCountRef = useRef(handRaisedAttendees.length);
+  useEffect(() => {
+    if (handRaisedAttendees.length > prevHandCountRef.current) {
+      classroomAudio.playHandRaiseChime();
+    }
+    prevHandCountRef.current = handRaisedAttendees.length;
+  }, [handRaisedAttendees.length]);
 
   return (
     <div
@@ -181,10 +192,24 @@ export function ClassroomModerationPanel({
 
         {/* Section 3: Audience & Attendance Roster */}
         <div className="space-y-3">
-          <span className="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
-            <Clock className="w-4 h-4 text-blue-400" />
-            {isBn ? 'উপস্থিত শিক্ষার্থী রোস্টার' : 'Audience Roster'} ({attendees.length})
-          </span>
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-black text-slate-300 uppercase tracking-wider flex items-center gap-1.5">
+              <Clock className="w-4 h-4 text-blue-400" />
+              {isBn ? 'উপস্থিত শিক্ষার্থী রোস্টার' : 'Audience Roster'} ({attendees.length})
+            </span>
+            {onMuteAll && (
+              <button
+                type="button"
+                onClick={onMuteAll}
+                className="text-[11px] font-black text-amber-400 hover:text-amber-300 bg-amber-950/60 hover:bg-amber-900/80 px-2.5 py-1 rounded-lg border border-amber-500/50 flex items-center gap-1 transition-all active:scale-95"
+                data-testid="moderation-mute-all-btn"
+                title={isBn ? 'সব শিক্ষার্থীর মাইক মিউট করুন' : 'Mute all students'}
+              >
+                <VolumeX className="w-3.5 h-3.5" />
+                <span>{isBn ? 'সবাইকে মিউট' : 'Mute All'}</span>
+              </button>
+            )}
+          </div>
 
           <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
             {attendees.map((att) => (

@@ -18,8 +18,12 @@ import {
   Smile,
   MoreVertical,
   X,
+  Settings,
+  BarChart3,
+  Tv,
 } from 'lucide-react';
 import { useLocalParticipant, useRoomContext } from '@livekit/components-react';
+import { classroomAudio } from '../utils/classroom-audio';
 
 export interface ClassroomControlBarProps {
   isTutor: boolean;
@@ -34,6 +38,11 @@ export interface ClassroomControlBarProps {
   lowDataMode: boolean;
   onToggleLowDataMode: () => void;
   onSendReaction?: (emoji: string) => void;
+  onOpenSettings?: () => void;
+  onTogglePollModal?: () => void;
+  hasActivePoll?: boolean;
+  isTheaterMode?: boolean;
+  onToggleTheaterMode?: () => void;
 }
 
 const REACTION_EMOJIS = ['👍', '👏', '❤️', '💡', '🔥', '✋'];
@@ -51,6 +60,11 @@ export function ClassroomControlBar({
   lowDataMode,
   onToggleLowDataMode,
   onSendReaction,
+  onOpenSettings,
+  onTogglePollModal,
+  hasActivePoll = false,
+  isTheaterMode = false,
+  onToggleTheaterMode,
 }: ClassroomControlBarProps) {
   const isBn = locale === 'bn';
   const room = useRoomContext();
@@ -61,7 +75,6 @@ export function ClassroomControlBar({
   const [wakeLockActive, setWakeLockActive] = useState(false);
   const [wakeLockSentinel, setWakeLockSentinel] = useState<any>(null);
   const [showEmojiPicker, setShowEmojiPicker] = useState(false);
-  const [showMobileMore, setShowMobileMore] = useState(false);
 
   // Screen Wake Lock API integration to prevent mobile screen from turning off during class
   useEffect(() => {
@@ -118,14 +131,14 @@ export function ClassroomControlBar({
         }
       } else if (e.key === 'h' || e.key === 'H') {
         if (!isTutor) {
-          onToggleHandRaise();
+          handleHandRaiseClick();
         }
       }
     };
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [canPublish, isCameraEnabled, isMicrophoneEnabled, isTutor, localParticipant, onToggleHandRaise]);
+  }, [canPublish, isCameraEnabled, isMicrophoneEnabled, isTutor, localParticipant, isHandRaised, onToggleHandRaise]);
 
   // Camera flip for mobile
   const handleCameraFlip = useCallback(async () => {
@@ -162,6 +175,13 @@ export function ClassroomControlBar({
   const handleEmojiClick = (emoji: string) => {
     onSendReaction?.(emoji);
     setShowEmojiPicker(false);
+  };
+
+  const handleHandRaiseClick = () => {
+    if (!isHandRaised) {
+      classroomAudio.playHandRaiseChime();
+    }
+    onToggleHandRaise();
   };
 
   return (
@@ -341,7 +361,7 @@ export function ClassroomControlBar({
         {!isTutor && (
           <button
             type="button"
-            onClick={onToggleHandRaise}
+            onClick={handleHandRaiseClick}
             className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-lg flex items-center gap-1.5 active:scale-95 ${
               isHandRaised
                 ? 'bg-amber-400 hover:bg-amber-500 text-slate-950 font-black animate-bounce ring-4 ring-amber-300 shadow-amber-500/40'
@@ -355,6 +375,27 @@ export function ClassroomControlBar({
             <span className="hidden md:inline text-xs font-black">
               {isHandRaised ? (isBn ? 'হাত তোলা আছে' : 'Hand Raised') : isBn ? 'হাত তুলুন' : 'Raise Hand'}
             </span>
+          </button>
+        )}
+
+        {/* In-Class Poll & Quiz */}
+        {onTogglePollModal && (
+          <button
+            type="button"
+            onClick={onTogglePollModal}
+            className={`relative min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md flex items-center justify-center active:scale-95 ${
+              hasActivePoll
+                ? 'bg-blue-600 text-white font-black ring-4 ring-blue-400/60 shadow-blue-500/30'
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700'
+            }`}
+            title={isBn ? 'ইন-ক্লাস পোল ও কুইজ' : 'In-Class Polls & Quiz'}
+            aria-label={isBn ? 'ইন-ক্লাস পোল ও কুইজ' : 'In-Class Polls & Quiz'}
+            data-testid="control-poll-toggle"
+          >
+            <BarChart3 className="w-5 h-5 text-amber-300" />
+            {hasActivePoll && (
+              <span className="absolute -top-1 -right-1 w-3 h-3 bg-amber-400 rounded-full border-2 border-slate-900 animate-ping" />
+            )}
           </button>
         )}
 
@@ -379,8 +420,38 @@ export function ClassroomControlBar({
         )}
       </div>
 
-      {/* Right Section: Chat & Disconnect */}
+      {/* Right Section: Settings, Theater, Chat & Disconnect */}
       <div className="flex items-center gap-2">
+        {onToggleTheaterMode && (
+          <button
+            type="button"
+            onClick={onToggleTheaterMode}
+            className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md border flex items-center justify-center active:scale-95 ${
+              isTheaterMode
+                ? 'bg-indigo-600 border-indigo-400 text-white ring-2 ring-indigo-400'
+                : 'bg-slate-800 hover:bg-slate-700 text-slate-200 border-slate-700'
+            }`}
+            title={isBn ? (isTheaterMode ? 'স্বাভাবিক ভিউতে ফিরুন' : 'সিনেমা / থিয়েটার ভিউ') : isTheaterMode ? 'Exit Theater' : 'Theater View'}
+            aria-label={isTheaterMode ? 'Exit Theater' : 'Theater View'}
+            data-testid="control-theater-toggle"
+          >
+            <Tv className="w-5 h-5 text-indigo-300" />
+          </button>
+        )}
+
+        {onOpenSettings && (
+          <button
+            type="button"
+            onClick={onOpenSettings}
+            className="min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-slate-800 hover:bg-slate-700 text-slate-100 transition-colors shadow-md border border-slate-700 flex items-center justify-center active:scale-95"
+            title={isBn ? 'মিডিয়া ও সাউন্ড সেটিংস' : 'Media & Sound Settings'}
+            aria-label={isBn ? 'মিডিয়া ও সাউন্ড সেটিংস' : 'Media & Sound Settings'}
+            data-testid="control-settings-toggle"
+          >
+            <Settings className="w-5 h-5 text-slate-300" />
+          </button>
+        )}
+
         <button
           type="button"
           onClick={onToggleChat}

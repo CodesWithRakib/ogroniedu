@@ -3,6 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { X, Send, MessageSquare, User, Smile, Sparkles } from 'lucide-react';
 import { useChat } from '@livekit/components-react';
+import { classroomAudio } from '../utils/classroom-audio';
 
 export interface ClassroomChatPanelProps {
   isOpen: boolean;
@@ -23,6 +24,18 @@ export function ClassroomChatPanel({
   const { chatMessages, send } = useChat();
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const prevCountRef = useRef(chatMessages.length);
+
+  useEffect(() => {
+    if (chatMessages.length > prevCountRef.current) {
+      const latestMsg = chatMessages[chatMessages.length - 1];
+      const isSelf = latestMsg?.from?.identity === displayName || latestMsg?.from?.name === displayName;
+      if (!isSelf) {
+        classroomAudio.playChatMessageChime();
+      }
+    }
+    prevCountRef.current = chatMessages.length;
+  }, [chatMessages, displayName]);
 
   useEffect(() => {
     if (isOpen) {

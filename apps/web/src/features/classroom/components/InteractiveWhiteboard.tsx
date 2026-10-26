@@ -745,13 +745,13 @@ export function InteractiveWhiteboard({
           <button
             type="button"
             onClick={handleExportPNG}
-            className="p-2 rounded-2xl bg-success-soft hover:bg-success-soft text-success-soft-foreground border border-success/30 transition-all flex items-center gap-1.5 text-xs font-bold"
-            title={locale === 'bn' ? 'নোট ডাউনলোড করুন (PNG)' : 'Export PNG Notes'}
-            aria-label={locale === 'bn' ? 'নোট ডাউনলোড করুন (PNG)' : 'Export PNG Notes'}
+            className="px-3 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm border border-emerald-500 transition-all flex items-center gap-1.5 text-xs font-black active:scale-95"
+            title={locale === 'bn' ? 'হোয়াইটবোর্ড নোট ডাউনলোড করুন (PNG)' : 'Download Whiteboard Notes (PNG)'}
+            aria-label={locale === 'bn' ? 'হোয়াইটবোর্ড নোট ডাউনলোড করুন (PNG)' : 'Download Whiteboard Notes (PNG)'}
             data-testid="wb-btn-export"
           >
-            <Download className="w-4 h-4" />
-            <span className="hidden md:inline">{locale === 'bn' ? 'ডাউনলোড' : 'Save'}</span>
+            <Download className="w-4 h-4 text-white" />
+            <span className="inline">{locale === 'bn' ? 'নোটস ডাউনলোড' : 'Download Notes'}</span>
           </button>
 
           {/* Fullscreen */}

@@ -8,6 +8,11 @@ import { ClassroomControlBar } from '../src/features/classroom/components/Classr
 import { ClassroomModerationPanel } from '../src/features/classroom/components/ClassroomModerationPanel';
 import { ClassroomChatPanel } from '../src/features/classroom/components/ClassroomChatPanel';
 import { LiveKitClassroomMeeting } from '../src/features/classroom/components/LiveKitClassroomMeeting';
+import { NetworkDiagnosticsModal } from '../src/features/classroom/components/NetworkDiagnosticsModal';
+import { AudioProcessingSettingsModal } from '../src/features/classroom/components/AudioProcessingSettingsModal';
+import { ClassroomPollModal } from '../src/features/classroom/components/ClassroomPollModal';
+import { InteractiveWhiteboard } from '../src/features/classroom/components/InteractiveWhiteboard';
+import { classroomAudio } from '../src/features/classroom/utils/classroom-audio';
 import type { ClassroomAttendeeSummary } from '@ogroniedu/contracts';
 
 // Mock LiveKit hooks
@@ -230,5 +235,205 @@ describe('LiveKit Scalable Dual-Mode Classroom Frontend Tests', () => {
     expect(html).toContain('data-testid="prejoin-lobby"');
     expect(html).toContain('ক্লাসরুম গ্রিন রুম / লবি');
     expect(html).toContain('Abrar Student');
+  });
+
+  it('TC-LK-008: should render NetworkDiagnosticsModal with latency telemetry and tips', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(NetworkDiagnosticsModal, {
+        isOpen: true,
+        onClose: () => {},
+        locale: 'bn',
+        latencyMs: 28,
+        packetLossPercent: 0.0,
+        qualityRating: 'excellent',
+        lowDataMode: false,
+        onToggleLowDataMode: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="network-diagnostics-modal"');
+    expect(html).toContain('নেটওয়ার্ক ডায়াগনস্টিকস ও স্থিতি');
+    expect(html).toContain('28');
+    expect(html).toContain('ms Ping');
+    expect(html).toContain('চমৎকার ও স্থিতিশীল');
+    expect(html).toContain('Opus / VP8');
+  });
+
+  it('TC-LK-009: should render AudioProcessingSettingsModal with noise suppression and echo cancellation toggles', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(AudioProcessingSettingsModal, {
+        isOpen: true,
+        onClose: () => {},
+        locale: 'bn',
+        noiseSuppression: true,
+        onToggleNoiseSuppression: () => {},
+        echoCancellation: true,
+        onToggleEchoCancellation: () => {},
+        soundEffectsEnabled: true,
+        onToggleSoundEffects: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="audio-processing-settings-modal"');
+    expect(html).toContain('অডিও ও মিডিয়া সেটিংস');
+    expect(html).toContain('নয়েজ সাপ্রেশন (Noise Suppression)');
+    expect(html).toContain('ইকো ক্যান্সেলেশন (Echo Cancellation)');
+    expect(html).toContain('ইন্টারঅ্যাক্টিভ সাউন্ড চাইম');
+  });
+
+  it('TC-LK-010: should verify classroomAudio synthesizer operates without throwing', () => {
+    expect(typeof classroomAudio.playHandRaiseChime).toBe('function');
+    expect(typeof classroomAudio.playChatMessageChime).toBe('function');
+    expect(typeof classroomAudio.playJoinChime).toBe('function');
+    expect(typeof classroomAudio.playLeaveChime).toBe('function');
+    expect(classroomAudio.isSoundEnabled()).toBe(true);
+    classroomAudio.setSoundEnabled(false);
+    expect(classroomAudio.isSoundEnabled()).toBe(false);
+    classroomAudio.setSoundEnabled(true);
+  });
+
+  it('TC-LK-011: should render ClassroomPollModal create form for Tutor', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(ClassroomPollModal, {
+        isOpen: true,
+        onClose: () => {},
+        isTutor: true,
+        locale: 'bn',
+        currentPoll: null,
+        votes: {},
+        userVotedIndex: null,
+        onLaunchPoll: () => {},
+        onVote: () => {},
+        onEndPoll: () => {},
+        onToggleShareResults: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="classroom-poll-modal"');
+    expect(html).toContain('ইন-ক্লাস পোল ও তাৎক্ষণিক কুইজ');
+    expect(html).toContain('data-testid="create-poll-form"');
+    expect(html).toContain('পোলের প্রশ্ন / কুইজ লিখুন');
+    expect(html).toContain('data-testid="launch-poll-btn"');
+    expect(html).toContain('পোল চালু ও সম্প্রচার করুন');
+  });
+
+  it('TC-LK-012: should render active poll in ClassroomPollModal for Student with voting choices', () => {
+    const samplePoll = {
+      id: 'poll-123',
+      question: 'What is Newton’s Third Law?',
+      options: ['Every action has equal reaction', 'F = ma', 'Gravity attracts', 'Inertia'],
+      creatorName: 'Farhan Tutor',
+      creatorIdentity: 'tutor-1',
+      createdAt: Date.now(),
+      isActive: true,
+      resultsShared: false,
+    };
+
+    const html = renderToStaticMarkup(
+      React.createElement(ClassroomPollModal, {
+        isOpen: true,
+        onClose: () => {},
+        isTutor: false,
+        locale: 'bn',
+        currentPoll: samplePoll,
+        votes: { 'student-1': 0, 'student-2': 0, 'student-3': 1 },
+        userVotedIndex: null,
+        onLaunchPoll: () => {},
+        onVote: () => {},
+        onEndPoll: () => {},
+        onToggleShareResults: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="active-poll-container"');
+    expect(html).toContain('What is Newton’s Third Law?');
+    expect(html).toContain('Every action has equal reaction');
+    expect(html).toContain('data-testid="submit-poll-vote-btn"');
+    expect(html).toContain('উত্তর জমা দিন');
+  });
+
+  it('TC-LK-013: should render prominent export button on InteractiveWhiteboard', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(InteractiveWhiteboard, {
+        locale: 'bn',
+        sessionTitle: 'Physics Derivation',
+      }),
+    );
+
+    expect(html).toContain('data-testid="interactive-whiteboard"');
+    expect(html).toContain('data-testid="wb-btn-export"');
+    expect(html).toContain('নোটস ডাউনলোড');
+  });
+
+  it('TC-LK-014: should render mute all students button in ClassroomModerationPanel', () => {
+    const attendees: ClassroomAttendeeSummary[] = [
+      {
+        id: 'att-1',
+        sessionId: 'sess-1',
+        participantIdentity: 'tutor-1',
+        participantName: 'Farhan Tutor',
+        role: 'HOST',
+        connectionStatus: 'CONNECTED',
+        isStagePromoted: true,
+        isHandRaised: false,
+        totalDurationSeconds: 1200,
+        createdAt: new Date().toISOString(),
+      },
+      {
+        id: 'att-2',
+        sessionId: 'sess-1',
+        participantIdentity: 'student-1',
+        participantName: 'Abrar Student',
+        role: 'STUDENT',
+        connectionStatus: 'CONNECTED',
+        isStagePromoted: false,
+        isHandRaised: true,
+        totalDurationSeconds: 600,
+        createdAt: new Date().toISOString(),
+      },
+    ];
+
+    const html = renderToStaticMarkup(
+      React.createElement(ClassroomModerationPanel, {
+        isOpen: true,
+        onClose: () => {},
+        locale: 'bn',
+        attendees,
+        onPromote: () => {},
+        onMute: () => {},
+        onMuteAll: () => {},
+        onKick: () => {},
+        onEndSession: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="classroom-moderation-panel"');
+    expect(html).toContain('data-testid="moderation-mute-all-btn"');
+    expect(html).toContain('সবাইকে মিউট');
+  });
+
+  it('TC-LK-015: should render ClassroomControlBar with poll button and theater mode button', () => {
+    const html = renderToStaticMarkup(
+      React.createElement(ClassroomControlBar, {
+        isTutor: true,
+        canPublish: true,
+        locale: 'bn',
+        isHandRaised: false,
+        onToggleHandRaise: () => {},
+        onToggleModeration: () => {},
+        onToggleChat: () => {},
+        onLeave: () => {},
+        lowDataMode: false,
+        onToggleLowDataMode: () => {},
+        onTogglePollModal: () => {},
+        hasActivePoll: true,
+        isTheaterMode: false,
+        onToggleTheaterMode: () => {},
+      }),
+    );
+
+    expect(html).toContain('data-testid="classroom-control-bar"');
+    expect(html).toContain('data-testid="control-poll-toggle"');
+    expect(html).toContain('data-testid="control-theater-toggle"');
   });
 });

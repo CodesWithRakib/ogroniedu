@@ -28,6 +28,8 @@ export interface PreJoinLobbyProps {
     audioDeviceId?: string;
     videoDeviceId?: string;
     lowDataMode: boolean;
+    noiseSuppression?: boolean;
+    echoCancellation?: boolean;
   }) => void;
   isLoading?: boolean;
 }
@@ -61,6 +63,8 @@ export function PreJoinLobby({
   const [selectedVideoDevice, setSelectedVideoDevice] = useState<string>('');
   const [permissionError, setPermissionError] = useState<string | null>(null);
   const [showSettings, setShowSettings] = useState(false);
+  const [noiseSuppression, setNoiseSuppression] = useState(true);
+  const [echoCancellation, setEchoCancellation] = useState(true);
 
   // Initialize media devices & preview stream
   const startPreview = useCallback(async () => {
@@ -184,6 +188,8 @@ export function PreJoinLobby({
       audioDeviceId: selectedAudioDevice || undefined,
       videoDeviceId: selectedVideoDevice || undefined,
       lowDataMode,
+      noiseSuppression,
+      echoCancellation,
     });
   };
 
@@ -419,6 +425,33 @@ export function PreJoinLobby({
                 </option>
               ))}
             </select>
+          </div>
+
+          {/* Advanced Audio Processing Toggles */}
+          <div className="sm:col-span-2 pt-2 border-t border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-3">
+            <label className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={noiseSuppression}
+                onChange={(e) => setNoiseSuppression(e.target.checked)}
+                className="w-4 h-4 rounded-md text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-xs font-bold text-slate-800">
+                {isBn ? 'নয়েজ সাপ্রেশন (ফ্যান ও টাইপিং নয়েজ দূর করুন)' : 'Noise Suppression (Filter background noise)'}
+              </span>
+            </label>
+
+            <label className="flex items-center gap-2.5 p-3 rounded-xl bg-slate-50 border border-slate-200 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={echoCancellation}
+                onChange={(e) => setEchoCancellation(e.target.checked)}
+                className="w-4 h-4 rounded-md text-blue-600 focus:ring-blue-500"
+              />
+              <span className="text-xs font-bold text-slate-800">
+                {isBn ? 'ইকো ক্যান্সেলেশন (প্রতিধ্বনি ফিল্টার)' : 'Echo Cancellation (Filter feedback)'}
+              </span>
+            </label>
           </div>
         </div>
       )}
