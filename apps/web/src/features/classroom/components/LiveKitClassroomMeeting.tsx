@@ -64,6 +64,8 @@ export interface LiveKitClassroomMeetingProps {
   isTutor?: boolean;
   onMeetingEnded?: () => void;
   className?: string;
+  isStandalone?: boolean;
+  subjectTitle?: string;
 }
 
 interface FloatingReaction {
@@ -82,6 +84,8 @@ export function LiveKitClassroomMeeting({
   isTutor = false,
   onMeetingEnded,
   className = '',
+  isStandalone = false,
+  subjectTitle,
 }: LiveKitClassroomMeetingProps) {
   const isBn = locale === 'bn';
 
@@ -241,8 +245,12 @@ export function LiveKitClassroomMeeting({
 
   // Pre-join Lobby View
   if (!hasJoined || !joinPayload) {
+    const lobbyWrapperClasses = isStandalone
+      ? `w-full h-full min-h-[calc(100dvh-3.5rem)] flex flex-col items-center justify-center p-3 sm:p-6 ${className}`
+      : `w-full ${className}`;
+
     return (
-      <div className={`w-full ${className}`} data-testid="livekit-classroom-container">
+      <div className={lobbyWrapperClasses} data-testid="livekit-classroom-container">
         {joinError && (
           <div className="max-w-4xl mx-auto mb-4 p-4 bg-rose-50 border-2 border-rose-300 text-rose-950 rounded-2xl text-xs sm:text-sm flex items-center gap-3 shadow-md">
             <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
@@ -266,13 +274,15 @@ export function LiveKitClassroomMeeting({
           locale={locale}
           onJoin={handleLobbyJoin}
           isLoading={isJoining}
+          isStandalone={isStandalone}
+          subjectTitle={subjectTitle}
         />
       </div>
     );
   }
 
-  const containerClasses = isTheaterMode
-    ? 'fixed inset-0 z-50 w-screen h-screen rounded-none bg-slate-950 flex flex-col p-2 sm:p-4'
+  const containerClasses = isTheaterMode || isStandalone
+    ? `relative w-full h-full flex-1 rounded-none border-none bg-slate-950 flex flex-col overflow-hidden ${className}`
     : `relative w-full h-[58vh] sm:h-[68vh] lg:h-[75vh] min-h-[360px] max-h-[85vh] bg-slate-950 rounded-3xl overflow-hidden shadow-2xl border-2 border-slate-800 flex flex-col ${className}`;
 
   // Active LiveKit Classroom Session
@@ -854,6 +864,57 @@ function ClassroomStage({
   const screenShareTrack = tracks.find((t) => t.source === Track.Source.ScreenShare);
   const pinnedTrack = pinnedIdentity ? tracks.find((t) => t.participant.identity === pinnedIdentity) : null;
   const cameraTracks = tracks.filter((t) => t.source === Track.Source.Camera);
+
+  // Priority 1: Screen Share is Active (in ANY mode!)
+  // Takes hero stage (80-85% screen real estate) with aspect-ratio preserved & zero cropping
+  if (screenShareTrack) {
+    const isPresenterLocal = screenShareTrack.participant.isLocal;
+    const presenterName =
+      screenShareTrack.participant.name ||
+      screenShareTrack.participant.identity ||
+      (isBn ? 'উপস্থাপক' : 'Presenter');
+
+    return (
+      <div className="w-full h-full flex flex-col lg:flex-row gap-3 items-center justify-center overflow-hidden p-1 sm:p-2">
+        {/* Main Stage: Screen Share (80-85% screen space) */}
+        <div className="flex-1 w-full h-full min-h-0 bg-slate-950 rounded-2xl overflow-hidden relative border-2 border-blue-500/80 shadow-2xl flex items-center justify-center">
+          <TrackRefContext.Provider value={screenShareTrack}>
+            <ParticipantTile className="w-full h-full [&_video]:w-full [&_video]:h-full [&_video]:object-contain [&_video]:max-h-full" />
+          </TrackRefContext.Provider>
+
+          {/* Presentation label banner */}
+          <div className="absolute top-3 left-3 bg-blue-600/95 text-white text-xs font-black px-3.5 py-1.5 rounded-xl backdrop-blur-md shadow-lg border border-blue-400/40 z-20 flex items-center gap-2">
+            <Radio className="w-3.5 h-3.5 animate-pulse" />
+            <span>
+              {isPresenterLocal
+                ? isBn
+                  ? 'আপনি স্ক্রিন শেয়ার করছেন'
+                  : 'You are presenting your screen'
+                : `${presenterName} ${isBn ? 'স্ক্রিন শেয়ার করছেন' : 'is presenting'}`}
+            </span>
+          </div>
+        </div>
+
+        {/* Participant Camera Tiles Filmstrip */}
+        {cameraTracks.length > 0 && (
+          <div className="w-full lg:w-64 h-28 lg:h-full flex lg:flex-col gap-2.5 overflow-x-auto lg:overflow-y-auto shrink-0 pb-1 lg:pb-0 justify-center lg:justify-start">
+            {cameraTracks.map((trackRef) => (
+              <div
+                key={trackRef.publication?.trackSid || trackRef.participant.identity}
+                className="w-44 lg:w-full aspect-video bg-slate-900 rounded-xl overflow-hidden shrink-0 shadow-md border border-slate-800"
+              >
+                <EnhancedParticipantTile
+                  trackRef={trackRef}
+                  isPinned={pinnedIdentity === trackRef.participant.identity}
+                  onTogglePin={onTogglePin}
+                />
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+    );
+  }
 
   // If a participant is pinned, render that participant on the hero stage!
   if (pinnedTrack) {

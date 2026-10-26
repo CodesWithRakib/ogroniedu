@@ -3,7 +3,6 @@
 import React, { use } from 'react';
 import { AlertCircle } from 'lucide-react';
 import { RequireAuth } from '@/components/auth/RequireAuth';
-import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { LoadingSpinner, EmptyState } from '@/components/ui';
 import { useGetSessionByIdQuery, SessionItem } from '@/store/services/sessions-api';
 import { ClassroomWorkspace } from '@/features/classroom';
@@ -24,9 +23,7 @@ export default function ClassroomPageRoute({ params }: { params: Promise<Classro
 
   return (
     <RequireAuth locale={locale}>
-      <DashboardShell locale={locale}>
-        <ClassroomPageContent locale={locale} sessionId={sessionId} />
-      </DashboardShell>
+      <ClassroomPageContent locale={locale} sessionId={sessionId} />
     </RequireAuth>
   );
 }
@@ -48,9 +45,9 @@ function ClassroomPageContent({ locale, sessionId }: { locale: Locale; sessionId
 
   if (isLoading) {
     return (
-      <div className="py-28 flex flex-col items-center justify-center space-y-3">
+      <div className="fixed inset-0 w-screen h-[100dvh] bg-slate-950 text-white flex flex-col items-center justify-center space-y-3 z-50">
         <LoadingSpinner />
-        <p className="text-xs text-muted-foreground font-medium">
+        <p className="text-xs text-slate-300 font-medium">
           {locale === 'bn' ? 'লাইভ ক্লাসরুম লোড হচ্ছে...' : 'Loading live interactive classroom...'}
         </p>
       </div>
@@ -59,21 +56,30 @@ function ClassroomPageContent({ locale, sessionId }: { locale: Locale; sessionId
 
   if (error || !session) {
     return (
-      <div className="max-w-4xl mx-auto py-12 px-4">
-        <EmptyState
-          title={locale === 'bn' ? 'ক্লাসরুম পাওয়া যায়নি' : 'Classroom Not Found'}
-          description={
-            locale === 'bn'
-              ? 'অনুরোধকৃত ক্লাস সেশনের আইডি সঠিক নয় অথবা আপনার এই সেশনে প্রবেশের অনুমতি নেই।'
-              : 'The requested classroom session could not be found or you may lack authorized access.'
-          }
-          icon={<AlertCircle className="h-6 w-6" />}
-          actionLabel={locale === 'bn' ? 'সব ক্লাসের সূচীতে ফিরুন' : 'Back to Sessions'}
-          actionHref={withLocale('/sessions', locale)}
-        />
+      <div className="fixed inset-0 w-screen h-[100dvh] bg-slate-950 text-white flex items-center justify-center p-4 z-50">
+        <div className="max-w-md w-full bg-slate-900 border border-slate-800 rounded-3xl p-6 shadow-2xl">
+          <EmptyState
+            title={locale === 'bn' ? 'ক্লাসরুম পাওয়া যায়নি' : 'Classroom Not Found'}
+            description={
+              locale === 'bn'
+                ? 'অনুরোধকৃত ক্লাস সেশনের আইডি সঠিক নয় অথবা আপনার এই সেশনে প্রবেশের অনুমতি নেই।'
+                : 'The requested classroom session could not be found or you may lack authorized access.'
+            }
+            icon={<AlertCircle className="h-6 w-6 text-rose-400" />}
+            actionLabel={locale === 'bn' ? 'সব ক্লাসের সূচীতে ফিরুন' : 'Back to Sessions'}
+            actionHref={withLocale('/sessions', locale)}
+          />
+        </div>
       </div>
     );
   }
 
-  return <ClassroomWorkspace session={session} locale={locale} isTutor={Boolean(isTutor)} />;
+  return (
+    <ClassroomWorkspace
+      session={session}
+      locale={locale}
+      isTutor={Boolean(isTutor)}
+      standalone={true}
+    />
+  );
 }

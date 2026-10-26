@@ -32,6 +32,8 @@ export interface PreJoinLobbyProps {
     echoCancellation?: boolean;
   }) => void;
   isLoading?: boolean;
+  isStandalone?: boolean;
+  subjectTitle?: string;
 }
 
 export function PreJoinLobby({
@@ -40,6 +42,8 @@ export function PreJoinLobby({
   locale = 'bn',
   onJoin,
   isLoading = false,
+  isStandalone = false,
+  subjectTitle,
 }: PreJoinLobbyProps) {
   const isBn = locale === 'bn';
 
@@ -193,21 +197,55 @@ export function PreJoinLobby({
     });
   };
 
+  const cardBgClass = isStandalone
+    ? 'w-full max-w-5xl mx-auto p-4 sm:p-8 bg-slate-900/95 rounded-3xl border-2 border-slate-800 shadow-2xl overflow-hidden text-white'
+    : 'w-full max-w-4xl mx-auto p-4 sm:p-7 bg-white rounded-3xl border-2 border-slate-200 shadow-xl overflow-hidden';
+
+  const headingTextClass = isStandalone
+    ? 'text-xl sm:text-2xl font-black text-white tracking-tight'
+    : 'text-xl sm:text-2xl font-black text-slate-900 tracking-tight';
+
+  const subTextClass = isStandalone
+    ? 'text-xs sm:text-sm font-semibold text-slate-300 mt-1'
+    : 'text-xs sm:text-sm font-semibold text-slate-700 mt-1';
+
+  const readinessCardClass = isStandalone
+    ? 'p-4 bg-slate-950/80 rounded-2xl border-2 border-slate-800 space-y-2.5'
+    : 'p-4 bg-slate-50 rounded-2xl border-2 border-slate-200/90 space-y-2.5';
+
+  const readinessLabelClass = isStandalone
+    ? 'text-xs font-black text-slate-300 uppercase tracking-wider block'
+    : 'text-xs font-black text-slate-800 uppercase tracking-wider block';
+
+  const readinessRowClass = isStandalone
+    ? 'flex items-center justify-between text-xs sm:text-sm font-bold text-slate-200'
+    : 'flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800';
+
+  const lowDataBoxClass = isStandalone
+    ? 'flex items-center justify-between p-3.5 bg-slate-950/80 hover:bg-slate-950 border-2 border-slate-800 rounded-2xl cursor-pointer transition-colors shadow-2xs'
+    : 'flex items-center justify-between p-3.5 bg-blue-50/80 hover:bg-blue-50 border-2 border-blue-200 rounded-2xl cursor-pointer transition-colors shadow-2xs';
+
+  const settingsBtnClass = showSettings
+    ? 'bg-blue-600 border-blue-600 text-white shadow-md'
+    : isStandalone
+      ? 'bg-slate-800 border-slate-700 text-slate-200 hover:bg-slate-700'
+      : 'bg-slate-50 border-slate-300 text-slate-800 hover:bg-slate-100';
+
   return (
     <div
-      className="w-full max-w-4xl mx-auto p-4 sm:p-7 bg-white rounded-3xl border-2 border-slate-200 shadow-xl overflow-hidden"
+      className={cardBgClass}
       data-testid="prejoin-lobby"
     >
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-4 mb-5">
+      <div className={`flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 mb-5 ${isStandalone ? 'border-slate-800' : 'border-slate-200'}`}>
         <div>
           <div className="flex items-center gap-2.5">
-            <span className="w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-100 animate-pulse" />
-            <h2 className="text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
+            <span className="w-3 h-3 rounded-full bg-emerald-500 ring-4 ring-emerald-500/20 animate-pulse" />
+            <h2 className={headingTextClass}>
               {isBn ? 'ক্লাসরুম গ্রিন রুম / লবি' : 'Classroom Green Room'}
             </h2>
           </div>
-          <p className="text-xs sm:text-sm font-semibold text-slate-700 mt-1">
+          <p className={subTextClass}>
             {isBn
               ? `স্বাগতম, ${displayName}! ক্লাসে যোগদানের পূর্বে অডিও ও ক্যামেরা পরীক্ষা করুন।`
               : `Welcome, ${displayName}! Check your devices before entering the session.`}
@@ -217,11 +255,7 @@ export function PreJoinLobby({
         <button
           type="button"
           onClick={() => setShowSettings(!showSettings)}
-          className={`self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-2xl border-2 font-bold text-xs transition-all shadow-xs ${
-            showSettings
-              ? 'bg-blue-600 border-blue-600 text-white shadow-md'
-              : 'bg-slate-50 border-slate-300 text-slate-800 hover:bg-slate-100'
-          }`}
+          className={`self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-2xl border-2 font-bold text-xs transition-all shadow-xs ${settingsBtnClass}`}
           title={isBn ? 'ডিভাইস সেটিংস' : 'Device Settings'}
           aria-label={isBn ? 'ডিভাইস সেটিংস' : 'Device Settings'}
         >
@@ -328,40 +362,40 @@ export function PreJoinLobby({
         {/* Right Column: Readiness checklist & Join button */}
         <div className="md:col-span-5 flex flex-col justify-between space-y-4">
           <div className="space-y-3">
-            <div className="p-4 bg-slate-50 rounded-2xl border-2 border-slate-200/90 space-y-2.5">
-              <span className="text-xs font-black text-slate-800 uppercase tracking-wider block">
+            <div className={readinessCardClass}>
+              <span className={readinessLabelClass}>
                 {isBn ? 'ক্লাসরুম তথ্য ও প্রস্তুতি' : 'Classroom Readiness'}
               </span>
 
-              <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800">
+              <div className={readinessRowClass}>
                 <span className="flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <ShieldCheck className="w-4 h-4 text-emerald-500" />
                   {isBn ? 'ভূমিকা' : 'Role'}
                 </span>
-                <span className="px-2.5 py-1 bg-blue-100 text-blue-900 rounded-lg font-black text-xs">
+                <span className="px-2.5 py-1 bg-blue-600/30 text-blue-400 border border-blue-500/40 rounded-lg font-black text-xs">
                   {isTutor ? (isBn ? 'শিক্ষক / হোস্ট' : 'Tutor / Host') : isBn ? 'শিক্ষার্থী' : 'Student'}
                 </span>
               </div>
 
-              <div className="flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800">
+              <div className={readinessRowClass}>
                 <span className="flex items-center gap-2">
-                  <Wifi className="w-4 h-4 text-indigo-600" />
+                  <Wifi className="w-4 h-4 text-indigo-400" />
                   {isBn ? 'ক্লাউড নেটওয়ার্ক' : 'Network Mode'}
                 </span>
-                <span className="text-emerald-700 font-black text-xs flex items-center gap-1">
-                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
+                <span className="text-emerald-400 font-black text-xs flex items-center gap-1">
+                  <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400" />
                   {isBn ? 'এসএফইউ প্রস্তুত' : 'SFU Cloud Ready'}
                 </span>
               </div>
             </div>
 
             {/* Mobile Data Saver Toggle */}
-            <label className="flex items-center justify-between p-3.5 bg-blue-50/80 hover:bg-blue-50 border-2 border-blue-200 rounded-2xl cursor-pointer transition-colors shadow-2xs">
+            <label className={lowDataBoxClass}>
               <div className="pr-2">
-                <p className="text-xs sm:text-sm font-black text-blue-950">
+                <p className="text-xs sm:text-sm font-black text-blue-300">
                   {isBn ? 'লো-ডাটা / অডিও-ফার্স্ট মোড' : 'Low-Data / Audio First'}
                 </p>
-                <p className="text-xs text-blue-800/90 font-semibold mt-0.5">
+                <p className="text-xs text-slate-300 font-semibold mt-0.5">
                   {isBn ? 'দুর্বল ৩জি/৪জি মোবাইল ডাটাতে ব্যান্ডউইথ সাশ্রয় করুন' : 'Conserves bandwidth on 3G/4G networks'}
                 </p>
               </div>

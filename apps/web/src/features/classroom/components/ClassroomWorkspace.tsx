@@ -58,6 +58,7 @@ interface ClassroomWorkspaceProps {
   locale?: 'bn' | 'en';
   isTutor?: boolean;
   initialTab?: 'video' | 'whiteboard' | 'formulas' | 'attendance';
+  standalone?: boolean;
 }
 
 export function ClassroomWorkspace({
@@ -65,6 +66,7 @@ export function ClassroomWorkspace({
   locale = 'bn',
   isTutor = false,
   initialTab = 'video',
+  standalone = false,
 }: ClassroomWorkspaceProps) {
   const isBn = locale === 'bn';
   const currentUser = useAppSelector((s) => s.auth.user);
@@ -270,6 +272,310 @@ export function ClassroomWorkspace({
 
   const activeParticipantName = currentUser?.displayName || (isTutor ? tutorName : studentName);
   const activeParticipantEmail = currentUser?.email || undefined;
+
+  if (standalone) {
+    return (
+      <div className="fixed inset-0 z-40 w-screen h-[100dvh] bg-slate-950 text-white overflow-hidden flex flex-col select-none">
+        {/* Sleek Top Bar (Google Meet Style) */}
+        <header className="h-14 px-3 sm:px-5 bg-slate-900/95 border-b border-slate-800 flex items-center justify-between shrink-0 z-30">
+          {/* Left: Back Link & Subject Info */}
+          <div className="flex items-center gap-2 sm:gap-3 min-w-0">
+            <Link
+              href={withLocale(`/sessions/${session.id}`, locale)}
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 text-xs font-bold transition-colors shrink-0"
+              data-testid="back-to-session-detail"
+              title={isBn ? 'সেশন বিবরণে ফিরে যান' : 'Back to Session Details'}
+            >
+              <ArrowLeft className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{isBn ? 'সেশন বিবরণী' : 'Details'}</span>
+            </Link>
+
+            <div className="h-5 w-px bg-slate-800 hidden sm:block" />
+
+            <div className="flex items-center gap-2 min-w-0">
+              <span className="w-2.5 h-2.5 rounded-full bg-rose-500 ring-4 ring-rose-500/20 animate-pulse shrink-0" />
+              <h1 className="text-xs sm:text-sm font-black text-white truncate max-w-[140px] sm:max-w-xs">
+                {subjectTitle}
+              </h1>
+
+              {session.status === 'in_progress' ? (
+                <div className="hidden sm:flex items-center gap-1.5 px-2 py-0.5 rounded-md bg-emerald-950/80 border border-emerald-800 text-emerald-400 text-xs font-mono font-bold">
+                  <Radio className="w-3 h-3 animate-pulse" />
+                  <span>{formatTimer(secondsElapsed)}</span>
+                </div>
+              ) : session.status === 'completed' ? (
+                <Badge className="bg-emerald-900/60 text-emerald-300 border border-emerald-700 text-[10px] font-bold px-2 py-0.5">
+                  {isBn ? 'ক্লাস সম্পন্ন' : 'Completed'}
+                </Badge>
+              ) : (
+                <Badge className="bg-blue-900/60 text-blue-300 border border-blue-700 text-[10px] font-bold px-2 py-0.5">
+                  {isBn ? 'নির্ধারিত' : 'Scheduled'}
+                </Badge>
+              )}
+            </div>
+          </div>
+
+          {/* Center: Tabs & Split Screen Toggle */}
+          <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-950/80 p-1 rounded-xl border border-slate-800 overflow-x-auto no-scrollbar">
+            <button
+              type="button"
+              onClick={() => setActiveTab('video')}
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
+                activeTab === 'video'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+              }`}
+              data-testid="tab-video"
+            >
+              <Video className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{isBn ? 'লাইভ ভিডিও ক্লাসরুম (LiveKit)' : 'Live Video Classroom (LiveKit)'}</span>
+              <span className="sm:hidden">{isBn ? 'ভিডিও' : 'Video'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setIsSplitMode(!isSplitMode)}
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
+                isSplitMode
+                  ? 'bg-indigo-600 text-white shadow-sm'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+              }`}
+              data-testid="split-mode-toggle"
+              title={isBn ? 'ভিডিও ও হোয়াইটবোর্ড একসাথে দেখুন' : 'Split view'}
+            >
+              <Columns className="w-3.5 h-3.5 text-blue-400" />
+              <span className="hidden md:inline">{isSplitMode ? (isBn ? 'স্প্লিট মোড চালু' : 'Split Active') : (isBn ? 'স্প্লিট স্ক্রিন ভিউ' : 'Split Screen')}</span>
+              <span className="md:hidden">{isBn ? 'স্প্লিট' : 'Split'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('whiteboard')}
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
+                activeTab === 'whiteboard'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+              }`}
+              data-testid="tab-whiteboard"
+            >
+              <Sparkles className="w-3.5 h-3.5 text-indigo-400" />
+              <span className="hidden md:inline">{isBn ? 'ইন্টারেক্টিভ হোয়াইটবোর্ড' : 'Interactive Whiteboard'}</span>
+              <span className="md:hidden">{isBn ? 'বোর্ড' : 'Board'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('formulas')}
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
+                activeTab === 'formulas'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+              }`}
+              data-testid="tab-formulas"
+            >
+              <BookOpen className="w-3.5 h-3.5 text-emerald-400" />
+              <span className="hidden lg:inline">{isBn ? 'ফর্মুলা ও স্টাডি নোটস' : 'Formulas & Study Notes'}</span>
+              <span className="lg:hidden">{isBn ? 'নোটস' : 'Notes'}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setActiveTab('attendance')}
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
+                activeTab === 'attendance'
+                  ? 'bg-blue-600 text-white shadow-sm'
+                  : 'text-slate-300 hover:text-white hover:bg-slate-800/60'
+              }`}
+              data-testid="tab-attendance"
+            >
+              <UserCheck className="w-3.5 h-3.5 text-amber-400" />
+              <span className="hidden lg:inline">{isBn ? 'উপস্থিতি ও বিবরণ' : 'Attendance & Details'}</span>
+              <span className="lg:hidden">{isBn ? 'উপস্থিতি' : 'Attendance'}</span>
+            </button>
+          </div>
+
+          {/* Right: Actions, Copy */}
+          <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+            {/* Copy Meeting Link */}
+            {session.meetingUrl && (
+              <button
+                type="button"
+                onClick={handleCopyLink}
+                className="p-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors text-xs flex items-center gap-1.5 font-bold"
+                title={isBn ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
+                aria-label={isBn ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
+                data-testid="copy-meeting-link-btn"
+              >
+                {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
+                <span className="hidden xl:inline">{copiedLink ? (isBn ? 'কপি হয়েছে' : 'Copied') : (isBn ? 'লিংক' : 'Link')}</span>
+              </button>
+            )}
+
+            {/* Tutor Controls: Start / Complete Class */}
+            {isTutor && session.status === 'scheduled' && (
+              <Button
+                size="sm"
+                onClick={handleStartClass}
+                isLoading={isStarting}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-xs"
+                data-testid="start-class-btn"
+              >
+                <Play className="w-3.5 h-3.5 mr-1 fill-current" />
+                <span className="hidden sm:inline">{isBn ? 'ক্লাস শুরু করুন' : 'Start Class'}</span>
+              </Button>
+            )}
+
+            {isTutor && session.status === 'in_progress' && (
+              <Button
+                size="sm"
+                onClick={() => setShowCompletionModal(true)}
+                isLoading={isCompleting}
+                className="bg-slate-800 hover:bg-slate-700 text-white border border-slate-700 text-xs font-extrabold px-3 py-1.5 rounded-xl shadow-xs"
+                data-testid="complete-class-btn"
+              >
+                <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-emerald-400" />
+                <span className="hidden sm:inline">{isBn ? 'ক্লাস সম্পন্ন' : 'Mark Completed'}</span>
+              </Button>
+            )}
+          </div>
+        </header>
+
+        {/* Workspace Stage: Split Screen or Fullscreen View */}
+        <main className="flex-1 w-full h-[calc(100dvh-3.5rem)] min-h-0 overflow-hidden relative">
+          {isSplitMode ? (
+            <div className="w-full h-full grid grid-cols-1 lg:grid-cols-2 gap-3 p-3 items-stretch">
+              <div className="w-full h-full min-h-0 bg-slate-900 rounded-2xl overflow-hidden border border-slate-800 shadow-xl">
+                <LiveKitClassroomMeeting
+                  sessionId={session.id}
+                  bookingId={session.bookingId}
+                  locale={locale}
+                  displayName={activeParticipantName}
+                  userEmail={activeParticipantEmail}
+                  isTutor={isTutor}
+                  isStandalone={true}
+                  subjectTitle={subjectTitle}
+                />
+              </div>
+              <div className="w-full h-full min-h-0 bg-slate-900 rounded-2xl overflow-y-auto p-3 border border-slate-800 shadow-xl">
+                {activeTab === 'formulas' ? (
+                  <ClassroomFormulasDrawer locale={locale} />
+                ) : activeTab === 'attendance' ? (
+                  <AttendanceSection
+                    session={session}
+                    locale={locale}
+                    isTutor={isTutor}
+                    latestAttendance={latestAttendance}
+                    selectedAttendanceStatus={selectedAttendanceStatus}
+                    setSelectedAttendanceStatus={setSelectedAttendanceStatus}
+                    attendanceNotes={attendanceNotes}
+                    setAttendanceNotes={setAttendanceNotes}
+                    correctionReason={correctionReason}
+                    setCorrectionReason={setCorrectionReason}
+                    attendanceSuccess={attendanceSuccess}
+                    handleMarkAttendance={handleMarkAttendance}
+                    isMarkingAttendance={isMarkingAttendance}
+                  />
+                ) : (
+                  <InteractiveWhiteboard locale={locale} sessionTitle={subjectTitle} />
+                )}
+              </div>
+            </div>
+          ) : (
+            <div className="w-full h-full">
+              {activeTab === 'video' && (
+                <LiveKitClassroomMeeting
+                  sessionId={session.id}
+                  bookingId={session.bookingId}
+                  locale={locale}
+                  displayName={activeParticipantName}
+                  userEmail={activeParticipantEmail}
+                  isTutor={isTutor}
+                  isStandalone={true}
+                  subjectTitle={subjectTitle}
+                />
+              )}
+
+              {activeTab === 'whiteboard' && (
+                <div className="w-full h-full p-3 sm:p-4 bg-slate-950 overflow-y-auto">
+                  <InteractiveWhiteboard locale={locale} sessionTitle={subjectTitle} />
+                </div>
+              )}
+
+              {activeTab === 'formulas' && (
+                <div className="w-full h-full p-4 sm:p-6 bg-slate-950 overflow-y-auto">
+                  <div className="max-w-5xl mx-auto">
+                    <ClassroomFormulasDrawer locale={locale} />
+                  </div>
+                </div>
+              )}
+
+              {activeTab === 'attendance' && (
+                <div className="w-full h-full p-4 sm:p-6 bg-slate-950 overflow-y-auto">
+                  <div className="max-w-4xl mx-auto bg-slate-900 rounded-3xl p-6 border border-slate-800 text-white">
+                    <AttendanceSection
+                      session={session}
+                      locale={locale}
+                      isTutor={isTutor}
+                      latestAttendance={latestAttendance}
+                      selectedAttendanceStatus={selectedAttendanceStatus}
+                      setSelectedAttendanceStatus={setSelectedAttendanceStatus}
+                      attendanceNotes={attendanceNotes}
+                      setAttendanceNotes={setAttendanceNotes}
+                      correctionReason={correctionReason}
+                      setCorrectionReason={setCorrectionReason}
+                      attendanceSuccess={attendanceSuccess}
+                      handleMarkAttendance={handleMarkAttendance}
+                      isMarkingAttendance={isMarkingAttendance}
+                    />
+                  </div>
+                </div>
+              )}
+            </div>
+          )}
+        </main>
+
+        {/* Completion Modal */}
+        {showCompletionModal && (
+          <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <div className="bg-slate-900 border-2 border-slate-700 text-white rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+              <h3 className="text-lg font-black text-white">
+                {isBn ? 'ক্লাস সমাপ্ত ঘোষণা করুন' : 'Complete Tutoring Class'}
+              </h3>
+              <p className="text-xs text-slate-300">
+                {isBn
+                  ? 'ক্লাস সম্পন্ন হিসেবে চিহ্নিত করলে এসক্রো পেমেন্ট ছাড় এবং এটেনডেন্স রেকর্ড চূড়ান্ত করা হবে।'
+                  : 'Marking session as completed finalizes attendance and releases escrow payment.'}
+              </p>
+              <textarea
+                value={completionNotes}
+                onChange={(e) => setCompletionNotes(e.target.value)}
+                placeholder={isBn ? 'ক্লাস সম্পর্কে কোনো মন্তব্য বা নোট লিখুন...' : 'Add completion notes...'}
+                className="w-full p-3 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs h-24"
+              />
+              <div className="flex justify-end gap-2">
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => setShowCompletionModal(false)}
+                  className="border-slate-700 text-slate-300 hover:bg-slate-800"
+                >
+                  {isBn ? 'বাতিল' : 'Cancel'}
+                </Button>
+                <Button
+                  size="sm"
+                  onClick={handleCompleteClass}
+                  isLoading={isCompleting}
+                  className="bg-emerald-600 hover:bg-emerald-700 text-white"
+                >
+                  {isBn ? 'নিশ্চিত করুন' : 'Confirm Complete'}
+                </Button>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+    );
+  }
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 text-slate-900">
