@@ -62,11 +62,15 @@ export function BetaFeedbackModal({
     setErrorMsg(null);
 
     if (title.trim().length < 3) {
-      setErrorMsg(isBn ? 'শিরোনাম কমপক্ষে ৩ অক্ষরের হতে হবে।' : 'Title must be at least 3 characters.');
+      setErrorMsg(
+        isBn ? 'শিরোনাম কমপক্ষে ৩ অক্ষরের হতে হবে।' : 'Title must be at least 3 characters.',
+      );
       return;
     }
     if (description.trim().length < 10) {
-      setErrorMsg(isBn ? 'বিবরণ কমপক্ষে ১০ অক্ষরের হতে হবে।' : 'Description must be at least 10 characters.');
+      setErrorMsg(
+        isBn ? 'বিবরণ কমপক্ষে ১০ অক্ষরের হতে হবে।' : 'Description must be at least 10 characters.',
+      );
       return;
     }
 
@@ -77,15 +81,17 @@ export function BetaFeedbackModal({
         category,
         title: title.trim(),
         description: description.trim(),
-        route: defaultRoute || (typeof window !== 'undefined' ? window.location.pathname : undefined),
+        route:
+          defaultRoute || (typeof window !== 'undefined' ? window.location.pathname : undefined),
         reproductionSteps: reproductionSteps.trim() || undefined,
-        diagnosticMetadata: includeDiagnostics && typeof window !== 'undefined'
-          ? {
-              viewport: `${window.innerWidth}x${window.innerHeight}`,
-              userAgent: navigator.userAgent,
-              locale,
-            }
-          : undefined,
+        diagnosticMetadata:
+          includeDiagnostics && typeof window !== 'undefined'
+            ? {
+                viewport: `${window.innerWidth}x${window.innerHeight}`,
+                userAgent: navigator.userAgent,
+                locale,
+              }
+            : undefined,
       };
 
       const res = await fetch('/api/v1/feedback', {
@@ -96,7 +102,10 @@ export function BetaFeedbackModal({
 
       if (!res.ok) {
         const errJson = await res.json().catch(() => ({}));
-        throw new Error(errJson?.error?.message || (isBn ? 'মতামত পাঠাতে সমস্যা হয়েছে।' : 'Failed to submit feedback.'));
+        throw new Error(
+          errJson?.error?.message ||
+            (isBn ? 'মতামত পাঠাতে সমস্যা হয়েছে।' : 'Failed to submit feedback.'),
+        );
       }
 
       setIsSuccess(true);
@@ -109,7 +118,13 @@ export function BetaFeedbackModal({
         onSuccess?.();
       }, 2000);
     } catch (err) {
-      setErrorMsg(err instanceof Error ? err.message : (isBn ? 'অপ্রত্যাশিত ত্রুটি ঘটেছে।' : 'An unexpected error occurred.'));
+      setErrorMsg(
+        err instanceof Error
+          ? err.message
+          : isBn
+            ? 'অপ্রত্যাশিত ত্রুটি ঘটেছে।'
+            : 'An unexpected error occurred.',
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -162,7 +177,9 @@ export function BetaFeedbackModal({
             <Alert className="rounded-2xl border-2 border-emerald-300 bg-emerald-50 p-6 text-center">
               <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-600 animate-bounce" />
               <h4 className="mt-3 text-base font-black text-emerald-950">
-                {isBn ? 'ধন্যবাদ! আপনার মতামত সফলভাবে জমা হয়েছে।' : 'Thank you! Your feedback has been submitted.'}
+                {isBn
+                  ? 'ধন্যবাদ! আপনার মতামত সফলভাবে জমা হয়েছে।'
+                  : 'Thank you! Your feedback has been submitted.'}
               </h4>
               <AlertDescription className="mt-1 text-xs font-semibold text-emerald-800">
                 {isBn
@@ -222,7 +239,11 @@ export function BetaFeedbackModal({
                   required
                   value={title}
                   onChange={(e) => setTitle(e.target.value)}
-                  placeholder={isBn ? 'যেমন: পেমেন্ট বাটনে ক্লিক করার পর কাজ করছে না' : 'e.g. Payment button unresponsive'}
+                  placeholder={
+                    isBn
+                      ? 'যেমন: পেমেন্ট বাটনে ক্লিক করার পর কাজ করছে না'
+                      : 'e.g. Payment button unresponsive'
+                  }
                   className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-900 shadow-2xs hover:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500/20"
                 />
               </div>
@@ -238,7 +259,11 @@ export function BetaFeedbackModal({
                   rows={3}
                   value={description}
                   onChange={(e) => setDescription(e.target.value)}
-                  placeholder={isBn ? 'সমস্যা বা প্রস্তাবনা বিস্তারিত লিখুন...' : 'Describe what happened or what you suggest...'}
+                  placeholder={
+                    isBn
+                      ? 'সমস্যা বা প্রস্তাবনা বিস্তারিত লিখুন...'
+                      : 'Describe what happened or what you suggest...'
+                  }
                   className="min-h-20 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-900 shadow-2xs hover:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500/20"
                 />
               </div>
@@ -253,7 +278,11 @@ export function BetaFeedbackModal({
                   rows={2}
                   value={reproductionSteps}
                   onChange={(e) => setReproductionSteps(e.target.value)}
-                  placeholder={isBn ? '১. টিউটর পেজে যাই ২. সময় নির্বাচন করি...' : '1. Navigated to tutor page 2. Clicked slot...'}
+                  placeholder={
+                    isBn
+                      ? '১. টিউটর পেজে যাই ২. সময় নির্বাচন করি...'
+                      : '1. Navigated to tutor page 2. Clicked slot...'
+                  }
                   className="min-h-14 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-900 shadow-2xs hover:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500/20"
                 />
               </div>

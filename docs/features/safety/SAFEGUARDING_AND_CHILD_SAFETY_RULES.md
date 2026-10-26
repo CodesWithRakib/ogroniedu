@@ -33,7 +33,7 @@
    - Under Section 11 of The Contract Act 1872, minors cannot independently enter binding educational agreements or disburse financial funds.
    - Minor learners must be registered or linked by an adult parent or legally appointed guardian (`guardian_student_links`).
    - The guardian must affirm the formal consent declaration:
-     > *"I hereby declare and affirm under penalty of applicable law that I am the biological parent or legally appointed guardian of the minor student, and I grant explicit consent for their participation in educational tutoring through OgroniEdu under policy version v1.0-bd-minor-consent."*
+     > _"I hereby declare and affirm under penalty of applicable law that I am the biological parent or legally appointed guardian of the minor student, and I grant explicit consent for their participation in educational tutoring through OgroniEdu under policy version v1.0-bd-minor-consent."_
 3. **Minor PII Protection:**
    - Tutors are strictly prohibited from soliciting or receiving the personal phone numbers, home street addresses, or private social media accounts of minor students.
    - All classroom communications, formula sharing, and homework discussions must take place within verified OgroniEdu channels.

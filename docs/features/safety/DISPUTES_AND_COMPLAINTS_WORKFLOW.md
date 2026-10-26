@@ -9,6 +9,7 @@
 ## 1. Dispute Eligibility & Scope
 
 A student or parent/guardian may formally open a Booking Dispute under any of the following grounds:
+
 1. `tutor_no_show`: Assigned tutor failed to attend the scheduled class session.
 2. `unfulfilled_hours`: Tutor ended the class prematurely or delivered fewer hours than contracted.
 3. `poor_quality`: Demonstrable failure to follow curriculum or lack of academic competence.
@@ -66,8 +67,8 @@ A student or parent/guardian may formally open a Booking Dispute under any of th
 
 ## 4. Resolution SLAs & Escalation Matrix
 
-| Priority | Criteria | Triage SLA | Target Resolution SLA |
-| :--- | :--- | :--- | :--- |
-| **High** | Child safety allegations, harassment, large monetary dispute (> ৳10,000) | **1 hour** | **12 hours** |
-| **Medium** | Tutor no-show, unfulfilled hours, trial dissatisfaction | **4 hours** | **24 hours** |
-| **Standard** | General pedagogical feedback, schedule confusion | **8 hours** | **48 hours** |
+| Priority     | Criteria                                                                 | Triage SLA  | Target Resolution SLA |
+| :----------- | :----------------------------------------------------------------------- | :---------- | :-------------------- |
+| **High**     | Child safety allegations, harassment, large monetary dispute (> ৳10,000) | **1 hour**  | **12 hours**          |
+| **Medium**   | Tutor no-show, unfulfilled hours, trial dissatisfaction                  | **4 hours** | **24 hours**          |
+| **Standard** | General pedagogical feedback, schedule confusion                         | **8 hours** | **48 hours**          |

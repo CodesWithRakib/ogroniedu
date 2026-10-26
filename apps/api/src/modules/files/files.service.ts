@@ -89,7 +89,10 @@ export class FilesService {
     if (!process.env.JWT_SECRET) {
       throw new Error('JWT_SECRET environment variable is required');
     }
-    const signature = crypto.createHmac('sha256', process.env.JWT_SECRET).update(payload).digest('hex');
+    const signature = crypto
+      .createHmac('sha256', process.env.JWT_SECRET)
+      .update(payload)
+      .digest('hex');
     const accessToken = Buffer.from(`${payload}:${signature}`).toString('base64url');
     const signedUrl = `/api/v1/files/${fileId}/download?token=${accessToken}&expires=${expiresAtMs}`;
 
@@ -310,7 +313,10 @@ export class FilesService {
       const expectedBuf = Buffer.from(expectedSig, 'utf8');
       const actualBuf = Buffer.from(tokenSig, 'utf8');
 
-      if (expectedBuf.length !== actualBuf.length || !crypto.timingSafeEqual(expectedBuf, actualBuf)) {
+      if (
+        expectedBuf.length !== actualBuf.length ||
+        !crypto.timingSafeEqual(expectedBuf, actualBuf)
+      ) {
         throw new ForbiddenException('Invalid download token signature');
       }
 

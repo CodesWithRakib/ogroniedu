@@ -121,11 +121,11 @@ describe('Phase 10 — Search Architecture & Query Indexing Invariants', () => {
     await service.searchTutors({ page: 1, limit: 12 });
 
     const combinedClauses = qb.clauses.join(' AND ');
-    expect(combinedClauses).toContain("tp.publication_status = :published");
-    expect(combinedClauses).toContain("tp.verification_status = :approved");
+    expect(combinedClauses).toContain('tp.publication_status = :published');
+    expect(combinedClauses).toContain('tp.verification_status = :approved');
     expect(combinedClauses).toContain("tp.safety_hold_status != 'safety_hold'");
     expect(combinedClauses).toContain("u.status = 'active'");
-    expect(combinedClauses).toContain("u.deleted_at IS NULL");
+    expect(combinedClauses).toContain('u.deleted_at IS NULL');
     expect(qb.parameters.published).toBe('published');
     expect(qb.parameters.approved).toBe('approved');
   });

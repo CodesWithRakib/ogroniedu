@@ -26,7 +26,9 @@ interface SessionMonthViewProps {
 export function SessionMonthView({ locale, sessions }: SessionMonthViewProps) {
   const isBn = locale === 'bn';
   const [currentDate, setCurrentDate] = useState(() => new Date());
-  const [selectedDaySessions, setSelectedDaySessions] = useState<CalendarSessionItem[] | null>(null);
+  const [selectedDaySessions, setSelectedDaySessions] = useState<CalendarSessionItem[] | null>(
+    null,
+  );
 
   const year = currentDate.getFullYear();
   const month = currentDate.getMonth();
@@ -46,12 +48,32 @@ export function SessionMonthView({ locale, sessions }: SessionMonthViewProps) {
   };
 
   const monthNamesEn = [
-    'January', 'February', 'March', 'April', 'May', 'June',
-    'July', 'August', 'September', 'October', 'November', 'December',
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December',
   ];
   const monthNamesBn = [
-    'জানুয়ারি', 'ফেব্রুয়ারি', 'মার্চ', 'এপ্রিল', 'মে', 'জুন',
-    'জুলাই', 'আগস্ট', 'সেপ্টেম্বর', 'অক্টোবর', 'নভেম্বর', 'ডিসেম্বর',
+    'জানুয়ারি',
+    'ফেব্রুয়ারি',
+    'মার্চ',
+    'এপ্রিল',
+    'মে',
+    'জুন',
+    'জুলাই',
+    'আগস্ট',
+    'সেপ্টেম্বর',
+    'অক্টোবর',
+    'নভেম্বর',
+    'ডিসেম্বর',
   ];
 
   const weekDaysEn = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
@@ -73,7 +95,11 @@ export function SessionMonthView({ locale, sessions }: SessionMonthViewProps) {
   }, [sessions]);
 
   // Calendar cells
-  const cells: Array<{ dayNumber: number | null; dateKey: string | null; sessions: CalendarSessionItem[] }> = [];
+  const cells: Array<{
+    dayNumber: number | null;
+    dateKey: string | null;
+    sessions: CalendarSessionItem[];
+  }> = [];
   for (let i = 0; i < firstDayOfMonth; i++) {
     cells.push({ dayNumber: null, dateKey: null, sessions: [] });
   }
@@ -175,9 +201,7 @@ export function SessionMonthView({ locale, sessions }: SessionMonthViewProps) {
                 >
                   {cell.dayNumber}
                 </span>
-                {hasSessions && (
-                  <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />
-                )}
+                {hasSessions && <span className="w-2 h-2 rounded-full bg-blue-500 animate-pulse" />}
               </div>
 
               {hasSessions && (
@@ -209,7 +233,8 @@ export function SessionMonthView({ locale, sessions }: SessionMonthViewProps) {
             <h4 className="text-sm font-black text-foreground flex items-center gap-2">
               <CalendarIcon className="w-4 h-4 text-primary" />
               <span>
-                {isBn ? 'নির্বাচিত দিনের ক্লাসসমূহ' : 'Classes on Selected Day'} ({selectedDaySessions.length})
+                {isBn ? 'নির্বাচিত দিনের ক্লাসসমূহ' : 'Classes on Selected Day'} (
+                {selectedDaySessions.length})
               </span>
             </h4>
             <Button
@@ -249,7 +274,12 @@ export function SessionMonthView({ locale, sessions }: SessionMonthViewProps) {
                       <span>{isBn ? 'প্রবেশ' : 'Join'}</span>
                     </a>
                   )}
-                  <Button asChild variant="outline" size="sm" className="h-7 text-[11px] px-2 rounded-lg">
+                  <Button
+                    asChild
+                    variant="outline"
+                    size="sm"
+                    className="h-7 text-[11px] px-2 rounded-lg"
+                  >
                     <Link href={withLocale(`/sessions/${s.id}`, locale)}>
                       {isBn ? 'বিবরণ' : 'Details'}
                     </Link>

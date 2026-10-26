@@ -38,11 +38,7 @@ import { TrustModule } from '../trust/trust.module';
     GuardiansModule,
     forwardRef(() => TrustModule),
   ],
-  controllers: [
-    NotificationController,
-    BookingMessagesController,
-    ConversationsController,
-  ],
+  controllers: [NotificationController, BookingMessagesController, ConversationsController],
   providers: [
     NotificationService,
     NotificationPreferencesService,

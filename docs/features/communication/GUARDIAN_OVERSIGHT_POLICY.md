@@ -2,7 +2,7 @@
 
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Legal Framework:** The Children Act 2013 (শিশু আইন ২০১৩), Contract Act 1872  
-**Target Group:** Minor students (under 18 years of age) and their verified guardians  
+**Target Group:** Minor students (under 18 years of age) and their verified guardians
 
 ---
 

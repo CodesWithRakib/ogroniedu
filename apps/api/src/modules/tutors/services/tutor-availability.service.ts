@@ -12,7 +12,10 @@ import {
   toDateString,
 } from '../../bookings/utils/zoned-time';
 
-export type { AvailabilitySlotInput, BlockedPeriodInput } from '../interfaces/tutor-availability.interfaces';
+export type {
+  AvailabilitySlotInput,
+  BlockedPeriodInput,
+} from '../interfaces/tutor-availability.interfaces';
 
 /**
  * Single home for tutor availability rules.

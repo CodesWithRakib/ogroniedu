@@ -11,22 +11,25 @@ The audit encompasses all 9 canonical roles, 28 database schema migrations, doub
 ## 2. Architecture & Role Audit
 
 ### 2.1 Canonical Identity & Role Model
+
 The canonical identity layer is defined in `@ogroniedu/contracts` and enforced across `@ogroniedu/api` and `@ogroniedu/web`. Exactly 9 distinct user roles are supported:
 
-| Role Identifier | Classification | Description & Scope |
-| :--- | :--- | :--- |
-| `student` | Consumer | Learner booking sessions, attending online classrooms, submitting assignments, rating tutors. |
-| `guardian` | Consumer / Sponsor | Parent/guardian managing one or more child accounts, funding escrow, overseeing safety. |
-| `tutor` | Service Provider | Independent educator offering subjects, setting availability, earning payouts upon milestone completion. |
-| `support_agent` | Platform Staff | Customer support agent resolving general inquiries and viewing sanitized non-confidential support tickets. |
-| `compliance_reviewer` | Platform Staff | Safety investigator with exclusive clearance to inspect unredacted child safeguarding reports and evidence. |
-| `admin` | Platform Operator | Platform operational administrator managing tutors, categories, subjects, financial settlements, and audit logs. |
-| `super_admin` | Platform Executive | Unrestricted platform authority with access to platform settings, safeguarding investigations, and staff provisioning. |
-| `organization_owner` | Tenant Administrator | Owner of an institutional tutoring agency managing tutors, payroll, revenue sharing, and organizational bookings. |
-| `organization_staff` | Tenant Operator | Staff member of an institutional tutoring agency managing day-to-day schedules and student enrollments. |
+| Role Identifier       | Classification       | Description & Scope                                                                                                    |
+| :-------------------- | :------------------- | :--------------------------------------------------------------------------------------------------------------------- |
+| `student`             | Consumer             | Learner booking sessions, attending online classrooms, submitting assignments, rating tutors.                          |
+| `guardian`            | Consumer / Sponsor   | Parent/guardian managing one or more child accounts, funding escrow, overseeing safety.                                |
+| `tutor`               | Service Provider     | Independent educator offering subjects, setting availability, earning payouts upon milestone completion.               |
+| `support_agent`       | Platform Staff       | Customer support agent resolving general inquiries and viewing sanitized non-confidential support tickets.             |
+| `compliance_reviewer` | Platform Staff       | Safety investigator with exclusive clearance to inspect unredacted child safeguarding reports and evidence.            |
+| `admin`               | Platform Operator    | Platform operational administrator managing tutors, categories, subjects, financial settlements, and audit logs.       |
+| `super_admin`         | Platform Executive   | Unrestricted platform authority with access to platform settings, safeguarding investigations, and staff provisioning. |
+| `organization_owner`  | Tenant Administrator | Owner of an institutional tutoring agency managing tutors, payroll, revenue sharing, and organizational bookings.      |
+| `organization_staff`  | Tenant Operator      | Staff member of an institutional tutoring agency managing day-to-day schedules and student enrollments.                |
 
 ### 2.2 Role Isolation & Separation of Duties
+
 A critical security finding verified during the audit is the strict separation between `admin` and `compliance_reviewer`:
+
 - Standard platform `admin` users **cannot** view unredacted child safeguarding complaints or sensitive victim evidence.
 - Only `super_admin` and `compliance_reviewer` hold clearance for the `/api/v1/safeguarding/*` investigation endpoints.
 - Tutors accused in a safety report are blocked from accessing case details, even if they possess elevated roles in another tenant.
@@ -36,6 +39,7 @@ A critical security finding verified during the audit is the strict separation b
 ## 3. Database & Schema Migration Audit
 
 ### 3.1 Migration Ledger Status
+
 The platform database (`ogroniedu_dev` on PostgreSQL 18) maintains 28 sequential migrations:
 
 1. `001_initial_schema.sql` — Base users, roles, sessions, refresh tokens.
@@ -72,6 +76,7 @@ The platform database (`ogroniedu_dev` on PostgreSQL 18) maintains 28 sequential
 ## 4. Financial & Double-Entry Ledger Invariance Audit
 
 The ledger architecture adheres to immutable double-entry bookkeeping rules:
+
 - **Zero-Sum Conservation:** Every posted journal entry enforces $\sum \text{Debit} = \sum \text{Credit}$.
 - **Immutable Journals:** Once posted, journal rows in `ledger_journals` and `ledger_entries` are never updated or deleted.
 - **Compensating Entries:** Corrections and refunds are executed strictly through reversing journals.
@@ -91,15 +96,15 @@ The ledger architecture adheres to immutable double-entry bookkeeping rules:
 
 ## 6. Baseline Verification & Pre-Requisite Check
 
-| Checkpoint | Expected Status | Audited Status | Notes |
-| :--- | :--- | :--- | :--- |
-| NestJS Backend API | Port 4000 Listening | **ACTIVE** | Health endpoint `GET /api/v1/health` responding 200 OK |
-| Next.js Frontend Web | Port 5000 Listening | **ACTIVE** | Responding with strict CSP and security headers |
-| PostgreSQL 18 Database | Port 5432 Listening | **ACTIVE** | 28 migrations applied, seeded demo accounts active |
-| Monorepo Unit/Integration Tests | All Tests Passing | **PASSING** | 1,098 passed across 121 test files |
-| Monorepo Typecheck | 0 TypeScript Errors | **PASSING** | 0 errors across `@ogroniedu/api`, `@ogroniedu/web`, `@ogroniedu/contracts`, `@ogroniedu/database` |
-| Monorepo Linter | 0 Warnings / 0 Errors | **PASSING** | 0 errors across 969 source files |
-| Documentation Integrity | All 26 Docs Valid | **PASSING** | 315 files validated with zero broken links |
+| Checkpoint                      | Expected Status       | Audited Status | Notes                                                                                             |
+| :------------------------------ | :-------------------- | :------------- | :------------------------------------------------------------------------------------------------ |
+| NestJS Backend API              | Port 4000 Listening   | **ACTIVE**     | Health endpoint `GET /api/v1/health` responding 200 OK                                            |
+| Next.js Frontend Web            | Port 5000 Listening   | **ACTIVE**     | Responding with strict CSP and security headers                                                   |
+| PostgreSQL 18 Database          | Port 5432 Listening   | **ACTIVE**     | 28 migrations applied, seeded demo accounts active                                                |
+| Monorepo Unit/Integration Tests | All Tests Passing     | **PASSING**    | 1,098 passed across 121 test files                                                                |
+| Monorepo Typecheck              | 0 TypeScript Errors   | **PASSING**    | 0 errors across `@ogroniedu/api`, `@ogroniedu/web`, `@ogroniedu/contracts`, `@ogroniedu/database` |
+| Monorepo Linter                 | 0 Warnings / 0 Errors | **PASSING**    | 0 errors across 969 source files                                                                  |
+| Documentation Integrity         | All 26 Docs Valid     | **PASSING**    | 315 files validated with zero broken links                                                        |
 
 ---
 

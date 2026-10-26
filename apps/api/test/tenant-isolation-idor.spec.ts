@@ -107,9 +107,7 @@ describe('Tenant Isolation & IDOR Defense Tests (Phase 09)', () => {
     });
 
     it('NEGATIVE TEST: User A CANNOT list members of competitor Organization B', async () => {
-      await expect(service.listMembers(userOrgA, orgBId)).rejects.toThrow(
-        ForbiddenException,
-      );
+      await expect(service.listMembers(userOrgA, orgBId)).rejects.toThrow(ForbiddenException);
     });
 
     it('NEGATIVE TEST: User A CANNOT update competitor Organization B profile', async () => {

@@ -30,20 +30,14 @@ export class DisputesController {
   @Post()
   @ApiOperation({ summary: 'Open a formal booking dispute / complaint' })
   @ApiResponse({ status: 201, description: 'Dispute opened, booking placed into disputed status' })
-  async openDispute(
-    @CurrentUser() user: AuthenticatedUser,
-    @Body() dto: CreateDisputeDto,
-  ) {
+  async openDispute(@CurrentUser() user: AuthenticatedUser, @Body() dto: CreateDisputeDto) {
     return this.disputesService.openDispute(user, dto);
   }
 
   @Get()
   @ApiOperation({ summary: 'List disputes (Admin triage queue or participant history)' })
   @ApiResponse({ status: 200, description: 'Paginated list of disputes' })
-  async listDisputes(
-    @CurrentUser() user: AuthenticatedUser,
-    @Query() query: QueryDisputesDto,
-  ) {
+  async listDisputes(@CurrentUser() user: AuthenticatedUser, @Query() query: QueryDisputesDto) {
     const res = await this.disputesService.listDisputes(user, query);
     return paginated(res.data, {
       page: res.page,
@@ -55,10 +49,7 @@ export class DisputesController {
   @Get(':id')
   @ApiOperation({ summary: 'Get dispute details (ABAC Scoped)' })
   @ApiResponse({ status: 200, description: 'Dispute details with booking and resolution' })
-  async getDispute(
-    @CurrentUser() user: AuthenticatedUser,
-    @Param('id') disputeId: string,
-  ) {
+  async getDispute(@CurrentUser() user: AuthenticatedUser, @Param('id') disputeId: string) {
     return this.disputesService.getDispute(user, disputeId);
   }
 

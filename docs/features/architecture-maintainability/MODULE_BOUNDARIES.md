@@ -27,13 +27,13 @@ Each backend module in `apps/api/src/modules/` adheres to a strict internal stru
 
 ### Module Boundary Cross-Import Rules
 
-| From Module | Allowed Module Imports | Disallowed Module Imports | Justification |
-| :--- | :--- | :--- | :--- |
-| **`auth`** | `users`, `audit`, `notifications` | `bookings`, `payments`, `learning` | Authentication must remain a foundational layer; high-level business domains depend on auth, never the reverse. |
-| **`bookings`** | `tutors`, `users`, `notifications`, `payments` | `admin`, `feedback` | Booking engine should not know about administrative back-office tools or beta feedback. |
-| **`payments`** | `audit`, `notifications` | `classroom`, `onboarding` | Financial ledger and payment orders must be isolated from educational content and onboarding wizards. |
-| **`trust`** | `tutors`, `bookings`, `files`, `notifications` | `analytics` | Trust & safety operations are critical governance workflows with strict access controls. |
-| **`notifications`** | `contracts` | `bookings`, `learning` | Notification delivery is a generic platform capability; it dispatches payloads given to it without depending on specific business flows. |
+| From Module         | Allowed Module Imports                         | Disallowed Module Imports          | Justification                                                                                                                            |
+| :------------------ | :--------------------------------------------- | :--------------------------------- | :--------------------------------------------------------------------------------------------------------------------------------------- |
+| **`auth`**          | `users`, `audit`, `notifications`              | `bookings`, `payments`, `learning` | Authentication must remain a foundational layer; high-level business domains depend on auth, never the reverse.                          |
+| **`bookings`**      | `tutors`, `users`, `notifications`, `payments` | `admin`, `feedback`                | Booking engine should not know about administrative back-office tools or beta feedback.                                                  |
+| **`payments`**      | `audit`, `notifications`                       | `classroom`, `onboarding`          | Financial ledger and payment orders must be isolated from educational content and onboarding wizards.                                    |
+| **`trust`**         | `tutors`, `bookings`, `files`, `notifications` | `analytics`                        | Trust & safety operations are critical governance workflows with strict access controls.                                                 |
+| **`notifications`** | `contracts`                                    | `bookings`, `learning`             | Notification delivery is a generic platform capability; it dispatches payloads given to it without depending on specific business flows. |
 
 ---
 

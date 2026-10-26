@@ -34,13 +34,13 @@ graph TD
 
 ### Monorepo Packages Summary
 
-| Package | Path | Responsibility | Technologies |
-| :--- | :--- | :--- | :--- |
-| **`@ogroniedu/web`** | `apps/web` | Frontend Web application & PWA | Next.js 16, React 19, Redux Toolkit, Tailwind CSS, Radix UI / shadcn |
-| **`@ogroniedu/api`** | `apps/api` | REST & WebSocket Backend Services | NestJS 10, TypeORM, Socket.IO, Express, Passport JWT, bcrypt |
-| **`@ogroniedu/contracts`** | `packages/contracts` | Canonical DTOs, API envelopes, and notification registries | TypeScript, ts-standard |
-| **`@ogroniedu/database`** | `packages/database` | Raw SQL schema migrations, seeds, and BCDR drill runners | PostgreSQL 18, `pg`, TypeORM |
-| **`@ogroniedu/tsconfig`** | `packages/tsconfig` | Shared compiler options and path mappings | TypeScript JSON configs |
+| Package                    | Path                 | Responsibility                                             | Technologies                                                         |
+| :------------------------- | :------------------- | :--------------------------------------------------------- | :------------------------------------------------------------------- |
+| **`@ogroniedu/web`**       | `apps/web`           | Frontend Web application & PWA                             | Next.js 16, React 19, Redux Toolkit, Tailwind CSS, Radix UI / shadcn |
+| **`@ogroniedu/api`**       | `apps/api`           | REST & WebSocket Backend Services                          | NestJS 10, TypeORM, Socket.IO, Express, Passport JWT, bcrypt         |
+| **`@ogroniedu/contracts`** | `packages/contracts` | Canonical DTOs, API envelopes, and notification registries | TypeScript, ts-standard                                              |
+| **`@ogroniedu/database`**  | `packages/database`  | Raw SQL schema migrations, seeds, and BCDR drill runners   | PostgreSQL 18, `pg`, TypeORM                                         |
+| **`@ogroniedu/tsconfig`**  | `packages/tsconfig`  | Shared compiler options and path mappings                  | TypeScript JSON configs                                              |
 
 ---
 

@@ -37,7 +37,9 @@ export class FeedbackService {
     user?: AuthenticatedUser | null,
     clientIp?: string,
   ): Promise<BetaFeedbackEntity> {
-    const rateLimitKey = user?.id ? `feedback:user:${user.id}` : `feedback:ip:${clientIp || 'unknown'}`;
+    const rateLimitKey = user?.id
+      ? `feedback:user:${user.id}`
+      : `feedback:ip:${clientIp || 'unknown'}`;
     this.rateLimiter.checkLimit(rateLimitKey, 10, 3600000); // 10 per hour
 
     const primaryRole = user?.roles?.[0] || 'anonymous';
@@ -58,7 +60,9 @@ export class FeedbackService {
     });
 
     const saved = await this.feedbackRepo.save(feedback);
-    this.logger.log(`New beta feedback submitted [${saved.id}]: category=${saved.category}, role=${saved.reporterRole}`);
+    this.logger.log(
+      `New beta feedback submitted [${saved.id}]: category=${saved.category}, role=${saved.reporterRole}`,
+    );
 
     await this.auditService.record({
       actorUserId: user?.id || null,
@@ -127,9 +131,13 @@ export class FeedbackService {
   /**
    * Administrative query of all feedback with category, severity, and status filters.
    */
-  async queryAdminFeedback(
-    query: QueryFeedbackDto,
-  ): Promise<{ items: BetaFeedbackEntity[]; total: number; page: number; limit: number; totalPages: number }> {
+  async queryAdminFeedback(query: QueryFeedbackDto): Promise<{
+    items: BetaFeedbackEntity[];
+    total: number;
+    page: number;
+    limit: number;
+    totalPages: number;
+  }> {
     const qb = this.feedbackRepo.createQueryBuilder('fb');
 
     if (query.category) {
@@ -179,7 +187,9 @@ export class FeedbackService {
     }
 
     const updated = await this.feedbackRepo.save(item);
-    this.logger.log(`Beta feedback [${id}] triaged by ${actor.id}: status=${updated.status}, severity=${updated.severity}`);
+    this.logger.log(
+      `Beta feedback [${id}] triaged by ${actor.id}: status=${updated.status}, severity=${updated.severity}`,
+    );
 
     await this.auditService.record({
       actorUserId: actor.id,

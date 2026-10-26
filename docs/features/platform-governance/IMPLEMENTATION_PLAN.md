@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Phase:** 09: Admin Operations, Organization Management & Platform Governance  
 **Date:** October 21, 2026  
-**Status:** Approved Specification  
+**Status:** Approved Specification
 
 ---
 
@@ -68,6 +68,7 @@ flowchart TD
 ## 2. Work Breakdown Structure (WBS)
 
 ### 2.1 Database Schema & Migration (`027_organizations_and_platform_governance.sql`)
+
 - [ ] Create `organizations` table:
   - `id UUID PRIMARY KEY`, `name TEXT`, `slug TEXT UNIQUE`, `type TEXT`, `status TEXT`, `owner_user_id UUID REFERENCES users(id)`, `contact_email TEXT`, `contact_phone TEXT`, `address TEXT`, `division TEXT`, `district TEXT`, `settings JSONB`, timestamps.
 - [ ] Create `organization_members` table:
@@ -80,12 +81,14 @@ flowchart TD
 - [ ] Execute migration on PostgreSQL 18 and rebuild `@ogroniedu/database`.
 
 ### 2.2 Shared Contracts (`packages/contracts`)
+
 - [ ] Create `packages/contracts/src/organizations.ts`:
   - Zod schemas: `CreateOrganizationSchema`, `UpdateOrganizationSchema`, `InviteOrganizationMemberSchema`, `UpdateOrganizationStatusSchema`, `QueryOrganizationsSchema`.
   - Export TypeScript types: `OrganizationRecord`, `OrganizationMemberRecord`, `OrganizationInvitationRecord`.
 - [ ] Re-export from `packages/contracts/src/index.ts` and compile.
 
 ### 2.3 Backend API & Services (`apps/api`)
+
 - [ ] Create `OrganizationsModule`:
   - Entities: `OrganizationEntity`, `OrganizationMemberEntity`, `OrganizationInvitationEntity`.
   - Service: `OrganizationsService`:
@@ -106,6 +109,7 @@ flowchart TD
     - Emits audit log for every exported dataset.
 
 ### 2.4 Frontend Web Application (`apps/web`)
+
 - [ ] Update `navigation.ts`:
   - Add navigation configuration for `organization_owner` and `organization_staff` pointing to `/dashboard/organization`.
   - Add `Organizations` entry in Admin Navigation pointing to `/dashboard/admin/organizations`.
@@ -218,10 +222,12 @@ sequenceDiagram
 ## 4. Rollback & Migration Safety Strategy
 
 ### 4.1 Zero-Downtime Migration
+
 - `027_organizations_and_platform_governance.sql` uses `CREATE TABLE IF NOT EXISTS` and `ALTER TABLE ... ADD COLUMN IF NOT EXISTS`.
 - Foreign keys use `ON DELETE SET NULL` on `tutor_profiles` and `audit_logs` so existing rows remain 100% valid.
 
 ### 4.2 Rollback Script
+
 ```sql
 ALTER TABLE tutor_profiles DROP COLUMN IF EXISTS organization_id;
 ALTER TABLE audit_logs DROP COLUMN IF EXISTS organization_id;

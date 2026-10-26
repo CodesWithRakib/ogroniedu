@@ -1,4 +1,5 @@
 # Phase 10: Search, SEO, Performance, Accessibility & Production Readiness
+
 ## Monitoring & Error Handling Policy
 
 This document outlines platform observability, health probe contracts, logging standards, and resilient error recovery mechanisms.
@@ -10,11 +11,13 @@ This document outlines platform observability, health probe contracts, logging s
 Implemented via `@nestjs/terminus` in `HealthController` (`/health`):
 
 ### 1. Liveness Probe (`GET /health/live`)
+
 - **Purpose:** Verifies that the Node.js event loop is unblocked and responsive.
 - **Contract:** Returns HTTP 200 with `{ status: 'ok', uptime: number, timestamp: string }`.
 - **Failure Action:** Container orchestrator (Kubernetes / ECS / Docker) restarts the unhealthy container.
 
 ### 2. Readiness Probe (`GET /health/ready`)
+
 - **Purpose:** Verifies that database connection pools and memory heaps are healthy before directing inbound client traffic.
 - **Contract:** Executes `SELECT 1` on PostgreSQL and inspects heap allocation.
 - **Failure Action:** Load balancer removes the instance from the active target group until recovery.

@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import {
-  NotFoundException,
-  ForbiddenException,
-  BadRequestException,
-} from '@nestjs/common';
+import { NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
 import jwt from 'jsonwebtoken';
 import { AdminUsersService } from '../src/modules/admin/services/admin-users.service';
 import { AdminPlatformService } from '../src/modules/admin/services/admin-platform.service';
@@ -76,11 +72,7 @@ describe('Phase 8: Admin & Super Admin Governance Verification', () => {
         getUserAuditHistory: vi.fn().mockResolvedValue([]),
       };
 
-      usersService = new AdminUsersService(
-        mockUserRepo,
-        mockDataSource,
-        mockAuditService,
-      );
+      usersService = new AdminUsersService(mockUserRepo, mockDataSource, mockAuditService);
     });
 
     it('INVARIANT: Administrator cannot suspend their own account', async () => {
@@ -117,11 +109,9 @@ describe('Phase 8: Admin & Super Admin Governance Verification', () => {
       mockUserRepo.findOne.mockResolvedValueOnce(superAdminTargetUser);
       mockDataSource.query.mockResolvedValueOnce([{ code: 'super_admin' }]);
 
-      const result = await usersService.suspendUser(
-        superAdminCaller,
-        superAdminTargetUser.id,
-        { reason: 'Security compromise on peer account' },
-      );
+      const result = await usersService.suspendUser(superAdminCaller, superAdminTargetUser.id, {
+        reason: 'Security compromise on peer account',
+      });
 
       expect(result.status).toBe('suspended');
       expect(mockAuditService.record).toHaveBeenCalledWith(
@@ -188,11 +178,9 @@ describe('Phase 8: Admin & Super Admin Governance Verification', () => {
         return [];
       });
 
-      const result = await usersService.updateUserRoles(
-        superAdminCaller,
-        studentTargetUser.id,
-        { roles: ['tutor', 'student'] },
-      );
+      const result = await usersService.updateUserRoles(superAdminCaller, studentTargetUser.id, {
+        roles: ['tutor', 'student'],
+      });
 
       expect(result.assignedRoles).toEqual(['tutor', 'student']);
       expect(mockDataSource.transaction).toHaveBeenCalled();

@@ -172,7 +172,9 @@ export function TutorTodayScheduleTimeline({
       {/* Footer */}
       <div className="mt-4 pt-3.5 border-t border-border flex items-center justify-between text-xs">
         <span className="text-[11px] text-muted-foreground">
-          {isBn ? 'সেশন শেষ হলে ক্লাসরুম থেকে মার্ক করুন' : 'Record attendance after class completes'}
+          {isBn
+            ? 'সেশন শেষ হলে ক্লাসরুম থেকে মার্ক করুন'
+            : 'Record attendance after class completes'}
         </span>
         <Link
           href={withLocale('/dashboard/tutor/sessions', locale)}

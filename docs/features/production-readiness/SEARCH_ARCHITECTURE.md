@@ -1,4 +1,5 @@
 # Phase 10: Search, SEO, Performance, Accessibility & Production Readiness
+
 ## Search Architecture & Query Optimization
 
 This document outlines the architecture, indexing strategy, and ranking formula of OgroniEdu's database-backed tutor discovery engine.
@@ -8,6 +9,7 @@ This document outlines the architecture, indexing strategy, and ranking formula 
 ## 1. Engine Decision: PostgreSQL vs External Search Service
 
 ### Evaluation
+
 - **External Search (Elasticsearch / Typesense / Meilisearch):**
   - Introduces substantial operational complexity: external JVM/Go daemon, secondary data store, dual-write synchronization hazards, eventual consistency lag on tutor suspensions/holds, and additional memory overhead.
 - **PostgreSQL 18 Native Engine:**
@@ -27,11 +29,12 @@ The ranking score is computed entirely within PostgreSQL to ensure stable pagina
 $$\text{Score} = 100 + B_{\text{NID}} + B_{\text{Acad}} + \min(\text{Exp} \times 5, 50) + R_{\text{Response}}$$
 
 Where:
+
 - **Base Score:** 100 for all approved published tutors.
-- **Verified NID ($B_{\text{NID}}$):** +20 points if an approved NID qualification exists.
-- **Verified Degree ($B_{\text{Acad}}$):** +20 points if an approved degree/certificate qualification exists.
+- **Verified NID ($B\_{\text{NID}}$):** +20 points if an approved NID qualification exists.
+- **Verified Degree ($B\_{\text{Acad}}$):** +20 points if an approved degree/certificate qualification exists.
 - **Experience:** +5 points per year of experience, capped at +50 points (10 years).
-- **Fast Responder ($R_{\text{Response}}$):** +10 points if median response time is $\le 60$ minutes.
+- **Fast Responder ($R\_{\text{Response}}$):** +10 points if median response time is $\le 60$ minutes.
 
 ---
 
@@ -46,7 +49,7 @@ To support low-latency search across multiple dimensions:
    ```
 2. **Tutor Qualifications Partial Index:**
    ```sql
-   CREATE INDEX ix_tutor_qualifications_search 
+   CREATE INDEX ix_tutor_qualifications_search
    ON tutor_qualifications (tutor_user_id, review_status, qualification_type)
    WHERE review_status = 'approved';
    ```

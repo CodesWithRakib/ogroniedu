@@ -1,13 +1,14 @@
 # Chat Attachments & File Policy
 
 **Platform:** OgroniEdu (অগ্রণী এডু)  
-**Modules:** Files Service, Real-Time Messaging  
+**Modules:** Files Service, Real-Time Messaging
 
 ---
 
 ## 1. Permitted Attachment Types
 
 To facilitate effective tuition without compromising system security or user safety:
+
 - **Documents:** PDF (`application/pdf`) up to 10 MB.
 - **Images:** JPEG (`image/jpeg`), PNG (`image/png`), WebP (`image/webp`) up to 5 MB.
 - **Prohibited:** Executables (`.exe`, `.bat`, `.cmd`, `.sh`), script files (`.js`, `.vbs`, `.py`), compressed archives (`.zip`, `.rar`, `.7z`), and macro-enabled documents.

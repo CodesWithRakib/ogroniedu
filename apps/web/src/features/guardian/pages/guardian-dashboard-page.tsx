@@ -258,8 +258,13 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
           releasedBdt={finalReleasedBdt}
           pendingMilestonesCount={completedSessions.length > 0 ? completedSessions.length : 1}
           nextMilestoneAmountBdt={4500}
-          nextMilestoneTutorName={upcomingSession?.tutorName || (isBn ? 'ড. মো. আনিসুর রহমান' : 'Dr. Anisur Rahman')}
-          nextMilestoneSubject={upcomingSession?.subjectName || (isBn ? 'উচ্চতর গণিত ও পদার্থবিজ্ঞান' : 'Higher Math & Physics')}
+          nextMilestoneTutorName={
+            upcomingSession?.tutorName || (isBn ? 'ড. মো. আনিসুর রহমান' : 'Dr. Anisur Rahman')
+          }
+          nextMilestoneSubject={
+            upcomingSession?.subjectName ||
+            (isBn ? 'উচ্চতর গণিত ও পদার্থবিজ্ঞান' : 'Higher Math & Physics')
+          }
         />
 
         <GuardianChildSafetyRadar
@@ -267,9 +272,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
           childName={activeChild?.displayName || (isBn ? 'আপনার সন্তান' : 'Your Child')}
           tutorVerified={true}
           lastSessionCheckIn={
-            upcomingSession?.startsAt
-              ? formatDateTime(upcomingSession.startsAt, locale)
-              : undefined
+            upcomingSession?.startsAt ? formatDateTime(upcomingSession.startsAt, locale) : undefined
           }
         />
       </div>
@@ -376,7 +379,10 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         <div className="lg:col-span-1">
           <SessionReminderCard
             locale={locale}
-            title={upcomingSession?.subjectName || (upcomingSession?.subject ? String(upcomingSession.subject) : undefined)}
+            title={
+              upcomingSession?.subjectName ||
+              (upcomingSession?.subject ? String(upcomingSession.subject) : undefined)
+            }
             timeRange={
               upcomingSession?.startsAt
                 ? formatDateTime(upcomingSession.startsAt, locale)

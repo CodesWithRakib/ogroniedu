@@ -50,9 +50,7 @@ export function AdminSafetyActionModal({
   tutorUser,
   locale,
 }: AdminSafetyActionModalProps) {
-  const [selectedTargetId, setSelectedTargetId] = useState<string>(
-    studentUser?.id || targetUserId,
-  );
+  const [selectedTargetId, setSelectedTargetId] = useState<string>(studentUser?.id || targetUserId);
 
   const currentTarget =
     selectedTargetId === studentUser?.id
@@ -61,12 +59,13 @@ export function AdminSafetyActionModal({
         ? { id: tutorUser.id, name: tutorUser.displayName, role: 'tutor' }
         : { id: targetUserId, name: targetUserName, role: targetUserRole || 'User' };
 
-  const { data: strikesData, isLoading, refetch } = useGetUserSafetyStrikesQuery(
-    currentTarget.id,
-    {
-      skip: !isOpen || !currentTarget.id,
-    },
-  );
+  const {
+    data: strikesData,
+    isLoading,
+    refetch,
+  } = useGetUserSafetyStrikesQuery(currentTarget.id, {
+    skip: !isOpen || !currentTarget.id,
+  });
 
   const [banUser, { isLoading: isBanning }] = useBanUserMutation();
   const [suspendUser, { isLoading: isSuspending }] = useSuspendUserMutation();
@@ -116,7 +115,10 @@ export function AdminSafetyActionModal({
         );
       } else {
         // Warning
-        await suspendUser({ id: currentTarget.id, reason: `[Warning Notice]: ${reason.trim()}` }).unwrap();
+        await suspendUser({
+          id: currentTarget.id,
+          reason: `[Warning Notice]: ${reason.trim()}`,
+        }).unwrap();
         toast.success(
           locale === 'bn'
             ? `${currentTarget.name}-কে সতর্কবার্তা পাঠানো হয়েছে`
@@ -128,10 +130,14 @@ export function AdminSafetyActionModal({
       refetch();
       onClose();
     } catch (err: unknown) {
-      const msg = err && typeof err === 'object' && 'data' in err
-        ? (err as { data?: { message?: string } }).data?.message
-        : 'Action failed';
-      toast.error(msg || (locale === 'bn' ? 'কার্যক্রম সম্পন্ন করতে ব্যর্থ হয়েছে' : 'Failed to execute action'));
+      const msg =
+        err && typeof err === 'object' && 'data' in err
+          ? (err as { data?: { message?: string } }).data?.message
+          : 'Action failed';
+      toast.error(
+        msg ||
+          (locale === 'bn' ? 'কার্যক্রম সম্পন্ন করতে ব্যর্থ হয়েছে' : 'Failed to execute action'),
+      );
     }
   };
 
@@ -161,7 +167,9 @@ export function AdminSafetyActionModal({
               </div>
               <div>
                 <DialogTitle className="text-base sm:text-lg font-bold text-foreground">
-                  {locale === 'bn' ? '🛡️ সেফগার্ড ও শাস্তিমূলক নিয়ন্ত্রণ' : '🛡️ Safeguard & Enforcement Controls'}
+                  {locale === 'bn'
+                    ? '🛡️ সেফগার্ড ও শাস্তিমূলক নিয়ন্ত্রণ'
+                    : '🛡️ Safeguard & Enforcement Controls'}
                 </DialogTitle>
                 <DialogDescription className="text-xs text-muted-foreground">
                   {currentTarget.name} ({currentTarget.role}) • ID: #{currentTarget.id.slice(0, 8)}
@@ -182,7 +190,10 @@ export function AdminSafetyActionModal({
               >
                 {currentStatus.toUpperCase()}
               </Badge>
-              <Badge variant="outline" className="text-[11px] font-bold border-red-500/40 text-red-600">
+              <Badge
+                variant="outline"
+                className="text-[11px] font-bold border-red-500/40 text-red-600"
+              >
                 {activeStrikes} / 3 Strikes
               </Badge>
             </div>
@@ -226,7 +237,9 @@ export function AdminSafetyActionModal({
             <FileLock2 className="w-4 h-4 text-red-600 shrink-0 mt-0.5" />
             <div>
               <p className="font-bold">
-                {locale === 'bn' ? '🚫 পরিচয় ও নথি ব্ল্যাকলিস্টেড' : '🚫 Identity & Credentials Blacklisted'}
+                {locale === 'bn'
+                  ? '🚫 পরিচয় ও নথি ব্ল্যাকলিস্টেড'
+                  : '🚫 Identity & Credentials Blacklisted'}
               </p>
               <p className="opacity-80 text-[11px] mt-0.5">
                 {locale === 'bn'
@@ -254,7 +267,9 @@ export function AdminSafetyActionModal({
             >
               <div className="flex items-center gap-1.5 mb-1">
                 <AlertTriangle className="w-3.5 h-3.5 text-amber-500" />
-                <span className="text-xs font-bold">{locale === 'bn' ? 'সতর্কবার্তা' : 'Warning'}</span>
+                <span className="text-xs font-bold">
+                  {locale === 'bn' ? 'সতর্কবার্তা' : 'Warning'}
+                </span>
               </div>
               <p className="text-[10px] opacity-75">
                 {locale === 'bn' ? 'স্ট্রাইক ১: আনুষ্ঠানিক নোটিশ' : 'Strike 1: Redaction & Notice'}
@@ -272,7 +287,9 @@ export function AdminSafetyActionModal({
             >
               <div className="flex items-center gap-1.5 mb-1">
                 <Clock className="w-3.5 h-3.5 text-orange-500" />
-                <span className="text-xs font-bold">{locale === 'bn' ? 'স্থগিতাদেশ' : 'Suspend 7D'}</span>
+                <span className="text-xs font-bold">
+                  {locale === 'bn' ? 'স্থগিতাদেশ' : 'Suspend 7D'}
+                </span>
               </div>
               <p className="text-[10px] opacity-75">
                 {locale === 'bn' ? 'স্ট্রাইক ২: ৭ দিন স্থগিত' : 'Strike 2: Token Revoke'}
@@ -290,7 +307,9 @@ export function AdminSafetyActionModal({
             >
               <div className="flex items-center gap-1.5 mb-1">
                 <Ban className="w-3.5 h-3.5 text-red-600" />
-                <span className="text-xs font-bold">{locale === 'bn' ? 'স্থায়ী ব্যান' : 'Perm Ban'}</span>
+                <span className="text-xs font-bold">
+                  {locale === 'bn' ? 'স্থায়ী ব্যান' : 'Perm Ban'}
+                </span>
               </div>
               <p className="text-[10px] opacity-75">
                 {locale === 'bn' ? 'স্ট্রাইক ৩: ব্ল্যাকলিস্ট' : 'Strike 3: Blacklist ID'}
@@ -308,7 +327,9 @@ export function AdminSafetyActionModal({
             >
               <div className="flex items-center gap-1.5 mb-1">
                 <RotateCcw className="w-3.5 h-3.5 text-emerald-600" />
-                <span className="text-xs font-bold">{locale === 'bn' ? 'মার্জনা / সচল' : 'Pardon'}</span>
+                <span className="text-xs font-bold">
+                  {locale === 'bn' ? 'মার্জনা / সচল' : 'Pardon'}
+                </span>
               </div>
               <p className="text-[10px] opacity-75">
                 {locale === 'bn' ? 'নিষেধাজ্ঞা প্রত্যাহার' : 'Restore Account'}
@@ -338,7 +359,9 @@ export function AdminSafetyActionModal({
           {/* Reason Input */}
           <div className="space-y-1">
             <label className="text-xs font-semibold text-foreground block">
-              {locale === 'bn' ? 'শাস্তিমূলক ব্যবস্থার কারণ ও অডিট নোট:' : 'Official Reason & Audit Log Notes:'}
+              {locale === 'bn'
+                ? 'শাস্তিমূলক ব্যবস্থার কারণ ও অডিট নোট:'
+                : 'Official Reason & Audit Log Notes:'}
             </label>
             <textarea
               value={reason}
@@ -366,8 +389,12 @@ export function AdminSafetyActionModal({
                     className="flex items-center justify-between text-[11px] p-1.5 rounded-lg bg-muted/30 border border-border/40"
                   >
                     <div className="flex items-center gap-1.5">
-                      <span className="font-semibold capitalize text-foreground">{a.action_type}:</span>
-                      <span className="text-muted-foreground truncate max-w-[260px]">{a.reason}</span>
+                      <span className="font-semibold capitalize text-foreground">
+                        {a.action_type}:
+                      </span>
+                      <span className="text-muted-foreground truncate max-w-[260px]">
+                        {a.reason}
+                      </span>
                     </div>
                     <span className="text-[10px] text-muted-foreground shrink-0">
                       {new Date(a.created_at).toLocaleDateString()}
@@ -398,14 +425,24 @@ export function AdminSafetyActionModal({
             }`}
           >
             {isBanning || isSuspending || isReactivating
-              ? (locale === 'bn' ? 'কার্যকর হচ্ছে…' : 'Applying…')
+              ? locale === 'bn'
+                ? 'কার্যকর হচ্ছে…'
+                : 'Applying…'
               : selectedAction === 'permanent_ban'
-                ? (locale === 'bn' ? 'স্থায়ী বহিষ্কার ও ব্ল্যাকলিস্ট করুন' : 'Confirm Permanent Ban & Blacklist')
+                ? locale === 'bn'
+                  ? 'স্থায়ী বহিষ্কার ও ব্ল্যাকলিস্ট করুন'
+                  : 'Confirm Permanent Ban & Blacklist'
                 : selectedAction === 'temporary_suspension'
-                  ? (locale === 'bn' ? 'স্থগিতাদেশ কার্যকর করুন' : 'Confirm Suspension')
+                  ? locale === 'bn'
+                    ? 'স্থগিতাদেশ কার্যকর করুন'
+                    : 'Confirm Suspension'
                   : selectedAction === 'pardon'
-                    ? (locale === 'bn' ? 'অ্যাকাউন্ট সচল ও মার্জনা করুন' : 'Confirm Pardon & Reactivate')
-                    : (locale === 'bn' ? 'সতর্কবার্তা পাঠান' : 'Send Official Warning')}
+                    ? locale === 'bn'
+                      ? 'অ্যাকাউন্ট সচল ও মার্জনা করুন'
+                      : 'Confirm Pardon & Reactivate'
+                    : locale === 'bn'
+                      ? 'সতর্কবার্তা পাঠান'
+                      : 'Send Official Warning'}
           </Button>
         </DialogFooter>
       </DialogContent>

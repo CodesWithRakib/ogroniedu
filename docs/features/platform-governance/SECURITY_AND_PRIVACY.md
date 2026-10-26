@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী ایڈু)  
 **Phase:** 09: Admin Operations, Organization Management & Platform Governance  
 **Date:** October 21, 2026  
-**Status:** Approved Specification  
+**Status:** Approved Specification
 
 ---
 
@@ -63,7 +63,8 @@ flowchart TD
 
 ## 4. Safeguarding & Child Protection Privacy
 
-Under Bangladesh's **The Children Act 2013 (*শিশু আইন ২০১৩*)**:
+Under Bangladesh's **The Children Act 2013 (_শিশু আইন ২০১৩_)**:
+
 - Minor victim identities, home addresses, phone numbers, and evidence attachments are classified as **Confidential Legal Records**.
 - Support agents, operational admins, tutors, and organization managers receive immediate `403 Forbidden` if attempting to query child safety reports.
 - Access is restricted strictly to designated `compliance_reviewer` officers and executive `super_admin`.
@@ -74,6 +75,7 @@ Under Bangladesh's **The Children Act 2013 (*শিশু আইন ২০১৩
 ## 5. CSV Injection / Formula Execution Defense
 
 When an administrator exports a CSV report:
+
 - Any user could maliciously register with a name such as `=cmd|'/C calc'!A0` or `@SUM(1+1)`.
 - The export serializer inspects every string value. If the initial character is in `[=+\-@\t\r]`, a single quote (`'`) is prepended, instructing spreadsheet interpreters to treat the value strictly as plain text.
 
@@ -82,6 +84,7 @@ When an administrator exports a CSV report:
 ## 6. Emergency Impersonation Security Protocol
 
 To prevent abuse of user impersonation:
+
 1. **Root-Only**: Restricted exclusively to `super_admin`.
 2. **Time-Capped**: Hard ceiling of **15 minutes**. Cannot be refreshed or renewed.
 3. **Mandatory Ticket Justification**: Requires an active support ticket ID and explicit reason.

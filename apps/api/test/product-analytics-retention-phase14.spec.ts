@@ -3,7 +3,10 @@ import { BadRequestException } from '@nestjs/common';
 import { EventTrackingService } from '../src/modules/analytics/services/event-tracking.service';
 import { AnalyticsService } from '../src/modules/analytics/analytics.service';
 import { AnalyticsTutorService } from '../src/modules/analytics/services/analytics-tutor.service';
-import { AllowedAnalyticsEvent, type TrackEventDto } from '../src/modules/analytics/dto/track-event.dto';
+import {
+  AllowedAnalyticsEvent,
+  type TrackEventDto,
+} from '../src/modules/analytics/dto/track-event.dto';
 
 /**
  * Phase 14: Product Analytics & Retention Optimization Test Suite
@@ -68,8 +71,12 @@ describe('Phase 14: Product Analytics & Retention Optimization', () => {
       const sessionDto: any = { eventName: 'session_completed', properties: {} };
       const paymentDto: any = { eventName: 'payment_succeeded', properties: {} };
 
-      await expect(trackingService.trackClientEvent(sessionDto)).rejects.toThrow(BadRequestException);
-      await expect(trackingService.trackClientEvent(paymentDto)).rejects.toThrow(BadRequestException);
+      await expect(trackingService.trackClientEvent(sessionDto)).rejects.toThrow(
+        BadRequestException,
+      );
+      await expect(trackingService.trackClientEvent(paymentDto)).rejects.toThrow(
+        BadRequestException,
+      );
       expect(mockDataSource.query).not.toHaveBeenCalled();
     });
 
@@ -115,7 +122,9 @@ describe('Phase 14: Product Analytics & Retention Optimization', () => {
         // 1. Conversion
         .mockResolvedValueOnce([{ total_requests: 80, confirmed_bookings: 60 }])
         // 2. Sessions
-        .mockResolvedValueOnce([{ total_sessions: 150, completed_sessions: 135, no_show_sessions: 3 }])
+        .mockResolvedValueOnce([
+          { total_sessions: 150, completed_sessions: 135, no_show_sessions: 3 },
+        ])
         // 3. GMV
         .mockResolvedValueOnce([{ total_gmv_minor: '12000000', total_orders: 60 }])
         // 4. Refunds

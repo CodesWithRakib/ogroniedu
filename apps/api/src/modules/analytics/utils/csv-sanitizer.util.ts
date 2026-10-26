@@ -28,8 +28,6 @@ export function arrayToCsv(
   rows: Array<Record<string, unknown>>,
 ): string {
   const headerLine = columns.map((col) => sanitizeCsvCell(col.header)).join(',');
-  const rowLines = rows.map((row) =>
-    columns.map((col) => sanitizeCsvCell(row[col.key])).join(','),
-  );
+  const rowLines = rows.map((row) => columns.map((col) => sanitizeCsvCell(row[col.key])).join(','));
   return [headerLine, ...rowLines].join('\r\n');
 }

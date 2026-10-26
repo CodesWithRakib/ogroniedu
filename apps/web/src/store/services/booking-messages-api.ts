@@ -41,10 +41,12 @@ export type BookingMessagesResponse = CursorCollectionEnvelope<BookingMessage>;
 
 export const bookingMessagesApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
-    getConversationsInbox: builder.query<{ success: boolean; data: ConversationInboxItem[] }, void>({
-      query: () => '/api/v1/conversations',
-      providesTags: [{ type: 'BookingMessage', id: 'INBOX' }],
-    }),
+    getConversationsInbox: builder.query<{ success: boolean; data: ConversationInboxItem[] }, void>(
+      {
+        query: () => '/api/v1/conversations',
+        providesTags: [{ type: 'BookingMessage', id: 'INBOX' }],
+      },
+    ),
     getBookingMessages: builder.query<BookingMessagesResponse, BookingMessagesParams | string>({
       query: (params) => {
         const { bookingId, ...rest } = typeof params === 'string' ? { bookingId: params } : params;

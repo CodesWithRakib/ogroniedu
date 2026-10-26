@@ -66,10 +66,6 @@ const PG_UNIQUE_VIOLATION = '23505';
 /** Per-step statuses recorded in user_onboarding.pending_steps. */
 const ONBOARDING_STATUS_IN_PROGRESS = 'in_progress';
 
-
-
-
-
 function isUniqueViolation(err: unknown): boolean {
   return (
     typeof err === 'object' &&

@@ -1,11 +1,7 @@
 import crypto from 'node:crypto';
 
 /** Account statuses that must never authenticate or refresh. */
-export const BLOCKED_STATUSES: readonly string[] = [
-  'suspended',
-  'deactivated',
-  'deletion_pending',
-];
+export const BLOCKED_STATUSES: readonly string[] = ['suspended', 'deactivated', 'deletion_pending'];
 
 /**
  * Returns true if the account status prevents authentication or token refresh.

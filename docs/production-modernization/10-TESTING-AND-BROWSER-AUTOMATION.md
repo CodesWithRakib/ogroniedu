@@ -20,19 +20,20 @@
         /---------------\  Total: 1,367 Automated Tests
 ```
 
-| Layer | Framework / Tool | Scope | Test Files | Total Tests | Pass Rate (Current) |
-|---|---|---|---|---|---|
-| **Database Tests** | Vitest 5.0.3 | Migrations, initial seeds, BCDR recovery drill, performance indexes | 4 files | 33 tests | **100% (33/33)** |
-| **Web Unit Tests** | Vitest 5.0.3 + React Testing Library | Component SSR, RTK Query state, mappers, accessibility | 48 files | 308 tests | **99.7% (307/308)** (1 assertion fix pending) |
-| **API Unit & Integration** | Vitest 5.0.3 + Supertest | Controllers, services, security guards, outbox, ledger | 96 files | 1,026 tests | **100% (1,026/1,026)** (with `JWT_SECRET` env) |
-| **Browser E2E Tests** | Playwright 1.64.0 | User journeys, auth guards, discovery, booking, localization | 11 specs | ~40 scenarios | Target: `http://localhost:5000` |
-| **Interactive Automated QA** | Chrome DevTools MCP | Live headful desktop browser testing, console & network audits | Dynamic | Role-based flows | Headful on desktop |
+| Layer                        | Framework / Tool                     | Scope                                                               | Test Files | Total Tests      | Pass Rate (Current)                            |
+| ---------------------------- | ------------------------------------ | ------------------------------------------------------------------- | ---------- | ---------------- | ---------------------------------------------- |
+| **Database Tests**           | Vitest 5.0.3                         | Migrations, initial seeds, BCDR recovery drill, performance indexes | 4 files    | 33 tests         | **100% (33/33)**                               |
+| **Web Unit Tests**           | Vitest 5.0.3 + React Testing Library | Component SSR, RTK Query state, mappers, accessibility              | 48 files   | 308 tests        | **99.7% (307/308)** (1 assertion fix pending)  |
+| **API Unit & Integration**   | Vitest 5.0.3 + Supertest             | Controllers, services, security guards, outbox, ledger              | 96 files   | 1,026 tests      | **100% (1,026/1,026)** (with `JWT_SECRET` env) |
+| **Browser E2E Tests**        | Playwright 1.64.0                    | User journeys, auth guards, discovery, booking, localization        | 11 specs   | ~40 scenarios    | Target: `http://localhost:5000`                |
+| **Interactive Automated QA** | Chrome DevTools MCP                  | Live headful desktop browser testing, console & network audits      | Dynamic    | Role-based flows | Headful on desktop                             |
 
 ---
 
 ## 2. Test Execution Commands (Authoritative)
 
 ### 2.1 Monorepo Full-Suite Commands
+
 ```pwsh
 # Run typecheck across all workspaces (Web, API, Contracts, Database)
 pnpm typecheck
@@ -48,6 +49,7 @@ pnpm test
 ```
 
 ### 2.2 Workspace-Specific Commands
+
 ```pwsh
 # Database migrations and seed verification tests
 pnpm --filter @ogroniedu/database test
@@ -68,6 +70,7 @@ pnpm --filter @ogroniedu/web e2e
 ## 3. Baseline Test Failure Analysis & Immediate Fixes
 
 ### 3.1 Backend API: Vitest Missing Environment Variable (`TDD-001`)
+
 - **Symptom**: When running `pnpm test` without setting `$env:JWT_SECRET`, 11 test files (70 tests) fail with `Error: JWT_SECRET environment variable is required`.
 - **Root Cause**: `apps/api` has no `vitest.config.ts` defining `env: { JWT_SECRET: '...' }` or specifying a setup file that loads `.env`.
 - **Fix**: Create `apps/api/vitest.config.ts` specifying test environment variables:
@@ -88,11 +91,13 @@ pnpm --filter @ogroniedu/web e2e
   ```
 
 ### 3.2 Frontend Web: Assertion Mismatch in `test/messaging.spec.ts` (`TDD-002`)
+
 - **Symptom**: 1 test fails in `apps/web/test/messaging.spec.ts:33`: `expected 'You' to be 'Me'`.
 - **Root Cause**: `chat-mappers.ts:19` specifies `const defaultOwnName = isBn ? 'আপনি' : 'You';`, while test asserted `toBe('Me')`.
 - **Fix**: Align the test assertion or mapper options parameter to pass `{ ownName: 'Me' }` or assert `'You'`.
 
 ### 3.3 Backend API: Oxlint Lint Warnings (`TDD-003`)
+
 - **Symptom**: `pnpm --filter @ogroniedu/api lint` exits with code 1 due to `--deny-warnings`.
 - **Root Cause**: 11 warnings:
   - 1 unused expression in `src/modules/notifications/booking-messages.service.ts:221`
@@ -104,6 +109,7 @@ pnpm --filter @ogroniedu/web e2e
 ## 4. Playwright Browser E2E Automation Setup
 
 ### 4.1 Configuration (`apps/web/playwright.config.ts`)
+
 - **Base URL**: `http://localhost:5000`
 - **Default Locale**: `bn-BD`
 - **Browser**: Chromium (Desktop Chrome viewport)
@@ -112,6 +118,7 @@ pnpm --filter @ogroniedu/web e2e
 - **Tracing**: Recorded `on-first-retry`
 
 ### 4.2 Playwright Test Inventory (11 Specs in `apps/web/e2e/`)
+
 1. `smoke.public.spec.ts`: Public website loading, bilingual switch (`/bn` vs `/en`), navbar, SEO meta.
 2. `auth.guards.spec.ts`: Anonymous redirection to `/login`, role-based access rejection (403/redirect).
 3. `tutor.discovery.spec.ts`: Search by subject/location, filter facets, pagination, tutor profile navigation.

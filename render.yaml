@@ -1,0 +1,52 @@
+services:
+  - type: web
+    name: ogroniedu-api
+    runtime: node
+    plan: starter
+    rootDir: .
+    buildCommand: pnpm install --frozen-lockfile && pnpm build:api
+    preDeployCommand: pnpm --filter @ogroniedu/database db:migrate
+    startCommand: pnpm --filter @ogroniedu/api start
+    healthCheckPath: /health/live
+    autoDeploy: true
+    buildFilter:
+      paths:
+        - apps/api/**
+        - packages/contracts/**
+        - packages/database/**
+        - packages/tsconfig/**
+        - package.json
+        - pnpm-lock.yaml
+        - pnpm-workspace.yaml
+        - turbo.json
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: DB_SSL
+        value: "true"
+      - key: DATABASE_URL
+        sync: false
+      - key: FRONTEND_URL
+        sync: false
+      - key: CORS_ORIGINS
+        sync: false
+      - key: JWT_SECRET
+        generateValue: true
+      - key: SUPABASE_URL
+        sync: false
+      - key: SUPABASE_PUBLISHABLE_KEY
+        sync: false
+      - key: SUPABASE_SECRET_KEY
+        sync: false
+      - key: SUPABASE_JWKS_URL
+        sync: false
+      - key: OTP_SMS_PRIMARY_PROVIDER
+        value: http_gateway
+      - key: OTP_SMS_FALLBACK_PROVIDER
+        value: http_gateway
+      - key: OTP_EMAIL_PRIMARY_PROVIDER
+        value: http_gateway
+      - key: OTP_EMAIL_FALLBACK_PROVIDER
+        value: http_gateway
+      - key: SSLCOMMERZ_IS_LIVE
+        value: "false"

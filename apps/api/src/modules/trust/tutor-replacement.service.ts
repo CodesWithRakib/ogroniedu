@@ -1,4 +1,7 @@
-import type { ReplacementRepos, ReplacementListResponse } from './interfaces/tutor-replacement.interfaces';
+import type {
+  ReplacementRepos,
+  ReplacementListResponse,
+} from './interfaces/tutor-replacement.interfaces';
 import {
   Injectable,
   NotFoundException,
@@ -69,7 +72,10 @@ import type {
   ReplacementCaseView,
 } from './interfaces/replacement-case-view.interface';
 
-export type { ReplacementRepos, ReplacementListResponse } from './interfaces/tutor-replacement.interfaces';
+export type {
+  ReplacementRepos,
+  ReplacementListResponse,
+} from './interfaces/tutor-replacement.interfaces';
 
 @Injectable()
 export class TutorReplacementService {

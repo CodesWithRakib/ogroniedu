@@ -150,7 +150,8 @@ export function AdminPlatformTelemetryGrid({
 
         <div className="my-2">
           <div className="text-2xl sm:text-3xl font-black text-foreground">
-            {formatLocalizedNumber(verifiedTutorsCount, locale)} / {formatLocalizedNumber(activeStudentsCount, locale)}
+            {formatLocalizedNumber(verifiedTutorsCount, locale)} /{' '}
+            {formatLocalizedNumber(activeStudentsCount, locale)}
           </div>
           <p className="text-[11px] text-muted-foreground mt-0.5">
             {isBn ? 'অনুমোদিত শিক্ষক / নিবন্ধিত শিক্ষার্থী' : 'Approved Tutors / Active Students'}

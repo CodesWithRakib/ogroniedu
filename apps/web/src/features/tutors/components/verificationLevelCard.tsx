@@ -371,7 +371,9 @@ export function VerificationLevelCard({
                     className="h-9 text-xs"
                     data-testid={`document-type-${record.level}`}
                   >
-                    <SelectValue placeholder={isBn ? 'নথির ধরন নির্বাচন করুন' : 'Select document type'} />
+                    <SelectValue
+                      placeholder={isBn ? 'নথির ধরন নির্বাচন করুন' : 'Select document type'}
+                    />
                   </SelectTrigger>
                   <SelectContent>
                     {allowedTypes.map((type) => (

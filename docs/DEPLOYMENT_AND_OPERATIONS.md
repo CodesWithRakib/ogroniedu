@@ -112,3 +112,189 @@ When post-deployment smoke tests detect a critical defect or error rates breach 
 - **Foundational System Data:** Roles, curricula, education levels, subjects, and ledger accounts are idempotent and safe to run in any environment.
 - **Demo User Invariant:** Production seed execution (`NODE_ENV=production`) is strictly prohibited from inserting synthetic demo users (`guardian.demo@ogroniedu.com`, etc.).
 - Automated regression tests in `packages/database/test/seed.spec.ts` enforce that `isProduction: true` prevents demo user creation with 100% certainty.
+
+---
+
+## 8. Cloud Native Production Deployment: Vercel + Render + PostgreSQL + Supabase
+
+### 8.1 Architecture Overview
+
+- **Frontend:** Next.js 16 (`apps/web`) deployed to **Vercel** with global Edge CDN caching and Server Components.
+- **Backend API:** NestJS 12 (`apps/api`) deployed as a Web Service on **Render** with HTTP + Socket.IO WebSockets (`/notifications`).
+- **Database:** Managed PostgreSQL (Render PostgreSQL, Neon, AWS RDS, or Supabase Postgres) with SSL termination (`sslmode=require`).
+- **Storage:** Supabase Storage (public avatar bucket + private evidence bucket with HMAC-signed token access).
+
+```
+                      +-----------------------------+
+                      |         End User            |
+                      +--------------+--------------+
+                                     |
+                    HTTPS            |             HTTPS / WSS
+                      |              |                  |
+                      v              |                  v
+        +-------------------------+  |   +-----------------------------+
+        |    Vercel Edge CDN      |  |   |    Render Web Service       |
+        |    (apps/web Next.js)   |--+-->|    (apps/api NestJS 12)     |
+        +-------------------------+      +--------------+--------------+
+                                                        |
+                                       +----------------+----------------+
+                                       |                                 |
+                                       v                                 v
+                        +-----------------------------+   +-----------------------------+
+                        |     Managed PostgreSQL      |   |      Supabase Storage       |
+                        |   (32 SQL Migrations)       |   |   (Evidence & Documents)    |
+                        +-----------------------------+   +-----------------------------+
+```
+
+---
+
+### 8.2 Managed PostgreSQL Setup & Database Provisioning
+
+1. **Database Instance Provisioning:**
+   - Provision a PostgreSQL 16+ or 18 instance on Render PostgreSQL, Neon, or AWS RDS.
+   - Note the connection string (format: `postgresql://[user]:[password]@[host]:5432/[database]?sslmode=require`).
+2. **Connection Parameters:**
+   - Enforce `sslmode=require` in `DATABASE_URL`.
+   - Set `DB_SSL=true` and `DB_POOL_MAX=20` to manage connection pooling limits.
+3. **Running Migrations:**
+   - Migrations are versioned SQL scripts located in `packages/database/src/migrations/` (001 to 032).
+   - Execution is tracked idempotently in `schema_migrations` table inside database transactions.
+   - Command to run migrations against the managed database:
+     ```bash
+     DATABASE_URL="postgresql://user:password@host:5432/ogroniedu?sslmode=require" pnpm --filter @ogroniedu/database db:migrate
+     ```
+   - On Render, this is automated via the `preDeployCommand` in `render.yaml`.
+
+---
+
+### 8.3 Render Deployment (NestJS Backend API)
+
+The repository root includes a production Blueprint specification (`render.yaml`).
+
+#### Step-by-Step Render Dashboard Setup:
+
+1. **Option A: Blueprint Deployment (Recommended)**
+   - In Render Dashboard, click **New +** -> **Blueprint**.
+   - Connect the GitHub repository `ogroniedu`.
+   - Render automatically detects `render.yaml` and parses the `ogroniedu-api` web service.
+   - Fill in the required secret environment variables (`DATABASE_URL`, `FRONTEND_URL`, `CORS_ORIGINS`, `SUPABASE_*`).
+   - Click **Apply**.
+
+2. **Option B: Manual Web Service Creation**
+   - Click **New +** -> **Web Service**.
+   - Select GitHub repository `ogroniedu`.
+   - Configure service details:
+     - **Name:** `ogroniedu-api`
+     - **Environment:** `Node`
+     - **Region:** `Oregon (US West)` or preferred region closest to users (e.g. `Singapore`).
+     - **Branch:** `main`
+     - **Root Directory:** `.` (leave empty or dot — monorepo root)
+     - **Build Command:**
+       ```bash
+       pnpm install --frozen-lockfile && pnpm build:api
+       ```
+     - **Pre-deploy Command:**
+       ```bash
+       pnpm --filter @ogroniedu/database db:migrate
+       ```
+     - **Start Command:**
+       ```bash
+       pnpm --filter @ogroniedu/api start
+       ```
+     - **Health Check Path:** `/health/live`
+     - **Auto-Deploy:** `Yes`
+   - Under **Advanced -> Build Filters**:
+     - Add paths: `apps/api/**`, `packages/**`, `package.json`, `pnpm-lock.yaml`, `turbo.json`.
+
+---
+
+### 8.4 Vercel Deployment (Next.js Frontend)
+
+#### Step-by-Step Vercel Dashboard Setup:
+
+1. In Vercel Dashboard, click **Add New...** -> **Project**.
+2. Import the GitHub repository `ogroniedu`.
+3. In **Configure Project**:
+   - **Framework Preset:** `Next.js`
+   - **Root Directory:** `apps/web` (Click _Edit_ and select `apps/web`).
+   - Ensure the option **"Include files outside of the Root Directory in the Build Step"** remains **ENABLED** (required for resolving `@ogroniedu/contracts` and root lockfile).
+   - **Build and Output Settings:**
+     - **Build Command:** Leave as default (`next build`) or `cd ../.. && pnpm build:web`
+     - **Install Command:** `pnpm install` (Vercel automatically detects `pnpm@12.10.1` from `packageManager` in root `package.json`).
+4. **Environment Variables:**
+   - Configure the frontend environment variables in Vercel:
+     - `NEXT_PUBLIC_API_URL`: Your deployed Render API URL (e.g., `https://ogroniedu-api.onrender.com`).
+     - `NEXT_PUBLIC_APP_URL`: Your Vercel domain (e.g., `https://ogroniedu.vercel.app` or custom domain `https://ogroni.edu.bd`).
+     - `NEXT_PUBLIC_SUPABASE_URL`: Your Supabase project URL (`https://<project-ref>.supabase.co`).
+     - `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`: Your Supabase anon/publishable key (`sb_publishable_...`).
+     - `NODE_ENV`: `production`
+5. Click **Deploy**.
+
+---
+
+### 8.5 Production Environment Variable Matrix
+
+| Variable Name                          | Service | Scope  |      Required in Prod      | Description / Example                                                                  |
+| :------------------------------------- | :------ | :----- | :------------------------: | :------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`                  | Vercel  | Public |            Yes             | Backend URL: `https://ogroniedu-api.onrender.com`                                      |
+| `NEXT_PUBLIC_APP_URL`                  | Vercel  | Public |            Yes             | Frontend URL: `https://ogroniedu.vercel.app`                                           |
+| `NEXT_PUBLIC_SUPABASE_URL`             | Vercel  | Public |            Yes             | Supabase endpoint: `https://<ref>.supabase.co`                                         |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Vercel  | Public |            Yes             | Supabase client publishable key                                                        |
+| `NEXT_PUBLIC_JITSI_DOMAIN`             | Vercel  | Public | No (default `meet.jit.si`) | Jitsi classroom domain                                                                 |
+| `PORT`                                 | Render  | Server |         Yes (Auto)         | Port assigned by Render (e.g. 10000)                                                   |
+| `NODE_ENV`                             | Both    | Server |            Yes             | `production`                                                                           |
+| `DATABASE_URL`                         | Render  | Secret |            Yes             | Postgres connection string with `sslmode=require`                                      |
+| `DB_SSL`                               | Render  | Server |            Yes             | `true`                                                                                 |
+| `DB_POOL_MAX`                          | Render  | Server |      No (default 20)       | Maximum connections per pool                                                           |
+| `FRONTEND_URL`                         | Render  | Server |            Yes             | Primary frontend URL (`https://ogroniedu.vercel.app`)                                  |
+| `CORS_ORIGINS`                         | Render  | Server |            Yes             | Comma-separated allowed origins (`https://ogroniedu.vercel.app,https://ogroni.edu.bd`) |
+| `JWT_SECRET`                           | Render  | Secret |            Yes             | High-entropy 256-bit secret (32+ chars, non-default)                                   |
+| `SUPABASE_URL`                         | Render  | Server |            Yes             | Supabase project URL                                                                   |
+| `SUPABASE_PUBLISHABLE_KEY`             | Render  | Server |            Yes             | Supabase client key                                                                    |
+| `SUPABASE_SECRET_KEY`                  | Render  | Secret |            Yes             | Supabase `service_role` privileged server key                                          |
+| `SUPABASE_JWKS_URL`                    | Render  | Server |            Yes             | Supabase Auth JWKS: `https://<ref>.supabase.co/auth/v1/.well-known/jwks.json`          |
+| `SSLCOMMERZ_STORE_ID`                  | Render  | Secret |             No             | SSLCOMMERZ store identifier                                                            |
+| `SSLCOMMERZ_STORE_PASSWD`              | Render  | Secret |             No             | SSLCOMMERZ merchant password                                                           |
+| `SSLCOMMERZ_IS_LIVE`                   | Render  | Server |    No (default `false`)    | Set `true` only when commercial live credentials provisioned                           |
+| `OTP_SMS_PRIMARY_PROVIDER`             | Render  | Server |            Yes             | `http_gateway`                                                                         |
+| `OTP_SMS_FALLBACK_PROVIDER`            | Render  | Server |            Yes             | `http_gateway` (`dev` blocked in production)                                           |
+| `OTP_EMAIL_PRIMARY_PROVIDER`           | Render  | Server |            Yes             | `http_gateway`                                                                         |
+| `OTP_EMAIL_FALLBACK_PROVIDER`          | Render  | Server |            Yes             | `http_gateway` (`dev` blocked in production)                                           |
+
+---
+
+### 8.6 Post-Deployment Smoke Test Protocol
+
+Run these verification steps immediately after production deployment:
+
+1. **Backend Health Liveness Probe:**
+   ```bash
+   curl -i https://ogroniedu-api.onrender.com/health/live
+   ```
+   _Expected:_ HTTP 200 `{"status":"ok","uptime":...,"timestamp":"..."}`
+2. **Backend Health Readiness Probe:**
+   ```bash
+   curl -i https://ogroniedu-api.onrender.com/health/ready
+   ```
+   _Expected:_ HTTP 200 with database health probe `{"database":{"status":"up"}}`.
+3. **Frontend Ingress & Localization:**
+   ```bash
+   curl -I https://ogroniedu.vercel.app/
+   ```
+   _Expected:_ HTTP 200 or 307 redirect to `/[locale]` (e.g. `/bn`).
+4. **CORS Preflight Test:**
+   ```bash
+   curl -i -X OPTIONS https://ogroniedu-api.onrender.com/api/v1/auth/login \
+     -H "Origin: https://ogroniedu.vercel.app" \
+     -H "Access-Control-Request-Method: POST"
+   ```
+   _Expected:_ HTTP 204 or 200 with `Access-Control-Allow-Origin: https://ogroniedu.vercel.app` and `Access-Control-Allow-Credentials: true`.
+5. **WebSocket Handshake Verification:**
+   - Open browser console on frontend.
+   - Verify connection to `wss://ogroniedu-api.onrender.com/notifications` succeeds.
+6. **Authentication & Session:**
+   - Register or log in with verified test credentials.
+   - Verify access token is received in response and subsequent RTK Query requests send `Authorization: Bearer <token>`.
+7. **Document Upload & Storage:**
+   - In tutor verification tab, upload a sample PDF/JPEG credential evidence.
+   - Verify file signature verification succeeds and HMAC-signed URL is generated.

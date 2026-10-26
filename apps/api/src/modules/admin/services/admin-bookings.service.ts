@@ -11,7 +11,6 @@ import { PaymentOrderEntity } from '../../payments/entities/payment-order.entity
 import { EscrowHoldEntity } from '../../payments/entities/escrow-hold.entity';
 import { InvoiceEntity } from '../../payments/entities/invoice.entity';
 import { LedgerJournalEntity } from '../../payments/entities/ledger-journal.entity';
-import { LedgerEntryEntity } from '../../payments/entities/ledger-entry.entity';
 import { PaymentRefundEntity } from '../../payments/entities/payment-refund.entity';
 import { AuditService } from '../../audit/audit.service';
 import { RefundsService } from '../../payments/services/refunds.service';

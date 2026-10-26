@@ -4,7 +4,10 @@ import { codeForStatus, errorEnvelope } from '../src/common/api-error/api-error'
 import { AllExceptionsFilter } from '../src/common/filters/http-exception.filter';
 import { HttpStatus } from '@nestjs/common';
 import { calculateReplacementRefundShare } from '../src/modules/trust/utils/replacement-policy.util';
-import { generateSecureOtpCode, isAccountBlocked } from '../src/modules/auth/utils/auth-policy.util';
+import {
+  generateSecureOtpCode,
+  isAccountBlocked,
+} from '../src/modules/auth/utils/auth-policy.util';
 import { sanitizeAnalyticsProperties } from '../src/modules/analytics/utils/event-sanitizer.util';
 import { NOTIFICATION_BROADCASTER } from '../src/modules/notifications/interfaces/notification-broadcaster.interface';
 
@@ -140,7 +143,9 @@ describe('Phase 15: Final Architecture Audit & Technical Debt Reduction', () => 
       };
 
       // Raw driver database error simulating SQL injection or syntax fault
-      const rawDbError = new Error('syntax error at or near "DROP TABLE users" in SELECT * FROM users');
+      const rawDbError = new Error(
+        'syntax error at or near "DROP TABLE users" in SELECT * FROM users',
+      );
       (rawDbError as any).code = '42601';
 
       filter.catch(rawDbError, mockHost);
@@ -148,7 +153,9 @@ describe('Phase 15: Final Architecture Audit & Technical Debt Reduction', () => 
       expect(responseStatus).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
       expect(responseBody.success).toBe(false);
       expect(responseBody.error.code).toBe('INTERNAL_ERROR');
-      expect(responseBody.error.message).toBe('Internal server error. Please contact support with request ID.');
+      expect(responseBody.error.message).toBe(
+        'Internal server error. Please contact support with request ID.',
+      );
       expect(responseBody.error.message).not.toContain('DROP TABLE');
       expect(responseBody.error.message).not.toContain('syntax error');
       expect(responseBody.meta.requestId).toBe('req-audit-999');

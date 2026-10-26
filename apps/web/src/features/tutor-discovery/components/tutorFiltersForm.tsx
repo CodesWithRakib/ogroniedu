@@ -518,10 +518,6 @@ export function TutorFiltersForm({
           </div>
         </div>
 
-
-
-
-
         {/* Submit Action */}
         <div className="pt-2">
           <Button

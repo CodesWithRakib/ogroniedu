@@ -52,14 +52,14 @@ No circular dependencies exist between application-owned packages (verified by `
 
 ## 2. Package Manifest
 
-| Package | Kind | Version | Purpose |
-|---|---|---|---|
-| `ogroniedu` (root) | workspace root | — | Turborepo config, shared tooling |
-| `@ogroniedu/web` | app | private | Next.js 16 frontend |
-| `@ogroniedu/api` | app | private | NestJS 12 backend API |
-| `@ogroniedu/database` | package | 1.0.0 | TypeORM entities, migrations, DB scripts |
-| `@ogroniedu/contracts` | package | 1.0.0 | Shared DTOs, types, enums (api ←→ web) |
-| `@ogroniedu/tsconfig` | package | 1.0.0 | Base TypeScript configs (base, nest, nextjs) |
+| Package                | Kind           | Version | Purpose                                      |
+| ---------------------- | -------------- | ------- | -------------------------------------------- |
+| `ogroniedu` (root)     | workspace root | —       | Turborepo config, shared tooling             |
+| `@ogroniedu/web`       | app            | private | Next.js 16 frontend                          |
+| `@ogroniedu/api`       | app            | private | NestJS 12 backend API                        |
+| `@ogroniedu/database`  | package        | 1.0.0   | TypeORM entities, migrations, DB scripts     |
+| `@ogroniedu/contracts` | package        | 1.0.0   | Shared DTOs, types, enums (api ←→ web)       |
+| `@ogroniedu/tsconfig`  | package        | 1.0.0   | Base TypeScript configs (base, nest, nextjs) |
 
 ---
 
@@ -95,6 +95,7 @@ AppModule
 ```
 
 Cross-module references are primarily via:
+
 - **DTOs** in `@ogroniedu/contracts` (the shared contract layer)
 - **Service method parameters** (primitives/identifiers, not entity imports)
 - **Event emission** (outbox pattern via `OutboxWorkerService`)
@@ -205,27 +206,27 @@ Student (web)                    API (NestJS)              Database (PostgreSQL)
 
 ## 6. External Integrations
 
-| Integration | Adapter | Status | Notes |
-|---|---|---|---|
-| SSLCommerz | `sslcommerz.adapter.ts` | Sandbox | Signature verification tested |
-| bKash | `bkash.adapter.ts` | Sandbox | Fails closed if no creds |
-| Nagad | (pending in payments module) | Stubbed | See RLD-006 |
-| Google Meet | `meetingUrl` field on sessions | Live link | No in-browser WebRTC |
-| Socket.IO | `notification.gateway.ts` | Production | JWT-authenticated, room-scoped |
-| SMTP/SMS | Outbox events (`notifications` table) | Mocked | Per KNOWN_LIMITATIONS.md |
-| File storage | `files.service.ts` | Local disk | Private-dir pattern |
+| Integration  | Adapter                               | Status     | Notes                          |
+| ------------ | ------------------------------------- | ---------- | ------------------------------ |
+| SSLCommerz   | `sslcommerz.adapter.ts`               | Sandbox    | Signature verification tested  |
+| bKash        | `bkash.adapter.ts`                    | Sandbox    | Fails closed if no creds       |
+| Nagad        | (pending in payments module)          | Stubbed    | See RLD-006                    |
+| Google Meet  | `meetingUrl` field on sessions        | Live link  | No in-browser WebRTC           |
+| Socket.IO    | `notification.gateway.ts`             | Production | JWT-authenticated, room-scoped |
+| SMTP/SMS     | Outbox events (`notifications` table) | Mocked     | Per KNOWN_LIMITATIONS.md       |
+| File storage | `files.service.ts`                    | Local disk | Private-dir pattern            |
 
 ---
 
 ## 7. Critical Architectural Patterns
 
-| Pattern | Location | Notes |
-|---|---|---|
-| Transactional Outbox | `OutboxWorkerService`, outbox table | Events persisted in DB tx, polled, dispatched |
-| Double-Entry Ledger | `LedgerService` + chart of accounts | Invariant: Σ debits == Σ credits enforced |
-| Advisory Locks | `BookingExpiryService` | Prevents duplicate sweep execution |
-| ABAC Resource Guards | `guardian-student.guard.ts`, `GuardianStudentGuard` | Per-resource ownership checks |
-| RBAC | `roles.guard.ts` | Class/method-level `@Roles()` decorator |
+| Pattern              | Location                                            | Notes                                         |
+| -------------------- | --------------------------------------------------- | --------------------------------------------- |
+| Transactional Outbox | `OutboxWorkerService`, outbox table                 | Events persisted in DB tx, polled, dispatched |
+| Double-Entry Ledger  | `LedgerService` + chart of accounts                 | Invariant: Σ debits == Σ credits enforced     |
+| Advisory Locks       | `BookingExpiryService`                              | Prevents duplicate sweep execution            |
+| ABAC Resource Guards | `guardian-student.guard.ts`, `GuardianStudentGuard` | Per-resource ownership checks                 |
+| RBAC                 | `roles.guard.ts`                                    | Class/method-level `@Roles()` decorator       |
 
 ---
 
@@ -233,32 +234,32 @@ Student (web)                    API (NestJS)              Database (PostgreSQL)
 
 Key versions as declared in package manifests (2026-10-24). All packages have clean typecheck.
 
-| Package | Version |
-|---|---|
-| Next.js | 16.4.2 |
-| React | 19.3.0 |
-| NestJS (common/core/platform) | 12.1.2 |
-| TypeORM | 1.1.2 |
-| Socket.IO | 4.8.4 |
-| TypeScript | 7.0.2 |
-| Vitest | 5.0.3 |
-| Playwright | 1.64.0 |
-| Oxlint | 1.88.0 |
-| Turborepo | 2.11.7 |
-| Redis (docker target) | 7-alpine |
-| PostgreSQL (target) | 18 |
+| Package                       | Version  |
+| ----------------------------- | -------- |
+| Next.js                       | 16.4.2   |
+| React                         | 19.3.0   |
+| NestJS (common/core/platform) | 12.1.2   |
+| TypeORM                       | 1.1.2    |
+| Socket.IO                     | 4.8.4    |
+| TypeScript                    | 7.0.2    |
+| Vitest                        | 5.0.3    |
+| Playwright                    | 1.64.0   |
+| Oxlint                        | 1.88.0   |
+| Turborepo                     | 2.11.7   |
+| Redis (docker target)         | 7-alpine |
+| PostgreSQL (target)           | 18       |
 
 ---
 
 ## 9. Known Architectural Weaknesses / Gaps
 
-| Weakness | Location | Impact |
-|---|---|---|
-| `navigation.ts` (26KB) — oversized, mixes nav definitions with role logic | `apps/web/src/lib/navigation.ts` | Maintenance burden, hard to extend nav |
-| `booking-messages.service.ts` — `no-unused-expressions` warning | `apps/api/src/modules/notifications/booking-messages.service.ts:221` | Code smell, not a functional defect |
-| No `/download` route on `FilesController` — signed URLs point to nonexistent endpoint | `files.controller.ts`, `files.service.ts` | RLD-001, blocks tutor verification |
-| `test-dispatch` endpoint ungated | `notification.controller.ts:98-103` | RLD-002, security control gap |
-| Whiteboard no socket sync | `InteractiveWhiteboard.tsx` | RLD-003, doc overclaim |
+| Weakness                                                                              | Location                                                             | Impact                                 |
+| ------------------------------------------------------------------------------------- | -------------------------------------------------------------------- | -------------------------------------- |
+| `navigation.ts` (26KB) — oversized, mixes nav definitions with role logic             | `apps/web/src/lib/navigation.ts`                                     | Maintenance burden, hard to extend nav |
+| `booking-messages.service.ts` — `no-unused-expressions` warning                       | `apps/api/src/modules/notifications/booking-messages.service.ts:221` | Code smell, not a functional defect    |
+| No `/download` route on `FilesController` — signed URLs point to nonexistent endpoint | `files.controller.ts`, `files.service.ts`                            | RLD-001, blocks tutor verification     |
+| `test-dispatch` endpoint ungated                                                      | `notification.controller.ts:98-103`                                  | RLD-002, security control gap          |
+| Whiteboard no socket sync                                                             | `InteractiveWhiteboard.tsx`                                          | RLD-003, doc overclaim                 |
 
 ---
 
@@ -270,4 +271,4 @@ Key versions as declared in package manifests (2026-10-24). All packages have cl
 
 ---
 
-*End of `02-ARCHITECTURE-AND-DEPENDENCIES.md`.*
+_End of `02-ARCHITECTURE-AND-DEPENDENCIES.md`._

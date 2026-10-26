@@ -24,12 +24,15 @@ Before initiating any deployment to staging or production, the release manager m
 ## 3. Step-by-Step Deployment Procedure
 
 ### Step 1: Provision & Validate Secrets
+
 Ensure all production secrets are provisioned in the orchestration environment:
+
 - Verify `JWT_SECRET` is non-default and has >= 32 characters.
 - Verify `DATABASE_URL` connects with SSL (`sslmode=require`).
 - Verify `SSLCOMMERZ_IS_LIVE` and `BKASH_IS_SANDBOX` are configured appropriately.
 
 ### Step 2: Database Migration (Expand Phase)
+
 Run forward-safe, non-blocking migrations against the database prior to deploying new application code:
 
 ```bash
@@ -37,10 +40,11 @@ Run forward-safe, non-blocking migrations against the database prior to deployin
 pnpm --filter @ogroniedu/database db:migrate
 ```
 
-*Verification:* Ensure script returns:
+_Verification:_ Ensure script returns:
 `No pending migrations. Database schema is up to date.`
 
 ### Step 3: Container Build & Push
+
 Build production Docker container images for API and Web:
 
 ```bash
@@ -52,6 +56,7 @@ docker build -t ogroniedu-web:latest -f apps/web/Dockerfile .
 ```
 
 ### Step 4: Rolling Deployment & Orchestration Update
+
 Deploy new containers in a rolling sequence (e.g. 25% increments), allowing readiness probes to pass before terminating older containers:
 
 ```bash
@@ -60,6 +65,7 @@ docker compose -f docker-compose.yml up -d --no-deps api web
 ```
 
 ### Step 5: Post-Deployment Smoke Verification
+
 Execute the automated post-deployment smoke test suite:
 
 ```bash
@@ -67,7 +73,8 @@ Execute the automated post-deployment smoke test suite:
 node scripts/smoke-test.mjs --target production
 ```
 
-*Expected Result:*
+_Expected Result:_
+
 - API Liveness Probe (`/api/health/liveness`): HTTP 200 OK
 - API Readiness Probe (`/api/health/readiness`): HTTP 200 OK
 - Web Frontend Landing Page (`/`): HTTP 200 / 307
@@ -82,7 +89,9 @@ node scripts/smoke-test.mjs --target production
 ## 4. Rollback Runbook
 
 ### Rollback Decision Criteria
+
 Initiate immediate rollback if any of the following occur within 30 minutes of deployment:
+
 1. Smoke tests fail (e.g. readiness probe returns 503 or fails to respond).
 2. HTTP 5xx error rate exceeds 1% of total requests over a 5-minute rolling window.
 3. Database connection pool exhaustion or query deadlocks occur.
@@ -91,6 +100,7 @@ Initiate immediate rollback if any of the following occur within 30 minutes of d
 ### Rollback Execution Steps (< 5 Minute SLA)
 
 #### Step 1: Revert Container Traffic to Previous Stable Image
+
 Roll back the container deployment to the previous stable release tag:
 
 ```bash
@@ -100,6 +110,7 @@ docker service update --image ogroniedu-web:v1.12.0 ogroniedu_web
 ```
 
 #### Step 2: Verify Service Restoration
+
 Confirm service health on the restored version:
 
 ```bash
@@ -107,8 +118,10 @@ node scripts/smoke-test.mjs --target production
 ```
 
 #### Step 3: Database Schema Review
+
 Because all migrations use the Expand/Contract pattern, schema changes made in the Expand phase are backward-compatible and do NOT require an immediate database rollback. If a faulty migration must be undone, execute the corresponding down-migration script using the procedures in `DATABASE_MIGRATION_AND_RECOVERY.md`.
 
 #### Step 4: Incident Notification & Log Preservation
+
 - Broadcast incident notification to the engineering and operations teams.
 - Preserve container logs and error dumps for post-incident triage.

@@ -46,9 +46,7 @@ test.describe('bilingual tutor profile (live API)', () => {
     await page.goto(`/bn/tutors/${tutor!.id}`);
     const tutorName = tutor!.displayNameBn || tutor!.displayNameEn || tutor!.displayName || '';
     if (tutorName) {
-      await expect(page.getByRole('heading', { level: 1 })).toContainText(
-        tutorName.split(' ')[0]!,
-      );
+      await expect(page.getByRole('heading', { level: 1 })).toContainText(tutorName.split(' ')[0]!);
     }
     await expect(page.getByText(tutor!.headlineBn!, { exact: true }).first()).toBeVisible();
     await expect(page.getByText(tutor!.bioBn!, { exact: true })).toBeVisible();

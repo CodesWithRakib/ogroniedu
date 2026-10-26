@@ -33,10 +33,7 @@ import {
   type OnboardingStep,
 } from '@/store/services/onboarding-api';
 import { useUploadEvidenceMutation } from '@/store/services/files-api';
-import {
-  useGetSubjectsQuery,
-  useGetEducationLevelsQuery,
-} from '@/store/services/taxonomy-api';
+import { useGetSubjectsQuery, useGetEducationLevelsQuery } from '@/store/services/taxonomy-api';
 import { normalizeUnknownError } from '@/lib/api-error';
 import { buildStepPayload, fieldsForStep, type StepField } from '../step-forms';
 import {
@@ -202,9 +199,7 @@ const tutorProfileSchema = z.object({
     .number()
     .min(100, 'ফি কমপক্ষে ১০০ টাকা হতে হবে')
     .max(20000, 'ফি সর্বোচ্চ ২০,০০০ টাকা হতে পারে'),
-  teachingModes: z
-    .array(z.string())
-    .min(1, 'কমপক্ষে একটি পাঠদানের মাধ্যম নির্বাচন করুন'),
+  teachingModes: z.array(z.string()).min(1, 'কমপক্ষে একটি পাঠদানের মাধ্যম নির্বাচন করুন'),
 });
 
 type TutorProfileFormValues = z.infer<typeof tutorProfileSchema>;
@@ -226,7 +221,8 @@ function TutorProfileStepForm({
       headline: 'Physics & Higher Math Specialist (Class 9-12)',
       headlineBn: 'নবম-দ্বাদশ শ্রেণির পদার্থবিজ্ঞান ও উচ্চতর গণিত শিক্ষক',
       bio: 'I have over 5 years of tutoring experience in physics and mathematics with a focus on conceptual clarity and exam prep.',
-      bioBn: 'আমি গত ৫ বছর ধরে পদার্থবিজ্ঞান ও গণিতের জটিল বিষয়গুলো শিক্ষার্থীদের কাছে সহজ ও সাবলীলভাবে উপস্থাপন করে আসছি।',
+      bioBn:
+        'আমি গত ৫ বছর ধরে পদার্থবিজ্ঞান ও গণিতের জটিল বিষয়গুলো শিক্ষার্থীদের কাছে সহজ ও সাবলীলভাবে উপস্থাপন করে আসছি।',
       yearsExperience: 3,
       hourlyRate: 600,
       teachingModes: ['online', 'student_home'],
@@ -778,9 +774,7 @@ function TutorSubjectsStepForm({
     // Prevent duplicate subject + level combo
     if (
       addedSubjects.some(
-        (item) =>
-          item.subjectId === selectedSubjectId &&
-          item.educationLevelId === selectedLevelId,
+        (item) => item.subjectId === selectedSubjectId && item.educationLevelId === selectedLevelId,
       )
     ) {
       return;
@@ -816,7 +810,11 @@ function TutorSubjectsStepForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 text-left" data-testid="onboarding-tutor-subjects-form">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 text-left"
+      data-testid="onboarding-tutor-subjects-form"
+    >
       <div className="rounded-xl border border-border bg-muted/20 p-3.5 space-y-3">
         <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
           <BookOpen className="h-4 w-4 text-primary" />
@@ -826,7 +824,11 @@ function TutorSubjectsStepForm({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <div className="space-y-1">
             <Label className="text-[11px] font-semibold">{isBn ? 'বিষয়' : 'Subject'} *</Label>
-            <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId} disabled={loadingSubjects}>
+            <Select
+              value={selectedSubjectId}
+              onValueChange={setSelectedSubjectId}
+              disabled={loadingSubjects}
+            >
               <SelectTrigger className="w-full text-xs">
                 <SelectValue placeholder={isBn ? 'বিষয় নির্বাচন করুন' : 'Select subject'} />
               </SelectTrigger>
@@ -841,8 +843,14 @@ function TutorSubjectsStepForm({
           </div>
 
           <div className="space-y-1">
-            <Label className="text-[11px] font-semibold">{isBn ? 'শ্রেণি / লেভেল' : 'Class / Level'} *</Label>
-            <Select value={selectedLevelId} onValueChange={setSelectedLevelId} disabled={loadingLevels}>
+            <Label className="text-[11px] font-semibold">
+              {isBn ? 'শ্রেণি / লেভেল' : 'Class / Level'} *
+            </Label>
+            <Select
+              value={selectedLevelId}
+              onValueChange={setSelectedLevelId}
+              disabled={loadingLevels}
+            >
               <SelectTrigger className="w-full text-xs">
                 <SelectValue placeholder={isBn ? 'লেভেল নির্বাচন করুন' : 'Select level'} />
               </SelectTrigger>
@@ -857,7 +865,9 @@ function TutorSubjectsStepForm({
           </div>
 
           <div className="space-y-1">
-            <Label className="text-[11px] font-semibold">{isBn ? 'ফি (টাকা/ঘণ্টা)' : 'Rate (BDT/hr)'}</Label>
+            <Label className="text-[11px] font-semibold">
+              {isBn ? 'ফি (টাকা/ঘণ্টা)' : 'Rate (BDT/hr)'}
+            </Label>
             <Input
               type="number"
               min={100}
@@ -976,10 +986,7 @@ function TutorAvailabilityStepForm({
   function handleAddSlot() {
     if (
       slots.some(
-        (s) =>
-          s.weekday === selectedDay &&
-          s.startLocal === startLocal &&
-          s.endLocal === endLocal,
+        (s) => s.weekday === selectedDay && s.startLocal === startLocal && s.endLocal === endLocal,
       )
     ) {
       return;
@@ -993,11 +1000,17 @@ function TutorAvailabilityStepForm({
 
   function applyPreset(presetType: 'weekdays' | 'evening' | 'all') {
     if (presetType === 'weekdays') {
-      setSlots([0, 1, 2, 3, 4].map((d) => ({ weekday: d, startLocal: '09:00', endLocal: '18:00' })));
+      setSlots(
+        [0, 1, 2, 3, 4].map((d) => ({ weekday: d, startLocal: '09:00', endLocal: '18:00' })),
+      );
     } else if (presetType === 'evening') {
-      setSlots([0, 1, 2, 3, 4].map((d) => ({ weekday: d, startLocal: '18:00', endLocal: '21:00' })));
+      setSlots(
+        [0, 1, 2, 3, 4].map((d) => ({ weekday: d, startLocal: '18:00', endLocal: '21:00' })),
+      );
     } else if (presetType === 'all') {
-      setSlots([0, 1, 2, 3, 4, 5, 6].map((d) => ({ weekday: d, startLocal: '10:00', endLocal: '20:00' })));
+      setSlots(
+        [0, 1, 2, 3, 4, 5, 6].map((d) => ({ weekday: d, startLocal: '10:00', endLocal: '20:00' })),
+      );
     }
   }
 
@@ -1008,7 +1021,11 @@ function TutorAvailabilityStepForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 text-left" data-testid="onboarding-tutor-availability-form">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 text-left"
+      data-testid="onboarding-tutor-availability-form"
+    >
       <div className="flex flex-wrap items-center gap-2">
         <span className="text-xs font-semibold text-muted-foreground mr-1">
           {isBn ? 'কুইক প্রিসেট:' : 'Quick Presets:'}
@@ -1040,7 +1057,10 @@ function TutorAvailabilityStepForm({
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
           <div className="space-y-1">
             <Label className="text-[11px] font-semibold">{isBn ? 'বার' : 'Weekday'}</Label>
-            <Select value={String(selectedDay)} onValueChange={(val) => setSelectedDay(Number(val))}>
+            <Select
+              value={String(selectedDay)}
+              onValueChange={(val) => setSelectedDay(Number(val))}
+            >
               <SelectTrigger className="w-full text-xs">
                 <SelectValue />
               </SelectTrigger>
@@ -1089,7 +1109,9 @@ function TutorAvailabilityStepForm({
 
       <div className="space-y-2">
         <Label className="text-xs font-semibold">
-          {isBn ? `সক্রিয় প্রাপ্যতা সময়সূচি (${slots.length})` : `Active Weekly Slots (${slots.length})`}
+          {isBn
+            ? `সক্রিয় প্রাপ্যতা সময়সূচি (${slots.length})`
+            : `Active Weekly Slots (${slots.length})`}
         </Label>
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
           {slots.map((s, idx) => {
@@ -1356,7 +1378,15 @@ function DocumentsStepForm({
                 <div className="text-[10px] text-muted-foreground flex items-center gap-1.5">
                   <span className="uppercase font-mono">{sample.type}</span>
                   <span>•</span>
-                  <span>{uploadingSample === sample.name ? (isBn ? 'লোড হচ্ছে...' : 'Loading...') : (isBn ? '+ যোগ করুন' : '+ Add')}</span>
+                  <span>
+                    {uploadingSample === sample.name
+                      ? isBn
+                        ? 'লোড হচ্ছে...'
+                        : 'Loading...'
+                      : isBn
+                        ? '+ যোগ করুন'
+                        : '+ Add'}
+                  </span>
                 </div>
               </div>
             </button>
@@ -1379,7 +1409,9 @@ function DocumentsStepForm({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                <SelectItem value="nid">{isBn ? 'জাতীয় পরিচয়পত্র (NID)' : 'National ID (NID)'}</SelectItem>
+                <SelectItem value="nid">
+                  {isBn ? 'জাতীয় পরিচয়পত্র (NID)' : 'National ID (NID)'}
+                </SelectItem>
                 <SelectItem value="degree">
                   {isBn ? 'শিক্ষাগত সনদ (Academic Certificate)' : 'Academic Certificate'}
                 </SelectItem>
@@ -1394,7 +1426,8 @@ function DocumentsStepForm({
             <Label className="text-xs font-semibold">
               {isBn
                 ? 'প্রমাণপত্র ফাইল (PDF / ছবি, সর্বোচ্চ ১০MB)'
-                : 'Evidence File (PDF / Image, Max 10MB)'} *
+                : 'Evidence File (PDF / Image, Max 10MB)'}{' '}
+              *
             </Label>
             <Input
               type="file"
@@ -1419,7 +1452,9 @@ function DocumentsStepForm({
         <div className="space-y-2">
           <div className="flex items-center justify-between">
             <Label className="text-xs font-bold text-foreground">
-              {isBn ? `সংযুক্ত নথিসমূহ (${uploadedFiles.length})` : `Attached Documents (${uploadedFiles.length})`}
+              {isBn
+                ? `সংযুক্ত নথিসমূহ (${uploadedFiles.length})`
+                : `Attached Documents (${uploadedFiles.length})`}
             </Label>
           </div>
           <div className="space-y-2">
@@ -1443,7 +1478,10 @@ function DocumentsStepForm({
                   <div className="min-w-0">
                     <div className="text-xs font-semibold text-foreground truncate">{doc.name}</div>
                     <div className="text-[11px] text-muted-foreground flex items-center gap-2">
-                      <Badge variant="outline" className="text-[9px] uppercase font-mono px-1.5 py-0">
+                      <Badge
+                        variant="outline"
+                        className="text-[9px] uppercase font-mono px-1.5 py-0"
+                      >
                         {doc.type}
                       </Badge>
                       <span>{(doc.sizeBytes / 1024).toFixed(1)} KB</span>
@@ -1501,7 +1539,11 @@ function SecuritySetupStepForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 text-left" data-testid="onboarding-security-form">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 text-left"
+      data-testid="onboarding-security-form"
+    >
       <div className="rounded-xl border border-border bg-muted/20 p-4 space-y-3">
         <div className="flex items-center gap-2 text-foreground font-semibold text-xs">
           <Shield className="h-4 w-4 text-primary" />
@@ -1557,11 +1599,17 @@ function ReviewStepForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4 text-left" data-testid="onboarding-review-form">
+    <form
+      onSubmit={handleSubmit}
+      className="space-y-4 text-left"
+      data-testid="onboarding-review-form"
+    >
       <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-3">
         <div className="flex items-center gap-2 text-primary font-bold text-sm">
           <Sparkles className="h-5 w-5" />
-          <span>{isBn ? 'সকল তথ্য চূড়ান্ত নিরীক্ষা' : 'Final Review & Verification Submission'}</span>
+          <span>
+            {isBn ? 'সকল তথ্য চূড়ান্ত নিরীক্ষা' : 'Final Review & Verification Submission'}
+          </span>
         </div>
         <p className="text-xs text-muted-foreground leading-relaxed">
           {isBn
@@ -1593,6 +1641,7 @@ function ContactVerificationCard({
   onVerified: () => void;
 }) {
   const isBn = locale === 'bn';
+  const apiBase = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
   const [code, setCode] = React.useState('');
   const [codeSent, setCodeSent] = React.useState(false);
   const [isSending, setIsSending] = React.useState(false);
@@ -1605,7 +1654,7 @@ function ContactVerificationCard({
     setIsSending(true);
     setError(null);
     try {
-      const res = await fetch('http://localhost:4000/api/v1/auth/request-code', {
+      const res = await fetch(`${apiBase}/api/v1/auth/request-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ contact: userContact, purpose: 'contact_verification' }),
@@ -1634,7 +1683,7 @@ function ContactVerificationCard({
     setIsVerifying(true);
     setError(null);
     try {
-      const res = await fetch('http://localhost:4000/api/v1/auth/verify-code', {
+      const res = await fetch(`${apiBase}/api/v1/auth/verify-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -1904,11 +1953,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
               isSubmitting={isSubmitting}
             />
           ) : nextStep.key === 'review' ? (
-            <ReviewStepForm
-              locale={locale}
-              onSubmit={handleSubmit}
-              isSubmitting={isSubmitting}
-            />
+            <ReviewStepForm locale={locale} onSubmit={handleSubmit} isSubmitting={isSubmitting} />
           ) : nextStep.submittable ? (
             <StepForm
               step={nextStep}

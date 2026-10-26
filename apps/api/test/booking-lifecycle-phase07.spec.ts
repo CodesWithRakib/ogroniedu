@@ -144,7 +144,9 @@ describe('Phase 7: Core Tutoring Lifecycle & Booking Concurrency', () => {
     beforeEach(() => {
       mockBookingRepo = {
         find: vi.fn(),
-        save: vi.fn().mockImplementation((entity) => Promise.resolve({ ...entity, id: entity.id || 'b-1' })),
+        save: vi
+          .fn()
+          .mockImplementation((entity) => Promise.resolve({ ...entity, id: entity.id || 'b-1' })),
       };
       mockAuditService = {
         record: vi.fn().mockResolvedValue(undefined),

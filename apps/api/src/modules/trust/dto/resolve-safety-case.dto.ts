@@ -18,7 +18,9 @@ export class ResolveSafetyCaseDto {
   @IsIn(['resolved', 'closed', 'dismissed'])
   status?: 'resolved' | 'closed' | 'dismissed';
 
-  @ApiPropertyOptional({ description: 'Specific outcome type code (e.g. warning, no_action, suspension)' })
+  @ApiPropertyOptional({
+    description: 'Specific outcome type code (e.g. warning, no_action, suspension)',
+  })
   @IsOptional()
   @IsString()
   @MaxLength(100)

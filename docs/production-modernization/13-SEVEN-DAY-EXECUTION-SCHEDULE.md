@@ -23,6 +23,7 @@ Day 7 ──► Production Build, Docker Staging Validation & Go/No-Go Release (
 ## 2. Daily Milestone Plan
 
 ### Day 1 — Repository Discovery, Baseline & Documentation Foundation
+
 - **Objectives**: Complete deep audit of all 1,105 files, 88 compiled routes, 36 controllers, 20 modules, 80 tables/views, 106 oversized files, and 27 services violating interface isolation. Establish the master documentation hierarchy and detailed phase blueprints.
 - **Tasks**: `INV-001` through `INV-010`.
 - **Target Deliverables**:
@@ -33,6 +34,7 @@ Day 7 ──► Production Build, Docker Staging Validation & Go/No-Go Release (
 ---
 
 ### Day 2 — Architecture & TDD Foundation (Achieving 100% Green Baseline)
+
 - **Objectives**: Stabilize testing and linting harnesses so TDD can be strictly enforced for all subsequent refactorings.
 - **Tasks**:
   - `TDD-001`: Create `apps/api/vitest.config.ts` providing `JWT_SECRET` and test environment variables. (Brings API tests from 952 to 1,026 / 1,026 PASS).
@@ -43,6 +45,7 @@ Day 7 ──► Production Build, Docker Staging Validation & Go/No-Go Release (
 ---
 
 ### Day 3 — Frontend Modularization & Thin Route Refactoring
+
 - **Objectives**: Decompose the 11 oversized `page.tsx` routes into thin Server Component route handlers delegating to feature views; decompose monolithic `navigation.ts` into role-specific files.
 - **Tasks**:
   - `FE-001`: Decompose `bookings/[id]/page.tsx` (829 lines) into `src/features/bookings/components/detail/`.
@@ -57,6 +60,7 @@ Day 7 ──► Production Build, Docker Staging Validation & Go/No-Go Release (
 ---
 
 ### Day 4 — Backend Service Modularization & Interface Extraction
+
 - **Objectives**: Enforce the non-negotiable architectural rule: extract internal interfaces from the 27 services into dedicated `interfaces/`, `enums/`, `dto/` folders; decompose top oversized god services.
 - **Tasks**:
   - `BE-001` to `BE-027`: Extract interfaces out of the 27 identified services.
@@ -71,6 +75,7 @@ Day 7 ──► Production Build, Docker Staging Validation & Go/No-Go Release (
 ---
 
 ### Day 5 — Security Hardening, Storage, Database & Outbox Integrity
+
 - **Objectives**: Resolve all identified security findings, implement missing file download streaming, verify outbox reliability, and apply database integrity optimizations.
 - **Tasks**:
   - `SEC-001` (`RLD-001`): Implement `GET /api/v1/files/:fileId/download` with HMAC signed URL token verification.
@@ -86,6 +91,7 @@ Day 7 ──► Production Build, Docker Staging Validation & Go/No-Go Release (
 ---
 
 ### Day 6 — Automated Regression, Playwright E2E & Chrome DevTools Visual QA
+
 - **Objectives**: Execute full automated regression testing across all tiers and conduct live browser testing using Chrome DevTools MCP.
 - **Tasks**:
   - Full Vitest regression test run: 1,367+ tests passing across Database, Web, and API.
@@ -97,6 +103,7 @@ Day 7 ──► Production Build, Docker Staging Validation & Go/No-Go Release (
 ---
 
 ### Day 7 — Production Build, Operations, Docker & Release Signoff
+
 - **Objectives**: Final release preparation, container build validation, production environment validation, and go/no-go signoff.
 - **Tasks**:
   - `REL-001`: Verify production build (`pnpm build`) and assert zero server secrets leaked in client bundle.

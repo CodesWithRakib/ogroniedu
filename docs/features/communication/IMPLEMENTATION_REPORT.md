@@ -4,15 +4,16 @@
 **Phase:** 08  
 **Date:** October 20, 2026  
 **Status:** COMPLETE (Pending Product-Owner Sign-Off)  
-**Author:** Senior Full-Stack Engineer, Real-Time Systems Architect & Application Security Engineer  
+**Author:** Senior Full-Stack Engineer, Real-Time Systems Architect & Application Security Engineer
 
 ---
 
 ## 1. Executive Summary
 
-Phase 08 successfully delivers a production-grade, secure, and auditable **Real-Time Communication & Messaging Subsystem** for OgroniEdu. The implementation adheres strictly to Bangladesh child-safety legislation (*The Children Act 2013 / শিশু আইন ২০১৩*) and financial protection policies (preserving escrow guarantees and preventing platform disintermediation).
+Phase 08 successfully delivers a production-grade, secure, and auditable **Real-Time Communication & Messaging Subsystem** for OgroniEdu. The implementation adheres strictly to Bangladesh child-safety legislation (_The Children Act 2013 / শিশু আইন ২০১৩_) and financial protection policies (preserving escrow guarantees and preventing platform disintermediation).
 
 ### Key Accomplishments:
+
 1. **Low-Latency Real-Time WebSockets via Socket.IO:**
    - Active chat rooms (`booking_chat:${bookingId}`) with instant message broadcast to viewers and recipient user rooms (`user:${recipientUserId}`).
    - Live debounced typing indicators (`chat_typing` / `user_typing`) with automatic 4-second timeout.
@@ -36,20 +37,21 @@ Phase 08 successfully delivers a production-grade, secure, and auditable **Real-
 
 ## 2. Requirements Traceability
 
-| Requirement ID | Description | Implementation Files | Status |
-| :--- | :--- | :--- | :---: |
-| **FR-008** | Real-Time Notification & Communication | `NotificationGateway`, `BookingMessagesService`, `useBookingChat` | **VERIFIED** |
-| **FR-080** | Participant Scoping & ABAC Messaging | `BookingMessagesService` (student, requester, tutor, linked guardian) | **VERIFIED** |
-| **FR-081** | Content Moderation & Anti-Circumvention | `content-safety.util.ts` (Bengali digits, obfuscated numbers, off-platform cash) | **VERIFIED** |
-| **FR-082** | Conversations Hub & Inbox | `ConversationsController`, `ConversationsInboxView`, `/[locale]/messages` | **VERIFIED** |
-| **NFR-001** | Strict ABAC & Unauthorized Rejection | `booking-messages.spec.ts` (403 Forbidden for non-participants) | **VERIFIED** |
-| **NFR-004** | 100% Bilingual Parity (EN & BN) | `messages/en.json`, `messages/bn.json`, `i18n.spec.ts` | **VERIFIED** |
+| Requirement ID | Description                             | Implementation Files                                                             |    Status    |
+| :------------- | :-------------------------------------- | :------------------------------------------------------------------------------- | :----------: |
+| **FR-008**     | Real-Time Notification & Communication  | `NotificationGateway`, `BookingMessagesService`, `useBookingChat`                | **VERIFIED** |
+| **FR-080**     | Participant Scoping & ABAC Messaging    | `BookingMessagesService` (student, requester, tutor, linked guardian)            | **VERIFIED** |
+| **FR-081**     | Content Moderation & Anti-Circumvention | `content-safety.util.ts` (Bengali digits, obfuscated numbers, off-platform cash) | **VERIFIED** |
+| **FR-082**     | Conversations Hub & Inbox               | `ConversationsController`, `ConversationsInboxView`, `/[locale]/messages`        | **VERIFIED** |
+| **NFR-001**    | Strict ABAC & Unauthorized Rejection    | `booking-messages.spec.ts` (403 Forbidden for non-participants)                  | **VERIFIED** |
+| **NFR-004**    | 100% Bilingual Parity (EN & BN)         | `messages/en.json`, `messages/bn.json`, `i18n.spec.ts`                           | **VERIFIED** |
 
 ---
 
 ## 3. Database Migration Applied
 
 **Migration 026:** `packages/database/src/migrations/026_realtime_messaging_and_attachments.sql`
+
 - Added columns: `attachment_asset_ids UUID[] DEFAULT '{}'` and `metadata JSONB DEFAULT '{}'` on table `booking_messages`.
 - Added performance indexes: `idx_booking_messages_cursor (booking_id, created_at DESC, id DESC)` and `idx_booking_messages_sender_recipient (sender_user_id, recipient_user_id)`.
 - Applied cleanly to PostgreSQL 18 `ogroniedu_dev` and recorded in `schema_migrations`.
@@ -58,14 +60,14 @@ Phase 08 successfully delivers a production-grade, secure, and auditable **Real-
 
 ## 4. Quality Gates & Verification Matrix
 
-| Check | Target | Actual Result | Status |
-| :--- | :--- | :--- | :---: |
-| **Typecheck** | Monorepo (`turbo run typecheck`) | 6/6 packages clean, 0 TypeScript errors | **100% PASS** |
-| **Linter** | Monorepo (`turbo run lint`) | 470 web + 468 api files, 0 warnings, 0 errors | **100% PASS** |
-| **API Unit Tests** | `Vitest` (`content-safety.util.spec.ts`, `booking-messages.spec.ts`, etc.) | 54 passed across 7 test suites | **100% PASS** |
-| **Web Unit Tests** | `Vitest` (`messaging.spec.ts`, `communication.spec.ts`, etc.) | 219 passed across 35 test suites | **100% PASS** |
-| **Production Build** | `turbo run build` | Next.js 16.4.0 Turbopack + NestJS production build clean | **100% PASS** |
-| **Visual Verification** | Headful Chrome DevTools MCP (`/en/messages`) | UI verified, message sent, live redactions tested, 0 console errors | **VERIFIED** |
+| Check                   | Target                                                                     | Actual Result                                                       |    Status     |
+| :---------------------- | :------------------------------------------------------------------------- | :------------------------------------------------------------------ | :-----------: |
+| **Typecheck**           | Monorepo (`turbo run typecheck`)                                           | 6/6 packages clean, 0 TypeScript errors                             | **100% PASS** |
+| **Linter**              | Monorepo (`turbo run lint`)                                                | 470 web + 468 api files, 0 warnings, 0 errors                       | **100% PASS** |
+| **API Unit Tests**      | `Vitest` (`content-safety.util.spec.ts`, `booking-messages.spec.ts`, etc.) | 54 passed across 7 test suites                                      | **100% PASS** |
+| **Web Unit Tests**      | `Vitest` (`messaging.spec.ts`, `communication.spec.ts`, etc.)              | 219 passed across 35 test suites                                    | **100% PASS** |
+| **Production Build**    | `turbo run build`                                                          | Next.js 16.4.0 Turbopack + NestJS production build clean            | **100% PASS** |
+| **Visual Verification** | Headful Chrome DevTools MCP (`/en/messages`)                               | UI verified, message sent, live redactions tested, 0 console errors | **VERIFIED**  |
 
 ---
 
@@ -87,14 +89,14 @@ Phase 08 successfully delivers a production-grade, secure, and auditable **Real-
 ## 6. Decisions Requiring Product-Owner Approval
 
 1. **Attachment Retention Period:**
-   - *Current Implementation:* File attachments referenced in messages persist until booking record archival.
-   - *Decision Needed:* Confirm whether non-active chat attachments should auto-archive after 180 days to manage storage costs.
+   - _Current Implementation:_ File attachments referenced in messages persist until booking record archival.
+   - _Decision Needed:_ Confirm whether non-active chat attachments should auto-archive after 180 days to manage storage costs.
 2. **Guardian Direct Message Permissions:**
-   - *Current Implementation:* Linked guardians can monitor tuition chats and post clarifying notes with a visible "🛡️ Guardian" tag.
-   - *Decision Needed:* Confirm if students or tutors should be able to initiate 1-on-1 private threads with guardians separately from the student's tuition thread.
+   - _Current Implementation:_ Linked guardians can monitor tuition chats and post clarifying notes with a visible "🛡️ Guardian" tag.
+   - _Decision Needed:_ Confirm if students or tutors should be able to initiate 1-on-1 private threads with guardians separately from the student's tuition thread.
 3. **Repeated Redaction Escalation:**
-   - *Current Implementation:* Redacted messages are masked inline and recorded in audit logs.
-   - *Decision Needed:* Confirm threshold (e.g. 3 consecutive redactions) for automated temporary messaging hold on repeat offenders.
+   - _Current Implementation:_ Redacted messages are masked inline and recorded in audit logs.
+   - _Decision Needed:_ Confirm threshold (e.g. 3 consecutive redactions) for automated temporary messaging hold on repeat offenders.
 
 ---
 

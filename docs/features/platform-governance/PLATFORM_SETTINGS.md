@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী ایڈু)  
 **Phase:** 09: Admin Operations, Organization Management & Platform Governance  
 **Date:** October 21, 2026  
-**Status:** Approved Specification  
+**Status:** Approved Specification
 
 ---
 
@@ -46,12 +46,12 @@ flowchart TD
 
 All persisted business settings reside in table `system_settings`. Modifications require `super_admin` role and strict schema validation:
 
-| Setting Key | Default Value | Data Type | Validation Rules | Description & Business Impact |
-| :--- | :--- | :---: | :--- | :--- |
-| **`platform_fee_percent`** | `{"percent": 8}` | `JSONB` | Integer `percent` between 0 and 50. | Commission deducted by the platform upon milestone completion. |
-| **`cancellation_window_hours`** | `{"hours": 24}` | `JSONB` | Integer `hours` between 1 and 168. | Hours before scheduled session start allowing 100% guardian refund. |
-| **`replacement_guarantee_trial_hours`**| `{"hours": 48}` | `JSONB` | Integer `hours` between 12 and 168. | Window post-trial session during which guardian can invoke free replacement. |
-| **`impersonation_max_minutes`** | `{"minutes": 15}` | `JSONB` | Integer `minutes` between 5 and 60. | Strict hard-cap ceiling for super-admin emergency support sessions. |
+| Setting Key                             | Default Value     | Data Type | Validation Rules                    | Description & Business Impact                                                |
+| :-------------------------------------- | :---------------- | :-------: | :---------------------------------- | :--------------------------------------------------------------------------- |
+| **`platform_fee_percent`**              | `{"percent": 8}`  |  `JSONB`  | Integer `percent` between 0 and 50. | Commission deducted by the platform upon milestone completion.               |
+| **`cancellation_window_hours`**         | `{"hours": 24}`   |  `JSONB`  | Integer `hours` between 1 and 168.  | Hours before scheduled session start allowing 100% guardian refund.          |
+| **`replacement_guarantee_trial_hours`** | `{"hours": 48}`   |  `JSONB`  | Integer `hours` between 12 and 168. | Window post-trial session during which guardian can invoke free replacement. |
+| **`impersonation_max_minutes`**         | `{"minutes": 15}` |  `JSONB`  | Integer `minutes` between 5 and 60. | Strict hard-cap ceiling for super-admin emergency support sessions.          |
 
 ---
 

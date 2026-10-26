@@ -1,5 +1,8 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { FeedbackController, AdminFeedbackController } from '../src/modules/feedback/feedback.controller';
+import {
+  FeedbackController,
+  AdminFeedbackController,
+} from '../src/modules/feedback/feedback.controller';
 import { CreateFeedbackDto } from '../src/modules/feedback/dto/create-feedback.dto';
 import { TriageFeedbackDto } from '../src/modules/feedback/dto/triage-feedback.dto';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
@@ -80,7 +83,11 @@ describe('Beta Feedback Controllers (Phase 12)', () => {
       expect(res.success).toBe(true);
       expect(res.data.id).toBe('fb-123');
       expect(res.requestId).toBe('req-fb-123');
-      expect(mockFeedbackService.submitFeedback).toHaveBeenCalledWith(dto, studentUser, '127.0.0.1');
+      expect(mockFeedbackService.submitFeedback).toHaveBeenCalledWith(
+        dto,
+        studentUser,
+        '127.0.0.1',
+      );
     });
 
     it('GET /api/v1/feedback/my returns paginated user feedback', async () => {

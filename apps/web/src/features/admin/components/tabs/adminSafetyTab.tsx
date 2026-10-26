@@ -80,7 +80,11 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
     if (!activeReport) return;
 
     if (holdReason.trim().length < 5) {
-      toast.error(isBn ? 'অনুগ্রহ করে স্থগিতাদেশের সুনির্দিষ্ট কারণ লিখুন।' : 'Please state hold reason (min 5 chars).');
+      toast.error(
+        isBn
+          ? 'অনুগ্রহ করে স্থগিতাদেশের সুনির্দিষ্ট কারণ লিখুন।'
+          : 'Please state hold reason (min 5 chars).',
+      );
       return;
     }
 
@@ -90,12 +94,19 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
         reason: holdReason.trim(),
       }).unwrap();
 
-      toast.success(isBn ? 'শিক্ষক প্রোফাইলে সুরক্ষামূলক স্থগিতাদেশ প্রয়োগ করা হয়েছে।' : 'Protective safety hold applied.');
+      toast.success(
+        isBn
+          ? 'শিক্ষক প্রোফাইলে সুরক্ষামূলক স্থগিতাদেশ প্রয়োগ করা হয়েছে।'
+          : 'Protective safety hold applied.',
+      );
       setShowHoldModal(false);
       setHoldReason('');
       refetch();
     } catch (err: any) {
-      toast.error(err?.data?.message || (isBn ? 'স্থগিতাদেশ প্রয়োগ ব্যর্থ হয়েছে।' : 'Failed to apply safety hold.'));
+      toast.error(
+        err?.data?.message ||
+          (isBn ? 'স্থগিতাদেশ প্রয়োগ ব্যর্থ হয়েছে।' : 'Failed to apply safety hold.'),
+      );
     }
   };
 
@@ -104,7 +115,11 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
     if (!activeReport || !investigatorId.trim()) return;
 
     if (investigatorId.trim() === activeReport.reportedUserId) {
-      toast.error(isBn ? 'স্বার্থের সংঘাত: অভিযুক্ত ব্যক্তিকে কেস তদন্তকারী হিসেবে নিয়োগ দেওয়া যাবে না।' : 'Conflict of interest: Implicated user cannot be assigned as investigator.');
+      toast.error(
+        isBn
+          ? 'স্বার্থের সংঘাত: অভিযুক্ত ব্যক্তিকে কেস তদন্তকারী হিসেবে নিয়োগ দেওয়া যাবে না।'
+          : 'Conflict of interest: Implicated user cannot be assigned as investigator.',
+      );
       return;
     }
 
@@ -115,11 +130,15 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
         reason: 'Assigned via admin safety desk',
       }).unwrap();
 
-      toast.success(isBn ? 'কেস তদন্তকারী সফলভাবে নিয়োগ করা হয়েছে।' : 'Investigator successfully assigned.');
+      toast.success(
+        isBn ? 'কেস তদন্তকারী সফলভাবে নিয়োগ করা হয়েছে।' : 'Investigator successfully assigned.',
+      );
       setInvestigatorId('');
       refetch();
     } catch (err: any) {
-      toast.error(err?.data?.message || (isBn ? 'নিয়োগ ব্যর্থ হয়েছে।' : 'Failed to assign investigator.'));
+      toast.error(
+        err?.data?.message || (isBn ? 'নিয়োগ ব্যর্থ হয়েছে।' : 'Failed to assign investigator.'),
+      );
     }
   };
 
@@ -134,11 +153,16 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
         reason: statusReason.trim() || undefined,
       }).unwrap();
 
-      toast.success(isBn ? 'কেস স্ট্যাটাস আপডেট সম্পন্ন হয়েছে।' : 'Case status updated successfully.');
+      toast.success(
+        isBn ? 'কেস স্ট্যাটাস আপডেট সম্পন্ন হয়েছে।' : 'Case status updated successfully.',
+      );
       setStatusReason('');
       refetch();
     } catch (err: any) {
-      toast.error(err?.data?.message || (isBn ? 'স্ট্যাটাস আপডেট ব্যর্থ হয়েছে।' : 'Failed to update status.'));
+      toast.error(
+        err?.data?.message ||
+          (isBn ? 'স্ট্যাটাস আপডেট ব্যর্থ হয়েছে।' : 'Failed to update status.'),
+      );
     }
   };
 
@@ -165,14 +189,20 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
       setMessageText('');
       refetch();
     } catch (err: any) {
-      toast.error(err?.data?.message || (isBn ? 'বার্তা প্রেরণ ব্যর্থ হয়েছে।' : 'Failed to post message.'));
+      toast.error(
+        err?.data?.message || (isBn ? 'বার্তা প্রেরণ ব্যর্থ হয়েছে।' : 'Failed to post message.'),
+      );
     }
   };
 
   const handleResolve = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!activeReport || resolutionNotes.trim().length < 5) {
-      toast.error(isBn ? 'অনুগ্রহ করে বিস্তারিত সমাধান ও সিদ্ধান্ত লিপিবদ্ধ করুন।' : 'Please document resolution findings (min 5 chars).');
+      toast.error(
+        isBn
+          ? 'অনুগ্রহ করে বিস্তারিত সমাধান ও সিদ্ধান্ত লিপিবদ্ধ করুন।'
+          : 'Please document resolution findings (min 5 chars).',
+      );
       return;
     }
 
@@ -188,7 +218,9 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
       setShowInvestigateModal(false);
       refetch();
     } catch (err: any) {
-      toast.error(err?.data?.message || (isBn ? 'মীমাংসা ব্যর্থ হয়েছে।' : 'Failed to resolve case.'));
+      toast.error(
+        err?.data?.message || (isBn ? 'মীমাংসা ব্যর্থ হয়েছে।' : 'Failed to resolve case.'),
+      );
     }
   };
 
@@ -208,7 +240,9 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
         <div>
           <div className="flex items-center gap-2">
             <h3 className="text-base font-bold text-foreground">
-              {isBn ? 'শিশু সুরক্ষা ও ট্রাস্ট ইনসিডেন্ট ট্রায়াজ' : 'Child Safeguarding & Incident Desk'}
+              {isBn
+                ? 'শিশু সুরক্ষা ও ট্রাস্ট ইনসিডেন্ট ট্রায়াজ'
+                : 'Child Safeguarding & Incident Desk'}
             </h3>
             {criticalCount > 0 && (
               <Badge variant="destructive" className="animate-pulse text-[10px] font-bold">
@@ -228,12 +262,16 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
         <Table data-testid="safety-reports-table">
           <TableHeader>
             <TableRow className="bg-muted/40 text-muted-foreground uppercase tracking-wider text-[11px] font-semibold">
-              <TableHead className="px-4 py-3">{isBn ? 'রিপোর্টার ও শিক্ষক' : 'Reporter & Target'}</TableHead>
+              <TableHead className="px-4 py-3">
+                {isBn ? 'রিপোর্টার ও শিক্ষক' : 'Reporter & Target'}
+              </TableHead>
               <TableHead className="px-4 py-3">{isBn ? 'ক্যাটাগরি' : 'Category'}</TableHead>
               <TableHead className="px-4 py-3">{isBn ? 'অগ্রাধিকার' : 'Severity'}</TableHead>
               <TableHead className="px-4 py-3">{isBn ? 'স্ট্যাটাস' : 'Status'}</TableHead>
               <TableHead className="px-4 py-3">{isBn ? 'বিবরণ' : 'Description'}</TableHead>
-              <TableHead className="px-4 py-3 text-right">{isBn ? 'পদক্ষেপ' : 'Intervention'}</TableHead>
+              <TableHead className="px-4 py-3 text-right">
+                {isBn ? 'পদক্ষেপ' : 'Intervention'}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-foreground text-xs">
@@ -252,12 +290,18 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                 return (
                   <TableRow
                     key={r.id}
-                    className={isUrgent ? 'bg-destructive/5 hover:bg-destructive/10' : 'hover:bg-muted/20'}
+                    className={
+                      isUrgent ? 'bg-destructive/5 hover:bg-destructive/10' : 'hover:bg-muted/20'
+                    }
                   >
                     <TableCell className="px-4 py-3 font-medium">
                       <div className="space-y-0.5">
                         <span className="font-bold text-foreground">
-                          {r.reportedUserId ? `Tutor #${r.reportedUserId.slice(0, 8)}` : isBn ? 'সাধারণ রিপোর্ট' : 'General'}
+                          {r.reportedUserId
+                            ? `Tutor #${r.reportedUserId.slice(0, 8)}`
+                            : isBn
+                              ? 'সাধারণ রিপোর্ট'
+                              : 'General'}
                         </span>
                         <div className="text-[11px] text-muted-foreground">
                           {isBn ? 'দায়েরকারী:' : 'By:'} #{r.reporterUserId.slice(0, 8)}
@@ -274,7 +318,13 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                     </TableCell>
                     <TableCell className="px-4 py-3">
                       <Badge
-                        variant={r.severity === 'critical' ? 'destructive' : r.severity === 'high' ? 'warning' : 'outline'}
+                        variant={
+                          r.severity === 'critical'
+                            ? 'destructive'
+                            : r.severity === 'high'
+                              ? 'warning'
+                              : 'outline'
+                        }
                         className="capitalize text-[10px]"
                       >
                         {r.severity}
@@ -285,7 +335,10 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                         {r.status?.replace(/_/g, ' ') || 'submitted'}
                       </Badge>
                     </TableCell>
-                    <TableCell className="px-4 py-3 max-w-xs truncate text-muted-foreground" title={r.description}>
+                    <TableCell
+                      className="px-4 py-3 max-w-xs truncate text-muted-foreground"
+                      title={r.description}
+                    >
                       {r.description}
                     </TableCell>
                     <TableCell className="px-4 py-3 text-right">
@@ -335,7 +388,9 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
               <div className="flex items-center gap-2 text-destructive">
                 <ShieldAlert className="w-5 h-5" />
                 <DialogTitle className="text-base font-bold text-foreground">
-                  {isBn ? 'শিক্ষক প্রোফাইলে জরুরি সুরক্ষামূলক স্থগিতাদেশ' : 'Apply Protective Safety Hold'}
+                  {isBn
+                    ? 'শিক্ষক প্রোফাইলে জরুরি সুরক্ষামূলক স্থগিতাদেশ'
+                    : 'Apply Protective Safety Hold'}
                 </DialogTitle>
               </div>
               <DialogDescription className="text-xs text-muted-foreground">
@@ -380,7 +435,15 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                   className="font-bold gap-1.5"
                 >
                   <ShieldAlert className="w-3.5 h-3.5" />
-                  <span>{applyingHold ? (isBn ? 'স্থগিত হচ্ছে...' : 'Applying...') : isBn ? 'স্থগিতাদেশ কার্যকর করুন' : 'Confirm Safety Hold'}</span>
+                  <span>
+                    {applyingHold
+                      ? isBn
+                        ? 'স্থগিত হচ্ছে...'
+                        : 'Applying...'
+                      : isBn
+                        ? 'স্থগিতাদেশ কার্যকর করুন'
+                        : 'Confirm Safety Hold'}
+                  </span>
                 </Button>
               </div>
             </form>
@@ -397,7 +460,9 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-5 h-5 text-primary" />
                   <DialogTitle className="text-base font-bold text-foreground">
-                    {isBn ? 'কেস তদন্ত ও কমপ্লায়েন্স ম্যানেজমেন্ট' : 'Case Investigation & Management'}
+                    {isBn
+                      ? 'কেস তদন্ত ও কমপ্লায়েন্স ম্যানেজমেন্ট'
+                      : 'Case Investigation & Management'}
                   </DialogTitle>
                 </div>
                 <Badge variant="outline" className="text-[10px] uppercase font-mono">
@@ -415,36 +480,67 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
               {/* Summary Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-muted/30 p-3 rounded-xl border border-border">
                 <div>
-                  <span className="text-[10px] text-muted-foreground font-semibold uppercase">{isBn ? 'ক্যাটাগরি' : 'Category'}</span>
-                  <div className="font-bold text-foreground capitalize mt-0.5">{activeReport.category?.replace(/_/g, ' ')}</div>
+                  <span className="text-[10px] text-muted-foreground font-semibold uppercase">
+                    {isBn ? 'ক্যাটাগরি' : 'Category'}
+                  </span>
+                  <div className="font-bold text-foreground capitalize mt-0.5">
+                    {activeReport.category?.replace(/_/g, ' ')}
+                  </div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-muted-foreground font-semibold uppercase">{isBn ? 'অগ্রাধিকার' : 'Severity'}</span>
-                  <div className="font-bold text-destructive capitalize mt-0.5">{activeReport.severity}</div>
+                  <span className="text-[10px] text-muted-foreground font-semibold uppercase">
+                    {isBn ? 'অগ্রাধিকার' : 'Severity'}
+                  </span>
+                  <div className="font-bold text-destructive capitalize mt-0.5">
+                    {activeReport.severity}
+                  </div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-muted-foreground font-semibold uppercase">{isBn ? 'গোপনীয়তা' : 'Privacy'}</span>
-                  <div className="font-bold text-foreground mt-0.5">{activeReport.isConfidential ? (isBn ? 'গোপনীয় 🔒' : 'Confidential 🔒') : (isBn ? 'সাধারণ' : 'Standard')}</div>
+                  <span className="text-[10px] text-muted-foreground font-semibold uppercase">
+                    {isBn ? 'গোপনীয়তা' : 'Privacy'}
+                  </span>
+                  <div className="font-bold text-foreground mt-0.5">
+                    {activeReport.isConfidential
+                      ? isBn
+                        ? 'গোপনীয় 🔒'
+                        : 'Confidential 🔒'
+                      : isBn
+                        ? 'সাধারণ'
+                        : 'Standard'}
+                  </div>
                 </div>
                 <div>
-                  <span className="text-[10px] text-muted-foreground font-semibold uppercase">{isBn ? 'বর্তমান স্ট্যাটাস' : 'Status'}</span>
-                  <div className="font-bold text-primary capitalize mt-0.5">{activeReport.status?.replace(/_/g, ' ')}</div>
+                  <span className="text-[10px] text-muted-foreground font-semibold uppercase">
+                    {isBn ? 'বর্তমান স্ট্যাটাস' : 'Status'}
+                  </span>
+                  <div className="font-bold text-primary capitalize mt-0.5">
+                    {activeReport.status?.replace(/_/g, ' ')}
+                  </div>
                 </div>
               </div>
 
               {/* Incident Narrative */}
               <div className="space-y-1">
-                <span className="font-semibold text-foreground">{isBn ? 'অভিযোগের বিবরণ:' : 'Incident Narrative:'}</span>
+                <span className="font-semibold text-foreground">
+                  {isBn ? 'অভিযোগের বিবরণ:' : 'Incident Narrative:'}
+                </span>
                 <p className="bg-muted/40 p-3 rounded-xl text-muted-foreground leading-relaxed border border-border/60">
                   {activeReport.description}
                 </p>
               </div>
 
               {/* Investigator Assignment */}
-              <form onSubmit={handleAssign} className="space-y-2 p-3 bg-card border border-border rounded-xl">
+              <form
+                onSubmit={handleAssign}
+                className="space-y-2 p-3 bg-card border border-border rounded-xl"
+              >
                 <div className="flex items-center gap-2 font-semibold text-foreground">
                   <UserPlus className="w-4 h-4 text-primary" />
-                  <span>{isBn ? 'তদন্তকারী কর্মকর্তা নিয়োগ (Conflict-of-Interest Guard)' : 'Assign Investigator'}</span>
+                  <span>
+                    {isBn
+                      ? 'তদন্তকারী কর্মকর্তা নিয়োগ (Conflict-of-Interest Guard)'
+                      : 'Assign Investigator'}
+                  </span>
                 </div>
                 <div className="flex gap-2">
                   <input
@@ -455,13 +551,22 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                     className="flex-1 px-3 py-1.5 rounded-lg border border-border bg-background text-xs"
                   />
                   <Button type="submit" size="sm" disabled={assigning}>
-                    {assigning ? (isBn ? 'নিয়োগ হচ্ছে...' : 'Assigning...') : isBn ? 'নিয়োগ করুন' : 'Assign'}
+                    {assigning
+                      ? isBn
+                        ? 'নিয়োগ হচ্ছে...'
+                        : 'Assigning...'
+                      : isBn
+                        ? 'নিয়োগ করুন'
+                        : 'Assign'}
                   </Button>
                 </div>
               </form>
 
               {/* State Transition */}
-              <form onSubmit={handleUpdateStatus} className="space-y-2 p-3 bg-card border border-border rounded-xl">
+              <form
+                onSubmit={handleUpdateStatus}
+                className="space-y-2 p-3 bg-card border border-border rounded-xl"
+              >
                 <div className="flex items-center gap-2 font-semibold text-foreground">
                   <Clock className="w-4 h-4 text-warning" />
                   <span>{isBn ? 'কেস লাইফসাইকেল স্ট্যাটাস পরিবর্তন' : 'Update Case State'}</span>
@@ -491,17 +596,28 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                 </div>
                 <div className="flex justify-end">
                   <Button type="submit" size="sm" variant="outline" disabled={updatingStatus}>
-                    {updatingStatus ? (isBn ? 'সংরক্ষণ হচ্ছে...' : 'Saving...') : isBn ? 'স্ট্যাটাস আপডেট' : 'Update State'}
+                    {updatingStatus
+                      ? isBn
+                        ? 'সংরক্ষণ হচ্ছে...'
+                        : 'Saving...'
+                      : isBn
+                        ? 'স্ট্যাটাস আপডেট'
+                        : 'Update State'}
                   </Button>
                 </div>
               </form>
 
               {/* Messages & Internal Investigator Notes */}
-              <form onSubmit={handleSendMessage} className="space-y-2 p-3 bg-card border border-border rounded-xl">
+              <form
+                onSubmit={handleSendMessage}
+                className="space-y-2 p-3 bg-card border border-border rounded-xl"
+              >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 font-semibold text-foreground">
                     <MessageSquare className="w-4 h-4 text-primary" />
-                    <span>{isBn ? 'তদন্ত নোট বা বার্তা প্রেরণ' : 'Case Messages & Internal Notes'}</span>
+                    <span>
+                      {isBn ? 'তদন্ত নোট বা বার্তা প্রেরণ' : 'Case Messages & Internal Notes'}
+                    </span>
                   </div>
                   <label className="flex items-center gap-1.5 text-[11px] text-muted-foreground cursor-pointer">
                     <input
@@ -510,7 +626,9 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                       onChange={(e) => setIsInternalNote(e.target.checked)}
                       className="rounded border-border"
                     />
-                    <span className="font-semibold text-primary">{isBn ? 'অভ্যন্তরীণ গোপন নোট (শুধুমাত্র স্টাফ)' : 'Internal Staff Note Only'}</span>
+                    <span className="font-semibold text-primary">
+                      {isBn ? 'অভ্যন্তরীণ গোপন নোট (শুধুমাত্র স্টাফ)' : 'Internal Staff Note Only'}
+                    </span>
                   </label>
                 </div>
                 <Textarea
@@ -530,16 +648,27 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                 />
                 <div className="flex justify-end">
                   <Button type="submit" size="sm" disabled={sendingMsg}>
-                    {sendingMsg ? (isBn ? 'পাঠানো হচ্ছে...' : 'Posting...') : isBn ? 'নোট সংরক্ষণ' : 'Post Message'}
+                    {sendingMsg
+                      ? isBn
+                        ? 'পাঠানো হচ্ছে...'
+                        : 'Posting...'
+                      : isBn
+                        ? 'নোট সংরক্ষণ'
+                        : 'Post Message'}
                   </Button>
                 </div>
               </form>
 
               {/* Resolution Section */}
-              <form onSubmit={handleResolve} className="space-y-2 p-3 bg-success/5 border border-success/30 rounded-xl">
+              <form
+                onSubmit={handleResolve}
+                className="space-y-2 p-3 bg-success/5 border border-success/30 rounded-xl"
+              >
                 <div className="flex items-center gap-2 font-semibold text-success">
                   <CheckCircle2 className="w-4 h-4" />
-                  <span>{isBn ? 'কেস চূড়ান্ত মীমাংসা ও সিদ্ধান্ত' : 'Final Case Resolution & Findings'}</span>
+                  <span>
+                    {isBn ? 'কেস চূড়ান্ত মীমাংসা ও সিদ্ধান্ত' : 'Final Case Resolution & Findings'}
+                  </span>
                 </div>
                 <Textarea
                   rows={3}
@@ -559,7 +688,13 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                     className="bg-success hover:bg-success/90 text-white font-bold"
                     disabled={resolvingCase}
                   >
-                    {resolvingCase ? (isBn ? 'মীমাংসা হচ্ছে...' : 'Resolving...') : isBn ? 'চূড়ান্ত সিদ্ধান্ত অনুমোদন' : 'Confirm Case Resolution'}
+                    {resolvingCase
+                      ? isBn
+                        ? 'মীমাংসা হচ্ছে...'
+                        : 'Resolving...'
+                      : isBn
+                        ? 'চূড়ান্ত সিদ্ধান্ত অনুমোদন'
+                        : 'Confirm Case Resolution'}
                   </Button>
                 </div>
               </form>

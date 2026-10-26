@@ -40,7 +40,12 @@ function calculatePasswordStrength(pass: string) {
   if (score === 3) {
     return { score: 3, labelBn: 'ভালো', labelEn: 'Good', colorClass: 'bg-blue-500' };
   }
-  return { score: 4, labelBn: 'চমৎকার ও সুরক্ষিত', labelEn: 'Strong & Secure', colorClass: 'bg-emerald-500' };
+  return {
+    score: 4,
+    labelBn: 'চমৎকার ও সুরক্ষিত',
+    labelEn: 'Strong & Secure',
+    colorClass: 'bg-emerald-500',
+  };
 }
 
 export function RegisterForm({ locale }: { locale: Locale }) {
@@ -148,7 +153,9 @@ export function RegisterForm({ locale }: { locale: Locale }) {
                   <div
                     className={cn(
                       'h-8 w-8 rounded-xl flex items-center justify-center transition-colors',
-                      active ? 'bg-primary text-white shadow-2xs' : 'bg-surface text-muted-foreground',
+                      active
+                        ? 'bg-primary text-white shadow-2xs'
+                        : 'bg-surface text-muted-foreground',
                     )}
                   >
                     <Icon className="h-4 w-4 stroke-[2.2]" aria-hidden="true" />

@@ -60,7 +60,11 @@ function resolveBookingTutorUserId(booking: BookingEntity): string | undefined {
 function resolveParticipantDisplayName(user: AuthenticatedUser, fallback: string): string {
   const record = user as unknown as Record<string, unknown>;
   const displayName = record.displayName;
-  if (typeof displayName === 'string' && displayName.trim().length > 0 && !displayName.includes('@')) {
+  if (
+    typeof displayName === 'string' &&
+    displayName.trim().length > 0 &&
+    !displayName.includes('@')
+  ) {
     return displayName.trim();
   }
   return fallback;
@@ -107,7 +111,10 @@ export class BookingMessagesService {
         where: { id: user.id },
         select: { id: true, displayName: true, avatarUrl: true, status: true, email: true },
       });
-      if (senderUserRecord && (senderUserRecord.status === 'suspended' || senderUserRecord.status === 'banned')) {
+      if (
+        senderUserRecord &&
+        (senderUserRecord.status === 'suspended' || senderUserRecord.status === 'banned')
+      ) {
         throw new ForbiddenException(
           'আপনার অ্যাকাউন্ট নীতি লঙ্ঘনের কারণে স্থগিত বা নিষিদ্ধ অবস্থায় রয়েছে। কোনো বার্তা পাঠানো সম্ভব নয়।',
         );
@@ -166,18 +173,17 @@ export class BookingMessagesService {
     const redactionReason = safetyResult.redactionReason;
 
     // 3. Persist Message
-    const resolvedSenderRole: 'student' | 'guardian' | 'tutor' | 'admin' =
-      isAdmin
-        ? 'admin'
-        : isTutor
-          ? 'tutor'
-          : isGuardian
-            ? 'guardian'
-            : 'student';
+    const resolvedSenderRole: 'student' | 'guardian' | 'tutor' | 'admin' = isAdmin
+      ? 'admin'
+      : isTutor
+        ? 'tutor'
+        : isGuardian
+          ? 'guardian'
+          : 'student';
 
     const senderDisplayName = isAdmin
       ? 'অগ্রণী প্ল্যাটফর্ম মডারেটর'
-      : (senderUserRecord?.displayName || resolveParticipantDisplayName(user, 'User'));
+      : senderUserRecord?.displayName || resolveParticipantDisplayName(user, 'User');
 
     const message = this.messageRepo.create({
       bookingId: booking.id,
@@ -188,12 +194,10 @@ export class BookingMessagesService {
       redactionReason,
       attachmentAssetIds: dto.attachmentAssetIds || [],
       metadata: {
-        ...(dto.metadata || {}),
+        ...dto.metadata,
         senderRole: resolvedSenderRole,
         senderName: senderDisplayName,
-        ...(isAdmin
-          ? { isStaffIntervention: true, staffTitle: 'অগ্রণী সাপোর্ট ডেস্ক' }
-          : {}),
+        ...(isAdmin ? { isStaffIntervention: true, staffTitle: 'অগ্রণী সাপোর্ট ডেস্ক' } : {}),
       },
     });
 
@@ -203,7 +207,9 @@ export class BookingMessagesService {
     savedMessage.senderUser = {
       id: user.id,
       displayName: senderDisplayName,
-      avatarUrl: senderUserRecord?.avatarUrl || ((user as unknown as Record<string, unknown>).avatarUrl as string | null | undefined),
+      avatarUrl:
+        senderUserRecord?.avatarUrl ||
+        ((user as unknown as Record<string, unknown>).avatarUrl as string | null | undefined),
     } as UserEntity;
 
     // 4. Outbox Event (Transactional)
@@ -256,7 +262,8 @@ export class BookingMessagesService {
     }
 
     // 6. Find all active linked guardians of the student
-    const guardianIds = (await this.guardianAccess?.findActiveGuardianIds(booking.studentUserId)) || [];
+    const guardianIds =
+      (await this.guardianAccess?.findActiveGuardianIds(booking.studentUserId)) || [];
 
     // 7. Collect ALL participant user IDs: Student, Tutor, Requester, Sender, All Guardians
     const allParticipantIds = new Set<string>();
@@ -496,7 +503,9 @@ export class BookingMessagesService {
         unreadQb.andWhere('m.recipient_user_id = :userId', { userId: user.id });
       }
 
-      const unread = await unreadQb.andWhere('m.read_at IS NULL').getRawMany<{ id: string; senderUserId: string }>();
+      const unread = await unreadQb
+        .andWhere('m.read_at IS NULL')
+        .getRawMany<{ id: string; senderUserId: string }>();
 
       if (unread.length === 0) {
         return { updatedCount: 0 };
@@ -514,7 +523,8 @@ export class BookingMessagesService {
         .execute();
 
       // Broadcast read receipts to active booking room, reader's room, sender's room, and all participant user rooms
-      const guardianIds = (await this.guardianAccess?.findActiveGuardianIds(booking.studentUserId)) || [];
+      const guardianIds =
+        (await this.guardianAccess?.findActiveGuardianIds(booking.studentUserId)) || [];
       const allParticipantIds = new Set<string>();
       if (booking.studentUserId) allParticipantIds.add(booking.studentUserId);
       if (tutorUserId) allParticipantIds.add(tutorUserId);
@@ -572,7 +582,10 @@ export class BookingMessagesService {
       }
     }
 
-    const bookings = await qb.orderBy('b.updated_at', 'DESC').take(isAdmin ? 100 : 50).getMany();
+    const bookings = await qb
+      .orderBy('b.updated_at', 'DESC')
+      .take(isAdmin ? 100 : 50)
+      .getMany();
     if (bookings.length === 0) {
       return [];
     }
@@ -614,7 +627,9 @@ export class BookingMessagesService {
       unreadQb.andWhere('m.recipient_user_id = :userId', { userId: user.id });
     }
 
-    const unreadRaw = await unreadQb.groupBy('m.booking_id').getRawMany<{ bookingId: string; count: string }>();
+    const unreadRaw = await unreadQb
+      .groupBy('m.booking_id')
+      .getRawMany<{ bookingId: string; count: string }>();
 
     const unreadMap = new Map<string, number>();
     for (const r of unreadRaw) {

@@ -1,8 +1,6 @@
 import type { RateLimitRecord } from './interfaces/rate-limit-record.interface';
 import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 
-
-
 @Injectable()
 export class RateLimiterService {
   private requests = new Map<string, RateLimitRecord>();

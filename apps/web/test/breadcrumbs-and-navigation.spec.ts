@@ -51,7 +51,14 @@ describe('Phase 2 — Information Architecture & Navigation Matrix', () => {
   });
 
   it('should ensure flat nav list contains all items from sections without duplicates', () => {
-    const roles = ['student', 'guardian', 'tutor', 'admin', 'support_agent', 'compliance_reviewer'] as const;
+    const roles = [
+      'student',
+      'guardian',
+      'tutor',
+      'admin',
+      'support_agent',
+      'compliance_reviewer',
+    ] as const;
     for (const role of roles) {
       const flatItems = navForRole(role);
       const hrefs = flatItems.map((i) => i.href);

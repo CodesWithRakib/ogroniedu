@@ -40,11 +40,19 @@ export function AdminBookingsTab({
               <TableHead className="px-4 py-3.5">{isBn ? 'বুকিং আইডি' : 'Booking ID'}</TableHead>
               <TableHead className="px-4 py-3.5">{isBn ? 'শিক্ষার্থী' : 'Student'}</TableHead>
               <TableHead className="px-4 py-3.5">{isBn ? 'টিউটর' : 'Tutor'}</TableHead>
-              <TableHead className="px-4 py-3.5">{isBn ? 'বিষয় ও মাধ্যম' : 'Subject & Mode'}</TableHead>
+              <TableHead className="px-4 py-3.5">
+                {isBn ? 'বিষয় ও মাধ্যম' : 'Subject & Mode'}
+              </TableHead>
               <TableHead className="px-4 py-3.5">{isBn ? 'ফি / সেশন' : 'Fee / Session'}</TableHead>
-              <TableHead className="px-4 py-3.5">{isBn ? 'এসক্রো স্থিতি' : 'Escrow Status'}</TableHead>
-              <TableHead className="px-4 py-3.5">{isBn ? 'বুকিং স্থিতি' : 'Booking Status'}</TableHead>
-              <TableHead className="px-4 py-3.5 text-right">{isBn ? 'অ্যাকশন' : 'Actions'}</TableHead>
+              <TableHead className="px-4 py-3.5">
+                {isBn ? 'এসক্রো স্থিতি' : 'Escrow Status'}
+              </TableHead>
+              <TableHead className="px-4 py-3.5">
+                {isBn ? 'বুকিং স্থিতি' : 'Booking Status'}
+              </TableHead>
+              <TableHead className="px-4 py-3.5 text-right">
+                {isBn ? 'অ্যাকশন' : 'Actions'}
+              </TableHead>
             </TableRow>
           </TableHeader>
           <TableBody className="text-foreground text-xs divide-y divide-border/50">
@@ -56,9 +64,12 @@ export function AdminBookingsTab({
               </TableRow>
             ) : (
               bookings.map((booking) => {
-                const isHeld = booking.escrowStatus === 'held' || (!booking.escrowStatus && booking.status === 'confirmed');
+                const isHeld =
+                  booking.escrowStatus === 'held' ||
+                  (!booking.escrowStatus && booking.status === 'confirmed');
                 const isReleased = booking.escrowStatus === 'released';
-                const isRefunded = booking.escrowStatus === 'refunded' || booking.status === 'cancelled';
+                const isRefunded =
+                  booking.escrowStatus === 'refunded' || booking.status === 'cancelled';
 
                 return (
                   <TableRow

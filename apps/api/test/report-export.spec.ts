@@ -6,20 +6,20 @@ import type { AuthenticatedUser } from '../src/common/decorators/current-user.de
 describe('Report Exporting & Anti-Formula Injection (Phase 09)', () => {
   describe('1. CSV Formula Injection Defense (CWE-1236)', () => {
     it('should prepend single quote to cell starting with =', () => {
-      expect(sanitizeCsvCell('=cmd|calc!A0')).toBe('\'=cmd|calc!A0');
+      expect(sanitizeCsvCell('=cmd|calc!A0')).toBe("'=cmd|calc!A0");
       expect(sanitizeCsvCell('=cmd|"/C calc"!A0')).toBe('"\'=cmd|""/C calc""!A0"');
     });
 
     it('should prepend single quote to cell starting with +', () => {
-      expect(sanitizeCsvCell('+12345')).toBe('\'+12345');
+      expect(sanitizeCsvCell('+12345')).toBe("'+12345");
     });
 
     it('should prepend single quote to cell starting with -', () => {
-      expect(sanitizeCsvCell('-5+5')).toBe('\'-5+5');
+      expect(sanitizeCsvCell('-5+5')).toBe("'-5+5");
     });
 
     it('should prepend single quote to cell starting with @', () => {
-      expect(sanitizeCsvCell('@SUM(1+1)')).toBe('\'@SUM(1+1)');
+      expect(sanitizeCsvCell('@SUM(1+1)')).toBe("'@SUM(1+1)");
     });
 
     it('should leave safe alphanumeric string unescaped without leading quote', () => {
@@ -111,7 +111,7 @@ describe('Report Exporting & Anti-Formula Injection (Phase 09)', () => {
 
       expect(result.filename).toContain('report-users-');
       expect(result.rowCount).toBe(2);
-      expect(result.csv).toContain('\'=2+5'); // Neutralized!
+      expect(result.csv).toContain("'=2+5"); // Neutralized!
 
       expect(mockAuditService.record).toHaveBeenCalledWith(
         expect.objectContaining({

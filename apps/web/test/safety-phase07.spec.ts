@@ -2,7 +2,11 @@ import { describe, it, expect } from 'vitest';
 import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { DisputeModal } from '../src/features/trust/components/DisputeModal';
-import { EmergencySosModal, EmergencySosContent, EMERGENCY_HOTLINES } from '../src/features/trust/components/EmergencySosModal';
+import {
+  EmergencySosModal,
+  EmergencySosContent,
+  EMERGENCY_HOTLINES,
+} from '../src/features/trust/components/EmergencySosModal';
 import { AdminDisputesTab } from '../src/features/admin/components/tabs/adminDisputesTab';
 import { AdminSafetyTab } from '../src/features/admin/components/tabs/adminSafetyTab';
 import { getDictionary } from '../src/lib/i18n';
@@ -76,7 +80,7 @@ describe('Phase 07 — Child Safety, Safeguarding & Emergency SOS Tests (Option 
       React.createElement(EmergencySosContent, {
         onClose: () => {},
         locale: 'bn',
-      })
+      }),
     );
 
     // National helplines

@@ -1,4 +1,5 @@
 # OgroniEdu — Phase 12: User Acceptance Testing, Beta Launch & Feedback-Driven Stabilization
+
 ## Implementation & Release Readiness Report
 
 **Document Version:** 1.0.0  
@@ -15,6 +16,7 @@
 Phase 12 establishes the end-to-end user acceptance testing, feedback capture, defect triage, and controlled beta stabilization layer for **OgroniEdu (অগ্রণী এডু)**.
 
 Rather than relying on ungrounded claims or simulated metrics, Phase 12 verified that:
+
 1. All critical platform subsystems across **Phases 01 through 11** are integrated, functional, and backed by automated integration tests.
 2. An enterprise-grade, persistent **Beta Feedback Subsystem** is implemented across the database, contract definitions, backend REST API, role-based admin triage controllers, and an accessible bilingual Next.js UI component.
 3. Complete end-to-end user journeys across all **9 canonical platform roles** were validated against real database fixtures and live API services.
@@ -30,7 +32,9 @@ Rather than relying on ungrounded claims or simulated metrics, Phase 12 verified
 ## 2. Key Architecture Deliverables
 
 ### 2.1 Database Layer: Migration 029 & Schema
+
 A dedicated migration was created to isolate beta feedback without polluting public guest support queues:
+
 - **Migration:** `packages/database/src/migrations/029_beta_testing_and_feedback.sql`
 - **Table:** `beta_feedback`
 - **Fields:**
@@ -51,6 +55,7 @@ A dedicated migration was created to isolate beta feedback without polluting pub
 - **BCDR Drill:** Verified in `packages/database/test/bcdr-recovery.spec.ts` where all 29 migrations replay cleanly against isolated test schemas.
 
 ### 2.2 Shared Type Contracts
+
 - **Package:** `@ogroniedu/contracts`
 - **File:** `packages/contracts/src/feedback.ts`
 - **Exports:**
@@ -60,6 +65,7 @@ A dedicated migration was created to isolate beta feedback without polluting pub
 - **Compilation:** Clean TypeScript build via Turborepo (`dist/index.d.ts`).
 
 ### 2.3 Backend API & RBAC
+
 - **Module:** `apps/api/src/modules/feedback/`
   - `entities/beta-feedback.entity.ts`: TypeORM entity mapping.
   - `dto/create-feedback.dto.ts`, `dto/triage-feedback.dto.ts`, `dto/query-feedback.dto.ts`.
@@ -75,6 +81,7 @@ A dedicated migration was created to isolate beta feedback without polluting pub
   - `apps/api/test/feedback.controller.spec.ts` (5 tests)
 
 ### 2.4 Frontend Web Integration & Accessibility
+
 - **Component:** `apps/web/src/components/feedback/BetaFeedbackModal.tsx`
   - Floating action trigger button pinned at bottom right with high-contrast icon and tooltip.
   - Accessible modal dialog (`role="dialog"`, `aria-modal="true"`, `aria-labelledby`).
@@ -91,6 +98,7 @@ A dedicated migration was created to isolate beta feedback without polluting pub
 ## 3. Synthetic Fixtures & Security Isolation
 
 In strict accordance with Phase 12 mandatory rules:
+
 - **Zero Production Data:** No real customer records or production database connections were used.
 - **Standardized Synthetic Accounts:**
   - Super Admin: `admin.demo@ogroniedu.com`
@@ -110,26 +118,26 @@ In strict accordance with Phase 12 mandatory rules:
 
 18 comprehensive, multi-role user acceptance test scenarios were defined and verified in `ROLE_BASED_UAT_SCENARIOS.md`:
 
-| Scenario ID | Journey / Workflow | Target Role(s) | Status | Verification Mechanism |
-| :--- | :--- | :--- | :--- | :--- |
-| **UAT-STU-01** | Student Onboarding & Profile Setup | Student | **PASSED** | API + Web E2E |
-| **UAT-STU-02** | Tutor Discovery, Filtering & Booking | Student, Guardian | **PASSED** | Search API + Booking Service |
-| **UAT-STU-03** | Sandbox Payment Execution | Student, Guardian | **PASSED** | bKash/SSL Sandbox Callback |
-| **UAT-STU-04** | Live Class Entry & Interactive Session | Student, Tutor | **PASSED** | WebRTC Gateway & Room State |
-| **UAT-TUT-01** | Tutor Verification & Document Upload | Tutor | **PASSED** | Verification Flow + Encryption |
-| **UAT-TUT-02** | Availability Calendar & Slot Scheduling | Tutor | **PASSED** | Recurrence Engine Tests |
-| **UAT-TUT-03** | Earnings Dashboard & Payout Request | Tutor | **PASSED** | Ledger Reconciliation Tests |
-| **UAT-GUA-01** | Guardian Account & Child Linkage | Guardian, Student | **PASSED** | Relationship Consent Flow |
-| **UAT-GUA-02** | Guardian Supervision & Booking Approval | Guardian | **PASSED** | Booking Authorization Gate |
-| **UAT-GUA-03** | Monthly Statement & Ledger Review | Guardian | **PASSED** | Financial Audit Views |
-| **UAT-ORG-01** | Organization Registration & Onboarding | Org Owner | **PASSED** | Org Provisioning Tests |
-| **UAT-ORG-02** | Staff Invitation & Role Delegation | Org Owner, Staff | **PASSED** | Org Member RBAC Suite |
-| **UAT-ORG-03** | Multi-Student Cohort Management | Org Staff | **PASSED** | Cohort Booking Matrix |
-| **UAT-ADM-01** | Verification Approval & Document Audit | Compliance Reviewer | **PASSED** | Admin Reviewer Console |
-| **UAT-ADM-02** | Safety Report Escalation & Triage | Support, Admin | **PASSED** | Safeguarding Incident Tests |
-| **UAT-ADM-03** | Dispute Mediation & Refund Processing | Support, Admin | **PASSED** | Dispute Ledger Escrow Test |
-| **UAT-SYS-01** | Rate Limiting, Brute Force & Session | Public, Auth | **PASSED** | Security Penetration Suite |
-| **UAT-FDB-01** | Beta Feedback Submission & Triage | Student, Admin | **PASSED** | `feedback.service.spec.ts` + Browser |
+| Scenario ID    | Journey / Workflow                      | Target Role(s)      | Status     | Verification Mechanism               |
+| :------------- | :-------------------------------------- | :------------------ | :--------- | :----------------------------------- |
+| **UAT-STU-01** | Student Onboarding & Profile Setup      | Student             | **PASSED** | API + Web E2E                        |
+| **UAT-STU-02** | Tutor Discovery, Filtering & Booking    | Student, Guardian   | **PASSED** | Search API + Booking Service         |
+| **UAT-STU-03** | Sandbox Payment Execution               | Student, Guardian   | **PASSED** | bKash/SSL Sandbox Callback           |
+| **UAT-STU-04** | Live Class Entry & Interactive Session  | Student, Tutor      | **PASSED** | WebRTC Gateway & Room State          |
+| **UAT-TUT-01** | Tutor Verification & Document Upload    | Tutor               | **PASSED** | Verification Flow + Encryption       |
+| **UAT-TUT-02** | Availability Calendar & Slot Scheduling | Tutor               | **PASSED** | Recurrence Engine Tests              |
+| **UAT-TUT-03** | Earnings Dashboard & Payout Request     | Tutor               | **PASSED** | Ledger Reconciliation Tests          |
+| **UAT-GUA-01** | Guardian Account & Child Linkage        | Guardian, Student   | **PASSED** | Relationship Consent Flow            |
+| **UAT-GUA-02** | Guardian Supervision & Booking Approval | Guardian            | **PASSED** | Booking Authorization Gate           |
+| **UAT-GUA-03** | Monthly Statement & Ledger Review       | Guardian            | **PASSED** | Financial Audit Views                |
+| **UAT-ORG-01** | Organization Registration & Onboarding  | Org Owner           | **PASSED** | Org Provisioning Tests               |
+| **UAT-ORG-02** | Staff Invitation & Role Delegation      | Org Owner, Staff    | **PASSED** | Org Member RBAC Suite                |
+| **UAT-ORG-03** | Multi-Student Cohort Management         | Org Staff           | **PASSED** | Cohort Booking Matrix                |
+| **UAT-ADM-01** | Verification Approval & Document Audit  | Compliance Reviewer | **PASSED** | Admin Reviewer Console               |
+| **UAT-ADM-02** | Safety Report Escalation & Triage       | Support, Admin      | **PASSED** | Safeguarding Incident Tests          |
+| **UAT-ADM-03** | Dispute Mediation & Refund Processing   | Support, Admin      | **PASSED** | Dispute Ledger Escrow Test           |
+| **UAT-SYS-01** | Rate Limiting, Brute Force & Session    | Public, Auth        | **PASSED** | Security Penetration Suite           |
+| **UAT-FDB-01** | Beta Feedback Submission & Triage       | Student, Admin      | **PASSED** | `feedback.service.spec.ts` + Browser |
 
 ---
 
@@ -145,6 +153,7 @@ Time:        41.52 s
 ```
 
 ### Breakdown by Workspace
+
 1. **`@ogroniedu/contracts`**:
    - TypeScript 5.8 clean build
    - Exported schemas: `feedback.ts`, `booking.ts`, `payment.ts`, `auth.ts`, `safeguarding.ts`, etc.

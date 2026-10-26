@@ -10,45 +10,45 @@
 
 ## 2. API Server Environment Matrix (`@ogroniedu/api`)
 
-| Variable Name | Required | Default / Staging Value | Production Requirement | Purpose |
-| :--- | :--- | :--- | :--- | :--- |
-| `NODE_ENV` | Yes | `development` / `staging` | `production` | Node.js execution environment; enables strict validation and masks error traces. |
-| `PORT` | No | `4000` | `4000` | Port on which the NestJS HTTP listener binds. |
-| `FRONTEND_URL` | Yes | `http://localhost:5000` | `https://ogroniedu.com` | Allowed CORS origins for browser credential sharing. Comma-separated if multiple. |
-| `DATABASE_URL` | Conditional | `postgresql://...` | Connection URI | Primary connection string for PostgreSQL instance. |
-| `DB_HOST` | Conditional | `localhost` | `db.production.internal` | PostgreSQL server hostname (if `DATABASE_URL` is omitted). |
-| `DB_PORT` | No | `5432` | `5432` | PostgreSQL server port. |
-| `DB_USERNAME` | Conditional | `postgres` | `ogroni_app_user` | Database user account with least-privilege schema access. |
-| `DB_PASSWORD` | Conditional | `postgres` | Complex secret (>20 chars) | Database password; default `postgres` blocked in production. |
-| `DB_NAME` | No | `ogroniedu_dev` | `ogroniedu_prod` | Target PostgreSQL database name. |
-| `DB_SSL` | No | `false` | `true` | Requires SSL/TLS encrypted transport for all database queries. |
-| `JWT_SECRET` | Yes | Sample 256-bit string | High-entropy random secret (>32 chars) | Secret used to sign and verify user authentication tokens. |
-| `SUPABASE_URL` | Yes | `https://your-proj.supabase.co` | Production project URL | Supabase endpoint for S3 storage and JWKS verification. |
-| `SUPABASE_PUBLISHABLE_KEY` | Yes | Public key string | Production public key | Public key for Supabase client interactions. |
-| `SUPABASE_SECRET_KEY` | Yes | Secret service role key | Production service key | Service role key for administrative storage operations. |
-| `SUPABASE_JWKS_URL` | No | `.../auth/v1/.well-known/jwks.json` | Valid JWKS endpoint | URL to fetch public JSON Web Key Sets for external auth token validation. |
-| `REDIS_HOST` | No | `localhost` | `redis.production.internal` | Redis cache and queue host. |
-| `REDIS_PORT` | No | `6379` | `6379` | Redis port. |
-| `SSLCOMMERZ_STORE_ID` | Yes | Sandbox store ID | Production Store ID | Merchant account ID issued by SSLCOMMERZ Bangladesh. |
-| `SSLCOMMERZ_STORE_PASSWD`| Yes | Sandbox store pass | Production Store Secret | Secret authentication key for SSLCOMMERZ payment verification. |
-| `SSLCOMMERZ_IS_LIVE` | No | `false` | `false` (until live verified) | Flag toggling between SSLCOMMERZ Sandbox and Live payment servers. |
-| `BKASH_APP_KEY` | Conditional | Sandbox App Key | Production App Key | App Key for bKash Tokenized Checkout API. |
-| `BKASH_APP_SECRET` | Conditional | Sandbox App Secret | Production App Secret | App Secret for bKash Tokenized Checkout API. |
-| `BKASH_IS_SANDBOX` | No | `true` | `true` (until live verified) | Flag enforcing bKash sandbox checkout mode. |
-| `OTP_SMS_PRIMARY_PROVIDER` | No | `http_gateway` | `http_gateway` | Provider adapter for SMS delivery (`http_gateway`). |
-| `OTP_SMS_FALLBACK_PROVIDER`| No | `dev` | `dev` or secondary | Provider fallback for failed SMS delivery. |
-| `OTP_DELIVERY_TIMEOUT_MS` | No | `5000` | `5000` | Timeout before triggering secondary delivery provider. |
+| Variable Name               | Required    | Default / Staging Value             | Production Requirement                 | Purpose                                                                           |
+| :-------------------------- | :---------- | :---------------------------------- | :------------------------------------- | :-------------------------------------------------------------------------------- |
+| `NODE_ENV`                  | Yes         | `development` / `staging`           | `production`                           | Node.js execution environment; enables strict validation and masks error traces.  |
+| `PORT`                      | No          | `4000`                              | `4000`                                 | Port on which the NestJS HTTP listener binds.                                     |
+| `FRONTEND_URL`              | Yes         | `http://localhost:5000`             | `https://ogroniedu.com`                | Allowed CORS origins for browser credential sharing. Comma-separated if multiple. |
+| `DATABASE_URL`              | Conditional | `postgresql://...`                  | Connection URI                         | Primary connection string for PostgreSQL instance.                                |
+| `DB_HOST`                   | Conditional | `localhost`                         | `db.production.internal`               | PostgreSQL server hostname (if `DATABASE_URL` is omitted).                        |
+| `DB_PORT`                   | No          | `5432`                              | `5432`                                 | PostgreSQL server port.                                                           |
+| `DB_USERNAME`               | Conditional | `postgres`                          | `ogroni_app_user`                      | Database user account with least-privilege schema access.                         |
+| `DB_PASSWORD`               | Conditional | `postgres`                          | Complex secret (>20 chars)             | Database password; default `postgres` blocked in production.                      |
+| `DB_NAME`                   | No          | `ogroniedu_dev`                     | `ogroniedu_prod`                       | Target PostgreSQL database name.                                                  |
+| `DB_SSL`                    | No          | `false`                             | `true`                                 | Requires SSL/TLS encrypted transport for all database queries.                    |
+| `JWT_SECRET`                | Yes         | Sample 256-bit string               | High-entropy random secret (>32 chars) | Secret used to sign and verify user authentication tokens.                        |
+| `SUPABASE_URL`              | Yes         | `https://your-proj.supabase.co`     | Production project URL                 | Supabase endpoint for S3 storage and JWKS verification.                           |
+| `SUPABASE_PUBLISHABLE_KEY`  | Yes         | Public key string                   | Production public key                  | Public key for Supabase client interactions.                                      |
+| `SUPABASE_SECRET_KEY`       | Yes         | Secret service role key             | Production service key                 | Service role key for administrative storage operations.                           |
+| `SUPABASE_JWKS_URL`         | No          | `.../auth/v1/.well-known/jwks.json` | Valid JWKS endpoint                    | URL to fetch public JSON Web Key Sets for external auth token validation.         |
+| `REDIS_HOST`                | No          | `localhost`                         | `redis.production.internal`            | Redis cache and queue host.                                                       |
+| `REDIS_PORT`                | No          | `6379`                              | `6379`                                 | Redis port.                                                                       |
+| `SSLCOMMERZ_STORE_ID`       | Yes         | Sandbox store ID                    | Production Store ID                    | Merchant account ID issued by SSLCOMMERZ Bangladesh.                              |
+| `SSLCOMMERZ_STORE_PASSWD`   | Yes         | Sandbox store pass                  | Production Store Secret                | Secret authentication key for SSLCOMMERZ payment verification.                    |
+| `SSLCOMMERZ_IS_LIVE`        | No          | `false`                             | `false` (until live verified)          | Flag toggling between SSLCOMMERZ Sandbox and Live payment servers.                |
+| `BKASH_APP_KEY`             | Conditional | Sandbox App Key                     | Production App Key                     | App Key for bKash Tokenized Checkout API.                                         |
+| `BKASH_APP_SECRET`          | Conditional | Sandbox App Secret                  | Production App Secret                  | App Secret for bKash Tokenized Checkout API.                                      |
+| `BKASH_IS_SANDBOX`          | No          | `true`                              | `true` (until live verified)           | Flag enforcing bKash sandbox checkout mode.                                       |
+| `OTP_SMS_PRIMARY_PROVIDER`  | No          | `http_gateway`                      | `http_gateway`                         | Provider adapter for SMS delivery (`http_gateway`).                               |
+| `OTP_SMS_FALLBACK_PROVIDER` | No          | `dev`                               | `dev` or secondary                     | Provider fallback for failed SMS delivery.                                        |
+| `OTP_DELIVERY_TIMEOUT_MS`   | No          | `5000`                              | `5000`                                 | Timeout before triggering secondary delivery provider.                            |
 
 ---
 
 ## 3. Web Frontend Environment Matrix (`@ogroniedu/web`)
 
-| Variable Name | Required | Default Value | Production Requirement | Purpose |
-| :--- | :--- | :--- | :--- | :--- |
-| `NEXT_PUBLIC_API_URL` | Yes | `http://localhost:4000` | `https://api.ogroniedu.com` | Base URL used by browser fetch calls and React components. |
-| `NEXT_PUBLIC_SUPABASE_URL`| Yes | Supabase project URL | Production project URL | Supabase public endpoint for client-side avatar display. |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Yes | Public key string | Production public key | Supabase public anonymous API key. |
-| `NODE_ENV` | Yes | `development` | `production` | Next.js build and optimization flag. |
+| Variable Name                          | Required | Default Value           | Production Requirement      | Purpose                                                    |
+| :------------------------------------- | :------- | :---------------------- | :-------------------------- | :--------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`                  | Yes      | `http://localhost:4000` | `https://api.ogroniedu.com` | Base URL used by browser fetch calls and React components. |
+| `NEXT_PUBLIC_SUPABASE_URL`             | Yes      | Supabase project URL    | Production project URL      | Supabase public endpoint for client-side avatar display.   |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Yes      | Public key string       | Production public key       | Supabase public anonymous API key.                         |
+| `NODE_ENV`                             | Yes      | `development`           | `production`                | Next.js build and optimization flag.                       |
 
 ---
 

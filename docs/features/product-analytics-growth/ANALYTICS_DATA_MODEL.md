@@ -74,24 +74,25 @@ CREATE TABLE IF NOT EXISTS product_analytics_events (
 
 To prevent table scans during date-range and funnel querying, the following compound indexes are provisioned:
 
-| Index Name | Indexed Columns | Query Use-Case |
-| :--- | :--- | :--- |
-| `ix_analytics_events_name_time` | `(event_name, created_at DESC)` | Funnel stage count aggregation over date windows |
-| `ix_analytics_events_actor` | `(actor_user_id, created_at DESC)` | User journey and cohort retention aggregation |
-| `ix_analytics_events_entity` | `(entity_type, entity_id)` | Tutor profile views and specific booking inquiries |
-| `ix_analytics_events_session` | `(session_id, created_at DESC)` | Session attribution and client deduplication |
-| `ix_analytics_events_created_at` | `(created_at DESC)` | General chronological stream queries |
+| Index Name                       | Indexed Columns                    | Query Use-Case                                     |
+| :------------------------------- | :--------------------------------- | :------------------------------------------------- |
+| `ix_analytics_events_name_time`  | `(event_name, created_at DESC)`    | Funnel stage count aggregation over date windows   |
+| `ix_analytics_events_actor`      | `(actor_user_id, created_at DESC)` | User journey and cohort retention aggregation      |
+| `ix_analytics_events_entity`     | `(entity_type, entity_id)`         | Tutor profile views and specific booking inquiries |
+| `ix_analytics_events_session`    | `(session_id, created_at DESC)`    | Session attribution and client deduplication       |
+| `ix_analytics_events_created_at` | `(created_at DESC)`                | General chronological stream queries               |
 
 ---
 
 ## 4. Analytical Views
 
 ### 4.1 Daily Product Funnel View (`v_daily_product_funnel`)
+
 Pre-aggregates daily counts across all funnel stages directly in PostgreSQL for real-time reporting dashboards:
 
 ```sql
 CREATE OR REPLACE VIEW v_daily_product_funnel AS
-SELECT 
+SELECT
     DATE_TRUNC('day', e.created_at)::date as metric_date,
     COUNT(e.id) FILTER (WHERE e.event_name = 'tutor_search_performed')::int as search_count,
     COUNT(e.id) FILTER (WHERE e.event_name = 'tutor_profile_viewed')::int as profile_views_count,

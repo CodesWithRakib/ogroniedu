@@ -23,6 +23,7 @@ graph TD
 ## 2. Workflow Specifications
 
 ### Workflow A: Authentication, Onboarding, Role Provisioning & Session Lifecycle
+
 - **Actors:** All 9 roles (`student`, `guardian`, `tutor`, `support_agent`, `compliance_reviewer`, `admin`, `super_admin`, `organization_owner`, `organization_staff`).
 - **Description:** Complete identity lifecycle from initial registration, magic link / password authentication, role selection, profile onboarding, JWT session issuance, refresh rotation, and logout.
 - **State Flow:**
@@ -35,11 +36,12 @@ graph TD
 ---
 
 ### Workflow B: Tutor Profile, Document Verification & 3-Level Badge Lifecycle
+
 - **Actors:** `tutor`, `compliance_reviewer`, `admin`, `super_admin`.
 - **Description:** Tutor builds subject offerings, educational background, hourly rates, and submits verification evidence across 3 distinct tiers:
-  1. *Level 1 (Identity):* National ID (NID) / Passport scan with biometric selfie.
-  2. *Level 2 (Academic):* Degree certificates, university transcripts, institutional credentials.
-  3. *Level 3 (Background):* Police clearance certificate / institutional recommendation.
+  1. _Level 1 (Identity):_ National ID (NID) / Passport scan with biometric selfie.
+  2. _Level 2 (Academic):_ Degree certificates, university transcripts, institutional credentials.
+  3. _Level 3 (Background):_ Police clearance certificate / institutional recommendation.
 - **State Flow:**
   `Draft` $\to$ `Submitted` $\to$ `Under Review` $\to$ `Level Approved / Rejected` $\to$ `Fully Verified`
 - **Side Effects:**
@@ -49,6 +51,7 @@ graph TD
 ---
 
 ### Workflow C: Tutor Discovery, Geo-Radius Search, Catalog Filtering & Public Profile
+
 - **Actors:** `student`, `guardian`, Anonymous Public Visitor.
 - **Description:** Multi-criteria search allowing learners and parents to discover verified tutors by subject, education level (SSC, HSC, O/A Levels, University), curriculum (Bangla Medium, English Medium, English Version, Madrasah), price range, gender, rating, and geospatial radius.
 - **Key Features:**
@@ -60,6 +63,7 @@ graph TD
 ---
 
 ### Workflow D: Guardian Multi-Child Management & Scoped Access
+
 - **Actors:** `guardian`, `student`.
 - **Description:** Multi-child management allowing a parent/guardian to link multiple dependent student accounts, monitor attendance, manage shared payment escrow, and inspect academic progress.
 - **Security Invariants:**
@@ -70,6 +74,7 @@ graph TD
 ---
 
 ### Workflow E: Booking Proposal, Counter-Offer, Acceptance, Scheduling & Concurrency Safety
+
 - **Actors:** `student`, `guardian`, `tutor`.
 - **Description:** Lifecycle of a tutoring engagement from initial proposal, price/schedule negotiation, tutor acceptance, calendar slot reservation, and session generation.
 - **State Flow:**
@@ -81,6 +86,7 @@ graph TD
 ---
 
 ### Workflow F: Payments, Escrow Ledger Invariant, Refunds, Disputed Holds & Payouts
+
 - **Actors:** `guardian`, `student`, `tutor`, `admin`, Payment Gateways (bKash, SSLCOMMERZ).
 - **Description:** Complete financial lifecycle governed by immutable double-entry bookkeeping:
   1. Guardian initiates payment order via bKash / SSLCOMMERZ.
@@ -94,6 +100,7 @@ graph TD
 ---
 
 ### Workflow G: LMS Learning Flow, Attendance Tracking, Milestone Verification & Session Delivery
+
 - **Actors:** `student`, `tutor`, `guardian`.
 - **Description:** Online/in-person session delivery, WebRTC classroom connection telemetry, digital whiteboard, attendance check-in/check-out, homework assignments, student submission, and tutor grading.
 - **State Flow:**
@@ -105,6 +112,7 @@ graph TD
 ---
 
 ### Workflow H: Realtime Messaging, Conversation Isolation & Centralized Notifications
+
 - **Actors:** `student`, `guardian`, `tutor`, `support_agent`.
 - **Description:** Secure end-to-end communication scoped by booking context:
   - Real-time WebSocket messaging with Socket.IO gateway (`/notifications`).
@@ -117,6 +125,7 @@ graph TD
 ---
 
 ### Workflow I: Child Safeguarding, SOS Incidents, Confidential Firewall & Compliance Investigation
+
 - **Actors:** `student`, `guardian`, `tutor`, `compliance_reviewer`, `super_admin`.
 - **Description:** Comprehensive safeguarding subsystem protecting vulnerable learners:
   - In-session Emergency SOS button immediately archives session video/telemetry and locks room.
@@ -127,6 +136,7 @@ graph TD
 ---
 
 ### Workflow J: Admin Operations, Multi-Tenant Governance, Platform Settings & Audit Ledger
+
 - **Actors:** `admin`, `super_admin`, `organization_owner`, `organization_staff`.
 - **Description:** Platform and institutional agency management:
   - Multi-tenant tutoring agency onboarding with custom commission splits and team roles.
@@ -136,6 +146,7 @@ graph TD
 ---
 
 ### Workflow K: Search, SEO, Security Headers, Accessibility & Production Readiness
+
 - **Actors:** Public Users, Search Engine Crawlers, Security Scanners.
 - **Description:** Production operational excellence:
   - Strict Content Security Policy (CSP), HSTS, X-Content-Type-Options, X-Frame-Options.

@@ -443,9 +443,7 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                               </>
                             ) : (
                               <span className="italic opacity-50">
-                                {locale === 'bn'
-                                  ? 'বার্তালাপ শুরু করুন'
-                                  : 'Start a conversation'}
+                                {locale === 'bn' ? 'বার্তালাপ শুরু করুন' : 'Start a conversation'}
                               </span>
                             )}
                           </p>
@@ -604,9 +602,7 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                   <MessageSquare className="w-8 h-8 text-primary/40" />
                 </div>
                 <h3 className="text-base font-bold text-foreground">
-                  {locale === 'bn'
-                    ? 'একটি বার্তালাপ নির্বাচন করুন'
-                    : 'Select a Conversation'}
+                  {locale === 'bn' ? 'একটি বার্তালাপ নির্বাচন করুন' : 'Select a Conversation'}
                 </h3>
                 <p className="text-xs text-muted-foreground mt-1.5 max-w-xs leading-relaxed">
                   {locale === 'bn'

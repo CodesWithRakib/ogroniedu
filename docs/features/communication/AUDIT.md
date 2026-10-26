@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Phase:** 08  
 **Date:** October 20, 2026  
-**Auditor:** Senior Full-Stack Engineer, Real-Time Systems Architect, Application Security Engineer  
+**Auditor:** Senior Full-Stack Engineer, Real-Time Systems Architect, Application Security Engineer
 
 ---
 
@@ -18,6 +18,7 @@ This audit reviews the current communication implementation, evaluates architect
 ## 2. Baseline Architecture & Current State
 
 ### 2.1 Existing Database Schema
+
 - **`booking_messages` Table** (created in `005_notifications_and_communication.sql`):
   - `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
   - `booking_id UUID NOT NULL REFERENCES bookings(id) ON DELETE CASCADE`
@@ -31,6 +32,7 @@ This audit reviews the current communication implementation, evaluates architect
   - Indexes: `idx_booking_messages_thread (booking_id, created_at ASC)` and `idx_booking_messages_unread (recipient_user_id, read_at) WHERE read_at IS NULL`.
 
 ### 2.2 Existing Backend Services & Gateways
+
 - **`BookingMessagesService`** (`apps/api/src/modules/notifications/booking-messages.service.ts`):
   - Provides `sendMessage` with basic content safety regex (Bangladeshi phone numbers, bKash/Nagad solicitations, external links).
   - Provides `getMessages` with cursor-based pagination (oldest→newest display order).
@@ -42,6 +44,7 @@ This audit reviews the current communication implementation, evaluates architect
   - Broadcasts notifications and unread counters.
 
 ### 2.3 Existing Frontend Components
+
 - **`BookingChatView`** (`apps/web/src/components/notifications/BookingChatView.tsx`):
   - UI presentation of chat thread with message bubbles, redaction warning badges, read checkmarks, and message input form.
 - **`BookingChatContainer`** (`apps/web/src/features/messaging/components/bookingChatContainer.tsx`):
@@ -53,15 +56,15 @@ This audit reviews the current communication implementation, evaluates architect
 
 ## 3. Gap Analysis for Phase 08
 
-| Area | Current Behavior | Required Phase 08 Behavior | Severity |
-| :--- | :--- | :--- | :--- |
-| **Real-Time Push in Active Chat** | REST polling / manual refetch only. No live broadcast to open thread. | Socket.IO room `booking_chat:${bookingId}` with immediate message broadcast upon send. | **CRITICAL** |
-| **Typing Indicators** | Not implemented. | Real-time `chat.typing` events broadcasting sender typing state with debouncing. | **HIGH** |
-| **Live Read Receipts** | Read status only updated via HTTP PATCH; sender does not see live checkmark update. | Socket.IO event `chat.read_receipt` broadcasting read status to open room. | **HIGH** |
-| **Learning Material Attachments** | Text only (`content TEXT`). | Support for verified file attachments (`attachment_asset_ids` / metadata) for homework, notes, PDFs, images. | **HIGH** |
-| **Advanced Anti-Circumvention** | Standard regex misses Bengali numerals (`০১৭১...`), spaced digits (`0 1 7...`), and social apps (Telegram, WhatsApp, IMO). | Comprehensive regex and heuristic filters covering Bengali numerals, spelled-out digits, social handles, and off-platform cash. | **CRITICAL** |
-| **Centralized Messages Inbox** | Chat only accessible per individual booking page (`/bookings/[id]`). | Centralized inbox (`/dashboard/messages`) listing all active conversation threads with unread counts and recent snippet. | **HIGH** |
-| **Guardian Live Oversight** | Guardians get notified via general notification, but no dedicated oversight mode in the live chat UI. | Guardian badge in thread, real-time message stream for minor's guardian, and transparent oversight indicator. | **CRITICAL** |
+| Area                              | Current Behavior                                                                                                           | Required Phase 08 Behavior                                                                                                      | Severity     |
+| :-------------------------------- | :------------------------------------------------------------------------------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------ | :----------- |
+| **Real-Time Push in Active Chat** | REST polling / manual refetch only. No live broadcast to open thread.                                                      | Socket.IO room `booking_chat:${bookingId}` with immediate message broadcast upon send.                                          | **CRITICAL** |
+| **Typing Indicators**             | Not implemented.                                                                                                           | Real-time `chat.typing` events broadcasting sender typing state with debouncing.                                                | **HIGH**     |
+| **Live Read Receipts**            | Read status only updated via HTTP PATCH; sender does not see live checkmark update.                                        | Socket.IO event `chat.read_receipt` broadcasting read status to open room.                                                      | **HIGH**     |
+| **Learning Material Attachments** | Text only (`content TEXT`).                                                                                                | Support for verified file attachments (`attachment_asset_ids` / metadata) for homework, notes, PDFs, images.                    | **HIGH**     |
+| **Advanced Anti-Circumvention**   | Standard regex misses Bengali numerals (`০১৭১...`), spaced digits (`0 1 7...`), and social apps (Telegram, WhatsApp, IMO). | Comprehensive regex and heuristic filters covering Bengali numerals, spelled-out digits, social handles, and off-platform cash. | **CRITICAL** |
+| **Centralized Messages Inbox**    | Chat only accessible per individual booking page (`/bookings/[id]`).                                                       | Centralized inbox (`/dashboard/messages`) listing all active conversation threads with unread counts and recent snippet.        | **HIGH**     |
+| **Guardian Live Oversight**       | Guardians get notified via general notification, but no dedicated oversight mode in the live chat UI.                      | Guardian badge in thread, real-time message stream for minor's guardian, and transparent oversight indicator.                   | **CRITICAL** |
 
 ---
 

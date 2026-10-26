@@ -33,7 +33,9 @@ flowchart TD
 ## 2. Workstream Breakdown
 
 ### Workstream 1: UAT Governance & Documentation Suite
+
 Author the comprehensive 11 pre-implementation documents and final release report in `docs/features/uat-beta/`:
+
 1. `AUDIT.md` — Baseline readiness and gap analysis.
 2. `IMPLEMENTATION_PLAN.md` — Execution roadmap and delivery milestones.
 3. `UAT_STRATEGY.md` — Entry/exit criteria, tester groups, testing cadence, and defect triage guidelines.
@@ -48,6 +50,7 @@ Author the comprehensive 11 pre-implementation documents and final release repor
 12. `IMPLEMENTATION_REPORT.md` — Final executive report and release recommendation.
 
 ### Workstream 2: Dedicated Beta Feedback Subsystem
+
 1. **Database Schema:** Create migration `029_beta_testing_and_feedback.sql` with table `beta_feedback`:
    - Columns: `id`, `reporter_user_id`, `reporter_role`, `category`, `title`, `description`, `route`, `reproduction_steps`, `diagnostic_metadata`, `severity`, `status`, `assigned_to_user_id`, `triage_notes`, `created_at`, `updated_at`.
 2. **Contracts & Validation:** Add `BetaFeedbackSchema` and DTOs in `@ogroniedu/contracts`.
@@ -59,16 +62,19 @@ Author the comprehensive 11 pre-implementation documents and final release repor
 4. **Audit Integration:** Emit audit log on triage transitions.
 
 ### Workstream 3: Frontend Feedback UI
+
 1. Add a persistent **"মতামত / Feedback"** trigger button across role dashboards.
 2. Implement `BetaFeedbackModal` with category selection (`bug`, `usability`, `feature_request`, `performance`, `accessibility`, `other`), reproduction steps input, and route detection.
 3. Connect submission to `POST /api/v1/feedback` with positive feedback toast notifications.
 
 ### Workstream 4: Synthetic UAT Scenarios & Execution
+
 1. Execute role-based UAT scenarios covering all 9 canonical roles (`student`, `guardian`, `tutor`, `support_agent`, `compliance_reviewer`, `admin`, `super_admin`, `organization_owner`, `organization_staff`).
 2. Verify critical end-to-end paths (onboarding $\to$ discovery $\to$ booking $\to$ sandbox payment $\to$ LMS classroom $\to$ feedback submission $\to$ admin triage).
 3. Record test execution outcomes and evidence.
 
 ### Workstream 5: Quality Gates & Go / No-Go Decision
+
 1. Execute monorepo tests (`pnpm turbo run test`).
 2. Run TypeScript strict typecheck (`pnpm turbo run typecheck`).
 3. Run monorepo linter (`pnpm turbo run lint`).

@@ -125,7 +125,8 @@ export function BookingChatView({
     if (e) e.preventDefault();
     if ((!inputText.trim() && attachedFiles.length === 0) || isSending) return;
 
-    const content = inputText.trim() || (locale === 'bn' ? 'সংযুক্ত ফাইল পাঠানো হয়েছে' : 'Attached file shared');
+    const content =
+      inputText.trim() || (locale === 'bn' ? 'সংযুক্ত ফাইল পাঠানো হয়েছে' : 'Attached file shared');
     const attachmentIds = attachedFiles.map((f) => f.id);
     setInputText('');
     setAttachedFiles([]);
@@ -243,7 +244,9 @@ export function BookingChatView({
                     isMine ? 'ml-auto' : 'mr-auto'
                   }`}
                 >
-                  <div className={`flex items-center gap-1.5 text-[11px] mb-1 px-1 ${isMine ? 'justify-end' : 'justify-start'}`}>
+                  <div
+                    className={`flex items-center gap-1.5 text-[11px] mb-1 px-1 ${isMine ? 'justify-end' : 'justify-start'}`}
+                  >
                     <span className="font-semibold text-slate-800 flex items-center gap-1.5">
                       <span>{msg.senderName}</span>
                       {msg.senderRole === 'admin' && (
@@ -271,7 +274,9 @@ export function BookingChatView({
                       )}
                     </span>
                     <span className="text-slate-400">•</span>
-                    <span className="text-slate-500 font-medium text-[10px]">{formatTime(msg.createdAt, locale)}</span>
+                    <span className="text-slate-500 font-medium text-[10px]">
+                      {formatTime(msg.createdAt, locale)}
+                    </span>
                   </div>
 
                   <div
@@ -301,7 +306,9 @@ export function BookingChatView({
                           >
                             <FileText className="w-4 h-4 shrink-0 text-primary" />
                             <span className="truncate flex-1">
-                              {locale === 'bn' ? `সংযুক্ত নথি #${idx + 1}` : `Document Asset #${idx + 1}`}
+                              {locale === 'bn'
+                                ? `সংযুক্ত নথি #${idx + 1}`
+                                : `Document Asset #${idx + 1}`}
                             </span>
                             <span className="text-[10px] opacity-75">PDF/Doc</span>
                           </div>
@@ -367,7 +374,8 @@ export function BookingChatView({
                                 ) : (
                                   <div className="text-[11px] text-slate-300 flex items-center justify-between gap-3">
                                     <span className="font-medium">
-                                      {msg.readByName || (locale === 'bn' ? 'অংশগ্রহণকারী' : 'Participant')}
+                                      {msg.readByName ||
+                                        (locale === 'bn' ? 'অংশগ্রহণকারী' : 'Participant')}
                                     </span>
                                     <span className="text-[10px] text-slate-400 flex items-center gap-1">
                                       <Clock className="w-2.5 h-2.5 opacity-70" />

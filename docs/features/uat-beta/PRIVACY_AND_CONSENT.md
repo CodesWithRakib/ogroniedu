@@ -23,14 +23,14 @@ graph TD
 
 ## 2. Collected Data Fields & Justifications
 
-| Data Field | Collection Context | Purpose & Justification | Access Clearance |
-| :--- | :--- | :--- | :--- |
-| **Reporter User ID & Role** | Authenticated feedback submission | Allows triage team to understand persona perspective and reply. | `admin`, `support_agent` |
-| **Feedback Category & Title** | Bug / Usability / A11y report | Routing ticket to appropriate engineering domain. | `admin`, `support_agent` |
-| **Reproduction Steps** | User-submitted text | Enables engineers to replicate and resolve defects. | Engineering / QA |
-| **Route & Page URL** | Client context (e.g. `/bn/tutors`) | Pinpointing UI component where defect manifested. | Engineering / QA |
-| **Diagnostic Metadata** | User Agent, Viewport dimensions | Diagnosing browser-specific layout or CSS issues. | Engineering / QA |
-| **Session Duration** | Automated classroom telemetry | Ensuring attendance duration threshold ($\ge 80\%$). | `tutor`, `guardian`, `student` |
+| Data Field                    | Collection Context                 | Purpose & Justification                                         | Access Clearance               |
+| :---------------------------- | :--------------------------------- | :-------------------------------------------------------------- | :----------------------------- |
+| **Reporter User ID & Role**   | Authenticated feedback submission  | Allows triage team to understand persona perspective and reply. | `admin`, `support_agent`       |
+| **Feedback Category & Title** | Bug / Usability / A11y report      | Routing ticket to appropriate engineering domain.               | `admin`, `support_agent`       |
+| **Reproduction Steps**        | User-submitted text                | Enables engineers to replicate and resolve defects.             | Engineering / QA               |
+| **Route & Page URL**          | Client context (e.g. `/bn/tutors`) | Pinpointing UI component where defect manifested.               | Engineering / QA               |
+| **Diagnostic Metadata**       | User Agent, Viewport dimensions    | Diagnosing browser-specific layout or CSS issues.               | Engineering / QA               |
+| **Session Duration**          | Automated classroom telemetry      | Ensuring attendance duration threshold ($\ge 80\%$).            | `tutor`, `guardian`, `student` |
 
 ---
 
@@ -45,6 +45,7 @@ graph TD
 ## 4. Participant Disclosure & Consent Agreement
 
 All participants in external beta testing must review and accept the **Beta Participation Agreement**:
+
 1. **Testing Environment Disclosure:** The user understands that they are interacting with a test/beta environment featuring new capabilities.
 2. **Sandbox Financials:** All payment actions utilize simulated sandbox currencies (bKash/SSLCOMMERZ Test) with zero real money deducted or owed.
 3. **Voluntary Feedback:** Submitting feedback, bug reports, and suggestions is voluntary and governed by this Privacy Policy.

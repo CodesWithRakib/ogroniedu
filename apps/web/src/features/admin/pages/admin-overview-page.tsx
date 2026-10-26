@@ -19,10 +19,7 @@ import {
 } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import { LoadingSpinner, Button } from '@/components/ui';
-import {
-  AdminPlatformTelemetryGrid,
-  AdminTriageCommandCenter,
-} from '../components';
+import { AdminPlatformTelemetryGrid, AdminTriageCommandCenter } from '../components';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { useAppSelector } from '@/store';
 import { useAdminDashboard } from '../hooks/use-admin-dashboard';
@@ -129,9 +126,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           <AdminPlatformTelemetryGrid
             locale={locale}
             totalGmvBdt={
-              admin.metrics.gmvMinor
-                ? Math.round(Number(admin.metrics.gmvMinor) / 100)
-                : 0
+              admin.metrics.gmvMinor ? Math.round(Number(admin.metrics.gmvMinor) / 100) : 0
             }
             activeEscrowPoolBdt={
               admin.metrics.escrowPoolMinor

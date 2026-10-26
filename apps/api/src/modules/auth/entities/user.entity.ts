@@ -37,7 +37,8 @@ export class UserEntity {
   avatarUrl!: string | null;
 
   @Column({ type: 'text', default: 'pending_verification' })
-  status!: 'pending_verification' | 'active' | 'suspended' | 'banned' | 'deactivated' | 'deletion_pending';
+  status!:
+    'pending_verification' | 'active' | 'suspended' | 'banned' | 'deactivated' | 'deletion_pending';
 
   @Column({ name: 'auth_epoch', type: 'integer', default: 0 })
   authEpoch!: number;

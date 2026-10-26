@@ -91,7 +91,8 @@ const TUTOR_PROFILE_FIELDS: StepField[] = [
     labelEn: 'Biography (English - at least 20 chars)',
     kind: 'textarea',
     required: true,
-    placeholder: 'Passionate educator with over 5 years of experience helping students excel in STEM subjects.',
+    placeholder:
+      'Passionate educator with over 5 years of experience helping students excel in STEM subjects.',
   },
   {
     name: 'bioBn',

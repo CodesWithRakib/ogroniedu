@@ -72,7 +72,10 @@ export const organizationsApi = baseApi.injectEndpoints({
     }),
 
     // Create organization
-    createOrganization: builder.mutation<ApiSuccessEnvelope<OrganizationRecord>, CreateOrganizationInput>({
+    createOrganization: builder.mutation<
+      ApiSuccessEnvelope<OrganizationRecord>,
+      CreateOrganizationInput
+    >({
       query: (body) => ({
         url: '/api/v1/organizations',
         method: 'POST',
@@ -117,7 +120,9 @@ export const organizationsApi = baseApi.injectEndpoints({
         method: 'POST',
         body,
       }),
-      invalidatesTags: (_result, _error, { id }) => [{ type: 'Organizations', id: `MEMBERS_${id}` }],
+      invalidatesTags: (_result, _error, { id }) => [
+        { type: 'Organizations', id: `MEMBERS_${id}` },
+      ],
     }),
 
     // Accept invitation

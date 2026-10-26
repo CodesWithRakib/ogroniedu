@@ -12,7 +12,7 @@
 flowchart TD
     Reporter["User (Student / Guardian / Tutor / Staff)"] --> Intake["Safe Intake Form"]
     Intake --> Classification{"Server-Side Classification"}
-    
+
     Classification -->|"General Complaint"| SupportDesk["Support Desk Queue"]
     Classification -->|"Booking / Tuition Dispute"| DisputeQueue["Disputes Queue (Escrow Frozen)"]
     Classification -->|"Financial Dispute"| FinanceQueue["Finance Ops Desk"]
@@ -32,6 +32,7 @@ flowchart TD
 ## 2. Work Breakdown Structure (WBS)
 
 ### Phase 7.1: Database Schema & Migration (Migration 025)
+
 - Extend `safety_reports` with:
   - `assigned_to UUID REFERENCES users(id)`
   - `is_confidential BOOLEAN NOT NULL DEFAULT true`
@@ -71,6 +72,7 @@ flowchart TD
   - `created_at TIMESTAMPTZ NOT NULL DEFAULT CURRENT_TIMESTAMP`
 
 ### Phase 7.2: Backend Domain & Security Engine (`@ogroniedu/api`)
+
 1. **Entities & DTOs:**
    - Map `SafetyCaseMessageEntity`, `SafetyCaseEventEntity`, and `SafetyActionEntity`.
    - Update `SafetyReportEntity` with relations and new columns.
@@ -89,6 +91,7 @@ flowchart TD
      - State transitions: Enforces state machine and persists immutable `safety_case_events`.
 
 ### Phase 7.3: Centralized Notification Privacy (`@ogroniedu/contracts`)
+
 - Register notification events:
   - `case.submitted`
   - `case.assigned`
@@ -100,6 +103,7 @@ flowchart TD
 - Use generic, non-revealing notification templates that do NOT leak private allegations in email or push previews.
 
 ### Phase 7.4: Frontend Experience (`@ogroniedu/web`)
+
 1. **Intake & Reporting:**
    - Accessible student/guardian intake form with category selection, booking/session picker, confidentiality disclosure, and hotline resources.
 2. **Case Detail & Secure Messaging:**
@@ -108,6 +112,7 @@ flowchart TD
    - Dedicated safeguarding queue with priority badges, conflict indicators, investigator assignment selector, internal notes tab, safety action triggers, and resolution modal.
 
 ### Phase 7.5: Automated Testing & Verification
+
 - Unit & integration tests for classification, state machine, assignment, and conflict-of-interest guards.
 - **12 Mandatory Authorization Security Tests**.
 - **5 E2E Workflow Tests**:

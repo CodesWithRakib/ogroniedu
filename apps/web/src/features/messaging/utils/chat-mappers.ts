@@ -40,18 +40,12 @@ export function mapToChatItems(
   return messages.map((m) => {
     const isOwn = m.senderUserId === currentUserId;
     const meta = (m.metadata || {}) as Record<string, unknown>;
-    const isStaff =
-      meta.isStaffIntervention === true ||
-      meta.senderRole === 'admin';
+    const isStaff = meta.isStaffIntervention === true || meta.senderRole === 'admin';
 
     const metadataRole = meta.senderRole as ChatRole | undefined;
     const metadataName = meta.senderName as string | undefined;
 
-    const computedRole: ChatRole = isStaff
-      ? 'admin'
-      : isOwn
-        ? ownRole
-        : (metadataRole || peerRole);
+    const computedRole: ChatRole = isStaff ? 'admin' : isOwn ? ownRole : metadataRole || peerRole;
 
     let senderName: string;
     if (isStaff) {
@@ -72,9 +66,19 @@ export function mapToChatItems(
         senderName = m.senderUser.displayName;
       }
       // Priority 4: Booking context participant names
-      else if (opts?.studentUserId && m.senderUserId === opts.studentUserId && opts.studentName && !isEmail(opts.studentName)) {
+      else if (
+        opts?.studentUserId &&
+        m.senderUserId === opts.studentUserId &&
+        opts.studentName &&
+        !isEmail(opts.studentName)
+      ) {
         senderName = opts.studentName;
-      } else if (opts?.tutorUserId && m.senderUserId === opts.tutorUserId && opts.tutorName && !isEmail(opts.tutorName)) {
+      } else if (
+        opts?.tutorUserId &&
+        m.senderUserId === opts.tutorUserId &&
+        opts.tutorName &&
+        !isEmail(opts.tutorName)
+      ) {
         senderName = opts.tutorName;
       }
       // Priority 5: peerName if valid name
@@ -87,17 +91,19 @@ export function mapToChatItems(
       }
     }
 
-    const readByName = isOwn && m.readAt
-      ? (!isEmail(m.readByName) ? m.readByName : null) ||
-        (!isEmail(m.recipientUser?.displayName) ? m.recipientUser?.displayName : null) ||
-        (!isEmail(opts?.peerName) ? opts?.peerName : null) ||
-        (isBn ? 'অংশগ্রহণকারী' : 'Participant')
-      : null;
+    const readByName =
+      isOwn && m.readAt
+        ? (!isEmail(m.readByName) ? m.readByName : null) ||
+          (!isEmail(m.recipientUser?.displayName) ? m.recipientUser?.displayName : null) ||
+          (!isEmail(opts?.peerName) ? opts?.peerName : null) ||
+          (isBn ? 'অংশগ্রহণকারী' : 'Participant')
+        : null;
 
     // Build initial seenBy list if present or seed from readAt + recipient
     let seenBy = m.seenBy;
     if ((!seenBy || seenBy.length === 0) && isOwn && m.readAt) {
-      const recipientName = m.readByName || m.recipientUser?.displayName || opts?.peerName || defaultPeerName;
+      const recipientName =
+        m.readByName || m.recipientUser?.displayName || opts?.peerName || defaultPeerName;
       seenBy = [
         {
           userId: m.readByUserId || m.recipientUserId || 'recipient',

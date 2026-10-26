@@ -650,7 +650,9 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                 href={withLocale('/dashboard/tutor/profile', locale)}
                 className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary text-primary-foreground text-xs font-semibold hover:bg-primary/90 transition-colors shrink-0"
               >
-                <span>{isBn ? 'শিক্ষক প্রোফাইল ও সনদ কেন্দ্র →' : 'Tutor Credentials Center →'}</span>
+                <span>
+                  {isBn ? 'শিক্ষক প্রোফাইল ও সনদ কেন্দ্র →' : 'Tutor Credentials Center →'}
+                </span>
               </Link>
             </div>
           )}

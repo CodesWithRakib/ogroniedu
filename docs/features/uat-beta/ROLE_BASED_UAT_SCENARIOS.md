@@ -20,6 +20,7 @@ graph LR
 ## 2. Student Persona Scenarios
 
 ### Scenario `UAT-STU-01`: Discover Tutors via Subject & District Search
+
 - **Role:** `student`
 - **Preconditions:** Unauthenticated visitor or logged-in student.
 - **Fixture:** `student.demo@ogroniedu.com`
@@ -33,6 +34,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-STU-02`: Submit Booking Proposal to Verified Tutor
+
 - **Role:** `student`
 - **Preconditions:** Authenticated as `student.demo`.
 - **Fixture:** `student.demo@ogroniedu.com` $\to$ `tutor.demo@ogroniedu.com`
@@ -46,6 +48,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-STU-03`: Attend Online Classroom & Test SOS Emergency Trigger
+
 - **Role:** `student`
 - **Preconditions:** Confirmed session scheduled for current time.
 - **Fixture:** `student.demo@ogroniedu.com` in `/bn/classroom/room-demo-101`
@@ -58,6 +61,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-STU-04`: Submit Beta Feedback on Usability Issue
+
 - **Role:** `student`
 - **Preconditions:** Authenticated student.
 - **Steps:**
@@ -74,6 +78,7 @@ graph LR
 ## 3. Guardian Persona Scenarios
 
 ### Scenario `UAT-GUA-01`: Multi-Child Profile Oversight & Scoped Navigation
+
 - **Role:** `guardian`
 - **Preconditions:** Authenticated guardian linked to 2 dependent children (`student.demo` and `student2.demo`).
 - **Fixture:** `guardian.demo@ogroniedu.com`
@@ -87,6 +92,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-GUA-02`: Fund Booking Escrow via Sandbox Gateway
+
 - **Role:** `guardian`
 - **Preconditions:** Accepted booking awaiting payment.
 - **Steps:**
@@ -98,6 +104,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-GUA-03`: IDOR Defense Rejection on Unlinked Child Profile
+
 - **Role:** `guardian`
 - **Preconditions:** Authenticated as `guardian.demo`.
 - **Steps:**
@@ -111,6 +118,7 @@ graph LR
 ## 4. Tutor Persona Scenarios
 
 ### Scenario `UAT-TUT-01`: Submit 3-Level Verification Dossier Evidence
+
 - **Role:** `tutor`
 - **Preconditions:** Authenticated tutor with unverified tier.
 - **Fixture:** `tutor2.demo@ogroniedu.com`
@@ -124,6 +132,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-TUT-02`: Manage Weekly Availability & Calendar Slots
+
 - **Role:** `tutor`
 - **Preconditions:** Authenticated tutor.
 - **Steps:**
@@ -135,6 +144,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-TUT-03`: Mark Attendance & Settle Milestone
+
 - **Role:** `tutor`
 - **Preconditions:** Completed session with 55 minutes attended ($>80\%$).
 - **Steps:**
@@ -146,6 +156,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-TUT-04`: Request Payout Disbursement
+
 - **Role:** `tutor`
 - **Preconditions:** Tutor with available payable balance $\ge 1,000\text{ BDT}$.
 - **Steps:**
@@ -161,6 +172,7 @@ graph LR
 ## 5. Operations, Support & Governance Scenarios
 
 ### Scenario `UAT-OPS-01`: Support Ticket Assignment & Resolution
+
 - **Role:** `support_agent`
 - **Fixture:** `support.demo@ogroniedu.com`
 - **Steps:**
@@ -172,6 +184,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-OPS-02`: Admin Review of Tutor Verification Dossier
+
 - **Role:** `admin`
 - **Fixture:** `ops.demo@ogroniedu.com`
 - **Steps:**
@@ -184,6 +197,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-OPS-03`: Super Admin Dynamic Feature Flag Toggling
+
 - **Role:** `super_admin`
 - **Fixture:** `admin.demo@ogroniedu.com`
 - **Steps:**
@@ -199,6 +213,7 @@ graph LR
 ## 6. Compliance & Child Safety Scenarios
 
 ### Scenario `UAT-CMP-01`: Compliance Reviewer Exclusive Clearance for SOS Incident
+
 - **Role:** `compliance_reviewer`
 - **Fixture:** `compliance.demo@ogroniedu.com`
 - **Steps:**
@@ -210,6 +225,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-CMP-02`: Safeguarding Confidentiality Firewall Rejection on Standard Admin
+
 - **Role:** `admin`
 - **Fixture:** `ops.demo@ogroniedu.com`
 - **Steps:**
@@ -223,6 +239,7 @@ graph LR
 ## 7. Organization Multi-Tenancy Scenarios
 
 ### Scenario `UAT-ORG-01`: Organization Owner Roster Management
+
 - **Role:** `organization_owner`
 - **Fixture:** `retina.owner@ogroniedu.com`
 - **Steps:**
@@ -234,6 +251,7 @@ graph LR
 - **Status:** **PASS**
 
 ### Scenario `UAT-ORG-02`: Cross-Tenant Isolation Rejection
+
 - **Role:** `organization_owner`
 - **Steps:**
   1. Attempt to query tutor bookings belonging to a different organization ID.

@@ -61,9 +61,7 @@ export function StudentNextClassHero({
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black tracking-tight text-white">
-              {isBn
-                ? 'আজকের জন্য কোনো ক্লাস নির্ধারিত নেই'
-                : 'No classes scheduled for today'}
+              {isBn ? 'আজকের জন্য কোনো ক্লাস নির্ধারিত নেই' : 'No classes scheduled for today'}
             </h2>
             <p className="text-sm text-indigo-100/80 leading-relaxed">
               {isBn

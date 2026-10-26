@@ -32,8 +32,6 @@ import type { NormalizedWebhookEvent } from '../adapters/payment-provider.interf
 
 type WebhookHeaderMap = Record<string, string | string[] | undefined>;
 
-
-
 function isUniqueViolation(error: unknown): boolean {
   return (
     typeof error === 'object' &&

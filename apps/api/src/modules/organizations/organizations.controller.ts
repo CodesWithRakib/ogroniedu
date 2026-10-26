@@ -58,10 +58,7 @@ export class OrganizationsController {
   @HttpCode(HttpStatus.OK)
   @ApiOperation({ summary: 'Accept an invitation to join an organization' })
   @ApiResponse({ status: 200, description: 'Invitation accepted and membership created' })
-  async acceptInvitation(
-    @CurrentUser() user: AuthenticatedUser,
-    @Body() dto: AcceptInvitationDto,
-  ) {
+  async acceptInvitation(@CurrentUser() user: AuthenticatedUser, @Body() dto: AcceptInvitationDto) {
     const result = await this.orgService.acceptInvitation(user, dto.token);
     return ok(result, `You have joined '${result.organization.name}' as ${result.member.role}.`);
   }

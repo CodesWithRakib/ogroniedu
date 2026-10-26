@@ -52,8 +52,8 @@ export function useConversationInbox(currentUserId: string, activeBookingId?: st
   });
 
   // In-memory conversation state (starts from API data, updated in real time by socket)
-  const [conversations, setConversations] = React.useState<ConversationInboxItem[]>(
-    () => (data?.data ? data.data : []),
+  const [conversations, setConversations] = React.useState<ConversationInboxItem[]>(() =>
+    data?.data ? data.data : [],
   );
   const [socketInitialized, setSocketInitialized] = React.useState(false);
 
@@ -138,9 +138,7 @@ export function useConversationInbox(currentUserId: string, activeBookingId?: st
       // If WE are the reader OR the message is in our currently active conversation, reset unread count
       if (data.readerUserId === currentUserId || activeBookingIdRef.current === data.bookingId) {
         setConversations((prev) =>
-          prev.map((c) =>
-            c.bookingId === data.bookingId ? { ...c, unreadCount: 0 } : c,
-          ),
+          prev.map((c) => (c.bookingId === data.bookingId ? { ...c, unreadCount: 0 } : c)),
         );
       }
       // Partner read our message — update read receipt on last message

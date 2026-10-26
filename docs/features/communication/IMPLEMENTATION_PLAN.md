@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Phase:** 08  
 **Date:** October 20, 2026  
-**Status:** In Progress  
+**Status:** In Progress
 
 ---
 
@@ -13,7 +13,7 @@
    - Deliver sub-100ms real-time messaging using Socket.IO rooms.
    - Support active thread subscriptions, live message arrival, typing indicators, and immediate read receipt synchronization.
 2. **Child Safety, Minor Protection & Statutory Compliance**:
-   - Protect minors under *The Children Act 2013* (শিশু আইন ২০১৩).
+   - Protect minors under _The Children Act 2013_ (শিশু আইন ২০১৩).
    - Guardian oversight mechanism allowing guardians of minor students to monitor tuition conversations transparently.
 3. **Escrow Protection & Anti-Circumvention Content Moderation**:
    - Normalize and inspect all messages before persistence.

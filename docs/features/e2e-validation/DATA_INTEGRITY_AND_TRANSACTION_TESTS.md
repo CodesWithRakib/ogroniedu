@@ -32,6 +32,7 @@ sequenceDiagram
 The financial backbone of OgroniEdu is governed by immutable double-entry bookkeeping rules.
 
 ### 2.1 The Conservation Law
+
 For every transaction journal $J$ containing $n$ entries $E_1, E_2, \dots, E_n$:
 
 $$\sum_{i=1}^{n} \text{Debit}(E_i) = \sum_{i=1}^{n} \text{Credit}(E_i)$$
@@ -41,20 +42,23 @@ If $\sum \text{Debit} \neq \sum \text{Credit}$, the transaction fails immediatel
 ### 2.2 Standard Journal Templates
 
 #### A. Escrow Funding (Student Payment)
+
 - **Debit:** Gateway Clearing Account (Asset) — $1,000.00\text{ BDT}$
 - **Credit:** Platform Escrow Liability Account (Liability) — $1,000.00\text{ BDT}$
-- *Balance Difference:* $0.00\text{ BDT}$ (Balanced)
+- _Balance Difference:_ $0.00\text{ BDT}$ (Balanced)
 
 #### B. Milestone Session Completion Settlement
+
 - **Debit:** Platform Escrow Liability (Liability) — $1,000.00\text{ BDT}$
 - **Credit:** Tutor Payable Account (Liability) — $900.00\text{ BDT}$
 - **Credit:** Platform Commission Revenue (Revenue) — $100.00\text{ BDT}$
-- *Balance Difference:* $0.00\text{ BDT}$ (Balanced)
+- _Balance Difference:_ $0.00\text{ BDT}$ (Balanced)
 
 #### C. Disputed Cancellation / Refund
+
 - **Debit:** Platform Escrow Liability (Liability) — $1,000.00\text{ BDT}$
 - **Credit:** Student Refund Payable (Liability) — $1,000.00\text{ BDT}$
-- *Balance Difference:* $0.00\text{ BDT}$ (Balanced)
+- _Balance Difference:_ $0.00\text{ BDT}$ (Balanced)
 
 ---
 
@@ -74,5 +78,6 @@ The 28 schema migrations enforce relational integrity via foreign key constraint
 ## 4. Disaster Recovery & Rollback Drill Results
 
 During Phase 10 verification, a catastrophic database wipe and recovery drill (BCDR) was executed:
+
 - **Procedure:** All 28 migrations were rolled down/dropped, re-applied sequentially, and re-seeded.
 - **Outcome:** 100% clean recovery with zero migration syntax errors or foreign key constraint deadlocks.

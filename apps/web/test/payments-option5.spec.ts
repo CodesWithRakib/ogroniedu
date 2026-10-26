@@ -49,7 +49,7 @@ describe('Option 5 — Tuition Fees, Escrow Checkout & Invoice Receipt Tests', (
       React.createElement(PaymentReceipt, {
         receipt: mockReceipt,
         locale: 'bn',
-      })
+      }),
     );
 
     expect(html).toContain('INV-2026-000001');
@@ -68,7 +68,7 @@ describe('Option 5 — Tuition Fees, Escrow Checkout & Invoice Receipt Tests', (
       React.createElement(PaymentReceipt, {
         receipt: mockReceipt,
         locale: 'en',
-      })
+      }),
     );
 
     expect(html).toContain('INV-2026-000001');
@@ -88,7 +88,7 @@ describe('Option 5 — Tuition Fees, Escrow Checkout & Invoice Receipt Tests', (
         onPay: () => {},
         isProcessing: false,
         payError: null,
-      })
+      }),
     );
 
     expect(html).toContain('data-testid="gateway-picker-sslcommerz"');
@@ -104,7 +104,7 @@ describe('Option 5 — Tuition Fees, Escrow Checkout & Invoice Receipt Tests', (
       React.createElement(CheckoutSummary, {
         order: mockOrder,
         locale: 'bn',
-      })
+      }),
     );
 
     expect(html).toContain('0301ea0c-a499-448f-90bf-ea0849b8b2fe');
@@ -118,7 +118,7 @@ describe('Option 5 — Tuition Fees, Escrow Checkout & Invoice Receipt Tests', (
       React.createElement(CheckoutLedger, {
         order: mockOrder,
         locale: 'bn',
-      })
+      }),
     );
 
     // 500 * 0.92 = 460

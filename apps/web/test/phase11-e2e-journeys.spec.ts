@@ -71,22 +71,30 @@ describe('Phase 11: Web Frontend End-to-End Journeys & Contract Validation', () 
 
   describe('Component SSR & Empty State Stability', () => {
     it('renders TutorSearchCatalog with bilingual toggle support', () => {
-      const bnHtml = renderToStaticMarkup(React.createElement(TutorSearchCatalog, { locale: 'bn' }));
+      const bnHtml = renderToStaticMarkup(
+        React.createElement(TutorSearchCatalog, { locale: 'bn' }),
+      );
       expect(bnHtml).toBeDefined();
       expect(bnHtml.length).toBeGreaterThan(50);
 
-      const enHtml = renderToStaticMarkup(React.createElement(TutorSearchCatalog, { locale: 'en' }));
+      const enHtml = renderToStaticMarkup(
+        React.createElement(TutorSearchCatalog, { locale: 'en' }),
+      );
       expect(enHtml).toBeDefined();
       expect(enHtml.length).toBeGreaterThan(50);
     });
 
     it('renders GuardianChildrenManager without client hydration crashes', () => {
-      const html = renderToStaticMarkup(React.createElement(GuardianChildrenManager, { locale: 'bn' }));
+      const html = renderToStaticMarkup(
+        React.createElement(GuardianChildrenManager, { locale: 'bn' }),
+      );
       expect(html).toBeDefined();
     });
 
     it('renders SessionScheduleCalendar with proper semantic structure', () => {
-      const html = renderToStaticMarkup(React.createElement(SessionScheduleCalendar, { locale: 'en' }));
+      const html = renderToStaticMarkup(
+        React.createElement(SessionScheduleCalendar, { locale: 'en' }),
+      );
       expect(html).toBeDefined();
     });
   });

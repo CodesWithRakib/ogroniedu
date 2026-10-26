@@ -115,8 +115,16 @@ export function SessionTimelineView({
                   </a>
                 )}
 
-                <Button asChild variant="outline" size="sm" className="rounded-xl text-xs font-semibold">
-                  <Link href={withLocale(`/sessions/${session.id}`, locale)} className="flex items-center gap-1">
+                <Button
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="rounded-xl text-xs font-semibold"
+                >
+                  <Link
+                    href={withLocale(`/sessions/${session.id}`, locale)}
+                    className="flex items-center gap-1"
+                  >
                     <span>{isBn ? 'বিবরণ' : 'Details'}</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </Link>

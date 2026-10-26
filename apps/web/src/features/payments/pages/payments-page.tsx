@@ -55,7 +55,9 @@ function PaymentsContent({ locale }: { locale: Locale }) {
 
   const [receiptModalOpen, setReceiptModalOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
-  const [gatewayFilter, setGatewayFilter] = useState<'all' | 'sslcommerz' | 'bkash' | 'nagad'>('all');
+  const [gatewayFilter, setGatewayFilter] = useState<'all' | 'sslcommerz' | 'bkash' | 'nagad'>(
+    'all',
+  );
 
   const openReceipt = async (orderId: string) => {
     await pay.handleViewReceipt(orderId);
@@ -125,7 +127,8 @@ function PaymentsContent({ locale }: { locale: Locale }) {
           </div>
           <div className="mt-3">
             <h4 className="text-2xl sm:text-3xl font-black text-slate-900 tabular-nums">
-              ৳ {formatLocalizedNumber(Math.round(pay.totalDueMinor / 100).toLocaleString(), locale)}
+              ৳{' '}
+              {formatLocalizedNumber(Math.round(pay.totalDueMinor / 100).toLocaleString(), locale)}
             </h4>
             <p className="text-xs text-slate-700 mt-1 font-semibold flex items-center gap-1.5">
               <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
@@ -158,7 +161,8 @@ function PaymentsContent({ locale }: { locale: Locale }) {
           </div>
           <div className="mt-3">
             <h4 className="text-2xl sm:text-3xl font-black text-slate-900 tabular-nums">
-              ৳ {formatLocalizedNumber(Math.round(pay.totalPaidMinor / 100).toLocaleString(), locale)}
+              ৳{' '}
+              {formatLocalizedNumber(Math.round(pay.totalPaidMinor / 100).toLocaleString(), locale)}
             </h4>
             <p className="text-xs text-slate-700 mt-1 font-semibold flex items-center gap-1.5">
               <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-600" />
@@ -279,7 +283,11 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                   <FileText className="w-4 h-4 mr-1.5 text-slate-700" />
                   <span>{isBn ? 'পরিশোধিত তালিকা দেখুন' : 'View Paid History'}</span>
                 </Button>
-                <Button asChild size="sm" className="rounded-xl font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-xs">
+                <Button
+                  asChild
+                  size="sm"
+                  className="rounded-xl font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
+                >
                   <Link href={withLocale('/tutors', locale)}>
                     <Sparkles className="w-4 h-4 mr-1.5" />
                     <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
@@ -350,7 +358,9 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                             {formatDate(b.createdAt, locale)}
                           </span>
                         </span>
-                        <span className="font-mono text-slate-500 font-semibold">#{b.id.slice(0, 8)}</span>
+                        <span className="font-mono text-slate-500 font-semibold">
+                          #{b.id.slice(0, 8)}
+                        </span>
                       </div>
                     </div>
 
@@ -422,7 +432,9 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                       type="text"
                       value={searchQuery}
                       onChange={(e) => setSearchQuery(e.target.value)}
-                      placeholder={isBn ? 'শিক্ষক বা রেফারেন্স খুঁজুন...' : 'Search tutor or ref...'}
+                      placeholder={
+                        isBn ? 'শিক্ষক বা রেফারেন্স খুঁজুন...' : 'Search tutor or ref...'
+                      }
                       className="pl-9 pr-3 py-1.5 text-xs font-semibold rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-48 sm:w-56"
                     />
                   </div>
@@ -717,7 +729,9 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                         className="h-11 bg-white text-xs font-bold border-slate-300 text-slate-900"
                         data-testid="pay-provider-select"
                       >
-                        <option value="sslcommerz">{dict.payments.sslTitle} (Cards, bKash, Nagad)</option>
+                        <option value="sslcommerz">
+                          {dict.payments.sslTitle} (Cards, bKash, Nagad)
+                        </option>
                         <option value="bkash">{dict.payments.bkashTitle}</option>
                         <option value="nagad">{dict.payments.nagadTitle}</option>
                       </NativeSelect>
@@ -736,8 +750,13 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                     </div>
                   </form>
                   {pay.formError && (
-                    <Alert variant="destructive" className="mt-4 rounded-xl border-rose-200 bg-rose-50 text-rose-900">
-                      <AlertDescription role="alert" className="text-xs font-bold">{pay.formError}</AlertDescription>
+                    <Alert
+                      variant="destructive"
+                      className="mt-4 rounded-xl border-rose-200 bg-rose-50 text-rose-900"
+                    >
+                      <AlertDescription role="alert" className="text-xs font-bold">
+                        {pay.formError}
+                      </AlertDescription>
                     </Alert>
                   )}
                 </CardContent>

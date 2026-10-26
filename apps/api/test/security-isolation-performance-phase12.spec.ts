@@ -51,10 +51,20 @@ describe('Phase 12: Security, Data Isolation & Performance', () => {
       mockMemberRepo = {
         findOne: vi.fn(async ({ where }: any) => {
           if (where?.organizationId === orgAlphaId && where?.userId === userAlphaId) {
-            return { organizationId: orgAlphaId, userId: userAlphaId, role: 'owner', status: 'active' };
+            return {
+              organizationId: orgAlphaId,
+              userId: userAlphaId,
+              role: 'owner',
+              status: 'active',
+            };
           }
           if (where?.organizationId === orgBetaId && where?.userId === userBetaId) {
-            return { organizationId: orgBetaId, userId: userBetaId, role: 'owner', status: 'active' };
+            return {
+              organizationId: orgBetaId,
+              userId: userBetaId,
+              role: 'owner',
+              status: 'active',
+            };
           }
           return null; // Not authorized for cross-tenant access!
         }),

@@ -20,10 +20,7 @@ import { Button } from '@/components/ui';
 // Extend Window interface for Jitsi Meet External API
 declare global {
   interface Window {
-    JitsiMeetExternalAPI?: new (
-      domain: string,
-      options: JitsiOptions
-    ) => JitsiApiInstance;
+    JitsiMeetExternalAPI?: new (domain: string, options: JitsiOptions) => JitsiApiInstance;
   }
 }
 
@@ -80,7 +77,9 @@ export function JitsiClassroomMeeting({
   const [copied, setCopied] = useState(false);
   const [scriptLoading, setScriptLoading] = useState(true);
   const [scriptError, setScriptError] = useState(false);
-  const [connectionStatus, setConnectionStatus] = useState<'connecting' | 'connected' | 'disconnected'>('connecting');
+  const [connectionStatus, setConnectionStatus] = useState<
+    'connecting' | 'connected' | 'disconnected'
+  >('connecting');
   const [participantCount, setParticipantCount] = useState(1);
   const [isGeneratingUrl, setIsGeneratingUrl] = useState(false);
 
@@ -102,7 +101,9 @@ export function JitsiClassroomMeeting({
     }
     const cleanBooking = (bookingId || '').replace(/-/g, '').slice(0, 6);
     const cleanSession = (sessionId || '').replace(/-/g, '').slice(0, 8);
-    const baseRoom = cleanBooking ? `ogroni-${cleanBooking}-${cleanSession}` : `ogroni-session-${cleanSession}`;
+    const baseRoom = cleanBooking
+      ? `ogroni-${cleanBooking}-${cleanSession}`
+      : `ogroni-session-${cleanSession}`;
     return jitsiAppId ? `${jitsiAppId}/${baseRoom}` : baseRoom;
   }, [meetingUrl, jitsiDomain, bookingId, sessionId, jitsiAppId]);
 
@@ -200,7 +201,9 @@ export function JitsiClassroomMeeting({
 
   // Load external script once
   useEffect(() => {
-    let scriptEl = document.querySelector<HTMLScriptElement>(`script[src="https://${jitsiDomain}/external_api.js"]`);
+    let scriptEl = document.querySelector<HTMLScriptElement>(
+      `script[src="https://${jitsiDomain}/external_api.js"]`,
+    );
 
     if (window.JitsiMeetExternalAPI) {
       setScriptLoading(false);
@@ -320,7 +323,9 @@ export function JitsiClassroomMeeting({
 
           <div className="hidden sm:flex items-center gap-1 text-xs text-slate-400 border-l border-slate-800 pl-3">
             <Users className="w-3.5 h-3.5 text-slate-300" />
-            <span className="font-medium text-slate-200">{participantCount} {isBn ? 'জন অংশগ্রহণকারী' : 'in call'}</span>
+            <span className="font-medium text-slate-200">
+              {participantCount} {isBn ? 'জন অংশগ্রহণকারী' : 'in call'}
+            </span>
           </div>
         </div>
 
@@ -334,11 +339,17 @@ export function JitsiClassroomMeeting({
               onClick={handleSaveUrl}
               isLoading={isGeneratingUrl}
               className="bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs rounded-xl h-8 px-3 flex items-center gap-1.5"
-              title={isBn ? 'এই মিটিং লিংকটি ক্লাসের প্রধান লিংক হিসেবে সংরক্ষণ করুন' : 'Save as primary session link'}
+              title={
+                isBn
+                  ? 'এই মিটিং লিংকটি ক্লাসের প্রধান লিংক হিসেবে সংরক্ষণ করুন'
+                  : 'Save as primary session link'
+              }
               data-testid="save-jitsi-link-btn"
             >
               <LinkIcon className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">{isBn ? 'প্রধান লিংক হিসেবে সেভ করুন' : 'Save as Session Link'}</span>
+              <span className="hidden md:inline">
+                {isBn ? 'প্রধান লিংক হিসেবে সেভ করুন' : 'Save as Session Link'}
+              </span>
             </Button>
           )}
 
@@ -350,8 +361,14 @@ export function JitsiClassroomMeeting({
             title={isBn ? 'ক্লাসরুম লিংক কপি করুন' : 'Copy classroom URL'}
             data-testid="copy-jitsi-room-url"
           >
-            {copied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Copy className="w-3.5 h-3.5" />}
-            <span className="hidden sm:inline">{copied ? (isBn ? 'কপি হয়েছে!' : 'Copied!') : (isBn ? 'লিংক কপি' : 'Copy Link')}</span>
+            {copied ? (
+              <Check className="w-3.5 h-3.5 text-emerald-400" />
+            ) : (
+              <Copy className="w-3.5 h-3.5" />
+            )}
+            <span className="hidden sm:inline">
+              {copied ? (isBn ? 'কপি হয়েছে!' : 'Copied!') : isBn ? 'লিংক কপি' : 'Copy Link'}
+            </span>
           </button>
 
           {/* Launch External Tab */}
@@ -373,7 +390,15 @@ export function JitsiClassroomMeeting({
             type="button"
             onClick={handleToggleFullscreen}
             className="p-1.5 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-200 border border-slate-700 transition-colors"
-            title={isFullscreen ? (isBn ? 'ফুলস্ক্রিন থেকে বের হন' : 'Exit Fullscreen') : (isBn ? 'ফুলস্ক্রিন' : 'Fullscreen')}
+            title={
+              isFullscreen
+                ? isBn
+                  ? 'ফুলস্ক্রিন থেকে বের হন'
+                  : 'Exit Fullscreen'
+                : isBn
+                  ? 'ফুলস্ক্রিন'
+                  : 'Fullscreen'
+            }
             data-testid="toggle-fullscreen-btn"
           >
             {isFullscreen ? <Minimize2 className="w-4 h-4" /> : <Maximize2 className="w-4 h-4" />}
@@ -387,7 +412,9 @@ export function JitsiClassroomMeeting({
         {scriptLoading && (
           <div className="absolute inset-0 bg-slate-950 flex flex-col items-center justify-center gap-3 z-10 text-slate-300">
             <RefreshCw className="w-8 h-8 animate-spin text-blue-400" />
-            <p className="text-xs font-semibold">{isBn ? 'অগ্রণী লাইভ ক্লাসরুম লোড হচ্ছে...' : 'Loading Ogroni Live Classroom...'}</p>
+            <p className="text-xs font-semibold">
+              {isBn ? 'অগ্রণী লাইভ ক্লাসরুম লোড হচ্ছে...' : 'Loading Ogroni Live Classroom...'}
+            </p>
           </div>
         )}
 
@@ -397,7 +424,11 @@ export function JitsiClassroomMeeting({
             <div className="bg-amber-950/80 border-b border-amber-800/60 px-4 py-2 text-amber-300 text-xs flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <AlertCircle className="w-4 h-4 text-amber-400 shrink-0" />
-                <span>{isBn ? 'সরাসরি সিকিউর আইফ্রেমের মাধ্যমে ক্লাসরুম চালু হয়েছে।' : 'Loaded via secure embedded video fallback.'}</span>
+                <span>
+                  {isBn
+                    ? 'সরাসরি সিকিউর আইফ্রেমের মাধ্যমে ক্লাসরুম চালু হয়েছে।'
+                    : 'Loaded via secure embedded video fallback.'}
+                </span>
               </span>
               <a
                 href={fullMeetingUrl}
@@ -410,7 +441,7 @@ export function JitsiClassroomMeeting({
             </div>
             <iframe
               src={`${fullMeetingUrl}#config.prejoinPageEnabled=false&config.startWithAudioMuted=false&userInfo.displayName=${encodeURIComponent(
-                displayName
+                displayName,
               )}`}
               allow="camera; microphone; fullscreen; display-capture; autoplay; clipboard-write; speaker"
               className="w-full flex-1 border-0"
@@ -419,11 +450,7 @@ export function JitsiClassroomMeeting({
           </div>
         ) : (
           /* Jitsi External API Container */
-          <div
-            ref={jitsiNodeRef}
-            className="w-full h-full"
-            data-testid="jitsi-iframe-container"
-          />
+          <div ref={jitsiNodeRef} className="w-full h-full" data-testid="jitsi-iframe-container" />
         )}
       </div>
 
@@ -433,13 +460,20 @@ export function JitsiClassroomMeeting({
           <Sparkles className="w-3.5 h-3.5 text-blue-400" />
           <span className="font-mono text-[11px] text-slate-300 font-semibold">{roomName}</span>
           <span className="text-slate-600">•</span>
-          <span className="text-[11px] text-slate-400">{isBn ? 'এন্ড-টু-এন্ড এনক্রিপ্টেড ও সুরক্ষিত' : 'End-to-End Encrypted'}</span>
+          <span className="text-[11px] text-slate-400">
+            {isBn ? 'এন্ড-টু-এন্ড এনক্রিপ্টেড ও সুরক্ষিত' : 'End-to-End Encrypted'}
+          </span>
         </div>
 
         <div className="flex items-center gap-3 text-[11px]">
-          <span>{isBn ? 'সার্ভার:' : 'Host:'} <strong className="text-slate-300">{jitsiDomain}</strong></span>
+          <span>
+            {isBn ? 'সার্ভার:' : 'Host:'} <strong className="text-slate-300">{jitsiDomain}</strong>
+          </span>
           <span className="text-slate-600">•</span>
-          <span>{isBn ? 'ব্যবহারকারী:' : 'User:'} <strong className="text-slate-200">{displayName}</strong></span>
+          <span>
+            {isBn ? 'ব্যবহারকারী:' : 'User:'}{' '}
+            <strong className="text-slate-200">{displayName}</strong>
+          </span>
         </div>
       </div>
     </div>

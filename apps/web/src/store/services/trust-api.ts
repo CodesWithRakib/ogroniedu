@@ -372,7 +372,13 @@ export const trustApi = baseApi.injectEndpoints({
       ],
     }),
     getDisputes: builder.query<
-      { success: boolean; data: BookingDisputeView[]; total: number; page: number; pageSize: number },
+      {
+        success: boolean;
+        data: BookingDisputeView[];
+        total: number;
+        page: number;
+        pageSize: number;
+      },
       { status?: string; bookingId?: string; page?: number; pageSize?: number } | void
     >({
       query: (params) => ({ url: '/api/v1/disputes', params: params ?? undefined }),
@@ -479,7 +485,13 @@ export const trustApi = baseApi.injectEndpoints({
     }),
     applyCaseSafetyAction: builder.mutation<
       unknown,
-      { reportId: string; actionType: string; targetUserId: string; reason: string; expiresAt?: string }
+      {
+        reportId: string;
+        actionType: string;
+        targetUserId: string;
+        reason: string;
+        expiresAt?: string;
+      }
     >({
       query: ({ reportId, ...body }) => ({
         url: `/api/v1/safety-reports/${reportId}/actions`,
@@ -505,18 +517,13 @@ export const trustApi = baseApi.injectEndpoints({
         { type: 'Notification', id: 'LIST' },
       ],
     }),
-    reopenSafetyCase: builder.mutation<
-      SafetyReportRecord,
-      { reportId: string; reason: string }
-    >({
+    reopenSafetyCase: builder.mutation<SafetyReportRecord, { reportId: string; reason: string }>({
       query: ({ reportId, reason }) => ({
         url: `/api/v1/safety-reports/${reportId}/reopen`,
         method: 'POST',
         body: { reason },
       }),
-      invalidatesTags: [
-        { type: 'SafetyReport' as any, id: 'LIST' },
-      ],
+      invalidatesTags: [{ type: 'SafetyReport' as any, id: 'LIST' }],
     }),
   }),
   overrideExisting: false,

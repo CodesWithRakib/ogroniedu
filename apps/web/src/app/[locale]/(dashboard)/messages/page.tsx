@@ -38,4 +38,3 @@ export default function MessagesRoute({ params }: { params: Promise<{ locale: st
     </RequireAuth>
   );
 }
-

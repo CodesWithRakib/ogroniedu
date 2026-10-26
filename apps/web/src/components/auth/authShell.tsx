@@ -126,7 +126,9 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
                 {isBn ? 'শিক্ষা ও নিরাপত্তার অঙ্গীকার' : 'Educational Trust & Security'}
               </span>
               <h2 className="text-2xl xl:text-3xl font-extrabold tracking-tight text-foreground font-bengali leading-snug">
-                {isBn ? 'সঠিক শিক্ষক ও নিশ্চিত ক্লাস।' : 'Verified Mentorship & Guaranteed Classes.'}
+                {isBn
+                  ? 'সঠিক শিক্ষক ও নিশ্চিত ক্লাস।'
+                  : 'Verified Mentorship & Guaranteed Classes.'}
                 <br />
                 <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
                   {isBn ? 'সুপ্ত মেধার শ্রেষ্ঠ বিকাশ।' : 'Unlock Boundless Potential.'}
@@ -200,7 +202,10 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
           {/* Bottom Social Proof Bar (Universal Platform Trust, No Personal Names) */}
           <div className="relative z-10 rounded-2xl border border-border/80 bg-white/95 p-3.5 shadow-2xs flex items-center justify-between gap-3">
             <div className="flex items-center gap-2">
-              <div className="flex items-center text-amber-500 text-xs tracking-tighter" aria-hidden="true">
+              <div
+                className="flex items-center text-amber-500 text-xs tracking-tighter"
+                aria-hidden="true"
+              >
                 ★★★★★
               </div>
               <span className="text-xs font-black text-foreground">৪.৯/৫.০</span>
@@ -261,9 +266,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
                   <span className="flex items-center gap-1">
                     <Sparkles className="h-3 w-3 text-amber-500 fill-amber-400" />
                     <span>
-                      {isBn
-                        ? 'এক ক্লিকে ডেমো অ্যাকাউন্ট নির্বাচন:'
-                        : '1-Click Demo Quick Fill:'}
+                      {isBn ? 'এক ক্লিকে ডেমো অ্যাকাউন্ট নির্বাচন:' : '1-Click Demo Quick Fill:'}
                     </span>
                   </span>
                   <span className="text-[10px] text-primary font-mono font-bold">
@@ -302,15 +305,24 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
               </span>
             </div>
             <div className="flex items-center gap-2 font-medium">
-              <Link href={withLocale('/privacy', locale)} className="hover:text-foreground hover:underline">
+              <Link
+                href={withLocale('/privacy', locale)}
+                className="hover:text-foreground hover:underline"
+              >
                 {isBn ? 'গোপনীয়তা' : 'Privacy'}
               </Link>
               <span>•</span>
-              <Link href={withLocale('/terms', locale)} className="hover:text-foreground hover:underline">
+              <Link
+                href={withLocale('/terms', locale)}
+                className="hover:text-foreground hover:underline"
+              >
                 {isBn ? 'শর্তাবলী' : 'Terms'}
               </Link>
               <span>•</span>
-              <Link href={withLocale('/safety', locale)} className="hover:text-foreground hover:underline">
+              <Link
+                href={withLocale('/safety', locale)}
+                className="hover:text-foreground hover:underline"
+              >
                 {isBn ? 'নিরাপত্তা' : 'Safety'}
               </Link>
             </div>

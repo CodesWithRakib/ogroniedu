@@ -33,10 +33,38 @@ describe('Phase 10: Financial, Escrow & Supporting Workflows Verification', () =
       mockAccountRepo = {
         findOne: vi.fn(),
         find: vi.fn().mockResolvedValue([
-          { id: 'acc-1', code: '1010_CASH', name: 'Cash', accountType: 'asset', currency: 'BDT', isActive: true },
-          { id: 'acc-2', code: '2010_ESCROW', name: 'Escrow Holding', accountType: 'liability', currency: 'BDT', isActive: true },
-          { id: 'acc-3', code: '2000_PAYABLE', name: 'Tutor Payable', accountType: 'liability', currency: 'BDT', isActive: true },
-          { id: 'acc-4', code: '4000_REVENUE', name: 'Platform Revenue', accountType: 'revenue', currency: 'BDT', isActive: true },
+          {
+            id: 'acc-1',
+            code: '1010_CASH',
+            name: 'Cash',
+            accountType: 'asset',
+            currency: 'BDT',
+            isActive: true,
+          },
+          {
+            id: 'acc-2',
+            code: '2010_ESCROW',
+            name: 'Escrow Holding',
+            accountType: 'liability',
+            currency: 'BDT',
+            isActive: true,
+          },
+          {
+            id: 'acc-3',
+            code: '2000_PAYABLE',
+            name: 'Tutor Payable',
+            accountType: 'liability',
+            currency: 'BDT',
+            isActive: true,
+          },
+          {
+            id: 'acc-4',
+            code: '4000_REVENUE',
+            name: 'Platform Revenue',
+            accountType: 'revenue',
+            currency: 'BDT',
+            isActive: true,
+          },
         ]),
       };
 
@@ -83,9 +111,7 @@ describe('Phase 10: Financial, Escrow & Supporting Workflows Verification', () =
           sourceId: 'src-1',
           idempotencyKey: 'idem-1',
           description: 'Single leg attempt',
-          entries: [
-            { accountCode: '1010_CASH', direction: 'debit', amountMinor: 50000 },
-          ],
+          entries: [{ accountCode: '1010_CASH', direction: 'debit', amountMinor: 50000 }],
         }),
       ).rejects.toThrow(BadRequestException);
     });
@@ -259,7 +285,8 @@ describe('Phase 10: Financial, Escrow & Supporting Workflows Verification', () =
     it('INVARIANT: Rejects payout request exceeding tutor available balance', async () => {
       mockDataSource.transaction.mockImplementationOnce(async (cb: any) => {
         const mgr = {
-          findOne: vi.fn()
+          findOne: vi
+            .fn()
             .mockResolvedValueOnce(null) // idempotency check: no existing payout
             .mockResolvedValueOnce({ tutorUserId: tutorUser.id, reservedMinor: '0' }), // locked account
           createQueryBuilder: vi.fn().mockReturnValue({
@@ -273,7 +300,8 @@ describe('Phase 10: Financial, Escrow & Supporting Workflows Verification', () =
             innerJoin: vi.fn().mockReturnThis(),
             where: vi.fn().mockReturnThis(),
             andWhere: vi.fn().mockReturnThis(),
-            getRawOne: vi.fn()
+            getRawOne: vi
+              .fn()
               .mockResolvedValueOnce({ balance: '60000' }) // payable = 600 BDT
               .mockResolvedValueOnce({ total: '0' }), // reserved = 0
           }),
@@ -294,7 +322,8 @@ describe('Phase 10: Financial, Escrow & Supporting Workflows Verification', () =
     it('SUCCESS: Allows payout request within available funds and records audit log', async () => {
       mockDataSource.transaction.mockImplementationOnce(async (cb: any) => {
         const mgr = {
-          findOne: vi.fn()
+          findOne: vi
+            .fn()
             .mockResolvedValueOnce(null) // no existing idempotency match
             .mockResolvedValueOnce({ tutorUserId: tutorUser.id, reservedMinor: '0' }), // locked account
           createQueryBuilder: vi.fn().mockReturnValue({
@@ -308,7 +337,8 @@ describe('Phase 10: Financial, Escrow & Supporting Workflows Verification', () =
             innerJoin: vi.fn().mockReturnThis(),
             where: vi.fn().mockReturnThis(),
             andWhere: vi.fn().mockReturnThis(),
-            getRawOne: vi.fn()
+            getRawOne: vi
+              .fn()
               .mockResolvedValueOnce({ balance: '200000' }) // ledger payable = 2000 BDT
               .mockResolvedValueOnce({ total: '0' }), // active payout sum = 0
           }),

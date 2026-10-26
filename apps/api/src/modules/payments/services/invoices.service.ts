@@ -1,4 +1,10 @@
-import { Injectable, NotFoundException, ForbiddenException, Inject, Optional } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+  Inject,
+  Optional,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, EntityManager } from 'typeorm';
 import { InvoiceEntity, PaymentOrderEntity } from '../entities';
@@ -89,8 +95,9 @@ export class InvoicesService {
   }
 
   async getInvoice(user: AuthenticatedUser, invoiceIdOrNumber: string): Promise<InvoiceEntity> {
-    const isUuid =
-      /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(invoiceIdOrNumber);
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(
+      invoiceIdOrNumber,
+    );
     const invoice = await this.invoiceRepo.findOne({
       where: isUuid ? { id: invoiceIdOrNumber } : { invoiceNumber: invoiceIdOrNumber },
     });

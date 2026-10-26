@@ -49,7 +49,12 @@ describe('Beta Feedback Service Tests (Phase 12)', () => {
 
   beforeEach(() => {
     mockFeedbackRepo = {
-      create: vi.fn((data) => ({ ...data, id: sampleFeedback.id, createdAt: new Date(), updatedAt: new Date() })),
+      create: vi.fn((data) => ({
+        ...data,
+        id: sampleFeedback.id,
+        createdAt: new Date(),
+        updatedAt: new Date(),
+      })),
       save: vi.fn(async (entity) => entity),
       findOne: vi.fn(async ({ where }) => {
         if (where?.id === sampleFeedback.id) {
@@ -90,7 +95,11 @@ describe('Beta Feedback Service Tests (Phase 12)', () => {
 
       const result = await service.submitFeedback(dto, studentUser, '127.0.0.1');
 
-      expect(mockRateLimiter.checkLimit).toHaveBeenCalledWith(`feedback:user:${studentUser.id}`, 10, 3600000);
+      expect(mockRateLimiter.checkLimit).toHaveBeenCalledWith(
+        `feedback:user:${studentUser.id}`,
+        10,
+        3600000,
+      );
       expect(mockFeedbackRepo.create).toHaveBeenCalled();
       expect(mockFeedbackRepo.save).toHaveBeenCalled();
       expect(mockAuditService.record).toHaveBeenCalledWith(
@@ -113,7 +122,9 @@ describe('Beta Feedback Service Tests (Phase 12)', () => {
         description: 'Search took 5 seconds to load results.',
       };
 
-      await expect(service.submitFeedback(dto, studentUser, '127.0.0.1')).rejects.toThrow(HttpException);
+      await expect(service.submitFeedback(dto, studentUser, '127.0.0.1')).rejects.toThrow(
+        HttpException,
+      );
     });
   });
 
@@ -143,11 +154,15 @@ describe('Beta Feedback Service Tests (Phase 12)', () => {
     });
 
     it('NEGATIVE TEST: rejects non-owner non-admin from reading feedback item (403 Forbidden)', async () => {
-      await expect(service.getFeedbackById(sampleFeedback.id, strangerUser)).rejects.toThrow(ForbiddenException);
+      await expect(service.getFeedbackById(sampleFeedback.id, strangerUser)).rejects.toThrow(
+        ForbiddenException,
+      );
     });
 
     it('NEGATIVE TEST: throws NotFoundException for invalid ID', async () => {
-      await expect(service.getFeedbackById('non-existent-id', studentUser)).rejects.toThrow(NotFoundException);
+      await expect(service.getFeedbackById('non-existent-id', studentUser)).rejects.toThrow(
+        NotFoundException,
+      );
     });
   });
 

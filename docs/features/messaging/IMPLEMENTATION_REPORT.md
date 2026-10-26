@@ -4,13 +4,13 @@
 **Phase:** 08: Communication & Real-Time Messaging System  
 **Date:** October 21, 2026  
 **Status:** Completed & Fully Verified  
-**Auditor / Engineer:** Senior Full-Stack Engineer, Real-Time Architect, Application Security Engineer  
+**Auditor / Engineer:** Senior Full-Stack Engineer, Real-Time Architect, Application Security Engineer
 
 ---
 
 ## 1. Executive Summary
 
-Phase 08 delivers a production-grade, secure, child-safe, and real-time communication platform for OgroniEdu. The implementation connects students, tutors, guardians, and support administrators with sub-second message delivery while enforcing strict safeguarding mandates under Bangladesh's **The Children Act 2013 (*শিশু আইন ২০১৩*)** and preventing escrow disintermediation (off-platform contact and payment circumvention).
+Phase 08 delivers a production-grade, secure, child-safe, and real-time communication platform for OgroniEdu. The implementation connects students, tutors, guardians, and support administrators with sub-second message delivery while enforcing strict safeguarding mandates under Bangladesh's **The Children Act 2013 (_শিশু আইন ২০১৩_)** and preventing escrow disintermediation (off-platform contact and payment circumvention).
 
 All components across database migrations, shared contracts, backend API and WebSocket gateways, content safety filtering, frontend UI views, automated test suites, and headful browser testing have been completed, verified clean, and validated against zero lint warnings and zero TypeScript errors.
 
@@ -19,6 +19,7 @@ All components across database migrations, shared contracts, backend API and Web
 ## 2. Implemented Architecture & Deliverables
 
 ### 2.1 Database & Migrations
+
 - **Migration `026_realtime_messaging_and_attachments.sql`**:
   - Added `attachment_asset_ids UUID[] DEFAULT '{}'::uuid[]` to `booking_messages`.
   - Added `metadata JSONB DEFAULT '{}'::jsonb` to `booking_messages`.
@@ -27,6 +28,7 @@ All components across database migrations, shared contracts, backend API and Web
   - Successfully executed and recorded in PostgreSQL 18 `ogroniedu_dev` database.
 
 ### 2.2 Shared Contracts (`@ogroniedu/contracts`)
+
 - Defined shared Zod schemas and TypeScript types in `packages/contracts/src/messaging.ts`:
   - `SendBookingMessageSchema`
   - `BookingMessageRecord`
@@ -36,6 +38,7 @@ All components across database migrations, shared contracts, backend API and Web
 - Re-exported from root `packages/contracts/src/index.ts` and compiled cleanly.
 
 ### 2.3 Backend API & Services (`@ogroniedu/api`)
+
 - **Content Safety Engine (`content-safety.util.ts`)**:
   - Bengali digit normalizer (`০-৯` -> `0-9`).
   - Whitespace-insensitive mobile number detector for Bangladeshi operators (`013-019`).
@@ -62,6 +65,7 @@ All components across database migrations, shared contracts, backend API and Web
   - `POST /api/v1/conversations/:bookingId/read-all` (Bulk read receipt).
 
 ### 2.4 Frontend Web Application (`@ogroniedu/web`)
+
 - **Redux RTK Query Service (`booking-messages-api.ts`)**:
   - Added endpoints `getConversationsInbox`, `markAllBookingMessagesAsRead`, and attachment support.
 - **Real-Time Hook (`use-booking-chat.ts`)**:
@@ -82,23 +86,24 @@ All components across database migrations, shared contracts, backend API and Web
 
 ## 3. Nine-Role Authorization Compliance Matrix
 
-| Canonical Role | Direct Chat | Guardian Oversight | Org Oversight | Dispute / Audit | Content Redaction Exemption |
-| :--- | :---: | :---: | :---: | :---: | :---: |
-| **`student`** | ✅ Active | ❌ | ❌ | ❌ | ❌ |
-| **`guardian`** | ✅ Active | ✅ Ward Threads | ❌ | ❌ | ❌ |
-| **`tutor`** | ✅ Active | ❌ | ❌ | ❌ | ❌ |
-| **`admin`** | ❌ | ❌ | ❌ | ✅ All Threads | ❌ |
-| **`super_admin`** | ❌ | ❌ | ❌ | ✅ Full Audit | ✅ Raw Content Audit |
-| **`support_agent`** | ❌ | ❌ | ❌ | ✅ Case Scoped | ❌ |
-| **`compliance_reviewer`** | ❌ | ❌ | ❌ | ✅ Safeguarding | ✅ Raw Content Audit |
-| **`organization_owner`** | ❌ | ❌ | ✅ Org Tutors | ❌ | ❌ |
-| **`organization_staff`** | ❌ | ❌ | ✅ Org Tutors | ❌ | ❌ |
+| Canonical Role            | Direct Chat | Guardian Oversight | Org Oversight | Dispute / Audit | Content Redaction Exemption |
+| :------------------------ | :---------: | :----------------: | :-----------: | :-------------: | :-------------------------: |
+| **`student`**             |  ✅ Active  |         ❌         |      ❌       |       ❌        |             ❌              |
+| **`guardian`**            |  ✅ Active  |  ✅ Ward Threads   |      ❌       |       ❌        |             ❌              |
+| **`tutor`**               |  ✅ Active  |         ❌         |      ❌       |       ❌        |             ❌              |
+| **`admin`**               |     ❌      |         ❌         |      ❌       | ✅ All Threads  |             ❌              |
+| **`super_admin`**         |     ❌      |         ❌         |      ❌       |  ✅ Full Audit  |    ✅ Raw Content Audit     |
+| **`support_agent`**       |     ❌      |         ❌         |      ❌       | ✅ Case Scoped  |             ❌              |
+| **`compliance_reviewer`** |     ❌      |         ❌         |      ❌       | ✅ Safeguarding |    ✅ Raw Content Audit     |
+| **`organization_owner`**  |     ❌      |         ❌         | ✅ Org Tutors |       ❌        |             ❌              |
+| **`organization_staff`**  |     ❌      |         ❌         | ✅ Org Tutors |       ❌        |             ❌              |
 
 ---
 
 ## 4. Verification & Quality Gates
 
 ### 4.1 Automated Tests
+
 - **API Test Suite**: 54/54 tests passing across:
   - `content-safety.util.spec.ts` (12 tests)
   - `booking-messages.spec.ts` (18 tests)
@@ -110,11 +115,13 @@ All components across database migrations, shared contracts, backend API and Web
 - **Web Test Suite**: 219/219 tests passing across 35 test suites.
 
 ### 4.2 Typecheck & Linting
+
 - `turbo run typecheck`: **Clean** across all 6 workspace packages (`@ogroniedu/database`, `@ogroniedu/contracts`, `@ogroniedu/api`, `@ogroniedu/web`, `@ogroniedu/ui`, `@ogroniedu/config`).
 - `turbo run lint`: **0 errors, 0 warnings** across 470 web files and 468 API files.
 - `turbo run build`: **Clean production build** (Next.js 16.4.0 Turbopack and NestJS).
 
 ### 4.3 End-to-End Browser Verification (Chrome DevTools MCP)
+
 - Navigated to `http://localhost:5000/en/messages`.
 - **Conversations Inbox**: Verified split-pane layout, partner avatar, subject, and unread pill.
 - **Active Chat**: Verified historical messages render in chronological order.
@@ -126,11 +133,11 @@ All components across database migrations, shared contracts, backend API and Web
 ## 5. Decisions Requiring Product Owner Approval
 
 1. **Attachment Retention Lifecycle**:
-   - *Current Implementation*: Active storage for the duration of the booking + 180 days post-completion, followed by cold archive.
-   - *PO Decision Requested*: Confirm whether 180 days is the preferred active window for lesson material downloads or if a shorter window (e.g. 90 days) is desired to reduce cloud storage costs.
+   - _Current Implementation_: Active storage for the duration of the booking + 180 days post-completion, followed by cold archive.
+   - _PO Decision Requested_: Confirm whether 180 days is the preferred active window for lesson material downloads or if a shorter window (e.g. 90 days) is desired to reduce cloud storage costs.
 2. **Repeated Circumvention Sanctions**:
-   - *Current Implementation*: Automatically redacts prohibited content, logs an audit record, and allows the clean portion of the message through.
-   - *PO Decision Requested*: Confirm whether 3 or more redactions within 24 hours should trigger an automated temporary 12-hour chat lockout or remain advisory with human support escalation.
+   - _Current Implementation_: Automatically redacts prohibited content, logs an audit record, and allows the clean portion of the message through.
+   - _PO Decision Requested_: Confirm whether 3 or more redactions within 24 hours should trigger an automated temporary 12-hour chat lockout or remain advisory with human support escalation.
 
 ---
 
@@ -138,6 +145,7 @@ All components across database migrations, shared contracts, backend API and Web
 
 Phase 08 is **100% complete, fully implemented, documented, tested, and verified**.
 All 11 required phase documentation files reside in `docs/features/messaging/`:
+
 1. `docs/features/messaging/AUDIT.md`
 2. `docs/features/messaging/IMPLEMENTATION_PLAN.md`
 3. `docs/features/messaging/CONVERSATION_RULES.md`

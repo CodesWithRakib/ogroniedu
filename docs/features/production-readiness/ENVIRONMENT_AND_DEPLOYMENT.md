@@ -1,4 +1,5 @@
 # Phase 10: Search, SEO, Performance, Accessibility & Production Readiness
+
 ## Environment & Deployment Readiness
 
 This document defines environment variable requirements, container packaging, database migration procedures, and deployment rollback steps.
@@ -8,23 +9,25 @@ This document defines environment variable requirements, container packaging, da
 ## 1. Environment Variables Registry
 
 ### Backend API (`apps/api`)
-| Variable | Required | Default / Example | Purpose |
-| :--- | :---: | :--- | :--- |
-| `NODE_ENV` | Yes | `production` / `development` | Runtime environment toggle |
-| `PORT` | No | `4000` | HTTP listening port |
-| `DATABASE_URL` | Yes | `postgres://user:pass@host:5432/ogroniedu` | PostgreSQL connection pool URL |
-| `JWT_SECRET` | Yes | `[REDACTED_32_CHAR_SECRET]` | Token signing secret |
-| `JWT_REFRESH_SECRET` | Yes | `[REDACTED_32_CHAR_SECRET]` | Refresh token signing secret |
-| `FRONTEND_URL` | Yes | `https://ogroni.edu.bd` | Allowed CORS origin |
-| `REDIS_URL` | No | `redis://localhost:6379` | Optional cache / pub-sub |
+
+| Variable             | Required | Default / Example                          | Purpose                        |
+| :------------------- | :------: | :----------------------------------------- | :----------------------------- |
+| `NODE_ENV`           |   Yes    | `production` / `development`               | Runtime environment toggle     |
+| `PORT`               |    No    | `4000`                                     | HTTP listening port            |
+| `DATABASE_URL`       |   Yes    | `postgres://user:pass@host:5432/ogroniedu` | PostgreSQL connection pool URL |
+| `JWT_SECRET`         |   Yes    | `[REDACTED_32_CHAR_SECRET]`                | Token signing secret           |
+| `JWT_REFRESH_SECRET` |   Yes    | `[REDACTED_32_CHAR_SECRET]`                | Refresh token signing secret   |
+| `FRONTEND_URL`       |   Yes    | `https://ogroni.edu.bd`                    | Allowed CORS origin            |
+| `REDIS_URL`          |    No    | `redis://localhost:6379`                   | Optional cache / pub-sub       |
 
 ### Frontend Web (`apps/web`)
-| Variable | Required | Default / Example | Purpose |
-| :--- | :---: | :--- | :--- |
-| `NODE_ENV` | Yes | `production` / `development` | Next.js optimization mode |
-| `PORT` | No | `5000` | HTTP server port |
-| `NEXT_PUBLIC_APP_URL` | Yes | `https://ogroni.edu.bd` | Public canonical base URL for SEO |
-| `NEXT_PUBLIC_API_URL` | Yes | `http://localhost:4000` | Backend API gateway URL |
+
+| Variable              | Required | Default / Example            | Purpose                           |
+| :-------------------- | :------: | :--------------------------- | :-------------------------------- |
+| `NODE_ENV`            |   Yes    | `production` / `development` | Next.js optimization mode         |
+| `PORT`                |    No    | `5000`                       | HTTP server port                  |
+| `NEXT_PUBLIC_APP_URL` |   Yes    | `https://ogroni.edu.bd`      | Public canonical base URL for SEO |
+| `NEXT_PUBLIC_API_URL` |   Yes    | `http://localhost:4000`      | Backend API gateway URL           |
 
 ---
 

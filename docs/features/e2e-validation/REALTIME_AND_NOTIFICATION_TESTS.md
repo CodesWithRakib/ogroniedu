@@ -8,10 +8,10 @@ OgroniEdu provides instant bi-directional updates via a dedicated NestJS WebSock
 flowchart LR
     Client["Client Browser / Mobile"] -- "JWT Handshake" --> Gateway["WebSocket Gateway (/notifications)"]
     Gateway -- "Join Room" --> Rooms["Rooms: user:{id}, org:{id}"]
-    
+
     BackendServices["Backend Services"] -- "Enqueue Event" --> Outbox["Notification Outbox"]
     OutboxWorker["Outbox Worker (Cron/Queue)"] -- "Process Unsent" --> Dispatcher["Notification Dispatcher"]
-    
+
     Dispatcher -- "Realtime Emit" --> Gateway
     Dispatcher -- "Email/SMS Fallback" --> ExternalProviders["External Gateways"]
 ```
@@ -21,6 +21,7 @@ flowchart LR
 ## 2. Room Scoping & Authentication
 
 ### 2.1 Connection Security
+
 1. **Handshake Authentication:** The client must provide a valid JWT bearer token in the connection query parameters or `auth.token`.
 2. **Unauthorized Rejection:** Connections lacking a valid signature are immediately disconnected with `UnauthorizedException`.
 3. **Automatic Room Subscription:** Upon authentication, sockets are isolated into deterministic rooms:
@@ -28,6 +29,7 @@ flowchart LR
    - Organization Staff Room: `org:<organizationId>` (if affiliated)
 
 ### 2.2 Security Isolation Invariant
+
 Clients can **never** listen to or emit directly to another user's room. All event emissions are initiated strictly server-side by authenticated domain services.
 
 ---
@@ -44,14 +46,14 @@ To prevent notification loss during transient network disconnects or process res
 
 ## 4. Multi-Channel Notification Scenarios
 
-| Event Name | Real-Time Push | In-App Bell | Email Fallback | Priority |
-| :--- | :---: | :---: | :---: | :--- |
-| `booking.requested` | Yes | Yes | Yes | High |
-| `booking.accepted` | Yes | Yes | Yes | High |
-| `session.reminder` | Yes | Yes | No | Normal |
-| `assignment.graded` | Yes | Yes | No | Low |
+| Event Name             |        Real-Time Push         |    In-App Bell    |  Email Fallback   | Priority     |
+| :--------------------- | :---------------------------: | :---------------: | :---------------: | :----------- |
+| `booking.requested`    |              Yes              |        Yes        |        Yes        | High         |
+| `booking.accepted`     |              Yes              |        Yes        |        Yes        | High         |
+| `session.reminder`     |              Yes              |        Yes        |        No         | Normal       |
+| `assignment.graded`    |              Yes              |        Yes        |        No         | Low          |
 | `safety.sos_triggered` | **Immediate (All Reviewers)** | **Urgent Banner** | **High Priority** | **CRITICAL** |
-| `payout.disbursed` | Yes | Yes | Yes | High |
+| `payout.disbursed`     |              Yes              |        Yes        |        Yes        | High         |
 
 ---
 

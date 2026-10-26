@@ -31,11 +31,7 @@ export type DisputeStatus =
   | 'dismissed';
 
 export type DisputeResolutionType =
-  | 'refund'
-  | 'tutor_upheld'
-  | 'partial_refund'
-  | 'replacement'
-  | 'dismissed';
+  'refund' | 'tutor_upheld' | 'partial_refund' | 'replacement' | 'dismissed';
 
 export const OPEN_DISPUTE_STATUSES: readonly DisputeStatus[] = [
   'opened',

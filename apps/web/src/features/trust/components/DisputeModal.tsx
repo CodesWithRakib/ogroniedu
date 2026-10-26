@@ -175,9 +175,7 @@ export function DisputeModal({
                     : 'Unsatisfactory Teaching Quality'}
                 </option>
                 <option value="curriculum_mismatch">
-                  {isBn
-                    ? 'পাঠ্যক্রম অমিল (Curriculum Mismatch)'
-                    : 'Curriculum / Syllabus Mismatch'}
+                  {isBn ? 'পাঠ্যক্রম অমিল (Curriculum Mismatch)' : 'Curriculum / Syllabus Mismatch'}
                 </option>
                 <option value="inappropriate_conduct">
                   {isBn
@@ -185,9 +183,7 @@ export function DisputeModal({
                     : 'Unprofessional / Inappropriate Conduct'}
                 </option>
                 <option value="billing_dispute">
-                  {isBn
-                    ? 'লেনদেন বা ফি অমিল (Billing / Fee Dispute)'
-                    : 'Billing / Fee Discrepancy'}
+                  {isBn ? 'লেনদেন বা ফি অমিল (Billing / Fee Dispute)' : 'Billing / Fee Discrepancy'}
                 </option>
                 <option value="other">{isBn ? 'অন্যান্য কারণ (Other)' : 'Other Grounds'}</option>
               </NativeSelect>
@@ -255,7 +251,15 @@ export function DisputeModal({
                   className="text-xs rounded-xl gap-1.5 font-bold"
                 >
                   <Send className="w-3.5 h-3.5" />
-                  <span>{isLoading ? (isBn ? 'প্রেরণ হচ্ছে...' : 'Filing...') : isBn ? 'বিরোধ জমা দিন' : 'Submit Dispute'}</span>
+                  <span>
+                    {isLoading
+                      ? isBn
+                        ? 'প্রেরণ হচ্ছে...'
+                        : 'Filing...'
+                      : isBn
+                        ? 'বিরোধ জমা দিন'
+                        : 'Submit Dispute'}
+                  </span>
                 </Button>
               </div>
             </div>

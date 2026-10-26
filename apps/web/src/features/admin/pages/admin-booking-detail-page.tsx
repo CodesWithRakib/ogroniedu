@@ -48,7 +48,10 @@ import {
 } from '@/components/ui';
 import { formatDateTime, formatBDTMinor } from '@/lib/format';
 import type { Locale } from '@/lib/i18n';
-import { useGetAdminBookingDetailQuery, useAdminCancelBookingMutation } from '@/store/services/admin-api';
+import {
+  useGetAdminBookingDetailQuery,
+  useAdminCancelBookingMutation,
+} from '@/store/services/admin-api';
 import { useSettleMilestoneMutation } from '@/store/services/payments-api';
 import { useStartSessionMutation, useCompleteSessionMutation } from '@/store/services/sessions-api';
 import { AdminCancelBookingModal } from '../components/modals/adminCancelBookingModal';
@@ -112,7 +115,9 @@ export function AdminBookingDetailPage({
       refetch();
     } catch (err: unknown) {
       const e = err as { data?: { message?: string } };
-      setActionError(e.data?.message || (isBn ? 'বাতিলকরণে ত্রুটি হয়েছে।' : 'Failed to cancel booking.'));
+      setActionError(
+        e.data?.message || (isBn ? 'বাতিলকরণে ত্রুটি হয়েছে।' : 'Failed to cancel booking.'),
+      );
     }
   };
 
@@ -124,19 +129,28 @@ export function AdminBookingDetailPage({
       refetch();
     } catch (err: unknown) {
       const e = err as { data?: { message?: string } };
-      setActionError(e.data?.message || (isBn ? 'সেশন শুরু করতে ব্যর্থ।' : 'Failed to start session.'));
+      setActionError(
+        e.data?.message || (isBn ? 'সেশন শুরু করতে ব্যর্থ।' : 'Failed to start session.'),
+      );
     }
   };
 
   const handleCompleteSession = async (sessionId: string) => {
     try {
       setActionError(null);
-      await completeSession({ id: sessionId, notes: 'Completed via Admin Inspection Control' }).unwrap();
-      setActionSuccess(isBn ? 'সেশন সফলভাবে সম্পন্ন মার্ক করা হয়েছে।' : 'Session marked as completed.');
+      await completeSession({
+        id: sessionId,
+        notes: 'Completed via Admin Inspection Control',
+      }).unwrap();
+      setActionSuccess(
+        isBn ? 'সেশন সফলভাবে সম্পন্ন মার্ক করা হয়েছে।' : 'Session marked as completed.',
+      );
       refetch();
     } catch (err: unknown) {
       const e = err as { data?: { message?: string } };
-      setActionError(e.data?.message || (isBn ? 'সেশন সম্পন্ন করতে ব্যর্থ।' : 'Failed to complete session.'));
+      setActionError(
+        e.data?.message || (isBn ? 'সেশন সম্পন্ন করতে ব্যর্থ।' : 'Failed to complete session.'),
+      );
     }
   };
 
@@ -152,7 +166,9 @@ export function AdminBookingDetailPage({
       refetch();
     } catch (err: unknown) {
       const e = err as { data?: { message?: string } };
-      setActionError(e.data?.message || (isBn ? 'সেটেলমেন্ট ব্যর্থ হয়েছে।' : 'Milestone settlement failed.'));
+      setActionError(
+        e.data?.message || (isBn ? 'সেটেলমেন্ট ব্যর্থ হয়েছে।' : 'Milestone settlement failed.'),
+      );
     }
   };
 
@@ -183,7 +199,9 @@ export function AdminBookingDetailPage({
           <Alert variant="destructive">
             <AlertTriangle className="w-4 h-4" />
             <AlertDescription>
-              {isBn ? 'বুকিং তথ্য পাওয়া যায়নি বা লোড করতে ত্রুটি হয়েছে।' : 'Booking dossier not found or failed to load.'}
+              {isBn
+                ? 'বুকিং তথ্য পাওয়া যায়নি বা লোড করতে ত্রুটি হয়েছে।'
+                : 'Booking dossier not found or failed to load.'}
             </AlertDescription>
           </Alert>
         </div>
@@ -195,7 +213,12 @@ export function AdminBookingDetailPage({
   const studentUser = booking.studentUser;
   const requesterUser = booking.requesterUser;
   const priceBdt = booking.pricePerSessionMinor ? Number(booking.pricePerSessionMinor) / 100 : 0;
-  const isEscrowHeld = escrowHolds.some((h: { status?: string }) => h.status === 'held' || h.status === 'partially_released') || booking.escrowStatus === 'held' || (!booking.escrowStatus && (booking.status === 'confirmed' || booking.status === 'completed'));
+  const isEscrowHeld =
+    escrowHolds.some(
+      (h: { status?: string }) => h.status === 'held' || h.status === 'partially_released',
+    ) ||
+    booking.escrowStatus === 'held' ||
+    (!booking.escrowStatus && (booking.status === 'confirmed' || booking.status === 'completed'));
 
   return (
     <AdminLayout locale={locale}>
@@ -248,22 +271,35 @@ export function AdminBookingDetailPage({
                     className="hover:text-foreground transition-colors"
                     title={isBn ? 'কপি করুন' : 'Copy Full ID'}
                   >
-                    {copiedId ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
+                    {copiedId ? (
+                      <Check className="w-3.5 h-3.5 text-emerald-600" />
+                    ) : (
+                      <Copy className="w-3.5 h-3.5" />
+                    )}
                   </button>
                 </span>
                 <StatusBadge status={booking.status} size="sm" />
                 {isEscrowHeld ? (
-                  <Badge variant="outline" className="border-amber-500/30 bg-amber-500/10 text-amber-600 text-xs py-0.5">
+                  <Badge
+                    variant="outline"
+                    className="border-amber-500/30 bg-amber-500/10 text-amber-600 text-xs py-0.5"
+                  >
                     <ShieldCheck className="w-3 h-3 mr-1" />
                     {isBn ? 'এসক্রো ফান্ড সংরক্ষিত' : 'Escrow Held'}
                   </Badge>
                 ) : booking.escrowStatus === 'released' ? (
-                  <Badge variant="outline" className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600 text-xs py-0.5">
+                  <Badge
+                    variant="outline"
+                    className="border-emerald-500/30 bg-emerald-500/10 text-emerald-600 text-xs py-0.5"
+                  >
                     <CheckCircle2 className="w-3 h-3 mr-1" />
                     {isBn ? 'এসক্রো রিলিজড' : 'Escrow Released'}
                   </Badge>
                 ) : booking.escrowStatus === 'refunded' ? (
-                  <Badge variant="outline" className="border-rose-500/30 bg-rose-500/10 text-rose-600 text-xs py-0.5">
+                  <Badge
+                    variant="outline"
+                    className="border-rose-500/30 bg-rose-500/10 text-rose-600 text-xs py-0.5"
+                  >
                     <ShieldAlert className="w-3 h-3 mr-1" />
                     {isBn ? 'এসক্রো রিফান্ডেড' : 'Escrow Refunded'}
                   </Badge>
@@ -282,7 +318,9 @@ export function AdminBookingDetailPage({
               </div>
 
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
-                {booking.subject?.nameBn || booking.subject?.name || (isBn ? 'সাধারণ পাঠদান' : 'General Tutoring')}
+                {booking.subject?.nameBn ||
+                  booking.subject?.name ||
+                  (isBn ? 'সাধারণ পাঠদান' : 'General Tutoring')}
                 {booking.educationLevel && (
                   <span className="text-muted-foreground font-normal text-lg sm:text-xl ml-2">
                     • {booking.educationLevel.nameBn || booking.educationLevel.name}
@@ -291,7 +329,9 @@ export function AdminBookingDetailPage({
               </h1>
               <p className="text-sm text-muted-foreground">
                 {isBn ? 'বুকিং তৈরির সময়: ' : 'Booking Created: '}
-                <span className="font-medium text-foreground">{formatDateTime(booking.createdAt, locale)}</span>
+                <span className="font-medium text-foreground">
+                  {formatDateTime(booking.createdAt, locale)}
+                </span>
               </p>
             </div>
 
@@ -321,25 +361,42 @@ export function AdminBookingDetailPage({
           {/* KPI Mini-Bar */}
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-6 pt-6 border-t border-border/60">
             <div>
-              <span className="text-xs text-muted-foreground">{isBn ? 'মোট ক্লাস সেশন' : 'Total Sessions'}</span>
-              <p className="text-lg font-bold font-mono text-foreground mt-0.5">{sessions.length || 1}</p>
+              <span className="text-xs text-muted-foreground">
+                {isBn ? 'মোট ক্লাস সেশন' : 'Total Sessions'}
+              </span>
+              <p className="text-lg font-bold font-mono text-foreground mt-0.5">
+                {sessions.length || 1}
+              </p>
             </div>
             <div>
-              <span className="text-xs text-muted-foreground">{isBn ? 'সম্পন্ন সেশন' : 'Completed Sessions'}</span>
+              <span className="text-xs text-muted-foreground">
+                {isBn ? 'সম্পন্ন সেশন' : 'Completed Sessions'}
+              </span>
               <p className="text-lg font-bold font-mono text-emerald-600 mt-0.5">
                 {sessions.filter((s: { status: string }) => s.status === 'completed').length}
               </p>
             </div>
             <div>
-              <span className="text-xs text-muted-foreground">{isBn ? 'এসক্রো রিজার্ভ' : 'Escrow Reserved'}</span>
+              <span className="text-xs text-muted-foreground">
+                {isBn ? 'এসক্রো রিজার্ভ' : 'Escrow Reserved'}
+              </span>
               <p className="text-lg font-bold font-mono text-amber-600 mt-0.5">
-                ৳{(escrowHolds[0] ? Number(escrowHolds[0].amountMinor) / 100 : priceBdt).toLocaleString()}
+                ৳
+                {(escrowHolds[0]
+                  ? Number(escrowHolds[0].amountMinor) / 100
+                  : priceBdt
+                ).toLocaleString()}
               </p>
             </div>
             <div>
-              <span className="text-xs text-muted-foreground">{isBn ? 'লেজার এন্ট্রি' : 'Ledger Entries'}</span>
+              <span className="text-xs text-muted-foreground">
+                {isBn ? 'লেজার এন্ট্রি' : 'Ledger Entries'}
+              </span>
               <p className="text-lg font-bold font-mono text-foreground mt-0.5">
-                {journals.reduce((acc: number, j: { entries?: unknown[] }) => acc + (j.entries?.length || 0), 0)}
+                {journals.reduce(
+                  (acc: number, j: { entries?: unknown[] }) => acc + (j.entries?.length || 0),
+                  0,
+                )}
               </p>
             </div>
           </div>
@@ -410,7 +467,9 @@ export function AdminBookingDetailPage({
                         {isBn ? 'শিক্ষার্থী তথ্য' : 'Student Dossier'}
                       </CardTitle>
                       <CardDescription className="text-xs">
-                        {isBn ? 'বুকিং গ্রহণকারী শিক্ষার্থী' : 'Registered Student for this Booking'}
+                        {isBn
+                          ? 'বুকিং গ্রহণকারী শিক্ষার্থী'
+                          : 'Registered Student for this Booking'}
                       </CardDescription>
                     </div>
                   </div>
@@ -421,22 +480,34 @@ export function AdminBookingDetailPage({
               </CardHeader>
               <CardContent className="pt-4 space-y-3 text-sm">
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'নাম' : 'Display Name'}</span>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'নাম' : 'Display Name'}
+                  </span>
                   <p className="font-semibold text-foreground">
                     {studentUser?.displayName || studentUser?.fullName || '—'}
                   </p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'ইমেইল' : 'Email Address'}</span>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'ইমেইল' : 'Email Address'}
+                  </span>
                   <p className="font-mono text-xs text-foreground">{studentUser?.email || '—'}</p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'ফোন নম্বর' : 'Phone Number'}</span>
-                  <p className="font-mono text-xs text-foreground">{studentUser?.phoneE164 || '—'}</p>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'ফোন নম্বর' : 'Phone Number'}
+                  </span>
+                  <p className="font-mono text-xs text-foreground">
+                    {studentUser?.phoneE164 || '—'}
+                  </p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'ইউজার আইডি' : 'User UUID'}</span>
-                  <p className="font-mono text-[11px] text-muted-foreground break-all">{studentUser?.id || booking.studentUserId}</p>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'ইউজার আইডি' : 'User UUID'}
+                  </span>
+                  <p className="font-mono text-[11px] text-muted-foreground break-all">
+                    {studentUser?.id || booking.studentUserId}
+                  </p>
                 </div>
                 {requesterUser && requesterUser.id !== studentUser?.id && (
                   <div className="pt-2 border-t border-border/60">
@@ -479,26 +550,40 @@ export function AdminBookingDetailPage({
               </CardHeader>
               <CardContent className="pt-4 space-y-3 text-sm">
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'নাম' : 'Display Name'}</span>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'নাম' : 'Display Name'}
+                  </span>
                   <p className="font-semibold text-foreground">
                     {tutorUser?.displayName || tutorUser?.fullName || '—'}
                   </p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'হেডলাইন' : 'Professional Headline'}</span>
-                  <p className="text-xs text-muted-foreground">{booking.tutorProfile?.headline || '—'}</p>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'হেডলাইন' : 'Professional Headline'}
+                  </span>
+                  <p className="text-xs text-muted-foreground">
+                    {booking.tutorProfile?.headline || '—'}
+                  </p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'ইমেইল' : 'Email Address'}</span>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'ইমেইল' : 'Email Address'}
+                  </span>
                   <p className="font-mono text-xs text-foreground">{tutorUser?.email || '—'}</p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'ফোন নম্বর' : 'Phone Number'}</span>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'ফোন নম্বর' : 'Phone Number'}
+                  </span>
                   <p className="font-mono text-xs text-foreground">{tutorUser?.phoneE164 || '—'}</p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'টিউটর আইডি' : 'Tutor User UUID'}</span>
-                  <p className="font-mono text-[11px] text-muted-foreground break-all">{booking.tutorUserId}</p>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'টিউটর আইডি' : 'Tutor User UUID'}
+                  </span>
+                  <p className="font-mono text-[11px] text-muted-foreground break-all">
+                    {booking.tutorUserId}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -512,28 +597,48 @@ export function AdminBookingDetailPage({
               </CardHeader>
               <CardContent className="pt-4 grid grid-cols-1 sm:grid-cols-3 gap-4 text-sm">
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'মাধ্যম' : 'Delivery Mode'}</span>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'মাধ্যম' : 'Delivery Mode'}
+                  </span>
                   <p className="font-medium text-foreground capitalize mt-0.5">{booking.mode}</p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'বিষয়' : 'Subject'}</span>
-                  <p className="font-medium text-foreground mt-0.5">{booking.subject?.nameBn || booking.subject?.name || '—'}</p>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'বিষয়' : 'Subject'}
+                  </span>
+                  <p className="font-medium text-foreground mt-0.5">
+                    {booking.subject?.nameBn || booking.subject?.name || '—'}
+                  </p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'স্তর' : 'Education Level'}</span>
-                  <p className="font-medium text-foreground mt-0.5">{booking.educationLevel?.nameBn || booking.educationLevel?.name || '—'}</p>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'স্তর' : 'Education Level'}
+                  </span>
+                  <p className="font-medium text-foreground mt-0.5">
+                    {booking.educationLevel?.nameBn || booking.educationLevel?.name || '—'}
+                  </p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'সেশন ফি (মাইনর)' : 'Price Minor'}</span>
-                  <p className="font-mono text-xs text-foreground mt-0.5">{booking.pricePerSessionMinor} poisha</p>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'সেশন ফি (মাইনর)' : 'Price Minor'}
+                  </span>
+                  <p className="font-mono text-xs text-foreground mt-0.5">
+                    {booking.pricePerSessionMinor} poisha
+                  </p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'বুকিং স্থিতি' : 'Booking Status'}</span>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'বুকিং স্থিতি' : 'Booking Status'}
+                  </span>
                   <p className="font-medium text-foreground capitalize mt-0.5">{booking.status}</p>
                 </div>
                 <div>
-                  <span className="text-xs text-muted-foreground block">{isBn ? 'এসক্রো স্থিতি' : 'Escrow Status'}</span>
-                  <p className="font-medium text-foreground capitalize mt-0.5">{booking.escrowStatus || 'None'}</p>
+                  <span className="text-xs text-muted-foreground block">
+                    {isBn ? 'এসক্রো স্থিতি' : 'Escrow Status'}
+                  </span>
+                  <p className="font-medium text-foreground capitalize mt-0.5">
+                    {booking.escrowStatus || 'None'}
+                  </p>
                 </div>
               </CardContent>
             </Card>
@@ -562,90 +667,107 @@ export function AdminBookingDetailPage({
               </Card>
             ) : (
               <div className="grid grid-cols-1 gap-4">
-                {sessions.map((sess: {
-                  id: string;
-                  status: string;
-                  startsAt: string;
-                  endsAt: string;
-                  meetingUrl?: string | null;
-                  locationInstructions?: string | null;
-                }, idx: number) => {
-                  const isCompleted = sess.status === 'completed';
-                  const isScheduled = sess.status === 'scheduled';
-                  const isInProgress = sess.status === 'in_progress';
+                {sessions.map(
+                  (
+                    sess: {
+                      id: string;
+                      status: string;
+                      startsAt: string;
+                      endsAt: string;
+                      meetingUrl?: string | null;
+                      locationInstructions?: string | null;
+                    },
+                    idx: number,
+                  ) => {
+                    const isCompleted = sess.status === 'completed';
+                    const isScheduled = sess.status === 'scheduled';
+                    const isInProgress = sess.status === 'in_progress';
 
-                  return (
-                    <Card key={sess.id} className="rounded-2xl shadow-xs border border-border">
-                      <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                        <div className="space-y-1.5">
-                          <div className="flex items-center gap-2">
-                            <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-xs font-bold font-mono">
-                              #{idx + 1}
-                            </span>
-                            <StatusBadge status={sess.status as 'scheduled' | 'in_progress' | 'completed' | 'cancelled'} size="sm" />
-                            <span className="text-xs text-muted-foreground font-mono">
-                              ID: {sess.id.substring(0, 8)}...
-                            </span>
-                          </div>
-                          <p className="text-sm font-semibold text-foreground flex items-center gap-2">
-                            <Clock className="w-4 h-4 text-muted-foreground" />
-                            <span>
-                              {formatDateTime(sess.startsAt, locale)} - {formatDateTime(sess.endsAt, locale)}
-                            </span>
-                          </p>
-                          {sess.meetingUrl && (
-                            <p className="text-xs text-primary font-mono flex items-center gap-1.5">
-                              <Video className="w-3.5 h-3.5" />
-                              <a href={sess.meetingUrl} target="_blank" rel="noreferrer" className="hover:underline">
-                                {sess.meetingUrl}
-                              </a>
+                    return (
+                      <Card key={sess.id} className="rounded-2xl shadow-xs border border-border">
+                        <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                          <div className="space-y-1.5">
+                            <div className="flex items-center gap-2">
+                              <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-xs font-bold font-mono">
+                                #{idx + 1}
+                              </span>
+                              <StatusBadge
+                                status={
+                                  sess.status as
+                                    'scheduled' | 'in_progress' | 'completed' | 'cancelled'
+                                }
+                                size="sm"
+                              />
+                              <span className="text-xs text-muted-foreground font-mono">
+                                ID: {sess.id.substring(0, 8)}...
+                              </span>
+                            </div>
+                            <p className="text-sm font-semibold text-foreground flex items-center gap-2">
+                              <Clock className="w-4 h-4 text-muted-foreground" />
+                              <span>
+                                {formatDateTime(sess.startsAt, locale)} -{' '}
+                                {formatDateTime(sess.endsAt, locale)}
+                              </span>
                             </p>
-                          )}
-                        </div>
+                            {sess.meetingUrl && (
+                              <p className="text-xs text-primary font-mono flex items-center gap-1.5">
+                                <Video className="w-3.5 h-3.5" />
+                                <a
+                                  href={sess.meetingUrl}
+                                  target="_blank"
+                                  rel="noreferrer"
+                                  className="hover:underline"
+                                >
+                                  {sess.meetingUrl}
+                                </a>
+                              </p>
+                            )}
+                          </div>
 
-                        {/* Session Operational Controls */}
-                        <div className="flex flex-wrap items-center gap-2">
-                          {isScheduled && (
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              onClick={() => handleStartSession(sess.id)}
-                              disabled={isStartingSession}
-                              className="text-xs h-8 gap-1.5"
-                            >
-                              <Play className="w-3 h-3 text-emerald-600" />
-                              <span>{isBn ? 'সেশন শুরু করুন' : 'Start Session'}</span>
-                            </Button>
-                          )}
-                          {(isScheduled || isInProgress) && (
-                            <Button
-                              variant="default"
-                              size="sm"
-                              onClick={() => handleCompleteSession(sess.id)}
-                              disabled={isCompletingSession}
-                              className="text-xs h-8 gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
-                            >
-                              <Check className="w-3 h-3" />
-                              <span>{isBn ? 'সম্পন্ন মার্ক করুন' : 'Mark Completed'}</span>
-                            </Button>
-                          )}
-                          {isCompleted && isEscrowHeld && (
-                            <Button
-                              variant="default"
-                              size="sm"
-                              onClick={() => handleSettleMilestone(sess.id)}
-                              disabled={isSettling}
-                              className="text-xs h-8 gap-1.5 bg-amber-600 hover:bg-amber-700 text-white"
-                            >
-                              <DollarSign className="w-3 h-3" />
-                              <span>{isBn ? 'মাইালস্টোন সেটেল করুন' : 'Settle Milestone'}</span>
-                            </Button>
-                          )}
-                        </div>
-                      </CardContent>
-                    </Card>
-                  );
-                })}
+                          {/* Session Operational Controls */}
+                          <div className="flex flex-wrap items-center gap-2">
+                            {isScheduled && (
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                onClick={() => handleStartSession(sess.id)}
+                                disabled={isStartingSession}
+                                className="text-xs h-8 gap-1.5"
+                              >
+                                <Play className="w-3 h-3 text-emerald-600" />
+                                <span>{isBn ? 'সেশন শুরু করুন' : 'Start Session'}</span>
+                              </Button>
+                            )}
+                            {(isScheduled || isInProgress) && (
+                              <Button
+                                variant="default"
+                                size="sm"
+                                onClick={() => handleCompleteSession(sess.id)}
+                                disabled={isCompletingSession}
+                                className="text-xs h-8 gap-1.5 bg-emerald-600 hover:bg-emerald-700 text-white"
+                              >
+                                <Check className="w-3 h-3" />
+                                <span>{isBn ? 'সম্পন্ন মার্ক করুন' : 'Mark Completed'}</span>
+                              </Button>
+                            )}
+                            {isCompleted && isEscrowHeld && (
+                              <Button
+                                variant="default"
+                                size="sm"
+                                onClick={() => handleSettleMilestone(sess.id)}
+                                disabled={isSettling}
+                                className="text-xs h-8 gap-1.5 bg-amber-600 hover:bg-amber-700 text-white"
+                              >
+                                <DollarSign className="w-3 h-3" />
+                                <span>{isBn ? 'মাইালস্টোন সেটেল করুন' : 'Settle Milestone'}</span>
+                              </Button>
+                            )}
+                          </div>
+                        </CardContent>
+                      </Card>
+                    );
+                  },
+                )}
               </div>
             )}
           </div>
@@ -659,7 +781,9 @@ export function AdminBookingDetailPage({
               <CardHeader className="pb-3 border-b border-border/60">
                 <CardTitle className="text-base font-bold flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-amber-500" />
-                  <span>{isBn ? 'এসক্রো রিজার্ভ ও হোল্ড রেকর্ড' : 'Escrow Holds & Commission Snapshot'}</span>
+                  <span>
+                    {isBn ? 'এসক্রো রিজার্ভ ও হোল্ড রেকর্ড' : 'Escrow Holds & Commission Snapshot'}
+                  </span>
                 </CardTitle>
               </CardHeader>
               <CardContent className="p-0">
@@ -667,11 +791,17 @@ export function AdminBookingDetailPage({
                   <TableHeader>
                     <TableRow className="text-[11px] font-bold uppercase bg-muted/30">
                       <TableHead className="px-4 py-3">{isBn ? 'হোল্ড আইডি' : 'Hold ID'}</TableHead>
-                      <TableHead className="px-4 py-3">{isBn ? 'সংরক্ষিত পরিমাণ' : 'Amount'}</TableHead>
+                      <TableHead className="px-4 py-3">
+                        {isBn ? 'সংরক্ষিত পরিমাণ' : 'Amount'}
+                      </TableHead>
                       <TableHead className="px-4 py-3">{isBn ? 'রিলিজড' : 'Released'}</TableHead>
-                      <TableHead className="px-4 py-3">{isBn ? 'কমিশন রেট' : 'Commission'}</TableHead>
+                      <TableHead className="px-4 py-3">
+                        {isBn ? 'কমিশন রেট' : 'Commission'}
+                      </TableHead>
                       <TableHead className="px-4 py-3">{isBn ? 'স্থিতি' : 'Status'}</TableHead>
-                      <TableHead className="px-4 py-3">{isBn ? 'হোল্ডের তারিখ' : 'Held At'}</TableHead>
+                      <TableHead className="px-4 py-3">
+                        {isBn ? 'হোল্ডের তারিখ' : 'Held At'}
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody className="text-xs divide-y divide-border/50">
@@ -682,38 +812,40 @@ export function AdminBookingDetailPage({
                         </TableCell>
                       </TableRow>
                     ) : (
-                      escrowHolds.map((h: {
-                        id: string;
-                        amountMinor: string | number;
-                        releasedMinor: string | number;
-                        commissionRateBps: number;
-                        status: string;
-                        heldAt?: string;
-                        createdAt?: string;
-                      }) => (
-                        <TableRow key={h.id}>
-                          <TableCell className="px-4 py-3 font-mono text-[11px]">
-                            {h.id.substring(0, 8)}...
-                          </TableCell>
-                          <TableCell className="px-4 py-3 font-bold font-mono">
-                            ৳{(Number(h.amountMinor) / 100).toLocaleString()}
-                          </TableCell>
-                          <TableCell className="px-4 py-3 font-mono text-emerald-600">
-                            ৳{(Number(h.releasedMinor || 0) / 100).toLocaleString()}
-                          </TableCell>
-                          <TableCell className="px-4 py-3 font-mono">
-                            {h.commissionRateBps / 100}% ({h.commissionRateBps} bps)
-                          </TableCell>
-                          <TableCell className="px-4 py-3 capitalize font-medium">
-                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-600 border border-amber-500/20">
-                              {h.status}
-                            </span>
-                          </TableCell>
-                          <TableCell className="px-4 py-3 text-muted-foreground">
-                            {formatDateTime(h.heldAt || h.createdAt || '', locale)}
-                          </TableCell>
-                        </TableRow>
-                      ))
+                      escrowHolds.map(
+                        (h: {
+                          id: string;
+                          amountMinor: string | number;
+                          releasedMinor: string | number;
+                          commissionRateBps: number;
+                          status: string;
+                          heldAt?: string;
+                          createdAt?: string;
+                        }) => (
+                          <TableRow key={h.id}>
+                            <TableCell className="px-4 py-3 font-mono text-[11px]">
+                              {h.id.substring(0, 8)}...
+                            </TableCell>
+                            <TableCell className="px-4 py-3 font-bold font-mono">
+                              ৳{(Number(h.amountMinor) / 100).toLocaleString()}
+                            </TableCell>
+                            <TableCell className="px-4 py-3 font-mono text-emerald-600">
+                              ৳{(Number(h.releasedMinor || 0) / 100).toLocaleString()}
+                            </TableCell>
+                            <TableCell className="px-4 py-3 font-mono">
+                              {h.commissionRateBps / 100}% ({h.commissionRateBps} bps)
+                            </TableCell>
+                            <TableCell className="px-4 py-3 capitalize font-medium">
+                              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-amber-500/10 text-amber-600 border border-amber-500/20">
+                                {h.status}
+                              </span>
+                            </TableCell>
+                            <TableCell className="px-4 py-3 text-muted-foreground">
+                              {formatDateTime(h.heldAt || h.createdAt || '', locale)}
+                            </TableCell>
+                          </TableRow>
+                        ),
+                      )
                     )}
                   </TableBody>
                 </Table>
@@ -727,7 +859,11 @@ export function AdminBookingDetailPage({
                 <CardHeader className="pb-3 border-b border-border/60">
                   <CardTitle className="text-sm font-bold flex items-center gap-2">
                     <Receipt className="w-4 h-4 text-primary" />
-                    <span>{isBn ? 'পেমেন্ট অর্ডার ও গেটওয়ে ট্রানজ্যাকশন' : 'Payment Orders & Gateway Tx'}</span>
+                    <span>
+                      {isBn
+                        ? 'পেমেন্ট অর্ডার ও গেটওয়ে ট্রানজ্যাকশন'
+                        : 'Payment Orders & Gateway Tx'}
+                    </span>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="pt-4 space-y-3">
@@ -736,29 +872,48 @@ export function AdminBookingDetailPage({
                       {isBn ? 'কোনো পেমেন্ট অর্ডার নেই' : 'No payment orders recorded'}
                     </p>
                   ) : (
-                    paymentOrders.map((ord: {
-                      id: string;
-                      provider: string;
-                      status: string;
-                      amountMinor: string | number;
-                      transactions?: Array<{ id: string; providerTransactionId?: string; status: string }>;
-                    }) => (
-                      <div key={ord.id} className="p-3 rounded-xl border border-border bg-muted/20 space-y-2">
-                        <div className="flex items-center justify-between">
-                          <span className="font-semibold text-xs capitalize">{ord.provider} Order</span>
-                          <StatusBadge status={ord.status as 'confirmed' | 'completed' | 'requested'} size="sm" />
-                        </div>
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground">Order ID: {ord.id.substring(0, 8)}...</span>
-                          <span className="font-bold font-mono">৳{(Number(ord.amountMinor) / 100).toLocaleString()}</span>
-                        </div>
-                        {ord.transactions && ord.transactions.length > 0 && (
-                          <div className="pt-2 border-t border-border/50 text-[11px] font-mono text-muted-foreground">
-                            Trx ID: {ord.transactions[0].providerTransactionId || ord.transactions[0].id}
+                    paymentOrders.map(
+                      (ord: {
+                        id: string;
+                        provider: string;
+                        status: string;
+                        amountMinor: string | number;
+                        transactions?: Array<{
+                          id: string;
+                          providerTransactionId?: string;
+                          status: string;
+                        }>;
+                      }) => (
+                        <div
+                          key={ord.id}
+                          className="p-3 rounded-xl border border-border bg-muted/20 space-y-2"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-semibold text-xs capitalize">
+                              {ord.provider} Order
+                            </span>
+                            <StatusBadge
+                              status={ord.status as 'confirmed' | 'completed' | 'requested'}
+                              size="sm"
+                            />
                           </div>
-                        )}
-                      </div>
-                    ))
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">
+                              Order ID: {ord.id.substring(0, 8)}...
+                            </span>
+                            <span className="font-bold font-mono">
+                              ৳{(Number(ord.amountMinor) / 100).toLocaleString()}
+                            </span>
+                          </div>
+                          {ord.transactions && ord.transactions.length > 0 && (
+                            <div className="pt-2 border-t border-border/50 text-[11px] font-mono text-muted-foreground">
+                              Trx ID:{' '}
+                              {ord.transactions[0].providerTransactionId || ord.transactions[0].id}
+                            </div>
+                          )}
+                        </div>
+                      ),
+                    )
                   )}
                 </CardContent>
               </Card>
@@ -777,33 +932,41 @@ export function AdminBookingDetailPage({
                       {isBn ? 'কোনো ইনভয়েস জারি করা হয়নি' : 'No invoices issued'}
                     </p>
                   ) : (
-                    invoices.map((inv: {
-                      id: string;
-                      invoiceNumber?: string;
-                      totalAmountMinor?: string | number;
-                      totalMinor?: string | number;
-                      status: string;
-                      issuedAt?: string;
-                    }) => (
-                      <div key={inv.id} className="p-3 rounded-xl border border-border bg-muted/20 space-y-1.5">
-                        <div className="flex items-center justify-between">
-                          <span className="font-mono text-xs font-bold text-foreground">
-                            {inv.invoiceNumber || inv.id.substring(0, 10)}
-                          </span>
-                          <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600">
-                            {inv.status}
-                          </span>
+                    invoices.map(
+                      (inv: {
+                        id: string;
+                        invoiceNumber?: string;
+                        totalAmountMinor?: string | number;
+                        totalMinor?: string | number;
+                        status: string;
+                        issuedAt?: string;
+                      }) => (
+                        <div
+                          key={inv.id}
+                          className="p-3 rounded-xl border border-border bg-muted/20 space-y-1.5"
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="font-mono text-xs font-bold text-foreground">
+                              {inv.invoiceNumber || inv.id.substring(0, 10)}
+                            </span>
+                            <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-500/10 text-emerald-600">
+                              {inv.status}
+                            </span>
+                          </div>
+                          <div className="flex items-center justify-between text-xs">
+                            <span className="text-muted-foreground">
+                              {formatDateTime(inv.issuedAt || '', locale)}
+                            </span>
+                            <span className="font-bold font-mono">
+                              ৳
+                              {(
+                                Number(inv.totalMinor ?? inv.totalAmountMinor ?? 50000) / 100
+                              ).toLocaleString()}
+                            </span>
+                          </div>
                         </div>
-                        <div className="flex items-center justify-between text-xs">
-                          <span className="text-muted-foreground">
-                            {formatDateTime(inv.issuedAt || '', locale)}
-                          </span>
-                          <span className="font-bold font-mono">
-                            ৳{(Number(inv.totalMinor ?? inv.totalAmountMinor ?? 50000) / 100).toLocaleString()}
-                          </span>
-                        </div>
-                      </div>
-                    ))
+                      ),
+                    )
                   )}
                 </CardContent>
               </Card>
@@ -814,7 +977,11 @@ export function AdminBookingDetailPage({
               <CardHeader className="pb-3 border-b border-border/60">
                 <CardTitle className="text-base font-bold flex items-center gap-2">
                   <Scale className="w-4 h-4 text-primary" />
-                  <span>{isBn ? 'ডাবল-এন্ট্রি লেজার জার্নাল ও এন্ট্রি' : 'Double-Entry Accounting Ledger'}</span>
+                  <span>
+                    {isBn
+                      ? 'ডাবল-এন্ট্রি লেজার জার্নাল ও এন্ট্রি'
+                      : 'Double-Entry Accounting Ledger'}
+                  </span>
                 </CardTitle>
                 <CardDescription className="text-xs">
                   {isBn
@@ -827,10 +994,18 @@ export function AdminBookingDetailPage({
                   <TableHeader>
                     <TableRow className="text-[11px] font-bold uppercase bg-muted/30">
                       <TableHead className="px-4 py-3">{isBn ? 'তারিখ' : 'Posted At'}</TableHead>
-                      <TableHead className="px-4 py-3">{isBn ? 'জার্নাল বিবরণ' : 'Description / Source'}</TableHead>
-                      <TableHead className="px-4 py-3">{isBn ? 'অ্যাকাউন্ট কোড' : 'Account'}</TableHead>
-                      <TableHead className="px-4 py-3">{isBn ? 'ডেবিট / ক্রেডিট' : 'Direction'}</TableHead>
-                      <TableHead className="px-4 py-3 text-right">{isBn ? 'পরিমাণ (টাকা)' : 'Amount (BDT)'}</TableHead>
+                      <TableHead className="px-4 py-3">
+                        {isBn ? 'জার্নাল বিবরণ' : 'Description / Source'}
+                      </TableHead>
+                      <TableHead className="px-4 py-3">
+                        {isBn ? 'অ্যাকাউন্ট কোড' : 'Account'}
+                      </TableHead>
+                      <TableHead className="px-4 py-3">
+                        {isBn ? 'ডেবিট / ক্রেডিট' : 'Direction'}
+                      </TableHead>
+                      <TableHead className="px-4 py-3 text-right">
+                        {isBn ? 'পরিমাণ (টাকা)' : 'Amount (BDT)'}
+                      </TableHead>
                     </TableRow>
                   </TableHeader>
                   <TableBody className="text-xs divide-y divide-border/50">
@@ -841,51 +1016,52 @@ export function AdminBookingDetailPage({
                         </TableCell>
                       </TableRow>
                     ) : (
-                      journals.flatMap((j: {
-                        id: string;
-                        postedAt?: string;
-                        createdAt?: string;
-                        description?: string;
-                        sourceType?: string;
-                        entries?: Array<{
+                      journals.flatMap(
+                        (j: {
                           id: string;
-                          direction: 'debit' | 'credit';
-                          amountMinor: string | number;
-                          account?: { code: string; name: string };
-                        }>;
-                      }) =>
-                        (j.entries || []).map((ent, eIdx) => (
-                          <TableRow key={`${j.id}-${eIdx}`} className="hover:bg-muted/30">
-                            <TableCell className="px-4 py-2.5 font-mono text-[11px] text-muted-foreground whitespace-nowrap">
-                              {formatDateTime(j.postedAt || j.createdAt || '', locale)}
-                            </TableCell>
-                            <TableCell className="px-4 py-2.5 font-medium text-foreground">
-                              {j.description || j.sourceType}
-                            </TableCell>
-                            <TableCell className="px-4 py-2.5">
-                              <span className="font-mono font-bold text-primary mr-1.5">
-                                {ent.account?.code || '—'}
-                              </span>
-                              <span className="text-muted-foreground text-[11px]">
-                                {ent.account?.name || ''}
-                              </span>
-                            </TableCell>
-                            <TableCell className="px-4 py-2.5">
-                              <span
-                                className={`px-2 py-0.5 rounded-md font-mono text-[10px] font-bold uppercase ${
-                                  ent.direction === 'debit'
-                                    ? 'bg-blue-500/10 text-blue-600 border border-blue-500/20'
-                                    : 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
-                                }`}
-                              >
-                                {ent.direction}
-                              </span>
-                            </TableCell>
-                            <TableCell className="px-4 py-2.5 font-mono font-bold text-right">
-                              ৳{(Number(ent.amountMinor) / 100).toLocaleString()}
-                            </TableCell>
-                          </TableRow>
-                        )),
+                          postedAt?: string;
+                          createdAt?: string;
+                          description?: string;
+                          sourceType?: string;
+                          entries?: Array<{
+                            id: string;
+                            direction: 'debit' | 'credit';
+                            amountMinor: string | number;
+                            account?: { code: string; name: string };
+                          }>;
+                        }) =>
+                          (j.entries || []).map((ent, eIdx) => (
+                            <TableRow key={`${j.id}-${eIdx}`} className="hover:bg-muted/30">
+                              <TableCell className="px-4 py-2.5 font-mono text-[11px] text-muted-foreground whitespace-nowrap">
+                                {formatDateTime(j.postedAt || j.createdAt || '', locale)}
+                              </TableCell>
+                              <TableCell className="px-4 py-2.5 font-medium text-foreground">
+                                {j.description || j.sourceType}
+                              </TableCell>
+                              <TableCell className="px-4 py-2.5">
+                                <span className="font-mono font-bold text-primary mr-1.5">
+                                  {ent.account?.code || '—'}
+                                </span>
+                                <span className="text-muted-foreground text-[11px]">
+                                  {ent.account?.name || ''}
+                                </span>
+                              </TableCell>
+                              <TableCell className="px-4 py-2.5">
+                                <span
+                                  className={`px-2 py-0.5 rounded-md font-mono text-[10px] font-bold uppercase ${
+                                    ent.direction === 'debit'
+                                      ? 'bg-blue-500/10 text-blue-600 border border-blue-500/20'
+                                      : 'bg-emerald-500/10 text-emerald-600 border border-emerald-500/20'
+                                  }`}
+                                >
+                                  {ent.direction}
+                                </span>
+                              </TableCell>
+                              <TableCell className="px-4 py-2.5 font-mono font-bold text-right">
+                                ৳{(Number(ent.amountMinor) / 100).toLocaleString()}
+                              </TableCell>
+                            </TableRow>
+                          )),
                       )
                     )}
                   </TableBody>
@@ -904,7 +1080,11 @@ export function AdminBookingDetailPage({
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base font-bold flex items-center gap-2">
                     <ShieldAlert className="w-4 h-4 text-primary" />
-                    <span>{isBn ? 'টিউটর রিপ্লেসমেন্ট গ্যারান্টি কেস' : 'Tutor Replacement Guarantee Case'}</span>
+                    <span>
+                      {isBn
+                        ? 'টিউটর রিপ্লেসমেন্ট গ্যারান্টি কেস'
+                        : 'Tutor Replacement Guarantee Case'}
+                    </span>
                   </CardTitle>
                   {replacementCase && (
                     <Badge variant="outline" className="text-xs uppercase">
@@ -924,12 +1104,22 @@ export function AdminBookingDetailPage({
                   <div className="space-y-3">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
-                        <span className="text-xs text-muted-foreground block">{isBn ? 'কেস আইডি' : 'Case ID'}</span>
+                        <span className="text-xs text-muted-foreground block">
+                          {isBn ? 'কেস আইডি' : 'Case ID'}
+                        </span>
                         <p className="font-mono text-xs">{replacementCase.id}</p>
                       </div>
                       <div>
-                        <span className="text-xs text-muted-foreground block">{isBn ? 'অনুরোধের কারণ' : 'Reason'}</span>
-                        <p className="font-medium">{replacementCase.explanation || replacementCase.reasonCode || replacementCase.reason_code || replacementCase.reason || '—'}</p>
+                        <span className="text-xs text-muted-foreground block">
+                          {isBn ? 'অনুরোধের কারণ' : 'Reason'}
+                        </span>
+                        <p className="font-medium">
+                          {replacementCase.explanation ||
+                            replacementCase.reasonCode ||
+                            replacementCase.reason_code ||
+                            replacementCase.reason ||
+                            '—'}
+                        </p>
                       </div>
                     </div>
                   </div>
@@ -952,28 +1142,37 @@ export function AdminBookingDetailPage({
                   </p>
                 ) : (
                   <div className="space-y-3">
-                    {refunds.map((r: {
-                      id: string;
-                      amountMinor: string | number;
-                      status: string;
-                      reason?: string;
-                      createdAt?: string;
-                    }) => (
-                      <div key={r.id} className="p-3 rounded-xl border border-border bg-muted/20 flex items-center justify-between">
-                        <div>
-                          <p className="font-mono text-xs font-semibold">{r.id.substring(0, 10)}...</p>
-                          <p className="text-xs text-muted-foreground">{r.reason || 'Admin Intervention'}</p>
+                    {refunds.map(
+                      (r: {
+                        id: string;
+                        amountMinor: string | number;
+                        status: string;
+                        reason?: string;
+                        createdAt?: string;
+                      }) => (
+                        <div
+                          key={r.id}
+                          className="p-3 rounded-xl border border-border bg-muted/20 flex items-center justify-between"
+                        >
+                          <div>
+                            <p className="font-mono text-xs font-semibold">
+                              {r.id.substring(0, 10)}...
+                            </p>
+                            <p className="text-xs text-muted-foreground">
+                              {r.reason || 'Admin Intervention'}
+                            </p>
+                          </div>
+                          <div className="text-right">
+                            <span className="font-mono font-bold text-rose-600 block">
+                              ৳{(Number(r.amountMinor) / 100).toLocaleString()}
+                            </span>
+                            <span className="text-[10px] uppercase font-semibold text-muted-foreground">
+                              {r.status}
+                            </span>
+                          </div>
                         </div>
-                        <div className="text-right">
-                          <span className="font-mono font-bold text-rose-600 block">
-                            ৳{(Number(r.amountMinor) / 100).toLocaleString()}
-                          </span>
-                          <span className="text-[10px] uppercase font-semibold text-muted-foreground">
-                            {r.status}
-                          </span>
-                        </div>
-                      </div>
-                    ))}
+                      ),
+                    )}
                   </div>
                 )}
               </CardContent>

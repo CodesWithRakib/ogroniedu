@@ -2,7 +2,7 @@
 
 **Date:** Following Phase 9  
 **Duration:** 1 day  
-**Owner:** QA Lead  
+**Owner:** QA Lead
 
 ---
 
@@ -14,18 +14,18 @@ Stabilize and expand the Playwright E2E test suite, ensuring all critical user f
 
 ## Scope
 
-| Test File | Current Status | Action Required |
-|---|---|---|
-| `auth.e2e.spec.ts` | ✅ Passing | Maintain; add logout flow test |
-| `bookings.e2e.spec.ts` | ✅ Passing | Add conflict detection test case |
-| `payments.e2e.spec.ts` | ✅ Passing | Add refund initiation test |
-| `tutor-profile.e2e.spec.ts` | ✅ Passing | Add verification submission test |
-| `guardian-linking.e2e.spec.ts` | ✅ Passing | Add child linking ABAC test |
-| `learning.e2e.spec.ts` | ⚠️ Flaky | Fix state leakage; add deterministic fixtures; retry config |
-| `trust-safety.e2e.spec.ts` | ✅ Passing | Maintain; add safety report submission test |
-| `admin-panel.e2e.spec.ts` | ✅ Passing | Maintain; add admin impersonation test |
-| `notifications.e2e.spec.ts` | ⚠️ Flaky | Fix WebSocket timing; increase retry; isolate user state |
-| `taxonomy.e2e.spec.ts` | ✅ Passing | Maintain |
+| Test File                      | Current Status | Action Required                                             |
+| ------------------------------ | -------------- | ----------------------------------------------------------- |
+| `auth.e2e.spec.ts`             | ✅ Passing     | Maintain; add logout flow test                              |
+| `bookings.e2e.spec.ts`         | ✅ Passing     | Add conflict detection test case                            |
+| `payments.e2e.spec.ts`         | ✅ Passing     | Add refund initiation test                                  |
+| `tutor-profile.e2e.spec.ts`    | ✅ Passing     | Add verification submission test                            |
+| `guardian-linking.e2e.spec.ts` | ✅ Passing     | Add child linking ABAC test                                 |
+| `learning.e2e.spec.ts`         | ⚠️ Flaky       | Fix state leakage; add deterministic fixtures; retry config |
+| `trust-safety.e2e.spec.ts`     | ✅ Passing     | Maintain; add safety report submission test                 |
+| `admin-panel.e2e.spec.ts`      | ✅ Passing     | Maintain; add admin impersonation test                      |
+| `notifications.e2e.spec.ts`    | ⚠️ Flaky       | Fix WebSocket timing; increase retry; isolate user state    |
+| `taxonomy.e2e.spec.ts`         | ✅ Passing     | Maintain                                                    |
 
 ### Action Items
 
@@ -62,10 +62,10 @@ describe('Feature X', () => {
     await page.fill('#email', 'user@test.com');
     await page.fill('#password', 'password123');
     await page.click('button:has-text("Sign in")');
-    
+
     // Act
     await page.click('text=Feature X');
-    
+
     // Assert
     await expect(page.locator('#success')).toBeVisible();
     await expect(page.locator('#error')).not.toBeVisible();
@@ -75,4 +75,4 @@ describe('Feature X', () => {
 
 ---
 
-*End of Phase 10.*
+_End of Phase 10._

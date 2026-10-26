@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Phase:** 08: Communication & Real-Time Messaging System  
 **Date:** October 20, 2026  
-**Status:** Approved & Implemented  
+**Status:** Approved & Implemented
 
 ---
 
@@ -20,7 +20,7 @@ flowchart TD
 
     Msg --> Outbox
     Transaction -->|Committed| EventBus[Event Emitter / Socket Gateway]
-    
+
     EventBus -->|Immediate Push| LiveChat[Socket Room: booking_chat:id]
     EventBus -->|Toast Notification| RecipientRoom[Socket Room: user:recipientId]
 
@@ -69,6 +69,7 @@ When `BookingMessagesService.sendMessage` executes, it records the following out
 ## 3. Real-Time vs. Offline Notification Deduplication
 
 To prevent annoying users who are already actively engaged in an open chat session with duplicate pushes, SMS, or emails:
+
 1. **Active Window Suppression**:
    - When a message is sent, `NotificationGateway` emits `new_chat_message` directly to the `booking_chat:${bookingId}` room.
    - If the recipient's socket client has active focus on `booking_chat:${bookingId}`, it immediately sends back a lightweight `messages_read` receipt.
@@ -81,6 +82,7 @@ To prevent annoying users who are already actively engaged in an open chat sessi
 ## 4. Guardian Mirroring Policy
 
 Under Child Safety and Safeguarding protocols:
+
 - If a message is sent to or from a student user who is a minor:
   - An additional notification outbox event is automatically created for every active guardian linked to that student in `guardian_students`.
   - Guardian payload:
@@ -103,6 +105,7 @@ Under Child Safety and Safeguarding protocols:
 ## 5. Reconnection & Offline State Synchronization
 
 When a mobile or web client temporarily loses internet connectivity (e.g., poor mobile coverage in regional Bangladesh):
+
 1. **Automatic Socket Reconnection**: The Socket.IO client automatically attempts reconnection with exponential backoff (`reconnectionDelay: 1000`, `reconnectionDelayMax: 5000`).
 2. **Resubscription**: On socket `connect` event, the client re-authenticates and invokes `join_booking_chat` for the currently displayed thread.
 3. **Catch-up Sync**: The client queries `GET /api/v1/conversations/:bookingId/messages?cursor=<lastKnownMessageId>&direction=forward` to pull any messages that arrived while disconnected.

@@ -11,7 +11,12 @@ import {
   Sparkles,
   CreditCard,
   BookOpen,
-  TrendingUp, Clock, CheckCircle2, AlertCircle, ExternalLink, RefreshCw,
+  TrendingUp,
+  Clock,
+  CheckCircle2,
+  AlertCircle,
+  ExternalLink,
+  RefreshCw,
 } from 'lucide-react';
 import { TutorLayout } from '@/layouts/tutor/TutorLayout';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
@@ -287,7 +292,9 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-foreground">
-                  {isBn ? '⚠️ নথিপত্রে তথ্য সংশোধন প্রয়োজন' : '⚠️ Action Required: Additional Information Needed'}
+                  {isBn
+                    ? '⚠️ নথিপত্রে তথ্য সংশোধন প্রয়োজন'
+                    : '⚠️ Action Required: Additional Information Needed'}
                 </h3>
                 <Badge variant="destructive" className="text-[10px]">
                   {isBn ? 'সংশোধন প্রয়োজন' : 'Action Required'}
@@ -357,7 +364,9 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-sm font-bold text-foreground">
-                  {isBn ? '🎉 অভিনন্দন! আপনার শিক্ষক প্রোফাইল ভেরিফাইড হয়েছে' : '🎉 Congratulations! Your Profile is Verified'}
+                  {isBn
+                    ? '🎉 অভিনন্দন! আপনার শিক্ষক প্রোফাইল ভেরিফাইড হয়েছে'
+                    : '🎉 Congratulations! Your Profile is Verified'}
                 </h3>
                 <Badge variant="success" className="text-[10px]">
                   {isBn ? 'ভেরিফাইড' : 'Verified'}

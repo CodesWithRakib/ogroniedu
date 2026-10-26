@@ -34,6 +34,7 @@ flowchart TD
 ```
 
 ### 2.1 Playbook Action 1: Zero-Result Search Remediation
+
 - **Problem:** When prospective students search for specialized subjects (e.g. Higher Secondary ICT or English Medium Physics) in non-metropolitan areas, the search may return 0 tutors.
 - **Evidence:** `zeroResultRate` metric in `v_daily_product_funnel`.
 - **Action:**
@@ -43,6 +44,7 @@ flowchart TD
 - **Guardrail:** Never show fake or unverified tutors to fill space.
 
 ### 2.2 Playbook Action 2: Tutor Profile Verification Guidance
+
 - **Problem:** Tutors register but abandon before completing their academic qualification dossier.
 - **Evidence:** `tutor.verificationRate` in `getActivationAnalytics()`.
 - **Action:**
@@ -51,6 +53,7 @@ flowchart TD
 - **Guardrail:** Never lower verification standards to boost tutor supply.
 
 ### 2.3 Playbook Action 3: Multi-Child Guardian Overview
+
 - **Problem:** Guardians managing multiple children struggle to track different lesson schedules.
 - **Evidence:** Guardian retention drops if session times conflict.
 - **Action:**
@@ -59,6 +62,7 @@ flowchart TD
 - **Guardrail:** Guardian notifications must respect user notification preference toggles.
 
 ### 2.4 Playbook Action 4: Homework & Academic Feedback Loop
+
 - **Problem:** Students take sessions but drop off without continuing because lesson progress is not tangible.
 - **Evidence:** `homework.submissionRate` in `getLearningEngagementAnalytics()`.
 - **Action:**

@@ -13,14 +13,7 @@ import {
   BookOpen,
   Sparkles,
 } from 'lucide-react';
-import {
-  Button,
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  CardFooter,
-} from '@/components/ui';
+import { Button, Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
@@ -145,9 +138,7 @@ export function SessionCard({
               className="px-3.5 py-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold text-xs shadow-xs shadow-blue-500/25 transition-all flex items-center gap-1.5 shrink-0 active:scale-95"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>
-                {dict.scheduling?.joinMeeting || (isBn ? 'ক্লাসে প্রবেশ' : 'Join Class')}
-              </span>
+              <span>{dict.scheduling?.joinMeeting || (isBn ? 'ক্লাসে প্রবেশ' : 'Join Class')}</span>
             </a>
           </div>
         )}

@@ -5,6 +5,7 @@
 The OgroniEdu platform architecture was inventoried across all five workspace packages (`@ogroniedu/web`, `@ogroniedu/api`, `@ogroniedu/contracts`, `@ogroniedu/database`, `@ogroniedu/tsconfig`). The system demonstrates strong foundational architecture with PostgreSQL 18, 30 clean SQL migrations, physical GiST scheduling concurrency locks, and integer poisha double-entry accounting.
 
 However, rapid feature iteration through Phases 01–14 introduced specific structural technical debt:
+
 - **Circular Imports**: Bi-directional `@Inject(forwardRef())` between `NotificationService` and `NotificationGateway`, custom hook type circularity in `use-guardian-children.ts` ⇄ `GuardianChildrenManager.tsx`, and state typing circularity in `store.ts` ⇄ `base-api.ts`.
 - **UI Monoliths**: `admin-taxonomy-page.tsx` had grown to 1,460 lines, inlining 5 independent entity management domains into a single file.
 - **Intertwined Domain Rules**: Pure calculations (financial refund splits, brute-force account lockout checks, and cryptographically secure OTP generation) were tightly coupled to database queries.
@@ -14,6 +15,7 @@ However, rapid feature iteration through Phases 01–14 introduced specific stru
 ## 2. Baseline Test & Build Results
 
 Before any code modifications were introduced, baseline quality checks were executed and recorded:
+
 - **Monorepo Tests**: 1,180 passed across 127 test files (100% pass rate).
 - **TypeScript Typecheck (`pnpm typecheck`)**: 0 errors across 5 workspace packages.
 - **Linting (`pnpm lint`)**: 0 errors, 0 warnings across 988 files.
@@ -42,6 +44,7 @@ Before any code modifications were introduced, baseline quality checks were exec
 ## 5. Files and Modules Refactored
 
 ### Frontend (`apps/web`)
+
 1. `apps/web/src/components/guardian/guardian-children.types.ts` — **[NEW]** Shared type definitions extracted from component.
 2. `apps/web/src/components/guardian/use-guardian-children.ts` — Updated imports to use `guardian-children.types.ts`.
 3. `apps/web/src/components/guardian/GuardianChildrenManager.tsx` — Updated to consume and re-export types from `guardian-children.types.ts`.
@@ -56,6 +59,7 @@ Before any code modifications were introduced, baseline quality checks were exec
 12. `apps/web/src/features/admin/pages/admin-taxonomy-page.tsx` — Refactored orchestrator page (-640 lines, -44% reduction).
 
 ### Backend (`apps/api`)
+
 13. `apps/api/src/modules/notifications/interfaces/notification-broadcaster.interface.ts` — **[NEW]** `INotificationBroadcaster` and `NOTIFICATION_BROADCASTER` DI token.
 14. `apps/api/src/modules/notifications/notification.service.ts` — Decoupled from `NotificationGateway`, injecting broadcaster abstraction.
 15. `apps/api/src/modules/notifications/notification.gateway.ts` — Implemented `INotificationBroadcaster`; removed `forwardRef`.
@@ -65,6 +69,7 @@ Before any code modifications were introduced, baseline quality checks were exec
 19. `apps/api/src/modules/trust/utils/replacement-policy.util.ts` — **[NEW]** Pure integer-poisha refund calculation and deadline check helpers.
 
 ### Tests
+
 20. `apps/api/test/auth-policy.util.spec.ts` — **[NEW]** 8 unit tests for auth policy.
 21. `apps/api/test/replacement-policy.util.spec.ts` — **[NEW]** 8 unit tests for replacement policy.
 22. `scripts/audit-circular-deps.mjs` — **[NEW]** Automated circular dependency audit tool.
@@ -96,6 +101,7 @@ graph LR
 ## 7. Dependency-Cycle Findings
 
 Using `scripts/audit-circular-deps.mjs`:
+
 - `@ogroniedu/web`: Reduced from 2 cycles to **0 cycles** (100% clean).
 - `@ogroniedu/contracts`: **0 cycles** (100% clean).
 - `@ogroniedu/database`: **0 cycles** (100% clean).
@@ -124,16 +130,16 @@ No database schema changes or migrations were required for Phase 15. All 30 exis
 
 ## 11. Final Quality Verification Results
 
-| Quality Gate | Command | Result | Status |
-| :--- | :--- | :---: | :---: |
-| **Monorepo Tests** | `pnpm test` | **1,196 passed** (129 test files) | ✅ 100% Passing |
-| **Backend API Tests** | `pnpm --filter @ogroniedu/api test` | **936 passed** (89 test files) | ✅ 100% Passing |
-| **Frontend Web Tests** | `pnpm --filter @ogroniedu/web test` | **237 passed** (38 test files) | ✅ 100% Passing |
-| **Database Tests** | `pnpm --filter @ogroniedu/database test` | **23 passed** (2 test files, cold drill pass) | ✅ 100% Passing |
-| **TypeScript Compilation** | `pnpm typecheck` | **0 errors** across 5 packages | ✅ Clean |
-| **Monorepo Linting** | `pnpm lint` | **0 warnings, 0 errors** across 990+ files | ✅ Clean |
-| **Documentation Integrity** | `node scripts/validate-documentation.js` | **381 files verified** | ✅ Clean |
-| **Deployment Smoke Verification** | `node scripts/smoke-test.mjs --target local` | **8/8 checks passed** | ✅ Healthy |
+| Quality Gate                      | Command                                      |                    Result                     |     Status      |
+| :-------------------------------- | :------------------------------------------- | :-------------------------------------------: | :-------------: |
+| **Monorepo Tests**                | `pnpm test`                                  |       **1,196 passed** (129 test files)       | ✅ 100% Passing |
+| **Backend API Tests**             | `pnpm --filter @ogroniedu/api test`          |        **936 passed** (89 test files)         | ✅ 100% Passing |
+| **Frontend Web Tests**            | `pnpm --filter @ogroniedu/web test`          |        **237 passed** (38 test files)         | ✅ 100% Passing |
+| **Database Tests**                | `pnpm --filter @ogroniedu/database test`     | **23 passed** (2 test files, cold drill pass) | ✅ 100% Passing |
+| **TypeScript Compilation**        | `pnpm typecheck`                             |        **0 errors** across 5 packages         |    ✅ Clean     |
+| **Monorepo Linting**              | `pnpm lint`                                  |  **0 warnings, 0 errors** across 990+ files   |    ✅ Clean     |
+| **Documentation Integrity**       | `node scripts/validate-documentation.js`     |            **381 files verified**             |    ✅ Clean     |
+| **Deployment Smoke Verification** | `node scripts/smoke-test.mjs --target local` |             **8/8 checks passed**             |   ✅ Healthy    |
 
 ---
 

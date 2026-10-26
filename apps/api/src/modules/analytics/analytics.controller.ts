@@ -28,10 +28,7 @@ export class AnalyticsController {
    */
   @Post('events')
   @Public()
-  async trackEvent(
-    @Body() dto: TrackEventDto,
-    @CurrentUser() user?: AuthenticatedUser,
-  ) {
+  async trackEvent(@Body() dto: TrackEventDto, @CurrentUser() user?: AuthenticatedUser) {
     const data = await this.eventTrackingService.trackClientEvent(dto, user);
     return {
       success: true,

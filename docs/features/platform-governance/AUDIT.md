@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Phase:** 09: Admin Operations, Organization Management & Platform Governance  
 **Date:** October 21, 2026  
-**Auditor:** Senior Full-Stack Architect, Backend Engineer, Security Engineer, QA Lead  
+**Auditor:** Senior Full-Stack Architect, Backend Engineer, Security Engineer, QA Lead
 
 ---
 
@@ -17,17 +17,17 @@ This audit examines the actual state of the monorepo codebase across authenticat
 
 ## 2. Monorepo & Technology Stack Baseline
 
-| Component | Technology | Version | Location / Package |
-| :--- | :--- | :--- | :--- |
-| **Monorepo Engine** | Turborepo | 2.11.7 | Root `turbo.json` |
-| **Package Manager** | pnpm | 9.x | `pnpm-workspace.yaml` |
-| **Backend Framework** | NestJS | 10.x | `apps/api` |
-| **Database** | PostgreSQL | 18 (Alpine/Debian) | Port 5432, DB `ogroniedu_dev` |
-| **ORM / Query Engine**| TypeORM | 0.3.x | `apps/api/src/database` |
-| **Shared Contracts** | Zod + TypeScript | 3.23.x | `packages/contracts` |
-| **Frontend Framework**| Next.js | 16.4.0 (Turbopack, App Router) | `apps/web` |
-| **State Management** | Redux Toolkit (RTK Query) | 2.x | `apps/web/src/store` |
-| **UI Design System** | Tailwind CSS v4 + Radix UI | Latest | `apps/web/src/components/ui` |
+| Component              | Technology                 | Version                        | Location / Package            |
+| :--------------------- | :------------------------- | :----------------------------- | :---------------------------- |
+| **Monorepo Engine**    | Turborepo                  | 2.11.7                         | Root `turbo.json`             |
+| **Package Manager**    | pnpm                       | 9.x                            | `pnpm-workspace.yaml`         |
+| **Backend Framework**  | NestJS                     | 10.x                           | `apps/api`                    |
+| **Database**           | PostgreSQL                 | 18 (Alpine/Debian)             | Port 5432, DB `ogroniedu_dev` |
+| **ORM / Query Engine** | TypeORM                    | 0.3.x                          | `apps/api/src/database`       |
+| **Shared Contracts**   | Zod + TypeScript           | 3.23.x                         | `packages/contracts`          |
+| **Frontend Framework** | Next.js                    | 16.4.0 (Turbopack, App Router) | `apps/web`                    |
+| **State Management**   | Redux Toolkit (RTK Query)  | 2.x                            | `apps/web/src/store`          |
+| **UI Design System**   | Tailwind CSS v4 + Radix UI | Latest                         | `apps/web/src/components/ui`  |
 
 ---
 
@@ -50,6 +50,7 @@ export const PlatformRoles = [
 ```
 
 ### 3.1 Role Verification Findings
+
 1. **`student`**: Enrolled learner. Can book tutors, participate in sessions, view own history.
 2. **`guardian`**: Parent/legal guardian. Can book on behalf of wards, access minor child progress, view mirrored notifications and messages under Child Safety laws.
 3. **`tutor`**: Verified educator. Submits credentials for dossier verification, sets availability, accepts bookings, conducts lessons.
@@ -65,6 +66,7 @@ export const PlatformRoles = [
 ## 4. Existing Administrative & Governance Implementation
 
 ### 4.1 Backend Admin Modules (`apps/api/src/modules/admin`)
+
 - **`AdminOperationsController`** (`/api/v1/admin`):
   - `GET /dashboard`: Aggregates pending tutor verifications, active replacements, open safety reports, active bookings, total users, and double-entry ledger balance check via `AdminDashboardService`.
   - `GET /users`, `GET /users/:id/dossier`: User directory search with role and status filtering, full profile dossier with past booking counts and audit history.
@@ -81,16 +83,19 @@ export const PlatformRoles = [
   - `GET /audit-logs`: Queries system audit logs with automated PII redaction (`redactSensitiveData`).
 
 ### 4.2 Support Module (`apps/api/src/modules/support`)
+
 - **`AdminSupportController`** (`/api/v1/admin/support-tickets`):
   - Exposes ticket triage queue for `SUPPORT_TRIAGE_ROLES` (`['admin', 'super_admin', 'support_agent']`).
   - Supports status updates (`submitted`, `in_review`, `resolved`, `spam`) and resolution notes.
 
 ### 4.3 Trust & Safeguarding (`apps/api/src/modules/trust`)
+
 - **`SafetyReportsController`** (`/api/v1/safety-reports`):
   - Governs safeguarding reports, evidence attachments, safety actions (`warn`, `temporary_suspension`, `ban`), and protective holds.
   - Confidentiality strictly enforced: ordinary administrators and support agents cannot access private child safety reports.
 
 ### 4.4 Analytics Module (`apps/api/src/modules/analytics`)
+
 - **`AnalyticsController`** (`/api/v1/analytics`):
   - Provides operational overview, double-entry financial metrics, tutor leaderboard, and learner retention.
 
@@ -98,15 +103,15 @@ export const PlatformRoles = [
 
 ## 5. Architectural Gap Analysis for Phase 09
 
-| Area | Current Baseline State | Phase 09 Mandate | Severity |
-| :--- | :--- | :--- | :--- |
-| **Organization Data Model** | Roles `organization_owner` and `organization_staff` exist in contracts, but **no `organizations`, `organization_members`, or `organization_invitations` tables exist in PostgreSQL.** | Create migration `027_organizations_and_platform_governance.sql` adding full relational tenant model with lifecycle (`pending_approval`, `active`, `suspended`, `archived`), membership management, and invitation tokens. | **CRITICAL** |
-| **Tenant Isolation & IDOR Protection** | No server-side organization scope enforcement on queries. | Enforce server-side tenant scoping. Prevent cross-organization record visibility or mutation. Reject client-supplied `organizationId` without verified membership. | **CRITICAL** |
-| **Organization Admin Management** | Platform admins have no dedicated APIs to review, approve, suspend, or audit educational organizations. | Implement `/api/v1/admin/organizations` endpoints and service methods to list, inspect, approve, and suspend organizations. | **HIGH** |
-| **Audit Logs Tenant Scoping** | Table `audit_logs` has no `organization_id` column. | Add `organization_id UUID REFERENCES organizations(id)` to `audit_logs` to enable organization-scoped audit histories. | **HIGH** |
-| **Administrative Reporting & CSV Export** | Analytics returns JSON aggregates only. No secure CSV export facility exists. | Implement `GET /api/v1/admin/reports/export` with date-range filters, scope validation, and **anti-formula injection escaping** (`=`, `+`, `-`, `@`, `\t`, `\r`). | **HIGH** |
-| **Organization Frontend Hub** | `navigation.ts` lacks items for `organization_owner` and `organization_staff`. No organization dashboard exists. | Add navigation items and build Organization Portal (`/dashboard/organization`) for member management and agency profile. Build Admin Organizations View (`/dashboard/admin/organizations`). | **HIGH** |
-| **Platform Settings Validation** | `updateSetting` accepts raw `JSONB` without runtime schema validation. | Implement explicit Zod schema validators for standard platform parameters. | **MEDIUM** |
+| Area                                      | Current Baseline State                                                                                                                                                                | Phase 09 Mandate                                                                                                                                                                                                           | Severity     |
+| :---------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :----------- |
+| **Organization Data Model**               | Roles `organization_owner` and `organization_staff` exist in contracts, but **no `organizations`, `organization_members`, or `organization_invitations` tables exist in PostgreSQL.** | Create migration `027_organizations_and_platform_governance.sql` adding full relational tenant model with lifecycle (`pending_approval`, `active`, `suspended`, `archived`), membership management, and invitation tokens. | **CRITICAL** |
+| **Tenant Isolation & IDOR Protection**    | No server-side organization scope enforcement on queries.                                                                                                                             | Enforce server-side tenant scoping. Prevent cross-organization record visibility or mutation. Reject client-supplied `organizationId` without verified membership.                                                         | **CRITICAL** |
+| **Organization Admin Management**         | Platform admins have no dedicated APIs to review, approve, suspend, or audit educational organizations.                                                                               | Implement `/api/v1/admin/organizations` endpoints and service methods to list, inspect, approve, and suspend organizations.                                                                                                | **HIGH**     |
+| **Audit Logs Tenant Scoping**             | Table `audit_logs` has no `organization_id` column.                                                                                                                                   | Add `organization_id UUID REFERENCES organizations(id)` to `audit_logs` to enable organization-scoped audit histories.                                                                                                     | **HIGH**     |
+| **Administrative Reporting & CSV Export** | Analytics returns JSON aggregates only. No secure CSV export facility exists.                                                                                                         | Implement `GET /api/v1/admin/reports/export` with date-range filters, scope validation, and **anti-formula injection escaping** (`=`, `+`, `-`, `@`, `\t`, `\r`).                                                          | **HIGH**     |
+| **Organization Frontend Hub**             | `navigation.ts` lacks items for `organization_owner` and `organization_staff`. No organization dashboard exists.                                                                      | Add navigation items and build Organization Portal (`/dashboard/organization`) for member management and agency profile. Build Admin Organizations View (`/dashboard/admin/organizations`).                                | **HIGH**     |
+| **Platform Settings Validation**          | `updateSetting` accepts raw `JSONB` without runtime schema validation.                                                                                                                | Implement explicit Zod schema validators for standard platform parameters.                                                                                                                                                 | **MEDIUM**   |
 
 ---
 

@@ -4,15 +4,15 @@
 
 Access to analytics is strictly governed by the platform's role-based and attribute-based access control (RBAC & ABAC) layers.
 
-| Role | Permitted Analytics Scope | Endpoint(s) | Prohibited Data |
-| :--- | :--- | :--- | :--- |
-| **Student** | Personal learning progress, attendance, homework grades, booking history | `/api/v1/learning/progress/me`, `/api/v1/sessions/mine` | Other students' scores, platform GMV, tutor revenue |
-| **Guardian** | Verified linked children's attendance, sessions, and academic progress | `/api/v1/guardians/children/:studentId` | Unlinked children, platform totals, tutor earnings |
-| **Tutor** | Personal inquiries, acceptance rate, completed sessions, personal earnings, ratings | `/api/v1/analytics/tutors/me` | Other tutors' earnings, platform-wide margins |
-| **Admin** | Full platform overview, multi-stage funnel, role activation, learning engagement, CSV exports | `/api/v1/analytics/*` | Unredacted credit card credentials, raw passwords |
-| **Super-Admin** | Full platform analytics + financial ledger reconciliation + organization oversight | `/api/v1/analytics/*`, `/api/v1/admin/reconciliation` | None (subject to immutable audit logging) |
-| **Org Owner** | Scoped strictly to member tutors, org bookings, and org student reach | `/api/v1/analytics/organizations/:id` | Other organizations' data (IDOR prevented) |
-| **Support Agent** | Operational tickets and specific dispute evidence | `/api/v1/support/*`, `/api/v1/admin/disputes` | Platform-wide GMV or revenue growth analytics |
+| Role              | Permitted Analytics Scope                                                                     | Endpoint(s)                                             | Prohibited Data                                     |
+| :---------------- | :-------------------------------------------------------------------------------------------- | :------------------------------------------------------ | :-------------------------------------------------- |
+| **Student**       | Personal learning progress, attendance, homework grades, booking history                      | `/api/v1/learning/progress/me`, `/api/v1/sessions/mine` | Other students' scores, platform GMV, tutor revenue |
+| **Guardian**      | Verified linked children's attendance, sessions, and academic progress                        | `/api/v1/guardians/children/:studentId`                 | Unlinked children, platform totals, tutor earnings  |
+| **Tutor**         | Personal inquiries, acceptance rate, completed sessions, personal earnings, ratings           | `/api/v1/analytics/tutors/me`                           | Other tutors' earnings, platform-wide margins       |
+| **Admin**         | Full platform overview, multi-stage funnel, role activation, learning engagement, CSV exports | `/api/v1/analytics/*`                                   | Unredacted credit card credentials, raw passwords   |
+| **Super-Admin**   | Full platform analytics + financial ledger reconciliation + organization oversight            | `/api/v1/analytics/*`, `/api/v1/admin/reconciliation`   | None (subject to immutable audit logging)           |
+| **Org Owner**     | Scoped strictly to member tutors, org bookings, and org student reach                         | `/api/v1/analytics/organizations/:id`                   | Other organizations' data (IDOR prevented)          |
+| **Support Agent** | Operational tickets and specific dispute evidence                                             | `/api/v1/support/*`, `/api/v1/admin/disputes`           | Platform-wide GMV or revenue growth analytics       |
 
 ---
 

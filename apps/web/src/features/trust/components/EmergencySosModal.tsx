@@ -4,10 +4,7 @@ import React, { useEffect } from 'react';
 import Link from 'next/link';
 import { PhoneCall, ShieldAlert, AlertTriangle, Lock } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
-import {
-  Dialog,
-  DialogContent,
-} from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { withLocale } from '@/lib/auth';
 
@@ -24,8 +21,7 @@ export const EMERGENCY_HOTLINES = [
     telNumber: '1098',
     titleBn: 'জাতীয় শিশু হেল্পলাইন (Child Helpline)',
     titleEn: 'National Child Helpline',
-    subtitleBn:
-      '২৪/৭ শিশুদের সুরক্ষা, নির্যাতন প্রতিরোধ ও জরুরি সহায়তা সেল (বিনামূল্যে টোল-ফ্রি)',
+    subtitleBn: '২৪/৭ শিশুদের সুরক্ষা, নির্যাতন প্রতিরোধ ও জরুরি সহায়তা সেল (বিনামূল্যে টোল-ফ্রি)',
     subtitleEn: '24/7 Child Protection & Anti-abuse Helpline (Toll-Free)',
     color: 'border-rose-300 bg-rose-50 text-slate-900',
     badgeBg: 'bg-rose-100 text-rose-800 border-rose-200',
@@ -112,7 +108,9 @@ export function EmergencySosContent({
                 <span className="text-2xl font-black text-slate-900 tracking-wider font-mono tabular-nums">
                   {item.number}
                 </span>
-                <span className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${item.badgeBg}`}>
+                <span
+                  className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-full border ${item.badgeBg}`}
+                >
                   {isBn ? item.badgeBn : item.badgeEn}
                 </span>
               </div>
@@ -142,9 +140,7 @@ export function EmergencySosContent({
           <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
             <AlertTriangle className="w-4 h-4 text-amber-600" />
             <span>
-              {isBn
-                ? 'প্ল্যাটফর্মে আনুষ্ঠানিক নিরাপত্তা অভিযোগ'
-                : 'Formal Safety Incident Report'}
+              {isBn ? 'প্ল্যাটফর্মে আনুষ্ঠানিক নিরাপত্তা অভিযোগ' : 'Formal Safety Incident Report'}
             </span>
           </span>
           <p className="text-[11px] text-slate-600 font-medium">

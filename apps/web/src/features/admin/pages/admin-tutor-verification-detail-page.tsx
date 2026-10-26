@@ -40,10 +40,7 @@ import {
   type TutorReviewDecision,
   type VerificationDossierLevel,
 } from '@/store/services/admin-api';
-import {
-  useGetSubjectsQuery,
-  useGetEducationLevelsQuery,
-} from '@/store/services/taxonomy-api';
+import { useGetSubjectsQuery, useGetEducationLevelsQuery } from '@/store/services/taxonomy-api';
 import {
   levelLabel,
   levelStatusLabel,
@@ -145,7 +142,8 @@ export function AdminTutorVerificationDetailPage({
   const user = dossier?.user;
   const profile = dossier?.profile;
   const reviewHistory = dossier?.reviewHistory ?? [];
-  const dossierLevels: VerificationDossierLevel[] = (dossier?.levels as VerificationDossierLevel[]) ?? [];
+  const dossierLevels: VerificationDossierLevel[] =
+    (dossier?.levels as VerificationDossierLevel[]) ?? [];
 
   // Active level in decision console
   const activeLevelData = dossierLevels.find((lvl) => lvl.level === selectedLevel);
@@ -286,16 +284,25 @@ export function AdminTutorVerificationDetailPage({
   }
 
   // Taxonomy mappers
-  const subjectsMap = new Map((subjectsData?.data ?? []).map((s) => [s.id, isBn ? s.nameBn || s.nameEn : s.nameEn]));
-  const levelsMap = new Map((levelsData?.data ?? []).map((l) => [l.id, isBn ? l.nameBn || l.nameEn : l.nameEn]));
+  const subjectsMap = new Map(
+    (subjectsData?.data ?? []).map((s) => [s.id, isBn ? s.nameBn || s.nameEn : s.nameEn]),
+  );
+  const levelsMap = new Map(
+    (levelsData?.data ?? []).map((l) => [l.id, isBn ? l.nameBn || l.nameEn : l.nameEn]),
+  );
 
   const qualifications = (profile.qualifications as Array<Record<string, unknown>>) ?? [];
   const subjects = (profile.subjects as Array<Record<string, unknown>>) ?? [];
-  const availabilities = (profile.availabilities as Array<{ weekday: number; startLocal: string; endLocal: string }>) ?? [];
+  const availabilities =
+    (profile.availabilities as Array<{ weekday: number; startLocal: string; endLocal: string }>) ??
+    [];
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-4 w-full px-4 sm:px-6 lg:px-8" data-testid="admin-tutor-detail-page">
+      <div
+        className="space-y-6 py-4 w-full px-4 sm:px-6 lg:px-8"
+        data-testid="admin-tutor-detail-page"
+      >
         {/* Navigation Breadcrumbs */}
         <div className="flex items-center justify-between gap-4">
           <div className="flex items-center gap-2 text-xs text-muted-foreground">
@@ -403,11 +410,35 @@ export function AdminTutorVerificationDetailPage({
         <div className="flex flex-wrap gap-1.5 border-b border-border pb-2.5">
           {[
             { id: 'profile', bn: 'প্রোফাইল ও বায়ো', en: 'Profile & Bio', icon: UserCheck },
-            { id: 'education', bn: 'শিক্ষাগত যোগ্যতা', en: 'Education', icon: GraduationCap, count: qualifications.length },
-            { id: 'subjects', bn: 'পাঠদান বিষয়সমূহ', en: 'Subjects', icon: BookOpen, count: subjects.length },
-            { id: 'schedule', bn: 'সাপ্তাহিক শিডিউল', en: 'Schedule', icon: Calendar, count: availabilities.length },
+            {
+              id: 'education',
+              bn: 'শিক্ষাগত যোগ্যতা',
+              en: 'Education',
+              icon: GraduationCap,
+              count: qualifications.length,
+            },
+            {
+              id: 'subjects',
+              bn: 'পাঠদান বিষয়সমূহ',
+              en: 'Subjects',
+              icon: BookOpen,
+              count: subjects.length,
+            },
+            {
+              id: 'schedule',
+              bn: 'সাপ্তাহিক শিডিউল',
+              en: 'Schedule',
+              icon: Calendar,
+              count: availabilities.length,
+            },
             { id: 'documents', bn: 'ভেরিফিকেশন প্রমাণাদি', en: 'Evidence Docs', icon: FileSearch },
-            { id: 'history', bn: 'পর্যালোচনার ইতিহাস', en: 'Review Trail', icon: Layers, count: reviewHistory.length },
+            {
+              id: 'history',
+              bn: 'পর্যালোচনার ইতিহাস',
+              en: 'Review Trail',
+              icon: Layers,
+              count: reviewHistory.length,
+            },
           ].map((tab) => {
             const Icon = tab.icon;
             const active = activeTab === tab.id;
@@ -426,7 +457,9 @@ export function AdminTutorVerificationDetailPage({
                 {typeof tab.count === 'number' && (
                   <span
                     className={`px-1.5 py-0.5 rounded-full text-[10px] font-mono ${
-                      active ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-muted text-muted-foreground'
+                      active
+                        ? 'bg-primary-foreground/20 text-primary-foreground'
+                        : 'bg-muted text-muted-foreground'
                     }`}
                   >
                     {tab.count}
@@ -492,29 +525,44 @@ export function AdminTutorVerificationDetailPage({
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                     <div className="rounded-xl border border-border/80 bg-muted/20 p-3 space-y-0.5">
-                      <span className="text-[11px] text-muted-foreground">{isBn ? 'অভিজ্ঞতা' : 'Experience'}</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {isBn ? 'অভিজ্ঞতা' : 'Experience'}
+                      </span>
                       <p className="text-sm font-extrabold text-foreground">
                         {profile.yearsExperience ? `${profile.yearsExperience} বছর` : '১ বছর'}
                       </p>
                     </div>
 
                     <div className="rounded-xl border border-border/80 bg-muted/20 p-3 space-y-0.5">
-                      <span className="text-[11px] text-muted-foreground">{isBn ? 'ঘণ্টাপ্রতি ফি' : 'Hourly Rate'}</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {isBn ? 'ঘণ্টাপ্রতি ফি' : 'Hourly Rate'}
+                      </span>
                       <p className="text-sm font-extrabold text-primary">
-                        ৳{profile.hourlyRateMinor ? Math.round(Number(profile.hourlyRateMinor) / 100) : 500} / ঘণ্টা
+                        ৳
+                        {profile.hourlyRateMinor
+                          ? Math.round(Number(profile.hourlyRateMinor) / 100)
+                          : 500}{' '}
+                        / ঘণ্টা
                       </p>
                     </div>
 
                     <div className="rounded-xl border border-border/80 bg-muted/20 p-3 space-y-0.5">
-                      <span className="text-[11px] text-muted-foreground">{isBn ? 'পাঠদানের মাধ্যম' : 'Teaching Modes'}</span>
+                      <span className="text-[11px] text-muted-foreground">
+                        {isBn ? 'পাঠদানের মাধ্যম' : 'Teaching Modes'}
+                      </span>
                       <div className="flex flex-wrap gap-1 mt-1">
-                        {Array.isArray(profile.teachingModes) && profile.teachingModes.length > 0 ? (
+                        {Array.isArray(profile.teachingModes) &&
+                        profile.teachingModes.length > 0 ? (
                           profile.teachingModes.map((mode: string) => (
                             <span
                               key={mode}
                               className="px-2 py-0.5 rounded-full bg-primary/10 text-primary text-[10px] font-semibold"
                             >
-                              {mode === 'online' ? 'অনলাইন' : mode === 'student_home' ? 'ছাত্রের বাসা' : 'শিক্ষকের স্থান'}
+                              {mode === 'online'
+                                ? 'অনলাইন'
+                                : mode === 'student_home'
+                                  ? 'ছাত্রের বাসা'
+                                  : 'শিক্ষকের স্থান'}
                             </span>
                           ))
                         ) : (
@@ -537,7 +585,9 @@ export function AdminTutorVerificationDetailPage({
 
                 {qualifications.length === 0 ? (
                   <p className="text-xs text-muted-foreground py-6 text-center">
-                    {isBn ? 'কোনো সনদ বা শিক্ষাগত যোগ্যতা যুক্ত করা হয়নি।' : 'No qualifications added.'}
+                    {isBn
+                      ? 'কোনো সনদ বা শিক্ষাগত যোগ্যতা যুক্ত করা হয়নি।'
+                      : 'No qualifications added.'}
                   </p>
                 ) : (
                   <div className="space-y-3">
@@ -548,7 +598,9 @@ export function AdminTutorVerificationDetailPage({
                       >
                         <div>
                           <div className="flex items-center gap-2">
-                            <h4 className="text-xs font-bold text-foreground">{String(q.title || 'Qualification')}</h4>
+                            <h4 className="text-xs font-bold text-foreground">
+                              {String(q.title || 'Qualification')}
+                            </h4>
                             <Badge variant="outline" className="text-[10px]">
                               {String(q.type || q.qualificationType || 'Degree')}
                             </Badge>
@@ -588,10 +640,16 @@ export function AdminTutorVerificationDetailPage({
                         String(sub.subjectNameBn || sub.subjectNameEn || sub.subjectId);
                       const levelName =
                         levelsMap.get(String(sub.educationLevelId)) ||
-                        String(sub.educationLevelNameBn || sub.educationLevelNameEn || sub.educationLevelId);
+                        String(
+                          sub.educationLevelNameBn ||
+                            sub.educationLevelNameEn ||
+                            sub.educationLevelId,
+                        );
                       const rate = sub.hourlyRateMinor
                         ? Math.round(Number(sub.hourlyRateMinor) / 100)
-                        : (sub.rateMinor ? Math.round(Number(sub.rateMinor) / 100) : 500);
+                        : sub.rateMinor
+                          ? Math.round(Number(sub.rateMinor) / 100)
+                          : 500;
 
                       return (
                         <div
@@ -600,7 +658,9 @@ export function AdminTutorVerificationDetailPage({
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-foreground">{subjectName}</span>
-                            <span className="text-xs font-extrabold text-primary">৳{rate}/ঘণ্টা</span>
+                            <span className="text-xs font-extrabold text-primary">
+                              ৳{rate}/ঘণ্টা
+                            </span>
                           </div>
                           <p className="text-[11px] text-muted-foreground">{levelName}</p>
                         </div>
@@ -636,9 +696,13 @@ export function AdminTutorVerificationDetailPage({
                               : 'border-border/60 bg-muted/10 opacity-60'
                           }`}
                         >
-                          <span className="font-bold text-foreground block">{isBn ? day.bn : day.en}</span>
+                          <span className="font-bold text-foreground block">
+                            {isBn ? day.bn : day.en}
+                          </span>
                           {daySlots.length === 0 ? (
-                            <span className="text-[11px] text-muted-foreground">{isBn ? 'বন্ধ' : 'Closed'}</span>
+                            <span className="text-[11px] text-muted-foreground">
+                              {isBn ? 'বন্ধ' : 'Closed'}
+                            </span>
                           ) : (
                             daySlots.map((s, idx) => (
                               <span
@@ -669,7 +733,10 @@ export function AdminTutorVerificationDetailPage({
                   {dossierLevels.map((lvl) => {
                     const docs = (lvl.documents as unknown as Array<Record<string, unknown>>) ?? [];
                     return (
-                      <div key={lvl.id} className="rounded-xl border border-border p-4 space-y-3 bg-muted/10">
+                      <div
+                        key={lvl.id}
+                        className="rounded-xl border border-border p-4 space-y-3 bg-muted/10"
+                      >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
                             <span className="text-xs font-bold text-foreground">
@@ -686,7 +753,9 @@ export function AdminTutorVerificationDetailPage({
 
                         {docs.length === 0 ? (
                           <p className="text-xs text-muted-foreground py-2 italic">
-                            {isBn ? 'এই স্তরে কোনো নথি জমা দেওয়া হয়নি।' : 'No documents filed for this level.'}
+                            {isBn
+                              ? 'এই স্তরে কোনো নথি জমা দেওয়া হয়নি।'
+                              : 'No documents filed for this level.'}
                           </p>
                         ) : (
                           <div className="space-y-2">
@@ -704,7 +773,9 @@ export function AdminTutorVerificationDetailPage({
                                   <div>
                                     <div className="flex items-center gap-2">
                                       <FileText className="h-4 w-4 text-muted-foreground" />
-                                      <span className="font-semibold text-foreground">{labelText}</span>
+                                      <span className="font-semibold text-foreground">
+                                        {labelText}
+                                      </span>
                                       <Badge
                                         variant={
                                           reviewStatus === 'approved'
@@ -719,7 +790,10 @@ export function AdminTutorVerificationDetailPage({
                                       </Badge>
                                     </div>
                                     <span className="text-[11px] text-muted-foreground block ml-6">
-                                      ID: {docId.slice(0, 8)}... • জমা: {doc.createdAt ? formatDate(String(doc.createdAt), locale) : '—'}
+                                      ID: {docId.slice(0, 8)}... • জমা:{' '}
+                                      {doc.createdAt
+                                        ? formatDate(String(doc.createdAt), locale)
+                                        : '—'}
                                     </span>
                                   </div>
 
@@ -846,13 +920,17 @@ export function AdminTutorVerificationDetailPage({
               <form onSubmit={handleSubmitDecision} className="space-y-3.5 text-left text-xs">
                 {/* Level selector */}
                 <div className="space-y-1">
-                  <Label className="text-[11px] font-semibold">{isBn ? 'যাচাই স্তর' : 'Level to Review'}</Label>
+                  <Label className="text-[11px] font-semibold">
+                    {isBn ? 'যাচাই স্তর' : 'Level to Review'}
+                  </Label>
                   <Select
                     value={selectedLevel}
                     onValueChange={(val) => setSelectedLevel(val as TutorVerificationLevel)}
                   >
                     <SelectTrigger className="w-full text-xs h-9">
-                      <SelectValue placeholder={isBn ? 'যাচাই স্তর নির্বাচন করুন' : 'Select level'} />
+                      <SelectValue
+                        placeholder={isBn ? 'যাচাই স্তর নির্বাচন করুন' : 'Select level'}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {dossierLevels.map((lvl) => (
@@ -873,7 +951,9 @@ export function AdminTutorVerificationDetailPage({
                   return (
                     <div className="space-y-1">
                       <div className="flex items-center justify-between">
-                        <Label className="text-[11px] font-semibold">{isBn ? 'চূড়ান্ত সিদ্ধান্ত' : 'Decision'}</Label>
+                        <Label className="text-[11px] font-semibold">
+                          {isBn ? 'চূড়ান্ত সিদ্ধান্ত' : 'Decision'}
+                        </Label>
                         {isApproved && (
                           <span className="text-[10px] text-emerald-600 font-semibold bg-emerald-500/10 px-1.5 py-0.5 rounded">
                             {isBn ? 'ইতিমধ্যে অনুমোদিত' : 'Already Approved'}
@@ -898,7 +978,13 @@ export function AdminTutorVerificationDetailPage({
                                 : 'border-border bg-card hover:bg-muted/40 text-foreground'
                           }`}
                         >
-                          {isBn ? (isSuspended ? '✓ পুনঃঅনুমোদন' : '✓ অনুমোদন') : (isSuspended ? '✓ Reinstate' : '✓ Approve')}
+                          {isBn
+                            ? isSuspended
+                              ? '✓ পুনঃঅনুমোদন'
+                              : '✓ অনুমোদন'
+                            : isSuspended
+                              ? '✓ Reinstate'
+                              : '✓ Approve'}
                         </button>
                         <button
                           type="button"
@@ -947,10 +1033,14 @@ export function AdminTutorVerificationDetailPage({
 
                 {/* Reason code preset */}
                 <div className="space-y-1">
-                  <Label className="text-[11px] font-semibold">{isBn ? 'কারণ কোড' : 'Reason Code'}</Label>
+                  <Label className="text-[11px] font-semibold">
+                    {isBn ? 'কারণ কোড' : 'Reason Code'}
+                  </Label>
                   <Select value={reasonCode} onValueChange={setReasonCode}>
                     <SelectTrigger className="w-full text-xs h-9">
-                      <SelectValue placeholder={isBn ? 'কারণ কোড নির্বাচন করুন' : 'Select reason code'} />
+                      <SelectValue
+                        placeholder={isBn ? 'কারণ কোড নির্বাচন করুন' : 'Select reason code'}
+                      />
                     </SelectTrigger>
                     <SelectContent>
                       {PRESET_REASON_CODES.map((r) => (
@@ -969,7 +1059,9 @@ export function AdminTutorVerificationDetailPage({
                       {isBn ? 'শিক্ষককে বার্তা (Feedback to Tutor)' : 'Feedback to Tutor'}
                     </Label>
                     {(decision === 'rejected' || decision === 'needs_information') && (
-                      <span className="text-[10px] text-destructive font-semibold">বাধ্যতামূলক *</span>
+                      <span className="text-[10px] text-destructive font-semibold">
+                        বাধ্যতামূলক *
+                      </span>
                     )}
                   </div>
                   <Textarea

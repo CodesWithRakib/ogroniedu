@@ -31,6 +31,7 @@ Phase 07 delivers an end-to-end child safeguarding, complaint, and dispute resol
 ## 2. Key Architecture & Deliverables
 
 ### Database & Schema Migration
+
 - **Migration:** `packages/database/src/migrations/024_disputes_and_safeguarding.sql`
 - **Tables & Columns Added:**
   - `booking_disputes`: tracks booking disputes with `reason_code`, `status`, `disputed_amount_minor`, `evidence_asset_ids`, `resolution_type`, `resolution_notes`, `refund_id`.
@@ -38,6 +39,7 @@ Phase 07 delivers an end-to-end child safeguarding, complaint, and dispute resol
   - `tutor_profiles.safety_hold_status`: (`clear`, `under_investigation`, `safety_hold`) and `safety_hold_reason`.
 
 ### Backend Implementation (`@ogroniedu/api`)
+
 - **Entities & DTOs:**
   - `BookingDisputeEntity` (`apps/api/src/modules/trust/entities/booking-dispute.entity.ts`)
   - `CreateDisputeDto`, `ResolveDisputeDto`, `QueryDisputesDto` (`apps/api/src/modules/trust/dto/`)
@@ -50,9 +52,11 @@ Phase 07 delivers an end-to-end child safeguarding, complaint, and dispute resol
   - `TutorSearchService`: filtered out tutors with `safety_hold_status === 'safety_hold'` from discovery queries.
 
 ### Notification Contracts (`@ogroniedu/contracts`)
+
 - Added `dispute.resolved` to `NotificationEventTypes` and registered bilingual notification templates (`bn` / `en`) with channels `[in_app, email]`.
 
 ### Frontend Web Implementation (`@ogroniedu/web`)
+
 - **RTK Query Slice:**
   - Updated `apps/web/src/store/services/trust-api.ts` with hooks: `useGetDisputesQuery`, `useGetDisputeByIdQuery`, `useCreateDisputeMutation`, `useResolveDisputeMutation`, `useApplyProtectiveSafetyHoldMutation`, `useReleaseProtectiveSafetyHoldMutation`.
   - Added `BookingDispute` to cache `tagTypes` in `apps/web/src/store/base-api.ts`.
@@ -71,34 +75,34 @@ Phase 07 delivers an end-to-end child safeguarding, complaint, and dispute resol
 The following implementation decisions were designed according to platform conventions and Bangladeshi regulatory guidelines, but require explicit business sign-off before production deployment:
 
 1. **Dispute Filing Eligibility Window:**
-   - *Current Implementation:* Students/guardians may dispute a booking while it is in `confirmed`, `in_progress`, or `completed` status.
-   - *Decision for PO:* Should there be an automated cutoff window for completed bookings (e.g. 7 days or 14 days after final session) after which dispute filing is disabled in favor of general support tickets?
+   - _Current Implementation:_ Students/guardians may dispute a booking while it is in `confirmed`, `in_progress`, or `completed` status.
+   - _Decision for PO:_ Should there be an automated cutoff window for completed bookings (e.g. 7 days or 14 days after final session) after which dispute filing is disabled in favor of general support tickets?
 
 2. **Automatic vs. Manual Tutor Payout Resumption:**
-   - *Current Implementation:* Resolving a dispute with `tutor_upheld` restores the booking status to `completed`, allowing subsequent milestone payouts to process normally through standard settlement sweeps.
-   - *Decision for PO:* Should tutor payouts for previously disputed sessions require explicit secondary approval by a senior finance manager before funds are released?
+   - _Current Implementation:_ Resolving a dispute with `tutor_upheld` restores the booking status to `completed`, allowing subsequent milestone payouts to process normally through standard settlement sweeps.
+   - _Decision for PO:_ Should tutor payouts for previously disputed sessions require explicit secondary approval by a senior finance manager before funds are released?
 
 3. **Guardian Notification Policy on Minor Incident Filing:**
-   - *Current Implementation:* Filing a child safety report sends a critical alert to the platform safeguarding triage team and records an audit log.
-   - *Decision for PO:* In scenarios where a minor student files a safety report, should an automatic SMS/email be dispatched immediately to the linked guardian, or should the safeguarding desk review first to handle sensitive cases where the guardian may be implicated?
+   - _Current Implementation:_ Filing a child safety report sends a critical alert to the platform safeguarding triage team and records an audit log.
+   - _Decision for PO:_ In scenarios where a minor student files a safety report, should an automatic SMS/email be dispatched immediately to the linked guardian, or should the safeguarding desk review first to handle sensitive cases where the guardian may be implicated?
 
 4. **Tutor Replacement Guarantee Integration:**
-   - *Current Implementation:* If an admin resolves a dispute with `replacement`, a `replacement_case` is created with priority status and the booking escrow remains frozen for transfer to the new tutor.
-   - *Decision for PO:* Is the tutor replacement fee credit capped at 100% of the disputed milestone, or can administrative discretion grant supplementary tuition credit?
+   - _Current Implementation:_ If an admin resolves a dispute with `replacement`, a `replacement_case` is created with priority status and the booking escrow remains frozen for transfer to the new tutor.
+   - _Decision for PO:_ Is the tutor replacement fee credit capped at 100% of the disputed milestone, or can administrative discretion grant supplementary tuition credit?
 
 ---
 
 ## 4. Verification & Quality Gates
 
-| Verification Gate | Result | Notes |
-|:---|:---:|:---|
-| **TypeScript Typecheck** | **PASS** | 0 errors across 5 workspace packages (`@ogroniedu/contracts`, `@ogroniedu/database`, `@ogroniedu/tsconfig`, `@ogroniedu/api`, `@ogroniedu/web`). |
-| **Oxlint Quality & Style** | **PASS** | 0 errors, 0 warnings across 922 files. |
-| **Backend Vitest Suite** | **PASS** | 74 test files, 776 passing unit/integration tests (including `safety-phase07.spec.ts` and `safety-reports.service.spec.ts`). |
-| **Frontend Vitest Suite** | **PASS** | 35 test files, 218 passing tests (including `safety-phase07.spec.ts` and `admin-operations.spec.ts`). |
-| **Total Test Suite** | **PASS** | **994 / 994 tests passing (100%)**. |
-| **Production Build** | **PASS** | Clean build for NestJS backend and Next.js 16 (Turbopack) frontend. |
-| **Chrome DevTools MCP Inspection** | **PASS** | Headful verification on port 5000: Admin Disputes Hub, Child Safety Desk, SOS Modal (1098/999/109), Booking Dossier. Zero console errors. |
+| Verification Gate                  |  Result  | Notes                                                                                                                                            |
+| :--------------------------------- | :------: | :----------------------------------------------------------------------------------------------------------------------------------------------- |
+| **TypeScript Typecheck**           | **PASS** | 0 errors across 5 workspace packages (`@ogroniedu/contracts`, `@ogroniedu/database`, `@ogroniedu/tsconfig`, `@ogroniedu/api`, `@ogroniedu/web`). |
+| **Oxlint Quality & Style**         | **PASS** | 0 errors, 0 warnings across 922 files.                                                                                                           |
+| **Backend Vitest Suite**           | **PASS** | 74 test files, 776 passing unit/integration tests (including `safety-phase07.spec.ts` and `safety-reports.service.spec.ts`).                     |
+| **Frontend Vitest Suite**          | **PASS** | 35 test files, 218 passing tests (including `safety-phase07.spec.ts` and `admin-operations.spec.ts`).                                            |
+| **Total Test Suite**               | **PASS** | **994 / 994 tests passing (100%)**.                                                                                                              |
+| **Production Build**               | **PASS** | Clean build for NestJS backend and Next.js 16 (Turbopack) frontend.                                                                              |
+| **Chrome DevTools MCP Inspection** | **PASS** | Headful verification on port 5000: Admin Disputes Hub, Child Safety Desk, SOS Modal (1098/999/109), Booking Dossier. Zero console errors.        |
 
 ---
 

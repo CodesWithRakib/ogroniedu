@@ -70,10 +70,7 @@ import {
   useDeleteTutorQualificationMutation,
   type TutorOwnProfile,
 } from '@/store/services/tutors-api';
-import {
-  useGetSubjectsQuery,
-  useGetEducationLevelsQuery,
-} from '@/store/services/taxonomy-api';
+import { useGetSubjectsQuery, useGetEducationLevelsQuery } from '@/store/services/taxonomy-api';
 import { VerificationLevelCard } from '../components/verificationLevelCard';
 import { QualificationUploadCard } from '../components/qualificationUploadCard';
 
@@ -168,12 +165,7 @@ function toForm(profile: TutorOwnProfile | undefined): FormState {
 }
 
 export type TutorProfileTab =
-  | 'bio'
-  | 'qualifications'
-  | 'subjects'
-  | 'schedule'
-  | 'verification'
-  | 'preview';
+  'bio' | 'qualifications' | 'subjects' | 'schedule' | 'verification' | 'preview';
 
 /**
  * Unified Tutor Profile & Credentials Command Center:
@@ -354,7 +346,9 @@ export function TutorProfileSettingsPage({
     setSubjectError(null);
 
     if (!selectedSubjectId || !selectedLevelId) {
-      setSubjectError(isBn ? 'বিষয় এবং শ্রেণি উভয়ই নির্বাচন করুন।' : 'Select both subject and level.');
+      setSubjectError(
+        isBn ? 'বিষয় এবং শ্রেণি উভয়ই নির্বাচন করুন।' : 'Select both subject and level.',
+      );
       return;
     }
 
@@ -469,16 +463,15 @@ export function TutorProfileSettingsPage({
   const verificationStatus = String(profile?.verificationStatus ?? 'not_submitted');
   const publicationStatus = String(profile?.publicationStatus ?? 'draft');
   const isApproved = verificationStatus === 'approved';
-  const isUnderReview =
-    verificationStatus === 'submitted' || verificationStatus === 'under_review';
+  const isUnderReview = verificationStatus === 'submitted' || verificationStatus === 'under_review';
   const tutorId = profile?.userId || profile?.id || '';
 
   return (
-    <TutorLayout
-      locale={locale}
-      title={isBn ? 'প্রোফাইল ও ভেরিফিকেশন' : 'Profile & Credentials'}
-    >
-      <div className="space-y-6 py-4 w-full px-4 sm:px-6 lg:px-8" data-testid="tutor-profile-command-center">
+    <TutorLayout locale={locale} title={isBn ? 'প্রোফাইল ও ভেরিফিকেশন' : 'Profile & Credentials'}>
+      <div
+        className="space-y-6 py-4 w-full px-4 sm:px-6 lg:px-8"
+        data-testid="tutor-profile-command-center"
+      >
         {/* ============================================================ */}
         {/* HERO COMMAND CENTER BANNER                                   */}
         {/* ============================================================ */}
@@ -588,7 +581,12 @@ export function TutorProfileSettingsPage({
         {/* ============================================================ */}
         {/* TABS CONTAINER                                               */}
         {/* ============================================================ */}
-        <Tabs defaultValue="bio" value={activeTab} onValueChange={setActiveTab} className="w-full space-y-4">
+        <Tabs
+          defaultValue="bio"
+          value={activeTab}
+          onValueChange={setActiveTab}
+          className="w-full space-y-4"
+        >
           <TabList className="w-full flex flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border">
             <TabTrigger value="bio" className="flex items-center gap-1.5 text-xs">
               <User className="h-3.5 w-3.5" />
@@ -643,7 +641,9 @@ export function TutorProfileSettingsPage({
               <CardHeader className="border-b border-border/80 pb-4">
                 <CardTitle className="text-base flex items-center gap-2">
                   <User className="h-4 w-4 text-primary" />
-                  <span>{isBn ? 'ব্যক্তিগত তথ্য ও টিচিং বায়ো' : 'Personal Profile & Teaching Bio'}</span>
+                  <span>
+                    {isBn ? 'ব্যক্তিগত তথ্য ও টিচিং বায়ো' : 'Personal Profile & Teaching Bio'}
+                  </span>
                 </CardTitle>
                 <CardDescription className="text-xs">
                   {isBn
@@ -662,7 +662,9 @@ export function TutorProfileSettingsPage({
                   <Alert>
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
                     <AlertDescription className="text-xs">
-                      {isBn ? 'প্রোফাইল তথ্য সফলভাবে সংরক্ষিত হয়েছে।' : 'Profile updated successfully.'}
+                      {isBn
+                        ? 'প্রোফাইল তথ্য সফলভাবে সংরক্ষিত হয়েছে।'
+                        : 'Profile updated successfully.'}
                     </AlertDescription>
                   </Alert>
                 )}
@@ -818,7 +820,11 @@ export function TutorProfileSettingsPage({
                   <div>
                     <CardTitle className="text-base flex items-center gap-2">
                       <GraduationCap className="h-4 w-4 text-primary" />
-                      <span>{isBn ? 'শিক্ষাগত যোগ্যতা ও সনদপত্র' : 'Educational Qualifications & Degrees'}</span>
+                      <span>
+                        {isBn
+                          ? 'শিক্ষাগত যোগ্যতা ও সনদপত্র'
+                          : 'Educational Qualifications & Degrees'}
+                      </span>
                     </CardTitle>
                     <CardDescription className="text-xs">
                       {isBn
@@ -833,7 +839,15 @@ export function TutorProfileSettingsPage({
                     className="gap-1.5 text-xs"
                   >
                     <Plus className="h-3.5 w-3.5" />
-                    <span>{showAddQual ? (isBn ? 'ফর্ম বন্ধ করুন' : 'Close Form') : (isBn ? 'নতুন ডিগ্রি যোগ করুন' : 'Add Degree')}</span>
+                    <span>
+                      {showAddQual
+                        ? isBn
+                          ? 'ফর্ম বন্ধ করুন'
+                          : 'Close Form'
+                        : isBn
+                          ? 'নতুন ডিগ্রি যোগ করুন'
+                          : 'Add Degree'}
+                    </span>
                   </Button>
                 </div>
               </CardHeader>
@@ -851,7 +865,11 @@ export function TutorProfileSettingsPage({
                   <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 space-y-3">
                     <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
                       <Sparkles className="h-3.5 w-3.5 text-primary" />
-                      <span>{isBn ? 'নতুন সনদ আপলোড ও নিবন্ধন করুন' : 'Upload & Register New Credential'}</span>
+                      <span>
+                        {isBn
+                          ? 'নতুন সনদ আপলোড ও নিবন্ধন করুন'
+                          : 'Upload & Register New Credential'}
+                      </span>
                     </h4>
                     <QualificationUploadCard
                       locale={locale}
@@ -874,7 +892,9 @@ export function TutorProfileSettingsPage({
                     <div className="rounded-2xl border border-dashed border-border p-8 text-center space-y-2">
                       <GraduationCap className="h-8 w-8 text-muted-foreground/60 mx-auto" />
                       <p className="text-xs font-semibold text-foreground">
-                        {isBn ? 'এখনও কোনো সনদ বা ডিগ্রি যুক্ত করা হয়নি।' : 'No qualifications added yet.'}
+                        {isBn
+                          ? 'এখনও কোনো সনদ বা ডিগ্রি যুক্ত করা হয়নি।'
+                          : 'No qualifications added yet.'}
                       </p>
                       <p className="text-[11px] text-muted-foreground max-w-sm mx-auto">
                         {isBn
@@ -896,21 +916,16 @@ export function TutorProfileSettingsPage({
                               </h4>
                               <StatusBadge
                                 status={String(
-                                  qual.reviewStatus ||
-                                    qual.verificationStatus ||
-                                    'pending',
+                                  qual.reviewStatus || qual.verificationStatus || 'pending',
                                 )}
                                 size="sm"
                               >
-                                {String(
-                                  qual.reviewStatus ||
-                                    qual.verificationStatus ||
-                                    'pending',
-                                )}
+                                {String(qual.reviewStatus || qual.verificationStatus || 'pending')}
                               </StatusBadge>
                             </div>
                             <p className="text-xs text-muted-foreground">
-                              {String(qual.institution || '—')} • সন: {String(qual.issuedYear || '—')}
+                              {String(qual.institution || '—')} • সন:{' '}
+                              {String(qual.issuedYear || '—')}
                             </p>
                             <Badge variant="outline" className="text-[10px]">
                               {String(qual.qualificationType || 'Degree')}
@@ -946,7 +961,9 @@ export function TutorProfileSettingsPage({
               <CardHeader className="border-b border-border/80 pb-4">
                 <CardTitle className="text-base flex items-center gap-2">
                   <BookOpen className="h-4 w-4 text-primary" />
-                  <span>{isBn ? 'পাঠদান বিষয় ও স্তরভিত্তিক ফি' : 'Teaching Subjects & Level Rates'}</span>
+                  <span>
+                    {isBn ? 'পাঠদান বিষয় ও স্তরভিত্তিক ফি' : 'Teaching Subjects & Level Rates'}
+                  </span>
                 </CardTitle>
                 <CardDescription className="text-xs">
                   {isBn
@@ -1001,12 +1018,16 @@ export function TutorProfileSettingsPage({
                             className="rounded-xl border border-border bg-card p-3 flex items-center justify-between gap-2 shadow-xs"
                           >
                             <div className="space-y-0.5 min-w-0">
-                              <p className="text-xs font-bold text-foreground truncate">{subjectName}</p>
+                              <p className="text-xs font-bold text-foreground truncate">
+                                {subjectName}
+                              </p>
                               <div className="flex items-center gap-1.5">
                                 <Badge variant="outline" className="text-[10px]">
                                   {levelName}
                                 </Badge>
-                                <span className="text-[11px] font-semibold text-primary">{rate}</span>
+                                <span className="text-[11px] font-semibold text-primary">
+                                  {rate}
+                                </span>
                               </div>
                             </div>
                             <Button
@@ -1040,12 +1061,11 @@ export function TutorProfileSettingsPage({
                       <Label className="text-[11px] font-medium">
                         {isBn ? 'বিষয় নির্বাচন করুন *' : 'Select Subject *'}
                       </Label>
-                      <Select
-                        value={selectedSubjectId}
-                        onValueChange={setSelectedSubjectId}
-                      >
+                      <Select value={selectedSubjectId} onValueChange={setSelectedSubjectId}>
                         <SelectTrigger className="w-full text-xs h-9">
-                          <SelectValue placeholder={isBn ? 'বিষয় নির্বাচন করুন' : 'Select subject'} />
+                          <SelectValue
+                            placeholder={isBn ? 'বিষয় নির্বাচন করুন' : 'Select subject'}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {taxonomySubjects.map((sub) => (
@@ -1062,12 +1082,11 @@ export function TutorProfileSettingsPage({
                       <Label className="text-[11px] font-medium">
                         {isBn ? 'শ্রেণি / লেভেল *' : 'Class / Level *'}
                       </Label>
-                      <Select
-                        value={selectedLevelId}
-                        onValueChange={setSelectedLevelId}
-                      >
+                      <Select value={selectedLevelId} onValueChange={setSelectedLevelId}>
                         <SelectTrigger className="w-full text-xs h-9">
-                          <SelectValue placeholder={isBn ? 'শ্রেণি নির্বাচন করুন' : 'Select level'} />
+                          <SelectValue
+                            placeholder={isBn ? 'শ্রেণি নির্বাচন করুন' : 'Select level'}
+                          />
                         </SelectTrigger>
                         <SelectContent>
                           {taxonomyLevels.map((lvl) => (
@@ -1164,7 +1183,11 @@ export function TutorProfileSettingsPage({
                       {configuredAvailabilities.map((slot) => {
                         const dayName = WEEKDAYS.find((w) => w.day === slot.weekday);
                         return (
-                          <Badge key={slot.id} variant="secondary" className="px-2.5 py-1 text-xs gap-1.5">
+                          <Badge
+                            key={slot.id}
+                            variant="secondary"
+                            className="px-2.5 py-1 text-xs gap-1.5"
+                          >
                             <Clock className="h-3 w-3 text-primary" />
                             <span>{isBn ? dayName?.bn : dayName?.en}</span>
                             <span className="font-mono text-[11px] text-muted-foreground">
@@ -1310,7 +1333,9 @@ export function TutorProfileSettingsPage({
                     </div>
                     <div>
                       <h3 className="text-sm font-bold text-foreground">
-                        {isBn ? '৩-স্তর ভেরিফিকেশন ও ট্রাস্ট ডসিয়ার' : '3-Tier Verification & Trust Dossier'}
+                        {isBn
+                          ? '৩-স্তর ভেরিফিকেশন ও ট্রাস্ট ডসিয়ার'
+                          : '3-Tier Verification & Trust Dossier'}
                       </h3>
                       <p className="text-xs text-muted-foreground">
                         {isBn
@@ -1357,7 +1382,9 @@ export function TutorProfileSettingsPage({
                   <div>
                     <CardTitle className="text-base flex items-center gap-2">
                       <Eye className="h-4 w-4 text-primary" />
-                      <span>{isBn ? 'শিক্ষার্থী ও অভিভাবক প্রিভিউ' : 'Student & Parent View Preview'}</span>
+                      <span>
+                        {isBn ? 'শিক্ষার্থী ও অভিভাবক প্রিভিউ' : 'Student & Parent View Preview'}
+                      </span>
                     </CardTitle>
                     <CardDescription className="text-xs">
                       {isBn
@@ -1463,7 +1490,9 @@ export function TutorProfileSettingsPage({
                   {/* Student CTA simulation */}
                   <div className="pt-2 border-t border-border flex items-center justify-between">
                     <span className="text-xs text-muted-foreground italic">
-                      {isBn ? 'শিক্ষার্থী দৃশ্য: সরাসরি বুকিং ও ইনবক্স' : 'Student view: Instant booking CTA'}
+                      {isBn
+                        ? 'শিক্ষার্থী দৃশ্য: সরাসরি বুকিং ও ইনবক্স'
+                        : 'Student view: Instant booking CTA'}
                     </span>
                     <Button disabled size="sm" className="text-xs gap-1.5 opacity-80">
                       <Send className="w-3.5 h-3.5" />

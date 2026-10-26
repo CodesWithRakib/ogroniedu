@@ -61,11 +61,16 @@ export function SavedTutorCard({
       >
         <div className="flex items-start justify-between gap-3">
           <div className="space-y-1">
-            <Badge variant="outline" className="bg-amber-100 text-amber-900 border-amber-300 text-xs font-bold">
+            <Badge
+              variant="outline"
+              className="bg-amber-100 text-amber-900 border-amber-300 text-xs font-bold"
+            >
               {isBn ? 'বর্তমানে অনুপুস্থিত' : 'Currently Unavailable'}
             </Badge>
             <h4 className="text-base font-bold text-slate-900">
-              {isBn ? 'শিক্ষক প্রোফাইলটি বর্তমানে উপলব্ধ নয়' : 'Tutor profile is not currently available'}
+              {isBn
+                ? 'শিক্ষক প্রোফাইলটি বর্তমানে উপলব্ধ নয়'
+                : 'Tutor profile is not currently available'}
             </h4>
             <p className="text-xs text-slate-600 leading-relaxed">
               {isBn
@@ -108,13 +113,15 @@ export function SavedTutorCard({
     ? formatLocalizedNumber(Number(profile.hourlyRateMinor) / 100, locale)
     : null;
 
-  const expYears = profile.yearsExperience != null
-    ? formatLocalizedNumber(profile.yearsExperience, locale)
-    : null;
+  const expYears =
+    profile.yearsExperience != null ? formatLocalizedNumber(profile.yearsExperience, locale) : null;
 
   const hasOnline = profile.teachingModes?.includes('online');
   const hasInPerson = profile.teachingModes?.includes('in_person');
-  const messagePath = withLocale(`/dashboard/${role === 'guardian' ? 'guardian' : 'student'}/messages?tutorId=${item.tutorId}`, locale);
+  const messagePath = withLocale(
+    `/dashboard/${role === 'guardian' ? 'guardian' : 'student'}/messages?tutorId=${item.tutorId}`,
+    locale,
+  );
   const profilePath = withLocale(`/tutors/${item.tutorId}`, locale);
   const bookingPath = withLocale(`/tutors/${item.tutorId}?book=1`, locale);
 
@@ -171,12 +178,16 @@ export function SavedTutorCard({
               <div className="flex items-center gap-2 flex-wrap pt-0.5">
                 {profile.ratingAverage != null && profile.totalReviews > 0 ? (
                   <div className="inline-flex items-center gap-1 text-xs font-bold text-amber-900 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded-full">
-                    <Star className="w-3.5 h-3.5 fill-amber-500 text-amber-500" aria-hidden="true" />
+                    <Star
+                      className="w-3.5 h-3.5 fill-amber-500 text-amber-500"
+                      aria-hidden="true"
+                    />
                     <span className="font-black text-slate-900">
                       {formatLocalizedNumber(profile.ratingAverage, locale)}
                     </span>
                     <span className="text-slate-600 font-medium text-[11px]">
-                      ({formatLocalizedNumber(profile.totalReviews, locale)} {isBn ? 'রিভিউ' : 'reviews'})
+                      ({formatLocalizedNumber(profile.totalReviews, locale)}{' '}
+                      {isBn ? 'রিভিউ' : 'reviews'})
                     </span>
                   </div>
                 ) : (
@@ -188,7 +199,8 @@ export function SavedTutorCard({
                 {profile.completedSessions > 0 && (
                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
                     <CalendarCheck className="w-3 h-3 text-slate-600" aria-hidden="true" />
-                    {formatLocalizedNumber(profile.completedSessions, locale)} {isBn ? 'সেশন সম্পন্ন' : 'sessions'}
+                    {formatLocalizedNumber(profile.completedSessions, locale)}{' '}
+                    {isBn ? 'সেশন সম্পন্ন' : 'sessions'}
                   </span>
                 )}
               </div>
@@ -218,12 +230,15 @@ export function SavedTutorCard({
                 key={subj.id || subj.subjectId}
                 className="inline-flex items-center text-xs font-semibold px-2.5 py-0.5 rounded-lg bg-indigo-50/80 text-indigo-900 border border-indigo-200/80"
               >
-                {isBn ? subj.subjectNameBn || subj.subjectNameEn : subj.subjectNameEn || subj.subjectNameBn}
+                {isBn
+                  ? subj.subjectNameBn || subj.subjectNameEn
+                  : subj.subjectNameEn || subj.subjectNameBn}
               </span>
             ))}
             {profile.subjects.length > 3 && (
               <span className="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-lg bg-slate-100 text-slate-600">
-                +{formatLocalizedNumber(profile.subjects.length - 3, locale)} {isBn ? 'টি বিষয়' : 'more'}
+                +{formatLocalizedNumber(profile.subjects.length - 3, locale)}{' '}
+                {isBn ? 'টি বিষয়' : 'more'}
               </span>
             )}
           </div>
@@ -246,23 +261,25 @@ export function SavedTutorCard({
           {profile.serviceAreas && profile.serviceAreas[0] && (
             <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-slate-800">
               <MapPin className="w-3.5 h-3.5 text-rose-600 shrink-0" aria-hidden="true" />
-              <span>{isBn ? profile.serviceAreas[0].districtNameBn : profile.serviceAreas[0].districtNameEn}</span>
+              <span>
+                {isBn
+                  ? profile.serviceAreas[0].districtNameBn
+                  : profile.serviceAreas[0].districtNameEn}
+              </span>
             </span>
           )}
           {expYears && (
             <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-slate-800">
               <Award className="w-3.5 h-3.5 text-amber-600 shrink-0" aria-hidden="true" />
-              <span>{expYears} {isBn ? 'বছর অভিজ্ঞতা' : 'yrs exp'}</span>
+              <span>
+                {expYears} {isBn ? 'বছর অভিজ্ঞতা' : 'yrs exp'}
+              </span>
             </span>
           )}
         </div>
 
         {/* Bio Snippet */}
-        {bio && (
-          <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">
-            {bio}
-          </p>
-        )}
+        {bio && <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">{bio}</p>}
       </div>
 
       {/* Card Footer: Pricing and Primary CTAs */}
@@ -347,7 +364,9 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
     const total = saved.length;
     const topRated = saved.filter((item) => (item.profile?.ratingAverage ?? 0) >= 4.5).length;
     const online = saved.filter((item) => item.profile?.teachingModes?.includes('online')).length;
-    const inPerson = saved.filter((item) => item.profile?.teachingModes?.includes('in_person')).length;
+    const inPerson = saved.filter((item) =>
+      item.profile?.teachingModes?.includes('in_person'),
+    ).length;
     return { total, topRated, online, inPerson };
   }, [saved]);
 
@@ -365,12 +384,12 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
         const nameBn = (p.displayNameBn || '').toLowerCase();
         const headlineEn = (p.headlineEn || '').toLowerCase();
         const headlineBn = (p.headlineBn || '').toLowerCase();
-        const subjects = (p.subjects || []).map(
-          (s) => `${s.subjectNameEn || ''} ${s.subjectNameBn || ''}`.toLowerCase()
-        ).join(' ');
-        const areas = (p.serviceAreas || []).map(
-          (a) => `${a.districtNameEn || ''} ${a.districtNameBn || ''}`.toLowerCase()
-        ).join(' ');
+        const subjects = (p.subjects || [])
+          .map((s) => `${s.subjectNameEn || ''} ${s.subjectNameBn || ''}`.toLowerCase())
+          .join(' ');
+        const areas = (p.serviceAreas || [])
+          .map((a) => `${a.districtNameEn || ''} ${a.districtNameBn || ''}`.toLowerCase())
+          .join(' ');
 
         return (
           nameEn.includes(q) ||
@@ -513,7 +532,11 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
               <Search className="w-4 h-4 text-slate-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
               <Input
                 type="text"
-                placeholder={isBn ? 'শিক্ষকের নাম, বিষয় বা জেলা দিয়ে খুঁজুন...' : 'Search by name, subject, or district...'}
+                placeholder={
+                  isBn
+                    ? 'শিক্ষকের নাম, বিষয় বা জেলা দিয়ে খুঁজুন...'
+                    : 'Search by name, subject, or district...'
+                }
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 className="pl-10 h-10 rounded-xl border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-blue-500"
@@ -541,8 +564,12 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
                 <option value="recent">{isBn ? 'সর্বশেষ সংরক্ষিত' : 'Recently Saved'}</option>
                 <option value="rating">{isBn ? 'সর্বোচ্চ রেটিং' : 'Highest Rating'}</option>
                 <option value="experience">{isBn ? 'সর্বোচ্চ অভিজ্ঞতা' : 'Most Experience'}</option>
-                <option value="price_asc">{isBn ? 'ফি: কম থেকে বেশি' : 'Price: Low to High'}</option>
-                <option value="price_desc">{isBn ? 'ফি: বেশি থেকে কম' : 'Price: High to Low'}</option>
+                <option value="price_asc">
+                  {isBn ? 'ফি: কম থেকে বেশি' : 'Price: Low to High'}
+                </option>
+                <option value="price_desc">
+                  {isBn ? 'ফি: বেশি থেকে কম' : 'Price: High to Low'}
+                </option>
               </NativeSelect>
             </div>
           </div>
@@ -560,7 +587,8 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
                 }`}
                 data-testid="filter-all"
               >
-                {isBn ? 'সকল শিক্ষক' : 'All Tutors'} ({formatLocalizedNumber(metrics.total, locale)})
+                {isBn ? 'সকল শিক্ষক' : 'All Tutors'} ({formatLocalizedNumber(metrics.total, locale)}
+                )
               </button>
               <button
                 type="button"
@@ -572,7 +600,8 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
                 }`}
                 data-testid="filter-top-rated"
               >
-                {isBn ? 'শীর্ষ রেটেড' : 'Top Rated'} ({formatLocalizedNumber(metrics.topRated, locale)})
+                {isBn ? 'শীর্ষ রেটেড' : 'Top Rated'} (
+                {formatLocalizedNumber(metrics.topRated, locale)})
               </button>
               <button
                 type="button"
@@ -596,7 +625,8 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
                 }`}
                 data-testid="filter-in-person"
               >
-                {isBn ? 'হোম টিউশন' : 'In-Person'} ({formatLocalizedNumber(metrics.inPerson, locale)})
+                {isBn ? 'হোম টিউশন' : 'In-Person'} (
+                {formatLocalizedNumber(metrics.inPerson, locale)})
               </button>
             </div>
 
@@ -623,9 +653,16 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
           <Card className="py-12 text-center rounded-3xl border-rose-200 bg-rose-50/30">
             <CardContent className="space-y-3">
               <p className="text-sm font-semibold text-rose-900">
-                {isBn ? 'সংরক্ষিত শিক্ষকের তালিকা লোড করা যায়নি।' : 'Failed to load your saved tutors list.'}
+                {isBn
+                  ? 'সংরক্ষিত শিক্ষকের তালিকা লোড করা যায়নি।'
+                  : 'Failed to load your saved tutors list.'}
               </p>
-              <Button variant="outline" size="sm" onClick={() => refetch()} className="border-rose-300 text-rose-800">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => refetch()}
+                className="border-rose-300 text-rose-800"
+              >
                 {isBn ? 'আবার চেষ্টা করুন' : 'Retry'}
               </Button>
             </CardContent>
@@ -684,7 +721,10 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
           </Card>
         ) : (
           /* Grid of Saved Tutors */
-          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-5" data-testid="saved-tutors-list">
+          <div
+            className="grid grid-cols-1 xl:grid-cols-2 gap-4 lg:gap-5"
+            data-testid="saved-tutors-list"
+          >
             {filteredItems.map((item) => (
               <SavedTutorCard
                 key={item.tutorId}

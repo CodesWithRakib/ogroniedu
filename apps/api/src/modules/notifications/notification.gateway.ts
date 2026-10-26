@@ -25,7 +25,11 @@ function readString(value: unknown): string | undefined {
   return typeof value === 'string' ? value : undefined;
 }
 
-const allowedWsOrigins = (process.env.FRONTEND_URL || 'http://localhost:5000')
+const allowedWsOrigins = (
+  process.env.CORS_ORIGINS ||
+  process.env.FRONTEND_URL ||
+  'http://localhost:5000'
+)
   .split(',')
   .map((o) => o.trim())
   .filter(Boolean);
@@ -33,10 +37,15 @@ const allowedWsOrigins = (process.env.FRONTEND_URL || 'http://localhost:5000')
 @WebSocketGateway({
   namespace: '/notifications',
   cors: {
-    origin: (origin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
       if (!origin) return callback(null, true);
       const isAllowed =
         allowedWsOrigins.includes(origin) ||
+        (origin.endsWith('.vercel.app') &&
+          allowedWsOrigins.some((fo) => fo.includes('vercel.app'))) ||
         origin.startsWith('http://localhost:') ||
         origin.startsWith('http://127.0.0.1:');
       callback(null, isAllowed);
@@ -44,7 +53,9 @@ const allowedWsOrigins = (process.env.FRONTEND_URL || 'http://localhost:5000')
     credentials: true,
   },
 })
-export class NotificationGateway implements OnGatewayConnection, OnGatewayDisconnect, INotificationBroadcaster {
+export class NotificationGateway
+  implements OnGatewayConnection, OnGatewayDisconnect, INotificationBroadcaster
+{
   private readonly logger = new Logger(NotificationGateway.name);
   private readonly jwtSecret: string | undefined = process.env.JWT_SECRET;
 
@@ -99,7 +110,9 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
   async handleConnection(client: Socket) {
     try {
       if (!this.jwtSecret && process.env.NODE_ENV !== 'test') {
-        this.logger.error('JWT_SECRET environment variable is required for WebSocket authentication');
+        this.logger.error(
+          'JWT_SECRET environment variable is required for WebSocket authentication',
+        );
         client.emit('auth_error', { message: 'Server configuration error' });
         client.disconnect(true);
         return;
@@ -382,7 +395,8 @@ export class NotificationGateway implements OnGatewayConnection, OnGatewayDiscon
     const isRequester = userId === booking.requesterUserId;
     const isTutor =
       userId === booking.tutorUserId ||
-      (booking.tutorProfile && (booking.tutorProfile as unknown as { userId?: string }).userId === userId);
+      (booking.tutorProfile &&
+        (booking.tutorProfile as unknown as { userId?: string }).userId === userId);
 
     let isGuardian = false;
     if (!isStudent && !isRequester && !isTutor && this.guardianAccess) {

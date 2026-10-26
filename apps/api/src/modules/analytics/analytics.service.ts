@@ -1,4 +1,11 @@
-import { Injectable, Logger, Inject, Optional, ForbiddenException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Logger,
+  Inject,
+  Optional,
+  ForbiddenException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
 import { LedgerService } from '../payments/ledger.service';
@@ -384,7 +391,8 @@ export class AnalyticsService {
     const sessionsCompleted = sessionsRes[0]?.completed_sessions || 0;
 
     const zeroResultCount = zeroResultSearchesRes[0]?.zero_result_count || 0;
-    const zeroResultRate = searchCount > 0 ? Number(((zeroResultCount / searchCount) * 100).toFixed(2)) : 0;
+    const zeroResultRate =
+      searchCount > 0 ? Number(((zeroResultCount / searchCount) * 100).toFixed(2)) : 0;
 
     const rawStages = [
       { key: 'tutor_search', label: 'Tutor Searches', count: searchCount },
@@ -396,12 +404,15 @@ export class AnalyticsService {
       { key: 'lesson_completed', label: 'First Lessons Completed', count: sessionsCompleted },
     ];
 
-    const baseline = searchCount > 0 ? searchCount : (profileViews > 0 ? profileViews : requestsSubmitted);
+    const baseline =
+      searchCount > 0 ? searchCount : profileViews > 0 ? profileViews : requestsSubmitted;
 
     const stages = rawStages.map((stage, idx) => {
       const prevCount = idx === 0 ? stage.count : rawStages[idx - 1].count;
-      const conversionFromPrev = prevCount > 0 ? Number(((stage.count / prevCount) * 100).toFixed(2)) : 0;
-      const overallConversion = baseline > 0 ? Number(((stage.count / baseline) * 100).toFixed(2)) : 0;
+      const conversionFromPrev =
+        prevCount > 0 ? Number(((stage.count / prevCount) * 100).toFixed(2)) : 0;
+      const overallConversion =
+        baseline > 0 ? Number(((stage.count / baseline) * 100).toFixed(2)) : 0;
       const dropOffRate = Number(Math.max(0, 100 - conversionFromPrev).toFixed(2));
 
       return {
@@ -488,13 +499,15 @@ export class AnalyticsService {
         registered: regStudents,
         onboarded: studentRes[0]?.onboarded_students || 0,
         activeWithBookings: actStudents,
-        activationRate: regStudents > 0 ? Number(((actStudents / regStudents) * 100).toFixed(2)) : 0,
+        activationRate:
+          regStudents > 0 ? Number(((actStudents / regStudents) * 100).toFixed(2)) : 0,
       },
       guardian: {
         registered: regGuardians,
         withLinkedChildren: guardianRes[0]?.linked_guardians || 0,
         activeWithChildBookings: actGuardians,
-        activationRate: regGuardians > 0 ? Number(((actGuardians / regGuardians) * 100).toFixed(2)) : 0,
+        activationRate:
+          regGuardians > 0 ? Number(((actGuardians / regGuardians) * 100).toFixed(2)) : 0,
       },
       tutor: {
         registered: regTutors,
@@ -541,14 +554,21 @@ export class AnalyticsService {
     const completedSessions = sessionsRes[0]?.completed_sessions || 0;
     const noShowSessions = sessionsRes[0]?.no_show_sessions || 0;
     const attendedDenominator = completedSessions + noShowSessions;
-    const attendanceRate = attendedDenominator > 0 ? Number(((completedSessions / attendedDenominator) * 100).toFixed(2)) : 0;
+    const attendanceRate =
+      attendedDenominator > 0
+        ? Number(((completedSessions / attendedDenominator) * 100).toFixed(2))
+        : 0;
 
     const totalAssignments = assignmentsRes[0]?.total_assignments || 0;
     const totalSubmissions = assignmentsRes[0]?.total_submissions || 0;
     const reviewedSubmissions = assignmentsRes[0]?.reviewed_submissions || 0;
 
-    const submissionRate = totalAssignments > 0 ? Number(((totalSubmissions / totalAssignments) * 100).toFixed(2)) : 0;
-    const reviewRate = totalSubmissions > 0 ? Number(((reviewedSubmissions / totalSubmissions) * 100).toFixed(2)) : 0;
+    const submissionRate =
+      totalAssignments > 0 ? Number(((totalSubmissions / totalAssignments) * 100).toFixed(2)) : 0;
+    const reviewRate =
+      totalSubmissions > 0
+        ? Number(((reviewedSubmissions / totalSubmissions) * 100).toFixed(2))
+        : 0;
 
     return {
       timeWindow: {
@@ -577,10 +597,18 @@ export class AnalyticsService {
   /**
    * 4e. Tenant-Isolated Organization Analytics
    */
-  async getOrganizationAnalytics(organizationId: string, query: AnalyticsTimeQueryDto, actor: AuthenticatedUser) {
+  async getOrganizationAnalytics(
+    organizationId: string,
+    query: AnalyticsTimeQueryDto,
+    actor: AuthenticatedUser,
+  ) {
     const { start, end } = this.parseTimeBounds(query);
 
-    const roles = Array.isArray(actor.roles) ? actor.roles : (actor as any).role ? [(actor as any).role] : [];
+    const roles = Array.isArray(actor.roles)
+      ? actor.roles
+      : (actor as any).role
+        ? [(actor as any).role]
+        : [];
     const isPlatformAdmin = roles.includes('admin') || roles.includes('super_admin');
     if (!isPlatformAdmin) {
       const membership = await this.dataSource.query(
@@ -590,7 +618,9 @@ export class AnalyticsService {
         [organizationId, actor.id],
       );
       if (membership.length === 0) {
-        throw new ForbiddenException('Access denied: You do not have permission to view analytics for this organization.');
+        throw new ForbiddenException(
+          'Access denied: You do not have permission to view analytics for this organization.',
+        );
       }
     }
 
@@ -619,7 +649,8 @@ export class AnalyticsService {
     const stats = statsRes[0];
     const totalBookings = stats?.total_bookings || 0;
     const confirmedBookings = stats?.confirmed_bookings || 0;
-    const conversionRate = totalBookings > 0 ? Number(((confirmedBookings / totalBookings) * 100).toFixed(2)) : 0;
+    const conversionRate =
+      totalBookings > 0 ? Number(((confirmedBookings / totalBookings) * 100).toFixed(2)) : 0;
     const completedVolumeBdt = Number(BigInt(stats?.completed_volume_minor || 0)) / 100;
 
     return {

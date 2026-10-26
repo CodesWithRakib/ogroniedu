@@ -1,11 +1,5 @@
 import type { BookingExpirySweepResult } from '../interfaces/booking-expiry.interfaces';
-import {
-  Injectable,
-  Logger,
-  Optional,
-  Inject,
-  forwardRef,
-} from '@nestjs/common';
+import { Injectable, Logger, Optional, Inject, forwardRef } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { DataSource, LessThanOrEqual, Repository } from 'typeorm';
 import { BookingEntity } from '../entities/booking.entity';
@@ -125,7 +119,8 @@ export class BookingExpiryService {
             await this.notificationService.dispatch({
               userId: booking.requesterUserId,
               eventType: 'booking.cancelled',
-              recipientRole: booking.requesterUserId === booking.studentUserId ? 'student' : 'guardian',
+              recipientRole:
+                booking.requesterUserId === booking.studentUserId ? 'student' : 'guardian',
               payload: {
                 bookingId: booking.id,
                 subjectName: booking.subject?.nameEn || 'Tutoring Request',
@@ -202,7 +197,8 @@ export class BookingExpiryService {
             await this.notificationService.dispatch({
               userId: booking.requesterUserId,
               eventType: 'booking.cancelled',
-              recipientRole: booking.requesterUserId === booking.studentUserId ? 'student' : 'guardian',
+              recipientRole:
+                booking.requesterUserId === booking.studentUserId ? 'student' : 'guardian',
               payload: {
                 bookingId: booking.id,
                 subjectName: booking.subject?.nameEn || 'Tutoring Session',
@@ -238,10 +234,9 @@ export class BookingExpiryService {
       return async () => {};
     }
     try {
-      const rows = (await this.dataSource.query(
-        'SELECT pg_try_advisory_lock($1) AS locked',
-        [BOOKING_EXPIRY_LOCK_KEY],
-      )) as Array<{ locked: boolean }>;
+      const rows = (await this.dataSource.query('SELECT pg_try_advisory_lock($1) AS locked', [
+        BOOKING_EXPIRY_LOCK_KEY,
+      ])) as Array<{ locked: boolean }>;
 
       if (!rows?.[0]?.locked) return null;
 
@@ -249,7 +244,9 @@ export class BookingExpiryService {
         try {
           await this.dataSource?.query('SELECT pg_advisory_unlock($1)', [BOOKING_EXPIRY_LOCK_KEY]);
         } catch (err) {
-          this.logger.warn(`Failed to release advisory lock ${BOOKING_EXPIRY_LOCK_KEY}: ${String(err)}`);
+          this.logger.warn(
+            `Failed to release advisory lock ${BOOKING_EXPIRY_LOCK_KEY}: ${String(err)}`,
+          );
         }
       };
     } catch {

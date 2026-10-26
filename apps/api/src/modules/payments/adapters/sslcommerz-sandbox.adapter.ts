@@ -57,9 +57,10 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
 
   private get tunnelBaseUrl(): string {
     return (
+      process.env.API_BASE_URL ||
+      process.env.RENDER_EXTERNAL_URL ||
       process.env.PAYMENT_TUNNEL_URL ||
       process.env.NGROK_TUNNEL_URL ||
-      process.env.API_BASE_URL ||
       'http://localhost:4000'
     );
   }
@@ -125,9 +126,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       clearTimeout(timeoutId);
 
       if (!response.ok) {
-        this.logger.warn(
-          `SSLCOMMERZ API returned HTTP ${response.status}: ${response.statusText}`,
-        );
+        this.logger.warn(`SSLCOMMERZ API returned HTTP ${response.status}: ${response.statusText}`);
         throw new ServiceUnavailableException(
           `Payment gateway returned HTTP ${response.status}. Please try again later.`,
         );
@@ -174,9 +173,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
         };
       }
 
-      const failInfo = data.status
-        ? `status=${data.status}`
-        : JSON.stringify(data).slice(0, 200);
+      const failInfo = data.status ? `status=${data.status}` : JSON.stringify(data).slice(0, 200);
       this.logger.warn(`SSLCOMMERZ API returned non-success: ${failInfo}`);
       throw new ServiceUnavailableException(
         `Payment gateway rejected the request (${data.status || 'unknown'}). Please verify store credentials and try again.`,
@@ -205,8 +202,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
     headers: Record<string, string | string[] | undefined>,
     rawBody: string | Record<string, unknown>,
   ): boolean {
-    const headerSignature =
-      headers['x-sslcommerz-signature'] || headers['X-SSLCOMMERZ-SIGNATURE'];
+    const headerSignature = headers['x-sslcommerz-signature'] || headers['X-SSLCOMMERZ-SIGNATURE'];
 
     let bodyObj: Record<string, unknown> = {};
     if (typeof rawBody === 'string') {
@@ -242,36 +238,52 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
     // and compares md5(queryString) with verify_sign.
     const verifyKey = bodyObj.verify_key as string | undefined;
     if (verifyKey && typeof verifyKey === 'string') {
-      const rawKeys = verifyKey.split(',').map((k) => k.trim()).filter(Boolean);
+      const rawKeys = verifyKey
+        .split(',')
+        .map((k) => k.trim())
+        .filter(Boolean);
       const storePasswdMd5 = crypto.createHash('md5').update(this.storePasswd).digest('hex');
 
       // 1. Official sorted keys format
       const sortedKeys = [...rawKeys].sort();
       const sortedQueryMd5 =
         sortedKeys
-          .map((k) => `${k}=${bodyObj[k] !== undefined && bodyObj[k] !== null ? String(bodyObj[k]) : ''}`)
+          .map(
+            (k) =>
+              `${k}=${bodyObj[k] !== undefined && bodyObj[k] !== null ? String(bodyObj[k]) : ''}`,
+          )
           .join('&') + `&store_passwd=${storePasswdMd5}`;
       const sortedMd5Hash = crypto.createHash('md5').update(sortedQueryMd5).digest('hex');
       if (sortedMd5Hash.toLowerCase() === verifySign.toLowerCase()) {
-        this.logger.log('SSLCOMMERZ webhook verified via official sorted verify_sign/verify_key algorithm');
+        this.logger.log(
+          'SSLCOMMERZ webhook verified via official sorted verify_sign/verify_key algorithm',
+        );
         return true;
       }
 
       // 2. Unsorted order format
       const originalQueryMd5 =
         rawKeys
-          .map((k) => `${k}=${bodyObj[k] !== undefined && bodyObj[k] !== null ? String(bodyObj[k]) : ''}`)
+          .map(
+            (k) =>
+              `${k}=${bodyObj[k] !== undefined && bodyObj[k] !== null ? String(bodyObj[k]) : ''}`,
+          )
           .join('&') + `&store_passwd=${storePasswdMd5}`;
       const originalMd5Hash = crypto.createHash('md5').update(originalQueryMd5).digest('hex');
       if (originalMd5Hash.toLowerCase() === verifySign.toLowerCase()) {
-        this.logger.log('SSLCOMMERZ webhook verified via unsorted verify_sign/verify_key algorithm');
+        this.logger.log(
+          'SSLCOMMERZ webhook verified via unsorted verify_sign/verify_key algorithm',
+        );
         return true;
       }
 
       // 3. Raw store password format
       const sortedRawPass =
         sortedKeys
-          .map((k) => `${k}=${bodyObj[k] !== undefined && bodyObj[k] !== null ? String(bodyObj[k]) : ''}`)
+          .map(
+            (k) =>
+              `${k}=${bodyObj[k] !== undefined && bodyObj[k] !== null ? String(bodyObj[k]) : ''}`,
+          )
           .join('&') + `&store_passwd=${this.storePasswd}`;
       const sortedRawPassHash = crypto.createHash('md5').update(sortedRawPass).digest('hex');
       if (sortedRawPassHash.toLowerCase() === verifySign.toLowerCase()) {
@@ -316,7 +328,9 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       // Fall through
     }
 
-    this.logger.warn(`SSLCOMMERZ webhook signature verification failed for signature: ${verifySign.slice(0, 10)}...`);
+    this.logger.warn(
+      `SSLCOMMERZ webhook signature verification failed for signature: ${verifySign.slice(0, 10)}...`,
+    );
     return false;
   }
 
@@ -396,7 +410,6 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
         currency: 'BDT',
         status: 'succeeded',
         verifiedAt: new Date(),
-        
       };
     }
 

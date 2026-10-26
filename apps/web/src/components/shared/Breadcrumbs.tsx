@@ -56,7 +56,10 @@ export function Breadcrumbs({ locale, className = '', customCrumbs }: Breadcrumb
 
   if (customCrumbs && customCrumbs.length > 0) {
     return (
-      <nav aria-label="Breadcrumb" className={`flex items-center text-xs text-muted-foreground ${className}`}>
+      <nav
+        aria-label="Breadcrumb"
+        className={`flex items-center text-xs text-muted-foreground ${className}`}
+      >
         <ol className="flex items-center gap-1.5 flex-wrap">
           <li className="flex items-center">
             <Link
@@ -73,7 +76,10 @@ export function Breadcrumbs({ locale, className = '', customCrumbs }: Breadcrumb
               <li key={idx} className="flex items-center gap-1.5">
                 <ChevronRight className="h-3 w-3 text-muted-foreground/60 shrink-0" />
                 {crumb.href && !isLast ? (
-                  <Link href={withLocale(crumb.href, locale)} className="hover:text-foreground transition-colors">
+                  <Link
+                    href={withLocale(crumb.href, locale)}
+                    className="hover:text-foreground transition-colors"
+                  >
                     {crumb.label}
                   </Link>
                 ) : (
@@ -116,7 +122,10 @@ export function Breadcrumbs({ locale, className = '', customCrumbs }: Breadcrumb
   });
 
   return (
-    <nav aria-label="Breadcrumb" className={`flex items-center text-xs text-muted-foreground ${className}`}>
+    <nav
+      aria-label="Breadcrumb"
+      className={`flex items-center text-xs text-muted-foreground ${className}`}
+    >
       <ol className="flex items-center gap-1.5 flex-wrap">
         <li className="flex items-center">
           <Link

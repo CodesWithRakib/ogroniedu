@@ -105,10 +105,13 @@ describe('Product Analytics, Event Tracking & Retention Specifications (Phase 14
     it('should gracefully isolate database write failures during server event tracking without throwing', async () => {
       mockDataSource.query.mockRejectedValueOnce(new Error('DB connection drop'));
 
-      const success = await eventTrackingService.trackServerEvent(AllowedAnalyticsEvent.BOOKING_CONFIRMED, {
-        actorUserId: 'user-1',
-        actorRole: 'system',
-      });
+      const success = await eventTrackingService.trackServerEvent(
+        AllowedAnalyticsEvent.BOOKING_CONFIRMED,
+        {
+          actorUserId: 'user-1',
+          actorRole: 'system',
+        },
+      );
 
       expect(success).toBe(false); // Isolated, does not throw
     });

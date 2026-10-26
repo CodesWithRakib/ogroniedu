@@ -31,7 +31,7 @@ describe('Option 6: Jitsi Online Classroom, Live Video & Session Scheduling Test
         displayName: 'Abrar Ahmed',
         userEmail: 'abrar@ogroniedu.com',
         isTutor: false,
-      })
+      }),
     );
 
     expect(html).toContain('data-testid="jitsi-classroom-container"');
@@ -54,7 +54,7 @@ describe('Option 6: Jitsi Online Classroom, Live Video & Session Scheduling Test
         userEmail: 'farhan@ogroniedu.com',
         isTutor: true,
         onMeetingUrlGenerated: () => {},
-      })
+      }),
     );
 
     expect(html).toContain('OgroniEdu Live Jitsi Classroom');
@@ -76,8 +76,8 @@ describe('Option 6: Jitsi Online Classroom, Live Video & Session Scheduling Test
           locale: 'bn',
           isTutor: true,
           initialTab: 'attendance',
-        })
-      )
+        }),
+      ),
     );
 
     expect(html).toContain('data-testid="tab-video"');
@@ -102,8 +102,8 @@ describe('Option 6: Jitsi Online Classroom, Live Video & Session Scheduling Test
           locale: 'bn',
           isTutor: true,
           initialTab: 'attendance',
-        })
-      )
+        }),
+      ),
     );
 
     expect(html).toContain('data-testid="classroom-save-attendance-btn"');
@@ -124,8 +124,8 @@ describe('Option 6: Jitsi Online Classroom, Live Video & Session Scheduling Test
           session: mockSession,
           locale: 'bn',
           isTutor: false,
-        })
-      )
+        }),
+      ),
     );
 
     expect(html).toContain('text-slate-900');

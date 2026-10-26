@@ -285,7 +285,9 @@ export class DisputesService {
     }
 
     if (RESOLVED_DISPUTE_STATUSES.includes(dispute.status)) {
-      throw new BadRequestException(`Dispute ${disputeId} has already been resolved (${dispute.status})`);
+      throw new BadRequestException(
+        `Dispute ${disputeId} has already been resolved (${dispute.status})`,
+      );
     }
 
     const booking = dispute.booking;

@@ -16,10 +16,22 @@ describe('Phase 07 — Child Safety, Safeguarding, Complaints & Disputes', () =>
   const disputeId = 'dddddddd-dddd-4ddd-addd-dddddddddd01';
   const sessionId = 'cccccccc-cccc-4ccc-accc-cccccccccc01';
 
-  const studentUser: AuthenticatedUser = { id: studentId, email: 'student@test.com', roles: ['student'] };
-  const guardianUser: AuthenticatedUser = { id: guardianId, email: 'guardian@test.com', roles: ['guardian'] };
+  const studentUser: AuthenticatedUser = {
+    id: studentId,
+    email: 'student@test.com',
+    roles: ['student'],
+  };
+  const guardianUser: AuthenticatedUser = {
+    id: guardianId,
+    email: 'guardian@test.com',
+    roles: ['guardian'],
+  };
   const tutorUser: AuthenticatedUser = { id: tutorId, email: 'tutor@test.com', roles: ['tutor'] };
-  const intruderUser: AuthenticatedUser = { id: intruderId, email: 'intruder@test.com', roles: ['student'] };
+  const intruderUser: AuthenticatedUser = {
+    id: intruderId,
+    email: 'intruder@test.com',
+    roles: ['student'],
+  };
   const adminUser: AuthenticatedUser = { id: adminId, email: 'admin@test.com', roles: ['admin'] };
 
   // -------------------------------------------------------------------------
@@ -258,9 +270,9 @@ describe('Phase 07 — Child Safety, Safeguarding, Complaints & Disputes', () =>
         mockDataSource as any,
       );
 
-      await expect(
-        settlementService.settleMilestone(adminUser, { sessionId }),
-      ).rejects.toThrow(BadRequestException);
+      await expect(settlementService.settleMilestone(adminUser, { sessionId })).rejects.toThrow(
+        BadRequestException,
+      );
     });
   });
 

@@ -20,10 +20,7 @@ export interface ReplacementCaseDetailPageProps {
   caseId: string;
 }
 
-export function ReplacementCaseDetailPageView({
-  locale,
-  caseId,
-}: ReplacementCaseDetailPageProps) {
+export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCaseDetailPageProps) {
   const isBn = locale === 'bn';
 
   const { data, isLoading, isError, refetch } = useGetReplacementCaseByIdQuery(caseId);

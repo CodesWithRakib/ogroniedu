@@ -79,9 +79,9 @@ export function SessionScheduleCalendar({
   const [sessions, setSessions] = useState<CalendarSessionItem[]>(initialSessions);
   const [actionError, setActionError] = useState<string | null>(null);
   const [scheduleOpen, setScheduleOpen] = useState(false);
-  const [filterStatus, setFilterStatus] = useState<
-    'all' | 'scheduled' | 'completed' | 'cancelled'
-  >('all');
+  const [filterStatus, setFilterStatus] = useState<'all' | 'scheduled' | 'completed' | 'cancelled'>(
+    'all',
+  );
   const [viewMode, setViewMode] = useState<'grid' | 'timeline' | 'month'>('grid');
 
   const filteredSessions = React.useMemo(() => {
@@ -134,9 +134,7 @@ export function SessionScheduleCalendar({
         await onReschedule(selectedSessionForReschedule.id, newStartsAt, reason);
       } else {
         throw new Error(
-          locale === 'bn'
-            ? 'রিশিডিউলিং এখন উপলব্ধ নয়।'
-            : 'Rescheduling is unavailable right now.',
+          locale === 'bn' ? 'রিশিডিউলিং এখন উপলব্ধ নয়।' : 'Rescheduling is unavailable right now.',
         );
       }
       setSelectedSessionForReschedule(null);
@@ -196,7 +194,9 @@ export function SessionScheduleCalendar({
     }
   };
 
-  const scheduledCount = sessions.filter((s) => s.status === 'scheduled' || s.status === 'in_progress').length;
+  const scheduledCount = sessions.filter(
+    (s) => s.status === 'scheduled' || s.status === 'in_progress',
+  ).length;
   const completedCount = sessions.filter((s) => s.status === 'completed').length;
   const cancelledCount = sessions.filter((s) => s.status === 'cancelled').length;
 
@@ -224,7 +224,8 @@ export function SessionScheduleCalendar({
 
           <div>
             <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground">
-              {dict.scheduling?.calendarTitle || (isBn ? 'ক্লাস সময়সূচী ও সেশন কন্ট্রোল' : 'Class Schedule & Sessions')}
+              {dict.scheduling?.calendarTitle ||
+                (isBn ? 'ক্লাস সময়সূচী ও সেশন কন্ট্রোল' : 'Class Schedule & Sessions')}
             </h1>
             <p className="text-muted-foreground text-xs sm:text-sm mt-1.5 leading-relaxed font-normal">
               {dict.scheduling?.calendarSubtitle ||
@@ -244,9 +245,7 @@ export function SessionScheduleCalendar({
               <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
                 {isBn ? 'আসন্ন ও লাইভ' : 'Upcoming & Live'}
               </span>
-              <span className="text-xl sm:text-2xl font-black text-primary">
-                {scheduledCount}
-              </span>
+              <span className="text-xl sm:text-2xl font-black text-primary">{scheduledCount}</span>
             </div>
 
             <div className="px-4 py-3 rounded-2xl bg-card/90 border border-border/80 text-center backdrop-blur shadow-xs">
@@ -262,9 +261,7 @@ export function SessionScheduleCalendar({
               <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
                 {isBn ? 'উপস্থিতি হার' : 'Attendance'}
               </span>
-              <span className="text-xl sm:text-2xl font-black text-indigo-600">
-                ১০০%
-              </span>
+              <span className="text-xl sm:text-2xl font-black text-indigo-600">১০০%</span>
             </div>
           </div>
 
@@ -276,7 +273,10 @@ export function SessionScheduleCalendar({
               className="w-full xl:w-auto bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-2xl shadow-md shadow-blue-500/20 active:scale-[0.98] h-12 px-6"
             >
               <Plus className="w-4 h-4 mr-1.5" />
-              <span>{dict.scheduling?.scheduleSession || (isBn ? 'নতুন ক্লাস নির্ধারণ' : 'Schedule Session')}</span>
+              <span>
+                {dict.scheduling?.scheduleSession ||
+                  (isBn ? 'নতুন ক্লাস নির্ধারণ' : 'Schedule Session')}
+              </span>
             </Button>
           )}
         </div>
@@ -291,7 +291,8 @@ export function SessionScheduleCalendar({
               <span>{isBn ? 'পরবর্তী আসন্ন ক্লাস প্রস্তুত' : 'Next Upcoming Class Ready'}</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">
-              {nextSession.subjectName || (isBn ? 'উচ্চতর গণিত ও পদার্থবিজ্ঞান' : 'Higher Mathematics & Physics')}
+              {nextSession.subjectName ||
+                (isBn ? 'উচ্চতর গণিত ও পদার্থবিজ্ঞান' : 'Higher Mathematics & Physics')}
             </h2>
             <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground font-medium">
               <span className="flex items-center gap-1 font-bold text-foreground">
@@ -306,7 +307,9 @@ export function SessionScheduleCalendar({
               <span>•</span>
               <span className="flex items-center gap-1">
                 <GraduationCap className="w-3.5 h-3.5 text-primary" />
-                <span>{isBn ? 'শিক্ষক:' : 'Tutor:'} <strong>{nextSession.tutorName}</strong></span>
+                <span>
+                  {isBn ? 'শিক্ষক:' : 'Tutor:'} <strong>{nextSession.tutorName}</strong>
+                </span>
               </span>
             </div>
           </div>
@@ -319,13 +322,23 @@ export function SessionScheduleCalendar({
                 rel="noreferrer"
                 className="px-6 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all flex items-center gap-2 active:scale-95 transform hover:-translate-y-0.5"
               >
-                <Sparkles className="w-4 h-4 fill-current animate-spin" style={{ animationDuration: '4s' }} />
+                <Sparkles
+                  className="w-4 h-4 fill-current animate-spin"
+                  style={{ animationDuration: '4s' }}
+                />
                 <span>{isBn ? 'সরাসরি ক্লাসরুমে প্রবেশ করুন' : 'Enter Live Classroom'}</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
             ) : (
-              <Button asChild size="default" className="rounded-2xl font-bold bg-primary text-primary-foreground">
-                <Link href={withLocale(`/sessions/${nextSession.id}`, locale)} className="flex items-center gap-1.5">
+              <Button
+                asChild
+                size="default"
+                className="rounded-2xl font-bold bg-primary text-primary-foreground"
+              >
+                <Link
+                  href={withLocale(`/sessions/${nextSession.id}`, locale)}
+                  className="flex items-center gap-1.5"
+                >
                   <Video className="w-4 h-4" />
                   <span>{isBn ? 'সেশন কন্ট্রোল দেখুন' : 'View Session Studio'}</span>
                 </Link>
@@ -350,7 +363,8 @@ export function SessionScheduleCalendar({
         <div className="space-y-1.5 flex-1">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="font-extrabold text-foreground text-sm">
-              {dict.scheduling?.cancellationPolicyTitle || 'Bangladesh Cancellation & Refund Policy'}
+              {dict.scheduling?.cancellationPolicyTitle ||
+                'Bangladesh Cancellation & Refund Policy'}
             </span>
             <span className="text-[11px] font-bold text-muted-foreground">
               {isBn ? 'ন্যায্য রিফান্ড অ্যালগরিদম' : 'Fair Automated Refund Algorithm'}
@@ -387,7 +401,9 @@ export function SessionScheduleCalendar({
             }`}
           >
             <span>{isBn ? 'সব ক্লাস' : 'All Classes'}</span>
-            <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${filterStatus === 'all' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-muted'}`}>
+            <span
+              className={`px-1.5 py-0.5 rounded-full text-[10px] ${filterStatus === 'all' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-muted'}`}
+            >
               {sessions.length}
             </span>
           </button>
@@ -401,9 +417,13 @@ export function SessionScheduleCalendar({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface'
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${filterStatus === 'scheduled' ? 'bg-primary-foreground' : 'bg-blue-500'}`} />
+            <span
+              className={`w-2 h-2 rounded-full ${filterStatus === 'scheduled' ? 'bg-primary-foreground' : 'bg-blue-500'}`}
+            />
             <span>{isBn ? 'আসন্ন ও লাইভ' : 'Upcoming & Live'}</span>
-            <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${filterStatus === 'scheduled' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-primary-soft text-primary font-bold'}`}>
+            <span
+              className={`px-1.5 py-0.5 rounded-full text-[10px] ${filterStatus === 'scheduled' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-primary-soft text-primary font-bold'}`}
+            >
               {scheduledCount}
             </span>
           </button>
@@ -417,9 +437,13 @@ export function SessionScheduleCalendar({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface'
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${filterStatus === 'completed' ? 'bg-primary-foreground' : 'bg-emerald-500'}`} />
+            <span
+              className={`w-2 h-2 rounded-full ${filterStatus === 'completed' ? 'bg-primary-foreground' : 'bg-emerald-500'}`}
+            />
             <span>{isBn ? 'সম্পন্ন' : 'Completed'}</span>
-            <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${filterStatus === 'completed' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-emerald-500/15 text-emerald-600 font-bold'}`}>
+            <span
+              className={`px-1.5 py-0.5 rounded-full text-[10px] ${filterStatus === 'completed' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-emerald-500/15 text-emerald-600 font-bold'}`}
+            >
               {completedCount}
             </span>
           </button>
@@ -433,9 +457,13 @@ export function SessionScheduleCalendar({
                 : 'text-muted-foreground hover:text-foreground hover:bg-surface'
             }`}
           >
-            <span className={`w-2 h-2 rounded-full ${filterStatus === 'cancelled' ? 'bg-primary-foreground' : 'bg-rose-400'}`} />
+            <span
+              className={`w-2 h-2 rounded-full ${filterStatus === 'cancelled' ? 'bg-primary-foreground' : 'bg-rose-400'}`}
+            />
             <span>{isBn ? 'বাতিল' : 'Cancelled'}</span>
-            <span className={`px-1.5 py-0.5 rounded-full text-[10px] ${filterStatus === 'cancelled' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-muted'}`}>
+            <span
+              className={`px-1.5 py-0.5 rounded-full text-[10px] ${filterStatus === 'cancelled' ? 'bg-primary-foreground/20 text-primary-foreground' : 'bg-muted'}`}
+            >
               {cancelledCount}
             </span>
           </button>
@@ -505,7 +533,8 @@ export function SessionScheduleCalendar({
           <CardContent className="space-y-3">
             <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin mx-auto" />
             <p className="text-muted-foreground text-sm font-semibold">
-              {dict.common?.loading || (isBn ? 'ক্লাস শিডিউল লোড হচ্ছে...' : 'Loading class sessions...')}
+              {dict.common?.loading ||
+                (isBn ? 'ক্লাস শিডিউল লোড হচ্ছে...' : 'Loading class sessions...')}
             </p>
           </CardContent>
         </Card>
@@ -515,7 +544,8 @@ export function SessionScheduleCalendar({
             <CalendarIcon className="w-8 h-8" />
           </div>
           <h3 className="text-xl font-black text-foreground tracking-tight">
-            {dict.scheduling?.noSessions || (isBn ? 'এখনও কোনো নির্ধারিত ক্লাস নেই' : 'No Sessions Scheduled Yet')}
+            {dict.scheduling?.noSessions ||
+              (isBn ? 'এখনও কোনো নির্ধারিত ক্লাস নেই' : 'No Sessions Scheduled Yet')}
           </h3>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto mt-2 leading-relaxed">
             {isBn
@@ -524,13 +554,22 @@ export function SessionScheduleCalendar({
           </p>
 
           <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-            <Button asChild size="default" className="rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs h-11 px-5 shadow-sm shadow-blue-500/20">
+            <Button
+              asChild
+              size="default"
+              className="rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs h-11 px-5 shadow-sm shadow-blue-500/20"
+            >
               <Link href={withLocale('/tutors', locale)} className="flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4" />
                 <span>{isBn ? 'অভিজ্ঞ শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
               </Link>
             </Button>
-            <Button asChild variant="outline" size="default" className="rounded-2xl font-bold text-xs h-11 px-5">
+            <Button
+              asChild
+              variant="outline"
+              size="default"
+              className="rounded-2xl font-bold text-xs h-11 px-5"
+            >
               <Link href={withLocale('/requests', locale)} className="flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4" />
                 <span>{isBn ? 'বুকিং অনুরোধ চেক করুন' : 'View Booking Requests'}</span>

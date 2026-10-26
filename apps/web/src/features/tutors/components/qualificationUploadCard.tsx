@@ -1,15 +1,7 @@
 'use client';
 
 import React from 'react';
-import {
-  Card,
-  CardHeader,
-  CardTitle,
-  CardContent,
-  Button,
-  Input,
-  Label,
-} from '@/components/ui';
+import { Card, CardHeader, CardTitle, CardContent, Button, Input, Label } from '@/components/ui';
 import {
   Select,
   SelectTrigger,
@@ -157,16 +149,15 @@ export function QualificationUploadCard({
             <Label htmlFor="qual-doc-type" className="text-xs font-medium">
               {isBn ? 'সনদের ধরন' : 'Document type'}
             </Label>
-            <Select
-              value={docType}
-              onValueChange={(val) => setDocType(val as typeof docType)}
-            >
+            <Select value={docType} onValueChange={(val) => setDocType(val as typeof docType)}>
               <SelectTrigger
                 id="qual-doc-type"
                 className="h-9 text-xs"
                 data-testid="qualification-type-select"
               >
-                <SelectValue placeholder={isBn ? 'সনদের ধরন নির্বাচন করুন' : 'Select document type'} />
+                <SelectValue
+                  placeholder={isBn ? 'সনদের ধরন নির্বাচন করুন' : 'Select document type'}
+                />
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="nid">

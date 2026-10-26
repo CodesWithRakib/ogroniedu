@@ -161,10 +161,7 @@ export function TaxonomyModal({
                 <Label htmlFor="form-extra" className="text-xs font-semibold">
                   {isBn ? 'প্রতিষ্ঠানের ধরন' : 'Institution Type'}
                 </Label>
-                <Select
-                  value={formExtra || 'school'}
-                  onValueChange={(val) => setFormExtra(val)}
-                >
+                <Select value={formExtra || 'school'} onValueChange={(val) => setFormExtra(val)}>
                   <SelectTrigger
                     id="form-extra"
                     className="rounded-2xl bg-card border-border text-sm"
@@ -173,9 +170,7 @@ export function TaxonomyModal({
                   </SelectTrigger>
                   <SelectContent>
                     <SelectItem value="school">{isBn ? 'স্কুল (School)' : 'School'}</SelectItem>
-                    <SelectItem value="college">
-                      {isBn ? 'কলেজ (College)' : 'College'}
-                    </SelectItem>
+                    <SelectItem value="college">{isBn ? 'কলেজ (College)' : 'College'}</SelectItem>
                     <SelectItem value="school_and_college">
                       {isBn ? 'স্কুল অ্যান্ড কলেজ' : 'School & College'}
                     </SelectItem>
@@ -207,10 +202,7 @@ export function TaxonomyModal({
               <Label htmlFor="form-extra" className="text-xs font-semibold">
                 {isBn ? 'ক্যাটাগরি / বিভাগ' : 'Category / Discipline'}
               </Label>
-              <Select
-                value={formExtra || 'core'}
-                onValueChange={(val) => setFormExtra(val)}
-              >
+              <Select value={formExtra || 'core'} onValueChange={(val) => setFormExtra(val)}>
                 <SelectTrigger
                   id="form-extra"
                   className="rounded-2xl bg-card border-border text-sm"
@@ -251,9 +243,7 @@ export function TaxonomyModal({
               onCheckedChange={(checked) => setFormIsActive(Boolean(checked))}
             />
             <Label htmlFor="form-is-active" className="text-xs font-semibold cursor-pointer">
-              {isBn
-                ? 'সক্রিয় থাকবে (শিক্ষার্থী ও শিক্ষকরা নির্বাচন করতে পারবেন)'
-                : 'Is Active'}
+              {isBn ? 'সক্রিয় থাকবে (শিক্ষার্থী ও শিক্ষকরা নির্বাচন করতে পারবেন)' : 'Is Active'}
             </Label>
           </div>
 
@@ -267,11 +257,7 @@ export function TaxonomyModal({
             >
               {isBn ? 'বাতিল' : 'Cancel'}
             </Button>
-            <Button
-              type="submit"
-              isLoading={isSaving}
-              className="rounded-full px-5 font-semibold"
-            >
+            <Button type="submit" isLoading={isSaving} className="rounded-full px-5 font-semibold">
               {modalMode === 'create'
                 ? isBn
                   ? 'সংরক্ষণ করুন'

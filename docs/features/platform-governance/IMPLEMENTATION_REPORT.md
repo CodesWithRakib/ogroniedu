@@ -1,4 +1,5 @@
 # OgroniEdu — Phase 09: Admin Operations, Organization Management & Platform Governance
+
 ## Final Implementation Report
 
 **Status:** Completed & Fully Verified  
@@ -10,11 +11,12 @@
 
 ## 1. Executive Summary
 
-Phase 09 delivered the comprehensive administrative governance, multi-tenant educational organization framework, and enterprise platform management infrastructure for OgroniEdu (অগ্রণী এডু). 
+Phase 09 delivered the comprehensive administrative governance, multi-tenant educational organization framework, and enterprise platform management infrastructure for OgroniEdu (অগ্রণী এডু).
 
 Prior to Phase 09, canonical role contracts defined `organization_owner` and `organization_staff`, but the platform lacked a database-backed relational tenant schema, agency accreditation lifecycle, tenant-scoped tutor affiliation, and tenant audit containment. Furthermore, administrative reporting lacked protection against CSV formula injection (OWASP ASVS compliance), and the UI lacked unified multi-role back-office management.
 
 During this phase, we designed, documented, implemented, and verified:
+
 1. **Multi-Tenant Organization & Accreditation Subsystem:** Tables `organizations`, `organization_members`, and `organization_invitations`, linking `tutor_profiles` and `audit_logs` with cascading tenant constraints.
 2. **Administrative Back-Office Governance:** Strict role-based and resource-based access controls for platform admins (`admin`, `super_admin`), support agents, and compliance reviewers.
 3. **Anti-Formula Injection CSV Export Engine:** RFC 4180 compliant export engine with leading-character neutralization (`=`, `+`, `-`, `@`, `\t`, `\r`) protecting all CSV exports from spreadsheet execution.
@@ -29,12 +31,14 @@ During this phase, we designed, documented, implemented, and verified:
 ## 2. Audit Findings & Repaired Problems
 
 ### Audit Discoveries
+
 1. **Missing Organization Tables:** Despite roles `organization_owner` and `organization_staff` existing in `@ogroniedu/contracts`, no PostgreSQL tables existed to represent organizations, their members, or their invites.
 2. **Audit Log Tenant Blindness:** `audit_logs` recorded `actor_user_id`, `resource_type`, and `resource_id`, but had no `organization_id` column, preventing organization owners from querying tenant audit logs or isolating enterprise activity.
 3. **CSV Formula Injection Exposure:** Export endpoints lacked strict RFC 4180 escaping and did not neutralize cell-leading formula characters (`=`, `+`, `-`, `@`), creating vulnerability to remote code execution in spreadsheet applications.
 4. **BCDR Migration Replay Count:** Hardcoded test assertion in `bcdr-recovery.spec.ts` expected 23 migrations, failing on new post-Phase 06 migrations (024 through 027).
 
 ### Remediations Executed
+
 - **Database Migration `027_organizations_and_platform_governance.sql`:** Applied cleanly to PostgreSQL 18 `ogroniedu_dev` with unique slug indexes, foreign keys, and audit log indexing.
 - **`CsvSanitizer` Utility:** Implemented in `apps/api/src/modules/analytics/utils/csv-sanitizer.util.ts` with cell neutralization and RFC 4180 quotes.
 - **Tenant Isolation IDOR Protection:** Enforced tenant boundary checks in `OrganizationsService`, ensuring non-owners cannot mutate organization metadata, invite members, or read other organizations' internal rosters.
@@ -45,6 +49,7 @@ During this phase, we designed, documented, implemented, and verified:
 ## 3. Database Changes & Migration Status
 
 ### Migration: `027_organizations_and_platform_governance.sql`
+
 - **`organizations` Table:**
   - `id` (UUID PK, default `gen_random_uuid()`)
   - `name` (TEXT NOT NULL)
@@ -82,26 +87,27 @@ During this phase, we designed, documented, implemented, and verified:
 
 ## 4. Admin Route & Capability Map
 
-| Route | HTTP Method | Guard / Role | Description |
-| :--- | :---: | :--- | :--- |
-| `/api/v1/admin/organizations` | `GET` | `Roles('admin', 'super_admin')` | Paginated search, filter by type/status |
-| `/api/v1/admin/organizations/:id/status` | `PATCH` | `Roles('admin', 'super_admin')` | Approve, suspend, or archive with mandatory audit reason |
-| `/api/v1/organizations` | `GET` | `JwtAuthGuard` | List organizations affiliated with requesting user |
-| `/api/v1/organizations` | `POST` | `JwtAuthGuard` | Register new organization (creator assigned as `owner`) |
-| `/api/v1/organizations/:id` | `GET` | `JwtAuthGuard` | Fetch organization details and member count |
-| `/api/v1/organizations/:id` | `PATCH` | `Roles('organization_owner')` + Tenant Guard | Update contact, trade license, address |
-| `/api/v1/organizations/:id/members` | `GET` | `JwtAuthGuard` + Member Check | View organization tutor/staff roster |
-| `/api/v1/organizations/:id/invitations` | `POST` | `Roles('organization_owner', 'organization_staff')` | Issue invitation link/token |
-| `/api/v1/organizations/invitations/accept` | `POST` | `JwtAuthGuard` | Redeem invitation token and join organization |
-| `/api/v1/organizations/:id/members/:memberUserId` | `DELETE` | `Roles('organization_owner')` | Remove member or affiliate tutor from roster |
-| `/api/v1/organizations/:id/transfer-ownership` | `POST` | `Roles('organization_owner')` | Transfer ownership to an active staff member |
-| `/api/v1/analytics/reports/export` | `GET` | `Roles('admin', 'super_admin')` | Anti-injection CSV stream of daily operations |
+| Route                                             | HTTP Method | Guard / Role                                        | Description                                              |
+| :------------------------------------------------ | :---------: | :-------------------------------------------------- | :------------------------------------------------------- |
+| `/api/v1/admin/organizations`                     |    `GET`    | `Roles('admin', 'super_admin')`                     | Paginated search, filter by type/status                  |
+| `/api/v1/admin/organizations/:id/status`          |   `PATCH`   | `Roles('admin', 'super_admin')`                     | Approve, suspend, or archive with mandatory audit reason |
+| `/api/v1/organizations`                           |    `GET`    | `JwtAuthGuard`                                      | List organizations affiliated with requesting user       |
+| `/api/v1/organizations`                           |   `POST`    | `JwtAuthGuard`                                      | Register new organization (creator assigned as `owner`)  |
+| `/api/v1/organizations/:id`                       |    `GET`    | `JwtAuthGuard`                                      | Fetch organization details and member count              |
+| `/api/v1/organizations/:id`                       |   `PATCH`   | `Roles('organization_owner')` + Tenant Guard        | Update contact, trade license, address                   |
+| `/api/v1/organizations/:id/members`               |    `GET`    | `JwtAuthGuard` + Member Check                       | View organization tutor/staff roster                     |
+| `/api/v1/organizations/:id/invitations`           |   `POST`    | `Roles('organization_owner', 'organization_staff')` | Issue invitation link/token                              |
+| `/api/v1/organizations/invitations/accept`        |   `POST`    | `JwtAuthGuard`                                      | Redeem invitation token and join organization            |
+| `/api/v1/organizations/:id/members/:memberUserId` |  `DELETE`   | `Roles('organization_owner')`                       | Remove member or affiliate tutor from roster             |
+| `/api/v1/organizations/:id/transfer-ownership`    |   `POST`    | `Roles('organization_owner')`                       | Transfer ownership to an active staff member             |
+| `/api/v1/analytics/reports/export`                |    `GET`    | `Roles('admin', 'super_admin')`                     | Anti-injection CSV stream of daily operations            |
 
 ---
 
 ## 5. Organization & Tenant Isolation Architecture
 
 ### Isolation Invariants
+
 1. **Multi-Tenant Ownership:** Each organization has exactly one `owner` at any time. Ownership transfer requires explicit confirmation and immediately demotes the previous owner to `staff`.
 2. **Affiliation Scoping:** Tutors affiliated with an organization have their `tutor_profiles.organization_id` set. Tutors can be unaffiliated (independent tutors) or institutional.
 3. **IDOR Defense:** All mutation endpoints verify that the authenticated `req.user.id` is an active member with appropriate role (`owner` or `staff`) within the target `organization_id`. Cross-organization tampering yields `403 Forbidden`.
@@ -119,6 +125,7 @@ During this phase, we designed, documented, implemented, and verified:
 ## 7. Platform Settings & Configuration Registry
 
 System settings are managed via the typed key-value registry:
+
 - Financial commission baseline (basis points)
 - Maintenance mode toggle
 - Registration gating / tutor invitation requirements
@@ -157,15 +164,15 @@ All mutations are auditable and persisted in `system_settings` with actor user t
 
 All quality gates passed with zero errors:
 
-| Check | Scope | Result | Details |
-| :--- | :--- | :---: | :--- |
-| **Monorepo Build** | 5 packages (`contracts`, `database`, `api`, `web`) | **PASS** | Turbopack production build in 17.1s |
-| **API Unit & Integration Tests** | 80 test files | **PASS** | 835 tests passed (100%) |
-| **Database Tests** | 4 test files (`bcdr`, `migration`, `seed`, `benchmarks`) | **PASS** | 33 tests passed (100%) |
-| **Web Tests** | 20+ test files | **PASS** | All component and route tests passed |
-| **TypeScript Typecheck** | All workspaces | **PASS** | 0 errors across monorepo |
-| **Linter (`oxlint`)** | 963 files (489 API + 474 Web) | **PASS** | 0 warnings, 0 errors |
-| **Headful Browser Testing** | Chrome DevTools MCP | **PASS** | Verified Admin Governance, Org Portal, Roster, and Approval Modal |
+| Check                            | Scope                                                    |  Result  | Details                                                           |
+| :------------------------------- | :------------------------------------------------------- | :------: | :---------------------------------------------------------------- |
+| **Monorepo Build**               | 5 packages (`contracts`, `database`, `api`, `web`)       | **PASS** | Turbopack production build in 17.1s                               |
+| **API Unit & Integration Tests** | 80 test files                                            | **PASS** | 835 tests passed (100%)                                           |
+| **Database Tests**               | 4 test files (`bcdr`, `migration`, `seed`, `benchmarks`) | **PASS** | 33 tests passed (100%)                                            |
+| **Web Tests**                    | 20+ test files                                           | **PASS** | All component and route tests passed                              |
+| **TypeScript Typecheck**         | All workspaces                                           | **PASS** | 0 errors across monorepo                                          |
+| **Linter (`oxlint`)**            | 963 files (489 API + 474 Web)                            | **PASS** | 0 warnings, 0 errors                                              |
+| **Headful Browser Testing**      | Chrome DevTools MCP                                      | **PASS** | Verified Admin Governance, Org Portal, Roster, and Approval Modal |
 
 ---
 

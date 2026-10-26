@@ -48,6 +48,7 @@ stateDiagram-v2
 ```
 
 ### 1.2 State Transition Invariants
+
 1. **Financial Integrity:** A booking can NEVER enter `confirmed` status without a corresponding `TRANSACTION` record of type `ESCROW_HOLD` where `amount == total_booking_amount`.
 2. **Double-Booking Prevention:** A tutor cannot accept a booking that overlaps with an existing `confirmed` or `in_progress` session slot (`SELECT 1 FROM sessions WHERE tutor_id = $1 AND tstzrange(start_time, end_time) && tstzrange($2, $3)`).
 3. **Automatic Expiry (TTL):**
@@ -59,16 +60,16 @@ stateDiagram-v2
 
 ## 2. Cancellation & Refund Policy Matrix
 
-| Initiating Party | Timing Before Session | Refund to Guardian / Student | Compensation to Tutor | Platform Fee | Operational Consequence |
-|---|---|:---:|:---:|:---:|---|
-| **Guardian / Student** | > 24 Hours | **100% Refund** (Original MFS/Card or Platform Credit) | 0% | Retained as platform credit | None; no penalty recorded |
-| **Guardian / Student** | 4 – 24 Hours | **80% Refund** | 20% Base Compensation | Waived | Recorded in cancellation stats |
-| **Guardian / Student** | < 4 Hours | **0% Refund** | 80% (Escrow released) | 20% Retained | Logged as short-notice cancellation |
-| **Guardian / Student** | No-Show (> 15 mins late without notice) | **0% Refund** | 80% (Escrow released) | 20% Retained | Strike 1 recorded on student profile |
-| **Tutor** | > 24 Hours | **100% Refund** + Free Reschedule Voucher | 0% | Fully waived | 1 reliability point deducted |
-| **Tutor** | < 24 Hours | **100% Refund** + Priority Replacement | 0% | Fully waived | 3 reliability points deducted + Warning |
-| **Tutor** | No-Show (> 15 mins late without notice) | **100% Refund** + Instant Tutor Replacement | 0% | Fully waived | Profile hidden + Compliance review |
-| **Force Majeure / Outage** | Internet/Power/Platform Outage | **100% Refund** or Free Reschedule | 50% from Platform Reserve | Absorbed | System logged, no fault assigned |
+| Initiating Party           | Timing Before Session                   |              Refund to Guardian / Student              |   Compensation to Tutor   |        Platform Fee         | Operational Consequence                 |
+| -------------------------- | --------------------------------------- | :----------------------------------------------------: | :-----------------------: | :-------------------------: | --------------------------------------- |
+| **Guardian / Student**     | > 24 Hours                              | **100% Refund** (Original MFS/Card or Platform Credit) |            0%             | Retained as platform credit | None; no penalty recorded               |
+| **Guardian / Student**     | 4 – 24 Hours                            |                     **80% Refund**                     |   20% Base Compensation   |           Waived            | Recorded in cancellation stats          |
+| **Guardian / Student**     | < 4 Hours                               |                     **0% Refund**                      |   80% (Escrow released)   |        20% Retained         | Logged as short-notice cancellation     |
+| **Guardian / Student**     | No-Show (> 15 mins late without notice) |                     **0% Refund**                      |   80% (Escrow released)   |        20% Retained         | Strike 1 recorded on student profile    |
+| **Tutor**                  | > 24 Hours                              |       **100% Refund** + Free Reschedule Voucher        |            0%             |        Fully waived         | 1 reliability point deducted            |
+| **Tutor**                  | < 24 Hours                              |         **100% Refund** + Priority Replacement         |            0%             |        Fully waived         | 3 reliability points deducted + Warning |
+| **Tutor**                  | No-Show (> 15 mins late without notice) |      **100% Refund** + Instant Tutor Replacement       |            0%             |        Fully waived         | Profile hidden + Compliance review      |
+| **Force Majeure / Outage** | Internet/Power/Platform Outage          |           **100% Refund** or Free Reschedule           | 50% from Platform Reserve |          Absorbed           | System logged, no fault assigned        |
 
 ---
 
@@ -93,6 +94,7 @@ stateDiagram-v2
 ## 5. Escrow & Double-Entry Financial Rules
 
 ### 5.1 Account Chart & Ledger Structure
+
 The platform utilizes strict double-entry ledger bookkeeping where total debits MUST balance total credits at all times (`SUM(debit) == SUM(credit)`).
 
 - `1001` — **Asset: Customer Escrow Cash** (Held at SSLCommerz / bKash merchant accounts)
@@ -102,6 +104,7 @@ The platform utilizes strict double-entry ledger bookkeeping where total debits 
 - `5001` — **Expense: Payment Gateway Processing Fees** (1.5% - 2.5% MFS fees)
 
 ### 5.2 Milestone Settlement Sequence
+
 1. **Deposit Phase:** Guardian deposits BDT 5,000 for a 10-session package.
    - `DR 1001 (Customer Escrow Cash) BDT 5,000`
    - `CR 2001 (Escrow Deposits Payable) BDT 5,000`
@@ -147,12 +150,12 @@ The platform utilizes strict double-entry ledger bookkeeping where total debits 
 
 ## 8. Tutor Verification & Credential Tiers
 
-| Tier Level | Name | Verification Requirement | Platform Privileges | Badge Rendered |
-|:---:|---|---|---|---|
-| **Tier 0** | Registered | Email & Phone OTP verified | Profile draft only; cannot receive bookings | None |
-| **Tier 1** | ID Verified | Government NID / Smart Card verified via OCR + manual audit | Can receive direct booking requests | `Verified ID` (Blue Check) |
-| **Tier 2** | Academically Verified | University Degree / Student ID / Transcript verified | Eligible for Tuition Job Board & Featured List | `Academic Verified` (Purple Check) |
-| **Tier 3** | Top Rated & Vetted | > 50 sessions, > 4.8 rating, clean safeguarding record | Priority algorithmic ranking & guarantee shield | `Elite Verified` (Gold Badge) |
+| Tier Level | Name                  | Verification Requirement                                    | Platform Privileges                             | Badge Rendered                     |
+| :--------: | --------------------- | ----------------------------------------------------------- | ----------------------------------------------- | ---------------------------------- |
+| **Tier 0** | Registered            | Email & Phone OTP verified                                  | Profile draft only; cannot receive bookings     | None                               |
+| **Tier 1** | ID Verified           | Government NID / Smart Card verified via OCR + manual audit | Can receive direct booking requests             | `Verified ID` (Blue Check)         |
+| **Tier 2** | Academically Verified | University Degree / Student ID / Transcript verified        | Eligible for Tuition Job Board & Featured List  | `Academic Verified` (Purple Check) |
+| **Tier 3** | Top Rated & Vetted    | > 50 sessions, > 4.8 rating, clean safeguarding record      | Priority algorithmic ranking & guarantee shield | `Elite Verified` (Gold Badge)      |
 
 ---
 

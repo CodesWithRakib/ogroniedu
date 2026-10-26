@@ -1,8 +1,5 @@
 import type { Repository } from 'typeorm';
-import type {
-  TutorReplacementCaseEntity,
-  TutorReplacementCaseEventEntity,
-} from '../entities';
+import type { TutorReplacementCaseEntity, TutorReplacementCaseEventEntity } from '../entities';
 import type { BookingEntity } from '../../bookings/entities/booking.entity';
 import type { OutboxEventEntity } from '../../bookings/entities/outbox-event.entity';
 import type { AuditLogEntity } from '../../audit/entities/audit-log.entity';

@@ -2,15 +2,7 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import {
-  Users,
-  UserPlus,
-  Mail,
-  Trash2,
-  CheckCircle,
-  ArrowLeft,
-  RefreshCw,
-} from 'lucide-react';
+import { Users, UserPlus, Mail, Trash2, CheckCircle, ArrowLeft, RefreshCw } from 'lucide-react';
 import {
   useGetMyOrganizationsQuery,
   useGetOrganizationMembersQuery,
@@ -29,7 +21,9 @@ import { Button } from '@/components/ui/Button';
 
 export function OrganizationMembersPageView() {
   const { data: myOrgsData, isLoading: orgsLoading } = useGetMyOrganizationsQuery();
-  const organizations = (myOrgsData?.data || []) as Array<OrganizationRecord & { memberRole?: string }>;
+  const organizations = (myOrgsData?.data || []) as Array<
+    OrganizationRecord & { memberRole?: string }
+  >;
   const currentOrg = organizations[0] || null;
 
   const {

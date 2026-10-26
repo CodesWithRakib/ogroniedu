@@ -1,13 +1,14 @@
 # Real-Time Messaging & Communication Test Plan
 
 **Platform:** OgroniEdu (অগ্রণী এডু)  
-**Phase:** 08  
+**Phase:** 08
 
 ---
 
 ## 1. Test Matrix
 
 ### 1.1 Unit & Integration Tests (`@ogroniedu/api`)
+
 1. **Content Normalizer & Anti-Circumvention Tests:**
    - Standard Bangladeshi mobile numbers (`+88017...`, `018...`).
    - Bengali digits (`০১৭১...`, `+৮৮০১৭...`).
@@ -34,6 +35,7 @@
    - New message broadcast to room upon send.
 
 ### 1.2 Frontend & UI Tests (`@ogroniedu/web`)
+
 1. **Component Rendering & Behavior:**
    - `BookingChatView` renders message bubbles, timestamps, read checkmarks.
    - Redacted badge displayed when message is filtered.

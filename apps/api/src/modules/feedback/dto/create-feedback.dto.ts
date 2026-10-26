@@ -3,7 +3,8 @@ import { FeedbackCategories, type FeedbackCategory } from '@ogroniedu/contracts'
 
 export class CreateFeedbackDto {
   @IsEnum(FeedbackCategories, {
-    message: 'category must be one of: bug, usability, feature_request, performance, accessibility, other',
+    message:
+      'category must be one of: bug, usability, feature_request, performance, accessibility, other',
   })
   category!: FeedbackCategory;
 

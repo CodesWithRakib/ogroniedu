@@ -46,11 +46,7 @@ export function CheckoutSummary({ order, locale }: CheckoutSummaryProps) {
               <AlertTriangle className="w-3.5 h-3.5 text-rose-700" />
             )}
             <span>
-              {isSuccess
-                ? p.statusSucceeded
-                : isPending
-                  ? p.statusPending
-                  : p.statusFailed}
+              {isSuccess ? p.statusSucceeded : isPending ? p.statusPending : p.statusFailed}
             </span>
           </span>
         </div>

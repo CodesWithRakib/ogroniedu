@@ -9,11 +9,13 @@
 ---
 
 ## 1. Objective and Business Justification
-Enforce the core user-defined non-negotiable rule: *"backend er o enum , interface kokhonoi service er vitore thakbe na alada folder kore module e thakbe"*. Business service files must only contain application logic and use case orchestration. Enums, interfaces, contracts, and DTOs must be located in dedicated module subfolders (`interfaces/`, `enums/`, `types/`, `contracts/`, `dto/`). Furthermore, monolithic god services (>600 lines) must be decomposed into single-responsibility sub-services.
+
+Enforce the core user-defined non-negotiable rule: _"backend er o enum , interface kokhonoi service er vitore thakbe na alada folder kore module e thakbe"_. Business service files must only contain application logic and use case orchestration. Enums, interfaces, contracts, and DTOs must be located in dedicated module subfolders (`interfaces/`, `enums/`, `types/`, `contracts/`, `dto/`). Furthermore, monolithic god services (>600 lines) must be decomposed into single-responsibility sub-services.
 
 ---
 
 ## 2. Current-State Findings and Evidence
+
 - 27 backend services in `apps/api/src/modules/` contain inline interface definitions directly inside `*.service.ts`:
   - `auth.service.ts` (`LoginUserRow`)
   - `rate-limiter.service.ts` (`RateLimitRecord`)
@@ -47,6 +49,7 @@ Enforce the core user-defined non-negotiable rule: *"backend er o enum , interfa
 ---
 
 ## 3. Exact Scope
+
 1. Extract all 30+ internal interfaces and types out of the 27 services into dedicated `interfaces/` folders within each owning NestJS module.
 2. Update all imports across controllers, services, and test specifications.
 3. Decompose the 6 god services into focused single-responsibility domain sub-services.
@@ -56,17 +59,20 @@ Enforce the core user-defined non-negotiable rule: *"backend er o enum , interfa
 ---
 
 ## 4. Explicit Exclusions
+
 - Do not extract modules into external monorepo packages (e.g. no `@ogroniedu/auth` package churn); keep domain modules cleanly separated within `apps/api/src/modules/<domain>/`.
 - Do not alter database table schemas or API HTTP endpoints.
 
 ---
 
 ## 5. Prerequisite Phases
+
 - `PHASE-01-ARCHITECTURE-AND-TDD-FOUNDATION.md` (Green baseline).
 
 ---
 
 ## 6. Tasks and Unique Task IDs
+
 - `BE-001`: Extract `LoginUserRow` from `auth.service.ts` to `auth/interfaces/login-user-row.interface.ts`.
 - `BE-002`: Extract `RateLimitRecord` from `rate-limiter.service.ts` to `auth/interfaces/`.
 - `BE-003`: Extract `OtpDeliveryConfiguration` from `otp-delivery.service.ts` to `auth/interfaces/`.
@@ -104,6 +110,7 @@ Enforce the core user-defined non-negotiable rule: *"backend er o enum , interfa
 ---
 
 ## 7. Actual Affected Files and Modules
+
 - `apps/api/src/modules/auth/**/*`
 - `apps/api/src/modules/bookings/**/*`
 - `apps/api/src/modules/guardians/**/*`
@@ -116,52 +123,62 @@ Enforce the core user-defined non-negotiable rule: *"backend er o enum , interfa
 ---
 
 ## 8. Files Created, Split, Moved, or Removed
+
 - Created: Dedicated interface files in `src/modules/<domain>/interfaces/`.
 - Split: God services decomposed into SRP sub-services.
 
 ---
 
 ## 9. Frontend Work
+
 - None.
 
 ---
 
 ## 10. Backend Work
+
 - Pure backend modularization following SOLID and Clean Architecture principles.
 
 ---
 
 ## 11. Database and Migration Work
+
 - None.
 
 ---
 
 ## 12. Event-Driven Architecture Work
+
 - Preserve all domain event emission points.
 
 ---
 
 ## 13. Security Requirements
+
 - Ensure no security checks, role verifications, or password hashing rounds are diluted.
 
 ---
 
 ## 14. Unit Test Requirements
+
 - All 1,026 backend unit and integration tests must pass cleanly.
 
 ---
 
 ## 15. Integration Test Requirements
+
 - Supertest controller specs verify that all API response envelopes remain unchanged.
 
 ---
 
 ## 16. Browser Automation and E2E Scenarios
+
 - N/A for backend refactoring; covered in regression phase.
 
 ---
 
 ## 17. Required Commands
+
 ```pwsh
 pnpm --filter @ogroniedu/api typecheck
 pnpm --filter @ogroniedu/api test
@@ -171,6 +188,7 @@ pnpm --filter @ogroniedu/api lint
 ---
 
 ## 18. Acceptance Criteria
+
 1. AST scan confirms zero interfaces and zero enums declared inside any `*.service.ts` file in `apps/api/src/modules/`.
 2. All 27 services cleanly import contracts and interfaces from `interfaces/`, `enums/`, or `dto/`.
 3. All 1,026 backend tests pass.
@@ -179,29 +197,35 @@ pnpm --filter @ogroniedu/api lint
 ---
 
 ## 19. Failure and Rollback Considerations
+
 - Work is executed module by module. Run tests after each module refactor before proceeding to the next.
 
 ---
 
 ## 20. Definition of Done
+
 - Zero interfaces in services, god classes decomposed, tests green.
 
 ---
 
 ## 21. Expected Evidence
+
 - Regex scan output showing zero matches for `interface` or `enum` in `*.service.ts`.
 
 ---
 
 ## 22. Known Risks and Blockers
+
 - Circular imports if interfaces are placed in incorrect folders. Always use separate `interfaces/` files without runtime dependencies.
 
 ---
 
 ## 23. Estimated Effort
+
 - 1.5 Days.
 
 ---
 
 ## 24. Next-Phase Dependencies
+
 - Unblocks `PHASE-04-SECURITY-HARDENING-AND-STORAGE-ACCESS.md`.

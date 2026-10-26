@@ -62,7 +62,19 @@ export function BookingChatContainer({
         tutorUserId,
         locale,
       }),
-    [chat.messages, currentUserId, ownRole, peerRole, peerName, ownName, studentName, tutorName, studentUserId, tutorUserId, locale],
+    [
+      chat.messages,
+      currentUserId,
+      ownRole,
+      peerRole,
+      peerName,
+      ownName,
+      studentName,
+      tutorName,
+      studentUserId,
+      tutorUserId,
+      locale,
+    ],
   );
 
   if (chat.isLoading) return <LoadingState testId={`${testId}-loading`} />;

@@ -19,7 +19,9 @@ describe('AnalyticsController & RBAC Security Specifications (Phase 15)', () => 
     getFunnelAnalytics: vi.fn().mockResolvedValue({ stages: [] }),
     getActivationAnalytics: vi.fn().mockResolvedValue({ student: {}, guardian: {}, tutor: {} }),
     getLearningEngagementAnalytics: vi.fn().mockResolvedValue({ sessions: {}, homework: {} }),
-    getOrganizationAnalytics: vi.fn().mockResolvedValue({ organization: { id: 'org-1' }, metrics: {} }),
+    getOrganizationAnalytics: vi
+      .fn()
+      .mockResolvedValue({ organization: { id: 'org-1' }, metrics: {} }),
   };
 
   const mockEventTrackingService = {
@@ -173,7 +175,11 @@ describe('AnalyticsController & RBAC Security Specifications (Phase 15)', () => 
     it('should invoke getOrganizationAnalytics endpoint with organization ID', async () => {
       const res = await controller.getOrganizationAnalytics('org-123', {}, tutorUser);
       expect(res.success).toBe(true);
-      expect(mockAnalyticsService.getOrganizationAnalytics).toHaveBeenCalledWith('org-123', {}, tutorUser);
+      expect(mockAnalyticsService.getOrganizationAnalytics).toHaveBeenCalledWith(
+        'org-123',
+        {},
+        tutorUser,
+      );
     });
   });
 });

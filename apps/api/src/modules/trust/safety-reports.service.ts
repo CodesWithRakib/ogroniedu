@@ -101,9 +101,7 @@ export class SafetyReportsService {
 
     const escalationLevel: EscalationLevel = isUrgent ? 'urgent_child_safety' : 'standard';
     const status: SafetyStatus = isUrgent ? 'escalated' : 'submitted';
-    const severity: SafetySeverity = isCriticalCategory
-      ? 'critical'
-      : (dto.severity || 'medium');
+    const severity: SafetySeverity = isCriticalCategory ? 'critical' : dto.severity || 'medium';
 
     return this.dataSource.transaction(async (manager) => {
       const report = manager.create(SafetyReportEntity, {
@@ -133,7 +131,9 @@ export class SafetyReportsService {
         eventType: 'submitted',
         fromStatus: null,
         toStatus: savedReport.status,
-        reason: isUrgent ? 'Initial submission with urgent safeguarding escalation' : 'Initial submission',
+        reason: isUrgent
+          ? 'Initial submission with urgent safeguarding escalation'
+          : 'Initial submission',
         metadata: {
           category: dto.category,
           severity,
@@ -155,7 +155,9 @@ export class SafetyReportsService {
           hasEvidence: (dto.evidenceAssetIds?.length || 0) > 0,
         },
       });
-      await this.auditRepo.save(auditLog).catch((err) => this.logger.warn(`Failed to persist audit log: ${err}`));
+      await this.auditRepo
+        .save(auditLog)
+        .catch((err) => this.logger.warn(`Failed to persist audit log: ${err}`));
 
       // 3. Outbox Event
       const outboxEvent = this.outboxRepo.create({
@@ -171,7 +173,9 @@ export class SafetyReportsService {
           reportedUserId: dto.reportedUserId,
         },
       });
-      await this.outboxRepo.save(outboxEvent).catch((err) => this.logger.warn(`Failed to emit outbox event: ${err}`));
+      await this.outboxRepo
+        .save(outboxEvent)
+        .catch((err) => this.logger.warn(`Failed to emit outbox event: ${err}`));
 
       if (isUrgent) {
         this.logger.warn(
@@ -183,15 +187,23 @@ export class SafetyReportsService {
       await this.notificationService
         .dispatch({
           userId: user.id,
-        recipientRole: (user.roles?.find((r) =>
-          ['student', 'guardian', 'tutor', 'admin', 'super_admin', 'compliance_reviewer'].includes(r),
-        ) as 'student' | 'guardian' | 'tutor' | 'admin' | 'super_admin' | 'compliance_reviewer') || 'student',
+          recipientRole:
+            (user.roles?.find((r) =>
+              [
+                'student',
+                'guardian',
+                'tutor',
+                'admin',
+                'super_admin',
+                'compliance_reviewer',
+              ].includes(r),
+            ) as
+              'student' | 'guardian' | 'tutor' | 'admin' | 'super_admin' | 'compliance_reviewer') ||
+            'student',
           eventType: 'case.submitted',
           payload: { caseId: savedReport.id },
         })
-        .catch((err) =>
-          this.logger.warn(`Failed to dispatch case.submitted notification: ${err}`),
-        );
+        .catch((err) => this.logger.warn(`Failed to dispatch case.submitted notification: ${err}`));
 
       return savedReport;
     });
@@ -315,10 +327,10 @@ export class SafetyReportsService {
         .where('report.reported_user_id IS NULL OR report.reported_user_id != :userId', {
           userId: user.id,
         })
-        .andWhere(
-          '(report.assigned_to = :userId OR report.category IN (:...nonSensitive))',
-          { userId: user.id, nonSensitive: NON_SENSITIVE_CATEGORIES },
-        );
+        .andWhere('(report.assigned_to = :userId OR report.category IN (:...nonSensitive))', {
+          userId: user.id,
+          nonSensitive: NON_SENSITIVE_CATEGORIES,
+        });
 
       return qb.orderBy('report.created_at', 'DESC').getMany();
     }
@@ -341,7 +353,9 @@ export class SafetyReportsService {
     dto: AssignCaseDto,
   ): Promise<SafetyReportEntity> {
     if (!isStaffRole(user)) {
-      throw new ForbiddenException('Compliance reviewer or admin privileges required to assign cases');
+      throw new ForbiddenException(
+        'Compliance reviewer or admin privileges required to assign cases',
+      );
     }
 
     const report = await this.reportRepo.findOne({
@@ -409,9 +423,7 @@ export class SafetyReportsService {
           eventType: 'case.assigned',
           payload: { caseId: report.id },
         })
-        .catch((err) =>
-          this.logger.warn(`Failed to dispatch case.assigned notification: ${err}`),
-        );
+        .catch((err) => this.logger.warn(`Failed to dispatch case.assigned notification: ${err}`));
 
       return updated;
     });
@@ -434,11 +446,15 @@ export class SafetyReportsService {
     const isAssigned = report.assignedTo === user.id;
 
     if (!isStaff && !isAssigned) {
-      throw new ForbiddenException('Only assigned investigators or compliance staff may update case status');
+      throw new ForbiddenException(
+        'Only assigned investigators or compliance staff may update case status',
+      );
     }
 
     if (user.id === report.reportedUserId) {
-      throw new ForbiddenException('Conflict of interest: Implicated user cannot update case state');
+      throw new ForbiddenException(
+        'Conflict of interest: Implicated user cannot update case state',
+      );
     }
 
     return this.dataSource.transaction(async (manager) => {
@@ -487,7 +503,9 @@ export class SafetyReportsService {
     }
 
     if (user.id === report.reportedUserId) {
-      throw new ForbiddenException('Access denied: You are not authorized to participate in this case thread');
+      throw new ForbiddenException(
+        'Access denied: You are not authorized to participate in this case thread',
+      );
     }
 
     const isStaff = isStaffRole(user);
@@ -532,7 +550,9 @@ export class SafetyReportsService {
             eventType: 'case.information_requested',
             payload: { caseId: report.id },
           })
-          .catch((err) => this.logger.warn(`Failed to dispatch information request notice: ${err}`));
+          .catch((err) =>
+            this.logger.warn(`Failed to dispatch information request notice: ${err}`),
+          );
       } else if (isReporter && report.status === 'awaiting_information') {
         // Reporter replied -> return to under_review
         report.status = 'under_review';
@@ -565,7 +585,9 @@ export class SafetyReportsService {
     dto: ApplySafetyActionDto,
   ): Promise<SafetyActionEntity> {
     if (!isStaffRole(user)) {
-      throw new ForbiddenException('Compliance reviewer or admin privileges required to apply safety actions');
+      throw new ForbiddenException(
+        'Compliance reviewer or admin privileges required to apply safety actions',
+      );
     }
 
     if (user.id === dto.targetUserId) {
@@ -649,7 +671,9 @@ export class SafetyReportsService {
     dto: RevokeSafetyActionDto,
   ): Promise<SafetyActionEntity> {
     if (!isStaffRole(user)) {
-      throw new ForbiddenException('Compliance reviewer or admin privileges required to revoke safety actions');
+      throw new ForbiddenException(
+        'Compliance reviewer or admin privileges required to revoke safety actions',
+      );
     }
 
     const action = await this.actionRepo.findOne({ where: { id: actionId } });
@@ -708,7 +732,9 @@ export class SafetyReportsService {
     const isAssigned = report.assignedTo === user.id;
 
     if (!isStaff && !isAssigned) {
-      throw new ForbiddenException('Only assigned investigators or compliance staff may resolve cases');
+      throw new ForbiddenException(
+        'Only assigned investigators or compliance staff may resolve cases',
+      );
     }
 
     if (user.id === report.reportedUserId) {
@@ -771,7 +797,9 @@ export class SafetyReportsService {
     reason: string,
   ): Promise<SafetyReportEntity> {
     if (!isStaffRole(user)) {
-      throw new ForbiddenException('Compliance reviewer or admin privileges required to reopen cases');
+      throw new ForbiddenException(
+        'Compliance reviewer or admin privileges required to reopen cases',
+      );
     }
 
     const report = await this.reportRepo.findOne({ where: { id: reportId } });
@@ -780,7 +808,9 @@ export class SafetyReportsService {
     }
 
     if (!['resolved', 'closed', 'dismissed', 'action_taken'].includes(report.status)) {
-      throw new BadRequestException(`Cannot reopen case in current active status (${report.status})`);
+      throw new BadRequestException(
+        `Cannot reopen case in current active status (${report.status})`,
+      );
     }
 
     return this.dataSource.transaction(async (manager) => {
@@ -825,7 +855,9 @@ export class SafetyReportsService {
 
     // Accused party blocked
     if (user.id === report.reportedUserId) {
-      throw new ForbiddenException('Access denied: You are not authorized to view evidence on this report');
+      throw new ForbiddenException(
+        'Access denied: You are not authorized to view evidence on this report',
+      );
     }
 
     // Verify attachment belongs to this case
@@ -841,7 +873,9 @@ export class SafetyReportsService {
     const isAssigned = report.assignedTo === user.id;
 
     if (!isReporter && !isStaff && !isAssigned) {
-      throw new ForbiddenException('Access denied: You are not authorized to download this case evidence');
+      throw new ForbiddenException(
+        'Access denied: You are not authorized to download this case evidence',
+      );
     }
 
     // Record audit event
@@ -918,9 +952,7 @@ export class SafetyReportsService {
     reason: string,
   ): Promise<SafetyReportEntity> {
     if (!isAdminRole(user)) {
-      throw new ForbiddenException(
-        'Admin privileges required to apply protective safety holds',
-      );
+      throw new ForbiddenException('Admin privileges required to apply protective safety holds');
     }
 
     const report = await this.reportRepo.findOne({
@@ -993,9 +1025,7 @@ export class SafetyReportsService {
     reportId: string,
   ): Promise<SafetyReportEntity> {
     if (!isAdminRole(user)) {
-      throw new ForbiddenException(
-        'Admin privileges required to remove protective safety holds',
-      );
+      throw new ForbiddenException('Admin privileges required to remove protective safety holds');
     }
 
     const report = await this.reportRepo.findOne({

@@ -39,7 +39,9 @@ flowchart TD
 ## 3. Detailed Workstream Breakdown
 
 ### Workstream 1: Documentation Suite
+
 Deliver the comprehensive 11 pre-implementation documents and the final release report in `docs/features/e2e-validation/`:
+
 1. `AUDIT.md` — Baseline architecture, role model, schema, and quality status.
 2. `IMPLEMENTATION_PLAN.md` — Strategic execution plan and milestones.
 3. `BUSINESS_WORKFLOW_CATALOG.md` — Exhaustive mapping of Workflows A through K with state transitions.
@@ -54,6 +56,7 @@ Deliver the comprehensive 11 pre-implementation documents and the final release 
 12. `IMPLEMENTATION_REPORT.md` — Definitive release hardening report and sign-off recommendation.
 
 ### Workstream 2: End-to-End Automated Testing
+
 1. **Multi-Role RBAC Specification:** Author comprehensive authorization test specs testing both positive and negative permissions across all 9 roles (`student`, `guardian`, `tutor`, `support_agent`, `compliance_reviewer`, `admin`, `super_admin`, `organization_owner`, `organization_staff`).
 2. **Phase 11 Business Workflows Test Suite:** Author a dedicated end-to-end integration test suite exercising the 11 business workflows:
    - Workflow A: Auth & Account Setup
@@ -70,6 +73,7 @@ Deliver the comprehensive 11 pre-implementation documents and the final release 
 3. **Ledger Invariance Assertions:** Verify zero-sum double-entry debit-credit equality ($\sum \text{Debit} = \sum \text{Credit}$) across all financial transitions (deposit, escrow hold, dispute hold, release, refund, platform fee deduction).
 
 ### Workstream 3: Real Headful Browser Verification & Release Hardening
+
 1. **Automated Headful Browser Verification:**
    - Use `chrome-devtools-mcp` tools (`new_page`, `navigate_page`, `evaluate_script`, `take_screenshot`).
    - Verify critical user flows on `http://localhost:5000` (Next.js) talking to `http://localhost:4000` (NestJS).
@@ -84,6 +88,7 @@ Deliver the comprehensive 11 pre-implementation documents and the final release 
 ---
 
 ## 4. Rollback & Safety Strategies
+
 - Any failed test or discovered contract regression must be fixed at the root cause.
 - Under no circumstances should test expectations be modified to mask broken functionality.
 - Production and dev database integrity is protected by transactional rollbacks in test suites.

@@ -58,14 +58,11 @@ export function mapAssignmentRecords(rows: AssignmentRecord[]): AssignmentItem[]
     const rawSub =
       row.submission ||
       ((row as unknown as { submissions?: Array<Record<string, unknown>> }).submissions?.[0] as
-        | AssignmentRecord['submission']
-        | undefined);
+        AssignmentRecord['submission'] | undefined);
     return {
       ...row,
       status: toAssignmentStatus(row.status),
-      submission: rawSub
-        ? { ...rawSub, status: toSubmissionStatus(rawSub.status) }
-        : null,
+      submission: rawSub ? { ...rawSub, status: toSubmissionStatus(rawSub.status) } : null,
     };
   });
 }

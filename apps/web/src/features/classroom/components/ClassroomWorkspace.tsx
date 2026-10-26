@@ -70,7 +70,9 @@ export function ClassroomWorkspace({
   const currentUser = useAppSelector((s) => s.auth.user);
 
   // Default to initialTab ('video' or caller specified)
-  const [activeTab, setActiveTab] = useState<'video' | 'whiteboard' | 'formulas' | 'attendance'>(initialTab);
+  const [activeTab, setActiveTab] = useState<'video' | 'whiteboard' | 'formulas' | 'attendance'>(
+    initialTab,
+  );
   const [isSplitMode, setIsSplitMode] = useState(false);
 
   // Mutations
@@ -245,7 +247,9 @@ export function ClassroomWorkspace({
     if (!participantUserId) return;
 
     if (latestAttendance && !correctionReason.trim()) {
-      setActionError(isBn ? 'উপস্থিতি সংশোধনের জন্য কারণ লিখুন।' : 'A reason is required to correct attendance.');
+      setActionError(
+        isBn ? 'উপস্থিতি সংশোধনের জন্য কারণ লিখুন।' : 'A reason is required to correct attendance.',
+      );
       return;
     }
 
@@ -340,14 +344,17 @@ export function ClassroomWorkspace({
               </span>
               <span>•</span>
               <span className="flex items-center gap-1.5">
-                <span className="text-slate-500 font-semibold">{isBn ? 'শিক্ষার্থী:' : 'Student:'}</span>
+                <span className="text-slate-500 font-semibold">
+                  {isBn ? 'শিক্ষার্থী:' : 'Student:'}
+                </span>
                 <strong className="text-slate-900 font-bold">{studentName}</strong>
               </span>
               <span>•</span>
               <span className="flex items-center gap-1.5 text-slate-700 font-semibold">
                 <Clock className="w-3.5 h-3.5 text-blue-600" />
                 <span>
-                  {formatWeekdayDate(session.startsAt, locale)} ({formatTime(session.startsAt, locale)})
+                  {formatWeekdayDate(session.startsAt, locale)} (
+                  {formatTime(session.startsAt, locale)})
                 </span>
               </span>
             </div>
@@ -397,13 +404,7 @@ export function ClassroomWorkspace({
                     <Copy className="w-4 h-4 text-slate-700" />
                   )}
                   <span className="hidden sm:inline">
-                    {copiedLink
-                      ? isBn
-                        ? 'কপি হয়েছে'
-                        : 'Copied'
-                      : isBn
-                        ? 'লিংক কপি'
-                        : 'Copy'}
+                    {copiedLink ? (isBn ? 'কপি হয়েছে' : 'Copied') : isBn ? 'লিংক কপি' : 'Copy'}
                   </span>
                 </button>
 
@@ -590,7 +591,15 @@ export function ClassroomWorkspace({
             data-testid="split-mode-toggle"
           >
             <Columns className="w-3.5 h-3.5 text-blue-600" />
-            <span>{isSplitMode ? (isBn ? 'স্প্লিট মোড চালু' : 'Split View Active') : (isBn ? 'স্প্লিট স্ক্রিন ভিউ' : 'Split Screen')}</span>
+            <span>
+              {isSplitMode
+                ? isBn
+                  ? 'স্প্লিট মোড চালু'
+                  : 'Split View Active'
+                : isBn
+                  ? 'স্প্লিট স্ক্রিন ভিউ'
+                  : 'Split Screen'}
+            </span>
           </button>
         </div>
       </div>
@@ -694,10 +703,7 @@ export function ClassroomWorkspace({
           </DialogHeader>
 
           <div className="space-y-1.5">
-            <Label
-              htmlFor="completion-notes-modal"
-              className="text-xs text-slate-700 font-bold"
-            >
+            <Label htmlFor="completion-notes-modal" className="text-xs text-slate-700 font-bold">
               {isBn ? 'ক্লাস রিভিউ ও মন্তব্য (ঐচ্ছিক):' : 'Session Notes (Optional):'}
             </Label>
             <Textarea
@@ -786,9 +792,7 @@ function AttendanceSection({
       <Card className="bg-white border border-slate-200 text-slate-900 rounded-3xl p-6 shadow-sm">
         <h3 className="text-base font-black text-slate-900 mb-2 flex items-center gap-2">
           <UserCheck className="w-5 h-5 text-blue-600" />
-          <span>
-            {isBn ? 'শিক্ষার্থীর হাজিরা / উপস্থিতি' : 'Student Attendance'}
-          </span>
+          <span>{isBn ? 'শিক্ষার্থীর হাজিরা / উপস্থিতি' : 'Student Attendance'}</span>
         </h3>
         <p className="text-xs text-slate-600 font-medium mb-4">
           {isBn
@@ -810,9 +814,7 @@ function AttendanceSection({
               <p className="text-slate-700 italic font-medium">"{latestAttendance.notes}"</p>
             )}
             <div className="text-[10px] text-slate-500 font-medium text-right">
-              {new Date(latestAttendance.recordedAt).toLocaleString(
-                isBn ? 'bn-BD' : 'en-US',
-              )}
+              {new Date(latestAttendance.recordedAt).toLocaleString(isBn ? 'bn-BD' : 'en-US')}
             </div>
           </div>
         )}
@@ -860,7 +862,10 @@ function AttendanceSection({
 
             {latestAttendance && (
               <div className="space-y-1">
-                <Label htmlFor="attendance-correction-reason" className="text-xs font-bold text-slate-700">
+                <Label
+                  htmlFor="attendance-correction-reason"
+                  className="text-xs font-bold text-slate-700"
+                >
                   {isBn ? 'সংশোধনের কারণ (আবশ্যক):' : 'Correction reason (required):'}
                 </Label>
                 <Input
@@ -887,9 +892,7 @@ function AttendanceSection({
                 type="text"
                 value={attendanceNotes}
                 onChange={(e) => setAttendanceNotes(e.target.value)}
-                placeholder={
-                  isBn ? 'যেমন: পাঠে মনোযোগ ছিল...' : 'e.g. Participated actively...'
-                }
+                placeholder={isBn ? 'যেমন: পাঠে মনোযোগ ছিল...' : 'e.g. Participated actively...'}
                 className="w-full h-9 rounded-xl border-slate-300 bg-white text-xs text-slate-900 placeholder:text-slate-400"
                 data-testid="attendance-notes-input"
               />
@@ -898,9 +901,7 @@ function AttendanceSection({
             {attendanceSuccess && (
               <div className="p-2.5 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-semibold flex items-center gap-1.5">
                 <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-                <span>
-                  {isBn ? 'উপস্থিতি সফলভাবে সংরক্ষিত!' : 'Attendance marked!'}
-                </span>
+                <span>{isBn ? 'উপস্থিতি সফলভাবে সংরক্ষিত!' : 'Attendance marked!'}</span>
               </div>
             )}
 
@@ -922,11 +923,7 @@ function AttendanceSection({
         <div className="space-y-4">
           <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-emerald-600" />
-            <span>
-              {isBn
-                ? 'নিরাপত্তা ও এস্ক্রো প্রতিশ্রুতি'
-                : 'Safety & Escrow Protection'}
-            </span>
+            <span>{isBn ? 'নিরাপত্তা ও এস্ক্রো প্রতিশ্রুতি' : 'Safety & Escrow Protection'}</span>
           </h3>
           <p className="text-xs text-slate-600 font-medium leading-relaxed">
             {isBn
@@ -959,9 +956,7 @@ function AttendanceSection({
             href={withLocale('/safety-reports', locale)}
             className="text-xs text-rose-700 hover:text-rose-900 font-bold inline-flex items-center gap-1"
           >
-            {isBn
-              ? 'জরুরি রিপোর্ট বা সহায়তা প্রয়োজন?'
-              : 'Need to file a safety report?'}
+            {isBn ? 'জরুরি রিপোর্ট বা সহায়তা প্রয়োজন?' : 'Need to file a safety report?'}
           </Link>
         </div>
       </Card>

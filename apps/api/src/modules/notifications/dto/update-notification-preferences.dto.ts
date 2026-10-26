@@ -9,7 +9,8 @@ export class NotificationPreferenceItemDto {
   })
   @IsIn(['booking', 'schedule', 'payment', 'learning', 'system', 'marketing', 'safety_notice'])
   @IsNotEmpty()
-  category!: 'booking' | 'schedule' | 'payment' | 'learning' | 'system' | 'marketing' | 'safety_notice';
+  category!:
+    'booking' | 'schedule' | 'payment' | 'learning' | 'system' | 'marketing' | 'safety_notice';
 
   @ApiProperty({
     example: 'in_app',

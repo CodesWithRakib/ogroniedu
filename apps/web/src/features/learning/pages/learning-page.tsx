@@ -163,90 +163,92 @@ export function LearningPage({ locale }: { locale: Locale }) {
         </Alert>
       )}
 
-      {role === 'tutor' && records.activeBookingId && (showCreateForm || records.assignments.length === 0) && (
-        <Card className="mb-6 border-primary/30 shadow-xs">
-          <CardContent className="py-4">
-            <form
-              onSubmit={handleCreateAssignment}
-              className="space-y-3"
-              data-testid="create-assignment-form"
-            >
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
-                <div className="sm:col-span-2 space-y-1">
-                  <Label htmlFor="assignment-title" className="text-xs font-medium">
-                    {dict.learning.newHomework}
-                  </Label>
-                  <Input
-                    id="assignment-title"
-                    value={assignmentTitle}
-                    onChange={(e) => setAssignmentTitle(e.target.value)}
-                    data-testid="assignment-title-input"
-                  />
+      {role === 'tutor' &&
+        records.activeBookingId &&
+        (showCreateForm || records.assignments.length === 0) && (
+          <Card className="mb-6 border-primary/30 shadow-xs">
+            <CardContent className="py-4">
+              <form
+                onSubmit={handleCreateAssignment}
+                className="space-y-3"
+                data-testid="create-assignment-form"
+              >
+                <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
+                  <div className="sm:col-span-2 space-y-1">
+                    <Label htmlFor="assignment-title" className="text-xs font-medium">
+                      {dict.learning.newHomework}
+                    </Label>
+                    <Input
+                      id="assignment-title"
+                      value={assignmentTitle}
+                      onChange={(e) => setAssignmentTitle(e.target.value)}
+                      data-testid="assignment-title-input"
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="assignment-due" className="text-xs font-medium">
+                      {dict.learning.dueAtLabel}
+                    </Label>
+                    <Input
+                      id="assignment-due"
+                      type="datetime-local"
+                      value={assignmentDue}
+                      onChange={(e) => setAssignmentDue(e.target.value)}
+                    />
+                  </div>
+                  <div className="space-y-1">
+                    <Label htmlFor="assignment-max" className="text-xs font-medium">
+                      {dict.learning.maxScoreLabel}
+                    </Label>
+                    <Input
+                      id="assignment-max"
+                      type="number"
+                      min={1}
+                      value={assignmentMax}
+                      onChange={(e) => setAssignmentMax(e.target.value)}
+                      data-testid="assignment-max-input"
+                    />
+                  </div>
                 </div>
                 <div className="space-y-1">
-                  <Label htmlFor="assignment-due" className="text-xs font-medium">
-                    {dict.learning.dueAtLabel}
+                  <Label htmlFor="assignment-instructions" className="text-xs font-medium">
+                    {dict.learning.instructionsLabel}
                   </Label>
-                  <Input
-                    id="assignment-due"
-                    type="datetime-local"
-                    value={assignmentDue}
-                    onChange={(e) => setAssignmentDue(e.target.value)}
+                  <Textarea
+                    id="assignment-instructions"
+                    rows={3}
+                    value={assignmentInstructions}
+                    onChange={(e) => setAssignmentInstructions(e.target.value)}
                   />
                 </div>
-                <div className="space-y-1">
-                  <Label htmlFor="assignment-max" className="text-xs font-medium">
-                    {dict.learning.maxScoreLabel}
-                  </Label>
-                  <Input
-                    id="assignment-max"
-                    type="number"
-                    min={1}
-                    value={assignmentMax}
-                    onChange={(e) => setAssignmentMax(e.target.value)}
-                    data-testid="assignment-max-input"
-                  />
-                </div>
-              </div>
-              <div className="space-y-1">
-                <Label htmlFor="assignment-instructions" className="text-xs font-medium">
-                  {dict.learning.instructionsLabel}
-                </Label>
-                <Textarea
-                  id="assignment-instructions"
-                  rows={3}
-                  value={assignmentInstructions}
-                  onChange={(e) => setAssignmentInstructions(e.target.value)}
-                />
-              </div>
-              <div className="flex flex-wrap items-end gap-2">
-                <div className="w-44 space-y-1">
-                  <Label htmlFor="assignment-publication" className="text-xs font-medium">
-                    {dict.learning.statusPublished} / {dict.learning.statusDraft}
-                  </Label>
-                  <NativeSelect
-                    id="assignment-publication"
-                    value={publishNow}
-                    onChange={(e) => setPublishNow(e.target.value)}
-                    className="h-9 text-xs"
+                <div className="flex flex-wrap items-end gap-2">
+                  <div className="w-44 space-y-1">
+                    <Label htmlFor="assignment-publication" className="text-xs font-medium">
+                      {dict.learning.statusPublished} / {dict.learning.statusDraft}
+                    </Label>
+                    <NativeSelect
+                      id="assignment-publication"
+                      value={publishNow}
+                      onChange={(e) => setPublishNow(e.target.value)}
+                      className="h-9 text-xs"
+                    >
+                      <option value="true">{dict.learning.publishAction}</option>
+                      <option value="false">{dict.learning.saveAsDraft}</option>
+                    </NativeSelect>
+                  </div>
+                  <Button
+                    type="submit"
+                    size="sm"
+                    isLoading={records.creating}
+                    data-testid="create-assignment-btn"
                   >
-                    <option value="true">{dict.learning.publishAction}</option>
-                    <option value="false">{dict.learning.saveAsDraft}</option>
-                  </NativeSelect>
+                    {dict.learning.createAssignment}
+                  </Button>
                 </div>
-                <Button
-                  type="submit"
-                  size="sm"
-                  isLoading={records.creating}
-                  data-testid="create-assignment-btn"
-                >
-                  {dict.learning.createAssignment}
-                </Button>
-              </div>
-            </form>
-          </CardContent>
-        </Card>
-      )}
+              </form>
+            </CardContent>
+          </Card>
+        )}
 
       {records.isLoading ? (
         <div className="py-16 flex justify-center">

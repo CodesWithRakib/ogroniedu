@@ -10,12 +10,7 @@ export const FeedbackCategories = [
 ] as const;
 export type FeedbackCategory = (typeof FeedbackCategories)[number];
 
-export const FeedbackSeverities = [
-  'p0_critical',
-  'p1_high',
-  'p2_medium',
-  'p3_low',
-] as const;
+export const FeedbackSeverities = ['p0_critical', 'p1_high', 'p2_medium', 'p3_low'] as const;
 export type FeedbackSeverity = (typeof FeedbackSeverities)[number];
 
 export const FeedbackStatuses = [

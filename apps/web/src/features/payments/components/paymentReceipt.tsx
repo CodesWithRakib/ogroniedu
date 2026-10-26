@@ -168,7 +168,9 @@ export function PaymentReceipt({ receipt, locale, onPrint, onClose }: PaymentRec
             data-testid="download-official-invoice-btn"
           >
             <Download className="w-3.5 h-3.5" />
-            <span>{isBn ? 'অফিশিয়াল ইনভয়েস দেখুন / ডাউনলোড' : 'Official Invoice (HTML/PDF)'}</span>
+            <span>
+              {isBn ? 'অফিশিয়াল ইনভয়েস দেখুন / ডাউনলোড' : 'Official Invoice (HTML/PDF)'}
+            </span>
             <ExternalLink className="w-3 h-3 opacity-70" />
           </Button>
 

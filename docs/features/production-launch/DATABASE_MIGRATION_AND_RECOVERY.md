@@ -3,6 +3,7 @@
 ## 1. Schema Management Philosophy
 
 Database migrations in OgroniEdu are governed by strict safety principles:
+
 1. **Zero-Downtime Compatibility:** Every migration must be non-blocking. Never lock active production tables with long-running operations.
 2. **Idempotency:** Every migration script must be safe to re-run using `IF NOT EXISTS` and `ON CONFLICT DO NOTHING`.
 3. **Transactional Boundary:** Each migration executes inside its own dedicated database transaction (`BEGIN ... COMMIT`). If any statement fails, the entire transaction is rolled back, leaving the database clean.
@@ -15,37 +16,37 @@ Database migrations in OgroniEdu are governed by strict safety principles:
 
 ## 2. Complete Inventory of Migrations (001 – 029)
 
-| Migration # | Filename | Scope & Capabilities Introduced | Status |
-| :--- | :--- | :--- | :--- |
-| `001` | `001_initial_schema.sql` | Core users, roles, auth tokens, profiles, student/tutor schemas | Applied |
-| `002` | `002_auth_verification_codes.sql` | OTP verification codes, rate limiting tracking | Applied |
-| `003` | `003_learning_management.sql` | Courses, subjects, sessions, learning modules | Applied |
-| `004` | `004_payments_and_ledger.sql` | Ledger entries, escrow balance, transaction histories | Applied |
-| `005` | `005_notifications_and_communication.sql` | Realtime notifications, preferences, delivery channels | Applied |
-| `006` | `006_reviews_and_trust_safety.sql` | Reviews, ratings, verified bookings, safety reports | Applied |
-| `007` | `007_admin_and_operations.sql` | Admin operations, audit logging, system settings | Applied |
-| `008` | `008_analytics_and_reporting.sql` | Aggregated analytics tables, platform KPIs | Applied |
-| `009` | `009_security_and_privacy_hardening.sql` | Security hardening, account suspension flags | Applied |
-| `010` | `010_performance_and_load_indexes.sql` | High-throughput composite search and filter indexes | Applied |
-| `011` | `011_session_cancellation_tracking.sql` | Session reschedule/cancellation tracking | Applied |
-| `012` | `012_support_tickets.sql` | Support ticket intake, triage, and escalation | Applied |
-| `013` | `013_auth_onboarding_and_magic_links.sql` | Magic link passwordless authentication | Applied |
-| `014` | `014_tutor_verification_dossier.sql` | Tutor academic dossier, background checks | Applied |
-| `015` | `015_academic_streams_and_institutions.sql` | Bangladeshi academic curriculum and streams | Applied |
-| `016` | `016_tutor_discovery_and_replacement_workflow.sql` | Tutor replacement guarantee cases | Applied |
-| `017` | `017_tutor_profile_localization.sql` | Bengali and English localization profiles | Applied |
-| `018` | `018_profile_avatar_urls.sql` | User avatar URLs in profiles | Applied |
-| `019` | `019_booking_scheduling_integrity.sql` | Booking time-slot overlapping constraint checks | Applied |
-| `020` | `020_bilingual_schema_cleanup.sql` | Clean bilingual data structures | Applied |
-| `021` | `021_review_bilingual_fields.sql` | Localized review attributes and feedback | Applied |
-| `022` | `022_payments_escrow_payouts.sql` | Escrow release workflows, payout methods, refunds | Applied |
-| `023` | `023_learning_lms.sql` | LMS homework, assignments, submissions, grading | Applied |
-| `024` | `024_disputes_and_safeguarding.sql` | Dispute cases and resolution workflows | Applied |
-| `025` | `025_safeguarding_case_management.sql` | Safeguarding incident tracking, audit trails | Applied |
-| `026` | `026_realtime_messaging_and_attachments.sql` | Booking chat messages and attachment metadata | Applied |
-| `027` | `027_organizations_and_platform_governance.sql` | Multi-tenant organization support and RBAC | Applied |
-| `028` | `028_search_performance_and_production_readiness.sql` | Search vector indexing and performance indexes | Applied |
-| `029` | `029_beta_testing_and_feedback.sql` | Beta feedback intake, satisfaction ratings | Applied |
+| Migration # | Filename                                              | Scope & Capabilities Introduced                                 | Status  |
+| :---------- | :---------------------------------------------------- | :-------------------------------------------------------------- | :------ |
+| `001`       | `001_initial_schema.sql`                              | Core users, roles, auth tokens, profiles, student/tutor schemas | Applied |
+| `002`       | `002_auth_verification_codes.sql`                     | OTP verification codes, rate limiting tracking                  | Applied |
+| `003`       | `003_learning_management.sql`                         | Courses, subjects, sessions, learning modules                   | Applied |
+| `004`       | `004_payments_and_ledger.sql`                         | Ledger entries, escrow balance, transaction histories           | Applied |
+| `005`       | `005_notifications_and_communication.sql`             | Realtime notifications, preferences, delivery channels          | Applied |
+| `006`       | `006_reviews_and_trust_safety.sql`                    | Reviews, ratings, verified bookings, safety reports             | Applied |
+| `007`       | `007_admin_and_operations.sql`                        | Admin operations, audit logging, system settings                | Applied |
+| `008`       | `008_analytics_and_reporting.sql`                     | Aggregated analytics tables, platform KPIs                      | Applied |
+| `009`       | `009_security_and_privacy_hardening.sql`              | Security hardening, account suspension flags                    | Applied |
+| `010`       | `010_performance_and_load_indexes.sql`                | High-throughput composite search and filter indexes             | Applied |
+| `011`       | `011_session_cancellation_tracking.sql`               | Session reschedule/cancellation tracking                        | Applied |
+| `012`       | `012_support_tickets.sql`                             | Support ticket intake, triage, and escalation                   | Applied |
+| `013`       | `013_auth_onboarding_and_magic_links.sql`             | Magic link passwordless authentication                          | Applied |
+| `014`       | `014_tutor_verification_dossier.sql`                  | Tutor academic dossier, background checks                       | Applied |
+| `015`       | `015_academic_streams_and_institutions.sql`           | Bangladeshi academic curriculum and streams                     | Applied |
+| `016`       | `016_tutor_discovery_and_replacement_workflow.sql`    | Tutor replacement guarantee cases                               | Applied |
+| `017`       | `017_tutor_profile_localization.sql`                  | Bengali and English localization profiles                       | Applied |
+| `018`       | `018_profile_avatar_urls.sql`                         | User avatar URLs in profiles                                    | Applied |
+| `019`       | `019_booking_scheduling_integrity.sql`                | Booking time-slot overlapping constraint checks                 | Applied |
+| `020`       | `020_bilingual_schema_cleanup.sql`                    | Clean bilingual data structures                                 | Applied |
+| `021`       | `021_review_bilingual_fields.sql`                     | Localized review attributes and feedback                        | Applied |
+| `022`       | `022_payments_escrow_payouts.sql`                     | Escrow release workflows, payout methods, refunds               | Applied |
+| `023`       | `023_learning_lms.sql`                                | LMS homework, assignments, submissions, grading                 | Applied |
+| `024`       | `024_disputes_and_safeguarding.sql`                   | Dispute cases and resolution workflows                          | Applied |
+| `025`       | `025_safeguarding_case_management.sql`                | Safeguarding incident tracking, audit trails                    | Applied |
+| `026`       | `026_realtime_messaging_and_attachments.sql`          | Booking chat messages and attachment metadata                   | Applied |
+| `027`       | `027_organizations_and_platform_governance.sql`       | Multi-tenant organization support and RBAC                      | Applied |
+| `028`       | `028_search_performance_and_production_readiness.sql` | Search vector indexing and performance indexes                  | Applied |
+| `029`       | `029_beta_testing_and_feedback.sql`                   | Beta feedback intake, satisfaction ratings                      | Applied |
 
 ---
 
@@ -74,6 +75,7 @@ try {
 ## 4. Disaster Recovery & Restoration Procedures
 
 ### 4.1 Daily Snapshot & Continuous WAL Archiving
+
 - **Point-In-Time Recovery (PITR):** Neon Serverless PostgreSQL / Cloud PostgreSQL automatically archives write-ahead logs (WAL) enabling point-in-time recovery up to 7 days.
 - **Logical Dump Backup:** A daily cron runs `pg_dump` to capture a consistent logical snapshot stored in an encrypted offsite S3 bucket:
 
@@ -87,6 +89,7 @@ pg_dump "$DATABASE_URL" \
 ```
 
 ### 4.2 Database Restoration Runbook
+
 If a catastrophic data corruption event occurs:
 
 1. **Stop Application Containers:** Immediately scale down API instances to prevent further writes:

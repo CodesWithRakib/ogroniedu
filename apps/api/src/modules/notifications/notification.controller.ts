@@ -103,20 +103,25 @@ export class NotificationController {
   @Post('test-dispatch')
   @ApiOperation({ summary: 'Trigger a notification dispatch (Internal / Testing)' })
   @ApiResponse({ status: 201, description: 'Dispatched notification item' })
-  @ApiResponse({ status: 403, description: 'Test dispatch not enabled or insufficient permissions' })
+  @ApiResponse({
+    status: 403,
+    description: 'Test dispatch not enabled or insufficient permissions',
+  })
   async testDispatch(
     @CurrentUser() user: AuthenticatedUser,
     @Body() dto: DispatchNotificationDto,
   ): Promise<NotificationItemDto> {
     if (!this.isTestDispatchEnabled()) {
-      throw new ForbiddenException('Test dispatch endpoint is disabled. Set TEST_DISPATCH_ENABLED=true to enable.');
+      throw new ForbiddenException(
+        'Test dispatch endpoint is disabled. Set TEST_DISPATCH_ENABLED=true to enable.',
+      );
     }
 
     // Additional role restriction - only super_admin can use test dispatch
     const allowedRoles = ['super_admin', 'admin'];
     const userRoles = user.roles || [];
-    const hasAllowedRole = userRoles.some(r => allowedRoles.includes(r));
-    
+    const hasAllowedRole = userRoles.some((r) => allowedRoles.includes(r));
+
     if (!hasAllowedRole) {
       throw new ForbiddenException('Insufficient permissions for test dispatch');
     }

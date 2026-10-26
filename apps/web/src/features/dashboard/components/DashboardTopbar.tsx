@@ -119,7 +119,8 @@ export function DashboardTopbar({
         locale={locale}
         onOpenFileReport={() => {
           setIsSosOpen(false);
-          const target = role === 'guardian' ? '/dashboard/guardian/safety-reports' : '/safety-reports';
+          const target =
+            role === 'guardian' ? '/dashboard/guardian/safety-reports' : '/safety-reports';
           router.push(withLocale(target, locale));
         }}
       />

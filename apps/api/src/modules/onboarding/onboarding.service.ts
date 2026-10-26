@@ -29,8 +29,6 @@ const TRACK_IN_PROGRESS: OnboardingTrackStatus = 'in_progress';
 const TRACK_PENDING_REVIEW: OnboardingTrackStatus = 'pending_review';
 const TRACK_COMPLETED: OnboardingTrackStatus = 'completed';
 
-
-
 @Injectable()
 export class OnboardingService {
   private readonly logger = new Logger(OnboardingService.name);
@@ -178,18 +176,17 @@ export class OnboardingService {
       // 2. Education Step: Persist into tutor_qualifications
       if (stepKey === 'education') {
         try {
-          const qualificationsList = Array.isArray(rec.qualifications)
-            ? rec.qualifications
-            : [rec];
+          const qualificationsList = Array.isArray(rec.qualifications) ? rec.qualifications : [rec];
 
           for (const item of qualificationsList) {
             const row = item as Record<string, unknown>;
             const degreeTitle = String(row.degree || row.title || '').trim();
             const qualType = String(row.type || row.qualificationType || 'degree').trim();
             const institution = String(row.institution || '').trim();
-            const year = row.passingYear || row.year || row.issuedYear
-              ? Number(row.passingYear || row.year || row.issuedYear)
-              : null;
+            const year =
+              row.passingYear || row.year || row.issuedYear
+                ? Number(row.passingYear || row.year || row.issuedYear)
+                : null;
 
             if (degreeTitle) {
               await this.dataSource.query(
@@ -280,7 +277,13 @@ export class OnboardingService {
                   id, tutor_user_id, weekday, start_local, end_local, timezone, is_active
                 )
                 VALUES (gen_random_uuid(), $1, $2, $3, $4, $5, true);`,
-                [userId, Number(slot.weekday), String(slot.startLocal), String(slot.endLocal), String(slot.timezone || 'Asia/Dhaka')],
+                [
+                  userId,
+                  Number(slot.weekday),
+                  String(slot.startLocal),
+                  String(slot.endLocal),
+                  String(slot.timezone || 'Asia/Dhaka'),
+                ],
               );
             }
 
@@ -382,7 +385,9 @@ export class OnboardingService {
             });
           }
         } catch (docErr) {
-          this.logger.error(`Failed to link onboarding documents to verification levels: ${docErr}`);
+          this.logger.error(
+            `Failed to link onboarding documents to verification levels: ${docErr}`,
+          );
         }
       }
     }

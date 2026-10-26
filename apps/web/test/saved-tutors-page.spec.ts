@@ -19,7 +19,7 @@ describe('SavedTutorCard & Saved Tutors Management (Option 3)', () => {
         role: 'student',
         isRemoving: false,
         onRemove: () => {},
-      })
+      }),
     );
 
     expect(htmlBn).toContain('বর্তমানে অনুপুস্থিত');
@@ -35,7 +35,7 @@ describe('SavedTutorCard & Saved Tutors Management (Option 3)', () => {
         role: 'student',
         isRemoving: false,
         onRemove: () => {},
-      })
+      }),
     );
 
     expect(htmlEn).toContain('Currently Unavailable');
@@ -95,7 +95,7 @@ describe('SavedTutorCard & Saved Tutors Management (Option 3)', () => {
         role: 'student',
         isRemoving: false,
         onRemove: () => {},
-      })
+      }),
     );
 
     // Tutor info
@@ -122,7 +122,9 @@ describe('SavedTutorCard & Saved Tutors Management (Option 3)', () => {
     expect(htmlBn).toContain('বুকিং অনুরোধ');
     expect(htmlBn).toContain('বার্তা');
     expect(htmlBn).toContain('/bn/tutors/8a798958-9c24-4049-86e9-18985e871597?book=1');
-    expect(htmlBn).toContain('/bn/dashboard/student/messages?tutorId=8a798958-9c24-4049-86e9-18985e871597');
+    expect(htmlBn).toContain(
+      '/bn/dashboard/student/messages?tutorId=8a798958-9c24-4049-86e9-18985e871597',
+    );
     expect(htmlBn).toContain('data-testid="saved-tutor-8a798958-9c24-4049-86e9-18985e871597"');
     expect(htmlBn).toContain('data-testid="unsave-tutor-8a798958-9c24-4049-86e9-18985e871597"');
 
@@ -134,8 +136,10 @@ describe('SavedTutorCard & Saved Tutors Management (Option 3)', () => {
         role: 'guardian',
         isRemoving: false,
         onRemove: () => {},
-      })
+      }),
     );
-    expect(htmlGuardian).toContain('/bn/dashboard/guardian/messages?tutorId=8a798958-9c24-4049-86e9-18985e871597');
+    expect(htmlGuardian).toContain(
+      '/bn/dashboard/guardian/messages?tutorId=8a798958-9c24-4049-86e9-18985e871597',
+    );
   });
 });

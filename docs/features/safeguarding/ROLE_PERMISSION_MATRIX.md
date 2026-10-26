@@ -7,22 +7,22 @@
 
 ## 1. Action-Level Permission Matrix across All 9 Platform Roles
 
-| Operational Action | Student | Guardian | Tutor | Org Staff | Org Owner | Support Agent | Compliance Reviewer | Admin | Super Admin |
-|:---|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|:---:|
-| **Submit Report / Complaint** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **View Own Submitted Case** | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ | ✅ |
-| **View Minor Child's Case** | ❌ (N/A) | ⚠️ (1) | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ |
-| **View Accused Reports (Self)** | ❌ (2) | ❌ (2) | ❌ (2) | ❌ (2) | ❌ (2) | ❌ (2) | ❌ (2) | ❌ (2) | ❌ (2) |
-| **View General Support Queue** | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ | ✅ |
-| **View Safeguarding Queue** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ (3) | ✅ | ✅ | ✅ |
-| **Assign Investigator** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| **Self-Assign / Resolve When Implicated** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ (4) | ❌ (4) | ❌ (4) | ❌ (4) |
-| **Read Internal Investigator Notes** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| **Add Internal Investigator Notes** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| **Download Case Evidence** | ⚠️ (5) | ⚠️ (5) | ❌ | ❌ | ❌ | ⚠️ (6) | ✅ | ✅ | ✅ |
-| **Apply Immediate Safety Action** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| **Resolve Safeguarding Case** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
-| **Reopen Closed Case** | ❌ | ❌ | ❌ | ❌ | ❌ | ❌ | ✅ | ✅ | ✅ |
+| Operational Action                        | Student  | Guardian | Tutor  | Org Staff | Org Owner | Support Agent | Compliance Reviewer | Admin  | Super Admin |
+| :---------------------------------------- | :------: | :------: | :----: | :-------: | :-------: | :-----------: | :-----------------: | :----: | :---------: |
+| **Submit Report / Complaint**             |    ✅    |    ✅    |   ✅   |    ✅     |    ✅     |      ✅       |         ✅          |   ✅   |     ✅      |
+| **View Own Submitted Case**               |    ✅    |    ✅    |   ✅   |    ✅     |    ✅     |      ✅       |         ✅          |   ✅   |     ✅      |
+| **View Minor Child's Case**               | ❌ (N/A) |  ⚠️ (1)  |   ❌   |    ❌     |    ❌     |      ❌       |         ❌          |   ❌   |     ❌      |
+| **View Accused Reports (Self)**           |  ❌ (2)  |  ❌ (2)  | ❌ (2) |  ❌ (2)   |  ❌ (2)   |    ❌ (2)     |       ❌ (2)        | ❌ (2) |   ❌ (2)    |
+| **View General Support Queue**            |    ❌    |    ❌    |   ❌   |    ❌     |    ❌     |      ✅       |         ✅          |   ✅   |     ✅      |
+| **View Safeguarding Queue**               |    ❌    |    ❌    |   ❌   |    ❌     |    ❌     |    ❌ (3)     |         ✅          |   ✅   |     ✅      |
+| **Assign Investigator**                   |    ❌    |    ❌    |   ❌   |    ❌     |    ❌     |      ❌       |         ✅          |   ✅   |     ✅      |
+| **Self-Assign / Resolve When Implicated** |    ❌    |    ❌    |   ❌   |    ❌     |    ❌     |    ❌ (4)     |       ❌ (4)        | ❌ (4) |   ❌ (4)    |
+| **Read Internal Investigator Notes**      |    ❌    |    ❌    |   ❌   |    ❌     |    ❌     |      ❌       |         ✅          |   ✅   |     ✅      |
+| **Add Internal Investigator Notes**       |    ❌    |    ❌    |   ❌   |    ❌     |    ❌     |      ❌       |         ✅          |   ✅   |     ✅      |
+| **Download Case Evidence**                |  ⚠️ (5)  |  ⚠️ (5)  |   ❌   |    ❌     |    ❌     |    ⚠️ (6)     |         ✅          |   ✅   |     ✅      |
+| **Apply Immediate Safety Action**         |    ❌    |    ❌    |   ❌   |    ❌     |    ❌     |      ❌       |         ✅          |   ✅   |     ✅      |
+| **Resolve Safeguarding Case**             |    ❌    |    ❌    |   ❌   |    ❌     |    ❌     |      ❌       |         ✅          |   ✅   |     ✅      |
+| **Reopen Closed Case**                    |    ❌    |    ❌    |   ❌   |    ❌     |    ❌     |      ❌       |         ✅          |   ✅   |     ✅      |
 
 ---
 

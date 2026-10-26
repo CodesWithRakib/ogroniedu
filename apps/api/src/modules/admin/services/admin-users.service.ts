@@ -249,10 +249,9 @@ export class AdminUsersService {
     );
 
     // Remove from banned_identities
-    await this.dataSource.query(
-      `DELETE FROM banned_identities WHERE banned_user_id = $1`,
-      [targetUserId],
-    );
+    await this.dataSource.query(`DELETE FROM banned_identities WHERE banned_user_id = $1`, [
+      targetUserId,
+    ]);
 
     await this.auditService.record({
       actorUserId: adminUser.id,
@@ -333,10 +332,9 @@ export class AdminUsersService {
 
     // Resolve role IDs from catalog
     const roleRows: Array<{ id: string; code: string }> =
-      (await this.dataSource.query(
-        `SELECT id, code FROM roles WHERE code = ANY($1);`,
-        [dto.roles],
-      )) || [];
+      (await this.dataSource.query(`SELECT id, code FROM roles WHERE code = ANY($1);`, [
+        dto.roles,
+      ])) || [];
 
     const roleMap = new Map<string, string>(
       roleRows.map((r: { id: string; code: string }) => [r.code, r.id]),

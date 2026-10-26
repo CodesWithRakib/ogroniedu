@@ -2,7 +2,7 @@
 
 **Date:** Day 6 of 7-day sprint  
 **Duration:** 2 days (1 day each for two packages)  
-**Owner:** Backend Lead  
+**Owner:** Backend Lead
 
 ---
 
@@ -14,16 +14,16 @@ Extract the tutors domain into `@ogroniedu/tutors` package, isolating tutor prof
 
 ### Scope
 
-| Task | Description |
-|---|---|
-| S7.1 | Create `packages/tutors/` structure with `src/`, `__tests__/`, `index.ts`, `package.json` |
-| S7.2 | Move `TutorsService` (core CRUD, verification, qualification, subject mapping) to `packages/tutors/src/services/tutors.service.ts` |
-| S7.3 | Move tutor verification logic (`TutorVerificationService`, `ReviewService`) to `packages/tutors/src/services/verification/` |
+| Task | Description                                                                                                                             |
+| ---- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| S7.1 | Create `packages/tutors/` structure with `src/`, `__tests__/`, `index.ts`, `package.json`                                               |
+| S7.2 | Move `TutorsService` (core CRUD, verification, qualification, subject mapping) to `packages/tutors/src/services/tutors.service.ts`      |
+| S7.3 | Move tutor verification logic (`TutorVerificationService`, `ReviewService`) to `packages/tutors/src/services/verification/`             |
 | S7.4 | Move availability/blocked periods (`TutorAvailabilityService`, `BlockedPeriodsService`) to `packages/tutors/src/services/availability/` |
-| S7.5 | Extract interfaces: `ITutorService`, `IVerificationService`, `IAvailabilityService` into `@ogroniedu/contracts/src/tutors.ts` |
-| S7.6 | Update `apps/api/src/modules/tutors/` to import from `@ogroniedu/tutors` |
-| S7.7 | Move existing tutors unit tests to `packages/tutors/__tests__/` |
-| S7.8 | Run `pnpm turbo run build` and `pnpm turbo run test:unit --filter=tutors` — 100% pass |
+| S7.5 | Extract interfaces: `ITutorService`, `IVerificationService`, `IAvailabilityService` into `@ogroniedu/contracts/src/tutors.ts`           |
+| S7.6 | Update `apps/api/src/modules/tutors/` to import from `@ogroniedu/tutors`                                                                |
+| S7.7 | Move existing tutors unit tests to `packages/tutors/__tests__/`                                                                         |
+| S7.8 | Run `pnpm turbo run build` and `pnpm turbo run test:unit --filter=tutors` — 100% pass                                                   |
 
 ### Acceptance Criteria
 
@@ -35,8 +35,8 @@ Extract the tutors domain into `@ogroniedu/tutors` package, isolating tutor prof
 
 ### Risk Mitigation
 
-| Risk | Mitigation |
-|---|---|
+| Risk                          | Mitigation                                                                    |
+| ----------------------------- | ----------------------------------------------------------------------------- |
 | Service registration breakage | Keep exported services identical in TypeScript interfaces; use barrel exports |
 
 ---
@@ -49,15 +49,15 @@ Extract the learning domain into `@ogroniedu/learning` package, isolating assign
 
 ### Scope
 
-| Task | Description |
-|---|---|
-| S7.9 | Create `packages/learning/` structure with `src/services/`, `__tests__/`, `index.ts` |
-| S7.10 | Split `LearningService` into sub-services: `AssignmentsService`, `SubmissionsService`, `LessonPlansService`, `ProgressReportsService` |
-| S7.11 | Move related handlers (e.g., `assignment.created` event) into each sub-service |
+| Task  | Description                                                                                                                                                   |
+| ----- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| S7.9  | Create `packages/learning/` structure with `src/services/`, `__tests__/`, `index.ts`                                                                          |
+| S7.10 | Split `LearningService` into sub-services: `AssignmentsService`, `SubmissionsService`, `LessonPlansService`, `ProgressReportsService`                         |
+| S7.11 | Move related handlers (e.g., `assignment.created` event) into each sub-service                                                                                |
 | S7.12 | Extract interfaces: `IAssignmentService`, `ISubmissionsService`, `ILessonPlansService`, `IProgressReportsService` into `@ogroniedu/contracts/src/learning.ts` |
-| S7.13 | Update `apps/api/src/modules/learning/` to import from `@ogroniedu/learning` package |
-| S7.14 | Move all learning unit tests to `packages/learning/__tests__/` |
-| S7.15 | Run `pnpm turbo run build` and `pnpm turbo run test:unit --filter=learning` — 100% pass |
+| S7.13 | Update `apps/api/src/modules/learning/` to import from `@ogroniedu/learning` package                                                                          |
+| S7.14 | Move all learning unit tests to `packages/learning/__tests__/`                                                                                                |
+| S7.15 | Run `pnpm turbo run build` and `pnpm turbo run test:unit --filter=learning` — 100% pass                                                                       |
 
 ### Acceptance Criteria
 
@@ -69,10 +69,10 @@ Extract the learning domain into `@ogroniedu/learning` package, isolating assign
 
 ### Risk Mitigation
 
-| Risk | Mitigation |
-|---|---|
+| Risk                       | Mitigation                                                                          |
+| -------------------------- | ----------------------------------------------------------------------------------- |
 | Grade state machine breaks | Keep `GradeSubmissionDto` and `GradeResponseDto` identical; mirror validation logic |
 
 ---
 
-*End of Phase 7.*
+_End of Phase 7._

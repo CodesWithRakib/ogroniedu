@@ -1,9 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import {
-  ForbiddenException,
-  ConflictException,
-  BadRequestException,
-} from '@nestjs/common';
+import { ForbiddenException, ConflictException, BadRequestException } from '@nestjs/common';
 import { SafetyReportsService } from '../src/modules/trust/safety-reports.service';
 import { DisputesService } from '../src/modules/trust/disputes.service';
 import { SettlementService } from '../src/modules/payments/services/settlement.service';
@@ -252,7 +248,9 @@ describe('Safeguarding Security, 12 Mandatory Authorization Gates & E2E Workflow
 
       // Attempt 1: Implicated staff attempting to assign
       await expect(
-        service.assignCase(implicatedInvestigator, 'rep-006', { assignedTo: complianceReviewer.id }),
+        service.assignCase(implicatedInvestigator, 'rep-006', {
+          assignedTo: complianceReviewer.id,
+        }),
       ).rejects.toThrow(ForbiddenException);
 
       // Attempt 2: Assigning case TO the implicated staff

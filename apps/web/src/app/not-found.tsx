@@ -7,10 +7,10 @@ export default function RootNotFound() {
       <body className="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans">
         <div className="max-w-md w-full bg-white border border-slate-200 rounded-2xl p-8 text-center shadow-lg">
           <h1 className="text-3xl font-bold text-slate-900 mb-2">404</h1>
-          <h2 className="text-xl font-semibold text-slate-800 mb-4">পৃষ্ঠাটি খুঁজে পাওয়া যায়নি (Page Not Found)</h2>
-          <p className="text-slate-600 text-sm mb-6">
-            অনুগ্রহ করে মূল পাতায় ফিরে যান।
-          </p>
+          <h2 className="text-xl font-semibold text-slate-800 mb-4">
+            পৃষ্ঠাটি খুঁজে পাওয়া যায়নি (Page Not Found)
+          </h2>
+          <p className="text-slate-600 text-sm mb-6">অনুগ্রহ করে মূল পাতায় ফিরে যান।</p>
           <div className="flex justify-center gap-4">
             <Link
               href="/bn"

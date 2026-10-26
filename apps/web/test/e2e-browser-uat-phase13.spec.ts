@@ -109,7 +109,11 @@ describe('Phase 13: End-to-End Browser UAT Automation', () => {
         'div',
         { className: 'p-4 border rounded-xl space-y-3' },
         React.createElement('h3', { className: 'text-sm font-bold' }, 'নতুন টিউশন অনুরোধ'),
-        React.createElement('p', { className: 'text-xs text-muted-foreground' }, 'উচ্চতর গণিত • সপ্তাহে ৩ দিন'),
+        React.createElement(
+          'p',
+          { className: 'text-xs text-muted-foreground' },
+          'উচ্চতর গণিত • সপ্তাহে ৩ দিন',
+        ),
         React.createElement(
           'div',
           { className: 'flex items-center gap-2' },
@@ -131,13 +135,21 @@ describe('Phase 13: End-to-End Browser UAT Automation', () => {
       const escrowBanner = React.createElement(
         'div',
         { className: 'p-4 bg-emerald-50 border border-emerald-200 rounded-xl' },
-        React.createElement('h4', { className: 'text-sm font-bold text-emerald-900' }, '১০০% নিরাপদ এসক্রো গ্যারান্টি'),
+        React.createElement(
+          'h4',
+          { className: 'text-sm font-bold text-emerald-900' },
+          '১০০% নিরাপদ এসক্রো গ্যারান্টি',
+        ),
         React.createElement(
           'p',
           { className: 'text-xs text-emerald-700' },
           'সেশন সম্পন্ন ও সন্তুষ্টির পরই কেবল শিক্ষকের অ্যাকাউন্টে অর্থ ছাড় করা হয়।',
         ),
-        React.createElement('span', { className: 'text-[11px] font-semibold text-emerald-800' }, 'bKash • Nagad • SSLCommerz'),
+        React.createElement(
+          'span',
+          { className: 'text-[11px] font-semibold text-emerald-800' },
+          'bKash • Nagad • SSLCommerz',
+        ),
       );
 
       const html = renderToStaticMarkup(escrowBanner);

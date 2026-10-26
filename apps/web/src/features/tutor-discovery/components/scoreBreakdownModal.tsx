@@ -61,7 +61,12 @@ export function ScoreBreakdownModal({
           </ul>
         </div>
 
-        <Button variant="primary" size="sm" className="w-full rounded-xl font-bold" onClick={onClose}>
+        <Button
+          variant="primary"
+          size="sm"
+          className="w-full rounded-xl font-bold"
+          onClick={onClose}
+        >
           {dict.common?.confirm || 'Understood'}
         </Button>
       </DialogContent>

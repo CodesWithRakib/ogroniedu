@@ -10,20 +10,20 @@
 
 The platform provides granular report categorization to ensure allegations and complaints are immediately routed to the appropriate operational and legal teams:
 
-| Category Code | Display Name (English) | Display Name (বাংলা) | Severity Baseline | Primary Queue |
-|:---|:---|:---|:---:|:---|
-| `general_complaint` | General Service Complaint | সাধারণ পরিষেবা অভিযোগ | Low / Medium | Customer Support |
-| `tutor_conduct` | Tutor Conduct Concern | শিক্ষকের আচরণ সংক্রান্ত উদ্বেগ | Medium / High | Safeguarding Desk |
-| `student_guardian_conduct` | Student / Guardian Conduct Concern | শিক্ষার্থী / অভিভাবকের আচরণ | Medium | Compliance Desk |
-| `inappropriate_communication` | Inappropriate Communication | অনুপযুক্ত বা অনাকাঙ্ক্ষিত বার্তা | High | Safeguarding Desk |
-| `harassment_bullying` | Harassment or Bullying | হয়রানি বা বুলিং | High / Critical | Safeguarding Desk |
-| `discrimination` | Discrimination or Bias | বৈষম্যমূলক আচরণ | High | Compliance Desk |
-| `abuse_exploitation` | Suspected Abuse or Exploitation | শোষণ বা নির্যাতনের আশঙ্কা | **Critical** | **Emergency Safeguarding** |
-| `physical_safety` | Physical Safety Concern | শারীরিক নিরাপত্তার ঝুঁকি | **Critical** | **Emergency Safeguarding** |
-| `privacy_data_exposure` | Privacy or Data Exposure | গোপনীয়তা লঙ্ঘন বা তথ্য ফাঁস | High | Security & Privacy |
-| `booking_dispute` | Booking or Service Dispute | টিউশন বা সেশন সংক্রান্ত বিরোধ | Medium / High | Disputes Queue |
-| `payment_refund` | Payment or Refund Dispute | পেমেন্ট বা রিফান্ড সংক্রান্ত বিরোধ | Medium / High | Finance Operations |
-| `other` | Other Unspecified Concern | অন্যান্য উদ্বেগ | Low / Medium | Support Triage |
+| Category Code                 | Display Name (English)             | Display Name (বাংলা)               | Severity Baseline | Primary Queue              |
+| :---------------------------- | :--------------------------------- | :--------------------------------- | :---------------: | :------------------------- |
+| `general_complaint`           | General Service Complaint          | সাধারণ পরিষেবা অভিযোগ              |   Low / Medium    | Customer Support           |
+| `tutor_conduct`               | Tutor Conduct Concern              | শিক্ষকের আচরণ সংক্রান্ত উদ্বেগ     |   Medium / High   | Safeguarding Desk          |
+| `student_guardian_conduct`    | Student / Guardian Conduct Concern | শিক্ষার্থী / অভিভাবকের আচরণ        |      Medium       | Compliance Desk            |
+| `inappropriate_communication` | Inappropriate Communication        | অনুপযুক্ত বা অনাকাঙ্ক্ষিত বার্তা   |       High        | Safeguarding Desk          |
+| `harassment_bullying`         | Harassment or Bullying             | হয়রানি বা বুলিং                   |  High / Critical  | Safeguarding Desk          |
+| `discrimination`              | Discrimination or Bias             | বৈষম্যমূলক আচরণ                    |       High        | Compliance Desk            |
+| `abuse_exploitation`          | Suspected Abuse or Exploitation    | শোষণ বা নির্যাতনের আশঙ্কা          |   **Critical**    | **Emergency Safeguarding** |
+| `physical_safety`             | Physical Safety Concern            | শারীরিক নিরাপত্তার ঝুঁকি           |   **Critical**    | **Emergency Safeguarding** |
+| `privacy_data_exposure`       | Privacy or Data Exposure           | গোপনীয়তা লঙ্ঘন বা তথ্য ফাঁস       |       High        | Security & Privacy         |
+| `booking_dispute`             | Booking or Service Dispute         | টিউশন বা সেশন সংক্রান্ত বিরোধ      |   Medium / High   | Disputes Queue             |
+| `payment_refund`              | Payment or Refund Dispute          | পেমেন্ট বা রিফান্ড সংক্রান্ত বিরোধ |   Medium / High   | Finance Operations         |
+| `other`                       | Other Unspecified Concern          | অন্যান্য উদ্বেগ                    |   Low / Medium    | Support Triage             |
 
 ---
 
@@ -43,6 +43,7 @@ flowchart TD
 ```
 
 ### Priority Definitions & SLAs:
+
 1. **`critical`:** Imminent risk of physical violence, child sexual abuse/grooming, criminal threat, or active extortion.
    - **Triage SLA:** < 30 minutes.
    - **Automatic Action:** Emergency Outbox event dispatched; protective tutor hold evaluation triggered.

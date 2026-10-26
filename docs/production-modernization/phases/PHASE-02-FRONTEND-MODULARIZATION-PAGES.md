@@ -9,11 +9,13 @@
 ---
 
 ## 1. Objective and Business Justification
-Enforce the core architectural rule: *"Route Pages Must Remain Thin"* (Part V Rule 14) and *"frontend amon file bad jabe na sob file ei amra kaj korbo"*. Route `page.tsx` files must not contain monolithic UI, state machines, or direct data fetching logic; they must act as thin Server Component wrappers delegating to feature-based views.
+
+Enforce the core architectural rule: _"Route Pages Must Remain Thin"_ (Part V Rule 14) and _"frontend amon file bad jabe na sob file ei amra kaj korbo"_. Route `page.tsx` files must not contain monolithic UI, state machines, or direct data fetching logic; they must act as thin Server Component wrappers delegating to feature-based views.
 
 ---
 
 ## 2. Current-State Findings and Evidence
+
 - 11 Next.js `page.tsx` files contain monolithic implementations (300 to 829 lines):
   - `bookings/[id]/page.tsx` (829 lines)
   - `guardian/children/[studentId]/page.tsx` (728 lines)
@@ -32,6 +34,7 @@ Enforce the core architectural rule: *"Route Pages Must Remain Thin"* (Part V Ru
 ---
 
 ## 3. Exact Scope
+
 1. Refactor the 11 oversized `page.tsx` files into thin route entry points (<40 lines) delegating to modular feature components in `src/features/<domain>/components/`.
 2. Decompose `src/lib/navigation.ts` into role-specific navigation configurations (`student.nav.ts`, `tutor.nav.ts`, `guardian.nav.ts`, `admin.nav.ts`, `org.nav.ts`).
 3. Modularize the top oversized feature views (`tutor-details-page.tsx`, `profile-page.tsx`, `admin-finance-page.tsx`, `GuardianChildrenManager.tsx`).
@@ -41,17 +44,20 @@ Enforce the core architectural rule: *"Route Pages Must Remain Thin"* (Part V Ru
 ---
 
 ## 4. Explicit Exclusions
+
 - No alteration of visual branding, colors, or CSS framework (keep Tailwind CSS v4 and shadcn/ui primitives).
 - No changes to API endpoints or backend contracts.
 
 ---
 
 ## 5. Prerequisite Phases
+
 - `PHASE-01-ARCHITECTURE-AND-TDD-FOUNDATION.md` (Green test suite baseline).
 
 ---
 
 ## 6. Tasks and Unique Task IDs
+
 - `FE-001`: Decompose `bookings/[id]/page.tsx` (829 lines) into `src/features/bookings/components/detail/*`.
 - `FE-002`: Decompose `guardian/children/[studentId]/page.tsx` (728 lines) into `src/features/guardian/components/child-detail/*`.
 - `FE-003`: Decompose `sessions/[id]/page.tsx` (634 lines) into `src/features/bookings/components/session-detail/*`.
@@ -72,6 +78,7 @@ Enforce the core architectural rule: *"Route Pages Must Remain Thin"* (Part V Ru
 ---
 
 ## 7. Actual Affected Files and Modules
+
 - `apps/web/src/app/[locale]/**/*.tsx`
 - `apps/web/src/features/**/*.tsx`
 - `apps/web/src/lib/navigation.ts`
@@ -80,12 +87,14 @@ Enforce the core architectural rule: *"Route Pages Must Remain Thin"* (Part V Ru
 ---
 
 ## 8. Files Created, Split, Moved, or Removed
+
 - Created: Feature component subdirectories under `src/features/bookings/components/detail/`, `src/features/guardian/components/child-detail/`, `src/features/learning/components/assignment-detail/`, `src/features/payments/components/checkout/`.
 - Decomposed: 11 oversized `page.tsx` files.
 
 ---
 
 ## 9. Frontend Work
+
 - Extract UI elements into focused, reusable presentation components.
 - Keep route `page.tsx` files strictly responsible for parameter parsing, SEO metadata generation, and initial access checks.
 - Keep Client Component directives (`"use client"`) at interactive leaf components.
@@ -93,43 +102,51 @@ Enforce the core architectural rule: *"Route Pages Must Remain Thin"* (Part V Ru
 ---
 
 ## 10. Backend Work
+
 - None (frontend architectural refactoring).
 
 ---
 
 ## 11. Database and Migration Work
+
 - None.
 
 ---
 
 ## 12. Event-Driven Architecture Work
+
 - None.
 
 ---
 
 ## 13. Security Requirements
+
 - Ensure zero server credentials or private tokens are leaked to client components.
 - Ensure role layout authorization checks are preserved on all routes.
 
 ---
 
 ## 14. Unit Test Requirements
+
 - `pnpm --filter @ogroniedu/web test` passes 308/308 tests.
 
 ---
 
 ## 15. Integration Test Requirements
+
 - RTK Query slice integration tests pass.
 
 ---
 
 ## 16. Browser Automation and E2E Scenarios
+
 - Playwright tests (`journey.booking.spec.ts`, `tutor.discovery.spec.ts`) pass without DOM selector breaks.
 - Automated visual inspection using Chrome DevTools MCP on port 5000.
 
 ---
 
 ## 17. Required Commands
+
 ```pwsh
 pnpm --filter @ogroniedu/web build
 pnpm --filter @ogroniedu/web test
@@ -139,6 +156,7 @@ pnpm --filter @ogroniedu/web lint
 ---
 
 ## 18. Acceptance Criteria
+
 1. Zero `page.tsx` files exceed 50 lines.
 2. All 88 routes compile and render cleanly with zero TypeScript errors.
 3. All 308 web unit tests pass.
@@ -147,29 +165,35 @@ pnpm --filter @ogroniedu/web lint
 ---
 
 ## 19. Failure and Rollback Considerations
+
 - Work is executed page-by-page. Each page decomposition is committed atomically with regression tests.
 
 ---
 
 ## 20. Definition of Done
+
 - All 11 oversized pages decomposed, builds clean, tests pass, visual QA verified.
 
 ---
 
 ## 21. Expected Evidence
+
 - Git diff showing thin `page.tsx` files and organized feature component trees.
 
 ---
 
 ## 22. Known Risks and Blockers
+
 - Component selector changes could affect Playwright E2E tests if test IDs or classes change. Preserve existing `data-testid` attributes.
 
 ---
 
 ## 23. Estimated Effort
+
 - 1.5 Days.
 
 ---
 
 ## 24. Next-Phase Dependencies
+
 - Unblocks `PHASE-07-CORE-MARKETPLACE-AND-BOOKINGS-WORKFLOW.md`.

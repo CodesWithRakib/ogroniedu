@@ -181,11 +181,7 @@ describe('Phase 11: Frontend UX, Fluid Layouts & Accessibility', () => {
 
   describe('5. High-Contrast Design System & Visual Feedback', () => {
     it('should render destructive action buttons with distinct styling', () => {
-      const button = React.createElement(
-        Button,
-        { variant: 'destructive' },
-        'বুকিং বাতিল করুন',
-      );
+      const button = React.createElement(Button, { variant: 'destructive' }, 'বুকিং বাতিল করুন');
 
       const html = renderToStaticMarkup(button);
       expect(html).toContain('bg-destructive');
@@ -194,11 +190,7 @@ describe('Phase 11: Frontend UX, Fluid Layouts & Accessibility', () => {
     });
 
     it('should render focus visible outline tokens for keyboard navigation', () => {
-      const button = React.createElement(
-        Button,
-        { variant: 'primary' },
-        'পরবর্তী ধাপ',
-      );
+      const button = React.createElement(Button, { variant: 'primary' }, 'পরবর্তী ধাপ');
 
       const html = renderToStaticMarkup(button);
       expect(html).toContain('focus-visible:outline-none');

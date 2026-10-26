@@ -3,13 +3,13 @@
 **Platform:** OgroniEdu (অগ্রণী एडু)  
 **Phase:** 09: Admin Operations, Organization Management & Platform Governance  
 **Date:** October 21, 2026  
-**Status:** Approved Specification  
+**Status:** Approved Specification
 
 ---
 
 ## 1. Moderation Architecture & Case Segregation
 
-Operational governance requires strict segregation between **ordinary customer support** and **confidential safeguarding investigations**. Merging these workflows violates Bangladesh's The Children Act 2013 (*শিশু আইন ২০১৩*) and exposes minor victims to privacy leaks.
+Operational governance requires strict segregation between **ordinary customer support** and **confidential safeguarding investigations**. Merging these workflows violates Bangladesh's The Children Act 2013 (_শিশু আইন ২০১৩_) and exposes minor victims to privacy leaks.
 
 ```mermaid
 flowchart TD
@@ -41,6 +41,7 @@ flowchart TD
 ## 2. Core Operational Workflows
 
 ### 2.1 Tutor Verification Review Workflow
+
 Tutors submit identity and academic credentials across 3 tiers: `identity` (NID), `educational` (Certificates/Transcripts), and `institutional` (Employment/Letters).
 
 ```mermaid
@@ -62,6 +63,7 @@ stateDiagram-v2
 ---
 
 ### 2.2 Support Ticket Triage Workflow
+
 Governs general inquiries, account assistance, and platform questions.
 
 - **Status Transitions**: `submitted` -> `in_review` -> `resolved` | `spam`.
@@ -72,6 +74,7 @@ Governs general inquiries, account assistance, and platform questions.
 ---
 
 ### 2.3 Safeguarding & Child Protection Case Workflow
+
 Governs sensitive reports of harassment, inappropriate contact, grooming, or abuse.
 
 - **Status Transitions**: `submitted` -> `under_investigation` -> `escalated` -> `action_taken` -> `resolved`.
@@ -82,6 +85,7 @@ Governs sensitive reports of harassment, inappropriate contact, grooming, or abu
 ---
 
 ### 2.4 Booking Dispute & Escrow Arbitration Workflow
+
 When a guardian or student disputes a session (e.g. tutor was a no-show, premature disconnect, or quality breach):
 
 - **Status Transitions**: `opened` -> `under_review` -> `resolved_refund` | `resolved_release` | `dismissed`.
@@ -91,5 +95,6 @@ When a guardian or student disputes a session (e.g. tutor was a no-show, prematu
 ---
 
 ### 2.5 Content Moderation (Reviews & Messages)
+
 - **Reviews**: Automated safety scans flag abusive language. Administrators review flagged reviews and can approve, reject, or request edit.
 - **Messages**: Real-time regex engine normalizes Bengali numerals (`০-৯`) and redacts off-platform contact (`[REDACTED CONTACT NUMBER]`) and bKash solicitations (`[REDACTED PAYMENT SOLICITATION]`). Flagged instances trigger an audit entry for supervisor review.

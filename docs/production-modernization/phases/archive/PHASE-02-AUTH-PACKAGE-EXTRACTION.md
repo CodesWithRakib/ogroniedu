@@ -2,7 +2,7 @@
 
 **Date:** Day 1 of 7-day sprint  
 **Duration:** 1 day  
-**Owner:** Backend Lead (auth domain)  
+**Owner:** Backend Lead (auth domain)
 
 ---
 
@@ -14,15 +14,15 @@ Extract the auth domain into a dedicated `@ogroniedu/auth` package, preserving a
 
 ## Scope
 
-| Task | Description |
-|---|---|
+| Task | Description                                                                                          |
+| ---- | ---------------------------------------------------------------------------------------------------- |
 | S2.1 | Create `packages/auth/` structure: `src/`, `__tests__/`, `index.ts`, `package.json`, `tsconfig.json` |
 | S2.2 | Move `AuthService`, `AccountAccessService`, JWT utility functions into `packages/auth/src/services/` |
-| S2.3 | Extract interfaces: `IAuthService`, `IUser`, `IJwtService` into `@ogroniedu/contracts/src/auth.ts` |
+| S2.3 | Extract interfaces: `IAuthService`, `IUser`, `IJwtService` into `@ogroniedu/contracts/src/auth.ts`   |
 | S2.4 | Update `apps/api/src/modules/auth/` to import from `@ogroniedu/auth` instead of co-locating services |
-| S2.5 | Move existing unit tests from `apps/api/src/modules/auth/__tests__/` to `packages/auth/__tests__/` |
-| S2.6 | Run `pnpm turbo run build` — verify zero breakage |
-| S2.7 | Run all auth tests — confirm 100% pass |
+| S2.5 | Move existing unit tests from `apps/api/src/modules/auth/__tests__/` to `packages/auth/__tests__/`   |
+| S2.6 | Run `pnpm turbo run build` — verify zero breakage                                                    |
+| S2.7 | Run all auth tests — confirm 100% pass                                                               |
 
 ---
 
@@ -38,11 +38,11 @@ Extract the auth domain into a dedicated `@ogroniedu/auth` package, preserving a
 
 ## Risk Mitigation
 
-| Risk | Mitigation |
-|---|---|
-| Circular dependency between auth and contracts | Contracts depend only on Prisma; auth depends only on contracts |
-| Test import path changes | Barrel exports in `packages/auth/index.ts` simplify consumer imports |
+| Risk                                           | Mitigation                                                           |
+| ---------------------------------------------- | -------------------------------------------------------------------- |
+| Circular dependency between auth and contracts | Contracts depend only on Prisma; auth depends only on contracts      |
+| Test import path changes                       | Barrel exports in `packages/auth/index.ts` simplify consumer imports |
 
 ---
 
-*End of Phase 2.*
+_End of Phase 2._

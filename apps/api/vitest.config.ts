@@ -13,10 +13,6 @@ export default defineConfig({
       PORT: '4000',
       DATABASE_URL: 'postgresql://postgres:password@localhost:5432/ogroniedu_dev',
     },
-    exclude: [
-      '**/node_modules/**',
-      '**/dist/**',
-      '**/.turbo/**',
-    ],
+    exclude: ['**/node_modules/**', '**/dist/**', '**/.turbo/**'],
   },
 });

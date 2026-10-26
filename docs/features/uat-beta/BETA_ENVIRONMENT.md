@@ -17,15 +17,15 @@ flowchart LR
 
 ## 2. Service Endpoints & Configuration
 
-| Service Component | Beta / Staging Endpoint | Local Development Endpoint | Operational State |
-| :--- | :--- | :--- | :---: |
-| **Web Frontend** | `https://beta.ogroniedu.com` | `http://localhost:5000` | Active (SSR + Strict CSP) |
-| **Backend API** | `https://api-beta.ogroniedu.com/api/v1` | `http://localhost:4000/api/v1` | Active (Express + NestJS) |
-| **WebSocket Gateway** | `wss://api-beta.ogroniedu.com/notifications` | `ws://localhost:4000/notifications` | Active (Socket.IO with JWT) |
-| **Database** | PostgreSQL 18 (`ogroniedu_staging`) | PostgreSQL 18 (`ogroniedu_dev`) | Active (Port 5432) |
-| **Payment Gateway (bKash)** | `https://tokenized.sandbox.bka.sh` | Simulated Adapter / Sandbox | Sandbox Mode Active |
-| **Payment Gateway (SSLCOMMERZ)**| `https://sandbox.sslcommerz.com` | Simulated Adapter / Sandbox | Sandbox Mode Active |
-| **Object Storage** | Staging S3 / MinIO (`ogroniedu-beta`) | Local Mock / Temp FS | Mock Storage Active |
+| Service Component                | Beta / Staging Endpoint                      | Local Development Endpoint          |      Operational State      |
+| :------------------------------- | :------------------------------------------- | :---------------------------------- | :-------------------------: |
+| **Web Frontend**                 | `https://beta.ogroniedu.com`                 | `http://localhost:5000`             |  Active (SSR + Strict CSP)  |
+| **Backend API**                  | `https://api-beta.ogroniedu.com/api/v1`      | `http://localhost:4000/api/v1`      |  Active (Express + NestJS)  |
+| **WebSocket Gateway**            | `wss://api-beta.ogroniedu.com/notifications` | `ws://localhost:4000/notifications` | Active (Socket.IO with JWT) |
+| **Database**                     | PostgreSQL 18 (`ogroniedu_staging`)          | PostgreSQL 18 (`ogroniedu_dev`)     |     Active (Port 5432)      |
+| **Payment Gateway (bKash)**      | `https://tokenized.sandbox.bka.sh`           | Simulated Adapter / Sandbox         |     Sandbox Mode Active     |
+| **Payment Gateway (SSLCOMMERZ)** | `https://sandbox.sslcommerz.com`             | Simulated Adapter / Sandbox         |     Sandbox Mode Active     |
+| **Object Storage**               | Staging S3 / MinIO (`ogroniedu-beta`)        | Local Mock / Temp FS                |     Mock Storage Active     |
 
 ---
 

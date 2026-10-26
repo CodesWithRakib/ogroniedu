@@ -89,7 +89,13 @@ export function EducationLevelsTable({
                 <XCircle className="h-3.5 w-3.5 text-destructive" />
               )}
               <span>
-                {lvl.isActive !== false ? (isBn ? 'সক্রিয়' : 'Active') : isBn ? 'নিষ্ক্রিয়' : 'Inactive'}
+                {lvl.isActive !== false
+                  ? isBn
+                    ? 'সক্রিয়'
+                    : 'Active'
+                  : isBn
+                    ? 'নিষ্ক্রিয়'
+                    : 'Inactive'}
               </span>
             </button>
           </td>

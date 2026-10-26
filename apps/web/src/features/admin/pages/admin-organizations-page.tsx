@@ -103,7 +103,8 @@ export function AdminOrganizationsPageView() {
             Organization Governance & Accreditation
           </h1>
           <p className="text-sm text-muted-foreground mt-1">
-            Review, verify trade licenses, approve, and oversee institutional coaching centers and agencies across Bangladesh.
+            Review, verify trade licenses, approve, and oversee institutional coaching centers and
+            agencies across Bangladesh.
           </p>
         </div>
         <div className="flex items-center gap-2">
@@ -194,11 +195,11 @@ export function AdminOrganizationsPageView() {
                       <div className="font-semibold text-foreground">{org.name}</div>
                       <div className="text-[11px] text-muted-foreground font-mono">@{org.slug}</div>
                     </td>
-                    <td className="py-3 px-4 capitalize">
-                      {org.type.replace('_', ' ')}
-                    </td>
+                    <td className="py-3 px-4 capitalize">{org.type.replace('_', ' ')}</td>
                     <td className="py-3 px-4 font-mono text-[11px]">
-                      {org.tradeLicenseNumber || <span className="text-muted-foreground/50">—</span>}
+                      {org.tradeLicenseNumber || (
+                        <span className="text-muted-foreground/50">—</span>
+                      )}
                     </td>
                     <td className="py-3 px-4">
                       <div>{org.contactEmail}</div>

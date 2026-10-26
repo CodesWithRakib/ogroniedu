@@ -18,10 +18,11 @@ The system must protect learners, especially minors under Bangladeshi law, while
 ## 2. Existing Architecture & Capability Inventory
 
 ### 2.1 Existing Models & Database Entities
+
 1. **`safety_reports` (`apps/api/src/modules/trust/entities/safety-report.entity.ts`):**
    - Stores user-submitted incident reports.
    - Columns: `id`, `reporter_user_id`, `reported_user_id`, `booking_id`, `session_id`, `category`, `severity`, `description`, `evidence_asset_ids`, `status`, `escalation_level`, `resolution_notes`, `resolved_by`, `resolved_at`, `policy_version`.
-   - *Gaps identified:* Missing investigator assignment (`assigned_to`), confidentiality flags (`is_confidential`), incident occurrence timestamp (`incident_date`), preferred safe contact method (`preferred_contact_method`), case messages, and case access audit history.
+   - _Gaps identified:_ Missing investigator assignment (`assigned_to`), confidentiality flags (`is_confidential`), incident occurrence timestamp (`incident_date`), preferred safe contact method (`preferred_contact_method`), case messages, and case access audit history.
 2. **`booking_disputes` (`apps/api/src/modules/trust/entities/booking-dispute.entity.ts`):**
    - Implemented in Phase 07 baseline. Links disputes directly to `bookings` and `payment_refunds`.
    - State machine: `opened` -> `under_review` -> `resolved_refund` / `resolved_partial_refund` / `resolved_tutor_upheld` / `resolved_replacement` / `dismissed`.
@@ -35,19 +36,22 @@ The system must protect learners, especially minors under Bangladeshi law, while
    - Public star ratings and textual reviews with moderation controls.
 
 ### 2.2 Roles & Permission Infrastructure
+
 - **Role Hierarchy (`packages/contracts/src/` & `apps/api/src/common/auth/`):**
   - Roles supported: `student`, `guardian`, `tutor`, `admin`, `super_admin`, `support_agent`, `compliance_reviewer`, `organization_owner`, `organization_staff`.
   - Roles are persisted in `user_roles` with `revoked_at IS NULL` active status checks.
   - Role utility: `isAdminRole()`, `isTutor()`, `isGuardian()`, `isStudent()`.
-  - *Gaps identified:* Fine-grained ABAC for confidential reports. Currently, an accused tutor could technically call general report endpoints if not strictly filtered by ABAC; must ensure accused users receive HTTP 404 or 403 when requesting confidential cases filed against them.
+  - _Gaps identified:_ Fine-grained ABAC for confidential reports. Currently, an accused tutor could technically call general report endpoints if not strictly filtered by ABAC; must ensure accused users receive HTTP 404 or 403 when requesting confidential cases filed against them.
 
 ### 2.3 Tutor Suspension & Verification Controls
+
 - **Tutor Profiles (`tutor_profiles`):**
   - `safety_hold_status`: (`clear`, `under_investigation`, `safety_hold`).
   - `safety_hold_reason`: Textual justification.
   - Enforced in `TutorSearchService` (unpublishes tutor from discovery) and `SessionReschedulingService.startSession()` (blocks classroom launch).
 
 ### 2.4 Financial & Escrow Integration
+
 - **Escrow Freeze Invariant:**
   - `SettlementService.settleMilestone()` verifies `booking.status !== 'disputed'`.
   - Disputed milestones cannot be disbursed to tutor balances while under dispute.
@@ -55,15 +59,17 @@ The system must protect learners, especially minors under Bangladeshi law, while
   - `RefundsService.requestAndApproveForAdmin()` posts balanced double-entry ledger transactions to the PostgreSQL ledger without bypassing validation.
 
 ### 2.5 Private Documents & Evidence Storage
+
 - **File Assets (`apps/api/src/modules/files/`):**
   - Manages asset metadata (`file_assets` table) and storage adapters (Local disk / S3).
-  - *Gaps identified:* Evidence attached to safeguarding cases requires case-level authorization before issuing secure download links, blocking accused parties and logging access in case audit trails.
+  - _Gaps identified:_ Evidence attached to safeguarding cases requires case-level authorization before issuing secure download links, blocking accused parties and logging access in case audit trails.
 
 ### 2.6 Centralized Notifications & Realtime Gateway
+
 - Centralized `NotificationService` and `NotificationGateway` (Socket.IO).
 - Templates in `packages/contracts/src/notification-registry.ts`.
 - Outbox pattern via `outbox_events` and worker.
-- *Gaps identified:* Generic wording required for sensitive safeguarding alerts to prevent leaking sensitive allegations in email subject lines or push notifications.
+- _Gaps identified:_ Generic wording required for sensitive safeguarding alerts to prevent leaking sensitive allegations in email subject lines or push notifications.
 
 ---
 
@@ -71,13 +77,13 @@ The system must protect learners, especially minors under Bangladeshi law, while
 
 To avoid misrouting, the platform explicitly categorizes cases into five distinct operational workflows:
 
-| Type | Nature | Primary Queue | SLA | Escrow Impact |
-|:---|:---|:---|:---:|:---:|
-| **1. General Service Complaint** | Punctuality, curriculum mismatch, communication issues. | Support Desk | 48 Hours | None (unless escalated) |
-| **2. Booking Dispute** | Tutor no-show, unfulfilled hours, missed sessions. | Dispute Queue | 24 Hours | **Escrow Frozen** |
-| **3. Financial Dispute** | Double charge, billing discrepancy, payout failure. | Finance Ops | 24 Hours | Transaction Held |
-| **4. Safeguarding Concern** | Inappropriate conduct, coercion, boundary violations. | Safeguarding Desk | 4 Hours | Tutor Safety Hold |
-| **5. Urgent Child Safety** | Child abuse, grooming, harassment, physical threat. | **Emergency Triage** | **Immediate (<1h)** | **Full Safety Freeze & Hotlines** |
+| Type                             | Nature                                                  | Primary Queue        |         SLA         |           Escrow Impact           |
+| :------------------------------- | :------------------------------------------------------ | :------------------- | :-----------------: | :-------------------------------: |
+| **1. General Service Complaint** | Punctuality, curriculum mismatch, communication issues. | Support Desk         |      48 Hours       |      None (unless escalated)      |
+| **2. Booking Dispute**           | Tutor no-show, unfulfilled hours, missed sessions.      | Dispute Queue        |      24 Hours       |         **Escrow Frozen**         |
+| **3. Financial Dispute**         | Double charge, billing discrepancy, payout failure.     | Finance Ops          |      24 Hours       |         Transaction Held          |
+| **4. Safeguarding Concern**      | Inappropriate conduct, coercion, boundary violations.   | Safeguarding Desk    |       4 Hours       |         Tutor Safety Hold         |
+| **5. Urgent Child Safety**       | Child abuse, grooming, harassment, physical threat.     | **Emergency Triage** | **Immediate (<1h)** | **Full Safety Freeze & Hotlines** |
 
 ---
 

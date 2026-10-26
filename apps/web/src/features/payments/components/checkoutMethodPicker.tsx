@@ -125,9 +125,7 @@ export function CheckoutMethodPicker({
                 </span>
               </div>
               <div className="text-xs text-slate-600 font-medium mt-1">
-                {isBn
-                  ? 'সরাসরি বিকাশ গেটওয়ে চেকআউট'
-                  : 'Direct bKash payment gateway checkout'}
+                {isBn ? 'সরাসরি বিকাশ গেটওয়ে চেকআউট' : 'Direct bKash payment gateway checkout'}
               </div>
             </div>
           </div>
@@ -187,7 +185,10 @@ export function CheckoutMethodPicker({
 
         {/* Errors & Alerts */}
         {payError && (
-          <Alert variant="destructive" className="rounded-2xl border-rose-200 bg-rose-50 text-rose-900">
+          <Alert
+            variant="destructive"
+            className="rounded-2xl border-rose-200 bg-rose-50 text-rose-900"
+          >
             <AlertDescription role="alert" className="font-semibold text-xs">
               {payError}
             </AlertDescription>

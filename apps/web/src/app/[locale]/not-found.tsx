@@ -15,18 +15,16 @@ export default function NotFound() {
           404 Error
         </span>
 
-        <h1 className="text-3xl font-black text-slate-900 mb-3">
-          পৃষ্ঠাটি খুঁজে পাওয়া যায়নি
-        </h1>
-        <h2 className="text-base font-semibold text-slate-500 mb-6">
-          Page Not Found
-        </h2>
+        <h1 className="text-3xl font-black text-slate-900 mb-3">পৃষ্ঠাটি খুঁজে পাওয়া যায়নি</h1>
+        <h2 className="text-base font-semibold text-slate-500 mb-6">Page Not Found</h2>
 
         <p className="text-slate-600 text-sm leading-relaxed mb-8">
-          আপনি যে ঠিকানাটি খুঁজছেন তা মুছে ফেলা হতে পারে, নাম পরিবর্তন করা হতে পারে, অথবা সাময়িকভাবে অনুপলব্ধ থাকতে পারে।
+          আপনি যে ঠিকানাটি খুঁজছেন তা মুছে ফেলা হতে পারে, নাম পরিবর্তন করা হতে পারে, অথবা
+          সাময়িকভাবে অনুপলব্ধ থাকতে পারে।
           <br />
           <span className="text-xs text-slate-500 mt-2 block">
-            The page you are looking for might have been removed, had its name changed, or is temporarily unavailable.
+            The page you are looking for might have been removed, had its name changed, or is
+            temporarily unavailable.
           </span>
         </p>
 

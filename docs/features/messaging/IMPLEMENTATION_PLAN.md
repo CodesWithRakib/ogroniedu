@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Phase:** 08: Communication & Real-Time Messaging System  
 **Date:** October 20, 2026  
-**Status:** Approved & Implemented  
+**Status:** Approved & Implemented
 
 ---
 
@@ -58,6 +58,7 @@ flowchart TD
 ## 2. Work Breakdown Structure (WBS)
 
 ### 2.1 Database & Migrations
+
 - [x] Create migration `026_realtime_messaging_and_attachments.sql`:
   - Add `attachment_asset_ids UUID[] DEFAULT '{}'` to `booking_messages`.
   - Add `metadata JSONB DEFAULT '{}'` to `booking_messages`.
@@ -67,12 +68,14 @@ flowchart TD
 - [x] Rebuild `@ogroniedu/database`.
 
 ### 2.2 Shared Contracts (`packages/contracts`)
+
 - [x] Create `packages/contracts/src/messaging.ts`:
   - Zod schemas: `SendBookingMessageSchema`, `BookingMessageRecord`, `ConversationInboxItem`, `ChatTypingPayload`, `ChatReadReceiptPayload`.
   - Export TypeScript interfaces for client/server sharing.
 - [x] Re-export in `packages/contracts/src/index.ts` and compile.
 
 ### 2.3 Backend API & Services (`apps/api`)
+
 - [x] Create `apps/api/src/modules/notifications/utils/content-safety.util.ts`:
   - Bengali digit converter (`০-৯` -> `0-9`).
   - Whitespace-insensitive mobile number detector (`013-019` series).
@@ -94,6 +97,7 @@ flowchart TD
 - [x] Create `ConversationsController` (`/api/v1/conversations`).
 
 ### 2.4 Frontend Web Application (`apps/web`)
+
 - [x] Update `apps/web/src/store/services/booking-messages-api.ts`:
   - Add `getConversationsInbox` query.
   - Add `markAllBookingMessagesAsRead` mutation.
@@ -198,12 +202,15 @@ sequenceDiagram
 ## 4. Migration & Rollback Strategy
 
 ### 4.1 Safe Migration Plan
+
 1. `026_realtime_messaging_and_attachments.sql` uses `ADD COLUMN IF NOT EXISTS` for zero-downtime deployment.
 2. Default values (`'{}'::uuid[]` and `'{}'::jsonb`) ensure existing rows require no backfilling or null checking.
 3. Indexes are created with `CREATE INDEX IF NOT EXISTS` to avoid locks during deployment.
 
 ### 4.2 Rollback Procedure
+
 If issues occur with attachments or metadata:
+
 ```sql
 DROP INDEX IF EXISTS idx_booking_messages_cursor;
 DROP INDEX IF EXISTS idx_booking_messages_sender_recipient;

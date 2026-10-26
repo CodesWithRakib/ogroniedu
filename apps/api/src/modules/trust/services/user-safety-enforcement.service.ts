@@ -3,7 +3,6 @@ import {
   Logger,
   NotFoundException,
   BadRequestException,
-  ForbiddenException,
   Inject,
   forwardRef,
 } from '@nestjs/common';
@@ -384,14 +383,13 @@ export class UserSafetyEnforcementService {
     await this.safetyActionRepo.save(action);
 
     // Dispatch real-time alert to user socket
-    this.notificationGateway.server?.to(`user:${targetUserId}`).emit(
-      dto.actionType === 'permanent_ban' ? 'account_banned' : 'account_suspended',
-      {
+    this.notificationGateway.server
+      ?.to(`user:${targetUserId}`)
+      .emit(dto.actionType === 'permanent_ban' ? 'account_banned' : 'account_suspended', {
         reason: dto.reason,
         appliedByAdmin: true,
         expiresAt: expiresAt?.toISOString(),
-      },
-    );
+      });
 
     // Audit Log
     await this.auditService.record({

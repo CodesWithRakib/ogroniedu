@@ -29,7 +29,10 @@ describe('Production Smoke & Operational Readiness Verification', () => {
         checkHeap: vi.fn().mockResolvedValue({ memory_heap: { status: 'up' } }),
       } as unknown as MemoryHealthIndicator;
 
-      const controller = new HealthController(mockHealth, mockMemory, { isInitialized: true, query: vi.fn() } as any);
+      const controller = new HealthController(mockHealth, mockMemory, {
+        isInitialized: true,
+        query: vi.fn(),
+      } as any);
       const res = await controller.checkReadiness();
 
       expect(res.status).toBe('ok');
@@ -116,13 +119,17 @@ describe('Production Smoke & Operational Readiness Verification', () => {
         }),
       } as any;
 
-      const dangerousException = new Error('FATAL: password authentication failed for user "postgres" at Object.runQuery');
+      const dangerousException = new Error(
+        'FATAL: password authentication failed for user "postgres" at Object.runQuery',
+      );
       filter.catch(dangerousException, host);
 
       expect(capturedStatus).toBe(HttpStatus.INTERNAL_SERVER_ERROR);
       expect(capturedJson.success).toBe(false);
       expect(capturedJson.error.code).toBe('INTERNAL_ERROR');
-      expect(capturedJson.error.message).toBe('Internal server error. Please contact support with request ID.');
+      expect(capturedJson.error.message).toBe(
+        'Internal server error. Please contact support with request ID.',
+      );
       // Confirm raw error message and stack trace are NEVER leaked to the client
       expect(JSON.stringify(capturedJson)).not.toContain('password');
       expect(JSON.stringify(capturedJson)).not.toContain('runQuery');

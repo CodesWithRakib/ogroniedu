@@ -5,6 +5,7 @@
 OgroniEdu adheres to strict data minimization principles governed by Bangladesh's Information and Communication Technology (ICT) Act and international data protection standards (GDPR).
 
 ### Core Commitments:
+
 1. **Purpose Limitation:** Analytics telemetry is used solely to detect UX friction, improve tutor search relevance, and optimize educational outcomes. Telemetry is never sold, shared with advertising brokers, or used for automated behavioral profiling.
 2. **First-Party Self-Hosted Telemetry:** No third-party tracking scripts (Google Analytics, Facebook Pixel, TikTok Pixel, Hotjar) are permitted in the client bundle.
 3. **Automated Property Sanitization:** The `sanitizeAnalyticsProperties()` filter automatically rejects and purges any key matching sensitive terms (e.g. `password`, `otp`, `token`, `card`, `phone`, `email`, `message`, `content`).
@@ -13,13 +14,13 @@ OgroniEdu adheres to strict data minimization principles governed by Bangladesh'
 
 ## 2. Retention Schedule by Data Category
 
-| Category | Retention Window | Storage Medium | Deletion / Anonymization Mechanism |
-| :--- | :--- | :--- | :--- |
-| **Raw Analytics Events** | **90 days** | PostgreSQL `product_analytics_events` | Automated pruning cron; older events purged |
-| **Aggregated Daily Funnels**| **Permanent** | PostgreSQL Views / Materialized Tables | Anonymized historical trend counts only |
-| **Double-Entry Financials** | **7 years** | PostgreSQL `ledger_entries`, `payment_orders` | Statutory financial accounting retention requirement |
-| **Child Safeguarding Logs** | **5 years** | PostgreSQL `safety_reports`, `safety_case_events`| Encrypted audit vault for child protection compliance |
-| **Client Session IDs** | **Session only** | Browser `sessionStorage` | Wiped automatically on tab/browser close |
+| Category                     | Retention Window | Storage Medium                                    | Deletion / Anonymization Mechanism                    |
+| :--------------------------- | :--------------- | :------------------------------------------------ | :---------------------------------------------------- |
+| **Raw Analytics Events**     | **90 days**      | PostgreSQL `product_analytics_events`             | Automated pruning cron; older events purged           |
+| **Aggregated Daily Funnels** | **Permanent**    | PostgreSQL Views / Materialized Tables            | Anonymized historical trend counts only               |
+| **Double-Entry Financials**  | **7 years**      | PostgreSQL `ledger_entries`, `payment_orders`     | Statutory financial accounting retention requirement  |
+| **Child Safeguarding Logs**  | **5 years**      | PostgreSQL `safety_reports`, `safety_case_events` | Encrypted audit vault for child protection compliance |
+| **Client Session IDs**       | **Session only** | Browser `sessionStorage`                          | Wiped automatically on tab/browser close              |
 
 ---
 

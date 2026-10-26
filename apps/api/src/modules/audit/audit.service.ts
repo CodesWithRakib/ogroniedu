@@ -64,10 +64,7 @@ export class AuditService {
     });
   }
 
-  async getOrganizationAuditHistory(
-    organizationId: string,
-    limit = 50,
-  ): Promise<AuditLogEntity[]> {
+  async getOrganizationAuditHistory(organizationId: string, limit = 50): Promise<AuditLogEntity[]> {
     return this.auditRepository.find({
       where: { organizationId },
       order: { createdAt: 'DESC' },

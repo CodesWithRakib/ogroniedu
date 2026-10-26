@@ -20,12 +20,8 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
             !
           </div>
 
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">
-            গুরুতর ত্রুটি ঘটেছে
-          </h1>
-          <h2 className="text-sm font-semibold text-slate-500 mb-4">
-            Critical System Error
-          </h2>
+          <h1 className="text-2xl font-bold text-slate-900 mb-2">গুরুতর ত্রুটি ঘটেছে</h1>
+          <h2 className="text-sm font-semibold text-slate-500 mb-4">Critical System Error</h2>
 
           <p className="text-slate-600 text-sm mb-6">
             অ্যাপ্লিকেশনটি লোড করার সময় মারাত্মক সমস্যা হয়েছে। পুনরায় লোড করার চেষ্টা করুন।

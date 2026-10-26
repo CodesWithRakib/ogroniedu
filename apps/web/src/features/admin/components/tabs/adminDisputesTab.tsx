@@ -1,7 +1,18 @@
 'use client';
 
 import React, { useState } from 'react';
-import { Scale, CheckCircle2, AlertCircle, XCircle, ArrowRight, ShieldCheck, DollarSign, Filter, User, BookOpen } from 'lucide-react';
+import {
+  Scale,
+  CheckCircle2,
+  AlertCircle,
+  XCircle,
+  ArrowRight,
+  ShieldCheck,
+  DollarSign,
+  Filter,
+  User,
+  BookOpen,
+} from 'lucide-react';
 import { Badge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { LoadingSpinner } from '@/components/ui';
@@ -22,7 +33,11 @@ import {
 } from '@/components/ui/dialog';
 import { NativeSelect } from '@/components/ui/NativeSelect';
 import { Textarea } from '@/components/ui/textarea';
-import { useGetDisputesQuery, useResolveDisputeMutation, type BookingDisputeView } from '@/store/services/trust-api';
+import {
+  useGetDisputesQuery,
+  useResolveDisputeMutation,
+  type BookingDisputeView,
+} from '@/store/services/trust-api';
 import { formatBDTMinor } from '@/lib/format';
 import { toast } from 'sonner';
 import type { Locale } from '@/lib/i18n';
@@ -107,7 +122,8 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
   const allDisputes = response?.data || [];
 
   const openCount = allDisputes.filter(
-    (d) => d.status === 'opened' || d.status === 'under_review' || d.status === 'evidence_requested',
+    (d) =>
+      d.status === 'opened' || d.status === 'under_review' || d.status === 'evidence_requested',
   ).length;
 
   const resolvedCount = allDisputes.filter(
@@ -116,7 +132,9 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
 
   const filteredDisputes = allDisputes.filter((d) => {
     if (statusFilter === 'open') {
-      return d.status === 'opened' || d.status === 'under_review' || d.status === 'evidence_requested';
+      return (
+        d.status === 'opened' || d.status === 'under_review' || d.status === 'evidence_requested'
+      );
     }
     if (statusFilter === 'resolved') {
       return d.status.startsWith('resolved_') || d.status === 'dismissed';
@@ -138,7 +156,9 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
     }
 
     try {
-      const refundAmountMinor = refundAmount.trim() ? Math.round(Number(refundAmount) * 100) : undefined;
+      const refundAmountMinor = refundAmount.trim()
+        ? Math.round(Number(refundAmount) * 100)
+        : undefined;
       await resolveDispute({
         id: activeDispute.id,
         body: {
@@ -155,7 +175,10 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
       refetch();
     } catch (err: unknown) {
       const errObj = err as { data?: { error?: { message?: string } } } | undefined;
-      toast.error(errObj?.data?.error?.message || (isBn ? 'নিষ্পত্তি ব্যর্থ হয়েছে।' : 'Failed to resolve dispute.'));
+      toast.error(
+        errObj?.data?.error?.message ||
+          (isBn ? 'নিষ্পত্তি ব্যর্থ হয়েছে।' : 'Failed to resolve dispute.'),
+      );
     }
   };
 
@@ -225,8 +248,12 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
         <Table data-testid="disputes-table">
           <TableHeader>
             <TableRow className="bg-slate-50 text-slate-700 uppercase tracking-wider text-[11px] font-bold border-b border-slate-200">
-              <TableHead className="px-4 py-3">{isBn ? 'বুকিং ও বিষয়' : 'Booking & Subject'}</TableHead>
-              <TableHead className="px-4 py-3">{isBn ? 'অভিযোগকারী ও শিক্ষক' : 'Disputant & Tutor'}</TableHead>
+              <TableHead className="px-4 py-3">
+                {isBn ? 'বুকিং ও বিষয়' : 'Booking & Subject'}
+              </TableHead>
+              <TableHead className="px-4 py-3">
+                {isBn ? 'অভিযোগকারী ও শিক্ষক' : 'Disputant & Tutor'}
+              </TableHead>
               <TableHead className="px-4 py-3">{isBn ? 'অভিযোগের কারণ' : 'Reason'}</TableHead>
               <TableHead className="px-4 py-3">{isBn ? 'দাবিকৃত অর্থ' : 'Claimed'}</TableHead>
               <TableHead className="px-4 py-3">{isBn ? 'অবস্থা' : 'Status'}</TableHead>
@@ -258,7 +285,9 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                   'মাধ্যমিক (SSC)';
                 const tutorName = d.booking?.tutorProfile?.user?.displayName || 'Farhan Ahmed';
                 const disputantName =
-                  d.disputant?.displayName || d.booking?.studentUser?.displayName || (isBn ? 'শিক্ষার্থী' : 'Student');
+                  d.disputant?.displayName ||
+                  d.booking?.studentUser?.displayName ||
+                  (isBn ? 'শিক্ষার্থী' : 'Student');
 
                 return (
                   <TableRow key={d.id} className="hover:bg-slate-50/80 transition-colors">
@@ -271,7 +300,9 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                         <div className="text-[11px] text-slate-500 flex items-center gap-1">
                           <span>{educationLevelName}</span>
                           <span>•</span>
-                          <span className="font-mono text-slate-600">#{d.bookingId.slice(0, 8)}</span>
+                          <span className="font-mono text-slate-600">
+                            #{d.bookingId.slice(0, 8)}
+                          </span>
                         </div>
                       </div>
                     </TableCell>
@@ -286,14 +317,18 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                           </span>
                         </div>
                         <div className="text-[11px] text-slate-500">
-                          {isBn ? 'শিক্ষক:' : 'Tutor:'} <span className="font-medium text-slate-800">{tutorName}</span>
+                          {isBn ? 'শিক্ষক:' : 'Tutor:'}{' '}
+                          <span className="font-medium text-slate-800">{tutorName}</span>
                         </div>
                       </div>
                     </TableCell>
 
                     {/* 3. Reason */}
                     <TableCell className="px-4 py-3">
-                      <Badge variant="outline" className="text-[11px] font-semibold bg-slate-50 text-slate-800 border-slate-300">
+                      <Badge
+                        variant="outline"
+                        className="text-[11px] font-semibold bg-slate-50 text-slate-800 border-slate-300"
+                      >
                         {disputeReasonLabel(d.reasonCode, isBn)}
                       </Badge>
                     </TableCell>
@@ -305,19 +340,26 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
 
                     {/* 5. Status Badge */}
                     <TableCell className="px-4 py-3">
-                      <span className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] ${badge.className}`}>
+                      <span
+                        className={`inline-block px-2.5 py-0.5 rounded-full text-[11px] ${badge.className}`}
+                      >
                         {badge.label}
                       </span>
                     </TableCell>
 
                     {/* 6. Description */}
-                    <TableCell className="px-4 py-3 max-w-xs truncate text-slate-600" title={d.description}>
+                    <TableCell
+                      className="px-4 py-3 max-w-xs truncate text-slate-600"
+                      title={d.description}
+                    >
                       {d.description}
                     </TableCell>
 
                     {/* 7. Action */}
                     <TableCell className="px-4 py-3 text-right">
-                      {d.status === 'opened' || d.status === 'under_review' || d.status === 'evidence_requested' ? (
+                      {d.status === 'opened' ||
+                      d.status === 'under_review' ||
+                      d.status === 'evidence_requested' ? (
                         <Button
                           size="sm"
                           variant="default"
@@ -342,7 +384,10 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                             {isBn ? 'নিষ্পন্ন হয়েছে' : 'Resolved'}
                           </span>
                           {d.resolutionNotes && (
-                            <p className="text-[10px] text-slate-500 truncate max-w-[140px]" title={d.resolutionNotes}>
+                            <p
+                              className="text-[10px] text-slate-500 truncate max-w-[140px]"
+                              title={d.resolutionNotes}
+                            >
                               {d.resolutionNotes}
                             </p>
                           )}
@@ -382,7 +427,9 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                   <div>
                     <span className="text-slate-500">{isBn ? 'বিষয়:' : 'Subject:'}</span>{' '}
                     <strong className="text-slate-900">
-                      {(isBn ? activeDispute.booking?.subject?.nameBn : activeDispute.booking?.subject?.nameEn) ||
+                      {(isBn
+                        ? activeDispute.booking?.subject?.nameBn
+                        : activeDispute.booking?.subject?.nameEn) ||
                         activeDispute.booking?.subject?.name ||
                         'বাংলা (১ম ও ২য় পত্র)'}
                     </strong>
@@ -402,9 +449,13 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                     </strong>
                   </div>
                   <div>
-                    <span className="text-slate-500">{isBn ? 'দাবিকৃত অর্থ:' : 'Claimed Refund:'}</span>{' '}
+                    <span className="text-slate-500">
+                      {isBn ? 'দাবিকৃত অর্থ:' : 'Claimed Refund:'}
+                    </span>{' '}
                     <strong className="text-emerald-700 font-mono font-bold">
-                      {activeDispute.disputedAmountMinor ? formatBDTMinor(activeDispute.disputedAmountMinor, locale) : '—'}
+                      {activeDispute.disputedAmountMinor
+                        ? formatBDTMinor(activeDispute.disputedAmountMinor, locale)
+                        : '—'}
                     </strong>
                   </div>
                 </div>
@@ -421,7 +472,9 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
               {/* Resolution Decision */}
               <div className="space-y-1.5">
                 <label className="text-xs font-semibold text-slate-800">
-                  {isBn ? 'মীমাংসা সিদ্ধান্ত (Binding Administrative Decision)' : 'Resolution Decision'}
+                  {isBn
+                    ? 'মীমাংসা সিদ্ধান্ত (Binding Administrative Decision)'
+                    : 'Resolution Decision'}
                 </label>
                 <NativeSelect
                   value={resolutionType}
@@ -429,16 +482,22 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                   className="w-full text-xs h-9.5 rounded-xl bg-white border-slate-300 text-slate-900 font-medium"
                 >
                   <option value="refund">
-                    {isBn ? '১০০% রিফান্ড অনুমোদন (Full Refund to Student)' : 'Full Refund to Customer'}
+                    {isBn
+                      ? '১০০% রিফান্ড অনুমোদন (Full Refund to Student)'
+                      : 'Full Refund to Customer'}
                   </option>
                   <option value="partial_refund">
                     {isBn ? 'আংশিক রিফান্ড (Partial Refund)' : 'Partial Refund'}
                   </option>
                   <option value="tutor_upheld">
-                    {isBn ? 'শিক্ষক সঠিক / এসক্রো বহাল (Uphold Tutor / Release Escrow)' : 'Uphold Tutor (Release Escrow)'}
+                    {isBn
+                      ? 'শিক্ষক সঠিক / এসক্রো বহাল (Uphold Tutor / Release Escrow)'
+                      : 'Uphold Tutor (Release Escrow)'}
                   </option>
                   <option value="replacement">
-                    {isBn ? 'বিকল্প শিক্ষক প্রতিস্থাপন (Trigger Replacement Guarantee)' : 'Trigger Replacement Guarantee'}
+                    {isBn
+                      ? 'বিকল্প শিক্ষক প্রতিস্থাপন (Trigger Replacement Guarantee)'
+                      : 'Trigger Replacement Guarantee'}
                   </option>
                   <option value="dismissed">
                     {isBn ? 'অভিযোগ খারিজ (Dismiss Frivolous Claim)' : 'Dismiss Claim (Frivolous)'}

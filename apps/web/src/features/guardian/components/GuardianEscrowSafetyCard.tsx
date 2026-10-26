@@ -95,7 +95,9 @@ export function GuardianEscrowSafetyCard({
             ৳ {formatLocalizedNumber(heldEscrowBdt, locale)}
           </div>
           <p className="text-[11px] text-muted-foreground mt-0.5">
-            {isBn ? 'ক্লাস সমাপ্তি নিশ্চিত হওয়া পর্যন্ত সংরক্ষিত' : 'Released only upon verification'}
+            {isBn
+              ? 'ক্লাস সমাপ্তি নিশ্চিত হওয়া পর্যন্ত সংরক্ষিত'
+              : 'Released only upon verification'}
           </p>
         </div>
 

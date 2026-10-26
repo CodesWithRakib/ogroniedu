@@ -44,6 +44,7 @@ flowchart TD
 ## 3. Detailed Work Breakdown
 
 ### Stage 1: Circular Dependency Remediation (P1)
+
 1. **Frontend Guardian Children Types**:
    - Create `apps/web/src/components/guardian/guardian-children.types.ts`.
    - Move `ChildItem`, `GuardianChildrenCallbacks`, `GuardianRelationship`, `LinkChildModalProps`, and related interfaces into `guardian-children.types.ts`.
@@ -61,6 +62,7 @@ flowchart TD
    - Remove bidirectional `forwardRef()` imports.
 
 ### Stage 2: Frontend Monolith Decomposition (P2)
+
 1. **Admin Taxonomy Page Decomposition**:
    - Create folder `apps/web/src/features/admin/components/taxonomy/`.
    - Extract:
@@ -79,6 +81,7 @@ flowchart TD
    - Refactor `GuardianChildrenManager.tsx` to compose these subcomponents.
 
 ### Stage 3: Domain Logic Extraction (P2)
+
 1. **Tutor Replacement Policy Extraction**:
    - Create `apps/api/src/modules/trust/utils/replacement-policy.util.ts`.
    - Move pure calculations:
@@ -93,6 +96,7 @@ flowchart TD
    - Author unit tests in `apps/api/test/auth-policy.util.spec.ts`.
 
 ### Stage 4: Verification & Final Quality Gates
+
 1. Run new policy unit tests.
 2. Run full monorepo test suite (`pnpm test`).
 3. Run `node scripts/audit-circular-deps.mjs` to measure cycle reduction.

@@ -177,10 +177,7 @@ export class PaymentsController {
 
   @Get('invoices/:invoiceId')
   @UseGuards(AuthGuard)
-  async getInvoice(
-    @CurrentUser() user: AuthenticatedUser,
-    @Param('invoiceId') invoiceId: string,
-  ) {
+  async getInvoice(@CurrentUser() user: AuthenticatedUser, @Param('invoiceId') invoiceId: string) {
     const invoice = await this.invoicesService.getInvoice(user, invoiceId);
     return { success: true, data: invoice };
   }

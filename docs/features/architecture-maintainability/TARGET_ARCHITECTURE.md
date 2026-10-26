@@ -3,6 +3,7 @@
 ## 1. Architectural Vision
 
 The target architecture establishes a clean, decoupled, layered system design that respects existing boundaries while enforcing:
+
 1. **Unidirectional Dependency Flow**: Presentation/Controllers -> Application Services -> Domain Business Rules/Policies -> Infrastructure/Persistence.
 2. **Zero Circular Dependencies**: Modules and components must have clear parent-child or client-service relationships without circular `forwardRef()` or bi-directional type cycles.
 3. **Decoupled Transports**: WebSockets, HTTP Controllers, and Outbox Workers are presentation/transport concerns. Application services must never have hard dependencies on transport mechanisms.
@@ -58,7 +59,9 @@ graph TD
 ## 3. Boundary & Inversion Contracts
 
 ### 3.1 Notification Broadcaster Inversion
+
 In the target architecture, `NotificationService` (Application Service) no longer injects `NotificationGateway` (Transport). Instead:
+
 - `NotificationService` publishes via `INotificationBroadcaster` (an abstract interface token).
 - `NotificationGateway` implements `INotificationBroadcaster`.
 - In test environments where WebSockets are not spun up, a no-op broadcaster or mock is injected without complex bidirectional mock stubs.
@@ -85,7 +88,9 @@ classDiagram
 ```
 
 ### 3.2 Frontend Component Composition
+
 Instead of pages with 1,500 lines managing multi-entity tables and modal states:
+
 - Pages manage only route parameters, breadcrumbs, and active tab state.
 - Each tab or functional entity is encapsulated into an independent section component (`*Section.tsx`).
 - Forms and modal dialogs are separate, single-purpose components (`*Modal.tsx`).

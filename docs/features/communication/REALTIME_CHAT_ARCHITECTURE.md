@@ -2,13 +2,14 @@
 
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Protocol:** Socket.IO v4 over WebSocket (with polling fallback)  
-**Security:** JWT Bearer Handshake Authentication + Thread ABAC Authorization  
+**Security:** JWT Bearer Handshake Authentication + Thread ABAC Authorization
 
 ---
 
 ## 1. Socket.IO Namespaces & Room Topography
 
 The system utilizes two distinct, highly focused namespaces:
+
 1. **`/notifications` (Existing):**
    - User-level broadcast room: `user:${userId}`.
    - Dispatches system announcements, booking status changes, billing alerts, and background reminders.
@@ -25,23 +26,23 @@ The system utilizes two distinct, highly focused namespaces:
 
 ### 2.1 Client to Server (Inbound)
 
-| Event Name | Payload | Authorization Guard | Description |
-| :--- | :--- | :--- | :--- |
-| `join_booking_chat` | `{ bookingId: string }` | ABAC check: socket user must be student, tutor, linked guardian, or admin of the booking. | Client joins `booking_chat:${bookingId}` room. Emits history sync or unread count. |
-| `leave_booking_chat` | `{ bookingId: string }` | Open | Client leaves the booking room. |
-| `send_chat_message` | `{ bookingId: string, content: string, attachmentAssetIds?: string[] }` | ABAC check + Content Safety inspection. | Persists message in database and broadcasts to room. |
-| `start_typing` | `{ bookingId: string }` | Participant check. | Broadcasts typing indicator to peers in room (expires in 4s). |
-| `stop_typing` | `{ bookingId: string }` | Participant check. | Clears typing indicator for user. |
-| `mark_thread_read` | `{ bookingId: string }` | Participant check. | Marks all pending unread messages in thread as read and broadcasts read receipts. |
+| Event Name           | Payload                                                                 | Authorization Guard                                                                       | Description                                                                        |
+| :------------------- | :---------------------------------------------------------------------- | :---------------------------------------------------------------------------------------- | :--------------------------------------------------------------------------------- |
+| `join_booking_chat`  | `{ bookingId: string }`                                                 | ABAC check: socket user must be student, tutor, linked guardian, or admin of the booking. | Client joins `booking_chat:${bookingId}` room. Emits history sync or unread count. |
+| `leave_booking_chat` | `{ bookingId: string }`                                                 | Open                                                                                      | Client leaves the booking room.                                                    |
+| `send_chat_message`  | `{ bookingId: string, content: string, attachmentAssetIds?: string[] }` | ABAC check + Content Safety inspection.                                                   | Persists message in database and broadcasts to room.                               |
+| `start_typing`       | `{ bookingId: string }`                                                 | Participant check.                                                                        | Broadcasts typing indicator to peers in room (expires in 4s).                      |
+| `stop_typing`        | `{ bookingId: string }`                                                 | Participant check.                                                                        | Clears typing indicator for user.                                                  |
+| `mark_thread_read`   | `{ bookingId: string }`                                                 | Participant check.                                                                        | Marks all pending unread messages in thread as read and broadcasts read receipts.  |
 
 ### 2.2 Server to Client (Outbound)
 
-| Event Name | Payload | Room Target | Description |
-| :--- | :--- | :--- | :--- |
-| `new_chat_message` | `BookingMessageEntity` | `booking_chat:${bookingId}` & `user:${recipientId}` | Dispatches newly sent message immediately to active chat viewers and recipient's private room. |
-| `user_typing` | `{ bookingId: string, userId: string, userName: string, isTyping: boolean }` | `booking_chat:${bookingId}` (broadcast to peers) | Informs peers of active typing state. |
-| `messages_read` | `{ bookingId: string, readerUserId: string, readAt: string, messageIds: string[] }` | `booking_chat:${bookingId}` | Signals that messages were read; updates sender checkmarks to double blue. |
-| `chat_error` | `{ code: string, message: string }` | Calling client socket | Emitted when authorization fails, validation fails, or rate limit is exceeded. |
+| Event Name         | Payload                                                                             | Room Target                                         | Description                                                                                    |
+| :----------------- | :---------------------------------------------------------------------------------- | :-------------------------------------------------- | :--------------------------------------------------------------------------------------------- |
+| `new_chat_message` | `BookingMessageEntity`                                                              | `booking_chat:${bookingId}` & `user:${recipientId}` | Dispatches newly sent message immediately to active chat viewers and recipient's private room. |
+| `user_typing`      | `{ bookingId: string, userId: string, userName: string, isTyping: boolean }`        | `booking_chat:${bookingId}` (broadcast to peers)    | Informs peers of active typing state.                                                          |
+| `messages_read`    | `{ bookingId: string, readerUserId: string, readAt: string, messageIds: string[] }` | `booking_chat:${bookingId}`                         | Signals that messages were read; updates sender checkmarks to double blue.                     |
+| `chat_error`       | `{ code: string, message: string }`                                                 | Calling client socket                               | Emitted when authorization fails, validation fails, or rate limit is exceeded.                 |
 
 ---
 

@@ -143,10 +143,7 @@ export const sessionsApi = baseApi.injectEndpoints({
         { type: 'Session', id: 'LIST' },
       ],
     }),
-    markNoShow: builder.mutation<
-      ApiSuccessEnvelope<SessionItem>,
-      { id: string; reason?: string }
-    >({
+    markNoShow: builder.mutation<ApiSuccessEnvelope<SessionItem>, { id: string; reason?: string }>({
       query: ({ id, ...body }) => ({
         url: `/api/v1/sessions/${id}/no-show`,
         method: 'POST',

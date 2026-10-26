@@ -18,13 +18,27 @@ async function bootstrap() {
   app.use(cookieParser());
   app.useWebSocketAdapter(new IoAdapter(app));
 
-  const frontendOrigins = (process.env.FRONTEND_URL || 'http://localhost:5000')
+  const rawOrigins =
+    process.env.CORS_ORIGINS || process.env.FRONTEND_URL || 'http://localhost:5000';
+  const frontendOrigins = rawOrigins
     .split(',')
     .map((o) => o.trim())
     .filter(Boolean);
 
   app.enableCors({
-    origin: frontendOrigins.length === 1 ? frontendOrigins[0] : frontendOrigins,
+    origin: (
+      origin: string | undefined,
+      callback: (err: Error | null, allow?: boolean) => void,
+    ) => {
+      if (!origin) return callback(null, true);
+      const isAllowed =
+        frontendOrigins.includes(origin) ||
+        (origin.endsWith('.vercel.app') &&
+          frontendOrigins.some((fo) => fo.includes('vercel.app'))) ||
+        (process.env.NODE_ENV !== 'production' &&
+          (origin.startsWith('http://localhost:') || origin.startsWith('http://127.0.0.1:')));
+      callback(null, isAllowed);
+    },
     credentials: true,
   });
 
@@ -69,7 +83,7 @@ async function bootstrap() {
   }
 
   const port = process.env.PORT || 4000;
-  await app.listen(port);
+  await app.listen(port, '0.0.0.0');
 
   logger.log(`====================================================`);
   logger.log(` OgroniEdu API server running on: http://localhost:${port}`);

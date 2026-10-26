@@ -9,13 +9,7 @@ import {
 } from 'typeorm';
 
 export type NotificationCategoryType =
-  | 'booking'
-  | 'schedule'
-  | 'payment'
-  | 'learning'
-  | 'system'
-  | 'marketing'
-  | 'safety_notice';
+  'booking' | 'schedule' | 'payment' | 'learning' | 'system' | 'marketing' | 'safety_notice';
 
 export type NotificationChannelType = 'in_app' | 'email' | 'sms' | 'push' | 'whatsapp';
 

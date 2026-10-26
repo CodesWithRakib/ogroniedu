@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী ایڈু)  
 **Phase:** 09: Admin Operations, Organization Management & Platform Governance  
 **Date:** October 21, 2026  
-**Status:** Approved & Implemented  
+**Status:** Approved & Implemented
 
 ---
 
@@ -88,9 +88,12 @@ CREATE INDEX IF NOT EXISTS ix_audit_logs_organization ON audit_logs(organization
 ### 2.1 Multi-Tenant Organization Endpoints (`/api/v1/organizations`)
 
 #### `POST /api/v1/organizations`
+
 Registers a new organization entity. Caller automatically becomes the initial `owner`.
+
 - **Permissions**: `organization_owner`, `admin`, `super_admin`.
 - **Request Body**:
+
 ```json
 {
   "name": "Retina Medical Coaching Uttara",
@@ -104,7 +107,9 @@ Registers a new organization entity. Caller automatically becomes the initial `o
   "address": "House 12, Sector 4, Uttara, Dhaka"
 }
 ```
+
 - **Response (`201 Created`)**:
+
 ```json
 {
   "success": true,
@@ -120,25 +125,36 @@ Registers a new organization entity. Caller automatically becomes the initial `o
 ```
 
 #### `GET /api/v1/organizations`
+
 Lists organizations affiliated with the authenticated user.
+
 - **Permissions**: `organization_owner`, `organization_staff`, `tutor`.
 
 #### `GET /api/v1/organizations/:id`
+
 Retrieves tenant-scoped details for an organization.
+
 - **Permissions**: Verified members of the organization or platform administrators.
 
 #### `PATCH /api/v1/organizations/:id`
+
 Updates organization metadata.
+
 - **Permissions**: Organization `owner` or `admin`.
 
 #### `GET /api/v1/organizations/:id/members`
+
 Lists all members in the organization.
+
 - **Permissions**: Verified members.
 
 #### `POST /api/v1/organizations/:id/invitations`
+
 Dispatches an invitation to a staff member or tutor.
+
 - **Permissions**: Organization `owner` or `admin`.
 - **Request Body**:
+
 ```json
 {
   "email": "dr.nusrat@example.com",
@@ -147,8 +163,11 @@ Dispatches an invitation to a staff member or tutor.
 ```
 
 #### `POST /api/v1/organizations/invitations/accept`
+
 Accepts an invitation token and links the user to the organization.
+
 - **Request Body**:
+
 ```json
 {
   "token": "4f8a3b1c-9d2e-4f7a-8b3c-1d5e7f9a2b4c"
@@ -156,13 +175,18 @@ Accepts an invitation token and links the user to the organization.
 ```
 
 #### `DELETE /api/v1/organizations/:id/members/:memberId`
+
 Removes a member from the organization.
+
 - **Permissions**: Organization `owner` (cannot remove self without transferring ownership).
 
 #### `POST /api/v1/organizations/:id/transfer-ownership`
+
 Transfers the `owner` role to another active member.
+
 - **Permissions**: Current organization `owner`.
 - **Request Body**:
+
 ```json
 {
   "newOwnerUserId": "member-uuid",
@@ -175,13 +199,18 @@ Transfers the `owner` role to another active member.
 ### 2.2 Platform Administration Endpoints (`/api/v1/admin/organizations`)
 
 #### `GET /api/v1/admin/organizations`
+
 Platform-wide registry of all organizations with status and date filtering.
+
 - **Permissions**: `admin`, `super_admin`.
 
 #### `PATCH /api/v1/admin/organizations/:id/status`
+
 Approves, suspends, or archives an organization.
+
 - **Permissions**: `admin`, `super_admin`.
 - **Request Body**:
+
 ```json
 {
   "status": "active",
@@ -194,7 +223,9 @@ Approves, suspends, or archives an organization.
 ### 2.3 Safe Reporting & CSV Export Endpoint (`/api/v1/admin/reports/export`)
 
 #### `GET /api/v1/admin/reports/export`
+
 Generates formula-safe CSV export stream.
+
 - **Permissions**: `admin`, `super_admin`.
 - **Query Parameters**:
   - `reportType`: `'users' | 'bookings' | 'financial' | 'tutors' | 'organizations'`

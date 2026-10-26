@@ -217,10 +217,7 @@ export class OrganizationsService {
   /**
    * 5. List Organization Members
    */
-  async listMembers(
-    user: AuthenticatedUser,
-    orgId: string,
-  ): Promise<OrganizationMemberEntity[]> {
+  async listMembers(user: AuthenticatedUser, orgId: string): Promise<OrganizationMemberEntity[]> {
     if (!isAdminRole(user)) {
       await this.verifyMembership(user.id, orgId);
     }
@@ -448,9 +445,12 @@ export class OrganizationsService {
     const qb = this.orgRepo.createQueryBuilder('org').orderBy('org.createdAt', 'DESC');
 
     if (query.search) {
-      qb.andWhere('(org.name ILIKE :search OR org.slug ILIKE :search OR org.contactEmail ILIKE :search)', {
-        search: `%${query.search.trim()}%`,
-      });
+      qb.andWhere(
+        '(org.name ILIKE :search OR org.slug ILIKE :search OR org.contactEmail ILIKE :search)',
+        {
+          search: `%${query.search.trim()}%`,
+        },
+      );
     }
     if (query.type) {
       qb.andWhere('org.type = :type', { type: query.type });

@@ -22,7 +22,8 @@ function resolveTab(param: string | null, fallback?: AdminTabKey): AdminTabKey {
   if (clean === 'users') return 'users';
   if (clean === 'verification' || clean === 'tutors') return 'verification';
   if (clean === 'reconciliation') return 'reconciliation';
-  if (clean === 'support' || clean === 'disputes' || clean === 'tickets' || clean === 'safety') return 'support';
+  if (clean === 'support' || clean === 'disputes' || clean === 'tickets' || clean === 'safety')
+    return 'support';
   if (clean === 'bookings') return 'bookings';
   if (clean === 'overview') return 'overview';
   return fallback ?? 'overview';

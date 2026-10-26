@@ -115,7 +115,9 @@ export function GuardianChildSafetyRadar({
       <div className="space-y-2">
         <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
           <PhoneCall className="w-3.5 h-3.5 text-primary" />
-          <span>{isBn ? 'জরুরি হেল্পলাইন নম্বর (টোল ফ্রি)' : 'Emergency Helplines (Toll-Free)'}</span>
+          <span>
+            {isBn ? 'জরুরি হেল্পলাইন নম্বর (টোল ফ্রি)' : 'Emergency Helplines (Toll-Free)'}
+          </span>
         </div>
 
         <div className="grid grid-cols-2 gap-2.5">

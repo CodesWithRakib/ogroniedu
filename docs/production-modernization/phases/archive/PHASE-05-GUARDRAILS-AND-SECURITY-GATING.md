@@ -2,7 +2,7 @@
 
 **Date:** Day 4 of 7-day sprint  
 **Duration:** 1 day  
-**Owner:** Security Officer / Backend Lead  
+**Owner:** Security Officer / Backend Lead
 
 ---
 
@@ -14,15 +14,15 @@ Gate the test-dispatch endpoint, enforce JWT_SECRET fail-fast, and close RLD-006
 
 ## Scope
 
-| Task | Description |
-|---|---|
-| S5.1 | Add `TEST_DISPATCH_ENABLED` env variable to `env.validation.ts` (default: `false`) |
-| S5.2 | Update `notification.controller.ts:test-dispatch` to check `process.env.TEST_DISPATCH_ENABLED` — return 403 when false |
+| Task | Description                                                                                                                               |
+| ---- | ----------------------------------------------------------------------------------------------------------------------------------------- |
+| S5.1 | Add `TEST_DISPATCH_ENABLED` env variable to `env.validation.ts` (default: `false`)                                                        |
+| S5.2 | Update `notification.controller.ts:test-dispatch` to check `process.env.TEST_DISPATCH_ENABLED` — return 403 when false                    |
 | S5.3 | Remove dev-secret fallbacks in `notification.gateway.ts` and `files.service.ts` — make `JWT_SECRET` required; panic-log loudly if missing |
-| S5.4 | Add `JWT_SECRET` validation at app startup (production mode only) — exit with status 1 if not set |
-| S5.5 | Run app locally without `JWT_SECRET` — verify crash on startup (production config) |
-| S5.6 | Run app with `JWT_SECRET` set — verify normal startup |
-| S5.7 | Execute existing unit + integration tests — verify no breakage from env validation changes |
+| S5.4 | Add `JWT_SECRET` validation at app startup (production mode only) — exit with status 1 if not set                                         |
+| S5.5 | Run app locally without `JWT_SECRET` — verify crash on startup (production config)                                                        |
+| S5.6 | Run app with `JWT_SECRET` set — verify normal startup                                                                                     |
+| S5.7 | Execute existing unit + integration tests — verify no breakage from env validation changes                                                |
 
 ---
 
@@ -38,11 +38,11 @@ Gate the test-dispatch endpoint, enforce JWT_SECRET fail-fast, and close RLD-006
 
 ## Risk Mitigation
 
-| Risk | Mitigation |
-|---|---|
-| Developer workflow breakage (local dev without JWT_SECRET) | Dev mode has fallback path explicitly; `NODE_ENV=development` skips fail-fast check |
-| Test-dispatch used accidentally in staging | Ensure `TEST_DISPATCH_ENABLED` is never true outside explicitly allowed environments |
+| Risk                                                       | Mitigation                                                                           |
+| ---------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| Developer workflow breakage (local dev without JWT_SECRET) | Dev mode has fallback path explicitly; `NODE_ENV=development` skips fail-fast check  |
+| Test-dispatch used accidentally in staging                 | Ensure `TEST_DISPATCH_ENABLED` is never true outside explicitly allowed environments |
 
 ---
 
-*End of Phase 5.*
+_End of Phase 5._

@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Phase:** 09: Admin Operations, Organization Management & Platform Governance  
 **Date:** October 21, 2026  
-**Status:** Approved Specification  
+**Status:** Approved Specification
 
 ---
 
@@ -12,6 +12,7 @@
 In Bangladesh, a substantial proportion of secondary and higher-secondary tutoring is delivered through structured coaching centers, academic institutions, and tutoring agencies (e.g. UCC, Saifur's, Retinā, Mentors', local neighborhood coaching academies).
 
 The Organization model enables:
+
 1. Coaching centers and agencies to operate as verified business entities on OgroniEdu.
 2. Organization Owners (`organization_owner`) and Staff (`organization_staff`) to manage institutional tutors under their umbrella.
 3. Multi-tenant scoping ensuring an organization's rosters, internal metrics, and tuition bookings are isolated from competitor organizations.
@@ -36,12 +37,12 @@ stateDiagram-v2
 
 ### 2.1 State Definitions & Capabilities
 
-| State | Allowed Operations | Restricted Operations |
-| :--- | :--- | :--- |
-| **`pending_approval`** | Owner can view status, update contact metadata, upload verification documents. | Cannot invite tutors, cannot take institutional bookings, hidden from public directory. |
-| **`active`** | Full institutional capability: invite tutors, manage staff, accept bookings, view analytics. | None. Must maintain active trade license. |
-| **`suspended`** | Read-only access for existing records. All active bookings flagged for administrative review. | Cannot post new bookings, cannot invite members, search visibility suppressed. |
-| **`archived`** | Historical audit records preserved for 7 years (tax/accounting compliance). | Entire organization permanently decommissioned. |
+| State                  | Allowed Operations                                                                            | Restricted Operations                                                                   |
+| :--------------------- | :-------------------------------------------------------------------------------------------- | :-------------------------------------------------------------------------------------- |
+| **`pending_approval`** | Owner can view status, update contact metadata, upload verification documents.                | Cannot invite tutors, cannot take institutional bookings, hidden from public directory. |
+| **`active`**           | Full institutional capability: invite tutors, manage staff, accept bookings, view analytics.  | None. Must maintain active trade license.                                               |
+| **`suspended`**        | Read-only access for existing records. All active bookings flagged for administrative review. | Cannot post new bookings, cannot invite members, search visibility suppressed.          |
+| **`archived`**         | Historical audit records preserved for 7 years (tax/accounting compliance).                   | Entire organization permanently decommissioned.                                         |
 
 ---
 
@@ -104,12 +105,12 @@ erDiagram
 
 Within an organization, members hold one of four organizational roles:
 
-| Org Role | Description | Permissions |
-| :--- | :--- | :--- |
+| Org Role    | Description                                          | Permissions                                                                                                                                            |
+| :---------- | :--------------------------------------------------- | :----------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **`owner`** | Primary business proprietor or legal representative. | Full authority: update settings, invite/remove staff and tutors, transfer ownership, view billing. Exactly one active owner required per organization. |
-| **`admin`** | Executive branch manager or operations director. | Manage tutors, invite staff, manage class schedules, view organization analytics. Cannot transfer ownership. |
-| **`staff`** | Academic coordinator or student counselor. | View member directory, coordinate tutor schedules. Cannot alter billing or organization settings. |
-| **`tutor`** | Affiliated educator teaching under the organization. | Delivers sessions, views assigned institutional bookings. |
+| **`admin`** | Executive branch manager or operations director.     | Manage tutors, invite staff, manage class schedules, view organization analytics. Cannot transfer ownership.                                           |
+| **`staff`** | Academic coordinator or student counselor.           | View member directory, coordinate tutor schedules. Cannot alter billing or organization settings.                                                      |
+| **`tutor`** | Affiliated educator teaching under the organization. | Delivers sessions, views assigned institutional bookings.                                                                                              |
 
 ---
 
@@ -142,6 +143,7 @@ Cross-tenant data exposure (Insecure Direct Object Reference) is prevented at th
 ## 6. Ownership Transfer Protocol
 
 To safeguard organizations from hostile takeovers or orphaned accounts:
+
 1. Only the current verified `owner` can initiate an ownership transfer.
 2. The recipient must be an existing active member of the organization.
 3. The transfer requires an explicit confirmation payload and reason.

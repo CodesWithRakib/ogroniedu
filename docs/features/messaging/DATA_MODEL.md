@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Phase:** 08: Communication & Real-Time Messaging System  
 **Date:** October 20, 2026  
-**Status:** Approved & Implemented  
+**Status:** Approved & Implemented
 
 ---
 
@@ -58,19 +58,19 @@ erDiagram
 
 ## 2. Table Definition: `booking_messages`
 
-| Column | Data Type | Nullable | Default | Description |
-| :--- | :--- | :--- | :--- | :--- |
-| `id` | `UUID` | No | `gen_random_uuid()` | Primary Key (v4 UUID). |
-| `booking_id` | `UUID` | No | - | Foreign Key to `bookings(id)` ON DELETE CASCADE. |
-| `sender_user_id` | `UUID` | No | - | Foreign Key to `users(id)` ON DELETE RESTRICT. |
-| `recipient_user_id`| `UUID` | No | - | Foreign Key to `users(id)` ON DELETE RESTRICT. |
-| `content` | `TEXT` | No | - | Message body. Sanitized/redacted if violating content safety. |
-| `is_redacted` | `BOOLEAN` | No | `false` | True if automated filters modified the message text. |
-| `redaction_reason` | `TEXT` | Yes | `NULL` | Machine code indicating violation (e.g. `PHONE_NUMBER_SHARING`, `PAYMENT_SOLICITATION`). |
-| `attachment_asset_ids` | `UUID[]` | No | `'{}'::uuid[]` | Array of references to `attachment_assets(id)`. |
-| `metadata` | `JSONB` | No | `'{}'::jsonb` | Extensible metadata (system notice tags, client temporary IDs, edit logs). |
-| `read_at` | `TIMESTAMPTZ`| Yes | `NULL` | Timestamp when recipient viewed the message. |
-| `created_at` | `TIMESTAMPTZ`| No | `now()` | Timestamp of creation. |
+| Column                 | Data Type     | Nullable | Default             | Description                                                                              |
+| :--------------------- | :------------ | :------- | :------------------ | :--------------------------------------------------------------------------------------- |
+| `id`                   | `UUID`        | No       | `gen_random_uuid()` | Primary Key (v4 UUID).                                                                   |
+| `booking_id`           | `UUID`        | No       | -                   | Foreign Key to `bookings(id)` ON DELETE CASCADE.                                         |
+| `sender_user_id`       | `UUID`        | No       | -                   | Foreign Key to `users(id)` ON DELETE RESTRICT.                                           |
+| `recipient_user_id`    | `UUID`        | No       | -                   | Foreign Key to `users(id)` ON DELETE RESTRICT.                                           |
+| `content`              | `TEXT`        | No       | -                   | Message body. Sanitized/redacted if violating content safety.                            |
+| `is_redacted`          | `BOOLEAN`     | No       | `false`             | True if automated filters modified the message text.                                     |
+| `redaction_reason`     | `TEXT`        | Yes      | `NULL`              | Machine code indicating violation (e.g. `PHONE_NUMBER_SHARING`, `PAYMENT_SOLICITATION`). |
+| `attachment_asset_ids` | `UUID[]`      | No       | `'{}'::uuid[]`      | Array of references to `attachment_assets(id)`.                                          |
+| `metadata`             | `JSONB`       | No       | `'{}'::jsonb`       | Extensible metadata (system notice tags, client temporary IDs, edit logs).               |
+| `read_at`              | `TIMESTAMPTZ` | Yes      | `NULL`              | Timestamp when recipient viewed the message.                                             |
+| `created_at`           | `TIMESTAMPTZ` | No       | `now()`             | Timestamp of creation.                                                                   |
 
 ---
 

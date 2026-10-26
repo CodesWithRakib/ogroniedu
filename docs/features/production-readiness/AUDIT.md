@@ -1,4 +1,5 @@
 # Phase 10: Search, SEO, Performance, Accessibility & Production Readiness
+
 ## Platform & Infrastructure Audit
 
 **Date:** October 21, 2026  
@@ -9,25 +10,26 @@
 
 ## 1. Stack & Runtime Inventory
 
-| Layer | Technology | Actual Version | Configuration & Notes |
-| :--- | :--- | :--- | :--- |
-| **Monorepo Engine** | Turborepo | `2.11.7` | Remote caching disabled; strict topological task execution |
-| **Package Manager** | pnpm | `12.10.1` | Workspaces configured with strict hoisting isolation |
-| **Frontend Framework** | Next.js | `16.4.0` | App Router with Turbopack bundler, `output: 'standalone'` |
-| **Frontend Library** | React | `19.3.0` | React 19 Server/Client components, Concurrent mode |
-| **Internationalization** | next-intl | `4.14.9` | Dynamic locale routing `[locale]` (`en`, `bn`) with JSON catalogs |
-| **UI Design System** | Tailwind CSS / Radix UI | `4.3.3` / `1.7.0` | Radix headless primitives with custom Tailwind tokens |
-| **Backend Framework** | NestJS | `12.1.2` | Fastify-compatible Express engine, global exception filter |
-| **Database Engine** | PostgreSQL | `18.0` on port 5432 | Database `ogroniedu_dev` with 27 sequential migrations applied |
-| **ORM & Driver** | TypeORM / pg | `1.1.2` / `8.23.1` | Native connection pooling, decorator-driven schema reflection |
-| **Real-Time WebSockets**| Socket.IO | `4.8.4` | Namespace `/notifications`, room-based dispatch |
-| **Health Probes** | @nestjs/terminus | `12.1.0` | `/health/live` (process alive) and `/health/ready` (db + heap) |
+| Layer                    | Technology              | Actual Version      | Configuration & Notes                                             |
+| :----------------------- | :---------------------- | :------------------ | :---------------------------------------------------------------- |
+| **Monorepo Engine**      | Turborepo               | `2.11.7`            | Remote caching disabled; strict topological task execution        |
+| **Package Manager**      | pnpm                    | `12.10.1`           | Workspaces configured with strict hoisting isolation              |
+| **Frontend Framework**   | Next.js                 | `16.4.0`            | App Router with Turbopack bundler, `output: 'standalone'`         |
+| **Frontend Library**     | React                   | `19.3.0`            | React 19 Server/Client components, Concurrent mode                |
+| **Internationalization** | next-intl               | `4.14.9`            | Dynamic locale routing `[locale]` (`en`, `bn`) with JSON catalogs |
+| **UI Design System**     | Tailwind CSS / Radix UI | `4.3.3` / `1.7.0`   | Radix headless primitives with custom Tailwind tokens             |
+| **Backend Framework**    | NestJS                  | `12.1.2`            | Fastify-compatible Express engine, global exception filter        |
+| **Database Engine**      | PostgreSQL              | `18.0` on port 5432 | Database `ogroniedu_dev` with 27 sequential migrations applied    |
+| **ORM & Driver**         | TypeORM / pg            | `1.1.2` / `8.23.1`  | Native connection pooling, decorator-driven schema reflection     |
+| **Real-Time WebSockets** | Socket.IO               | `4.8.4`             | Namespace `/notifications`, room-based dispatch                   |
+| **Health Probes**        | @nestjs/terminus        | `12.1.0`            | `/health/live` (process alive) and `/health/ready` (db + heap)    |
 
 ---
 
 ## 2. Tutor Search & Discovery Audit
 
 ### Current Implementation
+
 - **Controller & Service:** `apps/api/src/modules/tutors/services/tutor-search.service.ts` provides `searchTutors(query: SearchTutorsQueryDto)`.
 - **Filters Supported:** Keyword `q`, `subjectId`, `educationLevelId`, `curriculumId`, `mode` (`online`, `in_person`, `hybrid`), `minPrice`, `maxPrice`, `minExperience`, `districtCode`, `upazilaCode`, `availableWeekday`, and Haversine geo-distance (`lat`, `lng`, `radiusKm`).
 - **Eligibility Enforced:** Hard filters require:
@@ -38,6 +40,7 @@
   - `u.status = 'active' AND u.deleted_at IS NULL`
 
 ### Discovered Search Inefficiencies & Bottlenecks
+
 1. **Unindexed Keyword `ILIKE` Scans:** Keyword search `q` executes 12 sequential `ILIKE '%term%'` disjunctions across `users`, `tutor_profiles`, `subjects`, `tutor_qualifications`, and `tutor_service_areas`.
 2. **Missing Active User Partial Index:** Table `users` only has a partial index for `status = 'deletion_pending'`. Every search query joins `users` on `u.status = 'active'`, forcing full scans as user count scales.
 3. **Missing Foreign-Key / Composite Indexes:**
@@ -50,6 +53,7 @@
 ## 3. SEO, Metadata & Discoverability Audit
 
 ### Discovered Issues
+
 1. **Missing Public Route Metadata:**
    - Public pages `[locale]/(public)/page.tsx`, `[locale]/(public)/tutors/page.tsx`, and `[locale]/(public)/tutors/[id]/page.tsx` were marked `'use client'` without exporting Server `generateMetadata`.
    - Web crawlers received generic fallback titles without tutor name, subjects, or localized Bengali/English copy.
@@ -89,6 +93,7 @@
 ## 6. Audit Verdict & Remediation Roadmap
 
 The platform architecture is robust and modular, but requires targeted optimizations in:
+
 1. Database indexing (PostgreSQL `pg_trgm`, composite filter indexes).
 2. Server-side metadata, canonical URLs, and structured JSON-LD schemas.
 3. Comprehensive robots and dynamic sitemap generation.

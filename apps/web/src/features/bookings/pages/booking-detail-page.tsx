@@ -30,7 +30,12 @@ import {
 } from '@/store/services/bookings-api';
 import { useGetSessionsQuery, useLazyGetIcsCalendarQuery } from '@/store/services/sessions-api';
 import { useGetDisputesQuery } from '@/store/services/trust-api';
-import { SafetyReportModal, TutorReplacementModal, ReviewModal, DisputeModal } from '@/features/trust';
+import {
+  SafetyReportModal,
+  TutorReplacementModal,
+  ReviewModal,
+  DisputeModal,
+} from '@/features/trust';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDate } from '@/lib/format';
@@ -44,9 +49,18 @@ export interface BookingDetailPageProps {
 const DISPUTE_REASONS: Record<string, { bn: string; en: string }> = {
   tutor_no_show: { bn: 'শিক্ষক ক্লাসে অনুপস্থিত (No-Show)', en: 'Tutor No-Show' },
   poor_quality: { bn: 'ক্লাসের মান আশানুরূপ নয়', en: 'Substandard Teaching Quality' },
-  misconduct: { bn: 'অশোভন আচরণ বা নীতিবিরুদ্ধ কর্মকাণ্ড', en: 'Misconduct or Inappropriate Behavior' },
-  incomplete_curriculum: { bn: 'নির্ধারিত পাঠ্যক্রম সম্পন্ন করা হয়নি', en: 'Incomplete Curriculum Coverage' },
-  technical_failure: { bn: 'কারিগরি ত্রুটির কারণে ক্লাস সম্পন্ন হয়নি', en: 'Technical Failure / Connection Lost' },
+  misconduct: {
+    bn: 'অশোভন আচরণ বা নীতিবিরুদ্ধ কর্মকাণ্ড',
+    en: 'Misconduct or Inappropriate Behavior',
+  },
+  incomplete_curriculum: {
+    bn: 'নির্ধারিত পাঠ্যক্রম সম্পন্ন করা হয়নি',
+    en: 'Incomplete Curriculum Coverage',
+  },
+  technical_failure: {
+    bn: 'কারিগরি ত্রুটির কারণে ক্লাস সম্পন্ন হয়নি',
+    en: 'Technical Failure / Connection Lost',
+  },
   other: { bn: 'অন্যান্য সুনির্দিষ্ট কারণ', en: 'Other' },
 };
 
@@ -608,7 +622,13 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   {isBn ? 'দাবীকৃত রিফান্ড' : 'Claimed Refund'}
                 </span>
                 <span className="text-xs font-black text-slate-900 mt-0.5 block font-mono">
-                  ৳{formatLocalizedNumber(dispute?.disputedAmountMinor ? Math.round(Number(dispute.disputedAmountMinor) / 100) : priceBdt, locale)}
+                  ৳
+                  {formatLocalizedNumber(
+                    dispute?.disputedAmountMinor
+                      ? Math.round(Number(dispute.disputedAmountMinor) / 100)
+                      : priceBdt,
+                    locale,
+                  )}
                 </span>
               </div>
 
@@ -632,7 +652,8 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   {isBn ? 'তদন্তকারী কর্তৃপক্ষ' : 'Audit Authority'}
                 </span>
                 <span className="text-xs font-bold text-slate-900 mt-0.5 block">
-                  {dispute?.resolver?.displayName || (isBn ? 'অগ্রণী অডিট টিম' : 'Ogroni Audit Team')}
+                  {dispute?.resolver?.displayName ||
+                    (isBn ? 'অগ্রণী অডিট টিম' : 'Ogroni Audit Team')}
                 </span>
               </div>
             </div>
@@ -652,9 +673,15 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                 <div className="p-3.5 rounded-xl bg-emerald-100/60 border border-emerald-300 text-xs">
                   <div className="flex items-center gap-1.5 font-bold text-emerald-950 mb-1">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" />
-                    <span>{isBn ? 'অ্যাডমিন অডিট রিপোর্ট ও নিষ্পত্তির কারণ:' : 'Admin Audit Verdict & Resolution Notes:'}</span>
+                    <span>
+                      {isBn
+                        ? 'অ্যাডমিন অডিট রিপোর্ট ও নিষ্পত্তির কারণ:'
+                        : 'Admin Audit Verdict & Resolution Notes:'}
+                    </span>
                   </div>
-                  <p className="text-emerald-950 leading-relaxed font-semibold">{dispute.resolutionNotes}</p>
+                  <p className="text-emerald-950 leading-relaxed font-semibold">
+                    {dispute.resolutionNotes}
+                  </p>
                 </div>
               )}
             </div>

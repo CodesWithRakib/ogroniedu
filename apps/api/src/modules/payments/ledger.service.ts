@@ -2,13 +2,13 @@ import type { PostJournalParams, LedgerIntegrityResult } from './interfaces/ledg
 import { Injectable, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource, EntityManager } from 'typeorm';
-import {
-  LedgerAccountEntity,
-  LedgerJournalEntity,
-  LedgerEntryEntity,
-} from './entities';
+import { LedgerAccountEntity, LedgerJournalEntity, LedgerEntryEntity } from './entities';
 
-export type { JournalEntryInput, PostJournalParams, LedgerIntegrityResult } from './interfaces/ledger.interfaces';
+export type {
+  JournalEntryInput,
+  PostJournalParams,
+  LedgerIntegrityResult,
+} from './interfaces/ledger.interfaces';
 
 function isUniqueViolation(error: unknown): boolean {
   return (

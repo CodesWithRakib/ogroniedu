@@ -13,7 +13,9 @@ export default function AdminMessagesRoute({ params }: { params: Promise<{ local
   return (
     <AdminLayout
       locale={locale}
-      title={isBn ? 'মাস্টার মেসেজিং ও সেফগার্ড মনিটরিং' : 'Omniscient Messaging & Safeguard Monitor'}
+      title={
+        isBn ? 'মাস্টার মেসেজিং ও সেফগার্ড মনিটরিং' : 'Omniscient Messaging & Safeguard Monitor'
+      }
       subtitle={
         isBn
           ? 'শিক্ষার্থী, শিক্ষক ও অভিভাবকদের মধ্যকার সমস্ত রিয়েল-টাইম বার্তালাপ ও অফ-প্ল্যাটফর্ম যোগাযোগের চেষ্টা লাইভ পর্যবেক্ষণ করুন'

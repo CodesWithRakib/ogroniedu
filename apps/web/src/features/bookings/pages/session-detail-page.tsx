@@ -340,7 +340,9 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
               </span>
               <span>•</span>
               <span>
-                <span className="text-slate-500">{locale === 'bn' ? 'শিক্ষার্থী:' : 'Student:'}</span>{' '}
+                <span className="text-slate-500">
+                  {locale === 'bn' ? 'শিক্ষার্থী:' : 'Student:'}
+                </span>{' '}
                 <strong className="text-slate-900 font-bold">{studentName}</strong>
               </span>
             </p>

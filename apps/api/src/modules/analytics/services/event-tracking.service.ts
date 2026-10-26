@@ -1,7 +1,11 @@
 import { Injectable, Logger, BadRequestException } from '@nestjs/common';
 import { InjectDataSource } from '@nestjs/typeorm';
 import { DataSource } from 'typeorm';
-import { TrackEventDto, AllowedAnalyticsEvent, CLIENT_PERMITTED_EVENTS } from '../dto/track-event.dto';
+import {
+  TrackEventDto,
+  AllowedAnalyticsEvent,
+  CLIENT_PERMITTED_EVENTS,
+} from '../dto/track-event.dto';
 import { sanitizeAnalyticsProperties } from '../utils/event-sanitizer.util';
 import type { AuthenticatedUser } from '../../../common/decorators/current-user.decorator';
 
@@ -19,7 +23,10 @@ export class EventTrackingService {
    * Enforces that clients can only emit user-interaction events (searches, profile views, booking start).
    * Clients CANNOT claim server-authoritative events (such as booking_confirmed or session_completed).
    */
-  async trackClientEvent(dto: TrackEventDto, actor?: AuthenticatedUser): Promise<{ recorded: boolean }> {
+  async trackClientEvent(
+    dto: TrackEventDto,
+    actor?: AuthenticatedUser,
+  ): Promise<{ recorded: boolean }> {
     if (!CLIENT_PERMITTED_EVENTS.has(dto.eventName)) {
       throw new BadRequestException(
         `Clients are not permitted to emit server-authoritative event: '${dto.eventName}'.`,
@@ -51,7 +58,9 @@ export class EventTrackingService {
       );
       return { recorded: true };
     } catch (err) {
-      this.logger.warn(`Failed to record client analytics event '${dto.eventName}': ${(err as Error).message}`);
+      this.logger.warn(
+        `Failed to record client analytics event '${dto.eventName}': ${(err as Error).message}`,
+      );
       return { recorded: false };
     }
   }
@@ -92,7 +101,9 @@ export class EventTrackingService {
       );
       return true;
     } catch (err) {
-      this.logger.warn(`Failed to record server analytics event '${eventName}': ${(err as Error).message}`);
+      this.logger.warn(
+        `Failed to record server analytics event '${eventName}': ${(err as Error).message}`,
+      );
       return false;
     }
   }

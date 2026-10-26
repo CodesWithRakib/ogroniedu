@@ -7,7 +7,10 @@ import { makeStore } from '../src/store';
 import bnMessages from '../messages/bn.json';
 import enMessages from '../messages/en.json';
 import { PaymentReceipt } from '../src/features/payments/components/paymentReceipt';
-import { PaymentCheckoutView, type PaymentOrderDetails } from '../src/components/payments/PaymentCheckoutView';
+import {
+  PaymentCheckoutView,
+  type PaymentOrderDetails,
+} from '../src/components/payments/PaymentCheckoutView';
 import type { PaymentReceiptData } from '../src/features/payments/types/payment-checkout.types';
 
 function renderWithProviders(node: React.ReactElement, locale: 'bn' | 'en' = 'bn'): string {

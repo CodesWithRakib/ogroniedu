@@ -7,10 +7,7 @@ import { AuditModule } from '../audit/audit.module';
 import { RateLimiterService } from '../auth/rate-limiter.service';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([BetaFeedbackEntity]),
-    forwardRef(() => AuditModule),
-  ],
+  imports: [TypeOrmModule.forFeature([BetaFeedbackEntity]), forwardRef(() => AuditModule)],
   controllers: [FeedbackController, AdminFeedbackController],
   providers: [FeedbackService, RateLimiterService],
   exports: [FeedbackService],

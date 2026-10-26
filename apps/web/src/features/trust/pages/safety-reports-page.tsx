@@ -48,10 +48,10 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
   const metrics = useMemo(() => {
     const total = reports.length;
     const criticalOrHigh = reports.filter(
-      (r) => r.severity === 'critical' || r.severity === 'high'
+      (r) => r.severity === 'critical' || r.severity === 'high',
     ).length;
     const protectiveHolds = reports.filter(
-      (r) => r.status === 'action_taken' || r.status === 'escalated'
+      (r) => r.status === 'action_taken' || r.status === 'escalated',
     ).length;
     const resolved = reports.filter((r) => r.status === 'resolved').length;
     return { total, criticalOrHigh, protectiveHolds, resolved };
@@ -94,7 +94,9 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
               <div className="flex items-center gap-2 text-rose-700">
                 <ShieldAlert className="w-5 h-5 shrink-0 animate-pulse" />
                 <span className="text-xs font-black uppercase tracking-wider">
-                  {isBn ? '২৪/৭ জরুরি নিরাপত্তা ও শিশু সুরক্ষা নীতি' : 'Zero-Tolerance Safeguarding Protocol'}
+                  {isBn
+                    ? '২৪/৭ জরুরি নিরাপত্তা ও শিশু সুরক্ষা নীতি'
+                    : 'Zero-Tolerance Safeguarding Protocol'}
                 </span>
               </div>
               <h3 className="text-lg sm:text-xl font-black text-slate-900">
@@ -147,7 +149,9 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                   <span className="text-[10px] font-bold text-rose-800 block">
                     {isBn ? 'জাতীয় শিশু হেল্পলাইন (টোল-ফ্রি)' : 'National Child Helpline'}
                   </span>
-                  <span className="text-xl font-black text-slate-900 tracking-wider font-mono">১০৯৮</span>
+                  <span className="text-xl font-black text-slate-900 tracking-wider font-mono">
+                    ১০৯৮
+                  </span>
                 </div>
                 <span className="text-xs font-bold text-rose-700 bg-white border border-rose-200 px-2.5 py-1 rounded-xl">
                   {isBn ? 'ডায়াল' : 'Call'}
@@ -163,7 +167,9 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                   <span className="text-[10px] font-bold text-amber-800 block">
                     {isBn ? 'জরুরি পুলিশ ও উদ্ধার' : 'Police & Emergency'}
                   </span>
-                  <span className="text-xl font-black text-slate-900 tracking-wider font-mono">৯৯৯</span>
+                  <span className="text-xl font-black text-slate-900 tracking-wider font-mono">
+                    ৯৯৯
+                  </span>
                 </div>
                 <span className="text-xs font-bold text-amber-700 bg-white border border-amber-200 px-2.5 py-1 rounded-xl">
                   {isBn ? 'ডায়াল' : 'Call'}
@@ -179,7 +185,9 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                   <span className="text-[10px] font-bold text-blue-800 block">
                     {isBn ? 'অগ্রণী এডু সিকিউরিটি ডেস্ক' : 'OgroniEdu Triage'}
                   </span>
-                  <span className="text-sm font-black text-slate-900 font-mono">+৮৮০ ৯৬১২-৩৪৫৬৭৮</span>
+                  <span className="text-sm font-black text-slate-900 font-mono">
+                    +৮৮০ ৯৬১২-৩৪৫৬৭৮
+                  </span>
                 </div>
                 <span className="text-xs font-bold text-blue-700 bg-white border border-blue-200 px-2.5 py-1 rounded-xl">
                   {isBn ? 'ডায়াল' : 'Call'}
@@ -360,7 +368,9 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                             ? 'bg-rose-600 text-white'
                             : report.status === 'resolved' || report.status === 'closed'
                               ? 'bg-emerald-600 text-white'
-                              : report.status === 'under_investigation' || report.status === 'under_review' || report.status === 'triaged'
+                              : report.status === 'under_investigation' ||
+                                  report.status === 'under_review' ||
+                                  report.status === 'triaged'
                                 ? 'bg-blue-600 text-white'
                                 : 'bg-amber-600 text-white'
                         }`}
@@ -383,7 +393,9 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                         {isBn ? 'নিরাপত্তা টিমের তদন্ত ও নিষ্পত্তি নোট:' : 'Investigation Outcome:'}
                       </span>
-                      <p className="text-slate-700 leading-relaxed font-medium">{report.resolutionNotes}</p>
+                      <p className="text-slate-700 leading-relaxed font-medium">
+                        {report.resolutionNotes}
+                      </p>
                     </div>
                   )}
                 </Card>

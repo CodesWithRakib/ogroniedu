@@ -2,21 +2,21 @@
 
 **Date:** 2026-10-24  
 **Duration:** 7 days  
-**Owner:** Project Manager  
+**Owner:** Project Manager
 
 ---
 
 ## Sprint Calendar
 
-| Day | Date | Focus | Owner |
-|---|---|---|---|
-| 1 | Oct 25 | Auth Package Extraction | Backend Lead |
-| 2 | Oct 26 | Payments Package + File Download | Backend Lead |
-| 3 | Oct 27 | Security Gating + JWT_SECRET Fail-Fast | Security/Backend |
-| 4 | Oct 28 | DB Constraints & Indexes | DB Team |
-| 5 | Oct 29 | Tutors/Learning Package Refactors | Backend Lead |
-| 6 | Oct 30 | Deprecated Cleanup + TDD/Tests | Backend/QA |
-| 7 | Nov 1 | Release Readiness + Sign-off | Release Lead |
+| Day | Date   | Focus                                  | Owner            |
+| --- | ------ | -------------------------------------- | ---------------- |
+| 1   | Oct 25 | Auth Package Extraction                | Backend Lead     |
+| 2   | Oct 26 | Payments Package + File Download       | Backend Lead     |
+| 3   | Oct 27 | Security Gating + JWT_SECRET Fail-Fast | Security/Backend |
+| 4   | Oct 28 | DB Constraints & Indexes               | DB Team          |
+| 5   | Oct 29 | Tutors/Learning Package Refactors      | Backend Lead     |
+| 6   | Oct 30 | Deprecated Cleanup + TDD/Tests         | Backend/QA       |
+| 7   | Nov 1  | Release Readiness + Sign-off           | Release Lead     |
 
 ---
 
@@ -31,17 +31,17 @@
 
 ## Capacity Allocation
 
-| Owner | Available Days | Days Committed | Utilization |
-|---|---|---|---|
-| Backend Lead | 7 | 7 | 100% |
-| QA Lead | 7 | 5 | 71% |
-| Security Officer | 7 | 2 | 29% |
-| DB Team | 7 | 2 | 29% |
-| Release Lead | 7 | 3 | 43% |
-| Frontend Lead | 7 | 0 | 0% (deferred) |
+| Owner            | Available Days | Days Committed | Utilization   |
+| ---------------- | -------------- | -------------- | ------------- |
+| Backend Lead     | 7              | 7              | 100%          |
+| QA Lead          | 7              | 5              | 71%           |
+| Security Officer | 7              | 2              | 29%           |
+| DB Team          | 7              | 2              | 29%           |
+| Release Lead     | 7              | 3              | 43%           |
+| Frontend Lead    | 7              | 0              | 0% (deferred) |
 
 **Overall team utilization**: ~70% (within healthy <80% threshold)
 
 ---
 
-*End of Phase 12.*
+_End of Phase 12._

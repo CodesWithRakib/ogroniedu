@@ -31,7 +31,8 @@ export function OnboardingGate({
   React.useEffect(() => {
     if (!data || !pathname) return;
     if (!onboardingRequiredForPath(pathname)) return;
-    if (data.status === 'not_started' || data.isComplete || data.status === 'pending_review') return;
+    if (data.status === 'not_started' || data.isComplete || data.status === 'pending_review')
+      return;
     router.replace(withLocale('/onboarding', locale));
   }, [data, pathname, router, locale]);
 

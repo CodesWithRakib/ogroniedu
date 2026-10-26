@@ -49,14 +49,12 @@ export function mapAdminBookings(rows: unknown[]): AdminBookingItem[] {
     );
 
     const subject = b.subject as UnknownRecord | undefined;
-    const subjectName = str(
-      subject?.nameBn ?? subject?.name ?? b.subjectName,
-      '—',
-    );
+    const subjectName = str(subject?.nameBn ?? subject?.name ?? b.subjectName, '—');
 
-    const priceBdt = b.pricePerSessionMinor != null
-      ? Number(b.pricePerSessionMinor) / 100
-      : Number(b.priceBdt ?? b.amountMinor ?? 0);
+    const priceBdt =
+      b.pricePerSessionMinor != null
+        ? Number(b.pricePerSessionMinor) / 100
+        : Number(b.priceBdt ?? b.amountMinor ?? 0);
 
     return {
       id: String(b.id),

@@ -2,14 +2,7 @@
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
-import {
-  Building2,
-  Users,
-  CheckCircle,
-  Clock,
-  Save,
-  Plus,
-} from 'lucide-react';
+import { Building2, Users, CheckCircle, Clock, Save, Plus } from 'lucide-react';
 import {
   useGetMyOrganizationsQuery,
   useUpdateOrganizationMutation,
@@ -38,7 +31,9 @@ export function OrganizationDashboardPageView() {
   const [newName, setNewName] = useState('');
   const [newSlug, setNewSlug] = useState('');
   const [newEmail, setNewEmail] = useState('');
-  const [newType, setNewType] = useState<'coaching_center' | 'tutoring_agency' | 'academic_institution'>('coaching_center');
+  const [newType, setNewType] = useState<
+    'coaching_center' | 'tutoring_agency' | 'academic_institution'
+  >('coaching_center');
 
   useEffect(() => {
     if (currentOrg) {
@@ -102,7 +97,8 @@ export function OrganizationDashboardPageView() {
         <Building2 className="w-12 h-12 text-primary mx-auto" />
         <h2 className="text-xl font-bold text-foreground">No Organization Registered</h2>
         <p className="text-xs text-muted-foreground">
-          Register your coaching center, tutoring academy, or educational institution to begin recruiting tutors and accepting institutional tuition bookings.
+          Register your coaching center, tutoring academy, or educational institution to begin
+          recruiting tutors and accepting institutional tuition bookings.
         </p>
         <button
           onClick={() => setIsRegistering(true)}
@@ -127,7 +123,9 @@ export function OrganizationDashboardPageView() {
 
         <form onSubmit={handleRegister} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1">Organization Name</label>
+            <label className="block text-xs font-medium text-foreground mb-1">
+              Organization Name
+            </label>
             <input
               type="text"
               required
@@ -147,7 +145,9 @@ export function OrganizationDashboardPageView() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1">Unique Slug (URL Handle)</label>
+            <label className="block text-xs font-medium text-foreground mb-1">
+              Unique Slug (URL Handle)
+            </label>
             <input
               type="text"
               required
@@ -159,10 +159,16 @@ export function OrganizationDashboardPageView() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1">Organization Type</label>
+            <label className="block text-xs font-medium text-foreground mb-1">
+              Organization Type
+            </label>
             <select
               value={newType}
-              onChange={(e) => setNewType(e.target.value as 'coaching_center' | 'tutoring_agency' | 'academic_institution')}
+              onChange={(e) =>
+                setNewType(
+                  e.target.value as 'coaching_center' | 'tutoring_agency' | 'academic_institution',
+                )
+              }
               className="w-full text-xs p-2.5 rounded-lg border border-border bg-surface text-foreground"
             >
               <option value="coaching_center">Coaching Center</option>
@@ -172,7 +178,9 @@ export function OrganizationDashboardPageView() {
           </div>
 
           <div>
-            <label className="block text-xs font-medium text-foreground mb-1">Official Contact Email</label>
+            <label className="block text-xs font-medium text-foreground mb-1">
+              Official Contact Email
+            </label>
             <input
               type="email"
               required

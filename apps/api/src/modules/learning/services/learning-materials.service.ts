@@ -1,4 +1,7 @@
-import type { LearningMaterialView, MaterialDownload } from '../interfaces/learning-materials.interfaces';
+import type {
+  LearningMaterialView,
+  MaterialDownload,
+} from '../interfaces/learning-materials.interfaces';
 import {
   BadRequestException,
   ForbiddenException,
@@ -41,7 +44,10 @@ import {
   MAX_LEARNING_FILE_SIZE_BYTES,
 } from '../constants/learning-file.constants';
 
-export type { LearningMaterialView, MaterialDownload } from '../interfaces/learning-materials.interfaces';
+export type {
+  LearningMaterialView,
+  MaterialDownload,
+} from '../interfaces/learning-materials.interfaces';
 
 /**
  * Lesson resources. Files are written under a configurable private directory,

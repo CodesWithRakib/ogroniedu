@@ -143,7 +143,9 @@ export class SettlementService {
               .createQueryBuilder(EscrowHoldEntity, 'hold')
               .setLock('pessimistic_write')
               .where('hold.bookingId = :bookingId', { bookingId: booking.id })
-              .andWhere('hold.status IN (:...statuses)', { statuses: ['held', 'partially_released'] })
+              .andWhere('hold.status IN (:...statuses)', {
+                statuses: ['held', 'partially_released'],
+              })
               .orderBy('hold.createdAt', 'ASC')
               .getOne();
 

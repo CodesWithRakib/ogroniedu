@@ -400,7 +400,9 @@ describe('BookingMessagesService ABAC & Content Safety Tests (Phase 12)', () => 
         roles: ['guardian'],
       };
       // Active guardian link
-      mockGuardianLinkRepo.find.mockResolvedValue([{ guardianUserId: guardianId, status: 'active' }]);
+      mockGuardianLinkRepo.find.mockResolvedValue([
+        { guardianUserId: guardianId, status: 'active' },
+      ]);
 
       const msg = await service.sendMessage(guardianUser, bookingId, {
         content: 'Hello, I am the guardian. The class time is confirmed.',

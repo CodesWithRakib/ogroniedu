@@ -29,6 +29,10 @@ export class EnvironmentVariables {
 
   @IsString()
   @IsOptional()
+  CORS_ORIGINS?: string;
+
+  @IsString()
+  @IsOptional()
   DB_HOST: string = 'localhost';
 
   @Type(() => Number)

@@ -23,8 +23,7 @@ describe('Environment Configuration & Startup Secret Validation Tests', () => {
       SUPABASE_URL: 'https://placeholder-project.supabase.co',
       SUPABASE_PUBLISHABLE_KEY: 'test-supabase-publishable-key-placeholder',
       SUPABASE_SECRET_KEY: 'test-supabase-secret-key-placeholder',
-      SUPABASE_JWKS_URL:
-        'https://placeholder-project.supabase.co/auth/v1/.well-known/jwks.json',
+      SUPABASE_JWKS_URL: 'https://placeholder-project.supabase.co/auth/v1/.well-known/jwks.json',
       JWT_SECRET: 'production-strong-jwt-secret-key-32-chars-long!',
       FRONTEND_URL: 'https://ogroniedu.com',
     });

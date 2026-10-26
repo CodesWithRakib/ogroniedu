@@ -2,7 +2,7 @@
 
 **Date:** Following Phase 8  
 **Duration:** 1 day  
-**Owner:** QA Lead / Backend  
+**Owner:** QA Lead / Backend
 
 ---
 
@@ -14,14 +14,14 @@ Enforce TDD discipline across the codebase, achieving coverage targets for core 
 
 ## Scope
 
-| Metric | Before | Target | Action |
-|---|---|---|---|
-| Auth coverage | ~92% | ≥95% | Add tests for AccountAccessService edge cases |
-| Bookings coverage | ~88% | ≥95% | Add tests for expiry sweep, conflict detection |
-| Payments coverage | ~89% | ≥95% | Add tests for refund flow, ledger invariants |
-| Learning coverage | ~76% | ≥90% | Add tests for assignment lifecycle, grading |
-| Trust coverage | ~84% | ≥90% | Add tests for dispute filing, safety report flow |
-| Notifications coverage | ~67% | ≥90% | Add tests for dispatch, preferences, real-time fanout |
+| Metric                 | Before | Target | Action                                                |
+| ---------------------- | ------ | ------ | ----------------------------------------------------- |
+| Auth coverage          | ~92%   | ≥95%   | Add tests for AccountAccessService edge cases         |
+| Bookings coverage      | ~88%   | ≥95%   | Add tests for expiry sweep, conflict detection        |
+| Payments coverage      | ~89%   | ≥95%   | Add tests for refund flow, ledger invariants          |
+| Learning coverage      | ~76%   | ≥90%   | Add tests for assignment lifecycle, grading           |
+| Trust coverage         | ~84%   | ≥90%   | Add tests for dispute filing, safety report flow      |
+| Notifications coverage | ~67%   | ≥90%   | Add tests for dispatch, preferences, real-time fanout |
 
 ### Action Items
 
@@ -63,4 +63,4 @@ Enforce TDD discipline across the codebase, achieving coverage targets for core 
 
 ---
 
-*End of Phase 9.*
+_End of Phase 9._

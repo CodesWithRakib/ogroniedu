@@ -3,7 +3,7 @@
 **Platform:** OgroniEdu (অগ্রণী এডু)  
 **Phase:** 08: Communication & Real-Time Messaging System  
 **Date:** October 20, 2026  
-**Status:** Approved & Implemented  
+**Status:** Approved & Implemented
 
 ---
 
@@ -14,7 +14,7 @@ stateDiagram-v2
     [*] --> Draft : User types in UI
     Draft --> Submitting : Send clicked (optimistic UI render)
     Submitting --> Sanitizing : Payload received at API gateway
-    
+
     state Sanitizing {
         [*] --> NormalizeBengaliDigits
         NormalizeBengaliDigits --> InspectPhonePatterns
@@ -24,7 +24,7 @@ stateDiagram-v2
     }
 
     Sanitizing --> Persisting : Content verified / sanitized
-    
+
     state Persisting {
         [*] --> DBTransaction
         DBTransaction --> InsertBookingMessage
@@ -33,7 +33,7 @@ stateDiagram-v2
     }
 
     Persisting --> Dispatched : DB commit successful
-    
+
     state Dispatched {
         [*] --> BroadcastSocketRoom : booking_chat:id
         [*] --> BroadcastUserRoom : user:recipientId
@@ -51,6 +51,7 @@ stateDiagram-v2
 ## 2. Phase-by-Phase Technical Walkthrough
 
 ### Phase 1: Client Submission & Optimistic UI
+
 1. The user types content and selects optional verified attachment IDs.
 2. When the user hits Send:
    - The web client immediately creates a temporary local message with a client UUID, `createdAt: new Date().toISOString()`, and status `'sending'`.
@@ -59,6 +60,7 @@ stateDiagram-v2
 3. The client dispatches `POST /api/v1/conversations/:bookingId/messages`.
 
 ### Phase 2: Server-Side Ingestion, Normalization & Sanitization
+
 1. **Authentication & Authorization**:
    - `JwtAuthGuard` authenticates the caller.
    - `BookingMessagesService` verifies caller is a valid participant or authorized guardian.
@@ -75,13 +77,16 @@ stateDiagram-v2
      - A structured security audit log is emitted to alert platform safety supervisors.
 
 ### Phase 3: Transactional Persistence & Outbox Registration
+
 1. In a single PostgreSQL transaction:
    - Insert row into `booking_messages` with sanitized content, `attachment_asset_ids`, and `metadata`.
    - Insert row into `notification_outbox` with event type `booking.message_sent`, payload containing message metadata, and `idempotency_key = booking_message:${message.id}`.
 2. Transaction commits.
 
 ### Phase 4: Dual-Route Real-Time Broadcast
+
 Immediately following database commit, `NotificationGateway` triggers two simultaneous WebSocket broadcasts:
+
 1. **Thread Room Broadcast (`booking_chat:${bookingId}`)**:
    - Dispatches `new_chat_message` to all connected users actively viewing the thread.
    - Allows open chat windows on both sides to display the new message instantly.
@@ -90,10 +95,12 @@ Immediately following database commit, `NotificationGateway` triggers two simult
    - Triggers desktop toast notifications and increments the unread badge on the top navigation bar even if the user is currently on a different page.
 
 ### Phase 5: Asynchronous Delivery Fallback
+
 1. An outbox background worker polls `notification_outbox`.
 2. If the recipient does not acknowledge the real-time socket message within 120 seconds and has not viewed the thread, the outbox worker triggers an offline push notification or SMS alert based on user preferences.
 
 ### Phase 6: Read Receipt Synchronization
+
 1. When the recipient views the message in an active viewport:
    - The client emits either HTTP `POST /api/v1/conversations/:bookingId/read-all` or socket event `mark_thread_read`.
    - PostgreSQL executes:

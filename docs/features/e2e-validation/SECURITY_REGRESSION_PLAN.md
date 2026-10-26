@@ -32,23 +32,29 @@ graph TD
 ## 2. OWASP Top 10 Regression Verification
 
 ### 2.1 Broken Access Control & IDOR Prevention
+
 - **Threat:** Malicious student attempting to inspect another student's bookings, attendance records, or guardian profile by tampering with URL parameters (`/api/v1/bookings/:id`).
 - **Defense:** Every repository query verifies ownership:
   ```typescript
-  qb.where('booking.id = :id', { id })
-    .andWhere('(booking.studentUserId = :userId OR booking.tutorUserId = :userId OR guardian.id = :userId)', { userId });
+  qb.where('booking.id = :id', { id }).andWhere(
+    '(booking.studentUserId = :userId OR booking.tutorUserId = :userId OR guardian.id = :userId)',
+    { userId },
+  );
   ```
 - **Assertion:** Requesting foreign resources responds with HTTP 404 (or 403) with zero data leakage.
 
 ### 2.2 Privilege Escalation Defense
+
 - **Threat:** A standard user or tutor submits an update payload attempting to elevate their role to `admin` or `super_admin`.
 - **Defense:** The `user_roles` table is updated exclusively through administrative provisioning services gated by `@Roles('super_admin')`. User profile update DTOs strictly forbid role properties via `forbidNonWhitelisted: true`.
 
 ### 2.3 Injection Defense (SQL, NoSQL, Shell)
+
 - **Threat:** SQL injection payloads embedded in search queries, subject names, or bio descriptions.
 - **Defense:** All database queries utilize TypeORM parameterized expressions (`:param`). Raw string concatenation in SQL queries is prohibited across all workspaces.
 
 ### 2.4 Cryptographic Failures & Token Security
+
 - **Threat:** JWT token theft, rainbow table attacks, or session hijacking.
 - **Defense:**
   - Passwords hashed using salted argon2/bcrypt.
@@ -57,6 +63,7 @@ graph TD
   - Auth cookies configured with `HttpOnly; Secure; SameSite=Strict`.
 
 ### 2.5 Cross-Site Scripting (XSS) & Content Security Policy (CSP)
+
 - **Threat:** Malicious scripts injected via tutor reviews, chat messages, or assignment submissions.
 - **Defense:**
   - Input sanitization via `DOMPurify` / regex filters.

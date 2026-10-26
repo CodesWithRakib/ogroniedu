@@ -3,11 +3,12 @@
 **Document Reference:** `docs/TESTING_STRATEGY.md`  
 **Last Updated:** 2026-10-22  
 **Test Frameworks:** Vitest / Jest (Unit & Integration), Supertest (API Integration), Playwright / Chrome DevTools (E2E & Automated Browser Testing)  
-**Current Test Suite Baseline:** **1,175 Automated Tests Passing (100% Pass Rate)**  
-- `apps/api`: **938 Tests Passing**  
-- `apps/web`: **237 Tests Passing**  
-- TypeScript Diagnostics: **0 Errors**  
-- Lint Diagnostics: **0 Errors**  
+**Current Test Suite Baseline:** **1,175 Automated Tests Passing (100% Pass Rate)**
+
+- `apps/api`: **938 Tests Passing**
+- `apps/web`: **237 Tests Passing**
+- TypeScript Diagnostics: **0 Errors**
+- Lint Diagnostics: **0 Errors**
 - Smoke Test Probes: **8/8 Passing**
 
 ---
@@ -31,21 +32,22 @@ flowchart TD
 
 ## 2. Test Execution Commands & Environments
 
-| Test Target | CLI Command | Scope / Description | Average Execution Time |
-|---|---|---|:---:|
-| **Full Monorepo Unit/Integ** | `pnpm test` | Runs all Jest/Vitest test suites across `@ogroniedu/api`, `@ogroniedu/web`, `@ogroniedu/contracts` | ~45s |
-| **API Backend Suites** | `pnpm --filter @ogroniedu/api test` | 938 unit, service, controller, and database tests | ~32s |
-| **Web Frontend Suites** | `pnpm --filter @ogroniedu/web test` | 237 component, hook, Redux slice, and utility tests | ~14s |
-| **Monorepo Typecheck** | `pnpm typecheck` | Strict TypeScript compiler check across all workspaces | ~12s |
-| **Code Linting** | `pnpm lint` | ESLint rules enforcement (0 warnings / 0 errors) | ~8s |
-| **Smoke Test Probes** | `node scripts/smoke-test.mjs --target local` | 8 critical runtime probes against ports 4000 & 5000 | ~3s |
-| **E2E Browser Journeys** | `pnpm --filter @ogroniedu/web test:e2e` | Playwright multi-role browser journeys | ~90s |
+| Test Target                  | CLI Command                                  | Scope / Description                                                                                | Average Execution Time |
+| ---------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------------------- | :--------------------: |
+| **Full Monorepo Unit/Integ** | `pnpm test`                                  | Runs all Jest/Vitest test suites across `@ogroniedu/api`, `@ogroniedu/web`, `@ogroniedu/contracts` |          ~45s          |
+| **API Backend Suites**       | `pnpm --filter @ogroniedu/api test`          | 938 unit, service, controller, and database tests                                                  |          ~32s          |
+| **Web Frontend Suites**      | `pnpm --filter @ogroniedu/web test`          | 237 component, hook, Redux slice, and utility tests                                                |          ~14s          |
+| **Monorepo Typecheck**       | `pnpm typecheck`                             | Strict TypeScript compiler check across all workspaces                                             |          ~12s          |
+| **Code Linting**             | `pnpm lint`                                  | ESLint rules enforcement (0 warnings / 0 errors)                                                   |          ~8s           |
+| **Smoke Test Probes**        | `node scripts/smoke-test.mjs --target local` | 8 critical runtime probes against ports 4000 & 5000                                                |          ~3s           |
+| **E2E Browser Journeys**     | `pnpm --filter @ogroniedu/web test:e2e`      | Playwright multi-role browser journeys                                                             |          ~90s          |
 
 ---
 
 ## 3. Test Categories & Verification Standards
 
 ### 3.1 Unit Testing (Deterministic, Isolated)
+
 - **Execution Target:** Vitest / Jest in-memory.
 - **Scope:**
   - Business rule calculators (cancellation refund percentages, platform fee tiers, reliability score deductions).
@@ -54,6 +56,7 @@ flowchart TD
 - **Standard:** Fast execution (< 5ms per test), 0 external network/database dependencies.
 
 ### 3.2 API Integration & Persistence Testing
+
 - **Execution Target:** Supertest against local PostgreSQL 18 (`ogroniedu_dev` test schema).
 - **Scope:**
   - NestJS controllers and service layers.
@@ -62,6 +65,7 @@ flowchart TD
   - Outbox Events: Verifying that `outbox` records are inserted atomically with domain entities.
 
 ### 3.3 WebSocket & Real-Time Isolation Testing
+
 - **Execution Target:** Socket.IO client mock suites.
 - **Scope:**
   - Authenticated handshake with JWT bearer token.
@@ -69,6 +73,7 @@ flowchart TD
   - Whiteboard synchronization: Verifying broadcast of canvas draw strokes, clear commands, and undo/redo stacks.
 
 ### 3.4 Headful Browser Automation & DevTools Protocol
+
 - **Execution Target:** Automated headful Chrome DevTools testing protocol (per system instructions).
 - **Scope:**
   - Live page rendering on `http://localhost:5000`.

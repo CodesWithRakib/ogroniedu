@@ -145,9 +145,9 @@ describe('FilesService Unit & Ownership Tests', () => {
 
       // Token generated with negative TTL (already expired)
       const tokenObj = service.generateSignedAccessToken('file-123', ownerUser.id, -10);
-      await expect(
-        service.verifyDownloadAccess('file-123', tokenObj.accessToken),
-      ).rejects.toThrow(/expired/i);
+      await expect(service.verifyDownloadAccess('file-123', tokenObj.accessToken)).rejects.toThrow(
+        /expired/i,
+      );
     });
 
     it('NEGATIVE TEST: should reject tampered HMAC signature', async () => {
@@ -159,18 +159,18 @@ describe('FilesService Unit & Ownership Tests', () => {
       parts[3] = 'ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff';
       const tamperedToken = Buffer.from(parts.join(':')).toString('base64url');
 
-      await expect(
-        service.verifyDownloadAccess('file-123', tamperedToken),
-      ).rejects.toThrow(/signature/i);
+      await expect(service.verifyDownloadAccess('file-123', tamperedToken)).rejects.toThrow(
+        /signature/i,
+      );
     });
 
     it('NEGATIVE TEST: should reject token for mismatched fileId', async () => {
       mockFileRepo.findOne.mockResolvedValue(fileRecord);
 
       const tokenObj = service.generateSignedAccessToken('other-file-999', ownerUser.id, 3600);
-      await expect(
-        service.verifyDownloadAccess('file-123', tokenObj.accessToken),
-      ).rejects.toThrow(/mismatch/i);
+      await expect(service.verifyDownloadAccess('file-123', tokenObj.accessToken)).rejects.toThrow(
+        /mismatch/i,
+      );
     });
 
     it('should allow authenticated owner to download directly without token', async () => {
@@ -200,9 +200,9 @@ describe('FilesService Unit & Ownership Tests', () => {
     it('NEGATIVE TEST: should reject unauthorized non-owner without token', async () => {
       mockFileRepo.findOne.mockResolvedValue(fileRecord);
 
-      await expect(service.verifyDownloadAccess('file-123', undefined, unrelatedUser)).rejects.toThrow(
-        ForbiddenException,
-      );
+      await expect(
+        service.verifyDownloadAccess('file-123', undefined, unrelatedUser),
+      ).rejects.toThrow(ForbiddenException);
     });
   });
 });

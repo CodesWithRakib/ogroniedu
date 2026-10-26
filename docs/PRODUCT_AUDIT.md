@@ -5,7 +5,7 @@
 **Target Environment:** Local / Staging / Production Architecture  
 **Active Database:** PostgreSQL 18 (`ogroniedu_dev` on Port 5432)  
 **Backend API:** NestJS 12.1.2 on Port 4000  
-**Frontend Application:** Next.js 16.4.0 (Turbopack, App Router, React 19) on Port 5000  
+**Frontend Application:** Next.js 16.4.0 (Turbopack, App Router, React 19) on Port 5000
 
 ---
 
@@ -14,6 +14,7 @@
 OgroniEdu is an integrated education management, tutor discovery, and academic safeguarding SaaS platform engineered specifically for the Bangladeshi market. It provides a structured, trust-first ecosystem connecting **Students (শিক্ষার্থী)**, **Guardians (অভিভাবক)**, **Tutors (শিক্ষক)**, and **Administrative/Institutional Stakeholders**.
 
 This document is the result of a rigorous, read-only Phase 0 audit of the entire codebase, including:
+
 - **36 Backend Controllers** and **511 Backend TypeScript Files** (`apps/api/src/modules/`).
 - **83 Frontend Routes** across public, student, guardian, tutor, and admin portals (`apps/web/src/app/`).
 - **19 RTK Query API Client Slices** (`apps/web/src/store/services/`).
@@ -26,6 +27,7 @@ This document is the result of a rigorous, read-only Phase 0 audit of the entire
 ## 2. Answers to the 12 Mandatory Audit Questions
 
 ### Question 1: What is already implemented?
+
 - **Core Architecture & Monorepo Foundation**: Turborepo, pnpm workspaces, strict TypeScript configuration, shared contract definitions (`@ogroniedu/contracts`), and centralized database migrations (`@ogroniedu/database`).
 - **Bilingual Interface**: Seamless Next.js App Router i18n (`/bn/*` and `/en/*`) with comprehensive Bengali and English dictionaries.
 - **Multi-Role Authentication**: JWT access tokens (15m expiration), refresh tokens in HttpOnly cookies, bcrypt password hashing, auth epoch token revocation, and contact verification (OTP).
@@ -40,7 +42,9 @@ This document is the result of a rigorous, read-only Phase 0 audit of the entire
 ---
 
 ### Question 2: What is incomplete, broken, disconnected, or missing?
+
 While core engines are implemented and tests pass, several real-world workflow disconnections, gaps, and usability limitations exist:
+
 1. **Real Payment Gateway Integration**: Payments use mock/sandbox workflows; live integration with production SSLCommerz, bKash Merchant API, and Nagad Gateway requires credential gating and hardened webhook signature handling.
 2. **Video Classroom Live Streaming**: The "Online Classroom" currently generates Google Meet links or links to `/classroom/[id]`; an in-browser WebRTC / LiveKit video integration is stubbed with collaborative whiteboard, but lacks real-time multi-peer media relay.
 3. **Automated Notification Fallbacks**: Real-time notifications work over WebSockets, but SMS gateway (Greenweb/Banglalink) and SMTP email delivery fallbacks are currently mocked via Outbox events without production SMS aggregator API keys.
@@ -53,6 +57,7 @@ While core engines are implemented and tests pass, several real-world workflow d
 ### Question 3: Which user roles and routes actually exist?
 
 #### Canonical Roles Implemented in Code & Database:
+
 1. `student` — Enrolled learner (independent 18+ or guardian-managed).
 2. `guardian` — Parent or legal guardian managing minor students.
 3. `tutor` — Academic educator with verified credentials.
@@ -64,6 +69,7 @@ While core engines are implemented and tests pass, several real-world workflow d
 9. `organization_staff` — Institutional academic coordinator.
 
 #### Actual Route Inventory (83 Total Routes):
+
 - **Public Website (10 routes)**: `/`, `/contact`, `/faq`, `/how-it-works`, `/pricing`, `/privacy`, `/safety`, `/terms`, `/tutors`, `/tutors/[id]`.
 - **Authentication & Onboarding (6 routes)**: `/login`, `/register`, `/forgot-password`, `/magic-link`, `/onboarding`, `/profile`.
 - **Student Portal (5 routes)**: `/dashboard/student`, `/dashboard/student/learning`, `/dashboard/student/sessions`, `/dashboard/student/requests`, `/dashboard/student/payments`.
@@ -76,6 +82,7 @@ While core engines are implemented and tests pass, several real-world workflow d
 ---
 
 ### Question 4: How should each role's sidebar and navigation be organized?
+
 Navigation must be structured logically by role persona, avoiding duplicate items, broken links, or excessive nesting.
 
 ```mermaid
@@ -130,6 +137,7 @@ graph LR
 ---
 
 ### Question 5: What does each feature do, and how does it connect to other features?
+
 1. **Tutor Search & Filtering**: Connects to Academic Taxonomy (subjects/levels) and Tutor Verification (only `approved` + `published` profiles displayed). Drives inbound Booking Requests.
 2. **Booking Requests**: Connects Student/Guardian to Tutor. On acceptance, triggers Payment Order creation and Escrow Hold.
 3. **Escrow Payments**: Connects bKash/Nagad/SSL payment orders to the Double-Entry Ledger. Locks funds in customer escrow liability until session completion.
@@ -142,7 +150,8 @@ graph LR
 ---
 
 ### Question 6: What is the correct end-to-end user journey for each role?
-*(Detailed visual workflows and sequence diagrams are preserved in `docs/diagrams/` and expanded in `docs/USER_JOURNEYS.md`).*
+
+_(Detailed visual workflows and sequence diagrams are preserved in `docs/diagrams/` and expanded in `docs/USER_JOURNEYS.md`)._
 
 - **Student**: Discovery → Registration → Profile Setup → Tutor Search → Request Booking → Attend Class in Digital Whiteboard Room → Submit Homework → Give Tutor Review.
 - **Guardian**: Registration → Child Linkage & Consent → Search Vetted Tutor → Pay Escrow → Monitor Attendance & Graded Homework → Authorize Disbursement or Request Replacement.
@@ -153,6 +162,7 @@ graph LR
 ---
 
 ### Question 7: Which business rules or state transitions are missing or incorrect?
+
 1. **Session Rescheduling Lead Time**: Rescheduling currently permits adjustments up to the session start; it should enforce a minimum **2-hour advance notice** to avoid tutor disruption.
 2. **Guardian Replacement Window Enforcement**: Replacement guarantee is specified as "within 3 sessions or 14 days", but the database requires a strict constraint checking `completed_sessions_count <= 3` at the time of replacement case creation.
 3. **Tutor Hourly Rate Bounds**: Minimum rate is 300 BDT/hour, but maximum rate should be capped at 10,000 BDT/hour to prevent accidental input errors or fraudulent transactions.
@@ -161,6 +171,7 @@ graph LR
 ---
 
 ### Question 8: Which frontend/backend/API/database integrations require improvement?
+
 1. **Dynamic Telemetry in Admin Overview**: Completed in previous session; verified working with live SQL aggregation for GMV, Escrow, and Verified Tutors.
 2. **Real-Time Notification Synchronization**: RTK Query tag invalidation should listen to WebSocket socket events (`notification.received`, `booking.updated`) so badge counters update without manual browser refresh.
 3. **File Upload Antivirus & MIME Validation**: Document uploads in `files.controller.ts` check extensions, but should add binary magic-number verification to block disguised executables.
@@ -169,7 +180,9 @@ graph LR
 ---
 
 ### Question 9: Which diagrams and documentation should be created or updated?
+
 All diagrams in `docs/diagrams/` have been audited and updated to valid, renderable Mermaid:
+
 - `docs/diagrams/system-context.mmd` (Overall system context)
 - `docs/diagrams/student-journey.mmd` (Student end-to-end lifecycle)
 - `docs/diagrams/guardian-journey.mmd` (Guardian multi-child lifecycle)
@@ -183,15 +196,17 @@ All diagrams in `docs/diagrams/` have been audited and updated to valid, rendera
 ---
 
 ### Question 10: Which issues are critical, and why?
-- **P0 - Ledger Imbalance Risk**: Any financial operation touching `payment_orders` must write to `ledger_entries` atomically inside a PostgreSQL transaction. *(Verified: `LedgerService` enforces double-entry invariant with advisory locks).*
-- **P0 - Child Safety Safeguarding**: Allegations of physical safety or harassment must trigger immediate automated tutor holds. *(Verified: `SafetyReportsService` applies `tutor_safety_hold` automatically on critical reports).*
-- **P1 - Tenant IDOR Vulnerabilities**: Users must not access bookings, payments, or child records of other families. *(Verified: NestJS guards enforce ownership checks across all endpoints).*
-- **P1 - Webhook Idempotency**: Payment callbacks from external gateways must reject duplicate event IDs and verify cryptographic signatures. *(Verified: `PaymentWebhooksService` enforces signature checks).*
+
+- **P0 - Ledger Imbalance Risk**: Any financial operation touching `payment_orders` must write to `ledger_entries` atomically inside a PostgreSQL transaction. _(Verified: `LedgerService` enforces double-entry invariant with advisory locks)._
+- **P0 - Child Safety Safeguarding**: Allegations of physical safety or harassment must trigger immediate automated tutor holds. _(Verified: `SafetyReportsService` applies `tutor_safety_hold` automatically on critical reports)._
+- **P1 - Tenant IDOR Vulnerabilities**: Users must not access bookings, payments, or child records of other families. _(Verified: NestJS guards enforce ownership checks across all endpoints)._
+- **P1 - Webhook Idempotency**: Payment callbacks from external gateways must reject duplicate event IDs and verify cryptographic signatures. _(Verified: `PaymentWebhooksService` enforces signature checks)._
 
 ---
 
 ### Question 11: What is the dependency-aware, prioritized implementation roadmap?
-*(See `docs/IMPLEMENTATION_ROADMAP.md` for full breakdown across Phase 1 through Phase 14).*
+
+_(See `docs/IMPLEMENTATION_ROADMAP.md` for full breakdown across Phase 1 through Phase 14)._
 
 1. **Phase 1: Critical Foundations & Environmental Parity** (Security guards, DB migrations, seed data, secrets gating).
 2. **Phase 2: Information Architecture & Navigation Cohesion** (Sidebar groups, breadcrumbs, 83-route integrity).
@@ -211,7 +226,9 @@ All diagrams in `docs/diagrams/` have been audited and updated to valid, rendera
 ---
 
 ### Question 12: What are the exact acceptance criteria and browser tests for each phase?
+
 Detailed in `docs/TESTING_STRATEGY.md` and `docs/REGRESSION_CHECKLIST.md`. Every phase requires:
+
 - **0 TypeScript errors** (`pnpm typecheck`).
 - **0 Linter warnings/errors** (`pnpm lint`).
 - **100% Unit test pass rate** across web and API.

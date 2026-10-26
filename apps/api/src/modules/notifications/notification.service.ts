@@ -1,10 +1,4 @@
-import {
-  Injectable,
-  Logger,
-  NotFoundException,
-  ForbiddenException,
-  Inject,
-} from '@nestjs/common';
+import { Injectable, Logger, NotFoundException, ForbiddenException, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, IsNull } from 'typeorm';
 import {
@@ -38,7 +32,10 @@ import {
 import { NotificationEntity } from './entities/notification.entity';
 import { NotificationDeliveryEntity } from './entities/notification-delivery.entity';
 import { NotificationPreferenceEntity } from './entities/notification-preference.entity';
-import { NOTIFICATION_BROADCASTER, type INotificationBroadcaster } from './interfaces/notification-broadcaster.interface';
+import {
+  NOTIFICATION_BROADCASTER,
+  type INotificationBroadcaster,
+} from './interfaces/notification-broadcaster.interface';
 import { Optional } from '@nestjs/common';
 import { decodeCursor, encodeCursor, type CursorPayload } from '../../common/pagination/pagination';
 

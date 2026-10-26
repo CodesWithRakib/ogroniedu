@@ -1,11 +1,4 @@
-import {
-  IsIn,
-  IsString,
-  IsNotEmpty,
-  MinLength,
-  MaxLength,
-  IsOptional,
-} from 'class-validator';
+import { IsIn, IsString, IsNotEmpty, MinLength, MaxLength, IsOptional } from 'class-validator';
 import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 import type { DisputeResolutionType } from '../entities/booking-dispute.entity';
 

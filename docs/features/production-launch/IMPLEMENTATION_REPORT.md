@@ -13,15 +13,15 @@ In strict compliance with the **Production Safety Rule**, the platform has been 
 
 ## 2. Monorepo & Infrastructure Audit
 
-| Area | Verified Architecture | Operational Readiness |
-| :--- | :--- | :--- |
-| **Monorepo** | pnpm v12.10.1 workspaces: `@ogroniedu/api`, `@ogroniedu/web`, `@ogroniedu/database`, `@ogroniedu/shared`, `@ogroniedu/tsconfig` | Verified Clean |
-| **API Runtime** | NestJS v11.0.1 on Node.js v26.8.1 with Express adapter | Verified Running (port 4000) |
-| **Frontend Web** | Next.js v15.5.3 (App Router, React 19, strict light theme) | Verified Running (port 5000) |
-| **Database** | PostgreSQL 18 (Local dev) & Neon Cloud PostgreSQL (Serverless) | 29/29 Migrations Applied |
-| **Storage** | Supabase Storage (S3-compatible, private buckets, presigned URLs) | Configured & Verified |
-| **Realtime** | Socket.IO Gateway (`/notifications` namespace) | Gateway Active & Verified |
-| **Payments** | SSLCOMMERZ & bKash | Sandbox Mode Enforced |
+| Area             | Verified Architecture                                                                                                           | Operational Readiness        |
+| :--------------- | :------------------------------------------------------------------------------------------------------------------------------ | :--------------------------- |
+| **Monorepo**     | pnpm v12.10.1 workspaces: `@ogroniedu/api`, `@ogroniedu/web`, `@ogroniedu/database`, `@ogroniedu/shared`, `@ogroniedu/tsconfig` | Verified Clean               |
+| **API Runtime**  | NestJS v11.0.1 on Node.js v26.8.1 with Express adapter                                                                          | Verified Running (port 4000) |
+| **Frontend Web** | Next.js v15.5.3 (App Router, React 19, strict light theme)                                                                      | Verified Running (port 5000) |
+| **Database**     | PostgreSQL 18 (Local dev) & Neon Cloud PostgreSQL (Serverless)                                                                  | 29/29 Migrations Applied     |
+| **Storage**      | Supabase Storage (S3-compatible, private buckets, presigned URLs)                                                               | Configured & Verified        |
+| **Realtime**     | Socket.IO Gateway (`/notifications` namespace)                                                                                  | Gateway Active & Verified    |
+| **Payments**     | SSLCOMMERZ & bKash                                                                                                              | Sandbox Mode Enforced        |
 
 ---
 
@@ -35,14 +35,14 @@ In strict compliance with the **Production Safety Rule**, the platform has been 
 
 ## 4. Key Files and Modules Changed
 
-| File Path | Scope of Changes |
-| :--- | :--- |
-| `apps/api/src/modules/health/health.controller.ts` | Multi-path binding (`/health/live`, `/health/liveness`, `/health/ready`, `/health/readiness`, `/api/health/*`), strict production dependency error reporting (HTTP 503 on DB disconnect). |
-| `apps/api/test/health.spec.ts` | Added unit tests verifying strict production failure behavior and offline fallback. |
-| `apps/api/test/production-smoke.spec.ts` | **New automated test suite** (8 tests) verifying orchestrator probes, production environment secret rejection, zero-leakage exception filters, and auth rejection. |
-| `packages/database/scripts/run-migrations.mjs` | Added native `process.loadEnvFile()` support for automatic `.env` discovery across monorepo directories. |
-| `scripts/smoke-test.mjs` | Upgraded deployment smoke verification harness from 3 to **8 comprehensive non-destructive checks** (Liveness, Readiness, Web availability, Public stats, Auth rejection, Taxonomy, SEO metadata, and Zero-leakage). |
-| `docs/features/production-launch/*` | Authored complete 14-document Phase 13 operational release suite. |
+| File Path                                          | Scope of Changes                                                                                                                                                                                                     |
+| :------------------------------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `apps/api/src/modules/health/health.controller.ts` | Multi-path binding (`/health/live`, `/health/liveness`, `/health/ready`, `/health/readiness`, `/api/health/*`), strict production dependency error reporting (HTTP 503 on DB disconnect).                            |
+| `apps/api/test/health.spec.ts`                     | Added unit tests verifying strict production failure behavior and offline fallback.                                                                                                                                  |
+| `apps/api/test/production-smoke.spec.ts`           | **New automated test suite** (8 tests) verifying orchestrator probes, production environment secret rejection, zero-leakage exception filters, and auth rejection.                                                   |
+| `packages/database/scripts/run-migrations.mjs`     | Added native `process.loadEnvFile()` support for automatic `.env` discovery across monorepo directories.                                                                                                             |
+| `scripts/smoke-test.mjs`                           | Upgraded deployment smoke verification harness from 3 to **8 comprehensive non-destructive checks** (Liveness, Readiness, Web availability, Public stats, Auth rejection, Taxonomy, SEO metadata, and Zero-leakage). |
+| `docs/features/production-launch/*`                | Authored complete 14-document Phase 13 operational release suite.                                                                                                                                                    |
 
 ---
 
@@ -74,11 +74,13 @@ In strict compliance with the **Production Safety Rule**, the platform has been 
 ## 8. Automated Smoke Test Outcomes
 
 Executed command:
+
 ```bash
 node scripts/smoke-test.mjs --target local
 ```
 
 **Results (8/8 Passed):**
+
 - [x] API Liveness Probe (`/api/health/liveness`): **PASSED** (status: ok)
 - [x] API Readiness Probe (`/api/health/readiness`): **PASSED** (HTTP 200 OK)
 - [x] Web Frontend Landing Page (`/`): **PASSED** (HTTP 307)
@@ -92,14 +94,14 @@ node scripts/smoke-test.mjs --target local
 
 ## 9. Quality Gates Execution Summary
 
-| Quality Gate | Command Executed | Result | Status |
-| :--- | :--- | :--- | :--- |
-| **Unit & Integration Tests** | `pnpm --filter @ogroniedu/api test` | 128 test files passed | **100% PASS** |
-| **Production Smoke Spec** | `pnpm --filter @ogroniedu/api test test/production-smoke.spec.ts` | 8 passed tests | **100% PASS** |
-| **Health Spec** | `pnpm --filter @ogroniedu/api test test/health.spec.ts` | 4 passed tests | **100% PASS** |
-| **Static Type Check** | `pnpm typecheck` | 0 errors across 5 workspaces | **100% PASS** |
-| **ESLint Quality Gate** | `pnpm lint` | 0 errors, 0 warnings across 980+ files | **100% PASS** |
-| **Documentation Integrity** | `node scripts/validate-documentation.js` | 354 documentation files valid | **100% PASS** |
+| Quality Gate                 | Command Executed                                                  | Result                                 | Status        |
+| :--------------------------- | :---------------------------------------------------------------- | :------------------------------------- | :------------ |
+| **Unit & Integration Tests** | `pnpm --filter @ogroniedu/api test`                               | 128 test files passed                  | **100% PASS** |
+| **Production Smoke Spec**    | `pnpm --filter @ogroniedu/api test test/production-smoke.spec.ts` | 8 passed tests                         | **100% PASS** |
+| **Health Spec**              | `pnpm --filter @ogroniedu/api test test/health.spec.ts`           | 4 passed tests                         | **100% PASS** |
+| **Static Type Check**        | `pnpm typecheck`                                                  | 0 errors across 5 workspaces           | **100% PASS** |
+| **ESLint Quality Gate**      | `pnpm lint`                                                       | 0 errors, 0 warnings across 980+ files | **100% PASS** |
+| **Documentation Integrity**  | `node scripts/validate-documentation.js`                          | 354 documentation files valid          | **100% PASS** |
 
 ---
 

@@ -26,7 +26,10 @@ describe('Phase 11: 9 Canonical Roles Authorization Matrix Integration Tests', (
     rolesGuard = new RolesGuard(reflector);
   });
 
-  const createMockContext = (userRoles: string[], endpointAllowedRoles?: string[]): ExecutionContext => {
+  const createMockContext = (
+    userRoles: string[],
+    endpointAllowedRoles?: string[],
+  ): ExecutionContext => {
     vi.spyOn(reflector, 'getAllAndOverride').mockReturnValue(endpointAllowedRoles);
     return {
       getHandler: vi.fn(),
@@ -100,7 +103,13 @@ describe('Phase 11: 9 Canonical Roles Authorization Matrix Integration Tests', (
     });
 
     it('DENIES tutor, student, guardian, and org roles from safeguarding reports', () => {
-      const deniedRoles = ['tutor', 'student', 'guardian', 'organization_owner', 'organization_staff'];
+      const deniedRoles = [
+        'tutor',
+        'student',
+        'guardian',
+        'organization_owner',
+        'organization_staff',
+      ];
       for (const role of deniedRoles) {
         const ctx = createMockContext([role], safeguardingClearanceRoles);
         expect(() => rolesGuard.canActivate(ctx)).toThrow(ForbiddenException);
@@ -115,14 +124,20 @@ describe('Phase 11: 9 Canonical Roles Authorization Matrix Integration Tests', (
     });
 
     it('DENIES student and guardian from submitting tutor verification', () => {
-      expect(() => rolesGuard.canActivate(createMockContext(['student'], ['tutor']))).toThrow(ForbiddenException);
-      expect(() => rolesGuard.canActivate(createMockContext(['guardian'], ['tutor']))).toThrow(ForbiddenException);
+      expect(() => rolesGuard.canActivate(createMockContext(['student'], ['tutor']))).toThrow(
+        ForbiddenException,
+      );
+      expect(() => rolesGuard.canActivate(createMockContext(['guardian'], ['tutor']))).toThrow(
+        ForbiddenException,
+      );
     });
 
     it('allows admin and compliance_reviewer to review verification dossiers', () => {
       const reviewerEndpoint = ['admin', 'compliance_reviewer'];
       expect(rolesGuard.canActivate(createMockContext(['admin'], reviewerEndpoint))).toBe(true);
-      expect(rolesGuard.canActivate(createMockContext(['compliance_reviewer'], reviewerEndpoint))).toBe(true);
+      expect(
+        rolesGuard.canActivate(createMockContext(['compliance_reviewer'], reviewerEndpoint)),
+      ).toBe(true);
     });
   });
 
@@ -133,8 +148,12 @@ describe('Phase 11: 9 Canonical Roles Authorization Matrix Integration Tests', (
     });
 
     it('DENIES tutor and student from accessing guardian management endpoints', () => {
-      expect(() => rolesGuard.canActivate(createMockContext(['tutor'], ['guardian']))).toThrow(ForbiddenException);
-      expect(() => rolesGuard.canActivate(createMockContext(['student'], ['guardian']))).toThrow(ForbiddenException);
+      expect(() => rolesGuard.canActivate(createMockContext(['tutor'], ['guardian']))).toThrow(
+        ForbiddenException,
+      );
+      expect(() => rolesGuard.canActivate(createMockContext(['student'], ['guardian']))).toThrow(
+        ForbiddenException,
+      );
     });
   });
 
@@ -143,11 +162,20 @@ describe('Phase 11: 9 Canonical Roles Authorization Matrix Integration Tests', (
 
     it('allows admin and super_admin to inspect financial ledgers', () => {
       expect(rolesGuard.canActivate(createMockContext(['admin'], financeStaffRoles))).toBe(true);
-      expect(rolesGuard.canActivate(createMockContext(['super_admin'], financeStaffRoles))).toBe(true);
+      expect(rolesGuard.canActivate(createMockContext(['super_admin'], financeStaffRoles))).toBe(
+        true,
+      );
     });
 
     it('DENIES non-finance roles from reading raw double-entry ledgers', () => {
-      const deniedRoles = ['student', 'guardian', 'tutor', 'support_agent', 'organization_owner', 'organization_staff'];
+      const deniedRoles = [
+        'student',
+        'guardian',
+        'tutor',
+        'support_agent',
+        'organization_owner',
+        'organization_staff',
+      ];
       for (const role of deniedRoles) {
         const ctx = createMockContext([role], financeStaffRoles);
         expect(() => rolesGuard.canActivate(ctx)).toThrow(ForbiddenException);
@@ -162,13 +190,20 @@ describe('Phase 11: 9 Canonical Roles Authorization Matrix Integration Tests', (
     });
 
     it('allows organization_staff to manage assigned roster bookings', () => {
-      const ctx = createMockContext(['organization_staff'], ['organization_owner', 'organization_staff']);
+      const ctx = createMockContext(
+        ['organization_staff'],
+        ['organization_owner', 'organization_staff'],
+      );
       expect(rolesGuard.canActivate(ctx)).toBe(true);
     });
 
     it('DENIES independent tutors and students from organization management', () => {
-      expect(() => rolesGuard.canActivate(createMockContext(['tutor'], ['organization_owner']))).toThrow(ForbiddenException);
-      expect(() => rolesGuard.canActivate(createMockContext(['student'], ['organization_owner']))).toThrow(ForbiddenException);
+      expect(() =>
+        rolesGuard.canActivate(createMockContext(['tutor'], ['organization_owner'])),
+      ).toThrow(ForbiddenException);
+      expect(() =>
+        rolesGuard.canActivate(createMockContext(['student'], ['organization_owner'])),
+      ).toThrow(ForbiddenException);
     });
   });
 });

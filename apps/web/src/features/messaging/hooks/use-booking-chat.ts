@@ -33,7 +33,10 @@ export function useBookingChat(bookingId: string, locale: Locale) {
   const [olderCursor, setOlderCursor] = React.useState<string | null>(null);
   const [liveAppends, setLiveAppends] = React.useState<BookingMessage[]>([]);
   const [readReceipts, setReadReceipts] = React.useState<
-    Map<string, { readAt: string; readers: Map<string, { userId: string; name: string; seenAt: string }> }>
+    Map<
+      string,
+      { readAt: string; readers: Map<string, { userId: string; name: string; seenAt: string }> }
+    >
   >(new Map());
   const [typingUser, setTypingUser] = React.useState<string | null>(null);
   const typingTimerRef = React.useRef<NodeJS.Timeout | null>(null);

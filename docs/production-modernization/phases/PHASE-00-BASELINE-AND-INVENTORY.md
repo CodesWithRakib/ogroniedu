@@ -9,11 +9,13 @@
 ---
 
 ## 1. Objective and Business Justification
+
 Establish an evidence-based, verified baseline across the existing OgroniEdu repository before executing code modernization. Discover every route, controller, service, entity, and test. Inventory oversized files and architectural violations to ensure zero regressions and eliminate guesswork.
 
 ---
 
 ## 2. Current-State Findings and Evidence
+
 - **Monorepo Topology**: 5 workspaces (`apps/web`, `apps/api`, `packages/contracts`, `packages/database`, `packages/tsconfig`).
 - **Build Status**: `pnpm build` succeeds 100% across all packages.
 - **Typecheck Status**: `pnpm typecheck` succeeds 100% with 0 errors.
@@ -36,6 +38,7 @@ Establish an evidence-based, verified baseline across the existing OgroniEdu rep
 ---
 
 ## 3. Exact Scope
+
 - Repository static analysis and deep file discovery.
 - Execution of baseline `typecheck`, `build`, `lint`, and `test`.
 - Compilation of route, backend, database, security, and refactoring registers.
@@ -46,17 +49,20 @@ Establish an evidence-based, verified baseline across the existing OgroniEdu rep
 ---
 
 ## 4. Explicit Exclusions
+
 - Zero refactoring or modification of production business logic during Phase 00.
 - No package additions or dependency version changes.
 
 ---
 
 ## 5. Prerequisite Phases
+
 - None (Initial Foundation Phase).
 
 ---
 
 ## 6. Tasks and Unique Task IDs
+
 - `INV-001`: Inspect monorepo workspace dependencies, scripts, and Turborepo pipeline.
 - `INV-002`: Run baseline typecheck, build, lint, and test suites across all packages.
 - `INV-003`: Inventory all 528 frontend files and 88 Next.js compiled routes.
@@ -71,12 +77,14 @@ Establish an evidence-based, verified baseline across the existing OgroniEdu rep
 ---
 
 ## 7. Actual Affected Files and Modules
+
 - Entire repository inspected read-only.
 - All files in `docs/production-modernization/` and `docs/production-modernization/phases/` created or updated.
 
 ---
 
 ## 8. Files Created, Split, Moved, or Removed
+
 - Created/Updated:
   - `docs/production-modernization/README.md`
   - `docs/production-modernization/00-CURRENT-STATE.md`
@@ -99,6 +107,7 @@ Establish an evidence-based, verified baseline across the existing OgroniEdu rep
 ---
 
 ## 9. Frontend Work
+
 - Complete AST route scan of `apps/web/src/app` discovering 88 routes.
 - Identified 11 oversized route pages requiring decomposition.
 - Identified 1 failing assertion in `apps/web/test/messaging.spec.ts`.
@@ -106,6 +115,7 @@ Establish an evidence-based, verified baseline across the existing OgroniEdu rep
 ---
 
 ## 10. Backend Work
+
 - AST controller scan discovering 36 controllers across 20 modules.
 - Regex AST scan discovering 27 services declaring interfaces internally.
 - Identified Vitest missing `JWT_SECRET` environment issue.
@@ -113,40 +123,47 @@ Establish an evidence-based, verified baseline across the existing OgroniEdu rep
 ---
 
 ## 11. Database and Migration Work
+
 - Verification of 30 migration files in `packages/database/src/migrations/`.
 - Verified 33/33 test pass rate for migration and seed idempotency.
 
 ---
 
 ## 12. Event-Driven Architecture Work
+
 - Documented transactional outbox pattern and `OutboxWorkerService`.
 - Cataloged domain events across bookings, payments, trust, and learning.
 
 ---
 
 ## 13. Security Requirements
+
 - Mapped OWASP Top 10 vulnerabilities.
 - Documented findings `RLD-001` (missing download endpoint), `RLD-002` (test-dispatch role gating), `RLD-006` (dev-secret fallbacks).
 
 ---
 
 ## 14. Unit Test Requirements
+
 - Documented baseline test counts and failure root causes.
 
 ---
 
 ## 15. Integration Test Requirements
+
 - Documented database migration drills and API supertest suites.
 
 ---
 
 ## 16. Browser Automation and E2E Scenarios
+
 - Documented 11 Playwright specs in `apps/web/e2e/`.
 - Established Chrome DevTools MCP automated browser protocol.
 
 ---
 
 ## 17. Required Commands
+
 ```pwsh
 pnpm typecheck
 pnpm build
@@ -157,6 +174,7 @@ pnpm test
 ---
 
 ## 18. Acceptance Criteria
+
 1. All 1,105 source files, 88 routes, 36 controllers, and 80 tables are fully cataloged.
 2. Baseline test/build/lint results are empirically recorded.
 3. All 16 master documents in `docs/production-modernization/` exist with zero placeholders.
@@ -165,29 +183,35 @@ pnpm test
 ---
 
 ## 19. Failure and Rollback Considerations
+
 - Documentation-only phase; no code rollback risks.
 
 ---
 
 ## 20. Definition of Done
+
 - Complete audit report delivered and master task register populated with 72 distinct tasks.
 
 ---
 
 ## 21. Expected Evidence
+
 - `00-CURRENT-STATE.md`, `11-MASTER-TASK-REGISTER.md`, `03-ROUTE-AND-PAGE-INVENTORY.md`.
 
 ---
 
 ## 22. Known Risks and Blockers
+
 - None for documentation. Proceed to Phase 01.
 
 ---
 
 ## 23. Estimated Effort
+
 - 1 Day (completed).
 
 ---
 
 ## 24. Next-Phase Dependencies
+
 - Unblocks `PHASE-01-ARCHITECTURE-AND-TDD-FOUNDATION.md`.

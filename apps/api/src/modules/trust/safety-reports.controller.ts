@@ -95,7 +95,9 @@ export class SafetyReportsController {
   }
 
   @Post(':id/actions')
-  @ApiOperation({ summary: 'Apply immediate protective safety action (hold, restriction, suspension)' })
+  @ApiOperation({
+    summary: 'Apply immediate protective safety action (hold, restriction, suspension)',
+  })
   @ApiResponse({ status: 201, description: 'Safety action applied' })
   async applyAction(
     @CurrentUser() user: AuthenticatedUser,
@@ -135,7 +137,11 @@ export class SafetyReportsController {
     @Param('id') reportId: string,
     @Body('reason') reason: string,
   ) {
-    return this.safetyService.reopenCase(user, reportId, reason || 'Reopened for investigation review');
+    return this.safetyService.reopenCase(
+      user,
+      reportId,
+      reason || 'Reopened for investigation review',
+    );
   }
 
   @Get(':id/evidence/:assetId')
@@ -166,7 +172,11 @@ export class SafetyReportsController {
     @Param('id') reportId: string,
     @Body('reason') reason: string,
   ) {
-    return this.safetyService.applyProtectiveHold(user, reportId, reason || 'Protective hold pending investigation');
+    return this.safetyService.applyProtectiveHold(
+      user,
+      reportId,
+      reason || 'Protective hold pending investigation',
+    );
   }
 
   @Patch(':id/protective-hold/release')

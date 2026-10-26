@@ -167,13 +167,21 @@ describe('Phase 11: End-to-End Business Workflows (Workflows A through K) Integr
   /* -------------------------------------------------------------------------- */
   describe('Workflow C: Tutor Discovery & Geo-Radius Filtering', () => {
     // Haversine formula calculation
-    const calculateDistanceKm = (lat1: number, lon1: number, lat2: number, lon2: number): number => {
+    const calculateDistanceKm = (
+      lat1: number,
+      lon1: number,
+      lat2: number,
+      lon2: number,
+    ): number => {
       const R = 6371; // Earth's radius in km
       const dLat = ((lat2 - lat1) * Math.PI) / 180;
       const dLon = ((lon2 - lon1) * Math.PI) / 180;
       const a =
         Math.sin(dLat / 2) * Math.sin(dLat / 2) +
-        Math.cos((lat1 * Math.PI) / 180) * Math.cos((lat2 * Math.PI) / 180) * Math.sin(dLon / 2) * Math.sin(dLon / 2);
+        Math.cos((lat1 * Math.PI) / 180) *
+          Math.cos((lat2 * Math.PI) / 180) *
+          Math.sin(dLon / 2) *
+          Math.sin(dLon / 2);
       const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
       return R * c;
     };
@@ -243,7 +251,8 @@ describe('Phase 11: End-to-End Business Workflows (Workflows A through K) Integr
   /* WORKFLOW E: Booking Proposal, State Transitions & Slot Concurrency         */
   /* -------------------------------------------------------------------------- */
   describe('Workflow E: Booking Proposal, State Transitions & Slot Concurrency', () => {
-    type BookingState = 'draft' | 'requested' | 'accepted' | 'funded' | 'in_progress' | 'completed' | 'cancelled';
+    type BookingState =
+      'draft' | 'requested' | 'accepted' | 'funded' | 'in_progress' | 'completed' | 'cancelled';
 
     it('governs valid state machine transitions', () => {
       let state: BookingState = 'draft';
@@ -321,8 +330,12 @@ describe('Phase 11: End-to-End Business Workflows (Workflows A through K) Integr
         { accountName: 'PlatformEscrowLiability', direction: 'credit', amountPoisha: 100000 },
       ];
 
-      const sumDebit = escrowJournal.filter((e) => e.direction === 'debit').reduce((sum, e) => sum + e.amountPoisha, 0);
-      const sumCredit = escrowJournal.filter((e) => e.direction === 'credit').reduce((sum, e) => sum + e.amountPoisha, 0);
+      const sumDebit = escrowJournal
+        .filter((e) => e.direction === 'debit')
+        .reduce((sum, e) => sum + e.amountPoisha, 0);
+      const sumCredit = escrowJournal
+        .filter((e) => e.direction === 'credit')
+        .reduce((sum, e) => sum + e.amountPoisha, 0);
 
       expect(sumDebit).toBe(sumCredit);
       expect(sumDebit - sumCredit).toBe(0);
@@ -338,13 +351,29 @@ describe('Phase 11: End-to-End Business Workflows (Workflows A through K) Integr
       expect(split.platformFeeMinor + split.tutorNetMinor).toBe(totalAmountMinor);
 
       const settlementJournal = [
-        { accountName: 'PlatformEscrowLiability', direction: 'debit', amountPoisha: Number(totalAmountMinor) },
-        { accountName: 'TutorPayable', direction: 'credit', amountPoisha: Number(split.tutorNetMinor) },
-        { accountName: 'PlatformCommissionRevenue', direction: 'credit', amountPoisha: Number(split.platformFeeMinor) },
+        {
+          accountName: 'PlatformEscrowLiability',
+          direction: 'debit',
+          amountPoisha: Number(totalAmountMinor),
+        },
+        {
+          accountName: 'TutorPayable',
+          direction: 'credit',
+          amountPoisha: Number(split.tutorNetMinor),
+        },
+        {
+          accountName: 'PlatformCommissionRevenue',
+          direction: 'credit',
+          amountPoisha: Number(split.platformFeeMinor),
+        },
       ];
 
-      const sumDebit = settlementJournal.filter((e) => e.direction === 'debit').reduce((sum, e) => sum + e.amountPoisha, 0);
-      const sumCredit = settlementJournal.filter((e) => e.direction === 'credit').reduce((sum, e) => sum + e.amountPoisha, 0);
+      const sumDebit = settlementJournal
+        .filter((e) => e.direction === 'debit')
+        .reduce((sum, e) => sum + e.amountPoisha, 0);
+      const sumCredit = settlementJournal
+        .filter((e) => e.direction === 'credit')
+        .reduce((sum, e) => sum + e.amountPoisha, 0);
 
       expect(sumDebit).toBe(sumCredit);
       expect(sumDebit).toBe(100000);
@@ -390,7 +419,8 @@ describe('Phase 11: End-to-End Business Workflows (Workflows A through K) Integr
     });
 
     it('detects off-platform payment solicitations and personal contact details', () => {
-      const cleanMessage = 'Please review Chapter 4 on Quadratic Equations before our session tomorrow.';
+      const cleanMessage =
+        'Please review Chapter 4 on Quadratic Equations before our session tomorrow.';
       const cleanRes = inspectAndRedactContent(cleanMessage);
       expect(cleanRes.isRedacted).toBe(false);
       expect(cleanRes.sanitizedContent).toBe(cleanMessage);
@@ -480,7 +510,8 @@ describe('Phase 11: End-to-End Business Workflows (Workflows A through K) Integr
         { tutorId: 'tut-3', organizationId: orgBId },
       ];
 
-      const filterByTenant = (orgId: string) => tutorRecords.filter((r) => r.organizationId === orgId);
+      const filterByTenant = (orgId: string) =>
+        tutorRecords.filter((r) => r.organizationId === orgId);
 
       const orgAResults = filterByTenant(orgAId);
       expect(orgAResults).toHaveLength(2);

@@ -1,4 +1,5 @@
 # Phase 10: Search, SEO, Performance, Accessibility & Production Readiness
+
 ## SEO & Metadata Policy
 
 This document defines search engine optimization policies, structured data schemas, crawl rules, and bilingual canonicalization standards for OgroniEdu.
@@ -18,6 +19,7 @@ This document defines search engine optimization policies, structured data schem
 ## 2. Robots Policy (`robots.txt`)
 
 ### Directives
+
 - **Allow:** Public landing pages, tutor discovery, verified tutor profiles, informational and legal pages:
   - `/`
   - `/*/tutors`
@@ -54,6 +56,7 @@ This document defines search engine optimization policies, structured data schem
 ## 3. Dynamic Sitemap Specification (`sitemap.xml`)
 
 The sitemap is dynamically generated:
+
 1. **Core Static Routes:** Home, Tutors Catalog, How It Works, Pricing, Safety, FAQ, Contact, Terms, Privacy across both `bn` and `en`.
 2. **Dynamic Public Tutor Profiles:**
    - Queries approved, published, non-held tutors directly from the database.
@@ -68,6 +71,7 @@ The sitemap is dynamically generated:
 ## 4. Structured Data (JSON-LD) Schemas
 
 ### 1. `schema.org/WebSite` (Home Page)
+
 ```json
 {
   "@context": "https://schema.org",
@@ -83,6 +87,7 @@ The sitemap is dynamically generated:
 ```
 
 ### 2. `schema.org/Organization` (Platform Brand)
+
 ```json
 {
   "@context": "https://schema.org",
@@ -101,6 +106,7 @@ The sitemap is dynamically generated:
 ```
 
 ### 3. `schema.org/Person` (Tutor Public Profile)
+
 ```json
 {
   "@context": "https://schema.org",
@@ -115,4 +121,5 @@ The sitemap is dynamically generated:
   "image": "https://ogroni.edu.bd/tutors/avatar.jpg"
 }
 ```
-*Privacy Guard:* No personal phone numbers, emails, NID document numbers, or home addresses are ever emitted in structured data.
+
+_Privacy Guard:_ No personal phone numbers, emails, NID document numbers, or home addresses are ever emitted in structured data.

@@ -29,6 +29,7 @@ The system establishes an auditable, high-trust dispute resolution framework alo
 ## 3. Work Breakdown Structure (WBS)
 
 ### Step 1: Database Schema & Migration (`024_disputes_and_safeguarding.sql`)
+
 1. Create `booking_disputes` table:
    - `id UUID PRIMARY KEY DEFAULT gen_random_uuid()`
    - `booking_id UUID NOT NULL REFERENCES bookings(id) ON DELETE CASCADE`
@@ -51,6 +52,7 @@ The system establishes an auditable, high-trust dispute resolution framework alo
 3. Add `safety_hold_status TEXT NOT NULL DEFAULT 'clear'` (`clear`, `under_investigation`, `safety_hold`) and `safety_hold_reason TEXT` to `tutor_profiles`.
 
 ### Step 2: Backend Entities, DTOs & Disputes Subsystem
+
 1. Create `BookingDisputeEntity` in `apps/api/src/modules/trust/entities/booking-dispute.entity.ts`.
 2. Define DTOs:
    - `CreateDisputeDto`: `bookingId`, `reasonCode`, `description`, `disputedAmountMinor`, `evidenceAssetIds`.
@@ -64,16 +66,19 @@ The system establishes an auditable, high-trust dispute resolution framework alo
 4. Register `DisputesController` in `trust.module.ts`.
 
 ### Step 3: Financial Invariant — Escrow Settlement Freeze
+
 1. Update `SettlementService.settleMilestone` in `apps/api/src/modules/payments/services/settlement.service.ts`:
    - Query parent booking for the session.
    - If `booking.status === 'disputed'`, abort immediately with `BadRequestException('Settlement blocked: Booking is currently under dispute review.')`.
 
 ### Step 4: Protective Safety Hold Enforcement
+
 1. Add `applySafetyHold` and `releaseSafetyHold` methods to `SafetyReportsService` / `TutorProfilesRepository`.
 2. Update `SessionReschedulingService.startSession` to verify tutor is not under an active `safety_hold`.
 3. Update `TutorSearchService` to filter out profiles with `safety_hold_status = 'safety_hold'`.
 
 ### Step 5: Frontend UI & Admin Disputes Hub
+
 1. Create `DisputeModal` component in `apps/web/src/features/trust/components/DisputeModal.tsx`.
 2. Update `BookingDetailPage` ([`/bookings/[id]`](file:///C:/Sofof_tech_2026/ogroniedu/apps/web/src/app/[locale]/bookings/[id]/page.tsx)):
    - Add `Dispute / File Complaint` button when booking is `confirmed`, `in_progress`, or `completed`.
@@ -86,10 +91,12 @@ The system establishes an auditable, high-trust dispute resolution framework alo
      - **Ledger Accounts Tab** (reconciliation).
 
 ### Step 6: Localization & Design System
+
 1. Synchronize `messages/en.json` and `messages/bn.json` with 100% key parity across `trust`, `safety`, and `disputes` namespaces.
 2. Adhere to design system tokens (`bg-destructive-soft`, `bg-warning-soft`, `bg-success-soft`, `rounded-2xl`, etc.).
 
 ### Step 7: Automated Tests & Verification
+
 1. Author `apps/api/test/safety-phase07.spec.ts` covering:
    - Dispute creation, validation, and booking transition to `disputed`.
    - Escrow freeze invariant during dispute.

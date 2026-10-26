@@ -5,10 +5,11 @@
 For any multi-stage sequential funnel where $S_i$ represents the count of unique occurrences at stage $i$:
 
 ### 1.1 Conversion Rate from Previous Stage
-$$\text{ConversionRate}_{i} = \begin{cases} 
+
+$$ \text{ConversionRate}_{i} = \begin{cases}
 100.0\% & \text{if } i = 1 \\
 \frac{S_i}{S_{i-1}} \times 100 & \text{if } i > 1 \text{ and } S_{i-1} > 0 \\
-0.0\% & \text{if } S_{i-1} = 0 
+0.0\% & \text{if } S_{i-1} = 0
 \end{cases}$$
 
 ### 1.2 Stage Drop-Off Rate
@@ -73,3 +74,4 @@ Cancelled sessions (rescheduled or cancelled with notice) are excluded from the 
 1. **Standard Timezone:** All database queries utilize UTC timestamps with explicit boundary filtering: `created_at BETWEEN $1 AND $2`.
 2. **Display Timezone:** Customer-facing dashboards present dates converted to **Bangladesh Standard Time (BST, UTC+6)**.
 3. **Temporal Inversion Guard:** The `resolveTimeBounds()` utility verifies that `startDate <= endDate`. If an inverted range is supplied, the API throws `BadRequestException` to prevent negative duration calculations.
+$$
