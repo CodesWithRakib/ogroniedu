@@ -23,7 +23,6 @@ export interface EmbeddedEasyCheckoutProps {
   storeLogo?: string;
   amountMinor: number;
   locale: Locale;
-  isLive?: boolean;
   onModalClose?: () => void;
   onPaymentTriggered?: () => void;
   onPaymentCompleted?: (orderId: string) => void;
@@ -31,13 +30,12 @@ export interface EmbeddedEasyCheckoutProps {
 }
 
 const SSLCOMMERZ_SANDBOX_SCRIPT = 'https://sandbox.sslcommerz.com/embed.min.js';
-const SSLCOMMERZ_LIVE_SCRIPT = 'https://seamless-epay.sslcommerz.com/embed.min.js';
 
 /**
  * Official SSLCOMMERZ Embedded Easy Checkout Component.
  *
- * Provides the official seamless embedded checkout experience:
- * - Dynamically loads official SSLCOMMERZ embed.min.js with deduplication.
+ * Exclusively configured for SSLCOMMERZ Sandbox testing:
+ * - Dynamically loads official SSLCOMMERZ sandbox script with deduplication.
  * - Supports seamless desktop modal checkout & mobile responsive popup delegation.
  * - Handles cross-origin postMessage events from the gateway iframe safely.
  * - Implements failure recovery with secure direct fallback if script is blocked.
@@ -51,7 +49,6 @@ export function EmbeddedEasyCheckout({
   storeLogo,
   amountMinor,
   locale,
-  isLive = false,
   onModalClose,
   onPaymentTriggered,
   onPaymentCompleted,
@@ -64,7 +61,7 @@ export function EmbeddedEasyCheckout({
   const [iframeLoading, setIframeLoading] = useState(true);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
-  const scriptBaseUrl = isLive ? SSLCOMMERZ_LIVE_SCRIPT : SSLCOMMERZ_SANDBOX_SCRIPT;
+  const scriptBaseUrl = SSLCOMMERZ_SANDBOX_SCRIPT;
   const targetIframeUrl = (gatewayPageUrl || checkoutUrl).includes('?')
     ? `${gatewayPageUrl || checkoutUrl}&full=1`
     : `${gatewayPageUrl || checkoutUrl}?full=1`;

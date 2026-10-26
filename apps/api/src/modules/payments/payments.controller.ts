@@ -83,7 +83,11 @@ export class PaymentsController {
       headers['content-type']?.includes('application/x-www-form-urlencoded');
 
     if (isBrowserPost && res) {
-      const frontendUrl = process.env.FRONTEND_URL?.split(',')[0] || 'http://localhost:5000';
+      const rawFrontend =
+        process.env.FRONTEND_URL?.split(',')[0] ||
+        (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ||
+        'http://localhost:5000';
+      const frontendUrl = rawFrontend.trim().replace(/\/+$/, '');
       const locale = body.value_a === 'en' ? 'en' : 'bn';
       const bookingId = (body.value_b as string) || '';
       const orderId = result.orderId || (body.tran_id as string) || '';

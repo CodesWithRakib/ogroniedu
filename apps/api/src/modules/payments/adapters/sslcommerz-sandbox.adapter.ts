@@ -1,4 +1,4 @@
-import { Injectable, Logger, ServiceUnavailableException } from '@nestjs/common';
+import { Injectable, Logger, ServiceUnavailableException, OnModuleInit } from '@nestjs/common';
 import crypto from 'node:crypto';
 import { bdtToMinor } from '../../../common/money/money';
 import { readErrorMessage } from '../../../common/errors/error-message';
@@ -28,16 +28,46 @@ interface SslcommerzValidationResponse {
 }
 
 @Injectable()
-export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
+export class SslcommerzSandboxAdapter implements PaymentProviderAdapter, OnModuleInit {
   readonly providerName = 'sslcommerz';
   private readonly logger = new Logger(SslcommerzSandboxAdapter.name);
 
+  onModuleInit(): void {
+    this.validateSandboxConfiguration();
+  }
+
+  validateSandboxConfiguration(): void {
+    if (this.isLive) {
+      throw new Error(
+        'FATAL: SSLCOMMERZ_IS_LIVE=true is configured. Live mode is strictly disabled because Live merchant credentials have not been onboarded. Set SSLCOMMERZ_IS_LIVE=false.',
+      );
+    }
+    if (this.sessionApiUrl.includes('securepay.sslcommerz.com')) {
+      throw new Error(
+        'FATAL: Live session URL configured. This deployment only permits SSLCOMMERZ Sandbox endpoints (sandbox.sslcommerz.com).',
+      );
+    }
+    if (this.validationApiUrl.includes('securepay.sslcommerz.com')) {
+      throw new Error(
+        'FATAL: Live validation URL configured. This deployment only permits SSLCOMMERZ Sandbox endpoints (sandbox.sslcommerz.com).',
+      );
+    }
+    if (!this.storeId || !this.storePasswd) {
+      throw new Error('FATAL: SSLCOMMERZ_STORE_ID and SSLCOMMERZ_STORE_PASSWD must be configured.');
+    }
+    const maskedStore =
+      this.storeId.length > 4 ? `${this.storeId.slice(0, 4)}***` : '***';
+    this.logger.log(
+      `SSLCOMMERZ Sandbox Adapter initialized successfully (Store: ${maskedStore}, Mode: Sandbox Only)`,
+    );
+  }
+
   private get storeId(): string {
-    return process.env.SSLCOMMERZ_STORE_ID || 'ogron6ac9fcef6d321';
+    return process.env.SSLCOMMERZ_STORE_ID || '';
   }
 
   private get storePasswd(): string {
-    return process.env.SSLCOMMERZ_STORE_PASSWD || 'ogron6ac9fcef6d321@ssl';
+    return process.env.SSLCOMMERZ_STORE_PASSWD || '';
   }
 
   private get isLive(): boolean {
@@ -58,12 +88,29 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
   }
 
   private get tunnelBaseUrl(): string {
-    return (
+    const rawUrl =
       process.env.API_BASE_URL ||
       process.env.RENDER_EXTERNAL_URL ||
       process.env.PAYMENT_TUNNEL_URL ||
       process.env.NGROK_TUNNEL_URL ||
-      'http://localhost:4000'
+      'http://localhost:4000';
+
+    const trimmed = rawUrl.trim().replace(/\/+$/, '');
+    return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
+  }
+
+  /**
+   * Helper: Canonicalize payload keys for HMAC-SHA256 signature calculation
+   */
+  canonicalizePayload(payload: Record<string, unknown>): string {
+    return JSON.stringify(
+      Object.keys(payload)
+        .filter((k) => k !== 'verify_sign' && k !== 'signature')
+        .sort()
+        .reduce<Record<string, unknown>>((obj, key) => {
+          obj[key] = payload[key];
+          return obj;
+        }, {}),
     );
   }
 
@@ -84,6 +131,12 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
     payerPhone?: string,
     metadata?: Record<string, unknown>,
   ): Promise<CheckoutSessionResult> {
+    if (this.isLive) {
+      throw new ServiceUnavailableException(
+        'Live payment processing is disabled. OgroniEdu is provisioned for SSLCOMMERZ Sandbox payments only.',
+      );
+    }
+
     const amountBdt = (amountMinor / 100).toFixed(2);
     const callbackUrl = `${this.tunnelBaseUrl}/api/v1/payments/webhook/sslcommerz`;
 
