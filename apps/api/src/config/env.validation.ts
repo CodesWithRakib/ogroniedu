@@ -87,6 +87,32 @@ export class EnvironmentVariables {
   @IsOptional()
   @MinLength(16, { message: 'JWT_SECRET must be at least 16 characters long' })
   JWT_SECRET: string = 'super-secret-jwt-key-replace-in-production';
+
+  @IsString()
+  @IsOptional()
+  REDIS_URL?: string;
+
+  @IsString()
+  @IsOptional()
+  REDIS_HOST?: string;
+
+  @Type(() => Number)
+  @IsNumber()
+  @IsInt()
+  @IsOptional()
+  REDIS_PORT?: number;
+
+  @IsString()
+  @IsOptional()
+  REDIS_PASSWORD?: string;
+
+  @IsString()
+  @IsOptional()
+  UPSTASH_REDIS_REST_URL?: string;
+
+  @IsString()
+  @IsOptional()
+  UPSTASH_REDIS_REST_TOKEN?: string;
 }
 
 export function validateEnvironment(config: Record<string, unknown>): EnvironmentVariables {
