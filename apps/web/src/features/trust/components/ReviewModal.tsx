@@ -17,15 +17,7 @@ import { useCreateReviewMutation } from '@/store/services/trust-api';
 import { StarSelector } from './starSelector';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { toast } from 'sonner';
-
-export interface ReviewSubmitPayload {
-  bookingId: string;
-  rating: number;
-  punctualityRating: number;
-  teachingClarityRating: number;
-  subjectMasteryRating: number;
-  comment: string;
-}
+import type { ReviewSubmitPayload } from '../types/trust.types';
 
 export interface ReviewModalFormProps {
   bookingId: string;

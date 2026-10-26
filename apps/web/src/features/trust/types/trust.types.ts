@@ -1,3 +1,5 @@
+import type { Locale } from '@/lib/i18n';
+
 export interface ReviewItem {
   id: string;
   bookingId?: string;
@@ -78,6 +80,10 @@ export interface TutorReplacementModalProps {
   bookingId: string;
   isOpen: boolean;
   onClose: () => void;
+  locale?: Locale;
+  tutorName?: string | null;
+  subjectName?: string | null;
+  onSuccess?: () => void;
   onRequestSuccess?: (caseData: unknown) => void;
   onSubmitReplacement?: (payload: ReplacementSubmitPayload) => Promise<unknown>;
 }

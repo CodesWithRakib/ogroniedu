@@ -17,11 +17,15 @@ import {
   BookOpen,
   CheckCircle2,
   GraduationCap,
+  Download,
+  ExternalLink,
 } from 'lucide-react';
 import { Button, Card, CardContent, Alert, AlertDescription, Badge } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
+import { playAudioTone } from '@/lib/audio/notification-sound';
+import { useLazyGetIcsCalendarQuery } from '@/store/services/sessions-api';
 import type {
   CalendarSessionItem,
   CancelAssessmentView,
@@ -38,6 +42,37 @@ import {
 
 export type { CalendarSessionItem, CancelAssessmentView, ScheduleSessionInput };
 export type { SessionItemStatus } from '@/features/bookings/types/session.types';
+
+function formatGoogleCalendarDate(isoString: string): string {
+  try {
+    const d = new Date(isoString);
+    if (isNaN(d.getTime())) return '';
+    return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+  } catch {
+    return '';
+  }
+}
+
+export function buildGoogleCalendarUrl(session: {
+  title?: string;
+  startsAt: string;
+  endsAt?: string;
+  meetingUrl?: string | null;
+  tutorName?: string | null;
+  studentName?: string | null;
+  subjectName?: string | null;
+}) {
+  const title = encodeURIComponent(session.subjectName || session.title || 'OgroniEdu Class');
+  const startStr = formatGoogleCalendarDate(session.startsAt);
+  const endStr = session.endsAt
+    ? formatGoogleCalendarDate(session.endsAt)
+    : formatGoogleCalendarDate(new Date(new Date(session.startsAt).getTime() + 60 * 60 * 1000).toISOString());
+  const details = encodeURIComponent(
+    `OgroniEdu Class\nTeacher / Student: ${session.tutorName || session.studentName || 'OgroniEdu'}\nDigital Classroom: ${session.meetingUrl || 'https://ogroniedu.com'}`
+  );
+  const location = encodeURIComponent(session.meetingUrl || 'OgroniEdu Digital Classroom');
+  return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}&location=${location}`;
+}
 
 interface SessionScheduleCalendarProps {
   locale: Locale;
@@ -120,6 +155,32 @@ export function SessionScheduleCalendar({
     useState<CalendarSessionItem | null>(null);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [triggerGetIcs, { isFetching: isDownloadingIcs }] = useLazyGetIcsCalendarQuery();
+
+  const handleDownloadIcsCalendar = async () => {
+    try {
+      const res = await triggerGetIcs().unwrap();
+      if (res?.data?.icsContent) {
+        const blob = new Blob([res.data.icsContent], { type: 'text/calendar;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', res.data.filename || 'ogroniedu-classes.ics');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        playAudioTone('success');
+      }
+    } catch (err) {
+      console.error('Failed to download .ics calendar:', err);
+      setActionError(
+        locale === 'bn'
+          ? 'ক্যালেন্ডার (.ics) ফাইল ডাউনলোড করতে ব্যর্থ হয়েছে।'
+          : 'Failed to export calendar (.ics) file.',
+      );
+    }
+  };
 
   function openReschedule(session: CalendarSessionItem) {
     setSelectedSessionForReschedule(session);
@@ -345,11 +406,24 @@ export function SessionScheduleCalendar({
               </Button>
             )}
 
+            <a
+              href={buildGoogleCalendarUrl(nextSession)}
+              target="_blank"
+              rel="noreferrer"
+              data-testid="calendar-google-sync-btn"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-xs transition-colors h-11"
+              title={isBn ? 'গুগল ক্যালেন্ডারে যোগ করুন' : 'Add to Google Calendar'}
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-blue-600" />
+              <span>{isBn ? 'Google Calendar' : 'Google Cal'}</span>
+            </a>
+
             <Button
               variant="outline"
               size="default"
               onClick={() => openReschedule(nextSession)}
-              className="rounded-2xl text-xs font-semibold h-11"
+              data-testid="calendar-spotlight-reschedule-btn"
+              className="rounded-2xl text-xs font-semibold h-11 border-slate-300 text-slate-800 hover:bg-slate-100"
             >
               {isBn ? 'সময় পরিবর্তন' : 'Reschedule'}
             </Button>
@@ -469,11 +543,33 @@ export function SessionScheduleCalendar({
           </button>
         </div>
 
-        {/* View Mode Switcher */}
-        <div className="flex items-center gap-1 p-1 bg-surface rounded-xl border border-border/80 self-end sm:self-auto">
-          <button
+        {/* Calendar Sync & View Mode Switcher */}
+        <div className="flex flex-wrap items-center gap-2 self-end sm:self-auto">
+          <Button
             type="button"
-            onClick={() => setViewMode('grid')}
+            variant="outline"
+            size="sm"
+            onClick={handleDownloadIcsCalendar}
+            disabled={isDownloadingIcs}
+            data-testid="calendar-download-ics-btn"
+            className="rounded-xl border-slate-300 text-slate-800 hover:bg-slate-100 font-bold text-xs gap-1.5 h-9"
+          >
+            <Download className="w-3.5 h-3.5 text-blue-600" />
+            <span>
+              {isBn
+                ? isDownloadingIcs
+                  ? 'ডাউনলোড হচ্ছে...'
+                  : 'iCal (.ics) ক্যালেন্ডার'
+                : isDownloadingIcs
+                  ? 'Exporting...'
+                  : 'Export .ICS'}
+            </span>
+          </Button>
+
+          <div className="flex items-center gap-1 p-1 bg-surface rounded-xl border border-border/80">
+            <button
+              type="button"
+              onClick={() => setViewMode('grid')}
             title={isBn ? 'কার্ড ভিউ' : 'Card Grid View'}
             className={`p-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
               viewMode === 'grid'
@@ -514,6 +610,7 @@ export function SessionScheduleCalendar({
           </button>
         </div>
       </div>
+    </div>
 
       {/* 5. Alerts */}
       {actionError && (

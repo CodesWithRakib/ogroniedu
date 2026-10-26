@@ -14,6 +14,9 @@ import {
   ShieldCheck,
   Sparkles,
   Radio,
+  RotateCcw,
+  Download,
+  Calendar as CalendarIcon,
 } from 'lucide-react';
 import {
   Button,
@@ -26,7 +29,15 @@ import {
   Label,
   LoadingSpinner,
 } from '@/components/ui';
-import { useGetSessionByIdQuery } from '@/store/services/sessions-api';
+import {
+  useGetSessionByIdQuery,
+  useRescheduleSessionMutation,
+  useLazyGetIcsCalendarQuery,
+} from '@/store/services/sessions-api';
+import { RescheduleModal } from '@/features/bookings/components/sessions/rescheduleModal';
+import { buildGoogleCalendarUrl } from '@/components/scheduling/SessionScheduleCalendar';
+import { playAudioTone } from '@/lib/audio/notification-sound';
+import type { CalendarSessionItem } from '@/features/bookings/types/session.types';
 import { SessionLearningPanel } from '@/features/learning/components/sessionLearningPanel';
 import { SessionLifecycleActions } from '@/features/learning/components/sessionLifecycleActions';
 import {
@@ -58,6 +69,9 @@ export interface SessionDetailData {
     id?: string;
     subject?: { nameEn?: string; nameBn?: string };
   };
+  rescheduledAt?: string | null;
+  rescheduledBy?: string | null;
+  rescheduleReason?: string | null;
 }
 
 export interface SessionDetailPageProps {
@@ -73,7 +87,57 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
     data: sessionData,
     isLoading: sessionLoading,
     error: sessionError,
+    refetch: refetchSession,
   } = useGetSessionByIdQuery(sessionId);
+
+  const [rescheduleModalOpen, setRescheduleModalOpen] = useState(false);
+  const [rescheduleSession, { isLoading: isRescheduling }] = useRescheduleSessionMutation();
+  const [triggerGetIcs, { isFetching: isDownloadingIcs }] = useLazyGetIcsCalendarQuery();
+  const [actionNotice, setActionNotice] = useState<string | null>(null);
+
+  const handleConfirmReschedule = async (newStartsAt: string, reason: string) => {
+    try {
+      await rescheduleSession({
+        id: sessionId,
+        newStartsAt,
+        reason,
+      }).unwrap();
+      setRescheduleModalOpen(false);
+      refetchSession();
+      playAudioTone('success');
+      setActionNotice(
+        locale === 'bn'
+          ? 'ক্লাসের সময় সফলভাবে পরিবর্তন (রিশিডিউল) করা হয়েছে!'
+          : 'Session has been rescheduled successfully!',
+      );
+    } catch (err: unknown) {
+      const msg =
+        err && typeof err === 'object' && 'data' in err
+          ? ((err as { data?: { message?: string } }).data?.message ?? 'Failed to reschedule')
+          : 'Failed to reschedule session';
+      alert(msg);
+    }
+  };
+
+  const handleDownloadIcs = async () => {
+    try {
+      const res = await triggerGetIcs({ bookingId: session?.bookingId }).unwrap();
+      if (res?.data?.icsContent) {
+        const blob = new Blob([res.data.icsContent], { type: 'text/calendar;charset=utf-8' });
+        const url = URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = url;
+        link.setAttribute('download', res.data.filename || `session-${sessionId}.ics`);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+        playAudioTone('success');
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
 
   const {
     data: attendanceData,
@@ -221,12 +285,26 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
   const meetingUrl = session.meetingUrl;
   const status = session.status || 'scheduled';
 
+  const canReschedule =
+    (status === 'scheduled' || status === 'reschedule_pending') &&
+    (currentUser?.id === session.tutorUserId ||
+      currentUser?.id === session.studentUserId ||
+      currentUser?.roles?.includes('admin') ||
+      currentUser?.roles?.includes('super_admin') ||
+      Boolean(isTutor));
+
   const statusBadge = () => {
     switch (status) {
       case 'scheduled':
         return (
           <Badge className="bg-success-soft text-success-soft-foreground border border-success/30">
             {locale === 'bn' ? 'নির্ধারিত' : 'Scheduled'}
+          </Badge>
+        );
+      case 'reschedule_pending':
+        return (
+          <Badge className="bg-amber-100 text-amber-900 border border-amber-300 font-bold">
+            {locale === 'bn' ? 'রিশিডিউল প্রক্রিয়াধীন' : 'Reschedule Pending'}
           </Badge>
         );
       case 'in_progress':
@@ -358,6 +436,128 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
           </div>
         </div>
       </div>
+
+      {actionNotice && (
+        <div className="rounded-2xl border border-emerald-300 bg-emerald-50 p-4 text-xs text-emerald-950 font-bold flex items-center gap-2 shadow-2xs">
+          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+          <span>{actionNotice}</span>
+        </div>
+      )}
+
+      {session.rescheduledAt && (
+        <div
+          data-testid="session-rescheduled-notice"
+          className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950 flex items-start gap-3 shadow-2xs"
+        >
+          <RotateCcw className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <div className="font-extrabold text-sm text-slate-900">
+              {locale === 'bn'
+                ? 'ক্লাসটির সময়সূচী পরিবর্তন (রিশিডিউল) করা হয়েছে'
+                : 'This class has been rescheduled'}
+            </div>
+            <p className="text-slate-700">
+              {locale === 'bn' ? 'কার্যকর তারিখ:' : 'Rescheduled on:'}{' '}
+              <strong className="text-slate-900">
+                {formatWeekdayDate(session.rescheduledAt, locale)}
+              </strong>
+              {session.rescheduleReason && (
+                <>
+                  {' • '}
+                  <span>
+                    {locale === 'bn' ? 'কারণ:' : 'Reason:'}{' '}
+                    <em className="text-slate-900 font-medium">"{session.rescheduleReason}"</em>
+                  </span>
+                </>
+              )}
+            </p>
+          </div>
+        </div>
+      )}
+
+      {/* Class Schedule, Reschedule & Calendar Sync Card */}
+      <Card
+        data-testid="session-calendar-sync-card"
+        className="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm text-slate-900 space-y-4"
+      >
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
+              <CalendarIcon className="w-4 h-4 text-blue-600" />
+              <span>
+                {locale === 'bn' ? 'ক্যালেন্ডার ও সময়সূচী নিয়ন্ত্রণ' : 'Calendar & Schedule Controls'}
+              </span>
+            </div>
+            <h3 className="text-lg font-black text-slate-900">
+              {locale === 'bn'
+                ? 'ক্যালেন্ডার ইন্টিগ্রেশন ও ক্লাস রিশিডিউলিং'
+                : 'Calendar Sync & Class Rescheduling'}
+            </h3>
+            <p className="text-xs text-slate-600 font-medium">
+              {locale === 'bn'
+                ? 'আপনার ব্যক্তিগত Google Calendar বা Apple/Outlook ক্যালেন্ডারে ক্লাসটি যোগ করুন অথবা জরুরি প্রয়োজনে সময় পরিবর্তন করুন।'
+                : 'Sync this class with Google Calendar, Apple/Outlook .ics, or reschedule with your tutor/student.'}
+            </p>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2.5 shrink-0">
+            {/* Google Calendar Link */}
+            <a
+              href={buildGoogleCalendarUrl({
+                startsAt,
+                endsAt,
+                meetingUrl,
+                tutorName,
+                studentName,
+                subjectName,
+              })}
+              target="_blank"
+              rel="noreferrer"
+              data-testid="session-detail-google-cal-btn"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-xs transition-colors"
+              title={locale === 'bn' ? 'Google Calendar-এ যোগ করুন' : 'Add to Google Calendar'}
+            >
+              <ExternalLink className="w-3.5 h-3.5 text-blue-600" />
+              <span>{locale === 'bn' ? 'Google Calendar' : 'Google Cal'}</span>
+            </a>
+
+            {/* Apple / Outlook .ics Download */}
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={handleDownloadIcs}
+              disabled={isDownloadingIcs}
+              data-testid="session-detail-ics-download-btn"
+              className="rounded-xl border-slate-300 text-slate-800 hover:bg-slate-100 font-bold text-xs gap-1.5 h-9"
+            >
+              <Download className="w-3.5 h-3.5 text-blue-600" />
+              <span>
+                {locale === 'bn'
+                  ? isDownloadingIcs
+                    ? 'ডাউনলোড হচ্ছে...'
+                    : 'iCal (.ics) ফাইল'
+                  : isDownloadingIcs
+                    ? 'Exporting...'
+                    : 'Export .ICS'}
+              </span>
+            </Button>
+
+            {/* Reschedule Button */}
+            {canReschedule && (
+              <Button
+                type="button"
+                onClick={() => setRescheduleModalOpen(true)}
+                data-testid="session-detail-reschedule-btn"
+                className="rounded-xl font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-xs text-xs gap-1.5 h-9"
+              >
+                <RotateCcw className="w-3.5 h-3.5" />
+                <span>{locale === 'bn' ? 'ক্লাস রিশিডিউল করুন' : 'Reschedule Class'}</span>
+              </Button>
+            )}
+          </div>
+        </div>
+      </Card>
 
       {/* Grid: Classroom Link & Attendance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -617,6 +817,27 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       </div>
 
       <SessionLearningPanel locale={locale} sessionId={sessionId} />
+
+      {rescheduleModalOpen && (
+        <RescheduleModal
+          locale={locale}
+          session={{
+            id: session.id,
+            bookingId: session.bookingId || '',
+            subjectName,
+            tutorName,
+            studentName,
+            startsAt,
+            endsAt,
+            timezone: 'Asia/Dhaka',
+            status: status as any,
+            meetingUrl,
+          }}
+          isSubmitting={isRescheduling}
+          onClose={() => setRescheduleModalOpen(false)}
+          onConfirm={handleConfirmReschedule}
+        />
+      )}
     </div>
   );
 }

@@ -18,16 +18,7 @@ import { useCreateReplacementCaseMutation } from '@/store/services/trust-api';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import { toast } from 'sonner';
 import type { Locale } from '@/lib/i18n';
-
-export interface TutorReplacementModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  locale: Locale;
-  bookingId: string;
-  tutorName?: string | null;
-  subjectName?: string | null;
-  onSuccess?: () => void;
-}
+import type { TutorReplacementModalProps } from '../types/trust.types';
 
 export function TutorReplacementModalForm({
   onClose,
