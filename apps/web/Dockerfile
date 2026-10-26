@@ -17,6 +17,7 @@ RUN pnpm install --frozen-lockfile
 # Stage 2: Builder
 FROM dependencies AS builder
 COPY . .
+ENV DOCKER_BUILD=1
 ENV NEXT_TELEMETRY_DISABLED=1
 RUN rm -f apps/web/*.tsbuildinfo && \
     pnpm --filter @ogroniedu/contracts build && \
