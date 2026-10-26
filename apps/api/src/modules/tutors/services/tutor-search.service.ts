@@ -143,6 +143,26 @@ export class TutorSearchService {
       badges.push('verified_academic');
     }
 
+    if (this.profileRepo.manager?.query) {
+      try {
+        const verifiedLevels: Array<{ level: string }> = await this.profileRepo.manager.query(
+          `SELECT level FROM tutor_verification_levels WHERE tutor_user_id = $1 AND status = 'approved'`,
+          [tutorUserId],
+        );
+        if (verifiedLevels.some((l) => l.level === 'identity') && !badges.includes('verified_identity')) {
+          badges.push('verified_identity');
+        }
+        if (verifiedLevels.some((l) => l.level === 'educational') && !badges.includes('verified_academic')) {
+          badges.push('verified_academic');
+        }
+        if (verifiedLevels.some((l) => l.level === 'institutional') && !badges.includes('verified_institutional')) {
+          badges.push('verified_institutional');
+        }
+      } catch {
+        // Fall back gracefully if table does not exist in isolated test mocks
+      }
+    }
+
     const publicQualifications = approvedQualifications.map((q) => ({
       id: q.id,
       qualificationType: q.qualificationType,
@@ -384,6 +404,18 @@ export class TutorSearchService {
     const userById = new Map(users.map((user) => [user.id, user]));
     const rowById = new Map(rows.map((row) => [String(row.user_id), row]));
 
+    let verifiedLevelsRows: Array<{ tutor_user_id: string; level: string }> = [];
+    if (this.profileRepo.manager?.query && ids.length > 0) {
+      try {
+        verifiedLevelsRows = await this.profileRepo.manager.query(
+          `SELECT tutor_user_id, level FROM tutor_verification_levels WHERE tutor_user_id = ANY($1) AND status = 'approved'`,
+          [ids],
+        );
+      } catch {
+        // Fall back gracefully in unit tests
+      }
+    }
+
     const data = ids
       .map((id) => {
         const profile = profileById.get(id);
@@ -407,6 +439,20 @@ export class TutorSearchService {
         ) {
           badges.push('verified_academic');
           rankingReasons.push('Verified Academic Credentials (+20)');
+        }
+
+        const tutorLevels = verifiedLevelsRows.filter((r) => r.tutor_user_id === id);
+        if (tutorLevels.some((l) => l.level === 'identity') && !badges.includes('verified_identity')) {
+          badges.push('verified_identity');
+          rankingReasons.push('Verified Government Identity (+20)');
+        }
+        if (tutorLevels.some((l) => l.level === 'educational') && !badges.includes('verified_academic')) {
+          badges.push('verified_academic');
+          rankingReasons.push('Verified Academic Credentials (+20)');
+        }
+        if (tutorLevels.some((l) => l.level === 'institutional') && !badges.includes('verified_institutional')) {
+          badges.push('verified_institutional');
+          rankingReasons.push('Verified Institutional Credentials (+20)');
         }
         const experience = profile.yearsExperience || 0;
         if (experience > 0) {

@@ -19,6 +19,7 @@ import {
   Check,
   MessageSquare,
   UserCheck,
+  Award,
   Lock,
 } from 'lucide-react';
 import { Button, Textarea, Label, NativeSelect, Alert, AlertDescription } from '@/components/ui';
@@ -509,6 +510,13 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-800 border-2 border-indigo-300 shadow-2xs">
                     <GraduationCap className="w-3.5 h-3.5 text-indigo-700" aria-hidden="true" />
                     {isBn ? 'শিক্ষাগত সনদ অনুমোদিত' : 'Academic Verified'}
+                  </span>
+                )}
+
+                {profile.badges.includes('verified_institutional') && (
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-900 border-2 border-purple-300 shadow-2xs">
+                    <Award className="w-3.5 h-3.5 text-purple-700" aria-hidden="true" />
+                    {isBn ? 'প্রাতিষ্ঠানিক সনদ অনুমোদিত' : 'Institutional Verified'}
                   </span>
                 )}
               </div>

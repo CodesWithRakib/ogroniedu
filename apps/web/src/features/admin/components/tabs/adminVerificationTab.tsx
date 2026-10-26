@@ -529,7 +529,7 @@ export function AdminVerificationTab() {
                     >
                       <div className="flex flex-wrap items-center justify-between gap-2">
                         <div className="flex items-center gap-2">
-                          <ShieldCheck className="w-4 h-4 text-info-soft-foreground" />
+                          <ShieldCheck className="w-4 h-4 text-sky-600" />
                           <span className="text-sm font-semibold">
                             {levelLabel(lvl.level, locale)}
                           </span>
@@ -593,7 +593,7 @@ export function AdminVerificationTab() {
                               data-testid={`dossier-document-${document.id}`}
                             >
                               <div className="flex items-center gap-2 min-w-0">
-                                <FileText className="w-3.5 h-3.5 text-info-soft-foreground shrink-0" />
+                                <FileText className="w-3.5 h-3.5 text-sky-700 shrink-0" />
                                 <span className="font-medium">
                                   {documentTypeLabel(document.documentType, locale)}
                                 </span>
@@ -660,15 +660,15 @@ export function AdminVerificationTab() {
                 })}
 
                 {preview && (
-                  <div className="rounded-xl border border-info/40 bg-info-soft p-3 text-xs space-y-1.5">
+                  <div className="rounded-xl border border-sky-300 bg-sky-50 p-3.5 text-xs space-y-2">
                     <div className="flex items-center justify-between">
-                      <span className="font-semibold text-info-soft-foreground">
+                      <span className="font-bold text-sky-950">
                         {isBn ? 'প্রমাণপত্র' : 'Evidence'}: {preview.label}
                       </span>
                       <button
                         type="button"
                         onClick={() => setPreview(null)}
-                        className="text-muted-foreground hover:text-foreground"
+                        className="text-slate-600 hover:text-slate-900 font-bold"
                       >
                         ✕
                       </button>
@@ -677,12 +677,12 @@ export function AdminVerificationTab() {
                       href={preview.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-interactive/20 text-info-soft-foreground hover:bg-interactive/30 font-medium text-xs border border-info/40"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-100 text-sky-950 hover:bg-sky-200 font-bold text-xs border border-sky-300 shadow-2xs"
                     >
-                      <ExternalLink className="w-3.5 h-3.5" />
+                      <ExternalLink className="w-3.5 h-3.5 text-sky-700" />
                       {isBn ? 'সাইনড লিংকে খুলুন (৫ মিনিট)' : 'Open signed link (5 min)'}
                     </a>
-                    <p className="text-[10px] text-muted-foreground">
+                    <p className="text-[10px] text-slate-600 font-medium">
                       {isBn
                         ? 'অ্যাক্সেস অডিট লগে রেকর্ড হয়েছে।'
                         : 'Access recorded in the audit log.'}
@@ -781,10 +781,10 @@ export function AdminVerificationTab() {
                           key={preset.code}
                           type="button"
                           onClick={() => setReasonCode(preset.code)}
-                          className={`text-[10px] px-2.5 py-1 rounded-lg border transition-all ${
+                          className={`text-[10px] px-2.5 py-1 rounded-lg border font-semibold transition-all ${
                             reasonCode === preset.code
-                              ? 'bg-interactive/20 text-info-soft-foreground border-info/40'
-                              : 'bg-muted/60 text-muted-foreground border-border hover:text-foreground'
+                              ? 'bg-sky-100 text-sky-950 border-sky-400 font-bold shadow-2xs'
+                              : 'bg-slate-100 text-slate-700 border-slate-300 hover:text-slate-900 hover:bg-slate-200'
                           }`}
                         >
                           {isBn ? preset.bn : preset.en}

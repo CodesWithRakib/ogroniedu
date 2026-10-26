@@ -199,23 +199,24 @@ export function VerificationLevelCard({
 
   return (
     <Card
-      className="rounded-2xl border-border shadow-xs"
+      className="rounded-2xl border-2 border-slate-200 bg-white shadow-xs overflow-hidden"
       data-testid={`verification-level-${record.level}`}
     >
-      <CardHeader className="pb-3 border-b border-border">
+      <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/60">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <CardTitle className="text-sm font-bold flex items-center gap-2">
+          <CardTitle className="text-sm font-black text-slate-900 flex items-center gap-2">
             <FileText className="w-4 h-4 text-primary" />
             {levelLabel(record.level, locale)}
           </CardTitle>
           <Badge
             variant={levelStatusTone(record.status)}
+            className="font-bold border shadow-2xs"
             data-testid={`level-status-${record.level}`}
           >
             {levelStatusLabel(record.status, locale)}
           </Badge>
         </div>
-        <p className="text-[11px] text-muted-foreground mt-1">
+        <p className="text-[11px] text-slate-600 font-medium mt-1">
           {record.expiresAt
             ? isBn
               ? `মেয়াদ শেষ: ${formatDate(record.expiresAt, locale)}`
@@ -223,37 +224,37 @@ export function VerificationLevelCard({
             : nextActionLabel(record.requirements.nextAction, locale)}
         </p>
       </CardHeader>
-      <CardContent className="pt-4 space-y-3">
+      <CardContent className="pt-4 space-y-3.5">
         {error && (
           <p
             role="alert"
-            className="text-xs text-destructive  flex items-start gap-1.5"
+            className="text-xs text-rose-900 bg-rose-50 border border-rose-200 p-2.5 rounded-xl font-medium flex items-start gap-1.5"
             data-testid={`level-error-${record.level}`}
           >
-            <AlertTriangle className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+            <AlertTriangle className="w-4 h-4 shrink-0 text-rose-600 mt-0.5" />
             <span>{error}</span>
           </p>
         )}
         {message && (
           <p
             role="status"
-            className="text-xs text-primary  flex items-start gap-1.5"
+            className="text-xs text-emerald-950 bg-emerald-50 border border-emerald-300 p-2.5 rounded-xl font-medium flex items-start gap-1.5"
             data-testid={`level-message-${record.level}`}
           >
-            <CheckCircle2 className="w-3.5 h-3.5 shrink-0 mt-0.5" />
+            <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-600 mt-0.5" />
             <span>{message}</span>
           </p>
         )}
 
         {record.applicantFeedback && (
-          <div className="rounded-xl border border-warning/30 bg-warning/10 p-3 text-xs text-warning  space-y-1">
-            <span className="font-semibold flex items-center gap-1.5">
-              <Info className="w-3.5 h-3.5" />
+          <div className="rounded-xl border border-amber-300 bg-amber-50/90 p-3.5 text-xs text-amber-950 space-y-1.5 shadow-2xs">
+            <span className="font-bold flex items-center gap-1.5 text-amber-900">
+              <Info className="w-4 h-4 text-amber-700" />
               {isBn ? 'পর্যালোচকের মন্তব্য' : 'Reviewer feedback'}
             </span>
-            <p>{record.applicantFeedback}</p>
+            <p className="leading-relaxed font-medium">{record.applicantFeedback}</p>
             {record.decisionReasonCode && (
-              <p className="text-[10px] opacity-80">
+              <p className="text-[10px] font-mono text-amber-800 bg-amber-100/60 px-2 py-0.5 rounded w-fit">
                 {isBn ? 'কারণ কোড' : 'Reason code'}: {record.decisionReasonCode}
               </p>
             )}
@@ -261,11 +262,12 @@ export function VerificationLevelCard({
         )}
 
         {missingUploads.length > 0 && (
-          <div className="text-[11px] text-warning  space-y-1">
-            <span className="font-semibold">
+          <div className="text-xs text-slate-800 bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
+            <span className="font-bold text-slate-900 flex items-center gap-1.5">
+              <span className="w-2 h-2 rounded-full bg-amber-500" />
               {isBn ? 'আপলোড করা প্রয়োজন:' : 'Upload required:'}
             </span>
-            <ul className="list-disc list-inside">
+            <ul className="list-disc list-inside text-slate-700 pl-1 space-y-0.5 font-medium">
               {missingUploads.map((label) => (
                 <li key={label}>{label}</li>
               ))}
@@ -274,11 +276,12 @@ export function VerificationLevelCard({
         )}
 
         {missingUploads.length === 0 && awaitingApproval.length > 0 && (
-          <div className="text-[11px] text-muted-foreground space-y-1">
-            <span className="font-semibold text-foreground">
+          <div className="text-xs text-slate-800 bg-blue-50/60 border border-blue-200 p-3 rounded-xl space-y-1">
+            <span className="font-bold text-blue-950 flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-blue-600" />
               {isBn ? 'পর্যালোচকের অনুমোদনের অপেক্ষায়:' : 'Awaiting reviewer approval:'}
             </span>
-            <ul className="list-disc list-inside">
+            <ul className="list-disc list-inside text-slate-700 pl-1 space-y-0.5 font-medium">
               {awaitingApproval.map((label) => (
                 <li key={label}>{label}</li>
               ))}
@@ -289,7 +292,7 @@ export function VerificationLevelCard({
         {/* Uploaded evidence */}
         <div className="space-y-2">
           {record.documents.length === 0 ? (
-            <p className="text-[11px] text-muted-foreground italic">
+            <p className="text-[11px] text-slate-500 italic py-1">
               {isBn ? 'এখনও কোনো প্রমাণপত্র আপলোড করা হয়নি।' : 'No evidence uploaded yet.'}
             </p>
           ) : (
@@ -302,14 +305,14 @@ export function VerificationLevelCard({
                 return (
                   <li
                     key={document.id}
-                    className="flex items-center justify-between gap-2 rounded-xl border border-border bg-surface/50 px-3 py-2 text-xs"
+                    className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 py-2.5 text-xs shadow-2xs"
                     data-testid={`document-${document.id}`}
                   >
                     <div className="min-w-0">
-                      <span className="font-medium text-foreground">
+                      <span className="font-bold text-slate-900 block">
                         {documentTypeLabel(document.documentType, locale)}
                       </span>
-                      <span className="block text-[10px] text-muted-foreground truncate">
+                      <span className="block text-[11px] text-slate-600 font-medium truncate">
                         {document.originalFilename ?? (isBn ? 'সংযুক্ত ফাইল' : 'Attached file')}
                       </span>
                     </div>
@@ -322,7 +325,7 @@ export function VerificationLevelCard({
                               ? 'destructive'
                               : 'warning'
                         }
-                        className="text-[10px]"
+                        className="text-[10px] font-bold"
                       >
                         {statusLabel[locale]}
                       </Badge>
@@ -350,7 +353,7 @@ export function VerificationLevelCard({
         {/* Upload form */}
         {editable && (
           <form
-            className="space-y-2 border-t border-border pt-3"
+            className="space-y-2.5 border-t border-slate-100 pt-3"
             onSubmit={handleUpload}
             data-testid={`upload-form-${record.level}`}
           >
@@ -358,7 +361,7 @@ export function VerificationLevelCard({
               <div className="space-y-1">
                 <Label
                   htmlFor={`document-type-${record.level}`}
-                  className="text-muted-foreground font-medium text-[11px]"
+                  className="text-slate-800 font-bold text-[11px]"
                 >
                   {isBn ? 'নথির ধরন' : 'Document type'}
                 </Label>
@@ -368,7 +371,7 @@ export function VerificationLevelCard({
                 >
                   <SelectTrigger
                     id={`document-type-${record.level}`}
-                    className="h-9 text-xs"
+                    className="h-9 text-xs border-slate-300 text-slate-900 bg-white"
                     data-testid={`document-type-${record.level}`}
                   >
                     <SelectValue
@@ -387,7 +390,7 @@ export function VerificationLevelCard({
               <div className="space-y-1">
                 <Label
                   htmlFor={`document-file-${record.level}`}
-                  className="text-muted-foreground font-medium text-[11px]"
+                  className="text-slate-800 font-bold text-[11px]"
                 >
                   {isBn ? 'ফাইল (সর্বোচ্চ ১০MB)' : 'File (max 10MB)'}
                 </Label>
@@ -396,7 +399,7 @@ export function VerificationLevelCard({
                   type="file"
                   accept={ACCEPTED_EVIDENCE_MIME.join(',')}
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  className="w-full text-[11px] h-9 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:bg-muted file:text-foreground"
+                  className="w-full text-[11px] h-9 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:bg-slate-100 file:text-slate-900 border-slate-300 text-slate-900"
                   data-testid={`document-file-${record.level}`}
                 />
               </div>
@@ -406,18 +409,19 @@ export function VerificationLevelCard({
               size="sm"
               variant="outline"
               isLoading={busy}
+              className="border-slate-300 text-slate-900 hover:bg-slate-100 font-bold"
               data-testid={`upload-document-${record.level}`}
             >
-              <Upload className="w-3.5 h-3.5 mr-1" />
+              <Upload className="w-3.5 h-3.5 mr-1 text-slate-700" />
               {isBn ? 'প্রমাণপত্র আপলোড করুন' : 'Upload evidence'}
             </Button>
           </form>
         )}
 
         {/* Level actions */}
-        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-border pt-3">
-          <span className="text-[10px] text-muted-foreground inline-flex items-center gap-1">
-            <Clock className="w-3 h-3" />
+        <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
+          <span className="text-[11px] text-slate-600 font-medium inline-flex items-center gap-1">
+            <Clock className="w-3.5 h-3.5" />
             {formatLocalizedNumber(record.submissionCount ?? 0, locale)}{' '}
             {isBn ? 'বার জমা দেওয়া হয়েছে' : 'submission(s)'}
           </span>
@@ -429,6 +433,7 @@ export function VerificationLevelCard({
                 variant="outline"
                 disabled={busy}
                 onClick={handleReopen}
+                className="border-slate-300 text-slate-900 hover:bg-slate-100 font-bold"
                 data-testid={`reopen-level-${record.level}`}
               >
                 <RefreshCw className="w-3.5 h-3.5 mr-1" />
@@ -441,6 +446,7 @@ export function VerificationLevelCard({
                 size="sm"
                 disabled={busy || !record.requirements.submitReady}
                 onClick={handleSubmit}
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xs disabled:opacity-50"
                 data-testid={`submit-level-${record.level}`}
               >
                 <Send className="w-3.5 h-3.5 mr-1" />
