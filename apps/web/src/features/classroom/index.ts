@@ -2,3 +2,8 @@ export * from './components/InteractiveWhiteboard';
 export * from './components/ClassroomFormulasDrawer';
 export * from './components/ClassroomWorkspace';
 export * from './components/JitsiClassroomMeeting';
+export * from './components/PreJoinLobby';
+export * from './components/ClassroomControlBar';
+export * from './components/ClassroomModerationPanel';
+export * from './components/ClassroomChatPanel';
+export * from './components/LiveKitClassroomMeeting';

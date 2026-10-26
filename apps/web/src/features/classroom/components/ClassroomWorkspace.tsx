@@ -49,6 +49,7 @@ import { useAppSelector } from '@/store';
 import { InteractiveWhiteboard } from './InteractiveWhiteboard';
 import { ClassroomFormulasDrawer } from './ClassroomFormulasDrawer';
 import { JitsiClassroomMeeting } from './JitsiClassroomMeeting';
+import { LiveKitClassroomMeeting } from './LiveKitClassroomMeeting';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
 import { parseItem } from '@/lib/api/parse';
 import { withLocale } from '@/lib/auth';
@@ -323,10 +324,10 @@ export function ClassroomWorkspace({
       </div>
 
       {/* Main Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-sm p-6 md:p-8 text-slate-900">
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-2.5">
-            <div className="flex items-center gap-2 text-xs text-blue-700 font-bold">
+      <div className="relative overflow-hidden rounded-3xl bg-white border-2 border-slate-200 shadow-md p-4 sm:p-6 md:p-8 text-slate-900">
+        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
+          <div className="space-y-2">
+            <div className="flex items-center gap-2 text-xs text-blue-700 font-extrabold">
               <Sparkles className="w-4 h-4 text-blue-600" />
               <span>
                 {isBn
@@ -334,23 +335,21 @@ export function ClassroomWorkspace({
                   : 'OgroniEdu Live Interactive Classroom & Video Studio'}
               </span>
             </div>
-            <h1 className="text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
               {subjectTitle}
             </h1>
-            <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-600">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 text-xs font-semibold text-slate-700">
               <span className="flex items-center gap-1.5">
-                <span className="text-slate-500 font-semibold">{isBn ? 'শিক্ষক:' : 'Tutor:'}</span>
-                <strong className="text-slate-900 font-bold">{tutorName}</strong>
+                <span className="text-slate-500 font-bold">{isBn ? 'শিক্ষক:' : 'Tutor:'}</span>
+                <strong className="text-slate-900 font-black">{tutorName}</strong>
               </span>
               <span>•</span>
               <span className="flex items-center gap-1.5">
-                <span className="text-slate-500 font-semibold">
-                  {isBn ? 'শিক্ষার্থী:' : 'Student:'}
-                </span>
-                <strong className="text-slate-900 font-bold">{studentName}</strong>
+                <span className="text-slate-500 font-bold">{isBn ? 'শিক্ষার্থী:' : 'Student:'}</span>
+                <strong className="text-slate-900 font-black">{studentName}</strong>
               </span>
               <span>•</span>
-              <span className="flex items-center gap-1.5 text-slate-700 font-semibold">
+              <span className="flex items-center gap-1.5 text-slate-800 font-bold">
                 <Clock className="w-3.5 h-3.5 text-blue-600" />
                 <span>
                   {formatWeekdayDate(session.startsAt, locale)} (
@@ -518,29 +517,29 @@ export function ClassroomWorkspace({
       </div>
 
       {/* Navigation Tabs & Split Screen Toggle */}
-      <div className="flex flex-wrap items-center justify-between gap-3 border-b border-slate-200 pb-3">
-        <div className="flex flex-wrap items-center gap-2">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b-2 border-slate-200 pb-3">
+        <div className="flex items-center gap-2 overflow-x-auto no-scrollbar py-1 w-full sm:w-auto -mx-1 px-1">
           <button
             type="button"
             onClick={() => setActiveTab('video')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
               activeTab === 'video'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                ? 'bg-slate-950 text-white shadow-md'
+                : 'bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-900 border border-slate-300/80'
             }`}
             data-testid="tab-video"
           >
             <Video className="w-4 h-4 text-blue-400" />
-            <span>{isBn ? 'লাইভ ভিডিও ক্লাস (Jitsi Meet)' : 'Live Video Class (Jitsi)'}</span>
+            <span>{isBn ? 'লাইভ ভিডিও ক্লাস (Jitsi Meet)' : 'Live Video Class (LiveKit / Jitsi)'}</span>
           </button>
 
           <button
             type="button"
             onClick={() => setActiveTab('whiteboard')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
               activeTab === 'whiteboard'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                ? 'bg-slate-950 text-white shadow-md'
+                : 'bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-900 border border-slate-300/80'
             }`}
             data-testid="tab-whiteboard"
           >
@@ -551,10 +550,10 @@ export function ClassroomWorkspace({
           <button
             type="button"
             onClick={() => setActiveTab('formulas')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
               activeTab === 'formulas'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                ? 'bg-slate-950 text-white shadow-md'
+                : 'bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-900 border border-slate-300/80'
             }`}
             data-testid="tab-formulas"
           >
@@ -565,10 +564,10 @@ export function ClassroomWorkspace({
           <button
             type="button"
             onClick={() => setActiveTab('attendance')}
-            className={`flex items-center gap-2 px-4 py-2 rounded-2xl text-xs font-bold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
               activeTab === 'attendance'
-                ? 'bg-slate-900 text-white shadow-xs'
-                : 'bg-slate-100 text-slate-700 hover:bg-slate-200 hover:text-slate-900'
+                ? 'bg-slate-950 text-white shadow-md'
+                : 'bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-900 border border-slate-300/80'
             }`}
             data-testid="tab-attendance"
           >
@@ -578,19 +577,19 @@ export function ClassroomWorkspace({
         </div>
 
         {/* Split Screen Button */}
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-2 shrink-0">
           <button
             type="button"
             onClick={() => setIsSplitMode(!isSplitMode)}
-            className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-bold border transition-colors ${
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black border-2 transition-all ${
               isSplitMode
-                ? 'bg-blue-50 border-blue-300 text-blue-900'
-                : 'bg-white border-slate-200 text-slate-700 hover:bg-slate-100'
+                ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
+                : 'bg-white border-slate-300 text-slate-800 hover:bg-slate-100'
             }`}
             title={isBn ? 'ভিডিও ও হোয়াইটবোর্ড একসাথে দেখুন' : 'View video and tools side-by-side'}
             data-testid="split-mode-toggle"
           >
-            <Columns className="w-3.5 h-3.5 text-blue-600" />
+            <Columns className="w-4 h-4 text-blue-500" />
             <span>
               {isSplitMode
                 ? isBn
@@ -608,15 +607,13 @@ export function ClassroomWorkspace({
       {isSplitMode ? (
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 items-start">
           <div className="w-full">
-            <JitsiClassroomMeeting
+            <LiveKitClassroomMeeting
               sessionId={session.id}
               bookingId={session.bookingId}
-              meetingUrl={session.meetingUrl}
               locale={locale}
               displayName={activeParticipantName}
               userEmail={activeParticipantEmail}
               isTutor={isTutor}
-              onMeetingUrlGenerated={handleMeetingUrlGenerated}
             />
           </div>
           <div className="w-full">
@@ -647,15 +644,13 @@ export function ClassroomWorkspace({
         /* Standalone View */
         <>
           {activeTab === 'video' && (
-            <JitsiClassroomMeeting
+            <LiveKitClassroomMeeting
               sessionId={session.id}
               bookingId={session.bookingId}
-              meetingUrl={session.meetingUrl}
               locale={locale}
               displayName={activeParticipantName}
               userEmail={activeParticipantEmail}
               isTutor={isTutor}
-              onMeetingUrlGenerated={handleMeetingUrlGenerated}
             />
           )}
 

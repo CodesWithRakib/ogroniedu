@@ -181,6 +181,7 @@ export const baseApi = createApi({
     'FileAsset',
     'Onboarding',
     'Organizations',
+    'Classroom',
   ],
   endpoints: () => ({}),
 });

@@ -16,6 +16,27 @@ describe('Health & Readiness Probes Tests', () => {
     expect(new Date(result.timestamp).getTime()).not.toBeNaN();
   });
 
+  it('should check LiveKit media provider status when configured', () => {
+    const originalUrl = process.env.LIVEKIT_URL;
+    const originalKey = process.env.LIVEKIT_API_KEY;
+    const originalSecret = process.env.LIVEKIT_API_SECRET;
+
+    process.env.LIVEKIT_URL = 'wss://livekit.example.com';
+    process.env.LIVEKIT_API_KEY = 'test_key';
+    process.env.LIVEKIT_API_SECRET = 'test_secret';
+
+    const controller = new HealthController(null as any, null as any, null as any);
+    const result = controller.checkLivekit();
+
+    expect(result.status).toBe('ok');
+    expect(result.provider).toBe('livekit');
+    expect(result.configured).toBe(true);
+
+    process.env.LIVEKIT_URL = originalUrl;
+    process.env.LIVEKIT_API_KEY = originalKey;
+    process.env.LIVEKIT_API_SECRET = originalSecret;
+  });
+
   it('should handle readiness check with health indicators', async () => {
     const mockHealthService = {
       check: vi.fn().mockResolvedValue({

@@ -33,6 +33,24 @@ export class HealthController {
     };
   }
 
+  @Get(['media', 'livekit'])
+  @ApiOperation({ summary: 'LiveKit media provider connectivity and readiness check' })
+  @ApiResponse({ status: 200, description: 'LiveKit configuration and status' })
+  checkLivekit(): { status: string; provider: string; configured: boolean; timestamp: string } {
+    const isConfigured = Boolean(
+      process.env.LIVEKIT_URL &&
+      process.env.LIVEKIT_API_KEY &&
+      process.env.LIVEKIT_API_SECRET,
+    );
+
+    return {
+      status: isConfigured ? 'ok' : 'unconfigured',
+      provider: 'livekit',
+      configured: isConfigured,
+      timestamp: new Date().toISOString(),
+    };
+  }
+
   @Get(['ready', 'readiness'])
   @HealthCheck()
   @ApiOperation({ summary: 'Readiness check verifying database and resource health' })

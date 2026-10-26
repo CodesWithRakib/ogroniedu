@@ -113,6 +113,18 @@ export class EnvironmentVariables {
   @IsString()
   @IsOptional()
   UPSTASH_REDIS_REST_TOKEN?: string;
+
+  @IsString()
+  @IsOptional()
+  LIVEKIT_URL?: string;
+
+  @IsString()
+  @IsOptional()
+  LIVEKIT_API_KEY?: string;
+
+  @IsString()
+  @IsOptional()
+  LIVEKIT_API_SECRET?: string;
 }
 
 export function validateEnvironment(config: Record<string, unknown>): EnvironmentVariables {
