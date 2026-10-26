@@ -1,6 +1,9 @@
 export interface CheckoutSessionResult {
   checkoutUrl: string;
   providerOrderId: string;
+  sessionKey?: string;
+  gatewayPageUrl?: string;
+  storeLogo?: string;
 }
 
 export interface ProviderTransactionResult {
@@ -45,6 +48,7 @@ export interface PaymentProviderAdapter {
     amountMinor: number,
     currency: string,
     payerPhone?: string,
+    metadata?: Record<string, unknown>,
   ): Promise<CheckoutSessionResult>;
 
   verifyWebhookSignature(

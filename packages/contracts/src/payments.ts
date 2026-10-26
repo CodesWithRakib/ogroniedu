@@ -11,6 +11,7 @@ export const CreatePaymentOrderSchema = z.object({
   provider: z.enum(PaymentProviders).optional(),
   paymentMethod: z.enum(PaymentMethods).optional(),
   amountMinor: z.union([z.string(), z.number()]).optional(),
+  locale: z.enum(['bn', 'en']).optional(),
 });
 export type CreatePaymentOrderInput = z.infer<typeof CreatePaymentOrderSchema>;
 

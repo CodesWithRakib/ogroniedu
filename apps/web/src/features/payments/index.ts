@@ -1,9 +1,12 @@
 export * from './types/payment-checkout.types';
 export { usePaymentOrder } from './hooks/use-payment-order';
 export * from './hooks/use-checkout-flow';
+export * from './hooks/use-payment-status';
 export * from './components/checkoutSummary';
 export * from './components/checkoutMethodPicker';
 export * from './components/paymentReceipt';
 export * from './components/checkoutLedger';
+export * from './components/embedded-easy-checkout';
+export * from './components/payment-result-view';
 export * from './pages/payments-page';
 export * from './pages/booking-pay-page';

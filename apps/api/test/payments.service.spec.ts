@@ -645,5 +645,38 @@ describe('Payments domain: orders, verified webhooks, settlement and reconciliat
         expect.objectContaining({ reference: 'payout-1' }),
       ]);
     });
+
+    it('returns authoritative payment order status for authorized user', async () => {
+      mockOrderRepo.findOne.mockResolvedValue({
+        ...sampleOrder,
+        status: 'succeeded',
+        booking,
+        payerUser: { displayName: 'Rahim' },
+        transactions: [
+          { status: 'succeeded', verifiedAt: new Date('2026-10-26T12:00:00Z') },
+        ],
+      });
+
+      const res = await service.getPaymentOrderStatus(studentUser, orderId);
+      expect(res.orderId).toBe(orderId);
+      expect(res.status).toBe('succeeded');
+      expect(res.amountMinor).toBe(100000);
+      expect(res.booking?.subjectName).toBe('Mathematics');
+      expect(res.booking?.tutorName).toBe('Tutor One');
+      expect(res.receipt).toBeDefined();
+    });
+
+    it('rejects payment order status query for unauthorized stranger', async () => {
+      mockOrderRepo.findOne.mockResolvedValue({
+        ...sampleOrder,
+        status: 'pending',
+        booking,
+        payerUser: { displayName: 'Rahim' },
+      });
+
+      await expect(service.getPaymentOrderStatus(strangerUser, orderId)).rejects.toThrow(
+        ForbiddenException,
+      );
+    });
   });
 });

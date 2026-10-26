@@ -27,6 +27,8 @@ import { normalizeUnknownError, newIdempotencyKey } from '@/lib/api-error';
 import { formatBDTMinor } from '@/lib/format';
 import { type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
+import { EmbeddedEasyCheckout } from '../components/embedded-easy-checkout';
+import { usePaymentStatus } from '../hooks/use-payment-status';
 
 export interface BookingPayPageProps {
   bookingId: string;
@@ -90,6 +92,18 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
   const isConfirmed = CONFIRMED_STATUSES.has(status);
   const isTerminal = TERMINAL_STATUSES.has(status);
 
+  // Real-time authoritative payment status check while waiting for gateway confirmation
+  usePaymentStatus({
+    orderId: pendingOrder?.orderId,
+    enabled: Boolean(pendingOrder && isPayable),
+    onSuccess: () => {
+      void refetch();
+    },
+    onTerminalState: () => {
+      void refetch();
+    },
+  });
+
   // Poll the authoritative booking record while the provider is processing.
   // The browser itself is never allowed to mark the booking paid.
   useEffect(() => {
@@ -120,13 +134,35 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
       return;
     }
 
-    // Open synchronously so the browser does not block the provider window.
+    if (provider === 'sslcommerz') {
+      try {
+        const res = await createOrder({
+          body: { bookingId, provider, locale },
+          idempotencyKey: newIdempotencyKey('order'),
+        }).unwrap();
+        const created = (res.data ?? res) as CreatePaymentOrderResponse;
+        if (!created?.checkoutUrl) {
+          throw new Error(
+            isBn
+              ? 'পেমেন্ট গেটওয়ে চেকআউট লিংক দেয়নি। আবার চেষ্টা করুন।'
+              : 'The payment gateway did not return a checkout session. Please try again.',
+          );
+        }
+        setPendingOrder(created);
+        void refetch();
+      } catch (err) {
+        setErrorText(normalizeUnknownError(err, locale).message);
+      }
+      return;
+    }
+
+    // Open synchronously so the browser does not block the provider window for external gateways.
     const checkoutWindow = window.open('about:blank', '_blank');
     if (checkoutWindow) checkoutWindow.opener = null;
 
     try {
       const res = await createOrder({
-        body: { bookingId, provider },
+        body: { bookingId, provider, locale },
         idempotencyKey: newIdempotencyKey('order'),
       }).unwrap();
       const created = (res.data ?? res) as CreatePaymentOrderResponse;
@@ -341,54 +377,79 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                 </div>
               </div>
             ) : pendingOrder && isPayable ? (
-              <div className="rounded-2xl border border-warning/30 bg-warning-soft/40 p-6 space-y-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-warning/15 text-warning flex items-center justify-center">
-                    <Clock className="w-6 h-6" />
+              <div className="space-y-5">
+                {provider === 'sslcommerz' && (
+                  <EmbeddedEasyCheckout
+                    orderId={pendingOrder.orderId}
+                    checkoutUrl={pendingOrder.checkoutUrl}
+                    sessionKey={pendingOrder.sessionKey}
+                    gatewayPageUrl={pendingOrder.gatewayPageUrl}
+                    storeLogo={pendingOrder.storeLogo}
+                    amountMinor={pendingOrder.amountMinor || priceMinor}
+                    locale={locale}
+                    onPaymentCompleted={() => void refetch()}
+                    onPaymentFailed={() => void refetch()}
+                  />
+                )}
+
+                <div className="rounded-2xl border border-warning/30 bg-warning-soft/40 p-6 space-y-4">
+                  <div className="flex items-center gap-3">
+                    <div className="w-11 h-11 rounded-2xl bg-warning/15 text-warning flex items-center justify-center">
+                      <Clock className="w-6 h-6" />
+                    </div>
+                    <div>
+                      <h2 className="text-base font-extrabold text-foreground">
+                        {isBn
+                          ? 'প্রোভাইডার নিশ্চিতকরণের অপেক্ষায়'
+                          : 'Waiting for provider confirmation'}
+                      </h2>
+                      <p className="text-xs text-muted-foreground">
+                        {isBn
+                          ? 'পেমেন্ট সম্পন্ন হলে এই পেজ স্বয়ংক্রিয়ভাবে আপডেট হবে।'
+                          : 'This page updates automatically after the provider confirms the payment.'}
+                      </p>
+                    </div>
                   </div>
-                  <div>
-                    <h2 className="text-base font-extrabold text-foreground">
-                      {isBn
-                        ? 'প্রোভাইডার নিশ্চিতকরণের অপেক্ষায়'
-                        : 'Waiting for provider confirmation'}
-                    </h2>
-                    <p className="text-xs text-muted-foreground">
-                      {isBn
-                        ? 'পেমেন্ট সম্পন্ন হলে এই পেজ স্বয়ংক্রিয়ভাবে আপডেট হবে।'
-                        : 'This page updates automatically after the provider confirms the payment.'}
-                    </p>
+                  <div className="rounded-xl border border-border bg-card px-3 py-2.5 text-xs">
+                    <span className="text-muted-foreground">
+                      {isBn ? 'অর্ডার আইডি' : 'Order ID'}:{' '}
+                    </span>
+                    <span className="font-mono font-semibold text-foreground break-all">
+                      {pendingOrder.orderId}
+                    </span>
                   </div>
-                </div>
-                <div className="rounded-xl border border-border bg-card px-3 py-2.5 text-xs">
-                  <span className="text-muted-foreground">
-                    {isBn ? 'অর্ডার আইডি' : 'Order ID'}:{' '}
-                  </span>
-                  <span className="font-mono font-semibold text-foreground break-all">
-                    {pendingOrder.orderId}
-                  </span>
-                </div>
-                <div className="flex flex-wrap gap-2">
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="rounded-xl font-semibold"
-                    onClick={() => openCheckout(pendingOrder.checkoutUrl)}
-                  >
-                    <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
-                    {isBn ? 'চেকআউট আবার খুলুন' : 'Reopen checkout'}
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="outline"
-                    className="rounded-xl font-semibold"
-                    onClick={() => void refetch()}
-                    disabled={isFetching}
-                  >
-                    <RefreshCw
-                      className={`w-3.5 h-3.5 mr-1.5 ${isFetching ? 'animate-spin' : ''}`}
-                    />
-                    {isBn ? 'স্ট্যাটাস যাচাই করুন' : 'Check status'}
-                  </Button>
+                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
+                    <div className="flex flex-wrap gap-2">
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="rounded-xl font-semibold"
+                        onClick={() => openCheckout(pendingOrder.checkoutUrl)}
+                      >
+                        <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
+                        {isBn ? 'চেকআউট আবার খুলুন' : 'Reopen checkout'}
+                      </Button>
+                      <Button
+                        size="sm"
+                        variant="outline"
+                        className="rounded-xl font-semibold"
+                        onClick={() => void refetch()}
+                        disabled={isFetching}
+                      >
+                        <RefreshCw
+                          className={`w-3.5 h-3.5 mr-1.5 ${isFetching ? 'animate-spin' : ''}`}
+                        />
+                        {isBn ? 'স্ট্যাটাস যাচাই করুন' : 'Check status'}
+                      </Button>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setPendingOrder(null)}
+                      className="text-xs text-muted-foreground hover:text-foreground underline font-medium"
+                    >
+                      {isBn ? 'পেমেন্ট পদ্ধতি পরিবর্তন' : 'Change method'}
+                    </button>
+                  </div>
                 </div>
               </div>
             ) : isPayable ? (

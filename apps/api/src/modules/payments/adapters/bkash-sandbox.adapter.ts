@@ -36,6 +36,7 @@ export class BkashSandboxAdapter implements PaymentProviderAdapter {
     _amountMinor: number,
     _currency: string,
     _payerPhone?: string,
+    _metadata?: Record<string, unknown>,
   ): Promise<CheckoutSessionResult> {
     throw new ServiceUnavailableException(
       'bKash checkout is not configured. Use SSLCOMMERZ or contact operations to provision bKash merchant credentials.',

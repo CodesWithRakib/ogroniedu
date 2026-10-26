@@ -43,6 +43,12 @@ describe('PaymentsController', () => {
       getMyPaymentOrders: vi
         .fn()
         .mockResolvedValue([{ id: 'order-1', status: 'succeeded', amountMinor: '100000' }]),
+      getPaymentOrderStatus: vi.fn().mockResolvedValue({
+        orderId: '00000000-0000-4000-8000-000000000000',
+        status: 'succeeded',
+        amountMinor: 100000,
+        currency: 'BDT',
+      }),
     };
 
     mockInvoicesService = {
@@ -174,6 +180,46 @@ describe('PaymentsController', () => {
       mockUser,
       'aaaaaaaa-aaaa-4aaa-8aaa-aaaaaaaaaaaa',
       'bn',
+    );
+  });
+
+  it('redirects browser posts to branded payment result page with order details and status', async () => {
+    const body: any = {
+      tran_id: '00000000-0000-4000-8000-000000000000',
+      value_a: 'en',
+      value_b: 'booking-123',
+    };
+    mockPaymentsService.handleWebhook.mockResolvedValue({
+      received: true,
+      processed: true,
+      orderId: '00000000-0000-4000-8000-000000000000',
+      status: 'succeeded',
+    });
+    const headers = {
+      'content-type': 'application/x-www-form-urlencoded',
+      accept: 'text/html',
+    };
+    const req = { rawBody: Buffer.from('') } as any;
+    const mockRes = { redirect: vi.fn() } as any;
+
+    await controller.handleWebhook('sslcommerz', headers, body, req, mockRes);
+
+    expect(mockRes.redirect).toHaveBeenCalledWith(
+      expect.stringContaining('/en/payments/result?orderId=00000000-0000-4000-8000-000000000000&status=succeeded&bookingId=booking-123'),
+    );
+  });
+
+  it('returns payment order status for authorized user', async () => {
+    const res = await controller.getPaymentOrderStatus(
+      mockUser,
+      '00000000-0000-4000-8000-000000000000',
+    );
+
+    expect(res.success).toBe(true);
+    expect(res.data.status).toBe('succeeded');
+    expect(mockPaymentsService.getPaymentOrderStatus).toHaveBeenCalledWith(
+      mockUser,
+      '00000000-0000-4000-8000-000000000000',
     );
   });
 

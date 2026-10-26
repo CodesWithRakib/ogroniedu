@@ -84,9 +84,18 @@ export class PaymentsController {
 
     if (isBrowserPost && res) {
       const frontendUrl = process.env.FRONTEND_URL?.split(',')[0] || 'http://localhost:5000';
-      return res.redirect(
-        `${frontendUrl}/bn/dashboard/student/requests?payment=success&orderId=${result.orderId || ''}`,
-      );
+      const locale = body.value_a === 'en' ? 'en' : 'bn';
+      const bookingId = (body.value_b as string) || '';
+      const orderId = result.orderId || (body.tran_id as string) || '';
+      const status = result.status || 'pending';
+
+      const queryParams = new URLSearchParams({
+        orderId,
+        status,
+        ...(bookingId ? { bookingId } : {}),
+      });
+
+      return res.redirect(`${frontendUrl}/${locale}/payments/result?${queryParams.toString()}`);
     }
 
     return {
@@ -159,6 +168,32 @@ export class PaymentsController {
     return {
       success: true,
       data: orders,
+    };
+  }
+
+  @Get('orders/:orderId/status')
+  @UseGuards(AuthGuard)
+  async getPaymentOrderStatus(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('orderId', ParseUUIDPipe) orderId: string,
+  ) {
+    const status = await this.paymentsService.getPaymentOrderStatus(user, orderId);
+    return {
+      success: true,
+      data: status,
+    };
+  }
+
+  @Get('orders/:orderId')
+  @UseGuards(AuthGuard)
+  async getPaymentOrderById(
+    @CurrentUser() user: AuthenticatedUser,
+    @Param('orderId', ParseUUIDPipe) orderId: string,
+  ) {
+    const status = await this.paymentsService.getPaymentOrderStatus(user, orderId);
+    return {
+      success: true,
+      data: status,
     };
   }
 

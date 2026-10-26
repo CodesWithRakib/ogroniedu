@@ -18,3 +18,39 @@ export interface PaymentReceiptDto {
   provider: string;
   paidAt: string;
 }
+
+export interface CreatePaymentOrderResultDto {
+  orderId: string;
+  checkoutUrl: string;
+  sessionKey?: string;
+  gatewayPageUrl?: string;
+  storeLogo?: string;
+  amountMinor: number;
+  currency: string;
+  status: PaymentOrderStatus;
+  commissionRateBps: number;
+}
+
+export interface PaymentOrderStatusDto {
+  orderId: string;
+  bookingId: string;
+  payerUserId: string;
+  amountMinor: number;
+  currency: string;
+  status: PaymentOrderStatus;
+  provider: string;
+  providerReference?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  verifiedAt?: string | null;
+  failureReason?: string | null;
+  receipt?: PaymentReceiptDto | null;
+  booking?: {
+    id: string;
+    subjectName: string;
+    tutorName: string;
+    studentName: string;
+    rateMinor: number;
+    status: string;
+  };
+}

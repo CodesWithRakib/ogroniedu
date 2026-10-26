@@ -8,6 +8,7 @@ import { CheckoutSummary } from '@/features/payments/components/checkoutSummary'
 import { CheckoutMethodPicker } from '@/features/payments/components/checkoutMethodPicker';
 import { PaymentReceipt } from '@/features/payments/components/paymentReceipt';
 import { CheckoutLedger } from '@/features/payments/components/checkoutLedger';
+import { EmbeddedEasyCheckout } from '@/features/payments/components/embedded-easy-checkout';
 import type {
   PaymentOrderDetails,
   PaymentReceiptData,
@@ -82,6 +83,15 @@ export function PaymentCheckoutView({
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-2 space-y-6">
           <CheckoutSummary order={order} locale={locale} />
+
+          {order.status === 'pending' && order.checkoutUrl && flow.selectedGateway === 'sslcommerz' && (
+            <EmbeddedEasyCheckout
+              orderId={order.id}
+              checkoutUrl={order.checkoutUrl}
+              amountMinor={order.amountMinor}
+              locale={locale}
+            />
+          )}
 
           {order.status === 'pending' && (
             <CheckoutMethodPicker

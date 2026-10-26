@@ -1,4 +1,8 @@
-import type { PaymentReceiptDto } from '../interfaces/payment-orders.interfaces';
+import type {
+  PaymentReceiptDto,
+  PaymentOrderStatusDto,
+  CreatePaymentOrderResultDto,
+} from '../interfaces/payment-orders.interfaces';
 import {
   Injectable,
   NotFoundException,
@@ -13,7 +17,7 @@ import {
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PaymentOrderEntity, PaymentOrderStatus } from '../entities';
+import { PaymentOrderEntity } from '../entities';
 import { BookingEntity } from '../../bookings/entities/booking.entity';
 import { GuardianAccessService } from '../../guardians/guardian-access.service';
 import { PaymentAdapterFactory } from '../adapters/adapter.factory';
@@ -25,7 +29,11 @@ import { AuthenticatedUser } from '../../../common/decorators/current-user.decor
 import { isAdminRole } from '../../../common/auth/role.utils';
 import { minorToBdtString, parseMinor } from '../../../common/money/money';
 
-export type { PaymentReceiptDto } from '../interfaces/payment-orders.interfaces';
+export type {
+  PaymentReceiptDto,
+  PaymentOrderStatusDto,
+  CreatePaymentOrderResultDto,
+} from '../interfaces/payment-orders.interfaces';
 
 /**
  * Payment order lifecycle: creation with idempotency protection plus
@@ -73,14 +81,7 @@ export class PaymentOrdersService {
     dto: CreatePaymentOrderDto,
     idempotencyKey: string,
     requestId?: string,
-  ): Promise<{
-    orderId: string;
-    checkoutUrl: string;
-    amountMinor: number;
-    currency: string;
-    status: PaymentOrderStatus;
-    commissionRateBps: number;
-  }> {
+  ): Promise<CreatePaymentOrderResultDto> {
     const booking = await this.bookingRepo.findOne({
       where: { id: dto.bookingId },
       relations: {
@@ -121,6 +122,7 @@ export class PaymentOrdersService {
         ? dto.paymentMethod
         : 'sslcommerz');
     const adapter = this.adapterFactory.getAdapter(providerName);
+    const sessionMetadata = { locale: dto.locale || 'bn', bookingId: booking.id };
 
     if (existingOrder) {
       if (
@@ -137,6 +139,7 @@ export class PaymentOrdersService {
         Number(existingOrder.amountMinor),
         existingOrder.currency,
         user.phone,
+        sessionMetadata,
       );
       if (
         existingOrder.providerReference !== sessionResult.providerOrderId &&
@@ -148,6 +151,9 @@ export class PaymentOrdersService {
       return {
         orderId: existingOrder.id,
         checkoutUrl: sessionResult.checkoutUrl,
+        sessionKey: sessionResult.sessionKey,
+        gatewayPageUrl: sessionResult.gatewayPageUrl,
+        storeLogo: sessionResult.storeLogo,
         amountMinor: Number(existingOrder.amountMinor),
         currency: existingOrder.currency,
         status: existingOrder.status,
@@ -180,13 +186,20 @@ export class PaymentOrdersService {
 
     const savedOrder = await this.orderRepo.save(order);
 
-    let sessionResult: { checkoutUrl: string; providerOrderId: string };
+    let sessionResult: {
+      checkoutUrl: string;
+      providerOrderId: string;
+      sessionKey?: string;
+      gatewayPageUrl?: string;
+      storeLogo?: string;
+    };
     try {
       sessionResult = await adapter.createCheckoutSession(
         savedOrder.id,
         Number(amountMinor),
         savedOrder.currency,
         user.phone,
+        sessionMetadata,
       );
     } catch (err) {
       // Mark the order as failed so it doesn't block future attempts
@@ -227,6 +240,9 @@ export class PaymentOrdersService {
     return {
       orderId: savedOrder.id,
       checkoutUrl: sessionResult.checkoutUrl,
+      sessionKey: sessionResult.sessionKey,
+      gatewayPageUrl: sessionResult.gatewayPageUrl,
+      storeLogo: sessionResult.storeLogo,
       amountMinor: Number(amountMinor),
       currency: savedOrder.currency,
       status: savedOrder.status,
@@ -337,5 +353,83 @@ export class PaymentOrdersService {
       .orWhere('booking.studentUserId IN (:...studentIds)', { studentIds })
       .orderBy('order.createdAt', 'DESC')
       .getMany();
+  }
+
+  async getPaymentOrderStatus(
+    user: AuthenticatedUser,
+    orderId: string,
+  ): Promise<PaymentOrderStatusDto> {
+    const order = await this.orderRepo.findOne({
+      where: { id: orderId },
+      relations: {
+        booking: {
+          subject: true,
+          studentUser: true,
+          requesterUser: true,
+          tutorProfile: { user: true },
+        },
+        payerUser: true,
+        transactions: true,
+      },
+    });
+
+    if (!order) {
+      throw new NotFoundException(`Payment order ${orderId} not found`);
+    }
+
+    const isPayer = user.id === order.payerUserId;
+    const isStudent = user.id === order.booking?.studentUserId;
+    const isRequester = user.id === order.booking?.requesterUserId;
+    const isLinkedGuardian =
+      order.booking?.studentUserId &&
+      (await this.guardianAccess.hasActiveLink(user.id, order.booking.studentUserId));
+
+    if (!isPayer && !isStudent && !isRequester && !isLinkedGuardian && !isAdminRole(user)) {
+      throw new ForbiddenException('Access denied: You do not have permission to view this payment order status');
+    }
+
+    const successfulTxn = order.transactions?.find((t) => t.status === 'succeeded');
+    const failedTxn = order.transactions?.find((t) => t.status === 'failed');
+
+    let receipt: PaymentReceiptDto | null = null;
+    if (order.status === 'succeeded') {
+      try {
+        receipt = await this.getPaymentReceipt(user, orderId);
+      } catch {
+        receipt = null;
+      }
+    }
+
+    const tutorUser = order.booking?.tutorProfile?.user;
+    const tutorName = tutorUser?.displayName || tutorUser?.displayNameEn || 'Tutor';
+    const studentUser = order.booking?.studentUser;
+    const studentName = studentUser?.displayName || studentUser?.displayNameEn || 'Student';
+    const subjectName = order.booking?.subject?.nameEn || order.booking?.subject?.nameBn || 'Subject';
+
+    return {
+      orderId: order.id,
+      bookingId: order.bookingId,
+      payerUserId: order.payerUserId,
+      amountMinor: Number(order.amountMinor),
+      currency: order.currency,
+      status: order.status,
+      provider: order.provider,
+      providerReference: order.providerReference,
+      createdAt: order.createdAt.toISOString(),
+      updatedAt: order.updatedAt.toISOString(),
+      verifiedAt: successfulTxn?.verifiedAt?.toISOString() || null,
+      failureReason: (failedTxn?.rawPayloadRedacted?.rawStatus as string) || null,
+      receipt,
+      booking: order.booking
+        ? {
+            id: order.booking.id,
+            subjectName,
+            tutorName,
+            studentName,
+            rateMinor: Number(order.booking.pricePerSessionMinor) || 0,
+            status: order.booking.status,
+          }
+        : undefined,
+    };
   }
 }

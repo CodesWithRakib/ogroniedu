@@ -21,4 +21,11 @@ export class CreatePaymentOrderDto {
 
   @IsOptional()
   amountMinor?: string | number;
+
+  @IsString()
+  @IsOptional()
+  @IsIn(['bn', 'en'], {
+    message: 'locale must be bn or en',
+  })
+  locale?: string;
 }

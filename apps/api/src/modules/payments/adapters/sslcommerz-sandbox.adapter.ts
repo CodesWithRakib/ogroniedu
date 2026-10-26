@@ -15,6 +15,8 @@ interface SslcommerzSessionResponse {
   status?: string;
   sessionkey?: string;
   GatewayPageURL?: string;
+  storeLogo?: string;
+  storeBanner?: string;
 }
 
 /** Subset of the SSLCOMMERZ validation-server response we depend on. */
@@ -80,6 +82,7 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
     amountMinor: number,
     currency: string,
     payerPhone?: string,
+    metadata?: Record<string, unknown>,
   ): Promise<CheckoutSessionResult> {
     const amountBdt = (amountMinor / 100).toFixed(2);
     const callbackUrl = `${this.tunnelBaseUrl}/api/v1/payments/webhook/sslcommerz`;
@@ -104,6 +107,8 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
       product_name: 'Tutoring Session Fee',
       product_category: 'Education',
       product_profile: 'non-physical-goods',
+      value_a: (metadata?.locale as string) || 'bn',
+      value_b: (metadata?.bookingId as string) || '',
     });
 
     try {
@@ -170,6 +175,9 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter {
         return {
           checkoutUrl: data.GatewayPageURL,
           providerOrderId: data.sessionkey || orderId,
+          sessionKey: data.sessionkey,
+          gatewayPageUrl: data.GatewayPageURL,
+          storeLogo: data.storeLogo,
         };
       }
 

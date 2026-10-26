@@ -13,6 +13,7 @@ export interface CreatePaymentOrderRequest {
   amountMinor?: number;
   provider?: PaymentProvider;
   paymentMethod?: string;
+  locale?: string;
 }
 
 export interface PaymentReceipt {
@@ -37,10 +38,37 @@ export interface PaymentReceipt {
 export interface CreatePaymentOrderResponse {
   orderId: string;
   checkoutUrl: string;
+  sessionKey?: string;
+  gatewayPageUrl?: string;
+  storeLogo?: string;
   amountMinor: number;
   currency: string;
   status: 'created' | 'pending' | 'succeeded' | 'failed' | 'expired' | 'cancelled' | string;
   commissionRateBps: number;
+}
+
+export interface PaymentOrderStatusResponse {
+  orderId: string;
+  bookingId: string;
+  payerUserId: string;
+  amountMinor: number;
+  currency: string;
+  status: 'created' | 'pending' | 'succeeded' | 'failed' | 'expired' | 'cancelled' | string;
+  provider: string;
+  providerReference?: string | null;
+  createdAt: string;
+  updatedAt: string;
+  verifiedAt?: string | null;
+  failureReason?: string | null;
+  receipt?: PaymentReceipt | null;
+  booking?: {
+    id: string;
+    subjectName: string;
+    tutorName: string;
+    studentName: string;
+    rateMinor: number;
+    status: string;
+  };
 }
 
 export interface PaymentOrderRecord {
@@ -227,6 +255,10 @@ export const paymentsApi = baseApi.injectEndpoints({
     getPaymentReceipt: builder.query<ApiSuccessEnvelope<PaymentReceipt>, string>({
       query: (orderId) => `/api/v1/payments/orders/${orderId}/receipt`,
       providesTags: (_r, _e, orderId) => [{ type: 'PaymentReceipt', id: orderId }],
+    }),
+    getPaymentOrderStatus: builder.query<ApiSuccessEnvelope<PaymentOrderStatusResponse>, string>({
+      query: (orderId) => `/api/v1/payments/orders/${orderId}/status`,
+      providesTags: (_r, _e, orderId) => [{ type: 'PaymentOrder', id: orderId }],
     }),
 
     // ------------------------------------------------------------- refunds
@@ -442,6 +474,8 @@ export const {
   useCreatePaymentOrderMutation,
   useGetPaymentReceiptQuery,
   useLazyGetPaymentReceiptQuery,
+  useGetPaymentOrderStatusQuery,
+  useLazyGetPaymentOrderStatusQuery,
   useRequestRefundMutation,
   useGetMyRefundsQuery,
   useGetRefundQuery,

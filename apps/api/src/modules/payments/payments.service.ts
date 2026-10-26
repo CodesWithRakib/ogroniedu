@@ -7,7 +7,7 @@ import { PayoutsService } from './services/payouts.service';
 import { CreatePaymentOrderDto, RequestRefundDto, SettleMilestoneDto } from './dto';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 
-export type { PaymentReceiptDto } from './services/payment-orders.service';
+export type { PaymentReceiptDto, PaymentOrderStatusDto, CreatePaymentOrderResultDto } from './services/payment-orders.service';
 export type { ReconciliationReport } from './services/settlement.service';
 
 /**
@@ -60,6 +60,10 @@ export class PaymentsService {
 
   getPaymentReceipt(user: AuthenticatedUser, orderId: string) {
     return this.orders.getPaymentReceipt(user, orderId);
+  }
+
+  getPaymentOrderStatus(user: AuthenticatedUser, orderId: string) {
+    return this.orders.getPaymentOrderStatus(user, orderId);
   }
 
   getMyPaymentOrders(user: AuthenticatedUser) {
