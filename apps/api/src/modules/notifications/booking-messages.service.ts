@@ -27,7 +27,7 @@ import { decodeCursor, encodeCursor } from '../../common/pagination/pagination';
 import { inspectAndRedactContent } from './utils/content-safety.util';
 import type { ConversationInboxItem } from '@ogroniedu/contracts';
 import { UserEntity } from '../auth/entities/user.entity';
-import { UserSafetyEnforcementService } from '../trust/services/user-safety-enforcement.service';
+import type { ISafetyEnforcementPort } from './interfaces/safety-enforcement.interface';
 
 /** Default chat history page size (preserves the previous take:100 cap via max 100). */
 const DEFAULT_MESSAGES_PAGE_SIZE = 50;
@@ -91,9 +91,16 @@ export class BookingMessagesService {
     private readonly notificationGateway?: NotificationGateway,
     @InjectRepository(UserEntity)
     private readonly userRepo?: Repository<UserEntity>,
-    @Inject(forwardRef(() => UserSafetyEnforcementService))
-    private readonly safetyEnforcement?: UserSafetyEnforcementService,
   ) {}
+
+  private safetyEnforcer?: ISafetyEnforcementPort;
+
+  /**
+   * Register safety enforcement adapter at runtime (breaks circular module dependency).
+   */
+  public registerSafetyEnforcer(enforcer: ISafetyEnforcementPort): void {
+    this.safetyEnforcer = enforcer;
+  }
 
   /**
    * 1. Send Participant-Scoped Message with ABAC & Content Safety Redaction

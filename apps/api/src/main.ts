@@ -12,6 +12,7 @@ import { isSwaggerEnabled } from './config/swagger';
 async function bootstrap() {
   const logger = new Logger('Bootstrap');
   const app = await NestFactory.create(AppModule, { rawBody: true });
+  app.enableShutdownHooks();
 
   app.use(json({ limit: '15mb' }));
   app.use(urlencoded({ extended: true, limit: '15mb' }));

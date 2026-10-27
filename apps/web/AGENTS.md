@@ -19,3 +19,13 @@ When building, modifying, or styling UI components:
 - **Dimensions**: Use `size-*` when width and height are equal (e.g. `size-10`).
 - **Semantic colors**: Use `bg-primary`, `text-muted-foreground`, etc., rather than raw hex/color utilities.
 - **Composition**: Ensure modals/dialogs contain accessible titles (`DialogTitle`, `SheetTitle`), and forms use standard field wrappers.
+
+## React 19 Composition Patterns (`vercel-composition-patterns`)
+- **Skill reference**: Consult `.agents/skills/vercel-composition-patterns/SKILL.md`.
+- Avoid boolean prop proliferation (e.g., `isSecondary`, `hasHeader`, `withFooter`); prefer compound components with contextual composition.
+- Decouple state management into clear provider components and use React 19 primitives (`use()` over `useContext()`).
+
+## E2E Testing with Playwright (`webapp-testing`) & TDD (`tdd`)
+- **Skill references**: Consult `.agents/skills/webapp-testing/SKILL.md` and `.agents/skills/tdd/SKILL.md`.
+- End-to-end tests live in `e2e/`. Always wait for network idle and use accessible role/text selectors (`page.getByRole(...)`).
+- Unit and integration tests live in `test/` using Vitest. Test at defined public component seams rather than internal state.
