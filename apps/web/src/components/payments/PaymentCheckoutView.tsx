@@ -40,15 +40,15 @@ export function PaymentCheckoutView({
 
   if (!order) {
     return (
-      <div className="space-y-6 w-full py-2" data-testid="payment-empty-state">
-        <div className="rounded-3xl border border-slate-200 bg-white p-8 sm:p-12 text-center text-slate-900 shadow-sm">
-          <div className="w-14 h-14 rounded-2xl bg-blue-50 border border-blue-200 text-blue-700 flex items-center justify-center mx-auto mb-4">
+      <div className="flex flex-col gap-6 w-full py-2" data-testid="payment-empty-state">
+        <div className="rounded-3xl border border-border bg-card p-8 sm:p-12 text-center text-foreground shadow-sm">
+          <div className="w-14 h-14 rounded-2xl bg-primary-soft border border-primary/20 text-primary flex items-center justify-center mx-auto mb-4">
             <ShieldCheck className="w-7 h-7" />
           </div>
-          <h4 className="text-base sm:text-lg font-black text-slate-900">
+          <h4 className="text-base sm:text-lg font-black text-foreground">
             {isBn ? 'নিরাপদ এসক্রো পেমেন্ট ডিপোজিট' : 'Safe Escrow Payment Deposit'}
           </h4>
-          <p className="text-xs sm:text-sm text-slate-600 max-w-lg mx-auto mt-1.5 leading-relaxed font-medium">
+          <p className="text-xs sm:text-sm text-muted-foreground max-w-lg mx-auto mt-1.5 leading-relaxed font-medium">
             {isBn
               ? 'উপরের তালিকা থেকে আপনার টিউশন কোর্স নির্বাচন করে "পেমেন্ট গেটওয়েতে যান" বাটনে ক্লিক করুন।'
               : 'Select your tuition course above and click "Proceed to Checkout" to initialize secure escrow payment via bKash, Nagad or Cards.'}
@@ -59,19 +59,19 @@ export function PaymentCheckoutView({
   }
 
   return (
-    <div className="space-y-8 w-full py-4 text-slate-900">
-      <div className="space-y-1">
-        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">{p.title}</h2>
-        <p className="text-xs sm:text-sm font-medium text-slate-600">{p.subtitle}</p>
+    <div className="flex flex-col gap-8 w-full py-4 text-foreground">
+      <div className="flex flex-col gap-1">
+        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">{p.title}</h2>
+        <p className="text-xs sm:text-sm font-medium text-muted-foreground">{p.subtitle}</p>
       </div>
 
       {/* Sandbox Notice Banner */}
-      <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-slate-900 shadow-2xs">
+      <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-foreground shadow-2xs">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl bg-amber-100 text-amber-800 shrink-0">
             <ShieldCheck className="w-5 h-5 shrink-0" />
           </div>
-          <div className="text-xs sm:text-sm font-semibold text-slate-900">
+          <div className="text-xs sm:text-sm font-semibold text-foreground">
             <span className="font-black uppercase tracking-wider bg-amber-200 text-amber-950 px-2 py-0.5 rounded-md mr-2 text-[10px] border border-amber-300">
               {p.sandboxBadge}
             </span>
@@ -81,7 +81,7 @@ export function PaymentCheckoutView({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 space-y-6">
+        <div className="lg:col-span-2 flex flex-col gap-6">
           <CheckoutSummary order={order} locale={locale} />
 
           {order.status === 'pending' &&

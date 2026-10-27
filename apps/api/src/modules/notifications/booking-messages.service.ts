@@ -251,12 +251,12 @@ export class BookingMessagesService {
 
       // 5.1 Automated Strike & Punishment Escalation Ladder for Inappropriate / Abusive / Threatening Language
       if (
-        this.safetyEnforcement &&
+        this.safetyEnforcer &&
         (safetyResult.hasAbusiveLanguage ||
           safetyResult.hasThreatOrHarassment ||
           safetyResult.violationCodes.includes('OFF_PLATFORM_PAYMENT'))
       ) {
-        await this.safetyEnforcement
+        await this.safetyEnforcer
           .handleViolationAndEnforce(user.id, {
             violationCodes: safetyResult.violationCodes,
             reason: redactionReason || 'Content policy violation',

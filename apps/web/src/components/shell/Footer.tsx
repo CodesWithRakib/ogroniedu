@@ -90,7 +90,7 @@ export function Footer({ locale }: FooterProps) {
       <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-10">
           {/* Brand & Organization Bio */}
-          <div className="lg:col-span-2 space-y-4">
+          <div className="lg:col-span-2 flex flex-col gap-4">
             <OgroniEduBrand locale={locale} />
 
             <p className="max-w-md text-sm text-muted-foreground leading-relaxed font-bengali">
@@ -120,11 +120,11 @@ export function Footer({ locale }: FooterProps) {
           </div>
 
           {/* Column 2: Discover & Learn */}
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
               {dict.footer.quickLinks}
             </h4>
-            <ul className="space-y-2 text-sm text-muted-foreground font-medium">
+            <ul className="flex flex-col gap-2 text-sm text-muted-foreground font-medium">
               <li>
                 <Link href={`/${locale}`} className="hover:text-primary transition-colors">
                   {dict.nav.home}
@@ -163,11 +163,11 @@ export function Footer({ locale }: FooterProps) {
           </div>
 
           {/* Column 3: Trust, Safety & Standards */}
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
               {dict.safetyPage.badge}
             </h4>
-            <ul className="space-y-2 text-sm text-muted-foreground font-medium">
+            <ul className="flex flex-col gap-2 text-sm text-muted-foreground font-medium">
               <li>
                 <Link href={`/${locale}/safety`} className="hover:text-primary transition-colors">
                   {dict.nav.safety}
@@ -209,11 +209,11 @@ export function Footer({ locale }: FooterProps) {
           </div>
 
           {/* Column 4: Support & Legal */}
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             <h4 className="text-xs font-bold uppercase tracking-wider text-foreground">
               {isBn ? 'সহায়তা ও শর্তাবলী' : 'Support & Legal'}
             </h4>
-            <ul className="space-y-2 text-sm text-muted-foreground font-medium">
+            <ul className="flex flex-col gap-2 text-sm text-muted-foreground font-medium">
               <li>
                 <Link href={`/${locale}/faq`} className="hover:text-primary transition-colors">
                   {dict.nav.faq}

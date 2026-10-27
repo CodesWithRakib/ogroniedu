@@ -57,14 +57,14 @@ export function DashboardMobileNav({
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto py-4 space-y-4">
+            <div className="flex-1 overflow-y-auto py-4 flex flex-col gap-4">
               {sections && sections.length > 0 ? (
                 sections.map((section) => (
-                  <div key={section.id} className="space-y-1">
+                  <div key={section.id} className="flex flex-col gap-1">
                     <div className="px-3 pt-1 text-[10px] font-black uppercase tracking-wider text-muted-foreground/70 select-none">
                       {isBn ? section.titleBn : section.titleEn}
                     </div>
-                    <div className="space-y-0.5">
+                    <div className="flex flex-col gap-0.5">
                       {section.items.map((item) => {
                         const href = withLocale(item.href, locale);
                         const active = isNavActive(pathname, href);
@@ -91,7 +91,7 @@ export function DashboardMobileNav({
                   </div>
                 ))
               ) : (
-                <div className="space-y-1">
+                <div className="flex flex-col gap-1">
                   {items.map((item) => {
                     const href = withLocale(item.href, locale);
                     const active = isNavActive(pathname, href);

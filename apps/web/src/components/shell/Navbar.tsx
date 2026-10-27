@@ -151,9 +151,9 @@ export function Navbar({ locale }: NavbarProps) {
         <div
           role="region"
           aria-label={isBn ? 'মোবাইল নেভিগেশন মেনু' : 'Mobile Navigation Menu'}
-          className="md:hidden border-b border-border bg-card px-4 pt-3 pb-6 space-y-4 shadow-card animate-in slide-in-from-top-2"
+          className="md:hidden border-b border-border bg-card px-4 pt-3 pb-6 flex flex-col gap-4 shadow-card animate-in slide-in-from-top-2"
         >
-          <div className="flex flex-col space-y-1 text-sm font-medium">
+          <div className="flex flex-col gap-1 text-sm font-medium">
             {navLinks.map((link) => {
               const active = isActive(link.href);
               return (
@@ -176,9 +176,9 @@ export function Navbar({ locale }: NavbarProps) {
 
           <div className="pt-3 border-t border-border">
             {showAuthed ? (
-              <div className="space-y-3">
+              <div className="flex flex-col gap-3">
                 <div className="p-3 rounded-2xl bg-surface border border-border flex items-center justify-between">
-                  <div className="space-y-0.5">
+                  <div className="flex flex-col gap-0.5">
                     <p className="text-xs font-bold text-foreground">{user.displayName}</p>
                     <p className="text-[11px] text-muted-foreground capitalize">
                       {user.roles?.[0] || 'Member'}

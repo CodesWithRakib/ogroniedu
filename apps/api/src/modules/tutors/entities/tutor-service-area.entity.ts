@@ -6,7 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { TutorProfileEntity } from './tutor-profile.entity';
+import type { TutorProfileEntity } from './tutor-profile.entity';
 
 @Entity('tutor_service_areas')
 export class TutorServiceAreaEntity {
@@ -48,7 +48,9 @@ export class TutorServiceAreaEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @ManyToOne(() => TutorProfileEntity, (t) => t.serviceAreas, { onDelete: 'CASCADE' })
+  @ManyToOne('TutorProfileEntity', (t: TutorProfileEntity) => t.serviceAreas, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'tutor_user_id' })
   tutorProfile?: TutorProfileEntity;
 }

@@ -70,8 +70,8 @@ export function TutorReplacementModal({
       {submit.errorMsg && <TrustFormAlert tone="error">{submit.errorMsg}</TrustFormAlert>}
       {submit.successMsg && <TrustFormAlert tone="success">{submit.successMsg}</TrustFormAlert>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div className="space-y-1.5">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="reason-code" className="text-xs font-semibold text-muted-foreground">
             {t('reasonCode')}
           </Label>
@@ -89,7 +89,7 @@ export function TutorReplacementModal({
           </Select>
         </div>
 
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5">
           <Label
             htmlFor="replacement-explanation"
             className="text-xs font-semibold text-muted-foreground"

@@ -168,7 +168,7 @@ export function BookingChatView({
   const messages = controlledMessages ?? localMessages;
 
   return (
-    <div className="w-full h-full flex flex-col min-h-0 space-y-2.5 p-2 sm:p-3">
+    <div className="w-full h-full flex flex-col min-h-0 gap-2.5 p-2 sm:p-3">
       {/* Header */}
       {showHeader && (
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border pb-3 shrink-0">
@@ -207,7 +207,7 @@ export function BookingChatView({
         <div className="bg-warning/10 border border-warning/35 rounded-xl p-2.5 sm:p-3 text-xs text-warning flex items-start justify-between gap-2.5 shrink-0 transition-all">
           <div className="flex items-start gap-2.5">
             <ShieldAlert className="w-4 h-4 text-warning shrink-0 mt-0.5" />
-            <div className="space-y-0.5">
+            <div className="flex flex-col gap-0.5">
               <span className="font-semibold block">{n.safetyNotice}</span>
               <span className="text-[11px] opacity-90">{n.guardianOversightNote}</span>
             </div>
@@ -228,7 +228,7 @@ export function BookingChatView({
 
       {/* Messages Thread Container (Full Available Height) */}
       <Card className="border border-border flex flex-col flex-1 min-h-0 overflow-hidden shadow-xs">
-        <CardContent className="flex-1 overflow-y-auto p-4 space-y-3">
+        <CardContent className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
           {messages.length === 0 ? (
             <div className="h-full flex items-center justify-center text-xs text-muted-foreground">
               {n.noMessagesYet}
@@ -247,7 +247,7 @@ export function BookingChatView({
                   <div
                     className={`flex items-center gap-1.5 text-[11px] mb-1 px-1 ${isMine ? 'justify-end' : 'justify-start'}`}
                   >
-                    <span className="font-semibold text-slate-800 flex items-center gap-1.5">
+                    <span className="font-semibold text-foreground flex items-center gap-1.5">
                       <span>{msg.senderName}</span>
                       {msg.senderRole === 'admin' && (
                         <span className="text-[10px] px-1.5 py-0.2 rounded-md bg-purple-100 text-purple-900 font-bold border border-purple-300">
@@ -273,28 +273,28 @@ export function BookingChatView({
                         </span>
                       )}
                     </span>
-                    <span className="text-slate-400">•</span>
-                    <span className="text-slate-500 font-medium text-[10px]">
+                    <span className="text-muted-foreground">•</span>
+                    <span className="text-muted-foreground font-medium text-[10px]">
                       {formatTime(msg.createdAt, locale)}
                     </span>
                   </div>
 
                   <div
-                    className={`rounded-2xl px-4 py-2.5 text-sm space-y-2 shadow-2xs ${
+                    className={`rounded-2xl px-4 py-2.5 text-sm flex flex-col gap-2 shadow-2xs ${
                       isMine
-                        ? 'bg-blue-600 text-white rounded-tr-none'
+                        ? 'bg-primary text-primary-foreground rounded-tr-none'
                         : msg.senderRole === 'admin'
                           ? 'bg-purple-50 border border-purple-200 text-purple-950 rounded-tl-none'
                           : isGuardian
                             ? 'bg-amber-50/80 border border-amber-200 text-amber-950 rounded-tl-none'
-                            : 'bg-slate-100 border border-slate-200/80 text-slate-900 rounded-tl-none'
+                            : 'bg-surface-muted border border-border text-foreground rounded-tl-none'
                     }`}
                   >
                     <p className="leading-relaxed whitespace-pre-wrap font-normal">{msg.content}</p>
 
                     {/* Attachments rendering */}
                     {msg.attachmentAssetIds && msg.attachmentAssetIds.length > 0 && (
-                      <div className="pt-1 space-y-1">
+                      <div className="pt-1 flex flex-col gap-1">
                         {msg.attachmentAssetIds.map((attId, idx) => (
                           <div
                             key={attId}
@@ -324,7 +324,7 @@ export function BookingChatView({
                     )}
                   </div>
 
-                  <div className="flex items-center gap-1.5 text-[10px] text-slate-500 mt-0.5 px-1">
+                  <div className="flex items-center gap-1.5 text-[10px] text-muted-foreground mt-0.5 px-1">
                     {isMine &&
                       (msg.readAt ? (
                         <TooltipProvider delayDuration={150}>
@@ -332,30 +332,30 @@ export function BookingChatView({
                             <TooltipTrigger asChild>
                               <button
                                 type="button"
-                                className="flex items-center gap-1 p-0.5 rounded-full hover:bg-blue-500/10 transition-colors cursor-help focus:outline-none"
+                                className="flex items-center gap-1 p-0.5 rounded-full hover:bg-primary/10 transition-colors cursor-help focus:outline-none"
                                 aria-label="Message read receipt details"
                               >
-                                <CheckCheck className="w-3.5 h-3.5 text-blue-600 stroke-[2.5]" />
+                                <CheckCheck className="w-3.5 h-3.5 text-primary stroke-[2.5]" />
                               </button>
                             </TooltipTrigger>
                             <TooltipContent
                               side="top"
                               align="end"
-                              className="bg-slate-900/95 dark:bg-slate-950/95 backdrop-blur-md text-white border border-slate-700/60 shadow-xl rounded-xl p-2.5 text-xs max-w-xs z-50 animate-in fade-in-0 zoom-in-95"
+                              className="bg-popover/95 backdrop-blur-md text-popover-foreground border border-border shadow-xl rounded-xl p-2.5 text-xs max-w-xs z-50 animate-in fade-in-0 zoom-in-95"
                             >
-                              <div className="space-y-1.5">
-                                <div className="flex items-center gap-1.5 font-semibold text-[11px] text-blue-400 border-b border-white/10 pb-1">
+                              <div className="flex flex-col gap-1.5">
+                                <div className="flex items-center gap-1.5 font-semibold text-[11px] text-primary border-b border-border pb-1">
                                   <Users className="w-3.5 h-3.5" />
                                   <span>{locale === 'bn' ? 'কারা দেখেছেন' : 'Seen by'}</span>
                                   {msg.seenBy && msg.seenBy.length > 0 && (
-                                    <span className="text-[10px] bg-blue-500/20 text-blue-300 px-1.5 py-0.2 rounded-full font-mono">
+                                    <span className="text-[10px] bg-primary-soft text-primary px-1.5 py-0.2 rounded-full font-mono">
                                       {msg.seenBy.length}
                                     </span>
                                   )}
                                 </div>
 
                                 {msg.seenBy && msg.seenBy.length > 0 ? (
-                                  <div className="space-y-1 pt-0.5">
+                                  <div className="flex flex-col gap-1 pt-0.5">
                                     {msg.seenBy.map((reader, idx) => (
                                       <div
                                         key={reader.userId || idx}
@@ -401,7 +401,7 @@ export function BookingChatView({
                             <TooltipContent
                               side="top"
                               align="end"
-                              className="bg-slate-900/95 dark:bg-slate-950/95 backdrop-blur-md text-white border border-slate-700/60 shadow-xl rounded-lg px-2.5 py-1 text-[11px] z-50"
+                              className="bg-popover/95 backdrop-blur-md text-popover-foreground border border-border shadow-xl rounded-lg px-2.5 py-1 text-[11px] z-50"
                             >
                               <span>{locale === 'bn' ? 'প্রেরিত (পৌঁছেছে)' : 'Delivered'}</span>
                             </TooltipContent>

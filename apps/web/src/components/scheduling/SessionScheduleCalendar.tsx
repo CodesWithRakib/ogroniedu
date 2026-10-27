@@ -273,13 +273,13 @@ export function SessionScheduleCalendar({
   const cancelledCount = sessions.filter((s) => s.status === 'cancelled').length;
 
   return (
-    <div className="w-full space-y-6" data-testid="scheduling-container">
+    <div className="w-full flex flex-col gap-6" data-testid="scheduling-container">
       {/* 1. Ultra-Premium Studio Hero Header — Full Width */}
       <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-6 sm:p-8 lg:p-10 text-foreground shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-6">
         <div className="absolute -top-24 -right-12 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
         <div className="absolute -bottom-24 -left-12 w-96 h-96 rounded-full bg-brand-soft/20 blur-3xl pointer-events-none" />
 
-        <div className="relative z-10 space-y-3 max-w-3xl">
+        <div className="relative z-10 flex flex-col gap-3 max-w-3xl">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-primary-soft border border-primary/25 rounded-full text-xs font-bold text-primary">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
@@ -357,7 +357,7 @@ export function SessionScheduleCalendar({
       {/* 2. Spotlight Hero: Next Upcoming Class (Only when an upcoming class exists) */}
       {nextSession && (
         <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-r from-primary-soft/40 via-card to-card p-6 sm:p-7 shadow-md flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 font-bold text-xs border border-emerald-500/30">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <span>{isBn ? 'পরবর্তী আসন্ন ক্লাস প্রস্তুত' : 'Next Upcoming Class Ready'}</span>
@@ -422,10 +422,10 @@ export function SessionScheduleCalendar({
               target="_blank"
               rel="noreferrer"
               data-testid="calendar-google-sync-btn"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 font-bold text-xs shadow-xs transition-colors h-11"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl border border-border bg-card hover:bg-surface-muted text-foreground font-bold text-xs shadow-xs transition-colors h-11"
               title={isBn ? 'গুগল ক্যালেন্ডারে যোগ করুন' : 'Add to Google Calendar'}
             >
-              <ExternalLink className="w-3.5 h-3.5 text-blue-600" />
+              <ExternalLink className="w-3.5 h-3.5 text-primary" />
               <span>{isBn ? 'Google Calendar' : 'Google Cal'}</span>
             </a>
 
@@ -434,7 +434,7 @@ export function SessionScheduleCalendar({
               size="default"
               onClick={() => openReschedule(nextSession)}
               data-testid="calendar-spotlight-reschedule-btn"
-              className="rounded-2xl text-xs font-semibold h-11 border-slate-300 text-slate-800 hover:bg-slate-100"
+              className="rounded-2xl text-xs font-semibold h-11 border-border text-foreground hover:bg-surface-muted"
             >
               {isBn ? 'সময় পরিবর্তন' : 'Reschedule'}
             </Button>
@@ -445,7 +445,7 @@ export function SessionScheduleCalendar({
       {/* 3. Cancellation Policy Information Strip */}
       <div className="bg-warning-soft/70 border border-warning/30 rounded-2xl sm:rounded-3xl p-4 sm:p-5 text-xs flex items-start gap-3.5 shadow-xs">
         <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
-        <div className="space-y-1.5 flex-1">
+        <div className="flex flex-col gap-1.5 flex-1">
           <div className="flex flex-wrap items-center justify-between gap-2">
             <span className="font-extrabold text-foreground text-sm">
               {dict.scheduling?.cancellationPolicyTitle ||
@@ -503,7 +503,7 @@ export function SessionScheduleCalendar({
             }`}
           >
             <span
-              className={`w-2 h-2 rounded-full ${filterStatus === 'scheduled' ? 'bg-primary-foreground' : 'bg-blue-500'}`}
+              className={`w-2 h-2 rounded-full ${filterStatus === 'scheduled' ? 'bg-primary-foreground' : 'bg-primary'}`}
             />
             <span>{isBn ? 'আসন্ন ও লাইভ' : 'Upcoming & Live'}</span>
             <span
@@ -563,9 +563,9 @@ export function SessionScheduleCalendar({
             onClick={handleDownloadIcsCalendar}
             disabled={isDownloadingIcs}
             data-testid="calendar-download-ics-btn"
-            className="rounded-xl border-slate-300 text-slate-800 hover:bg-slate-100 font-bold text-xs gap-1.5 h-9"
+            className="rounded-xl border-border text-foreground hover:bg-surface-muted font-bold text-xs gap-1.5 h-9"
           >
-            <Download className="w-3.5 h-3.5 text-blue-600" />
+            <Download className="w-3.5 h-3.5 text-primary" />
             <span>
               {isBn
                 ? isDownloadingIcs
@@ -638,7 +638,7 @@ export function SessionScheduleCalendar({
       {/* 6. Sessions Body (Loading / Empty / Rendered Views) */}
       {isLoading ? (
         <Card className="text-center py-16 rounded-3xl border-border/80">
-          <CardContent className="space-y-3">
+          <CardContent className="flex flex-col gap-3">
             <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin mx-auto" />
             <p className="text-muted-foreground text-sm font-semibold">
               {dict.common?.loading ||

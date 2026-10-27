@@ -8,7 +8,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import type { OrganizationInvitationStatus } from '@ogroniedu/contracts';
-import { OrganizationEntity } from './organization.entity';
+import type { OrganizationEntity } from './organization.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 
 @Entity('organization_invitations')
@@ -42,7 +42,9 @@ export class OrganizationInvitationEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @ManyToOne(() => OrganizationEntity, (org) => org.invitations, { onDelete: 'CASCADE' })
+  @ManyToOne('OrganizationEntity', (org: OrganizationEntity) => org.invitations, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'organization_id' })
   organization?: OrganizationEntity;
 

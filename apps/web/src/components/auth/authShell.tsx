@@ -120,8 +120,8 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
           </div>
 
           {/* Middle: Universal Educational Pillars & Abstract Visual */}
-          <div className="relative z-10 my-auto py-6 space-y-6">
-            <div className="space-y-2">
+          <div className="relative z-10 my-auto py-6 flex flex-col gap-6">
+            <div className="flex flex-col gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-primary">
                 {isBn ? 'শিক্ষা ও নিরাপত্তার অঙ্গীকার' : 'Educational Trust & Security'}
               </span>
@@ -145,7 +145,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
             </div>
 
             {/* Universal Feature Metric Cards (Face-Free, Name-Free) */}
-            <div className="space-y-3 pt-1">
+            <div className="flex flex-col gap-3 pt-1">
               {/* Card 1: Escrow Protection */}
               <div className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white/90 border border-border/80 shadow-2xs transition-all hover:border-primary/40 hover:shadow-xs">
                 <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
@@ -165,7 +165,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
 
               {/* Card 2: Completed Sessions */}
               <div className="flex items-start gap-3.5 p-3.5 rounded-2xl bg-white/90 border border-border/80 shadow-2xs transition-all hover:border-primary/40 hover:shadow-xs">
-                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-blue-600 border border-blue-100">
+                <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary border border-primary/20">
                   <TrendingUp className="h-5 w-5 stroke-[2.2]" aria-hidden="true" />
                 </div>
                 <div className="min-w-0 flex-1">
@@ -243,8 +243,8 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
           </div>
 
           {/* Form Header */}
-          <div className="my-auto py-2 max-w-md w-full mx-auto space-y-6">
-            <div className="space-y-1.5 text-center sm:text-left">
+          <div className="my-auto py-2 max-w-md w-full mx-auto flex flex-col gap-6">
+            <div className="flex flex-col gap-1.5 text-center sm:text-left">
               <div className="lg:hidden flex items-center justify-center sm:justify-start gap-2 mb-3">
                 <div className="h-8 w-8 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-xs">
                   <GraduationCap className="h-5 w-5 stroke-[2.3]" />
@@ -261,7 +261,7 @@ export function AuthShell({ locale, title, subtitle, children, onQuickFill }: Au
 
             {/* 1-Click Demo Accounts Quick-Fill Strip (development/test builds only) */}
             {onQuickFill && isDemoQuickFillAllowed() && (
-              <div className="rounded-2xl border border-border/80 bg-surface/70 p-3 space-y-2">
+              <div className="rounded-2xl border border-border/80 bg-surface/70 p-3 flex flex-col gap-2">
                 <div className="flex items-center justify-between text-[11px] font-bold text-muted-foreground">
                   <span className="flex items-center gap-1">
                     <Sparkles className="h-3 w-3 text-amber-500 fill-amber-400" />

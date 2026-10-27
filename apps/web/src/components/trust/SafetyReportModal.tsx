@@ -75,9 +75,9 @@ export function SafetyReportModal({
       {submit.errorMsg && <TrustFormAlert tone="error">{submit.errorMsg}</TrustFormAlert>}
       {submit.successMsg && <TrustFormAlert tone="success">{submit.successMsg}</TrustFormAlert>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="incident-category"
               className="text-xs font-semibold text-muted-foreground"
@@ -98,7 +98,7 @@ export function SafetyReportModal({
             </Select>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="incident-severity"
               className="text-xs font-semibold text-muted-foreground"
@@ -119,7 +119,7 @@ export function SafetyReportModal({
           </div>
         </div>
 
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5">
           <Label
             htmlFor="incident-description"
             className="text-xs font-semibold text-muted-foreground"

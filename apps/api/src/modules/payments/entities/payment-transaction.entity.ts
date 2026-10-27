@@ -8,7 +8,7 @@ import {
   Index,
   Unique,
 } from 'typeorm';
-import { PaymentOrderEntity } from './payment-order.entity';
+import type { PaymentOrderEntity } from './payment-order.entity';
 
 export type PaymentTransactionStatus = 'pending' | 'succeeded' | 'failed' | 'reversed';
 
@@ -50,7 +50,9 @@ export class PaymentTransactionEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @ManyToOne(() => PaymentOrderEntity, (o) => o.transactions, { onDelete: 'CASCADE' })
+  @ManyToOne('PaymentOrderEntity', (o: PaymentOrderEntity) => o.transactions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'payment_order_id' })
   paymentOrder?: PaymentOrderEntity;
 }

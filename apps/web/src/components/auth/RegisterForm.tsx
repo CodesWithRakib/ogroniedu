@@ -38,7 +38,7 @@ function calculatePasswordStrength(pass: string) {
     return { score: 2, labelBn: 'মোটামুটি', labelEn: 'Fair', colorClass: 'bg-amber-500' };
   }
   if (score === 3) {
-    return { score: 3, labelBn: 'ভালো', labelEn: 'Good', colorClass: 'bg-blue-500' };
+    return { score: 3, labelBn: 'ভালো', labelEn: 'Good', colorClass: 'bg-primary' };
   }
   return {
     score: 4,
@@ -116,7 +116,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
           : 'Join OgroniEdu to connect with verified mentors or find students.'
       }
     >
-      <form onSubmit={handleSubmit} className="space-y-4" data-testid="register-form">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4" data-testid="register-form">
         {/* Error Alert */}
         {formError && (
           <Alert variant="destructive" className="rounded-2xl" data-testid="register-error">
@@ -125,7 +125,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
         )}
 
         {/* Role Picker: Modern High-Impact Segmented Cards */}
-        <div className="space-y-2 text-left">
+        <div className="flex flex-col gap-2 text-left">
           <Label htmlFor="register-role" className="text-xs font-bold text-foreground">
             {isBn ? 'আপনার ভূমিকা নির্বাচন করুন' : 'Select Account Type'}
           </Label>
@@ -186,7 +186,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
         </div>
 
         {/* Full Name Input */}
-        <div className="space-y-1.5 text-left">
+        <div className="flex flex-col gap-1.5 text-left">
           <Label htmlFor="register-name" className="text-xs font-bold text-foreground">
             {isBn ? 'পুরো নাম' : 'Full Name'}
           </Label>
@@ -205,7 +205,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
 
         {/* Email & Phone Grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="space-y-1.5 text-left">
+          <div className="flex flex-col gap-1.5 text-left">
             <Label htmlFor="register-email" className="text-xs font-bold text-foreground">
               {isBn ? 'ইমেইল (ঐচ্ছিক)' : 'Email (optional)'}
             </Label>
@@ -222,7 +222,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
             />
           </div>
 
-          <div className="space-y-1.5 text-left">
+          <div className="flex flex-col gap-1.5 text-left">
             <Label htmlFor="register-phone" className="text-xs font-bold text-foreground">
               {isBn ? 'মোবাইল (ঐচ্ছিক)' : 'Mobile (optional)'}
             </Label>
@@ -241,7 +241,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
         </div>
 
         {/* Password Input + Live Strength Bar */}
-        <div className="space-y-1.5 text-left">
+        <div className="flex flex-col gap-1.5 text-left">
           <Label htmlFor="register-password" className="text-xs font-bold text-foreground">
             {dict.auth.passwordLabel}
           </Label>
@@ -269,7 +269,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
 
           {/* Interactive Multi-Segment Password Strength Indicator */}
           {password.length > 0 && (
-            <div className="space-y-1 pt-1 animate-in fade-in duration-200">
+            <div className="flex flex-col gap-1 pt-1 animate-in fade-in duration-200">
               <div className="grid grid-cols-4 gap-1.5 h-1.5 w-full">
                 {[1, 2, 3, 4].map((seg) => (
                   <div

@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   NotificationEntity,
@@ -21,7 +21,6 @@ import { BookingMessagesController } from './booking-messages.controller';
 import { ConversationsController } from './conversations.controller';
 import { AuditModule } from '../audit/audit.module';
 import { GuardiansModule } from '../guardians/guardians.module';
-import { TrustModule } from '../trust/trust.module';
 
 @Module({
   imports: [
@@ -36,7 +35,6 @@ import { TrustModule } from '../trust/trust.module';
     ]),
     AuditModule,
     GuardiansModule,
-    forwardRef(() => TrustModule),
   ],
   controllers: [NotificationController, BookingMessagesController, ConversationsController],
   providers: [

@@ -154,7 +154,7 @@ export function TutorVerificationStatusCard({
   return (
     <Card className="border-border bg-card">
       <CardHeader className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-border">
-        <div className="space-y-1">
+        <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
             <ShieldCheck className="h-5 w-5 text-primary" />
             <CardTitle className="text-xl font-bold tracking-tight">
@@ -170,7 +170,7 @@ export function TutorVerificationStatusCard({
         <div>{getStatusBadge()}</div>
       </CardHeader>
 
-      <CardContent className="pt-6 space-y-6">
+      <CardContent className="pt-6 flex flex-col gap-6">
         {errorNotice && (
           <Alert variant="destructive">
             <AlertTriangle className="h-5 w-5" />
@@ -184,7 +184,7 @@ export function TutorVerificationStatusCard({
         )}
 
         {/* Dynamic Verification Badges (Definition of Done: Only checks actually performed) */}
-        <div className="space-y-3">
+        <div className="flex flex-col gap-3">
           <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
             {locale === 'bn' ? 'যাচাইকৃত ব্যাজসমূহ' : 'Verified Badges Earned'}
           </h4>
@@ -219,7 +219,7 @@ export function TutorVerificationStatusCard({
 
         {/* Publication Control & Gate */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between p-4 rounded-xl bg-muted/40 border border-border gap-4">
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2">
               <Globe className="h-4 w-4 text-primary" />
               <p className="text-sm font-semibold">{t.publicationStatus}</p>
@@ -245,7 +245,7 @@ export function TutorVerificationStatusCard({
         </div>
 
         {/* Uploaded Qualifications List */}
-        <div className="space-y-3">
+        <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
               {t.qualificationsTitle}
@@ -255,7 +255,7 @@ export function TutorVerificationStatusCard({
             </span>
           </div>
 
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             {qualifications.length === 0 ? (
               <div className="text-center py-6 border border-dashed rounded-xl text-muted-foreground text-xs">
                 <FileText className="h-8 w-8 mx-auto mb-2 opacity-40" />
@@ -269,7 +269,7 @@ export function TutorVerificationStatusCard({
                   key={q.id}
                   className="flex items-center justify-between p-3 rounded-lg border bg-card text-xs"
                 >
-                  <div className="space-y-0.5">
+                  <div className="flex flex-col gap-0.5">
                     <p className="font-medium text-foreground">{q.title}</p>
                     <p className="text-muted-foreground">{q.institution || q.qualificationType}</p>
                   </div>

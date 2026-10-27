@@ -11,7 +11,7 @@ import {
 } from 'typeorm';
 import { UserEntity } from '../../auth/entities/user.entity';
 import type { ClassroomRole } from '@ogroniedu/contracts';
-import { ClassroomSessionEntity } from './classroom-session.entity';
+import type { ClassroomSessionEntity } from './classroom-session.entity';
 
 @Entity('classroom_attendance_records')
 @Unique('uq_classroom_attendee', ['classroomSessionId', 'userId'])
@@ -72,7 +72,7 @@ export class ClassroomAttendanceRecordEntity {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt!: Date;
 
-  @ManyToOne(() => ClassroomSessionEntity, (session) => session.attendanceRecords, {
+  @ManyToOne('ClassroomSessionEntity', (session: ClassroomSessionEntity) => session.attendanceRecords, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'classroom_session_id' })

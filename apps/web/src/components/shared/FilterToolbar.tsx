@@ -25,7 +25,7 @@ export function FilterToolbar({
   locale?: Locale;
 }) {
   return (
-    <div className="space-y-3" data-testid="filter-toolbar">
+    <div className="flex flex-col gap-3" data-testid="filter-toolbar">
       <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
         <SearchInput
           value={searchValue}

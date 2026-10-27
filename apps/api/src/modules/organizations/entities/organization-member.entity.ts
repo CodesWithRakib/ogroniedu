@@ -10,7 +10,7 @@ import {
   Unique,
 } from 'typeorm';
 import type { OrganizationMemberRole, OrganizationMemberStatus } from '@ogroniedu/contracts';
-import { OrganizationEntity } from './organization.entity';
+import type { OrganizationEntity } from './organization.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 
 @Entity('organization_members')
@@ -42,7 +42,9 @@ export class OrganizationMemberEntity {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt!: Date;
 
-  @ManyToOne(() => OrganizationEntity, (org) => org.members, { onDelete: 'CASCADE' })
+  @ManyToOne('OrganizationEntity', (org: OrganizationEntity) => org.members, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'organization_id' })
   organization?: OrganizationEntity;
 

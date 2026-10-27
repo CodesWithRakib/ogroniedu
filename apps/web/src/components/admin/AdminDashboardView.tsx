@@ -190,7 +190,7 @@ export function AdminDashboardView({
 
   return (
     <div
-      className="min-h-screen bg-surface-muted text-foreground p-6 space-y-6"
+      className="min-h-screen bg-surface-muted text-foreground p-6 flex flex-col gap-6"
       data-testid="admin-dashboard-view"
     >
       {actions.actionError && (
@@ -217,7 +217,7 @@ export function AdminDashboardView({
           className="bg-warning/10 border-2 border-warning/40 rounded-2xl p-4 flex items-center justify-between animate-pulse"
           data-testid="active-impersonation-banner"
         >
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <span className="text-2xl">⚠️</span>
             <div>
               <p className="font-bold text-warning  text-sm tracking-wide">
@@ -243,7 +243,7 @@ export function AdminDashboardView({
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
         <div>
-          <div className="flex items-center space-x-3">
+          <div className="flex items-center gap-3">
             <h1 className="text-3xl font-extrabold tracking-tight text-foreground">{t('title')}</h1>
             <span className="px-2.5 py-0.5 text-xs font-semibold rounded-full bg-primary/10 text-primary border border-primary/25">
               {isSuperAdmin ? 'SUPER ADMIN' : 'ADMIN'}

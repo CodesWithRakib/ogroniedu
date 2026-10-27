@@ -3,8 +3,7 @@ import {
   Logger,
   NotFoundException,
   BadRequestException,
-  Inject,
-  forwardRef,
+  type OnModuleInit,
 } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource, IsNull } from 'typeorm';
@@ -13,6 +12,8 @@ import { SafetyActionEntity, SafetyActionType } from '../entities/safety-action.
 import { BannedIdentityEntity } from '../entities/banned-identity.entity';
 import { NotificationService } from '../../notifications/notification.service';
 import { NotificationGateway } from '../../notifications/notification.gateway';
+import { BookingMessagesService } from '../../notifications/booking-messages.service';
+import type { ISafetyEnforcementPort } from '../../notifications/interfaces/safety-enforcement.interface';
 import { AuditService } from '../../audit/audit.service';
 import type { AuthenticatedUser } from '../../../common/interfaces/authenticated-user.interface';
 
@@ -27,7 +28,7 @@ export interface EnforcementDecision {
 }
 
 @Injectable()
-export class UserSafetyEnforcementService {
+export class UserSafetyEnforcementService implements OnModuleInit, ISafetyEnforcementPort {
   private readonly logger = new Logger(UserSafetyEnforcementService.name);
 
   constructor(
@@ -39,12 +40,15 @@ export class UserSafetyEnforcementService {
     private readonly bannedIdentityRepo: Repository<BannedIdentityEntity>,
     @InjectDataSource()
     private readonly dataSource: DataSource,
-    @Inject(forwardRef(() => NotificationService))
     private readonly notificationService: NotificationService,
-    @Inject(forwardRef(() => NotificationGateway))
     private readonly notificationGateway: NotificationGateway,
+    private readonly bookingMessagesService: BookingMessagesService,
     private readonly auditService: AuditService,
   ) {}
+
+  onModuleInit(): void {
+    this.bookingMessagesService.registerSafetyEnforcer(this);
+  }
 
   /**
    * 1. Inspect existing active strikes for a user

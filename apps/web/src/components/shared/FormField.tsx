@@ -25,7 +25,7 @@ export function FormField({
   const hintId = hint ? `${htmlFor}-hint` : undefined;
 
   return (
-    <div className={cn('space-y-1.5 w-full', className)}>
+    <div className={cn('flex flex-col gap-1.5 w-full', className)}>
       <Label
         htmlFor={htmlFor}
         className="text-xs sm:text-sm font-medium text-foreground flex items-center"

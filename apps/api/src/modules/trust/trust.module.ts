@@ -1,4 +1,4 @@
-import { Module, forwardRef } from '@nestjs/common';
+import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
   ReviewEntity,
@@ -52,10 +52,10 @@ import { TutorReplacementDeadlineScheduler } from './services/tutor-replacement-
       AuditLogEntity,
       UserEntity,
     ]),
-    forwardRef(() => NotificationsModule),
+    NotificationsModule,
     TutorsModule,
     FilesModule,
-    forwardRef(() => PaymentsModule),
+    PaymentsModule,
   ],
   controllers: [
     ReviewsController,

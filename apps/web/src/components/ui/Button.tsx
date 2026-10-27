@@ -1,4 +1,4 @@
-import React, { forwardRef, type ButtonHTMLAttributes } from 'react';
+import React, { type ButtonHTMLAttributes } from 'react';
 import { cva, type VariantProps } from 'class-variance-authority';
 import { Slot, Slottable } from '@radix-ui/react-slot';
 import { Loader2 } from 'lucide-react';
@@ -14,10 +14,10 @@ export const buttonVariants = cva(
         default:
           'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 active:opacity-95',
         secondary:
-          'bg-blue-50 text-blue-700 hover:bg-blue-100/80 border border-blue-200/80 active:bg-blue-100 shadow-2xs font-semibold',
+          'bg-primary-soft text-primary hover:bg-primary-soft/80 border border-primary/20 active:bg-primary-soft shadow-2xs font-semibold',
         outline:
-          'border border-slate-200 bg-white text-slate-800 hover:bg-slate-50 hover:border-blue-300 hover:text-blue-700 active:bg-slate-100 shadow-2xs',
-        ghost: 'bg-transparent text-foreground hover:bg-slate-100 hover:text-blue-700',
+          'border border-border bg-card text-foreground hover:bg-surface-muted hover:border-primary/40 hover:text-primary active:bg-surface-muted shadow-2xs',
+        ghost: 'bg-transparent text-foreground hover:bg-surface-muted hover:text-primary',
         destructive: 'bg-destructive text-white hover:bg-destructive/90 active:opacity-95',
         warning: 'bg-warning text-white hover:bg-warning/90 active:opacity-95',
         link: 'text-interactive underline-offset-4 hover:underline p-0 h-auto font-medium',
@@ -42,46 +42,43 @@ export interface ButtonProps
   extends ButtonHTMLAttributes<HTMLButtonElement>, VariantProps<typeof buttonVariants> {
   asChild?: boolean;
   isLoading?: boolean;
+  ref?: React.Ref<HTMLButtonElement>;
 }
 
-export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant = 'primary',
-      size = 'md',
-      asChild = false,
-      isLoading = false,
-      disabled,
-      children,
-      ...props
-    },
-    ref,
-  ) => {
-    const Comp = asChild ? Slot : 'button';
+export function Button({
+  className,
+  variant = 'primary',
+  size = 'md',
+  asChild = false,
+  isLoading = false,
+  disabled,
+  children,
+  ref,
+  ...props
+}: ButtonProps) {
+  const Comp = asChild ? Slot : 'button';
 
-    return (
-      <Comp
-        ref={ref}
-        disabled={disabled || isLoading}
-        aria-busy={isLoading}
-        aria-disabled={disabled || isLoading}
-        className={cn(buttonVariants({ variant, size, className }))}
-        {...props}
-      >
-        {asChild ? (
-          <Slottable>{children}</Slottable>
-        ) : (
-          <>
-            {isLoading && (
-              <Loader2 className="w-4 h-4 animate-spin text-current" aria-hidden="true" />
-            )}
-            {children}
-          </>
-        )}
-      </Comp>
-    );
-  },
-);
+  return (
+    <Comp
+      ref={ref}
+      disabled={disabled || isLoading}
+      aria-busy={isLoading}
+      aria-disabled={disabled || isLoading}
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...props}
+    >
+      {asChild ? (
+        <Slottable>{children}</Slottable>
+      ) : (
+        <>
+          {isLoading && (
+            <Loader2 className="w-4 h-4 animate-spin text-current" aria-hidden="true" />
+          )}
+          {children}
+        </>
+      )}
+    </Comp>
+  );
+}
 
 Button.displayName = 'Button';

@@ -1,5 +1,5 @@
 import { Entity, PrimaryGeneratedColumn, Column, ManyToOne, JoinColumn } from 'typeorm';
-import { TutorProfileEntity } from './tutor-profile.entity';
+import type { TutorProfileEntity } from './tutor-profile.entity';
 
 @Entity('tutor_availability')
 export class TutorAvailabilityEntity {
@@ -30,7 +30,9 @@ export class TutorAvailabilityEntity {
   @Column({ name: 'is_active', type: 'boolean', default: true })
   isActive!: boolean;
 
-  @ManyToOne(() => TutorProfileEntity, (t) => t.availabilities, { onDelete: 'CASCADE' })
+  @ManyToOne('TutorProfileEntity', (t: TutorProfileEntity) => t.availabilities, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'tutor_user_id' })
   tutorProfile?: TutorProfileEntity;
 }

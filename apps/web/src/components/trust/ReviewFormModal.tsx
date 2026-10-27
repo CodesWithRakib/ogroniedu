@@ -78,7 +78,7 @@ export function ReviewFormModal({
       {submit.errorMsg && <TrustFormAlert tone="error">{submit.errorMsg}</TrustFormAlert>}
       {submit.successMsg && <TrustFormAlert tone="success">{submit.successMsg}</TrustFormAlert>}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <StarSelector
           label={t('overallRating')}
           value={rating}
@@ -104,7 +104,7 @@ export function ReviewFormModal({
           locale={locale}
         />
 
-        <div className="space-y-1.5 pt-2">
+        <div className="flex flex-col gap-1.5 pt-2">
           <Label htmlFor="review-comment" className="text-xs font-semibold text-muted-foreground">
             {t('writeReview')}
           </Label>

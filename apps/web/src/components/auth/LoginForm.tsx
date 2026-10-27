@@ -39,7 +39,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
       }
       onQuickFill={handleQuickFill}
     >
-      <form onSubmit={handleSubmit} className="space-y-4" data-testid="login-form">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4" data-testid="login-form">
         {/* Status Notice */}
         {notice && (
           <div
@@ -60,7 +60,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         )}
 
         {/* Email or Phone Input */}
-        <div className="space-y-1.5 text-left">
+        <div className="flex flex-col gap-1.5 text-left">
           <Label
             htmlFor="login-identifier"
             className="text-xs font-bold text-foreground flex items-center justify-between"
@@ -86,7 +86,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         </div>
 
         {/* Password Input */}
-        <div className="space-y-1.5 text-left">
+        <div className="flex flex-col gap-1.5 text-left">
           <div className="flex items-center justify-between">
             <Label htmlFor="login-password" className="text-xs font-bold text-foreground">
               {t.passwordLabel}

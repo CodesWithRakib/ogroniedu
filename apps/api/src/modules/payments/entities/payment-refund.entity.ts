@@ -8,7 +8,7 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { PaymentOrderEntity } from './payment-order.entity';
+import type { PaymentOrderEntity } from './payment-order.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 
 export type RefundStatus =
@@ -89,7 +89,9 @@ export class PaymentRefundEntity {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt!: Date;
 
-  @ManyToOne(() => PaymentOrderEntity, (o) => o.refunds, { onDelete: 'CASCADE' })
+  @ManyToOne('PaymentOrderEntity', (o: PaymentOrderEntity) => o.refunds, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'payment_order_id' })
   paymentOrder?: PaymentOrderEntity;
 

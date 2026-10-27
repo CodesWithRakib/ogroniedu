@@ -7,7 +7,7 @@ import {
   JoinColumn,
   Index,
 } from 'typeorm';
-import { LedgerJournalEntity } from './ledger-journal.entity';
+import type { LedgerJournalEntity } from './ledger-journal.entity';
 import { LedgerAccountEntity } from './ledger-account.entity';
 
 export type LedgerDirection = 'debit' | 'credit';
@@ -45,7 +45,9 @@ export class LedgerEntryEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @ManyToOne(() => LedgerJournalEntity, (j) => j.entries, { onDelete: 'CASCADE' })
+  @ManyToOne('LedgerJournalEntity', (j: LedgerJournalEntity) => j.entries, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'journal_id' })
   journal?: LedgerJournalEntity;
 

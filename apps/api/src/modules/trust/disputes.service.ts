@@ -6,8 +6,6 @@ import {
   BadRequestException,
   ConflictException,
   Logger,
-  Inject,
-  forwardRef,
 } from '@nestjs/common';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource, In } from 'typeorm';
@@ -42,9 +40,7 @@ export class DisputesService {
     private readonly outboxRepo: Repository<OutboxEventEntity>,
     @InjectRepository(AuditLogEntity)
     private readonly auditRepo: Repository<AuditLogEntity>,
-    @Inject(NotificationService)
     private readonly notificationService: NotificationService,
-    @Inject(forwardRef(() => RefundsService))
     private readonly refundsService: RefundsService,
     @InjectDataSource()
     private readonly dataSource: DataSource,

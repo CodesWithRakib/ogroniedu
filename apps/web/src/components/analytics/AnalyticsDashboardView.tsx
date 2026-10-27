@@ -61,7 +61,7 @@ export function AnalyticsDashboardView({
   };
 
   return (
-    <div className="space-y-6" data-testid="analytics-dashboard-view">
+    <div className="flex flex-col gap-6" data-testid="analytics-dashboard-view">
       <AnalyticsHeader
         selectedPreset={selectedPreset}
         onPreset={handlePresetSelect}
@@ -69,7 +69,7 @@ export function AnalyticsDashboardView({
         onExportJson={handleExportJson}
       />
 
-      <div className="bg-primary/10 border border-primary/25 rounded-2xl p-3.5 flex items-center space-x-3 text-xs text-primary  font-medium">
+      <div className="bg-primary/10 border border-primary/25 rounded-2xl p-3.5 flex items-center gap-3 text-xs text-primary font-medium">
         <span className="text-base">🛡️</span>
         <span>{t('sourceOfTruthNotice')}</span>
       </div>

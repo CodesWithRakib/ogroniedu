@@ -148,22 +148,22 @@ export function BetaFeedbackModal({
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
           data-testid="beta-feedback-modal"
-          className="w-[94vw] max-w-lg max-h-[90vh] overflow-y-auto p-5 sm:p-6 space-y-4 rounded-3xl border border-slate-200 bg-white shadow-2xl text-left"
+          className="w-[94vw] max-w-lg max-h-[90vh] overflow-y-auto p-5 sm:p-6 flex flex-col gap-4 rounded-3xl border border-border bg-card shadow-2xl text-left"
         >
           {/* Header */}
-          <DialogHeader className="space-y-1.5 border-b border-slate-100 pb-3.5 text-left">
+          <DialogHeader className="flex flex-col gap-1.5 border-b border-border pb-3.5 text-left">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-blue-50 text-blue-600 border border-blue-200/80 shadow-2xs">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary border border-primary/20 shadow-2xs">
                 <MessageSquarePlus className="h-5 w-5" />
               </div>
               <div className="min-w-0 flex-1">
                 <DialogTitle
                   id="beta-feedback-modal-title"
-                  className="text-base sm:text-lg font-black tracking-tight text-slate-900"
+                  className="text-base sm:text-lg font-black tracking-tight text-foreground"
                 >
                   {isBn ? 'বেটা মতামত ও বাগ রিপোর্ট' : 'Beta Feedback & Bug Report'}
                 </DialogTitle>
-                <DialogDescription className="text-xs font-semibold text-blue-700">
+                <DialogDescription className="text-xs font-semibold text-primary">
                   {isBn
                     ? 'প্ল্যাটফর্ম উন্নত করতে আপনার মতামত বা সমস্যার বিবরণ দিন'
                     : 'Help us improve the platform with your feedback or bug reports'}
@@ -188,7 +188,7 @@ export function BetaFeedbackModal({
               </AlertDescription>
             </Alert>
           ) : (
-            <form onSubmit={handleSubmit} className="space-y-3.5 text-xs">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-3.5 text-xs">
               {errorMsg && (
                 <Alert variant="destructive" className="rounded-xl p-3 text-xs">
                   <AlertCircle className="h-4 w-4 shrink-0" />
@@ -197,8 +197,8 @@ export function BetaFeedbackModal({
               )}
 
               {/* Category Select */}
-              <div className="space-y-1.5">
-                <Label htmlFor="feedback-category" className="text-xs font-bold text-slate-800">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="feedback-category" className="text-xs font-bold text-foreground">
                   {isBn ? 'ক্যাটাগরি' : 'Category'}
                 </Label>
                 <Select
@@ -207,19 +207,19 @@ export function BetaFeedbackModal({
                 >
                   <SelectTrigger
                     id="feedback-category"
-                    className="w-full rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-semibold text-slate-900 shadow-2xs hover:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500/20"
+                    className="w-full rounded-xl border border-border bg-card px-3.5 py-2 text-xs sm:text-sm font-semibold text-foreground shadow-2xs hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring/20"
                   >
                     <SelectValue />
                   </SelectTrigger>
                   <SelectContent
                     position="popper"
-                    className="rounded-2xl border border-slate-200 bg-white shadow-xl"
+                    className="rounded-2xl border border-border bg-card shadow-xl"
                   >
                     {categoryOptions.map((opt) => (
                       <SelectItem
                         key={opt.value}
                         value={opt.value}
-                        className="text-xs sm:text-sm font-medium text-slate-800"
+                        className="text-xs sm:text-sm font-medium text-foreground"
                       >
                         {opt.label}
                       </SelectItem>
@@ -229,8 +229,8 @@ export function BetaFeedbackModal({
               </div>
 
               {/* Title Input */}
-              <div className="space-y-1.5">
-                <Label htmlFor="feedback-title" className="text-xs font-bold text-slate-800">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="feedback-title" className="text-xs font-bold text-foreground">
                   {isBn ? 'সংক্ষিপ্ত শিরোনাম' : 'Short Title'}
                 </Label>
                 <Input
@@ -244,13 +244,13 @@ export function BetaFeedbackModal({
                       ? 'যেমন: পেমেন্ট বাটনে ক্লিক করার পর কাজ করছে না'
                       : 'e.g. Payment button unresponsive'
                   }
-                  className="rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-900 shadow-2xs hover:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500/20"
+                  className="rounded-xl border border-border bg-card px-3.5 py-2 text-xs sm:text-sm font-medium text-foreground shadow-2xs hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring/20"
                 />
               </div>
 
               {/* Description Textarea */}
-              <div className="space-y-1.5">
-                <Label htmlFor="feedback-description" className="text-xs font-bold text-slate-800">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="feedback-description" className="text-xs font-bold text-foreground">
                   {isBn ? 'বিস্তারিত বিবরণ' : 'Description'}
                 </Label>
                 <Textarea
@@ -264,13 +264,13 @@ export function BetaFeedbackModal({
                       ? 'সমস্যা বা প্রস্তাবনা বিস্তারিত লিখুন...'
                       : 'Describe what happened or what you suggest...'
                   }
-                  className="min-h-20 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-900 shadow-2xs hover:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500/20"
+                  className="min-h-20 rounded-xl border border-border bg-card px-3.5 py-2 text-xs sm:text-sm font-medium text-foreground shadow-2xs hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring/20"
                 />
               </div>
 
               {/* Reproduction Steps */}
-              <div className="space-y-1.5">
-                <Label htmlFor="feedback-steps" className="text-xs font-bold text-slate-800">
+              <div className="flex flex-col gap-1.5">
+                <Label htmlFor="feedback-steps" className="text-xs font-bold text-foreground">
                   {isBn ? 'পুনরাবৃত্তির ধাপ (ঐচ্ছিক)' : 'Reproduction Steps (Optional)'}
                 </Label>
                 <Textarea
@@ -283,7 +283,7 @@ export function BetaFeedbackModal({
                       ? '১. টিউটর পেজে যাই ২. সময় নির্বাচন করি...'
                       : '1. Navigated to tutor page 2. Clicked slot...'
                   }
-                  className="min-h-14 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-xs sm:text-sm font-medium text-slate-900 shadow-2xs hover:border-blue-400 focus-visible:ring-2 focus-visible:ring-blue-500/20"
+                  className="min-h-14 rounded-xl border border-border bg-card px-3.5 py-2 text-xs sm:text-sm font-medium text-foreground shadow-2xs hover:border-primary/40 focus-visible:ring-2 focus-visible:ring-ring/20"
                 />
               </div>
 
@@ -296,7 +296,7 @@ export function BetaFeedbackModal({
                 />
                 <Label
                   htmlFor="include-diagnostics"
-                  className="text-xs font-medium text-slate-700 cursor-pointer"
+                  className="text-xs font-medium text-muted-foreground cursor-pointer"
                 >
                   {isBn
                     ? 'ডিভাইসের স্ক্রিন সাইজ ও ব্রাউজার তথ্য যুক্ত করুন (কোনো গোপন পাসওয়ার্ড যাবে না)'
@@ -305,13 +305,13 @@ export function BetaFeedbackModal({
               </div>
 
               {/* Action Buttons */}
-              <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5 pt-3 border-t border-slate-100">
+              <DialogFooter className="flex flex-col-reverse sm:flex-row sm:justify-end gap-2.5 pt-3 border-t border-border">
                 <Button
                   type="button"
                   variant="outline"
                   size="md"
                   onClick={() => setIsOpen(false)}
-                  className="rounded-xl border border-slate-200 bg-white text-slate-700 hover:bg-slate-50 font-bold text-xs"
+                  className="rounded-xl border border-border bg-card text-foreground hover:bg-surface-muted font-bold text-xs"
                 >
                   {isBn ? 'বাতিল' : 'Cancel'}
                 </Button>

@@ -9,7 +9,7 @@ import {
   Index,
   Unique,
 } from 'typeorm';
-import { AssignmentEntity } from './assignment.entity';
+import type { AssignmentEntity } from './assignment.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 
 export type SubmissionStatus = 'submitted' | 'late' | 'reviewed' | 'returned';
@@ -71,7 +71,9 @@ export class AssignmentSubmissionEntity {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt!: Date;
 
-  @ManyToOne(() => AssignmentEntity, (a) => a.submissions, { onDelete: 'CASCADE' })
+  @ManyToOne('AssignmentEntity', (a: AssignmentEntity) => a.submissions, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'assignment_id' })
   assignment?: AssignmentEntity;
 

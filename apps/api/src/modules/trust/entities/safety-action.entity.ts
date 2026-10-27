@@ -7,7 +7,7 @@ import {
   JoinColumn,
 } from 'typeorm';
 import { UserEntity } from '../../auth/entities/user.entity';
-import { SafetyReportEntity } from './safety-report.entity';
+import type { SafetyReportEntity } from './safety-report.entity';
 
 export type SafetyActionType =
   | 'warning'
@@ -53,7 +53,7 @@ export class SafetyActionEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @ManyToOne(() => SafetyReportEntity, (report) => report.actions, {
+  @ManyToOne('SafetyReportEntity', (report: SafetyReportEntity) => report.actions, {
     nullable: true,
     onDelete: 'SET NULL',
   })

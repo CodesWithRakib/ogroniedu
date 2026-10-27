@@ -6,7 +6,7 @@ import {
   ManyToOne,
   JoinColumn,
 } from 'typeorm';
-import { TutorProfileEntity } from './tutor-profile.entity';
+import type { TutorProfileEntity } from './tutor-profile.entity';
 import { FileAssetEntity } from '../../files/entities/file-asset.entity';
 
 export type QualificationReviewStatus = 'pending' | 'approved' | 'rejected' | 'expired';
@@ -55,7 +55,9 @@ export class TutorQualificationEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @ManyToOne(() => TutorProfileEntity, (t) => t.qualifications, { onDelete: 'CASCADE' })
+  @ManyToOne('TutorProfileEntity', (t: TutorProfileEntity) => t.qualifications, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'tutor_user_id' })
   tutorProfile?: TutorProfileEntity;
 

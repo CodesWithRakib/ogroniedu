@@ -41,7 +41,8 @@ function resolveImport(sourceFile, importPath, baseDir) {
 
 function extractImports(filePath) {
   const content = fs.readFileSync(filePath, 'utf-8');
-  const importRegex = /(?:import|export)\s+(?:type\s+)?(?:[\s\S]*?from\s+)?['"]([^'"]+)['"]/g;
+  // Match runtime value imports/exports; ignore pure type imports which are erased at build time
+  const importRegex = /(?:import|export)(?!\s+type\s+)\s+(?:[\s\S]*?from\s+)?['"]([^'"]+)['"]/g;
   const imports = [];
   let match;
   while ((match = importRegex.exec(content)) !== null) {

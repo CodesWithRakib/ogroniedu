@@ -12,7 +12,7 @@ import { BookingEntity } from '../../bookings/entities/booking.entity';
 import { BookingSessionEntity } from '../../bookings/entities/booking-session.entity';
 import { UserEntity } from '../../auth/entities/user.entity';
 import { FileAssetEntity } from '../../files/entities/file-asset.entity';
-import { LessonPlanEntity } from './lesson-plan.entity';
+import type { LessonPlanEntity } from './lesson-plan.entity';
 import { AssignmentEntity } from './assignment.entity';
 
 export type LearningMaterialKind = 'file' | 'link';
@@ -77,7 +77,7 @@ export class LearningMaterialEntity {
   @JoinColumn({ name: 'booking_id' })
   booking?: BookingEntity;
 
-  @ManyToOne(() => LessonPlanEntity, (plan) => plan.materials, {
+  @ManyToOne('LessonPlanEntity', (plan: LessonPlanEntity) => plan.materials, {
     onDelete: 'CASCADE',
     nullable: true,
   })

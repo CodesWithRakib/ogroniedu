@@ -49,16 +49,16 @@ export function TutorReviewsListView({
   };
 
   return (
-    <div className="mt-6 space-y-4">
-      <h3 className="text-lg font-black text-slate-900 flex items-center gap-2">
+    <div className="mt-6 flex flex-col gap-4">
+      <h3 className="text-lg font-black text-foreground flex items-center gap-2">
         <span>{t('reviewsTitle')}</span>
-        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-slate-100 text-slate-700 border border-slate-200">
+        <span className="text-xs font-bold px-2 py-0.5 rounded-full bg-surface-muted text-muted-foreground border border-border">
           {localReviews.length}
         </span>
       </h3>
 
       {localReviews.length === 0 ? (
-        <div className="p-6 text-center bg-slate-50 rounded-2xl border border-dashed border-slate-300 text-slate-600 text-sm">
+        <div className="p-6 text-center bg-surface-muted/50 rounded-2xl border border-dashed border-border text-muted-foreground text-sm">
           No reviews yet. Completed session students and guardians will be able to leave feedback
           here.
         </div>

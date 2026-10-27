@@ -8,7 +8,7 @@ import {
   Index,
 } from 'typeorm';
 import { UserEntity } from '../../auth/entities/user.entity';
-import { ClassroomSessionEntity } from './classroom-session.entity';
+import type { ClassroomSessionEntity } from './classroom-session.entity';
 
 @Entity('classroom_connection_events')
 @Index('ix_classroom_events_session_time', ['classroomSessionId', 'eventTimestamp'])
@@ -40,7 +40,7 @@ export class ClassroomConnectionEventEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @ManyToOne(() => ClassroomSessionEntity, (session) => session.connectionEvents, {
+  @ManyToOne('ClassroomSessionEntity', (session: ClassroomSessionEntity) => session.connectionEvents, {
     onDelete: 'CASCADE',
   })
   @JoinColumn({ name: 'classroom_session_id' })

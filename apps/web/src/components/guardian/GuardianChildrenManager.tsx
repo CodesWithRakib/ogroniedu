@@ -223,7 +223,7 @@ export function GuardianChildrenManager({
   const [customStream, setCustomStream] = React.useState(false);
 
   return (
-    <div className="space-y-6" data-testid="guardian-children-manager">
+    <div className="flex flex-col gap-6" data-testid="guardian-children-manager">
       {/* Header bar */}
       <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border pb-4">
         <div>
@@ -252,7 +252,7 @@ export function GuardianChildrenManager({
           <div className="h-10 w-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 mt-0.5">
             <ShieldCheck className="h-5 w-5" />
           </div>
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <h4 className="text-sm font-bold text-foreground flex items-center gap-2">
               <span>
                 {isBn
@@ -285,11 +285,11 @@ export function GuardianChildrenManager({
       {/* Children List */}
       {children.length === 0 ? (
         <Card className="text-center py-16 rounded-2xl border-dashed border-2 border-border bg-card/60">
-          <CardContent className="space-y-4 max-w-md mx-auto">
+          <CardContent className="flex flex-col gap-4 max-w-md mx-auto">
             <div className="h-16 w-16 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto">
               <GraduationCap className="h-8 w-8" />
             </div>
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'এখনো কোনো সন্তান যুক্ত করা হয়নি' : 'No children profiles linked yet'}
               </h3>
@@ -338,13 +338,13 @@ export function GuardianChildrenManager({
                 key={child.linkId}
                 className="rounded-2xl border-border bg-card hover:border-primary/40 hover:shadow-xs transition-all p-5 flex flex-col justify-between"
               >
-                <div className="space-y-3">
+                <div className="flex flex-col gap-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
                       <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 text-primary font-black text-sm flex items-center justify-center shrink-0">
                         {initials || 'ST'}
                       </div>
-                      <div className="space-y-1">
+                      <div className="flex flex-col gap-1">
                         <div className="flex flex-wrap items-center gap-2">
                           <CardTitle className="text-base font-bold text-foreground">
                             {child.displayName}
@@ -491,9 +491,9 @@ export function GuardianChildrenManager({
 
           {activeTab === 'register' ? (
             /* TAB 1: Register New Child with Full Info */
-            <form onSubmit={handleRegisterChild} className="space-y-4 pt-1">
+            <form onSubmit={handleRegisterChild} className="flex flex-col gap-4 pt-1">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                <div className="space-y-1.5 sm:col-span-2">
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <Label
                     htmlFor="reg-child-name"
                     required
@@ -510,7 +510,7 @@ export function GuardianChildrenManager({
                   />
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label htmlFor="reg-child-dob" className="text-xs font-semibold text-foreground">
                     {isBn ? 'জন্ম তারিখ (বয়স গণনা ও সুরক্ষার জন্য)' : 'Date of Birth'}
                   </Label>
@@ -522,7 +522,7 @@ export function GuardianChildrenManager({
                   />
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label
                     htmlFor="reg-child-gender"
                     className="text-xs font-semibold text-foreground"
@@ -546,7 +546,7 @@ export function GuardianChildrenManager({
                   </Select>
                 </div>
 
-                <div className="space-y-1.5 sm:col-span-2">
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="reg-child-institution"
@@ -617,7 +617,7 @@ export function GuardianChildrenManager({
                   )}
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label
                     htmlFor="reg-child-level"
                     className="text-xs font-semibold text-foreground"
@@ -644,7 +644,7 @@ export function GuardianChildrenManager({
                   </Select>
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label
                     htmlFor="reg-child-curriculum"
                     className="text-xs font-semibold text-foreground"
@@ -670,7 +670,7 @@ export function GuardianChildrenManager({
                   </Select>
                 </div>
 
-                <div className="space-y-1.5 sm:col-span-2">
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <div className="flex items-center justify-between">
                     <Label
                       htmlFor="reg-child-stream"
@@ -739,7 +739,7 @@ export function GuardianChildrenManager({
                   )}
                 </div>
 
-                <div className="space-y-1.5 sm:col-span-2">
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <Label
                     htmlFor="reg-child-goals"
                     className="text-xs font-semibold text-foreground"
@@ -760,7 +760,7 @@ export function GuardianChildrenManager({
                   />
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label
                     htmlFor="reg-child-phone"
                     className="text-xs font-semibold text-foreground"
@@ -775,7 +775,7 @@ export function GuardianChildrenManager({
                   />
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label
                     htmlFor="reg-child-email"
                     className="text-xs font-semibold text-foreground"
@@ -791,7 +791,7 @@ export function GuardianChildrenManager({
                   />
                 </div>
 
-                <div className="space-y-1.5 sm:col-span-2">
+                <div className="flex flex-col gap-1.5 sm:col-span-2">
                   <Label
                     htmlFor="reg-select-relationship"
                     required
@@ -819,7 +819,7 @@ export function GuardianChildrenManager({
               </div>
 
               {/* Minor Consent statement */}
-              <div className="p-3.5 bg-surface-muted/60 rounded-2xl border border-border space-y-2 mt-2">
+              <div className="p-3.5 bg-surface-muted/60 rounded-2xl border border-border flex flex-col gap-2 mt-2">
                 <div className="flex items-start gap-2.5">
                   <Checkbox
                     id="reg-checkbox-consent"
@@ -861,8 +861,8 @@ export function GuardianChildrenManager({
             </form>
           ) : (
             /* TAB 2: Link Existing Student Account */
-            <form onSubmit={handleLinkChild} className="space-y-4 pt-1">
-              <div className="space-y-1.5">
+            <form onSubmit={handleLinkChild} className="flex flex-col gap-4 pt-1">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="input-student-identifier"
                   required
@@ -879,7 +879,7 @@ export function GuardianChildrenManager({
                 />
               </div>
 
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="select-relationship"
                   required
@@ -905,7 +905,7 @@ export function GuardianChildrenManager({
                 </Select>
               </div>
 
-              <div className="p-3.5 bg-surface-muted/60 rounded-2xl border border-border space-y-2">
+              <div className="p-3.5 bg-surface-muted/60 rounded-2xl border border-border flex flex-col gap-2">
                 <div className="flex items-start gap-2.5">
                   <Checkbox
                     id="checkbox-consent"
