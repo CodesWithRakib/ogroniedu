@@ -180,23 +180,23 @@ export function EmbeddedEasyCheckout({
   }, [onModalClose]);
 
   return (
-    <div className="w-full space-y-4" data-testid="embedded-easy-checkout-container">
+    <div className="w-full flex flex-col gap-4" data-testid="embedded-easy-checkout-container">
       {/* Primary Embedded Action Card */}
-      <div className="rounded-2xl sm:rounded-3xl border-2 border-blue-600/30 bg-gradient-to-br from-blue-50/60 via-white to-indigo-50/40 p-5 sm:p-6 shadow-sm text-slate-900">
+      <div className="rounded-2xl sm:rounded-3xl border-2 border-primary/30 bg-gradient-to-br from-primary-soft/40 via-card to-primary-soft/20 p-5 sm:p-6 shadow-sm text-foreground">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-xl bg-blue-600 text-white font-black text-xs flex items-center justify-center shadow-xs">
+              <span className="w-8 h-8 rounded-xl bg-primary text-primary-foreground font-black text-xs flex items-center justify-center shadow-xs">
                 SSL
               </span>
-              <h3 className="text-base sm:text-lg font-black text-slate-900">
+              <h3 className="text-base sm:text-lg font-black text-foreground">
                 {isBn ? 'এসএসএলকমার্জ ইনস্ট্যান্ট চেকআউট' : 'SSLCOMMERZ Easy Checkout'}
               </h3>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-blue-100 text-blue-900 border border-blue-200">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-primary-soft text-primary border border-primary/30">
                 {isBn ? 'এমবেডেড' : 'Embedded'}
               </span>
             </div>
-            <p className="text-xs text-slate-600 font-medium max-w-md">
+            <p className="text-xs text-muted-foreground font-medium max-w-md">
               {isBn
                 ? 'পেজ ছেড়ে না গিয়ে কার্ড, বিকাশ, নগদ বা ইন্টারনেট ব্যাংকিংয়ের মাধ্যমে নিরাপদে পরিশোধ করুন।'
                 : 'Pay securely using cards, bKash, Nagad, or net banking directly without leaving OgroniEdu.'}

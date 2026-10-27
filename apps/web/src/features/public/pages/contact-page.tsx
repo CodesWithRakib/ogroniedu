@@ -39,9 +39,9 @@ export function ContactPage({ locale }: { locale: Locale }) {
   } = useContactForm(locale);
 
   return (
-    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
+    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col gap-16">
       {/* Header Banner */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
+      <div className="text-center max-w-3xl mx-auto flex flex-col gap-4">
         <Badge
           variant="secondary"
           className="text-primary border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full"
@@ -67,7 +67,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
             </CardHeader>
             <CardContent className="px-0 pb-0">
               {submitted ? (
-                <div className="rounded-xl bg-primary-soft/50 border border-primary/20 p-8 text-center space-y-4">
+                <div className="rounded-xl bg-primary-soft/50 border border-primary/20 p-8 text-center flex flex-col gap-4">
                   <CheckCircle2 className="h-12 w-12 text-primary mx-auto" />
                   <p className="text-lg font-bold text-foreground font-bengali">
                     {p.submitSuccess}
@@ -92,8 +92,8 @@ export function ContactPage({ locale }: { locale: Locale }) {
                   </div>
                 </div>
               ) : (
-                <form onSubmit={handleSubmit} className="space-y-5 font-bengali">
-                  <div className="space-y-1.5">
+                <form onSubmit={handleSubmit} className="flex flex-col gap-5 font-bengali">
+                  <div className="flex flex-col gap-1.5">
                     <Label htmlFor="contact-name" className="text-xs font-semibold text-foreground">
                       {p.nameLabel} *
                     </Label>
@@ -108,7 +108,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="contact-email"
                         className="text-xs font-semibold text-foreground"
@@ -125,7 +125,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                         className="rounded-xl h-11"
                       />
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="contact-phone"
                         className="text-xs font-semibold text-foreground"
@@ -143,7 +143,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                     </div>
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="flex flex-col gap-1.5">
                     <Label className="text-xs font-semibold text-foreground">
                       {p.categoryLabel}
                     </Label>
@@ -164,7 +164,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                     </Select>
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="flex flex-col gap-1.5">
                     <Label
                       htmlFor="contact-message"
                       className="text-xs font-semibold text-foreground"
@@ -207,14 +207,14 @@ export function ContactPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Office Details */}
-        <div className="lg:col-span-5 space-y-6">
+        <div className="lg:col-span-5 flex flex-col gap-6">
           <Card className="bg-card border-border rounded-2xl shadow-xs p-6 sm:p-8">
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-lg font-bold font-bengali text-foreground">
                 {p.officeHeading}
               </CardTitle>
             </CardHeader>
-            <CardContent className="px-0 pb-0 space-y-5 text-sm text-muted-foreground font-bengali">
+            <CardContent className="px-0 pb-0 flex flex-col gap-5 text-sm text-muted-foreground font-bengali">
               <div className="flex items-start gap-3">
                 <div className="h-9 w-9 rounded-xl bg-primary-soft flex items-center justify-center text-primary shrink-0">
                   <MapPin className="h-4 w-4" />

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -72,7 +72,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
     <div className="relative mx-auto w-full max-w-md px-4 py-8" data-testid="forgot-password-page">
       {/* Container Card */}
       <div className="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-card">
-        <header className="mb-6 space-y-1.5 text-center">
+        <header className="mb-6 flex flex-col gap-1.5 text-center">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/25">
             <KeyRound className="h-6 w-6 stroke-[2.2]" />
           </div>
@@ -111,8 +111,8 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
         )}
 
         {stage === 'request' && (
-          <form onSubmit={handleRequest} className="space-y-4">
-            <div className="space-y-1.5 text-left">
+          <form onSubmit={handleRequest} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5 text-left">
               <Label htmlFor="recovery-contact" className="text-xs font-bold text-foreground">
                 {isBn ? 'ইমেইল অথবা মোবাইল নম্বর' : 'Email or mobile number'}
               </Label>
@@ -144,8 +144,8 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
         )}
 
         {stage === 'reset' && (
-          <form onSubmit={handleReset} className="space-y-4">
-            <div className="space-y-1.5 text-left">
+          <form onSubmit={handleReset} className="flex flex-col gap-4">
+            <div className="flex flex-col gap-1.5 text-left">
               <Label htmlFor="recovery-code" className="text-xs font-bold text-foreground">
                 {isBn ? '৬-ডিজিট কোড' : '6-digit code'}
               </Label>
@@ -162,7 +162,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
                 data-testid="forgot-password-code"
               />
             </div>
-            <div className="space-y-1.5 text-left">
+            <div className="flex flex-col gap-1.5 text-left">
               <Label htmlFor="recovery-password" className="text-xs font-bold text-foreground">
                 {isBn ? 'নতুন পাসওয়ার্ড' : 'New password'}
               </Label>

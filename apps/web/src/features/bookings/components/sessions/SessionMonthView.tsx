@@ -110,7 +110,7 @@ export function SessionMonthView({ locale, sessions }: SessionMonthViewProps) {
   }
 
   return (
-    <div className="space-y-4">
+    <div className="flex flex-col gap-4">
       {/* Calendar Header with Prev/Next navigation */}
       <div className="flex items-center justify-between p-4 rounded-2xl bg-card border border-border/80 shadow-xs">
         <div className="flex items-center gap-2">
@@ -205,7 +205,7 @@ export function SessionMonthView({ locale, sessions }: SessionMonthViewProps) {
               </div>
 
               {hasSessions && (
-                <div className="space-y-1 mt-1">
+                <div className="flex flex-col gap-1 mt-1">
                   {cell.sessions.slice(0, 2).map((s) => (
                     <div
                       key={s.id}
@@ -228,7 +228,7 @@ export function SessionMonthView({ locale, sessions }: SessionMonthViewProps) {
 
       {/* Selected Day Flyout / Detail Drawer */}
       {selectedDaySessions && selectedDaySessions.length > 0 && (
-        <div className="p-4 sm:p-5 rounded-2xl bg-card border border-primary/30 shadow-md space-y-3 animate-in fade-in slide-in-from-top-2">
+        <div className="p-4 sm:p-5 rounded-2xl bg-card border border-primary/30 shadow-md flex flex-col gap-3 animate-in fade-in slide-in-from-top-2">
           <div className="flex items-center justify-between">
             <h4 className="text-sm font-black text-foreground flex items-center gap-2">
               <CalendarIcon className="w-4 h-4 text-primary" />
@@ -253,7 +253,7 @@ export function SessionMonthView({ locale, sessions }: SessionMonthViewProps) {
                 key={s.id}
                 className="p-3 rounded-xl bg-surface border border-border/80 flex items-center justify-between gap-3 text-xs"
               >
-                <div className="min-w-0 space-y-0.5">
+                <div className="min-w-0 flex flex-col gap-0.5">
                   <span className="font-black text-foreground block truncate">
                     {s.subjectName || (isBn ? 'ক্লাস' : 'Class')}
                   </span>

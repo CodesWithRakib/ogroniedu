@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import {
@@ -159,7 +159,7 @@ export function AdminSafetyActionModal({
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent className="max-w-xl sm:max-w-2xl bg-card border-border shadow-2xl p-6 rounded-2xl">
-        <DialogHeader className="space-y-1.5 pb-2 border-b border-border">
+        <DialogHeader className="flex flex-col gap-1.5 pb-2 border-b border-border">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               <div className="w-9 h-9 rounded-xl bg-red-500/10 text-red-600 dark:text-red-400 flex items-center justify-center font-bold">
@@ -251,7 +251,7 @@ export function AdminSafetyActionModal({
         )}
 
         {/* Action Type Selection */}
-        <div className="space-y-3 py-2">
+        <div className="flex flex-col gap-3 py-2">
           <label className="text-xs font-bold text-foreground block">
             {locale === 'bn' ? 'শাস্তিমূলক ব্যবস্থা নির্বাচন করুন:' : 'Select Enforcement Action:'}
           </label>
@@ -338,7 +338,7 @@ export function AdminSafetyActionModal({
           </div>
 
           {/* Preset Reasons */}
-          <div className="space-y-1 pt-1">
+          <div className="flex flex-col gap-1 pt-1">
             <span className="text-[11px] font-medium text-muted-foreground block">
               {locale === 'bn' ? 'দ্রুত কারণ নির্বাচন করুন:' : 'Quick Preset Reason:'}
             </span>
@@ -357,7 +357,7 @@ export function AdminSafetyActionModal({
           </div>
 
           {/* Reason Input */}
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <label className="text-xs font-semibold text-foreground block">
               {locale === 'bn'
                 ? 'শাস্তিমূলক ব্যবস্থার কারণ ও অডিট নোট:'
@@ -382,7 +382,7 @@ export function AdminSafetyActionModal({
               <span className="text-[11px] font-bold text-muted-foreground block mb-1">
                 {locale === 'bn' ? 'পূর্ববর্তী রেকর্ড ও সতর্কতা:' : 'Past Enforcement History:'}
               </span>
-              <div className="max-h-24 overflow-y-auto space-y-1">
+              <div className="max-h-24 overflow-y-auto flex flex-col gap-1">
                 {actionsList.map((a) => (
                   <div
                     key={a.id}

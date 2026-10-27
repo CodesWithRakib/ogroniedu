@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
@@ -56,14 +56,14 @@ export function AdminRolesModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-2 py-2">
+        <div className="flex flex-col gap-2 py-2">
           {ASSIGNABLE_ROLES.map((role) => {
             const isChecked = editingRoles.includes(role);
             const inputId = `role-${role}`;
             return (
               <div
                 key={role}
-                className="flex items-center space-x-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
+                className="flex items-center gap-3 p-2 rounded-lg hover:bg-muted/50 transition-colors"
               >
                 <Checkbox
                   id={inputId}
@@ -79,7 +79,7 @@ export function AdminRolesModal({
           })}
         </div>
 
-        <div className="flex justify-end space-x-3 pt-3">
+        <div className="flex justify-end flex items-center gap-3 pt-3">
           <Button variant="outline" onClick={onClose}>
             {tCommon('cancel')}
           </Button>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { Calendar, CheckCircle2, Clock } from 'lucide-react';
@@ -41,7 +41,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
           <LoadingSpinner />
         </div>
       ) : (
-        <div className="space-y-6 py-6" data-testid="admin-bookings-page">
+        <div className="flex flex-col gap-6 py-6" data-testid="admin-bookings-page">
           {actions.actionError && (
             <Alert variant="destructive" data-testid="admin-action-error">
               <AlertDescription role="alert">{actions.actionError}</AlertDescription>
@@ -51,7 +51,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn' ? 'বুকিং ও প্ল্যাটফর্ম হস্তক্ষেপ' : 'Bookings & Interventions'}
                 </h1>
@@ -113,7 +113,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Bookings Table Card */}
-          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
             <AdminBookingsTab
               bookings={actions.bookings}
               onRequestCancel={view.setSelectedBookingForCancel}

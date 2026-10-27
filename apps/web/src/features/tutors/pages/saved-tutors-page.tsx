@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
@@ -56,23 +56,23 @@ export function SavedTutorCard({
   if (!profile) {
     return (
       <Card
-        className="rounded-3xl border border-amber-200 bg-amber-50/40 p-5 sm:p-6 space-y-3"
+        className="rounded-3xl border border-amber-200 bg-amber-50/40 p-5 sm:p-6 flex flex-col gap-3"
         data-testid="saved-tutor-unavailable"
       >
         <div className="flex items-start justify-between gap-3">
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Badge
               variant="outline"
               className="bg-amber-100 text-amber-900 border-amber-300 text-xs font-bold"
             >
               {isBn ? 'বর্তমানে অনুপুস্থিত' : 'Currently Unavailable'}
             </Badge>
-            <h4 className="text-base font-bold text-slate-900">
+            <h4 className="text-base font-bold text-foreground">
               {isBn
                 ? 'শিক্ষক প্রোফাইলটি বর্তমানে উপলব্ধ নয়'
                 : 'Tutor profile is not currently available'}
             </h4>
-            <p className="text-xs text-slate-600 leading-relaxed">
+            <p className="text-xs text-muted-foreground leading-relaxed">
               {isBn
                 ? 'যাচাইকরণ, প্রকাশনা বা অ্যাকাউন্ট পরিবর্তনের কারণে এই প্রোফাইলটি সাময়িকভাবে সক্রিয় নেই।'
                 : 'This profile is currently unlisted due to verification, publication or account changes.'}
@@ -127,10 +127,10 @@ export function SavedTutorCard({
 
   return (
     <Card
-      className="group rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-200 hover:border-blue-400/80 flex flex-col justify-between gap-5 text-left w-full"
+      className="group rounded-3xl border border-border bg-card p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-200 hover:border-blue-400/80 flex flex-col justify-between gap-5 text-left w-full"
       data-testid={`saved-tutor-${item.tutorId}`}
     >
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         {/* Top: Avatar, Names, Badges & Unsave Action */}
         <div className="flex items-start justify-between gap-4">
           <div className="flex items-start gap-3.5 min-w-0">
@@ -154,11 +154,11 @@ export function SavedTutorCard({
             </Link>
 
             {/* Name, Headline & Primary Badges */}
-            <div className="min-w-0 space-y-1">
+            <div className="min-w-0 flex flex-col gap-1">
               <div className="flex items-center gap-2 flex-wrap">
                 <Link
                   href={profilePath}
-                  className="text-base sm:text-lg font-black text-slate-900 hover:text-blue-600 transition-colors tracking-tight line-clamp-1 leading-snug"
+                  className="text-base sm:text-lg font-black text-foreground hover:text-blue-600 transition-colors tracking-tight line-clamp-1 leading-snug"
                 >
                   {resolvedDisplayName}
                 </Link>
@@ -182,23 +182,23 @@ export function SavedTutorCard({
                       className="w-3.5 h-3.5 fill-amber-500 text-amber-500"
                       aria-hidden="true"
                     />
-                    <span className="font-black text-slate-900">
+                    <span className="font-black text-foreground">
                       {formatLocalizedNumber(profile.ratingAverage, locale)}
                     </span>
-                    <span className="text-slate-600 font-medium text-[11px]">
+                    <span className="text-muted-foreground font-medium text-[11px]">
                       ({formatLocalizedNumber(profile.totalReviews, locale)}{' '}
                       {isBn ? 'রিভিউ' : 'reviews'})
                     </span>
                   </div>
                 ) : (
-                  <span className="text-[11px] font-medium text-slate-600 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
+                  <span className="text-[11px] font-medium text-muted-foreground bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
                     {isBn ? 'নতুন শিক্ষক — রিভিউ প্রক্রিয়াধীন' : 'New tutor'}
                   </span>
                 )}
 
                 {profile.completedSessions > 0 && (
                   <span className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-full">
-                    <CalendarCheck className="w-3 h-3 text-slate-600" aria-hidden="true" />
+                    <CalendarCheck className="w-3 h-3 text-muted-foreground" aria-hidden="true" />
                     {formatLocalizedNumber(profile.completedSessions, locale)}{' '}
                     {isBn ? 'সেশন সম্পন্ন' : 'sessions'}
                   </span>
@@ -236,7 +236,7 @@ export function SavedTutorCard({
               </span>
             ))}
             {profile.subjects.length > 3 && (
-              <span className="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-lg bg-slate-100 text-slate-600">
+              <span className="inline-flex items-center text-[11px] font-medium px-2 py-0.5 rounded-lg bg-slate-100 text-muted-foreground">
                 +{formatLocalizedNumber(profile.subjects.length - 3, locale)}{' '}
                 {isBn ? 'টি বিষয়' : 'more'}
               </span>
@@ -247,19 +247,19 @@ export function SavedTutorCard({
         {/* Key Attributes Row: Modes, District, Experience */}
         <div className="flex flex-wrap items-center gap-2 text-xs font-semibold text-slate-700 pt-1">
           {hasOnline && (
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-slate-800">
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-foreground">
               <Video className="w-3.5 h-3.5 text-blue-600 shrink-0" aria-hidden="true" />
               <span>{isBn ? 'অনলাইন ক্লাস' : 'Online'}</span>
             </span>
           )}
           {hasInPerson && (
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-slate-800">
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-foreground">
               <GraduationCap className="w-3.5 h-3.5 text-indigo-600 shrink-0" aria-hidden="true" />
               <span>{isBn ? 'হোম টিউশন' : 'In-Person'}</span>
             </span>
           )}
           {profile.serviceAreas && profile.serviceAreas[0] && (
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-slate-800">
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-foreground">
               <MapPin className="w-3.5 h-3.5 text-rose-600 shrink-0" aria-hidden="true" />
               <span>
                 {isBn
@@ -269,7 +269,7 @@ export function SavedTutorCard({
             </span>
           )}
           {expYears && (
-            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-slate-800">
+            <span className="inline-flex items-center gap-1.5 rounded-lg bg-slate-50 border border-slate-200 px-2.5 py-1 text-foreground">
               <Award className="w-3.5 h-3.5 text-amber-600 shrink-0" aria-hidden="true" />
               <span>
                 {expYears} {isBn ? 'বছর অভিজ্ঞতা' : 'yrs exp'}
@@ -279,25 +279,25 @@ export function SavedTutorCard({
         </div>
 
         {/* Bio Snippet */}
-        {bio && <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">{bio}</p>}
+        {bio && <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">{bio}</p>}
       </div>
 
       {/* Card Footer: Pricing and Primary CTAs */}
       <div className="border-t border-slate-100 pt-4 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
         {/* Rate Display */}
         <div className="shrink-0">
-          <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+          <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block">
             {isBn ? 'সম্মানী / ফি' : 'Hourly Rate'}
           </span>
           {hourlyRate ? (
-            <div className="text-xl sm:text-2xl font-black text-slate-900 tabular-nums tracking-tight">
+            <div className="text-xl sm:text-2xl font-black text-foreground tabular-nums tracking-tight">
               ৳ {hourlyRate}
-              <span className="text-xs font-semibold text-slate-500 ml-1">
+              <span className="text-xs font-semibold text-muted-foreground ml-1">
                 {isBn ? '/ ঘণ্টা' : '/ hr'}
               </span>
             </div>
           ) : (
-            <span className="text-xs text-slate-600 font-semibold">
+            <span className="text-xs text-muted-foreground font-semibold">
               {isBn ? 'আলোচনা সাপেক্ষে' : 'Negotiable'}
             </span>
           )}
@@ -319,7 +319,7 @@ export function SavedTutorCard({
             <Button
               variant="outline"
               size="sm"
-              className="w-full gap-1.5 border-slate-200 text-slate-800 hover:bg-slate-100 font-bold text-xs px-3 py-2 rounded-xl"
+              className="w-full gap-1.5 border-slate-200 text-foreground hover:bg-slate-100 font-bold text-xs px-3 py-2 rounded-xl"
             >
               <MessageSquare className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
               {isBn ? 'বার্তা' : 'Message'}
@@ -330,7 +330,7 @@ export function SavedTutorCard({
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1 text-slate-600 hover:text-blue-600 text-xs px-2.5 py-2 rounded-xl"
+              className="gap-1 text-muted-foreground hover:text-blue-600 text-xs px-2.5 py-2 rounded-xl"
               title={isBn ? 'সম্পূর্ণ প্রোফাইল দেখুন' : 'View Full Profile'}
             >
               <span className="hidden lg:inline">{isBn ? 'প্রোফাইল' : 'Profile'}</span>
@@ -456,67 +456,67 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
           : 'Your curated shortlist of verified tutors — request sessions or message directly'
       }
     >
-      <div className="w-full space-y-6">
+      <div className="w-full flex flex-col gap-6">
         {/* KPI Stats Bar */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <Card className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
                 <Bookmark className="w-5 h-5 fill-blue-600/20" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                   {isBn ? 'মোট সংরক্ষিত' : 'Total Saved'}
                 </p>
-                <p className="text-xl font-black text-slate-900 tabular-nums">
+                <p className="text-xl font-black text-foreground tabular-nums">
                   {formatLocalizedNumber(metrics.total, locale)} {isBn ? 'জন' : ''}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
                 <Star className="w-5 h-5 fill-amber-500/20 text-amber-600" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                   {isBn ? 'শীর্ষ রেটেড (৪.৫+)' : 'Top Rated (4.5+)'}
                 </p>
-                <p className="text-xl font-black text-slate-900 tabular-nums">
+                <p className="text-xl font-black text-foreground tabular-nums">
                   {formatLocalizedNumber(metrics.topRated, locale)} {isBn ? 'জন' : ''}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                 <Video className="w-5 h-5 text-emerald-600" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                   {isBn ? 'অনলাইন ক্লাস' : 'Online Ready'}
                 </p>
-                <p className="text-xl font-black text-slate-900 tabular-nums">
+                <p className="text-xl font-black text-foreground tabular-nums">
                   {formatLocalizedNumber(metrics.online, locale)} {isBn ? 'জন' : ''}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700">
                 <GraduationCap className="w-5 h-5 text-indigo-600" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                   {isBn ? 'হোম টিউশন' : 'In-Person'}
                 </p>
-                <p className="text-xl font-black text-slate-900 tabular-nums">
+                <p className="text-xl font-black text-foreground tabular-nums">
                   {formatLocalizedNumber(metrics.inPerson, locale)} {isBn ? 'জন' : ''}
                 </p>
               </div>
@@ -525,7 +525,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
         </div>
 
         {/* Search, Filter Tabs & Sort Controls */}
-        <Card className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs space-y-3">
+        <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs flex flex-col gap-3">
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1">
@@ -539,14 +539,14 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
                 }
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10 h-10 rounded-xl border-slate-200 text-slate-900 placeholder:text-slate-400 focus-visible:ring-blue-500"
+                className="pl-10 h-10 rounded-xl border-slate-200 text-foreground placeholder:text-slate-400 focus-visible:ring-blue-500"
                 data-testid="saved-tutors-search"
               />
               {searchQuery && (
                 <button
                   type="button"
                   onClick={() => setSearchQuery('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 hover:text-slate-600"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-xs font-semibold text-slate-400 hover:text-muted-foreground"
                 >
                   ✕
                 </button>
@@ -635,7 +635,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
                 variant="ghost"
                 size="sm"
                 onClick={handleResetFilters}
-                className="gap-1 text-xs text-slate-500 hover:text-slate-800"
+                className="gap-1 text-xs text-muted-foreground hover:text-foreground"
               >
                 <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
                 {isBn ? 'ফিল্টার রিসেট' : 'Reset filters'}
@@ -646,12 +646,12 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
 
         {/* Content Listing Section */}
         {isLoading ? (
-          <div className="py-16 text-center text-sm font-semibold text-slate-500">
+          <div className="py-16 text-center text-sm font-semibold text-muted-foreground">
             {isBn ? 'সংরক্ষিত শিক্ষক লোড হচ্ছে...' : 'Loading saved tutors...'}
           </div>
         ) : isError ? (
           <Card className="py-12 text-center rounded-3xl border-rose-200 bg-rose-50/30">
-            <CardContent className="space-y-3">
+            <CardContent className="flex flex-col gap-3">
               <p className="text-sm font-semibold text-rose-900">
                 {isBn
                   ? 'সংরক্ষিত শিক্ষকের তালিকা লোড করা যায়নি।'
@@ -669,16 +669,16 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
           </Card>
         ) : saved.length === 0 ? (
           /* Empty state: No saved tutors in DB */
-          <Card className="py-16 text-center rounded-3xl border border-slate-200 bg-white">
-            <CardContent className="max-w-md mx-auto space-y-4">
+          <Card className="py-16 text-center rounded-3xl border border-border bg-card">
+            <CardContent className="max-w-md mx-auto flex flex-col gap-4">
               <div className="w-16 h-16 rounded-3xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto shadow-2xs">
                 <Bookmark className="w-8 h-8 fill-blue-600/20" aria-hidden="true" />
               </div>
-              <div className="space-y-1.5">
-                <h3 className="text-lg font-black text-slate-900">
+              <div className="flex flex-col gap-1.5">
+                <h3 className="text-lg font-black text-foreground">
                   {isBn ? 'কোনো সংরক্ষিত শিক্ষক নেই' : 'No saved tutors yet'}
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-muted-foreground leading-relaxed">
                   {isBn
                     ? 'শিক্ষক ডিরেক্টরি ব্রাউজ করুন এবং আপনার পছন্দের শিক্ষকদের বুকমার্ক করে রাখুন যাতে পরবর্তীতে সহজে বুকিং বা যোগাযোগ করতে পারেন।'
                     : 'Explore the tutor directory and bookmark verified teachers to compare and book later.'}
@@ -696,15 +696,15 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
           </Card>
         ) : filteredItems.length === 0 ? (
           /* Empty state: Search/Filter returned 0 results */
-          <Card className="py-16 text-center rounded-3xl border border-slate-200 bg-white">
-            <CardContent className="max-w-md mx-auto space-y-3">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-slate-500 flex items-center justify-center mx-auto">
+          <Card className="py-16 text-center rounded-3xl border border-border bg-card">
+            <CardContent className="max-w-md mx-auto flex flex-col gap-3">
+              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-muted-foreground flex items-center justify-center mx-auto">
                 <Search className="w-6 h-6" aria-hidden="true" />
               </div>
-              <h3 className="text-base font-bold text-slate-900">
+              <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'কোনো শিক্ষক খুঁজে পাওয়া যায়নি' : 'No matching tutors found'}
               </h3>
-              <p className="text-xs text-slate-600">
+              <p className="text-xs text-muted-foreground">
                 {isBn
                   ? 'আপনার সার্চ কুয়েরি অথবা ফিল্টার পরিবর্তন করে আবার চেষ্টা করুন।'
                   : 'Try adjusting your search query or reset filters to see your saved tutors.'}

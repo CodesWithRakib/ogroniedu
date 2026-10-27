@@ -198,13 +198,13 @@ export function PreJoinLobby({
   };
 
   const cardBgClass =
-    'w-full max-w-5xl mx-auto p-4 sm:p-8 bg-white rounded-3xl border-2 border-slate-200 shadow-xl overflow-hidden text-slate-900';
+    'w-full max-w-5xl mx-auto p-4 sm:p-8 bg-card rounded-3xl border-2 border-border shadow-xl overflow-hidden text-card-foreground';
 
-  const headingTextClass = 'text-xl sm:text-2xl font-black text-slate-900 tracking-tight';
+  const headingTextClass = 'text-xl sm:text-2xl font-black text-foreground tracking-tight';
 
-  const subTextClass = 'text-xs sm:text-sm font-semibold text-slate-700 mt-1';
+  const subTextClass = 'text-xs sm:text-sm font-semibold text-muted-foreground mt-1';
 
-  const readinessCardClass = 'p-4 bg-slate-50 rounded-2xl border-2 border-slate-200/90 space-y-2.5';
+  const readinessCardClass = 'p-4 bg-surface-muted rounded-2xl border-2 border-border flex flex-col gap-2.5';
 
   const readinessLabelClass = 'text-xs font-black text-slate-800 uppercase tracking-wider block';
 
@@ -368,8 +368,8 @@ export function PreJoinLobby({
         </div>
 
         {/* Right Column: Readiness checklist & Join button */}
-        <div className="md:col-span-5 flex flex-col justify-between space-y-4">
-          <div className="space-y-3">
+        <div className="md:col-span-5 flex flex-col justify-between gap-4">
+          <div className="flex flex-col gap-3">
             <div className={readinessCardClass}>
               <span className={readinessLabelClass}>
                 {isBn ? 'ক্লাসরুম তথ্য ও প্রস্তুতি' : 'Classroom Readiness'}

@@ -27,11 +27,11 @@ export function ScoreBreakdownModal({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="score-breakdown-modal"
-        className="max-w-md w-full p-6 space-y-4 rounded-3xl bg-white border border-slate-200 shadow-2xl text-left"
+        className="max-w-md w-full p-6 flex flex-col gap-4 rounded-3xl bg-card border border-border shadow-2xl text-left"
       >
-        <DialogHeader className="border-b border-slate-100 pb-3 text-left">
-          <DialogTitle className="flex items-center gap-2 font-black text-slate-900">
-            <Sparkles className="w-5 h-5 text-blue-600" />
+        <DialogHeader className="border-b border-border pb-3 text-left">
+          <DialogTitle className="flex items-center gap-2 font-black text-foreground">
+            <Sparkles className="w-5 h-5 text-primary" />
             <span>{dict.discovery?.scoreBreakdownTitle || 'Ranking Factors'}</span>
           </DialogTitle>
           <DialogDescription className="sr-only">
@@ -40,21 +40,21 @@ export function ScoreBreakdownModal({
         </DialogHeader>
 
         <div>
-          <p className="text-sm font-bold text-slate-900">{tutor.displayName}</p>
-          <p className="text-xs text-blue-700 font-extrabold mt-0.5">
+          <p className="text-sm font-bold text-foreground">{tutor.displayName}</p>
+          <p className="text-xs text-primary font-extrabold mt-0.5">
             Total Score: {formatLocalizedNumber(tutor.matchScore, locale)} Points
           </p>
         </div>
 
-        <div className="space-y-2 pt-1 text-xs">
-          <p className="text-slate-600">
+        <div className="flex flex-col gap-2 pt-1 text-xs">
+          <p className="text-muted-foreground">
             OgroniEdu scores tutors using transparent, deterministic verification &amp; quality
             signals:
           </p>
-          <ul className="space-y-2 border border-slate-200 rounded-2xl p-3.5 bg-slate-50/60">
+          <ul className="flex flex-col gap-2 border border-border rounded-2xl p-3.5 bg-surface-muted/60">
             {tutor.rankingReasons.map((reason, idx) => (
-              <li key={idx} className="flex items-start gap-2 text-slate-800">
-                <CheckCircle2 className="w-3.5 h-3.5 text-blue-600 shrink-0 mt-0.5" />
+              <li key={idx} className="flex items-start gap-2 text-foreground">
+                <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
                 <span>{reason}</span>
               </li>
             ))}

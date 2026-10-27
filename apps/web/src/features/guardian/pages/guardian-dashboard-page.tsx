@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -315,7 +315,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                   </span>
                 </div>
               </CardHeader>
-              <CardContent className="space-y-4 pt-0 text-xs">
+              <CardContent className="flex flex-col gap-4 pt-0 text-xs">
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-surface border border-border">
                   <div>
                     <span className="text-muted-foreground block text-[11px]">
@@ -360,7 +360,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
             </Card>
           ) : (
             <Card className="h-full flex items-center justify-center p-8 text-center">
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 <Users className="w-10 h-10 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
                   {isBn ? 'কোনো সন্তান প্রোফাইল যুক্ত নেই' : 'No Child Linked'}

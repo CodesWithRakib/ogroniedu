@@ -101,29 +101,29 @@ export function SafetyReportModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="safety-report-modal"
-        className="w-full max-w-xl rounded-3xl border border-rose-200 bg-white p-6 md:p-8 text-slate-900 shadow-2xl max-h-[90vh] overflow-y-auto text-left"
+        className="w-full max-w-xl rounded-3xl border border-border bg-card p-6 md:p-8 text-foreground shadow-2xl max-h-[90vh] overflow-y-auto text-left"
       >
         {isSuccess ? (
-          <div className="py-10 text-center space-y-4">
+          <div className="py-10 text-center flex flex-col gap-4">
             <CheckCircle2 className="w-16 h-16 text-emerald-600 mx-auto animate-bounce" />
-            <h3 className="text-xl font-black text-slate-900">
+            <h3 className="text-xl font-black text-foreground">
               {isBn ? 'রিপোর্ট সফলভাবে গৃহীত হয়েছে' : 'Report Filed Successfully'}
             </h3>
-            <p className="text-sm text-slate-600 max-w-md mx-auto">
+            <p className="text-sm text-muted-foreground max-w-md mx-auto">
               {isBn
                 ? 'আমাদের নিরাপত্তা টিম অবিলম্বে ব্যবস্থা নিচ্ছে। আপনার যেকোনো প্রয়োজনে ২৪/৭ হটলাইনে যোগাযোগ করুন।'
                 : 'Our security ops team is taking immediate action. We will contact you shortly.'}
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4">
-            <DialogHeader className="border-b border-rose-100 pb-4 text-left">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+            <DialogHeader className="border-b border-border/40 pb-4 text-left">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
                   <ShieldAlert className="w-5 h-5" />
                 </div>
                 <div>
-                  <DialogTitle className="text-lg font-black text-slate-900">
+                  <DialogTitle className="text-lg font-black text-foreground">
                     {isBn ? 'শিশু সুরক্ষা ও নিরাপত্তা সতর্কতা' : 'Child Safety & Protection Alert'}
                   </DialogTitle>
                   <DialogDescription className="text-xs text-rose-700 font-semibold mt-0.5">
@@ -156,7 +156,7 @@ export function SafetyReportModal({
             </Alert>
 
             {/* Category Select */}
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label
                 htmlFor="safety-category-select"
                 className="text-xs font-semibold text-foreground"
@@ -199,7 +199,7 @@ export function SafetyReportModal({
             </div>
 
             {/* Severity Radio */}
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label className="text-xs font-semibold text-foreground">
                 {isBn ? 'বিপদের মাত্রা (Severity):' : 'Urgency Level:'}
               </Label>
@@ -248,7 +248,7 @@ export function SafetyReportModal({
             </div>
 
             {/* Description Textarea */}
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label
                 htmlFor="safety-description-input"
                 className="text-xs font-semibold text-foreground"

@@ -87,19 +87,19 @@ export function RescheduleModal({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="reschedule-modal"
-        className="bg-white border-2 border-slate-200 rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl space-y-4 text-left"
+        className="bg-card border-2 border-border rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl flex flex-col gap-4 text-left text-card-foreground"
       >
-        <DialogHeader className="border-b border-slate-100 pb-3 text-left">
+        <DialogHeader className="border-b border-border pb-3 text-left">
           <div className="flex items-center gap-2.5">
             <div className="w-10 h-10 rounded-xl bg-amber-50 border border-amber-300 flex items-center justify-center text-amber-700">
               <Calendar className="w-5 h-5" />
             </div>
             <div>
-              <DialogTitle className="font-black text-slate-900 text-lg">
+              <DialogTitle className="font-black text-foreground text-lg">
                 {dict.scheduling?.reschedule ||
                   (isBn ? 'ক্লাস রিশিডিউল করুন' : 'Reschedule Session')}
               </DialogTitle>
-              <p className="text-xs text-slate-600 font-medium">
+              <p className="text-xs text-muted-foreground font-medium">
                 {session.subjectName || (isBn ? 'টিচিং সেশন' : 'Tutoring Session')} •{' '}
                 {session.tutorName}
               </p>
@@ -127,10 +127,10 @@ export function RescheduleModal({
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-xs">
           {/* Quick Preset Buttons */}
-          <div className="space-y-1.5">
-            <Label className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+          <div className="flex flex-col gap-1.5">
+            <Label className="font-bold text-foreground text-xs flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
               <span>
                 {isBn ? 'দ্রুত সময় নির্বাচন (ক্লিক করুন)' : 'Quick Presets (Click to apply)'}
@@ -147,7 +147,7 @@ export function RescheduleModal({
                   key={p.hours}
                   type="button"
                   onClick={() => applyQuickPreset(p.hours)}
-                  className="px-2.5 py-1.5 rounded-xl border border-slate-300 bg-slate-50 hover:bg-slate-100 text-slate-800 font-bold text-[11px] transition-colors shadow-2xs cursor-pointer text-center"
+                  className="px-2.5 py-1.5 rounded-xl border border-border bg-surface-muted hover:bg-surface-hover text-foreground font-bold text-[11px] transition-colors shadow-2xs cursor-pointer text-center"
                 >
                   {isBn ? p.labelBn : p.labelEn}
                 </button>
@@ -155,12 +155,12 @@ export function RescheduleModal({
             </div>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="reschedule-time-input"
-              className="font-bold text-slate-800 text-xs flex items-center gap-1.5"
+              className="font-bold text-foreground text-xs flex items-center gap-1.5"
             >
-              <Clock className="w-3.5 h-3.5 text-slate-600" />
+              <Clock className="w-3.5 h-3.5 text-muted-foreground" />
               <span>
                 {dict.scheduling?.rescheduleNewTime ||
                   (isBn ? 'নতুন তারিখ ও সময় (BST)' : 'New Date & Time (BST)')}
@@ -175,13 +175,13 @@ export function RescheduleModal({
                 setNewTime(e.target.value);
                 setError(null);
               }}
-              className="border-slate-300 text-slate-900 bg-white font-medium"
+              className="border-border text-foreground bg-card font-medium"
               data-testid="reschedule-time-input"
             />
           </div>
 
-          <div className="space-y-1.5">
-            <Label htmlFor="reschedule-reason-input" className="font-bold text-slate-800 text-xs">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="reschedule-reason-input" className="font-bold text-foreground text-xs">
               {dict.scheduling?.rescheduleReasonLabel ||
                 (isBn ? 'রিশিডিউলের কারণ' : 'Reason for Rescheduling')}
             </Label>
@@ -199,12 +199,12 @@ export function RescheduleModal({
                   ? 'রিশিডিউল করার কারণ লিখুন (যেমন: জরুরি পারিবারিক কাজ, বিদ্যুৎ বিভ্রাট, অসুস্থতা ইত্যাদি)...'
                   : 'Provide brief context for rescheduling (e.g., family emergency, illness)...'
               }
-              className="w-full p-2.5 rounded-xl border border-slate-300 bg-white text-slate-900 text-xs focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none placeholder:text-slate-400 font-medium"
+              className="w-full p-2.5 rounded-xl border border-border bg-card text-foreground text-xs focus-visible:ring-2 focus-visible:ring-ring/35 focus-visible:outline-none placeholder:text-muted-foreground font-medium"
               data-testid="reschedule-reason-input"
             />
           </div>
 
-          <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+          <div className="flex justify-end gap-2 pt-2 border-t border-border">
             <Button
               type="button"
               variant="outline"

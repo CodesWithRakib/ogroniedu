@@ -63,18 +63,18 @@ export function CaseCard({
   const isBn = locale === 'bn';
   return (
     <Card
-      className="rounded-2xl border border-slate-200 bg-white p-5 space-y-4 shadow-xs"
+      className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4 shadow-xs"
       data-testid={`replacement-case-${item.id}`}
     >
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
-        <div className="space-y-1">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/40 pb-3">
+        <div className="flex flex-col gap-1">
           <div className="flex items-center gap-2">
-            <span className="font-mono text-xs font-black text-slate-900">
+            <span className="font-mono text-xs font-black text-foreground">
               #{item.id.slice(0, 8)}
             </span>
             <Badge
               variant="outline"
-              className="text-xs capitalize font-semibold border-slate-300 text-slate-800 bg-slate-50"
+              className="text-xs capitalize font-semibold border-border text-foreground bg-muted"
             >
               {item.reasonCode.replace(/_/g, ' ')}
             </Badge>
@@ -84,14 +84,14 @@ export function CaseCard({
               </Badge>
             )}
           </div>
-          <span className="text-[11px] text-slate-600 font-medium">
+          <span className="text-[11px] text-muted-foreground font-medium">
             {isBn ? 'দায়ের:' : 'Filed:'} {formatDateTime(item.createdAt, locale)}
           </span>
         </div>
         <StatusBadge status={item.status} locale={locale} />
       </div>
 
-      <p className="text-xs rounded-xl bg-slate-50 border border-slate-200 p-3 text-slate-900 font-medium">
+      <p className="text-xs rounded-xl bg-muted/40 border border-border p-3 text-foreground font-medium">
         {item.explanation}
       </p>
 
@@ -109,8 +109,8 @@ export function CaseCard({
         )}
 
       {item.userVisibleNote && (
-        <p className="text-xs text-slate-700 bg-slate-50 border border-slate-200 rounded-lg p-2 font-medium">
-          <span className="font-bold text-slate-900">
+        <p className="text-xs text-muted-foreground bg-muted/40 border border-border rounded-lg p-2 font-medium">
+          <span className="font-bold text-foreground">
             {isBn ? 'সর্বশেষ আপডেট: ' : 'Latest update: '}
           </span>
           {item.userVisibleNote}
@@ -132,19 +132,19 @@ export function CaseCard({
 
       {item.status === 'offered' && item.replacementTutor && (
         <div
-          className="p-4 rounded-2xl bg-blue-50 border border-blue-300 space-y-3"
+          className="p-4 rounded-2xl bg-primary/5 border border-primary/20 flex flex-col gap-3"
           data-testid={`offer-${item.id}`}
         >
           <div className="flex items-center justify-between">
-            <p className="text-sm font-black text-slate-900">
+            <p className="text-sm font-black text-foreground">
               {isBn ? 'বিকল্প শিক্ষক প্রস্তাব:' : 'Proposed replacement tutor:'}{' '}
-              <span className="text-blue-700 font-bold">{item.replacementTutor.displayName}</span>
+              <span className="text-primary font-bold">{item.replacementTutor.displayName}</span>
             </p>
-            <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-blue-600 text-white">
+            <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-primary text-primary-foreground">
               {isBn ? 'যাচাইকৃত' : 'Verified'}
             </span>
           </div>
-          <p className="text-xs text-slate-700 font-medium">
+          <p className="text-xs text-muted-foreground font-medium">
             {isBn
               ? 'শিক্ষকের প্রোফাইল ও পড়ানোর সময় যাচাই করে গ্রহণ বা প্রত্যাখ্যান করুন।'
               : 'Review tutor profile and schedule to accept or decline.'}
@@ -165,7 +165,7 @@ export function CaseCard({
               variant="outline"
               disabled={isMutating}
               onClick={() => onDecline(item.id)}
-              className="gap-1.5 text-xs font-bold border-slate-300 bg-white hover:bg-slate-100 text-slate-800"
+              className="gap-1.5 text-xs font-bold border-border bg-card hover:bg-muted text-foreground"
               data-testid={`decline-offer-${item.id}`}
             >
               <X className="w-3.5 h-3.5 text-rose-600" aria-hidden="true" />
@@ -175,10 +175,10 @@ export function CaseCard({
         </div>
       )}
 
-      <div className="flex items-center justify-between text-xs pt-1 border-t border-slate-100">
+      <div className="flex items-center justify-between text-xs pt-1 border-t border-border/40">
         <Link
           href={withLocale(`/tutor-replacements/${item.id}`, locale)}
-          className="font-bold text-blue-700 hover:underline inline-flex items-center gap-1"
+          className="font-bold text-primary hover:underline inline-flex items-center gap-1"
         >
           {isBn ? 'বিস্তারিত ও ইতিহাস দেখুন' : 'View details & history'}
         </Link>
@@ -188,7 +188,7 @@ export function CaseCard({
             variant="ghost"
             disabled={isMutating}
             onClick={() => onCancel(item.id)}
-            className="text-xs text-slate-600 hover:text-rose-700"
+            className="text-xs text-muted-foreground hover:text-destructive"
           >
             {isBn ? 'অনুরোধ প্রত্যাহার' : 'Withdraw request'}
           </Button>
@@ -251,15 +251,15 @@ export function TutorReplacementsListPage({ locale }: TutorReplacementsListPageP
         </Link>
       }
     >
-      <div className="p-5 rounded-2xl border border-blue-200 bg-blue-50/70 flex items-start gap-4 shadow-xs">
-        <RefreshCw className="w-6 h-6 text-blue-700 shrink-0 mt-0.5" aria-hidden="true" />
-        <div className="space-y-1">
-          <h4 className="text-sm font-black text-slate-900">
+      <div className="p-5 rounded-2xl border border-primary/20 bg-primary/5 flex items-start gap-4 shadow-xs">
+        <RefreshCw className="w-6 h-6 text-primary shrink-0 mt-0.5" aria-hidden="true" />
+        <div className="flex flex-col gap-1">
+          <h4 className="text-sm font-black text-foreground">
             {isBn
               ? '১০০% অভিভাবক সুরক্ষা ও ৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি'
               : '100% Trust & 48-Hour Tutor Replacement Guarantee'}
           </h4>
-          <p className="text-xs text-slate-700 leading-relaxed font-medium">
+          <p className="text-xs text-muted-foreground leading-relaxed font-medium">
             {isBn
               ? 'যোগ্য বুকিংয়ের জন্য আপনি বিকল্প যাচাইকৃত শিক্ষক চাইতে পারেন। অপারেশনস টিম নির্ধারিত ৪৮ ঘণ্টার মধ্যে উপযুক্ত শিক্ষক খুঁজে দেয়; বিকল্প না মিললে সম্পূর্ণ এসক্রো ফি রিফান্ডের আওতায় আসবে।'
               : 'For an eligible booking you can request a verified replacement tutor. Operations matches within the 48-hour policy window; if no replacement is accepted, the case can proceed to a full escrow refund review.'}
@@ -279,7 +279,7 @@ export function TutorReplacementsListPage({ locale }: TutorReplacementsListPageP
         </div>
       ) : isError ? (
         <Card className="py-12 text-center rounded-2xl">
-          <CardContent className="space-y-3">
+          <CardContent className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
               {isBn ? 'কেস লোড করা যায়নি।' : 'Failed to load replacement cases.'}
             </p>
@@ -290,7 +290,7 @@ export function TutorReplacementsListPage({ locale }: TutorReplacementsListPageP
         </Card>
       ) : cases.length === 0 ? (
         <Card className="py-16 text-center rounded-2xl">
-          <CardContent className="space-y-3">
+          <CardContent className="flex flex-col gap-3">
             <ShieldCheck className="w-14 h-14 text-success mx-auto" aria-hidden="true" />
             <h4 className="text-base font-bold text-foreground">
               {isBn ? 'কোনো রিপ্লেসমেন্ট কেস নেই' : 'No replacement cases'}
@@ -303,7 +303,7 @@ export function TutorReplacementsListPage({ locale }: TutorReplacementsListPageP
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-4" data-testid="replacement-cases-list">
+        <div className="flex flex-col gap-4" data-testid="replacement-cases-list">
           {cases.map((item) => (
             <CaseCard
               key={item.id}

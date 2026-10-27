@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
@@ -22,11 +22,11 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
           <LoadingSpinner />
         </div>
       ) : (
-        <div className="space-y-6 py-6" data-testid="admin-audit-logs-page">
+        <div className="flex flex-col gap-6 py-6" data-testid="admin-audit-logs-page">
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn'
                     ? 'প্ল্যাটফর্ম সিকিউরিটি ও অডিট লগ'
@@ -45,16 +45,16 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Security & Sanitization Card */}
-          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-3">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-3">
             <h3 className="text-base font-bold text-foreground flex items-center gap-2">
               <ShieldCheck className="w-5 h-5 text-success-soft-foreground" />
               <span>{t('auditTrailTitle')}</span>
             </h3>
-            <p className="text-xs text-success-soft-foreground font-semibold flex items-center space-x-1.5">
+            <p className="text-xs text-success-soft-foreground font-semibold flex items-center gap-1.5">
               <Lock className="w-4 h-4" />
               <span>{t('auditRedactedNotice')}</span>
             </p>
-            <div className="text-xs text-muted-foreground space-y-1.5">
+            <div className="text-xs text-muted-foreground flex flex-col gap-1.5">
               <p>
                 •{' '}
                 {locale === 'bn'
@@ -77,7 +77,7 @@ export function AdminAuditLogsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Audit Logs Table Card */}
-          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
             <AdminAuditLogsTab auditLogs={admin.logs} locale={locale} />
           </div>
         </div>

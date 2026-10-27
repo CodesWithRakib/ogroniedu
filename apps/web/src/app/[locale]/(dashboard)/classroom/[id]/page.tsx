@@ -45,9 +45,9 @@ function ClassroomPageContent({ locale, sessionId }: { locale: Locale; sessionId
 
   if (isLoading) {
     return (
-      <div className="fixed inset-0 w-screen h-[100dvh] bg-slate-50 text-slate-900 flex flex-col items-center justify-center space-y-3 z-50">
+      <div className="fixed inset-0 w-screen h-[100dvh] bg-background text-foreground flex flex-col items-center justify-center gap-3 z-50">
         <LoadingSpinner />
-        <p className="text-xs text-slate-600 font-medium">
+        <p className="text-xs text-muted-foreground font-medium">
           {locale === 'bn' ? 'লাইভ ক্লাসরুম লোড হচ্ছে...' : 'Loading live interactive classroom...'}
         </p>
       </div>
@@ -56,8 +56,8 @@ function ClassroomPageContent({ locale, sessionId }: { locale: Locale; sessionId
 
   if (error || !session) {
     return (
-      <div className="fixed inset-0 w-screen h-[100dvh] bg-slate-50 text-slate-900 flex items-center justify-center p-4 z-50">
-        <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-6 shadow-xl">
+      <div className="fixed inset-0 w-screen h-[100dvh] bg-background text-foreground flex items-center justify-center p-4 z-50">
+        <div className="max-w-md w-full bg-card border border-border rounded-3xl p-6 shadow-xl">
           <EmptyState
             title={locale === 'bn' ? 'ক্লাসরুম পাওয়া যায়নি' : 'Classroom Not Found'}
             description={

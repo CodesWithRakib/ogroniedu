@@ -333,7 +333,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
   };
 
   return (
-    <div className="w-full space-y-6">
+    <div className="w-full flex flex-col gap-6">
       {/* Navigation */}
       <div className="flex items-center justify-between">
         <Link
@@ -358,7 +358,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
 
       {/* Live Interactive Classroom Workspace Launch Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
-        <div className="space-y-1.5 text-center md:text-left max-w-2xl">
+        <div className="flex flex-col gap-1.5 text-center md:text-left max-w-2xl">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-800 text-xs font-bold border border-blue-200">
             <Radio className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
             <span>{locale === 'bn' ? 'স্মার্ট ক্লাসরুম হাব' : 'Smart Classroom Hub'}</span>
@@ -399,7 +399,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       {/* Main Session Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200 p-8 shadow-sm text-slate-900">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
               <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-50 border border-emerald-300 rounded-full text-xs font-bold text-emerald-900">
                 <Clock className="w-3.5 h-3.5 text-emerald-700" />
@@ -426,7 +426,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
             </p>
           </div>
 
-          <div className="bg-slate-50 border border-slate-200 rounded-2xl p-5 shrink-0 text-center space-y-1">
+          <div className="bg-surface-muted border border-border rounded-2xl p-5 shrink-0 text-center flex flex-col gap-1">
             <div className="text-xs uppercase tracking-wider font-bold text-slate-600">
               {formatWeekdayDate(startsAt, locale)}
             </div>
@@ -450,7 +450,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
           className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950 flex items-start gap-3 shadow-2xs"
         >
           <RotateCcw className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <div className="font-extrabold text-sm text-slate-900">
               {locale === 'bn'
                 ? 'ক্লাসটির সময়সূচী পরিবর্তন (রিশিডিউল) করা হয়েছে'
@@ -478,10 +478,10 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       {/* Class Schedule, Reschedule & Calendar Sync Card */}
       <Card
         data-testid="session-calendar-sync-card"
-        className="bg-white border-2 border-slate-200 rounded-3xl p-6 shadow-sm text-slate-900 space-y-4"
+        className="bg-card border-2 border-border rounded-3xl p-6 shadow-sm text-card-foreground flex flex-col gap-4"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
               <CalendarIcon className="w-4 h-4 text-blue-600" />
               <span>
@@ -579,9 +579,9 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
             </p>
           </CardHeader>
 
-          <CardContent className="p-0 space-y-4 pt-2">
+          <CardContent className="p-0 flex flex-col gap-4 pt-2">
             {meetingUrl ? (
-              <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl space-y-3">
+              <div className="p-4 bg-surface-muted border border-border rounded-2xl flex flex-col gap-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-emerald-800">
                   <ShieldCheck className="w-4 h-4 text-emerald-600" />
                   <span>
@@ -616,7 +616,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
                 </Link>
               </div>
             ) : (
-              <div className="p-5 bg-slate-50 border border-slate-200 rounded-2xl text-center space-y-3">
+              <div className="p-5 bg-surface-muted border border-border rounded-2xl text-center flex flex-col gap-3">
                 <Video className="w-8 h-8 mx-auto text-slate-400" />
                 <p className="text-xs text-slate-600 font-medium">
                   {locale === 'bn'
@@ -668,9 +668,9 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
             </p>
           </CardHeader>
 
-          <CardContent className="p-0 space-y-4">
+          <CardContent className="p-0 flex flex-col gap-4">
             {latestRecord && (
-              <div className="p-3 bg-muted rounded-xl border border-border text-xs space-y-1">
+              <div className="p-3 bg-muted rounded-xl border border-border text-xs flex flex-col gap-1">
                 <div className="flex items-center justify-between text-muted-foreground font-medium">
                   <span>{locale === 'bn' ? 'রেকর্ডকৃত অবস্থা:' : 'Recorded Status:'}</span>
                   <span className="font-bold text-foreground capitalize">
@@ -691,7 +691,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
             {isTutor ? (
               <form
                 onSubmit={handleMarkAttendance}
-                className="space-y-3"
+                className="flex flex-col gap-3"
                 data-testid="tutor-mark-attendance-form"
               >
                 <Label className="text-xs font-semibold text-muted-foreground block">
@@ -730,7 +730,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
                 </div>
 
                 {latestRecord && (
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1">
                     <Label
                       htmlFor="attendance-correction-reason"
                       className="text-xs text-muted-foreground"
@@ -748,7 +748,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
                   </div>
                 )}
 
-                <div className="space-y-1">
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="attendance-notes" className="text-xs text-muted-foreground">
                     {locale === 'bn' ? 'মন্তব্য (ঐচ্ছিক):' : 'Notes (optional):'}
                   </Label>

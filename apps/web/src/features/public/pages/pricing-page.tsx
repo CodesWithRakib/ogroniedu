@@ -37,9 +37,9 @@ export function PricingPage({ locale }: { locale: Locale }) {
   } = calc;
 
   return (
-    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
+    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col gap-16">
       {/* Header Banner */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
+      <div className="text-center max-w-3xl mx-auto flex flex-col gap-4">
         <Badge
           variant="secondary"
           className="text-primary border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full"
@@ -56,7 +56,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
 
       {/* Free for Students Banner */}
       <div className="rounded-2xl bg-primary-soft/40 border border-border p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
-        <div className="space-y-2 text-center sm:text-left">
+        <div className="flex flex-col gap-2 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-3 py-1 text-xs font-semibold text-primary">
             <CheckCircle2 className="h-3.5 w-3.5" />
             <span>
@@ -79,7 +79,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* 8% Platform Commission Breakdown */}
-      <section className="space-y-8">
+      <section className="flex flex-col gap-8">
         <div className="border-b border-border pb-4">
           <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-soft text-primary">
@@ -121,7 +121,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </section>
 
       {/* Interactive Calculator */}
-      <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 space-y-8">
+      <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 flex flex-col gap-8">
         <div className="flex items-center gap-3">
           <div
             className="h-12 w-12 rounded-xl bg-primary-soft text-primary flex items-center justify-center"
@@ -144,7 +144,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center pt-2">
-          <div className="space-y-6">
+          <div className="flex flex-col gap-6">
             <div>
               <div className="flex justify-between text-sm font-semibold mb-2 font-bengali">
                 <span className="text-muted-foreground">
@@ -184,7 +184,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="rounded-xl bg-muted/30 p-6 border border-border space-y-4">
+          <div className="rounded-xl bg-muted/30 p-6 border border-border flex flex-col gap-4">
             <div className="flex justify-between items-center text-sm">
               <span className="text-muted-foreground font-bengali">
                 {locale === 'bn' ? 'মাসিক মোট ফি (শিক্ষার্থী জমা):' : 'Gross Monthly Fee:'}
@@ -214,7 +214,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </section>
 
       {/* Hourly Benchmarks Grid */}
-      <section className="space-y-8">
+      <section className="flex flex-col gap-8">
         <div className="border-b border-border pb-4">
           <h2 className="text-2xl font-bold text-foreground font-bengali">{p.benchmarksTitle}</h2>
           <p className="text-sm text-muted-foreground font-bengali mt-1">{p.benchmarksSubtitle}</p>

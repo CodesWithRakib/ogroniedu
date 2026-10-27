@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -180,9 +180,9 @@ export function AdminUsersHubPage({ locale }: { locale: Locale }) {
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6" data-testid="admin-users-hub">
+      <div className="flex flex-col gap-6 py-6" data-testid="admin-users-hub">
         {/* Eyebrow & Hero Header (Image 1 Exact Layout) */}
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-black uppercase tracking-widest text-primary">
               {isBn ? 'ফুল অ্যাক্সেস কন্ট্রোল' : 'FULL ACCESS CONTROL'}

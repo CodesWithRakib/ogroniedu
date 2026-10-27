@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -93,7 +93,7 @@ export function OrganizationDashboardPageView() {
 
   if (!currentOrg && !isRegistering) {
     return (
-      <div className="max-w-xl mx-auto py-12 text-center space-y-4">
+      <div className="max-w-xl mx-auto py-12 text-center flex flex-col gap-4">
         <Building2 className="w-12 h-12 text-primary mx-auto" />
         <h2 className="text-xl font-bold text-foreground">No Organization Registered</h2>
         <p className="text-xs text-muted-foreground">
@@ -113,7 +113,7 @@ export function OrganizationDashboardPageView() {
 
   if (isRegistering) {
     return (
-      <div className="max-w-lg mx-auto bg-card p-6 rounded-2xl border border-border shadow-xs space-y-5">
+      <div className="max-w-lg mx-auto bg-card p-6 rounded-2xl border border-border shadow-xs flex flex-col gap-5">
         <div>
           <h2 className="text-lg font-bold text-foreground">Register Educational Organization</h2>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -121,7 +121,7 @@ export function OrganizationDashboardPageView() {
           </p>
         </div>
 
-        <form onSubmit={handleRegister} className="space-y-4">
+        <form onSubmit={handleRegister} className="flex flex-col gap-4">
           <div>
             <label className="block text-xs font-medium text-foreground mb-1">
               Organization Name
@@ -213,7 +213,7 @@ export function OrganizationDashboardPageView() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       {/* Top Banner */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
         <div>
@@ -255,7 +255,7 @@ export function OrganizationDashboardPageView() {
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-card p-4 rounded-xl border border-border shadow-xs space-y-1">
+        <div className="bg-card p-4 rounded-xl border border-border shadow-xs flex flex-col gap-1">
           <div className="text-xs font-medium text-muted-foreground">Accreditation Status</div>
           <div className="text-lg font-bold text-foreground capitalize">
             {currentOrg?.status.replace('_', ' ')}
@@ -267,7 +267,7 @@ export function OrganizationDashboardPageView() {
           </p>
         </div>
 
-        <div className="bg-card p-4 rounded-xl border border-border shadow-xs space-y-1">
+        <div className="bg-card p-4 rounded-xl border border-border shadow-xs flex flex-col gap-1">
           <div className="text-xs font-medium text-muted-foreground">Institution Type</div>
           <div className="text-lg font-bold text-foreground capitalize">
             {currentOrg?.type.replace('_', ' ')}
@@ -275,7 +275,7 @@ export function OrganizationDashboardPageView() {
           <p className="text-[11px] text-muted-foreground">Registered educational provider</p>
         </div>
 
-        <div className="bg-card p-4 rounded-xl border border-border shadow-xs space-y-1">
+        <div className="bg-card p-4 rounded-xl border border-border shadow-xs flex flex-col gap-1">
           <div className="text-xs font-medium text-muted-foreground">Affiliated Roster</div>
           <div className="text-lg font-bold text-foreground">
             {currentOrg?.memberCount || 1} Member(s)
@@ -290,7 +290,7 @@ export function OrganizationDashboardPageView() {
       </div>
 
       {/* Profile & Metadata Settings Form */}
-      <div className="bg-card rounded-xl border border-border shadow-xs p-6 space-y-4">
+      <div className="bg-card rounded-xl border border-border shadow-xs p-6 flex flex-col gap-4">
         <div>
           <h2 className="text-base font-bold text-foreground">Organization Profile & Contact</h2>
           <p className="text-xs text-muted-foreground">
@@ -305,7 +305,7 @@ export function OrganizationDashboardPageView() {
           </div>
         )}
 
-        <form onSubmit={handleUpdate} className="space-y-4">
+        <form onSubmit={handleUpdate} className="flex flex-col gap-4">
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="block text-xs font-medium text-foreground mb-1">

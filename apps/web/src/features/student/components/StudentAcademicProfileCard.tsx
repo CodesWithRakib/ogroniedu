@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import {
@@ -282,8 +282,8 @@ export function StudentAcademicProfileCard({
             </Alert>
           )}
 
-          <form onSubmit={handleSave} className="space-y-4 pt-1">
-            <div className="space-y-1.5">
+          <form onSubmit={handleSave} className="flex flex-col gap-4 pt-1">
+            <div className="flex flex-col gap-1.5">
               <Label
                 htmlFor="academic-institution"
                 className="text-xs font-semibold text-foreground"
@@ -305,7 +305,7 @@ export function StudentAcademicProfileCard({
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label htmlFor="academic-level" className="text-xs font-semibold text-foreground">
                   {isBn ? 'শ্রেণী / পর্যায়' : 'Education Level'}
                 </Label>
@@ -334,7 +334,7 @@ export function StudentAcademicProfileCard({
                 </Select>
               </div>
 
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label
                   htmlFor="academic-curriculum"
                   className="text-xs font-semibold text-foreground"
@@ -367,7 +367,7 @@ export function StudentAcademicProfileCard({
               </div>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="academic-stream" className="text-xs font-semibold text-foreground">
                 {isBn ? 'শাখা / বিভাগ' : 'Stream / Group'}
               </Label>
@@ -385,7 +385,7 @@ export function StudentAcademicProfileCard({
               />
             </div>
 
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="academic-goals" className="text-xs font-semibold text-foreground">
                 {isBn ? 'পড়ার লক্ষ্য ও প্রস্তুতি' : 'Learning Goals'}
               </Label>

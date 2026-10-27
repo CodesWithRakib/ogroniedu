@@ -74,15 +74,15 @@ export function EmergencySosContent({
   const isBn = locale === 'bn';
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       {/* Header */}
-      <div className="border-b border-slate-100 pb-4 text-left">
+      <div className="border-b border-border/40 pb-4 text-left">
         <div className="flex items-center gap-3">
           <div className="p-2.5 rounded-2xl bg-rose-50 border border-rose-200 animate-pulse text-rose-600">
             <ShieldAlert className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-xl font-black text-slate-900 flex items-center gap-2">
+            <h3 className="text-xl font-black text-foreground flex items-center gap-2">
               <span>
                 {isBn ? 'জরুরি নিরাপত্তা ও এসওএস হেল্পলাইন' : 'Emergency SOS & Safety Hub'}
               </span>
@@ -97,13 +97,13 @@ export function EmergencySosContent({
       </div>
 
       {/* Hotlines Grid */}
-      <div className="space-y-3">
+      <div className="flex flex-col gap-3">
         {EMERGENCY_HOTLINES.map((item) => (
           <div
             key={item.telNumber}
             className={`p-4 rounded-2xl border ${item.color} flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-[transform,border-color] duration-150 hover:scale-[1.01]`}
           >
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
                 <span className="text-2xl font-black text-slate-900 tracking-wider font-mono tabular-nums">
                   {item.number}
@@ -135,15 +135,15 @@ export function EmergencySosContent({
       </div>
 
       {/* File Immediate Incident Report CTA */}
-      <div className="p-4 rounded-2xl bg-slate-50 border border-slate-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
-        <div className="space-y-0.5">
-          <span className="text-xs font-bold text-slate-900 flex items-center gap-1.5">
+      <div className="p-4 rounded-2xl bg-muted/50 border border-border shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div className="flex flex-col gap-0.5">
+          <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
             <AlertTriangle className="w-4 h-4 text-amber-600" />
             <span>
               {isBn ? 'প্ল্যাটফর্মে আনুষ্ঠানিক নিরাপত্তা অভিযোগ' : 'Formal Safety Incident Report'}
             </span>
           </span>
-          <p className="text-[11px] text-slate-600 font-medium">
+          <p className="text-[11px] text-muted-foreground font-medium">
             {isBn
               ? 'অনুপযুক্ত চ্যাট, হয়রানি বা অবৈধ ফি দাবির প্রমাণ সহ সরাসরি অ্যাডমিনের কাছে অভিযোগ দাখিল করুন।'
               : 'Escalate abusive conduct, child safety, or off-platform payment threats to admin triage.'}
@@ -175,7 +175,7 @@ export function EmergencySosContent({
       </div>
 
       {/* Footer & Privacy Assurance */}
-      <div className="flex items-center justify-between text-[11px] text-slate-600 pt-2 border-t border-slate-100">
+      <div className="flex items-center justify-between text-[11px] text-muted-foreground pt-2 border-t border-border/40">
         <span className="flex items-center gap-1 font-semibold">
           <Lock className="w-3.5 h-3.5 text-emerald-600" />
           <span>
@@ -189,7 +189,7 @@ export function EmergencySosContent({
           variant="outline"
           size="sm"
           onClick={onClose}
-          className="border-slate-300 text-slate-800 text-xs rounded-xl h-8 font-bold"
+          className="border-border text-foreground text-xs rounded-xl h-8 font-bold"
         >
           {isBn ? 'বন্ধ করুন' : 'Close'}
         </Button>
@@ -220,7 +220,7 @@ export function EmergencySosModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="emergency-sos-modal"
-        className="w-full max-w-xl bg-white border border-slate-200 rounded-3xl p-6 md:p-8 space-y-6 text-slate-900 max-h-[90vh] overflow-y-auto shadow-2xl text-left"
+        className="w-full max-w-xl bg-card border border-border rounded-3xl p-6 md:p-8 flex flex-col gap-6 text-foreground max-h-[90vh] overflow-y-auto shadow-2xl text-left"
       >
         <EmergencySosContent
           onClose={onClose}

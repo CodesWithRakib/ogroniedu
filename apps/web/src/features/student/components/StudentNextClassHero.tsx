@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -51,7 +51,7 @@ export function StudentNextClassHero({
         <div className="absolute bottom-0 left-1/3 -mb-16 w-48 h-48 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none" />
 
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
-          <div className="space-y-3 max-w-xl">
+          <div className="flex flex-col gap-3 max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-indigo-500/20 border border-indigo-400/30 text-indigo-200 text-xs font-semibold">
               <Flame className="w-3.5 h-3.5 text-amber-400 animate-bounce" />
               <span>
@@ -106,7 +106,7 @@ export function StudentNextClassHero({
 
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         {/* Left side: Class metadata & tutor */}
-        <div className="space-y-3.5 max-w-2xl">
+        <div className="flex flex-col gap-3.5 max-w-2xl">
           <div className="flex flex-wrap items-center gap-2.5">
             {isLive ? (
               <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-red-500/25 border border-red-500/40 text-red-300 text-xs font-bold animate-pulse">

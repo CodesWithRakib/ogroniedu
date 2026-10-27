@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { Button, Input } from '@/components/ui';
@@ -85,9 +85,9 @@ export function TaxonomyModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={onSave} className="space-y-4 pt-2">
+        <form onSubmit={onSave} className="flex flex-col gap-4 pt-2">
           {modalMode === 'create' && (
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="form-code" className="text-xs font-semibold">
                 {isBn ? 'ইউনিক কোড (e.g. lvl-class-9, stream-science)' : 'Unique Code'}
               </Label>
@@ -101,7 +101,7 @@ export function TaxonomyModal({
             </div>
           )}
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="form-name-en" className="text-xs font-semibold">
               {isBn ? 'ইংরেজি নাম' : 'Name (English)'}
             </Label>
@@ -114,7 +114,7 @@ export function TaxonomyModal({
             />
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="form-name-bn" className="text-xs font-semibold">
               {isBn ? 'বাংলা নাম' : 'Name (Bangla)'}
             </Label>
@@ -128,7 +128,7 @@ export function TaxonomyModal({
           </div>
 
           {activeTab === 'curricula' && (
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="form-extra" className="text-xs font-semibold">
                 {isBn ? 'বোর্ড / পরীক্ষা নিয়ন্ত্রক সংস্থা' : 'Board / Examination Authority'}
               </Label>
@@ -142,7 +142,7 @@ export function TaxonomyModal({
           )}
 
           {activeTab === 'streams' && (
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="form-extra" className="text-xs font-semibold">
                 {isBn ? 'বিবরণ / লক্ষ্য' : 'Description'}
               </Label>
@@ -157,7 +157,7 @@ export function TaxonomyModal({
 
           {activeTab === 'institutions' && (
             <>
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label htmlFor="form-extra" className="text-xs font-semibold">
                   {isBn ? 'প্রতিষ্ঠানের ধরন' : 'Institution Type'}
                 </Label>
@@ -183,7 +183,7 @@ export function TaxonomyModal({
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label htmlFor="form-extra-2" className="text-xs font-semibold">
                   {isBn ? 'জেলা (District)' : 'District'}
                 </Label>
@@ -198,7 +198,7 @@ export function TaxonomyModal({
           )}
 
           {activeTab === 'subjects' && (
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label htmlFor="form-extra" className="text-xs font-semibold">
                 {isBn ? 'ক্যাটাগরি / বিভাগ' : 'Category / Discipline'}
               </Label>

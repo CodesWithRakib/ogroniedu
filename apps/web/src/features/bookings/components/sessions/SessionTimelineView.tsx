@@ -40,7 +40,7 @@ export function SessionTimelineView({
   if (sessions.length === 0) return null;
 
   return (
-    <div className="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-3 before:top-3 before:bottom-3 before:w-0.5 before:bg-border/80">
+    <div className="relative pl-6 sm:pl-8 flex flex-col gap-6 before:absolute before:left-3 before:top-3 before:bottom-3 before:w-0.5 before:bg-border/80">
       {sessions.map((session, idx) => {
         const formattedDate = formatWeekdayDate(session.startsAt, locale);
         const formattedTime = formatTime(session.startsAt, locale);
@@ -71,7 +71,7 @@ export function SessionTimelineView({
 
             {/* Timeline Session Row Card */}
             <div className="rounded-2xl sm:rounded-3xl border border-border/80 bg-card/90 backdrop-blur-sm p-4 sm:p-6 hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4">
-              <div className="space-y-2 min-w-0 flex-1">
+              <div className="flex flex-col gap-2 min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-soft text-primary font-bold text-xs border border-primary/20">
                     <Calendar className="w-3 h-3" />

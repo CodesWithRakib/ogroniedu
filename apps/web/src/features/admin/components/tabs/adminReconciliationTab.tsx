@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -40,8 +40,8 @@ export function AdminReconciliationTab({
   }
 
   return (
-    <div className="space-y-6" data-testid="reconciliation-tab-content">
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs">
+    <div className="flex flex-col gap-6" data-testid="reconciliation-tab-content">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs">
         <div className="flex items-center justify-between gap-3">
           <div>
             <h3 className="text-lg font-bold text-foreground">{t('reconciliationTitle')}</h3>

@@ -166,7 +166,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 flex flex-col space-y-5 text-foreground">
+    <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-5 text-foreground">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
@@ -268,7 +268,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
               className="p-3.5 rounded-2xl bg-surface-muted border border-border hover:border-info/40 transition-all flex flex-col justify-between group"
               data-testid={`formula-card-${item.id}`}
             >
-              <div className="space-y-1">
+              <div className="flex flex-col gap-1">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold text-foreground group-hover:text-info-soft-foreground transition-colors">
                     {locale === 'bn' ? item.titleBn : item.titleEn}

@@ -68,7 +68,7 @@ export function StudyRoomStudentCockpit({
 
       <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         {/* Left Side: Subject & Learning Momentum */}
-        <div className="space-y-3 max-w-xl">
+        <div className="flex flex-col gap-3 max-w-xl">
           <div className="flex flex-wrap items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-indigo-500/25 border border-indigo-400/40 text-indigo-200 text-xs font-bold">
               <BookOpen className="w-3.5 h-3.5 text-indigo-300" />

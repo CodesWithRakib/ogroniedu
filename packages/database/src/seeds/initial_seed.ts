@@ -332,7 +332,7 @@ export async function runInitialSeed(
       ['in_person', 'online', 'hybrid'],
       120000, // 1200 BDT in poisha (1200 * 100)
       'BDT',
-      '/tutors/tutor-rashed.jpg',
+      '/images/tutors/tutor-rashed.jpg',
       25,
       'approved',
       'published',

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -59,7 +59,7 @@ export function AdminDisputesPage({
           <LoadingSpinner />
         </div>
       ) : (
-        <div className="space-y-6 py-6" data-testid="admin-disputes-page">
+        <div className="flex flex-col gap-6 py-6" data-testid="admin-disputes-page">
           {actions.actionError && (
             <Alert variant="destructive" data-testid="admin-action-error">
               <AlertDescription role="alert">{actions.actionError}</AlertDescription>
@@ -69,7 +69,7 @@ export function AdminDisputesPage({
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn'
                     ? 'আর্থিক রিকনসিলিয়েশন ও বিরোধ নিষ্পত্তি'
@@ -188,7 +188,7 @@ export function AdminDisputesPage({
           </div>
 
           {/* Content Card based on subSection */}
-          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
             {subSection === 'disputes' && <AdminDisputesTab locale={locale} />}
             {subSection === 'safety' && <AdminSafetyTab locale={locale} />}
             {subSection === 'reconciliation' && (

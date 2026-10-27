@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -88,7 +88,7 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6" data-testid="admin-users-admins-page">
+      <div className="flex flex-col gap-6 py-6" data-testid="admin-users-admins-page">
         {/* Back Link to Hub (Matching Image 2: "← Back to Users & Staff") */}
         <div>
           <Link

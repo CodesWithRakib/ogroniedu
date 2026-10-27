@@ -42,7 +42,7 @@ export function TutorStudioDeskHeader({
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         {/* Title and context */}
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary-soft border border-primary/25 text-primary text-xs font-bold">
             <GraduationCap className="w-3.5 h-3.5" />
             <span>{isBn ? 'টিচিং স্টুডিও ও ক্লাসরুম' : 'Teaching Studio Desk'}</span>

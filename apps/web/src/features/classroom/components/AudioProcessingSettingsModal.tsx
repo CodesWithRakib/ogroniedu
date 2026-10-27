@@ -65,21 +65,21 @@ export function AudioProcessingSettingsModal({
 
   return (
     <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-xs animate-in fade-in duration-150"
       data-testid="audio-processing-settings-modal"
     >
-      <div className="w-full max-w-lg bg-white border-2 border-slate-200 rounded-3xl shadow-2xl text-slate-900 overflow-hidden animate-in zoom-in-95 duration-150">
+      <div className="w-full max-w-lg bg-card border-2 border-border rounded-3xl shadow-2xl text-card-foreground overflow-hidden animate-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-200 bg-slate-50">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border bg-surface-muted">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-blue-50 border border-blue-200">
-              <Sliders className="w-5 h-5 text-blue-600" />
+            <div className="p-2 rounded-xl bg-primary-soft border border-primary/20">
+              <Sliders className="w-5 h-5 text-primary" />
             </div>
             <div>
-              <h3 className="text-base font-black text-slate-900">
+              <h3 className="text-base font-black text-foreground">
                 {isBn ? 'অডিও ও মিডিয়া সেটিংস' : 'Audio & Media Settings'}
               </h3>
-              <p className="text-xs text-slate-500 font-bold">
+              <p className="text-xs text-muted-foreground font-bold">
                 {isBn ? 'নয়েজ সাপ্রেশন ও ডিভাইস কনফিগারেশন' : 'Noise suppression & hardware setup'}
               </p>
             </div>
@@ -87,7 +87,7 @@ export function AudioProcessingSettingsModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors"
+            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-muted transition-colors"
             title={isBn ? 'বন্ধ করুন' : 'Close'}
           >
             <X className="w-5 h-5" />
@@ -95,21 +95,21 @@ export function AudioProcessingSettingsModal({
         </div>
 
         {/* Content */}
-        <div className="p-5 space-y-5">
+        <div className="p-5 flex flex-col gap-5">
           {/* Audio Filters Section */}
-          <div className="space-y-3">
-            <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-              <Sparkles className="w-4 h-4 text-emerald-600" />
+          <div className="flex flex-col gap-3">
+            <h4 className="text-xs font-black text-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <Sparkles className="w-4 h-4 text-success" />
               {isBn ? 'উন্নত অডিও ফিল্টারিং' : 'Advanced Audio Filters'}
             </h4>
 
             {/* Noise Suppression */}
-            <label className="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-2xl cursor-pointer transition-all">
+            <label className="flex items-center justify-between p-3.5 bg-surface-muted border border-border hover:border-border-strong rounded-2xl cursor-pointer transition-all">
               <div className="pr-3">
-                <p className="text-xs sm:text-sm font-black text-slate-900">
+                <p className="text-xs sm:text-sm font-black text-foreground">
                   {isBn ? 'নয়েজ সাপ্রেশন (Noise Suppression)' : 'Background Noise Suppression'}
                 </p>
-                <p className="text-xs text-slate-600 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {isBn
                     ? 'ফ্যানের শব্দ, কিবোর্ড টাইপিং ও আশপাশের আওয়াজ ফিল্টার করে'
                     : 'Removes ceiling fan hum, traffic and typing noises'}
@@ -119,17 +119,17 @@ export function AudioProcessingSettingsModal({
                 type="checkbox"
                 checked={noiseSuppression}
                 onChange={(e) => onToggleNoiseSuppression(e.target.checked)}
-                className="w-5 h-5 rounded-md text-emerald-600 border-2 border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                className="w-5 h-5 rounded-md text-primary border-2 border-border focus:ring-ring cursor-pointer"
               />
             </label>
 
             {/* Echo Cancellation */}
-            <label className="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-2xl cursor-pointer transition-all">
+            <label className="flex items-center justify-between p-3.5 bg-surface-muted border border-border hover:border-border-strong rounded-2xl cursor-pointer transition-all">
               <div className="pr-3">
-                <p className="text-xs sm:text-sm font-black text-slate-900">
+                <p className="text-xs sm:text-sm font-black text-foreground">
                   {isBn ? 'ইকো ক্যান্সেলেশন (Echo Cancellation)' : 'Acoustic Echo Cancellation'}
                 </p>
-                <p className="text-xs text-slate-600 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {isBn
                     ? 'স্পিকার থেকে মাইক্রোফোনে ফিরে আসা প্রতিধ্বনি রোধ করে'
                     : 'Prevents feedback loop when speaking without headphones'}
@@ -139,17 +139,17 @@ export function AudioProcessingSettingsModal({
                 type="checkbox"
                 checked={echoCancellation}
                 onChange={(e) => onToggleEchoCancellation(e.target.checked)}
-                className="w-5 h-5 rounded-md text-emerald-600 border-2 border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                className="w-5 h-5 rounded-md text-primary border-2 border-border focus:ring-ring cursor-pointer"
               />
             </label>
 
             {/* Sound Effects / Chimes */}
-            <label className="flex items-center justify-between p-3.5 bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-2xl cursor-pointer transition-all">
+            <label className="flex items-center justify-between p-3.5 bg-surface-muted border border-border hover:border-border-strong rounded-2xl cursor-pointer transition-all">
               <div className="pr-3">
-                <p className="text-xs sm:text-sm font-black text-slate-900">
+                <p className="text-xs sm:text-sm font-black text-foreground">
                   {isBn ? 'ইন্টারঅ্যাক্টিভ সাউন্ড চাইম' : 'Notification Sound Effects'}
                 </p>
-                <p className="text-xs text-slate-600 mt-0.5">
+                <p className="text-xs text-muted-foreground mt-0.5">
                   {isBn
                     ? 'হাত তোলা ও নতুন চ্যাট মেসেজের জন্য মৃদু নোটিফিকেশন সাউন্ড'
                     : 'Plays gentle chime on hand raise and chat messages'}
@@ -159,14 +159,14 @@ export function AudioProcessingSettingsModal({
                 type="checkbox"
                 checked={soundEffectsEnabled}
                 onChange={(e) => handleSoundToggle(e.target.checked)}
-                className="w-5 h-5 rounded-md text-emerald-600 border-2 border-slate-300 focus:ring-emerald-500 cursor-pointer"
+                className="w-5 h-5 rounded-md text-primary border-2 border-border focus:ring-ring cursor-pointer"
               />
             </label>
           </div>
 
           {/* Hardware Device Selection (if devices provided) */}
           {devices && (
-            <div className="space-y-3 pt-2 border-t border-slate-200">
+            <div className="flex flex-col gap-3 pt-2 border-t border-border">
               <h4 className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
                 <Mic className="w-4 h-4 text-blue-600" />
                 {isBn ? 'ইনপুট ডিভাইস নির্বাচন' : 'Hardware Selection'}

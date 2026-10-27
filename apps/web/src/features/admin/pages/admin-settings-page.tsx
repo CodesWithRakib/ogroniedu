@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { Sliders, ToggleLeft } from 'lucide-react';
@@ -30,7 +30,7 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
           <LoadingSpinner />
         </div>
       ) : (
-        <div className="space-y-6 py-6" data-testid="admin-settings-page">
+        <div className="flex flex-col gap-6 py-6" data-testid="admin-settings-page">
           {actions.actionError && (
             <Alert variant="destructive" data-testid="admin-action-error">
               <AlertDescription role="alert">{actions.actionError}</AlertDescription>
@@ -40,7 +40,7 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn'
                     ? 'প্ল্যাটফর্ম সেটিংস ও ফিচার ফ্ল্যাগ'
@@ -59,7 +59,7 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Feature Flags Section */}
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             <h2 className="text-base font-bold text-foreground flex items-center gap-2">
               <ToggleLeft className="w-5 h-5 text-success-soft-foreground" />
               <span>{locale === 'bn' ? 'ক্যানারি ফিচার ফ্ল্যাগ' : 'Canary Feature Flags'}</span>
@@ -72,7 +72,7 @@ export function AdminSettingsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* System Reference Settings Section */}
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             <h2 className="text-base font-bold text-foreground flex items-center gap-2">
               <Sliders className="w-5 h-5 text-info-soft-foreground" />
               <span>

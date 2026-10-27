@@ -158,7 +158,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
   }
 
   return (
-    <div className="w-full space-y-3">
+    <div className="w-full flex flex-col gap-3">
       {/* Search Header Row: Curriculum Quick Chips + Mode Switcher */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
         {/* Curriculum Horizontal Filter Chips */}

@@ -54,9 +54,9 @@ export function SafetyPage({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
+    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col gap-16">
       {/* Header Banner */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
+      <div className="text-center max-w-3xl mx-auto flex flex-col gap-4">
         <Badge
           variant="secondary"
           className="text-primary border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full"
@@ -91,7 +91,7 @@ export function SafetyPage({ locale }: { locale: Locale }) {
                   {pillar.badge}
                 </Badge>
               </CardHeader>
-              <CardContent className="space-y-2 p-6 pt-2">
+              <CardContent className="flex flex-col gap-2 p-6 pt-2">
                 <CardTitle className="text-lg font-bold font-bengali text-foreground">
                   {pillar.title}
                 </CardTitle>
@@ -106,7 +106,7 @@ export function SafetyPage({ locale }: { locale: Locale }) {
 
       {/* Emergency Reporting Guidance */}
       <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
-        <div className="space-y-2 text-center sm:text-left">
+        <div className="flex flex-col gap-2 text-center sm:text-left">
           <div className="flex items-center justify-center sm:justify-start gap-2 text-destructive font-bold text-sm">
             <ShieldAlert className="h-5 w-5" aria-hidden="true" />
             <span>

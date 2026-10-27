@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -103,7 +103,7 @@ export function OrganizationMembersPageView() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
         <div>
@@ -217,7 +217,7 @@ export function OrganizationMembersPageView() {
       {/* Invite Modal */}
       {showInviteModal && (
         <Dialog open={showInviteModal} onOpenChange={(open) => !open && setShowInviteModal(false)}>
-          <DialogContent className="bg-white w-full max-w-md rounded-3xl border border-slate-200 shadow-2xl p-6 space-y-4 text-left">
+          <DialogContent className="bg-card w-full max-w-md rounded-3xl border border-border shadow-2xl p-6 flex flex-col gap-4 text-left">
             <DialogHeader className="border-b border-slate-100 pb-3 text-left">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 flex items-center justify-center shrink-0">
@@ -242,7 +242,7 @@ export function OrganizationMembersPageView() {
               </div>
             )}
 
-            <form onSubmit={handleInviteSubmit} className="space-y-4">
+            <form onSubmit={handleInviteSubmit} className="flex flex-col gap-4">
               <div>
                 <label className="block text-xs font-bold text-slate-800 mb-1">
                   Invitee Email Address

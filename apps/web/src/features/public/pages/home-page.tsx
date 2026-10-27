@@ -149,7 +149,7 @@ export function HomePage({ locale }: { locale: Locale }) {
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 lg:gap-10 items-center">
             {/* Left Column: Trust Pill, Bengali Headline, Subtitle & Search */}
-            <div className="lg:col-span-7 space-y-4 sm:space-y-5 text-left z-10">
+            <div className="lg:col-span-7 flex flex-col gap-4 sm:gap-5 text-left z-10">
               {/* Trust Pill Badge */}
               <div className="inline-flex items-center gap-2 rounded-full border border-primary/20 bg-card/90 py-1.5 px-3.5 shadow-xs max-w-full overflow-hidden text-xs backdrop-blur-md">
                 <div className="flex items-center gap-1.5 font-bold text-foreground shrink-0">
@@ -243,7 +243,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               </div>
               <div className="min-w-0 flex-1">
                 {statsLoading ? (
-                  <div className="space-y-1.5" aria-hidden="true">
+                  <div className="flex flex-col gap-1.5" aria-hidden="true">
                     <Skeleton className="h-7 w-20 rounded-lg" />
                     <Skeleton className="h-3.5 w-16 rounded-md" />
                   </div>
@@ -267,7 +267,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               </div>
               <div className="min-w-0 flex-1">
                 {statsLoading ? (
-                  <div className="space-y-1.5" aria-hidden="true">
+                  <div className="flex flex-col gap-1.5" aria-hidden="true">
                     <Skeleton className="h-7 w-20 rounded-lg" />
                     <Skeleton className="h-3.5 w-16 rounded-md" />
                   </div>
@@ -291,7 +291,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               </div>
               <div className="min-w-0 flex-1">
                 {statsLoading ? (
-                  <div className="space-y-1.5" aria-hidden="true">
+                  <div className="flex flex-col gap-1.5" aria-hidden="true">
                     <Skeleton className="h-7 w-20 rounded-lg" />
                     <Skeleton className="h-3.5 w-16 rounded-md" />
                   </div>
@@ -315,7 +315,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               </div>
               <div className="min-w-0 flex-1">
                 {statsLoading ? (
-                  <div className="space-y-1.5" aria-hidden="true">
+                  <div className="flex flex-col gap-1.5" aria-hidden="true">
                     <Skeleton className="h-7 w-20 rounded-lg" />
                     <Skeleton className="h-3.5 w-16 rounded-md" />
                   </div>
@@ -341,7 +341,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       <section className="py-14 sm:py-20 relative">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
-            <div className="text-left space-y-2">
+            <div className="text-left flex flex-col gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-primary">
                 {isBn ? 'জনপ্রিয় বিষয় ও কারিকুলাম' : 'Popular Subjects & Curriculums'}
               </span>
@@ -397,7 +397,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       <section className="py-14 sm:py-20 border-t border-border bg-surface/30 relative">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
-            <div className="text-left space-y-2">
+            <div className="text-left flex flex-col gap-2">
               <span className="text-xs font-bold uppercase tracking-wider text-primary">
                 {isBn ? 'শীর্ষ যাচাইকৃত শিক্ষকবৃন্দ' : 'Featured Verified Educators'}
               </span>
@@ -426,16 +426,16 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <div
                   key={idx}
                   data-testid="tutor-skeleton-card"
-                  className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-4"
+                  className="rounded-2xl border border-border bg-card p-5 shadow-xs flex flex-col gap-4"
                 >
                   <div className="flex items-center gap-3">
                     <Skeleton className="h-12 w-12 rounded-xl shrink-0" />
-                    <div className="space-y-2 flex-1">
+                    <div className="flex flex-col gap-2 flex-1">
                       <Skeleton className="h-4 w-3/4 rounded" />
                       <Skeleton className="h-3 w-1/2 rounded" />
                     </div>
                   </div>
-                  <div className="space-y-2 pt-2">
+                  <div className="flex flex-col gap-2 pt-2">
                     <Skeleton className="h-3 w-full rounded" />
                     <Skeleton className="h-3 w-4/5 rounded" />
                   </div>
@@ -577,7 +577,7 @@ export function HomePage({ locale }: { locale: Locale }) {
        * ==================================================================== */}
       <section className="py-14 sm:py-20 border-t border-border bg-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-left mb-12 space-y-2">
+          <div className="text-left mb-12 flex flex-col gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-primary">
               {isBn ? 'অগ্রণী এডুর বিশেষত্ব' : 'Why Choose OgroniEdu'}
             </span>
@@ -590,7 +590,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 flex flex-col gap-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-primary border border-blue-100">
                 <Award className="h-6 w-6" aria-hidden="true" />
               </div>
@@ -605,7 +605,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 2 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 flex flex-col gap-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
                 <ShieldCheck className="h-6 w-6" aria-hidden="true" />
               </div>
@@ -620,7 +620,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 3 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 flex flex-col gap-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100">
                 <TrendingUp className="h-6 w-6" aria-hidden="true" />
               </div>
@@ -635,7 +635,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 4 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 space-y-3.5">
+            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 flex flex-col gap-3.5">
               <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
                 <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
               </div>
@@ -657,7 +657,7 @@ export function HomePage({ locale }: { locale: Locale }) {
        * ==================================================================== */}
       <section className="py-14 sm:py-20 border-t border-border bg-background">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="text-center max-w-2xl mx-auto mb-12 space-y-2">
+          <div className="text-center max-w-2xl mx-auto mb-12 flex flex-col gap-2">
             <span className="text-xs font-bold uppercase tracking-wider text-primary">
               {isBn ? 'সহজ ৩টি ধাপ' : 'Simple 3-Step Journey'}
             </span>
@@ -668,7 +668,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {/* Step 1 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs flex flex-col gap-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
                   01
@@ -688,7 +688,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs flex flex-col gap-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
                   02
@@ -708,7 +708,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs space-y-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
+            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs flex flex-col gap-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
                   03
@@ -741,7 +741,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
 
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
-              <div className="space-y-3.5 max-w-xl text-left">
+              <div className="flex flex-col gap-3.5 max-w-xl text-left">
                 <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-3.5 py-1 text-xs font-semibold text-blue-200 backdrop-blur-md">
                   <Sparkles className="h-3.5 w-3.5 text-blue-400" aria-hidden="true" />
                   <span>{isBn ? 'অগ্রণী এডু প্ল্যাটফর্ম' : 'OgroniEdu Platform'}</span>

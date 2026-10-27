@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import {
@@ -235,7 +235,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
   const criticalCount = reports.filter((r) => r.escalationLevel === 'urgent_child_safety').length;
 
   return (
-    <div className="space-y-4" data-testid="admin-safety-tab-content">
+    <div className="flex flex-col gap-4" data-testid="admin-safety-tab-content">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-1">
         <div>
           <div className="flex items-center gap-2">
@@ -278,7 +278,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
             {reports.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
-                  <div className="flex flex-col items-center justify-center space-y-1">
+                  <div className="flex flex-col items-center justify-center flex flex-col gap-1">
                     <ShieldCheck className="w-8 h-8 text-success/60" />
                     <span>{isBn ? 'কোনো নিরাপত্তা অভিযোগ নেই' : 'No active safety reports'}</span>
                   </div>
@@ -295,7 +295,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                     }
                   >
                     <TableCell className="px-4 py-3 font-medium">
-                      <div className="space-y-0.5">
+                      <div className="flex flex-col gap-0.5">
                         <span className="font-bold text-foreground">
                           {r.reportedUserId
                             ? `Tutor #${r.reportedUserId.slice(0, 8)}`
@@ -384,7 +384,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
       {showHoldModal && activeReport && (
         <Dialog open={showHoldModal} onOpenChange={() => setShowHoldModal(false)}>
           <DialogContent className="sm:max-w-md p-6 bg-card border-border rounded-2xl shadow-xl">
-            <DialogHeader className="space-y-1.5">
+            <DialogHeader className="flex flex-col gap-1.5">
               <div className="flex items-center gap-2 text-destructive">
                 <ShieldAlert className="w-5 h-5" />
                 <DialogTitle className="text-base font-bold text-foreground">
@@ -400,8 +400,8 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={handleApplyHold} className="space-y-4 pt-2">
-              <div className="space-y-1.5">
+            <form onSubmit={handleApplyHold} className="flex flex-col gap-4 pt-2">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-foreground">
                   {isBn ? 'স্থগিতাদেশের সুনির্দিষ্ট কারণ' : 'Specific Justification & Reason'}
                 </label>
@@ -455,7 +455,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
       {showInvestigateModal && activeReport && (
         <Dialog open={showInvestigateModal} onOpenChange={() => setShowInvestigateModal(false)}>
           <DialogContent className="sm:max-w-2xl p-6 bg-card border-border rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
-            <DialogHeader className="space-y-1">
+            <DialogHeader className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">
                   <ShieldAlert className="w-5 h-5 text-primary" />
@@ -476,7 +476,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
               </DialogDescription>
             </DialogHeader>
 
-            <div className="space-y-6 pt-3 text-xs">
+            <div className="flex flex-col gap-6 pt-3 text-xs">
               {/* Summary Cards */}
               <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-muted/30 p-3 rounded-xl border border-border">
                 <div>
@@ -520,7 +520,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
               </div>
 
               {/* Incident Narrative */}
-              <div className="space-y-1">
+              <div className="flex flex-col gap-1">
                 <span className="font-semibold text-foreground">
                   {isBn ? 'অভিযোগের বিবরণ:' : 'Incident Narrative:'}
                 </span>
@@ -532,7 +532,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
               {/* Investigator Assignment */}
               <form
                 onSubmit={handleAssign}
-                className="space-y-2 p-3 bg-card border border-border rounded-xl"
+                className="flex flex-col gap-2 p-3 bg-card border border-border rounded-xl"
               >
                 <div className="flex items-center gap-2 font-semibold text-foreground">
                   <UserPlus className="w-4 h-4 text-primary" />
@@ -565,7 +565,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
               {/* State Transition */}
               <form
                 onSubmit={handleUpdateStatus}
-                className="space-y-2 p-3 bg-card border border-border rounded-xl"
+                className="flex flex-col gap-2 p-3 bg-card border border-border rounded-xl"
               >
                 <div className="flex items-center gap-2 font-semibold text-foreground">
                   <Clock className="w-4 h-4 text-warning" />
@@ -610,7 +610,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
               {/* Messages & Internal Investigator Notes */}
               <form
                 onSubmit={handleSendMessage}
-                className="space-y-2 p-3 bg-card border border-border rounded-xl"
+                className="flex flex-col gap-2 p-3 bg-card border border-border rounded-xl"
               >
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2 font-semibold text-foreground">
@@ -662,7 +662,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
               {/* Resolution Section */}
               <form
                 onSubmit={handleResolve}
-                className="space-y-2 p-3 bg-success/5 border border-success/30 rounded-xl"
+                className="flex flex-col gap-2 p-3 bg-success/5 border border-success/30 rounded-xl"
               >
                 <div className="flex items-center gap-2 font-semibold text-success">
                   <CheckCircle2 className="w-4 h-4" />

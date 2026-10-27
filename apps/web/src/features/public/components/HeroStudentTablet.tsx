@@ -70,7 +70,7 @@ export function HeroStudentTablet() {
           {/* Main Layout: Left Sidebar + Content Area */}
           <div className="grid grid-cols-12 min-h-[180px]">
             {/* Tablet Sidebar */}
-            <div className="col-span-3 border-r border-primary/40 bg-background/95 p-1.5 space-y-0.5">
+            <div className="col-span-3 border-r border-primary/40 bg-background/95 p-1.5 flex flex-col gap-0.5">
               <div className="flex items-center gap-1 rounded-md bg-brand-soft text-primary px-1.5 py-0.5 font-bold border border-border shadow-xs">
                 <LayoutDashboard className="h-2.5 w-2.5 shrink-0" />
                 <span className="text-[8.5px] truncate">Dashboard</span>
@@ -98,11 +98,11 @@ export function HeroStudentTablet() {
             </div>
 
             {/* Tablet Main Screen Content */}
-            <div className="col-span-9 p-2 space-y-1.5 bg-card">
+            <div className="col-span-9 p-2 flex flex-col gap-1.5 bg-card">
               {/* Top Row: Greeting & Next Session */}
               <div className="grid grid-cols-12 gap-1.5">
                 {/* Greeting & 2 Stat Cards */}
-                <div className="col-span-7 space-y-1">
+                <div className="col-span-7 flex flex-col gap-1">
                   <div>
                     <h4 className="font-extrabold text-foreground text-[11px] leading-tight">
                       Good morning, Rahim!
@@ -114,7 +114,7 @@ export function HeroStudentTablet() {
 
                   <div className="grid grid-cols-2 gap-1">
                     {/* Total Sessions */}
-                    <div className="rounded-md border border-primary/40 bg-card p-1 space-y-0.5">
+                    <div className="rounded-md border border-primary/40 bg-card p-1 flex flex-col gap-0.5">
                       <div className="flex items-center gap-1 text-[7.5px] text-primary-soft-foreground">
                         <CalendarDays className="h-2 w-2" />
                         <span className="truncate">Sessions</span>
@@ -128,7 +128,7 @@ export function HeroStudentTablet() {
                     </div>
 
                     {/* Assignment Completed */}
-                    <div className="rounded-md border border-primary/40 bg-card p-1 space-y-0.5">
+                    <div className="rounded-md border border-primary/40 bg-card p-1 flex flex-col gap-0.5">
                       <div className="flex items-center gap-1 text-[7.5px] text-primary-soft-foreground">
                         <FileCheck className="h-2 w-2" />
                         <span className="truncate">Assignment</span>
@@ -164,7 +164,7 @@ export function HeroStudentTablet() {
               {/* Lower Section: Subject Performance Bar Chart + Recent Activity */}
               <div className="grid grid-cols-12 gap-1.5">
                 {/* Subject Performance Chart */}
-                <div className="col-span-7 rounded-lg border border-primary/40 bg-card p-1.5 space-y-1">
+                <div className="col-span-7 rounded-lg border border-primary/40 bg-card p-1.5 flex flex-col gap-1">
                   <div className="flex items-center justify-between text-[8px]">
                     <span className="font-bold text-foreground">Subject Performance</span>
                     <div className="flex items-center gap-1.5 text-[7px] text-muted-foreground">
@@ -210,7 +210,7 @@ export function HeroStudentTablet() {
                 </div>
 
                 {/* Recent Activity List */}
-                <div className="col-span-5 rounded-lg border border-primary/40 bg-card p-1.5 space-y-0.5">
+                <div className="col-span-5 rounded-lg border border-primary/40 bg-card p-1.5 flex flex-col gap-0.5">
                   <div className="flex items-center justify-between text-[8px]">
                     <span className="font-bold text-foreground">Recent Activity</span>
                     <span className="text-[7px] text-primary-soft-foreground hover:underline cursor-pointer">
@@ -218,7 +218,7 @@ export function HeroStudentTablet() {
                     </span>
                   </div>
 
-                  <div className="space-y-1 text-[7.5px]">
+                  <div className="flex flex-col gap-1 text-[7.5px]">
                     <div className="flex items-start gap-1">
                       <CheckCircle2 className="h-2 w-2 text-primary shrink-0 mt-0.5" />
                       <div className="leading-tight">

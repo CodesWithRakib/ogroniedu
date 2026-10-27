@@ -86,33 +86,33 @@ export function TutorReplacementModalForm({
   };
 
   return (
-    <div data-testid="tutor-replacement-modal-content" className="space-y-4">
+    <div data-testid="tutor-replacement-modal-content" className="flex flex-col gap-4">
       {isSuccess ? (
-        <div className="py-10 text-center space-y-4">
+        <div className="py-10 text-center flex flex-col gap-4">
           <CheckCircle2 className="w-16 h-16 text-emerald-600 mx-auto animate-bounce" />
-          <h3 className="text-xl font-black text-slate-900">
+          <h3 className="text-xl font-black text-foreground">
             {isBn ? 'রিপ্লেসমেন্ট দাবি সফলভাবে গৃহীত হয়েছে' : 'Guarantee Request Active'}
           </h3>
-          <p className="text-sm text-slate-600 max-w-md mx-auto">
+          <p className="text-sm text-muted-foreground max-w-md mx-auto">
             {isBn
               ? '৪৮ ঘণ্টার কাউন্টডাউন শুরু হয়েছে। আমাদের ম্যাচিং টিম আপনার সাথে যোগাযোগ করবে।'
               : 'The 48-hour guarantee clock has started. Our team is curating matching replacement tutors.'}
           </p>
         </div>
       ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <div className="border-b border-slate-100 pb-4 text-left">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+          <div className="border-b border-border/40 pb-4 text-left">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-2xl bg-blue-50 border border-blue-200/80 text-blue-600 flex items-center justify-center shrink-0">
+              <div className="h-10 w-10 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
                 <RefreshCw className="w-5 h-5" />
               </div>
               <div>
-                <h3 className="text-lg font-black text-slate-900">
+                <h3 className="text-lg font-black text-foreground">
                   {isBn
                     ? '৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি'
                     : '48-Hour Tutor Replacement Guarantee'}
                 </h3>
-                <p className="text-xs font-semibold text-blue-700 mt-0.5">
+                <p className="text-xs font-semibold text-primary mt-0.5">
                   {tutorName && subjectName
                     ? isBn
                       ? `${tutorName} (${subjectName})-এর বিকল্প শিক্ষক দাবি করুন`
@@ -126,23 +126,23 @@ export function TutorReplacementModalForm({
           </div>
 
           {/* SLA Guarantee Banner */}
-          <Alert className="flex items-center justify-between p-3 rounded-xl bg-blue-50 border border-blue-200 text-xs text-slate-900">
+          <Alert className="flex items-center justify-between p-3 rounded-xl bg-primary/5 border border-primary/20 text-xs text-foreground">
             <div className="flex items-center gap-2">
-              <ShieldCheck className="w-4 h-4 text-blue-700 shrink-0" />
-              <AlertDescription className="text-xs text-slate-800 font-medium">
+              <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
+              <AlertDescription className="text-xs text-foreground font-medium">
                 {isBn
                   ? '১০০% অভিভাবক সুরক্ষা: ৪৮ ঘণ্টার মধ্যে নতুন যাচাইকৃত শিক্ষক অথবা সম্পূর্ণ ফান্ড ফেরত।'
                   : '100% Trust Guarantee: New verified tutor within 48h or full escrow refund.'}
               </AlertDescription>
             </div>
-            <div className="flex items-center gap-1 font-bold text-blue-700 shrink-0">
+            <div className="flex items-center gap-1 font-bold text-primary shrink-0">
               <Clock className="w-3.5 h-3.5" />
               <span>৪৮ ঘণ্টা</span>
             </div>
           </Alert>
 
           {/* Reason Code Select */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="replacement-reason-select"
               className="text-xs font-semibold text-foreground"
@@ -183,7 +183,7 @@ export function TutorReplacementModalForm({
           </div>
 
           {/* Explanation Textarea */}
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label
               htmlFor="replacement-explanation-input"
               className="text-xs font-semibold text-foreground"
@@ -256,7 +256,7 @@ export function TutorReplacementModal({ isOpen, onClose, ...rest }: TutorReplace
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="tutor-replacement-modal"
-        className="w-full max-w-xl rounded-3xl border border-blue-200 bg-white p-6 text-slate-900 shadow-2xl max-h-[90vh] overflow-y-auto text-left"
+        className="w-full max-w-xl rounded-3xl border border-border bg-card p-6 text-foreground shadow-2xl max-h-[90vh] overflow-y-auto text-left"
       >
         <TutorReplacementModalForm onClose={onClose} {...rest} />
       </DialogContent>

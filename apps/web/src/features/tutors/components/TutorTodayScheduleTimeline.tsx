@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -89,7 +89,7 @@ export function TutorTodayScheduleTimeline({
             </Link>
           </div>
         ) : (
-          <div className="space-y-3">
+          <div className="flex flex-col gap-3">
             {sessions.slice(0, 3).map((session, idx) => {
               const isLive = session.status === 'in_progress';
               const isCompleted = session.status === 'completed';

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { BookOpen, CalendarCheck2, ClipboardCheck, GraduationCap } from 'lucide-react';
@@ -135,7 +135,7 @@ export function AdminLearningPage({ locale }: { locale: Locale }) {
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6" data-testid="admin-learning-page">
+      <div className="flex flex-col gap-6 py-6" data-testid="admin-learning-page">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
           <div>
             <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
@@ -172,7 +172,7 @@ export function AdminLearningPage({ locale }: { locale: Locale }) {
           ))}
         </div>
 
-        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
+        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-sm font-bold text-foreground">
               {isBn ? 'সেশন তালিকা' : 'Session records'}

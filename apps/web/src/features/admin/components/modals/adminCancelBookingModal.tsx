@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useTranslations } from 'next-intl';
 import type { AdminBookingItem } from '../../types/admin.types';
 import {
@@ -35,8 +35,8 @@ export function AdminCancelBookingModal({
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md w-full space-y-4" data-testid="cancel-booking-modal">
-        <DialogHeader className="text-left space-y-1">
+      <DialogContent className="max-w-md w-full flex flex-col gap-4" data-testid="cancel-booking-modal">
+        <DialogHeader className="text-left flex flex-col gap-1">
           <DialogTitle className="text-lg font-bold text-destructive">
             {t('cancelIntervention')}
           </DialogTitle>
@@ -45,7 +45,7 @@ export function AdminCancelBookingModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="cancel-reason" className="text-xs font-medium text-foreground">
             {t('cancelReasonLabel')} *
           </Label>
@@ -59,7 +59,7 @@ export function AdminCancelBookingModal({
           />
         </div>
 
-        <div className="flex items-center space-x-2">
+        <div className="flex items-center gap-2">
           <Checkbox
             id="refund-escrow"
             checked={refundEscrow}
@@ -74,7 +74,7 @@ export function AdminCancelBookingModal({
           </Label>
         </div>
 
-        <div className="flex justify-end space-x-3 pt-2">
+        <div className="flex justify-end flex items-center gap-3 pt-2">
           <Button variant="outline" size="sm" onClick={onClose}>
             {tCommon('cancel')}
           </Button>

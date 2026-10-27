@@ -74,7 +74,7 @@ export function SessionLearningPanel({ locale, sessionId }: { locale: Locale; se
             {t.sessionLessonPlan}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2 text-xs">
+        <CardContent className="flex flex-col gap-2 text-xs">
           {plan.isLoading ? (
             <p className="text-muted-foreground">…</p>
           ) : !planData ? (
@@ -86,14 +86,14 @@ export function SessionLearningPanel({ locale, sessionId }: { locale: Locale; se
                 <p className="text-muted-foreground whitespace-pre-line">{planData.description}</p>
               )}
               {planData.objectives.length > 0 && (
-                <ul className="list-disc pl-5 space-y-0.5 text-muted-foreground">
+                <ul className="list-disc pl-5 flex flex-col gap-0.5 text-muted-foreground">
                   {planData.objectives.map((objective) => (
                     <li key={objective}>{objective}</li>
                   ))}
                 </ul>
               )}
               {planData.steps.length > 0 && (
-                <ol className="list-decimal pl-5 space-y-0.5 text-muted-foreground">
+                <ol className="list-decimal pl-5 flex flex-col gap-0.5 text-muted-foreground">
                   {planData.steps.map((step, index) => (
                     <li key={`${step.title}-${index}`}>
                       {step.title}
@@ -115,7 +115,7 @@ export function SessionLearningPanel({ locale, sessionId }: { locale: Locale; se
             {t.materials}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="flex flex-col gap-2">
           {downloadError && (
             <Alert variant="destructive">
               <AlertDescription role="alert">{downloadError}</AlertDescription>
@@ -167,7 +167,7 @@ export function SessionLearningPanel({ locale, sessionId }: { locale: Locale; se
         <CardHeader className="pb-2">
           <CardTitle className="text-sm font-bold">{t.linkedAssignments}</CardTitle>
         </CardHeader>
-        <CardContent className="space-y-2">
+        <CardContent className="flex flex-col gap-2">
           {assignmentItems.length === 0 ? (
             <EmptyState title={t.noAssignments} description={t.linkedAssignments} />
           ) : (

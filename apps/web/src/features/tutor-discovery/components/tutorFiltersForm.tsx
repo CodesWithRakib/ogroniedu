@@ -178,7 +178,7 @@ export function TutorFiltersForm({
         isMobileDrawer ? 'p-4 sm:p-5' : 'p-5'
       } ${className}`}
     >
-      <form onSubmit={handleSubmit} className="space-y-4" data-testid="discovery-filters-form">
+      <form onSubmit={handleSubmit} className="flex flex-col gap-4" data-testid="discovery-filters-form">
         {/* Header Row */}
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <div className="flex items-center gap-2">
@@ -228,12 +228,12 @@ export function TutorFiltersForm({
         </div>
 
         {/* 2. Subject & Class */}
-        <div className="space-y-2.5 pt-2 border-t border-border">
+        <div className="flex flex-col gap-2.5 pt-2 border-t border-border">
           <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
             <BookOpen className="w-3 h-3 text-primary" />
             <span>{isBn ? 'বিষয় ও শ্রেণি' : 'Subject & Class'}</span>
           </label>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <Select
               value={value.subjectId || 'all'}
               onValueChange={(val) => onChange({ subjectId: val === 'all' ? '' : val })}
@@ -279,12 +279,12 @@ export function TutorFiltersForm({
         </div>
 
         {/* 3. Teaching Mode & Curriculum */}
-        <div className="space-y-2.5 pt-2 border-t border-border">
+        <div className="flex flex-col gap-2.5 pt-2 border-t border-border">
           <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
             <GraduationCap className="w-3 h-3 text-primary" />
             <span>{isBn ? 'পদ্ধতি ও শিক্ষাক্রম' : 'Mode & Curriculum'}</span>
           </label>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <Select
               value={value.modeFilter || 'all'}
               onValueChange={(val) => onChange({ modeFilter: val === 'all' ? '' : val })}
@@ -328,12 +328,12 @@ export function TutorFiltersForm({
         </div>
 
         {/* 4. District & Distance */}
-        <div className="space-y-2.5 pt-2 border-t border-border">
+        <div className="flex flex-col gap-2.5 pt-2 border-t border-border">
           <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
             <MapPin className="w-3 h-3 text-primary" />
             <span>{isBn ? 'এলাকা ও দূরত্ব' : 'District & Radius'}</span>
           </label>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <Select
               value={value.districtCode || 'all'}
               onValueChange={(val) => onChange({ districtCode: val === 'all' ? '' : val })}
@@ -392,7 +392,7 @@ export function TutorFiltersForm({
         </div>
 
         {/* 5. Budget / Hourly Fee */}
-        <div className="space-y-2.5 pt-2 border-t border-border">
+        <div className="flex flex-col gap-2.5 pt-2 border-t border-border">
           <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
             <Banknote className="w-3 h-3 text-primary" />
             <span>{isBn ? 'ঘণ্টাপ্রতি ফি (৳)' : 'Hourly Fee (৳)'}</span>
@@ -468,13 +468,13 @@ export function TutorFiltersForm({
         </div>
 
         {/* 6. Experience & Weekday */}
-        <div className="space-y-2.5 pt-2 border-t border-border">
+        <div className="flex flex-col gap-2.5 pt-2 border-t border-border">
           <label className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1">
             <Calendar className="w-3 h-3 text-primary" />
             <span>{isBn ? 'অভিজ্ঞতা ও দিন' : 'Experience & Day'}</span>
           </label>
           <div className="grid grid-cols-2 gap-2">
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <span className="text-[10px] text-muted-foreground">
                 {isBn ? 'ন্যূনতম অভিজ্ঞতা (বছর)' : 'Min Exp (Years)'}
               </span>
@@ -490,7 +490,7 @@ export function TutorFiltersForm({
                 aria-label={isBn ? 'সর্বনিম্ন অভিজ্ঞতা' : 'Minimum experience'}
               />
             </div>
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <span className="text-[10px] text-muted-foreground">
                 {isBn ? 'উপলব্ধতার দিন' : 'Available Day'}
               </span>

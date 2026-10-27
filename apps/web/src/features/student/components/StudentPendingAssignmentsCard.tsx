@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -122,7 +122,7 @@ export function StudentPendingAssignmentsCard({
               </p>
             </div>
           ) : (
-            <div className="space-y-3" data-testid="student-assignments-list">
+            <div className="flex flex-col gap-3" data-testid="student-assignments-list">
               {assignments.slice(0, 3).map((asgn) => {
                 const isSubmitted = Boolean(asgn.submission);
                 const isReviewed = asgn.submission?.status === 'reviewed';
@@ -227,7 +227,7 @@ export function StudentPendingAssignmentsCard({
         onOpenChange={(open) => !open && setActiveAssignment(null)}
       >
         {activeAssignment && (
-          <DialogContent className="bg-card border border-border w-full max-w-lg rounded-2xl p-6 text-foreground space-y-4">
+          <DialogContent className="bg-card border border-border w-full max-w-lg rounded-2xl p-6 text-foreground flex flex-col gap-4">
             <DialogHeader className="border-b border-border pb-3 text-left">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-warning-soft text-warning flex items-center justify-center shrink-0">
@@ -259,8 +259,8 @@ export function StudentPendingAssignmentsCard({
               </Alert>
             )}
 
-            <form onSubmit={handleSubmit} className="space-y-4">
-              <div className="space-y-1.5">
+            <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+              <div className="flex flex-col gap-1.5">
                 <Label className="block text-xs font-semibold text-foreground">
                   {isBn ? 'আপনার উত্তর / নোটস' : 'Your Answer / Notes'}
                 </Label>

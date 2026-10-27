@@ -37,7 +37,7 @@ export function GuardianLearningOversightHeader({
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         {/* Title and context */}
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/25 text-emerald-700 dark:text-emerald-300 text-xs font-bold">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>{isBn ? 'অভিভাবক একাডেমিক তদারকি' : 'Parental Academic Oversight'}</span>

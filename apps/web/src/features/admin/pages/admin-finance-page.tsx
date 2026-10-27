@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useMemo, useState } from 'react';
 import {
@@ -325,7 +325,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6" data-testid="admin-finance-page">
+      <div className="flex flex-col gap-6 py-6" data-testid="admin-finance-page">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
           <div>
             <div className="flex items-center gap-3">
@@ -409,7 +409,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                       key={refund.id}
                       className="py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3"
                     >
-                      <div className="space-y-1">
+                      <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-bold text-sm">
                             {refund.refundNumber ?? refund.id.slice(0, 8)}
@@ -503,7 +503,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                       key={payout.id}
                       className="py-4 flex flex-col lg:flex-row lg:items-center justify-between gap-3"
                     >
-                      <div className="space-y-1">
+                      <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2 flex-wrap">
                           <span className="font-bold text-sm">{payout.payoutNumber}</span>
                           <Badge variant={payoutVariant(payout.status)}>{payout.status}</Badge>
@@ -579,7 +579,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
         )}
 
         {section === 'reconciliation' && (
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             <Card>
               <CardHeader className="flex flex-row items-center justify-between gap-3">
                 <div>
@@ -599,7 +599,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                   {isBn ? 'রিকনসিলিয়েশন চালান' : 'Run reconciliation'}
                 </Button>
               </CardHeader>
-              <CardContent className="space-y-4">
+              <CardContent className="flex flex-col gap-4">
                 {ledger ? (
                   <>
                     <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
@@ -673,7 +673,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                   </CardTitle>
                   <CardDescription>{formatDateTime(report.reconciledAt, locale)}</CardDescription>
                 </CardHeader>
-                <CardContent className="space-y-3">
+                <CardContent className="flex flex-col gap-3">
                   <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-xs">
                     <div>
                       <p className="text-muted-foreground">{isBn ? 'অর্ডার' : 'Orders'}</p>
@@ -700,7 +700,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                       </AlertDescription>
                     </Alert>
                   ) : (
-                    <div className="space-y-2">
+                    <div className="flex flex-col gap-2">
                       {report.unreconciledDiscrepancies.map((row) => (
                         <Alert key={`${row.reference}-${row.reason}`} variant="destructive">
                           <XCircle className="w-4 h-4" />
@@ -786,8 +786,8 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                 : 'Complete the real bank/provider transfer first, then record its reference. The server never invents a reference.'}
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleConfirmManual} className="space-y-3">
-            <div className="space-y-1">
+          <form onSubmit={handleConfirmManual} className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="refund-ref">
                 {isBn ? 'বাহ্যিক রেফারেন্স' : 'External reference'}
               </Label>
@@ -825,8 +825,8 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                 : 'Provide the real transfer reference. Without it the payout is never marked paid.'}
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleMarkPaid} className="space-y-3">
-            <div className="space-y-1">
+          <form onSubmit={handleMarkPaid} className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="payout-ref">
                 {isBn ? 'ব্যাংক/ওয়ালেট রেফারেন্স' : 'Bank/wallet reference'}
               </Label>
@@ -862,8 +862,8 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                 : 'The reserved amount returns to the tutor’s withdrawable balance.'}
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleMarkFailed} className="space-y-3">
-            <div className="space-y-1">
+          <form onSubmit={handleMarkFailed} className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="payout-fail-reason">{isBn ? 'কারণ' : 'Reason'}</Label>
               <Input
                 id="payout-fail-reason"
@@ -902,8 +902,8 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                 : 'New rates apply only to future payment orders.'}
             </DialogDescription>
           </DialogHeader>
-          <form onSubmit={handleCreatePolicy} className="space-y-3">
-            <div className="space-y-1">
+          <form onSubmit={handleCreatePolicy} className="flex flex-col gap-3">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="policy-fee">
                 {isBn ? 'প্ল্যাটফর্ম কমিশন (%)' : 'Platform commission (%)'}
               </Label>
@@ -918,7 +918,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                 required
               />
             </div>
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="policy-min">
                 {isBn ? 'ন্যূনতম পে-আউট (BDT)' : 'Minimum payout (BDT)'}
               </Label>
@@ -931,7 +931,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                 required
               />
             </div>
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="policy-notes">{isBn ? 'নোট (ঐচ্ছিক)' : 'Notes (optional)'}</Label>
               <Input
                 id="policy-notes"

@@ -155,23 +155,23 @@ export function ClassroomPollModal({
         </div>
 
         {/* Modal Body */}
-        <div className="p-6 overflow-y-auto space-y-5">
+        <div className="p-6 overflow-y-auto flex flex-col gap-5">
           {/* Active Poll View */}
           {currentPoll && currentPoll.isActive ? (
-            <div className="space-y-4" data-testid="active-poll-container">
+            <div className="flex flex-col gap-4" data-testid="active-poll-container">
               {/* Poll Question Banner */}
-              <div className="p-4 bg-blue-50 border-2 border-blue-200 rounded-2xl">
-                <div className="flex items-center justify-between text-xs font-bold text-blue-700 mb-1.5">
+              <div className="p-4 bg-primary-soft/40 border-2 border-primary/20 rounded-2xl">
+                <div className="flex items-center justify-between text-xs font-bold text-primary mb-1.5">
                   <span className="flex items-center gap-1">
-                    <Radio className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
+                    <Radio className="w-3.5 h-3.5 text-primary animate-pulse" />
                     {isBn ? 'চলমান পোল' : 'Active Poll'}
                   </span>
                   <span>{isBn ? `মোট ভোট: ${totalVotes}` : `Total Votes: ${totalVotes}`}</span>
                 </div>
-                <h4 className="text-base sm:text-lg font-black text-slate-900 leading-snug">
+                <h4 className="text-base sm:text-lg font-black text-foreground leading-snug">
                   {currentPoll.question}
                 </h4>
-                <p className="text-xs text-slate-600 font-medium mt-1">
+                <p className="text-xs text-muted-foreground font-medium mt-1">
                   {isBn
                     ? `তৈরি করেছেন: ${currentPoll.creatorName}`
                     : `Created by: ${currentPoll.creatorName}`}
@@ -179,7 +179,7 @@ export function ClassroomPollModal({
               </div>
 
               {/* Options List */}
-              <div className="space-y-2.5">
+              <div className="flex flex-col gap-2.5">
                 {currentPoll.options.map((opt, idx) => {
                   const count = optionCounts[idx] || 0;
                   const percentage = totalVotes > 0 ? Math.round((count / totalVotes) * 100) : 0;
@@ -302,7 +302,7 @@ export function ClassroomPollModal({
             /* Tutor Poll Creation Form */
             <form
               onSubmit={handleCreateSubmit}
-              className="space-y-4"
+              className="flex flex-col gap-4"
               data-testid="create-poll-form"
             >
               <div>
@@ -327,7 +327,7 @@ export function ClassroomPollModal({
                 <label className="block text-xs font-black text-slate-800 mb-1.5">
                   {isBn ? 'উত্তর বিকল্পসমূহ (কমপক্ষে ২টি):' : 'Answer Options (at least 2):'}
                 </label>
-                <div className="space-y-2">
+                <div className="flex flex-col gap-2">
                   {options.map((opt, idx) => (
                     <div key={idx} className="flex items-center gap-2">
                       <span className="w-6 h-6 rounded-md bg-blue-900 text-white font-black text-xs flex items-center justify-center shrink-0">
@@ -397,7 +397,7 @@ export function ClassroomPollModal({
             </form>
           ) : (
             /* Student No Active Poll State */
-            <div className="py-8 text-center text-slate-600 space-y-2">
+            <div className="py-8 text-center text-muted-foreground flex flex-col gap-2">
               <BarChart3 className="w-12 h-12 text-slate-300 mx-auto" />
               <p className="text-sm font-bold text-slate-700">
                 {isBn ? 'বর্তমানে কোনো সক্রিয় পোল নেই' : 'No active poll right now'}

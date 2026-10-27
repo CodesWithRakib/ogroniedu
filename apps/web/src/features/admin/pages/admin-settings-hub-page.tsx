@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -150,9 +150,9 @@ export function AdminSettingsHubPage({ locale }: { locale: Locale }) {
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6" data-testid="admin-settings-hub">
+      <div className="flex flex-col gap-6 py-6" data-testid="admin-settings-hub">
         {/* Eyebrow & Hero Header (Matching Reference Screenshot Image 1) */}
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center gap-2">
             <span className="text-[11px] font-black uppercase tracking-widest text-primary">
               {isBn ? 'সিস্টেম কনফিগারেশন ও গভর্ন্যান্স' : 'SYSTEM CONFIGURATION & GOVERNANCE'}

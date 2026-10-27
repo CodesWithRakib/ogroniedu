@@ -128,7 +128,7 @@ export function NewReplacementRequestPage({ locale }: NewReplacementRequestPageP
         </p>
       ) : isError ? (
         <Card className="py-12 text-center rounded-2xl">
-          <CardContent className="space-y-3">
+          <CardContent className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
               {isBn ? 'বুকিং লোড করা যায়নি।' : 'Failed to load eligible bookings.'}
             </p>
@@ -139,7 +139,7 @@ export function NewReplacementRequestPage({ locale }: NewReplacementRequestPageP
         </Card>
       ) : bookings.length === 0 ? (
         <Card className="py-16 text-center rounded-2xl">
-          <CardContent className="space-y-3">
+          <CardContent className="flex flex-col gap-3">
             <AlertTriangle className="w-12 h-12 text-warning mx-auto" aria-hidden="true" />
             <h3 className="text-base font-bold text-foreground">
               {isBn ? 'যোগ্য বুকিং নেই' : 'No eligible bookings'}
@@ -154,10 +154,10 @@ export function NewReplacementRequestPage({ locale }: NewReplacementRequestPageP
       ) : (
         <form
           onSubmit={handleSubmit}
-          className="max-w-2xl space-y-5"
+          className="max-w-2xl flex flex-col gap-5"
           data-testid="replacement-request-form"
         >
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="eligible-booking" className="text-xs font-semibold">
               {isBn ? 'যোগ্য বুকিং' : 'Eligible booking'}
             </Label>
@@ -189,7 +189,7 @@ export function NewReplacementRequestPage({ locale }: NewReplacementRequestPageP
             )}
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="replacement-reason" className="text-xs font-semibold">
               {isBn ? 'কারণ' : 'Reason'}
             </Label>
@@ -211,7 +211,7 @@ export function NewReplacementRequestPage({ locale }: NewReplacementRequestPageP
             </NativeSelect>
           </div>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="replacement-explanation" className="text-xs font-semibold">
               {isBn ? 'বিস্তারিত ব্যাখ্যা' : 'Explanation'}
             </Label>

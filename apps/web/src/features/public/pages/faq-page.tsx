@@ -23,7 +23,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
   } = useFaqBrowser(locale);
 
   return (
-    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12">
+    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col gap-12">
       {/* Schema.org FAQPage Microdata */}
       <script
         type="application/ld+json"
@@ -44,7 +44,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
       />
 
       {/* Header Banner */}
-      <div className="text-center space-y-4">
+      <div className="text-center flex flex-col gap-4">
         <Badge
           variant="secondary"
           className="text-primary border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full"
@@ -78,7 +78,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* FAQ Accordion List */}
-      <div className="space-y-4">
+      <div className="flex flex-col gap-4">
         {filteredFaqs.map((faq, idx) => {
           const isOpen = openIndex === idx;
           return (
@@ -116,7 +116,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Still Have Questions CTA */}
-      <div className="rounded-2xl border border-border bg-card p-8 sm:p-10 text-center space-y-4">
+      <div className="rounded-2xl border border-border bg-card p-8 sm:p-10 text-center flex flex-col gap-4">
         <h3 className="text-xl font-bold text-foreground font-bengali">
           {locale === 'bn' ? 'আরও কোনো প্রশ্ন আছে?' : 'Still have questions?'}
         </h3>

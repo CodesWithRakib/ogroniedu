@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -70,7 +70,7 @@ export function AdminUsersTab({
   });
 
   return (
-    <div className="space-y-4" data-testid="users-tab-content">
+    <div className="flex flex-col gap-4" data-testid="users-tab-content">
       <div className="flex flex-col sm:flex-row gap-3 items-center justify-between">
         <Input
           type="text"
@@ -156,7 +156,7 @@ export function AdminUsersTab({
                           : user.status}
                     </StatusBadge>
                   </TableCell>
-                  <TableCell className="px-4 py-3 text-right space-x-2">
+                  <TableCell className="px-4 py-3 text-right flex items-center gap-2">
                     {user.status !== 'suspended' ? (
                       <Button
                         variant="destructive"

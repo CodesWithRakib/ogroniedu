@@ -119,7 +119,7 @@ export function StudentProgressPanel({
   const attendanceRate = data?.attendance.attendanceRate ?? null;
 
   return (
-    <div className="space-y-4" data-testid="student-progress-panel">
+    <div className="flex flex-col gap-4" data-testid="student-progress-panel">
       {error && (
         <Alert variant="destructive">
           <AlertDescription role="alert">{error}</AlertDescription>
@@ -128,7 +128,7 @@ export function StudentProgressPanel({
 
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
         <Card>
-          <CardContent className="py-4 space-y-1">
+          <CardContent className="py-4 flex flex-col gap-1">
             <p className="text-[11px] font-semibold uppercase text-muted-foreground">
               {t.attendanceRate}
             </p>
@@ -143,7 +143,7 @@ export function StudentProgressPanel({
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="py-4 space-y-1">
+          <CardContent className="py-4 flex flex-col gap-1">
             <p className="text-[11px] font-semibold uppercase text-muted-foreground">
               {t.sessionsCompleted}
             </p>
@@ -156,7 +156,7 @@ export function StudentProgressPanel({
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="py-4 space-y-1">
+          <CardContent className="py-4 flex flex-col gap-1">
             <p className="text-[11px] font-semibold uppercase text-muted-foreground">
               {t.assignmentCompletion}
             </p>
@@ -173,7 +173,7 @@ export function StudentProgressPanel({
           </CardContent>
         </Card>
         <Card>
-          <CardContent className="py-4 space-y-1">
+          <CardContent className="py-4 flex flex-col gap-1">
             <p className="text-[11px] font-semibold uppercase text-muted-foreground">
               {t.averageScore}
             </p>
@@ -198,12 +198,12 @@ export function StudentProgressPanel({
               {t.progressTrend}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="flex flex-col gap-3">
             {(data?.attendanceTrend ?? []).length === 0 ? (
               <p className="text-xs text-muted-foreground">{t.attendanceNotEnoughData}</p>
             ) : (
               data!.attendanceTrend.map((month) => (
-                <div key={month.month} className="space-y-1">
+                <div key={month.month} className="flex flex-col gap-1">
                   <div className="flex items-center justify-between text-[11px]">
                     <span className="font-medium text-foreground">{month.month}</span>
                     <span className="text-muted-foreground">
@@ -226,12 +226,12 @@ export function StudentProgressPanel({
               {t.recentFeedback}
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-3">
+          <CardContent className="flex flex-col gap-3">
             {(data?.recentFeedback ?? []).length === 0 ? (
               <p className="text-xs text-muted-foreground">{t.noFeedback}</p>
             ) : (
               data!.recentFeedback.map((feedback) => (
-                <div key={feedback.submissionId} className="text-xs space-y-1">
+                <div key={feedback.submissionId} className="text-xs flex flex-col gap-1">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-semibold text-foreground">
                       {feedback.assignmentTitle}
@@ -257,12 +257,12 @@ export function StudentProgressPanel({
             {t.learningGoals}
           </CardTitle>
         </CardHeader>
-        <CardContent className="space-y-3">
+        <CardContent className="flex flex-col gap-3">
           {summary.length === 0 ? (
             <p className="text-xs text-muted-foreground">{t.goalsEmpty}</p>
           ) : (
             summary.map((goal) => (
-              <div key={goal.id} className="rounded-xl border border-border p-3 space-y-2">
+              <div key={goal.id} className="rounded-xl border border-border p-3 flex flex-col gap-2">
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <p className="text-sm font-semibold text-foreground">{goal.title}</p>
@@ -315,7 +315,7 @@ export function StudentProgressPanel({
               onSubmit={handleCreateGoal}
               className="grid grid-cols-1 sm:grid-cols-3 gap-2 pt-2"
             >
-              <div className="space-y-1">
+              <div className="flex flex-col gap-1">
                 <Label htmlFor="goal-title" className="text-[11px]">
                   {t.goalTitleLabel}
                 </Label>
@@ -326,7 +326,7 @@ export function StudentProgressPanel({
                   className="h-9 text-xs"
                 />
               </div>
-              <div className="space-y-1">
+              <div className="flex flex-col gap-1">
                 <Label htmlFor="goal-target" className="text-[11px]">
                   {t.goalTargetDate}
                 </Label>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import {
@@ -94,7 +94,7 @@ export function AdminOrganizationsPageView() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="flex flex-col gap-6">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 border-b border-border pb-5">
         <div>
@@ -261,7 +261,7 @@ export function AdminOrganizationsPageView() {
       {/* Confirmation Modal */}
       {selectedOrg && actionStatus && (
         <Dialog open={true} onOpenChange={(open) => !open && setSelectedOrg(null)}>
-          <DialogContent className="bg-white w-full max-w-md rounded-3xl border border-slate-200 shadow-2xl p-6 space-y-4 text-left">
+          <DialogContent className="bg-white w-full max-w-md rounded-3xl border border-slate-200 shadow-2xl p-6 flex flex-col gap-4 text-left">
             <DialogHeader className="border-b border-slate-100 pb-3 text-left">
               <div className="flex items-center gap-3">
                 <div
@@ -288,7 +288,7 @@ export function AdminOrganizationsPageView() {
               </div>
             </DialogHeader>
 
-            <form onSubmit={handleActionSubmit} className="space-y-4">
+            <form onSubmit={handleActionSubmit} className="flex flex-col gap-4">
               <div>
                 <label className="block text-xs font-bold text-slate-800 mb-1">
                   Reason & Verification Notes

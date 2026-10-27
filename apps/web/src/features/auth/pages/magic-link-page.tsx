@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -65,7 +65,7 @@ export function MagicLinkPage({ locale }: { locale: Locale }) {
   return (
     <div className="relative mx-auto w-full max-w-md px-4 py-8" data-testid="magic-link-page">
       <div className="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-card">
-        <header className="mb-6 space-y-1.5 text-center">
+        <header className="mb-6 flex flex-col gap-1.5 text-center">
           <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/25">
             <KeyRound className="h-6 w-6 stroke-[2.2]" />
           </div>

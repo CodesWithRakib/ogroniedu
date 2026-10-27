@@ -90,14 +90,14 @@ export function BookingRequestModal({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="booking-request-modal"
-        className="w-[94vw] max-w-lg max-h-[88vh] overflow-y-auto p-5 sm:p-6 space-y-4 rounded-3xl border border-slate-200 bg-white shadow-2xl"
+        className="w-[94vw] max-w-lg max-h-[88vh] overflow-y-auto p-5 sm:p-6 flex flex-col gap-4 rounded-3xl border border-border bg-card shadow-2xl"
       >
-        <DialogHeader className="space-y-1 border-b border-slate-200 pb-3 text-left">
-          <DialogTitle className="font-black text-slate-900 text-base sm:text-lg">
+        <DialogHeader className="flex flex-col gap-1 border-b border-border pb-3 text-left">
+          <DialogTitle className="font-black text-foreground text-base sm:text-lg">
             {dict.bookingRequest?.modalTitle ||
               (isBn ? 'টিউটরিং ক্লাসের অনুরোধ পাঠান' : 'Request Tutoring Session')}
           </DialogTitle>
-          <DialogDescription className="text-xs font-semibold text-blue-700">
+          <DialogDescription className="text-xs font-semibold text-muted-foreground">
             {isBn
               ? tutor.displayNameBn || tutor.displayNameEn || tutor.displayName
               : tutor.displayNameEn || tutor.displayNameBn || tutor.displayName}
@@ -114,7 +114,7 @@ export function BookingRequestModal({
         ) : (
           <form
             onSubmit={onSubmit}
-            className="space-y-4 text-xs"
+            className="flex flex-col gap-4 text-xs"
             data-testid="booking-request-form"
           >
             {error && (
@@ -128,7 +128,7 @@ export function BookingRequestModal({
             )}
 
             {studentOptions.length > 0 ? (
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label className="font-bold text-slate-800 text-xs">
                   {dict.bookingRequest?.selectStudent ||
                     (isBn ? 'শিক্ষার্থী নির্বাচন করুন' : 'Select Student')}
@@ -158,7 +158,7 @@ export function BookingRequestModal({
                 </Select>
               </div>
             ) : (
-              <div className="rounded-2xl bg-amber-50 border border-amber-200 p-3.5 space-y-2">
+              <div className="rounded-2xl bg-amber-50 border border-amber-200 p-3.5 flex flex-col gap-2">
                 <div className="flex items-center gap-2 font-bold text-amber-900 text-xs">
                   <LogIn className="w-4 h-4 text-amber-700 shrink-0" />
                   <span>{isBn ? 'অনুরোধ পাঠাতে লগইন প্রয়োজন' : 'Sign in required to request'}</span>
@@ -179,7 +179,7 @@ export function BookingRequestModal({
             )}
 
             {levelOptions.length > 0 && (
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <Label className="font-bold text-slate-800 text-xs">
                   {dict.bookingRequest?.selectLevel ||
                     (isBn ? 'শ্রেণি / স্তর নির্বাচন করুন' : 'Select Level')}
@@ -207,7 +207,7 @@ export function BookingRequestModal({
               </div>
             )}
 
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label className="font-bold text-slate-800 text-xs">
                 {dict.bookingRequest?.selectSubject ||
                   (isBn ? 'বিষয় নির্বাচন করুন' : 'Select Subject')}
@@ -251,7 +251,7 @@ export function BookingRequestModal({
               </Select>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label className="font-bold text-slate-800 text-xs">
                 {dict.bookingRequest?.selectMode || (isBn ? 'পছন্দের মাধ্যম' : 'Preferred Mode')}
               </Label>
@@ -279,7 +279,7 @@ export function BookingRequestModal({
               </Select>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label className="font-bold text-slate-800 text-xs">
                 {dict.bookingRequest?.preferredDaysLabel ||
                   (isBn ? 'পছন্দের বার' : 'Preferred Days')}
@@ -308,7 +308,7 @@ export function BookingRequestModal({
               </div>
             </div>
 
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label className="font-bold text-slate-800 text-xs">
                 {dict.bookingRequest?.notesLabel ||
                   (isBn ? 'প্রয়োজনীয় নির্দেশনা বা লক্ষ্য' : 'Notes / Learning Goals')}

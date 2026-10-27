@@ -126,7 +126,7 @@ export function QualificationUploadCard({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="space-y-3" data-testid="qualification-upload-form">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-3" data-testid="qualification-upload-form">
           {formError && (
             <p
               role="alert"
@@ -145,7 +145,7 @@ export function QualificationUploadCard({
               {saved}
             </p>
           )}
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label htmlFor="qual-doc-type" className="text-xs font-medium">
               {isBn ? 'সনদের ধরন' : 'Document type'}
             </Label>
@@ -170,7 +170,7 @@ export function QualificationUploadCard({
               </SelectContent>
             </Select>
           </div>
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label htmlFor="qual-title" className="text-xs font-medium">
               {isBn ? 'শিরোনাম' : 'Title'}
             </Label>
@@ -182,7 +182,7 @@ export function QualificationUploadCard({
               data-testid="qualification-title-input"
             />
           </div>
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label htmlFor="qual-institution" className="text-xs font-medium">
               {isBn ? 'প্রতিষ্ঠান (ঐচ্ছিক)' : 'Institution (optional)'}
             </Label>
@@ -193,7 +193,7 @@ export function QualificationUploadCard({
               data-testid="qualification-institution-input"
             />
           </div>
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label htmlFor="qual-file" className="text-xs font-medium">
               {isBn
                 ? 'ফাইল (PDF/JPEG/PNG/WEBP, সর্বোচ্চ ১০MB)'

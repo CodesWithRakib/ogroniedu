@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
@@ -64,13 +64,13 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-7 lg:p-8 space-y-5 shadow-xs hover:border-blue-500/30 transition-all duration-300">
-      <div className="flex items-center justify-between border-b border-slate-200/80 pb-4">
+    <div className="rounded-3xl bg-card border border-border p-5 sm:p-7 lg:p-8 flex flex-col gap-5 shadow-xs hover:border-blue-500/30 transition-all duration-300">
+      <div className="flex items-center justify-between border-b border-border/80 pb-4">
         <div className="flex items-center gap-3">
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs shrink-0">
             {icon}
           </div>
-          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-slate-900 tracking-tight">
+          <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground tracking-tight">
             {title}
           </h2>
         </div>
@@ -286,15 +286,15 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
         className="min-h-screen bg-slate-50/60 py-8 px-4 sm:px-6 lg:px-8"
         data-testid="profile-loading"
       >
-        <div className="max-w-7xl mx-auto space-y-6 animate-pulse" aria-hidden="true">
-          <div className="h-56 rounded-3xl bg-white border border-slate-200" />
+        <div className="max-w-7xl mx-auto flex flex-col gap-6 animate-pulse" aria-hidden="true">
+          <div className="h-56 rounded-3xl bg-white border border-border" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            <div className="lg:col-span-8 space-y-6">
-              <div className="h-44 rounded-3xl bg-white border border-slate-200" />
-              <div className="h-60 rounded-3xl bg-white border border-slate-200" />
+            <div className="lg:col-span-8 flex flex-col gap-6">
+              <div className="h-44 rounded-3xl bg-white border border-border" />
+              <div className="h-60 rounded-3xl bg-white border border-border" />
             </div>
-            <div className="lg:col-span-4 space-y-6">
-              <div className="h-80 rounded-3xl bg-white border border-slate-200" />
+            <div className="lg:col-span-4 flex flex-col gap-6">
+              <div className="h-80 rounded-3xl bg-white border border-border" />
             </div>
           </div>
         </div>
@@ -305,14 +305,14 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
   if (profileQuery.error || !profile) {
     return (
       <div className="min-h-screen bg-slate-50/60 py-16 px-4" data-testid="profile-unavailable">
-        <div className="max-w-xl mx-auto rounded-3xl border border-slate-200 bg-white p-6 sm:p-10 text-center space-y-5 shadow-xs">
+        <div className="max-w-xl mx-auto rounded-3xl border border-border bg-card p-6 sm:p-10 text-center flex flex-col gap-5 shadow-xs">
           <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-amber-50 text-amber-700 border border-amber-300 mx-auto">
             <AlertCircle className="h-8 w-8" aria-hidden="true" />
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-slate-900">
+          <h1 className="text-xl sm:text-2xl font-black text-foreground">
             {isBn ? 'এই প্রোফাইলটি পাওয়া যায়নি' : 'This tutor profile is unavailable'}
           </h1>
-          <p className="text-sm text-slate-600 leading-relaxed">
+          <p className="text-sm text-muted-foreground leading-relaxed">
             {isBn
               ? 'শিক্ষকটি বর্তমানে প্ল্যাটফর্মে সক্রিয় নাও হতে পারেন অথবা প্রোফাইলটি পুনঃযাচাইাধীন রয়েছে।'
               : 'The tutor may no longer be publicly verified or bookable at this moment.'}
@@ -322,7 +322,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
               variant="outline"
               size="sm"
               onClick={() => profileQuery.refetch()}
-              className="rounded-xl font-semibold border-slate-300 text-slate-800"
+              className="rounded-xl font-semibold border-slate-300 text-foreground"
             >
               {isBn ? 'আবার চেষ্টা করুন' : 'Retry'}
             </Button>
@@ -358,7 +358,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
     : null;
 
   return (
-    <div className="min-h-screen bg-slate-50/50 text-slate-900 py-4 sm:py-8 px-3 sm:px-6 lg:px-8 space-y-5 sm:space-y-8">
+    <div className="min-h-screen bg-background text-foreground py-4 sm:py-8 px-3 sm:px-6 lg:px-8 flex flex-col gap-5 sm:gap-8">
       {/* Navigation & Action Bar */}
       <div className="max-w-7xl mx-auto flex items-center justify-between text-xs sm:text-sm">
         <Link
@@ -382,11 +382,11 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             className={`inline-flex items-center gap-1.5 rounded-2xl border px-3.5 py-2 text-xs font-bold transition-all disabled:opacity-50 ${
               isSaved
                 ? 'border-blue-300 bg-blue-50 text-blue-800'
-                : 'border-slate-300 bg-white text-slate-700 hover:border-blue-500 hover:text-slate-900'
+                : 'border-slate-300 bg-white text-muted-foreground hover:border-blue-500 hover:text-foreground'
             }`}
           >
             <Bookmark
-              className={`w-4 h-4 ${isSaved ? 'fill-blue-700 text-blue-700' : 'text-slate-500'}`}
+              className={`w-4 h-4 ${isSaved ? 'fill-blue-700 text-blue-700' : 'text-muted-foreground'}`}
               aria-hidden="true"
             />
             <span>
@@ -409,7 +409,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
       )}
 
       {/* Hero Profile Banner */}
-      <div className="max-w-7xl mx-auto rounded-3xl bg-white border border-slate-200/90 p-5 sm:p-8 lg:p-10 shadow-xs relative overflow-hidden">
+      <div className="max-w-7xl mx-auto rounded-3xl bg-card border border-border p-5 sm:p-8 lg:p-10 shadow-xs relative overflow-hidden">
         {/* Subtle decorative background glow */}
         <div className="absolute top-0 right-0 -mt-16 -mr-16 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
 
@@ -436,9 +436,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             </div>
 
             {/* Title, Headline & Badges */}
-            <div className="space-y-2.5 flex-1 min-w-0 w-full">
+            <div className="flex flex-col gap-2.5 flex-1 min-w-0 w-full">
               <div>
-                <h1 className="text-xl sm:text-2xl lg:text-4xl font-black text-slate-900 tracking-tight leading-tight">
+                <h1 className="text-xl sm:text-2xl lg:text-4xl font-black text-foreground tracking-tight leading-tight">
                   {displayName}
                 </h1>
                 {headline && (
@@ -457,14 +457,14 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   >
                     <Star className="w-4 h-4 fill-amber-500 text-amber-600" aria-hidden="true" />
                     <span>{formatLocalizedNumber(profile.ratingAverage, locale)}</span>
-                    <span className="text-slate-700 font-medium">
+                    <span className="text-muted-foreground font-medium">
                       ({formatLocalizedNumber(profile.totalReviews, locale)}{' '}
                       {isBn ? 'রিভিউ' : 'reviews'})
                     </span>
                   </span>
                 ) : (
                   <span
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-slate-700 bg-slate-100 px-3 py-1 rounded-full border border-slate-300 shadow-2xs"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground bg-slate-100 px-3 py-1 rounded-full border border-slate-300 shadow-2xs"
                     data-testid="profile-no-rating"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
@@ -473,8 +473,8 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 )}
 
                 {expYears && (
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-slate-800 bg-slate-100 px-3 py-1 rounded-full border border-slate-300 shadow-2xs">
-                    <Clock className="w-3.5 h-3.5 text-slate-600" aria-hidden="true" />
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground bg-slate-100 px-3 py-1 rounded-full border border-slate-300 shadow-2xs">
+                    <Clock className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
                     <span>
                       {expYears} {isBn ? 'বছরের অভিজ্ঞতা' : 'yrs experience'}
                     </span>
@@ -524,12 +524,12 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
           </div>
 
           {/* Pricing & Quick Booking Action Card */}
-          <div className="flex flex-col sm:flex-row lg:flex-col items-center sm:items-center lg:items-end justify-between gap-4 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-t-0 border-slate-200">
+          <div className="flex flex-col sm:flex-row lg:flex-col items-center sm:items-center lg:items-end justify-between gap-4 w-full lg:w-auto pt-4 lg:pt-0 border-t lg:border-t-0 border-border">
             <div className="text-center sm:text-left lg:text-right">
-              <span className="text-xs text-slate-500 uppercase font-bold tracking-wider block">
+              <span className="text-xs text-muted-foreground uppercase font-bold tracking-wider block">
                 {isBn ? 'ঘণ্টাপ্রতি টিউশন ফি' : 'Hourly rate'}
               </span>
-              <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-slate-900 tabular-nums tracking-tight">
+              <span className="text-2xl sm:text-3xl lg:text-4xl font-black text-foreground tabular-nums tracking-tight">
                 {hourlyRate ? `৳${hourlyRate}` : isBn ? 'আলোচনা সাপেক্ষে' : 'Negotiable'}
               </span>
             </div>
@@ -550,7 +550,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
       {/* Main Content Layout */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8 items-start">
         {/* Left Column: Bio, Qualifications, Subjects, Reviews */}
-        <div className="lg:col-span-8 space-y-6 sm:space-y-8">
+        <div className="lg:col-span-8 flex flex-col gap-6 sm:gap-8">
           {/* About Section */}
           {bio && (
             <SectionCard
@@ -558,7 +558,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
               icon={<BookOpen className="w-5 h-5 text-blue-700" aria-hidden="true" />}
             >
               <div className="relative pl-4 border-l-3 border-blue-500/40">
-                <p className="text-sm sm:text-base text-slate-800 leading-relaxed whitespace-pre-line font-normal">
+                <p className="text-sm sm:text-base text-foreground leading-relaxed whitespace-pre-line font-normal">
                   {bio}
                 </p>
               </div>
@@ -576,7 +576,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             }
           >
             {(profile.qualifications ?? []).length === 0 ? (
-              <p className="text-sm text-slate-500" data-testid="no-qualifications">
+              <p className="text-sm text-muted-foreground" data-testid="no-qualifications">
                 {isBn ? 'কোনো যাচাইকৃত যোগ্যতা নেই।' : 'No approved qualification recorded.'}
               </p>
             ) : (
@@ -589,21 +589,21 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   return (
                     <div
                       key={q.id}
-                      className="flex items-start gap-3.5 sm:gap-4 rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 hover:border-blue-500/40 transition-colors shadow-2xs"
+                      className="flex items-start gap-3.5 sm:gap-4 rounded-2xl border border-border bg-card p-3.5 sm:p-5 hover:border-blue-500/40 transition-colors shadow-2xs"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 mt-0.5">
                         <CheckCircle2 className="w-5 h-5" aria-hidden="true" />
                       </div>
                       <div className="flex-1 min-w-0">
                         <div className="flex items-start justify-between gap-2">
-                          <p className="font-bold text-slate-900 text-sm sm:text-base leading-snug">
+                          <p className="font-bold text-foreground text-sm sm:text-base leading-snug">
                             {qTitle}
                           </p>
                           <span className="inline-flex shrink-0 items-center text-[11px] font-bold text-emerald-900 bg-emerald-100 border border-emerald-300 px-2 py-0.5 rounded-md">
                             {isBn ? 'যাচাইকৃত' : 'Verified'}
                           </span>
                         </div>
-                        <p className="text-xs sm:text-sm text-slate-600 mt-1 font-medium">
+                        <p className="text-xs sm:text-sm text-muted-foreground mt-1 font-medium">
                           {[
                             qInstitution,
                             q.issuedYear ? formatLocalizedNumber(q.issuedYear, locale) : null,
@@ -625,7 +625,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             icon={<Sparkles className="w-5 h-5 text-blue-700" aria-hidden="true" />}
           >
             {subjects.length === 0 ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 {isBn ? 'কোনো বিষয় যোগ করা হয়নি।' : 'No subject configured.'}
               </p>
             ) : (
@@ -633,13 +633,13 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 {subjects.map((s) => (
                   <div
                     key={s.id}
-                    className="flex items-center justify-between gap-3 rounded-2xl border border-slate-200/90 bg-white p-4 hover:border-blue-500/40 transition-colors shadow-2xs"
+                    className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 hover:border-blue-500/40 transition-colors shadow-2xs"
                   >
                     <div className="min-w-0">
-                      <p className="font-bold text-slate-900 text-sm sm:text-base truncate">
+                      <p className="font-bold text-foreground text-sm sm:text-base truncate">
                         {isBn ? s.subjectNameBn : s.subjectNameEn}
                       </p>
-                      <p className="text-xs text-slate-600 mt-0.5 truncate font-medium">
+                      <p className="text-xs text-muted-foreground mt-0.5 truncate font-medium">
                         {isBn ? s.educationLevelNameBn : s.educationLevelNameEn}
                       </p>
                     </div>
@@ -670,22 +670,22 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             }
           >
             {reviewsQuery.isLoading ? (
-              <div className="py-8 text-center text-sm text-slate-500 animate-pulse">
+              <div className="py-8 text-center text-sm text-muted-foreground animate-pulse">
                 {isBn ? 'রিভিউ লোড হচ্ছে...' : 'Loading reviews...'}
               </div>
             ) : reviews.length === 0 ? (
-              <div className="py-8 text-center space-y-2" data-testid="no-reviews">
-                <p className="text-sm font-bold text-slate-900">
+              <div className="py-8 text-center flex flex-col gap-2" data-testid="no-reviews">
+                <p className="text-sm font-bold text-foreground">
                   {isBn ? 'এখনো কোনো রিভিউ প্রকাশিত হয়নি।' : 'No published reviews yet.'}
                 </p>
-                <p className="text-xs text-slate-600">
+                <p className="text-xs text-muted-foreground">
                   {isBn
                     ? 'শিক্ষার্থীর ক্লাস সম্পন্ন হওয়ার পর তাঁর দেওয়া সত্যানুসন্ধানী মতামত এখানে প্রকাশ পাবে।'
                     : 'Reviews will appear here once students complete their tutoring sessions.'}
                 </p>
               </div>
             ) : (
-              <div className="space-y-4" data-testid="tutor-review-list">
+              <div className="flex flex-col gap-4" data-testid="tutor-review-list">
                 {reviews.map((review) => {
                   const reviewerName = isBn
                     ? review.reviewerDisplayNameBn || review.reviewerDisplayName || 'শিক্ষার্থী'
@@ -700,7 +700,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   return (
                     <div
                       key={review.id}
-                      className="rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-5 space-y-3.5 shadow-2xs"
+                      className="rounded-2xl border border-border bg-card p-4 sm:p-5 flex flex-col gap-3.5 shadow-2xs"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5">
@@ -708,7 +708,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                             {reviewerName ? reviewerName[0] : 'S'}
                           </div>
                           <div>
-                            <p className="text-xs sm:text-sm font-bold text-slate-900">
+                            <p className="text-xs sm:text-sm font-bold text-foreground">
                               {reviewerName}
                             </p>
                             <span className="inline-flex items-center gap-1 text-[11px] font-bold text-emerald-800">
@@ -730,31 +730,31 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                       {/* Multi-Criteria Breakdown Badges */}
                       <div className="flex flex-wrap gap-2 pt-0.5">
                         {review.punctualityRating != null && (
-                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-800 border border-slate-200 shadow-2xs">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
                             ⏱ {isBn ? 'সময়নিষ্ঠতা' : 'Punctuality'}:{' '}
                             {formatLocalizedNumber(review.punctualityRating, locale)}/5
                           </span>
                         )}
                         {review.teachingClarityRating != null && (
-                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-800 border border-slate-200 shadow-2xs">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
                             💡 {isBn ? 'পাঠদান স্পষ্টতা' : 'Clarity'}:{' '}
                             {formatLocalizedNumber(review.teachingClarityRating, locale)}/5
                           </span>
                         )}
                         {review.subjectMasteryRating != null && (
-                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-800 border border-slate-200 shadow-2xs">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
                             📚 {isBn ? 'বিষয় দক্ষতা' : 'Mastery'}:{' '}
                             {formatLocalizedNumber(review.subjectMasteryRating, locale)}/5
                           </span>
                         )}
                       </div>
 
-                      <p className="text-sm text-slate-800 leading-relaxed font-normal">
+                      <p className="text-sm text-foreground leading-relaxed font-normal">
                         "{commentText}"
                       </p>
 
                       {replyText && (
-                        <div className="rounded-2xl bg-blue-50/80 border border-blue-200 p-3.5 text-xs text-slate-800 space-y-1.5">
+                        <div className="rounded-2xl bg-blue-50/80 border border-blue-200 p-3.5 text-xs text-foreground flex flex-col gap-1.5">
                           <div className="flex items-center gap-1.5 font-bold text-blue-900">
                             <MessageSquare
                               className="w-3.5 h-3.5 text-blue-700"
@@ -762,7 +762,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                             />
                             <span>{isBn ? 'শিক্ষকের উত্তর' : 'Tutor Reply'}</span>
                           </div>
-                          <p className="text-slate-700 leading-relaxed">{replyText}</p>
+                          <p className="text-muted-foreground leading-relaxed">{replyText}</p>
                         </div>
                       )}
                     </div>
@@ -774,20 +774,20 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
         </div>
 
         {/* Right Sidebar: Service Area, Availability & Booking Form */}
-        <div className="lg:col-span-4 space-y-6" id="booking-section">
+        <div className="lg:col-span-4 flex flex-col gap-6" id="booking-section">
           {/* Service Areas & Availability Schedule */}
           <SectionCard
             title={isBn ? 'সেবা এলাকা ও সময়সূচি' : 'Service Areas & Schedule'}
             icon={<MapPin className="w-5 h-5 text-blue-700" aria-hidden="true" />}
           >
-            <div className="space-y-4 text-sm">
+            <div className="flex flex-col gap-4 text-sm">
               {/* Service Areas */}
               <div>
-                <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-2">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">
                   {isBn ? 'কভারেজ এলাকা' : 'Service Locations'}
                 </span>
                 {profile.serviceAreas.length === 0 ? (
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-muted-foreground">
                     {isBn ? 'সেবা এলাকা নির্ধারিত নয়।' : 'No service area listed.'}
                   </p>
                 ) : (
@@ -799,7 +799,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                       return (
                         <span
                           key={area.id ?? `${area.districtCode}-${areaLocality}`}
-                          className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-slate-800 shadow-2xs"
+                          className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-foreground shadow-2xs"
                         >
                           <MapPin className="w-3.5 h-3.5 text-blue-700 shrink-0" />
                           <span>
@@ -817,7 +817,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
               {/* Teaching Modes */}
               <div>
-                <span className="text-xs font-bold text-slate-600 uppercase tracking-wider block mb-2">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider block mb-2">
                   {isBn ? 'পাঠদানের মাধ্যম' : 'Teaching Modes'}
                 </span>
                 <div className="flex flex-wrap gap-2">
@@ -843,18 +843,18 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
               </div>
 
               {/* Weekly Time Slots */}
-              <div className="border-t border-slate-200 pt-3">
-                <span className="text-xs font-bold text-slate-600 uppercase tracking-wider flex items-center gap-1.5 mb-2">
+              <div className="border-t border-border pt-3">
+                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5 mb-2">
                   <CalendarDays className="w-3.5 h-3.5 text-blue-700" aria-hidden="true" />
                   {isBn ? 'সাপ্তাহিক ক্লাসের সময়' : 'Available Days & Hours'}
                 </span>
 
                 {(profile.availability?.length ?? 0) === 0 ? (
-                  <p className="text-xs text-slate-500">
+                  <p className="text-xs text-muted-foreground">
                     {isBn ? 'সময়সূচি নির্ধারিত নয়' : 'No availability published'}
                   </p>
                 ) : (
-                  <div className="space-y-1.5">
+                  <div className="flex flex-col gap-1.5">
                     {(profile.availability ?? []).map((slot) => {
                       const dayName = isBn
                         ? WEEKDAY_LABELS[slot.weekday]?.bn
@@ -864,10 +864,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                       return (
                         <div
                           key={`${slot.weekday}-${slot.startLocal}-${slot.endLocal}`}
-                          className="flex items-center justify-between rounded-xl bg-slate-50 border border-slate-200 px-3 py-2 text-xs"
+                          className="flex items-center justify-between rounded-xl bg-slate-50 border border-border px-3 py-2 text-xs"
                         >
-                          <span className="font-bold text-slate-900">{dayName}</span>
-                          <span className="text-slate-700 font-mono font-medium">
+                          <span className="font-bold text-foreground">{dayName}</span>
+                          <span className="text-muted-foreground font-mono font-medium">
                             {start} — {end}
                           </span>
                         </div>
@@ -885,8 +885,8 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             icon={<Send className="w-5 h-5 text-blue-700" aria-hidden="true" />}
           >
             {!currentUser ? (
-              <div className="space-y-4" data-testid="profile-login-required">
-                <p className="text-sm text-slate-600 leading-relaxed font-normal">
+              <div className="flex flex-col gap-4" data-testid="profile-login-required">
+                <p className="text-sm text-muted-foreground leading-relaxed font-normal">
                   {isBn
                     ? 'শিক্ষককে সরাসরি টিউশন অনুরোধ পাঠাতে অনুগ্রহ করে আপনার অভিভাবক বা শিক্ষার্থী অ্যাকাউন্টে লগইন করুন।'
                     : 'Sign in to send a direct tutoring booking request to this educator.'}
@@ -898,22 +898,22 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 </Link>
               </div>
             ) : studentOptions.length === 0 ? (
-              <p className="text-sm text-slate-500">
+              <p className="text-sm text-muted-foreground">
                 {isBn
                   ? 'অনুরোধ পাঠাতে একজন শিক্ষার্থী প্রোফাইল প্রয়োজন।'
                   : 'A student profile is required to request tutoring.'}
               </p>
             ) : (
-              <form onSubmit={handleBookingSubmit} className="space-y-4">
-                <div className="space-y-1.5">
-                  <Label htmlFor="student-select" className="text-xs font-bold text-slate-800">
+              <form onSubmit={handleBookingSubmit} className="flex flex-col gap-4">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="student-select" className="text-xs font-bold text-foreground">
                     {isBn ? 'শিক্ষার্থী নির্বাচন করুন' : 'Select Student'}
                   </Label>
                   <NativeSelect
                     id="student-select"
                     value={selectedStudentId}
                     onChange={(e) => setSelectedStudentId(e.target.value)}
-                    className="text-xs rounded-xl border-slate-300 text-slate-900"
+                    className="text-xs rounded-xl border-slate-300 text-foreground"
                   >
                     {studentOptions.map((option) => (
                       <option key={option.id} value={option.id}>
@@ -923,15 +923,15 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   </NativeSelect>
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="subject-select" className="text-xs font-bold text-slate-800">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="subject-select" className="text-xs font-bold text-foreground">
                     {isBn ? 'বিষয় ও শ্রেণি' : 'Subject & Level'}
                   </Label>
                   <NativeSelect
                     id="subject-select"
                     value={selectedSubject?.id ?? ''}
                     onChange={(e) => setSelectedSubjectEntryId(e.target.value)}
-                    className="text-xs rounded-xl border-slate-300 text-slate-900"
+                    className="text-xs rounded-xl border-slate-300 text-foreground"
                   >
                     {subjects.map((s) => (
                       <option key={s.id} value={s.id}>
@@ -943,8 +943,8 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   </NativeSelect>
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="mode-select" className="text-xs font-bold text-slate-800">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="mode-select" className="text-xs font-bold text-foreground">
                     {isBn ? 'পাঠদানের পদ্ধতি' : 'Teaching Mode'}
                   </Label>
                   <NativeSelect
@@ -953,7 +953,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                     onChange={(e) =>
                       setSelectedMode(e.target.value as 'online' | 'in_person' | 'hybrid')
                     }
-                    className="text-xs rounded-xl border-slate-300 text-slate-900"
+                    className="text-xs rounded-xl border-slate-300 text-foreground"
                   >
                     {profile.teachingModes.map((mode) => (
                       <option key={mode} value={mode}>
@@ -973,8 +973,8 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   </NativeSelect>
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label className="text-xs font-bold text-slate-800">
+                <div className="flex flex-col gap-1.5">
+                  <Label className="text-xs font-bold text-foreground">
                     {isBn ? 'পছন্দের দিনসমূহ' : 'Preferred Days'}
                   </Label>
                   <div className="flex flex-wrap gap-1.5">
@@ -989,7 +989,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                           className={`rounded-xl border px-3 py-1.5 text-xs font-bold transition-all ${
                             isSelected
                               ? 'border-transparent bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs'
-                              : 'border-slate-300 bg-white text-slate-700 hover:border-blue-500 hover:text-slate-900'
+                              : 'border-slate-300 bg-white text-muted-foreground hover:border-blue-500 hover:text-foreground'
                           }`}
                         >
                           {isBn ? WEEKDAY_LABELS[index]?.bn : WEEKDAY_LABELS[index]?.en}
@@ -999,8 +999,8 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   </div>
                 </div>
 
-                <div className="space-y-1.5">
-                  <Label htmlFor="booking-notes" className="text-xs font-bold text-slate-800">
+                <div className="flex flex-col gap-1.5">
+                  <Label htmlFor="booking-notes" className="text-xs font-bold text-foreground">
                     {isBn
                       ? 'শিক্ষকের জন্য কোনো বিশেষ বার্তা (ঐচ্ছিক)'
                       : 'Message for tutor (optional)'}
@@ -1015,7 +1015,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                         ? 'আপনার শিক্ষার্থীর বর্তমান অবস্থা বা বিশেষ কোনো প্রয়োজনীয়তা লিখুন...'
                         : 'Mention student current topics or specific requirements...'
                     }
-                    className="text-xs rounded-xl border-slate-300 text-slate-900 placeholder:text-slate-400"
+                    className="text-xs rounded-xl border-slate-300 text-foreground placeholder:text-slate-400"
                   ></Textarea>
                 </div>
 
@@ -1050,8 +1050,8 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 </Button>
 
                 {/* Trust and Escrow Notice */}
-                <div className="rounded-2xl bg-slate-50 p-3.5 space-y-1.5 text-[11px] text-slate-600 border border-slate-200">
-                  <div className="flex items-center gap-1.5 font-bold text-slate-800">
+                <div className="rounded-2xl bg-muted/40 p-3.5 flex flex-col gap-1.5 text-[11px] text-muted-foreground border border-border">
+                  <div className="flex items-center gap-1.5 font-bold text-foreground">
                     <Lock className="w-3.5 h-3.5 text-blue-700" />
                     <span>
                       {isBn ? 'অগ্রণী এসক্রো পেমেন্ট সুরক্ষা' : 'Ogroni Escrow Security Guarantee'}

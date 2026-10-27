@@ -150,7 +150,7 @@ export function AssignmentSubmissionsPage({
   const hasScore = submission?.score !== null && submission?.score !== undefined;
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-4xl mx-auto px-4 py-8 flex flex-col gap-6">
       {/* Navigation */}
       <div className="flex items-center justify-between">
         <Link
@@ -164,7 +164,7 @@ export function AssignmentSubmissionsPage({
       </div>
 
       {/* Header */}
-      <div className="rounded-2xl bg-card border border-info/40 p-8 text-foreground space-y-2">
+      <div className="rounded-2xl bg-card border border-info/40 p-8 text-foreground flex flex-col gap-2">
         <div className="flex items-center gap-2 text-info-soft-foreground text-xs font-bold uppercase tracking-wider">
           <BookOpen className="w-4 h-4" />
           <span>{locale === 'bn' ? 'জমা দেওয়া খাতা মূল্যায়ন' : 'Submission Evaluation'}</span>
@@ -190,7 +190,7 @@ export function AssignmentSubmissionsPage({
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* Submission Work */}
-          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 space-y-4">
+          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col gap-4">
             <CardHeader className="p-0 pb-2">
               <div className="flex items-center justify-between">
                 <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
@@ -225,7 +225,7 @@ export function AssignmentSubmissionsPage({
           </Card>
 
           {/* Grading Form */}
-          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 space-y-4">
+          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col gap-4">
             <CardHeader className="p-0 pb-2">
               <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
                 <Award className="w-4 h-4 text-success-soft-foreground" />
@@ -246,10 +246,10 @@ export function AssignmentSubmissionsPage({
               {isTutor ? (
                 <form
                   onSubmit={handleGrade}
-                  className="space-y-3"
+                  className="flex flex-col gap-3"
                   data-testid="submissions-grading-form"
                 >
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1">
                     <Label
                       htmlFor="submission-score"
                       className="text-xs font-semibold text-muted-foreground"
@@ -268,7 +268,7 @@ export function AssignmentSubmissionsPage({
                     />
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="flex flex-col gap-1.5">
                     <Label
                       htmlFor="submission-feedback"
                       className="text-xs font-semibold text-muted-foreground"
@@ -290,7 +290,7 @@ export function AssignmentSubmissionsPage({
                   </div>
 
                   {hasScore && (
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="submission-revision"
                         className="text-xs font-semibold text-warning-soft-foreground"

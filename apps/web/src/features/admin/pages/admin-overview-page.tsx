@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -96,11 +96,11 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           <LoadingSpinner />
         </div>
       ) : (
-        <div className="space-y-8 py-6" data-testid="admin-overview-page">
+        <div className="flex flex-col gap-8 py-6" data-testid="admin-overview-page">
           {/* Header Banner */}
           <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {t('title')}
                 </h1>
@@ -313,7 +313,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Double-Entry Ledger Integrity Snapshot */}
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-5 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-5 shadow-xs">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-base font-bold text-foreground flex items-center gap-2">
@@ -375,7 +375,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
           {/* Security & Audit Policy Card */}
           <div className="bg-card border border-border rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs">
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-success-soft-foreground text-sm font-semibold">
                 <CheckCircle2 className="w-4 h-4 text-success" />
                 <span>{t('auditRedactedNotice')}</span>

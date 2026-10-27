@@ -59,7 +59,7 @@ export function TutorResultsGrid({
   if (tutors.length === 0) {
     return (
       <div
-        className="rounded-2xl bg-card/90 border border-border p-10 sm:p-16 text-center space-y-4 backdrop-blur-xl"
+        className="rounded-2xl bg-card/90 border border-border p-10 sm:p-16 text-center flex flex-col gap-4 backdrop-blur-xl"
         data-testid="tutors-empty"
       >
         <div

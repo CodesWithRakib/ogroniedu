@@ -170,11 +170,11 @@ export function LearningPage({ locale }: { locale: Locale }) {
             <CardContent className="py-4">
               <form
                 onSubmit={handleCreateAssignment}
-                className="space-y-3"
+                className="flex flex-col gap-3"
                 data-testid="create-assignment-form"
               >
                 <div className="grid grid-cols-1 sm:grid-cols-4 gap-2">
-                  <div className="sm:col-span-2 space-y-1">
+                  <div className="sm:col-span-2 flex flex-col gap-1">
                     <Label htmlFor="assignment-title" className="text-xs font-medium">
                       {dict.learning.newHomework}
                     </Label>
@@ -185,7 +185,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
                       data-testid="assignment-title-input"
                     />
                   </div>
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1">
                     <Label htmlFor="assignment-due" className="text-xs font-medium">
                       {dict.learning.dueAtLabel}
                     </Label>
@@ -196,7 +196,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
                       onChange={(e) => setAssignmentDue(e.target.value)}
                     />
                   </div>
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1">
                     <Label htmlFor="assignment-max" className="text-xs font-medium">
                       {dict.learning.maxScoreLabel}
                     </Label>
@@ -210,7 +210,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
                     />
                   </div>
                 </div>
-                <div className="space-y-1">
+                <div className="flex flex-col gap-1">
                   <Label htmlFor="assignment-instructions" className="text-xs font-medium">
                     {dict.learning.instructionsLabel}
                   </Label>
@@ -222,7 +222,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
                   />
                 </div>
                 <div className="flex flex-wrap items-end gap-2">
-                  <div className="w-44 space-y-1">
+                  <div className="w-44 flex flex-col gap-1">
                     <Label htmlFor="assignment-publication" className="text-xs font-medium">
                       {dict.learning.statusPublished} / {dict.learning.statusDraft}
                     </Label>
@@ -278,7 +278,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
           actionHref={role === 'tutor' ? undefined : withLocale('/tutors', locale)}
         />
       ) : (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           {records.activeBookingStudentId && (
             <StudentProgressPanel
               locale={locale}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import {
@@ -199,12 +199,12 @@ export function VerificationLevelCard({
 
   return (
     <Card
-      className="rounded-2xl border-2 border-slate-200 bg-white shadow-xs overflow-hidden"
+      className="rounded-2xl border border-border bg-card shadow-xs overflow-hidden"
       data-testid={`verification-level-${record.level}`}
     >
-      <CardHeader className="pb-3 border-b border-slate-100 bg-slate-50/60">
+      <CardHeader className="pb-3 border-b border-border/40 bg-muted/40">
         <div className="flex flex-wrap items-center justify-between gap-2">
-          <CardTitle className="text-sm font-black text-slate-900 flex items-center gap-2">
+          <CardTitle className="text-sm font-black text-foreground flex items-center gap-2">
             <FileText className="w-4 h-4 text-primary" />
             {levelLabel(record.level, locale)}
           </CardTitle>
@@ -216,7 +216,7 @@ export function VerificationLevelCard({
             {levelStatusLabel(record.status, locale)}
           </Badge>
         </div>
-        <p className="text-[11px] text-slate-600 font-medium mt-1">
+        <p className="text-[11px] text-muted-foreground font-medium mt-1">
           {record.expiresAt
             ? isBn
               ? `মেয়াদ শেষ: ${formatDate(record.expiresAt, locale)}`
@@ -224,7 +224,7 @@ export function VerificationLevelCard({
             : nextActionLabel(record.requirements.nextAction, locale)}
         </p>
       </CardHeader>
-      <CardContent className="pt-4 space-y-3.5">
+      <CardContent className="pt-4 flex flex-col gap-3.5">
         {error && (
           <p
             role="alert"
@@ -247,7 +247,7 @@ export function VerificationLevelCard({
         )}
 
         {record.applicantFeedback && (
-          <div className="rounded-xl border border-amber-300 bg-amber-50/90 p-3.5 text-xs text-amber-950 space-y-1.5 shadow-2xs">
+          <div className="rounded-xl border border-amber-300 bg-amber-50/90 p-3.5 text-xs text-amber-950 flex flex-col gap-1.5 shadow-2xs">
             <span className="font-bold flex items-center gap-1.5 text-amber-900">
               <Info className="w-4 h-4 text-amber-700" />
               {isBn ? 'পর্যালোচকের মন্তব্য' : 'Reviewer feedback'}
@@ -262,12 +262,12 @@ export function VerificationLevelCard({
         )}
 
         {missingUploads.length > 0 && (
-          <div className="text-xs text-slate-800 bg-slate-50 border border-slate-200 p-3 rounded-xl space-y-1">
-            <span className="font-bold text-slate-900 flex items-center gap-1.5">
+          <div className="text-xs text-foreground bg-slate-50 border border-slate-200 p-3 rounded-xl flex flex-col gap-1">
+            <span className="font-bold text-foreground flex items-center gap-1.5">
               <span className="w-2 h-2 rounded-full bg-amber-500" />
               {isBn ? 'আপলোড করা প্রয়োজন:' : 'Upload required:'}
             </span>
-            <ul className="list-disc list-inside text-slate-700 pl-1 space-y-0.5 font-medium">
+            <ul className="list-disc list-inside text-muted-foreground pl-1 flex flex-col gap-0.5 font-medium">
               {missingUploads.map((label) => (
                 <li key={label}>{label}</li>
               ))}
@@ -276,12 +276,12 @@ export function VerificationLevelCard({
         )}
 
         {missingUploads.length === 0 && awaitingApproval.length > 0 && (
-          <div className="text-xs text-slate-800 bg-blue-50/60 border border-blue-200 p-3 rounded-xl space-y-1">
+          <div className="text-xs text-foreground bg-blue-50/60 border border-blue-200 p-3 rounded-xl flex flex-col gap-1">
             <span className="font-bold text-blue-950 flex items-center gap-1.5">
               <Clock className="w-3.5 h-3.5 text-blue-600" />
               {isBn ? 'পর্যালোচকের অনুমোদনের অপেক্ষায়:' : 'Awaiting reviewer approval:'}
             </span>
-            <ul className="list-disc list-inside text-slate-700 pl-1 space-y-0.5 font-medium">
+            <ul className="list-disc list-inside text-muted-foreground pl-1 flex flex-col gap-0.5 font-medium">
               {awaitingApproval.map((label) => (
                 <li key={label}>{label}</li>
               ))}
@@ -290,13 +290,13 @@ export function VerificationLevelCard({
         )}
 
         {/* Uploaded evidence */}
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           {record.documents.length === 0 ? (
             <p className="text-[11px] text-slate-500 italic py-1">
               {isBn ? 'এখনও কোনো প্রমাণপত্র আপলোড করা হয়নি।' : 'No evidence uploaded yet.'}
             </p>
           ) : (
-            <ul className="space-y-2">
+            <ul className="flex flex-col gap-2">
               {record.documents.map((document) => {
                 const statusLabel = DOC_STATUS_LABEL[document.reviewStatus] ?? {
                   en: document.reviewStatus,
@@ -305,14 +305,14 @@ export function VerificationLevelCard({
                 return (
                   <li
                     key={document.id}
-                    className="flex items-center justify-between gap-2 rounded-xl border border-slate-200 bg-slate-50/80 px-3.5 py-2.5 text-xs shadow-2xs"
+                    className="flex items-center justify-between gap-2 rounded-xl border border-border bg-muted/40/80 px-3.5 py-2.5 text-xs shadow-2xs"
                     data-testid={`document-${document.id}`}
                   >
                     <div className="min-w-0">
-                      <span className="font-bold text-slate-900 block">
+                      <span className="font-bold text-foreground block">
                         {documentTypeLabel(document.documentType, locale)}
                       </span>
-                      <span className="block text-[11px] text-slate-600 font-medium truncate">
+                      <span className="block text-[11px] text-muted-foreground font-medium truncate">
                         {document.originalFilename ?? (isBn ? 'সংযুক্ত ফাইল' : 'Attached file')}
                       </span>
                     </div>
@@ -353,15 +353,15 @@ export function VerificationLevelCard({
         {/* Upload form */}
         {editable && (
           <form
-            className="space-y-2.5 border-t border-slate-100 pt-3"
+            className="flex flex-col gap-2.5 border-t border-border/40 pt-3"
             onSubmit={handleUpload}
             data-testid={`upload-form-${record.level}`}
           >
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-              <div className="space-y-1">
+              <div className="flex flex-col gap-1">
                 <Label
                   htmlFor={`document-type-${record.level}`}
-                  className="text-slate-800 font-bold text-[11px]"
+                  className="text-foreground font-bold text-[11px]"
                 >
                   {isBn ? 'নথির ধরন' : 'Document type'}
                 </Label>
@@ -371,7 +371,7 @@ export function VerificationLevelCard({
                 >
                   <SelectTrigger
                     id={`document-type-${record.level}`}
-                    className="h-9 text-xs border-slate-300 text-slate-900 bg-white"
+                    className="h-9 text-xs border-border text-foreground bg-white"
                     data-testid={`document-type-${record.level}`}
                   >
                     <SelectValue
@@ -387,10 +387,10 @@ export function VerificationLevelCard({
                   </SelectContent>
                 </Select>
               </div>
-              <div className="space-y-1">
+              <div className="flex flex-col gap-1">
                 <Label
                   htmlFor={`document-file-${record.level}`}
-                  className="text-slate-800 font-bold text-[11px]"
+                  className="text-foreground font-bold text-[11px]"
                 >
                   {isBn ? 'ফাইল (সর্বোচ্চ ১০MB)' : 'File (max 10MB)'}
                 </Label>
@@ -399,7 +399,7 @@ export function VerificationLevelCard({
                   type="file"
                   accept={ACCEPTED_EVIDENCE_MIME.join(',')}
                   onChange={(e) => setFile(e.target.files?.[0] ?? null)}
-                  className="w-full text-[11px] h-9 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:bg-slate-100 file:text-slate-900 border-slate-300 text-slate-900"
+                  className="w-full text-[11px] h-9 file:mr-2 file:py-1 file:px-2 file:rounded-md file:border-0 file:text-xs file:bg-slate-100 file:text-foreground border-border text-foreground"
                   data-testid={`document-file-${record.level}`}
                 />
               </div>
@@ -409,10 +409,10 @@ export function VerificationLevelCard({
               size="sm"
               variant="outline"
               isLoading={busy}
-              className="border-slate-300 text-slate-900 hover:bg-slate-100 font-bold"
+              className="border-border text-foreground hover:bg-slate-100 font-bold"
               data-testid={`upload-document-${record.level}`}
             >
-              <Upload className="w-3.5 h-3.5 mr-1 text-slate-700" />
+              <Upload className="w-3.5 h-3.5 mr-1 text-muted-foreground" />
               {isBn ? 'প্রমাণপত্র আপলোড করুন' : 'Upload evidence'}
             </Button>
           </form>
@@ -420,7 +420,7 @@ export function VerificationLevelCard({
 
         {/* Level actions */}
         <div className="flex flex-wrap items-center justify-between gap-2 border-t border-slate-100 pt-3">
-          <span className="text-[11px] text-slate-600 font-medium inline-flex items-center gap-1">
+          <span className="text-[11px] text-muted-foreground font-medium inline-flex items-center gap-1">
             <Clock className="w-3.5 h-3.5" />
             {formatLocalizedNumber(record.submissionCount ?? 0, locale)}{' '}
             {isBn ? 'বার জমা দেওয়া হয়েছে' : 'submission(s)'}
@@ -433,7 +433,7 @@ export function VerificationLevelCard({
                 variant="outline"
                 disabled={busy}
                 onClick={handleReopen}
-                className="border-slate-300 text-slate-900 hover:bg-slate-100 font-bold"
+                className="border-border text-foreground hover:bg-slate-100 font-bold"
                 data-testid={`reopen-level-${record.level}`}
               >
                 <RefreshCw className="w-3.5 h-3.5 mr-1" />

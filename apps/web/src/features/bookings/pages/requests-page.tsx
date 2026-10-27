@@ -230,7 +230,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
       <div className="mb-6 relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-5 sm:p-7 shadow-xs">
         <div className="absolute -top-16 -right-10 w-64 h-64 rounded-full bg-brand-soft blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
-          <div className="space-y-2.5 max-w-2xl">
+          <div className="flex flex-col gap-2.5 max-w-2xl">
             <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-soft px-3 py-1 text-[11px] font-bold text-primary">
               <BookOpen className="w-3.5 h-3.5" />
               {locale === 'bn' ? 'বুকিং ওয়ার্কস্পেস' : 'Booking workspace'}
@@ -446,7 +446,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                 data-testid={`request-card-${r.id}`}
                 className="flex flex-col justify-between bg-card border border-slate-200 hover:border-blue-400 text-foreground hover:shadow-xs transition-all rounded-2xl overflow-hidden shadow-xs"
               >
-                <CardHeader className="space-y-3 pb-3">
+                <CardHeader className="flex flex-col gap-3 pb-3">
                   <div className="flex items-center justify-between gap-2">
                     <span className="font-mono text-xs font-bold text-slate-700 bg-slate-100 border border-slate-200 px-2 py-0.5 rounded-lg">
                       ID: #{r.id.slice(0, 8)}
@@ -484,7 +484,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                   </div>
                 </CardHeader>
 
-                <CardContent className="space-y-3 text-xs pt-0 flex-1">
+                <CardContent className="flex flex-col gap-3 text-xs pt-0 flex-1">
                   <div className="flex flex-wrap items-center gap-2">
                     <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-blue-50 text-blue-900 border border-blue-200 font-bold text-xs">
                       <BookOpen className="w-3.5 h-3.5 text-blue-700" />

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import {
@@ -191,7 +191,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
   }
 
   return (
-    <div className="space-y-4" data-testid="admin-disputes-tab-content">
+    <div className="flex flex-col gap-4" data-testid="admin-disputes-tab-content">
       {/* Header and Filter Tabs */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
         <div>
@@ -265,7 +265,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
             {filteredDisputes.length === 0 ? (
               <TableRow>
                 <TableCell colSpan={7} className="text-center py-10 text-slate-500">
-                  <div className="flex flex-col items-center justify-center space-y-1.5">
+                  <div className="flex flex-col items-center justify-center flex flex-col gap-1.5">
                     <CheckCircle2 className="w-8 h-8 text-emerald-500" />
                     <span className="font-medium text-slate-700">
                       {isBn ? 'কোনো বিরোধ বা অভিযোগ পাওয়া যায়নি' : 'No booking disputes found'}
@@ -293,7 +293,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                   <TableRow key={d.id} className="hover:bg-slate-50/80 transition-colors">
                     {/* 1. Booking & Subject */}
                     <TableCell className="px-4 py-3 font-medium">
-                      <div className="space-y-0.5">
+                      <div className="flex flex-col gap-0.5">
                         <span className="font-bold text-slate-900 block text-xs">
                           {subjectName}
                         </span>
@@ -309,7 +309,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
 
                     {/* 2. Disputant & Tutor */}
                     <TableCell className="px-4 py-3">
-                      <div className="space-y-0.5">
+                      <div className="flex flex-col gap-0.5">
                         <div className="flex items-center gap-1.5">
                           <span className="font-semibold text-slate-900">{disputantName}</span>
                           <span className="text-[10px] bg-slate-100 text-slate-700 px-1 py-0.2 rounded font-medium">
@@ -379,7 +379,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                           <ArrowRight className="w-3 h-3" />
                         </Button>
                       ) : (
-                        <div className="space-y-0.5 text-right">
+                        <div className="flex flex-col gap-0.5 text-right">
                           <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
                             {isBn ? 'নিষ্পন্ন হয়েছে' : 'Resolved'}
                           </span>
@@ -406,7 +406,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
       {activeDispute && (
         <Dialog open={!!activeDispute} onOpenChange={() => setActiveDispute(null)}>
           <DialogContent className="sm:max-w-lg p-6 bg-white border border-slate-200 rounded-2xl shadow-2xl">
-            <DialogHeader className="space-y-1.5 pb-2 border-b border-slate-100">
+            <DialogHeader className="flex flex-col gap-1.5 pb-2 border-b border-slate-100">
               <div className="flex items-center gap-2 text-blue-700">
                 <Scale className="w-5 h-5 text-blue-600" />
                 <DialogTitle className="text-base font-bold text-slate-900">
@@ -420,9 +420,9 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
               </DialogDescription>
             </DialogHeader>
 
-            <form onSubmit={handleResolve} className="space-y-4 pt-3">
+            <form onSubmit={handleResolve} className="flex flex-col gap-4 pt-3">
               {/* Context Summary Card */}
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs space-y-2">
+              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs flex flex-col gap-2">
                 <div className="grid grid-cols-2 gap-2 text-[11px] pb-2 border-b border-slate-200">
                   <div>
                     <span className="text-slate-500">{isBn ? 'বিষয়:' : 'Subject:'}</span>{' '}
@@ -470,7 +470,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
               </div>
 
               {/* Resolution Decision */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-slate-800">
                   {isBn
                     ? 'মীমাংসা সিদ্ধান্ত (Binding Administrative Decision)'
@@ -507,7 +507,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
 
               {/* Refund amount if applicable */}
               {(resolutionType === 'refund' || resolutionType === 'partial_refund') && (
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <label className="text-xs font-semibold text-slate-800">
                     {isBn ? 'অনুমোদিত রিফান্ড পরিমাণ (৳)' : 'Approved Refund Amount (BDT ৳)'}
                   </label>
@@ -523,7 +523,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
               )}
 
               {/* Resolution notes */}
-              <div className="space-y-1.5">
+              <div className="flex flex-col gap-1.5">
                 <label className="text-xs font-semibold text-slate-800">
                   {isBn ? 'তদন্ত নোট ও সিদ্ধান্তের ভিত্তি' : 'Investigation Rationale & Notes'}
                 </label>

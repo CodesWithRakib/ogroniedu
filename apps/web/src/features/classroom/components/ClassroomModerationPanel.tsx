@@ -93,9 +93,9 @@ export function ClassroomModerationPanel({
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-4 space-y-6 bg-slate-50/50">
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-6 bg-surface-muted/50">
         {/* Section 1: Hand-Raise Queue */}
-        <div className="space-y-3">
+        <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
             <span className="text-xs font-black text-amber-800 uppercase tracking-wider flex items-center gap-1.5">
               <Hand className="w-4 h-4 text-amber-600" />
@@ -104,11 +104,11 @@ export function ClassroomModerationPanel({
           </div>
 
           {handRaisedAttendees.length === 0 ? (
-            <p className="text-xs text-slate-500 font-semibold italic p-3.5 bg-white rounded-2xl border border-slate-200 text-center">
+            <p className="text-xs text-muted-foreground font-semibold italic p-3.5 bg-card rounded-2xl border border-border text-center">
               {isBn ? 'বর্তমানে কোনো শিক্ষার্থী হাত তোলেনি।' : 'No active hand-raise requests.'}
             </p>
           ) : (
-            <div className="space-y-2.5">
+            <div className="flex flex-col gap-2.5">
               {handRaisedAttendees.map((student) => (
                 <div
                   key={student.id}
@@ -143,18 +143,18 @@ export function ClassroomModerationPanel({
         </div>
 
         {/* Section 2: Promoted Students on Stage */}
-        <div className="space-y-3">
+        <div className="flex flex-col gap-3">
           <span className="text-xs font-black text-indigo-800 uppercase tracking-wider flex items-center gap-1.5">
             <Radio className="w-4 h-4 text-emerald-600 animate-pulse" />
             {isBn ? 'স্টেজে সক্রিয় শিক্ষার্থী' : 'Active on Stage'} ({stageAttendees.length})
           </span>
 
           {stageAttendees.length === 0 ? (
-            <p className="text-xs text-slate-500 font-semibold italic p-3.5 bg-white rounded-2xl border border-slate-200 text-center">
+            <p className="text-xs text-muted-foreground font-semibold italic p-3.5 bg-card rounded-2xl border border-border text-center">
               {isBn ? 'স্টেজে কোনো শিক্ষার্থী নেই।' : 'No students currently on stage.'}
             </p>
           ) : (
-            <div className="space-y-2.5">
+            <div className="flex flex-col gap-2.5">
               {stageAttendees.map((student) => (
                 <div
                   key={student.id}
@@ -195,10 +195,10 @@ export function ClassroomModerationPanel({
         </div>
 
         {/* Section 3: Audience & Attendance Roster */}
-        <div className="space-y-3">
+        <div className="flex flex-col gap-3">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-800 uppercase tracking-wider flex items-center gap-1.5">
-              <Clock className="w-4 h-4 text-blue-600" />
+            <span className="text-xs font-black text-foreground uppercase tracking-wider flex items-center gap-1.5">
+              <Clock className="w-4 h-4 text-primary" />
               {isBn ? 'উপস্থিত শিক্ষার্থী রোস্টার' : 'Audience Roster'} ({attendees.length})
             </span>
             {onMuteAll && (
@@ -215,7 +215,7 @@ export function ClassroomModerationPanel({
             )}
           </div>
 
-          <div className="space-y-2 max-h-60 overflow-y-auto pr-1">
+          <div className="flex flex-col gap-2 max-h-60 overflow-y-auto pr-1">
             {attendees.map((att) => (
               <div
                 key={att.id}

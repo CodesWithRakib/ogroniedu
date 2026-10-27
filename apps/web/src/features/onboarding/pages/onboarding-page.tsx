@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -104,7 +104,7 @@ function StepForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-4" data-testid={`onboarding-form-${step.key}`}>
+    <form onSubmit={handleSubmit} className="flex flex-col gap-4" data-testid={`onboarding-form-${step.key}`}>
       {fields.map((field: StepField) => {
         const id = `onboarding-${step.key}-${field.name}`;
         const label = isBn ? field.labelBn : field.labelEn;
@@ -123,7 +123,7 @@ function StepForm({
           );
         }
         return (
-          <div key={field.name} className="space-y-1.5 text-left">
+          <div key={field.name} className="flex flex-col gap-1.5 text-left">
             <Label htmlFor={id} className="text-xs font-semibold text-foreground">
               {label}
               {field.required ? ' *' : ''}
@@ -258,7 +258,7 @@ function TutorProfileStepForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleValidSubmit)}
-        className="space-y-5 text-left w-full"
+        className="flex flex-col gap-5 text-left w-full"
         data-testid="onboarding-tutor-profile-form"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -266,7 +266,7 @@ function TutorProfileStepForm({
             control={form.control}
             name="headline"
             render={({ field }) => (
-              <FormItem className="space-y-1">
+              <FormItem className="flex flex-col gap-1">
                 <div className="flex items-center justify-between">
                   <FormLabel className="text-xs font-semibold text-foreground">
                     {isBn ? 'পেশাদার শিরোনাম (ইংরেজি)' : 'Headline (English)'} *
@@ -298,7 +298,7 @@ function TutorProfileStepForm({
             control={form.control}
             name="headlineBn"
             render={({ field }) => (
-              <FormItem className="space-y-1">
+              <FormItem className="flex flex-col gap-1">
                 <div className="flex items-center justify-between">
                   <FormLabel className="text-xs font-semibold text-foreground">
                     {isBn ? 'পেশাদার শিরোনাম (বাংলা)' : 'Headline (Bangla)'} *
@@ -331,7 +331,7 @@ function TutorProfileStepForm({
           control={form.control}
           name="bio"
           render={({ field }) => (
-            <FormItem className="space-y-1">
+            <FormItem className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
                 <FormLabel className="text-xs font-semibold text-foreground">
                   {isBn
@@ -367,7 +367,7 @@ function TutorProfileStepForm({
           control={form.control}
           name="bioBn"
           render={({ field }) => (
-            <FormItem className="space-y-1">
+            <FormItem className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
                 <FormLabel className="text-xs font-semibold text-foreground">
                   {isBn
@@ -404,7 +404,7 @@ function TutorProfileStepForm({
             control={form.control}
             name="yearsExperience"
             render={({ field }) => (
-              <FormItem className="space-y-1">
+              <FormItem className="flex flex-col gap-1">
                 <FormLabel className="text-xs font-semibold text-foreground">
                   {isBn ? 'অভিজ্ঞতার বছর' : 'Years of Experience'} *
                 </FormLabel>
@@ -427,7 +427,7 @@ function TutorProfileStepForm({
             control={form.control}
             name="hourlyRate"
             render={({ field }) => (
-              <FormItem className="space-y-1">
+              <FormItem className="flex flex-col gap-1">
                 <FormLabel className="text-xs font-semibold text-foreground">
                   {isBn ? 'বেসিক ঘণ্টা প্রতি ফি (টাকা / ঘণ্টা)' : 'Base Hourly Rate (BDT / hr)'} *
                 </FormLabel>
@@ -448,7 +448,7 @@ function TutorProfileStepForm({
           />
         </div>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <FormLabel className="text-xs font-semibold text-foreground">
             {isBn ? 'পাঠদানের মাধ্যমসমূহ' : 'Teaching Modes'} *
           </FormLabel>
@@ -582,7 +582,7 @@ function TutorEducationStepForm({
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit(handleValidSubmit)}
-        className="space-y-5 text-left w-full"
+        className="flex flex-col gap-5 text-left w-full"
         data-testid="onboarding-tutor-education-form"
       >
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
@@ -590,7 +590,7 @@ function TutorEducationStepForm({
             control={form.control}
             name="title"
             render={({ field }) => (
-              <FormItem className="space-y-1">
+              <FormItem className="flex flex-col gap-1">
                 <div className="flex items-center justify-between">
                   <FormLabel className="text-xs font-semibold text-foreground">
                     {isBn ? 'ডিগ্রি / সনদের নাম' : 'Degree / Qualification Title'} *
@@ -622,7 +622,7 @@ function TutorEducationStepForm({
             control={form.control}
             name="type"
             render={({ field }) => (
-              <FormItem className="space-y-1">
+              <FormItem className="flex flex-col gap-1">
                 <FormLabel className="text-xs font-semibold text-foreground">
                   {isBn ? 'সনদের ধরন' : 'Qualification Type'} *
                 </FormLabel>
@@ -655,7 +655,7 @@ function TutorEducationStepForm({
             control={form.control}
             name="institution"
             render={({ field }) => (
-              <FormItem className="space-y-1">
+              <FormItem className="flex flex-col gap-1">
                 <div className="flex items-center justify-between">
                   <FormLabel className="text-xs font-semibold text-foreground">
                     {isBn ? 'শিক্ষা প্রতিষ্ঠান / বোর্ড' : 'Institution / Board'} *
@@ -687,7 +687,7 @@ function TutorEducationStepForm({
             control={form.control}
             name="issuedYear"
             render={({ field }) => (
-              <FormItem className="space-y-1">
+              <FormItem className="flex flex-col gap-1">
                 <FormLabel className="text-xs font-semibold text-foreground">
                   {isBn ? 'পাশের সন' : 'Passing / Graduation Year'} *
                 </FormLabel>
@@ -812,17 +812,17 @@ function TutorSubjectsStepForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 text-left"
+      className="flex flex-col gap-4 text-left"
       data-testid="onboarding-tutor-subjects-form"
     >
-      <div className="rounded-xl border border-border bg-muted/20 p-3.5 space-y-3">
+      <div className="rounded-xl border border-border bg-muted/20 p-3.5 flex flex-col gap-3">
         <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
           <BookOpen className="h-4 w-4 text-primary" />
           {isBn ? 'নতুন পাঠদান বিষয় নির্বাচন করুন' : 'Add Teaching Subject'}
         </h4>
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label className="text-[11px] font-semibold">{isBn ? 'বিষয়' : 'Subject'} *</Label>
             <Select
               value={selectedSubjectId}
@@ -842,7 +842,7 @@ function TutorSubjectsStepForm({
             </Select>
           </div>
 
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label className="text-[11px] font-semibold">
               {isBn ? 'শ্রেণি / লেভেল' : 'Class / Level'} *
             </Label>
@@ -864,7 +864,7 @@ function TutorSubjectsStepForm({
             </Select>
           </div>
 
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label className="text-[11px] font-semibold">
               {isBn ? 'ফি (টাকা/ঘণ্টা)' : 'Rate (BDT/hr)'}
             </Label>
@@ -894,7 +894,7 @@ function TutorSubjectsStepForm({
       </div>
 
       {/* Added subjects preview list */}
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <Label className="text-xs font-semibold">
           {isBn
             ? `নির্বাচিত বিষয়সমূহ (${addedSubjects.length})`
@@ -1023,7 +1023,7 @@ function TutorAvailabilityStepForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 text-left"
+      className="flex flex-col gap-4 text-left"
       data-testid="onboarding-tutor-availability-form"
     >
       <div className="flex flex-wrap items-center gap-2">
@@ -1053,9 +1053,9 @@ function TutorAvailabilityStepForm({
         </button>
       </div>
 
-      <div className="rounded-xl border border-border bg-muted/20 p-3 space-y-2.5">
+      <div className="rounded-xl border border-border bg-muted/20 p-3 flex flex-col gap-2.5">
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label className="text-[11px] font-semibold">{isBn ? 'বার' : 'Weekday'}</Label>
             <Select
               value={String(selectedDay)}
@@ -1074,7 +1074,7 @@ function TutorAvailabilityStepForm({
             </Select>
           </div>
 
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label className="text-[11px] font-semibold">{isBn ? 'শুরু' : 'Start Time'}</Label>
             <Input
               type="time"
@@ -1084,7 +1084,7 @@ function TutorAvailabilityStepForm({
             />
           </div>
 
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label className="text-[11px] font-semibold">{isBn ? 'সমাপ্তি' : 'End Time'}</Label>
             <Input
               type="time"
@@ -1107,7 +1107,7 @@ function TutorAvailabilityStepForm({
         </Button>
       </div>
 
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <Label className="text-xs font-semibold">
           {isBn
             ? `সক্রিয় প্রাপ্যতা সময়সূচি (${slots.length})`
@@ -1333,11 +1333,11 @@ function DocumentsStepForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-5 text-left w-full"
+      className="flex flex-col gap-5 text-left w-full"
       data-testid="onboarding-documents-form"
     >
       {/* 1-Click Realistic Test Documents Selection */}
-      <div className="rounded-2xl border border-primary/25 bg-primary/5 p-4 space-y-3">
+      <div className="rounded-2xl border border-primary/25 bg-primary/5 p-4 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" />
@@ -1395,14 +1395,14 @@ function DocumentsStepForm({
       </div>
 
       {/* Manual File Upload */}
-      <div className="rounded-2xl border border-border bg-card p-4 space-y-3.5">
+      <div className="rounded-2xl border border-border bg-card p-4 flex flex-col gap-3.5">
         <h4 className="text-xs font-bold text-foreground flex items-center gap-2">
           <Upload className="h-4 w-4 text-primary" />
           {isBn ? 'আপনার নিজস্ব ফাইল আপলোড করুন' : 'Or Upload Your Own Document'}
         </h4>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label className="text-xs font-semibold">{isBn ? 'নথির ধরন' : 'Document Type'} *</Label>
             <Select value={documentType} onValueChange={setDocumentType}>
               <SelectTrigger className="w-full text-xs">
@@ -1422,7 +1422,7 @@ function DocumentsStepForm({
             </Select>
           </div>
 
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <Label className="text-xs font-semibold">
               {isBn
                 ? 'প্রমাণপত্র ফাইল (PDF / ছবি, সর্বোচ্চ ১০MB)'
@@ -1449,7 +1449,7 @@ function DocumentsStepForm({
 
       {/* List of Attached Documents */}
       {uploadedFiles.length > 0 && (
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <div className="flex items-center justify-between">
             <Label className="text-xs font-bold text-foreground">
               {isBn
@@ -1457,7 +1457,7 @@ function DocumentsStepForm({
                 : `Attached Documents (${uploadedFiles.length})`}
             </Label>
           </div>
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             {uploadedFiles.map((doc, idx) => (
               <div
                 key={`${doc.id}-${idx}`}
@@ -1541,10 +1541,10 @@ function SecuritySetupStepForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 text-left"
+      className="flex flex-col gap-4 text-left"
       data-testid="onboarding-security-form"
     >
-      <div className="rounded-xl border border-border bg-muted/20 p-4 space-y-3">
+      <div className="rounded-xl border border-border bg-muted/20 p-4 flex flex-col gap-3">
         <div className="flex items-center gap-2 text-foreground font-semibold text-xs">
           <Shield className="h-4 w-4 text-primary" />
           <span>{isBn ? 'নিরাপত্তা ও নৈতিক আচরণবিধি' : 'Security & Code of Conduct'}</span>
@@ -1601,10 +1601,10 @@ function ReviewStepForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-4 text-left"
+      className="flex flex-col gap-4 text-left"
       data-testid="onboarding-review-form"
     >
-      <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 space-y-3">
+      <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 flex flex-col gap-3">
         <div className="flex items-center gap-2 text-primary font-bold text-sm">
           <Sparkles className="h-5 w-5" />
           <span>
@@ -1706,7 +1706,7 @@ function ContactVerificationCard({
   }
 
   return (
-    <div className="rounded-xl border border-border bg-muted/30 p-3.5 space-y-3 text-left">
+    <div className="rounded-xl border border-border bg-muted/30 p-3.5 flex flex-col gap-3 text-left">
       <div className="flex items-center justify-between">
         <span className="text-xs font-semibold">{isBn ? 'যোগাযোগ নম্বর / ইমেইল' : 'Contact'}</span>
         <span className="text-xs text-muted-foreground">{userContact}</span>
@@ -1723,7 +1723,7 @@ function ContactVerificationCard({
           {isBn ? 'যাচাইকরণ কোড পাঠান' : 'Send verification code'}
         </Button>
       ) : (
-        <form onSubmit={handleVerifyCode} className="space-y-2">
+        <form onSubmit={handleVerifyCode} className="flex flex-col gap-2">
           <Input
             value={code}
             onChange={(e) => setCode(e.target.value)}
@@ -1806,7 +1806,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
 
   return (
     <div className="w-full px-4 sm:px-6 lg:px-8 py-8" data-testid="onboarding-page">
-      <header className="mb-6 space-y-1">
+      <header className="mb-6 flex flex-col gap-1">
         <h1 className="text-xl font-bold text-foreground">
           {isBn ? 'অ্যাকাউন্ট সম্পূর্ণ করুন' : 'Complete your account setup'}
         </h1>
@@ -1816,7 +1816,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
         </p>
       </header>
 
-      <div className="mb-6 space-y-2">
+      <div className="mb-6 flex flex-col gap-2">
         <div className="flex items-center justify-between text-xs font-semibold text-muted-foreground">
           <span>{isBn ? 'অগ্রগতি' : 'Progress'}</span>
           <span data-testid="onboarding-progress">{progress}%</span>
@@ -1838,7 +1838,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
         </div>
       )}
 
-      <ul className="mb-6 space-y-2" data-testid="onboarding-step-list">
+      <ul className="mb-6 flex flex-col gap-2" data-testid="onboarding-step-list">
         {data.steps.map((step) => (
           <li
             key={step.key}

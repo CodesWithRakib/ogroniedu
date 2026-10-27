@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -149,7 +149,7 @@ export function AdminReplacementDetailPageView({
         </p>
       ) : isError || !item ? (
         <Card className="py-16 text-center rounded-2xl">
-          <CardContent className="space-y-3">
+          <CardContent className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
               {isBn ? 'কেসটি পাওয়া যায়নি।' : 'The case was not found.'}
             </p>
@@ -160,7 +160,7 @@ export function AdminReplacementDetailPageView({
         </Card>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
-          <div className="lg:col-span-2 space-y-5">
+          <div className="lg:col-span-2 flex flex-col gap-5">
             {error && (
               <Alert variant="destructive" className="rounded-2xl">
                 <AlertDescription role="alert">{error}</AlertDescription>
@@ -172,7 +172,7 @@ export function AdminReplacementDetailPageView({
               </Alert>
             )}
 
-            <Card className="rounded-2xl bg-card p-5 space-y-3">
+            <Card className="rounded-2xl bg-card p-5 flex flex-col gap-3">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline" className="capitalize">
                   {item.reasonCode.replace(/_/g, ' ')}
@@ -188,7 +188,7 @@ export function AdminReplacementDetailPageView({
               <p className="text-sm text-foreground rounded-xl border border-border p-3">
                 {item.explanation}
               </p>
-              <div className="text-xs text-muted-foreground space-y-1">
+              <div className="text-xs text-muted-foreground flex flex-col gap-1">
                 <p>
                   {isBn ? 'বুকিং:' : 'Booking:'} {item.bookingId} · {item.booking?.status ?? '—'}
                 </p>
@@ -209,14 +209,14 @@ export function AdminReplacementDetailPageView({
               </div>
             </Card>
 
-            <Card className="rounded-2xl bg-card p-5 space-y-3">
+            <Card className="rounded-2xl bg-card p-5 flex flex-col gap-3">
               <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                 <History className="w-4 h-4 text-primary" aria-hidden="true" />
                 {isBn ? 'ইতিহাস' : 'History'}
               </h3>
-              <ul className="space-y-2" data-testid="admin-case-history">
+              <ul className="flex flex-col gap-2" data-testid="admin-case-history">
                 {(detail?.history ?? []).map((event) => (
-                  <li key={event.id} className="text-xs border-l-2 border-border pl-3 space-y-0.5">
+                  <li key={event.id} className="text-xs border-l-2 border-border pl-3 flex flex-col gap-0.5">
                     <p className="text-foreground">
                       {event.eventType} {event.toStatus ? `→ ${event.toStatus}` : ''}
                     </p>
@@ -237,7 +237,7 @@ export function AdminReplacementDetailPageView({
               </ul>
             </Card>
 
-            <Card className="rounded-2xl bg-card p-5 space-y-3">
+            <Card className="rounded-2xl bg-card p-5 flex flex-col gap-3">
               <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                 <UserSearch className="w-4 h-4 text-primary" aria-hidden="true" />
                 {isBn ? 'বিকল্প শিক্ষক প্রার্থী' : 'Replacement candidates'}
@@ -253,7 +253,7 @@ export function AdminReplacementDetailPageView({
                     : 'No eligible candidate found — keep the case in manual review.'}
                 </p>
               ) : (
-                <ul className="space-y-2">
+                <ul className="flex flex-col gap-2">
                   {candidates.map((candidate) => (
                     <li
                       key={candidate.id}
@@ -280,13 +280,13 @@ export function AdminReplacementDetailPageView({
             </Card>
           </div>
 
-          <div className="space-y-5">
-            <Card className="rounded-2xl bg-card p-5 space-y-3">
+          <div className="flex flex-col gap-5">
+            <Card className="rounded-2xl bg-card p-5 flex flex-col gap-3">
               <h3 className="text-sm font-bold text-foreground">
                 {isBn ? 'সিদ্ধান্ত ও নোট' : 'Decision & notes'}
               </h3>
-              <form onSubmit={submitUpdate} className="space-y-3">
-                <div className="space-y-1.5">
+              <form onSubmit={submitUpdate} className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1.5">
                   <Label htmlFor="target-status" className="text-xs font-semibold">
                     {isBn ? 'নতুন স্ট্যাটাস' : 'Target status'}
                   </Label>
@@ -306,7 +306,7 @@ export function AdminReplacementDetailPageView({
                 </div>
 
                 {targetStatus === 'offered' && (
-                  <div className="space-y-1.5">
+                  <div className="flex flex-col gap-1.5">
                     <Label htmlFor="replacement-tutor" className="text-xs font-semibold">
                       {isBn ? 'বিকল্প শিক্ষক (UUID)' : 'Replacement tutor (UUID)'}
                     </Label>
@@ -319,7 +319,7 @@ export function AdminReplacementDetailPageView({
                   </div>
                 )}
 
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label htmlFor="refund-eligibility" className="text-xs font-semibold">
                     {isBn ? 'রিফান্ড যোগ্যতা (রেকর্ড)' : 'Refund eligibility (record only)'}
                   </Label>
@@ -339,7 +339,7 @@ export function AdminReplacementDetailPageView({
                   </NativeSelect>
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label htmlFor="user-visible-note" className="text-xs font-semibold">
                     {isBn ? 'ব্যবহারকারীর জন্য নোট' : 'Applicant-facing note'}
                   </Label>
@@ -352,7 +352,7 @@ export function AdminReplacementDetailPageView({
                   />
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label htmlFor="internal-note" className="text-xs font-semibold">
                     {isBn
                       ? 'অভ্যন্তরীণ নোট (ব্যবহারকারী দেখবে না)'
@@ -385,13 +385,13 @@ export function AdminReplacementDetailPageView({
               </form>
             </Card>
 
-            <Card className="rounded-2xl bg-card p-5 space-y-3">
+            <Card className="rounded-2xl bg-card p-5 flex flex-col gap-3">
               <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                 <CalendarClock className="w-4 h-4 text-primary" aria-hidden="true" />
                 {isBn ? 'সময়সীমা বাড়ান' : 'Extend deadline'}
               </h3>
-              <form onSubmit={submitExtension} className="space-y-3">
-                <div className="space-y-1.5">
+              <form onSubmit={submitExtension} className="flex flex-col gap-3">
+                <div className="flex flex-col gap-1.5">
                   <Label htmlFor="extension-hours" className="text-xs font-semibold">
                     {isBn ? 'ঘণ্টা (১-৭২)' : 'Hours (1-72)'}
                   </Label>
@@ -405,7 +405,7 @@ export function AdminReplacementDetailPageView({
                     className="text-xs"
                   />
                 </div>
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label htmlFor="extension-reason" className="text-xs font-semibold">
                     {isBn ? 'কারণ (আবশ্যক)' : 'Reason (required)'}
                   </Label>

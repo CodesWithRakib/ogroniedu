@@ -18,9 +18,9 @@ export function TermsPage({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto space-y-12">
+    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto flex flex-col gap-12">
       {/* Header Banner */}
-      <div className="text-center space-y-4">
+      <div className="text-center flex flex-col gap-4">
         <Badge
           variant="outline"
           className="text-primary border-primary/30 bg-primary/10 px-3.5 py-1 text-xs font-bold uppercase tracking-wider rounded-full"
@@ -33,14 +33,14 @@ export function TermsPage({ locale }: { locale: Locale }) {
         <p className="text-xs sm:text-sm text-muted-foreground font-bengali">{p.subtitle}</p>
       </div>
 
-      <Card className="bg-card/90 backdrop-blur-xl border-border rounded-2xl p-6 sm:p-10 space-y-6">
+      <Card className="bg-card/90 backdrop-blur-xl border-border rounded-2xl p-6 sm:p-10 flex flex-col gap-6">
         <p className="text-sm sm:text-base text-foreground font-bengali leading-relaxed border-b border-border pb-6">
           {p.introText}
         </p>
 
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           {sections.map((sec, idx) => (
-            <div key={idx} className="space-y-2">
+            <div key={idx} className="flex flex-col gap-2">
               <h2 className="text-lg font-bold text-foreground font-bengali">{sec.title}</h2>
               <p className="text-xs sm:text-sm text-muted-foreground font-bengali leading-relaxed">
                 {sec.text}

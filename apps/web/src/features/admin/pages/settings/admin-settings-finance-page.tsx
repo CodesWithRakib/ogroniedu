@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
@@ -73,7 +73,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6" data-testid="admin-settings-finance-page">
+      <div className="flex flex-col gap-6 py-6" data-testid="admin-settings-finance-page">
         <div>
           <Link
             href={withLocale('/dashboard/admin/settings', locale)}
@@ -86,7 +86,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
 
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
           <div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                 {isBn ? 'আর্থিক ও কমিশন পলিসি' : 'Financial & Commission Policy'}
               </h1>
@@ -149,7 +149,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
           </Alert>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
+            <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold">
                   %
@@ -166,7 +166,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
                 </div>
               </div>
 
-              <div className="space-y-2 pt-2">
+              <div className="flex flex-col gap-2 pt-2">
                 <div className="flex items-center justify-between text-sm font-semibold">
                   <span>{isBn ? 'কমিশন রেট' : 'Commission Rate'}</span>
                   <span className="font-mono text-primary font-bold">
@@ -191,7 +191,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
+            <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-success-soft text-success border border-success/30 flex items-center justify-center font-bold">
                   ৳
@@ -220,7 +220,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-xs md:col-span-2">
+            <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-3 shadow-xs md:col-span-2">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-info-soft text-info border border-info/30 flex items-center justify-center">
                   <ShieldCheck className="w-5 h-5" />
@@ -250,7 +250,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
               />
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-6 space-y-3 shadow-xs md:col-span-2">
+            <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-3 shadow-xs md:col-span-2">
               <h3 className="text-sm font-bold text-foreground">
                 {isBn ? 'সক্রিয় সংস্করণ' : 'Active Version'}
               </h3>

@@ -56,7 +56,7 @@ export function SessionCard({
         }`}
       />
 
-      <CardHeader className="space-y-3 p-5 sm:p-6 pb-3">
+      <CardHeader className="flex flex-col gap-3 p-5 sm:p-6 pb-3">
         <div className="flex items-center justify-between gap-2">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-soft text-primary font-bold text-[11px] border border-primary/20">
             <Calendar className="w-3.5 h-3.5" />
@@ -114,7 +114,7 @@ export function SessionCard({
         </div>
       </CardHeader>
 
-      <CardContent className="space-y-3 px-5 sm:px-6 py-2 text-xs">
+      <CardContent className="flex flex-col gap-3 px-5 sm:px-6 py-2 text-xs">
         {/* Direct Classroom Action Link */}
         {session.meetingUrl && session.status !== 'cancelled' && (
           <div className="p-3 bg-gradient-to-br from-primary-soft/40 via-surface to-surface rounded-2xl border border-primary/25 flex items-center justify-between gap-3 shadow-xs">
@@ -145,7 +145,7 @@ export function SessionCard({
 
         {/* Cancellation Assessment Metadata */}
         {session.cancellationAssessment && (
-          <div className="p-3 bg-destructive-soft rounded-xl border border-destructive/20 text-xs text-destructive-soft-foreground space-y-1">
+          <div className="p-3 bg-destructive-soft rounded-xl border border-destructive/20 text-xs text-destructive-soft-foreground flex flex-col gap-1">
             <span className="font-bold block">
               {isBn ? 'বাতিলকৃত সেশন বিবরণ' : 'Cancelled Session Policy'}
             </span>

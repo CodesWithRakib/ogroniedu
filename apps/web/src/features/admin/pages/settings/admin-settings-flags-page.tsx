@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -26,7 +26,7 @@ export function AdminSettingsFlagsPage({ locale }: { locale: Locale }) {
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6" data-testid="admin-settings-flags-page">
+      <div className="flex flex-col gap-6 py-6" data-testid="admin-settings-flags-page">
         {/* Back Link to Hub (Image 2 Pattern) */}
         <div>
           <Link
@@ -41,7 +41,7 @@ export function AdminSettingsFlagsPage({ locale }: { locale: Locale }) {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
           <div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                 {isBn ? 'ক্যানারি ফিচার ফ্ল্যাগ' : 'Canary Feature Flags'}
               </h1>
@@ -68,7 +68,7 @@ export function AdminSettingsFlagsPage({ locale }: { locale: Locale }) {
             <LoadingSpinner />
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             <AdminFeatureFlagsTab
               featureFlags={actions.featureFlags}
               isSuperAdmin={isSuperAdmin}

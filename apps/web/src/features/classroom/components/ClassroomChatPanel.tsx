@@ -89,7 +89,7 @@ export function ClassroomChatPanel({
       </div>
 
       {/* Message List */}
-      <div className="flex-1 overflow-y-auto p-4 space-y-3.5 bg-slate-50/50">
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 bg-surface-muted/50">
         {chatMessages.length === 0 ? (
           <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
             <div className="w-16 h-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mb-3 shadow-inner">

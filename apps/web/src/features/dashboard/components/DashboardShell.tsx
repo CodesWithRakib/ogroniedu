@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { createContext, useContext, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -97,7 +97,7 @@ export function DashboardShell({
   // If already rendered inside an outer RoleDashboardLayout, render only the page inner content & header
   if (isNested) {
     return (
-      <div className="space-y-6">
+      <div className="flex flex-col gap-6">
         {(title || subtitle || actions) && (
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2">
             <div>
@@ -170,7 +170,7 @@ export function DashboardShell({
           <main
             id="main-content"
             tabIndex={-1}
-            className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 space-y-6 bg-background focus-visible:outline-none pb-24 lg:pb-8"
+            className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 flex flex-col gap-6 bg-background focus-visible:outline-none pb-24 lg:pb-8"
           >
             {/* Breadcrumb Navigation Trail */}
             <Breadcrumbs locale={locale} className="mb-2" />

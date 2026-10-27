@@ -539,7 +539,7 @@ export function ClassroomWorkspace({
         {/* Completion Modal - Light Mode */}
         {showCompletionModal && (
           <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-            <div className="bg-white border-2 border-slate-200 text-slate-900 rounded-3xl p-6 max-w-md w-full shadow-2xl space-y-4">
+            <div className="bg-card border-2 border-border text-foreground rounded-3xl p-6 max-w-md w-full shadow-2xl flex flex-col gap-4">
               <h3 className="text-lg font-black text-slate-900">
                 {isBn ? 'ক্লাস সমাপ্ত ঘোষণা করুন' : 'Complete Tutoring Class'}
               </h3>
@@ -582,7 +582,7 @@ export function ClassroomWorkspace({
   }
 
   return (
-    <div className="max-w-7xl mx-auto px-4 py-6 space-y-6 text-slate-900">
+    <div className="max-w-7xl mx-auto px-4 py-6 flex flex-col gap-6 text-foreground">
       {/* Top Breadcrumb & Status */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <Link
@@ -618,7 +618,7 @@ export function ClassroomWorkspace({
       {/* Main Header Banner */}
       <div className="relative overflow-hidden rounded-3xl bg-white border-2 border-slate-200 shadow-md p-4 sm:p-6 md:p-8 text-slate-900">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
-          <div className="space-y-2">
+          <div className="flex flex-col gap-2">
             <div className="flex items-center gap-2 text-xs text-blue-700 font-extrabold">
               <Sparkles className="w-4 h-4 text-blue-600" />
               <span>
@@ -976,22 +976,22 @@ export function ClassroomWorkspace({
 
       {/* Class Completion Modal */}
       <Dialog open={showCompletionModal} onOpenChange={setShowCompletionModal}>
-        <DialogContent className="max-w-md w-full space-y-4 bg-white text-slate-900 border border-slate-200 rounded-3xl p-6 shadow-2xl">
-          <DialogHeader className="text-left space-y-1">
-            <div className="flex items-center gap-2 text-slate-900">
-              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
-              <DialogTitle className="text-lg font-black text-slate-900">
+        <DialogContent className="max-w-md w-full flex flex-col gap-4 bg-card text-foreground border border-border rounded-3xl p-6 shadow-2xl">
+          <DialogHeader className="text-left flex flex-col gap-1">
+            <div className="flex items-center gap-2 text-foreground">
+              <CheckCircle2 className="w-5 h-5 text-success" />
+              <DialogTitle className="text-lg font-black text-foreground">
                 {isBn ? 'ক্লাস সম্পন্ন করার নিশ্চিতকরণ' : 'Complete Tutoring Class'}
               </DialogTitle>
             </div>
-            <DialogDescription className="text-xs text-slate-600 font-medium leading-relaxed">
+            <DialogDescription className="text-xs text-muted-foreground font-medium leading-relaxed">
               {isBn
                 ? 'আপনি কি ক্লাসটি সম্পন্ন হিসেবে চিহ্নিত করতে চান? ক্লাসের উপর কোনো মন্তব্য বা অগ্রগতি নোট থাকলে লিখুন।'
                 : 'Mark this session as completed. You may optionally add summary feedback or study recommendations.'}
             </DialogDescription>
           </DialogHeader>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label htmlFor="completion-notes-modal" className="text-xs text-slate-700 font-bold">
               {isBn ? 'ক্লাস রিভিউ ও মন্তব্য (ঐচ্ছিক):' : 'Session Notes (Optional):'}
             </Label>
@@ -1090,7 +1090,7 @@ function AttendanceSection({
         </p>
 
         {latestAttendance && (
-          <div className="p-4 bg-slate-50 rounded-2xl border border-slate-200 mb-4 space-y-2 text-xs">
+          <div className="p-4 bg-surface-muted rounded-2xl border border-border mb-4 flex flex-col gap-2 text-xs">
             <div className="flex items-center justify-between">
               <span className="text-slate-600 font-bold">
                 {isBn ? 'সর্বশেষ রেকর্ডকৃত স্ট্যাটাস:' : 'Recorded Status:'}
@@ -1111,7 +1111,7 @@ function AttendanceSection({
         {isTutor && (
           <form
             onSubmit={handleMarkAttendance}
-            className="space-y-3"
+            className="flex flex-col gap-3"
             data-testid="classroom-mark-attendance-form"
           >
             <Label className="text-xs font-bold text-slate-700 block">
@@ -1150,7 +1150,7 @@ function AttendanceSection({
             </div>
 
             {latestAttendance && (
-              <div className="space-y-1">
+              <div className="flex flex-col gap-1">
                 <Label
                   htmlFor="attendance-correction-reason"
                   className="text-xs font-bold text-slate-700"
@@ -1172,7 +1172,7 @@ function AttendanceSection({
               </div>
             )}
 
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="notes-inp" className="text-xs font-bold text-slate-700">
                 {isBn ? 'ক্লাসের সক্রিয়তা বা মন্তব্য:' : 'Session remarks:'}
               </Label>
@@ -1209,7 +1209,7 @@ function AttendanceSection({
 
       {/* Session Safety & Security Card */}
       <Card className="bg-white border border-slate-200 text-slate-900 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-emerald-600" />
             <span>{isBn ? 'নিরাপত্তা ও এস্ক্রো প্রতিশ্রুতি' : 'Safety & Escrow Protection'}</span>
@@ -1220,7 +1220,7 @@ function AttendanceSection({
               : 'All sessions are monitored under OgroniEdu safety standards. Escrow milestone releases are executed upon verified session completion.'}
           </p>
 
-          <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 space-y-2 text-xs font-medium">
+          <div className="p-3.5 rounded-2xl bg-surface-muted border border-border flex flex-col gap-2 text-xs font-medium">
             <div className="flex items-center justify-between text-slate-600">
               <span>{isBn ? 'বুকিং আইডি:' : 'Booking ID:'}</span>
               <span className="font-mono text-slate-900 font-bold">

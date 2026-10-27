@@ -101,7 +101,7 @@ export function AssignmentsTab({
               )}
             </CardHeader>
 
-            <CardContent className="space-y-3 pt-0">
+            <CardContent className="flex flex-col gap-3 pt-0">
               {asgn.instructions && (
                 <p className="text-xs text-foreground bg-surface p-3 rounded-xl border border-border leading-relaxed">
                   {asgn.instructions}

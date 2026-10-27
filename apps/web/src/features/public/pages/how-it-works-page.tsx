@@ -91,7 +91,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
   ];
 
   return (
-    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto space-y-16">
+    <div className="py-14 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto flex flex-col gap-16">
       {/* Schema.org HowTo Microdata */}
       <script
         type="application/ld+json"
@@ -112,7 +112,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
       />
 
       {/* Header Banner */}
-      <div className="text-center max-w-3xl mx-auto space-y-4">
+      <div className="text-center max-w-3xl mx-auto flex flex-col gap-4">
         <Badge
           variant="secondary"
           className="text-primary border border-primary/20 bg-primary-soft px-3.5 py-1 text-xs font-semibold uppercase tracking-wider rounded-full"
@@ -128,7 +128,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Section 1: For Students & Guardians */}
-      <section className="space-y-8">
+      <section className="flex flex-col gap-8">
         <div className="border-b border-border pb-4">
           <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-soft text-primary">
@@ -187,7 +187,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
       </section>
 
       {/* Section 2: For Tutors */}
-      <section className="space-y-8 pt-8">
+      <section className="flex flex-col gap-8 pt-8">
         <div className="border-b border-border pb-4">
           <h2 className="text-2xl font-bold text-foreground font-bengali flex items-center gap-2.5">
             <div className="flex h-8 w-8 items-center justify-center rounded-xl bg-primary-soft text-primary">

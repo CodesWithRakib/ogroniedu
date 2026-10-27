@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -162,9 +162,9 @@ export function StudentSubjectMasteryCard({
       </div>
 
       {/* Subject rows */}
-      <div className="space-y-3.5">
+      <div className="flex flex-col gap-3.5">
         {subjects.map((subj) => (
-          <div key={subj.id} className="space-y-1.5">
+          <div key={subj.id} className="flex flex-col gap-1.5">
             <div className="flex items-center justify-between text-xs">
               <span className="font-semibold text-foreground">
                 {isBn ? subj.nameBn : subj.nameEn}

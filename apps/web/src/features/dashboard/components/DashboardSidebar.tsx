@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -52,9 +52,9 @@ export function DashboardSidebar({
       data-testid="dashboard-sidebar"
     >
       {/* Top Section: Brand & Nav Links (scrollable) */}
-      <div className="p-4 space-y-5 overflow-y-auto flex-1">
+      <div className="p-4 flex flex-col gap-5 overflow-y-auto flex-1">
         {/* Brand & Role Header */}
-        <div className="space-y-3 pt-1">
+        <div className="flex flex-col gap-3 pt-1">
           <div className="px-1.5">
             <OgroniEduBrand locale={locale} />
           </div>
@@ -71,13 +71,13 @@ export function DashboardSidebar({
         </div>
 
         {/* Categorized Navigation Sections (Matching User Hierarchy) */}
-        <nav className="space-y-4 px-0.5" aria-label="Sidebar navigation">
+        <nav className="flex flex-col gap-4 px-0.5" aria-label="Sidebar navigation">
           {activeSections.map((section) => (
-            <div key={section.id} className="space-y-1">
+            <div key={section.id} className="flex flex-col gap-1">
               <div className="px-3 pt-1 text-[10px] font-black uppercase tracking-wider text-muted-foreground/70 select-none">
                 {isBn ? section.titleBn : section.titleEn}
               </div>
-              <div className="space-y-0.5">
+              <div className="flex flex-col gap-0.5">
                 {section.items.map((item) => {
                   const Icon = item.icon;
                   const targetHref = withLocale(item.href, locale);

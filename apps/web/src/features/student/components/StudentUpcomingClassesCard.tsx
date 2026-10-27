@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -84,7 +84,7 @@ export function StudentUpcomingClassesCard({
             </Link>
           </div>
         ) : (
-          <div className="space-y-3" data-testid="student-upcoming-sessions-list">
+          <div className="flex flex-col gap-3" data-testid="student-upcoming-sessions-list">
             {sessions.slice(0, 3).map((s) => {
               const isLive = s.status === 'in_progress';
               return (

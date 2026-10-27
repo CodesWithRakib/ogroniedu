@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -188,7 +188,7 @@ export function AdminBookingDetailPage({
   if (isError || !booking) {
     return (
       <AdminLayout locale={locale}>
-        <div className="space-y-6 py-8">
+        <div className="flex flex-col gap-6 py-8">
           <Link
             href={`/${locale}/dashboard/admin/bookings`}
             className="inline-flex items-center gap-2 text-sm text-muted-foreground hover:text-foreground font-medium transition-colors"
@@ -222,7 +222,7 @@ export function AdminBookingDetailPage({
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6 w-full" data-testid="admin-booking-detail-page">
+      <div className="flex flex-col gap-6 py-6 w-full" data-testid="admin-booking-detail-page">
         {/* Navigation & Breadcrumb */}
         <div className="flex items-center justify-between">
           <Link
@@ -262,7 +262,7 @@ export function AdminBookingDetailPage({
         {/* Header Hero Card */}
         <div className="bg-card border border-border rounded-2xl p-6 shadow-xs relative overflow-hidden">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2.5">
                 <span className="font-mono text-xs font-semibold px-2.5 py-1 rounded-md bg-muted text-muted-foreground flex items-center gap-1.5">
                   ID: {booking.id.substring(0, 13)}...
@@ -478,7 +478,7 @@ export function AdminBookingDetailPage({
                   </Badge>
                 </div>
               </CardHeader>
-              <CardContent className="pt-4 space-y-3 text-sm">
+              <CardContent className="pt-4 flex flex-col gap-3 text-sm">
                 <div>
                   <span className="text-xs text-muted-foreground block">
                     {isBn ? 'নাম' : 'Display Name'}
@@ -548,7 +548,7 @@ export function AdminBookingDetailPage({
                   </Link>
                 </div>
               </CardHeader>
-              <CardContent className="pt-4 space-y-3 text-sm">
+              <CardContent className="pt-4 flex flex-col gap-3 text-sm">
                 <div>
                   <span className="text-xs text-muted-foreground block">
                     {isBn ? 'নাম' : 'Display Name'}
@@ -647,7 +647,7 @@ export function AdminBookingDetailPage({
 
         {/* TAB 2: CLASS SESSIONS TIMELINE */}
         {activeTab === 'sessions' && (
-          <div className="space-y-4">
+          <div className="flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 className="text-base font-bold text-foreground">
@@ -686,7 +686,7 @@ export function AdminBookingDetailPage({
                     return (
                       <Card key={sess.id} className="rounded-2xl shadow-xs border border-border">
                         <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-                          <div className="space-y-1.5">
+                          <div className="flex flex-col gap-1.5">
                             <div className="flex items-center gap-2">
                               <span className="px-2 py-0.5 rounded-md bg-primary/10 text-primary text-xs font-bold font-mono">
                                 #{idx + 1}
@@ -775,7 +775,7 @@ export function AdminBookingDetailPage({
 
         {/* TAB 3: FINANCIALS & DOUBLE-ENTRY LEDGER */}
         {activeTab === 'financials' && (
-          <div className="space-y-6">
+          <div className="flex flex-col gap-6">
             {/* Escrow Holds Card */}
             <Card className="rounded-2xl shadow-xs">
               <CardHeader className="pb-3 border-b border-border/60">
@@ -866,7 +866,7 @@ export function AdminBookingDetailPage({
                     </span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="pt-4 space-y-3">
+                <CardContent className="pt-4 flex flex-col gap-3">
                   {paymentOrders.length === 0 ? (
                     <p className="text-xs text-muted-foreground text-center py-4">
                       {isBn ? 'কোনো পেমেন্ট অর্ডার নেই' : 'No payment orders recorded'}
@@ -886,7 +886,7 @@ export function AdminBookingDetailPage({
                       }) => (
                         <div
                           key={ord.id}
-                          className="p-3 rounded-xl border border-border bg-muted/20 space-y-2"
+                          className="p-3 rounded-xl border border-border bg-muted/20 flex flex-col gap-2"
                         >
                           <div className="flex items-center justify-between">
                             <span className="font-semibold text-xs capitalize">
@@ -926,7 +926,7 @@ export function AdminBookingDetailPage({
                     <span>{isBn ? 'অফিসিয়াল ইনভয়েস' : 'Official Invoices'}</span>
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="pt-4 space-y-3">
+                <CardContent className="pt-4 flex flex-col gap-3">
                   {invoices.length === 0 ? (
                     <p className="text-xs text-muted-foreground text-center py-4">
                       {isBn ? 'কোনো ইনভয়েস জারি করা হয়নি' : 'No invoices issued'}
@@ -943,7 +943,7 @@ export function AdminBookingDetailPage({
                       }) => (
                         <div
                           key={inv.id}
-                          className="p-3 rounded-xl border border-border bg-muted/20 space-y-1.5"
+                          className="p-3 rounded-xl border border-border bg-muted/20 flex flex-col gap-1.5"
                         >
                           <div className="flex items-center justify-between">
                             <span className="font-mono text-xs font-bold text-foreground">
@@ -1073,7 +1073,7 @@ export function AdminBookingDetailPage({
 
         {/* TAB 4: REPLACEMENT & DISPUTES */}
         {activeTab === 'governance' && (
-          <div className="space-y-6">
+          <div className="flex flex-col gap-6">
             {/* Tutor Replacement Guarantee Case */}
             <Card className="rounded-2xl shadow-xs">
               <CardHeader className="pb-3 border-b border-border/60">
@@ -1101,7 +1101,7 @@ export function AdminBookingDetailPage({
                       : 'No active replacement case filed for this booking.'}
                   </p>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="flex flex-col gap-3">
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                       <div>
                         <span className="text-xs text-muted-foreground block">
@@ -1141,7 +1141,7 @@ export function AdminBookingDetailPage({
                     {isBn ? 'কোনো রিফান্ড রেকর্ড নেই।' : 'No refund records found.'}
                   </p>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="flex flex-col gap-3">
                     {refunds.map(
                       (r: {
                         id: string;

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -377,7 +377,7 @@ export function AdminVerificationTab() {
   }
 
   return (
-    <div className="space-y-4" data-testid="verification-tab-content">
+    <div className="flex flex-col gap-4" data-testid="verification-tab-content">
       {/* Filters */}
       <div className="flex flex-col lg:flex-row gap-3 lg:items-center lg:justify-between">
         <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto">
@@ -484,7 +484,7 @@ export function AdminVerificationTab() {
         {selected && (
           <DialogContent
             aria-label={isBn ? 'ভেরিফিকেশন ডসিয়ার' : 'Verification dossier'}
-            className="max-w-3xl w-full p-6 space-y-4 max-h-[90vh] overflow-y-auto"
+            className="max-w-3xl w-full p-6 flex flex-col gap-4 max-h-[90vh] overflow-y-auto"
             data-testid="verification-dossier-modal"
           >
             <DialogHeader className="border-b border-border pb-3 text-left">
@@ -514,13 +514,13 @@ export function AdminVerificationTab() {
                 </AlertDescription>
               </Alert>
             ) : (
-              <div className="space-y-3">
+              <div className="flex flex-col gap-3">
                 {dossierLevels.map((lvl) => {
                   const missing = missingDocumentLabels(lvl.requirements, locale);
                   return (
                     <section
                       key={lvl.level}
-                      className={`rounded-2xl border p-3.5 space-y-2 ${
+                      className={`rounded-2xl border p-3.5 flex flex-col gap-2 ${
                         lvl.level === selectedLevel
                           ? 'border-primary/50 bg-primary/5'
                           : 'border-border bg-surface/40'
@@ -585,7 +585,7 @@ export function AdminVerificationTab() {
                           {isBn ? 'কোনো প্রমাণপত্র নেই।' : 'No evidence attached.'}
                         </p>
                       ) : (
-                        <ul className="space-y-1.5">
+                        <ul className="flex flex-col gap-1.5">
                           {lvl.documents.map((document) => (
                             <li
                               key={document.id}
@@ -660,7 +660,7 @@ export function AdminVerificationTab() {
                 })}
 
                 {preview && (
-                  <div className="rounded-xl border border-sky-300 bg-sky-50 p-3.5 text-xs space-y-2">
+                  <div className="rounded-xl border border-sky-300 bg-sky-50 p-3.5 text-xs flex flex-col gap-2">
                     <div className="flex items-center justify-between">
                       <span className="font-bold text-sky-950">
                         {isBn ? 'প্রমাণপত্র' : 'Evidence'}: {preview.label}
@@ -694,7 +694,7 @@ export function AdminVerificationTab() {
 
             {/* Decision form */}
             <form
-              className="space-y-3 border-t border-border pt-4"
+              className="flex flex-col gap-3 border-t border-border pt-4"
               data-testid="verification-decision-form"
               onSubmit={handleDecide}
             >
@@ -733,7 +733,7 @@ export function AdminVerificationTab() {
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label className="text-xs font-medium">{isBn ? 'স্তর' : 'Level'}</Label>
                       <NativeSelect
                         value={selectedLevel ?? activeLevel.level}
@@ -747,7 +747,7 @@ export function AdminVerificationTab() {
                         ))}
                       </NativeSelect>
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label className="text-xs font-medium">
                         {isBn ? 'সিদ্ধান্ত' : 'Decision'}
                       </Label>
@@ -765,7 +765,7 @@ export function AdminVerificationTab() {
                     </div>
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="flex flex-col gap-1.5">
                     <Label className="text-xs font-medium" htmlFor="verification-reason">
                       {isBn ? 'কারণ কোড' : 'Reason code'}
                     </Label>
@@ -793,7 +793,7 @@ export function AdminVerificationTab() {
                     </div>
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="flex flex-col gap-1.5">
                     <Label className="text-xs font-medium" htmlFor="verification-feedback">
                       {isBn ? 'শিক্ষককে দেখানো ফিডব্যাক' : 'Applicant-facing feedback'}
                     </Label>
@@ -811,7 +811,7 @@ export function AdminVerificationTab() {
                     />
                   </div>
 
-                  <div className="space-y-1.5">
+                  <div className="flex flex-col gap-1.5">
                     <Label className="text-xs font-medium" htmlFor="verification-notes">
                       {isBn
                         ? 'অভ্যন্তরীণ নোট (শিক্ষক দেখবেন না)'

@@ -35,9 +35,9 @@ export function HomeworkSubmitModal({
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-white rounded-3xl max-w-lg w-full p-6 border border-slate-200 shadow-2xl space-y-4 text-left">
-        <DialogHeader className="border-b border-slate-100 pb-3 text-left">
-          <DialogTitle className="text-base font-black text-slate-900">
+      <DialogContent className="bg-card text-card-foreground rounded-3xl max-w-lg w-full p-6 border border-border shadow-2xl flex flex-col gap-4 text-left">
+        <DialogHeader className="border-b border-border pb-3 text-left">
+          <DialogTitle className="text-base font-black text-foreground">
             {t.submitHomework}: {assignment.title}
           </DialogTitle>
           <DialogDescription className="sr-only">
@@ -45,7 +45,7 @@ export function HomeworkSubmitModal({
           </DialogDescription>
         </DialogHeader>
 
-        <div className="space-y-2">
+        <div className="flex flex-col gap-2">
           <Label className="text-xs font-semibold text-foreground">{t.submissionTextLabel}</Label>
           <Textarea
             value={text}

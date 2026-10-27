@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useTranslations } from 'next-intl';
 import type { AdminReconciliationData } from '../../types/admin.types';
@@ -9,7 +9,7 @@ export function AdminOverviewTab({ reconciliation }: { reconciliation: AdminReco
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5" data-testid="overview-tab-content">
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs">
         <h3 className="text-base font-bold text-foreground flex items-center justify-between">
           <span>{t('reconciliationTitle')}</span>
           <span
@@ -48,13 +48,13 @@ export function AdminOverviewTab({ reconciliation }: { reconciliation: AdminReco
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-3 shadow-xs">
+      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-3 shadow-xs">
         <h3 className="text-base font-bold text-foreground">{t('auditTrailTitle')}</h3>
-        <p className="text-xs text-primary  font-semibold flex items-center space-x-1.5">
+        <p className="text-xs text-primary  font-semibold flex items-center gap-1.5">
           <span>🛡️</span>
           <span>{t('auditRedactedNotice')}</span>
         </p>
-        <div className="text-xs text-muted-foreground space-y-2">
+        <div className="text-xs text-muted-foreground flex flex-col gap-2">
           <p>• All mutations are recorded to PostgreSQL `audit_logs` table.</p>
           <p>
             • Credentials, passwords, card PANs, and session tokens are automatically sanitized.

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -65,7 +65,7 @@ export function AdminUsersDirectoryPage({ locale }: { locale: Locale }) {
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6" data-testid="admin-users-directory-page">
+      <div className="flex flex-col gap-6 py-6" data-testid="admin-users-directory-page">
         {/* Back Link to Hub (Image 2 Pattern) */}
         <div>
           <Link
@@ -80,7 +80,7 @@ export function AdminUsersDirectoryPage({ locale }: { locale: Locale }) {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-2 border-b border-border">
           <div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
                 {isBn ? 'সকল নিবন্ধিত ইউজার ডিরেক্টরি' : 'All Registered Users'}
               </h1>
@@ -142,7 +142,7 @@ export function AdminUsersDirectoryPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Users Table Card */}
-        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
+        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
           <AdminUsersTab
             users={actions.users}
             isSuperAdmin={isSuperAdmin}

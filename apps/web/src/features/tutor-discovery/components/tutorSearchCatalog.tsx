@@ -343,14 +343,14 @@ export function TutorSearchCatalog({
 
   return (
     <div
-      className="w-full max-w-7xl mx-auto px-4 pt-3 sm:pt-4 pb-24 sm:pb-12 space-y-4"
+      className="w-full max-w-7xl mx-auto px-4 pt-3 sm:pt-4 pb-24 sm:pb-12 flex flex-col gap-4"
       data-testid="tutor-discovery-container"
     >
       {/* 1. Header Hero Banner - Compact & Clean */}
       <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-4 sm:p-5 backdrop-blur-xl shadow-xs">
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 bg-brand-soft rounded-full blur-3xl pointer-events-none" />
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
-          <div className="space-y-1 max-w-2xl">
+          <div className="flex flex-col gap-1 max-w-2xl">
             <h1 className="text-lg sm:text-2xl font-black tracking-tight text-foreground">
               {dict.discovery?.searchHeading || 'যাচাইকৃত অভিজ্ঞ গৃহশিক্ষক খুঁজুন'}
             </h1>
@@ -417,7 +417,7 @@ export function TutorSearchCatalog({
       </div>
 
       {/* 2. Top Interactive Bar - Sticky on scroll */}
-      <div className="sticky top-16 z-30 space-y-2.5 bg-background/95 backdrop-blur-md py-2 -mx-4 px-4 border-b border-border/40 sm:border-transparent transition-all">
+      <div className="sticky top-16 z-30 flex flex-col gap-2.5 bg-background/95 backdrop-blur-md py-2 -mx-4 px-4 border-b border-border/40 sm:border-transparent transition-all">
         {/* Search input + Mobile Filter Trigger */}
         <div className="flex items-center gap-2.5">
           <div className="relative flex-1">
@@ -592,7 +592,7 @@ export function TutorSearchCatalog({
         </aside>
 
         {/* Right Column: Search Results */}
-        <main className="lg:col-span-8 xl:col-span-9 space-y-5 min-w-0">
+        <main className="lg:col-span-8 xl:col-span-9 flex flex-col gap-5 min-w-0">
           {/* Results Count & Quick Sort Bar */}
           <div className="flex items-center justify-between gap-3 pb-2 border-b border-border/60">
             <div className="text-xs sm:text-sm text-muted-foreground">

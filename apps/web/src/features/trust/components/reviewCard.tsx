@@ -48,12 +48,12 @@ export function ReviewCard({
   return (
     <Card
       data-testid="review-card"
-      className="p-5 border border-slate-200 bg-white rounded-2xl shadow-xs space-y-3.5 text-slate-900"
+      className="p-5 border border-border bg-card rounded-2xl shadow-xs flex flex-col gap-3.5 text-foreground"
     >
       <div className="flex justify-between items-start gap-3">
         <div>
           <div className="flex items-center gap-2 flex-wrap">
-            <span className="font-bold text-sm text-slate-900">{reviewerName}</span>
+            <span className="font-bold text-sm text-foreground">{reviewerName}</span>
             {rev.isVerifiedBooking && (
               <Badge
                 variant="success"
@@ -64,7 +64,7 @@ export function ReviewCard({
               </Badge>
             )}
           </div>
-          <p className="text-xs text-slate-600 font-medium mt-0.5">
+          <p className="text-xs text-muted-foreground font-medium mt-0.5">
             {new Date(rev.createdAt).toLocaleDateString(isBn ? 'bn-BD' : 'en-US', {
               year: 'numeric',
               month: 'short',
@@ -82,42 +82,42 @@ export function ReviewCard({
       {/* Multi-Criteria Breakdown Badges */}
       <div className="flex flex-wrap gap-2 pt-0.5">
         {rev.punctualityRating != null && (
-          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-800 border border-slate-200 shadow-2xs">
+          <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
             ⏱ {isBn ? 'সময়নিষ্ঠতা' : 'Punctuality'}: {rev.punctualityRating}/5
           </span>
         )}
         {rev.teachingClarityRating != null && (
-          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-800 border border-slate-200 shadow-2xs">
+          <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
             💡 {isBn ? 'পাঠদান স্পষ্টতা' : 'Clarity'}: {rev.teachingClarityRating}/5
           </span>
         )}
         {rev.subjectMasteryRating != null && (
-          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-slate-800 border border-slate-200 shadow-2xs">
+          <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
             📚 {isBn ? 'বিষয় দক্ষতা' : 'Mastery'}: {rev.subjectMasteryRating}/5
           </span>
         )}
       </div>
 
       {/* Written Feedback */}
-      <p className="text-xs sm:text-sm text-slate-800 leading-relaxed font-normal">
+      <p className="text-xs sm:text-sm text-foreground/90 leading-relaxed font-normal">
         "{commentText}"
       </p>
 
       {/* Tutor Response / Rebuttal */}
       {tutorReply && (
-        <div className="p-4 bg-blue-50/90 border-l-4 border-blue-600 rounded-r-2xl text-xs space-y-1.5 shadow-2xs">
-          <div className="font-bold text-blue-950 flex items-center justify-between">
+        <div className="p-4 bg-primary/5 border-l-4 border-primary rounded-r-2xl text-xs flex flex-col gap-1.5 shadow-2xs">
+          <div className="font-bold text-foreground flex items-center justify-between">
             <div className="flex items-center gap-1.5">
-              <MessageSquare className="w-3.5 h-3.5 text-blue-700" />
+              <MessageSquare className="w-3.5 h-3.5 text-primary" />
               <span>{isBn ? 'শিক্ষকের উত্তর / প্রতিক্রিয়া' : 'Tutor Reply'}</span>
             </div>
             {rev.tutorRespondedAt && (
-              <span className="text-[11px] text-blue-800 font-medium">
+              <span className="text-[11px] text-muted-foreground font-medium">
                 {new Date(rev.tutorRespondedAt).toLocaleDateString(isBn ? 'bn-BD' : 'en-US')}
               </span>
             )}
           </div>
-          <p className="text-slate-800 leading-relaxed font-normal">{tutorReply}</p>
+          <p className="text-foreground/80 leading-relaxed font-normal">{tutorReply}</p>
         </div>
       )}
 
@@ -125,11 +125,11 @@ export function ReviewCard({
       {isCurrentTutor && !tutorReply && (
         <div className="pt-1">
           {replying ? (
-            <div className="space-y-2 p-3 bg-slate-50 border border-slate-200 rounded-xl">
+            <div className="flex flex-col gap-2 p-3 bg-muted/40 border border-border rounded-xl">
               {replyError && (
                 <Alert
                   variant="destructive"
-                  className="py-2 px-3 rounded-xl border-red-300 bg-red-50 text-red-900"
+                  className="py-2 px-3 rounded-xl border-destructive/30 bg-destructive/10 text-destructive"
                 >
                   <AlertDescription className="text-xs font-bold">{replyError}</AlertDescription>
                 </Alert>
@@ -144,7 +144,7 @@ export function ReviewCard({
                 }
                 value={replyText}
                 onChange={(e) => onReplyTextChange?.(e.target.value)}
-                className="text-xs bg-white border border-slate-300 text-slate-900 placeholder:text-slate-500 rounded-xl"
+                className="text-xs bg-background border border-border text-foreground placeholder:text-muted-foreground rounded-xl"
                 data-testid="tutor-reply-textarea"
               />
               <div className="flex justify-end gap-2">
@@ -153,7 +153,7 @@ export function ReviewCard({
                   variant="outline"
                   size="sm"
                   onClick={onCancelReply}
-                  className="text-xs border-slate-300 text-slate-800 bg-white hover:bg-slate-100"
+                  className="text-xs border-border text-foreground bg-background hover:bg-muted"
                 >
                   {isBn ? 'বাতিল' : 'Cancel'}
                 </Button>
@@ -163,7 +163,7 @@ export function ReviewCard({
                   disabled={isPostingReply}
                   onClick={onPostReply}
                   isLoading={isPostingReply}
-                  className="text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold"
+                  className="text-xs font-bold"
                   data-testid="submit-tutor-reply-btn"
                 >
                   {isPostingReply
@@ -182,7 +182,7 @@ export function ReviewCard({
               variant="outline"
               size="sm"
               onClick={onOpenReply}
-              className="text-blue-700 border-blue-300 hover:bg-blue-50 text-xs h-8 px-3 font-bold rounded-xl"
+              className="text-primary border-primary/30 hover:bg-primary/5 text-xs h-8 px-3 font-bold rounded-xl"
               data-testid="open-reply-btn"
             >
               + {isBn ? 'শিক্ষক হিসেবে উত্তর দিন' : 'Reply as Tutor'}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import {
@@ -516,7 +516,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
         </div>
       }
     >
-      <div className="space-y-6 py-4" data-testid="admin-taxonomy-page">
+      <div className="flex flex-col gap-6 py-4" data-testid="admin-taxonomy-page">
         {/* Feedback Alert */}
         {feedback && (
           <Alert

@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useTranslations } from 'next-intl';
 import type { AdminUserItem } from '../../types/admin.types';
 import {
@@ -37,8 +37,8 @@ export function AdminImpersonationModal({
 
   return (
     <Dialog open onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-md w-full space-y-4" data-testid="impersonate-modal">
-        <DialogHeader className="text-left space-y-1">
+      <DialogContent className="max-w-md w-full flex flex-col gap-4" data-testid="impersonate-modal">
+        <DialogHeader className="text-left flex flex-col gap-1">
           <DialogTitle className="text-lg font-bold text-warning-soft-foreground">
             {t('impersonationBadge')}
           </DialogTitle>
@@ -54,7 +54,7 @@ export function AdminImpersonationModal({
           </AlertDescription>
         </Alert>
 
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="impersonate-reason" className="text-xs font-medium text-foreground">
             Operational Justification *
           </Label>
@@ -68,7 +68,7 @@ export function AdminImpersonationModal({
           />
         </div>
 
-        <div className="space-y-1.5">
+        <div className="flex flex-col gap-1.5">
           <Label htmlFor="impersonate-duration" className="text-xs font-medium text-foreground">
             Session Duration (Max 15 min)
           </Label>
@@ -84,7 +84,7 @@ export function AdminImpersonationModal({
           />
         </div>
 
-        <div className="flex justify-end space-x-3 pt-2">
+        <div className="flex justify-end flex items-center gap-3 pt-2">
           <Button variant="outline" size="sm" onClick={onClose}>
             {tCommon('cancel')}
           </Button>

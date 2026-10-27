@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -67,7 +67,7 @@ export function GuardianChildSafetyRadar({
       </div>
 
       {/* Safety Verification Badges */}
-      <div className="my-4 space-y-2.5">
+      <div className="my-4 flex flex-col gap-2.5">
         <div className="p-3 rounded-xl bg-surface border border-border/80 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-7 w-7 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
@@ -112,7 +112,7 @@ export function GuardianChildSafetyRadar({
       </div>
 
       {/* 24/7 National Emergency & Safeguarding Hotlines */}
-      <div className="space-y-2">
+      <div className="flex flex-col gap-2">
         <div className="text-[11px] font-bold uppercase tracking-wider text-muted-foreground flex items-center gap-1.5">
           <PhoneCall className="w-3.5 h-3.5 text-primary" />
           <span>

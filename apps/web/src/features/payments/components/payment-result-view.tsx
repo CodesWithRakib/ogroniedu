@@ -85,7 +85,7 @@ export function PaymentResultView({
 
   return (
     <div
-      className="w-full max-w-3xl mx-auto space-y-6 py-6 px-4 text-slate-900"
+      className="w-full max-w-3xl mx-auto flex flex-col gap-6 py-6 px-4 text-foreground"
       data-testid="payment-result-view"
     >
       {/* Navigation back */}
@@ -119,9 +119,9 @@ export function PaymentResultView({
             </p>
           </div>
 
-          <CardContent className="p-6 sm:p-8 space-y-6">
+          <CardContent className="p-6 sm:p-8 flex flex-col gap-6">
             {/* Payment & Booking Breakdown */}
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 space-y-3">
+            <div className="rounded-2xl border border-border bg-surface-muted p-5 flex flex-col gap-3">
               <h3 className="text-xs font-black uppercase tracking-wider text-slate-500">
                 {isBn ? 'লেনদেন সারসংক্ষেপ' : 'Transaction Summary'}
               </h3>
@@ -261,8 +261,8 @@ export function PaymentResultView({
             </p>
           </div>
 
-          <CardContent className="p-6 sm:p-8 space-y-6">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 space-y-2.5 text-xs">
+          <CardContent className="p-6 sm:p-8 flex flex-col gap-6">
+            <div className="rounded-2xl border border-border bg-surface-muted p-5 flex flex-col gap-2.5 text-xs">
               <div className="flex justify-between items-center">
                 <span className="text-slate-500">
                   {isBn ? 'অর্ডার রেফারেন্স' : 'Order Reference'}
@@ -320,7 +320,7 @@ export function PaymentResultView({
             </p>
           </div>
 
-          <CardContent className="p-6 sm:p-8 space-y-6">
+          <CardContent className="p-6 sm:p-8 flex flex-col gap-6">
             <div className="flex flex-col sm:flex-row items-center justify-between gap-3 pt-2">
               {bookingId ? (
                 <>
@@ -377,8 +377,8 @@ export function PaymentResultView({
             </p>
           </div>
 
-          <CardContent className="p-6 sm:p-8 space-y-6">
-            <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 space-y-2 text-center text-xs">
+          <CardContent className="p-6 sm:p-8 flex flex-col gap-6">
+            <div className="rounded-2xl border border-border bg-surface-muted p-5 flex flex-col gap-2 text-center text-xs">
               <p className="text-slate-600 font-medium">
                 {isBn
                   ? 'লেনদেন নিশ্চিত হলে এই পেজটি স্বয়ংক্রিয়ভাবে আপডেট হবে।'

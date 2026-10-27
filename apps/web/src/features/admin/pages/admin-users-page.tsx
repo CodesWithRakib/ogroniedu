@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
@@ -69,7 +69,7 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
           <LoadingSpinner />
         </div>
       ) : (
-        <div className="space-y-6 py-6" data-testid="admin-users-page">
+        <div className="flex flex-col gap-6 py-6" data-testid="admin-users-page">
           {actions.actionError && (
             <Alert variant="destructive" data-testid="admin-action-error">
               <AlertDescription role="alert">{actions.actionError}</AlertDescription>
@@ -81,7 +81,7 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
               className="bg-warning-soft border border-warning/30 rounded-2xl p-4 flex items-center justify-between shadow-xs animate-pulse"
               data-testid="active-impersonation-banner"
             >
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <span className="text-2xl">⚠️</span>
                 <div>
                   <p className="font-bold text-warning-soft-foreground text-sm tracking-wide">
@@ -109,7 +109,7 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
           {/* Page Header */}
           <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
             <div>
-              <div className="flex items-center space-x-3">
+              <div className="flex items-center gap-3">
                 <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                   {locale === 'bn' ? 'ব্যবহারকারী ও রোল ব্যবস্থাপনা' : 'User & Access Management'}
                 </h1>
@@ -167,7 +167,7 @@ export function AdminUsersPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Users Table Card */}
-          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4">
+          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
             <AdminUsersTab
               users={actions.users}
               isSuperAdmin={isSuperAdmin}

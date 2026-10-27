@@ -38,10 +38,10 @@ export function CancelSessionModal({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="cancel-modal"
-        className="bg-white border border-slate-200 rounded-3xl max-w-md w-full p-6 shadow-2xl space-y-4 text-left"
+        className="bg-card border border-border rounded-3xl max-w-md w-full p-6 shadow-2xl flex flex-col gap-4 text-left text-card-foreground"
       >
-        <DialogHeader className="border-b border-slate-100 pb-3 text-left">
-          <DialogTitle className="font-black text-rose-600 text-lg">
+        <DialogHeader className="border-b border-border pb-3 text-left">
+          <DialogTitle className="font-black text-destructive text-lg">
             {dict.scheduling?.cancelSession || 'Cancel Session'}
           </DialogTitle>
           <DialogDescription className="sr-only">
@@ -49,7 +49,7 @@ export function CancelSessionModal({
           </DialogDescription>
         </DialogHeader>
 
-        <form onSubmit={handleSubmit} className="space-y-4 text-xs">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 text-xs">
           <Alert
             variant="destructive"
             className="p-3 text-xs leading-relaxed bg-destructive/10 border-destructive/30"
@@ -60,7 +60,7 @@ export function CancelSessionModal({
             </AlertDescription>
           </Alert>
 
-          <div className="space-y-1.5">
+          <div className="flex flex-col gap-1.5">
             <Label className="font-semibold text-foreground text-xs">
               {dict.scheduling?.cancelReasonLabel || 'Reason for Cancellation'}
             </Label>

@@ -47,18 +47,18 @@ export function NetworkDiagnosticsModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-150"
       data-testid="network-diagnostics-modal"
     >
-      <div className="w-full max-w-md bg-white border-2 border-slate-200 rounded-3xl shadow-2xl text-slate-900 overflow-hidden animate-in zoom-in-95 duration-150">
+      <div className="w-full max-w-md bg-card border-2 border-border rounded-3xl shadow-2xl text-card-foreground overflow-hidden animate-in zoom-in-95 duration-150">
         {/* Header */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-200 bg-slate-50">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border bg-surface-muted">
           <div className="flex items-center gap-2.5">
-            <div className="p-2 rounded-xl bg-emerald-50 border border-emerald-200">
-              <Activity className="w-5 h-5 text-emerald-600" />
+            <div className="p-2 rounded-xl bg-success-soft border border-success/30">
+              <Activity className="w-5 h-5 text-success" />
             </div>
             <div>
-              <h3 className="text-base font-black text-slate-900">
+              <h3 className="text-base font-black text-foreground">
                 {isBn ? 'নেটওয়ার্ক ডায়াগনস্টিকস ও স্থিতি' : 'Network Diagnostics & Health'}
               </h3>
-              <p className="text-xs text-slate-500 font-bold">
+              <p className="text-xs text-muted-foreground font-bold">
                 {isBn ? 'রিয়েল-টাইম ক্লাউড সংযোগ বিশ্লেষণ' : 'Real-time WebRTC SFU telemetry'}
               </p>
             </div>
@@ -66,7 +66,7 @@ export function NetworkDiagnosticsModal({
           <button
             type="button"
             onClick={onClose}
-            className="p-1.5 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors"
+            className="p-1.5 rounded-xl text-muted-foreground hover:text-foreground hover:bg-surface-muted transition-colors"
             title={isBn ? 'বন্ধ করুন' : 'Close'}
           >
             <X className="w-5 h-5" />
@@ -74,7 +74,7 @@ export function NetworkDiagnosticsModal({
         </div>
 
         {/* Content */}
-        <div className="p-5 space-y-4">
+        <div className="p-5 flex flex-col gap-4">
           {/* Main Quality Banner */}
           <div
             className={`p-4 rounded-2xl border-2 flex items-center justify-between ${

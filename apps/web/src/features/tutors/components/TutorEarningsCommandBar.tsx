@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -74,7 +74,7 @@ export function TutorEarningsCommandBar({
 
         {/* Escrow & Lifetime Metrics */}
         <div className="grid grid-cols-2 gap-4 lg:border-l lg:border-border lg:pl-6">
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <Lock className="w-3.5 h-3.5 text-amber-500" />
               <span>{isBn ? 'এসক্রোতে সংরক্ষিত' : 'Locked in Escrow'}</span>
@@ -87,7 +87,7 @@ export function TutorEarningsCommandBar({
             </p>
           </div>
 
-          <div className="space-y-1">
+          <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
               <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
               <span>{isBn ? 'সর্বমোট অর্জিত আয়' : 'Lifetime Earnings'}</span>

@@ -85,12 +85,12 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
         </Button>
       }
     >
-      <div className="w-full space-y-6">
+      <div className="w-full flex flex-col gap-6">
         {/* 1. URGENT 24/7 EMERGENCY BANNER & HOTLINE STRIP */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4" data-testid="safety-hotlines-banner">
           {/* Safeguarding Commitment */}
           <div className="lg:col-span-2 p-5 sm:p-6 rounded-3xl border border-rose-200 bg-rose-50/60 text-slate-900 flex flex-col justify-between gap-4 shadow-2xs">
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-rose-700">
                 <ShieldAlert className="w-5 h-5 shrink-0 animate-pulse" />
                 <span className="text-xs font-black uppercase tracking-wider">
@@ -135,11 +135,11 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
           </div>
 
           {/* Quick Helpline Strip */}
-          <div className="p-5 sm:p-6 rounded-3xl border border-slate-200 bg-white flex flex-col justify-between gap-3 shadow-2xs">
-            <span className="text-xs font-black uppercase tracking-wider text-slate-500">
+          <div className="p-5 sm:p-6 rounded-3xl border border-border bg-card flex flex-col justify-between gap-3 shadow-2xs">
+            <span className="text-xs font-black uppercase tracking-wider text-muted-foreground">
               {isBn ? 'জরুরি হেল্পলাইন নম্বরসমূহ' : 'Emergency Contacts'}
             </span>
-            <div className="space-y-2">
+            <div className="flex flex-col gap-2">
               <a
                 href="tel:1098"
                 className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-slate-900 flex items-center justify-between hover:bg-rose-100 transition-colors"
@@ -178,18 +178,18 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
 
               <a
                 href="tel:+8809612345678"
-                className="p-3 rounded-2xl bg-blue-50 border border-blue-200 text-slate-900 flex items-center justify-between hover:bg-blue-100 transition-colors"
+                className="p-3 rounded-2xl bg-primary/5 border border-primary/20 text-foreground flex items-center justify-between hover:bg-primary/10 transition-colors"
                 title="Call Security Desk"
               >
                 <div>
-                  <span className="text-[10px] font-bold text-blue-800 block">
+                  <span className="text-[10px] font-bold text-primary block">
                     {isBn ? 'অগ্রণী এডু সিকিউরিটি ডেস্ক' : 'OgroniEdu Triage'}
                   </span>
-                  <span className="text-sm font-black text-slate-900 font-mono">
+                  <span className="text-sm font-black text-foreground font-mono">
                     +৮৮০ ৯৬১২-৩৪৫৬৭৮
                   </span>
                 </div>
-                <span className="text-xs font-bold text-blue-700 bg-white border border-blue-200 px-2.5 py-1 rounded-xl">
+                <span className="text-xs font-bold text-primary bg-background border border-primary/20 px-2.5 py-1 rounded-xl">
                   {isBn ? 'ডায়াল' : 'Call'}
                 </span>
               </a>
@@ -199,64 +199,64 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
 
         {/* 2. KPI METRIC SUMMARY CARDS */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <Card className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center gap-3">
-              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-slate-100 text-slate-700">
+              <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-muted-foreground">
                 <AlertCircle className="w-5 h-5" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                   {isBn ? 'মোট অভিযোগ' : 'Total Reports'}
                 </p>
-                <p className="text-xl font-black text-slate-900 tabular-nums">
+                <p className="text-xl font-black text-foreground tabular-nums">
                   {formatLocalizedNumber(metrics.total, locale)} {isBn ? 'টি' : ''}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-50 text-rose-700">
                 <AlertTriangle className="w-5 h-5 text-rose-600" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                   {isBn ? 'উচ্চ অগ্রাধিকার' : 'Critical / High'}
                 </p>
-                <p className="text-xl font-black text-slate-900 tabular-nums">
+                <p className="text-xl font-black text-foreground tabular-nums">
                   {formatLocalizedNumber(metrics.criticalOrHigh, locale)} {isBn ? 'টি' : ''}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
                 <Clock className="w-5 h-5 text-amber-600" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                   {isBn ? 'সুরক্ষামূলক স্থগিতাদেশ' : 'Protective Holds'}
                 </p>
-                <p className="text-xl font-black text-slate-900 tabular-nums">
+                <p className="text-xl font-black text-foreground tabular-nums">
                   {formatLocalizedNumber(metrics.protectiveHolds, locale)} {isBn ? 'টি' : ''}
                 </p>
               </div>
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-slate-200/90 bg-white p-4 shadow-2xs">
+          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600" aria-hidden="true" />
               </div>
               <div>
-                <p className="text-xs font-bold text-slate-500 uppercase tracking-wide">
+                <p className="text-xs font-bold text-muted-foreground uppercase tracking-wide">
                   {isBn ? 'নিষ্পত্তি সম্পন্ন' : 'Resolved'}
                 </p>
-                <p className="text-xl font-black text-slate-900 tabular-nums">
+                <p className="text-xl font-black text-foreground tabular-nums">
                   {formatLocalizedNumber(metrics.resolved, locale)} {isBn ? 'টি' : ''}
                 </p>
               </div>
@@ -265,11 +265,11 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
         </div>
 
         {/* 3. CATEGORY FILTERS & INCIDENTS LIST */}
-        <div className="space-y-4">
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-slate-200 pb-3">
+        <div className="flex flex-col gap-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-border pb-3">
             <div className="flex items-center gap-2 flex-wrap">
-              <Filter className="w-4 h-4 text-slate-500" />
-              <span className="text-xs font-bold text-slate-800">
+              <Filter className="w-4 h-4 text-muted-foreground" />
+              <span className="text-xs font-bold text-foreground">
                 {isBn ? 'ক্যাটাগরি ফিল্টার:' : 'Filter Incidents:'}
               </span>
               <div className="flex flex-wrap items-center gap-1.5">
@@ -286,7 +286,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                     className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       filterCategory === c.id
                         ? 'bg-rose-600 text-white shadow-2xs'
-                        : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
+                        : 'bg-muted text-muted-foreground hover:bg-muted/80'
                     }`}
                     data-testid={`filter-cat-${c.id}`}
                   >
@@ -295,7 +295,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                 ))}
               </div>
             </div>
-            <span className="text-xs font-semibold text-slate-500">
+            <span className="text-xs font-semibold text-muted-foreground">
               {isBn
                 ? `প্রদর্শিত হচ্ছে ${formatLocalizedNumber(filteredReports.length, locale)}টি রেকর্ড`
                 : `Showing ${filteredReports.length} records`}
@@ -303,20 +303,20 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
           </div>
 
           {isLoading ? (
-            <div className="py-16 text-center text-sm font-semibold text-slate-500">
+            <div className="py-16 text-center text-sm font-semibold text-muted-foreground">
               {isBn ? 'লোড হচ্ছে...' : 'Loading safety reports...'}
             </div>
           ) : filteredReports.length === 0 ? (
-            <Card className="py-16 text-center rounded-3xl border border-slate-200 bg-white">
-              <CardContent className="space-y-4 max-w-md mx-auto">
+            <Card className="py-16 text-center rounded-3xl border border-border bg-card">
+              <CardContent className="flex flex-col gap-4 max-w-md mx-auto">
                 <div className="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-2xs">
                   <ShieldCheck className="w-8 h-8" />
                 </div>
-                <div className="space-y-1">
-                  <h4 className="text-lg font-black text-slate-900">
+                <div className="flex flex-col gap-1">
+                  <h4 className="text-lg font-black text-foreground">
                     {isBn ? 'কোনো নিরাপত্তা অভিযোগ বা ঘটনা নেই' : 'No Incident Reports on Record'}
                   </h4>
-                  <p className="text-xs text-slate-600 leading-relaxed font-medium">
+                  <p className="text-xs text-muted-foreground leading-relaxed font-medium">
                     {isBn
                       ? 'আপনার সকল সেশন ও টিউটরিং নিরাপদভাবে পরিচালিত হচ্ছে। কোনো সন্দেহজনক কার্যকলাপ চোখে পড়লে অবিলম্বে রিপোর্ট করুন।'
                       : 'Your learning sessions are secure. Report any policy violation or concern.'}
@@ -331,16 +331,16 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-3" data-testid="safety-reports-list">
+            <div className="flex flex-col gap-3" data-testid="safety-reports-list">
               {filteredReports.map((report) => (
                 <Card
                   key={report.id}
-                  className="rounded-3xl border border-slate-200 bg-white p-5 sm:p-6 space-y-3 shadow-2xs hover:border-rose-400/80 transition-all text-left"
+                  className="rounded-3xl border border-border bg-card p-5 sm:p-6 flex flex-col gap-3 shadow-2xs hover:border-rose-400/80 transition-all text-left"
                   data-testid={`safety-report-card-${report.id}`}
                 >
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-slate-100 pb-3">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/40 pb-3">
                     <div className="flex items-center gap-2 flex-wrap">
-                      <span className="text-xs font-mono font-bold text-slate-500">
+                      <span className="text-xs font-mono font-bold text-muted-foreground">
                         #{report.id.slice(0, 8)}
                       </span>
                       <span
@@ -351,12 +351,12 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                               ? 'bg-amber-100 text-amber-800 border-amber-300'
                               : report.severity === 'medium'
                                 ? 'bg-blue-100 text-blue-800 border-blue-300'
-                                : 'bg-slate-100 text-slate-800 border-slate-300'
+                                : 'bg-muted text-foreground border-border'
                         }`}
                       >
                         {report.severity.toUpperCase()}
                       </span>
-                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-slate-100 text-slate-800 border border-slate-200 capitalize">
+                      <span className="text-xs font-bold px-2.5 py-0.5 rounded-full bg-muted text-foreground border border-border capitalize">
                         {report.category.replace(/_/g, ' ')}
                       </span>
                     </div>
@@ -377,23 +377,23 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                       >
                         {report.status.replace(/_/g, ' ').toUpperCase()}
                       </span>
-                      <span className="text-slate-500 text-[11px] font-medium">
+                      <span className="text-muted-foreground text-[11px] font-medium">
                         {formatDateTime(String(report.createdAt), locale)}
                       </span>
                     </div>
                   </div>
 
-                  <p className="text-xs sm:text-sm text-slate-900 leading-relaxed font-medium">
+                  <p className="text-xs sm:text-sm text-foreground leading-relaxed font-medium">
                     {report.description}
                   </p>
 
                   {report.resolutionNotes && (
-                    <div className="p-3.5 rounded-2xl bg-slate-50 border border-slate-200 text-xs text-slate-800 space-y-1">
+                    <div className="p-3.5 rounded-2xl bg-muted/40 border border-border text-xs text-foreground flex flex-col gap-1">
                       <span className="font-bold text-emerald-800 flex items-center gap-1.5 block">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                         {isBn ? 'নিরাপত্তা টিমের তদন্ত ও নিষ্পত্তি নোট:' : 'Investigation Outcome:'}
                       </span>
-                      <p className="text-slate-700 leading-relaxed font-medium">
+                      <p className="text-muted-foreground leading-relaxed font-medium">
                         {report.resolutionNotes}
                       </p>
                     </div>

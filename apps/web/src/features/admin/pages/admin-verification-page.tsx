@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { ShieldCheck, FileCheck2, Clock } from 'lucide-react';
@@ -14,11 +14,11 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6" data-testid="admin-verification-page">
+      <div className="flex flex-col gap-6 py-6" data-testid="admin-verification-page">
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200">
           <div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-slate-900">
                 {locale === 'bn'
                   ? 'শিক্ষক যাচাই ও সনদ পর্যালোচনা'
@@ -80,7 +80,7 @@ export function AdminVerificationPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Verification Queue Card */}
-        <div className="bg-white border-2 border-slate-200 rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs">
+        <div className="bg-white border-2 border-slate-200 rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs">
           <AdminVerificationTab />
         </div>
       </div>

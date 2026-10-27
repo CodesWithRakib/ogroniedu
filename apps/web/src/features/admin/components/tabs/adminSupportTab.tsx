@@ -1,4 +1,4 @@
-import React from 'react';
+﻿import React from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/Badge';
@@ -58,7 +58,7 @@ export function AdminSupportTab({
     statusFilter === 'all' ? tickets : tickets.filter((row) => row.status === statusFilter);
 
   return (
-    <div className="space-y-4" data-testid="support-tab-content">
+    <div className="flex flex-col gap-4" data-testid="support-tab-content">
       <div className="flex items-center gap-2">
         <Select value={statusFilter} onValueChange={(val) => setStatusFilter(val)}>
           <SelectTrigger

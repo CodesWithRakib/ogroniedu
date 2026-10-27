@@ -98,17 +98,17 @@ export function DisputeModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md p-6 bg-white border border-slate-200 rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto text-left">
-        <DialogHeader className="space-y-1.5 border-b border-slate-100 pb-3.5 text-left">
+      <DialogContent className="sm:max-w-md p-6 bg-card border border-border rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto text-left">
+        <DialogHeader className="flex flex-col gap-1.5 border-b border-border/40 pb-3.5 text-left">
           <div className="flex items-center gap-2.5 text-amber-500">
             <div className="p-2.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600">
               <Scale className="w-5 h-5" />
             </div>
             <div>
-              <DialogTitle className="text-lg font-black text-slate-900">
+              <DialogTitle className="text-lg font-black text-foreground">
                 {isBn ? 'বুকিং বিরোধ ও অভিযোগ দায়ের' : 'File Booking Dispute & Complaint'}
               </DialogTitle>
-              <DialogDescription className="text-xs font-semibold text-blue-700 leading-relaxed">
+              <DialogDescription className="text-xs font-semibold text-primary leading-relaxed">
                 {isBn
                   ? `শিক্ষক ${tutorName ? `(${tutorName})` : ''}-এর সাথে ক্লাস বা লেনদেন সংক্রান্ত বিরোধ রিপোর্ট করুন।`
                   : `Open a formal dispute regarding session delivery or fees for this booking.`}
@@ -118,7 +118,7 @@ export function DisputeModal({
         </DialogHeader>
 
         {isSuccess ? (
-          <div className="py-8 text-center space-y-3 animate-in fade-in">
+          <div className="py-8 text-center flex flex-col items-center gap-3 animate-in fade-in">
             <CheckCircle2 className="w-12 h-12 text-success mx-auto" />
             <h4 className="text-sm font-bold text-foreground">
               {isBn ? 'অভিযোগ সফলভাবে গ্রহণ করা হয়েছে' : 'Dispute Registered'}
@@ -130,9 +130,9 @@ export function DisputeModal({
             </p>
           </div>
         ) : (
-          <form onSubmit={handleSubmit} className="space-y-4 pt-2">
+          <form onSubmit={handleSubmit} className="flex flex-col gap-4 pt-2">
             {/* Escrow Freeze Notice */}
-            <div className="p-3.5 rounded-xl border border-warning/30 bg-warning/10 text-xs space-y-1">
+            <div className="p-3.5 rounded-xl border border-warning/30 bg-warning/10 text-xs flex flex-col gap-1">
               <div className="flex items-center gap-1.5 font-bold text-warning-foreground">
                 <AlertCircle className="w-4 h-4 shrink-0" />
                 <span>{isBn ? 'স্বয়ংক্রিয় এসক্রো সুরক্ষা' : 'Automated Escrow Hold'}</span>
@@ -151,7 +151,7 @@ export function DisputeModal({
             )}
 
             {/* Reason code */}
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label className="text-xs font-semibold text-foreground">
                 {isBn ? 'বিরোধের কারণ' : 'Dispute Reason'}
               </Label>
@@ -190,7 +190,7 @@ export function DisputeModal({
             </div>
 
             {/* Claimed Refund Amount (optional) */}
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <Label className="text-xs font-semibold text-foreground">
                 {isBn ? 'দাবিকৃত রিফান্ড পরিমাণ (ঐচ্ছিক ৳)' : 'Claimed Refund Amount (Optional ৳)'}
               </Label>
@@ -206,7 +206,7 @@ export function DisputeModal({
             </div>
 
             {/* Description */}
-            <div className="space-y-1.5">
+            <div className="flex flex-col gap-1.5">
               <div className="flex justify-between items-center">
                 <Label className="text-xs font-semibold text-foreground">
                   {isBn ? 'অভিযোগের বিস্তারিত বিবরণ' : 'Detailed Explanation'}

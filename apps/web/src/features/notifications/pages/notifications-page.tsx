@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
@@ -62,7 +62,7 @@ export function NotificationsPage({ locale }: { locale: Locale }) {
         />
       ) : (
         <>
-          <div className="space-y-3" data-testid="notifications-list">
+          <div className="flex flex-col gap-3" data-testid="notifications-list">
             {feed.items.map((n) => (
               <Card key={n.id} data-testid={`notification-row-${n.id}`}>
                 <CardContent className="flex items-start justify-between gap-3 py-4">

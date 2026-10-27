@@ -232,7 +232,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
           : 'Payment status is verified directly with the backend'
       }
     >
-      <div className="w-full space-y-6">
+      <div className="w-full flex flex-col gap-6">
         <Link
           href={withLocale(`/dashboard/bookings/${bookingId}`, locale)}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
@@ -245,7 +245,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
         <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-5 sm:p-8 shadow-xs">
           <div className="absolute -top-20 -right-16 w-72 h-72 rounded-full bg-brand-soft blur-3xl pointer-events-none" />
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-            <div className="space-y-3 max-w-2xl">
+            <div className="flex flex-col gap-3 max-w-2xl">
               <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-soft px-3 py-1 text-[11px] font-bold text-primary">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 {isBn ? 'সুরক্ষিত চেকআউট' : 'Secure checkout'}
@@ -331,9 +331,9 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
           {/* Main column */}
-          <div className="lg:col-span-3 space-y-5">
+          <div className="lg:col-span-3 flex flex-col gap-5">
             {isConfirmed ? (
-              <div className="rounded-2xl border border-success/30 bg-success-soft/40 p-6 space-y-4">
+              <div className="rounded-2xl border border-success/30 bg-success-soft/40 p-6 flex flex-col gap-4">
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-2xl bg-success/15 text-success flex items-center justify-center">
                     <CheckCircle2 className="w-6 h-6" />
@@ -377,7 +377,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                 </div>
               </div>
             ) : pendingOrder && isPayable ? (
-              <div className="space-y-5">
+              <div className="flex flex-col gap-5">
                 {provider === 'sslcommerz' && (
                   <EmbeddedEasyCheckout
                     orderId={pendingOrder.orderId}
@@ -392,7 +392,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                   />
                 )}
 
-                <div className="rounded-2xl border border-warning/30 bg-warning-soft/40 p-6 space-y-4">
+                <div className="rounded-2xl border border-warning/30 bg-warning-soft/40 p-6 flex flex-col gap-4">
                   <div className="flex items-center gap-3">
                     <div className="w-11 h-11 rounded-2xl bg-warning/15 text-warning flex items-center justify-center">
                       <Clock className="w-6 h-6" />
@@ -453,7 +453,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                 </div>
               </div>
             ) : isPayable ? (
-              <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 space-y-4">
+              <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 flex flex-col gap-4">
                 <div className="flex items-center gap-2 pb-3 border-b border-border">
                   <CreditCard className="w-4 h-4 text-interactive" />
                   <h2 className="text-sm font-extrabold text-foreground">
@@ -525,7 +525,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                 </Button>
               </div>
             ) : isTerminal ? (
-              <div className="rounded-2xl border border-border bg-card p-6 space-y-3">
+              <div className="rounded-2xl border border-border bg-card p-6 flex flex-col gap-3">
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center">
                     <AlertTriangle className="w-6 h-6" />
@@ -548,7 +548,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                 </Link>
               </div>
             ) : (
-              <div className="rounded-2xl border border-info/30 bg-info-soft/50 p-6 space-y-3">
+              <div className="rounded-2xl border border-info/30 bg-info-soft/50 p-6 flex flex-col gap-3">
                 <div className="flex items-center gap-3">
                   <div className="w-11 h-11 rounded-2xl bg-info/15 text-info flex items-center justify-center">
                     <Clock className="w-6 h-6" />
@@ -574,13 +574,13 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
           </div>
 
           {/* Summary column */}
-          <aside className="lg:col-span-2 space-y-5">
-            <div className="rounded-2xl border border-border bg-card p-5 space-y-3">
+          <aside className="lg:col-span-2 flex flex-col gap-5">
+            <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-3">
               <h2 className="text-sm font-extrabold text-foreground flex items-center gap-2 pb-3 border-b border-border">
                 <Receipt className="w-4 h-4 text-interactive" />
                 {isBn ? 'অর্ডার সারসংক্ষেপ' : 'Order summary'}
               </h2>
-              <dl className="space-y-2.5 text-xs">
+              <dl className="flex flex-col gap-2.5 text-xs">
                 <div className="flex items-start justify-between gap-3">
                   <dt className="text-muted-foreground">{isBn ? 'বিষয়' : 'Subject'}</dt>
                   <dd className="font-semibold text-foreground text-right">{displaySubject}</dd>
@@ -610,7 +610,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-border bg-gradient-to-br from-card to-primary-soft/20 p-5 space-y-2.5 text-[11px] text-muted-foreground">
+            <div className="rounded-2xl border border-border bg-gradient-to-br from-card to-primary-soft/20 p-5 flex flex-col gap-2.5 text-[11px] text-muted-foreground">
               <div className="flex items-center gap-2 font-bold text-foreground text-xs">
                 <ShieldCheck className="w-4 h-4 text-primary" />
                 {isBn ? 'কেন এই পেমেন্ট নিরাপদ' : 'Why this payment is safe'}

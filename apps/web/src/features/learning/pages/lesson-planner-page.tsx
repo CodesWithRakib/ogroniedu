@@ -145,7 +145,7 @@ export function LessonPlannerPage({ locale }: { locale: Locale }) {
 
   return (
     <DashboardShell locale={locale}>
-      <div className="space-y-6" data-testid="lesson-planner">
+      <div className="flex flex-col gap-6" data-testid="lesson-planner">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
           <div>
             <h1 className="text-xl font-black text-foreground">{t.lessonPlans}</h1>
@@ -181,8 +181,8 @@ export function LessonPlannerPage({ locale }: { locale: Locale }) {
                 <CardTitle className="text-sm font-bold">{t.createLessonPlan}</CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleCreate} className="space-y-3">
-                  <div className="space-y-1">
+                <form onSubmit={handleCreate} className="flex flex-col gap-3">
+                  <div className="flex flex-col gap-1">
                     <Label htmlFor="plan-title" className="text-xs">
                       {t.planTitleLabel}
                     </Label>
@@ -193,7 +193,7 @@ export function LessonPlannerPage({ locale }: { locale: Locale }) {
                       className="text-sm"
                     />
                   </div>
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1">
                     <Label htmlFor="plan-description" className="text-xs">
                       {t.planDescriptionLabel}
                     </Label>
@@ -205,7 +205,7 @@ export function LessonPlannerPage({ locale }: { locale: Locale }) {
                       className="text-sm"
                     />
                   </div>
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1">
                     <Label htmlFor="plan-objectives" className="text-xs">
                       {t.planObjectivesLabel}
                     </Label>
@@ -232,7 +232,7 @@ export function LessonPlannerPage({ locale }: { locale: Locale }) {
             ) : items.length === 0 ? (
               <EmptyState title={t.noLessonPlans} description={t.lessonPlans} />
             ) : (
-              <div className="space-y-4">
+              <div className="flex flex-col gap-4">
                 {items.map((plan) => (
                   <Card key={plan.id}>
                     <CardHeader className="pb-2 flex flex-row items-start justify-between gap-2">
@@ -267,7 +267,7 @@ export function LessonPlannerPage({ locale }: { locale: Locale }) {
                         )}
                       </div>
                     </CardHeader>
-                    <CardContent className="space-y-3">
+                    <CardContent className="flex flex-col gap-3">
                       {plan.objectives.length > 0 && (
                         <ul className="list-disc pl-5 text-xs text-muted-foreground">
                           {plan.objectives.map((objective) => (
@@ -276,7 +276,7 @@ export function LessonPlannerPage({ locale }: { locale: Locale }) {
                         </ul>
                       )}
 
-                      <div className="space-y-2">
+                      <div className="flex flex-col gap-2">
                         <p className="text-xs font-semibold text-foreground">{t.materials}</p>
                         {plan.materials.length === 0 ? (
                           <p className="text-[11px] text-muted-foreground">{t.noMaterials}</p>

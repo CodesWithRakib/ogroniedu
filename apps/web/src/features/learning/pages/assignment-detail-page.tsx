@@ -187,7 +187,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
   const dateLocale = locale === 'bn' ? 'bn-BD' : 'en-US';
 
   return (
-    <div className="max-w-4xl mx-auto px-4 py-8 space-y-6">
+    <div className="max-w-4xl mx-auto px-4 py-8 flex flex-col gap-6">
       {/* Navigation */}
       <div className="flex items-center justify-between">
         <Link
@@ -209,7 +209,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
       </div>
 
       {/* Main Assignment Banner */}
-      <div className="rounded-2xl bg-card border border-primary/40 p-8 text-foreground space-y-4">
+      <div className="rounded-2xl bg-card border border-primary/40 p-8 text-foreground flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-xs font-medium text-primary-soft-foreground">
@@ -279,7 +279,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
       {/* Submission & Grading Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Student Submission Card */}
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 space-y-4">
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col gap-4">
           <CardHeader className="p-0 pb-2">
             <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
               <Send className="w-4 h-4 text-success-soft-foreground" />
@@ -296,9 +296,9 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="p-0 space-y-3">
+          <CardContent className="p-0 flex flex-col gap-3">
             {submission ? (
-              <div className="p-4 bg-muted rounded-2xl border border-border space-y-2">
+              <div className="p-4 bg-muted rounded-2xl border border-border flex flex-col gap-2">
                 <div className="flex items-center justify-between text-[11px] text-muted-foreground">
                   <span>{locale === 'bn' ? 'জমার সময়:' : 'Submitted on:'}</span>
                   <span className="font-medium text-foreground">
@@ -316,10 +316,10 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
             ) : isStudent ? (
               <form
                 onSubmit={handleSubmitSolution}
-                className="space-y-3"
+                className="flex flex-col gap-3"
                 data-testid="student-solution-form"
               >
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label
                     htmlFor="solution-text"
                     className="text-xs font-semibold text-muted-foreground block"
@@ -378,7 +378,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
         </Card>
 
         {/* Evaluation / Feedback Card */}
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 space-y-4">
+        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col gap-4">
           <CardHeader className="p-0 pb-2">
             <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
               <Award className="w-4 h-4 text-warning-soft-foreground" />
@@ -395,9 +395,9 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
             </CardDescription>
           </CardHeader>
 
-          <CardContent className="p-0 space-y-3">
+          <CardContent className="p-0 flex flex-col gap-3">
             {hasScore && !isEditingGrade && (
-              <div className="p-4 bg-primary-soft border border-primary/40 rounded-2xl space-y-3">
+              <div className="p-4 bg-primary-soft border border-primary/40 rounded-2xl flex flex-col gap-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-success-soft-foreground font-semibold">
                     {locale === 'bn' ? 'প্রাপ্ত স্কোর:' : 'Awarded Score:'}
@@ -409,7 +409,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
                 </div>
 
                 {submission!.tutorFeedback && (
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1">
                     <span className="text-[11px] font-bold text-muted-foreground uppercase">
                       {locale === 'bn' ? 'শিক্ষকের মন্তব্য:' : 'Tutor Remarks:'}
                     </span>
@@ -435,8 +435,8 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
             )}
 
             {isTutor && submission && (!hasScore || isEditingGrade) && (
-              <form onSubmit={handleGrade} className="space-y-3" data-testid="tutor-grading-form">
-                <div className="space-y-1">
+              <form onSubmit={handleGrade} className="flex flex-col gap-3" data-testid="tutor-grading-form">
+                <div className="flex flex-col gap-1">
                   <Label
                     htmlFor="score-input"
                     className="text-xs font-semibold text-muted-foreground"
@@ -455,7 +455,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
                   />
                 </div>
 
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <Label
                     htmlFor="feedback-input"
                     className="text-xs font-semibold text-muted-foreground"
@@ -477,7 +477,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
                 </div>
 
                 {hasScore && isEditingGrade && (
-                  <div className="space-y-1.5">
+                  <div className="flex flex-col gap-1.5">
                     <Label
                       htmlFor="revision-reason"
                       className="text-xs font-semibold text-warning-soft-foreground"

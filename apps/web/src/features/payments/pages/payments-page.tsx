@@ -255,7 +255,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
 
       {/* 4. Tab 1: Due & Pending Payments ("kongula payment korte hbe") */}
       {pay.activeTab === 'due' && (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           {pay.requests.isLoading ? (
             <div className="py-16 flex justify-center">
               <LoadingSpinner />
@@ -390,7 +390,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
 
       {/* 5. Tab 2: Paid History & Receipts ("kongula paid kore felche") */}
       {pay.activeTab === 'paid' && (
-        <div className="space-y-4">
+        <div className="flex flex-col gap-4">
           {pay.ordersQuery.isLoading || pay.requests.isLoading ? (
             <div className="py-16 flex justify-center">
               <LoadingSpinner />
@@ -682,15 +682,15 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                     className="grid grid-cols-1 gap-5 md:grid-cols-2 md:items-end"
                     data-testid="create-order-form"
                   >
-                    <div className="space-y-1.5 md:col-span-1">
-                      <Label htmlFor="pay-booking" className="text-xs font-black text-slate-900">
+                    <div className="flex flex-col gap-1.5 md:col-span-1">
+                      <Label htmlFor="pay-booking" className="text-xs font-black text-foreground">
                         {isBn ? 'টিউশন / কোর্স নির্বাচন করুন' : 'Select Tuition / Course'}
                       </Label>
                       <NativeSelect
                         id="pay-booking"
                         value={pay.bookingId}
                         onChange={(e) => pay.handleSelectBooking(e.target.value)}
-                        className="h-11 bg-white text-xs font-bold border-slate-300 text-slate-900"
+                        className="h-11 bg-card text-xs font-bold border-border text-foreground"
                         data-testid="pay-booking-select"
                       >
                         {bookingOptions.map((opt) => (
@@ -701,32 +701,32 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                       </NativeSelect>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <Label className="text-xs font-black text-slate-900">
+                    <div className="flex flex-col gap-1.5">
+                      <Label className="text-xs font-black text-foreground">
                         {isBn ? 'সার্ভার-যাচাইকৃত পরিমাণ' : 'Server-verified amount'}
                       </Label>
-                      <div className="h-11 rounded-xl border border-slate-300 bg-slate-50 px-3.5 flex items-center justify-between text-xs font-black text-slate-900">
-                        <span className="tabular-nums text-sm text-blue-700">
+                      <div className="h-11 rounded-xl border border-border bg-surface-muted px-3.5 flex items-center justify-between text-xs font-black text-foreground">
+                        <span className="tabular-nums text-sm text-primary font-extrabold">
                           ৳ {formatLocalizedNumber(Number(pay.amountBdt) || 0, locale)}
                         </span>
-                        <Lock className="w-4 h-4 text-slate-500" />
+                        <Lock className="w-4 h-4 text-muted-foreground" />
                       </div>
-                      <p className="text-[11px] text-slate-600 font-medium">
+                      <p className="text-[11px] text-muted-foreground font-medium">
                         {isBn
                           ? 'পরিমাণ বুকিং থেকে নির্ধারিত হয়, সম্পাদনাযোগ্য নয়।'
                           : 'Amount is taken from the booking and cannot be edited.'}
                       </p>
                     </div>
 
-                    <div className="space-y-1.5">
-                      <Label htmlFor="pay-provider" className="text-xs font-black text-slate-900">
+                    <div className="flex flex-col gap-1.5">
+                      <Label htmlFor="pay-provider" className="text-xs font-black text-foreground">
                         {dict.payments.selectGateway}
                       </Label>
                       <NativeSelect
                         id="pay-provider"
                         value={pay.provider}
                         onChange={(e) => pay.setProvider(e.target.value as PaymentProvider)}
-                        className="h-11 bg-white text-xs font-bold border-slate-300 text-slate-900"
+                        className="h-11 bg-card text-xs font-bold border-border text-foreground"
                         data-testid="pay-provider-select"
                       >
                         <option value="sslcommerz">

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -570,7 +570,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
         {/* Left Col: Verification Status & Upload Cards */}
-        <div className="lg:col-span-1 space-y-4" data-testid="tutor-verification-section">
+        <div className="lg:col-span-1 flex flex-col gap-4" data-testid="tutor-verification-section">
           {profile.isLoading ? (
             <div className="py-8 flex justify-center">
               <LoadingSpinner />
@@ -604,7 +604,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Right Col: Performance & Focus Tracker (2 Cols) */}
-        <div className="lg:col-span-2 space-y-5">
+        <div className="lg:col-span-2 flex flex-col gap-5">
           <TutorPerformanceRadar
             locale={locale}
             rating={4.9}

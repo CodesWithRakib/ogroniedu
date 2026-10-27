@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -119,7 +119,7 @@ export function GuardianEscrowSafetyCard({
       {pendingMilestonesCount > 0 && !approved ? (
         <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-4">
           <div className="flex items-start justify-between gap-3">
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 flex items-center gap-1">
                 <AlertTriangle className="w-3 h-3 text-amber-600 dark:text-amber-400" />
                 {isBn ? 'অভিভাবকের অনুমোদনের অপেক্ষায়' : 'Action Required: Release Milestone'}

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -138,7 +138,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
             <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-brand-accent border border-primary/30 flex items-center justify-center text-primary font-black text-2xl">
               {child?.displayName ? child.displayName.slice(0, 2).toUpperCase() : 'ST'}
             </div>
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <div className="flex flex-wrap items-center gap-2">
                 <h2 className="text-xl font-bold text-foreground">
                   {child?.displayName || (isBn ? 'শিক্ষার্থী' : 'Student')}
@@ -375,10 +375,10 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
       {/* 4. TAB CONTENTS */}
       {/* TAB A: TUTORS & BOOKINGS */}
       {activeTab === 'tutors' && (
-        <div className="space-y-4" data-testid="child-tutors-list">
+        <div className="flex flex-col gap-4" data-testid="child-tutors-list">
           {childBookings.length === 0 ? (
             <Card className="py-12 text-center rounded-2xl">
-              <CardContent className="space-y-3">
+              <CardContent className="flex flex-col gap-3">
                 <GraduationCap className="w-12 h-12 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
                   {isBn
@@ -406,7 +406,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
                   className="rounded-2xl border-border bg-card hover:border-primary/40 transition-all p-5"
                 >
                   <div className="flex items-start justify-between gap-3">
-                    <div className="space-y-1">
+                    <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-2">
                         <h4 className="font-bold text-foreground text-base">
                           {b.tutorProfile?.user?.displayName ||
@@ -474,10 +474,10 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
 
       {/* TAB B: SESSIONS & ATTENDANCE */}
       {activeTab === 'sessions' && (
-        <div className="space-y-4" data-testid="child-sessions-list">
+        <div className="flex flex-col gap-4" data-testid="child-sessions-list">
           {childSessions.length === 0 ? (
             <Card className="py-12 text-center rounded-2xl">
-              <CardContent className="space-y-2">
+              <CardContent className="flex flex-col gap-2">
                 <Calendar className="w-10 h-10 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
                   {isBn ? 'কোনো ক্লাস শিডিউল নেই' : 'No sessions scheduled yet'}
@@ -490,13 +490,13 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               {childSessions.map((s) => (
                 <Card
                   key={s.id}
                   className="rounded-2xl border-border bg-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                 >
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
                       <Clock className="w-4 h-4 text-primary" />
                       <span className="font-bold text-foreground text-sm">
@@ -556,10 +556,10 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
 
       {/* TAB C: HOMEWORK & PROGRESS */}
       {activeTab === 'homework' && (
-        <div className="space-y-4" data-testid="child-homework-list">
+        <div className="flex flex-col gap-4" data-testid="child-homework-list">
           {!learningSummary?.assignments || learningSummary.assignments.length === 0 ? (
             <Card className="py-12 text-center rounded-2xl">
-              <CardContent className="space-y-2">
+              <CardContent className="flex flex-col gap-2">
                 <BookOpen className="w-10 h-10 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
                   {isBn ? 'কোনো বাড়ির কাজ দেওয়া হয়নি' : 'No homework records yet'}
@@ -572,13 +572,13 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
               </CardContent>
             </Card>
           ) : (
-            <div className="space-y-3">
+            <div className="flex flex-col gap-3">
               {learningSummary.assignments.map((a) => (
                 <Card
                   key={a.id}
                   className="rounded-2xl border-border bg-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                 >
-                  <div className="space-y-1">
+                  <div className="flex flex-col gap-1">
                     <h4 className="font-bold text-foreground text-sm">{a.title}</h4>
                     <p className="text-xs text-muted-foreground">
                       {isBn ? 'সর্বোচ্চ নম্বর:' : 'Max Score:'} {a.maxScore}{' '}
@@ -602,13 +602,13 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
 
       {/* TAB D: CHILD SAFETY & TRUST ACTIONS */}
       {activeTab === 'safety' && (
-        <div className="space-y-4" data-testid="child-safety-section">
+        <div className="flex flex-col gap-4" data-testid="child-safety-section">
           <Card className="rounded-2xl border-destructive/40 bg-surface-muted p-6 text-foreground">
             <div className="flex items-start gap-4">
               <div className="h-12 w-12 rounded-2xl bg-destructive/20 border border-destructive/40 text-destructive-soft-foreground flex items-center justify-center shrink-0">
                 <ShieldAlert className="w-6 h-6" />
               </div>
-              <div className="space-y-2">
+              <div className="flex flex-col gap-2">
                 <h3 className="text-lg font-bold text-foreground">
                   {isBn
                     ? 'শিশু সুরক্ষা ও নীতি পর্যবেক্ষণ (Child Safeguarding Center)'

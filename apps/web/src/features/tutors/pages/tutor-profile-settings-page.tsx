@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -469,19 +469,19 @@ export function TutorProfileSettingsPage({
   return (
     <TutorLayout locale={locale} title={isBn ? 'প্রোফাইল ও ভেরিফিকেশন' : 'Profile & Credentials'}>
       <div
-        className="space-y-6 py-4 w-full px-4 sm:px-6 lg:px-8"
+        className="flex flex-col gap-6 py-4 w-full px-4 sm:px-6 lg:px-8"
         data-testid="tutor-profile-command-center"
       >
         {/* ============================================================ */}
         {/* HERO COMMAND CENTER BANNER                                   */}
         {/* ============================================================ */}
-        <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs space-y-4">
+        <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs flex flex-col gap-4">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
               <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl uppercase">
                 {profile?.headlineEn?.slice(0, 2) || 'TU'}
               </div>
-              <div className="space-y-1">
+              <div className="flex flex-col gap-1">
                 <div className="flex flex-wrap items-center gap-2">
                   <h1 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">
                     {isBn
@@ -585,7 +585,7 @@ export function TutorProfileSettingsPage({
           defaultValue="bio"
           value={activeTab}
           onValueChange={setActiveTab}
-          className="w-full space-y-4"
+          className="w-full flex flex-col gap-4"
         >
           <TabList className="w-full flex flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border">
             <TabTrigger value="bio" className="flex items-center gap-1.5 text-xs">
@@ -651,7 +651,7 @@ export function TutorProfileSettingsPage({
                     : 'Provide a compelling headline, detailed bio, hourly rate, and experience.'}
                 </CardDescription>
               </CardHeader>
-              <CardContent className="p-5 sm:p-6 space-y-6">
+              <CardContent className="p-5 sm:p-6 flex flex-col gap-6">
                 {error && (
                   <Alert variant="destructive">
                     <AlertTriangle className="h-4 w-4" />
@@ -669,10 +669,10 @@ export function TutorProfileSettingsPage({
                   </Alert>
                 )}
 
-                <form onSubmit={handleSubmitBio} className="space-y-5">
+                <form onSubmit={handleSubmitBio} className="flex flex-col gap-5">
                   {/* Headlines */}
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label htmlFor="headlineBn" className="text-xs font-semibold">
                         {isBn ? 'বাংলা শিরোনাম' : 'Bengali Headline'}
                       </Label>
@@ -684,7 +684,7 @@ export function TutorProfileSettingsPage({
                         className="text-xs"
                       />
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label htmlFor="headlineEn" className="text-xs font-semibold">
                         {isBn ? 'ইংরেজি শিরোনাম *' : 'English Headline *'}
                       </Label>
@@ -701,7 +701,7 @@ export function TutorProfileSettingsPage({
 
                   {/* Hourly rate & Experience */}
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label htmlFor="hourlyRate" className="text-xs font-semibold">
                         {isBn ? 'বেস ঘণ্টাপ্রতি ফি (টাকা)' : 'Base Hourly Rate (BDT)'}
                       </Label>
@@ -716,7 +716,7 @@ export function TutorProfileSettingsPage({
                         className="text-xs"
                       />
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label htmlFor="yearsExperience" className="text-xs font-semibold">
                         {isBn ? 'অভিজ্ঞতার বছর' : 'Years of Experience'}
                       </Label>
@@ -734,7 +734,7 @@ export function TutorProfileSettingsPage({
                   </div>
 
                   {/* Teaching modes */}
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label className="text-xs font-semibold">
                       {isBn ? 'পাঠদানের মাধ্যমসমূহ' : 'Teaching Modes'}
                     </Label>
@@ -760,7 +760,7 @@ export function TutorProfileSettingsPage({
 
                   {/* Bios */}
                   <div className="grid gap-4 sm:grid-cols-2">
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label htmlFor="bioBn" className="text-xs font-semibold">
                         {isBn ? 'বাংলায় বিস্তারিত পরিচিতি' : 'Bengali Bio'}
                       </Label>
@@ -773,7 +773,7 @@ export function TutorProfileSettingsPage({
                         className="text-xs"
                       />
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label htmlFor="bioEn" className="text-xs font-semibold">
                         {isBn ? 'ইংরেজিতে বিস্তারিত পরিচিতি *' : 'English Bio *'}
                       </Label>
@@ -852,7 +852,7 @@ export function TutorProfileSettingsPage({
                 </div>
               </CardHeader>
 
-              <CardContent className="p-5 sm:p-6 space-y-6">
+              <CardContent className="p-5 sm:p-6 flex flex-col gap-6">
                 {qualActionMsg && (
                   <Alert>
                     <Info className="h-4 w-4 text-primary" />
@@ -862,7 +862,7 @@ export function TutorProfileSettingsPage({
 
                 {/* Upload Degree Card Accordion */}
                 {showAddQual && (
-                  <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 space-y-3">
+                  <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
                     <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
                       <Sparkles className="h-3.5 w-3.5 text-primary" />
                       <span>
@@ -887,9 +887,9 @@ export function TutorProfileSettingsPage({
                 )}
 
                 {/* Existing Qualifications List */}
-                <div className="space-y-3">
+                <div className="flex flex-col gap-3">
                   {configuredQualifications.length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-border p-8 text-center space-y-2">
+                    <div className="rounded-2xl border border-dashed border-border p-8 text-center flex flex-col gap-2">
                       <GraduationCap className="h-8 w-8 text-muted-foreground/60 mx-auto" />
                       <p className="text-xs font-semibold text-foreground">
                         {isBn
@@ -909,7 +909,7 @@ export function TutorProfileSettingsPage({
                           key={String(qual.id || idx)}
                           className="rounded-xl border border-border bg-card p-4 flex flex-col justify-between gap-3 shadow-xs"
                         >
-                          <div className="space-y-1">
+                          <div className="flex flex-col gap-1">
                             <div className="flex items-center justify-between gap-2">
                               <h4 className="text-xs font-bold text-foreground">
                                 {String(qual.title || 'Degree')}
@@ -972,7 +972,7 @@ export function TutorProfileSettingsPage({
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="p-5 sm:p-6 space-y-6">
+              <CardContent className="p-5 sm:p-6 flex flex-col gap-6">
                 {subjectMessage && (
                   <Alert>
                     <CheckCircle2 className="h-4 w-4 text-emerald-600" />
@@ -987,7 +987,7 @@ export function TutorProfileSettingsPage({
                 )}
 
                 {/* Current Subjects List */}
-                <div className="space-y-3">
+                <div className="flex flex-col gap-3">
                   <Label className="text-xs font-semibold block">
                     {isBn ? 'বর্তমান পাঠদান বিষয়সমূহ:' : 'Current Teaching Subjects:'}
                   </Label>
@@ -1017,7 +1017,7 @@ export function TutorProfileSettingsPage({
                             key={sub.id}
                             className="rounded-xl border border-border bg-card p-3 flex items-center justify-between gap-2 shadow-xs"
                           >
-                            <div className="space-y-0.5 min-w-0">
+                            <div className="flex flex-col gap-0.5 min-w-0">
                               <p className="text-xs font-bold text-foreground truncate">
                                 {subjectName}
                               </p>
@@ -1050,14 +1050,14 @@ export function TutorProfileSettingsPage({
                 {/* Add Subject Form with Shadcn UI Select */}
                 <form
                   onSubmit={handleAddSubject}
-                  className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-4"
+                  className="rounded-xl border border-border/80 bg-muted/20 p-4 flex flex-col gap-4"
                 >
                   <Label className="text-xs font-bold block">
                     {isBn ? 'নতুন বিষয় ও শ্রেণি যোগ করুন' : 'Add New Subject & Level'}
                   </Label>
                   <div className="grid gap-3 sm:grid-cols-3">
                     {/* Subject Selector */}
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label className="text-[11px] font-medium">
                         {isBn ? 'বিষয় নির্বাচন করুন *' : 'Select Subject *'}
                       </Label>
@@ -1078,7 +1078,7 @@ export function TutorProfileSettingsPage({
                     </div>
 
                     {/* Education Level Selector */}
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label className="text-[11px] font-medium">
                         {isBn ? 'শ্রেণি / লেভেল *' : 'Class / Level *'}
                       </Label>
@@ -1099,7 +1099,7 @@ export function TutorProfileSettingsPage({
                     </div>
 
                     {/* Hourly rate for this subject */}
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label className="text-[11px] font-medium">
                         {isBn ? 'এই বিষয়ের ফি (টাকা, ঐচ্ছিক)' : 'Subject Rate (BDT, Optional)'}
                       </Label>
@@ -1153,7 +1153,7 @@ export function TutorProfileSettingsPage({
                 </CardDescription>
               </CardHeader>
 
-              <CardContent className="p-5 sm:p-6 space-y-6">
+              <CardContent className="p-5 sm:p-6 flex flex-col gap-6">
                 {availabilityError && (
                   <Alert variant="destructive">
                     <AlertTriangle className="h-4 w-4" />
@@ -1168,7 +1168,7 @@ export function TutorProfileSettingsPage({
                 )}
 
                 {/* Active slots summary */}
-                <div className="space-y-2">
+                <div className="flex flex-col gap-2">
                   <Label className="text-xs font-semibold">
                     {isBn ? 'বর্তমান সক্রিয় শিডিউল:' : 'Current Active Slots:'}
                   </Label>
@@ -1203,9 +1203,9 @@ export function TutorProfileSettingsPage({
                 {/* Set Schedule Form */}
                 <form
                   onSubmit={handleSaveAvailability}
-                  className="rounded-xl border border-border/80 bg-muted/20 p-4 space-y-4"
+                  className="rounded-xl border border-border/80 bg-muted/20 p-4 flex flex-col gap-4"
                 >
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <Label className="text-xs font-semibold">
                       {isBn ? 'পাঠদানের দিনসমূহ নির্বাচন করুন:' : 'Select Teaching Days:'}
                     </Label>
@@ -1230,7 +1230,7 @@ export function TutorProfileSettingsPage({
                   </div>
 
                   <div className="grid gap-3 sm:grid-cols-2">
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label className="text-[11px] font-medium">
                         {isBn ? 'শুরুর সময় (Start Time)' : 'Start Time'}
                       </Label>
@@ -1241,7 +1241,7 @@ export function TutorProfileSettingsPage({
                         className="text-xs font-mono"
                       />
                     </div>
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label className="text-[11px] font-medium">
                         {isBn ? 'শেষের সময় (End Time)' : 'End Time'}
                       </Label>
@@ -1323,9 +1323,9 @@ export function TutorProfileSettingsPage({
           {/* TAB 5: 3-TIER VERIFICATION DOSSIER                           */}
           {/* ============================================================ */}
           <TabContent value="verification">
-            <div className="space-y-6">
+            <div className="flex flex-col gap-6">
               {/* Dossier status hero */}
-              <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs space-y-3">
+              <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs flex flex-col gap-3">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
@@ -1406,15 +1406,15 @@ export function TutorProfileSettingsPage({
                 </div>
               </CardHeader>
 
-              <CardContent className="p-5 sm:p-6 space-y-6">
+              <CardContent className="p-5 sm:p-6 flex flex-col gap-6">
                 {/* Simulated Tutor Card */}
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-sm max-w-2xl mx-auto space-y-6">
+                <div className="rounded-2xl border border-border bg-card p-6 shadow-sm max-w-2xl mx-auto flex flex-col gap-6">
                   {/* Tutor header */}
                   <div className="flex items-start gap-4">
                     <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-2xl uppercase">
                       {form.headlineEn?.slice(0, 2) || 'TU'}
                     </div>
-                    <div className="space-y-1 flex-1">
+                    <div className="flex flex-col gap-1 flex-1">
                       <div className="flex flex-wrap items-center gap-2">
                         <h3 className="text-lg font-black text-foreground">
                           {isBn
@@ -1448,7 +1448,7 @@ export function TutorProfileSettingsPage({
                   </div>
 
                   {/* Bio snippet */}
-                  <div className="rounded-xl bg-muted/20 p-4 border border-border/60 space-y-1.5">
+                  <div className="rounded-xl bg-muted/20 p-4 border border-border/60 flex flex-col gap-1.5">
                     <h5 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                       {isBn ? 'পরিচিতি বিবরণ' : 'About Tutor'}
                     </h5>
@@ -1460,7 +1460,7 @@ export function TutorProfileSettingsPage({
                   </div>
 
                   {/* Teaching subjects pills */}
-                  <div className="space-y-2">
+                  <div className="flex flex-col gap-2">
                     <h5 className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider">
                       {isBn ? 'পাঠদান বিষয়সমূহ' : 'Teaching Subjects'}
                     </h5>

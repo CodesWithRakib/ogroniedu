@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -23,7 +23,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
 
   return (
     <AdminLayout locale={locale}>
-      <div className="space-y-6 py-6" data-testid="admin-settings-security-page">
+      <div className="flex flex-col gap-6 py-6" data-testid="admin-settings-security-page">
         {/* Back Link to Hub (Image 2 Pattern) */}
         <div>
           <Link
@@ -38,7 +38,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
         {/* Page Header */}
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-border">
           <div>
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center gap-3">
               <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-foreground">
                 {isBn ? 'নিরাপত্তা ও অ্যাক্সেস পলিসি' : 'Security & Access Control'}
               </h1>
@@ -79,7 +79,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
 
         {/* Security Parameters Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
             <div className="flex items-center justify-between">
               <div>
                 <h3 id="security-2fa-title" className="text-base font-bold text-foreground">
@@ -108,7 +108,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
             <div className="flex items-center justify-between">
               <div>
                 <h3 id="security-ip-title" className="text-base font-bold text-foreground">
@@ -135,7 +135,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
             <div>
               <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'অ্যাডমিন সেশন টাইমআউট (মিনিট)' : 'Admin Session Expiry Window (Minutes)'}
@@ -157,7 +157,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
             />
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-6 space-y-4 shadow-xs">
+          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
             <div>
               <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'সর্বোচ্চ ব্যর্থ লগইন প্রচেষ্টা' : 'Max Failed Login Attempts'}

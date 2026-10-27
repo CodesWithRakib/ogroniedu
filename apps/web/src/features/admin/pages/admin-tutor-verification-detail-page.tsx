@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -260,7 +260,7 @@ export function AdminTutorVerificationDetailPage({
   if (error || !profile) {
     return (
       <AdminLayout locale={locale}>
-        <div className="py-8 max-w-4xl mx-auto space-y-4">
+        <div className="py-8 max-w-4xl mx-auto flex flex-col gap-4">
           <Button
             variant="outline"
             size="sm"
@@ -300,7 +300,7 @@ export function AdminTutorVerificationDetailPage({
   return (
     <AdminLayout locale={locale}>
       <div
-        className="space-y-6 py-4 w-full px-4 sm:px-6 lg:px-8"
+        className="flex flex-col gap-6 py-4 w-full px-4 sm:px-6 lg:px-8"
         data-testid="admin-tutor-detail-page"
       >
         {/* Navigation Breadcrumbs */}
@@ -475,18 +475,18 @@ export function AdminTutorVerificationDetailPage({
         {/* ============================================================ */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
           {/* Main Inspection Column (Left 2 spans) */}
-          <div className="lg:col-span-2 space-y-6">
+          <div className="lg:col-span-2 flex flex-col gap-6">
             {/* TAB 1: PROFILE & BIO */}
             {activeTab === 'profile' && (
-              <div className="rounded-2xl border border-border bg-card p-5 space-y-5">
+              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-5">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <UserCheck className="h-4 w-4 text-primary" />
                   {isBn ? 'ব্যক্তিগত ও পেশাদার পরিচিতি' : 'Personal & Professional Profile'}
                 </h3>
 
-                <div className="space-y-4">
+                <div className="flex flex-col gap-4">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="rounded-xl border border-border/80 bg-muted/20 p-3.5 space-y-1">
+                    <div className="rounded-xl border border-border/80 bg-muted/20 p-3.5 flex flex-col gap-1">
                       <Label className="text-[11px] font-semibold text-muted-foreground">
                         {isBn ? 'শিরোনাম (বাংলা)' : 'Headline (Bangla)'}
                       </Label>
@@ -495,7 +495,7 @@ export function AdminTutorVerificationDetailPage({
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-border/80 bg-muted/20 p-3.5 space-y-1">
+                    <div className="rounded-xl border border-border/80 bg-muted/20 p-3.5 flex flex-col gap-1">
                       <Label className="text-[11px] font-semibold text-muted-foreground">
                         {isBn ? 'শিরোনাম (ইংরেজি)' : 'Headline (English)'}
                       </Label>
@@ -505,7 +505,7 @@ export function AdminTutorVerificationDetailPage({
                     </div>
                   </div>
 
-                  <div className="rounded-xl border border-border/80 bg-muted/20 p-3.5 space-y-1">
+                  <div className="rounded-xl border border-border/80 bg-muted/20 p-3.5 flex flex-col gap-1">
                     <Label className="text-[11px] font-semibold text-muted-foreground">
                       {isBn ? 'পরিচিতি / বায়ো (বাংলা)' : 'Biography (Bangla)'}
                     </Label>
@@ -514,7 +514,7 @@ export function AdminTutorVerificationDetailPage({
                     </p>
                   </div>
 
-                  <div className="rounded-xl border border-border/80 bg-muted/20 p-3.5 space-y-1">
+                  <div className="rounded-xl border border-border/80 bg-muted/20 p-3.5 flex flex-col gap-1">
                     <Label className="text-[11px] font-semibold text-muted-foreground">
                       {isBn ? 'পরিচিতি / বায়ো (ইংরেজি)' : 'Biography (English)'}
                     </Label>
@@ -524,7 +524,7 @@ export function AdminTutorVerificationDetailPage({
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                    <div className="rounded-xl border border-border/80 bg-muted/20 p-3 space-y-0.5">
+                    <div className="rounded-xl border border-border/80 bg-muted/20 p-3 flex flex-col gap-0.5">
                       <span className="text-[11px] text-muted-foreground">
                         {isBn ? 'অভিজ্ঞতা' : 'Experience'}
                       </span>
@@ -533,7 +533,7 @@ export function AdminTutorVerificationDetailPage({
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-border/80 bg-muted/20 p-3 space-y-0.5">
+                    <div className="rounded-xl border border-border/80 bg-muted/20 p-3 flex flex-col gap-0.5">
                       <span className="text-[11px] text-muted-foreground">
                         {isBn ? 'ঘণ্টাপ্রতি ফি' : 'Hourly Rate'}
                       </span>
@@ -546,7 +546,7 @@ export function AdminTutorVerificationDetailPage({
                       </p>
                     </div>
 
-                    <div className="rounded-xl border border-border/80 bg-muted/20 p-3 space-y-0.5">
+                    <div className="rounded-xl border border-border/80 bg-muted/20 p-3 flex flex-col gap-0.5">
                       <span className="text-[11px] text-muted-foreground">
                         {isBn ? 'পাঠদানের মাধ্যম' : 'Teaching Modes'}
                       </span>
@@ -577,7 +577,7 @@ export function AdminTutorVerificationDetailPage({
 
             {/* TAB 2: EDUCATION & QUALIFICATIONS */}
             {activeTab === 'education' && (
-              <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
+              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <GraduationCap className="h-4 w-4 text-primary" />
                   {isBn ? 'শিক্ষাগত যোগ্যতা ও সনদ তালিকা' : 'Educational Qualifications'}
@@ -590,7 +590,7 @@ export function AdminTutorVerificationDetailPage({
                       : 'No qualifications added.'}
                   </p>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="flex flex-col gap-3">
                     {qualifications.map((q, idx) => (
                       <div
                         key={String(q.id || idx)}
@@ -622,7 +622,7 @@ export function AdminTutorVerificationDetailPage({
 
             {/* TAB 3: SUBJECTS & RATES */}
             {activeTab === 'subjects' && (
-              <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
+              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <BookOpen className="h-4 w-4 text-primary" />
                   {isBn ? 'পাঠদানের বিষয়সমূহ ও ক্লাস লেভেল' : 'Teaching Subjects & Class Levels'}
@@ -654,7 +654,7 @@ export function AdminTutorVerificationDetailPage({
                       return (
                         <div
                           key={String(sub.id || idx)}
-                          className="rounded-xl border border-border bg-muted/20 p-3.5 space-y-1"
+                          className="rounded-xl border border-border bg-muted/20 p-3.5 flex flex-col gap-1"
                         >
                           <div className="flex items-center justify-between">
                             <span className="text-xs font-bold text-foreground">{subjectName}</span>
@@ -673,7 +673,7 @@ export function AdminTutorVerificationDetailPage({
 
             {/* TAB 4: SCHEDULE & AVAILABILITY */}
             {activeTab === 'schedule' && (
-              <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
+              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary" />
                   {isBn ? 'সাপ্তাহিক সময়সূচি ও প্রাপ্যতা' : 'Weekly Availability Schedule'}
@@ -690,7 +690,7 @@ export function AdminTutorVerificationDetailPage({
                       return (
                         <div
                           key={day.id}
-                          className={`rounded-xl border p-3 text-xs space-y-1.5 ${
+                          className={`rounded-xl border p-3 text-xs flex flex-col gap-1.5 ${
                             daySlots.length > 0
                               ? 'border-primary/30 bg-primary/5'
                               : 'border-border/60 bg-muted/10 opacity-60'
@@ -723,19 +723,19 @@ export function AdminTutorVerificationDetailPage({
 
             {/* TAB 5: EVIDENCE DOCUMENTS & SIGNED PREVIEW */}
             {activeTab === 'documents' && (
-              <div className="rounded-2xl border border-border bg-card p-5 space-y-5">
+              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-5">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <FileSearch className="h-4 w-4 text-primary" />
                   {isBn ? 'ভেরিফিকেশন প্রমাণাদি ও নথি পরিদর্শন' : 'Verification Evidence Documents'}
                 </h3>
 
-                <div className="space-y-4">
+                <div className="flex flex-col gap-4">
                   {dossierLevels.map((lvl) => {
                     const docs = (lvl.documents as unknown as Array<Record<string, unknown>>) ?? [];
                     return (
                       <div
                         key={lvl.id}
-                        className="rounded-xl border border-border p-4 space-y-3 bg-muted/10"
+                        className="rounded-xl border border-border p-4 flex flex-col gap-3 bg-muted/10"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -758,7 +758,7 @@ export function AdminTutorVerificationDetailPage({
                               : 'No documents filed for this level.'}
                           </p>
                         ) : (
-                          <div className="space-y-2">
+                          <div className="flex flex-col gap-2">
                             {docs.map((doc) => {
                               const docId = String(doc.id);
                               const docType = String(doc.documentType);
@@ -845,7 +845,7 @@ export function AdminTutorVerificationDetailPage({
 
             {/* TAB 6: REVIEW HISTORY & AUDIT */}
             {activeTab === 'history' && (
-              <div className="rounded-2xl border border-border bg-card p-5 space-y-4">
+              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <Layers className="h-4 w-4 text-primary" />
                   {isBn ? 'পর্যালোচনার ইতিহাস ও অডিট ট্রেইল' : 'Review Decision Trail'}
@@ -856,11 +856,11 @@ export function AdminTutorVerificationDetailPage({
                     {isBn ? 'এখনও কোনো পর্যালোচনা রেকর্ড নেই।' : 'No review history records yet.'}
                   </p>
                 ) : (
-                  <div className="space-y-3">
+                  <div className="flex flex-col gap-3">
                     {reviewHistory.map((item) => (
                       <div
                         key={item.id}
-                        className="rounded-xl border border-border bg-muted/20 p-3.5 text-xs space-y-1.5"
+                        className="rounded-xl border border-border bg-muted/20 p-3.5 text-xs flex flex-col gap-1.5"
                       >
                         <div className="flex items-center justify-between">
                           <div className="flex items-center gap-2">
@@ -908,8 +908,8 @@ export function AdminTutorVerificationDetailPage({
           {/* ============================================================ */}
           {/* REVIEW DECISION CONSOLE (RIGHT 1 SPAN)                        */}
           {/* ============================================================ */}
-          <div className="space-y-4 sticky top-6">
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-xs space-y-4">
+          <div className="flex flex-col gap-4 sticky top-6">
+            <div className="rounded-2xl border border-border bg-card p-5 shadow-xs flex flex-col gap-4">
               <div className="flex items-center gap-2 border-b border-border pb-3">
                 <ShieldCheck className="h-5 w-5 text-primary" />
                 <h3 className="text-sm font-bold text-foreground">
@@ -917,9 +917,9 @@ export function AdminTutorVerificationDetailPage({
                 </h3>
               </div>
 
-              <form onSubmit={handleSubmitDecision} className="space-y-3.5 text-left text-xs">
+              <form onSubmit={handleSubmitDecision} className="flex flex-col gap-3.5 text-left text-xs">
                 {/* Level selector */}
-                <div className="space-y-1">
+                <div className="flex flex-col gap-1">
                   <Label className="text-[11px] font-semibold">
                     {isBn ? 'যাচাই স্তর' : 'Level to Review'}
                   </Label>
@@ -949,7 +949,7 @@ export function AdminTutorVerificationDetailPage({
                   const isSuspended = selectedLevelRow?.status === 'suspended';
 
                   return (
-                    <div className="space-y-1">
+                    <div className="flex flex-col gap-1">
                       <div className="flex items-center justify-between">
                         <Label className="text-[11px] font-semibold">
                           {isBn ? 'চূড়ান্ত সিদ্ধান্ত' : 'Decision'}
@@ -1032,7 +1032,7 @@ export function AdminTutorVerificationDetailPage({
                 })()}
 
                 {/* Reason code preset */}
-                <div className="space-y-1">
+                <div className="flex flex-col gap-1">
                   <Label className="text-[11px] font-semibold">
                     {isBn ? 'কারণ কোড' : 'Reason Code'}
                   </Label>
@@ -1053,7 +1053,7 @@ export function AdminTutorVerificationDetailPage({
                 </div>
 
                 {/* Feedback for applicant */}
-                <div className="space-y-1">
+                <div className="flex flex-col gap-1">
                   <div className="flex items-center justify-between">
                     <Label className="text-[11px] font-semibold">
                       {isBn ? 'শিক্ষককে বার্তা (Feedback to Tutor)' : 'Feedback to Tutor'}
@@ -1078,7 +1078,7 @@ export function AdminTutorVerificationDetailPage({
                 </div>
 
                 {/* Internal notes */}
-                <div className="space-y-1">
+                <div className="flex flex-col gap-1">
                   <Label className="text-[11px] font-semibold">
                     {isBn ? 'অভ্যন্তরীণ নোট (গোপনীয়)' : 'Internal Reviewer Notes'}
                   </Label>

@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import { useTranslations } from 'next-intl';
 import type { AnalyticsOperationalData } from '../types/analytics.types';
@@ -10,11 +10,11 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
       <div
-        className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs"
+        className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs"
         data-testid="conversion-funnel-card"
       >
         <h3 className="text-base font-bold text-foreground">{t('conversionFunnelTitle')}</h3>
-        <div className="space-y-3">
+        <div className="flex flex-col gap-3">
           <div>
             <div className="flex justify-between text-xs text-foreground/80 font-medium mb-1">
               <span>{t('totalRequests')}</span>
@@ -50,7 +50,7 @@ export function AnalyticsFunnelCards({ data }: { data: AnalyticsOperationalData 
       </div>
 
       <div
-        className="bg-card border border-border rounded-2xl p-5 sm:p-6 space-y-4 shadow-xs"
+        className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs"
         data-testid="session-reliability-card"
       >
         <h3 className="text-base font-bold text-foreground">{t('sessionReliabilityTitle')}</h3>

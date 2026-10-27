@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -104,7 +104,7 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
             : 'Sign out of all other browsers and devices to secure your account.'}
         </CardDescription>
       </CardHeader>
-      <CardContent className="space-y-4">
+      <CardContent className="flex flex-col gap-4">
         <div className="p-3.5 rounded-2xl bg-surface-muted border border-border text-xs text-muted-foreground flex items-start gap-2.5">
           <ShieldCheck className="h-4 w-4 text-success-soft-foreground shrink-0 mt-0.5" />
           <span>
@@ -165,8 +165,8 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
   const isBn = locale === 'bn';
 
   return (
-    <div className="space-y-4">
-      <div className="space-y-1">
+    <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-1">
         <h3 className="text-lg font-bold text-foreground flex items-center gap-2">
           <Layers className="h-5 w-5 text-primary" />
           {isBn
@@ -182,8 +182,8 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Card 1: Minor Child Learner */}
-        <Card className="rounded-2xl border-border bg-card p-5 space-y-4 flex flex-col justify-between hover:border-primary/40 transition-all">
-          <div className="space-y-3">
+        <Card className="rounded-2xl border-border bg-card p-5 flex flex-col gap-4 flex flex-col justify-between hover:border-primary/40 transition-all">
+          <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2.5 pb-2 border-b border-border">
               <div className="h-9 w-9 rounded-2xl bg-warning-soft border border-warning/20 text-warning flex items-center justify-center shrink-0">
                 <ShieldAlert className="h-5 w-5" />
@@ -198,11 +198,11 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="space-y-2 text-xs">
+            <div className="flex flex-col gap-2 text-xs">
               <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider text-primary">
                 {isBn ? 'সরাসরি যা যা করতে পারবে:' : 'Autonomous Actions:'}
               </p>
-              <ul className="space-y-1.5 text-muted-foreground">
+              <ul className="flex flex-col gap-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
                   <span>
@@ -238,11 +238,11 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               </ul>
             </div>
 
-            <div className="space-y-2 text-xs pt-2 border-t border-border">
+            <div className="flex flex-col gap-2 text-xs pt-2 border-t border-border">
               <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider text-warning">
                 {isBn ? 'অভিভাবকের সুরক্ষা ও নিয়ন্ত্রণ:' : 'Guardian Supervision:'}
               </p>
-              <ul className="space-y-1.5 text-muted-foreground">
+              <ul className="flex flex-col gap-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <Lock className="h-3.5 w-3.5 text-warning shrink-0 mt-0.5" />
                   <span>
@@ -280,8 +280,8 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
         </Card>
 
         {/* Card 2: Standalone Student */}
-        <Card className="rounded-2xl border-border bg-card p-5 space-y-4 flex flex-col justify-between hover:border-primary/40 transition-all">
-          <div className="space-y-3">
+        <Card className="rounded-2xl border-border bg-card p-5 flex flex-col gap-4 flex flex-col justify-between hover:border-primary/40 transition-all">
+          <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2.5 pb-2 border-b border-border">
               <div className="h-9 w-9 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
                 <GraduationCap className="h-5 w-5" />
@@ -296,11 +296,11 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="space-y-2 text-xs">
+            <div className="flex flex-col gap-2 text-xs">
               <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider text-primary">
                 {isBn ? 'সম্পূর্ণ স্বাধীন সক্ষমতা:' : 'Full Autonomous Powers:'}
               </p>
-              <ul className="space-y-1.5 text-muted-foreground">
+              <ul className="flex flex-col gap-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success-soft-foreground shrink-0 mt-0.5" />
                   <span>
@@ -344,11 +344,11 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               </ul>
             </div>
 
-            <div className="space-y-2 text-xs pt-2 border-t border-border">
+            <div className="flex flex-col gap-2 text-xs pt-2 border-t border-border">
               <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider text-primary">
                 {isBn ? 'ঐচ্ছিক সুবিধা:' : 'Optional Features:'}
               </p>
-              <ul className="space-y-1.5 text-muted-foreground">
+              <ul className="flex flex-col gap-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <Info className="h-3.5 w-3.5 text-primary shrink-0 mt-0.5" />
                   <span>
@@ -370,8 +370,8 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
         </Card>
 
         {/* Card 3: Guardian */}
-        <Card className="rounded-2xl border-border bg-card p-5 space-y-4 flex flex-col justify-between hover:border-primary/40 transition-all">
-          <div className="space-y-3">
+        <Card className="rounded-2xl border-border bg-card p-5 flex flex-col gap-4 flex flex-col justify-between hover:border-primary/40 transition-all">
+          <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2.5 pb-2 border-b border-border">
               <div className="h-9 w-9 rounded-2xl bg-success-soft border border-success/20 text-success flex items-center justify-center shrink-0">
                 <ShieldCheck className="h-5 w-5" />
@@ -386,11 +386,11 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="space-y-2 text-xs">
+            <div className="flex flex-col gap-2 text-xs">
               <p className="font-semibold text-foreground text-[11px] uppercase tracking-wider text-success">
                 {isBn ? 'তদারকি ও প্রশাসনিক অধিকার:' : 'Oversight & Administrative:'}
               </p>
-              <ul className="space-y-1.5 text-muted-foreground">
+              <ul className="flex flex-col gap-1.5 text-muted-foreground">
                 <li className="flex items-start gap-2">
                   <CheckCircle2 className="h-3.5 w-3.5 text-success shrink-0 mt-0.5" />
                   <span>
@@ -507,7 +507,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
           </CardContent>
         </Card>
       ) : (
-        <div className="space-y-6">
+        <div className="flex flex-col gap-6">
           {/* Identity Hero Card */}
           <Card className="rounded-2xl border-border bg-gradient-to-br from-card via-card to-surface-muted p-6 shadow-xs">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
@@ -515,7 +515,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                 <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 border border-primary/30 text-primary font-black text-xl flex items-center justify-center shrink-0">
                   {initials}
                 </div>
-                <div className="space-y-1.5">
+                <div className="flex flex-col gap-1.5">
                   <div className="flex flex-wrap items-center gap-2">
                     <h2 className="text-xl font-bold text-foreground">
                       {user?.displayName || 'User'}
@@ -731,7 +731,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
               <CardContent>
                 <form
                   onSubmit={profile.handleSave}
-                  className="space-y-4"
+                  className="flex flex-col gap-4"
                   data-testid="profile-form"
                 >
                   {profile.formError && (
@@ -747,7 +747,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                   )}
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5 sm:col-span-2">
+                    <div className="flex flex-col gap-1.5 sm:col-span-2">
                       <Label
                         htmlFor="profile-name"
                         className="text-xs font-semibold text-foreground"
@@ -764,7 +764,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       />
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="profile-email"
                         className="text-xs font-semibold text-foreground"
@@ -783,7 +783,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       </span>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="profile-phone"
                         className="text-xs font-semibold text-foreground"
@@ -802,7 +802,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       </span>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="profile-locale"
                         className="text-xs font-semibold text-foreground"
@@ -826,7 +826,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       </Select>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label className="text-xs font-semibold text-foreground">
                         {isBn ? 'নিবন্ধনের তারিখ' : 'Member Since'}
                       </Label>
@@ -870,7 +870,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={profile.handleSaveAcademicProfile} className="space-y-4">
+                <form onSubmit={profile.handleSaveAcademicProfile} className="flex flex-col gap-4">
                   {profile.academicError && (
                     <Alert variant="destructive">
                       <AlertDescription role="alert">{profile.academicError}</AlertDescription>
@@ -884,7 +884,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                   )}
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="academic-dob"
                         className="text-xs font-semibold text-foreground"
@@ -904,7 +904,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       </span>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="academic-institution"
                         className="text-xs font-semibold text-foreground"
@@ -921,7 +921,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       />
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="academic-level"
                         className="text-xs font-semibold text-foreground"
@@ -950,7 +950,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       </Select>
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="academic-curriculum"
                         className="text-xs font-semibold text-foreground"
@@ -979,7 +979,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       </Select>
                     </div>
 
-                    <div className="space-y-1.5 sm:col-span-2">
+                    <div className="flex flex-col gap-1.5 sm:col-span-2">
                       <Label
                         htmlFor="academic-stream"
                         className="text-xs font-semibold text-foreground"
@@ -998,7 +998,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       />
                     </div>
 
-                    <div className="space-y-1.5 sm:col-span-2">
+                    <div className="flex flex-col gap-1.5 sm:col-span-2">
                       <Label
                         htmlFor="academic-goals"
                         className="text-xs font-semibold text-foreground"
@@ -1021,7 +1021,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       />
                     </div>
 
-                    <div className="space-y-1.5">
+                    <div className="flex flex-col gap-1.5">
                       <Label
                         htmlFor="academic-visibility"
                         className="text-xs font-semibold text-foreground"

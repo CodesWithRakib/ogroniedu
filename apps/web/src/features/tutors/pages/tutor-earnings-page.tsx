@@ -1,4 +1,4 @@
-'use client';
+﻿'use client';
 
 import React, { useMemo, useState } from 'react';
 import {
@@ -295,7 +295,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
       </div>
 
       <div className="rounded-2xl p-6 bg-card border border-brand/25 text-foreground flex flex-col md:flex-row md:items-center justify-between gap-6">
-        <div className="space-y-2 max-w-2xl">
+        <div className="flex flex-col gap-2 max-w-2xl">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-soft text-primary-soft-foreground text-xs font-semibold">
             <ShieldCheck className="w-3.5 h-3.5" />
             <span>{isBn ? 'এসক্রো সুরক্ষা সক্রিয়' : 'Escrow protection active'}</span>
@@ -327,7 +327,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-1 space-y-4">
+        <div className="lg:col-span-1 flex flex-col gap-4">
           <Card className="rounded-2xl border-border shadow-xs">
             <CardHeader className="pb-3 border-b border-border">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
@@ -335,7 +335,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                 <span>{isBn ? 'পে-আউট অনুরোধ' : 'Payout Requests'}</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4 space-y-3">
+            <CardContent className="pt-4 flex flex-col gap-3">
               {payouts.length === 0 ? (
                 <div className="py-8 text-center text-xs text-muted-foreground">
                   {isBn ? 'কোনো পে-আউট অনুরোধ নেই' : 'No payout requests yet'}
@@ -347,7 +347,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                     className="p-3 rounded-2xl bg-card/80 border border-border flex items-center justify-between gap-3 text-xs"
                     data-testid={`payout-record-${rec.id}`}
                   >
-                    <div className="space-y-1">
+                    <div className="flex flex-col gap-1">
                       <div className="flex items-center gap-1.5 font-bold text-foreground">
                         <span>{formatBDTMinor(rec.amountMinor, locale)}</span>
                         <span className="text-[10px] text-muted-foreground font-normal">
@@ -359,7 +359,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                       </p>
                     </div>
 
-                    <div className="text-right space-y-1">
+                    <div className="text-right flex flex-col gap-1">
                       <Badge variant={statusVariant(rec.status)} className="text-[10px] py-0.5">
                         {payoutStatusLabel(rec.status, isBn)}
                       </Badge>
@@ -380,7 +380,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                 <span>{isBn ? 'পে-আউট নীতি' : 'Payout Policy'}</span>
               </CardTitle>
             </CardHeader>
-            <CardContent className="pt-4 space-y-2 text-xs text-muted-foreground">
+            <CardContent className="pt-4 flex flex-col gap-2 text-xs text-muted-foreground">
               <p>
                 {isBn
                   ? 'প্রতিটি অনুরোধ অর্থ বিভাগ পর্যালোচনা করে। অনুমোদনের পর প্রকৃত ব্যাংক/মোবাইল ব্যাংকিং রেফারেন্সসহ স্থানান্তর নিশ্চিত করা হয়।'
@@ -396,7 +396,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
           </Card>
         </div>
 
-        <div className="lg:col-span-2 space-y-4">
+        <div className="lg:col-span-2 flex flex-col gap-4">
           <Card className="rounded-2xl border-border shadow-xs">
             <CardHeader className="pb-3 border-b border-border">
               <CardTitle className="text-base font-bold flex items-center gap-2">
@@ -411,7 +411,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
             </CardHeader>
             <CardContent className="pt-4">
               {settlements.length === 0 ? (
-                <div className="py-12 text-center text-muted-foreground space-y-2">
+                <div className="py-12 text-center text-muted-foreground flex flex-col gap-2">
                   <Calendar className="w-10 h-10 mx-auto text-muted-foreground/40" />
                   <p className="text-xs">
                     {isBn ? 'এখনও কোনো সেশন নিষ্পত্তি হয়নি।' : 'No settled sessions yet.'}
@@ -425,7 +425,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                       className="py-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-2 rounded-xl"
                       data-testid={`settlement-row-${settlement.id}`}
                     >
-                      <div className="space-y-1">
+                      <div className="flex flex-col gap-1">
                         <div className="flex items-center gap-2">
                           <span className="text-sm font-bold text-foreground">
                             #{settlement.sessionId.slice(0, 8)}
@@ -494,8 +494,8 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
             </Alert>
           )}
 
-          <form onSubmit={handleRequestPayout} className="space-y-4" data-testid="payout-form">
-            <div className="space-y-1.5">
+          <form onSubmit={handleRequestPayout} className="flex flex-col gap-4" data-testid="payout-form">
+            <div className="flex flex-col gap-1.5">
               <Label className="text-xs font-bold text-foreground">
                 {isBn ? 'উত্তোলনের মাধ্যম নির্বাচন করুন:' : 'Select Payout Channel:'}
               </Label>
@@ -517,7 +517,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <Label htmlFor="payout-acc" className="text-xs font-medium text-foreground">
                 {selectedMethod === 'bank'
                   ? isBn
@@ -538,7 +538,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
               />
             </div>
 
-            <div className="space-y-1">
+            <div className="flex flex-col gap-1">
               <div className="flex items-center justify-between text-xs">
                 <Label htmlFor="payout-amount" className="font-medium text-foreground">
                   {isBn ? 'উত্তোলনের পরিমাণ (টাকা)' : 'Withdrawal Amount (BDT)'}

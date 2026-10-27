@@ -117,19 +117,19 @@ export function TutorCard({
           </Link>
 
           {/* Details */}
-          <div className="space-y-2 flex-1 min-w-0">
+          <div className="flex flex-col gap-2 flex-1 min-w-0">
             {/* Name + Match Score */}
             <div className="flex items-start justify-between gap-3">
               <div className="min-w-0">
                 <Link
                   href={`/${locale}/tutors/${tutor.id}`}
-                  className="text-base sm:text-lg xl:text-xl font-black text-foreground hover:text-blue-600 transition-colors tracking-tight line-clamp-2 leading-tight"
+                  className="text-base sm:text-lg xl:text-xl font-black text-foreground hover:text-primary transition-colors tracking-tight line-clamp-2 leading-tight"
                 >
                   {resolvedDisplayName}
                 </Link>
 
                 {headline && (
-                  <p className="text-xs sm:text-sm text-blue-600 font-bold line-clamp-2 mt-0.5 leading-snug">
+                  <p className="text-xs sm:text-sm text-primary font-bold line-clamp-2 mt-0.5 leading-snug">
                     {headline}
                   </p>
                 )}

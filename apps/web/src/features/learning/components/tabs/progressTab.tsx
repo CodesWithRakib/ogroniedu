@@ -73,7 +73,7 @@ export function ProgressTab({
             </div>
           </CardHeader>
 
-          <CardContent className="space-y-3 pt-0">
+          <CardContent className="flex flex-col gap-3 pt-0">
             <div className="bg-surface p-3.5 rounded-xl border border-border text-sm">
               <span className="text-xs font-bold text-muted-foreground uppercase tracking-wide block mb-1">
                 {t.observableProgressLabel}
