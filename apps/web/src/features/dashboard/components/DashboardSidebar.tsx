@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { cn } from 'cn';
+import { cn } from '@/lib/utils';
 import { withLocale } from '@/lib/auth';
 import type { Locale } from '@/lib/i18n';
 import { navSectionsForRole, type NavItem, type NavSection } from '@/lib/navigation';
