@@ -166,15 +166,15 @@ export function ClassroomPollModal({
                     <Radio className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
                     {isBn ? 'চলমান পোল' : 'Active Poll'}
                   </span>
-                  <span>
-                    {isBn ? `মোট ভোট: ${totalVotes}` : `Total Votes: ${totalVotes}`}
-                  </span>
+                  <span>{isBn ? `মোট ভোট: ${totalVotes}` : `Total Votes: ${totalVotes}`}</span>
                 </div>
                 <h4 className="text-base sm:text-lg font-black text-slate-900 leading-snug">
                   {currentPoll.question}
                 </h4>
                 <p className="text-xs text-slate-600 font-medium mt-1">
-                  {isBn ? `তৈরি করেছেন: ${currentPoll.creatorName}` : `Created by: ${currentPoll.creatorName}`}
+                  {isBn
+                    ? `তৈরি করেছেন: ${currentPoll.creatorName}`
+                    : `Created by: ${currentPoll.creatorName}`}
                 </p>
               </div>
 
@@ -249,7 +249,9 @@ export function ClassroomPollModal({
                   {userVotedIndex !== null ? (
                     <div className="p-3 bg-emerald-50 border border-emerald-300 rounded-xl flex items-center gap-2 text-emerald-800 text-xs font-bold">
                       <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
-                      <span>{isBn ? 'আপনার ভোট গ্রহণ করা হয়েছে!' : 'Your vote has been submitted!'}</span>
+                      <span>
+                        {isBn ? 'আপনার ভোট গ্রহণ করা হয়েছে!' : 'Your vote has been submitted!'}
+                      </span>
                     </div>
                   ) : (
                     <Button
@@ -298,7 +300,11 @@ export function ClassroomPollModal({
             </div>
           ) : isTutor ? (
             /* Tutor Poll Creation Form */
-            <form onSubmit={handleCreateSubmit} className="space-y-4" data-testid="create-poll-form">
+            <form
+              onSubmit={handleCreateSubmit}
+              className="space-y-4"
+              data-testid="create-poll-form"
+            >
               <div>
                 <label className="block text-xs font-black text-slate-800 mb-1.5">
                   {isBn ? 'পোলের প্রশ্ন / কুইজ লিখুন:' : 'Poll Question / Quiz Prompt:'}
@@ -331,9 +337,7 @@ export function ClassroomPollModal({
                         type="text"
                         value={opt}
                         onChange={(e) => handleOptionChange(e.target.value, idx)}
-                        placeholder={
-                          isBn ? `বিকল্প ${idx + 1}` : `Option ${idx + 1}`
-                        }
+                        placeholder={isBn ? `বিকল্প ${idx + 1}` : `Option ${idx + 1}`}
                         required
                         className="flex-1 px-3 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 font-bold text-xs sm:text-sm focus:bg-white focus:border-blue-600 focus:outline-hidden"
                       />

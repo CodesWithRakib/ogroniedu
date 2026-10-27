@@ -87,10 +87,7 @@ export function usePaymentStatus({
     }
 
     // Exponential backoff with jitter up to maxIntervalMs
-    const nextInterval = Math.min(
-      initialIntervalMs * Math.pow(1.3, attempts),
-      maxIntervalMs,
-    );
+    const nextInterval = Math.min(initialIntervalMs * Math.pow(1.3, attempts), maxIntervalMs);
 
     timerRef.current = setTimeout(() => {
       setAttempts((prev) => prev + 1);

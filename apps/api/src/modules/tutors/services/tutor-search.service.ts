@@ -149,13 +149,22 @@ export class TutorSearchService {
           `SELECT level FROM tutor_verification_levels WHERE tutor_user_id = $1 AND status = 'approved'`,
           [tutorUserId],
         );
-        if (verifiedLevels.some((l) => l.level === 'identity') && !badges.includes('verified_identity')) {
+        if (
+          verifiedLevels.some((l) => l.level === 'identity') &&
+          !badges.includes('verified_identity')
+        ) {
           badges.push('verified_identity');
         }
-        if (verifiedLevels.some((l) => l.level === 'educational') && !badges.includes('verified_academic')) {
+        if (
+          verifiedLevels.some((l) => l.level === 'educational') &&
+          !badges.includes('verified_academic')
+        ) {
           badges.push('verified_academic');
         }
-        if (verifiedLevels.some((l) => l.level === 'institutional') && !badges.includes('verified_institutional')) {
+        if (
+          verifiedLevels.some((l) => l.level === 'institutional') &&
+          !badges.includes('verified_institutional')
+        ) {
           badges.push('verified_institutional');
         }
       } catch {
@@ -442,15 +451,24 @@ export class TutorSearchService {
         }
 
         const tutorLevels = verifiedLevelsRows.filter((r) => r.tutor_user_id === id);
-        if (tutorLevels.some((l) => l.level === 'identity') && !badges.includes('verified_identity')) {
+        if (
+          tutorLevels.some((l) => l.level === 'identity') &&
+          !badges.includes('verified_identity')
+        ) {
           badges.push('verified_identity');
           rankingReasons.push('Verified Government Identity (+20)');
         }
-        if (tutorLevels.some((l) => l.level === 'educational') && !badges.includes('verified_academic')) {
+        if (
+          tutorLevels.some((l) => l.level === 'educational') &&
+          !badges.includes('verified_academic')
+        ) {
           badges.push('verified_academic');
           rankingReasons.push('Verified Academic Credentials (+20)');
         }
-        if (tutorLevels.some((l) => l.level === 'institutional') && !badges.includes('verified_institutional')) {
+        if (
+          tutorLevels.some((l) => l.level === 'institutional') &&
+          !badges.includes('verified_institutional')
+        ) {
           badges.push('verified_institutional');
           rankingReasons.push('Verified Institutional Credentials (+20)');
         }

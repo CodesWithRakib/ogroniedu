@@ -66,9 +66,7 @@ export function RescheduleModal({
 
     if (targetDate.getTime() <= Date.now()) {
       setError(
-        isBn
-          ? 'রিশিডিউল সময় অবশ্যই ভবিষ্যতের হতে হবে।'
-          : 'Rescheduled time must be in the future.',
+        isBn ? 'রিশিডিউল সময় অবশ্যই ভবিষ্যতের হতে হবে।' : 'Rescheduled time must be in the future.',
       );
       return;
     }
@@ -98,10 +96,12 @@ export function RescheduleModal({
             </div>
             <div>
               <DialogTitle className="font-black text-slate-900 text-lg">
-                {dict.scheduling?.reschedule || (isBn ? 'ক্লাস রিশিডিউল করুন' : 'Reschedule Session')}
+                {dict.scheduling?.reschedule ||
+                  (isBn ? 'ক্লাস রিশিডিউল করুন' : 'Reschedule Session')}
               </DialogTitle>
               <p className="text-xs text-slate-600 font-medium">
-                {session.subjectName || (isBn ? 'টিচিং সেশন' : 'Tutoring Session')} • {session.tutorName}
+                {session.subjectName || (isBn ? 'টিচিং সেশন' : 'Tutoring Session')} •{' '}
+                {session.tutorName}
               </p>
             </div>
           </div>
@@ -132,7 +132,9 @@ export function RescheduleModal({
           <div className="space-y-1.5">
             <Label className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
-              <span>{isBn ? 'দ্রুত সময় নির্বাচন (ক্লিক করুন)' : 'Quick Presets (Click to apply)'}</span>
+              <span>
+                {isBn ? 'দ্রুত সময় নির্বাচন (ক্লিক করুন)' : 'Quick Presets (Click to apply)'}
+              </span>
             </Label>
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
               {[
@@ -154,9 +156,15 @@ export function RescheduleModal({
           </div>
 
           <div className="space-y-1.5">
-            <Label htmlFor="reschedule-time-input" className="font-bold text-slate-800 text-xs flex items-center gap-1.5">
+            <Label
+              htmlFor="reschedule-time-input"
+              className="font-bold text-slate-800 text-xs flex items-center gap-1.5"
+            >
               <Clock className="w-3.5 h-3.5 text-slate-600" />
-              <span>{dict.scheduling?.rescheduleNewTime || (isBn ? 'নতুন তারিখ ও সময় (BST)' : 'New Date & Time (BST)')}</span>
+              <span>
+                {dict.scheduling?.rescheduleNewTime ||
+                  (isBn ? 'নতুন তারিখ ও সময় (BST)' : 'New Date & Time (BST)')}
+              </span>
             </Label>
             <Input
               id="reschedule-time-input"
@@ -174,7 +182,8 @@ export function RescheduleModal({
 
           <div className="space-y-1.5">
             <Label htmlFor="reschedule-reason-input" className="font-bold text-slate-800 text-xs">
-              {dict.scheduling?.rescheduleReasonLabel || (isBn ? 'রিশিডিউলের কারণ' : 'Reason for Rescheduling')}
+              {dict.scheduling?.rescheduleReasonLabel ||
+                (isBn ? 'রিশিডিউলের কারণ' : 'Reason for Rescheduling')}
             </Label>
             <Textarea
               id="reschedule-reason-input"
@@ -212,7 +221,8 @@ export function RescheduleModal({
               data-testid="confirm-reschedule-btn"
               className="rounded-xl font-bold bg-amber-600 hover:bg-amber-700 text-white shadow-xs"
             >
-              {dict.scheduling?.confirmReschedule || (isBn ? 'রিশিডিউল নিশ্চিত করুন' : 'Confirm Reschedule')}
+              {dict.scheduling?.confirmReschedule ||
+                (isBn ? 'রিশিডিউল নিশ্চিত করুন' : 'Confirm Reschedule')}
             </Button>
           </div>
         </form>

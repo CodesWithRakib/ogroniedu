@@ -3,11 +3,7 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Provider } from 'react-redux';
 import { makeStore } from '../src/store';
-import {
-  ReviewModalForm,
-  ReviewCard,
-  type ReviewItem,
-} from '../src/features/trust';
+import { ReviewModalForm, ReviewCard, type ReviewItem } from '../src/features/trust';
 
 describe('Tutor Verified Reviews, Multi-Criteria Ratings & Rebuttal System', () => {
   const store = makeStore();
@@ -43,8 +39,8 @@ describe('Tutor Verified Reviews, Multi-Criteria Ratings & Rebuttal System', () 
           subjectName: 'উচ্চতর গণিত',
           locale: 'bn',
           onClose: () => {},
-        })
-      )
+        }),
+      ),
     );
 
     // Verify header and subject
@@ -71,7 +67,7 @@ describe('Tutor Verified Reviews, Multi-Criteria Ratings & Rebuttal System', () 
       React.createElement(ReviewCard, {
         review: sampleReview,
         locale: 'bn',
-      })
+      }),
     );
 
     // Verify student name and verified badge
@@ -99,7 +95,7 @@ describe('Tutor Verified Reviews, Multi-Criteria Ratings & Rebuttal System', () 
       React.createElement(ReviewCard, {
         review: sampleReview,
         locale: 'en',
-      })
+      }),
     );
 
     expect(html).toContain('Farhan Ahmed');
@@ -109,7 +105,9 @@ describe('Tutor Verified Reviews, Multi-Criteria Ratings & Rebuttal System', () 
     expect(html).toContain('Mastery');
     expect(html).toContain('Sir is exceptionally sincere and clarifies complex math with ease.');
     expect(html).toContain('Tutor Reply');
-    expect(html).toContain('Thank you Farhan! We will keep striving for your best academic results.');
+    expect(html).toContain(
+      'Thank you Farhan! We will keep striving for your best academic results.',
+    );
   });
 
   it('should render tutor reply trigger when viewing as tutor and no rebuttal exists', () => {
@@ -127,7 +125,7 @@ describe('Tutor Verified Reviews, Multi-Criteria Ratings & Rebuttal System', () 
         review: reviewWithoutReply,
         isCurrentTutor: true,
         locale: 'bn',
-      })
+      }),
     );
 
     expect(html).toContain('open-reply-btn');
@@ -151,7 +149,7 @@ describe('Tutor Verified Reviews, Multi-Criteria Ratings & Rebuttal System', () 
         replying: true,
         replyText: 'শিক্ষার্থীর প্রচেষ্টাকে সাধুবাদ জানাই।',
         locale: 'bn',
-      })
+      }),
     );
 
     expect(html).toContain('tutor-reply-textarea');

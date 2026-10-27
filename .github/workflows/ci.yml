@@ -36,6 +36,9 @@ jobs:
       DB_USERNAME: postgres
       DB_PASSWORD: password
       DB_NAME: ogroniedu_test
+      SSLCOMMERZ_STORE_ID: sandbox_ci_store
+      SSLCOMMERZ_STORE_PASSWD: sandbox_ci_passwd
+      SSLCOMMERZ_IS_LIVE: false
 
     steps:
       - name: Checkout Code

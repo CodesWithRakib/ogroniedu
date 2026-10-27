@@ -234,32 +234,32 @@ The repository root includes a production Blueprint specification (`render.yaml`
 
 ### 8.5 Production Environment Variable Matrix
 
-| Variable Name                          | Service | Scope  |      Required in Prod      | Description / Example                                                                  |
-| :------------------------------------- | :------ | :----- | :------------------------: | :------------------------------------------------------------------------------------- |
-| `NEXT_PUBLIC_API_URL`                  | Vercel  | Public |            Yes             | Backend URL: `https://ogroniedu-api.onrender.com`                                      |
-| `NEXT_PUBLIC_APP_URL`                  | Vercel  | Public |            Yes             | Frontend URL: `https://ogroniedu.vercel.app`                                           |
-| `NEXT_PUBLIC_SUPABASE_URL`             | Vercel  | Public |            Yes             | Supabase endpoint: `https://<ref>.supabase.co`                                         |
-| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Vercel  | Public |            Yes             | Supabase client publishable key                                                        |
-| `NEXT_PUBLIC_LIVEKIT_URL`              | Vercel  | Public | Yes                        | LiveKit WebRTC SFU WebSocket endpoint                                                  |
-| `PORT`                                 | Render  | Server |         Yes (Auto)         | Port assigned by Render (e.g. 10000)                                                   |
-| `NODE_ENV`                             | Both    | Server |            Yes             | `production`                                                                           |
-| `DATABASE_URL`                         | Render  | Secret |            Yes             | Postgres connection string with `sslmode=require`                                      |
-| `DB_SSL`                               | Render  | Server |            Yes             | `true`                                                                                 |
-| `DB_POOL_MAX`                          | Render  | Server |      No (default 20)       | Maximum connections per pool                                                           |
-| `FRONTEND_URL`                         | Render  | Server |            Yes             | Primary frontend URL (`https://ogroniedu.vercel.app`)                                  |
-| `CORS_ORIGINS`                         | Render  | Server |            Yes             | Comma-separated allowed origins (`https://ogroniedu.vercel.app,https://ogroni.edu.bd`) |
-| `JWT_SECRET`                           | Render  | Secret |            Yes             | High-entropy 256-bit secret (32+ chars, non-default)                                   |
-| `SUPABASE_URL`                         | Render  | Server |            Yes             | Supabase project URL                                                                   |
-| `SUPABASE_PUBLISHABLE_KEY`             | Render  | Server |            Yes             | Supabase client key                                                                    |
-| `SUPABASE_SECRET_KEY`                  | Render  | Secret |            Yes             | Supabase `service_role` privileged server key                                          |
-| `SUPABASE_JWKS_URL`                    | Render  | Server |            Yes             | Supabase Auth JWKS: `https://<ref>.supabase.co/auth/v1/.well-known/jwks.json`          |
-| `SSLCOMMERZ_STORE_ID`                  | Render  | Secret |             No             | SSLCOMMERZ store identifier                                                            |
-| `SSLCOMMERZ_STORE_PASSWD`              | Render  | Secret |             No             | SSLCOMMERZ merchant password                                                           |
-| `SSLCOMMERZ_IS_LIVE`                   | Render  | Server |    No (default `false`)    | Set `true` only when commercial live credentials provisioned                           |
-| `OTP_SMS_PRIMARY_PROVIDER`             | Render  | Server |            Yes             | `http_gateway`                                                                         |
-| `OTP_SMS_FALLBACK_PROVIDER`            | Render  | Server |            Yes             | `http_gateway` (`dev` blocked in production)                                           |
-| `OTP_EMAIL_PRIMARY_PROVIDER`           | Render  | Server |            Yes             | `http_gateway`                                                                         |
-| `OTP_EMAIL_FALLBACK_PROVIDER`          | Render  | Server |            Yes             | `http_gateway` (`dev` blocked in production)                                           |
+| Variable Name                          | Service | Scope  |   Required in Prod   | Description / Example                                                                  |
+| :------------------------------------- | :------ | :----- | :------------------: | :------------------------------------------------------------------------------------- |
+| `NEXT_PUBLIC_API_URL`                  | Vercel  | Public |         Yes          | Backend URL: `https://ogroniedu-api.onrender.com`                                      |
+| `NEXT_PUBLIC_APP_URL`                  | Vercel  | Public |         Yes          | Frontend URL: `https://ogroniedu.vercel.app`                                           |
+| `NEXT_PUBLIC_SUPABASE_URL`             | Vercel  | Public |         Yes          | Supabase endpoint: `https://<ref>.supabase.co`                                         |
+| `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY` | Vercel  | Public |         Yes          | Supabase client publishable key                                                        |
+| `NEXT_PUBLIC_LIVEKIT_URL`              | Vercel  | Public |         Yes          | LiveKit WebRTC SFU WebSocket endpoint                                                  |
+| `PORT`                                 | Render  | Server |      Yes (Auto)      | Port assigned by Render (e.g. 10000)                                                   |
+| `NODE_ENV`                             | Both    | Server |         Yes          | `production`                                                                           |
+| `DATABASE_URL`                         | Render  | Secret |         Yes          | Postgres connection string with `sslmode=require`                                      |
+| `DB_SSL`                               | Render  | Server |         Yes          | `true`                                                                                 |
+| `DB_POOL_MAX`                          | Render  | Server |   No (default 20)    | Maximum connections per pool                                                           |
+| `FRONTEND_URL`                         | Render  | Server |         Yes          | Primary frontend URL (`https://ogroniedu.vercel.app`)                                  |
+| `CORS_ORIGINS`                         | Render  | Server |         Yes          | Comma-separated allowed origins (`https://ogroniedu.vercel.app,https://ogroni.edu.bd`) |
+| `JWT_SECRET`                           | Render  | Secret |         Yes          | High-entropy 256-bit secret (32+ chars, non-default)                                   |
+| `SUPABASE_URL`                         | Render  | Server |         Yes          | Supabase project URL                                                                   |
+| `SUPABASE_PUBLISHABLE_KEY`             | Render  | Server |         Yes          | Supabase client key                                                                    |
+| `SUPABASE_SECRET_KEY`                  | Render  | Secret |         Yes          | Supabase `service_role` privileged server key                                          |
+| `SUPABASE_JWKS_URL`                    | Render  | Server |         Yes          | Supabase Auth JWKS: `https://<ref>.supabase.co/auth/v1/.well-known/jwks.json`          |
+| `SSLCOMMERZ_STORE_ID`                  | Render  | Secret |          No          | SSLCOMMERZ store identifier                                                            |
+| `SSLCOMMERZ_STORE_PASSWD`              | Render  | Secret |          No          | SSLCOMMERZ merchant password                                                           |
+| `SSLCOMMERZ_IS_LIVE`                   | Render  | Server | No (default `false`) | Set `true` only when commercial live credentials provisioned                           |
+| `OTP_SMS_PRIMARY_PROVIDER`             | Render  | Server |         Yes          | `http_gateway`                                                                         |
+| `OTP_SMS_FALLBACK_PROVIDER`            | Render  | Server |         Yes          | `http_gateway` (`dev` blocked in production)                                           |
+| `OTP_EMAIL_PRIMARY_PROVIDER`           | Render  | Server |         Yes          | `http_gateway`                                                                         |
+| `OTP_EMAIL_FALLBACK_PROVIDER`          | Render  | Server |         Yes          | `http_gateway` (`dev` blocked in production)                                           |
 
 ---
 

@@ -26,7 +26,9 @@ export class LiveKitMediaProvider implements IMediaProvider {
     this.livekitUrl =
       this.config.get<string>('LIVEKIT_URL') || 'wss://ogroniedu-57i4qo5d.livekit.cloud';
 
-    this.httpUrl = this.livekitUrl.replace(/^wss:\/\//i, 'https://').replace(/^ws:\/\//i, 'http://');
+    this.httpUrl = this.livekitUrl
+      .replace(/^wss:\/\//i, 'https://')
+      .replace(/^ws:\/\//i, 'http://');
 
     this.roomService = new RoomServiceClient(this.httpUrl, this.apiKey, this.apiSecret);
     this.webhookReceiver = new WebhookReceiver(this.apiKey, this.apiSecret);
@@ -116,7 +118,10 @@ export class LiveKitMediaProvider implements IMediaProvider {
     }
   }
 
-  async verifyWebhook(rawBody: string | Buffer, authHeader: string): Promise<LiveKitWebhookPayload> {
+  async verifyWebhook(
+    rawBody: string | Buffer,
+    authHeader: string,
+  ): Promise<LiveKitWebhookPayload> {
     try {
       const bodyString = typeof rawBody === 'string' ? rawBody : rawBody.toString('utf8');
       const event = await this.webhookReceiver.receive(bodyString, authHeader);

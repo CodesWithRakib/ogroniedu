@@ -57,7 +57,10 @@ describe('SSLCOMMERZ Sandbox-Only Payment Scenarios (13 Mandatory Scenarios)', (
     vi.stubEnv('SSLCOMMERZ_STORE_PASSWD', 'test_store_passwd');
     vi.stubEnv('SSLCOMMERZ_IS_LIVE', 'false');
     vi.stubEnv('SSLCOMMERZ_SESSION_URL', 'https://sandbox.sslcommerz.com/gwprocess/v4/api.php');
-    vi.stubEnv('SSLCOMMERZ_VALIDATION_URL', 'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php');
+    vi.stubEnv(
+      'SSLCOMMERZ_VALIDATION_URL',
+      'https://sandbox.sslcommerz.com/validator/api/validationserverAPI.php',
+    );
 
     adapter = new SslcommerzSandboxAdapter();
 
@@ -108,7 +111,11 @@ describe('SSLCOMMERZ Sandbox-Only Payment Scenarios (13 Mandatory Scenarios)', (
       findOne: vi.fn().mockResolvedValue(lockedOrder),
       find: vi.fn().mockResolvedValue([]),
       create: vi.fn((data) => ({ ...data, id: orderId })),
-      save: vi.fn(async (entity) => ({ ...entity, id: entity.id ?? orderId, updatedAt: new Date() })),
+      save: vi.fn(async (entity) => ({
+        ...entity,
+        id: entity.id ?? orderId,
+        updatedAt: new Date(),
+      })),
     };
 
     mockTransactionRepo = {
@@ -233,9 +240,46 @@ describe('SSLCOMMERZ Sandbox-Only Payment Scenarios (13 Mandatory Scenarios)', (
     });
 
     it('throws fatal error if validation URL points to securepay (live)', () => {
-      vi.stubEnv('SSLCOMMERZ_VALIDATION_URL', 'https://securepay.sslcommerz.com/validator/api/validationserverAPI.php');
+      vi.stubEnv(
+        'SSLCOMMERZ_VALIDATION_URL',
+        'https://securepay.sslcommerz.com/validator/api/validationserverAPI.php',
+      );
       const testAdapter = new SslcommerzSandboxAdapter();
       expect(() => testAdapter.onModuleInit()).toThrow(/FATAL: Live validation URL configured/);
+    });
+
+    it('throws fatal error if credentials are missing in production', () => {
+      vi.stubEnv('NODE_ENV', 'production');
+      vi.stubEnv('SSLCOMMERZ_STORE_ID', '');
+      vi.stubEnv('SSLCOMMERZ_STORE_PASSWD', '');
+      const testAdapter = new SslcommerzSandboxAdapter();
+      expect(() => testAdapter.onModuleInit()).toThrow(
+        /FATAL: SSLCOMMERZ_STORE_ID and SSLCOMMERZ_STORE_PASSWD must be configured in production/,
+      );
+    });
+
+    it('throws fatal error if configuration is inconsistent (one set, other missing)', () => {
+      vi.stubEnv('SSLCOMMERZ_STORE_ID', 'test_store');
+      vi.stubEnv('SSLCOMMERZ_STORE_PASSWD', '');
+      const testAdapter = new SslcommerzSandboxAdapter();
+      expect(() => testAdapter.onModuleInit()).toThrow(/FATAL: Inconsistent configuration/);
+    });
+
+    it('warns but does not throw when credentials are absent in non-production (e.g. CI / test / dev)', () => {
+      vi.stubEnv('NODE_ENV', 'test');
+      vi.stubEnv('SSLCOMMERZ_STORE_ID', '');
+      vi.stubEnv('SSLCOMMERZ_STORE_PASSWD', '');
+      const testAdapter = new SslcommerzSandboxAdapter();
+      expect(() => testAdapter.onModuleInit()).not.toThrow();
+    });
+
+    it('fails closed on createCheckoutSession if credentials are not configured', async () => {
+      vi.stubEnv('SSLCOMMERZ_STORE_ID', '');
+      vi.stubEnv('SSLCOMMERZ_STORE_PASSWD', '');
+      const testAdapter = new SslcommerzSandboxAdapter();
+      await expect(testAdapter.createCheckoutSession('ord-1', 100000, 'BDT')).rejects.toThrow(
+        /SSLCOMMERZ gateway credentials.*are not configured/,
+      );
     });
   });
 
@@ -604,9 +648,9 @@ describe('SSLCOMMERZ Sandbox-Only Payment Scenarios (13 Mandatory Scenarios)', (
   // --------------------------------------------------------------------------
   describe('Scenario 13: Record-Level Authorization Guard', () => {
     it('rejects order status access from stranger user with 403 Forbidden', async () => {
-      await expect(
-        ordersService.getPaymentOrderStatus(strangerUser, orderId),
-      ).rejects.toThrow(ForbiddenException);
+      await expect(ordersService.getPaymentOrderStatus(strangerUser, orderId)).rejects.toThrow(
+        ForbiddenException,
+      );
     });
 
     it('permits authorized payer to view order status', async () => {

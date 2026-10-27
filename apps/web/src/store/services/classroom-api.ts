@@ -91,18 +91,20 @@ export const classroomApi = baseApi.injectEndpoints({
       invalidatesTags: (_res, _err, { sessionId }) => [{ type: 'Classroom', id: sessionId }],
     }),
 
-    endClassroom: builder.mutation<ApiSuccessEnvelope<void>, { sessionId: string; notes?: string }>({
-      query: ({ sessionId, ...body }) => ({
-        url: `/api/v1/classroom/sessions/${sessionId}/end`,
-        method: 'POST',
-        body,
-      }),
-      invalidatesTags: (_res, _err, { sessionId }) => [
-        { type: 'Classroom', id: sessionId },
-        { type: 'Session', id: sessionId },
-        { type: 'Session', id: 'LIST' },
-      ],
-    }),
+    endClassroom: builder.mutation<ApiSuccessEnvelope<void>, { sessionId: string; notes?: string }>(
+      {
+        query: ({ sessionId, ...body }) => ({
+          url: `/api/v1/classroom/sessions/${sessionId}/end`,
+          method: 'POST',
+          body,
+        }),
+        invalidatesTags: (_res, _err, { sessionId }) => [
+          { type: 'Classroom', id: sessionId },
+          { type: 'Session', id: sessionId },
+          { type: 'Session', id: 'LIST' },
+        ],
+      },
+    ),
 
     getClassroomAttendees: builder.query<ApiSuccessEnvelope<ClassroomAttendeeSummary[]>, string>({
       query: (sessionId) => `/api/v1/classroom/sessions/${sessionId}/attendees`,

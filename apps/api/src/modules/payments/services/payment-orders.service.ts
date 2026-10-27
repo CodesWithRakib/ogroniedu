@@ -385,7 +385,9 @@ export class PaymentOrdersService {
       (await this.guardianAccess.hasActiveLink(user.id, order.booking.studentUserId));
 
     if (!isPayer && !isStudent && !isRequester && !isLinkedGuardian && !isAdminRole(user)) {
-      throw new ForbiddenException('Access denied: You do not have permission to view this payment order status');
+      throw new ForbiddenException(
+        'Access denied: You do not have permission to view this payment order status',
+      );
     }
 
     const successfulTxn = order.transactions?.find((t) => t.status === 'succeeded');
@@ -404,7 +406,8 @@ export class PaymentOrdersService {
     const tutorName = tutorUser?.displayName || tutorUser?.displayNameEn || 'Tutor';
     const studentUser = order.booking?.studentUser;
     const studentName = studentUser?.displayName || studentUser?.displayNameEn || 'Student';
-    const subjectName = order.booking?.subject?.nameEn || order.booking?.subject?.nameBn || 'Subject';
+    const subjectName =
+      order.booking?.subject?.nameEn || order.booking?.subject?.nameBn || 'Subject';
 
     return {
       orderId: order.id,

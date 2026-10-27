@@ -74,10 +74,14 @@ describe('ClassroomController Unit Tests', () => {
   });
 
   it('TC-CLS-CTRL-002: should generate join token and payload', async () => {
-    const res = await controller.joinClassroom(mockTutor, mockSessionId, { deviceInfo: { isMobile: false } });
+    const res = await controller.joinClassroom(mockTutor, mockSessionId, {
+      deviceInfo: { isMobile: false },
+    });
     expect(res.success).toBe(true);
     expect(res.data.token).toBe('test-token');
-    expect(mockService.joinClassroom).toHaveBeenCalledWith(mockSessionId, mockTutor, { isMobile: false });
+    expect(mockService.joinClassroom).toHaveBeenCalledWith(mockSessionId, mockTutor, {
+      isMobile: false,
+    });
   });
 
   it('TC-CLS-CTRL-003: should toggle hand raise', async () => {
@@ -94,7 +98,12 @@ describe('ClassroomController Unit Tests', () => {
     });
     expect(res.success).toBe(true);
     expect(res.data.canPublish).toBe(true);
-    expect(mockService.promoteParticipant).toHaveBeenCalledWith(mockSessionId, mockTutor, mockStudent.id, true);
+    expect(mockService.promoteParticipant).toHaveBeenCalledWith(
+      mockSessionId,
+      mockTutor,
+      mockStudent.id,
+      true,
+    );
   });
 
   it('TC-CLS-CTRL-005: should mute participant track', async () => {
@@ -104,7 +113,13 @@ describe('ClassroomController Unit Tests', () => {
       muted: true,
     });
     expect(res.success).toBe(true);
-    expect(mockService.muteParticipant).toHaveBeenCalledWith(mockSessionId, mockTutor, mockStudent.id, 'TR_1', true);
+    expect(mockService.muteParticipant).toHaveBeenCalledWith(
+      mockSessionId,
+      mockTutor,
+      mockStudent.id,
+      'TR_1',
+      true,
+    );
   });
 
   it('TC-CLS-CTRL-006: should kick participant from classroom', async () => {
@@ -113,13 +128,24 @@ describe('ClassroomController Unit Tests', () => {
       reason: 'Disruptive',
     });
     expect(res.success).toBe(true);
-    expect(mockService.kickParticipant).toHaveBeenCalledWith(mockSessionId, mockTutor, mockStudent.id, 'Disruptive');
+    expect(mockService.kickParticipant).toHaveBeenCalledWith(
+      mockSessionId,
+      mockTutor,
+      mockStudent.id,
+      'Disruptive',
+    );
   });
 
   it('TC-CLS-CTRL-007: should end classroom and finalize attendance', async () => {
-    const res = await controller.endClassroom(mockTutor, mockSessionId, { notes: 'Lesson complete' });
+    const res = await controller.endClassroom(mockTutor, mockSessionId, {
+      notes: 'Lesson complete',
+    });
     expect(res.success).toBe(true);
-    expect(mockService.endClassroom).toHaveBeenCalledWith(mockSessionId, mockTutor, 'Lesson complete');
+    expect(mockService.endClassroom).toHaveBeenCalledWith(
+      mockSessionId,
+      mockTutor,
+      'Lesson complete',
+    );
   });
 
   it('TC-CLS-CTRL-008: should process webhook request', async () => {

@@ -108,8 +108,7 @@ export class ClassroomService {
     if (!classroom) {
       const roomName = `ogroni-session-${sessionId}`;
       const title =
-        bookingSession.booking?.subject?.nameEn ||
-        `Live Tutoring Session ${sessionId.slice(0, 8)}`;
+        bookingSession.booking?.subject?.nameEn || `Live Tutoring Session ${sessionId.slice(0, 8)}`;
       const mode: ClassroomMode = 'SMALL_GROUP';
 
       classroom = this.classroomRepo.create({
@@ -302,7 +301,11 @@ export class ClassroomService {
   /**
    * Interactive Stage Promotion: Raise Hand request from student.
    */
-  async raiseHand(sessionId: string, user: AuthenticatedUser, isHandRaised: boolean): Promise<void> {
+  async raiseHand(
+    sessionId: string,
+    user: AuthenticatedUser,
+    isHandRaised: boolean,
+  ): Promise<void> {
     const { classroom } = await this.getOrCreateClassroomForSession(sessionId, user);
 
     const attendee = await this.attendeeRepo.findOne({
@@ -337,10 +340,7 @@ export class ClassroomService {
     participantIdentity: string,
     canPublish: boolean,
   ): Promise<void> {
-    const { classroom, userRole } = await this.getOrCreateClassroomForSession(
-      sessionId,
-      tutorUser,
-    );
+    const { classroom, userRole } = await this.getOrCreateClassroomForSession(sessionId, tutorUser);
 
     if (userRole !== 'HOST') {
       throw new ForbiddenException('Only the session host can promote participants to stage.');
@@ -389,10 +389,7 @@ export class ClassroomService {
     trackSid?: string,
     muted: boolean = true,
   ): Promise<void> {
-    const { classroom, userRole } = await this.getOrCreateClassroomForSession(
-      sessionId,
-      tutorUser,
-    );
+    const { classroom, userRole } = await this.getOrCreateClassroomForSession(sessionId, tutorUser);
 
     if (userRole !== 'HOST') {
       throw new ForbiddenException('Only the session host can mute participants.');
@@ -434,10 +431,7 @@ export class ClassroomService {
     participantIdentity: string,
     reason?: string,
   ): Promise<void> {
-    const { classroom, userRole } = await this.getOrCreateClassroomForSession(
-      sessionId,
-      tutorUser,
-    );
+    const { classroom, userRole } = await this.getOrCreateClassroomForSession(sessionId, tutorUser);
 
     if (userRole !== 'HOST') {
       throw new ForbiddenException('Only the session host can remove participants.');
@@ -527,7 +521,9 @@ export class ClassroomService {
             participantUserId: att.userId,
             attendanceStatus: att.totalDurationSeconds >= 600 ? 'present' : 'late',
             recordedBy: tutorUser.id,
-            notes: notes || `Attended via LiveKit classroom: ${Math.round(att.totalDurationSeconds / 60)} mins`,
+            notes:
+              notes ||
+              `Attended via LiveKit classroom: ${Math.round(att.totalDurationSeconds / 60)} mins`,
           });
         } else {
           lmsRecord.attendanceStatus = att.totalDurationSeconds >= 600 ? 'present' : 'late';
@@ -574,7 +570,10 @@ export class ClassroomService {
   /**
    * Authoritative LiveKit Webhook Receiver for idempotency & automated attendance duration tracking.
    */
-  async handleWebhook(rawBody: string | Buffer, authHeader: string): Promise<{ success: boolean; event: string }> {
+  async handleWebhook(
+    rawBody: string | Buffer,
+    authHeader: string,
+  ): Promise<{ success: boolean; event: string }> {
     const payload: LiveKitWebhookPayload = await this.mediaProvider.verifyWebhook(
       rawBody,
       authHeader,

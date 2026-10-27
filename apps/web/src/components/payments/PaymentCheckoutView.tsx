@@ -84,14 +84,16 @@ export function PaymentCheckoutView({
         <div className="lg:col-span-2 space-y-6">
           <CheckoutSummary order={order} locale={locale} />
 
-          {order.status === 'pending' && order.checkoutUrl && flow.selectedGateway === 'sslcommerz' && (
-            <EmbeddedEasyCheckout
-              orderId={order.id}
-              checkoutUrl={order.checkoutUrl}
-              amountMinor={order.amountMinor}
-              locale={locale}
-            />
-          )}
+          {order.status === 'pending' &&
+            order.checkoutUrl &&
+            flow.selectedGateway === 'sslcommerz' && (
+              <EmbeddedEasyCheckout
+                orderId={order.id}
+                checkoutUrl={order.checkoutUrl}
+                amountMinor={order.amountMinor}
+                locale={locale}
+              />
+            )}
 
           {order.status === 'pending' && (
             <CheckoutMethodPicker

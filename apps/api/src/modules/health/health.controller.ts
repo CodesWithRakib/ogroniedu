@@ -38,9 +38,7 @@ export class HealthController {
   @ApiResponse({ status: 200, description: 'LiveKit configuration and status' })
   checkLivekit(): { status: string; provider: string; configured: boolean; timestamp: string } {
     const isConfigured = Boolean(
-      process.env.LIVEKIT_URL &&
-      process.env.LIVEKIT_API_KEY &&
-      process.env.LIVEKIT_API_SECRET,
+      process.env.LIVEKIT_URL && process.env.LIVEKIT_API_KEY && process.env.LIVEKIT_API_SECRET,
     );
 
     return {

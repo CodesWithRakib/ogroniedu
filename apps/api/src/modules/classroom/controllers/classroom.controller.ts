@@ -145,12 +145,7 @@ export class ClassroomController {
     @Param('id', ParseUUIDPipe) id: string,
     @Body() dto: KickParticipantDto,
   ) {
-    await this.classroomService.kickParticipant(
-      id,
-      user,
-      dto.participantIdentity,
-      dto.reason,
-    );
+    await this.classroomService.kickParticipant(id, user, dto.participantIdentity, dto.reason);
     return {
       success: true,
       message: 'Participant removed from classroom.',

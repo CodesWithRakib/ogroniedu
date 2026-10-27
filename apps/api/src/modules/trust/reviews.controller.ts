@@ -62,10 +62,7 @@ export class ReviewsController {
   @ApiBearerAuth()
   @ApiOperation({ summary: 'Admin view of all reviews for moderation' })
   @ApiResponse({ status: 200, description: 'List of reviews' })
-  async getAdminReviews(
-    @CurrentUser() user: AuthenticatedUser,
-    @Query('status') status?: string,
-  ) {
+  async getAdminReviews(@CurrentUser() user: AuthenticatedUser, @Query('status') status?: string) {
     return this.reviewsService.getAdminReviews(user, status);
   }
 

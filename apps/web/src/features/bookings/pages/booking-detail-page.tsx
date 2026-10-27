@@ -138,9 +138,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
       setTutorReplyText('');
       playAudioTone('success');
       toast.success(
-        isBn
-          ? 'আপনার প্রতিক্রিয়া সফলভাবে প্রকাশ করা হয়েছে!'
-          : 'Reply posted successfully!',
+        isBn ? 'আপনার প্রতিক্রিয়া সফলভাবে প্রকাশ করা হয়েছে!' : 'Reply posted successfully!',
       );
       refetchBookingReview();
     } catch (err: unknown) {
@@ -154,8 +152,10 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
     }
   };
 
-  const [acceptReplacementOffer, { isLoading: acceptingOffer }] = useAcceptReplacementOfferMutation();
-  const [declineReplacementOffer, { isLoading: decliningOffer }] = useDeclineReplacementOfferMutation();
+  const [acceptReplacementOffer, { isLoading: acceptingOffer }] =
+    useAcceptReplacementOfferMutation();
+  const [declineReplacementOffer, { isLoading: decliningOffer }] =
+    useDeclineReplacementOfferMutation();
 
   const [respondBooking, { isLoading: responding }] = useRespondBookingRequestMutation();
   const [withdrawBooking, { isLoading: withdrawing }] = useWithdrawBookingRequestMutation();
@@ -538,9 +538,14 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
               </Button>
 
               {!isTutor &&
-                ['accepted', 'awaiting_payment', 'confirmed', 'in_progress', 'disputed', 'replacement_requested'].includes(
-                  status,
-                ) && (
+                [
+                  'accepted',
+                  'awaiting_payment',
+                  'confirmed',
+                  'in_progress',
+                  'disputed',
+                  'replacement_requested',
+                ].includes(status) && (
                   <Button
                     size="sm"
                     variant="outline"
@@ -566,18 +571,20 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                 </Button>
               )}
 
-              {!isTutor && !hasReviewed && ['confirmed', 'in_progress', 'completed', 'accepted'].includes(status) && (
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={() => setReviewModalOpen(true)}
-                  className="border-amber-400 text-amber-950 bg-amber-50/70 hover:bg-amber-100 font-bold text-xs"
-                  data-testid="open-review-modal-btn"
-                >
-                  <Star className="w-3.5 h-3.5 mr-1.5 text-amber-600 fill-current" />
-                  {isBn ? 'শিক্ষককে রিভিউ দিন' : 'Rate Tutor'}
-                </Button>
-              )}
+              {!isTutor &&
+                !hasReviewed &&
+                ['confirmed', 'in_progress', 'completed', 'accepted'].includes(status) && (
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => setReviewModalOpen(true)}
+                    className="border-amber-400 text-amber-950 bg-amber-50/70 hover:bg-amber-100 font-bold text-xs"
+                    data-testid="open-review-modal-btn"
+                  >
+                    <Star className="w-3.5 h-3.5 mr-1.5 text-amber-600 fill-current" />
+                    {isBn ? 'শিক্ষককে রিভিউ দিন' : 'Rate Tutor'}
+                  </Button>
+                )}
 
               {!isTutor && hasReviewed && (
                 <span

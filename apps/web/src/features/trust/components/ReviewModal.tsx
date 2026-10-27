@@ -200,7 +200,10 @@ export function ReviewModalForm({
 
         {/* Error Message */}
         {errorMessage && (
-          <Alert variant="destructive" className="p-3.5 rounded-xl text-xs flex items-center gap-2 border-red-300 bg-red-50 text-red-900">
+          <Alert
+            variant="destructive"
+            className="p-3.5 rounded-xl text-xs flex items-center gap-2 border-red-300 bg-red-50 text-red-900"
+          >
             <AlertCircle className="w-4 h-4 shrink-0 text-red-600" />
             <AlertDescription className="font-bold">{errorMessage}</AlertDescription>
           </Alert>

@@ -7,7 +7,11 @@ import { PayoutsService } from './services/payouts.service';
 import { CreatePaymentOrderDto, RequestRefundDto, SettleMilestoneDto } from './dto';
 import { AuthenticatedUser } from '../../common/decorators/current-user.decorator';
 
-export type { PaymentReceiptDto, PaymentOrderStatusDto, CreatePaymentOrderResultDto } from './services/payment-orders.service';
+export type {
+  PaymentReceiptDto,
+  PaymentOrderStatusDto,
+  CreatePaymentOrderResultDto,
+} from './services/payment-orders.service';
 export type { ReconciliationReport } from './services/settlement.service';
 
 /**

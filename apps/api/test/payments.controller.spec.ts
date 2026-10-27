@@ -205,7 +205,9 @@ describe('PaymentsController', () => {
     await controller.handleWebhook('sslcommerz', headers, body, req, mockRes);
 
     expect(mockRes.redirect).toHaveBeenCalledWith(
-      expect.stringContaining('/en/payments/result?orderId=00000000-0000-4000-8000-000000000000&status=succeeded&bookingId=booking-123'),
+      expect.stringContaining(
+        '/en/payments/result?orderId=00000000-0000-4000-8000-000000000000&status=succeeded&bookingId=booking-123',
+      ),
     );
   });
 

@@ -282,7 +282,10 @@ export function EmbeddedEasyCheckout({
                   SSL
                 </div>
                 <div>
-                  <h4 id="sslcz-modal-title" className="text-xs sm:text-sm font-black text-slate-900">
+                  <h4
+                    id="sslcz-modal-title"
+                    className="text-xs sm:text-sm font-black text-slate-900"
+                  >
                     {isBn ? 'এসএসএলকমার্জ নিরাপদ চেকআউট' : 'SSLCOMMERZ Secure Checkout'}
                   </h4>
                   <p className="text-[10px] text-slate-500 font-semibold">
@@ -319,9 +322,7 @@ export function EmbeddedEasyCheckout({
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-3 bg-white z-10">
                   <LoadingSpinner className="w-8 h-8 text-blue-600" />
                   <p className="text-xs font-bold text-slate-600">
-                    {isBn
-                      ? 'নিরাপদ পেমেন্ট গেটওয়ে লোড হচ্ছে…'
-                      : 'Loading secure payment gateway…'}
+                    {isBn ? 'নিরাপদ পেমেন্ট গেটওয়ে লোড হচ্ছে…' : 'Loading secure payment gateway…'}
                   </p>
                 </div>
               )}

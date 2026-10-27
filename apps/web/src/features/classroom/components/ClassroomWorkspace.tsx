@@ -331,7 +331,9 @@ export function ClassroomWorkspace({
               title={isBn ? 'ফুলস্ক্রিন ভিডিও ক্লাসরুম' : 'Fullscreen Video'}
             >
               <Video className="w-3.5 h-3.5" />
-              <span className="hidden sm:inline">{isBn ? 'লাইভ ভিডিও ক্লাসরুম (LiveKit)' : 'Live Video Classroom (LiveKit)'}</span>
+              <span className="hidden sm:inline">
+                {isBn ? 'লাইভ ভিডিও ক্লাসরুম (LiveKit)' : 'Live Video Classroom (LiveKit)'}
+              </span>
               <span className="sm:hidden">{isBn ? 'ভিডিও' : 'Video'}</span>
             </button>
 
@@ -347,7 +349,15 @@ export function ClassroomWorkspace({
               title={isBn ? 'ভিডিও ও হোয়াইটবোর্ড একসাথে দেখুন' : 'Split Whiteboard view'}
             >
               <Columns className="w-3.5 h-3.5" />
-              <span className="hidden md:inline">{sideTool === 'whiteboard' ? (isBn ? 'হোয়াইটবোর্ড খোলা আছে' : 'Whiteboard Open') : (isBn ? 'স্প্লিট হোয়াইটবোর্ড' : 'Split Whiteboard')}</span>
+              <span className="hidden md:inline">
+                {sideTool === 'whiteboard'
+                  ? isBn
+                    ? 'হোয়াইটবোর্ড খোলা আছে'
+                    : 'Whiteboard Open'
+                  : isBn
+                    ? 'স্প্লিট হোয়াইটবোর্ড'
+                    : 'Split Whiteboard'}
+              </span>
               <span className="md:hidden">{isBn ? 'হোয়াইটবোর্ড' : 'Board'}</span>
             </button>
 
@@ -363,7 +373,9 @@ export function ClassroomWorkspace({
               title={isBn ? 'ফর্মুলা ও নোটস' : 'Formulas & Study Notes'}
             >
               <BookOpen className="w-3.5 h-3.5 text-emerald-600" />
-              <span className="hidden lg:inline">{isBn ? 'ফর্মুলা ও স্টাডি নোটস' : 'Formulas & Study Notes'}</span>
+              <span className="hidden lg:inline">
+                {isBn ? 'ফর্মুলা ও স্টাডি নোটস' : 'Formulas & Study Notes'}
+              </span>
               <span className="lg:hidden">{isBn ? 'নোটস' : 'Notes'}</span>
             </button>
 
@@ -379,7 +391,9 @@ export function ClassroomWorkspace({
               title={isBn ? 'উপস্থিতি ও বিবরণ' : 'Attendance & Details'}
             >
               <UserCheck className="w-3.5 h-3.5 text-amber-600" />
-              <span className="hidden lg:inline">{isBn ? 'উপস্থিতি ও বিবরণ' : 'Attendance & Details'}</span>
+              <span className="hidden lg:inline">
+                {isBn ? 'উপস্থিতি ও বিবরণ' : 'Attendance & Details'}
+              </span>
               <span className="lg:hidden">{isBn ? 'উপস্থিতি' : 'Attendance'}</span>
             </button>
           </div>
@@ -396,8 +410,14 @@ export function ClassroomWorkspace({
                 aria-label={isBn ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
                 data-testid="copy-meeting-link-btn"
               >
-                {copiedLink ? <Check className="w-3.5 h-3.5 text-emerald-600" /> : <Copy className="w-3.5 h-3.5" />}
-                <span className="hidden xl:inline">{copiedLink ? (isBn ? 'কপি হয়েছে' : 'Copied') : (isBn ? 'লিংক' : 'Link')}</span>
+                {copiedLink ? (
+                  <Check className="w-3.5 h-3.5 text-emerald-600" />
+                ) : (
+                  <Copy className="w-3.5 h-3.5" />
+                )}
+                <span className="hidden xl:inline">
+                  {copiedLink ? (isBn ? 'কপি হয়েছে' : 'Copied') : isBn ? 'লিংক' : 'Link'}
+                </span>
               </button>
             )}
 
@@ -424,7 +444,9 @@ export function ClassroomWorkspace({
                 data-testid="complete-class-btn"
               >
                 <CheckCircle2 className="w-3.5 h-3.5 mr-1 text-emerald-400" />
-                <span className="hidden sm:inline">{isBn ? 'ক্লাস সম্পন্ন' : 'Mark Completed'}</span>
+                <span className="hidden sm:inline">
+                  {isBn ? 'ক্লাস সম্পন্ন' : 'Mark Completed'}
+                </span>
               </Button>
             )}
           </div>
@@ -461,10 +483,16 @@ export function ClassroomWorkspace({
                   {sideTool === 'attendance' && <UserCheck className="w-4 h-4 text-amber-600" />}
                   <span className="font-extrabold text-xs sm:text-sm text-slate-800">
                     {sideTool === 'whiteboard'
-                      ? (isBn ? 'ইন্টারেক্টিভ হোয়াইটবোর্ড' : 'Interactive Whiteboard')
+                      ? isBn
+                        ? 'ইন্টারেক্টিভ হোয়াইটবোর্ড'
+                        : 'Interactive Whiteboard'
                       : sideTool === 'formulas'
-                        ? (isBn ? 'ফর্মুলা ও স্টাডি নোটস' : 'Formulas & Study Notes')
-                        : (isBn ? 'উপস্থিতি ও বিবরণ' : 'Attendance & Details')}
+                        ? isBn
+                          ? 'ফর্মুলা ও স্টাডি নোটস'
+                          : 'Formulas & Study Notes'
+                        : isBn
+                          ? 'উপস্থিতি ও বিবরণ'
+                          : 'Attendance & Details'}
                   </span>
                 </div>
                 <button
@@ -523,7 +551,9 @@ export function ClassroomWorkspace({
               <textarea
                 value={completionNotes}
                 onChange={(e) => setCompletionNotes(e.target.value)}
-                placeholder={isBn ? 'ক্লাস সম্পর্কে কোনো মন্তব্য বা নোট লিখুন...' : 'Add completion notes...'}
+                placeholder={
+                  isBn ? 'ক্লাস সম্পর্কে কোনো মন্তব্য বা নোট লিখুন...' : 'Add completion notes...'
+                }
                 className="w-full p-3 rounded-xl bg-slate-50 border border-slate-300 text-slate-900 text-xs h-24 focus:bg-white focus:ring-2 focus:ring-blue-500"
               />
               <div className="flex justify-end gap-2">
@@ -607,7 +637,9 @@ export function ClassroomWorkspace({
               </span>
               <span>•</span>
               <span className="flex items-center gap-1.5">
-                <span className="text-slate-500 font-bold">{isBn ? 'শিক্ষার্থী:' : 'Student:'}</span>
+                <span className="text-slate-500 font-bold">
+                  {isBn ? 'শিক্ষার্থী:' : 'Student:'}
+                </span>
                 <strong className="text-slate-900 font-black">{studentName}</strong>
               </span>
               <span>•</span>

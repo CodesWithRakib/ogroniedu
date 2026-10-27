@@ -53,7 +53,11 @@ import {
   useGetClassroomAttendeesQuery,
   type ClassroomSessionInfo,
 } from '@/store/services/classroom-api';
-import type { ClassroomJoinPayload, ClassroomMode, ClassroomAttendeeSummary } from '@ogroniedu/contracts';
+import type {
+  ClassroomJoinPayload,
+  ClassroomMode,
+  ClassroomAttendeeSummary,
+} from '@ogroniedu/contracts';
 
 export interface LiveKitClassroomMeetingProps {
   sessionId: string;
@@ -93,8 +97,6 @@ function LiveKitClassroomMeetingBase({
   subjectTitle,
 }: LiveKitClassroomMeetingProps) {
   const isBn = locale === 'bn';
-
-
 
   // Join mutation & attendees query
   const [joinClassroom, { isLoading: isJoining, error: joinError }] = useJoinClassroomMutation();
@@ -207,7 +209,10 @@ function LiveKitClassroomMeetingBase({
     );
     for (const student of students) {
       try {
-        await muteMutation({ sessionId, participantIdentity: student.participantIdentity }).unwrap();
+        await muteMutation({
+          sessionId,
+          participantIdentity: student.participantIdentity,
+        }).unwrap();
       } catch {
         // ignore
       }
@@ -250,7 +255,9 @@ function LiveKitClassroomMeetingBase({
         <h3 className="text-lg font-black text-white">
           {isBn ? 'সেশন সমাপ্ত অথবা সংযোগ বিচ্ছিন্ন' : 'Disconnected from Classroom'}
         </h3>
-        <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1.5 max-w-md">{kickedNotice}</p>
+        <p className="text-xs sm:text-sm text-slate-300 font-medium mt-1.5 max-w-md">
+          {kickedNotice}
+        </p>
       </div>
     );
   }
@@ -293,9 +300,10 @@ function LiveKitClassroomMeetingBase({
     );
   }
 
-  const containerClasses = isTheaterMode || isStandalone
-    ? `relative w-full h-full flex-1 rounded-none border-none bg-slate-100 flex flex-col overflow-hidden ${className}`
-    : `relative w-full h-[58vh] sm:h-[68vh] lg:h-[75vh] min-h-[360px] max-h-[85vh] bg-slate-100 rounded-3xl overflow-hidden shadow-xl border-2 border-slate-200 flex flex-col ${className}`;
+  const containerClasses =
+    isTheaterMode || isStandalone
+      ? `relative w-full h-full flex-1 rounded-none border-none bg-slate-100 flex flex-col overflow-hidden ${className}`
+      : `relative w-full h-[58vh] sm:h-[68vh] lg:h-[75vh] min-h-[360px] max-h-[85vh] bg-slate-100 rounded-3xl overflow-hidden shadow-xl border-2 border-slate-200 flex flex-col ${className}`;
 
   // Active LiveKit Classroom Session
   return (
@@ -640,7 +648,11 @@ function ClassroomSessionContent({
             aria-label="Fullscreen"
             data-testid="toggle-fullscreen-btn"
           >
-            {fullscreen ? <Minimize2 className="w-4 h-4 text-slate-700" /> : <Maximize2 className="w-4 h-4 text-slate-700" />}
+            {fullscreen ? (
+              <Minimize2 className="w-4 h-4 text-slate-700" />
+            ) : (
+              <Maximize2 className="w-4 h-4 text-slate-700" />
+            )}
           </button>
         </div>
       </div>
@@ -822,7 +834,9 @@ function EnhancedParticipantTile({
         {isAudioMuted ? (
           <MicOff className="w-3.5 h-3.5 text-rose-600" />
         ) : (
-          <Mic className={`w-3.5 h-3.5 ${isSpeaking ? 'text-emerald-600 animate-pulse' : 'text-slate-600'}`} />
+          <Mic
+            className={`w-3.5 h-3.5 ${isSpeaking ? 'text-emerald-600 animate-pulse' : 'text-slate-600'}`}
+          />
         )}
         <span className="text-xs font-black truncate max-w-[120px] sm:max-w-[180px]">
           {displayName}
@@ -870,7 +884,9 @@ function ClassroomStage({
 
   // Identify screen share track if any
   const screenShareTrack = tracks.find((t) => t.source === Track.Source.ScreenShare);
-  const pinnedTrack = pinnedIdentity ? tracks.find((t) => t.participant.identity === pinnedIdentity) : null;
+  const pinnedTrack = pinnedIdentity
+    ? tracks.find((t) => t.participant.identity === pinnedIdentity)
+    : null;
   const cameraTracks = tracks.filter((t) => t.source === Track.Source.Camera);
 
   // Priority 1: Screen Share is Active (in ANY mode!)
@@ -1014,10 +1030,7 @@ function ClassroomStage({
                 key={trackRef.publication?.trackSid || trackRef.participant.identity}
                 className="w-44 md:w-full aspect-video bg-slate-900 rounded-xl overflow-hidden shrink-0 shadow-md"
               >
-                <EnhancedParticipantTile
-                  trackRef={trackRef}
-                  onTogglePin={onTogglePin}
-                />
+                <EnhancedParticipantTile trackRef={trackRef} onTogglePin={onTogglePin} />
               </div>
             ))}
           </div>

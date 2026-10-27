@@ -3,10 +3,7 @@ import React from 'react';
 import { renderToStaticMarkup } from 'react-dom/server';
 import { Provider } from 'react-redux';
 import { makeStore } from '../src/store';
-import {
-  CaseCard,
-  StatusBadge,
-} from '../src/features/trust/pages/tutor-replacements-list-page';
+import { CaseCard, StatusBadge } from '../src/features/trust/pages/tutor-replacements-list-page';
 import {
   TutorReplacementModal,
   TutorReplacementModalForm,
@@ -59,7 +56,9 @@ describe('Tutor Replacement Guarantee System Tests', () => {
     expect(html).toContain('data-testid="replacement-case-a1b2c3d4-e5f6-47a8-b9c0-d1e2f3a4b5c6"');
     expect(html).toContain('#a1b2c3d4');
     expect(html).toContain('teaching mismatch');
-    expect(html).toContain('শিক্ষকের পাঠদান পদ্ধতি আমার সন্তানের ধারণক্ষমতার সাথে সামঞ্জস্যপূর্ণ নয়।');
+    expect(html).toContain(
+      'শিক্ষকের পাঠদান পদ্ধতি আমার সন্তানের ধারণক্ষমতার সাথে সামঞ্জস্যপূর্ণ নয়।',
+    );
     expect(html).toContain('ম্যাচিং সময়সীমা:');
     expect(html).toContain('আমাদের ম্যাচিং টিম আপনার জন্য বিকল্প উপযুক্ত শিক্ষক খুঁজছে।');
     expect(html).toContain('বিস্তারিত ও ইতিহাস দেখুন');
@@ -104,7 +103,9 @@ describe('Tutor Replacement Guarantee System Tests', () => {
     expect(html).toContain('data-testid="tutor-replacement-modal-content"');
     expect(html).toContain('৪৮ ঘণ্টার শিক্ষক রিপ্লেসমেন্ট গ্যারান্টি');
     expect(html).toContain('ফরহাদ হোসেন (উচ্চতর গণিত)-এর বিকল্প শিক্ষক দাবি করুন');
-    expect(html).toContain('১০০% অভিভাবক সুরক্ষা: ৪৮ ঘণ্টার মধ্যে নতুন যাচাইকৃত শিক্ষক অথবা সম্পূর্ণ ফান্ড ফেরত।');
+    expect(html).toContain(
+      '১০০% অভিভাবক সুরক্ষা: ৪৮ ঘণ্টার মধ্যে নতুন যাচাইকৃত শিক্ষক অথবা সম্পূর্ণ ফান্ড ফেরত।',
+    );
     expect(html).toContain('৪৮ ঘণ্টা');
     expect(html).toContain('teaching_mismatch');
     expect(html).toContain('tutor_no_show');
@@ -126,7 +127,9 @@ describe('Tutor Replacement Guarantee System Tests', () => {
     // Check student nav sections
     const studentTutorsSection = STUDENT_NAV_SECTIONS.find((s) => s.id === 'tutors');
     expect(studentTutorsSection).toBeDefined();
-    const studentReplItem = studentTutorsSection?.items.find((i) => i.href === '/tutor-replacements');
+    const studentReplItem = studentTutorsSection?.items.find(
+      (i) => i.href === '/tutor-replacements',
+    );
     expect(studentReplItem).toBeDefined();
     expect(studentReplItem?.labelBn).toBe('শিক্ষক পরিবর্তন গ্যারান্টি');
     expect(studentReplItem?.testId).toBe('nav-student-tutor-replacements');
@@ -134,7 +137,9 @@ describe('Tutor Replacement Guarantee System Tests', () => {
     // Check guardian nav sections
     const guardianTutorsSection = GUARDIAN_NAV_SECTIONS.find((s) => s.id === 'tutors');
     expect(guardianTutorsSection).toBeDefined();
-    const guardianReplItem = guardianTutorsSection?.items.find((i) => i.href === '/tutor-replacements');
+    const guardianReplItem = guardianTutorsSection?.items.find(
+      (i) => i.href === '/tutor-replacements',
+    );
     expect(guardianReplItem).toBeDefined();
     expect(guardianReplItem?.labelBn).toBe('শিক্ষক পরিবর্তন গ্যারান্টি');
     expect(guardianReplItem?.testId).toBe('nav-guardian-tutor-replacements');
@@ -142,7 +147,9 @@ describe('Tutor Replacement Guarantee System Tests', () => {
     // Check admin nav sections
     const adminOpsSection = ADMIN_NAV_SECTIONS.find((s) => s.id === 'operations');
     expect(adminOpsSection).toBeDefined();
-    const adminReplItem = adminOpsSection?.items.find((i) => i.href === '/dashboard/admin/replacements');
+    const adminReplItem = adminOpsSection?.items.find(
+      (i) => i.href === '/dashboard/admin/replacements',
+    );
     expect(adminReplItem).toBeDefined();
     expect(adminReplItem?.testId).toBe('nav-replacements');
   });
@@ -153,14 +160,22 @@ describe('Tutor Replacement Guarantee System Tests', () => {
       { code: 'matching', bn: 'শিক্ষক খোঁজা হচ্ছে', en: 'Matching' },
       { code: 'offered', bn: 'শিক্ষক প্রস্তাবিত', en: 'Tutor offered' },
       { code: 'accepted', bn: 'শিক্ষক গ্রহণ করা হয়েছে', en: 'Replacement accepted' },
-      { code: 'refund_eligible', bn: 'রিফান্ড পর্যালোচনার যোগ্য', en: 'Eligible for refund review' },
+      {
+        code: 'refund_eligible',
+        bn: 'রিফান্ড পর্যালোচনার যোগ্য',
+        en: 'Eligible for refund review',
+      },
     ];
 
     for (const item of statuses) {
-      const bnHtml = renderToStaticMarkup(React.createElement(StatusBadge, { status: item.code, locale: 'bn' }));
+      const bnHtml = renderToStaticMarkup(
+        React.createElement(StatusBadge, { status: item.code, locale: 'bn' }),
+      );
       expect(bnHtml).toContain(item.bn);
 
-      const enHtml = renderToStaticMarkup(React.createElement(StatusBadge, { status: item.code, locale: 'en' }));
+      const enHtml = renderToStaticMarkup(
+        React.createElement(StatusBadge, { status: item.code, locale: 'en' }),
+      );
       expect(enHtml).toContain(item.en);
     }
   });

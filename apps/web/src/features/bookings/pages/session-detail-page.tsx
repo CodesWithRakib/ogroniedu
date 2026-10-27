@@ -485,7 +485,9 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
             <div className="flex items-center gap-2 text-primary font-bold text-xs uppercase tracking-wider">
               <CalendarIcon className="w-4 h-4 text-blue-600" />
               <span>
-                {locale === 'bn' ? 'ক্যালেন্ডার ও সময়সূচী নিয়ন্ত্রণ' : 'Calendar & Schedule Controls'}
+                {locale === 'bn'
+                  ? 'ক্যালেন্ডার ও সময়সূচী নিয়ন্ত্রণ'
+                  : 'Calendar & Schedule Controls'}
               </span>
             </div>
             <h3 className="text-lg font-black text-slate-900">
@@ -597,7 +599,9 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
                   data-testid="join-classroom-btn"
                 >
                   <ExternalLink className="w-4 h-4" />
-                  {locale === 'bn' ? 'সরাসরি লাইভ ক্লাসরুমে প্রবেশ করুন' : 'Join Live Video Classroom'}
+                  {locale === 'bn'
+                    ? 'সরাসরি লাইভ ক্লাসরুমে প্রবেশ করুন'
+                    : 'Join Live Video Classroom'}
                 </Link>
 
                 <Link

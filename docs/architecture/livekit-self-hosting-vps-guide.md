@@ -28,6 +28,7 @@ Because all token generation, participant moderation, and room lifecycle logic i
 ## 2. Environment Variables & Zero-Code Migration
 
 ### LiveKit Cloud (Current Default)
+
 ```env
 # Server (.env)
 LIVEKIT_URL=wss://ogroniedu-57i4qo5d.livekit.cloud
@@ -39,6 +40,7 @@ NEXT_PUBLIC_LIVEKIT_URL=wss://ogroniedu-57i4qo5d.livekit.cloud
 ```
 
 ### Self-Hosted VPS (Post-Migration)
+
 ```env
 # Server (.env)
 LIVEKIT_URL=wss://livekit.ogroniedu.com
@@ -56,23 +58,26 @@ NEXT_PUBLIC_LIVEKIT_URL=wss://livekit.ogroniedu.com
 ## 3. VPS Hardware & Network Requirements
 
 ### Recommended Server Sizing
-| Class Load | Concurrency | vCPU | RAM | Network Bandwidth |
-| :--- | :--- | :--- | :--- | :--- |
-| **Small Group Classes (1–6 users)** | Up to 10 simultaneous rooms (60 users) | 4 vCPU | 8 GB | 1 Gbps |
-| **Large Batch Classes (50–500 users)** | 2–5 webinar rooms (500–1000 users) | 8–16 vCPU | 16–32 GB | 2.5–10 Gbps |
+
+| Class Load                             | Concurrency                            | vCPU      | RAM      | Network Bandwidth |
+| :------------------------------------- | :------------------------------------- | :-------- | :------- | :---------------- |
+| **Small Group Classes (1–6 users)**    | Up to 10 simultaneous rooms (60 users) | 4 vCPU    | 8 GB     | 1 Gbps            |
+| **Large Batch Classes (50–500 users)** | 2–5 webinar rooms (500–1000 users)     | 8–16 vCPU | 16–32 GB | 2.5–10 Gbps       |
 
 ### Required Firewall & Port Rules (UFW / AWS Security Group)
+
 LiveKit requires specific TCP and UDP ports for signaling, TURN, and media egress:
 
-| Port | Protocol | Purpose | Source |
-| :--- | :--- | :--- | :--- |
-| **`80`** | TCP | HTTP Let's Encrypt SSL verification (Caddy) | Anywhere (`0.0.0.0/0`) |
-| **`443`** | TCP | HTTPS & Secure WebSocket Signaling (`wss://`) | Anywhere (`0.0.0.0/0`) |
-| **`7880`** | TCP | Internal LiveKit HTTP & Signaling | Localhost / Reverse Proxy |
-| **`7881`** | TCP | RTC TCP fallback (for strict firewalls) | Anywhere (`0.0.0.0/0`) |
-| **`50000–60000`** | UDP | WebRTC Media ICE/UDP tracks | Anywhere (`0.0.0.0/0`) |
+| Port              | Protocol | Purpose                                       | Source                    |
+| :---------------- | :------- | :-------------------------------------------- | :------------------------ |
+| **`80`**          | TCP      | HTTP Let's Encrypt SSL verification (Caddy)   | Anywhere (`0.0.0.0/0`)    |
+| **`443`**         | TCP      | HTTPS & Secure WebSocket Signaling (`wss://`) | Anywhere (`0.0.0.0/0`)    |
+| **`7880`**        | TCP      | Internal LiveKit HTTP & Signaling             | Localhost / Reverse Proxy |
+| **`7881`**        | TCP      | RTC TCP fallback (for strict firewalls)       | Anywhere (`0.0.0.0/0`)    |
+| **`50000–60000`** | UDP      | WebRTC Media ICE/UDP tracks                   | Anywhere (`0.0.0.0/0`)    |
 
 Ubuntu UFW configuration:
+
 ```bash
 sudo ufw allow 80/tcp
 sudo ufw allow 443/tcp
@@ -86,18 +91,22 @@ sudo ufw reload
 ## 4. VPS Docker Deployment
 
 ### Step 1: Directory Setup
+
 On your Ubuntu/Debian VPS:
+
 ```bash
 sudo mkdir -p /opt/livekit
 cd /opt/livekit
 ```
 
 ### Step 2: LiveKit Server Configuration (`livekit.yaml`)
+
 Create `/opt/livekit/livekit.yaml`:
+
 ```yaml
 port: 7880
 bind_addresses:
-  - ""
+  - ''
 
 rtc:
   tcp_port: 7881
@@ -107,8 +116,8 @@ rtc:
 
 redis:
   address: redis:6379
-  username: ""
-  password: ""
+  username: ''
+  password: ''
   db: 0
 
 keys:
@@ -130,8 +139,10 @@ room:
 ```
 
 ### Step 3: Caddy Reverse Proxy Configuration (`Caddyfile`)
+
 Caddy provides automated Let's Encrypt SSL/TLS certificates and WebSocket tunneling:
 Create `/opt/livekit/Caddyfile`:
+
 ```caddy
 livekit.ogroniedu.com {
     reverse_proxy livekit:7880
@@ -139,14 +150,16 @@ livekit.ogroniedu.com {
 ```
 
 ### Step 4: Docker Compose Setup (`docker-compose.yml`)
+
 Create `/opt/livekit/docker-compose.yml`:
+
 ```yaml
 services:
   livekit:
     image: livekit/livekit-server:latest
     container_name: livekit-server
     restart: unless-stopped
-    network_mode: "host"
+    network_mode: 'host'
     volumes:
       - ./livekit.yaml:/etc/livekit.yaml:ro
     command: --config /etc/livekit.yaml
@@ -156,7 +169,7 @@ services:
     container_name: livekit-redis
     restart: unless-stopped
     ports:
-      - "127.0.0.1:6379:6379"
+      - '127.0.0.1:6379:6379'
     volumes:
       - redis_data:/data
 
@@ -165,8 +178,8 @@ services:
     container_name: livekit-caddy
     restart: unless-stopped
     ports:
-      - "80:80"
-      - "443:443"
+      - '80:80'
+      - '443:443'
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - caddy_data:/data
@@ -179,6 +192,7 @@ volumes:
 ```
 
 ### Step 5: Start LiveKit Cluster
+
 ```bash
 docker compose up -d
 docker compose logs -f livekit
@@ -189,6 +203,7 @@ docker compose logs -f livekit
 ## 5. Webhook Integration & Idempotency
 
 When participants join or leave, LiveKit automatically fires signed HTTP POST requests to OgroniEdu:
+
 - Endpoint: `https://api.ogroniedu.com/api/v1/classroom/webhook`
 - Header: `Authorization: <livekit_sha256_jwt_token>`
 - The backend's `LiveKitMediaProvider.verifyWebhook()` validates this signature using the matching `LIVEKIT_API_KEY` and `LIVEKIT_API_SECRET`.
@@ -202,11 +217,15 @@ When participants join or leave, LiveKit automatically fires signed HTTP POST re
 ## 6. Verification and Health Monitoring
 
 ### Health Endpoint
+
 The OgroniEdu NestJS API provides an automated status endpoint:
+
 ```http
 GET /api/health/media
 ```
+
 Response:
+
 ```json
 {
   "status": "ok",
@@ -217,7 +236,9 @@ Response:
 ```
 
 ### In-Flight Class Verification
+
 Run an end-to-end token generation check using the OgroniEdu CLI test script:
+
 ```bash
 pnpm --filter @ogroniedu/api test classroom.service.spec.ts
 ```

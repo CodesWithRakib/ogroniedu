@@ -72,7 +72,10 @@ export function CaseCard({
             <span className="font-mono text-xs font-black text-slate-900">
               #{item.id.slice(0, 8)}
             </span>
-            <Badge variant="outline" className="text-xs capitalize font-semibold border-slate-300 text-slate-800 bg-slate-50">
+            <Badge
+              variant="outline"
+              className="text-xs capitalize font-semibold border-slate-300 text-slate-800 bg-slate-50"
+            >
               {item.reasonCode.replace(/_/g, ' ')}
             </Badge>
             {item.isOverdue && (
@@ -115,7 +118,10 @@ export function CaseCard({
       )}
 
       {item.refundEligibility === 'eligible' && (
-        <Alert className="rounded-xl border-emerald-300 bg-emerald-50 text-emerald-950" data-testid={`refund-eligible-${item.id}`}>
+        <Alert
+          className="rounded-xl border-emerald-300 bg-emerald-50 text-emerald-950"
+          data-testid={`refund-eligible-${item.id}`}
+        >
           <AlertDescription className="text-xs font-semibold">
             {isBn
               ? 'এই কেসটি রিফান্ড পর্যালোচনার জন্য যোগ্য হিসেবে চিহ্নিত। ১০০% মানিব্যাক গ্যারান্টি অনুসারে এসক্রো রিফান্ড প্রক্রিয়াধীন।'

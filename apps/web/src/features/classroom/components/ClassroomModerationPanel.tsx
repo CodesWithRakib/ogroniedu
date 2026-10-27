@@ -116,7 +116,9 @@ export function ClassroomModerationPanel({
                   data-testid={`hand-raise-item-${student.participantIdentity}`}
                 >
                   <div>
-                    <p className="text-xs sm:text-sm font-black text-slate-900">{student.participantName}</p>
+                    <p className="text-xs sm:text-sm font-black text-slate-900">
+                      {student.participantName}
+                    </p>
                     <p className="text-xs font-bold text-amber-800 mt-0.5 flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-amber-500 animate-ping" />
                       {isBn ? 'কথা বলার অনুমতি চাইছে' : 'Requested to speak'}
@@ -159,7 +161,9 @@ export function ClassroomModerationPanel({
                   className="p-3.5 bg-indigo-50 border-2 border-indigo-200 rounded-2xl flex items-center justify-between gap-3 shadow-xs"
                 >
                   <div>
-                    <p className="text-xs sm:text-sm font-black text-slate-900">{student.participantName}</p>
+                    <p className="text-xs sm:text-sm font-black text-slate-900">
+                      {student.participantName}
+                    </p>
                     <p className="text-xs font-bold text-emerald-700 mt-0.5 flex items-center gap-1">
                       <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse" />
                       {isBn ? 'মাইক/ভিডিও সক্রিয়' : 'Broadcasting on stage'}
@@ -221,10 +225,14 @@ export function ClassroomModerationPanel({
                   <div className="flex items-center gap-2">
                     <span
                       className={`w-2.5 h-2.5 rounded-full ${
-                        att.connectionStatus === 'CONNECTED' ? 'bg-emerald-500 shadow-xs' : 'bg-slate-300'
+                        att.connectionStatus === 'CONNECTED'
+                          ? 'bg-emerald-500 shadow-xs'
+                          : 'bg-slate-300'
                       }`}
                     />
-                    <span className="font-black text-slate-900 text-xs sm:text-sm">{att.participantName}</span>
+                    <span className="font-black text-slate-900 text-xs sm:text-sm">
+                      {att.participantName}
+                    </span>
                     {att.role === 'HOST' && (
                       <span className="px-2 py-0.5 bg-blue-100 text-blue-800 border border-blue-200 rounded-md text-[10px] font-black">
                         HOST
@@ -232,7 +240,8 @@ export function ClassroomModerationPanel({
                     )}
                   </div>
                   <p className="text-[11px] font-bold text-slate-500 mt-1">
-                    {Math.round(att.totalDurationSeconds / 60)} {isBn ? 'মিনিট উপস্থিত' : 'mins attended'}
+                    {Math.round(att.totalDurationSeconds / 60)}{' '}
+                    {isBn ? 'মিনিট উপস্থিত' : 'mins attended'}
                   </p>
                 </div>
 

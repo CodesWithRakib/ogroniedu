@@ -6,6 +6,7 @@ describe('SslcommerzSandboxAdapter', () => {
   let adapter: SslcommerzSandboxAdapter;
 
   beforeEach(() => {
+    vi.stubEnv('SSLCOMMERZ_STORE_ID', 'test-store-id');
     vi.stubEnv('SSLCOMMERZ_STORE_PASSWD', 'test-store-passwd');
     adapter = new SslcommerzSandboxAdapter();
   });

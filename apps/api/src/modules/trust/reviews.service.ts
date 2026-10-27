@@ -281,17 +281,12 @@ export class ReviewsService {
   /**
    * 2c. Get all reviews across platform for staff moderation.
    */
-  async getAdminReviews(
-    user: AuthenticatedUser,
-    status?: string,
-  ): Promise<PublicReviewView[]> {
+  async getAdminReviews(user: AuthenticatedUser, status?: string): Promise<PublicReviewView[]> {
     if (!isAdminRole(user)) {
       throw new ForbiddenException('Admin privileges required');
     }
 
-    const where: FindOptionsWhere<ReviewEntity> = status
-      ? { moderationStatus: status as any }
-      : {};
+    const where: FindOptionsWhere<ReviewEntity> = status ? { moderationStatus: status as any } : {};
 
     const reviews = await this.reviewRepo.find({
       where,

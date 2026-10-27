@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { ClassroomService } from '../src/modules/classroom/services/classroom.service';
 import type { IMediaProvider } from '../src/modules/classroom/interfaces/media-provider.interface';
 import type { AuthenticatedUser } from '../src/common/decorators/current-user.decorator';
-import { NotFoundException, ForbiddenException, BadRequestException } from '@nestjs/common';
+import { ForbiddenException, BadRequestException } from '@nestjs/common';
 
 describe('ClassroomService Unit & Integration Tests', () => {
   let service: ClassroomService;
@@ -32,12 +32,6 @@ describe('ClassroomService Unit & Integration Tests', () => {
     id: 'stranger-user-uuid-3',
     roles: ['student'],
     email: 'stranger@ogroniedu.com',
-  };
-
-  const guardianUser: AuthenticatedUser = {
-    id: 'guardian-user-uuid-4',
-    roles: ['guardian'],
-    email: 'guardian@ogroniedu.com',
   };
 
   const now = new Date();
@@ -206,9 +200,9 @@ describe('ClassroomService Unit & Integration Tests', () => {
     });
 
     it('TC-CLS-004: should reject unauthorized stranger with ForbiddenException', async () => {
-      await expect(
-        service.joinClassroom('session-uuid-101', strangerUser),
-      ).rejects.toThrow(ForbiddenException);
+      await expect(service.joinClassroom('session-uuid-101', strangerUser)).rejects.toThrow(
+        ForbiddenException,
+      );
     });
 
     it('TC-CLS-005: should reject join if booking session has been cancelled', async () => {
@@ -217,9 +211,9 @@ describe('ClassroomService Unit & Integration Tests', () => {
         status: 'cancelled',
       });
 
-      await expect(
-        service.joinClassroom('session-uuid-101', studentUser),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.joinClassroom('session-uuid-101', studentUser)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('TC-CLS-006: should reject early join if class starts in more than 15 minutes', async () => {
@@ -232,9 +226,9 @@ describe('ClassroomService Unit & Integration Tests', () => {
         status: 'SCHEDULED',
       });
 
-      await expect(
-        service.joinClassroom('session-uuid-101', studentUser),
-      ).rejects.toThrow(BadRequestException);
+      await expect(service.joinClassroom('session-uuid-101', studentUser)).rejects.toThrow(
+        BadRequestException,
+      );
     });
 
     it('TC-CLS-006B: should allow host/tutor to join classroom early to prepare and start session', async () => {
@@ -299,12 +293,7 @@ describe('ClassroomService Unit & Integration Tests', () => {
         isHandRaised: true,
       });
 
-      await service.promoteParticipant(
-        'session-uuid-101',
-        tutorUser,
-        studentUser.id,
-        true,
-      );
+      await service.promoteParticipant('session-uuid-101', tutorUser, studentUser.id, true);
 
       expect(mockMediaProvider.updateParticipantPermissions).toHaveBeenCalledWith(
         'ogroni-session-session-uuid-101',

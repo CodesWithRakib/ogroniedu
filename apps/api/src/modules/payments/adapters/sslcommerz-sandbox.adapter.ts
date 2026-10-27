@@ -52,11 +52,30 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter, OnModul
         'FATAL: Live validation URL configured. This deployment only permits SSLCOMMERZ Sandbox endpoints (sandbox.sslcommerz.com).',
       );
     }
-    if (!this.storeId || !this.storePasswd) {
-      throw new Error('FATAL: SSLCOMMERZ_STORE_ID and SSLCOMMERZ_STORE_PASSWD must be configured.');
+
+    const isProduction = process.env.NODE_ENV === 'production';
+    const hasStoreId = Boolean(this.storeId);
+    const hasStorePasswd = Boolean(this.storePasswd);
+
+    if (hasStoreId !== hasStorePasswd) {
+      throw new Error(
+        'FATAL: Inconsistent configuration: Both SSLCOMMERZ_STORE_ID and SSLCOMMERZ_STORE_PASSWD must be configured together.',
+      );
     }
-    const maskedStore =
-      this.storeId.length > 4 ? `${this.storeId.slice(0, 4)}***` : '***';
+
+    if (!hasStoreId || !hasStorePasswd) {
+      if (isProduction) {
+        throw new Error(
+          'FATAL: SSLCOMMERZ_STORE_ID and SSLCOMMERZ_STORE_PASSWD must be configured in production.',
+        );
+      }
+      this.logger.warn(
+        'SSLCOMMERZ_STORE_ID or SSLCOMMERZ_STORE_PASSWD is not configured in this non-production environment. Payment sessions will fail closed until credentials are provided.',
+      );
+      return;
+    }
+
+    const maskedStore = this.storeId.length > 4 ? `${this.storeId.slice(0, 4)}***` : '***';
     this.logger.log(
       `SSLCOMMERZ Sandbox Adapter initialized successfully (Store: ${maskedStore}, Mode: Sandbox Only)`,
     );
@@ -118,6 +137,9 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter, OnModul
    * Helper: Generate a valid signature for webhook validation and testing
    */
   generateSignature(payload: string): string {
+    if (!this.storePasswd) {
+      throw new Error('SSLCOMMERZ_STORE_PASSWD is not configured');
+    }
     return crypto.createHmac('sha256', this.storePasswd).update(payload).digest('hex');
   }
 
@@ -134,6 +156,12 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter, OnModul
     if (this.isLive) {
       throw new ServiceUnavailableException(
         'Live payment processing is disabled. OgroniEdu is provisioned for SSLCOMMERZ Sandbox payments only.',
+      );
+    }
+
+    if (!this.storeId || !this.storePasswd) {
+      throw new ServiceUnavailableException(
+        'SSLCOMMERZ gateway credentials (SSLCOMMERZ_STORE_ID, SSLCOMMERZ_STORE_PASSWD) are not configured.',
       );
     }
 
@@ -470,6 +498,19 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter, OnModul
         amountMinor: 150000,
         currency: 'BDT',
         status: 'succeeded',
+        verifiedAt: new Date(),
+      };
+    }
+
+    if (!this.storeId || !this.storePasswd) {
+      this.logger.warn(
+        'SSLCOMMERZ transaction validation query rejected: credentials are not configured',
+      );
+      return {
+        providerTransactionId,
+        amountMinor: 0,
+        currency: 'BDT',
+        status: 'failed',
         verifiedAt: new Date(),
       };
     }

@@ -161,9 +161,7 @@ export function TutorReplacementModalForm({
                   : 'Teaching Style Mismatch'}
               </option>
               <option value="tutor_no_show">
-                {isBn
-                  ? 'শিক্ষক নির্ধারিত ক্লাসে অনুপস্থিত ছিলেন (Tutor No-Show)'
-                  : 'Tutor No-Show'}
+                {isBn ? 'শিক্ষক নির্ধারিত ক্লাসে অনুপস্থিত ছিলেন (Tutor No-Show)' : 'Tutor No-Show'}
               </option>
               <option value="frequent_tutor_cancellation">
                 {isBn
@@ -209,10 +207,7 @@ export function TutorReplacementModalForm({
           </div>
 
           {errorMessage && (
-            <Alert
-              variant="destructive"
-              className="flex items-center gap-2 p-3 rounded-xl text-xs"
-            >
+            <Alert variant="destructive" className="flex items-center gap-2 p-3 rounded-xl text-xs">
               <AlertTriangle className="w-4 h-4 shrink-0" />
               <AlertDescription>{errorMessage}</AlertDescription>
             </Alert>
@@ -254,11 +249,7 @@ export function TutorReplacementModalForm({
   );
 }
 
-export function TutorReplacementModal({
-  isOpen,
-  onClose,
-  ...rest
-}: TutorReplacementModalProps) {
+export function TutorReplacementModal({ isOpen, onClose, ...rest }: TutorReplacementModalProps) {
   if (!isOpen) return null;
 
   return (

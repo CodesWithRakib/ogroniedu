@@ -88,7 +88,8 @@ describe('Tutor 3-Tier Verification Dossier & Compliance Audit Suite', () => {
       status: 'needs_information',
       assignedReviewerUserId: 'reviewer-admin-001',
       decisionReasonCode: 'illegible_document',
-      applicantFeedback: 'সনদের স্ক্যান কপি অস্পষ্ট। অনুগ্রহ করে মূল সনদের রঙিন ও স্পষ্ট ছবি আপলোড করুন।',
+      applicantFeedback:
+        'সনদের স্ক্যান কপি অস্পষ্ট। অনুগ্রহ করে মূল সনদের রঙিন ও স্পষ্ট ছবি আপলোড করুন।',
       expiresAt: null,
       decidedAt: '2026-10-26T10:00:00Z',
       lastSubmittedAt: '2026-10-25T14:00:00Z',

@@ -84,7 +84,10 @@ export function PaymentResultView({
   }
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6 py-6 px-4 text-slate-900" data-testid="payment-result-view">
+    <div
+      className="w-full max-w-3xl mx-auto space-y-6 py-6 px-4 text-slate-900"
+      data-testid="payment-result-view"
+    >
       {/* Navigation back */}
       {bookingId && (
         <Link
@@ -124,13 +127,15 @@ export function PaymentResultView({
               </h3>
               <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3.5 text-xs">
                 <div>
-                  <dt className="text-slate-500 font-medium">{isBn ? 'অর্ডার রেফারেন্স' : 'Order Reference'}</dt>
-                  <dd className="font-mono font-bold text-slate-900 mt-0.5 break-all">
-                    {orderId}
-                  </dd>
+                  <dt className="text-slate-500 font-medium">
+                    {isBn ? 'অর্ডার রেফারেন্স' : 'Order Reference'}
+                  </dt>
+                  <dd className="font-mono font-bold text-slate-900 mt-0.5 break-all">{orderId}</dd>
                 </div>
                 <div>
-                  <dt className="text-slate-500 font-medium">{isBn ? 'প্রদেয় পরিমাণ' : 'Amount Paid'}</dt>
+                  <dt className="text-slate-500 font-medium">
+                    {isBn ? 'প্রদেয় পরিমাণ' : 'Amount Paid'}
+                  </dt>
                   <dd className="text-base font-black text-slate-900 mt-0.5">
                     {formatBDTMinor(amountMinor, locale)} {currency}
                   </dd>
@@ -145,15 +150,21 @@ export function PaymentResultView({
                 </div>
                 {order?.verifiedAt && (
                   <div>
-                    <dt className="text-slate-500 font-medium">{isBn ? 'যাচাইয়ের সময়' : 'Verified At'}</dt>
+                    <dt className="text-slate-500 font-medium">
+                      {isBn ? 'যাচাইয়ের সময়' : 'Verified At'}
+                    </dt>
                     <dd className="font-semibold text-slate-700 mt-0.5">
-                      {new Date(order.verifiedAt).toLocaleString(locale === 'bn' ? 'bn-BD' : 'en-US')}
+                      {new Date(order.verifiedAt).toLocaleString(
+                        locale === 'bn' ? 'bn-BD' : 'en-US',
+                      )}
                     </dd>
                   </div>
                 )}
                 {receipt?.invoiceNumber && (
                   <div>
-                    <dt className="text-slate-500 font-medium">{isBn ? 'ইনভয়েস নম্বর' : 'Invoice Number'}</dt>
+                    <dt className="text-slate-500 font-medium">
+                      {isBn ? 'ইনভয়েস নম্বর' : 'Invoice Number'}
+                    </dt>
                     <dd className="font-mono font-bold text-blue-700 mt-0.5">
                       {receipt.invoiceNumber}
                     </dd>
@@ -177,7 +188,9 @@ export function PaymentResultView({
               <div className="flex items-center gap-2 w-full sm:w-auto">
                 {receipt?.invoiceId && (
                   <a
-                    href={apiUrl(`/api/v1/payments/invoices/${receipt.invoiceId}/print?locale=${locale}`)}
+                    href={apiUrl(
+                      `/api/v1/payments/invoices/${receipt.invoiceId}/print?locale=${locale}`,
+                    )}
                     target="_blank"
                     rel="noreferrer"
                     className="w-full sm:w-auto"
@@ -251,7 +264,9 @@ export function PaymentResultView({
           <CardContent className="p-6 sm:p-8 space-y-6">
             <div className="rounded-2xl border border-slate-200 bg-slate-50/60 p-5 space-y-2.5 text-xs">
               <div className="flex justify-between items-center">
-                <span className="text-slate-500">{isBn ? 'অর্ডার রেফারেন্স' : 'Order Reference'}</span>
+                <span className="text-slate-500">
+                  {isBn ? 'অর্ডার রেফারেন্স' : 'Order Reference'}
+                </span>
                 <span className="font-mono font-bold text-slate-800">{orderId}</span>
               </div>
               {order?.failureReason && (

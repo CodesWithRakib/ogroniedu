@@ -43,8 +43,7 @@ export function ReviewCard({
     (isBn ? 'যাচাইকৃত শিক্ষার্থী' : 'Verified Learner');
 
   const commentText = (isBn ? rev.commentBn : rev.commentEn) || rev.comment;
-  const tutorReply =
-    (isBn ? rev.tutorResponseBn : rev.tutorResponseEn) || rev.tutorResponse;
+  const tutorReply = (isBn ? rev.tutorResponseBn : rev.tutorResponseEn) || rev.tutorResponse;
 
   return (
     <Card
@@ -128,7 +127,10 @@ export function ReviewCard({
           {replying ? (
             <div className="space-y-2 p-3 bg-slate-50 border border-slate-200 rounded-xl">
               {replyError && (
-                <Alert variant="destructive" className="py-2 px-3 rounded-xl border-red-300 bg-red-50 text-red-900">
+                <Alert
+                  variant="destructive"
+                  className="py-2 px-3 rounded-xl border-red-300 bg-red-50 text-red-900"
+                >
                   <AlertDescription className="text-xs font-bold">{replyError}</AlertDescription>
                 </Alert>
               )}

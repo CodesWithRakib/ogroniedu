@@ -138,7 +138,15 @@ export function ClassroomControlBar({
 
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [canPublish, isCameraEnabled, isMicrophoneEnabled, isTutor, localParticipant, isHandRaised, onToggleHandRaise]);
+  }, [
+    canPublish,
+    isCameraEnabled,
+    isMicrophoneEnabled,
+    isTutor,
+    localParticipant,
+    isHandRaised,
+    onToggleHandRaise,
+  ]);
 
   // Camera flip for mobile
   const handleCameraFlip = useCallback(async () => {
@@ -151,8 +159,10 @@ export function ClassroomControlBar({
       if (videoDevices.length > 1) {
         const nextDevice =
           nextMode === 'environment'
-            ? videoDevices.find((d) => d.label.toLowerCase().includes('back') || d.label.toLowerCase().includes('rear')) ||
-              videoDevices[1]
+            ? videoDevices.find(
+                (d) =>
+                  d.label.toLowerCase().includes('back') || d.label.toLowerCase().includes('rear'),
+              ) || videoDevices[1]
             : videoDevices[0];
 
         if (nextDevice) {
@@ -227,7 +237,11 @@ export function ClassroomControlBar({
           aria-label={isBn ? 'লো-ডাটা মোড' : 'Low Data Mode'}
           data-testid="low-data-mode-toggle"
         >
-          {lowDataMode ? <WifiOff className="w-4 h-4 text-amber-600" /> : <Wifi className="w-4 h-4 text-emerald-600" />}
+          {lowDataMode ? (
+            <WifiOff className="w-4 h-4 text-amber-600" />
+          ) : (
+            <Wifi className="w-4 h-4 text-emerald-600" />
+          )}
           <span className="hidden md:inline font-bold">
             {lowDataMode ? (isBn ? 'লো-ডাটা' : 'Low-Data') : isBn ? 'এইচডি' : 'HD'}
           </span>
@@ -276,7 +290,11 @@ export function ClassroomControlBar({
           aria-label={isMicrophoneEnabled ? 'Mute Mic' : 'Unmute Mic'}
           data-testid="control-mic-toggle"
         >
-          {isMicrophoneEnabled ? <Mic className="w-5 h-5 text-emerald-600" /> : <MicOff className="w-5 h-5 text-white" />}
+          {isMicrophoneEnabled ? (
+            <Mic className="w-5 h-5 text-emerald-600" />
+          ) : (
+            <MicOff className="w-5 h-5 text-white" />
+          )}
         </button>
 
         {/* Camera Toggle */}
@@ -307,7 +325,11 @@ export function ClassroomControlBar({
           aria-label={isCameraEnabled ? 'Turn Off Camera' : 'Turn On Camera'}
           data-testid="control-camera-toggle"
         >
-          {isCameraEnabled ? <VideoIcon className="w-5 h-5 text-blue-600" /> : <VideoOff className="w-5 h-5 text-white" />}
+          {isCameraEnabled ? (
+            <VideoIcon className="w-5 h-5 text-blue-600" />
+          ) : (
+            <VideoOff className="w-5 h-5 text-white" />
+          )}
         </button>
 
         {/* Mobile Camera Flip Switch */}
@@ -328,7 +350,9 @@ export function ClassroomControlBar({
         {canPublish && (
           <button
             type="button"
-            onClick={() => localParticipant.setScreenShareEnabled(!isScreenShareEnabled, { audio: true })}
+            onClick={() =>
+              localParticipant.setScreenShareEnabled(!isScreenShareEnabled, { audio: true })
+            }
             className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md hidden sm:flex items-center justify-center active:scale-95 ${
               isScreenShareEnabled
                 ? 'bg-blue-600 hover:bg-blue-700 text-white ring-4 ring-blue-300'
@@ -367,13 +391,27 @@ export function ClassroomControlBar({
                 ? 'bg-amber-400 hover:bg-amber-500 text-slate-950 font-black animate-bounce ring-4 ring-amber-300 shadow-amber-500/40'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
             }`}
-            title={isHandRaised ? (isBn ? 'হাত নামান' : 'Lower Hand') : isBn ? 'কথা বলার জন্য হাত তুলুন' : 'Raise Hand to Speak'}
+            title={
+              isHandRaised
+                ? isBn
+                  ? 'হাত নামান'
+                  : 'Lower Hand'
+                : isBn
+                  ? 'কথা বলার জন্য হাত তুলুন'
+                  : 'Raise Hand to Speak'
+            }
             aria-label={isHandRaised ? 'Lower Hand' : 'Raise Hand'}
             data-testid="control-raise-hand"
           >
             <Hand className="w-5 h-5 text-amber-600" />
             <span className="hidden md:inline text-xs font-black">
-              {isHandRaised ? (isBn ? 'হাত তোলা আছে' : 'Hand Raised') : isBn ? 'হাত তুলুন' : 'Raise Hand'}
+              {isHandRaised
+                ? isBn
+                  ? 'হাত তোলা আছে'
+                  : 'Hand Raised'
+                : isBn
+                  ? 'হাত তুলুন'
+                  : 'Raise Hand'}
             </span>
           </button>
         )}
@@ -410,7 +448,9 @@ export function ClassroomControlBar({
             data-testid="control-moderation-toggle"
           >
             <Users className="w-5 h-5" />
-            <span className="hidden md:inline text-xs font-bold">{isBn ? 'মডারেশন' : 'Manage'}</span>
+            <span className="hidden md:inline text-xs font-bold">
+              {isBn ? 'মডারেশন' : 'Manage'}
+            </span>
             {handRaiseCount > 0 && (
               <span className="absolute -top-2 -right-2 bg-amber-400 text-slate-950 font-black text-[11px] w-6 h-6 rounded-full flex items-center justify-center animate-pulse border-2 border-white shadow-md">
                 {handRaiseCount}
@@ -431,7 +471,15 @@ export function ClassroomControlBar({
                 ? 'bg-indigo-600 border-indigo-400 text-white ring-2 ring-indigo-300'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
             }`}
-            title={isBn ? (isTheaterMode ? 'স্বাভাবিক ভিউতে ফিরুন' : 'সিনেমা / থিয়েটার ভিউ') : isTheaterMode ? 'Exit Theater' : 'Theater View'}
+            title={
+              isBn
+                ? isTheaterMode
+                  ? 'স্বাভাবিক ভিউতে ফিরুন'
+                  : 'সিনেমা / থিয়েটার ভিউ'
+                : isTheaterMode
+                  ? 'Exit Theater'
+                  : 'Theater View'
+            }
             aria-label={isTheaterMode ? 'Exit Theater' : 'Theater View'}
             data-testid="control-theater-toggle"
           >
@@ -467,7 +515,15 @@ export function ClassroomControlBar({
           type="button"
           onClick={onLeave}
           className="min-w-[46px] min-h-[46px] p-3 px-3.5 sm:px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs flex items-center gap-1.5 transition-all shadow-md shadow-rose-600/30 active:scale-95"
-          title={isTutor ? (isBn ? 'সবার জন্য ক্লাস শেষ করুন' : 'End Class for All') : isBn ? 'ক্লাসরুম ত্যাগ করুন' : 'Leave Classroom'}
+          title={
+            isTutor
+              ? isBn
+                ? 'সবার জন্য ক্লাস শেষ করুন'
+                : 'End Class for All'
+              : isBn
+                ? 'ক্লাসরুম ত্যাগ করুন'
+                : 'Leave Classroom'
+          }
           aria-label={isTutor ? 'End Class' : 'Leave Classroom'}
           data-testid="control-leave-btn"
         >

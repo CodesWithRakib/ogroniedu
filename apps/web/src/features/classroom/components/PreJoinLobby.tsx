@@ -208,7 +208,8 @@ export function PreJoinLobby({
 
   const readinessLabelClass = 'text-xs font-black text-slate-800 uppercase tracking-wider block';
 
-  const readinessRowClass = 'flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800';
+  const readinessRowClass =
+    'flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800';
 
   const lowDataBoxClass =
     'flex items-center justify-between p-3.5 bg-blue-50/80 hover:bg-blue-50 border-2 border-blue-200 rounded-2xl cursor-pointer transition-colors shadow-2xs';
@@ -218,10 +219,7 @@ export function PreJoinLobby({
     : 'bg-slate-50 border-slate-300 text-slate-800 hover:bg-slate-100';
 
   return (
-    <div
-      className={cardBgClass}
-      data-testid="prejoin-lobby"
-    >
+    <div className={cardBgClass} data-testid="prejoin-lobby">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b pb-4 mb-5 border-slate-200">
         <div>
@@ -307,7 +305,7 @@ export function PreJoinLobby({
               />
             </div>
             <span className="text-[10px] font-black text-slate-800 min-w-7">
-              {audioEnabled ? `${audioLevel}%` : (isBn ? 'মিউট' : 'Muted')}
+              {audioEnabled ? `${audioLevel}%` : isBn ? 'মিউট' : 'Muted'}
             </span>
           </div>
 
@@ -321,11 +319,23 @@ export function PreJoinLobby({
                   ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 ring-2 ring-emerald-500/80 border border-slate-200'
                   : 'bg-rose-600 hover:bg-rose-700 text-white ring-2 ring-rose-400'
               }`}
-              title={audioEnabled ? (isBn ? 'মাইক বন্ধ করুন' : 'Mute') : isBn ? 'মাইক চালু করুন' : 'Unmute'}
+              title={
+                audioEnabled
+                  ? isBn
+                    ? 'মাইক বন্ধ করুন'
+                    : 'Mute'
+                  : isBn
+                    ? 'মাইক চালু করুন'
+                    : 'Unmute'
+              }
               aria-label={audioEnabled ? 'Mute' : 'Unmute'}
               data-testid="lobby-mic-toggle"
             >
-              {audioEnabled ? <Mic className="w-5 h-5 text-emerald-600" /> : <MicOff className="w-5 h-5 text-white" />}
+              {audioEnabled ? (
+                <Mic className="w-5 h-5 text-emerald-600" />
+              ) : (
+                <MicOff className="w-5 h-5 text-white" />
+              )}
             </button>
 
             <button
@@ -336,11 +346,23 @@ export function PreJoinLobby({
                   ? 'bg-slate-100 hover:bg-slate-200 text-slate-800 ring-2 ring-blue-500/80 border border-slate-200'
                   : 'bg-rose-600 hover:bg-rose-700 text-white ring-2 ring-rose-400'
               }`}
-              title={videoEnabled ? (isBn ? 'ক্যামেরা বন্ধ করুন' : 'Turn Off Camera') : isBn ? 'ক্যামেরা চালু করুন' : 'Turn On Camera'}
+              title={
+                videoEnabled
+                  ? isBn
+                    ? 'ক্যামেরা বন্ধ করুন'
+                    : 'Turn Off Camera'
+                  : isBn
+                    ? 'ক্যামেরা চালু করুন'
+                    : 'Turn On Camera'
+              }
               aria-label={videoEnabled ? 'Turn Off Camera' : 'Turn On Camera'}
               data-testid="lobby-camera-toggle"
             >
-              {videoEnabled ? <Camera className="w-5 h-5 text-blue-600" /> : <CameraOff className="w-5 h-5 text-white" />}
+              {videoEnabled ? (
+                <Camera className="w-5 h-5 text-blue-600" />
+              ) : (
+                <CameraOff className="w-5 h-5 text-white" />
+              )}
             </button>
           </div>
         </div>
@@ -359,7 +381,13 @@ export function PreJoinLobby({
                   {isBn ? 'ভূমিকা' : 'Role'}
                 </span>
                 <span className="px-2.5 py-1 bg-blue-100 text-blue-900 border border-blue-200 rounded-lg font-black text-xs">
-                  {isTutor ? (isBn ? 'শিক্ষক / হোস্ট' : 'Tutor / Host') : isBn ? 'শিক্ষার্থী' : 'Student'}
+                  {isTutor
+                    ? isBn
+                      ? 'শিক্ষক / হোস্ট'
+                      : 'Tutor / Host'
+                    : isBn
+                      ? 'শিক্ষার্থী'
+                      : 'Student'}
                 </span>
               </div>
 
@@ -382,7 +410,9 @@ export function PreJoinLobby({
                   {isBn ? 'লো-ডাটা / অডিও-ফার্স্ট মোড' : 'Low-Data / Audio First'}
                 </p>
                 <p className="text-xs text-blue-800/90 font-semibold mt-0.5">
-                  {isBn ? 'দুর্বল ৩জি/৪জি মোবাইল ডাটাতে ব্যান্ডউইথ সাশ্রয় করুন' : 'Conserves bandwidth on 3G/4G networks'}
+                  {isBn
+                    ? 'দুর্বল ৩জি/৪জি মোবাইল ডাটাতে ব্যান্ডউইথ সাশ্রয় করুন'
+                    : 'Conserves bandwidth on 3G/4G networks'}
                 </p>
               </div>
               <input
@@ -457,7 +487,9 @@ export function PreJoinLobby({
                 className="w-4 h-4 rounded-md text-blue-600 focus:ring-blue-500"
               />
               <span className="text-xs font-bold text-slate-800">
-                {isBn ? 'নয়েজ সাপ্রেশন (ফ্যান ও টাইপিং নয়েজ দূর করুন)' : 'Noise Suppression (Filter background noise)'}
+                {isBn
+                  ? 'নয়েজ সাপ্রেশন (ফ্যান ও টাইপিং নয়েজ দূর করুন)'
+                  : 'Noise Suppression (Filter background noise)'}
               </span>
             </label>
 
@@ -469,7 +501,9 @@ export function PreJoinLobby({
                 className="w-4 h-4 rounded-md text-blue-600 focus:ring-blue-500"
               />
               <span className="text-xs font-bold text-slate-800">
-                {isBn ? 'ইকো ক্যান্সেলেশন (প্রতিধ্বনি ফিল্টার)' : 'Echo Cancellation (Filter feedback)'}
+                {isBn
+                  ? 'ইকো ক্যান্সেলেশন (প্রতিধ্বনি ফিল্টার)'
+                  : 'Echo Cancellation (Filter feedback)'}
               </span>
             </label>
           </div>

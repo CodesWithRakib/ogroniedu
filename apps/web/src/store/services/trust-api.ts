@@ -303,7 +303,8 @@ export const trustApi = baseApi.injectEndpoints({
       { success: boolean; data: TutorReviewItem[] } | TutorReviewItem[],
       { status?: string } | void
     >({
-      query: (arg) => `/api/v1/reviews/admin/all${arg && arg.status ? `?status=${arg.status}` : ''}`,
+      query: (arg) =>
+        `/api/v1/reviews/admin/all${arg && arg.status ? `?status=${arg.status}` : ''}`,
       providesTags: [{ type: 'Review', id: 'ADMIN_LIST' }],
     }),
     replyToReview: builder.mutation<unknown, { id: string; reply: string; bookingId?: string }>({
@@ -320,7 +321,12 @@ export const trustApi = baseApi.injectEndpoints({
     }),
     moderateReview: builder.mutation<
       unknown,
-      { id: string; status: 'pending' | 'published' | 'flagged' | 'hidden'; reason?: string; bookingId?: string }
+      {
+        id: string;
+        status: 'pending' | 'published' | 'flagged' | 'hidden';
+        reason?: string;
+        bookingId?: string;
+      }
     >({
       query: ({ id, status, reason }) => ({
         url: `/api/v1/reviews/${id}/moderate`,

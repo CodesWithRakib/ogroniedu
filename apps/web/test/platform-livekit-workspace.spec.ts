@@ -8,8 +8,10 @@ import type { SessionItem } from '../src/store/services/sessions-api';
 
 // Mock LiveKit react components
 vi.mock('@livekit/components-react', () => ({
-  LiveKitRoom: ({ children }: any) => React.createElement('div', { 'data-testid': 'mock-livekit-room' }, children),
-  RoomAudioRenderer: () => React.createElement('div', { 'data-testid': 'mock-room-audio-renderer' }),
+  LiveKitRoom: ({ children }: any) =>
+    React.createElement('div', { 'data-testid': 'mock-livekit-room' }, children),
+  RoomAudioRenderer: () =>
+    React.createElement('div', { 'data-testid': 'mock-room-audio-renderer' }),
   useTracks: () => [],
   useParticipants: () => [],
   useRoomContext: () => ({

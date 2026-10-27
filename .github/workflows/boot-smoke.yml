@@ -47,6 +47,9 @@ jobs:
       PORT: 4000
       JWT_SECRET: ci-boot-smoke-secret-not-for-production
       FRONTEND_URL: http://localhost:5000
+      SSLCOMMERZ_STORE_ID: sandbox_smoke_store
+      SSLCOMMERZ_STORE_PASSWD: sandbox_smoke_passwd
+      SSLCOMMERZ_IS_LIVE: false
 
     steps:
       - name: Checkout Code

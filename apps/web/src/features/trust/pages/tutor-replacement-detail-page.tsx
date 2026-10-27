@@ -86,7 +86,10 @@ export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCas
           <Card className="rounded-2xl bg-white border border-slate-200 p-5 space-y-4 shadow-xs">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
-                <Badge variant="outline" className="capitalize border-slate-300 text-slate-800 bg-slate-50 font-semibold">
+                <Badge
+                  variant="outline"
+                  className="capitalize border-slate-300 text-slate-800 bg-slate-50 font-semibold"
+                >
                   {item.reasonCode.replace(/_/g, ' ')}
                 </Badge>
                 {item.isOverdue && (
@@ -107,7 +110,9 @@ export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCas
                 <Clock className="w-4 h-4 text-purple-700" aria-hidden="true" />
                 <span>
                   {isBn ? 'ম্যাচিং সময়সীমা:' : 'Matching deadline:'}{' '}
-                  <strong className="text-slate-900">{formatDateTime(item.deadlineAt, locale)}</strong>
+                  <strong className="text-slate-900">
+                    {formatDateTime(item.deadlineAt, locale)}
+                  </strong>
                 </span>
               </p>
             )}
@@ -131,10 +136,15 @@ export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCas
           </Card>
 
           {item.status === 'offered' && item.replacementTutor && (
-            <Card className="rounded-2xl bg-blue-50 border border-blue-300 p-5 space-y-3 shadow-xs" data-testid="case-offer">
+            <Card
+              className="rounded-2xl bg-blue-50 border border-blue-300 p-5 space-y-3 shadow-xs"
+              data-testid="case-offer"
+            >
               <p className="text-sm font-black text-slate-900">
                 {isBn ? 'প্রস্তাবিত বিকল্প শিক্ষক:' : 'Offered replacement tutor:'}{' '}
-                <span className="text-blue-700 underline font-bold">{item.replacementTutor.displayName}</span>
+                <span className="text-blue-700 underline font-bold">
+                  {item.replacementTutor.displayName}
+                </span>
               </p>
               <div className="flex gap-2 pt-1">
                 <Button
@@ -172,7 +182,10 @@ export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCas
             ) : (
               <ul className="space-y-2.5" data-testid="case-history">
                 {detail!.history.map((event) => (
-                  <li key={event.id} className="text-xs border-l-2 border-slate-300 pl-3 space-y-0.5">
+                  <li
+                    key={event.id}
+                    className="text-xs border-l-2 border-slate-300 pl-3 space-y-0.5"
+                  >
                     <p className="text-slate-900 font-bold">
                       {event.userVisibleNote ??
                         event.eventType.replace(/_/g, ' ').replace(/\./g, ' ')}

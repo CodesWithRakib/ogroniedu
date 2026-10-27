@@ -652,9 +652,7 @@ describe('Payments domain: orders, verified webhooks, settlement and reconciliat
         status: 'succeeded',
         booking,
         payerUser: { displayName: 'Rahim' },
-        transactions: [
-          { status: 'succeeded', verifiedAt: new Date('2026-10-26T12:00:00Z') },
-        ],
+        transactions: [{ status: 'succeeded', verifiedAt: new Date('2026-10-26T12:00:00Z') }],
       });
 
       const res = await service.getPaymentOrderStatus(studentUser, orderId);

@@ -46,7 +46,10 @@ function formatGoogleCalendarDate(isoString: string): string {
   try {
     const d = new Date(isoString);
     if (isNaN(d.getTime())) return '';
-    return d.toISOString().replace(/[-:]/g, '').replace(/\.\d{3}/, '');
+    return d
+      .toISOString()
+      .replace(/[-:]/g, '')
+      .replace(/\.\d{3}/, '');
   } catch {
     return '';
   }
@@ -65,9 +68,11 @@ export function buildGoogleCalendarUrl(session: {
   const startStr = formatGoogleCalendarDate(session.startsAt);
   const endStr = session.endsAt
     ? formatGoogleCalendarDate(session.endsAt)
-    : formatGoogleCalendarDate(new Date(new Date(session.startsAt).getTime() + 60 * 60 * 1000).toISOString());
+    : formatGoogleCalendarDate(
+        new Date(new Date(session.startsAt).getTime() + 60 * 60 * 1000).toISOString(),
+      );
   const details = encodeURIComponent(
-    `OgroniEdu Class\nTeacher / Student: ${session.tutorName || session.studentName || 'OgroniEdu'}\nDigital Classroom: ${session.meetingUrl || 'https://ogroniedu.com'}`
+    `OgroniEdu Class\nTeacher / Student: ${session.tutorName || session.studentName || 'OgroniEdu'}\nDigital Classroom: ${session.meetingUrl || 'https://ogroniedu.com'}`,
   );
   const location = encodeURIComponent(session.meetingUrl || 'OgroniEdu Digital Classroom');
   return `https://calendar.google.com/calendar/render?action=TEMPLATE&text=${title}&dates=${startStr}/${endStr}&details=${details}&location=${location}`;
@@ -576,47 +581,47 @@ export function SessionScheduleCalendar({
             <button
               type="button"
               onClick={() => setViewMode('grid')}
-            title={isBn ? 'কার্ড ভিউ' : 'Card Grid View'}
-            className={`p-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
-              viewMode === 'grid'
-                ? 'bg-card text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <LayoutGrid className="w-4 h-4" />
-            <span className="hidden md:inline">{isBn ? 'কার্ড' : 'Cards'}</span>
-          </button>
+              title={isBn ? 'কার্ড ভিউ' : 'Card Grid View'}
+              className={`p-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                viewMode === 'grid'
+                  ? 'bg-card text-foreground shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <LayoutGrid className="w-4 h-4" />
+              <span className="hidden md:inline">{isBn ? 'কার্ড' : 'Cards'}</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setViewMode('timeline')}
-            title={isBn ? 'টাইমলাইন ভিউ' : 'Timeline Agenda View'}
-            className={`p-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
-              viewMode === 'timeline'
-                ? 'bg-card text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <ListOrdered className="w-4 h-4" />
-            <span className="hidden md:inline">{isBn ? 'টাইমলাইন' : 'Timeline'}</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('timeline')}
+              title={isBn ? 'টাইমলাইন ভিউ' : 'Timeline Agenda View'}
+              className={`p-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                viewMode === 'timeline'
+                  ? 'bg-card text-foreground shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <ListOrdered className="w-4 h-4" />
+              <span className="hidden md:inline">{isBn ? 'টাইমলাইন' : 'Timeline'}</span>
+            </button>
 
-          <button
-            type="button"
-            onClick={() => setViewMode('month')}
-            title={isBn ? 'মাসিক ক্যালেন্ডার' : 'Month Calendar View'}
-            className={`p-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
-              viewMode === 'month'
-                ? 'bg-card text-foreground shadow-xs'
-                : 'text-muted-foreground hover:text-foreground'
-            }`}
-          >
-            <CalendarDays className="w-4 h-4" />
-            <span className="hidden md:inline">{isBn ? 'ক্যালেন্ডার' : 'Calendar'}</span>
-          </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('month')}
+              title={isBn ? 'মাসিক ক্যালেন্ডার' : 'Month Calendar View'}
+              className={`p-1.5 rounded-lg text-xs font-bold transition-all flex items-center gap-1 cursor-pointer ${
+                viewMode === 'month'
+                  ? 'bg-card text-foreground shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              <CalendarDays className="w-4 h-4" />
+              <span className="hidden md:inline">{isBn ? 'ক্যালেন্ডার' : 'Calendar'}</span>
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
       {/* 5. Alerts */}
       {actionError && (

@@ -29,7 +29,8 @@ export function ClassroomChatPanel({
   useEffect(() => {
     if (chatMessages.length > prevCountRef.current) {
       const latestMsg = chatMessages[chatMessages.length - 1];
-      const isSelf = latestMsg?.from?.identity === displayName || latestMsg?.from?.name === displayName;
+      const isSelf =
+        latestMsg?.from?.identity === displayName || latestMsg?.from?.name === displayName;
       if (!isSelf) {
         classroomAudio.playChatMessageChime();
       }
@@ -98,7 +99,9 @@ export function ClassroomChatPanel({
               {isBn ? 'এখনো কোনো মেসেজ নেই' : 'No messages yet'}
             </p>
             <p className="text-xs text-slate-500 mt-1 max-w-xs font-medium">
-              {isBn ? 'ক্লাসের সাথে প্রশ্ন বা প্রয়োজনীয় মন্তব্য শেয়ার করুন।' : 'Post questions or comments to the class.'}
+              {isBn
+                ? 'ক্লাসের সাথে প্রশ্ন বা প্রয়োজনীয় মন্তব্য শেয়ার করুন।'
+                : 'Post questions or comments to the class.'}
             </p>
           </div>
         ) : (
@@ -115,7 +118,9 @@ export function ClassroomChatPanel({
                 className={`flex flex-col ${isSelf ? 'items-end' : 'items-start'}`}
               >
                 <div className="flex items-center gap-1.5 mb-1 px-1">
-                  <span className={`text-xs font-black ${isSelf ? 'text-blue-700' : 'text-slate-700'}`}>
+                  <span
+                    className={`text-xs font-black ${isSelf ? 'text-blue-700' : 'text-slate-700'}`}
+                  >
                     {isSelf ? (isBn ? 'আপনি' : 'You') : msg.from?.name || 'User'}
                   </span>
                   <span className="text-[10px] font-semibold text-slate-400">{timeStr}</span>
@@ -151,7 +156,10 @@ export function ClassroomChatPanel({
       </div>
 
       {/* Message Input */}
-      <form onSubmit={handleSend} className="p-3 sm:p-4 border-t border-slate-200 bg-white flex items-center gap-2">
+      <form
+        onSubmit={handleSend}
+        className="p-3 sm:p-4 border-t border-slate-200 bg-white flex items-center gap-2"
+      >
         <input
           type="text"
           value={inputText}
