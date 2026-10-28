@@ -262,7 +262,10 @@ export function StudentProgressPanel({
             <p className="text-xs text-muted-foreground">{t.goalsEmpty}</p>
           ) : (
             summary.map((goal) => (
-              <div key={goal.id} className="rounded-xl border border-border p-3 flex flex-col gap-2">
+              <div
+                key={goal.id}
+                className="rounded-xl border border-border p-3 flex flex-col gap-2"
+              >
                 <div className="flex flex-wrap items-center justify-between gap-2">
                   <div>
                     <p className="text-sm font-semibold text-foreground">{goal.title}</p>

@@ -917,7 +917,10 @@ export function AdminTutorVerificationDetailPage({
                 </h3>
               </div>
 
-              <form onSubmit={handleSubmitDecision} className="flex flex-col gap-3.5 text-left text-xs">
+              <form
+                onSubmit={handleSubmitDecision}
+                className="flex flex-col gap-3.5 text-left text-xs"
+              >
                 {/* Level selector */}
                 <div className="flex flex-col gap-1">
                   <Label className="text-[11px] font-semibold">

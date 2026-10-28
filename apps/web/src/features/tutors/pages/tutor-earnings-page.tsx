@@ -494,7 +494,11 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
             </Alert>
           )}
 
-          <form onSubmit={handleRequestPayout} className="flex flex-col gap-4" data-testid="payout-form">
+          <form
+            onSubmit={handleRequestPayout}
+            className="flex flex-col gap-4"
+            data-testid="payout-form"
+          >
             <div className="flex flex-col gap-1.5">
               <Label className="text-xs font-bold text-foreground">
                 {isBn ? 'উত্তোলনের মাধ্যম নির্বাচন করুন:' : 'Select Payout Channel:'}

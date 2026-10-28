@@ -61,7 +61,9 @@ export function PaymentCheckoutView({
   return (
     <div className="flex flex-col gap-8 w-full py-4 text-foreground">
       <div className="flex flex-col gap-1">
-        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">{p.title}</h2>
+        <h2 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
+          {p.title}
+        </h2>
         <p className="text-xs sm:text-sm font-medium text-muted-foreground">{p.subtitle}</p>
       </div>
 

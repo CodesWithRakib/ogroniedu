@@ -3,6 +3,7 @@
 This package manages the PostgreSQL schema, TypeORM data-source connection, and database migrations for OgroniEdu.
 
 ## 1. PostgreSQL Patterns & Query Optimization
+
 - **Skill Reference**: Consult [`.agents/skills/postgres-patterns/SKILL.md`](file:///C:/Sofof_tech_2026/ogroniedu/.agents/skills/postgres-patterns/SKILL.md).
 - **Data Types**:
   - Always use `timestamptz` for timestamps (never bare `timestamp` without time zone).
@@ -15,6 +16,7 @@ This package manages the PostgreSQL schema, TypeORM data-source connection, and 
   - Use GIN indexes for JSONB searches and full-text search columns.
 
 ## 2. Migration Discipline
+
 - Schema migrations reside in `src/migrations/` as sequenced SQL files (e.g., `034_migration_name.sql`).
 - Every migration must be idempotent and non-destructive in staging and production environments.
 - Run tests with `pnpm --filter @ogroniedu/database test` to ensure migration integrity and benchmark compliance.

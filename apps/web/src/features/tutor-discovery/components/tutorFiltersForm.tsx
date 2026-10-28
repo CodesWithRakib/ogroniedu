@@ -178,7 +178,11 @@ export function TutorFiltersForm({
         isMobileDrawer ? 'p-4 sm:p-5' : 'p-5'
       } ${className}`}
     >
-      <form onSubmit={handleSubmit} className="flex flex-col gap-4" data-testid="discovery-filters-form">
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col gap-4"
+        data-testid="discovery-filters-form"
+      >
         {/* Header Row */}
         <div className="flex items-center justify-between pb-3 border-b border-border">
           <div className="flex items-center gap-2">

@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useEffect, useState, useRef, useCallback } from 'react';
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import {
   ShieldCheck,
   Lock,
   ExternalLink,
   AlertTriangle,
-  RefreshCw,
   X,
   CreditCard,
   Maximize2,
@@ -35,10 +34,11 @@ const SSLCOMMERZ_SANDBOX_SCRIPT = 'https://sandbox.sslcommerz.com/embed.min.js';
  * Official SSLCOMMERZ Embedded Easy Checkout Component.
  *
  * Exclusively configured for SSLCOMMERZ Sandbox testing:
- * - Dynamically loads official SSLCOMMERZ sandbox script with deduplication.
+ * - Dynamically resolves frameable EasyCheckOut URL (/EasyCheckOut/testcde<sessionkey>?full=1)
+ *   to bypass X-Frame-Options: SAMEORIGIN that the gateway sends on hosted gw.php.
  * - Supports seamless desktop modal checkout & mobile responsive popup delegation.
  * - Handles cross-origin postMessage events from the gateway iframe safely.
- * - Implements failure recovery with secure direct fallback if script is blocked.
+ * - Implements failure recovery with secure direct fallback if script or iframe is blocked.
  * - Maintains complete accessibility and brand consistency.
  */
 export function EmbeddedEasyCheckout({
@@ -46,7 +46,6 @@ export function EmbeddedEasyCheckout({
   checkoutUrl,
   sessionKey,
   gatewayPageUrl,
-  storeLogo,
   amountMinor,
   locale,
   onModalClose,
@@ -55,18 +54,56 @@ export function EmbeddedEasyCheckout({
   onPaymentFailed,
 }: EmbeddedEasyCheckoutProps) {
   const isBn = locale === 'bn';
-  const [scriptLoaded, setScriptLoaded] = useState(false);
+  const [, setScriptLoaded] = useState(false);
   const [scriptError, setScriptError] = useState<string | null>(null);
   const [isOpen, setIsOpen] = useState(false);
   const [iframeLoading, setIframeLoading] = useState(true);
+  const [iframeDelayed, setIframeDelayed] = useState(false);
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   const scriptBaseUrl = SSLCOMMERZ_SANDBOX_SCRIPT;
-  const targetIframeUrl = (gatewayPageUrl || checkoutUrl).includes('?')
-    ? `${gatewayPageUrl || checkoutUrl}&full=1`
-    : `${gatewayPageUrl || checkoutUrl}?full=1`;
 
-  // 1. Dynamic official script loader with deduplication and error handling
+  // 1. Resolve authoritative frameable EasyCheckOut URL
+  // SSLCOMMERZ sends `X-Frame-Options: SAMEORIGIN` on `gw.php` (hosted checkout),
+  // but explicitly allows framing on `/EasyCheckOut/testcde<sessionkey>?full=1`.
+  const { targetIframeUrl, isDirectOnly } = useMemo(() => {
+    const rawUrl = gatewayPageUrl || checkoutUrl;
+    if (!rawUrl) return { targetIframeUrl: '', isDirectOnly: false };
+
+    // A. Already an EasyCheckOut URL
+    if (rawUrl.includes('/EasyCheckOut/')) {
+      const url = rawUrl.includes('full=1')
+        ? rawUrl
+        : rawUrl.includes('?')
+          ? `${rawUrl}&full=1`
+          : `${rawUrl}?full=1`;
+      return { targetIframeUrl: url, isDirectOnly: false };
+    }
+
+    // B. Extract session key from URL or prop to build canonical EasyCheckOut URL
+    const extractedKey =
+      sessionKey ||
+      rawUrl.match(/[?&]SESSIONKEY=([A-Za-z0-9]+)/i)?.[1] ||
+      rawUrl.match(/\/EasyCheckOut\/(?:testcde)?([A-Za-z0-9]+)/i)?.[1];
+
+    if (extractedKey) {
+      const isSandbox =
+        rawUrl.includes('sandbox.sslcommerz.com') || !rawUrl.includes('securepay.sslcommerz.com');
+      const baseDomain = isSandbox
+        ? 'https://sandbox.sslcommerz.com'
+        : 'https://seamless-epay.sslcommerz.com';
+      const pathPrefix = isSandbox ? 'testcde' : '';
+      const url = `${baseDomain}/EasyCheckOut/${pathPrefix}${extractedKey.toLowerCase()}?full=1`;
+      return { targetIframeUrl: url, isDirectOnly: false };
+    }
+
+    // C. Hosted gw.php without session key cannot be framed due to X-Frame-Options: SAMEORIGIN
+    const directOnly = rawUrl.includes('gw.php') || rawUrl.includes('/gwprocess/v4/');
+    const url = rawUrl.includes('?') ? `${rawUrl}&full=1` : `${rawUrl}?full=1`;
+    return { targetIframeUrl: url, isDirectOnly: directOnly };
+  }, [gatewayPageUrl, checkoutUrl, sessionKey]);
+
+  // 2. Dynamic official script loader with deduplication and error handling
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -98,13 +135,9 @@ export function EmbeddedEasyCheckout({
     };
 
     document.head.appendChild(script);
-
-    return () => {
-      // Do not remove script on unmount to avoid re-executing almond/requirejs conflicts
-    };
   }, [scriptBaseUrl, isBn]);
 
-  // 2. Gateway postMessage listener for cross-origin messages
+  // 3. Gateway postMessage listener for cross-origin messages
   useEffect(() => {
     if (typeof window === 'undefined') return;
 
@@ -135,7 +168,7 @@ export function EmbeddedEasyCheckout({
     return () => window.removeEventListener('message', handleMessage);
   }, [orderId, onPaymentCompleted, onPaymentFailed]);
 
-  // 3. Close on Escape key press
+  // 4. Close on Escape key press
   useEffect(() => {
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === 'Escape' && isOpen) {
@@ -147,6 +180,22 @@ export function EmbeddedEasyCheckout({
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [isOpen, onModalClose]);
 
+  // 5. Iframe delay monitor (detect ad-blockers or loading stalls)
+  useEffect(() => {
+    if (!isOpen) {
+      setIframeDelayed(false);
+      return;
+    }
+
+    const timer = setTimeout(() => {
+      if (iframeLoading) {
+        setIframeDelayed(true);
+      }
+    }, 6000);
+
+    return () => clearTimeout(timer);
+  }, [isOpen, iframeLoading]);
+
   const handleOpenEmbedded = useCallback(() => {
     onPaymentTriggered?.();
 
@@ -157,16 +206,16 @@ export function EmbeddedEasyCheckout({
         window.navigator.userAgent,
       );
 
-    if (isMobile) {
-      // On mobile devices, open in a new tab per official SSLCommerz recommendation
-      // so MFS apps (bKash, Nagad) can trigger native deep-links reliably
+    // If mobile OR hosted URL without iframe support, open direct in a new tab/window
+    if (isMobile || isDirectOnly) {
       const win = window.open(checkoutUrl, '_blank');
       if (win) win.opener = null;
     } else {
       setIframeLoading(true);
+      setIframeDelayed(false);
       setIsOpen(true);
     }
-  }, [checkoutUrl, onPaymentTriggered]);
+  }, [checkoutUrl, isDirectOnly, onPaymentTriggered]);
 
   const handleOpenDirect = useCallback(() => {
     onPaymentTriggered?.();
@@ -327,12 +376,34 @@ export function EmbeddedEasyCheckout({
                 </div>
               )}
 
+              {/* Delayed Loading / Browser Adblocker Rescue Banner */}
+              {iframeDelayed && (
+                <div className="absolute inset-x-4 bottom-4 p-3.5 bg-amber-50/95 backdrop-blur-xs border border-amber-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-xs text-amber-950 shadow-lg z-20 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                  <div className="flex items-center gap-2">
+                    <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
+                    <span className="font-medium">
+                      {isBn
+                        ? 'লোড হতে সময় লাগছে বা ব্রাউজার দ্বারা ব্লক করা হয়েছে?'
+                        : 'Taking longer to load or blocked by browser?'}
+                    </span>
+                  </div>
+                  <Button
+                    type="button"
+                    size="sm"
+                    onClick={handleOpenDirect}
+                    className="h-8 px-3 text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shrink-0 shadow-xs"
+                  >
+                    {isBn ? 'সরাসরি উইন্ডোতে খুলুন' : 'Open Direct Window'}
+                  </Button>
+                </div>
+              )}
+
               <iframe
                 src={targetIframeUrl}
                 title="SSLCOMMERZ Easy Checkout"
                 className="w-full h-full border-0"
                 onLoad={() => setIframeLoading(false)}
-                allow="payment"
+                allow="payment *; camera *; microphone *"
                 data-testid="sslcommerz-checkout-iframe"
               />
             </div>

@@ -14,6 +14,9 @@ export class StudentProfileEntity {
   @PrimaryColumn('uuid', { name: 'user_id' })
   userId!: string;
 
+  @Column({ name: 'student_code', type: 'text', nullable: true })
+  studentCode!: string;
+
   @Column({ name: 'date_of_birth', type: 'date', nullable: true })
   dateOfBirth!: string | null;
 

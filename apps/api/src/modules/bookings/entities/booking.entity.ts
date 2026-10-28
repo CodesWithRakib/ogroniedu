@@ -24,6 +24,9 @@ export class BookingEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  @Column({ name: 'booking_reference', type: 'text', nullable: true })
+  bookingReference!: string;
+
   @Column('uuid', { name: 'requester_user_id' })
   requesterUserId!: string;
 

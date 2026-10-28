@@ -435,7 +435,11 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
             )}
 
             {isTutor && submission && (!hasScore || isEditingGrade) && (
-              <form onSubmit={handleGrade} className="flex flex-col gap-3" data-testid="tutor-grading-form">
+              <form
+                onSubmit={handleGrade}
+                className="flex flex-col gap-3"
+                data-testid="tutor-grading-form"
+              >
                 <div className="flex flex-col gap-1">
                   <Label
                     htmlFor="score-input"

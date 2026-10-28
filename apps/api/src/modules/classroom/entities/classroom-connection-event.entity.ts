@@ -40,9 +40,13 @@ export class ClassroomConnectionEventEntity {
   @CreateDateColumn({ name: 'created_at', type: 'timestamptz' })
   createdAt!: Date;
 
-  @ManyToOne('ClassroomSessionEntity', (session: ClassroomSessionEntity) => session.connectionEvents, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(
+    'ClassroomSessionEntity',
+    (session: ClassroomSessionEntity) => session.connectionEvents,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
   @JoinColumn({ name: 'classroom_session_id' })
   classroomSession?: ClassroomSessionEntity;
 

@@ -12,6 +12,7 @@ This block is written and re-added by `next dev` — verify at `node_modules/nex
 
 The `@ogroniedu/web` frontend uses shadcn/ui components (`new-york` style, `radix` base, `lucide-react` icons).
 When building, modifying, or styling UI components:
+
 - **Skill reference**: Consult `.agents/skills/shadcn/SKILL.md` and rules in `.agents/skills/shadcn/rules/`.
 - **Imports**: Always import `cn` from `@/lib/utils` (never from `'cn'`).
 - **Adding components**: Use `pnpm dlx shadcn@latest add <component>` from inside `apps/web`.
@@ -21,11 +22,13 @@ When building, modifying, or styling UI components:
 - **Composition**: Ensure modals/dialogs contain accessible titles (`DialogTitle`, `SheetTitle`), and forms use standard field wrappers.
 
 ## React 19 Composition Patterns (`vercel-composition-patterns`)
+
 - **Skill reference**: Consult `.agents/skills/vercel-composition-patterns/SKILL.md`.
 - Avoid boolean prop proliferation (e.g., `isSecondary`, `hasHeader`, `withFooter`); prefer compound components with contextual composition.
 - Decouple state management into clear provider components and use React 19 primitives (`use()` over `useContext()`).
 
 ## E2E Testing with Playwright (`webapp-testing`) & TDD (`tdd`)
+
 - **Skill references**: Consult `.agents/skills/webapp-testing/SKILL.md` and `.agents/skills/tdd/SKILL.md`.
 - End-to-end tests live in `e2e/`. Always wait for network idle and use accessible role/text selectors (`page.getByRole(...)`).
 - Unit and integration tests live in `test/` using Vitest. Test at defined public component seams rather than internal state.

@@ -72,9 +72,13 @@ export class ClassroomAttendanceRecordEntity {
   @UpdateDateColumn({ name: 'updated_at', type: 'timestamptz' })
   updatedAt!: Date;
 
-  @ManyToOne('ClassroomSessionEntity', (session: ClassroomSessionEntity) => session.attendanceRecords, {
-    onDelete: 'CASCADE',
-  })
+  @ManyToOne(
+    'ClassroomSessionEntity',
+    (session: ClassroomSessionEntity) => session.attendanceRecords,
+    {
+      onDelete: 'CASCADE',
+    },
+  )
   @JoinColumn({ name: 'classroom_session_id' })
   classroomSession?: ClassroomSessionEntity;
 

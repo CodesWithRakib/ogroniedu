@@ -1,12 +1,64 @@
 flowchart TB
- Browser[Mobile/Desktop Browser] --> Web[Next.js Web]
- Web --> API[NestJS Modular Monolith]
- API --> DB[(PostgreSQL)]
- API --> Redis[(Redis/Queue)]
- API --> Storage[Private Object Storage]
- API --> Providers[Payment/Email/SMS Providers]
- Redis --> Worker[Background Worker]
- Worker --> DB
- Worker --> Providers
- API --> Obs[Logs/Metrics/Error Tracking]
- Worker --> Obs
+  subgraph ClientLayer["🖥️ Frontend & Client Tier"]
+    WebStudent["Next.js Web (Student Portal)"]
+    WebGuardian["Next.js Web (Guardian Portal)"]
+    WebTutor["Next.js Web (Tutor Workspace)"]
+    WebAdmin["Next.js Web (Admin Console)"]
+  end
+
+  subgraph GatewayLayer["🛡️ Edge & Gateway Tier"]
+    Nginx["Reverse Proxy / SSL Termination"]
+    AuthGuard["JWT / RBAC / Permission Guards"]
+    RateLimiter["Rate Limiting & DDoS Shield"]
+  end
+
+  subgraph CoreApi["⚙️ NestJS Modular Monolith (Core Engine)"]
+    direction TB
+    AuthMod["Auth & Onboarding Module"]
+    TutorMod["Tutor Discovery & Dossier Module"]
+    BookingMod["Bookings & GiST Scheduling Engine"]
+    LMSMod["LMS & Curriculum Module"]
+    PayMod["Escrow & Double-Entry Ledger"]
+    TrustMod["Trust, Safety & Safeguarding"]
+    SupportMod["Support Tickets & Notifications"]
+    OutboxWorker["Transactional Outbox Worker"]
+  end
+
+  subgraph RealtimeTier["⚡ Realtime & Media Infrastructure"]
+    LiveKit["LiveKit SFU (Video Classroom)"]
+    SocketGateway["Socket.IO (Push Notifications & Chat)"]
+    RedisQueue[("Redis (Pub/Sub & Session Cache)")]
+  end
+
+  subgraph DataStorage["🗄️ Persistence & Storage"]
+    PostgresDB[("PostgreSQL 18<br/>(GiST Exclusion + Append-Only Ledger)")]
+    PrivateStorage["Private Object Storage (S3 / Local)<br/>(KYC, Dossiers, Transcripts)"]
+  end
+
+  subgraph ExternalServices["🌐 External Gateways & Integrations"]
+    SSLCommerz["SSLCOMMERZ Gateway"]
+    bKash["bKash PGW API"]
+    SMSProvider["Local SMS Gateway (Bangla SMS)"]
+    SMTPMail["Transactional Email (SMTP)"]
+  end
+
+  %% Client to Gateway
+  WebStudent & WebGuardian & WebTutor & WebAdmin --> Nginx
+  Nginx --> AuthGuard --> RateLimiter --> CoreApi
+
+  %% Core API Internal Dependencies
+  CoreApi --> PostgresDB
+  CoreApi --> RedisQueue
+  CoreApi --> SocketGateway
+
+  %% Realtime flows
+  WebStudent & WebTutor <--> LiveKit
+  LMSMod --> LiveKit
+  SocketGateway <--> RedisQueue
+
+  %% Outbox & External Providers
+  PostgresDB -.-> OutboxWorker
+  OutboxWorker --> SMSProvider
+  OutboxWorker --> SMTPMail
+  PayMod <--> SSLCommerz & bKash
+  TrustMod & TutorMod --> PrivateStorage

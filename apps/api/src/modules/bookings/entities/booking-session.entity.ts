@@ -32,6 +32,9 @@ export class BookingSessionEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  @Column({ name: 'session_code', type: 'text', nullable: true })
+  sessionCode!: string;
+
   @Column('uuid', { name: 'booking_id' })
   bookingId!: string;
 

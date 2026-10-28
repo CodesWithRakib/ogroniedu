@@ -29,6 +29,9 @@ export class TutorProfileEntity {
   @PrimaryColumn('uuid', { name: 'user_id' })
   userId!: string;
 
+  @Column({ name: 'tutor_code', type: 'text', nullable: true })
+  tutorCode!: string;
+
   /** Legacy canonical English headline. Kept in sync with `headlineEn`. */
   @Column({ type: 'text', nullable: true })
   headline!: string | null;

@@ -12,6 +12,7 @@ This block is written and re-added by `turbo` before repository-scoped commands 
 ## Agent Skills Reference
 
 This repository maintains project skills in `.agents/skills/` (and tracked via `skills-lock.json`):
+
 - `codebase-design` (`.agents/skills/codebase-design/SKILL.md`): Deep module architecture, clean seams, small interfaces with high leverage, and testability.
 - `shadcn` (`.agents/skills/shadcn/SKILL.md`): CLI and component rules for adding, styling, and composing UI in `apps/web`.
 - `frontend-design` (`.agents/skills/frontend-design/SKILL.md`): High-quality frontend visual design principles.

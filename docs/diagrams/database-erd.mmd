@@ -1,0 +1,163 @@
+erDiagram
+    %% ==============================================================================
+    %% OgroniEdu — Canonical Bounded Context ERD
+    %% ==============================================================================
+
+    %% Identity & User Management Context
+    users ||--o{ user_roles : "has"
+    roles ||--o{ user_roles : "granted_to"
+    roles ||--o{ role_permissions : "includes"
+    permissions ||--o{ role_permissions : "belongs_to"
+    users ||--o| student_profiles : "student_profile"
+    users ||--o| tutor_profiles : "tutor_profile"
+    users ||--o{ guardian_student_links : "parent_of"
+    student_profiles ||--o{ guardian_student_links : "linked_student"
+
+    users {
+        uuid id PK "gen_random_uuid()"
+        string email UK
+        string phone_e164 UK
+        string display_name
+        string preferred_locale "bn, en"
+        string status "active, pending_verification, suspended"
+        timestamptz created_at
+    }
+
+    tutor_profiles {
+        uuid user_id PK,FK
+        string tutor_code UK "TUT-YYYY-XXXXX"
+        string verification_status "not_submitted, approved, suspended"
+        string publication_status "draft, published, unpublished"
+        bigint hourly_rate_minor
+        smallint years_experience
+    }
+
+    student_profiles {
+        uuid user_id PK,FK
+        string student_code UK "STU-YYYY-XXXXX"
+        uuid education_level_id FK
+        uuid curriculum_id FK
+        string institution_name
+        string stream
+    }
+
+    %% Academic Taxonomy Context
+    curricula ||--o{ subjects : "categorizes"
+    education_levels ||--o{ subjects : "levels"
+    tutor_profiles ||--o{ tutor_subjects : "offers"
+    subjects ||--o{ tutor_subjects : "subject_taught"
+
+    curricula {
+        uuid id PK
+        string code UK
+        string name_en
+        string name_bn
+    }
+
+    education_levels {
+        uuid id PK
+        string code UK
+        string name_en
+        int sort_order
+    }
+
+    subjects {
+        uuid id PK
+        string code UK
+        string name_en
+        string name_bn
+    }
+
+    %% Booking & Scheduling Concurrency Context
+    bookings ||--o{ booking_sessions : "has_sessions"
+    student_profiles ||--o{ bookings : "student"
+    tutor_profiles ||--o{ bookings : "tutor"
+    subjects ||--o{ bookings : "subject"
+
+    bookings {
+        uuid id PK
+        string booking_reference UK "BK-YYYY-XXXXX"
+        uuid student_user_id FK
+        uuid tutor_user_id FK
+        uuid subject_id FK
+        string mode "online, in_person, hybrid"
+        string status "requested, confirmed, active, completed"
+        bigint price_per_session_minor
+    }
+
+    booking_sessions {
+        uuid id PK
+        string session_code UK "SES-YYYY-XXXXX"
+        uuid booking_id FK
+        tstzrange scheduled_period "GiST Exclusion Constraint"
+        string status "scheduled, in_progress, completed, cancelled"
+    }
+
+    %% Financial Ledger & Payment Escrow Context
+    bookings ||--o{ payment_orders : "invoiced_under"
+    payment_orders ||--o| invoices : "generates_invoice"
+    payment_orders ||--o{ payment_transactions : "reconciles"
+    payment_orders ||--o{ escrow_holds : "secures"
+    ledger_journals ||--o{ ledger_entries : "journal_lines"
+    ledger_accounts ||--o{ ledger_entries : "posted_to"
+
+    invoices {
+        uuid id PK
+        string invoice_number UK "INV-YYYY-XXXXX"
+        uuid payment_order_id FK
+        uuid booking_id FK
+        bigint total_minor
+        string status "issued, void"
+    }
+
+    payment_orders {
+        uuid id PK
+        string order_reference UK "ORD-YYYY-XXXXX"
+        uuid booking_id FK
+        bigint amount_minor
+        string provider "bkash, sslcommerz"
+        string status "created, pending, succeeded, failed"
+    }
+
+    ledger_entries {
+        uuid id PK
+        uuid journal_id FK
+        uuid account_id FK
+        string direction "DEBIT, CREDIT"
+        bigint amount_minor
+    }
+
+    %% Live Classroom & LMS Context
+    booking_sessions ||--o| classroom_sessions : "hosts"
+    classroom_sessions ||--o{ classroom_attendance_records : "attendees"
+
+    classroom_sessions {
+        uuid id PK
+        string room_name UK
+        string mode "SMALL_GROUP, LARGE_BATCH"
+        string status "SCHEDULED, LIVE, ENDED"
+        uuid booking_session_id FK
+        uuid host_user_id FK
+    }
+
+    %% Trust, Support & Safety Context
+    bookings ||--o{ booking_disputes : "disputed_via"
+    users ||--o{ support_tickets : "opened_by"
+
+    booking_disputes {
+        uuid id PK
+        string dispute_code UK "DSP-YYYY-XXXXX"
+        uuid booking_id FK
+        uuid disputed_by FK
+        string reason_code
+        string status "opened, under_review, resolved_refund"
+    }
+
+    support_tickets {
+        uuid id PK
+        string ticket_number UK "TKT-YYYY-XXXXX"
+        uuid reporter_user_id FK
+        string category
+        string status "submitted, resolved, closed"
+    }
+

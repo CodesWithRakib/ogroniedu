@@ -216,7 +216,10 @@ export function AdminReplacementDetailPageView({
               </h3>
               <ul className="flex flex-col gap-2" data-testid="admin-case-history">
                 {(detail?.history ?? []).map((event) => (
-                  <li key={event.id} className="text-xs border-l-2 border-border pl-3 flex flex-col gap-0.5">
+                  <li
+                    key={event.id}
+                    className="text-xs border-l-2 border-border pl-3 flex flex-col gap-0.5"
+                  >
                     <p className="text-foreground">
                       {event.eventType} {event.toStatus ? `→ ${event.toStatus}` : ''}
                     </p>

@@ -19,11 +19,7 @@ export function Card({ className, variant = 'default', ref, ...props }: CardProp
   return (
     <div
       ref={ref}
-      className={cn(
-        'rounded-2xl p-5 sm:p-6 transition-colors',
-        variantStyles[variant],
-        className,
-      )}
+      className={cn('rounded-2xl p-5 sm:p-6 transition-colors', variantStyles[variant], className)}
       {...props}
     />
   );

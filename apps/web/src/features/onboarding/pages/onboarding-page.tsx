@@ -104,7 +104,11 @@ function StepForm({
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-4" data-testid={`onboarding-form-${step.key}`}>
+    <form
+      onSubmit={handleSubmit}
+      className="flex flex-col gap-4"
+      data-testid={`onboarding-form-${step.key}`}
+    >
       {fields.map((field: StepField) => {
         const id = `onboarding-${step.key}-${field.name}`;
         const label = isBn ? field.labelBn : field.labelEn;

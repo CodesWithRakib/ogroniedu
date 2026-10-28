@@ -25,6 +25,9 @@ export class PaymentOrderEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  @Column({ name: 'order_reference', type: 'text', nullable: true })
+  orderReference!: string;
+
   @Column('uuid', { name: 'booking_id' })
   bookingId!: string;
 

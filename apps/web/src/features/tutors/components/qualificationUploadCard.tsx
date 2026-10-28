@@ -126,7 +126,11 @@ export function QualificationUploadCard({
         </CardTitle>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit} className="flex flex-col gap-3" data-testid="qualification-upload-form">
+        <form
+          onSubmit={handleSubmit}
+          className="flex flex-col gap-3"
+          data-testid="qualification-upload-form"
+        >
           {formError && (
             <p
               role="alert"

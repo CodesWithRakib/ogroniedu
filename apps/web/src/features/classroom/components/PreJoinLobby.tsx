@@ -204,7 +204,8 @@ export function PreJoinLobby({
 
   const subTextClass = 'text-xs sm:text-sm font-semibold text-muted-foreground mt-1';
 
-  const readinessCardClass = 'p-4 bg-surface-muted rounded-2xl border-2 border-border flex flex-col gap-2.5';
+  const readinessCardClass =
+    'p-4 bg-surface-muted rounded-2xl border-2 border-border flex flex-col gap-2.5';
 
   const readinessLabelClass = 'text-xs font-black text-slate-800 uppercase tracking-wider block';
 

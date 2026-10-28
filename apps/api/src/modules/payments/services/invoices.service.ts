@@ -76,7 +76,7 @@ export class InvoicesService {
         studentName: booking.studentUser?.displayName ?? null,
         tutorName: booking.tutorProfile?.user?.displayName ?? null,
         subjectName: booking.subject?.nameEn ?? null,
-        bookingReference: `#${booking.id.slice(0, 8).toUpperCase()}`,
+        bookingReference: booking.bookingReference ?? `#${booking.id.slice(0, 8).toUpperCase()}`,
         sessionCount: 1,
       },
     });

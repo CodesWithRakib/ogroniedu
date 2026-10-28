@@ -19,6 +19,9 @@ export class SupportTicketEntity {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
 
+  @Column({ name: 'ticket_number', type: 'text', nullable: true })
+  ticketNumber!: string;
+
   @Column({ type: 'text' })
   name!: string;
 
