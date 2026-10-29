@@ -149,7 +149,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
           </Alert>
         ) : (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
+            <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 text-primary border border-primary/20 flex items-center justify-center font-bold">
                   %
@@ -191,7 +191,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
+            <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-4">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-success-soft text-success border border-success/30 flex items-center justify-center font-bold">
                   ৳
@@ -220,7 +220,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-3 shadow-xs md:col-span-2">
+            <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-3 md:col-span-2">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-info-soft text-info border border-info/30 flex items-center justify-center">
                   <ShieldCheck className="w-5 h-5" />
@@ -250,7 +250,7 @@ export function AdminSettingsFinancePage({ locale }: { locale: Locale }) {
               />
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-3 shadow-xs md:col-span-2">
+            <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-3 md:col-span-2">
               <h3 className="text-sm font-bold text-foreground">
                 {isBn ? 'সক্রিয় সংস্করণ' : 'Active Version'}
               </h3>

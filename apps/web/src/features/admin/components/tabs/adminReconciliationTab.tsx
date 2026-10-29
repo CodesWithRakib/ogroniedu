@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import { useTranslations } from 'next-intl';
@@ -41,7 +41,7 @@ export function AdminReconciliationTab({
 
   return (
     <div className="flex flex-col gap-6" data-testid="reconciliation-tab-content">
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs">
+      <div className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-4">
         <div className="flex items-center justify-between gap-3">
           <div>
             <h3 className="text-lg font-bold text-foreground">{t('reconciliationTitle')}</h3>
@@ -54,7 +54,7 @@ export function AdminReconciliationTab({
           <button
             onClick={handleRun}
             disabled={running}
-            className="px-4 py-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl text-xs font-bold shadow-xs shadow-blue-500/25 transition disabled:opacity-60 inline-flex items-center gap-1.5"
+            className="px-4 py-2 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl text-xs font-semibold transition disabled:opacity-60 inline-flex items-center gap-1.5"
             data-testid="rerun-audit-btn"
           >
             {running && <Loader2 className="w-3.5 h-3.5 animate-spin" />}
@@ -118,7 +118,7 @@ export function AdminReconciliationTab({
           {reconciliation.accounts.map((acc) => (
             <div
               key={acc.code}
-              className="bg-surface/75 border border-border p-4 rounded-2xl flex justify-between items-center"
+              className="bg-surface border border-border p-4 rounded-xl flex justify-between items-center"
             >
               <div>
                 <span className="text-xs font-mono text-muted-foreground">{acc.code}</span>

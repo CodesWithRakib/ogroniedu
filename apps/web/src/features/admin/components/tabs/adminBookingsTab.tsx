@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -33,7 +33,7 @@ export function AdminBookingsTab({
 
   return (
     <div className="flex flex-col gap-4" data-testid="bookings-tab-content">
-      <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-xs">
+      <div className="border border-border rounded-xl overflow-hidden bg-card">
         <Table data-testid="bookings-table">
           <TableHeader>
             <TableRow className="uppercase tracking-wider text-[11px] font-bold bg-muted/30">

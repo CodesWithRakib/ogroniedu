@@ -148,7 +148,7 @@ export function AdminReplacementDetailPageView({
           {isBn ? 'লোড হচ্ছে...' : 'Loading case...'}
         </p>
       ) : isError || !item ? (
-        <Card className="py-16 text-center rounded-2xl">
+        <Card className="py-16 text-center rounded-xl">
           <CardContent className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
               {isBn ? 'কেসটি পাওয়া যায়নি।' : 'The case was not found.'}
@@ -162,17 +162,17 @@ export function AdminReplacementDetailPageView({
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
           <div className="lg:col-span-2 flex flex-col gap-5">
             {error && (
-              <Alert variant="destructive" className="rounded-2xl">
+              <Alert variant="destructive" className="rounded-xl">
                 <AlertDescription role="alert">{error}</AlertDescription>
               </Alert>
             )}
             {notice && (
-              <Alert className="rounded-2xl">
+              <Alert className="rounded-xl">
                 <AlertDescription>{notice}</AlertDescription>
               </Alert>
             )}
 
-            <Card className="rounded-2xl bg-card p-5 flex flex-col gap-3">
+            <Card className="rounded-xl bg-card p-5 flex flex-col gap-3">
               <div className="flex flex-wrap items-center gap-2">
                 <Badge variant="outline" className="capitalize">
                   {item.reasonCode.replace(/_/g, ' ')}
@@ -209,7 +209,7 @@ export function AdminReplacementDetailPageView({
               </div>
             </Card>
 
-            <Card className="rounded-2xl bg-card p-5 flex flex-col gap-3">
+            <Card className="rounded-xl bg-card p-5 flex flex-col gap-3">
               <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                 <History className="w-4 h-4 text-primary" aria-hidden="true" />
                 {isBn ? 'ইতিহাস' : 'History'}
@@ -240,7 +240,7 @@ export function AdminReplacementDetailPageView({
               </ul>
             </Card>
 
-            <Card className="rounded-2xl bg-card p-5 flex flex-col gap-3">
+            <Card className="rounded-xl bg-card p-5 flex flex-col gap-3">
               <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                 <UserSearch className="w-4 h-4 text-primary" aria-hidden="true" />
                 {isBn ? 'বিকল্প শিক্ষক প্রার্থী' : 'Replacement candidates'}
@@ -284,7 +284,7 @@ export function AdminReplacementDetailPageView({
           </div>
 
           <div className="flex flex-col gap-5">
-            <Card className="rounded-2xl bg-card p-5 flex flex-col gap-3">
+            <Card className="rounded-xl bg-card p-5 flex flex-col gap-3">
               <h3 className="text-sm font-bold text-foreground">
                 {isBn ? 'সিদ্ধান্ত ও নোট' : 'Decision & notes'}
               </h3>
@@ -388,7 +388,7 @@ export function AdminReplacementDetailPageView({
               </form>
             </Card>
 
-            <Card className="rounded-2xl bg-card p-5 flex flex-col gap-3">
+            <Card className="rounded-xl bg-card p-5 flex flex-col gap-3">
               <h3 className="text-sm font-bold text-foreground flex items-center gap-2">
                 <CalendarClock className="w-4 h-4 text-primary" aria-hidden="true" />
                 {isBn ? 'সময়সীমা বাড়ান' : 'Extend deadline'}

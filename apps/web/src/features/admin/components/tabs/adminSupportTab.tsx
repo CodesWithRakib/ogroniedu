@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useTranslations, useLocale } from 'next-intl';
 import { Textarea } from '@/components/ui/textarea';
 import { Badge } from '@/components/ui/Badge';
@@ -78,7 +78,7 @@ export function AdminSupportTab({
           </SelectContent>
         </Select>
       </div>
-      <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-xs">
+      <div className="border border-border rounded-xl overflow-hidden bg-card">
         <Table data-testid="support-table">
           <TableHeader>
             <TableRow className="bg-muted/40 text-muted-foreground uppercase tracking-wider text-[11px] font-semibold">

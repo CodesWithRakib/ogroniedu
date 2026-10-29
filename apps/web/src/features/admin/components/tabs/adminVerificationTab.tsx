@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -148,7 +148,7 @@ export function VerificationQueueTable({
     );
   }
   return (
-    <div className="border border-border rounded-2xl overflow-x-auto bg-card shadow-xs">
+    <div className="border border-border rounded-xl overflow-x-auto bg-card">
       <Table data-testid="verification-table">
         <TableHeader>
           <TableRow className="uppercase tracking-wider text-[11px] font-bold">
@@ -387,7 +387,7 @@ export function AdminVerificationTab() {
             onChange={(e) => setSearchInput(e.target.value)}
             placeholder={isBn ? 'নাম, ইমেইল বা হেডলাইন খুঁজুন' : 'Search name, email or headline'}
             leadingIcon={<Search className="w-4 h-4 text-muted-foreground/70" />}
-            className="w-full sm:w-72 rounded-2xl"
+            className="w-full sm:w-72 rounded-xl"
             data-testid="verification-search-input"
           />
           <NativeSelect
@@ -520,7 +520,7 @@ export function AdminVerificationTab() {
                   return (
                     <section
                       key={lvl.level}
-                      className={`rounded-2xl border p-3.5 flex flex-col gap-2 ${
+                      className={`rounded-xl border p-3.5 flex flex-col gap-2 ${
                         lvl.level === selectedLevel
                           ? 'border-primary/50 bg-primary/5'
                           : 'border-border bg-surface/40'
@@ -677,12 +677,12 @@ export function AdminVerificationTab() {
                       href={preview.url}
                       target="_blank"
                       rel="noreferrer"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-sky-100 text-sky-950 hover:bg-sky-200 font-bold text-xs border border-sky-300 shadow-2xs"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-primary-soft text-primary hover:bg-primary-soft/80 font-bold text-xs border border-primary/20"
                     >
-                      <ExternalLink className="w-3.5 h-3.5 text-sky-700" />
+                      <ExternalLink className="w-3.5 h-3.5" />
                       {isBn ? 'সাইনড লিংকে খুলুন (৫ মিনিট)' : 'Open signed link (5 min)'}
                     </a>
-                    <p className="text-[10px] text-slate-600 font-medium">
+                    <p className="text-[10px] text-muted-foreground font-medium">
                       {isBn
                         ? 'অ্যাক্সেস অডিট লগে রেকর্ড হয়েছে।'
                         : 'Access recorded in the audit log.'}
@@ -783,8 +783,8 @@ export function AdminVerificationTab() {
                           onClick={() => setReasonCode(preset.code)}
                           className={`text-[10px] px-2.5 py-1 rounded-lg border font-semibold transition-all ${
                             reasonCode === preset.code
-                              ? 'bg-sky-100 text-sky-950 border-sky-400 font-bold shadow-2xs'
-                              : 'bg-slate-100 text-slate-700 border-slate-300 hover:text-slate-900 hover:bg-slate-200'
+                              ? 'bg-primary-soft text-primary border-primary/40 font-bold'
+                              : 'bg-surface text-muted-foreground border-border hover:text-foreground hover:bg-surface-hover'
                           }`}
                         >
                           {isBn ? preset.bn : preset.en}

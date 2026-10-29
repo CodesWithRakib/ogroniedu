@@ -357,7 +357,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
           </Alert>
         )}
 
-        <div className="flex flex-wrap gap-2 bg-surface/80 p-1 rounded-2xl border border-border w-fit">
+        <div className="flex flex-wrap gap-2 bg-surface/80 p-1 rounded-xl border border-border w-fit">
           {tabs.map((tab) => {
             const Icon = tab.icon;
             const active = section === tab.id;
@@ -368,7 +368,7 @@ export function AdminFinancePage({ locale }: { locale: Locale }) {
                 onClick={() => setSection(tab.id)}
                 className={`flex items-center gap-2 px-3.5 py-1.5 rounded-xl text-xs font-bold transition ${
                   active
-                    ? 'bg-primary text-primary-foreground shadow-xs'
+                    ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -114,7 +114,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               </div>
               <p className="text-muted-foreground text-sm mt-1.5">{t('subtitle')}</p>
             </div>
-            <div className="text-left md:text-right bg-surface border border-border/80 p-3 rounded-2xl shadow-xs">
+            <div className="text-left md:text-right bg-surface border border-border p-3 rounded-xl">
               <p className="text-xs text-muted-foreground">Authenticated Operator</p>
               <p className="text-sm font-semibold text-foreground">
                 {user?.displayName || 'Admin'}
@@ -133,7 +133,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                 ? Math.round(Number(admin.metrics.escrowPoolMinor) / 100)
                 : 0
             }
-            verifiedTutorsCount={admin.metrics.verifiedTutorsCount ?? 4}
+            verifiedTutorsCount={admin.metrics.verifiedTutorsCount ?? 0}
             activeStudentsCount={
               admin.metrics.activeStudentsCount ?? admin.metrics.totalRegisteredUsers
             }
@@ -152,7 +152,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
             <Link
               href={`/${locale}/dashboard/admin/verification`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/80 hover:border-primary/40 rounded-2xl p-4 sm:p-4.5 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between"
+              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-xl p-4 sm:p-4.5 transition-colors group flex flex-col justify-between"
             >
               <div className="flex justify-between items-start gap-2">
                 <div className="flex items-center gap-2">
@@ -175,7 +175,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/disputes`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/80 hover:border-primary/40 rounded-2xl p-4 sm:p-4.5 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between"
+              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-xl p-4 sm:p-4.5 transition-colors group flex flex-col justify-between"
             >
               <div className="flex justify-between items-start gap-2">
                 <div className="flex items-center gap-2">
@@ -198,7 +198,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/disputes`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/80 hover:border-primary/40 rounded-2xl p-4 sm:p-4.5 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between"
+              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-xl p-4 sm:p-4.5 transition-colors group flex flex-col justify-between"
             >
               <div className="flex justify-between items-start gap-2">
                 <div className="flex items-center gap-2">
@@ -221,7 +221,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/bookings`}
-              className="bg-card hover:bg-surface-hover/80 border border-border/80 hover:border-primary/40 rounded-2xl p-4 sm:p-4.5 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between"
+              className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-xl p-4 sm:p-4.5 transition-colors group flex flex-col justify-between"
             >
               <div className="flex justify-between items-start gap-2">
                 <div className="flex items-center gap-2">
@@ -244,7 +244,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/dashboard/admin/users`}
-              className="col-span-2 lg:col-span-1 bg-card hover:bg-surface-hover/80 border border-border/80 hover:border-primary/40 rounded-2xl p-4 sm:p-4.5 transition-all shadow-xs hover:shadow-sm group flex flex-col justify-between"
+              className="col-span-2 lg:col-span-1 bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-xl p-4 sm:p-4.5 transition-colors group flex flex-col justify-between"
             >
               <div className="flex justify-between items-start gap-2">
                 <div className="flex items-center gap-2">
@@ -285,12 +285,12 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    className="bg-card hover:bg-surface-hover border border-border hover:border-primary/40 rounded-2xl p-5 sm:p-6 transition-all duration-200 group flex flex-col justify-between"
+                    className="bg-card hover:bg-surface-hover border border-border hover:border-primary/40 rounded-xl p-5 sm:p-6 transition-colors group flex flex-col justify-between"
                   >
                     <div>
                       <div className="flex items-center justify-between mb-3">
                         <div
-                          className={`w-11 h-11 rounded-2xl flex items-center justify-center border ${item.accent}`}
+                          className={`w-10 h-10 rounded-xl flex items-center justify-center border ${item.accent}`}
                         >
                           <Icon className="w-5 h-5" />
                         </div>
@@ -313,7 +313,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Double-Entry Ledger Integrity Snapshot */}
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-5 shadow-xs">
+          <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-5">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
               <div>
                 <h3 className="text-base font-bold text-foreground flex items-center gap-2">
@@ -346,19 +346,19 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3.5">
-              <div className="bg-surface p-4 rounded-2xl border border-border">
+              <div className="bg-surface p-4 rounded-xl border border-border">
                 <p className="text-xs text-muted-foreground font-medium">{t('totalDebits')}</p>
                 <p className="text-lg font-mono font-bold text-foreground mt-1">
                   {admin.reconciliation?.totalDebits || '0'} BDT
                 </p>
               </div>
-              <div className="bg-surface p-4 rounded-2xl border border-border">
+              <div className="bg-surface p-4 rounded-xl border border-border">
                 <p className="text-xs text-muted-foreground font-medium">{t('totalCredits')}</p>
                 <p className="text-lg font-mono font-bold text-foreground mt-1">
                   {admin.reconciliation?.totalCredits || '0'} BDT
                 </p>
               </div>
-              <div className="bg-surface p-4 rounded-2xl border border-border">
+              <div className="bg-surface p-4 rounded-xl border border-border">
                 <p className="text-xs text-muted-foreground font-medium">{t('discrepancy')}</p>
                 <p
                   className={`text-lg font-mono font-bold mt-1 ${
@@ -374,7 +374,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Security & Audit Policy Card */}
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6 shadow-xs">
+          <div className="bg-card border border-border rounded-xl p-6 flex flex-col md:flex-row md:items-center justify-between gap-6">
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-success-soft-foreground text-sm font-semibold">
                 <CheckCircle2 className="w-4 h-4 text-success" />
@@ -387,7 +387,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
               </p>
             </div>
             <Button asChild size="sm" className="whitespace-nowrap shrink-0">
-              <Link href={`/${locale}/admin?tab=audit`}>
+              <Link href={`/${locale}/dashboard/admin/audit-logs`}>
                 <FileText className="w-4 h-4" />
                 <span>{locale === 'bn' ? 'অডিট হিস্ট্রি খুলুন' : 'Inspect Audit Trail'}</span>
               </Link>

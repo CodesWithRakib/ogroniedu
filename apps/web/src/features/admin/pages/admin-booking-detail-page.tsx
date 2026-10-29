@@ -260,7 +260,7 @@ export function AdminBookingDetailPage({
         )}
 
         {/* Header Hero Card */}
-        <div className="bg-card border border-border rounded-2xl p-6 shadow-xs relative overflow-hidden">
+        <div className="bg-card border border-border rounded-xl p-6 relative overflow-hidden">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="flex flex-col gap-2">
               <div className="flex flex-wrap items-center gap-2.5">
@@ -349,7 +349,7 @@ export function AdminBookingDetailPage({
                 <Button
                   variant="destructive"
                   onClick={() => setCancelModalOpen(true)}
-                  className="rounded-xl font-medium shadow-xs"
+                  className="rounded-xl font-medium"
                 >
                   <ShieldAlert className="w-4 h-4 mr-1.5" />
                   {isBn ? 'বাতিল ও রিফান্ড' : 'Cancel & Refund'}
@@ -455,7 +455,7 @@ export function AdminBookingDetailPage({
         {activeTab === 'overview' && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
             {/* Student Dossier Card */}
-            <Card className="rounded-2xl shadow-xs">
+            <Card className="rounded-xl">
               <CardHeader className="pb-3 border-b border-border/60">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -523,7 +523,7 @@ export function AdminBookingDetailPage({
             </Card>
 
             {/* Tutor Dossier Card */}
-            <Card className="rounded-2xl shadow-xs">
+            <Card className="rounded-xl">
               <CardHeader className="pb-3 border-b border-border/60">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
@@ -589,7 +589,7 @@ export function AdminBookingDetailPage({
             </Card>
 
             {/* Class Specifications Card */}
-            <Card className="rounded-2xl shadow-xs md:col-span-2">
+            <Card className="rounded-xl md:col-span-2">
               <CardHeader className="pb-3 border-b border-border/60">
                 <CardTitle className="text-base font-bold">
                   {isBn ? 'টিউশন ও ক্লাস স্পেসিফিকেশন' : 'Class Specifications & Logistics'}
@@ -662,7 +662,7 @@ export function AdminBookingDetailPage({
             </div>
 
             {sessions.length === 0 ? (
-              <Card className="rounded-2xl p-8 text-center text-muted-foreground">
+              <Card className="rounded-xl p-8 text-center text-muted-foreground">
                 <p>{isBn ? 'কোনো সেশন শিডিউল করা হয়নি।' : 'No sessions scheduled yet.'}</p>
               </Card>
             ) : (
@@ -684,7 +684,7 @@ export function AdminBookingDetailPage({
                     const isInProgress = sess.status === 'in_progress';
 
                     return (
-                      <Card key={sess.id} className="rounded-2xl shadow-xs border border-border">
+                      <Card key={sess.id} className="rounded-xl border border-border">
                         <CardContent className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                           <div className="flex flex-col gap-1.5">
                             <div className="flex items-center gap-2">
@@ -777,7 +777,7 @@ export function AdminBookingDetailPage({
         {activeTab === 'financials' && (
           <div className="flex flex-col gap-6">
             {/* Escrow Holds Card */}
-            <Card className="rounded-2xl shadow-xs">
+            <Card className="rounded-xl">
               <CardHeader className="pb-3 border-b border-border/60">
                 <CardTitle className="text-base font-bold flex items-center gap-2">
                   <ShieldCheck className="w-4 h-4 text-amber-500" />
@@ -855,7 +855,7 @@ export function AdminBookingDetailPage({
             {/* Payment Orders & Invoices */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
               {/* Payment Orders */}
-              <Card className="rounded-2xl shadow-xs">
+              <Card className="rounded-xl">
                 <CardHeader className="pb-3 border-b border-border/60">
                   <CardTitle className="text-sm font-bold flex items-center gap-2">
                     <Receipt className="w-4 h-4 text-primary" />
@@ -919,7 +919,7 @@ export function AdminBookingDetailPage({
               </Card>
 
               {/* Official Invoices */}
-              <Card className="rounded-2xl shadow-xs">
+              <Card className="rounded-xl">
                 <CardHeader className="pb-3 border-b border-border/60">
                   <CardTitle className="text-sm font-bold flex items-center gap-2">
                     <FileText className="w-4 h-4 text-emerald-600" />
@@ -973,7 +973,7 @@ export function AdminBookingDetailPage({
             </div>
 
             {/* Double-Entry Ledger Journal Table */}
-            <Card className="rounded-2xl shadow-xs">
+            <Card className="rounded-xl">
               <CardHeader className="pb-3 border-b border-border/60">
                 <CardTitle className="text-base font-bold flex items-center gap-2">
                   <Scale className="w-4 h-4 text-primary" />
@@ -1075,7 +1075,7 @@ export function AdminBookingDetailPage({
         {activeTab === 'governance' && (
           <div className="flex flex-col gap-6">
             {/* Tutor Replacement Guarantee Case */}
-            <Card className="rounded-2xl shadow-xs">
+            <Card className="rounded-xl">
               <CardHeader className="pb-3 border-b border-border/60">
                 <div className="flex items-center justify-between">
                   <CardTitle className="text-base font-bold flex items-center gap-2">
@@ -1128,7 +1128,7 @@ export function AdminBookingDetailPage({
             </Card>
 
             {/* Refunds Section */}
-            <Card className="rounded-2xl shadow-xs">
+            <Card className="rounded-xl">
               <CardHeader className="pb-3 border-b border-border/60">
                 <CardTitle className="text-base font-bold flex items-center gap-2">
                   <DollarSign className="w-4 h-4 text-rose-500" />

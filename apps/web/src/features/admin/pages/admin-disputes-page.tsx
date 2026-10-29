@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { useSearchParams } from 'next/navigation';
@@ -93,12 +93,12 @@ export function AdminDisputesPage({
             </div>
 
             {/* Sub-section Switcher */}
-            <div className="flex flex-wrap bg-surface/80 p-1 rounded-2xl border border-border gap-1">
+            <div className="flex flex-wrap bg-surface p-1 rounded-xl border border-border gap-1">
               <button
                 onClick={() => setSubSection('disputes')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                   subSection === 'disputes'
-                    ? 'bg-primary text-primary-foreground shadow-xs'
+                    ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 data-testid="tab-disputes-btn"
@@ -108,9 +108,9 @@ export function AdminDisputesPage({
               </button>
               <button
                 onClick={() => setSubSection('safety')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                   subSection === 'safety'
-                    ? 'bg-primary text-primary-foreground shadow-xs'
+                    ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 data-testid="tab-safety-btn"
@@ -120,9 +120,9 @@ export function AdminDisputesPage({
               </button>
               <button
                 onClick={() => setSubSection('reconciliation')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                   subSection === 'reconciliation'
-                    ? 'bg-primary text-primary-foreground shadow-xs'
+                    ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 data-testid="tab-reconciliation-btn"
@@ -132,9 +132,9 @@ export function AdminDisputesPage({
               </button>
               <button
                 onClick={() => setSubSection('support')}
-                className={`flex items-center gap-2 px-3 py-1.5 rounded-xl text-xs font-bold transition cursor-pointer ${
+                className={`flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-bold transition cursor-pointer ${
                   subSection === 'support'
-                    ? 'bg-primary text-primary-foreground shadow-xs'
+                    ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
                 data-testid="tab-support-btn"
@@ -148,7 +148,7 @@ export function AdminDisputesPage({
 
           {/* 3 Summary Metrics */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">{t('totalDebits')}</p>
                 <p className="text-2xl font-black text-foreground mt-1 font-mono">
@@ -160,7 +160,7 @@ export function AdminDisputesPage({
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">{t('totalCredits')}</p>
                 <p className="text-2xl font-black text-foreground mt-1 font-mono">
@@ -172,7 +172,7 @@ export function AdminDisputesPage({
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'উন্মুক্ত সাপোর্ট টিকিট' : 'Open Dispute Tickets'}
@@ -188,7 +188,7 @@ export function AdminDisputesPage({
           </div>
 
           {/* Content Card based on subSection */}
-          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
+          <div className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-4">
             {subSection === 'disputes' && <AdminDisputesTab locale={locale} />}
             {subSection === 'safety' && <AdminSafetyTab locale={locale} />}
             {subSection === 'reconciliation' && (

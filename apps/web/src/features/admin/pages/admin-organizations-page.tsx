@@ -110,7 +110,7 @@ export function AdminOrganizationsPageView() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => refetch()}
-            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground bg-surface border border-border rounded-lg shadow-xs hover:bg-muted transition"
+            className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium text-muted-foreground hover:text-foreground bg-surface border border-border rounded-lg hover:bg-muted transition"
           >
             <RefreshCw className="w-3.5 h-3.5" />
             Refresh
@@ -119,7 +119,7 @@ export function AdminOrganizationsPageView() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-3 bg-card p-3 rounded-xl border border-border shadow-xs">
+      <div className="flex flex-col md:flex-row items-center justify-between gap-3 bg-card p-3 rounded-xl border border-border">
         <div className="relative w-full md:w-80">
           <Search className="w-4 h-4 text-muted-foreground absolute left-3 top-1/2 -translate-y-1/2" />
           <input
@@ -143,7 +143,7 @@ export function AdminOrganizationsPageView() {
               onClick={() => setStatusFilter(tab.id)}
               className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap transition ${
                 statusFilter === tab.id
-                  ? 'bg-primary text-primary-foreground shadow-xs'
+                  ? 'bg-primary text-primary-foreground'
                   : 'text-muted-foreground hover:text-foreground hover:bg-muted'
               }`}
             >
@@ -154,7 +154,7 @@ export function AdminOrganizationsPageView() {
       </div>
 
       {/* Organizations Table */}
-      <div className="bg-card rounded-xl border border-border shadow-xs overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
         {isLoading ? (
           <div className="p-12 text-center text-sm text-muted-foreground">
             <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-primary" />
@@ -261,7 +261,7 @@ export function AdminOrganizationsPageView() {
       {/* Confirmation Modal */}
       {selectedOrg && actionStatus && (
         <Dialog open={true} onOpenChange={(open) => !open && setSelectedOrg(null)}>
-          <DialogContent className="bg-white w-full max-w-md rounded-3xl border border-slate-200 shadow-2xl p-6 flex flex-col gap-4 text-left">
+          <DialogContent className="bg-card w-full max-w-md rounded-xl border border-border p-6 flex flex-col gap-4 text-left">
             <DialogHeader className="border-b border-slate-100 pb-3 text-left">
               <div className="flex items-center gap-3">
                 <div

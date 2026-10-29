@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useTranslations } from 'next-intl';
 import {
@@ -25,7 +25,7 @@ export function AdminAuditLogsTab({
 
   return (
     <div className="flex flex-col gap-4" data-testid="audit-logs-tab-content">
-      <div className="border border-border rounded-2xl overflow-hidden bg-card">
+      <div className="border border-border rounded-xl overflow-hidden bg-card">
         <Table data-testid="audit-logs-table">
           <TableHeader>
             <TableRow>

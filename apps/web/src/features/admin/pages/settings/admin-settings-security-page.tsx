@@ -79,7 +79,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
 
         {/* Security Parameters Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
+          <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 id="security-2fa-title" className="text-base font-bold text-foreground">
@@ -108,7 +108,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
+          <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-4">
             <div className="flex items-center justify-between">
               <div>
                 <h3 id="security-ip-title" className="text-base font-bold text-foreground">
@@ -135,7 +135,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
+          <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-4">
             <div>
               <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'অ্যাডমিন সেশন টাইমআউট (মিনিট)' : 'Admin Session Expiry Window (Minutes)'}
@@ -157,7 +157,7 @@ export function AdminSettingsSecurityPage({ locale }: { locale: Locale }) {
             />
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
+          <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-4">
             <div>
               <h3 className="text-base font-bold text-foreground">
                 {isBn ? 'সর্বোচ্চ ব্যর্থ লগইন প্রচেষ্টা' : 'Max Failed Login Attempts'}

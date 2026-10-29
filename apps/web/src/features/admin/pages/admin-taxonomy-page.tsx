@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import {
@@ -540,16 +540,16 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
         )}
 
         {/* Dynamic Taxonomy Tabs Bar */}
-        <div className="flex flex-wrap items-center gap-2 p-1.5 bg-surface rounded-2xl border border-border">
+        <div className="flex flex-wrap items-center gap-2 p-1.5 bg-surface rounded-xl border border-border">
           <button
             onClick={() => {
               setActiveTab('levels');
               setSearchQuery('');
             }}
             data-testid="tab-levels"
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'levels'
-                ? 'bg-card text-foreground shadow-xs border border-border'
+                ? 'bg-card text-foreground border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -566,9 +566,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
               setSearchQuery('');
             }}
             data-testid="tab-curricula"
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'curricula'
-                ? 'bg-card text-foreground shadow-xs border border-border'
+                ? 'bg-card text-foreground border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -585,9 +585,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
               setSearchQuery('');
             }}
             data-testid="tab-streams"
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'streams'
-                ? 'bg-card text-foreground shadow-xs border border-border'
+                ? 'bg-card text-foreground border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -604,9 +604,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
               setSearchQuery('');
             }}
             data-testid="tab-institutions"
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'institutions'
-                ? 'bg-card text-foreground shadow-xs border border-border'
+                ? 'bg-card text-foreground border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -623,9 +623,9 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
               setSearchQuery('');
             }}
             data-testid="tab-subjects"
-            className={`flex items-center gap-2 px-4 py-2 rounded-xl text-xs sm:text-sm font-semibold transition-all ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs sm:text-sm font-semibold transition-all ${
               activeTab === 'subjects'
-                ? 'bg-card text-foreground shadow-xs border border-border'
+                ? 'bg-card text-foreground border border-border'
                 : 'text-muted-foreground hover:text-foreground'
             }`}
           >
@@ -647,7 +647,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
               placeholder={
                 isBn ? 'নাম, কোড অথবা জেলা দিয়ে খুঁজুন...' : 'Search by name, code or district...'
               }
-              className="pl-10 rounded-2xl bg-card border-border"
+              className="pl-10 rounded-xl bg-card border-border"
             />
           </div>
 
@@ -655,7 +655,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             <div className="w-36">
               <Select value={statusFilter} onValueChange={(val: any) => setStatusFilter(val)}>
                 <SelectTrigger
-                  className="rounded-2xl bg-card border-border text-xs"
+                  className="rounded-xl bg-card border-border text-xs"
                   data-testid="taxonomy-status-filter"
                 >
                   <SelectValue placeholder={isBn ? 'স্ট্যাটাস' : 'Status'} />
@@ -673,7 +673,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
             {activeTab === 'institutions' && (
               <div className="w-44">
                 <Select value={selectedType} onValueChange={(val) => setSelectedType(val)}>
-                  <SelectTrigger className="rounded-2xl bg-card border-border text-xs">
+                  <SelectTrigger className="rounded-xl bg-card border-border text-xs">
                     <SelectValue placeholder="সব ধরন" />
                   </SelectTrigger>
                   <SelectContent>
@@ -701,7 +701,7 @@ export function AdminTaxonomyPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* TABLE CONTENT */}
-        <Card className="rounded-2xl border border-border overflow-hidden">
+        <Card className="rounded-xl border border-border overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs sm:text-sm">
               <thead className="bg-surface border-b border-border text-muted-foreground font-semibold">

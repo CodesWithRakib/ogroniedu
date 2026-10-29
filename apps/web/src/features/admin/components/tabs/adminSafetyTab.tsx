@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import {
@@ -258,7 +258,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-xs">
+      <div className="border border-border rounded-xl overflow-hidden bg-card">
         <Table data-testid="safety-reports-table">
           <TableHeader>
             <TableRow className="bg-muted/40 text-muted-foreground uppercase tracking-wider text-[11px] font-semibold">
@@ -383,7 +383,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
       {/* Safety Hold Confirmation Modal */}
       {showHoldModal && activeReport && (
         <Dialog open={showHoldModal} onOpenChange={() => setShowHoldModal(false)}>
-          <DialogContent className="sm:max-w-md p-6 bg-card border-border rounded-2xl shadow-xl">
+          <DialogContent className="sm:max-w-md p-6 bg-card border-border rounded-xl">
             <DialogHeader className="flex flex-col gap-1.5">
               <div className="flex items-center gap-2 text-destructive">
                 <ShieldAlert className="w-5 h-5" />
@@ -454,7 +454,7 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
       {/* Case Investigation & Management Drawer */}
       {showInvestigateModal && activeReport && (
         <Dialog open={showInvestigateModal} onOpenChange={() => setShowInvestigateModal(false)}>
-          <DialogContent className="sm:max-w-2xl p-6 bg-card border-border rounded-2xl shadow-xl max-h-[90vh] overflow-y-auto">
+          <DialogContent className="sm:max-w-2xl p-6 bg-card border-border rounded-xl max-h-[90vh] overflow-y-auto">
             <DialogHeader className="flex flex-col gap-1">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-2">

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -195,7 +195,7 @@ export function AdminSettingsHubPage({ locale }: { locale: Locale }) {
                 key={card.id}
                 href={targetUrl}
                 data-testid={`settings-card-${card.id}`}
-                className="group relative bg-card border border-border hover:border-input hover:shadow-xs transition-all duration-200 rounded-2xl p-5 flex flex-col justify-between"
+                className="group relative bg-card border border-border hover:border-input transition-colors duration-200 rounded-xl p-5 flex flex-col justify-between"
               >
                 <div>
                   {/* Top Row: Icon squircle + Badge */}

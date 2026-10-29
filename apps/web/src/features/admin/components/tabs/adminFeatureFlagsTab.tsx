@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import type { AdminFeatureFlagItem } from '../../types/admin.types';
 
@@ -13,7 +13,7 @@ export function AdminFeatureFlagsTab({
 }) {
   return (
     <div className="flex flex-col gap-4" data-testid="feature-flags-tab-content">
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs">
+      <div className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-4">
         <h3 className="text-base font-bold text-foreground">Feature Flags &amp; Canary Toggles</h3>
         <div className="divide-y divide-border/60">
           {featureFlags.map((flag) => (
@@ -31,9 +31,9 @@ export function AdminFeatureFlagsTab({
               <button
                 disabled={!isSuperAdmin}
                 onClick={() => onToggle(flag.key, !flag.enabled)}
-                className={`px-3 py-1.5 rounded-xl text-xs font-bold transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-bold transition ${
                   flag.enabled
-                    ? 'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25'
+                    ? 'bg-primary hover:bg-primary/90 text-primary-foreground'
                     : 'bg-surface hover:bg-surface-hover text-muted-foreground border border-border'
                 }`}
                 data-testid={`toggle-flag-${flag.key}`}

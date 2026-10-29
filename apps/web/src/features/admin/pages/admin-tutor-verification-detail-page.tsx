@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -340,10 +340,10 @@ export function AdminTutorVerificationDetailPage({
         {/* ============================================================ */}
         {/* TUTOR DOSSIER HERO CARD                                      */}
         {/* ============================================================ */}
-        <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs">
+        <div className="rounded-xl border border-border bg-card p-5 sm:p-6">
           <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl uppercase">
+              <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl uppercase">
                 {user?.displayName?.slice(0, 2) || 'TU'}
               </div>
               <div>
@@ -448,7 +448,7 @@ export function AdminTutorVerificationDetailPage({
                 onClick={() => setActiveTab(tab.id as never)}
                 className={`flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold transition-all ${
                   active
-                    ? 'bg-primary text-primary-foreground shadow-xs'
+                    ? 'bg-primary text-primary-foreground'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
                 }`}
               >
@@ -478,7 +478,7 @@ export function AdminTutorVerificationDetailPage({
           <div className="lg:col-span-2 flex flex-col gap-6">
             {/* TAB 1: PROFILE & BIO */}
             {activeTab === 'profile' && (
-              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-5">
+              <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-5">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <UserCheck className="h-4 w-4 text-primary" />
                   {isBn ? 'ব্যক্তিগত ও পেশাদার পরিচিতি' : 'Personal & Professional Profile'}
@@ -577,7 +577,7 @@ export function AdminTutorVerificationDetailPage({
 
             {/* TAB 2: EDUCATION & QUALIFICATIONS */}
             {activeTab === 'education' && (
-              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4">
+              <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-4">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <GraduationCap className="h-4 w-4 text-primary" />
                   {isBn ? 'শিক্ষাগত যোগ্যতা ও সনদ তালিকা' : 'Educational Qualifications'}
@@ -622,7 +622,7 @@ export function AdminTutorVerificationDetailPage({
 
             {/* TAB 3: SUBJECTS & RATES */}
             {activeTab === 'subjects' && (
-              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4">
+              <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-4">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <BookOpen className="h-4 w-4 text-primary" />
                   {isBn ? 'পাঠদানের বিষয়সমূহ ও ক্লাস লেভেল' : 'Teaching Subjects & Class Levels'}
@@ -673,7 +673,7 @@ export function AdminTutorVerificationDetailPage({
 
             {/* TAB 4: SCHEDULE & AVAILABILITY */}
             {activeTab === 'schedule' && (
-              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4">
+              <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-4">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary" />
                   {isBn ? 'সাপ্তাহিক সময়সূচি ও প্রাপ্যতা' : 'Weekly Availability Schedule'}
@@ -723,7 +723,7 @@ export function AdminTutorVerificationDetailPage({
 
             {/* TAB 5: EVIDENCE DOCUMENTS & SIGNED PREVIEW */}
             {activeTab === 'documents' && (
-              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-5">
+              <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-5">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <FileSearch className="h-4 w-4 text-primary" />
                   {isBn ? 'ভেরিফিকেশন প্রমাণাদি ও নথি পরিদর্শন' : 'Verification Evidence Documents'}
@@ -845,7 +845,7 @@ export function AdminTutorVerificationDetailPage({
 
             {/* TAB 6: REVIEW HISTORY & AUDIT */}
             {activeTab === 'history' && (
-              <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4">
+              <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-4">
                 <h3 className="text-sm font-bold text-foreground border-b border-border pb-3 flex items-center gap-2">
                   <Layers className="h-4 w-4 text-primary" />
                   {isBn ? 'পর্যালোচনার ইতিহাস ও অডিট ট্রেইল' : 'Review Decision Trail'}
@@ -909,7 +909,7 @@ export function AdminTutorVerificationDetailPage({
           {/* REVIEW DECISION CONSOLE (RIGHT 1 SPAN)                        */}
           {/* ============================================================ */}
           <div className="flex flex-col gap-4 sticky top-6">
-            <div className="rounded-2xl border border-border bg-card p-5 shadow-xs flex flex-col gap-4">
+            <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-4">
               <div className="flex items-center gap-2 border-b border-border pb-3">
                 <ShieldCheck className="h-5 w-5 text-primary" />
                 <h3 className="text-sm font-bold text-foreground">
@@ -975,7 +975,7 @@ export function AdminTutorVerificationDetailPage({
                           onClick={() => setDecision('approved')}
                           className={`p-2 rounded-xl border text-xs font-bold transition-all ${
                             decision === 'approved' && !isApproved
-                              ? 'border-primary bg-primary text-primary-foreground shadow-xs'
+                              ? 'border-primary bg-primary text-primary-foreground'
                               : isApproved
                                 ? 'opacity-40 cursor-not-allowed border-border bg-muted/40 text-muted-foreground'
                                 : 'border-border bg-card hover:bg-muted/40 text-foreground'
@@ -995,7 +995,7 @@ export function AdminTutorVerificationDetailPage({
                           onClick={() => setDecision('needs_information')}
                           className={`p-2 rounded-xl border text-xs font-bold transition-all ${
                             decision === 'needs_information' && !isApproved
-                              ? 'border-warning bg-warning text-warning-foreground shadow-xs'
+                              ? 'border-warning bg-warning text-warning-foreground'
                               : isApproved
                                 ? 'opacity-40 cursor-not-allowed border-border bg-muted/40 text-muted-foreground'
                                 : 'border-border bg-card hover:bg-muted/40 text-foreground'
@@ -1009,7 +1009,7 @@ export function AdminTutorVerificationDetailPage({
                           onClick={() => setDecision('rejected')}
                           className={`p-2 rounded-xl border text-xs font-bold transition-all ${
                             decision === 'rejected' && !isApproved
-                              ? 'border-destructive bg-destructive text-destructive-foreground shadow-xs'
+                              ? 'border-destructive bg-destructive text-destructive-foreground'
                               : isApproved
                                 ? 'opacity-40 cursor-not-allowed border-border bg-muted/40 text-muted-foreground'
                                 : 'border-border bg-card hover:bg-muted/40 text-foreground'
@@ -1023,7 +1023,7 @@ export function AdminTutorVerificationDetailPage({
                           onClick={() => setDecision('suspended')}
                           className={`p-2 rounded-xl border text-xs font-bold transition-all ${
                             decision === 'suspended'
-                              ? 'border-foreground bg-foreground text-background shadow-xs'
+                              ? 'border-foreground bg-foreground text-background'
                               : 'border-border bg-card hover:bg-muted/40 text-foreground'
                           }`}
                         >
@@ -1109,7 +1109,7 @@ export function AdminTutorVerificationDetailPage({
                   type="submit"
                   disabled={deciding}
                   isLoading={deciding}
-                  className="w-full font-bold shadow-xs text-xs h-10"
+                  className="w-full font-bold text-xs h-10"
                 >
                   {isBn ? 'সিদ্ধান্ত কার্যকর করুন' : 'Record Final Decision'}
                 </Button>

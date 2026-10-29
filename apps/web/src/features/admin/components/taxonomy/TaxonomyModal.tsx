@@ -164,7 +164,7 @@ export function TaxonomyModal({
                 <Select value={formExtra || 'school'} onValueChange={(val) => setFormExtra(val)}>
                   <SelectTrigger
                     id="form-extra"
-                    className="rounded-2xl bg-card border-border text-sm"
+                    className="rounded-xl bg-card border-border text-sm"
                   >
                     <SelectValue />
                   </SelectTrigger>
@@ -205,7 +205,7 @@ export function TaxonomyModal({
               <Select value={formExtra || 'core'} onValueChange={(val) => setFormExtra(val)}>
                 <SelectTrigger
                   id="form-extra"
-                  className="rounded-2xl bg-card border-border text-sm"
+                  className="rounded-xl bg-card border-border text-sm"
                 >
                   <SelectValue />
                 </SelectTrigger>

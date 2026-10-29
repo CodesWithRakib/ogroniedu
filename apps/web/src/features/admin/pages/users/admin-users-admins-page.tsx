@@ -140,7 +140,7 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
 
           {isSuperAdmin && (
             <Button
-              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold px-4 py-2 rounded-xl shadow-xs"
+              className="flex items-center gap-2 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold px-4 py-2 rounded-xl"
               onClick={() => {
                 const dummyId = `new_admin_${Date.now()}`;
                 view.requestRoles({
@@ -160,7 +160,7 @@ export function AdminUsersAdminsPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Table Card (Image 2 Replica) */}
-        <div className="bg-card border border-border rounded-2xl overflow-hidden">
+        <div className="bg-card border border-border rounded-xl overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs text-foreground">
               <thead className="bg-muted/40 uppercase tracking-wider text-[10px] font-bold text-muted-foreground border-b border-border">

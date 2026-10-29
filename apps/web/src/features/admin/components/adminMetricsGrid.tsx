@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
@@ -70,23 +70,23 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
           return (
             <div
               key={card.key}
-              className="bg-gradient-to-br from-primary via-primary/95 to-primary-hover text-primary-foreground border border-primary/20 rounded-2xl p-5 shadow-primary/20 col-span-2 md:col-span-1 transition-all hover:-translate-y-0.5 relative overflow-hidden group select-none"
+              className="bg-card border border-primary/40 rounded-xl p-5 col-span-2 md:col-span-1 transition-colors relative overflow-hidden group select-none"
             >
               <div className="flex items-center justify-between">
-                <p className="text-xs font-semibold text-primary-foreground/90 truncate">
+                <p className="text-xs font-semibold text-foreground truncate">
                   {card.label}
                 </p>
-                <div className="h-7 w-7 rounded-full bg-muted flex items-center justify-center text-foreground shrink-0">
+                <div className="h-7 w-7 rounded-full bg-primary-soft flex items-center justify-center text-primary shrink-0">
                   <ArrowUpRight className="h-3.5 w-3.5" />
                 </div>
               </div>
               <p
-                className="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight font-sans leading-none text-foreground"
+                className="text-3xl sm:text-4xl font-extrabold mt-3 tracking-tight font-sans leading-none text-primary"
                 data-testid={card.testId}
               >
                 {card.value}
               </p>
-              <span className="text-[10px] text-muted-foreground font-semibold mt-2 inline-block px-2 py-0.5 rounded-full bg-muted">
+              <span className="text-[10px] text-muted-foreground font-semibold mt-2 inline-block px-2 py-0.5 rounded-full bg-surface border border-border">
                 {card.caption}
               </span>
             </div>
@@ -96,11 +96,11 @@ export function AdminMetricsGrid({ metrics }: { metrics: AdminDashboardMetrics }
         return (
           <div
             key={card.key}
-            className="bg-card border border-border rounded-2xl p-5 shadow-xs col-span-2 md:col-span-1 transition-all hover:shadow-xs hover:-translate-y-0.5 group select-none"
+            className="bg-card border border-border rounded-xl p-5 col-span-2 md:col-span-1 transition-colors group select-none"
           >
             <div className="flex items-center justify-between">
               <p className="text-xs font-semibold text-muted-foreground truncate">{card.label}</p>
-              <div className="h-7 w-7 rounded-full border border-border bg-surface/75 text-foreground flex items-center justify-center shrink-0 group-hover:bg-primary group-hover:text-primary-foreground group-hover:border-primary transition-colors">
+              <div className="h-7 w-7 rounded-full border border-border bg-surface text-muted-foreground flex items-center justify-center shrink-0 group-hover:bg-primary-soft group-hover:text-primary transition-colors">
                 <ArrowUpRight className="h-3.5 w-3.5" />
               </div>
             </div>

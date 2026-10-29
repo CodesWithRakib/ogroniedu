@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -26,10 +26,10 @@ interface AdminPlatformTelemetryGridProps {
 
 export function AdminPlatformTelemetryGrid({
   locale,
-  totalGmvBdt = 485000,
-  activeEscrowPoolBdt = 64200,
-  verifiedTutorsCount = 28,
-  activeStudentsCount = 114,
+  totalGmvBdt = 0,
+  activeEscrowPoolBdt = 0,
+  verifiedTutorsCount = 0,
+  activeStudentsCount = 0,
   isLedgerBalanced = true,
 }: AdminPlatformTelemetryGridProps) {
   const isBn = locale === 'bn';
@@ -40,7 +40,7 @@ export function AdminPlatformTelemetryGrid({
       data-testid="admin-platform-telemetry"
     >
       {/* 1. GMV Volume */}
-      <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col justify-between">
+      <div className="bg-card border border-border rounded-xl p-4 sm:p-5 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             {isBn ? 'গ্রস ট্রানজ্যাকশন (GMV)' : 'Gross Volume (GMV)'}
@@ -54,10 +54,15 @@ export function AdminPlatformTelemetryGrid({
           <div className="text-2xl sm:text-3xl font-black text-foreground">
             ৳ {formatLocalizedNumber(totalGmvBdt, locale)}
           </div>
-          <p className="text-[11px] text-emerald-600 dark:text-emerald-400 font-semibold mt-0.5 flex items-center gap-1">
-            <span>↑ 18.4%</span>
-            <span className="text-muted-foreground font-normal">
-              {isBn ? 'চলতি মাসে প্রবৃদ্ধি' : 'vs last month'}
+          <p className="text-[11px] text-muted-foreground font-medium mt-0.5 flex items-center gap-1">
+            <span>
+              {totalGmvBdt > 0
+                ? isBn
+                  ? 'লাইভ প্ল্যাটফর্ম ভলিউম'
+                  : 'Live platform volume'
+                : isBn
+                  ? 'কোন লেনদেন নেই'
+                  : 'No volume yet'}
             </span>
           </p>
         </div>
@@ -72,7 +77,7 @@ export function AdminPlatformTelemetryGrid({
       </div>
 
       {/* 2. Safe Escrow Pool */}
-      <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col justify-between">
+      <div className="bg-card border border-border rounded-xl p-4 sm:p-5 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             {isBn ? 'সুরক্ষিত এসক্রো পুল' : 'Active Escrow Pool'}
@@ -101,7 +106,7 @@ export function AdminPlatformTelemetryGrid({
       </div>
 
       {/* 3. Double-Entry Ledger Radar */}
-      <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col justify-between">
+      <div className="bg-card border border-border rounded-xl p-4 sm:p-5 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             {isBn ? 'ডাবল-এন্ট্রি লেজার' : 'Ledger Integrity'}
@@ -138,7 +143,7 @@ export function AdminPlatformTelemetryGrid({
       </div>
 
       {/* 4. Verified Tutors & Active Students */}
-      <div className="bg-card border border-border rounded-2xl p-4 sm:p-5 shadow-xs flex flex-col justify-between">
+      <div className="bg-card border border-border rounded-xl p-4 sm:p-5 flex flex-col justify-between">
         <div className="flex items-center justify-between">
           <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
             {isBn ? 'সক্রিয় লার্নিং নেটওয়ার্ক' : 'Learning Ecosystem'}

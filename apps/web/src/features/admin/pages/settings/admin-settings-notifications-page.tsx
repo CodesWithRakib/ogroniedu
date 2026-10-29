@@ -98,7 +98,7 @@ export function AdminSettingsNotificationsPage({ locale }: { locale: Locale }) {
         {/* Gateways Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
           {/* SMS Gateway Card */}
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
+          <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-interactive-soft text-interactive border border-interactive/20 flex items-center justify-center font-bold">
                 <Smartphone className="w-5 h-5" />
@@ -158,7 +158,7 @@ export function AdminSettingsNotificationsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Email Gateway Card */}
-          <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-4 shadow-xs">
+          <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-4">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-info-soft text-info border border-info/30 flex items-center justify-center font-bold">
                 <Mail className="w-5 h-5" />

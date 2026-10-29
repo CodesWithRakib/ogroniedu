@@ -1,4 +1,4 @@
-﻿import React from 'react';
+import React from 'react';
 import { useTranslations } from 'next-intl';
 import { Search } from 'lucide-react';
 import { Button } from '@/components/ui/Button';
@@ -78,7 +78,7 @@ export function AdminUsersTab({
           value={searchQuery}
           onChange={(e) => onSearchChange(e.target.value)}
           leadingIcon={<Search className="w-4 h-4 text-muted-foreground/70" />}
-          className="w-full sm:w-80 rounded-2xl"
+          className="w-full sm:w-80 rounded-xl"
           data-testid="users-search-input"
         />
         <Select
@@ -86,7 +86,7 @@ export function AdminUsersTab({
           onValueChange={(val) => onStatusFilterChange(val as StatusFilter)}
         >
           <SelectTrigger
-            className="w-full sm:w-48 rounded-2xl bg-card border-border text-xs"
+            className="w-full sm:w-48 rounded-xl bg-card border-border text-xs"
             data-testid="users-status-filter"
           >
             <SelectValue placeholder={t('allStatuses')} />
@@ -99,7 +99,7 @@ export function AdminUsersTab({
         </Select>
       </div>
 
-      <div className="border border-border rounded-2xl overflow-hidden bg-card shadow-xs">
+      <div className="border border-border rounded-xl overflow-hidden bg-card">
         <Table data-testid="users-table">
           <TableHeader>
             <TableRow className="uppercase tracking-wider text-[11px] font-bold">

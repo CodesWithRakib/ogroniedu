@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import {
@@ -206,13 +206,13 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
         </div>
 
         {/* Status Filters */}
-        <div className="flex items-center gap-1.5 p-1 bg-slate-100 rounded-xl border border-slate-200">
+        <div className="flex items-center gap-1.5 p-1 bg-surface rounded-xl border border-border">
           <button
             onClick={() => setStatusFilter('all')}
             className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors ${
               statusFilter === 'all'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-foreground border border-border'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             {isBn ? 'সকল অভিযোগ' : 'All'} ({allDisputes.length})
@@ -221,12 +221,12 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
             onClick={() => setStatusFilter('open')}
             className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors flex items-center gap-1.5 ${
               statusFilter === 'open'
-                ? 'bg-amber-500 text-white shadow-xs'
-                : 'text-amber-800 hover:text-amber-950'
+                ? 'bg-warning text-warning-foreground font-bold'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             <span>{isBn ? 'সক্রিয়' : 'Active'}</span>
-            <span className="bg-amber-600 text-white text-[10px] px-1.5 py-0.2 rounded-full">
+            <span className="bg-warning-foreground/20 text-warning-foreground text-[10px] px-1.5 py-0.2 rounded-full">
               {openCount}
             </span>
           </button>
@@ -234,8 +234,8 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
             onClick={() => setStatusFilter('resolved')}
             className={`px-3 py-1 text-xs font-semibold rounded-lg transition-colors ${
               statusFilter === 'resolved'
-                ? 'bg-white text-slate-900 shadow-xs'
-                : 'text-slate-600 hover:text-slate-900'
+                ? 'bg-card text-foreground border border-border'
+                : 'text-muted-foreground hover:text-foreground'
             }`}
           >
             {isBn ? 'নিষ্পন্ন' : 'Resolved'} ({resolvedCount})
@@ -244,10 +244,10 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
       </div>
 
       {/* Disputes Table */}
-      <div className="border border-slate-200 rounded-2xl overflow-hidden bg-white shadow-xs">
+      <div className="border border-border rounded-xl overflow-hidden bg-card">
         <Table data-testid="disputes-table">
           <TableHeader>
-            <TableRow className="bg-slate-50 text-slate-700 uppercase tracking-wider text-[11px] font-bold border-b border-slate-200">
+            <TableRow className="bg-muted/30 text-muted-foreground uppercase tracking-wider text-[11px] font-bold border-b border-border">
               <TableHead className="px-4 py-3">
                 {isBn ? 'বুকিং ও বিষয়' : 'Booking & Subject'}
               </TableHead>
@@ -372,7 +372,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                                 : '',
                             );
                           }}
-                          className="text-xs h-7.5 px-3 rounded-xl gap-1 font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
+                          className="text-xs h-7.5 px-3 rounded-lg gap-1 font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
                           data-testid={`triage-dispute-${d.id}`}
                         >
                           <span>{isBn ? 'নিষ্পত্তি করুন' : 'Triage & Resolve'}</span>
@@ -380,12 +380,12 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                         </Button>
                       ) : (
                         <div className="flex flex-col gap-0.5 text-right">
-                          <span className="text-[11px] font-semibold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                          <span className="text-[11px] font-semibold text-success bg-success-soft px-2 py-0.5 rounded-md border border-success/30">
                             {isBn ? 'নিষ্পন্ন হয়েছে' : 'Resolved'}
                           </span>
                           {d.resolutionNotes && (
                             <p
-                              className="text-[10px] text-slate-500 truncate max-w-[140px]"
+                              className="text-[10px] text-muted-foreground truncate max-w-[140px]"
                               title={d.resolutionNotes}
                             >
                               {d.resolutionNotes}
@@ -405,15 +405,15 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
       {/* Resolution Modal */}
       {activeDispute && (
         <Dialog open={!!activeDispute} onOpenChange={() => setActiveDispute(null)}>
-          <DialogContent className="sm:max-w-lg p-6 bg-white border border-slate-200 rounded-2xl shadow-2xl">
-            <DialogHeader className="flex flex-col gap-1.5 pb-2 border-b border-slate-100">
-              <div className="flex items-center gap-2 text-blue-700">
-                <Scale className="w-5 h-5 text-blue-600" />
-                <DialogTitle className="text-base font-bold text-slate-900">
+          <DialogContent className="sm:max-w-lg p-6 bg-card border border-border rounded-xl">
+            <DialogHeader className="flex flex-col gap-1.5 pb-2 border-b border-border">
+              <div className="flex items-center gap-2 text-primary">
+                <Scale className="w-5 h-5 text-primary" />
+                <DialogTitle className="text-base font-bold text-foreground">
                   {isBn ? 'বুকিং বিরোধ মীমাংসা ও সিদ্ধান্ত' : 'Resolve Booking Dispute'}
                 </DialogTitle>
               </div>
-              <DialogDescription className="text-xs text-slate-600">
+              <DialogDescription className="text-xs text-muted-foreground">
                 {isBn
                   ? `বুকিং #${activeDispute.bookingId.slice(0, 8)}-এর অভিযোগ পর্যালোচনা ও প্রশাসনিক সিদ্ধান্ত প্রয়োগ করুন।`
                   : `Evaluate complaint and execute binding resolution for Booking #${activeDispute.bookingId.slice(0, 8)}.`}
@@ -422,37 +422,37 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
 
             <form onSubmit={handleResolve} className="flex flex-col gap-4 pt-3">
               {/* Context Summary Card */}
-              <div className="p-3.5 rounded-xl bg-slate-50 border border-slate-200 text-xs flex flex-col gap-2">
-                <div className="grid grid-cols-2 gap-2 text-[11px] pb-2 border-b border-slate-200">
+              <div className="p-3.5 rounded-xl bg-surface border border-border text-xs flex flex-col gap-2">
+                <div className="grid grid-cols-2 gap-2 text-[11px] pb-2 border-b border-border">
                   <div>
-                    <span className="text-slate-500">{isBn ? 'বিষয়:' : 'Subject:'}</span>{' '}
-                    <strong className="text-slate-900">
+                    <span className="text-muted-foreground">{isBn ? 'বিষয়:' : 'Subject:'}</span>{' '}
+                    <strong className="text-foreground">
                       {(isBn
                         ? activeDispute.booking?.subject?.nameBn
                         : activeDispute.booking?.subject?.nameEn) ||
                         activeDispute.booking?.subject?.name ||
-                        'বাংলা (১ম ও ২য় পত্র)'}
+                        '—'}
                     </strong>
                   </div>
                   <div>
-                    <span className="text-slate-500">{isBn ? 'শিক্ষক:' : 'Tutor:'}</span>{' '}
-                    <strong className="text-slate-900">
-                      {activeDispute.booking?.tutorProfile?.user?.displayName || 'Farhan Ahmed'}
+                    <span className="text-muted-foreground">{isBn ? 'শিক্ষক:' : 'Tutor:'}</span>{' '}
+                    <strong className="text-foreground">
+                      {activeDispute.booking?.tutorProfile?.user?.displayName || '—'}
                     </strong>
                   </div>
                   <div>
-                    <span className="text-slate-500">{isBn ? 'অভিযোগকারী:' : 'Disputant:'}</span>{' '}
-                    <strong className="text-slate-900">
+                    <span className="text-muted-foreground">{isBn ? 'অভিযোগকারী:' : 'Disputant:'}</span>{' '}
+                    <strong className="text-foreground">
                       {activeDispute.disputant?.displayName ||
                         activeDispute.booking?.studentUser?.displayName ||
-                        'আবরার আহমেদ'}
+                        '—'}
                     </strong>
                   </div>
                   <div>
-                    <span className="text-slate-500">
+                    <span className="text-muted-foreground">
                       {isBn ? 'দাবিকৃত অর্থ:' : 'Claimed Refund:'}
                     </span>{' '}
-                    <strong className="text-emerald-700 font-mono font-bold">
+                    <strong className="text-success font-mono font-bold">
                       {activeDispute.disputedAmountMinor
                         ? formatBDTMinor(activeDispute.disputedAmountMinor, locale)
                         : '—'}
@@ -460,10 +460,10 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                   </div>
                 </div>
                 <div>
-                  <span className="font-semibold text-slate-900 block text-xs">
+                  <span className="font-semibold text-foreground block text-xs">
                     {isBn ? 'অভিযোগকারীর বক্তব্য:' : 'Disputant Statement:'}
                   </span>
-                  <p className="text-slate-700 text-xs mt-1 leading-relaxed bg-white p-2.5 rounded-lg border border-slate-200">
+                  <p className="text-muted-foreground text-xs mt-1 leading-relaxed bg-card p-2.5 rounded-lg border border-border">
                     {activeDispute.description}
                   </p>
                 </div>
@@ -471,7 +471,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
 
               {/* Resolution Decision */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-800">
+                <label className="text-xs font-semibold text-foreground">
                   {isBn
                     ? 'মীমাংসা সিদ্ধান্ত (Binding Administrative Decision)'
                     : 'Resolution Decision'}
@@ -479,7 +479,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                 <NativeSelect
                   value={resolutionType}
                   onChange={(e) => setResolutionType(e.target.value as any)}
-                  className="w-full text-xs h-9.5 rounded-xl bg-white border-slate-300 text-slate-900 font-medium"
+                  className="w-full text-xs h-9.5 rounded-xl bg-card border-border text-foreground font-medium"
                 >
                   <option value="refund">
                     {isBn
@@ -508,7 +508,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
               {/* Refund amount if applicable */}
               {(resolutionType === 'refund' || resolutionType === 'partial_refund') && (
                 <div className="flex flex-col gap-1.5">
-                  <label className="text-xs font-semibold text-slate-800">
+                  <label className="text-xs font-semibold text-foreground">
                     {isBn ? 'অনুমোদিত রিফান্ড পরিমাণ (৳)' : 'Approved Refund Amount (BDT ৳)'}
                   </label>
                   <input
@@ -517,14 +517,14 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                     placeholder="500"
                     value={refundAmount}
                     onChange={(e) => setRefundAmount(e.target.value)}
-                    className="w-full h-9 px-3 rounded-xl bg-white border border-slate-300 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-hidden focus:ring-1 focus:ring-blue-600"
+                    className="w-full h-9 px-3 rounded-xl bg-card border border-border text-xs text-foreground placeholder:text-muted-foreground focus:outline-hidden focus:ring-1 focus:ring-primary"
                   />
                 </div>
               )}
 
               {/* Resolution notes */}
               <div className="flex flex-col gap-1.5">
-                <label className="text-xs font-semibold text-slate-800">
+                <label className="text-xs font-semibold text-foreground">
                   {isBn ? 'তদন্ত নোট ও সিদ্ধান্তের ভিত্তি' : 'Investigation Rationale & Notes'}
                 </label>
                 <Textarea
@@ -536,17 +536,17 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                       ? 'তদন্তের ফলাফল এবং সিদ্ধান্তের কারণ সংক্ষেপে লিখুন (যেমন: শিক্ষক লগ যাচাই করা হয়েছে)...'
                       : 'Document investigation findings and reasons for this resolution...'
                   }
-                  className="text-xs rounded-xl bg-white border-slate-300 text-slate-900 resize-none placeholder:text-slate-400"
+                  className="text-xs rounded-xl bg-card border-border text-foreground resize-none placeholder:text-muted-foreground"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-2 border-t border-slate-100">
+              <div className="flex justify-end gap-2 pt-2 border-t border-border">
                 <Button
                   type="button"
                   variant="outline"
                   size="sm"
                   onClick={() => setActiveDispute(null)}
-                  className="text-xs rounded-xl border-slate-300 text-slate-700"
+                  className="text-xs rounded-xl border-border text-foreground"
                 >
                   {isBn ? 'বাতিল' : 'Cancel'}
                 </Button>
@@ -554,7 +554,7 @@ export function AdminDisputesTab({ locale }: { locale: Locale }) {
                   type="submit"
                   size="sm"
                   disabled={resolving}
-                  className="text-xs rounded-xl font-bold bg-blue-600 hover:bg-blue-700 text-white shadow-sm"
+                  className="text-xs rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
                   data-testid="confirm-resolve-dispute-btn"
                 >
                   {resolving

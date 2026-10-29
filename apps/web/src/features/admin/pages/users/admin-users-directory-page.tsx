@@ -104,7 +104,7 @@ export function AdminUsersDirectoryPage({ locale }: { locale: Locale }) {
 
         {/* 3 Metric Summary Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
+          <div className="bg-card border border-border rounded-xl p-4.5 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground font-medium">
                 {isBn ? 'সক্রিয় অ্যাকাউন্ট' : 'Active Accounts'}
@@ -116,7 +116,7 @@ export function AdminUsersDirectoryPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
+          <div className="bg-card border border-border rounded-xl p-4.5 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground font-medium">
                 {isBn ? 'স্থগিত অ্যাকাউন্ট' : 'Suspended Accounts'}
@@ -128,7 +128,7 @@ export function AdminUsersDirectoryPage({ locale }: { locale: Locale }) {
             </div>
           </div>
 
-          <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
+          <div className="bg-card border border-border rounded-xl p-4.5 flex items-center justify-between">
             <div>
               <p className="text-xs text-muted-foreground font-medium">
                 {isBn ? 'স্টাফ ও অপারেটর' : 'Staff & Operators'}
@@ -142,7 +142,7 @@ export function AdminUsersDirectoryPage({ locale }: { locale: Locale }) {
         </div>
 
         {/* Users Table Card */}
-        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
+        <div className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-4">
           <AdminUsersTab
             users={actions.users}
             isSuperAdmin={isSuperAdmin}

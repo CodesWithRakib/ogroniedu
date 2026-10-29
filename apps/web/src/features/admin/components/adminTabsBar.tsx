@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { useTranslations } from 'next-intl';
@@ -53,7 +53,7 @@ export function AdminTabsBar({
           className={cn(
             'px-3.5 py-2 text-xs font-bold rounded-xl transition whitespace-nowrap cursor-pointer',
             activeTab === key
-              ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/20'
+              ? 'bg-primary text-primary-foreground font-semibold'
               : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover',
           )}
           data-testid={`tab-${key}`}

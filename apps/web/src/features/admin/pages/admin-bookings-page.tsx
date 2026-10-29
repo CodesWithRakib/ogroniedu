@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { Calendar, CheckCircle2, Clock } from 'lucide-react';
@@ -69,7 +69,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
 
           {/* 3 Metric Summary Cards */}
           <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'চলমান নিশ্চিত বুকিং' : 'Active Confirmed'}
@@ -83,7 +83,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'সম্পন্ন সেশন' : 'Completed Sessions'}
@@ -97,7 +97,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
               </div>
             </div>
 
-            <div className="bg-card border border-border rounded-2xl p-4.5 flex items-center justify-between">
+            <div className="bg-card border border-border rounded-xl p-4.5 flex items-center justify-between">
               <div>
                 <p className="text-xs text-muted-foreground font-medium">
                   {locale === 'bn' ? 'মোট বুকিং রেকর্ড' : 'Total Bookings'}
@@ -113,7 +113,7 @@ export function AdminBookingsPage({ locale }: { locale: Locale }) {
           </div>
 
           {/* Bookings Table Card */}
-          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
+          <div className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-4">
             <AdminBookingsTab
               bookings={actions.bookings}
               onRequestCancel={view.setSelectedBookingForCancel}

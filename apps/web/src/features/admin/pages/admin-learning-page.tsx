@@ -159,7 +159,7 @@ export function AdminLearningPage({ locale }: { locale: Locale }) {
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
           {cards.map(({ label, value, hint, Icon }) => (
-            <div key={label} className="bg-card border border-border rounded-2xl p-4.5">
+            <div key={label} className="bg-card border border-border rounded-xl p-4.5">
               <div className="flex items-center justify-between">
                 <p className="text-xs text-muted-foreground font-medium">{label}</p>
                 <Icon className="w-4 h-4 text-muted-foreground" />
@@ -172,7 +172,7 @@ export function AdminLearningPage({ locale }: { locale: Locale }) {
           ))}
         </div>
 
-        <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4">
+        <div className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-4">
           <div className="flex flex-wrap items-center justify-between gap-3">
             <h2 className="text-sm font-bold text-foreground">
               {isBn ? 'সেশন তালিকা' : 'Session records'}

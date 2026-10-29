@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -23,15 +23,15 @@ interface AdminTriageCommandCenterProps {
 
 export function AdminTriageCommandCenter({
   locale,
-  pendingVerifications = 4,
-  activeReplacements = 1,
+  pendingVerifications = 0,
+  activeReplacements = 0,
   openSafetyReports = 0,
 }: AdminTriageCommandCenterProps) {
   const isBn = locale === 'bn';
 
   return (
     <div
-      className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs"
+      className="bg-card border border-border rounded-xl p-5 sm:p-6"
       data-testid="admin-triage-command-center"
     >
       <div className="flex items-center justify-between pb-4 border-b border-border">

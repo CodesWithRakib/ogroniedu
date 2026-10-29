@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useTranslations } from 'next-intl';
 import type { AdminReconciliationData } from '../../types/admin.types';
@@ -9,7 +9,7 @@ export function AdminOverviewTab({ reconciliation }: { reconciliation: AdminReco
 
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-5" data-testid="overview-tab-content">
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs">
+      <div className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-4">
         <h3 className="text-base font-bold text-foreground flex items-center justify-between">
           <span>{t('reconciliationTitle')}</span>
           <span
@@ -23,19 +23,19 @@ export function AdminOverviewTab({ reconciliation }: { reconciliation: AdminReco
           </span>
         </h3>
         <div className="grid grid-cols-3 gap-3 text-center">
-          <div className="bg-surface/75 p-3.5 rounded-2xl border border-border">
+          <div className="bg-surface p-3.5 rounded-xl border border-border">
             <p className="text-xs text-muted-foreground font-medium">{t('totalDebits')}</p>
             <p className="text-sm font-mono font-bold text-foreground mt-1">
               {reconciliation.totalDebits} BDT
             </p>
           </div>
-          <div className="bg-surface/75 p-3.5 rounded-2xl border border-border">
+          <div className="bg-surface p-3.5 rounded-xl border border-border">
             <p className="text-xs text-muted-foreground font-medium">{t('totalCredits')}</p>
             <p className="text-sm font-mono font-bold text-foreground mt-1">
               {reconciliation.totalCredits} BDT
             </p>
           </div>
-          <div className="bg-surface/75 p-3.5 rounded-2xl border border-border">
+          <div className="bg-surface p-3.5 rounded-xl border border-border">
             <p className="text-xs text-muted-foreground font-medium">{t('discrepancy')}</p>
             <p
               className={`text-sm font-mono font-bold mt-1 ${
@@ -48,7 +48,7 @@ export function AdminOverviewTab({ reconciliation }: { reconciliation: AdminReco
         </div>
       </div>
 
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-3 shadow-xs">
+      <div className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-3">
         <h3 className="text-base font-bold text-foreground">{t('auditTrailTitle')}</h3>
         <p className="text-xs text-primary  font-semibold flex items-center gap-1.5">
           <span>🛡️</span>
