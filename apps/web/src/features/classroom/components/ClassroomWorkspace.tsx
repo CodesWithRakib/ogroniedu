@@ -875,10 +875,10 @@ export function ClassroomWorkspace({
           <button
             type="button"
             onClick={() => setIsSplitMode(!isSplitMode)}
-            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-black border-2 transition-all ${
+            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all ${
               isSplitMode
-                ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
-                : 'bg-white border-slate-300 text-slate-800 hover:bg-slate-100'
+                ? 'bg-primary border-primary text-primary-foreground shadow-xs'
+                : 'bg-card border-border text-foreground hover:bg-muted/40'
             }`}
             title={isBn ? 'ভিডিও ও হোয়াইটবোর্ড একসাথে দেখুন' : 'View video and tools side-by-side'}
             data-testid="split-mode-toggle"

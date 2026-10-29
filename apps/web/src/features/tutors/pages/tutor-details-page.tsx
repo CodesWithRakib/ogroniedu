@@ -449,7 +449,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 text-xs sm:text-sm">
                 {profile.totalReviews > 0 && profile.ratingAverage != null ? (
                   <span
-                    className="inline-flex items-center gap-1.5 font-bold text-amber-900 bg-amber-50 px-3 py-1 rounded-full border-2 border-amber-300"
+                    className="inline-flex items-center gap-1.5 font-bold text-amber-900 bg-amber-50 px-3 py-1 rounded-full border border-amber-300"
                     data-testid="profile-rating"
                   >
                     <Star className="w-4 h-4 fill-amber-500 text-amber-600" aria-hidden="true" />
@@ -491,27 +491,27 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
               {/* Trust & Verification Badges with Strong Contrast */}
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border-2 border-emerald-300">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border border-emerald-300">
                   <ShieldCheck className="w-4 h-4 text-emerald-700" aria-hidden="true" />
                   {isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor'}
                 </span>
 
                 {profile.badges.includes('verified_identity') && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border-2 border-blue-300">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border border-blue-300">
                     <UserCheck className="w-3.5 h-3.5 text-blue-700" aria-hidden="true" />
                     {isBn ? 'এনআইডি ভেরিফাইড' : 'NID Verified'}
                   </span>
                 )}
 
                 {profile.badges.includes('verified_academic') && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-800 border-2 border-indigo-300">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-800 border border-indigo-300">
                     <GraduationCap className="w-3.5 h-3.5 text-indigo-700" aria-hidden="true" />
                     {isBn ? 'শিক্ষাগত সনদ অনুমোদিত' : 'Academic Verified'}
                   </span>
                 )}
 
                 {profile.badges.includes('verified_institutional') && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-900 border-2 border-purple-300">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-900 border border-purple-300">
                     <Award className="w-3.5 h-3.5 text-purple-700" aria-hidden="true" />
                     {isBn ? 'প্রাতিষ্ঠানিক সনদ অনুমোদিত' : 'Institutional Verified'}
                   </span>
@@ -1023,7 +1023,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 )}
                 {bookingSuccess && (
                   <Alert
-                    className="rounded-xl border-2 border-emerald-300 bg-emerald-50 text-emerald-900"
+                    className="rounded-xl border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-950 dark:text-emerald-100"
                     data-testid="booking-success"
                   >
                     <AlertDescription className="font-bold">{bookingSuccess}</AlertDescription>

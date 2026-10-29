@@ -228,7 +228,7 @@ export function ClassroomControlBar({
         <button
           type="button"
           onClick={onToggleLowDataMode}
-          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black border-2 transition-all active:scale-95 ${
+          className={`flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border transition-all active:scale-95 ${
             lowDataMode
               ? 'bg-amber-50 border-amber-300 text-amber-800'
               : 'bg-slate-100 hover:bg-slate-200 border-slate-200 text-slate-700'
@@ -248,7 +248,7 @@ export function ClassroomControlBar({
         </button>
 
         <div
-          className={`hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-black border-2 ${
+          className={`hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border ${
             wakeLockActive
               ? 'bg-blue-50 border-blue-300 text-blue-700'
               : 'bg-slate-100 border-slate-200 text-slate-600'

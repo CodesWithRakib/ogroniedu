@@ -10,3 +10,4 @@ export default async function BookingsRedirectPage({
   const locale: Locale = rawLocale === 'en' ? 'en' : 'bn';
   redirect(`/${locale}/dashboard/student/requests`);
 }
+

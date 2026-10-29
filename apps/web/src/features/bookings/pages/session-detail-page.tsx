@@ -486,7 +486,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       {/* Class Schedule, Reschedule & Calendar Sync Card */}
       <Card
         data-testid="session-calendar-sync-card"
-        className="bg-card border-2 border-border rounded-xl p-6 text-card-foreground flex flex-col gap-4"
+        className="bg-card border border-border rounded-xl p-6 text-card-foreground flex flex-col gap-4"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex flex-col gap-1">

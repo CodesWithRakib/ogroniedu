@@ -319,7 +319,7 @@ export function ClassroomPollModal({
                   }
                   required
                   rows={2}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border-2 border-slate-300 rounded-xl text-slate-900 font-bold text-sm focus:bg-white focus:border-blue-600 focus:outline-hidden transition-colors"
+                  className="w-full px-3.5 py-2.5 bg-background border border-border rounded-xl text-foreground font-semibold text-sm focus:border-primary focus:outline-hidden transition-colors"
                 />
               </div>
 
@@ -339,7 +339,7 @@ export function ClassroomPollModal({
                         onChange={(e) => handleOptionChange(e.target.value, idx)}
                         placeholder={isBn ? `বিকল্প ${idx + 1}` : `Option ${idx + 1}`}
                         required
-                        className="flex-1 px-3 py-2 bg-slate-50 border-2 border-slate-200 rounded-xl text-slate-900 font-bold text-xs sm:text-sm focus:bg-white focus:border-blue-600 focus:outline-hidden"
+                        className="flex-1 px-3 py-2 bg-background border border-border rounded-xl text-foreground font-semibold text-xs sm:text-sm focus:border-primary focus:outline-hidden"
                       />
                       {options.length > 2 && (
                         <button
@@ -376,7 +376,7 @@ export function ClassroomPollModal({
                 <select
                   value={duration}
                   onChange={(e) => setDuration(Number(e.target.value))}
-                  className="px-3 py-1.5 bg-slate-50 border border-slate-300 rounded-xl text-xs font-bold text-slate-800 focus:outline-hidden"
+                  className="px-3 py-1.5 bg-background border border-border rounded-xl text-xs font-semibold text-foreground focus:outline-hidden"
                 >
                   <option value={30}>{isBn ? '৩০ সেকেন্ড' : '30 seconds'}</option>
                   <option value={60}>{isBn ? '১ মিনিট' : '1 minute'}</option>

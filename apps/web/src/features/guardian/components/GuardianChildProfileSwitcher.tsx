@@ -90,8 +90,8 @@ export function GuardianChildProfileSwitcher({
               onClick={() => onSelectChild(child.studentId)}
               className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-left transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-primary-soft text-foreground border-2 border-primary'
-                  : 'bg-surface hover:bg-muted/40 border border-border/80 text-muted-foreground'
+                  ? 'bg-primary/10 text-foreground border border-primary font-bold shadow-xs'
+                  : 'bg-card hover:bg-muted/40 border border-border text-muted-foreground'
               }`}
             >
               <div

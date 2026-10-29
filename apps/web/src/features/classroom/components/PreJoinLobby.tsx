@@ -443,15 +443,15 @@ export function PreJoinLobby({
 
       {/* Expandable Device Settings Drawer */}
       {showSettings && (
-        <div className="mt-6 pt-5 border-t-2 border-slate-200 grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in duration-200">
+        <div className="mt-6 pt-5 border-t border-border grid grid-cols-1 sm:grid-cols-2 gap-4 animate-in fade-in duration-200">
           <div>
-            <label className="block text-xs sm:text-sm font-black text-slate-900 mb-2">
+            <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2">
               {isBn ? 'ক্যামেরা নির্বাচন' : 'Select Camera'}
             </label>
             <select
               value={selectedVideoDevice}
               onChange={(e) => setSelectedVideoDevice(e.target.value)}
-              className="w-full text-xs sm:text-sm p-3 min-h-[46px] rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full text-xs sm:text-sm p-3 min-h-[46px] rounded-xl border border-border bg-card text-foreground font-semibold focus:outline-hidden focus:ring-2 focus:ring-primary/20"
             >
               {devices.videoInputs.map((d) => (
                 <option key={d.deviceId} value={d.deviceId}>
@@ -462,13 +462,13 @@ export function PreJoinLobby({
           </div>
 
           <div>
-            <label className="block text-xs sm:text-sm font-black text-slate-900 mb-2">
+            <label className="block text-xs sm:text-sm font-semibold text-foreground mb-2">
               {isBn ? 'মাইক্রোফোন নির্বাচন' : 'Select Microphone'}
             </label>
             <select
               value={selectedAudioDevice}
               onChange={(e) => setSelectedAudioDevice(e.target.value)}
-              className="w-full text-xs sm:text-sm p-3 min-h-[46px] rounded-xl border-2 border-slate-300 bg-white text-slate-900 font-bold focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+              className="w-full text-xs sm:text-sm p-3 min-h-[46px] rounded-xl border border-border bg-card text-foreground font-semibold focus:outline-hidden focus:ring-2 focus:ring-primary/20"
             >
               {devices.audioInputs.map((d) => (
                 <option key={d.deviceId} value={d.deviceId}>

@@ -65,7 +65,7 @@ export function TutorTodayScheduleTimeline({
       <div className="mt-4 flex-1">
         {isLoading ? (
           <div className="py-8 flex justify-center">
-            <div className="animate-spin rounded-full h-7 w-7 border-2 border-primary border-t-transparent" />
+            <div className="animate-spin rounded-full h-7 w-7 border border-primary border-t-primary" />
           </div>
         ) : sessions.length === 0 ? (
           <div className="py-8 px-4 text-center">
