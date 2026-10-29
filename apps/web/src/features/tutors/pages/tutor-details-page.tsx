@@ -22,8 +22,9 @@ import {
   Award,
   Lock,
 } from 'lucide-react';
-import { Button, Textarea, Label, NativeSelect, Alert, AlertDescription } from '@/components/ui';
+import { Button, Alert, AlertDescription } from '@/components/ui';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { formatTimeString12h } from '@/lib/format';
 import {
   useGetTutorPublicProfileQuery,
   useGetSavedTutorsQuery,
@@ -51,6 +52,26 @@ const DAY_MAP: Record<string, number> = {
   friday: 5,
   saturday: 6,
 };
+
+function getShiftLabel(startLocal: string, isBn: boolean): string {
+  const hour = parseInt(startLocal.split(':')[0] || '0', 10);
+  if (hour >= 17) return isBn ? 'সন্ধ্যা সেশন' : 'Evening Session';
+  if (hour >= 12) return isBn ? 'দুপুর/বিকাল' : 'Afternoon Session';
+  return isBn ? 'সকাল সেশন' : 'Morning Session';
+}
+
+function getDurationHours(startLocal: string, endLocal: string, locale: Locale): string {
+  const startHour = parseInt(startLocal.split(':')[0] || '0', 10);
+  const startMin = parseInt(startLocal.split(':')[1] || '0', 10);
+  const endHour = parseInt(endLocal.split(':')[0] || '0', 10);
+  const endMin = parseInt(endLocal.split(':')[1] || '0', 10);
+
+  const totalMin = endHour * 60 + endMin - (startHour * 60 + startMin);
+  if (totalMin <= 0) return '';
+  const hrs = totalMin / 60;
+  const isBn = locale === 'bn';
+  return `${formatLocalizedNumber(hrs % 1 === 0 ? hrs : hrs.toFixed(1), locale)} ${isBn ? 'ঘণ্টা' : 'hrs'}`;
+}
 
 function SectionCard({
   title,
@@ -839,34 +860,64 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 </div>
               </div>
 
-              {/* Weekly Time Slots */}
-              <div className="border-t border-border pt-3">
-                <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5 mb-2">
-                  <CalendarDays className="w-3.5 h-3.5 text-blue-700" aria-hidden="true" />
-                  {isBn ? 'সাপ্তাহিক ক্লাসের সময়' : 'Available Days & Hours'}
-                </span>
+              {/* Weekly Time Slots - 12-Hour Timeline */}
+              <div className="border-t border-border pt-4">
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+                    <CalendarDays className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
+                    {isBn ? 'সাপ্তাহিক ক্লাসের সময়সূচি' : 'Weekly Availability'}
+                  </span>
+                  {(profile.availability?.length ?? 0) > 0 && (
+                    <span className="text-[10px] font-bold text-primary bg-primary/10 border border-primary/20 px-2 py-0.5 rounded-full">
+                      {formatLocalizedNumber(profile.availability?.length ?? 0, locale)}{' '}
+                      {isBn ? 'দিন উপলব্ধ' : 'days available'}
+                    </span>
+                  )}
+                </div>
 
                 {(profile.availability?.length ?? 0) === 0 ? (
                   <p className="text-xs text-muted-foreground">
                     {isBn ? 'সময়সূচি নির্ধারিত নয়' : 'No availability published'}
                   </p>
                 ) : (
-                  <div className="flex flex-col gap-1.5">
+                  <div className="relative pl-5 before:absolute before:left-2 before:top-2 before:bottom-2 before:w-0.5 before:bg-gradient-to-b before:from-primary before:via-blue-300 before:to-muted/40 flex flex-col gap-2.5">
                     {(profile.availability ?? []).map((slot) => {
                       const dayName = isBn
                         ? WEEKDAY_LABELS[slot.weekday]?.bn
                         : WEEKDAY_LABELS[slot.weekday]?.en;
-                      const start = slot.startLocal.slice(0, 5);
-                      const end = slot.endLocal.slice(0, 5);
+                      const start12 = formatTimeString12h(slot.startLocal, locale);
+                      const end12 = formatTimeString12h(slot.endLocal, locale);
+                      const shiftLabel = getShiftLabel(slot.startLocal, isBn);
+                      const durationStr = getDurationHours(slot.startLocal, slot.endLocal, locale);
+
                       return (
                         <div
                           key={`${slot.weekday}-${slot.startLocal}-${slot.endLocal}`}
-                          className="flex items-center justify-between rounded-xl bg-slate-50 border border-border px-3 py-2 text-xs"
+                          className="relative flex items-center justify-between rounded-xl bg-card border border-border p-3 shadow-xs hover:border-primary/40 transition-all"
                         >
-                          <span className="font-bold text-foreground">{dayName}</span>
-                          <span className="text-muted-foreground font-mono font-medium">
-                            {start} — {end}
-                          </span>
+                          {/* Timeline node */}
+                          <div className="absolute -left-5 mt-0.5 flex h-3.5 w-3.5 items-center justify-center rounded-full bg-primary/20 ring-4 ring-background border-2 border-primary" />
+
+                          <div className="flex flex-col gap-0.5">
+                            <div className="flex items-center gap-2">
+                              <span className="font-bold text-foreground text-xs">{dayName}</span>
+                              <span className="text-[10px] font-bold text-primary bg-primary/10 px-2 py-0.5 rounded-md">
+                                {shiftLabel}
+                              </span>
+                            </div>
+                            {durationStr && (
+                              <span className="text-[10px] text-muted-foreground font-medium">
+                                {durationStr} {isBn ? 'সেশন উইন্ডো' : 'session window'}
+                              </span>
+                            )}
+                          </div>
+
+                          <div className="flex items-center gap-1.5 font-bold text-xs bg-slate-50 dark:bg-muted/40 border border-border px-2.5 py-1 rounded-lg text-foreground font-mono">
+                            <Clock className="w-3.5 h-3.5 text-primary" />
+                            <span>
+                              {start12} — {end12}
+                            </span>
+                          </div>
                         </div>
                       );
                     })}
@@ -876,192 +927,116 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             </div>
           </SectionCard>
 
-          {/* Tutoring Booking Request Card */}
+          {/* Tutoring Booking Journey & Quick CTA Card - NO INLINE FORM */}
           <SectionCard
-            title={isBn ? 'টিউশন বুকিং অনুরোধ' : 'Request Tutoring Session'}
-            icon={<Send className="w-5 h-5 text-blue-700" aria-hidden="true" />}
+            title={isBn ? 'বুকিং প্রক্রিয়া ও টিউশন শুরু' : 'How Booking Works'}
+            icon={<Sparkles className="w-5 h-5 text-primary" aria-hidden="true" />}
+            badge={
+              <span className="text-[11px] font-bold text-emerald-800 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-300">
+                {isBn ? '৩টি সহজ ধাপ' : '3 Easy Steps'}
+              </span>
+            }
           >
-            {!currentUser ? (
-              <div className="flex flex-col gap-4" data-testid="profile-login-required">
-                <p className="text-sm text-muted-foreground leading-relaxed font-normal">
-                  {isBn
-                    ? 'শিক্ষককে সরাসরি টিউশন অনুরোধ পাঠাতে অনুগ্রহ করে আপনার অভিভাবক বা শিক্ষার্থী অ্যাকাউন্টে লগইন করুন।'
-                    : 'Sign in to send a direct tutoring booking request to this educator.'}
-                </p>
-                <Link href={withLocale('/login', locale)} className="block">
-                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 rounded-xl">
-                    {isBn ? 'লগইন করুন' : 'Sign in'}
-                  </Button>
-                </Link>
-              </div>
-            ) : studentOptions.length === 0 ? (
-              <p className="text-sm text-muted-foreground">
-                {isBn
-                  ? 'অনুরোধ পাঠাতে একজন শিক্ষার্থী প্রোফাইল প্রয়োজন।'
-                  : 'A student profile is required to request tutoring.'}
-              </p>
-            ) : (
-              <form onSubmit={handleBookingSubmit} className="flex flex-col gap-4">
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="student-select" className="text-xs font-bold text-foreground">
-                    {isBn ? 'শিক্ষার্থী নির্বাচন করুন' : 'Select Student'}
-                  </Label>
-                  <NativeSelect
-                    id="student-select"
-                    value={selectedStudentId}
-                    onChange={(e) => setSelectedStudentId(e.target.value)}
-                    className="text-xs rounded-xl border-slate-300 text-foreground"
-                  >
-                    {studentOptions.map((option) => (
-                      <option key={option.id} value={option.id}>
-                        {option.label}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="subject-select" className="text-xs font-bold text-foreground">
-                    {isBn ? 'বিষয় ও শ্রেণি' : 'Subject & Level'}
-                  </Label>
-                  <NativeSelect
-                    id="subject-select"
-                    value={selectedSubject?.id ?? ''}
-                    onChange={(e) => setSelectedSubjectEntryId(e.target.value)}
-                    className="text-xs rounded-xl border-slate-300 text-foreground"
-                  >
-                    {subjects.map((s) => (
-                      <option key={s.id} value={s.id}>
-                        {(isBn ? s.subjectNameBn : s.subjectNameEn) +
-                          ' — ' +
-                          (isBn ? s.educationLevelNameBn : s.educationLevelNameEn)}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="mode-select" className="text-xs font-bold text-foreground">
-                    {isBn ? 'পাঠদানের পদ্ধতি' : 'Teaching Mode'}
-                  </Label>
-                  <NativeSelect
-                    id="mode-select"
-                    value={selectedMode}
-                    onChange={(e) =>
-                      setSelectedMode(e.target.value as 'online' | 'in_person' | 'hybrid')
-                    }
-                    className="text-xs rounded-xl border-slate-300 text-foreground"
-                  >
-                    {profile.teachingModes.map((mode) => (
-                      <option key={mode} value={mode}>
-                        {mode === 'online'
-                          ? isBn
-                            ? 'অনলাইন'
-                            : 'Online'
-                          : mode === 'in_person'
-                            ? isBn
-                              ? 'হোম টিউশন'
-                              : 'In-person'
-                            : isBn
-                              ? 'হাইব্রিড'
-                              : 'Hybrid'}
-                      </option>
-                    ))}
-                  </NativeSelect>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label className="text-xs font-bold text-foreground">
-                    {isBn ? 'পছন্দের দিনসমূহ' : 'Preferred Days'}
-                  </Label>
-                  <div className="flex flex-wrap gap-1.5">
-                    {Object.entries(DAY_MAP).map(([key, index]) => {
-                      const isSelected = selectedDays.includes(key);
-                      return (
-                        <button
-                          key={key}
-                          type="button"
-                          onClick={() => toggleDay(key)}
-                          aria-pressed={isSelected}
-                          className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors ${
-                            isSelected
-                              ? 'border-primary bg-primary text-primary-foreground'
-                              : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground'
-                          }`}
-                        >
-                          {isBn ? WEEKDAY_LABELS[index]?.bn : WEEKDAY_LABELS[index]?.en}
-                        </button>
-                      );
-                    })}
+            <div className="flex flex-col gap-5 text-xs">
+              {/* 3-Step Visual Process Timeline */}
+              <div className="relative pl-6 before:absolute before:left-2.5 before:top-2 before:bottom-2 before:w-0.5 before:bg-gradient-to-b before:from-primary before:via-blue-300 before:to-muted/40 flex flex-col gap-4">
+                {/* Step 1 */}
+                <div className="relative flex flex-col gap-1">
+                  <div className="absolute -left-6 mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground font-black text-[10px] ring-4 ring-background shadow-xs">
+                    ১
                   </div>
-                </div>
-
-                <div className="flex flex-col gap-1.5">
-                  <Label htmlFor="booking-notes" className="text-xs font-bold text-foreground">
-                    {isBn
-                      ? 'শিক্ষকের জন্য কোনো বিশেষ বার্তা (ঐচ্ছিক)'
-                      : 'Message for tutor (optional)'}
-                  </Label>
-                  <Textarea
-                    id="booking-notes"
-                    value={bookingNotes}
-                    onChange={(e) => setBookingNotes(e.target.value)}
-                    rows={3}
-                    placeholder={
-                      isBn
-                        ? 'আপনার শিক্ষার্থীর বর্তমান অবস্থা বা বিশেষ কোনো প্রয়োজনীয়তা লিখুন...'
-                        : 'Mention student current topics or specific requirements...'
-                    }
-                    className="text-xs rounded-xl border-slate-300 text-foreground placeholder:text-slate-400"
-                  ></Textarea>
-                </div>
-
-                {bookingError && (
-                  <Alert variant="destructive" className="rounded-xl">
-                    <AlertDescription role="alert">{bookingError}</AlertDescription>
-                  </Alert>
-                )}
-                {bookingSuccess && (
-                  <Alert
-                    className="rounded-xl border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 text-emerald-950 dark:text-emerald-100"
-                    data-testid="booking-success"
-                  >
-                    <AlertDescription className="font-bold">{bookingSuccess}</AlertDescription>
-                  </Alert>
-                )}
-
-                <Button
-                  type="submit"
-                  disabled={isBookingSubmitting || !selectedSubject}
-                  className="w-full gap-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 transition-colors"
-                  data-testid="submit-booking-request"
-                >
-                  <Send className="w-4 h-4" aria-hidden="true" />
-                  {isBookingSubmitting
-                    ? isBn
-                      ? 'অনুরোধ পাঠানো হচ্ছে...'
-                      : 'Sending request...'
-                    : isBn
-                      ? 'টিউশন অনুরোধ পাঠান'
-                      : 'Send Tutoring Request'}
-                </Button>
-
-                {/* Trust and Escrow Notice */}
-                <div className="rounded-xl bg-muted/40 p-3.5 flex flex-col gap-1.5 text-[11px] text-muted-foreground border border-border">
-                  <div className="flex items-center gap-1.5 font-bold text-foreground">
-                    <Lock className="w-3.5 h-3.5 text-blue-700" />
-                    <span>
-                      {isBn ? 'অগ্রণী এসক্রো পেমেন্ট সুরক্ষা' : 'Ogroni Escrow Security Guarantee'}
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground text-xs">
+                      {isBn ? 'অনুরোধ পাঠান' : 'Submit Booking Request'}
+                    </span>
+                    <span className="text-[10px] font-semibold text-primary">
+                      {isBn ? 'ধাপ ১' : 'Step 1'}
                     </span>
                   </div>
-                  <p className="leading-relaxed">
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
                     {isBn
-                      ? 'শিক্ষক অনুরোধ গ্রহণ করার পর প্রথম ক্লাস শুরু হবে। সন্তোষজনক ক্লাসের পর পেমেন্ট শিক্ষকদের কাছে পৌঁছাবে।'
-                      : 'Tutoring starts after tutor acceptance. Payment is safely held in escrow until session completion.'}
+                      ? 'বিষয়, শ্রেণি, পাঠদান মাধ্যম ও পছন্দের দিন-সময় উল্লেখ করে টিউশন অনুরোধ পাঠান।'
+                      : 'Select student, subject, preferred learning mode, and weekly schedule.'}
                   </p>
                 </div>
-              </form>
-            )}
+
+                {/* Step 2 */}
+                <div className="relative flex flex-col gap-1">
+                  <div className="absolute -left-6 mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground font-black text-[10px] ring-4 ring-background shadow-xs">
+                    ২
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground text-xs">
+                      {isBn ? 'শিক্ষক পর্যালোচনা ও কনফার্মেশন' : 'Tutor Acceptance'}
+                    </span>
+                    <span className="text-[10px] font-semibold text-primary">
+                      {isBn ? 'ধাপ ২' : 'Step 2'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    {isBn
+                      ? 'শিক্ষক আপনার পাঠ্যসূচি যাচাই করবেন এবং আলোচনার মাধ্যমে ক্লাস সময়সূচি চূড়ান্ত করবেন।'
+                      : 'The tutor reviews your requirements and confirms matching schedule slots.'}
+                  </p>
+                </div>
+
+                {/* Step 3 */}
+                <div className="relative flex flex-col gap-1">
+                  <div className="absolute -left-6 mt-0.5 flex h-5 w-5 items-center justify-center rounded-full bg-primary text-primary-foreground font-black text-[10px] ring-4 ring-background shadow-xs">
+                    ৩
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <span className="font-bold text-foreground text-xs">
+                      {isBn ? 'নিরাপদ এসক্রো ও ক্লাস শুরু' : 'Escrow Protected Learning'}
+                    </span>
+                    <span className="text-[10px] font-semibold text-primary">
+                      {isBn ? 'ধাপ ৩' : 'Step 3'}
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-muted-foreground leading-relaxed">
+                    {isBn
+                      ? 'ক্লাস সন্তোষজনকভাবে সম্পন্ন হওয়ার পরই কেবল শিক্ষকের কাছে ফি ছাড় করা হয়। শতভাগ নিরাপদ।'
+                      : 'Classes commence under 100% money-back escrow protection.'}
+                  </p>
+                </div>
+              </div>
+
+              {/* Primary Action Button (Triggers Modal) */}
+              <div className="pt-1 flex flex-col gap-2">
+                <Button
+                  type="button"
+                  onClick={handleOpenRequestModal}
+                  data-testid="request-tutoring-sidebar-btn"
+                  className="w-full h-12 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-sm shadow-md shadow-primary/20 flex items-center justify-center gap-2 cursor-pointer transition-all hover:scale-[1.01]"
+                >
+                  <Send className="w-4 h-4" />
+                  <span>{isBn ? 'টিউশন অনুরোধ পাঠান' : 'Request Tutoring Now'}</span>
+                </Button>
+
+                {!currentUser && (
+                  <p className="text-[11px] text-center text-muted-foreground">
+                    {isBn
+                      ? 'অনুরোধ পাঠাতে অভিভাবক বা শিক্ষার্থী একাউন্টে লগইন প্রয়োজন।'
+                      : 'Sign-in required to submit request.'}
+                  </p>
+                )}
+              </div>
+
+              {/* Escrow Guarantee Pill */}
+              <div className="rounded-xl bg-muted/40 p-3 flex items-start gap-2.5 text-[11px] text-muted-foreground border border-border">
+                <Lock className="w-4 h-4 text-primary shrink-0 mt-0.5" />
+                <div className="flex flex-col gap-0.5">
+                  <span className="font-bold text-foreground">
+                    {isBn ? 'অগ্রণী এসক্রো গ্যারান্টি' : 'Ogroni Escrow Guarantee'}
+                  </span>
+                  <p className="leading-relaxed">
+                    {isBn
+                      ? 'শিক্ষক সম্মতি জানানোর পর ক্লাস শুরু হবে। সন্তোষজনক ক্লাসের পর পেমেন্ট শিক্ষকদের কাছে পৌঁছাবে।'
+                      : 'Payment is safely held until session completion. Full refund if unsatisfied.'}
+                  </p>
+                </div>
+              </div>
+            </div>
           </SectionCard>
         </div>
       </div>
@@ -1071,6 +1046,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
         <BookingRequestModal
           tutor={tutorCardData}
           locale={locale}
+          availability={profile.availability}
           studentOptions={studentOptions}
           levelOptions={levelOptions}
           value={{

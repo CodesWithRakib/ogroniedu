@@ -1,5 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { getDictionary, formatLocalizedNumber } from '../src/lib/i18n';
+import { formatTimeString12h } from '../src/lib/format';
 import bnDict from '../messages/bn.json';
 import enDict from '../messages/en.json';
 
@@ -51,5 +52,21 @@ describe('Bilingual Localization & Dictionary Parity Tests', () => {
     expect(formatLocalizedNumber(0, 'en')).toBe('0');
     expect(formatLocalizedNumber(12345, 'en')).toBe('12345');
     expect(formatLocalizedNumber(2026, 'en')).toBe('2026');
+  });
+
+  it('should correctly format 24-hour time strings into 12-hour format in bn and en', () => {
+    // Bengali 12-hour formatting
+    expect(formatTimeString12h('17:00', 'bn')).toBe('৫:০০ PM');
+    expect(formatTimeString12h('21:00', 'bn')).toBe('৯:০০ PM');
+    expect(formatTimeString12h('09:30', 'bn')).toBe('৯:৩০ AM');
+    expect(formatTimeString12h('12:00', 'bn')).toBe('১২:০০ PM');
+    expect(formatTimeString12h('00:00', 'bn')).toBe('১২:০০ AM');
+
+    // English 12-hour formatting
+    expect(formatTimeString12h('17:00', 'en')).toBe('5:00 PM');
+    expect(formatTimeString12h('21:00', 'en')).toBe('9:00 PM');
+    expect(formatTimeString12h('09:30', 'en')).toBe('9:30 AM');
+    expect(formatTimeString12h('12:00', 'en')).toBe('12:00 PM');
+    expect(formatTimeString12h('00:00', 'en')).toBe('12:00 AM');
   });
 });

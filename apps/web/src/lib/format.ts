@@ -1,4 +1,4 @@
-import type { Locale } from './i18n';
+import { formatLocalizedNumber, type Locale } from './i18n';
 
 /** Centralized locale-aware formatters. Features must import from here — no ad-hoc toLocaleString. */
 
@@ -101,4 +101,29 @@ export function formatBDTMinor(minor: string | number | null | undefined, locale
   const major = n / 100;
   const digits = major.toLocaleString(locale === 'bn' ? 'bn-BD' : 'en-US');
   return locale === 'bn' ? `৳${digits}` : `BDT ${digits}`;
+}
+
+/**
+ * Format a 24-hour time string ("17:00", "09:30:00") into a localized 12-hour format ("5:00 PM" / "৫:০০ PM").
+ */
+export function formatTimeString12h(
+  timeStr: string | null | undefined,
+  locale: Locale = 'bn',
+): string {
+  if (!timeStr) return '—';
+  const parts = timeStr.split(':');
+  if (parts.length < 2) return timeStr;
+
+  const hours = parseInt(parts[0], 10);
+  const minutes = parts[1].padStart(2, '0');
+  if (Number.isNaN(hours)) return timeStr;
+
+  const isPM = hours >= 12;
+  const period = isPM ? 'PM' : 'AM';
+  const h12 = hours % 12 || 12;
+
+  const formattedHours = formatLocalizedNumber(h12, locale);
+  const formattedMinutes = formatLocalizedNumber(minutes, locale);
+
+  return `${formattedHours}:${formattedMinutes} ${period}`;
 }
