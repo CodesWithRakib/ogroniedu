@@ -102,24 +102,26 @@ export function WeeklyActivityChart({
     subtitle ??
     (isBn ? 'সপ্তাহের দিনগুলোতে ক্লাস ও স্টাডির সময়' : 'Learning and session volume across week');
 
+  const totalSessionsThisWeek = data.reduce((sum, d) => sum + (d.count || 0), 0);
+
   return (
-    <div className="bg-card border border-border/80 rounded-2xl p-5 sm:p-6 flex flex-col justify-between select-none shadow-xs">
+    <div className="bg-card border border-border rounded-xl p-5 flex flex-col justify-between select-none">
       {/* Header */}
-      <div className="flex items-center justify-between pb-4">
+      <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
         <div>
-          <h3 className="text-base font-bold text-foreground tracking-tight flex items-center gap-2">
+          <h3 className="text-sm sm:text-base font-bold text-foreground tracking-tight flex items-center gap-2">
             <BarChart2 className="h-4 w-4 text-primary" />
             {heading}
           </h3>
           <p className="text-xs text-muted-foreground mt-0.5">{sub}</p>
         </div>
-        <span className="text-[11px] font-semibold px-2.5 py-1 rounded-full bg-primary-soft text-primary">
+        <span className="text-[11px] font-semibold px-2.5 py-0.5 rounded-full bg-primary-soft text-primary">
           {isBn ? 'এই সপ্তাহ' : 'This Week'}
         </span>
       </div>
 
       {/* Bar Chart Container */}
-      <div className="h-48 pt-6 pb-2 flex items-end justify-between gap-2 sm:gap-3 px-2">
+      <div className="h-44 pt-6 pb-2 flex items-end justify-between gap-2 sm:gap-3 px-1">
         {data.map((item, idx) => {
           const heightPercent = Math.max(15, Math.min(100, item.percentage));
           const isHighest = item.isPeak || item.percentage >= 85;
@@ -132,29 +134,34 @@ export function WeeklyActivityChart({
             >
               {/* Tooltip Badge on Hover or Peak */}
               {isHighest && (
-                <div className="absolute -top-6 bg-card border border-primary/20 shadow-xs text-foreground text-[10px] font-bold px-2 py-0.5 rounded-md pointer-events-none z-10 transition-transform group-hover:scale-110">
+                <div className="absolute -top-6 bg-popover border border-border text-popover-foreground text-[10px] font-bold px-2 py-0.5 rounded pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity">
                   {formatLocalizedNumber(item.percentage, locale)}%
+                </div>
+              )}
+              {item.count > 0 && !isHighest && (
+                <div className="absolute -top-6 bg-popover border border-border text-popover-foreground text-[10px] font-bold px-2 py-0.5 rounded pointer-events-none z-10 opacity-0 group-hover:opacity-100 transition-opacity">
+                  {formatLocalizedNumber(item.count, locale)} {isBn ? 'টি ক্লাস' : 'class'}
                 </div>
               )}
 
               {/* Bar Pill */}
               <div
-                className="w-full max-w-[32px] rounded-full overflow-hidden transition-all duration-300 relative flex flex-col justify-end"
+                className="w-full max-w-[28px] rounded-full overflow-hidden transition-all duration-300 relative flex flex-col justify-end"
                 style={{ height: `${heightPercent}%` }}
               >
                 {isHighest ? (
-                  /* Solid active pill bar */
-                  <div className="w-full h-full bg-gradient-to-t from-blue-600 to-indigo-600 rounded-full shadow-xs shadow-blue-500/25 transition-all" />
+                  <div className="w-full h-full bg-primary rounded-full transition-all" />
+                ) : item.percentage > 0 ? (
+                  <div className="w-full h-full bg-primary/60 rounded-full transition-all" />
                 ) : (
-                  /* Soft neutral pill bar */
-                  <div className="w-full h-full rounded-full bg-surface-muted group-hover:bg-primary-soft transition-colors" />
+                  <div className="w-full h-full rounded-full bg-muted transition-colors" />
                 )}
               </div>
 
               {/* Day label */}
               <span
                 className={cn(
-                  'mt-3 text-[11px] sm:text-xs font-semibold transition-colors',
+                  'mt-2.5 text-[11px] font-semibold transition-colors',
                   isHighest
                     ? 'text-primary font-bold'
                     : 'text-muted-foreground group-hover:text-foreground',
@@ -167,6 +174,11 @@ export function WeeklyActivityChart({
           );
         })}
       </div>
+      {data.length > 0 && totalSessionsThisWeek === 0 && (
+        <div className="pt-2 text-center text-[11px] text-muted-foreground">
+          {isBn ? 'এই সপ্তাহে কোনো ক্লাস সম্পন্ন হয়নি।' : 'No completed classes this week yet.'}
+        </div>
+      )}
     </div>
   );
 }

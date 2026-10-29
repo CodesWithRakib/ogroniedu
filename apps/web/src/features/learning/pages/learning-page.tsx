@@ -52,6 +52,29 @@ export function LearningPage({ locale }: { locale: Locale }) {
   const [assignmentInstructions, setAssignmentInstructions] = React.useState('');
   const [publishNow, setPublishNow] = React.useState('true');
 
+  const guardianAttendanceRate = React.useMemo(() => {
+    if (records.attendance.length === 0) return null;
+    const attended = records.attendance.filter(
+      (a) => a.attendanceStatus === 'present' || a.attendanceStatus === 'late',
+    ).length;
+    return Math.round((attended / records.attendance.length) * 100);
+  }, [records.attendance]);
+
+  const guardianAverageScore = React.useMemo(() => {
+    const scoredSubmissions = records.assignments
+      .filter((a) => a.submission && typeof a.submission.score === 'number')
+      .map((a) => ((a.submission?.score ?? 0) / (a.maxScore || 100)) * 100);
+    if (scoredSubmissions.length === 0) return null;
+    const sum = scoredSubmissions.reduce((acc, cur) => acc + cur, 0);
+    return Math.round(sum / scoredSubmissions.length);
+  }, [records.assignments]);
+
+  const guardianCompletedTasks = React.useMemo(() => {
+    return records.assignments.filter(
+      (a) => a.submission && a.submission.status === 'reviewed',
+    ).length;
+  }, [records.assignments]);
+
   async function handleCreateAssignment(e: React.FormEvent) {
     e.preventDefault();
     if (!records.activeBookingId || !assignmentTitle.trim()) return;
@@ -113,10 +136,9 @@ export function LearningPage({ locale }: { locale: Locale }) {
           activeCourseName={
             activeBooking?.subjectName || (locale === 'bn' ? 'চলতি কোর্স' : 'Active Course')
           }
-          completedTasksCount={
-            records.assignments.filter((a) => a.submission && a.submission.status === 'reviewed')
-              .length
-          }
+          attendanceRate={guardianAttendanceRate}
+          averageScore={guardianAverageScore}
+          completedTasksCount={guardianCompletedTasks}
         />
       )}
 
@@ -127,7 +149,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
       )}
       {records.bookingOptions.length > 0 && (
         <div
-          className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-card p-4 rounded-2xl border border-border"
+          className="mb-6 flex flex-wrap items-center justify-between gap-3 bg-card p-4 rounded-xl border border-border"
           data-testid="learning-booking-picker"
         >
           <div className="flex items-center gap-2">

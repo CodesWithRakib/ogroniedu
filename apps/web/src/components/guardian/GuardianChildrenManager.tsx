@@ -238,7 +238,7 @@ export function GuardianChildrenManager({
             setActiveTab('register');
             setIsModalOpen(true);
           }}
-          className="gap-2 shrink-0 rounded-full shadow-xs px-5 font-semibold"
+          className="gap-2 shrink-0 rounded-xl px-4 font-semibold"
           id="btn-add-child"
         >
           <UserPlus className="h-4 w-4" />
@@ -247,7 +247,7 @@ export function GuardianChildrenManager({
       </div>
 
       {/* Minor Protection & Autonomy Info Banner */}
-      <div className="rounded-2xl border border-primary/20 bg-gradient-to-r from-primary/10 via-primary/5 to-transparent p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-xs">
+      <div className="rounded-xl border border-border bg-card p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-start gap-3">
           <div className="h-10 w-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 mt-0.5">
             <ShieldCheck className="h-5 w-5" />
@@ -305,7 +305,7 @@ export function GuardianChildrenManager({
                   setActiveTab('register');
                   setIsModalOpen(true);
                 }}
-                className="rounded-full px-6 gap-2 shadow-xs font-semibold"
+                className="rounded-xl px-5 gap-2 font-semibold"
               >
                 <UserPlus className="h-4 w-4" />
                 {isBn ? 'নতুন সন্তান নিবন্ধন করুন' : 'Register New Child'}
@@ -316,7 +316,7 @@ export function GuardianChildrenManager({
                   setActiveTab('link');
                   setIsModalOpen(true);
                 }}
-                className="rounded-full px-5 gap-2 font-medium"
+                className="rounded-xl px-4 gap-2 font-medium"
               >
                 <LinkIcon className="h-4 w-4" />
                 {isBn ? 'বিদ্যমান অ্যাকাউন্ট লিঙ্ক' : 'Link Existing Account'}
@@ -336,12 +336,12 @@ export function GuardianChildrenManager({
             return (
               <Card
                 key={child.linkId}
-                className="rounded-2xl border-border bg-card hover:border-primary/40 hover:shadow-xs transition-all p-5 flex flex-col justify-between"
+                className="rounded-xl border-border bg-card hover:border-primary/40 transition-colors p-5 flex flex-col justify-between"
               >
                 <div className="flex flex-col gap-3">
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex items-center gap-3">
-                      <div className="h-12 w-12 rounded-2xl bg-gradient-to-br from-primary/20 to-primary/5 border border-primary/20 text-primary font-black text-sm flex items-center justify-center shrink-0">
+                      <div className="h-10 w-10 rounded-xl bg-primary-soft text-primary border border-primary/20 font-bold text-sm flex items-center justify-center shrink-0">
                         {initials || 'ST'}
                       </div>
                       <div className="flex flex-col gap-1">
@@ -457,9 +457,9 @@ export function GuardianChildrenManager({
             <button
               type="button"
               onClick={() => setActiveTab('register')}
-              className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'register'
-                  ? 'bg-card text-foreground shadow-xs border border-border'
+                  ? 'bg-card text-foreground border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -469,9 +469,9 @@ export function GuardianChildrenManager({
             <button
               type="button"
               onClick={() => setActiveTab('link')}
-              className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
+              className={`flex-1 py-2 text-xs font-semibold rounded-xl transition-colors flex items-center justify-center gap-2 ${
                 activeTab === 'link'
-                  ? 'bg-card text-foreground shadow-xs border border-border'
+                  ? 'bg-card text-foreground border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -853,7 +853,7 @@ export function GuardianChildrenManager({
                   type="submit"
                   disabled={loading}
                   isLoading={loading}
-                  className="rounded-full px-6 shadow-xs font-semibold"
+                  className="rounded-xl px-5 font-semibold"
                 >
                   {isBn ? 'সন্তান নিবন্ধন সম্পন্ন করুন' : 'Complete Registration'}
                 </Button>
@@ -939,7 +939,7 @@ export function GuardianChildrenManager({
                   type="submit"
                   disabled={loading}
                   isLoading={loading}
-                  className="rounded-full px-6 shadow-xs font-semibold"
+                  className="rounded-xl px-5 font-semibold"
                 >
                   {isBn ? 'অ্যাকাউন্ট লিঙ্ক করুন' : 'Link Student Account'}
                 </Button>

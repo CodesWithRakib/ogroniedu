@@ -80,7 +80,7 @@ export function StudentNextClassHero({
             </Link>
             <Link
               href={withLocale('/tutors', locale)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-md shadow-blue-500/30 transition-all"
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors"
             >
               <Sparkles className="w-4 h-4" />
               <span>{isBn ? 'নতুন শিক্ষক খুঁজুন' : 'Browse Tutors'}</span>
@@ -163,18 +163,18 @@ export function StudentNextClassHero({
               href={nextSession.meetingUrl}
               target="_blank"
               rel="noreferrer"
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs sm:text-sm transition-colors"
             >
-              <Video className="w-4 h-4 text-white" />
+              <Video className="w-4 h-4 text-primary-foreground" />
               <span>{isBn ? 'ক্লাসরুমে যোগ দিন' : 'Join Classroom Now'}</span>
               <ExternalLink className="w-3.5 h-3.5 ml-0.5 opacity-80" />
             </a>
           ) : (
             <Link
               href={withLocale(`/dashboard/student/sessions`, locale)}
-              className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm shadow-lg shadow-blue-500/30 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-bold text-xs sm:text-sm transition-colors"
             >
-              <Video className="w-4 h-4 text-white" />
+              <Video className="w-4 h-4 text-primary-foreground" />
               <span>{isBn ? 'ক্লাস লিংক ও রুম দেখুন' : 'Enter Study Room'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>

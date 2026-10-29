@@ -52,7 +52,7 @@ export function GuardianChildProfileSwitcher({
 
         <Link
           href={withLocale('/dashboard/guardian/children', locale)}
-          className="inline-flex items-center justify-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-xs shadow-blue-500/25 shrink-0"
+          className="inline-flex items-center justify-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors shrink-0"
         >
           <Plus className="w-4 h-4" />
           <span>{isBn ? 'সন্তান যোগ করুন' : 'Link Child'}</span>
@@ -63,7 +63,7 @@ export function GuardianChildProfileSwitcher({
 
   return (
     <div
-      className="p-3 sm:p-4 rounded-2xl bg-card border border-border shadow-xs"
+      className="p-3.5 rounded-xl bg-card border border-border select-none"
       data-testid="guardian-child-switcher"
     >
       <div className="flex items-center justify-between mb-3 px-1">

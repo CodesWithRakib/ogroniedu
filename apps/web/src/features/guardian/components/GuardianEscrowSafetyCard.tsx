@@ -7,11 +7,9 @@ import {
   CreditCard,
   Lock,
   CheckCircle2,
-  AlertTriangle,
   ArrowRight,
   Sparkles,
   HelpCircle,
-  RefreshCw,
 } from 'lucide-react';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
@@ -29,34 +27,24 @@ interface GuardianEscrowSafetyCardProps {
 
 export function GuardianEscrowSafetyCard({
   locale,
-  heldEscrowBdt = 8500,
-  releasedBdt = 12000,
-  pendingMilestonesCount = 1,
-  nextMilestoneAmountBdt = 4500,
-  nextMilestoneTutorName = 'ড. মো. আনিসুর রহমান',
-  nextMilestoneSubject = 'উচ্চতর গণিত ও পদার্থবিজ্ঞান',
+  heldEscrowBdt = 0,
+  releasedBdt = 0,
+  pendingMilestonesCount = 0,
+  nextMilestoneAmountBdt = 0,
+  nextMilestoneTutorName = '',
+  nextMilestoneSubject = '',
 }: GuardianEscrowSafetyCardProps) {
   const isBn = locale === 'bn';
-  const [isApproving, setIsApproving] = React.useState(false);
-  const [approved, setApproved] = React.useState(false);
-
-  const handleApprove = () => {
-    setIsApproving(true);
-    setTimeout(() => {
-      setIsApproving(false);
-      setApproved(true);
-    }, 800);
-  };
 
   return (
     <div
-      className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between"
+      className="bg-card border border-border rounded-xl p-5 flex flex-col justify-between select-none"
       data-testid="guardian-escrow-safety-card"
     >
       {/* Header */}
-      <div className="flex items-center justify-between pb-3.5 border-b border-border">
+      <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
         <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
+          <div className="h-8 w-8 rounded-lg bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
@@ -85,13 +73,13 @@ export function GuardianEscrowSafetyCard({
       </div>
 
       {/* Escrow Balance Visualization */}
-      <div className="my-4 grid grid-cols-2 gap-3">
-        <div className="p-3.5 rounded-xl bg-surface border border-border/80">
+      <div className="my-3.5 grid grid-cols-2 gap-3">
+        <div className="p-3.5 rounded-lg bg-muted/30 border border-border/60">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Lock className="w-3.5 h-3.5 text-amber-500" />
             <span>{isBn ? 'এসক্রোতে সুরক্ষিত' : 'Safely Held in Escrow'}</span>
           </div>
-          <div className="text-lg sm:text-xl font-black text-foreground mt-1">
+          <div className="text-lg sm:text-xl font-bold text-foreground mt-1 tabular-nums">
             ৳ {formatLocalizedNumber(heldEscrowBdt, locale)}
           </div>
           <p className="text-[11px] text-muted-foreground mt-0.5">
@@ -101,68 +89,61 @@ export function GuardianEscrowSafetyCard({
           </p>
         </div>
 
-        <div className="p-3.5 rounded-xl bg-surface border border-border/80">
+        <div className="p-3.5 rounded-lg bg-muted/30 border border-border/60">
           <div className="flex items-center gap-1.5 text-xs text-muted-foreground">
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
-            <span>{isBn ? 'সফলভাবে পরিশোধিত' : 'Released This Term'}</span>
+            <CreditCard className="w-3.5 h-3.5 text-emerald-500" />
+            <span>{isBn ? 'মোট ছাড়কৃত পারিশ্রমিক' : 'Total Released to Tutors'}</span>
           </div>
-          <div className="text-lg sm:text-xl font-black text-foreground mt-1">
+          <div className="text-lg sm:text-xl font-bold text-foreground mt-1 tabular-nums">
             ৳ {formatLocalizedNumber(releasedBdt, locale)}
           </div>
           <p className="text-[11px] text-muted-foreground mt-0.5">
-            {isBn ? 'শিক্ষকের একাউন্টে সরাসরি স্থানান্তরিত' : 'Directly settled to tutor'}
+            {isBn
+              ? 'যাচাইকৃত ক্লাস বাবদ শিক্ষকের ওয়ালেটে জমা'
+              : 'Directly settled for attended classes'}
           </p>
         </div>
       </div>
 
-      {/* Pending Milestone Approval Queue */}
-      {pendingMilestonesCount > 0 && !approved ? (
-        <div className="p-3.5 rounded-xl bg-amber-500/10 border border-amber-500/20 mb-4">
-          <div className="flex items-start justify-between gap-3">
-            <div className="flex flex-col gap-1">
-              <span className="text-[10px] font-bold uppercase tracking-wider text-amber-800 dark:text-amber-300 flex items-center gap-1">
-                <AlertTriangle className="w-3 h-3 text-amber-600 dark:text-amber-400" />
-                {isBn ? 'অভিভাবকের অনুমোদনের অপেক্ষায়' : 'Action Required: Release Milestone'}
-              </span>
-              <p className="text-xs font-bold text-foreground">
+      {/* Action / Notification Pill */}
+      {pendingMilestonesCount > 0 ? (
+        <div className="p-3 rounded-lg bg-warning-soft/40 border border-warning/30 mb-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div className="min-w-0">
+            <span className="text-[10px] font-bold uppercase tracking-wider text-warning block">
+              {isBn ? 'অনুমোদনের অপেক্ষায় মাইলস্টোন' : 'Pending Milestone Release'}
+            </span>
+            {nextMilestoneSubject && nextMilestoneTutorName ? (
+              <p className="text-xs font-bold text-foreground truncate">
                 {nextMilestoneSubject} • {nextMilestoneTutorName}
               </p>
-              <p className="text-[11px] text-muted-foreground">
-                {isBn
-                  ? `১২টি ক্লাসের মাইলস্টোন সম্পন্ন হয়েছে। সম্মানী: ৳ ${formatLocalizedNumber(nextMilestoneAmountBdt, locale)}`
-                  : `Monthly milestone completed. Amount: ৳ ${nextMilestoneAmountBdt}`}
-              </p>
-            </div>
-
-            <Button
-              size="sm"
-              onClick={handleApprove}
-              disabled={isApproving}
-              className="rounded-xl shrink-0 font-bold text-xs"
-            >
-              {isApproving
-                ? isBn
-                  ? 'প্রসেসিং...'
-                  : 'Processing...'
-                : isBn
-                  ? 'সম্মানী ছাড়ুন'
-                  : 'Approve & Release'}
-            </Button>
+            ) : null}
+            <p className="text-[11px] text-muted-foreground">
+              {isBn
+                ? `${formatLocalizedNumber(pendingMilestonesCount, locale)}টি ক্লাসের মাইলস্টোন সম্পন্ন হয়েছে। সম্মানী: ৳ ${formatLocalizedNumber(nextMilestoneAmountBdt, locale)}`
+                : `${pendingMilestonesCount} session milestone(s) completed. Amount: ৳ ${nextMilestoneAmountBdt}`}
+            </p>
           </div>
+
+          <Button asChild size="sm" className="rounded-lg shrink-0 font-semibold text-xs">
+            <Link href={withLocale('/dashboard/guardian/payments', locale)}>
+              <span>{isBn ? 'সম্মানী ছাড়ুন' : 'Review & Settle'}</span>
+              <ArrowRight className="h-3.5 w-3.5 ml-1" />
+            </Link>
+          </Button>
         </div>
-      ) : approved ? (
-        <div className="p-3 rounded-xl bg-emerald-500/10 border border-emerald-500/20 mb-4 flex items-center gap-2 text-emerald-700 dark:text-emerald-300 text-xs font-semibold">
-          <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
+      ) : (
+        <div className="p-2.5 rounded-lg bg-muted/20 border border-border/40 mb-3.5 flex items-center gap-2 text-muted-foreground text-xs">
+          <CheckCircle2 className="w-4 h-4 text-emerald-500 shrink-0" />
           <span>
             {isBn
-              ? 'মাইলস্টোন সম্মানী সফলভাবে শিক্ষকের একাউন্টে পাঠানো হয়েছে!'
-              : 'Milestone released successfully to the tutor!'}
+              ? 'সব টিউশন মাইলস্টোন আপ-টু-ডেট রয়েছে। কোনো অনিষ্পন্ন পেমেন্ট নেই।'
+              : 'All tuition milestones are settled. Escrow is fully synchronized.'}
           </span>
         </div>
-      ) : null}
+      )}
 
       {/* Trust Guarantees Footer */}
-      <div className="pt-3 border-t border-border flex flex-wrap items-center justify-between gap-2 text-xs">
+      <div className="pt-3 border-t border-border/60 flex flex-wrap items-center justify-between gap-2 text-xs">
         <div className="flex items-center gap-1.5 text-[11px] text-muted-foreground">
           <Sparkles className="w-3.5 h-3.5 text-primary shrink-0" />
           <span>

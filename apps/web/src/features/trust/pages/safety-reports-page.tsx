@@ -76,7 +76,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
         <Button
           size="sm"
           onClick={() => setIsModalOpen(true)}
-          className="gap-1.5 text-xs font-bold shadow-xs bg-rose-600 hover:bg-rose-700 text-white rounded-full px-4"
+          className="gap-1.5 text-xs font-bold bg-rose-600 hover:bg-rose-700 text-white rounded-xl px-4"
           id="btn-file-new-safety-report"
           data-testid="file-safety-incident-btn"
         >
@@ -89,7 +89,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
         {/* 1. URGENT 24/7 EMERGENCY BANNER & HOTLINE STRIP */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4" data-testid="safety-hotlines-banner">
           {/* Safeguarding Commitment */}
-          <div className="lg:col-span-2 p-5 sm:p-6 rounded-3xl border border-rose-200 bg-rose-50/60 text-slate-900 flex flex-col justify-between gap-4 shadow-2xs">
+          <div className="lg:col-span-2 p-5 sm:p-6 rounded-xl border border-rose-200 bg-rose-50/60 text-slate-900 flex flex-col justify-between gap-4">
             <div className="flex flex-col gap-2">
               <div className="flex items-center gap-2 text-rose-700">
                 <ShieldAlert className="w-5 h-5 shrink-0 animate-pulse" />
@@ -114,7 +114,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
               <Button
                 size="sm"
                 onClick={() => setIsModalOpen(true)}
-                className="text-xs bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl shadow-xs px-4 py-2"
+                className="text-xs bg-rose-600 hover:bg-rose-700 text-white font-bold rounded-xl px-4 py-2"
               >
                 {isBn ? 'জরুরি রিপোর্ট ফর্ম' : 'File Emergency Incident'}
               </Button>
@@ -135,14 +135,14 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
           </div>
 
           {/* Quick Helpline Strip */}
-          <div className="p-5 sm:p-6 rounded-3xl border border-border bg-card flex flex-col justify-between gap-3 shadow-2xs">
+          <div className="p-5 sm:p-6 rounded-xl border border-border bg-card flex flex-col justify-between gap-3">
             <span className="text-xs font-black uppercase tracking-wider text-muted-foreground">
               {isBn ? 'জরুরি হেল্পলাইন নম্বরসমূহ' : 'Emergency Contacts'}
             </span>
             <div className="flex flex-col gap-2">
               <a
                 href="tel:1098"
-                className="p-3 rounded-2xl bg-rose-50 border border-rose-200 text-slate-900 flex items-center justify-between hover:bg-rose-100 transition-colors"
+                className="p-3 rounded-xl bg-rose-50 border border-rose-200 text-slate-900 flex items-center justify-between hover:bg-rose-100 transition-colors"
                 title="Call 1098"
               >
                 <div>
@@ -160,7 +160,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
 
               <a
                 href="tel:999"
-                className="p-3 rounded-2xl bg-amber-50 border border-amber-200 text-slate-900 flex items-center justify-between hover:bg-amber-100 transition-colors"
+                className="p-3 rounded-xl bg-amber-50 border border-amber-200 text-slate-900 flex items-center justify-between hover:bg-amber-100 transition-colors"
                 title="Call 999"
               >
                 <div>
@@ -178,7 +178,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
 
               <a
                 href="tel:+8809612345678"
-                className="p-3 rounded-2xl bg-primary/5 border border-primary/20 text-foreground flex items-center justify-between hover:bg-primary/10 transition-colors"
+                className="p-3 rounded-xl bg-primary/5 border border-primary/20 text-foreground flex items-center justify-between hover:bg-primary/10 transition-colors"
                 title="Call Security Desk"
               >
                 <div>
@@ -199,7 +199,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
 
         {/* 2. KPI METRIC SUMMARY CARDS */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
+          <Card className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-muted text-muted-foreground">
                 <AlertCircle className="w-5 h-5" aria-hidden="true" />
@@ -215,7 +215,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
+          <Card className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-rose-50 text-rose-700">
                 <AlertTriangle className="w-5 h-5 text-rose-600" aria-hidden="true" />
@@ -231,7 +231,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
+          <Card className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
                 <Clock className="w-5 h-5 text-amber-600" aria-hidden="true" />
@@ -247,7 +247,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
+          <Card className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                 <CheckCircle2 className="w-5 h-5 text-emerald-600" aria-hidden="true" />
@@ -307,9 +307,9 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
               {isBn ? 'লোড হচ্ছে...' : 'Loading safety reports...'}
             </div>
           ) : filteredReports.length === 0 ? (
-            <Card className="py-16 text-center rounded-3xl border border-border bg-card">
+            <Card className="py-16 text-center rounded-xl border border-border bg-card">
               <CardContent className="flex flex-col gap-4 max-w-md mx-auto">
-                <div className="w-16 h-16 rounded-3xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto shadow-2xs">
+                <div className="w-16 h-16 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto">
                   <ShieldCheck className="w-8 h-8" />
                 </div>
                 <div className="flex flex-col gap-1">
@@ -324,7 +324,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                 </div>
                 <Button
                   onClick={() => setIsModalOpen(true)}
-                  className="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-xs"
+                  className="bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl"
                 >
                   {isBn ? 'নতুন রিপোর্ট দাখিল করুন' : 'File Incident Report'}
                 </Button>
@@ -335,7 +335,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
               {filteredReports.map((report) => (
                 <Card
                   key={report.id}
-                  className="rounded-3xl border border-border bg-card p-5 sm:p-6 flex flex-col gap-3 shadow-2xs hover:border-rose-400/80 transition-all text-left"
+                  className="rounded-xl border border-border bg-card p-5 sm:p-6 flex flex-col gap-3 hover:border-rose-400/80 transition-colors text-left"
                   data-testid={`safety-report-card-${report.id}`}
                 >
                   <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/40 pb-3">

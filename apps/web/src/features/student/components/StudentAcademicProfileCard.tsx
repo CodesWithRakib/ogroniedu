@@ -139,10 +139,10 @@ export function StudentAcademicProfileCard({
 
   return (
     <>
-      <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs relative overflow-hidden flex flex-col justify-between">
+      <div className="bg-card border border-border rounded-xl p-5 relative overflow-hidden flex flex-col justify-between select-none">
         <div>
           {/* Header */}
-          <div className="flex items-center justify-between pb-3.5 border-b border-border">
+          <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
             <div className="flex items-center gap-2.5">
               <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
                 <GraduationCap className="h-5 w-5" />

@@ -10,19 +10,17 @@ import {
   Search,
   Sparkles,
   ArrowRight,
-  CreditCard,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
 import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart';
+import { computeWeeklyActivity } from '@/components/dashboard/weekly-activity.util';
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
-import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
 import { EmptyState, LoadingSpinner } from '@/components/ui';
 import { Button } from '@/components/ui/Button';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDate } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
-import { useGetSubjectsQuery, type TaxonomySubject } from '@/store/services/taxonomy-api';
 import { useStudentDashboard } from '../hooks/use-student-dashboard';
 import {
   StudentAcademicProfileCard,
@@ -34,7 +32,7 @@ import {
   type SubjectMasteryItem,
 } from '../components';
 
-/** Production-ready Student dashboard: Donezo/Shopeers-inspired aesthetic with full real student API data. */
+/** Clean, cohesive Student dashboard: pure Shadcn tokens, real data only, zero mock clutter. */
 export function StudentDashboardPage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   const {
@@ -54,56 +52,32 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
     isLoading,
   } = useStudentDashboard(locale);
   const isBn = locale === 'bn';
-  const taxonomySubjects = useGetSubjectsQuery();
 
   const dynamicSubjects = React.useMemo<SubjectMasteryItem[]>(() => {
-    // If student has active bookings with subjects, prioritize them
-    const booked = activeTutors.map((t, idx) => ({
+    if (activeTutors.length === 0) return [];
+
+    return activeTutors.map((t, idx) => ({
       id: t.bookingId || `booked-${idx}`,
       nameBn: t.subjectName,
       nameEn: t.subjectName,
-      progressPercent: Math.min(
-        100,
-        Math.max(
-          40,
-          Math.round(
-            ((metrics?.sessionsAttended ?? 0) / Math.max(1, metrics?.totalSessionsRecorded ?? 1)) *
-              100,
-          ) || 80 - idx * 10,
-        ),
-      ),
-      completedChapters: Math.max(1, metrics?.assignmentsCompleted ?? 0) + idx,
-      totalChapters: 20,
-      colorClass: idx % 2 === 0 ? 'from-blue-600 to-indigo-600' : 'from-indigo-600 to-purple-600',
-      accentClass: 'text-blue-600 bg-blue-500/10',
+      progressPercent: metrics?.totalSessionsRecorded
+        ? Math.min(
+            100,
+            Math.round(
+              ((metrics.sessionsAttended ?? 0) / Math.max(1, metrics.totalSessionsRecorded)) * 100,
+            ),
+          )
+        : 0,
+      completedChapters: metrics?.assignmentsCompleted ?? 0,
+      totalChapters: Math.max(metrics?.assignmentsAssigned ?? 1, 1),
     }));
+  }, [activeTutors, metrics]);
 
-    if (booked.length > 0) return booked;
-
-    // Otherwise load live subjects from database taxonomy
-    const dbSubjects = (taxonomySubjects.data?.data ?? []) as TaxonomySubject[];
-    if (dbSubjects.length > 0) {
-      return dbSubjects.slice(0, 4).map((s: TaxonomySubject, idx: number) => ({
-        id: s.id,
-        nameBn: s.nameBn,
-        nameEn: s.nameEn,
-        progressPercent: 75 + idx * 5,
-        completedChapters: 12 + idx,
-        totalChapters: 20,
-        colorClass:
-          idx === 0
-            ? 'from-blue-600 to-indigo-600'
-            : idx === 1
-              ? 'from-indigo-600 to-purple-600'
-              : idx === 2
-                ? 'from-emerald-600 to-teal-600'
-                : 'from-amber-500 to-orange-500',
-        accentClass: 'text-primary bg-primary-soft',
-      }));
-    }
-
-    return [];
-  }, [activeTutors, taxonomySubjects.data, metrics]);
+  const rawSessionsList = sessions.data?.data || [];
+  const weeklyActivityData = React.useMemo(
+    () => computeWeeklyActivity(rawSessionsList),
+    [rawSessionsList],
+  );
 
   const attendancePercentage = metrics?.attendanceRate ?? 100;
 
@@ -119,7 +93,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
       role="student"
       actions={
         <div className="flex items-center gap-2">
-          <Button asChild size="sm" className="rounded-full">
+          <Button asChild size="sm" className="rounded-xl">
             <Link
               href={withLocale('/dashboard/student/learning', locale)}
               className="flex items-center gap-1.5"
@@ -128,7 +102,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
               <span>{isBn ? 'স্টাডি রুম' : 'Study Room'}</span>
             </Link>
           </Button>
-          <Button asChild variant="outline" size="sm" className="rounded-full">
+          <Button asChild variant="outline" size="sm" className="rounded-xl">
             <Link href={withLocale('/tutors', locale)} className="flex items-center gap-1.5">
               <Search className="h-3.5 w-3.5 text-muted-foreground" />
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
@@ -137,23 +111,18 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
         </div>
       }
     >
-      {/* ======================================================== */}
-      {/* 0. STUDENT NEXT CLASS HERO ACTION COUNTDOWN              */}
-      {/* ======================================================== */}
+      {/* 0. STUDENT NEXT CLASS HERO ACTION COUNTDOWN */}
       <StudentNextClassHero
         locale={locale}
         nextSession={nextSession}
         isLoading={sessions.isLoading}
       />
 
-      {/* ======================================================== */}
-      {/* 1. DONEZO 4-CARD HERO KPI GRID                           */}
-      {/* ======================================================== */}
+      {/* 1. 4-CARD HERO KPI GRID */}
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         data-testid="student-overview-grid"
       >
-        {/* Card 1: Featured Hero Solid Card (Sessions) */}
         <HeroKpiCard
           variant="hero"
           icon={Calendar}
@@ -174,7 +143,6 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
           testId="student-sessions-count"
         />
 
-        {/* Card 2: Requests Secondary Card */}
         <HeroKpiCard
           variant="secondary"
           icon={Inbox}
@@ -189,7 +157,6 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
           testId="student-requests-count"
         />
 
-        {/* Card 3: Notifications Secondary Card */}
         <HeroKpiCard
           variant="secondary"
           icon={Bell}
@@ -200,7 +167,6 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
           testId="student-unread-count"
         />
 
-        {/* Card 4: Study Streak & Attendance */}
         <HeroKpiCard
           variant="secondary"
           icon={Sparkles}
@@ -219,55 +185,8 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
         />
       </div>
 
-      {/* ======================================================== */}
-      {/* QUICK ACTIONS ROW                                        */}
-      {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2 p-3 sm:p-3.5 rounded-2xl bg-card border border-border/80 shadow-xs">
-        <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1.5 px-1">
-          <Sparkles className="w-3.5 h-3.5 text-primary" />
-          {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
-        </span>
-        <Link
-          href={withLocale('/dashboard/student/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
-        >
-          <BookOpen className="w-3.5 h-3.5 text-primary" />
-          <span>{isBn ? 'লার্নিং হাব' : 'Learning Hub'}</span>
-        </Link>
-        <Link
-          href={withLocale('/dashboard/student/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
-        >
-          <Calendar className="w-3.5 h-3.5 text-primary" />
-          <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
-        </Link>
-        <Link
-          href={withLocale('/dashboard/student/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
-        >
-          <Inbox className="w-3.5 h-3.5 text-primary" />
-          <span>{isBn ? 'টিউশন অনুরোধ' : 'Tuition Requests'}</span>
-        </Link>
-        <Link
-          href={withLocale('/dashboard/student/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
-        >
-          <CreditCard className="w-3.5 h-3.5 text-primary" />
-          <span>{isBn ? 'টিউশন ফি ও পেমেন্ট' : 'Tuition Payments'}</span>
-        </Link>
-        <Link
-          href={withLocale('/tutors', locale)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-semibold shadow-xs shadow-blue-500/25 transition-all sm:ml-auto"
-        >
-          <Search className="w-3.5 h-3.5" />
-          <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
-        </Link>
-      </div>
-
-      {/* ======================================================== */}
-      {/* 2. ACADEMIC PROFILE & UPCOMING CLASSES ROW (2 COLS)      */}
-      {/* ======================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* 2. ACADEMIC PROFILE & UPCOMING CLASSES ROW (2 COLS) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
         <StudentAcademicProfileCard
           locale={locale}
           studentProfile={studentProfile}
@@ -283,10 +202,8 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
         />
       </div>
 
-      {/* ======================================================== */}
-      {/* 3. MY TUTORS & PENDING HOMEWORK ROW (2 COLS)             */}
-      {/* ======================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* 3. MY TUTORS & PENDING HOMEWORK ROW (2 COLS) */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
         <StudentMyTutorsCard locale={locale} tutors={activeTutors} isLoading={requests.isLoading} />
 
         <StudentPendingAssignmentsCard
@@ -296,14 +213,12 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
         />
       </div>
 
-      {/* ======================================================== */}
-      {/* 4. VISUAL ANALYTICS & SUBJECT MASTERY                    */}
-      {/* ======================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      {/* 4. VISUAL ANALYTICS & SUBJECT MASTERY (3 COLS) */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
         <div className="lg:col-span-1">
           <StudentSubjectMasteryCard
             locale={locale}
-            subjects={dynamicSubjects.length > 0 ? dynamicSubjects : undefined}
+            subjects={dynamicSubjects}
             averageScore={metrics?.averageScore}
           />
         </div>
@@ -317,10 +232,11 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                 ? 'সপ্তাহের বিভিন্ন দিনে সম্পন্ন করা ক্লাস ও টাস্ক'
                 : 'Study and session volume across the week'
             }
+            data={weeklyActivityData}
           />
         </div>
 
-        <div className="lg:col-span-1 flex flex-col gap-5">
+        <div className="lg:col-span-1">
           <ProgressGaugeCard
             locale={locale}
             percentage={Math.round(attendancePercentage)}
@@ -335,19 +251,11 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                   : 'Chapters & assignments finished'
             }
           />
-
-          <StudyTimeTrackerCard
-            locale={locale}
-            title={isBn ? 'ফোকাস সেশন টাইমার' : 'Study Time Tracker'}
-            subtitle={isBn ? 'ধারাবাহিক মনোযোগ ও রিভিশন' : 'Continuous focus timer'}
-          />
         </div>
       </div>
 
-      {/* ======================================================== */}
-      {/* 5. RECENT REQUESTS SECTION                               */}
-      {/* ======================================================== */}
-      <div className="mt-2">
+      {/* 5. RECENT REQUESTS SECTION */}
+      <div>
         {requests.isLoading ? (
           <div className="py-8 flex justify-center">
             <LoadingSpinner />
@@ -364,8 +272,8 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
             actionHref={withLocale('/tutors', locale)}
           />
         ) : (
-          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6">
-            <div className="flex items-center justify-between pb-4 border-b border-border">
+          <div className="bg-card border border-border rounded-xl p-5 sm:p-6">
+            <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
               <div>
                 <h3 className="text-base font-bold text-foreground">
                   {isBn ? 'সাম্প্রতিক টিউটরিং অনুরোধ' : 'Recent Tutoring Requests'}
@@ -385,7 +293,7 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
               </Link>
             </div>
 
-            <div className="divide-y divide-border/50" data-testid="student-recent-requests">
+            <div className="divide-y divide-border/40" data-testid="student-recent-requests">
               {myRequests.slice(0, 5).map((r) => {
                 const tp =
                   r.tutorProfile && typeof r.tutorProfile === 'object' ? r.tutorProfile : null;
@@ -412,16 +320,16 @@ export function StudentDashboardPage({ locale }: { locale: Locale }) {
                 return (
                   <div
                     key={r.id}
-                    className="py-3.5 flex items-center justify-between gap-3 hover:bg-muted/30 px-2 rounded-xl transition-colors"
+                    className="py-3 flex items-center justify-between gap-3 hover:bg-muted/30 px-2 rounded-lg transition-colors"
                   >
                     <div className="flex items-center gap-3 min-w-0">
-                      <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0 font-bold text-xs">
+                      <div className="h-8 w-8 rounded-lg bg-primary-soft text-primary flex items-center justify-center shrink-0 font-bold text-xs">
                         #{r.id.slice(0, 3)}
                       </div>
                       <div className="min-w-0 flex-1">
-                        <p className="text-xs sm:text-sm font-bold text-foreground truncate">
+                        <p className="text-xs sm:text-sm font-semibold text-foreground truncate">
                           {tutorName} •{' '}
-                          <span className="font-medium text-muted-foreground">{subjectName}</span>
+                          <span className="font-normal text-muted-foreground">{subjectName}</span>
                         </p>
                         <p className="text-[11px] text-muted-foreground truncate">
                           {r.createdAt ? formatDate(r.createdAt, locale) : '—'}

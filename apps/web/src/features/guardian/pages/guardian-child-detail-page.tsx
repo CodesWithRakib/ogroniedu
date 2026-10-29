@@ -119,7 +119,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
             size="sm"
             variant="destructive"
             onClick={() => setIsSafetyModalOpen(true)}
-            className="gap-1.5 text-xs font-bold shadow-xs bg-destructive hover:bg-destructive/90 text-white rounded-full"
+            className="gap-1.5 text-xs font-semibold rounded-xl"
             id="btn-trigger-child-safety"
           >
             <ShieldAlert className="w-3.5 h-3.5" />
@@ -130,12 +130,12 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
     >
       {/* 1. CHILD HERO DOSSIER CARD */}
       <div
-        className="p-5 rounded-2xl bg-card border border-border shadow-xs relative overflow-hidden"
+        className="p-5 rounded-xl bg-card border border-border relative overflow-hidden select-none"
         data-testid="child-dossier-hero"
       >
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
           <div className="flex items-start gap-4">
-            <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 to-brand-accent border border-primary/30 flex items-center justify-center text-primary font-black text-2xl">
+            <div className="h-14 w-14 rounded-xl bg-primary-soft text-primary border border-primary/20 flex items-center justify-center font-bold text-xl">
               {child?.displayName ? child.displayName.slice(0, 2).toUpperCase() : 'ST'}
             </div>
             <div className="flex flex-col gap-1">
@@ -313,15 +313,15 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
       </div>
 
       {/* 3. INTERACTIVE SECTION TABS */}
-      <div className="flex items-center gap-2 border-b border-border pb-2" role="tablist">
+      <div className="flex items-center gap-2 border-b border-border/60 pb-2" role="tablist">
         <button
           role="tab"
           aria-selected={activeTab === 'tutors'}
           onClick={() => setActiveTab('tutors')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
             activeTab === 'tutors'
-              ? 'bg-primary text-primary-foreground shadow-xs'
-              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
           }`}
           id="tab-tutors"
         >
@@ -333,10 +333,10 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
           role="tab"
           aria-selected={activeTab === 'sessions'}
           onClick={() => setActiveTab('sessions')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
             activeTab === 'sessions'
-              ? 'bg-primary text-primary-foreground shadow-xs'
-              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
           }`}
           id="tab-sessions"
         >
@@ -348,10 +348,10 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
           role="tab"
           aria-selected={activeTab === 'homework'}
           onClick={() => setActiveTab('homework')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
             activeTab === 'homework'
-              ? 'bg-primary text-primary-foreground shadow-xs'
-              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
+              ? 'bg-primary text-primary-foreground'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
           }`}
           id="tab-homework"
         >
@@ -361,10 +361,10 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
           role="tab"
           aria-selected={activeTab === 'safety'}
           onClick={() => setActiveTab('safety')}
-          className={`px-4 py-2 rounded-xl text-xs font-bold transition-all cursor-pointer ${
+          className={`px-3.5 py-1.5 rounded-lg text-xs font-semibold transition-colors cursor-pointer ${
             activeTab === 'safety'
-              ? 'bg-destructive text-white shadow-xs'
-              : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
+              ? 'bg-destructive text-destructive-foreground'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
           }`}
           id="tab-safety"
         >
@@ -392,7 +392,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
                 </p>
                 <Link
                   href={withLocale('/tutors', locale)}
-                  className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-xs shadow-blue-500/25 transition-all"
+                  className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold transition-colors"
                 >
                   {isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}
                 </Link>
@@ -537,7 +537,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
                         size="sm"
                         disabled={isSettling}
                         onClick={() => handleSettleMilestone(s.id)}
-                        className="gap-1.5 text-xs bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold h-8 px-3 rounded-xl shadow-xs shadow-blue-500/25"
+                        className="gap-1.5 text-xs bg-primary hover:bg-primary/90 text-primary-foreground font-semibold h-8 px-3 rounded-lg transition-colors"
                         id={`btn-settle-${s.id}`}
                       >
                         <CreditCard className="w-3.5 h-3.5" />

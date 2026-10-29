@@ -21,9 +21,9 @@ import {
   ExternalLink,
 } from 'lucide-react';
 import { Button, Card, CardContent, Alert, AlertDescription, Badge } from '@/components/ui';
-import { getDictionary, type Locale } from '@/lib/i18n';
+import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
-import { useAppSelector } from '@/store';
+import { ReactReduxContext } from 'react-redux';
 import { primaryRole } from '@/store/slices/auth-slice';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
 import { playAudioTone } from '@/lib/audio/notification-sound';
@@ -90,6 +90,8 @@ interface SessionScheduleCalendarProps {
   onReschedule?: (sessionId: string, newStartsAt: string, reason: string) => Promise<void>;
   onCancel?: (sessionId: string, reason: string) => Promise<CancelAssessmentView | null | void>;
   scopeSlot?: React.ReactNode;
+  role?: string;
+  requestsHref?: string;
 }
 
 const DEFAULT_SESSIONS: CalendarSessionItem[] = [];
@@ -114,6 +116,8 @@ export function SessionScheduleCalendar({
   onCancel,
   scheduleOptions = [],
   scopeSlot,
+  role: roleProp,
+  requestsHref: requestsHrefProp,
 }: SessionScheduleCalendarProps) {
   const dict = getDictionary(locale);
   const isBn = locale === 'bn';
@@ -125,14 +129,16 @@ export function SessionScheduleCalendar({
   );
   const [viewMode, setViewMode] = useState<'grid' | 'timeline' | 'month'>('grid');
 
-  const user = useAppSelector((s) => s.auth.user);
-  const role = primaryRole(user?.roles);
+  const reduxContext = React.useContext(ReactReduxContext);
+  const user = reduxContext ? (reduxContext.store?.getState() as any)?.auth?.user : null;
+  const role = roleProp || primaryRole(user?.roles);
   const requestsHref =
-    role === 'guardian'
+    requestsHrefProp ||
+    (role === 'guardian'
       ? withLocale('/dashboard/guardian/requests', locale)
       : role === 'tutor'
         ? withLocale('/dashboard/tutor/requests', locale)
-        : withLocale('/dashboard/student/requests', locale);
+        : withLocale('/dashboard/student/requests', locale));
 
   const filteredSessions = React.useMemo(() => {
     let list = [...sessions];
@@ -283,30 +289,35 @@ export function SessionScheduleCalendar({
   const completedCount = sessions.filter((s) => s.status === 'completed').length;
   const cancelledCount = sessions.filter((s) => s.status === 'cancelled').length;
 
+  const attendanceRate = React.useMemo(() => {
+    const finished = completedCount + cancelledCount;
+    if (finished === 0) return null;
+    return Math.round((completedCount / finished) * 100);
+  }, [completedCount, cancelledCount]);
+
   return (
     <div className="w-full flex flex-col gap-6" data-testid="scheduling-container">
-      {/* 1. Ultra-Premium Studio Hero Header — Full Width */}
-      <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-6 sm:p-8 lg:p-10 text-foreground shadow-xs flex flex-col xl:flex-row xl:items-center justify-between gap-6">
-        <div className="absolute -top-24 -right-12 w-96 h-96 rounded-full bg-primary/10 blur-3xl pointer-events-none" />
-        <div className="absolute -bottom-24 -left-12 w-96 h-96 rounded-full bg-brand-soft/20 blur-3xl pointer-events-none" />
-
-        <div className="relative z-10 flex flex-col gap-3 max-w-3xl">
+      {/* 1. Studio Header */}
+      <div className="rounded-xl border border-border bg-card p-5 sm:p-6 text-foreground flex flex-col xl:flex-row xl:items-center justify-between gap-6">
+        <div className="flex flex-col gap-3 max-w-3xl">
           <div className="flex flex-wrap items-center gap-2">
-            <span className="inline-flex items-center gap-1.5 px-3.5 py-1 bg-primary-soft border border-primary/25 rounded-full text-xs font-bold text-primary">
+            <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/10 border border-primary/20 rounded-full text-xs font-bold text-primary">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
               <Clock className="w-3.5 h-3.5" />
               <span>
-                {dict.scheduling?.timezoneNotice || 'Bangladesh Standard Time (BST / UTC+6)'}
+                {isBn
+                  ? 'বাংলাদেশ সময় (BST / UTC+৬)'
+                  : (dict.scheduling?.timezoneNotice || 'Bangladesh Standard Time (BST / UTC+6)')}
               </span>
             </span>
-            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-surface border border-border text-[11px] font-bold text-muted-foreground">
+            <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full bg-muted/50 border border-border text-[11px] font-bold text-muted-foreground">
               <ShieldCheck className="w-3.5 h-3.5 text-emerald-500" />
               <span>{isBn ? '১০০% এসক্রো সুরক্ষিত ক্লাস' : '100% Escrow Protected'}</span>
             </span>
           </div>
 
           <div>
-            <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground">
+            <h1 className="text-2xl sm:text-3xl font-black tracking-tight text-foreground">
               {dict.scheduling?.calendarTitle ||
                 (isBn ? 'ক্লাস সময়সূচী ও সেশন কন্ট্রোল' : 'Class Schedule & Sessions')}
             </h1>
@@ -322,29 +333,31 @@ export function SessionScheduleCalendar({
         </div>
 
         {/* Live Metrics Strip & Schedule Action Button */}
-        <div className="relative z-10 flex flex-wrap xl:flex-nowrap items-center gap-3 shrink-0">
+        <div className="flex flex-wrap xl:flex-nowrap items-center gap-3 shrink-0">
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-2.5 w-full xl:w-auto">
-            <div className="px-4 py-3 rounded-2xl bg-card/90 border border-border/80 text-center backdrop-blur shadow-xs">
+            <div className="px-4 py-2.5 rounded-xl bg-muted/40 border border-border text-center">
               <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
                 {isBn ? 'আসন্ন ও লাইভ' : 'Upcoming & Live'}
               </span>
-              <span className="text-xl sm:text-2xl font-black text-primary">{scheduledCount}</span>
+              <span className="text-lg sm:text-xl font-black text-primary">{scheduledCount}</span>
             </div>
 
-            <div className="px-4 py-3 rounded-2xl bg-card/90 border border-border/80 text-center backdrop-blur shadow-xs">
+            <div className="px-4 py-2.5 rounded-xl bg-muted/40 border border-border text-center">
               <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
-                {isBn ? 'সম্পন্ন ক্লাস' : 'Completed'}
+                {isBn ? 'সম্পন্ন' : 'Completed'}
               </span>
-              <span className="text-xl sm:text-2xl font-black text-emerald-600">
+              <span className="text-lg sm:text-xl font-black text-emerald-600">
                 {completedCount}
               </span>
             </div>
 
-            <div className="col-span-2 sm:col-span-1 px-4 py-3 rounded-2xl bg-card/90 border border-border/80 text-center backdrop-blur shadow-xs">
+            <div className="col-span-2 sm:col-span-1 px-4 py-2.5 rounded-xl bg-muted/40 border border-border text-center">
               <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
                 {isBn ? 'উপস্থিতি হার' : 'Attendance'}
               </span>
-              <span className="text-xl sm:text-2xl font-black text-indigo-600">১০০%</span>
+              <span className="text-lg sm:text-xl font-black text-foreground">
+                {attendanceRate != null ? `${formatLocalizedNumber(attendanceRate, locale)}%` : '—'}
+              </span>
             </div>
           </div>
 
@@ -353,7 +366,7 @@ export function SessionScheduleCalendar({
               size="default"
               onClick={() => setScheduleOpen(true)}
               data-testid="schedule-open-btn"
-              className="w-full xl:w-auto bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold rounded-2xl shadow-md shadow-blue-500/20 active:scale-[0.98] h-12 px-6"
+              className="w-full xl:w-auto bg-primary hover:bg-primary/90 text-primary-foreground font-bold rounded-xl h-11 px-5"
             >
               <Plus className="w-4 h-4 mr-1.5" />
               <span>
@@ -367,15 +380,14 @@ export function SessionScheduleCalendar({
 
       {/* 2. Spotlight Hero: Next Upcoming Class (Only when an upcoming class exists) */}
       {nextSession && (
-        <div className="relative overflow-hidden rounded-3xl border border-primary/30 bg-gradient-to-r from-primary-soft/40 via-card to-card p-6 sm:p-7 shadow-md flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+        <div className="rounded-xl border border-border bg-card p-5 sm:p-6 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
           <div className="flex flex-col gap-2">
-            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 font-bold text-xs border border-emerald-500/30">
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/15 text-emerald-700 font-bold text-xs border border-emerald-500/30 w-fit">
               <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              <span>{isBn ? 'পরবর্তী আসন্ন ক্লাস প্রস্তুত' : 'Next Upcoming Class Ready'}</span>
+              <span>{isBn ? 'ডিজিটাল ক্লাসরুম' : 'Digital Classroom'}</span>
             </div>
             <h2 className="text-xl sm:text-2xl font-black text-foreground tracking-tight">
-              {nextSession.subjectName ||
-                (isBn ? 'উচ্চতর গণিত ও পদার্থবিজ্ঞান' : 'Higher Mathematics & Physics')}
+              {nextSession.subjectName || (isBn ? 'সক্রিয় পাঠ্যক্রম' : 'Active Session')}
             </h2>
             <div className="flex flex-wrap items-center gap-3 text-xs text-muted-foreground font-medium">
               <span className="flex items-center gap-1 font-bold text-foreground">
@@ -387,13 +399,17 @@ export function SessionScheduleCalendar({
                 <Clock className="w-3.5 h-3.5 text-primary" />
                 <span>{formatTime(nextSession.startsAt, locale)}</span>
               </span>
-              <span>•</span>
-              <span className="flex items-center gap-1">
-                <GraduationCap className="w-3.5 h-3.5 text-primary" />
-                <span>
-                  {isBn ? 'শিক্ষক:' : 'Tutor:'} <strong>{nextSession.tutorName}</strong>
-                </span>
-              </span>
+              {nextSession.tutorName && (
+                <>
+                  <span>•</span>
+                  <span className="flex items-center gap-1">
+                    <GraduationCap className="w-3.5 h-3.5 text-primary" />
+                    <span>
+                      {isBn ? 'শিক্ষক:' : 'Tutor:'} <strong>{nextSession.tutorName}</strong>
+                    </span>
+                  </span>
+                </>
+              )}
             </div>
           </div>
 
@@ -403,20 +419,17 @@ export function SessionScheduleCalendar({
                 href={nextSession.meetingUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="px-6 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-2xl font-black text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all flex items-center gap-2 active:scale-95 transform hover:-translate-y-0.5"
+                className="px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-bold text-xs sm:text-sm transition-colors flex items-center gap-2"
               >
-                <Sparkles
-                  className="w-4 h-4 fill-current animate-spin"
-                  style={{ animationDuration: '4s' }}
-                />
-                <span>{isBn ? 'সরাসরি ক্লাসরুমে প্রবেশ করুন' : 'Enter Live Classroom'}</span>
+                <Sparkles className="w-4 h-4" />
+                <span>{dict.scheduling?.joinMeeting || (isBn ? 'অনলাইন ক্লাসে যুক্ত হন' : 'Enter Live Classroom')}</span>
                 <ArrowRight className="w-4 h-4" />
               </a>
             ) : (
               <Button
                 asChild
                 size="default"
-                className="rounded-2xl font-bold bg-primary text-primary-foreground"
+                className="rounded-xl font-bold bg-primary text-primary-foreground"
               >
                 <Link
                   href={withLocale(`/sessions/${nextSession.id}`, locale)}
@@ -433,7 +446,7 @@ export function SessionScheduleCalendar({
               target="_blank"
               rel="noreferrer"
               data-testid="calendar-google-sync-btn"
-              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-2xl border border-border bg-card hover:bg-surface-muted text-foreground font-bold text-xs shadow-xs transition-colors h-11"
+              className="inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl border border-border bg-card hover:bg-muted text-foreground font-bold text-xs transition-colors h-10"
               title={isBn ? 'গুগল ক্যালেন্ডারে যোগ করুন' : 'Add to Google Calendar'}
             >
               <ExternalLink className="w-3.5 h-3.5 text-primary" />
@@ -445,7 +458,7 @@ export function SessionScheduleCalendar({
               size="default"
               onClick={() => openReschedule(nextSession)}
               data-testid="calendar-spotlight-reschedule-btn"
-              className="rounded-2xl text-xs font-semibold h-11 border-border text-foreground hover:bg-surface-muted"
+              className="rounded-xl text-xs font-semibold h-10 border-border text-foreground hover:bg-muted"
             >
               {isBn ? 'সময় পরিবর্তন' : 'Reschedule'}
             </Button>
@@ -454,7 +467,7 @@ export function SessionScheduleCalendar({
       )}
 
       {/* 3. Cancellation Policy Information Strip */}
-      <div className="bg-warning-soft/70 border border-warning/30 rounded-2xl sm:rounded-3xl p-4 sm:p-5 text-xs flex items-start gap-3.5 shadow-xs">
+      <div className="bg-muted/40 border border-border rounded-xl p-4 sm:p-5 text-xs flex items-start gap-3.5">
         <AlertTriangle className="w-5 h-5 text-warning shrink-0 mt-0.5" />
         <div className="flex flex-col gap-1.5 flex-1">
           <div className="flex flex-wrap items-center justify-between gap-2">
@@ -484,7 +497,7 @@ export function SessionScheduleCalendar({
       </div>
 
       {/* 4. Controls Toolbar: Status Pills + View Mode Toggles */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card/80 backdrop-blur border border-border/80 rounded-2xl p-2 shadow-xs">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-card border border-border rounded-xl p-2">
         {/* Status Filter Pills */}
         <div className="flex flex-wrap items-center gap-1.5">
           <button
@@ -658,13 +671,13 @@ export function SessionScheduleCalendar({
           </CardContent>
         </Card>
       ) : sessions.length === 0 ? (
-        <div className="relative overflow-hidden rounded-3xl border border-border/80 bg-gradient-to-b from-card to-card/60 p-8 sm:p-12 text-center shadow-xs">
-          <div className="w-16 h-16 rounded-3xl bg-primary-soft/60 border border-primary/20 text-primary flex items-center justify-center mx-auto mb-4 shadow-xs">
-            <CalendarIcon className="w-8 h-8" />
+        <div className="rounded-xl border border-border bg-card p-8 sm:p-12 text-center">
+          <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto mb-4">
+            <CalendarIcon className="w-7 h-7" />
           </div>
           <h3 className="text-xl font-black text-foreground tracking-tight">
             {dict.scheduling?.noSessions ||
-              (isBn ? 'এখনও কোনো নির্ধারিত ক্লাস নেই' : 'No Sessions Scheduled Yet')}
+              (isBn ? 'কোনো ক্লাস নির্ধারিত নেই।' : 'No Sessions Scheduled Yet')}
           </h3>
           <p className="text-xs sm:text-sm text-muted-foreground max-w-md mx-auto mt-2 leading-relaxed">
             {isBn

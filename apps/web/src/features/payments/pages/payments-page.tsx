@@ -83,23 +83,23 @@ function PaymentsContent({ locale }: { locale: Locale }) {
   return (
     <DashboardShell locale={locale} title={dict.payments.title} subtitle={dict.payments.subtitle}>
       {/* 1. Security & Escrow Trust Banner */}
-      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-3xl bg-white border border-slate-200 shadow-sm text-slate-900">
+      <div className="mb-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 p-5 sm:p-6 rounded-xl bg-card border border-border text-foreground">
         <div className="flex items-center gap-3.5">
-          <div className="p-3.5 rounded-2xl bg-blue-50 border border-blue-200 text-blue-700 shrink-0">
-            <ShieldCheck className="w-7 h-7" />
+          <div className="p-3 rounded-xl bg-primary/10 border border-primary/20 text-primary shrink-0">
+            <ShieldCheck className="w-6 h-6" />
           </div>
           <div>
-            <h3 className="text-base sm:text-lg font-black text-slate-900 tracking-tight">
+            <h3 className="text-base sm:text-lg font-black text-foreground tracking-tight">
               {isBn ? '১০০% নিরাপদ এসক্রো পেমেন্ট সুরক্ষা' : '100% Escrow Protected Payments'}
             </h3>
-            <p className="text-xs sm:text-sm text-slate-600 mt-1 leading-relaxed font-medium">
+            <p className="text-xs sm:text-sm text-muted-foreground mt-1 leading-relaxed font-normal">
               {isBn
                 ? 'ক্লাস সন্তোষজনকভাবে সম্পন্ন না হওয়া পর্যন্ত আপনার অর্থ অগ্রণী এডু এসক্রো অ্যাকাউন্টে সুরক্ষিত থাকে।'
                 : 'Your tuition fees remain safely in escrow until sessions are successfully conducted.'}
             </p>
           </div>
         </div>
-        <div className="flex items-center gap-2 text-slate-800 font-bold text-xs px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 shrink-0 self-start sm:self-auto shadow-2xs">
+        <div className="flex items-center gap-2 text-foreground font-bold text-xs px-3.5 py-2 rounded-xl bg-muted/40 border border-border shrink-0 self-start sm:self-auto">
           <Lock className="w-4 h-4 text-emerald-600" />
           <span>bKash • Nagad • SSLCommerz</span>
         </div>
@@ -110,15 +110,15 @@ function PaymentsContent({ locale }: { locale: Locale }) {
         {/* Card 1: Payment Due */}
         <div
           onClick={() => pay.setActiveTab('due')}
-          className={`cursor-pointer p-5 rounded-3xl border-2 transition-all ${
+          className={`cursor-pointer p-5 rounded-xl border transition-colors ${
             pay.activeTab === 'due'
-              ? 'bg-amber-50/70 border-amber-400 ring-2 ring-amber-400/20 shadow-sm'
-              : 'bg-white border-slate-200 hover:border-amber-300'
+              ? 'bg-amber-50/40 border-amber-400 dark:bg-amber-950/20'
+              : 'bg-card border-border hover:border-amber-300'
           }`}
           data-testid="kpi-card-due"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-600 uppercase tracking-wider">
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               {isBn ? 'পরিশোধের অপেক্ষায় (বকেয়া)' : 'Payment Due / Pending'}
             </span>
             <div className="h-9 w-9 rounded-xl bg-amber-100 text-amber-900 flex items-center justify-center border border-amber-200">
@@ -126,12 +126,12 @@ function PaymentsContent({ locale }: { locale: Locale }) {
             </div>
           </div>
           <div className="mt-3">
-            <h4 className="text-2xl sm:text-3xl font-black text-slate-900 tabular-nums">
+            <h4 className="text-2xl sm:text-3xl font-black text-foreground tabular-nums">
               ৳{' '}
               {formatLocalizedNumber(Math.round(pay.totalDueMinor / 100).toLocaleString(), locale)}
             </h4>
-            <p className="text-xs text-slate-700 mt-1 font-semibold flex items-center gap-1.5">
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-amber-500 animate-pulse" />
+            <p className="text-xs text-muted-foreground mt-1 font-semibold flex items-center gap-1.5">
+              <span className="inline-block w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
               <span>
                 {isBn
                   ? `${formatLocalizedNumber(pay.dueBookings.length, locale)}টি টিউশন ফি পরিশোধযোগ্য`
@@ -144,15 +144,15 @@ function PaymentsContent({ locale }: { locale: Locale }) {
         {/* Card 2: Total Paid */}
         <div
           onClick={() => pay.setActiveTab('paid')}
-          className={`cursor-pointer p-5 rounded-3xl border-2 transition-all ${
+          className={`cursor-pointer p-5 rounded-xl border transition-colors ${
             pay.activeTab === 'paid'
-              ? 'bg-emerald-50/70 border-emerald-400 ring-2 ring-emerald-400/20 shadow-sm'
-              : 'bg-white border-slate-200 hover:border-emerald-300'
+              ? 'bg-emerald-50/40 border-emerald-400 dark:bg-emerald-950/20'
+              : 'bg-card border-border hover:border-emerald-300'
           }`}
           data-testid="kpi-card-paid"
         >
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-600 uppercase tracking-wider">
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               {isBn ? 'মোট পরিশোধিত ফি' : 'Total Paid History'}
             </span>
             <div className="h-9 w-9 rounded-xl bg-emerald-100 text-emerald-900 flex items-center justify-center border border-emerald-200">
@@ -160,12 +160,12 @@ function PaymentsContent({ locale }: { locale: Locale }) {
             </div>
           </div>
           <div className="mt-3">
-            <h4 className="text-2xl sm:text-3xl font-black text-slate-900 tabular-nums">
+            <h4 className="text-2xl sm:text-3xl font-black text-foreground tabular-nums">
               ৳{' '}
               {formatLocalizedNumber(Math.round(pay.totalPaidMinor / 100).toLocaleString(), locale)}
             </h4>
-            <p className="text-xs text-slate-700 mt-1 font-semibold flex items-center gap-1.5">
-              <span className="inline-block w-2.5 h-2.5 rounded-full bg-emerald-600" />
+            <p className="text-xs text-muted-foreground mt-1 font-semibold flex items-center gap-1.5">
+              <span className="inline-block w-2 h-2 rounded-full bg-emerald-600" />
               <span>
                 {isBn
                   ? `${formatLocalizedNumber(paidCount, locale)}টি সফল পেমেন্ট ও রশিদ সংরক্ষিত`
@@ -176,20 +176,20 @@ function PaymentsContent({ locale }: { locale: Locale }) {
         </div>
 
         {/* Card 3: Escrow Balance / Guarantee */}
-        <div className="p-5 rounded-3xl bg-white border border-slate-200 shadow-2xs">
+        <div className="p-5 rounded-xl bg-card border border-border">
           <div className="flex items-center justify-between">
-            <span className="text-xs font-black text-slate-600 uppercase tracking-wider">
+            <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
               {isBn ? 'এসক্রো নিরাপত্তা স্তর' : 'Escrow Protection'}
             </span>
-            <div className="h-9 w-9 rounded-xl bg-blue-100 text-blue-900 flex items-center justify-center border border-blue-200">
+            <div className="h-9 w-9 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
               <ShieldCheck className="w-4 h-4" />
             </div>
           </div>
           <div className="mt-3">
-            <h4 className="text-2xl sm:text-3xl font-black text-slate-900">
+            <h4 className="text-2xl sm:text-3xl font-black text-foreground">
               {isBn ? '১০০% সুরক্ষিত' : '100% Protected'}
             </h4>
-            <p className="text-xs text-slate-700 mt-1 font-semibold">
+            <p className="text-xs text-muted-foreground mt-1 font-semibold">
               {isBn ? 'বাংলাদেশ ব্যাংক ও দ্বৈত লেজার জামানত' : 'Double-entry ledger verified'}
             </p>
           </div>
@@ -197,24 +197,24 @@ function PaymentsContent({ locale }: { locale: Locale }) {
       </div>
 
       {/* 3. Navigation / Filter Tabs */}
-      <div className="flex items-center gap-2 p-1.5 bg-slate-100 rounded-2xl border border-slate-200 mb-6 overflow-x-auto shadow-inner">
+      <div className="flex items-center gap-2 p-1.5 bg-muted/40 rounded-xl border border-border mb-6 overflow-x-auto">
         <button
           type="button"
           onClick={() => pay.setActiveTab('due')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all shrink-0 ${
             pay.activeTab === 'due'
-              ? 'bg-white text-slate-900 shadow-sm border border-slate-300 font-black'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+              ? 'bg-card text-foreground border border-border'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted'
           }`}
           data-testid="tab-due"
         >
           <Clock className={`w-4 h-4 ${pay.dueBookings.length > 0 ? 'text-amber-600' : ''}`} />
           <span>{isBn ? 'বকেয়া ও পরিশোধযোগ্য' : 'Due & Pending Payments'}</span>
           <span
-            className={`px-2.5 py-0.5 rounded-full text-[11px] font-black border ${
+            className={`px-2 py-0.5 rounded-full text-[11px] font-bold border ${
               pay.dueBookings.length > 0
                 ? 'bg-amber-100 text-amber-950 border-amber-300'
-                : 'bg-slate-200 text-slate-700 border-slate-300'
+                : 'bg-muted text-muted-foreground border-border'
             }`}
           >
             {formatLocalizedNumber(pay.dueBookings.length, locale)}
@@ -224,16 +224,16 @@ function PaymentsContent({ locale }: { locale: Locale }) {
         <button
           type="button"
           onClick={() => pay.setActiveTab('paid')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all shrink-0 ${
             pay.activeTab === 'paid'
-              ? 'bg-white text-slate-900 shadow-sm border border-slate-300 font-black'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+              ? 'bg-card text-foreground border border-border'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted'
           }`}
           data-testid="tab-paid"
         >
           <CheckCircle2 className="w-4 h-4 text-emerald-600" />
           <span>{isBn ? 'পরিশোধিত তালিকা ও রশিদ' : 'Paid Tuitions & Receipts'}</span>
-          <span className="px-2.5 py-0.5 rounded-full text-[11px] font-black bg-emerald-100 text-emerald-950 border border-emerald-300">
+          <span className="px-2 py-0.5 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-950 border border-emerald-300">
             {formatLocalizedNumber(paidCount, locale)}
           </span>
         </button>
@@ -241,14 +241,14 @@ function PaymentsContent({ locale }: { locale: Locale }) {
         <button
           type="button"
           onClick={() => pay.setActiveTab('checkout')}
-          className={`flex items-center gap-2 px-5 py-2.5 rounded-xl text-xs font-bold transition-all shrink-0 ${
+          className={`flex items-center gap-2 px-4 py-2 rounded-lg text-xs font-bold transition-all shrink-0 ${
             pay.activeTab === 'checkout'
-              ? 'bg-white text-slate-900 shadow-sm border border-slate-300 font-black'
-              : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
+              ? 'bg-card text-foreground border border-border'
+              : 'text-muted-foreground hover:text-foreground hover:bg-muted'
           }`}
           data-testid="tab-checkout"
         >
-          <CreditCard className="w-4 h-4 text-blue-600" />
+          <CreditCard className="w-4 h-4 text-primary" />
           <span>{isBn ? 'পেমেন্ট চেকআউট' : 'Make Payment / Checkout'}</span>
         </button>
       </div>
@@ -261,14 +261,14 @@ function PaymentsContent({ locale }: { locale: Locale }) {
               <LoadingSpinner />
             </div>
           ) : pay.dueBookings.length === 0 ? (
-            <Card className="rounded-3xl border-slate-200 bg-white p-8 sm:p-12 text-center text-slate-900 shadow-sm">
-              <div className="w-16 h-16 rounded-2xl bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto mb-4 border border-emerald-200">
-                <CheckCircle2 className="w-8 h-8" />
+            <Card className="rounded-xl border-border bg-card p-6 sm:p-10 text-center text-foreground">
+              <div className="w-14 h-14 rounded-xl bg-emerald-50 text-emerald-700 flex items-center justify-center mx-auto mb-4 border border-emerald-200">
+                <CheckCircle2 className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-black text-slate-900">
+              <h3 className="text-xl font-black text-foreground">
                 {isBn ? 'কোনো বকেয়া পেমেন্ট নেই!' : 'No Pending Payments Due!'}
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 mt-1.5 max-w-md mx-auto font-medium leading-relaxed">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 max-w-md mx-auto font-medium leading-relaxed">
                 {isBn
                   ? 'আপনার সমস্ত অনুমোদিত টিউশনের ফি পরিশোধ করা হয়েছে। নতুন শিক্ষকের সাথে ক্লাস শুরু করতে বুকিং অনুরোধ পাঠান।'
                   : 'All your accepted tuitions are up to date. Send new tuition requests to connect with expert tutors.'}
@@ -278,15 +278,15 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                   onClick={() => pay.setActiveTab('paid')}
                   variant="outline"
                   size="sm"
-                  className="rounded-xl font-bold border-slate-300 text-slate-800 hover:bg-slate-100"
+                  className="rounded-xl font-bold border-border text-foreground hover:bg-muted"
                 >
-                  <FileText className="w-4 h-4 mr-1.5 text-slate-700" />
+                  <FileText className="w-4 h-4 mr-1.5 text-muted-foreground" />
                   <span>{isBn ? 'পরিশোধিত তালিকা দেখুন' : 'View Paid History'}</span>
                 </Button>
                 <Button
                   asChild
                   size="sm"
-                  className="rounded-xl font-extrabold bg-blue-600 hover:bg-blue-700 text-white shadow-xs"
+                  className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <Link href={withLocale('/tutors', locale)}>
                     <Sparkles className="w-4 h-4 mr-1.5" />
@@ -313,66 +313,68 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                   '';
                 const rate = Number(b.pricePerSessionMinor)
                   ? (Number(b.pricePerSessionMinor) / 100).toFixed(0)
-                  : '1,000';
+                  : Number(b.totalAmountMinor)
+                    ? (Number(b.totalAmountMinor) / 100).toFixed(0)
+                    : '—';
 
                 return (
                   <div
                     key={b.id}
-                    className="p-5 sm:p-6 rounded-3xl bg-white border-2 border-amber-300 hover:border-amber-500 transition-all shadow-sm flex flex-col justify-between gap-4 text-slate-900"
+                    className="p-5 rounded-xl bg-card border border-border hover:border-amber-400 transition-colors flex flex-col justify-between gap-4 text-foreground"
                     data-testid={`due-booking-card-${b.id}`}
                   >
                     <div>
                       <div className="flex items-start justify-between gap-3">
                         <div className="min-w-0">
-                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-black bg-amber-100 text-amber-950 border border-amber-300 mb-2">
+                          <span className="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-bold bg-amber-100 text-amber-950 border border-amber-300 mb-2">
                             <Clock className="w-3.5 h-3.5 text-amber-700" />
                             <span>{isBn ? 'পরিশোধ প্রয়োজন' : 'Payment Due'}</span>
                           </span>
-                          <h4 className="text-base sm:text-lg font-black text-slate-900 truncate">
+                          <h4 className="text-base sm:text-lg font-black text-foreground truncate">
                             {tutorName}
                           </h4>
-                          <p className="text-xs font-bold text-blue-700 mt-0.5 truncate">
+                          <p className="text-xs font-bold text-primary mt-0.5 truncate">
                             {subjectName} {educationLevel ? `• ${educationLevel}` : ''}
                           </p>
                         </div>
-                        <div className="text-right shrink-0 bg-slate-50 p-2.5 rounded-2xl border border-slate-100">
-                          <span className="text-[10px] font-black uppercase tracking-wider text-slate-500 block">
+                        <div className="text-right shrink-0 bg-muted/40 p-2.5 rounded-xl border border-border">
+                          <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
                             {isBn ? 'ফি / ক্লাস' : 'Per Session'}
                           </span>
-                          <span className="text-lg sm:text-xl font-black text-slate-900 tabular-nums">
-                            ৳ {formatLocalizedNumber(rate, locale)}
+                          <span className="text-lg sm:text-xl font-black text-foreground tabular-nums">
+                            ৳ {rate !== '—' ? formatLocalizedNumber(rate, locale) : '—'}
                           </span>
                         </div>
                       </div>
 
                       {b.tutorProfile?.headline && (
-                        <p className="text-xs text-slate-600 line-clamp-2 mt-2 leading-relaxed bg-slate-50 p-3 rounded-2xl border border-slate-100 font-medium">
+                        <p className="text-xs text-muted-foreground line-clamp-2 mt-2 leading-relaxed bg-muted/30 p-3 rounded-xl border border-border font-medium">
                           {b.tutorProfile.headline}
                         </p>
                       )}
 
-                      <div className="mt-3 flex items-center justify-between text-xs text-slate-600 font-medium">
+                      <div className="mt-3 flex items-center justify-between text-xs text-muted-foreground font-medium">
                         <span>
                           {isBn ? 'অনুরোধ তারিখ:' : 'Requested:'}{' '}
-                          <span className="font-bold text-slate-900">
+                          <span className="font-bold text-foreground">
                             {formatDate(b.createdAt, locale)}
                           </span>
                         </span>
-                        <span className="font-mono text-slate-500 font-semibold">
+                        <span className="font-mono text-muted-foreground font-semibold">
                           #{b.id.slice(0, 8)}
                         </span>
                       </div>
                     </div>
 
-                    <div className="pt-3 border-t border-slate-100 flex items-center justify-between gap-3">
-                      <span className="text-xs font-bold text-emerald-800 flex items-center gap-1">
+                    <div className="pt-3 border-t border-border flex items-center justify-between gap-3">
+                      <span className="text-xs font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-1">
                         <ShieldCheck className="w-4 h-4 text-emerald-600" />
                         <span>{isBn ? 'এসক্রো সুরক্ষা সক্রিয়' : 'Escrow Protected'}</span>
                       </span>
                       <Button
                         type="button"
                         onClick={() => pay.selectBookingForPayment(b.id)}
-                        className="bg-blue-600 hover:bg-blue-700 text-white text-xs font-black h-10 px-5 rounded-xl shadow-xs flex items-center gap-1.5"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold h-10 px-4 rounded-xl flex items-center gap-1.5"
                         data-testid={`pay-now-btn-${b.id}`}
                       >
                         <CreditCard className="w-4 h-4" />
@@ -396,28 +398,28 @@ function PaymentsContent({ locale }: { locale: Locale }) {
               <LoadingSpinner />
             </div>
           ) : pay.paidOrders.length === 0 && pay.paidBookings.length === 0 ? (
-            <Card className="rounded-3xl border-slate-200 bg-white p-8 sm:p-12 text-center text-slate-900 shadow-sm">
-              <div className="w-16 h-16 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center mx-auto mb-4 border border-slate-200">
-                <FileText className="w-8 h-8" />
+            <Card className="rounded-xl border-border bg-card p-6 sm:p-10 text-center text-foreground">
+              <div className="w-14 h-14 rounded-xl bg-muted/50 text-muted-foreground flex items-center justify-center mx-auto mb-4 border border-border">
+                <FileText className="w-7 h-7" />
               </div>
-              <h3 className="text-xl font-black text-slate-900">
+              <h3 className="text-xl font-black text-foreground">
                 {isBn ? 'এখনও কোনো পেমেন্ট রেকর্ড নেই' : 'No Payment History Found'}
               </h3>
-              <p className="text-xs sm:text-sm text-slate-600 mt-1 max-w-md mx-auto font-medium leading-relaxed">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1 max-w-md mx-auto font-medium leading-relaxed">
                 {isBn
                   ? 'আপনার কোনো টিউশন ফি পরিশোধ করা হলে এখানে রসিদ এবং ট্রানজ্যাকশন হিস্টোরি প্রদর্শিত হবে।'
                   : 'When you pay tuition fees, verified receipts and transaction references will appear here.'}
               </p>
             </Card>
           ) : (
-            <div className="bg-white rounded-3xl border border-slate-200 shadow-sm overflow-hidden text-slate-900">
+            <div className="bg-card rounded-xl border border-border overflow-hidden text-foreground">
               {/* Header & Filter Strip */}
-              <div className="p-5 border-b border-slate-100 bg-slate-50/70 flex flex-col md:flex-row md:items-center justify-between gap-4">
+              <div className="p-4 sm:p-5 border-b border-border bg-muted/30 flex flex-col md:flex-row md:items-center justify-between gap-4">
                 <div>
-                  <h3 className="text-base font-black text-slate-900">
+                  <h3 className="text-base font-black text-foreground">
                     {isBn ? 'পরিশোধিত টিউশন ও আর্থিক রেকর্ড' : 'Paid Tutoring & Escrow Ledger'}
                   </h3>
-                  <p className="text-xs text-slate-600 mt-0.5 font-medium">
+                  <p className="text-xs text-muted-foreground mt-0.5 font-medium">
                     {isBn
                       ? 'সম্পন্ন করা পেমেন্টের বিবরণ ও রসিদ কপি'
                       : 'Verified transactions and downloadable receipts'}
@@ -427,7 +429,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 <div className="flex flex-wrap items-center gap-2.5">
                   {/* Search box */}
                   <div className="relative">
-                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400" />
+                    <Search className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground" />
                     <input
                       type="text"
                       value={searchQuery}
@@ -435,19 +437,19 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                       placeholder={
                         isBn ? 'শিক্ষক বা রেফারেন্স খুঁজুন...' : 'Search tutor or ref...'
                       }
-                      className="pl-9 pr-3 py-1.5 text-xs font-semibold rounded-xl border border-slate-300 bg-white focus:outline-none focus:ring-2 focus:ring-blue-500 w-48 sm:w-56"
+                      className="pl-9 pr-3 py-1.5 text-xs font-semibold rounded-xl border border-border bg-card text-foreground focus:outline-none focus:ring-2 focus:ring-primary w-48 sm:w-56"
                     />
                   </div>
 
                   {/* Gateway filter pills */}
-                  <div className="flex items-center gap-1 bg-slate-200/70 p-1 rounded-xl">
+                  <div className="flex items-center gap-1 bg-muted/50 p-1 rounded-xl border border-border">
                     <button
                       type="button"
                       onClick={() => setGatewayFilter('all')}
                       className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
                         gatewayFilter === 'all'
-                          ? 'bg-white text-slate-900 shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-card text-foreground border border-border'
+                          : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
                       {isBn ? 'সকল' : 'All'}
@@ -457,8 +459,8 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                       onClick={() => setGatewayFilter('sslcommerz')}
                       className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
                         gatewayFilter === 'sslcommerz'
-                          ? 'bg-white text-blue-900 shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-card text-primary border border-border'
+                          : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
                       SSLCOMMERZ
@@ -468,15 +470,15 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                       onClick={() => setGatewayFilter('bkash')}
                       className={`px-2.5 py-1 rounded-lg text-[11px] font-bold transition-all ${
                         gatewayFilter === 'bkash'
-                          ? 'bg-white text-pink-900 shadow-xs'
-                          : 'text-slate-600 hover:text-slate-900'
+                          ? 'bg-card text-foreground border border-border'
+                          : 'text-muted-foreground hover:text-foreground'
                       }`}
                     >
                       bKash
                     </button>
                   </div>
 
-                  <span className="text-xs font-black text-emerald-950 bg-emerald-100 border border-emerald-300 px-3 py-1 rounded-full">
+                  <span className="text-xs font-bold text-emerald-950 dark:text-emerald-300 bg-emerald-100 dark:bg-emerald-950/40 border border-emerald-300 dark:border-emerald-700 px-3 py-1 rounded-full">
                     {isBn
                       ? `${formatLocalizedNumber(paidCount, locale)}টি সম্পন্ন`
                       : `${paidCount} Completed`}
@@ -485,7 +487,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
               </div>
 
               {/* Transactions List */}
-              <div className="divide-y divide-slate-100">
+              <div className="divide-y divide-border">
                 {filteredPaidOrders.map((ord) => {
                   const b = ord.booking;
                   const tutorName =
@@ -503,40 +505,40 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                   return (
                     <div
                       key={ord.id}
-                      className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50 transition-colors"
+                      className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-muted/30 transition-colors"
                       data-testid={`paid-order-row-${ord.id}`}
                     >
                       <div className="flex items-start gap-3.5 min-w-0">
-                        <div className="h-11 w-11 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center shrink-0 mt-0.5">
-                          <CheckCircle2 className="w-6 h-6" />
+                        <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                          <CheckCircle2 className="w-5 h-5" />
                         </div>
                         <div className="min-w-0">
                           <div className="flex items-center gap-2 flex-wrap">
-                            <h4 className="text-sm sm:text-base font-black text-slate-900 truncate">
+                            <h4 className="text-sm sm:text-base font-black text-foreground truncate">
                               {tutorName}
                             </h4>
-                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-950 border border-emerald-300">
+                            <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
                               {isBn ? 'পরিশোধিত (এসক্রো সুরক্ষিত)' : 'Paid (Escrow Safe)'}
                             </span>
                           </div>
-                          <p className="text-xs font-bold text-blue-700 mt-0.5 truncate">
+                          <p className="text-xs font-bold text-primary mt-0.5 truncate">
                             {subjectName} • {formatDate(ord.createdAt, locale)}
                           </p>
-                          <p className="text-[11px] font-mono text-slate-600 mt-1 font-semibold">
-                            Ref: <span className="text-slate-900">{txnId}</span> • Gateway:{' '}
-                            <span className="font-black uppercase text-slate-900">
+                          <p className="text-[11px] font-mono text-muted-foreground mt-1 font-semibold">
+                            Ref: <span className="text-foreground">{txnId}</span> • Gateway:{' '}
+                            <span className="font-bold uppercase text-foreground">
                               {ord.provider}
                             </span>
                           </p>
                         </div>
                       </div>
 
-                      <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                      <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-border">
                         <div className="text-left sm:text-right">
-                          <span className="text-lg sm:text-xl font-black text-slate-900 tabular-nums block">
+                          <span className="text-lg sm:text-xl font-black text-foreground tabular-nums block">
                             ৳ {formatLocalizedNumber(amount, locale)}
                           </span>
-                          <span className="text-[10px] text-slate-500 uppercase font-black tracking-wider">
+                          <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
                             {ord.currency}
                           </span>
                         </div>
@@ -546,9 +548,9 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                           size="sm"
                           onClick={() => openReceipt(ord.id)}
                           data-testid={`view-receipt-btn-${ord.id}`}
-                          className="rounded-xl text-xs font-bold h-9 border-slate-300 text-slate-800 hover:bg-slate-100"
+                          className="rounded-xl text-xs font-bold h-9 border-border text-foreground hover:bg-muted"
                         >
-                          <FileText className="w-3.5 h-3.5 mr-1.5 text-blue-600" />
+                          <FileText className="w-3.5 h-3.5 mr-1.5 text-primary" />
                           <span>{isBn ? 'রশিদ দেখুন' : 'View Receipt'}</span>
                         </Button>
                       </div>
@@ -568,45 +570,47 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                       (isBn ? 'টিউশন কোর্স' : 'Tutoring Course');
                     const amount = Number(b.pricePerSessionMinor)
                       ? (Number(b.pricePerSessionMinor) / 100).toFixed(0)
-                      : '1,000';
+                      : Number(b.totalAmountMinor)
+                        ? (Number(b.totalAmountMinor) / 100).toFixed(0)
+                        : '—';
 
                     return (
                       <div
                         key={b.id}
-                        className="p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-slate-50 transition-colors"
+                        className="p-4 sm:p-5 flex flex-col sm:flex-row sm:items-center justify-between gap-4 hover:bg-muted/30 transition-colors"
                       >
                         <div className="flex items-start gap-3.5 min-w-0">
-                          <div className="h-11 w-11 rounded-2xl bg-emerald-100 text-emerald-800 border border-emerald-300 flex items-center justify-center shrink-0 mt-0.5">
-                            <CheckCircle2 className="w-6 h-6" />
+                          <div className="h-10 w-10 rounded-xl bg-emerald-100 dark:bg-emerald-950/40 text-emerald-800 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700 flex items-center justify-center shrink-0 mt-0.5">
+                            <CheckCircle2 className="w-5 h-5" />
                           </div>
                           <div className="min-w-0">
                             <div className="flex items-center gap-2 flex-wrap">
-                              <h4 className="text-sm sm:text-base font-black text-slate-900 truncate">
+                              <h4 className="text-sm sm:text-base font-black text-foreground truncate">
                                 {tutorName}
                               </h4>
-                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-black bg-emerald-100 text-emerald-950 border border-emerald-300">
+                              <span className="px-2.5 py-0.5 rounded-full text-[10px] font-bold bg-emerald-100 dark:bg-emerald-950/40 text-emerald-950 dark:text-emerald-300 border border-emerald-300 dark:border-emerald-700">
                                 {isBn ? 'পরিশোধিত ও কনফার্মড' : 'Paid & Confirmed'}
                               </span>
                             </div>
-                            <p className="text-xs font-bold text-blue-700 mt-0.5 truncate">
+                            <p className="text-xs font-bold text-primary mt-0.5 truncate">
                               {subjectName} • {formatDate(b.createdAt, locale)}
                             </p>
-                            <p className="text-[11px] font-mono text-slate-600 mt-1 font-semibold">
+                            <p className="text-[11px] font-mono text-muted-foreground mt-1 font-semibold">
                               Booking Ref: #{b.id.slice(0, 8)}
                             </p>
                           </div>
                         </div>
 
-                        <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-slate-100">
+                        <div className="flex items-center justify-between sm:justify-end gap-4 shrink-0 pt-3 sm:pt-0 border-t sm:border-t-0 border-border">
                           <div className="text-left sm:text-right">
-                            <span className="text-lg sm:text-xl font-black text-slate-900 tabular-nums block">
-                              ৳ {formatLocalizedNumber(amount, locale)}
+                            <span className="text-lg sm:text-xl font-black text-foreground tabular-nums block">
+                              ৳ {amount !== '—' ? formatLocalizedNumber(amount, locale) : '—'}
                             </span>
-                            <span className="text-[10px] text-slate-500 uppercase font-black tracking-wider">
+                            <span className="text-[10px] text-muted-foreground uppercase font-bold tracking-wider">
                               BDT
                             </span>
                           </div>
-                          <span className="text-xs font-bold text-emerald-800 flex items-center gap-1 bg-emerald-50 px-2.5 py-1 rounded-xl border border-emerald-200">
+                          <span className="text-xs font-bold text-emerald-800 dark:text-emerald-400 flex items-center gap-1 bg-emerald-50 dark:bg-emerald-950/30 px-2.5 py-1 rounded-xl border border-emerald-200 dark:border-emerald-800">
                             <ShieldCheck className="w-4 h-4 text-emerald-600" />
                             <span>{isBn ? 'এসক্রো ফান্ডে জমা' : 'In Escrow'}</span>
                           </span>
@@ -664,13 +668,13 @@ function PaymentsContent({ locale }: { locale: Locale }) {
             />
           ) : (
             <>
-              <Card className="mb-6 border-slate-200 rounded-3xl shadow-sm overflow-hidden bg-white text-slate-900">
-                <CardHeader className="pb-4 border-b border-slate-100 bg-slate-50/60">
-                  <CardTitle className="text-base font-black text-slate-900 flex items-center gap-2">
-                    <CreditCard className="w-5 h-5 text-blue-600" />
+              <Card className="mb-6 border-border rounded-xl overflow-hidden bg-card text-foreground">
+                <CardHeader className="pb-4 border-b border-border bg-muted/30">
+                  <CardTitle className="text-base font-black text-foreground flex items-center gap-2">
+                    <CreditCard className="w-5 h-5 text-primary" />
                     <span>{isBn ? 'টিউশন ফি পরিশোধ অর্ডার' : 'New Tuition Payment Order'}</span>
                   </CardTitle>
-                  <CardDescription className="text-xs text-slate-600 font-semibold">
+                  <CardDescription className="text-xs text-muted-foreground font-medium">
                     {isBn
                       ? 'নির্ধারিত টিউশন নির্বাচন করে নিরাপদ গেটওয়েতে ফি প্রদান করুন।'
                       : 'Select your active booking and proceed to the secured Bangladesh Bank compliant escrow checkout.'}
@@ -742,7 +746,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                         type="submit"
                         isLoading={pay.creating}
                         data-testid="create-order-btn"
-                        className="bg-blue-600 hover:bg-blue-700 text-white px-8 text-xs font-black h-11 rounded-xl shadow-xs"
+                        className="bg-primary hover:bg-primary/90 text-primary-foreground px-8 text-xs font-bold h-11 rounded-xl"
                       >
                         <CreditCard className="w-4 h-4 mr-2" />
                         {isBn ? 'পেমেন্ট গেটওয়েতে যান' : 'Proceed to Checkout'}
@@ -778,7 +782,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                 isLoading={pay.refunding}
                 onClick={pay.handleRefund}
                 data-testid="refund-btn"
-                className="border-slate-300 text-slate-800 font-bold"
+                className="border-border text-foreground font-bold"
               >
                 {isBn ? 'রিফান্ড অনুরোধ' : 'Request refund'}
               </Button>
@@ -800,7 +804,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
               onClose={() => setReceiptModalOpen(false)}
             />
           ) : (
-            <div className="p-8 text-center bg-white rounded-3xl border border-slate-200">
+            <div className="p-8 text-center bg-card rounded-xl border border-border">
               <LoadingSpinner />
             </div>
           )}

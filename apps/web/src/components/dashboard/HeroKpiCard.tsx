@@ -26,16 +26,14 @@ export function HeroKpiCard({
 }: HeroKpiCardProps) {
   const isHero = variant === 'hero';
   const valString = String(value ?? '');
-  // Long strings (like "অনুমোদিত", "যাচাইধীন", "Under Review") should use compact font-size
   const isLongText = valString.length > 5;
 
   const content = (
     <div
       data-testid={testId}
       className={cn(
-        'group relative flex flex-col justify-between rounded-2xl p-5 sm:p-6 transition-all duration-200 select-none bg-card border border-border/80 hover:shadow-sm hover:border-primary/40 hover:-translate-y-0.5',
-        isHero &&
-          'border-primary/30 bg-gradient-to-b from-primary-soft/40 via-card to-card shadow-xs hover:border-primary/50',
+        'group relative flex flex-col justify-between rounded-xl p-5 transition-colors select-none bg-card border border-border hover:border-primary/40',
+        isHero && 'bg-primary-soft/20 border-primary/30 hover:border-primary/50',
       )}
     >
       {/* Top row: Title + Icon + Arrow indicator */}
@@ -44,10 +42,10 @@ export function HeroKpiCard({
           {Icon && (
             <div
               className={cn(
-                'h-8 w-8 rounded-xl flex items-center justify-center shrink-0 transition-colors',
+                'h-8 w-8 rounded-lg flex items-center justify-center shrink-0 transition-colors',
                 isHero
-                  ? 'bg-primary-soft text-primary shadow-xs'
-                  : 'bg-surface text-muted-foreground group-hover:text-primary group-hover:bg-primary-soft/70',
+                  ? 'bg-primary-soft text-primary'
+                  : 'bg-muted text-muted-foreground group-hover:text-primary group-hover:bg-primary-soft',
               )}
             >
               <Icon className="h-4 w-4" aria-hidden="true" />
@@ -83,10 +81,10 @@ export function HeroKpiCard({
         <div>
           <div
             className={cn(
-              'inline-flex items-center gap-1.5 text-[11px] font-semibold w-fit tracking-tight px-2.5 py-1 rounded-lg',
+              'inline-flex items-center gap-1.5 text-[11px] font-semibold w-fit tracking-tight px-2.5 py-0.5 rounded-md',
               isHero
                 ? 'bg-primary-soft text-primary'
-                : 'text-muted-foreground bg-surface border border-border/60 group-hover:border-primary/20',
+                : 'text-muted-foreground bg-muted group-hover:text-foreground',
             )}
           >
             <TrendingUp className="h-3 w-3 shrink-0 text-primary" aria-hidden="true" />
@@ -101,7 +99,7 @@ export function HeroKpiCard({
     return (
       <Link
         href={href}
-        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-2xl"
+        className="block focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
       >
         {content}
       </Link>

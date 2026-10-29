@@ -7,28 +7,24 @@ import {
   Calendar,
   Inbox,
   ShieldCheck,
-  ShieldAlert,
-  RefreshCw,
   Search,
   Plus,
   CreditCard,
-  BookOpen,
-  Sparkles,
   GraduationCap,
   ArrowRight,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
 import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart';
+import { computeWeeklyActivity } from '@/components/dashboard/weekly-activity.util';
 import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard';
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
-import { GuardianChildrenManager } from '@/components/guardian/GuardianChildrenManager';
 import {
   GuardianEscrowSafetyCard,
   GuardianChildSafetyRadar,
   GuardianChildProfileSwitcher,
 } from '../components';
-import { LoadingSpinner, Card, CardHeader, CardContent, Button } from '@/components/ui';
+import { Card, CardHeader, CardContent, Button } from '@/components/ui';
 import { getDictionary, formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { formatDateTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
@@ -36,32 +32,14 @@ import { useGetMyPaymentOrdersQuery } from '@/store/services/payments-api';
 import { useGuardianDashboard } from '../hooks/use-guardian-dashboard';
 
 /**
- * Production-ready Guardian Dashboard:
- * Donezo/Shopeers-inspired aesthetic with full-fidelity real data,
- * child academic profile overview, quick actions bar, and live safety sync.
+ * Clean, cohesive Guardian Dashboard:
+ * Standard Shadcn tokens, real data only, zero mock clutter.
  */
 export function GuardianDashboardPage({ locale }: { locale: Locale }) {
   const dict = getDictionary(locale);
   const dashboard = useGuardianDashboard();
   const { user, children, activeChild, childrenQuery, requests, sessions } = dashboard;
   const isBn = locale === 'bn';
-
-  const mappedChildren = React.useMemo(
-    () =>
-      children.map((c) => ({
-        linkId: c.linkId,
-        studentId: c.studentId,
-        displayName: c.displayName,
-        relationshipType: c.relationshipType,
-        status: c.status,
-        consentPolicyVersion: c.consentPolicyVersion,
-        consentRecordedAt: c.consentRecordedAt,
-        isMinor: c.isMinor,
-        institutionName: c.institutionName,
-        educationLevelName: c.educationLevelName,
-      })),
-    [children],
-  );
 
   const upcomingSession = sessions.data?.data?.[0];
 
@@ -72,10 +50,38 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
     (sum, o) => sum + Math.round(Number(o.amountMinor) / 100),
     0,
   );
-  const completedSessions = (sessions.data?.data ?? []).filter((s) => s.status === 'completed');
+
+  const rawSessionsList = sessions.data?.data || [];
+  const completedSessions = rawSessionsList.filter((s) => s.status === 'completed');
   const dynamicReleasedBdt = completedSessions.length * 1500;
-  const dynamicHeldBdt = totalPaidBdt > 0 ? Math.max(0, totalPaidBdt - dynamicReleasedBdt) : 8500;
-  const finalReleasedBdt = totalPaidBdt > 0 ? dynamicReleasedBdt : 12000;
+  const dynamicHeldBdt = totalPaidBdt > 0 ? Math.max(0, totalPaidBdt - dynamicReleasedBdt) : 0;
+  const finalReleasedBdt = totalPaidBdt > 0 ? dynamicReleasedBdt : 0;
+
+  const weeklyActivityData = React.useMemo(
+    () => computeWeeklyActivity(rawSessionsList),
+    [rawSessionsList],
+  );
+
+  const totalSessionsCount = rawSessionsList.length;
+  const attendancePercentage =
+    totalSessionsCount > 0
+      ? Math.min(100, Math.round((completedSessions.length / totalSessionsCount) * 100))
+      : 0;
+
+  const pendingMilestoneSession = completedSessions[0];
+  const pendingMilestonesCount = completedSessions.length;
+  const nextMilestoneAmountBdt = pendingMilestoneSession
+    ? Math.round(Number(pendingMilestoneSession.hourlyRateMinor || 0) / 100)
+    : 0;
+  const nextMilestoneTutorName = pendingMilestoneSession?.tutorName || '';
+  const nextMilestoneSubject = pendingMilestoneSession?.subjectName || '';
+
+  const lastCompletedOrLiveSession = rawSessionsList.find(
+    (s) => s.status === 'in_progress' || s.status === 'completed',
+  );
+  const lastCheckInFormatted = lastCompletedOrLiveSession?.startsAt
+    ? formatDateTime(lastCompletedOrLiveSession.startsAt, locale)
+    : undefined;
 
   return (
     <DashboardShell
@@ -89,29 +95,26 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
       role="guardian"
       actions={
         <div className="flex items-center gap-2">
-          <Button asChild size="sm">
+          <Button asChild size="sm" className="rounded-xl">
             <Link href={withLocale('/tutors', locale)}>
-              <Plus className="h-3.5 w-3.5" />
+              <Plus className="h-3.5 w-3.5 mr-1" />
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutor'}</span>
             </Link>
           </Button>
-          <Button asChild variant="outline" size="sm">
+          <Button asChild variant="outline" size="sm" className="rounded-xl">
             <Link href={withLocale('/dashboard/guardian/payments', locale)}>
-              <CreditCard className="h-3.5 w-3.5 text-muted-foreground" />
+              <CreditCard className="h-3.5 w-3.5 mr-1 text-muted-foreground" />
               <span>{isBn ? 'টিউশন ফি ও এসক্রো' : 'Tuition & Escrow'}</span>
             </Link>
           </Button>
         </div>
       }
     >
-      {/* ======================================================== */}
-      {/* 1. DONEZO 4-CARD HERO KPI GRID                           */}
-      {/* ======================================================== */}
+      {/* 1. 4-CARD HERO KPI GRID */}
       <div
-        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-5"
+        className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         data-testid="guardian-overview-grid"
       >
-        {/* Card 1: Featured Hero Solid Card (Children Count) */}
         <HeroKpiCard
           variant="hero"
           icon={Users}
@@ -126,7 +129,6 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
           testId="guardian-children-count"
         />
 
-        {/* Card 2: Requests Secondary Card */}
         <HeroKpiCard
           variant="secondary"
           icon={Inbox}
@@ -141,7 +143,6 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
           testId="guardian-requests-count"
         />
 
-        {/* Card 3: Sessions Secondary Card */}
         <HeroKpiCard
           variant="secondary"
           icon={Calendar}
@@ -156,7 +157,6 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
           testId="guardian-sessions-count"
         />
 
-        {/* Card 4: Active Child Card */}
         <HeroKpiCard
           variant="secondary"
           icon={ShieldCheck}
@@ -172,75 +172,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         />
       </div>
 
-      {/* ======================================================== */}
-      {/* 2. QUICK ACTIONS BAR                                     */}
-      {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2 p-3 sm:p-3.5 rounded-2xl bg-card border border-border/80 shadow-xs">
-        <span className="text-xs font-bold text-muted-foreground mr-1 flex items-center gap-1.5 px-1">
-          <Sparkles className="w-3.5 h-3.5 text-primary" />
-          {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
-        </span>
-        <Link
-          href={withLocale('/dashboard/guardian/children', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/70 bg-surface hover:bg-primary-soft hover:border-primary/30 text-foreground text-xs font-semibold transition-all duration-150"
-        >
-          <Users className="w-3.5 h-3.5 text-primary" />
-          <span>{isBn ? 'সন্তান প্রোফাইল' : 'Children'}</span>
-        </Link>
-        <Link
-          href={withLocale('/dashboard/guardian/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/70 bg-surface hover:bg-primary-soft hover:border-primary/30 text-foreground text-xs font-semibold transition-all duration-150"
-        >
-          <BookOpen className="w-3.5 h-3.5 text-primary" />
-          <span>{isBn ? 'লার্নিং অগ্রগতি' : 'Learning Hub'}</span>
-        </Link>
-        <Link
-          href={withLocale('/dashboard/guardian/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/70 bg-surface hover:bg-primary-soft hover:border-primary/30 text-foreground text-xs font-semibold transition-all duration-150"
-        >
-          <Calendar className="w-3.5 h-3.5 text-primary" />
-          <span>{isBn ? 'ক্লাস সময়সূচি' : 'Class Schedule'}</span>
-        </Link>
-        <Link
-          href={withLocale('/dashboard/guardian/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/70 bg-surface hover:bg-primary-soft hover:border-primary/30 text-foreground text-xs font-semibold transition-all duration-150"
-        >
-          <Inbox className="w-3.5 h-3.5 text-primary" />
-          <span>{isBn ? 'টিউশন অনুরোধ' : 'Tuition Requests'}</span>
-        </Link>
-        <Link
-          href={withLocale('/dashboard/guardian/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border/70 bg-surface hover:bg-primary-soft hover:border-primary/30 text-foreground text-xs font-semibold transition-all duration-150"
-        >
-          <CreditCard className="w-3.5 h-3.5 text-primary" />
-          <span>{isBn ? 'টিউশন ফি ও এসক্রো' : 'Fees & Payments'}</span>
-        </Link>
-        <Link
-          href={withLocale('/dashboard/guardian/safety-reports', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-destructive/25 bg-destructive-soft hover:bg-destructive/15 text-destructive font-semibold text-xs transition-colors"
-          id="link-safety-hub"
-        >
-          <ShieldAlert className="w-3.5 h-3.5 text-destructive" />
-          <span>{isBn ? 'শিশু সুরক্ষা হাব' : 'Safety Hub'}</span>
-        </Link>
-        <Link
-          href={withLocale('/tutor-replacements', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-warning/25 bg-warning-soft hover:bg-warning/15 text-warning font-semibold text-xs transition-colors"
-          id="link-replacement-hub"
-        >
-          <RefreshCw className="w-3.5 h-3.5 text-warning" />
-          <span>{isBn ? 'রিপ্লেসমেন্ট গ্যারান্টি' : 'Replacements'}</span>
-        </Link>
-        <Link
-          href={withLocale('/tutors', locale)}
-          className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-semibold shadow-xs shadow-blue-500/25 transition-all sm:ml-auto"
-        >
-          <Search className="w-3.5 h-3.5" />
-          <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
-        </Link>
-      </div>
-
-      {/* Child Switcher Tabs / Portfolio */}
+      {/* 2. Child Switcher Tabs / Portfolio */}
       <GuardianChildProfileSwitcher
         locale={locale}
         childrenList={children}
@@ -248,47 +180,36 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         onSelectChild={dashboard.setActiveChildId}
       />
 
-      {/* ======================================================== */}
-      {/* 2.5 ESCROW SAFETY & CHILD SAFEGUARDING RADAR             */}
-      {/* ======================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
+      {/* 3. ESCROW SAFETY & CHILD SAFEGUARDING RADAR */}
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-5">
         <GuardianEscrowSafetyCard
           locale={locale}
           heldEscrowBdt={dynamicHeldBdt}
           releasedBdt={finalReleasedBdt}
-          pendingMilestonesCount={completedSessions.length > 0 ? completedSessions.length : 1}
-          nextMilestoneAmountBdt={4500}
-          nextMilestoneTutorName={
-            upcomingSession?.tutorName || (isBn ? 'ড. মো. আনিসুর রহমান' : 'Dr. Anisur Rahman')
-          }
-          nextMilestoneSubject={
-            upcomingSession?.subjectName ||
-            (isBn ? 'উচ্চতর গণিত ও পদার্থবিজ্ঞান' : 'Higher Math & Physics')
-          }
+          pendingMilestonesCount={pendingMilestonesCount}
+          nextMilestoneAmountBdt={nextMilestoneAmountBdt}
+          nextMilestoneTutorName={nextMilestoneTutorName}
+          nextMilestoneSubject={nextMilestoneSubject}
         />
 
         <GuardianChildSafetyRadar
           locale={locale}
           childName={activeChild?.displayName || (isBn ? 'আপনার সন্তান' : 'Your Child')}
           tutorVerified={true}
-          lastSessionCheckIn={
-            upcomingSession?.startsAt ? formatDateTime(upcomingSession.startsAt, locale) : undefined
-          }
+          lastSessionCheckIn={lastCheckInFormatted}
         />
       </div>
 
-      {/* ======================================================== */}
-      {/* 3. ACTIVE CHILD ACADEMIC OVERVIEW & NEXT CLASS ROW       */}
-      {/* ======================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      {/* 4. ACTIVE CHILD ACADEMIC OVERVIEW & NEXT CLASS ROW */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
         {/* Child Academic Snapshot Card (2 Cols on lg) */}
         <div className="lg:col-span-2">
           {activeChild ? (
-            <Card className="h-full flex flex-col justify-between">
-              <CardHeader className="pb-3">
+            <Card className="h-full flex flex-col justify-between rounded-xl border border-border">
+              <CardHeader className="pb-3 border-b border-border/60">
                 <div className="flex items-center justify-between">
                   <div className="flex items-center gap-3">
-                    <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center font-bold">
+                    <div className="h-9 w-9 rounded-lg bg-primary-soft text-primary flex items-center justify-center font-bold">
                       <GraduationCap className="w-5 h-5" />
                     </div>
                     <div>
@@ -300,7 +221,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                       </h3>
                     </div>
                   </div>
-                  <span className="px-3 py-1 rounded-full bg-success-soft text-success-soft-foreground border border-success/20 text-xs font-semibold">
+                  <span className="px-2.5 py-0.5 rounded-full bg-primary-soft text-primary border border-primary/20 text-xs font-semibold">
                     {activeChild.relationshipType === 'father'
                       ? isBn
                         ? 'পিতা'
@@ -315,15 +236,15 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                   </span>
                 </div>
               </CardHeader>
-              <CardContent className="flex flex-col gap-4 pt-0 text-xs">
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-2xl bg-surface border border-border">
+              <CardContent className="flex flex-col gap-4 pt-4 text-xs">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 p-3.5 rounded-lg bg-muted/30 border border-border/60">
                   <div>
                     <span className="text-muted-foreground block text-[11px]">
                       {isBn ? 'শিক্ষাপ্রতিষ্ঠান:' : 'Institution:'}
                     </span>
                     <span className="font-semibold text-foreground">
                       {activeChild.institutionName ||
-                        (isBn ? 'ঢাকা রেসিডেনসিয়াল মডেল কলেজ' : 'Not specified')}
+                        (isBn ? 'প্রতিষ্ঠান নির্ধারিত নেই' : 'Not specified')}
                     </span>
                   </div>
                   <div>
@@ -331,14 +252,15 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                       {isBn ? 'শিক্ষা স্তর ও মাধ্যম:' : 'Level & Curriculum:'}
                     </span>
                     <span className="font-semibold text-foreground">
-                      {isBn ? 'এইচএসসি (একাদশ-দ্বাদশ শ্রেণি) • বাংলা মাধ্যম' : 'HSC (Class 11-12)'}
+                      {activeChild.educationLevelName ||
+                        (isBn ? 'শিক্ষা স্তর নির্ধারিত নেই' : 'Not specified')}
                     </span>
                   </div>
                 </div>
 
                 <div className="flex items-center justify-between pt-1">
                   <div className="flex items-center gap-2 text-muted-foreground text-xs">
-                    <ShieldCheck className="w-4 h-4 text-success shrink-0" />
+                    <ShieldCheck className="w-4 h-4 text-emerald-500 shrink-0" />
                     <span>
                       {isBn
                         ? 'অভিভাবক সম্মতি ও নিরাপত্তা নজরদারি সক্রিয়'
@@ -359,7 +281,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
               </CardContent>
             </Card>
           ) : (
-            <Card className="h-full flex items-center justify-center p-8 text-center">
+            <Card className="h-full flex items-center justify-center p-8 text-center rounded-xl border border-border">
               <div className="flex flex-col gap-2">
                 <Users className="w-10 h-10 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
@@ -394,10 +316,8 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         </div>
       </div>
 
-      {/* ======================================================== */}
-      {/* 4. VISUAL ANALYTICS & TIMERS ROW                         */}
-      {/* ======================================================== */}
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-5">
+      {/* 5. VISUAL ANALYTICS & TIMERS ROW */}
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-5">
         <div className="lg:col-span-2">
           <WeeklyActivityChart
             locale={locale}
@@ -407,35 +327,120 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
                 ? 'সপ্তাহজুড়ে ক্লাসে অংশগ্রহণ ও সময়'
                 : 'Learning sessions and attendance consistency'
             }
+            data={weeklyActivityData}
           />
         </div>
 
         <div className="lg:col-span-1">
           <ProgressGaugeCard
             locale={locale}
-            percentage={85}
+            percentage={attendancePercentage}
             title={isBn ? 'সিলেবাস ও ক্লাসের অগ্রগতি' : 'Syllabus & Class Progress'}
-            subtitle={isBn ? 'চলতি সেশনের পাঠ্যক্রম সম্পন্ন' : 'Term curriculum completed'}
+            subtitle={
+              totalSessionsCount > 0
+                ? isBn
+                  ? `${formatLocalizedNumber(completedSessions.length, locale)}/${formatLocalizedNumber(totalSessionsCount, locale)} ক্লাস সম্পন্ন`
+                  : `${completedSessions.length}/${totalSessionsCount} sessions completed`
+                : isBn
+                  ? 'এখনও কোনো ক্লাস নির্ধারিত নেই'
+                  : 'No sessions scheduled yet'
+            }
           />
         </div>
       </div>
 
-      {/* ======================================================== */}
-      {/* 5. LINKED CHILDREN MANAGER SECTION                       */}
-      {/* ======================================================== */}
+      {/* 6. LINKED CHILDREN OVERVIEW */}
       <div className="mt-2" data-testid="guardian-children-section">
-        {childrenQuery.isLoading ? (
-          <div className="py-8 flex justify-center">
-            <LoadingSpinner />
+        <div className="bg-card border border-border rounded-xl p-5 sm:p-6">
+          <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
+            <div>
+              <h3 className="text-base font-bold text-foreground">
+                {isBn ? 'সংযুক্ত সন্তান ও শিক্ষার্থী' : 'My Linked Children'}
+              </h3>
+              <p className="text-xs text-muted-foreground mt-0.5">
+                {isBn
+                  ? 'আপনার অ্যাকাউন্টের অধীনে সক্রিয় সন্তান প্রোফাইল ও অভিভাবকত্ব'
+                  : 'Active child profiles and guardian relationships'}
+              </p>
+            </div>
+            <Button asChild size="sm" variant="outline" className="rounded-lg text-xs">
+              <Link
+                href={withLocale('/dashboard/guardian/children', locale)}
+                className="flex items-center gap-1.5"
+              >
+                <span>{isBn ? 'সব সন্তান পরিচালনা' : 'Manage All Children'}</span>
+                <ArrowRight className="h-3.5 w-3.5" />
+              </Link>
+            </Button>
           </div>
-        ) : (
-          <GuardianChildrenManager
-            locale={locale}
-            initialChildren={mappedChildren}
-            onAddChild={dashboard.handleAddChild}
-            onRevokeLink={dashboard.handleRevokeLink}
-          />
-        )}
+
+          {children.length === 0 ? (
+            <div className="py-8 px-4 text-center">
+              <Users className="h-10 w-10 text-muted-foreground mx-auto mb-2" />
+              <p className="text-xs font-bold text-foreground">
+                {isBn ? 'কোনো সন্তান প্রোফাইল যুক্ত নেই' : 'No children profiles linked yet'}
+              </p>
+              <p className="text-[11px] text-muted-foreground mt-1 max-w-sm mx-auto">
+                {isBn
+                  ? 'আপনার সন্তানের ফোন নম্বর বা আইডি দিয়ে প্রোফাইল যুক্ত করুন।'
+                  : 'Link your child via mobile or ID to monitor their classes.'}
+              </p>
+              <Button asChild size="sm" className="mt-3.5 rounded-lg text-xs">
+                <Link href={withLocale('/dashboard/guardian/children', locale)}>
+                  <Plus className="h-3.5 w-3.5 mr-1" />
+                  <span>{isBn ? 'সন্তান যুক্ত করুন' : 'Link Child'}</span>
+                </Link>
+              </Button>
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3.5 mt-4">
+              {children.map((c) => (
+                <div
+                  key={c.studentId}
+                  className="p-3.5 rounded-lg bg-muted/30 border border-border/60 flex flex-col justify-between gap-3"
+                >
+                  <div className="flex items-start justify-between gap-2">
+                    <div className="min-w-0">
+                      <p className="text-sm font-bold text-foreground truncate">
+                        {c.displayName}
+                      </p>
+                      <p className="text-[11px] text-muted-foreground truncate">
+                        {c.institutionName ||
+                          (isBn ? 'প্রতিষ্ঠান নির্ধারিত নেই' : 'Institution not set')}
+                      </p>
+                    </div>
+                    <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary-soft text-primary shrink-0">
+                      {c.relationshipType === 'father'
+                        ? isBn
+                          ? 'পিতা'
+                          : 'Father'
+                        : c.relationshipType === 'mother'
+                          ? isBn
+                            ? 'মাতা'
+                            : 'Mother'
+                          : isBn
+                            ? 'আইনগত অভিভাবক'
+                            : 'Guardian'}
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between pt-2 border-t border-border/40 text-xs">
+                    <span className="text-[11px] text-muted-foreground">
+                      {c.educationLevelName || (isBn ? 'শিক্ষা স্তর' : 'Level')}
+                    </span>
+                    <Link
+                      href={withLocale(`/dashboard/guardian/children/${c.studentId}`, locale)}
+                      className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
+                    >
+                      <span>{isBn ? 'বিস্তারিত' : 'View'}</span>
+                      <ArrowRight className="h-3 w-3" />
+                    </Link>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
     </DashboardShell>
   );

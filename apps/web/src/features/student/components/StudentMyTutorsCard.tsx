@@ -18,9 +18,9 @@ export function StudentMyTutorsCard({ locale, tutors, isLoading }: StudentMyTuto
   const isBn = locale === 'bn';
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between">
+    <div className="bg-card border border-border rounded-xl p-5 flex flex-col justify-between select-none">
       {/* Header */}
-      <div className="flex items-center justify-between pb-3.5 border-b border-border">
+      <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
         <div className="flex items-center gap-2.5">
           <div className="h-9 w-9 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
             <Users className="h-5 w-5" />
@@ -65,7 +65,7 @@ export function StudentMyTutorsCard({ locale, tutors, isLoading }: StudentMyTuto
             </p>
             <Link
               href={withLocale('/tutors', locale)}
-              className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-xs shadow-blue-500/25 transition-all"
+              className="mt-3.5 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors"
             >
               <span>{isBn ? 'শিক্ষক ব্রাউজ করুন' : 'Browse Tutors'}</span>
               <ArrowRight className="h-3.5 w-3.5" />

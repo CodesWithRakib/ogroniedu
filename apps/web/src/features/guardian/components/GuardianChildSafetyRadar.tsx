@@ -3,17 +3,14 @@
 import React from 'react';
 import Link from 'next/link';
 import {
-  ShieldAlert,
   ShieldCheck,
   PhoneCall,
-  AlertCircle,
   Clock,
   UserCheck,
-  CheckCircle2,
   FileCheck,
   Headphones,
 } from 'lucide-react';
-import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 
 interface GuardianChildSafetyRadarProps {
@@ -27,19 +24,21 @@ export function GuardianChildSafetyRadar({
   locale,
   childName = 'আপনার সন্তান',
   tutorVerified = true,
-  lastSessionCheckIn = 'আজ বিকাল ৪:০০',
+  lastSessionCheckIn,
 }: GuardianChildSafetyRadarProps) {
   const isBn = locale === 'bn';
+  const displayCheckIn =
+    lastSessionCheckIn || (isBn ? 'কোনো সাম্প্রতিক ক্লাস রেকর্ড নেই' : 'No recent session check-in');
 
   return (
     <div
-      className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between"
+      className="bg-card border border-border rounded-xl p-5 flex flex-col justify-between select-none"
       data-testid="guardian-child-safety-radar"
     >
       {/* Header */}
-      <div className="flex items-center justify-between pb-3.5 border-b border-border">
+      <div className="flex items-center justify-between pb-3.5 border-b border-border/60">
         <div className="flex items-center gap-2.5">
-          <div className="h-9 w-9 rounded-xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
+          <div className="h-8 w-8 rounded-lg bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div>
@@ -67,8 +66,8 @@ export function GuardianChildSafetyRadar({
       </div>
 
       {/* Safety Verification Badges */}
-      <div className="my-4 flex flex-col gap-2.5">
-        <div className="p-3 rounded-xl bg-surface border border-border/80 flex items-center justify-between">
+      <div className="my-3.5 flex flex-col gap-2.5">
+        <div className="p-3 rounded-lg bg-muted/30 border border-border/60 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-7 w-7 rounded-lg bg-emerald-500/15 text-emerald-600 dark:text-emerald-400 flex items-center justify-center shrink-0">
               <FileCheck className="w-4 h-4" />
@@ -89,7 +88,7 @@ export function GuardianChildSafetyRadar({
           </span>
         </div>
 
-        <div className="p-3 rounded-xl bg-surface border border-border/80 flex items-center justify-between">
+        <div className="p-3 rounded-lg bg-muted/30 border border-border/60 flex items-center justify-between">
           <div className="flex items-center gap-2.5">
             <div className="h-7 w-7 rounded-lg bg-blue-500/15 text-blue-600 dark:text-blue-400 flex items-center justify-center shrink-0">
               <Clock className="w-4 h-4" />
@@ -100,13 +99,13 @@ export function GuardianChildSafetyRadar({
               </p>
               <p className="text-[11px] text-muted-foreground">
                 {isBn
-                  ? `সর্বশেষ সেশন চেক-ইন: ${lastSessionCheckIn}`
-                  : `Last session check-in: ${lastSessionCheckIn}`}
+                  ? `সর্বশেষ সেশন চেক-ইন: ${displayCheckIn}`
+                  : `Last session check-in: ${displayCheckIn}`}
               </p>
             </div>
           </div>
           <span className="text-blue-600 dark:text-blue-400 text-xs font-bold shrink-0">
-            {isBn ? 'ট্র্যাক হচ্ছে' : 'Logged'}
+            {lastSessionCheckIn ? (isBn ? 'ট্র্যাক হচ্ছে' : 'Logged') : '—'}
           </span>
         </div>
       </div>
@@ -123,9 +122,9 @@ export function GuardianChildSafetyRadar({
         <div className="grid grid-cols-2 gap-2.5">
           <a
             href="tel:1098"
-            className="flex items-center gap-2.5 p-2.5 rounded-xl bg-destructive-soft/40 hover:bg-destructive-soft border border-destructive/30 text-destructive-soft-foreground transition-all group"
+            className="flex items-center gap-2.5 p-2.5 rounded-lg bg-destructive-soft/40 hover:bg-destructive-soft border border-destructive/30 text-destructive-soft-foreground transition-colors"
           >
-            <div className="h-8 w-8 rounded-lg bg-destructive text-white flex items-center justify-center font-black text-xs shrink-0 group-hover:scale-105 transition-transform">
+            <div className="h-7 w-7 rounded-md bg-destructive text-destructive-foreground flex items-center justify-center font-bold text-xs shrink-0">
               1098
             </div>
             <div className="min-w-0">
@@ -140,9 +139,9 @@ export function GuardianChildSafetyRadar({
 
           <a
             href="tel:999"
-            className="flex items-center gap-2.5 p-2.5 rounded-xl bg-warning-soft/40 hover:bg-warning-soft border border-warning/30 text-warning-soft-foreground transition-all group"
+            className="flex items-center gap-2.5 p-2.5 rounded-lg bg-warning-soft/40 hover:bg-warning-soft border border-warning/30 text-warning-soft-foreground transition-colors"
           >
-            <div className="h-8 w-8 rounded-lg bg-warning text-white flex items-center justify-center font-black text-xs shrink-0 group-hover:scale-105 transition-transform">
+            <div className="h-7 w-7 rounded-md bg-warning text-warning-foreground flex items-center justify-center font-bold text-xs shrink-0">
               999
             </div>
             <div className="min-w-0">
@@ -158,7 +157,7 @@ export function GuardianChildSafetyRadar({
       </div>
 
       {/* Footer support link */}
-      <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-xs">
+      <div className="mt-4 pt-3 border-t border-border/60 flex items-center justify-between text-xs">
         <span className="text-[11px] text-muted-foreground">
           {isBn ? 'অপ্রীতিকর আচরণ তাৎক্ষণিক রিপোর্ট করুন' : 'Report misconduct 24/7 anonymously'}
         </span>

@@ -226,29 +226,22 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           : 'Track new tuition bookings, manage tutor confirmations and progress'
       }
     >
-      {/* Hero banner — same visual language as home / tutor discovery */}
-      <div className="mb-6 relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-5 sm:p-7 shadow-xs">
-        <div className="absolute -top-16 -right-10 w-64 h-64 rounded-full bg-brand-soft blur-3xl pointer-events-none" />
-        <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-5">
+      {/* Hero banner — clean cohesive layout */}
+      <div className="mb-6 rounded-xl border border-border bg-card p-5 sm:p-6 text-foreground">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5">
           <div className="flex flex-col gap-2.5 max-w-2xl">
-            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-soft px-3 py-1 text-[11px] font-bold text-primary">
+            <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary/10 px-3 py-1 text-[11px] font-bold text-primary w-fit">
               <BookOpen className="w-3.5 h-3.5" />
               {locale === 'bn' ? 'বুকিং ওয়ার্কস্পেস' : 'Booking workspace'}
             </div>
             <h2 className="text-xl sm:text-2xl lg:text-3xl font-black tracking-tight text-foreground">
               {locale === 'bn' ? (
                 <>
-                  আপনার টিউশন{' '}
-                  <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
-                    অনুরোধসমূহ
-                  </span>
+                  আপনার টিউশন <span className="text-primary">অনুরোধসমূহ</span>
                 </>
               ) : (
                 <>
-                  Your tutoring{' '}
-                  <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
-                    inquiries
-                  </span>
+                  Your tutoring <span className="text-primary">inquiries</span>
                 </>
               )}
             </h2>
@@ -264,7 +257,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
               <Link href={withLocale('/tutors', locale)}>
                 <Button
                   size="sm"
-                  className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 rounded-xl font-semibold"
+                  className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold"
                 >
                   <Search className="w-4 h-4 mr-1.5" />
                   {locale === 'bn' ? 'নতুন শিক্ষক খুঁজুন' : 'Find a Tutor'}
@@ -444,7 +437,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
               <Card
                 key={r.id}
                 data-testid={`request-card-${r.id}`}
-                className="flex flex-col justify-between bg-card border border-slate-200 hover:border-blue-400 text-foreground hover:shadow-xs transition-all rounded-2xl overflow-hidden shadow-xs"
+                className="flex flex-col justify-between bg-card border border-border hover:border-primary/50 text-foreground transition-colors rounded-xl overflow-hidden"
               >
                 <CardHeader className="flex flex-col gap-3 pb-3">
                   <div className="flex items-center justify-between gap-2">
@@ -566,7 +559,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                           <Link href={withLocale(`/dashboard/bookings/${r.id}/pay`, locale)}>
                             <Button
                               size="sm"
-                              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-xs shadow-blue-500/25"
+                              className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold rounded-xl"
                             >
                               <CreditCard className="w-3.5 h-3.5 mr-1" />
                               {locale === 'bn' ? 'পেমেন্ট করুন' : 'Make Payment'}
@@ -669,7 +662,7 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                             disabled={req.responding}
                             onClick={() => req.handleRespond(r.id, 'accept')}
                             data-testid={`accept-btn-${r.id}`}
-                            className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold shadow-xs shadow-blue-500/25"
+                            className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold rounded-xl"
                           >
                             {dict.bookingRequest.acceptButton}
                           </Button>
