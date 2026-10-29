@@ -27,10 +27,10 @@ export function ScoreBreakdownModal({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="score-breakdown-modal"
-        className="max-w-md w-full p-6 flex flex-col gap-4 rounded-3xl bg-card border border-border shadow-2xl text-left"
+        className="max-w-md w-full p-6 flex flex-col gap-4 rounded-xl bg-card border border-border text-left"
       >
         <DialogHeader className="border-b border-border pb-3 text-left">
-          <DialogTitle className="flex items-center gap-2 font-black text-foreground">
+          <DialogTitle className="flex items-center gap-2 font-bold text-foreground">
             <Sparkles className="w-5 h-5 text-primary" />
             <span>{dict.discovery?.scoreBreakdownTitle || 'Ranking Factors'}</span>
           </DialogTitle>
@@ -41,7 +41,7 @@ export function ScoreBreakdownModal({
 
         <div>
           <p className="text-sm font-bold text-foreground">{tutor.displayName}</p>
-          <p className="text-xs text-primary font-extrabold mt-0.5">
+          <p className="text-xs text-primary font-semibold mt-0.5">
             Total Score: {formatLocalizedNumber(tutor.matchScore, locale)} Points
           </p>
         </div>
@@ -51,7 +51,7 @@ export function ScoreBreakdownModal({
             OgroniEdu scores tutors using transparent, deterministic verification &amp; quality
             signals:
           </p>
-          <ul className="flex flex-col gap-2 border border-border rounded-2xl p-3.5 bg-surface-muted/60">
+          <ul className="flex flex-col gap-2 border border-border rounded-lg p-3 bg-muted/40">
             {tutor.rankingReasons.map((reason, idx) => (
               <li key={idx} className="flex items-start gap-2 text-foreground">
                 <CheckCircle2 className="w-3.5 h-3.5 text-primary shrink-0 mt-0.5" />
@@ -64,7 +64,7 @@ export function ScoreBreakdownModal({
         <Button
           variant="primary"
           size="sm"
-          className="w-full rounded-xl font-bold"
+          className="w-full rounded-xl font-semibold"
           onClick={onClose}
         >
           {dict.common?.confirm || 'Understood'}

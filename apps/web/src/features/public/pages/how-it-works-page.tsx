@@ -147,7 +147,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card border-border rounded-2xl shadow-xs hover:border-primary/40 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 relative overflow-hidden"
+                className="bg-card border border-border rounded-xl hover:border-primary/40 transition-colors relative overflow-hidden"
               >
                 <div className="absolute top-4 right-4">
                   <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-primary-soft text-primary font-mono tabular-nums">
@@ -176,7 +176,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
           <Button
             asChild
             size="lg"
-            className="rounded-full px-8 font-semibold shadow-xs font-bengali"
+            className="rounded-xl px-6 font-semibold font-bengali"
           >
             <Link href={`/${locale}/tutors`} className="flex items-center gap-2">
               <span>{dict.nav.findTutors}</span>
@@ -204,7 +204,7 @@ export function HowItWorksPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card border-border rounded-2xl shadow-xs hover:border-primary/40 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 relative overflow-hidden"
+                className="bg-card border border-border rounded-xl hover:border-primary/40 transition-colors relative overflow-hidden"
               >
                 <div className="absolute top-4 right-4">
                   <span className="text-[10px] font-semibold uppercase tracking-wider px-2.5 py-1 rounded-full bg-muted text-muted-foreground font-mono tabular-nums">

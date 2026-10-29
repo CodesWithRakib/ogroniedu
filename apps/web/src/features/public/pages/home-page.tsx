@@ -190,11 +190,11 @@ export function HomePage({ locale }: { locale: Locale }) {
                 )}
               </div>
 
-              {/* Main Headline with High-Contrast Gradient */}
+              {/* Main Headline */}
               <h1 className="text-3xl sm:text-4xl md:text-5xl lg:text-[44px] xl:text-[52px] font-black tracking-tight text-foreground leading-[1.14]">
                 {isBn ? 'সঠিক শিক্ষক খুঁজুন।' : 'Find the Right Tutor.'}
                 <br />
-                <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
+                <span className="text-primary">
                   {isBn ? 'সুপ্ত মেধার শ্রেষ্ঠ বিকাশ।' : 'Unlock Their Potential.'}
                 </span>
               </h1>
@@ -215,11 +215,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             {/* Right Column: Hero Visual Stage Focused on Verified Educators */}
             <div className="lg:col-span-5 relative mt-6 lg:mt-0 flex flex-col items-center lg:items-end">
               <div className="relative w-full max-w-[430px]">
-                {/* Background Decorative Mesh Glow */}
-                <div className="absolute -top-6 -right-6 w-64 h-64 bg-blue-100/50 dark:bg-blue-900/10 rounded-full blur-2xl pointer-events-none -z-10" />
-                <div className="absolute -bottom-6 -left-6 w-64 h-64 bg-indigo-100/40 dark:bg-indigo-950/15 rounded-full blur-2xl pointer-events-none -z-10" />
-
-                {/* Primary Featured Tutor Spotlight Card (Interactive & Zero-Overlap) */}
+                {/* Primary Featured Tutor Spotlight Card */}
                 <HeroTutorCard locale={locale} />
               </div>
             </div>
@@ -231,14 +227,14 @@ export function HomePage({ locale }: { locale: Locale }) {
        * STATS & SOCIAL PROOF STRIP (Directly Below Hero)
        * ==================================================================== */}
       <section
-        className="relative py-8 sm:py-10 border-y border-border bg-surface/50"
+        className="relative py-8 sm:py-10 border-y border-border bg-muted/20"
         data-testid="platform-metrics-band"
       >
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
             {/* Stat 1: Happy Students */}
-            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-xs">
-              <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-blue-50 text-primary border border-blue-100">
+            <div className="rounded-xl border border-border bg-card p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 transition-colors hover:border-primary/40">
+              <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
                 <Users className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
               <div className="min-w-0 flex-1">
@@ -261,8 +257,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Stat 2: Verified Tutors */}
-            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-xs">
-              <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100">
+            <div className="rounded-xl border border-border bg-card p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 transition-colors hover:border-primary/40">
+              <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
                 <GraduationCap className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
               <div className="min-w-0 flex-1">
@@ -285,8 +281,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Stat 3: Completed sessions (live aggregate) */}
-            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-xs">
-              <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+            <div className="rounded-xl border border-border bg-card p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 transition-colors hover:border-primary/40">
+              <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
                 <TrendingUp className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
               <div className="min-w-0 flex-1">
@@ -309,8 +305,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Stat 4: 100% Escrow Protection */}
-            <div className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs flex items-center gap-3.5 sm:gap-4 transition-all hover:border-primary/40 hover:shadow-xs">
-              <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
+            <div className="rounded-xl border border-border bg-card p-4 sm:p-5 flex items-center gap-3.5 sm:gap-4 transition-colors hover:border-primary/40">
+              <div className="flex h-11 w-11 sm:h-12 sm:w-12 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
                 <ShieldCheck className="h-5 w-5 sm:h-6 sm:w-6" aria-hidden="true" />
               </div>
               <div className="min-w-0 flex-1">
@@ -368,10 +364,10 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <Link
                   key={cat.id}
                   href={`/${locale}/tutors?q=${encodeURIComponent(cat.query)}`}
-                  className="rounded-2xl border border-border bg-card p-4 sm:p-5 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 group text-left flex flex-col justify-between min-h-[140px]"
+                  className="rounded-xl border border-border bg-card p-4 sm:p-5 hover:border-primary/40 transition-colors group text-left flex flex-col justify-between min-h-[140px]"
                 >
                   <div
-                    className={`h-10 w-10 rounded-xl flex items-center justify-center border transition-transform duration-200 group-hover:scale-110 ${cat.accentColor}`}
+                    className="h-10 w-10 rounded-lg flex items-center justify-center border border-primary/20 bg-primary/10 text-primary transition-transform duration-200 group-hover:scale-105"
                   >
                     <IconComp className="h-5 w-5" aria-hidden="true" />
                   </div>
@@ -394,7 +390,7 @@ export function HomePage({ locale }: { locale: Locale }) {
       {/* ====================================================================
        * TOP VERIFIED EDUCATORS DYNAMIC SPOTLIGHT SECTION
        * ==================================================================== */}
-      <section className="py-14 sm:py-20 border-t border-border bg-surface/30 relative">
+      <section className="py-14 sm:py-20 border-t border-border bg-muted/20 relative">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-10 gap-4">
             <div className="text-left flex flex-col gap-2">
@@ -410,7 +406,7 @@ export function HomePage({ locale }: { locale: Locale }) {
 
             <Link
               href={`/${locale}/tutors`}
-              className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-hover transition-colors"
+              className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary/80 transition-colors"
             >
               <span>{isBn ? 'সকল শিক্ষক খুঁজুন' : 'View All Tutors'}</span>
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
@@ -426,7 +422,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <div
                   key={idx}
                   data-testid="tutor-skeleton-card"
-                  className="rounded-2xl border border-border bg-card p-5 shadow-xs flex flex-col gap-4"
+                  className="rounded-xl border border-border bg-card p-5 flex flex-col gap-4"
                 >
                   <div className="flex items-center gap-3">
                     <Skeleton className="h-12 w-12 rounded-xl shrink-0" />
@@ -439,7 +435,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                     <Skeleton className="h-3 w-full rounded" />
                     <Skeleton className="h-3 w-4/5 rounded" />
                   </div>
-                  <div className="flex items-center justify-between pt-3 border-t border-border/80">
+                  <div className="flex items-center justify-between pt-3 border-t border-border">
                     <Skeleton className="h-5 w-16 rounded" />
                     <Skeleton className="h-8 w-20 rounded-xl" />
                   </div>
@@ -448,7 +444,7 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
           ) : displayedTutors.length === 0 ? (
             <div
-              className="rounded-2xl border border-border bg-card p-8 text-center"
+              className="rounded-xl border border-border bg-card p-8 text-center"
               data-testid="home-tutors-empty"
             >
               <p className="text-sm font-bold text-foreground">
@@ -467,7 +463,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               {displayedTutors.map((tutor) => (
                 <div
                   key={tutor.id}
-                  className="rounded-2xl border border-border bg-card p-5 shadow-xs hover:border-primary/40 hover:shadow-card transition-all duration-200 flex flex-col justify-between group text-left"
+                  className="rounded-xl border border-border bg-card p-5 hover:border-primary/40 transition-colors flex flex-col justify-between group text-left"
                 >
                   <div>
                     {/* Top row: Avatar & Verified Badge */}
@@ -475,12 +471,12 @@ export function HomePage({ locale }: { locale: Locale }) {
                       <div className="flex items-center gap-3 min-w-0 flex-1">
                         <div className="relative shrink-0">
                           <div
-                            className={`h-12 w-12 rounded-xl bg-gradient-to-br ${tutor.avatarBg} text-white font-black text-sm flex items-center justify-center shadow-xs`}
+                            className="h-12 w-12 rounded-xl bg-primary/10 text-primary border border-primary/20 font-bold text-sm flex items-center justify-center"
                           >
                             {tutor.name.charAt(0)}
                           </div>
                           <div
-                            className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-white ring-2 ring-card shadow-xs"
+                            className="absolute -bottom-1 -right-1 flex h-4 w-4 items-center justify-center rounded-full bg-emerald-500 text-white ring-2 ring-card"
                             title={isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor'}
                           >
                             <CheckCircle2 className="h-3 w-3 stroke-[3]" />
@@ -517,7 +513,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                       {tutor.subjects.map((sub, i) => (
                         <span
                           key={i}
-                          className="rounded-lg bg-surface border border-border/80 px-2 py-0.5 text-[10px] font-medium text-muted-foreground truncate"
+                          className="rounded-md bg-muted/60 border border-border px-2 py-0.5 text-[10px] font-medium text-muted-foreground truncate"
                         >
                           {sub}
                         </span>
@@ -525,14 +521,14 @@ export function HomePage({ locale }: { locale: Locale }) {
                     </div>
 
                     {/* Highlights Row */}
-                    <div className="mt-3 pt-2.5 border-t border-border/60 flex items-center justify-between text-[11px] text-muted-foreground">
+                    <div className="mt-3 pt-2.5 border-t border-border flex items-center justify-between text-[11px] text-muted-foreground">
                       <span>{tutor.experience}</span>
-                      <span className="font-medium text-foreground/80">{tutor.modes}</span>
+                      <span className="font-medium text-foreground">{tutor.modes}</span>
                     </div>
                   </div>
 
                   {/* Rate & Book CTA */}
-                  <div className="mt-4 pt-3.5 border-t border-border/80 flex items-center justify-between gap-2">
+                  <div className="mt-4 pt-3.5 border-t border-border flex items-center justify-between gap-2">
                     <div>
                       <span className="text-[9px] font-semibold text-muted-foreground uppercase tracking-wider block">
                         {isBn ? 'পারিশ্রমিক' : 'Rate'}
@@ -559,7 +555,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                           ? `/${locale}/tutors/${tutor.id}`
                           : `/${locale}/tutors`
                       }
-                      className="rounded-xl bg-surface hover:bg-primary hover:text-white border border-border hover:border-primary px-3 py-1.5 text-xs font-bold text-foreground transition-all duration-150 inline-flex items-center gap-1 cursor-pointer active:scale-95 shrink-0"
+                      className="rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground border border-border px-3 py-1.5 text-xs font-semibold text-foreground transition-colors inline-flex items-center gap-1 cursor-pointer shrink-0"
                     >
                       <span>{isBn ? 'প্রোফাইল' : 'Profile'}</span>
                       <ArrowRight className="h-3 w-3" />
@@ -590,8 +586,8 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
             {/* Feature 1 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 flex flex-col gap-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-blue-50 text-primary border border-blue-100">
+            <div className="rounded-xl border border-border bg-card p-6 hover:border-primary/40 transition-colors flex flex-col gap-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
                 <Award className="h-6 w-6" aria-hidden="true" />
               </div>
               <h3 className="text-base font-bold text-foreground">
@@ -605,8 +601,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 2 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 flex flex-col gap-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-emerald-50 text-emerald-600 border border-emerald-100">
+            <div className="rounded-xl border border-border bg-card p-6 hover:border-primary/40 transition-colors flex flex-col gap-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
                 <ShieldCheck className="h-6 w-6" aria-hidden="true" />
               </div>
               <h3 className="text-base font-bold text-foreground">
@@ -620,8 +616,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 3 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 flex flex-col gap-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-indigo-50 text-indigo-600 border border-indigo-100">
+            <div className="rounded-xl border border-border bg-card p-6 hover:border-primary/40 transition-colors flex flex-col gap-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
                 <TrendingUp className="h-6 w-6" aria-hidden="true" />
               </div>
               <h3 className="text-base font-bold text-foreground">
@@ -635,8 +631,8 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Feature 4 */}
-            <div className="rounded-2xl border border-border bg-card p-6 shadow-xs hover:border-primary/40 hover:shadow-xs transition-all duration-200 flex flex-col gap-3.5">
-              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-amber-50 text-amber-600 border border-amber-100">
+            <div className="rounded-xl border border-border bg-card p-6 hover:border-primary/40 transition-colors flex flex-col gap-3.5">
+              <div className="flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20">
                 <CheckCircle2 className="h-6 w-6" aria-hidden="true" />
               </div>
               <h3 className="text-base font-bold text-foreground">
@@ -668,12 +664,12 @@ export function HomePage({ locale }: { locale: Locale }) {
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 sm:gap-8">
             {/* Step 1 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs flex flex-col gap-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
+            <div className="rounded-xl border border-border bg-card p-6 flex flex-col gap-3.5 hover:border-primary/40 transition-colors">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
                   01
                 </span>
-                <div className="h-10 w-10 rounded-xl bg-blue-50 text-primary flex items-center justify-center border border-blue-100">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
                   <Search className="w-5 h-5" aria-hidden="true" />
                 </div>
               </div>
@@ -688,12 +684,12 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 2 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs flex flex-col gap-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
+            <div className="rounded-xl border border-border bg-card p-6 flex flex-col gap-3.5 hover:border-primary/40 transition-colors">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
                   02
                 </span>
-                <div className="h-10 w-10 rounded-xl bg-indigo-50 text-indigo-600 flex items-center justify-center border border-indigo-100">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
                   <CalendarDays className="w-5 h-5" aria-hidden="true" />
                 </div>
               </div>
@@ -708,12 +704,12 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             {/* Step 3 */}
-            <div className="rounded-2xl border border-border bg-card p-7 shadow-xs flex flex-col gap-3.5 hover:border-primary/40 hover:shadow-xs transition-all">
+            <div className="rounded-xl border border-border bg-card p-6 flex flex-col gap-3.5 hover:border-primary/40 transition-colors">
               <div className="flex items-center justify-between">
                 <span className="text-3xl font-black text-muted-foreground/30 font-mono tabular-nums">
                   03
                 </span>
-                <div className="h-10 w-10 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <div className="h-10 w-10 rounded-xl bg-primary/10 text-primary flex items-center justify-center border border-primary/20">
                   <ShieldCheck className="w-5 h-5" aria-hidden="true" />
                 </div>
               </div>
@@ -731,27 +727,23 @@ export function HomePage({ locale }: { locale: Locale }) {
       </section>
 
       {/* ====================================================================
-       * CTA BANNER: Deep Royal Navy & Sapphire
+       * CTA BANNER: Clean & Unified Card
        * ==================================================================== */}
       <section className="py-14 sm:py-20">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-          <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-blue-950 to-indigo-950 text-white p-8 sm:p-14 border border-blue-900/50">
-            {/* Ambient Backlight */}
-            <div className="absolute top-0 right-0 w-80 h-80 bg-blue-500/20 rounded-full blur-3xl pointer-events-none -mr-20 -mt-20" />
-            <div className="absolute bottom-0 left-0 w-80 h-80 bg-indigo-500/20 rounded-full blur-3xl pointer-events-none -ml-20 -mb-20" />
-
+          <div className="relative overflow-hidden rounded-xl bg-card text-foreground p-8 sm:p-12 border border-border">
             <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-8">
               <div className="flex flex-col gap-3.5 max-w-xl text-left">
-                <div className="inline-flex items-center gap-2 rounded-full border border-blue-400/30 bg-blue-500/10 px-3.5 py-1 text-xs font-semibold text-blue-200 backdrop-blur-md">
-                  <Sparkles className="h-3.5 w-3.5 text-blue-400" aria-hidden="true" />
+                <div className="inline-flex items-center gap-2 rounded-full border border-border bg-muted/60 px-3.5 py-1 text-xs font-semibold text-foreground">
+                  <Sparkles className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                   <span>{isBn ? 'অগ্রণী এডু প্ল্যাটফর্ম' : 'OgroniEdu Platform'}</span>
                 </div>
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black text-white tracking-tight">
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-foreground tracking-tight">
                   {isBn
                     ? 'আজই আপনার সন্তানের জন্য সেরা গৃহশিক্ষক নিশ্চিত করুন'
                     : 'Find the ideal verified tutor for your child today'}
                 </h3>
-                <p className="text-xs sm:text-sm text-slate-300 leading-relaxed">
+                <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
                   {isBn
                     ? 'বিনামূল্যে অ্যাকাউন্ট তৈরি করুন এবং ঢাকা ও সারা বাংলাদেশের শীর্ষ বিশ্ববিদ্যালয়ের মেধাবী শিক্ষকদের সাথে কথা বলুন।'
                     : 'Create a free account and directly connect with brilliant university tutors across Dhaka and Bangladesh.'}
@@ -762,7 +754,7 @@ export function HomePage({ locale }: { locale: Locale }) {
                 <Button
                   asChild
                   size="lg"
-                  className="rounded-full px-7 py-3.5 h-auto text-xs font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25"
+                  className="rounded-xl px-6 py-2.5 h-auto text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   <Link href={`/${locale}/register`} className="flex items-center gap-2">
                     <span>{isBn ? 'নিবন্ধন করুন' : 'Get Started'}</span>
@@ -771,12 +763,12 @@ export function HomePage({ locale }: { locale: Locale }) {
                 </Button>
                 <Button
                   asChild
-                  variant="ghost"
+                  variant="outline"
                   size="lg"
-                  className="rounded-full px-7 py-3.5 h-auto text-xs font-bold border border-white/30 bg-white/5 text-white hover:bg-white/15 hover:text-white transition-colors"
+                  className="rounded-xl px-6 py-2.5 h-auto text-xs font-semibold border border-border bg-background hover:bg-muted text-foreground transition-colors"
                 >
                   <Link href={`/${locale}/tutors`} className="flex items-center gap-2">
-                    <Search className="w-4 h-4 text-blue-300" aria-hidden="true" />
+                    <Search className="w-4 h-4 text-primary" aria-hidden="true" />
                     <span>{isBn ? 'সকল শিক্ষক দেখুন' : 'Browse All Tutors'}</span>
                   </Link>
                 </Button>

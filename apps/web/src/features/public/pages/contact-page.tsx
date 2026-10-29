@@ -59,7 +59,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
       <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
         {/* Contact Form */}
         <div className="lg:col-span-7">
-          <Card className="bg-card border-border rounded-2xl p-6 sm:p-8">
+          <Card className="bg-card border-border rounded-xl p-6 sm:p-8">
             <CardHeader className="px-0 pt-0 pb-6">
               <CardTitle className="text-xl sm:text-2xl font-bold font-bengali text-foreground">
                 {p.formHeading}
@@ -85,7 +85,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
                       variant="outline"
                       size="sm"
                       onClick={handleReset}
-                      className="mt-2 rounded-full px-5 text-xs font-semibold"
+                      className="mt-2 rounded-xl px-5 text-xs font-semibold"
                     >
                       {locale === 'bn' ? 'আরেকটি বার্তা পাঠান' : 'Send Another Message'}
                     </Button>
@@ -208,7 +208,7 @@ export function ContactPage({ locale }: { locale: Locale }) {
 
         {/* Office Details */}
         <div className="lg:col-span-5 flex flex-col gap-6">
-          <Card className="bg-card border-border rounded-2xl shadow-xs p-6 sm:p-8">
+          <Card className="bg-card border-border rounded-xl p-6 sm:p-8">
             <CardHeader className="px-0 pt-0 pb-4">
               <CardTitle className="text-lg font-bold font-bengali text-foreground">
                 {p.officeHeading}

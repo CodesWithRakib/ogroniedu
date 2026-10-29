@@ -81,10 +81,10 @@ export function Navbar({ locale }: NavbarProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-4 py-1.5 rounded-full text-xs font-semibold transition-[background-color,color,box-shadow] duration-150 ${
+                className={`relative px-4 py-1.5 rounded-full text-xs font-semibold transition-colors ${
                   active
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/20'
-                    : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                 }`}
               >
                 {link.label}
@@ -119,7 +119,7 @@ export function Navbar({ locale }: NavbarProps) {
             ) : (
               <Link
                 href={withLocale('/login', locale)}
-                className="inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-full text-xs font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 transition-[transform,background-color,box-shadow] duration-150 hover:scale-[1.03] active:scale-[0.98]"
+                className="inline-flex items-center justify-center gap-1.5 px-5 py-2 rounded-xl text-xs font-semibold bg-primary hover:bg-primary/90 text-primary-foreground transition-colors"
                 data-testid="navbar-login-link"
               >
                 <span>{isBn ? 'লগইন' : 'Login'}</span>
@@ -177,7 +177,7 @@ export function Navbar({ locale }: NavbarProps) {
           <div className="pt-3 border-t border-border">
             {showAuthed ? (
               <div className="flex flex-col gap-3">
-                <div className="p-3 rounded-2xl bg-surface border border-border flex items-center justify-between">
+                <div className="p-3 rounded-xl bg-muted/40 border border-border flex items-center justify-between">
                   <div className="flex flex-col gap-0.5">
                     <p className="text-xs font-bold text-foreground">{user.displayName}</p>
                     <p className="text-[11px] text-muted-foreground capitalize">
@@ -206,7 +206,7 @@ export function Navbar({ locale }: NavbarProps) {
                 <Button
                   variant="primary"
                   size="sm"
-                  className="w-full justify-center rounded-xl font-bold bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25"
+                  className="w-full justify-center rounded-xl font-semibold bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
                   {dict.nav.login}
                 </Button>

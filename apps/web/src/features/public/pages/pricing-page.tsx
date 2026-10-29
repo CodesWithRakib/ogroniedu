@@ -55,7 +55,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Free for Students Banner */}
-      <div className="rounded-2xl bg-primary-soft/40 border border-border p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
+      <div className="rounded-xl bg-card border border-border p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex flex-col gap-2 text-center sm:text-left">
           <div className="inline-flex items-center gap-2 rounded-full bg-card border border-border px-3 py-1 text-xs font-semibold text-primary">
             <CheckCircle2 className="h-3.5 w-3.5" />
@@ -69,7 +69,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
         </div>
         <Button
           asChild
-          className="rounded-full px-7 font-semibold shadow-xs font-bengali whitespace-nowrap"
+          className="rounded-xl px-6 font-semibold font-bengali whitespace-nowrap"
         >
           <Link href={`/${locale}/tutors`} className="flex items-center gap-2">
             <span>{dict.nav.findTutors}</span>
@@ -101,7 +101,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
             return (
               <Card
                 key={idx}
-                className="bg-card border-border rounded-2xl shadow-xs hover:shadow-xs hover:border-primary/40 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5"
+                className="bg-card border border-border rounded-xl hover:border-primary/40 transition-colors"
               >
                 <CardContent className="p-6 flex flex-col gap-3">
                   <div
@@ -121,7 +121,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
       </section>
 
       {/* Interactive Calculator */}
-      <section className="rounded-2xl border border-border bg-card p-6 sm:p-8 flex flex-col gap-8">
+      <section className="rounded-xl border border-border bg-card p-6 sm:p-8 flex flex-col gap-8">
         <div className="flex items-center gap-3">
           <div
             className="h-12 w-12 rounded-xl bg-primary-soft text-primary flex items-center justify-center"
@@ -224,7 +224,7 @@ export function PricingPage({ locale }: { locale: Locale }) {
           {tiers.map((tier, idx) => (
             <Card
               key={idx}
-              className="bg-card border-border rounded-2xl shadow-xs relative overflow-hidden hover:border-primary/40 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5"
+              className="bg-card border border-border rounded-xl relative overflow-hidden hover:border-primary/40 transition-colors"
             >
               <div className="absolute top-4 right-4">
                 <span className="text-[10px] font-semibold px-2.5 py-1 rounded-full bg-muted text-muted-foreground border border-border">

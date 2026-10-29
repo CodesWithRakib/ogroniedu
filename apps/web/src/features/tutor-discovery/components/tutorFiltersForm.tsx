@@ -174,7 +174,7 @@ export function TutorFiltersForm({
 
   return (
     <div
-      className={`rounded-2xl border border-border bg-card/95 text-foreground shadow-xs transition-colors backdrop-blur-xl ${
+      className={`rounded-xl border border-border bg-card text-foreground transition-colors ${
         isMobileDrawer ? 'p-4 sm:p-5' : 'p-5'
       } ${className}`}
     >
@@ -440,7 +440,7 @@ export function TutorFiltersForm({
               onClick={() => onChange({ minPrice: '', maxPrice: '500' })}
               className={`text-[10px] px-2 py-0.5 rounded-full border border-border transition-colors ${
                 value.maxPrice === '500' && !value.minPrice
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent font-bold shadow-xs'
+                  ? 'bg-primary text-primary-foreground border-primary font-semibold'
                   : 'bg-background/40 hover:bg-muted text-muted-foreground'
               }`}
             >
@@ -451,7 +451,7 @@ export function TutorFiltersForm({
               onClick={() => onChange({ minPrice: '500', maxPrice: '1000' })}
               className={`text-[10px] px-2 py-0.5 rounded-full border border-border transition-colors ${
                 value.minPrice === '500' && value.maxPrice === '1000'
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent font-bold shadow-xs'
+                  ? 'bg-primary text-primary-foreground border-primary font-semibold'
                   : 'bg-background/40 hover:bg-muted text-muted-foreground'
               }`}
             >
@@ -462,7 +462,7 @@ export function TutorFiltersForm({
               onClick={() => onChange({ minPrice: '1000', maxPrice: '' })}
               className={`text-[10px] px-2 py-0.5 rounded-full border border-border transition-colors ${
                 value.minPrice === '1000' && !value.maxPrice
-                  ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent font-bold shadow-xs'
+                  ? 'bg-primary text-primary-foreground border-primary font-semibold'
                   : 'bg-background/40 hover:bg-muted text-muted-foreground'
               }`}
             >
@@ -528,7 +528,7 @@ export function TutorFiltersForm({
             type="submit"
             disabled={isPending}
             data-testid="apply-filters-button"
-            className="w-full rounded-xl font-extrabold text-xs gap-1.5 h-10 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/20 hover:shadow-xs transition-all duration-150 cursor-pointer"
+            className="w-full rounded-xl font-semibold text-xs gap-1.5 h-10 bg-primary hover:bg-primary/90 text-primary-foreground transition-colors cursor-pointer"
           >
             <Filter className="w-3.5 h-3.5" />
             <span>

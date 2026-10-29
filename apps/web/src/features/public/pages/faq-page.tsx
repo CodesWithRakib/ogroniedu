@@ -84,12 +84,12 @@ export function FaqPage({ locale }: { locale: Locale }) {
           return (
             <Card
               key={idx}
-              className="bg-card border-border rounded-2xl shadow-xs transition-[border-color,box-shadow] duration-150 overflow-hidden hover:border-primary/40"
+              className="bg-card border border-border rounded-xl transition-colors overflow-hidden hover:border-primary/40"
             >
               <button
                 type="button"
                 onClick={() => setOpenIndex(isOpen ? null : idx)}
-                className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 font-bengali cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-2xl"
+                className="w-full text-left p-5 sm:p-6 flex items-center justify-between gap-4 font-bengali cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring rounded-xl"
                 aria-expanded={isOpen}
               >
                 <span className="text-base sm:text-lg font-bold text-foreground">{faq.q}</span>
@@ -116,7 +116,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Still Have Questions CTA */}
-      <div className="rounded-2xl border border-border bg-card p-8 sm:p-10 text-center flex flex-col gap-4">
+      <div className="rounded-xl border border-border bg-card p-8 text-center flex flex-col gap-4">
         <h3 className="text-xl font-bold text-foreground font-bengali">
           {locale === 'bn' ? 'আরও কোনো প্রশ্ন আছে?' : 'Still have questions?'}
         </h3>
@@ -128,7 +128,7 @@ export function FaqPage({ locale }: { locale: Locale }) {
         <Button
           asChild
           size="lg"
-          className="rounded-full px-8 font-semibold shadow-xs font-bengali"
+          className="rounded-xl px-6 font-semibold font-bengali"
         >
           <Link href={`/${locale}/contact`} className="flex items-center gap-2">
             <span>{dict.nav.contact}</span>

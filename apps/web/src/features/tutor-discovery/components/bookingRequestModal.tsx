@@ -90,7 +90,7 @@ export function BookingRequestModal({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="booking-request-modal"
-        className="w-[94vw] max-w-lg max-h-[88vh] overflow-y-auto p-5 sm:p-6 flex flex-col gap-4 rounded-3xl border border-border bg-card shadow-2xl"
+        className="w-[94vw] max-w-lg max-h-[88vh] overflow-y-auto p-5 sm:p-6 flex flex-col gap-4 rounded-xl border border-border bg-card"
       >
         <DialogHeader className="flex flex-col gap-1 border-b border-border pb-3 text-left">
           <DialogTitle className="font-black text-foreground text-base sm:text-lg">
@@ -105,9 +105,9 @@ export function BookingRequestModal({
         </DialogHeader>
 
         {successMessage ? (
-          <Alert className="bg-emerald-50 border-2 border-emerald-300 text-center p-5 rounded-2xl">
+          <Alert className="bg-emerald-500/10 border border-emerald-500/20 text-center p-5 rounded-xl">
             <CheckCircle2 className="w-10 h-10 text-emerald-600 mx-auto mb-2" />
-            <AlertDescription className="text-sm font-bold text-emerald-900">
+            <AlertDescription className="text-sm font-bold text-emerald-600">
               {successMessage}
             </AlertDescription>
           </Alert>
@@ -129,7 +129,7 @@ export function BookingRequestModal({
 
             {studentOptions.length > 0 ? (
               <div className="flex flex-col gap-1.5">
-                <Label className="font-bold text-slate-800 text-xs">
+                <Label className="font-semibold text-foreground text-xs">
                   {dict.bookingRequest?.selectStudent ||
                     (isBn ? 'শিক্ষার্থী নির্বাচন করুন' : 'Select Student')}
                 </Label>
@@ -138,7 +138,7 @@ export function BookingRequestModal({
                   onValueChange={(val) => onChange({ studentId: val })}
                 >
                   <SelectTrigger
-                    className="w-full rounded-xl bg-white border-slate-300 text-xs text-slate-900"
+                    className="w-full rounded-xl bg-card border-border text-xs text-foreground"
                     data-testid="booking-student-select"
                   >
                     <SelectValue
@@ -158,19 +158,19 @@ export function BookingRequestModal({
                 </Select>
               </div>
             ) : (
-              <div className="rounded-2xl bg-amber-50 border border-amber-200 p-3.5 flex flex-col gap-2">
-                <div className="flex items-center gap-2 font-bold text-amber-900 text-xs">
-                  <LogIn className="w-4 h-4 text-amber-700 shrink-0" />
+              <div className="rounded-xl bg-amber-500/10 border border-amber-500/20 p-3.5 flex flex-col gap-2">
+                <div className="flex items-center gap-2 font-bold text-amber-600 text-xs">
+                  <LogIn className="w-4 h-4 shrink-0" />
                   <span>{isBn ? 'অনুরোধ পাঠাতে লগইন প্রয়োজন' : 'Sign in required to request'}</span>
                 </div>
-                <p className="text-[11px] text-amber-800 leading-relaxed">
+                <p className="text-[11px] text-muted-foreground leading-relaxed">
                   {isBn
                     ? 'শিক্ষককে অনুরোধ পাঠাতে অভিভাবক বা শিক্ষার্থী একাউন্টে লগইন করুন।'
                     : 'Please sign in to your student or guardian account to book this tutor.'}
                 </p>
                 <Link
                   href={withLocale('/login', locale)}
-                  className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold px-4 py-2 text-xs shadow-xs shadow-blue-500/20 transition-all"
+                  className="inline-flex items-center gap-1.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-4 py-2 text-xs transition-colors"
                 >
                   <LogIn className="w-3.5 h-3.5" />
                   <span>{isBn ? 'লগইন করুন' : 'Sign in now'}</span>
@@ -180,13 +180,13 @@ export function BookingRequestModal({
 
             {levelOptions.length > 0 && (
               <div className="flex flex-col gap-1.5">
-                <Label className="font-bold text-slate-800 text-xs">
+                <Label className="font-semibold text-foreground text-xs">
                   {dict.bookingRequest?.selectLevel ||
                     (isBn ? 'শ্রেণি / স্তর নির্বাচন করুন' : 'Select Level')}
                 </Label>
                 <Select value={value.levelId} onValueChange={(val) => onChange({ levelId: val })}>
                   <SelectTrigger
-                    className="w-full rounded-xl bg-white border-slate-300 text-xs text-slate-900"
+                    className="w-full rounded-xl bg-card border-border text-xs text-foreground"
                     data-testid="booking-level-select"
                   >
                     <SelectValue
@@ -208,7 +208,7 @@ export function BookingRequestModal({
             )}
 
             <div className="flex flex-col gap-1.5">
-              <Label className="font-bold text-slate-800 text-xs">
+              <Label className="font-semibold text-foreground text-xs">
                 {dict.bookingRequest?.selectSubject ||
                   (isBn ? 'বিষয় নির্বাচন করুন' : 'Select Subject')}
               </Label>
@@ -224,7 +224,7 @@ export function BookingRequestModal({
                 }}
               >
                 <SelectTrigger
-                  className="w-full rounded-xl bg-white border-slate-300 text-xs text-slate-900"
+                  className="w-full rounded-xl bg-card border-border text-xs text-foreground"
                   data-testid="booking-subject-select"
                 >
                   <SelectValue
@@ -252,7 +252,7 @@ export function BookingRequestModal({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label className="font-bold text-slate-800 text-xs">
+              <Label className="font-semibold text-foreground text-xs">
                 {dict.bookingRequest?.selectMode || (isBn ? 'পছন্দের মাধ্যম' : 'Preferred Mode')}
               </Label>
               <Select
@@ -260,7 +260,7 @@ export function BookingRequestModal({
                 onValueChange={(val) => onChange({ mode: val as BookingFormValue['mode'] })}
               >
                 <SelectTrigger
-                  className="w-full rounded-xl bg-white border-slate-300 text-xs text-slate-900"
+                  className="w-full rounded-xl bg-card border-border text-xs text-foreground"
                   data-testid="booking-mode-select"
                 >
                   <SelectValue />
@@ -280,7 +280,7 @@ export function BookingRequestModal({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label className="font-bold text-slate-800 text-xs">
+              <Label className="font-semibold text-foreground text-xs">
                 {dict.bookingRequest?.preferredDaysLabel ||
                   (isBn ? 'পছন্দের বার' : 'Preferred Days')}
               </Label>
@@ -295,10 +295,10 @@ export function BookingRequestModal({
                       size="xs"
                       onClick={() => onToggleDay(d.key)}
                       data-testid={`day-toggle-${d.key}`}
-                      className={`rounded-xl text-[11px] h-7 font-bold transition-all ${
+                      className={`rounded-xl text-[11px] h-7 font-semibold transition-colors ${
                         isSelected
-                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs'
-                          : 'border-slate-300 bg-white text-slate-700 hover:border-blue-500'
+                          ? 'bg-primary text-primary-foreground border-primary'
+                          : 'border-border bg-card text-foreground hover:border-primary/40'
                       }`}
                     >
                       {d.label}
@@ -309,7 +309,7 @@ export function BookingRequestModal({
             </div>
 
             <div className="flex flex-col gap-1.5">
-              <Label className="font-bold text-slate-800 text-xs">
+              <Label className="font-semibold text-foreground text-xs">
                 {dict.bookingRequest?.notesLabel ||
                   (isBn ? 'প্রয়োজনীয় নির্দেশনা বা লক্ষ্য' : 'Notes / Learning Goals')}
               </Label>
@@ -324,17 +324,17 @@ export function BookingRequestModal({
                     : 'Describe syllabus chapters or goals...')
                 }
                 data-testid="booking-notes-input"
-                className="rounded-xl border-slate-300 bg-white text-xs text-slate-900 resize-none placeholder:text-slate-400"
+                className="rounded-xl border-border bg-card text-xs text-foreground resize-none placeholder:text-muted-foreground"
               />
             </div>
 
-            <div className="flex items-center justify-end gap-3 pt-2 border-t border-slate-100">
+            <div className="flex items-center justify-end gap-3 pt-2 border-t border-border">
               <Button
                 type="button"
                 variant="outline"
                 size="sm"
                 onClick={onClose}
-                className="rounded-xl px-5 border-slate-200 text-slate-700 font-bold text-xs"
+                className="rounded-xl px-5 border-border text-foreground font-semibold text-xs"
               >
                 {dict.common?.cancel || (isBn ? 'বাতিল করুন' : 'Cancel')}
               </Button>
@@ -345,15 +345,15 @@ export function BookingRequestModal({
                 isLoading={isSubmitting}
                 disabled={studentOptions.length === 0}
                 data-testid="submit-booking-request"
-                className="rounded-xl px-6 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-xs shadow-blue-500/25"
+                className="rounded-xl px-6 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs"
               >
                 {dict.bookingRequest?.submitButton || (isBn ? 'অনুরোধ পাঠান' : 'Send Request')}
               </Button>
             </div>
 
             {/* Escrow note inside modal */}
-            <div className="rounded-xl bg-slate-50 border border-slate-200 p-2.5 flex items-center gap-2 text-[11px] text-slate-600">
-              <Lock className="w-3.5 h-3.5 text-blue-700 shrink-0" />
+            <div className="rounded-xl bg-muted/40 border border-border p-2.5 flex items-center gap-2 text-[11px] text-muted-foreground">
+              <Lock className="w-3.5 h-3.5 text-primary shrink-0" />
               <span>
                 {isBn
                   ? 'অগ্রণী এসক্রো গ্যারান্টি: ক্লাস সন্তোষজনক হলে তবেই শিক্ষককে পেমেন্ট ছাড় করা হবে।'

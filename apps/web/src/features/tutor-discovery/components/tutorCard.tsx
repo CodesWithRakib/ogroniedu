@@ -91,7 +91,7 @@ export function TutorCard({
 
   return (
     <div
-      className="group relative rounded-3xl bg-card border border-border/80 hover:border-blue-500/40 p-5 sm:p-6 shadow-xs hover:shadow-xs transition-all duration-300 hover:-translate-y-0.5 text-left w-full overflow-hidden"
+      className="group relative rounded-xl bg-card border border-border hover:border-primary/40 p-5 sm:p-6 transition-colors text-left w-full overflow-hidden"
       data-testid={`tutor-card-${tutor.id}`}
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-5 sm:gap-6">
@@ -103,15 +103,15 @@ export function TutorCard({
               <img
                 src={tutor.avatarUrl}
                 alt={resolvedDisplayName}
-                className="h-16 w-16 sm:h-20 sm:w-20 rounded-2xl sm:rounded-3xl object-cover ring-2 ring-blue-100 shadow-xs group-hover:ring-blue-400 transition-all"
+                className="h-16 w-16 sm:h-20 sm:w-20 rounded-xl object-cover border border-border"
               />
             ) : (
-              <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-2xl sm:rounded-3xl bg-gradient-to-br from-blue-50 via-indigo-50/50 to-blue-100/70 border-2 border-blue-200/80 text-blue-700 font-black text-lg sm:text-2xl shadow-xs group-hover:border-blue-500/50 transition-colors">
+              <div className="flex h-16 w-16 sm:h-20 sm:w-20 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold text-lg sm:text-2xl">
                 {initials}
               </div>
             )}
             <span
-              className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-card bg-emerald-500 shadow-xs ring-2 ring-emerald-500/20"
+              className="absolute -bottom-0.5 -right-0.5 h-4 w-4 rounded-full border-2 border-card bg-emerald-500 ring-2 ring-emerald-500/20"
               title={isBn ? 'সক্রিয় শিক্ষক' : 'Active Tutor'}
             />
           </Link>
@@ -139,7 +139,7 @@ export function TutorCard({
               <button
                 type="button"
                 onClick={() => onShowScore(tutor)}
-                className="inline-flex items-center gap-1.5 rounded-full bg-blue-50/90 border border-blue-200/80 px-2.5 py-1 text-xs font-black text-blue-700 shadow-2xs hover:bg-blue-100 transition-colors shrink-0 cursor-pointer"
+                className="inline-flex items-center gap-1.5 rounded-full bg-primary/10 border border-primary/20 px-2.5 py-1 text-xs font-semibold text-primary hover:bg-primary/15 transition-colors shrink-0 cursor-pointer"
                 title={
                   locale === 'bn'
                     ? 'ম্যাচ স্কোরের ব্যাখ্যা দেখতে ক্লিক করুন'
@@ -148,7 +148,7 @@ export function TutorCard({
                 data-testid={`match-score-badge-${tutor.id}`}
               >
                 <Sparkles
-                  className="w-3.5 h-3.5 text-blue-600 fill-blue-600/20"
+                  className="w-3.5 h-3.5 text-primary"
                   aria-hidden="true"
                 />
                 <span className="tabular-nums">
@@ -184,7 +184,7 @@ export function TutorCard({
               )}
 
               {/* Verification Pills */}
-              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-50 border border-emerald-200/80 px-2.5 py-0.5 text-[11px] font-bold text-emerald-700 shadow-2xs">
+              <span className="inline-flex items-center gap-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 px-2.5 py-0.5 text-[11px] font-semibold text-emerald-600">
                 <CheckCircle2
                   className="w-3.5 h-3.5 text-emerald-600 stroke-[2.5]"
                   aria-hidden="true"
@@ -195,8 +195,8 @@ export function TutorCard({
               </span>
 
               {tutor.badges.includes('verified_identity') && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-blue-50 border border-blue-200/80 px-2.5 py-0.5 text-[11px] font-bold text-blue-700 shadow-2xs">
-                  <Award className="w-3.5 h-3.5 text-blue-600 stroke-[2.5]" aria-hidden="true" />
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
+                  <Award className="w-3.5 h-3.5 text-primary stroke-[2.5]" aria-hidden="true" />
                   <span>
                     {dict.tutor?.badgeVerifiedIdentity ||
                       (isBn ? 'এনআইডি যাচাইকৃত' : 'NID Verified')}
@@ -206,9 +206,9 @@ export function TutorCard({
 
               {(tutor.badges.includes('verified_academic') ||
                 tutor.badges.includes('verified_degree')) && (
-                <span className="inline-flex items-center gap-1 rounded-full bg-indigo-50 border border-indigo-200/80 px-2.5 py-0.5 text-[11px] font-bold text-indigo-700 shadow-2xs">
+                <span className="inline-flex items-center gap-1 rounded-full bg-primary/10 border border-primary/20 px-2.5 py-0.5 text-[11px] font-semibold text-primary">
                   <GraduationCap
-                    className="w-3.5 h-3.5 text-indigo-600 stroke-[2.5]"
+                    className="w-3.5 h-3.5 text-primary stroke-[2.5]"
                     aria-hidden="true"
                   />
                   <span>
@@ -222,23 +222,23 @@ export function TutorCard({
             {/* Clean Highlights Row */}
             <div className="flex flex-wrap items-center gap-2 pt-1 text-xs font-semibold text-muted-foreground">
               {/* Teaching Mode */}
-              <div className="flex items-center gap-1.5 bg-surface/90 rounded-xl px-2.5 py-1 border border-border/70 text-foreground/85">
-                <Video className="h-3.5 w-3.5 text-blue-600 shrink-0" aria-hidden="true" />
+              <div className="flex items-center gap-1.5 bg-muted/50 rounded-lg px-2.5 py-1 border border-border text-foreground">
+                <Video className="h-3.5 w-3.5 text-primary shrink-0" aria-hidden="true" />
                 <span>{modesText}</span>
               </div>
 
               {/* Subjects Preview */}
               {subjectsPreview && (
-                <div className="flex items-center gap-1.5 bg-surface/90 rounded-xl px-2.5 py-1 border border-border/70 text-foreground/85">
+                <div className="flex items-center gap-1.5 bg-muted/50 rounded-lg px-2.5 py-1 border border-border text-foreground">
                   <span className="truncate max-w-xs">{subjectsPreview}</span>
                 </div>
               )}
 
               {/* Experience */}
               {expYears && (
-                <div className="flex items-center gap-1.5 bg-surface/90 rounded-xl px-2.5 py-1 border border-border/70 text-foreground/85">
+                <div className="flex items-center gap-1.5 bg-muted/50 rounded-lg px-2.5 py-1 border border-border text-foreground">
                   <GraduationCap
-                    className="h-3.5 w-3.5 text-blue-600 shrink-0"
+                    className="h-3.5 w-3.5 text-primary shrink-0"
                     aria-hidden="true"
                   />
                   <span className="tabular-nums">
@@ -252,10 +252,10 @@ export function TutorCard({
               {/* Distance */}
               {tutor.distanceKm != null && (
                 <div
-                  className="flex items-center gap-1.5 bg-surface/90 rounded-xl px-2.5 py-1 border border-border/70 text-foreground/85"
+                  className="flex items-center gap-1.5 bg-muted/50 rounded-lg px-2.5 py-1 border border-border text-foreground"
                   data-testid={`tutor-distance-${tutor.id}`}
                 >
-                  <MapPin className="w-3.5 h-3.5 text-blue-600 shrink-0" aria-hidden="true" />
+                  <MapPin className="w-3.5 h-3.5 text-primary shrink-0" aria-hidden="true" />
                   <span className="tabular-nums">
                     {formatLocalizedNumber(tutor.distanceKm, locale)} km {isBn ? 'দূরত্ব' : 'away'}
                   </span>
@@ -264,8 +264,8 @@ export function TutorCard({
 
               {/* Next Available Day */}
               {tutor.nextAvailableWeekday != null && (
-                <div className="flex items-center gap-1.5 bg-surface/90 rounded-xl px-2.5 py-1 border border-border/70 text-foreground/85">
-                  <CalendarDays className="w-3.5 h-3.5 text-blue-600 shrink-0" aria-hidden="true" />
+                <div className="flex items-center gap-1.5 bg-muted/50 rounded-lg px-2.5 py-1 border border-border text-foreground">
+                  <CalendarDays className="w-3.5 h-3.5 text-primary shrink-0" aria-hidden="true" />
                   <span>
                     {locale === 'bn' ? 'পরবর্তী ক্লাস: ' : 'Next: '}
                     {locale === 'bn'
@@ -286,7 +286,7 @@ export function TutorCard({
         </div>
 
         {/* Right Section: Pricing & Actions */}
-        <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between lg:justify-center gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 lg:border-l border-border/80 lg:pl-6 shrink-0 lg:w-52">
+        <div className="flex flex-col sm:flex-row lg:flex-col items-start sm:items-center lg:items-end justify-between lg:justify-center gap-3 pt-4 lg:pt-0 border-t lg:border-t-0 lg:border-l border-border lg:pl-6 shrink-0 lg:w-52">
           {/* Hourly Rate Display */}
           <div className="text-left lg:text-right w-full">
             <span className="text-[11px] font-bold text-muted-foreground uppercase tracking-wider block">
@@ -308,14 +308,14 @@ export function TutorCard({
 
           {/* Action CTAs */}
           <div className="flex flex-col w-full gap-2 pt-1">
-            {/* Primary Request Tutoring CTA (Signature Home Page Blue/Indigo Gradient) */}
+            {/* Primary Request Tutoring CTA */}
             <button
               type="button"
               onClick={() => onRequestBooking(tutor)}
               data-testid={`request-tutoring-btn-${tutor.id}`}
-              className="inline-flex items-center justify-center gap-1.5 w-full rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-black text-xs px-4 py-2.5 shadow-xs shadow-blue-500/20 hover:shadow-xs hover:shadow-blue-500/30 transition-all duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 active:scale-[0.98] group"
+              className="inline-flex items-center justify-center gap-1.5 w-full rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs px-4 py-2.5 transition-colors cursor-pointer group"
             >
-              <Send className="w-3.5 h-3.5 stroke-[2.2] transition-transform group-hover:translate-x-0.5" />
+              <Send className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5" />
               <span>
                 {dict.discovery?.requestSession || (isBn ? 'অনুরোধ পাঠান' : 'Request Tutoring')}
               </span>
@@ -325,7 +325,7 @@ export function TutorCard({
             <div className="flex items-center gap-2 w-full">
               <Link
                 href={`/${locale}/tutors/${tutor.id}`}
-                className="inline-flex items-center justify-center gap-1 flex-1 rounded-xl bg-card hover:bg-muted/80 border border-border text-foreground hover:text-blue-600 font-bold text-xs px-3 py-2 transition-all shadow-2xs focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 text-center"
+                className="inline-flex items-center justify-center gap-1 flex-1 rounded-xl bg-muted/50 hover:bg-muted border border-border text-foreground hover:text-primary font-semibold text-xs px-3 py-2 transition-colors text-center"
                 title={
                   locale === 'bn'
                     ? 'সম্পূর্ণ প্রোফাইল ও যোগ্যতা দেখুন'
@@ -351,10 +351,10 @@ export function TutorCard({
                         ? 'শিক্ষক সংরক্ষণ করুন'
                         : 'Save tutor'
                   }
-                  className="inline-flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground hover:text-blue-600 hover:border-blue-400/50 transition-colors shadow-2xs cursor-pointer"
+                  className="inline-flex h-8.5 w-8.5 shrink-0 items-center justify-center rounded-xl border border-border bg-card text-muted-foreground hover:text-primary hover:border-primary/40 transition-colors cursor-pointer"
                 >
                   <Bookmark
-                    className={`w-4 h-4 ${isSaved ? 'fill-blue-600 text-blue-600' : ''}`}
+                    className={`w-4 h-4 ${isSaved ? 'fill-primary text-primary' : ''}`}
                     aria-hidden="true"
                   />
                 </button>

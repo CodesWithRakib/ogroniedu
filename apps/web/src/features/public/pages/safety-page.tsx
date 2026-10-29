@@ -78,7 +78,7 @@ export function SafetyPage({ locale }: { locale: Locale }) {
           return (
             <Card
               key={idx}
-              className="bg-card border-border rounded-2xl shadow-xs hover:border-primary/40 transition-[border-color,box-shadow,transform] duration-200 hover:-translate-y-0.5 relative overflow-hidden"
+              className="bg-card border border-border rounded-xl hover:border-primary/40 transition-colors relative overflow-hidden"
             >
               <CardHeader className="flex flex-row items-start justify-between gap-4 p-6 pb-2">
                 <div className="h-12 w-12 rounded-xl bg-primary-soft flex items-center justify-center text-primary">
@@ -105,7 +105,7 @@ export function SafetyPage({ locale }: { locale: Locale }) {
       </div>
 
       {/* Emergency Reporting Guidance */}
-      <div className="rounded-2xl border border-destructive/20 bg-destructive/5 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6 shadow-xs">
+      <div className="rounded-xl border border-destructive/20 bg-destructive/5 p-6 sm:p-8 flex flex-col sm:flex-row items-center justify-between gap-6">
         <div className="flex flex-col gap-2 text-center sm:text-left">
           <div className="flex items-center justify-center sm:justify-start gap-2 text-destructive font-bold text-sm">
             <ShieldAlert className="h-5 w-5" aria-hidden="true" />
@@ -122,7 +122,7 @@ export function SafetyPage({ locale }: { locale: Locale }) {
         <Button
           asChild
           variant="outline"
-          className="rounded-full px-6 font-semibold font-bengali whitespace-nowrap border-destructive/30 text-destructive hover:bg-destructive/10"
+          className="rounded-xl px-6 font-semibold font-bengali whitespace-nowrap border-destructive/30 text-destructive hover:bg-destructive/10"
         >
           <Link href={`/${locale}/contact`} className="flex items-center gap-2">
             <span>{dict.nav.contact}</span>

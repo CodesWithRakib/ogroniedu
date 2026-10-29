@@ -49,7 +49,7 @@ export function TutorResultsGrid({
           <div
             key={index}
             data-testid="tutor-skeleton-card"
-            className="h-44 sm:h-48 animate-pulse rounded-3xl bg-card/70 border border-border"
+            className="h-44 sm:h-48 animate-pulse rounded-xl bg-card border border-border"
           />
         ))}
       </div>
@@ -59,26 +59,26 @@ export function TutorResultsGrid({
   if (tutors.length === 0) {
     return (
       <div
-        className="rounded-2xl bg-card/90 border border-border p-10 sm:p-16 text-center flex flex-col gap-4 backdrop-blur-xl"
+        className="rounded-xl bg-card border border-border p-8 sm:p-12 text-center flex flex-col gap-4 items-center"
         data-testid="tutors-empty"
       >
         <div
-          className="flex h-16 w-16 items-center justify-center rounded-full bg-brand-soft border border-border text-primary mx-auto"
+          className="flex h-14 w-14 items-center justify-center rounded-full bg-muted border border-border text-primary"
           aria-hidden="true"
         >
-          <SearchX className="w-8 h-8 stroke-[2]" aria-hidden="true" />
+          <SearchX className="w-7 h-7" aria-hidden="true" />
         </div>
-        <h3 className="text-xl font-bold text-foreground">
+        <h3 className="text-lg font-bold text-foreground">
           {dict.discovery?.noResults || 'No tutors matched your criteria.'}
         </h3>
-        <p className="text-sm text-muted-foreground max-w-md mx-auto leading-relaxed">
+        <p className="text-xs sm:text-sm text-muted-foreground max-w-md leading-relaxed">
           {dict.discovery?.noResultsSuggestion ||
             'Try expanding your search radius or clearing price filters.'}
         </p>
         <button
           type="button"
           onClick={onReset}
-          className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-extrabold text-xs px-5 py-2.5 shadow-xs shadow-blue-500/20 hover:scale-[1.03] active:scale-[0.98] transition-[transform,box-shadow,opacity] duration-150 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring"
+          className="inline-flex items-center gap-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs px-4 py-2 transition-colors cursor-pointer"
         >
           <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
           <span>{dict.discovery?.resetFilters || 'Reset Filters'}</span>

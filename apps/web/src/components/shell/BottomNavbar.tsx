@@ -99,8 +99,8 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           aria-label={isBn ? 'টিউশন রিকোয়েস্ট পোস্ট করুন' : 'Post Tuition Request'}
         >
           <div
-            className={`flex h-12 w-12 items-center justify-center rounded-full bg-gradient-to-tr from-blue-600 via-indigo-600 to-blue-500 text-white shadow-md shadow-blue-500/25 ring-4 ring-card transition-transform duration-150 group-hover:scale-105 ${
-              isRequestsActive ? 'ring-blue-500/40' : ''
+            className={`flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground ring-4 ring-card transition-transform duration-150 group-hover:scale-105 ${
+              isRequestsActive ? 'ring-primary/40' : ''
             }`}
           >
             <PlusCircle className="h-6 w-6 stroke-[2.4]" aria-hidden="true" />

@@ -347,8 +347,7 @@ export function TutorSearchCatalog({
       data-testid="tutor-discovery-container"
     >
       {/* 1. Header Hero Banner - Compact & Clean */}
-      <div className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-4 sm:p-5 backdrop-blur-xl shadow-xs">
-        <div className="absolute top-0 right-0 -mr-16 -mt-16 w-80 h-80 bg-brand-soft rounded-full blur-3xl pointer-events-none" />
+      <div className="relative overflow-hidden rounded-xl border border-border bg-card p-4 sm:p-5">
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-3">
           <div className="flex flex-col gap-1 max-w-2xl">
             <h1 className="text-lg sm:text-2xl font-black tracking-tight text-foreground">
@@ -431,7 +430,7 @@ export function TutorSearchCatalog({
               onChange={(e) => patchFilters({ query: e.target.value })}
               aria-label={isBn ? 'শিক্ষক খুঁজুন' : 'Search tutors'}
               leadingIcon={<Search className="w-4 h-4 text-primary" />}
-              className="rounded-2xl h-11 sm:h-12 text-sm bg-card/90 border-border shadow-xs pl-10 pr-9"
+              className="rounded-xl h-11 text-sm bg-card border-border pl-10 pr-9"
             />
             {filters.query && (
               <button
@@ -453,7 +452,7 @@ export function TutorSearchCatalog({
             type="button"
             variant={activeFilterCount > 0 ? 'primary' : 'outline'}
             onClick={() => setIsMobileFilterOpen(true)}
-            className="lg:hidden h-11 sm:h-12 px-3.5 sm:px-4 rounded-2xl font-bold text-xs shrink-0 gap-1.5 shadow-xs"
+            className="lg:hidden h-11 px-3.5 rounded-xl font-semibold text-xs shrink-0 gap-1.5"
             aria-label={isBn ? 'ফিল্টার খুলুন' : 'Open filters'}
           >
             <SlidersHorizontal className="w-4 h-4" />
@@ -476,8 +475,8 @@ export function TutorSearchCatalog({
             }}
             className={`shrink-0 rounded-full px-3 py-1 font-semibold transition-all border ${
               !filters.query && !filters.subjectId && !filters.modeFilter
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs shadow-blue-500/20'
-                : 'bg-card border-border text-foreground hover:border-primary/40'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-card border border-border text-foreground hover:border-primary/40'
             }`}
           >
             {isBn ? 'সকল শিক্ষক' : 'All Tutors'}
@@ -496,8 +495,8 @@ export function TutorSearchCatalog({
                 }}
                 className={`shrink-0 rounded-full px-3 py-1 font-semibold transition-all border ${
                   isSelected
-                    ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs shadow-blue-500/20'
-                    : 'bg-card border-border text-foreground hover:border-primary/40'
+                    ? 'bg-primary text-primary-foreground border-primary'
+                    : 'bg-card border border-border text-foreground hover:border-primary/40'
                 }`}
               >
                 {sub}
@@ -515,8 +514,8 @@ export function TutorSearchCatalog({
             }}
             className={`shrink-0 rounded-full px-3 py-1 font-semibold transition-all border ${
               filters.modeFilter === 'online'
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs shadow-blue-500/20'
-                : 'bg-card border-border text-foreground hover:border-primary/40'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-card border border-border text-foreground hover:border-primary/40'
             }`}
           >
             {isBn ? 'অনলাইন' : 'Online'}
@@ -530,8 +529,8 @@ export function TutorSearchCatalog({
             }}
             className={`shrink-0 rounded-full px-3 py-1 font-semibold transition-all border ${
               filters.modeFilter === 'in_person'
-                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white border-transparent shadow-xs shadow-blue-500/20'
-                : 'bg-card border-border text-foreground hover:border-primary/40'
+                ? 'bg-primary text-primary-foreground border-primary'
+                : 'bg-card border border-border text-foreground hover:border-primary/40'
             }`}
           >
             {isBn ? 'হোম টিউশন' : 'Home Tutoring'}
@@ -653,7 +652,7 @@ export function TutorSearchCatalog({
 
           {/* Query or Search Error Alert */}
           {(queryError || searchError) && (
-            <Alert variant="destructive" className="rounded-2xl" data-testid="discovery-error">
+            <Alert variant="destructive" className="rounded-xl" data-testid="discovery-error">
               <AlertDescription role="alert">{queryError || searchError}</AlertDescription>
             </Alert>
           )}
@@ -680,7 +679,7 @@ export function TutorSearchCatalog({
       <Sheet open={isMobileFilterOpen} onOpenChange={setIsMobileFilterOpen}>
         <SheetContent
           side="bottom"
-          className="p-0 max-h-[85vh] rounded-t-3xl overflow-hidden flex flex-col bg-card border-t border-border"
+          className="p-0 max-h-[85vh] rounded-t-2xl overflow-hidden flex flex-col bg-card border-t border-border"
           showCloseButton={false}
         >
           {/* Drag Handle Bar */}

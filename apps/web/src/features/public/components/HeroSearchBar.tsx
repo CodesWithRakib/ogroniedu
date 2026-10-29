@@ -171,10 +171,10 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 key={pill.id || 'all'}
                 type="button"
                 onClick={() => handleCurriculumClick(pill.id)}
-                className={`rounded-full px-3 py-1.5 text-xs font-bold whitespace-nowrap transition-all duration-150 cursor-pointer ${
+                className={`rounded-full px-3 py-1.5 text-xs font-semibold whitespace-nowrap transition-colors cursor-pointer ${
                   isSelected
-                    ? 'bg-primary text-white shadow-xs scale-102 ring-2 ring-primary/20'
-                    : 'bg-card/90 border border-border/80 text-muted-foreground hover:text-foreground hover:border-primary/40'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'bg-card border border-border text-muted-foreground hover:text-foreground hover:border-primary/40'
                 }`}
               >
                 {isBn ? pill.labelBn : pill.labelEn}
@@ -220,9 +220,9 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           /* ========================================================
            * MODE 1: STRUCTURED FILTER CAPSULE
            * ======================================================== */
-          <div className="rounded-3xl lg:rounded-full bg-card/95 border border-border/80 shadow-card hover:border-primary/40 hover:shadow-popover p-2 lg:p-2 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2 transition-all duration-300">
+          <div className="rounded-xl bg-card border border-border p-2 flex flex-col lg:flex-row items-stretch lg:items-center justify-between gap-2">
             {/* Segment 1: Education Level / Class */}
-            <div className="flex-1 px-4 py-2 rounded-2xl lg:rounded-l-full hover:bg-surface-hover/70 transition-colors border-b lg:border-b-0 lg:border-r border-border/70">
+            <div className="flex-1 px-4 py-2 rounded-lg hover:bg-muted/50 transition-colors border-b lg:border-b-0 lg:border-r border-border">
               <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <GraduationCap className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>{isBn ? 'শ্রেণি / মাধ্যম' : 'Class / Level'}</span>
@@ -241,7 +241,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 </SelectTrigger>
                 <SelectContent
                   position="popper"
-                  className="max-h-64 rounded-2xl border-border bg-popover shadow-popover"
+                  className="max-h-64 rounded-xl border-border bg-popover"
                 >
                   <SelectItem value="all">
                     {isBn ? 'সকল শ্রেণি ও মাধ্যম' : 'All Classes & Curriculums'}
@@ -256,7 +256,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             </div>
 
             {/* Segment 2: Subject */}
-            <div className="flex-1 px-4 py-2 rounded-2xl hover:bg-surface-hover/70 transition-colors border-b lg:border-b-0 lg:border-r border-border/70">
+            <div className="flex-1 px-4 py-2 rounded-lg hover:bg-muted/50 transition-colors border-b lg:border-b-0 lg:border-r border-border">
               <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <BookOpen className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>{isBn ? 'পড়ার বিষয়' : 'Subject'}</span>
@@ -273,7 +273,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 </SelectTrigger>
                 <SelectContent
                   position="popper"
-                  className="max-h-64 rounded-2xl border-border bg-popover shadow-popover"
+                  className="max-h-64 rounded-xl border-border bg-popover"
                 >
                   <SelectItem value="all">{isBn ? 'সকল বিষয়' : 'All Subjects'}</SelectItem>
                   {subjects.map((sub) => (
@@ -286,7 +286,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             </div>
 
             {/* Segment 3: Location / Medium */}
-            <div className="flex-1 px-4 py-2 rounded-2xl hover:bg-surface-hover/70 transition-colors">
+            <div className="flex-1 px-4 py-2 rounded-lg hover:bg-muted/50 transition-colors">
               <div className="flex items-center gap-1.5 text-[10px] font-bold text-muted-foreground uppercase tracking-wider mb-0.5">
                 <MapPin className="h-3.5 w-3.5 text-primary" aria-hidden="true" />
                 <span>{isBn ? 'এলাকা বা মাধ্যম' : 'Location / Mode'}</span>
@@ -303,7 +303,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
                 </SelectTrigger>
                 <SelectContent
                   position="popper"
-                  className="max-h-64 rounded-2xl border-border bg-popover shadow-popover"
+                  className="max-h-64 rounded-xl border-border bg-popover"
                 >
                   <SelectItem value="all">
                     {isBn ? 'সারাদেশে বা অনলাইন' : 'Anywhere / Online'}
@@ -321,12 +321,12 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             <Button
               type="submit"
               size="lg"
-              className="w-full lg:w-auto rounded-2xl lg:rounded-full px-8 py-3.5 h-auto text-xs font-black gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
+              className="w-full lg:w-auto rounded-xl px-6 py-2.5 h-auto text-xs font-semibold gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shrink-0 transition-colors cursor-pointer"
             >
-              <Search className="h-4 w-4 stroke-[2.8]" aria-hidden="true" />
+              <Search className="h-4 w-4" aria-hidden="true" />
               <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
               <ArrowRight
-                className="h-3.5 w-3.5 stroke-[2.5] transition-transform group-hover:translate-x-0.5 hidden sm:inline"
+                className="h-3.5 w-3.5 hidden sm:inline"
                 aria-hidden="true"
               />
             </Button>
@@ -335,7 +335,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
           /* ========================================================
            * MODE 2: DIRECT KEYWORD SEARCH CAPSULE
            * ======================================================== */
-          <div className="rounded-3xl lg:rounded-full bg-card/95 border border-border/80 shadow-card hover:border-primary/40 p-2 flex flex-col lg:flex-row items-center justify-between gap-2 transition-all duration-300">
+          <div className="rounded-xl bg-card border border-border p-2 flex flex-col lg:flex-row items-center justify-between gap-2">
             <div className="flex items-center flex-1 w-full px-4 py-2">
               <Search className="h-4 w-4 text-primary mr-3 shrink-0" aria-hidden="true" />
               <Input
@@ -354,9 +354,9 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             <Button
               type="submit"
               size="lg"
-              className="w-full lg:w-auto rounded-2xl lg:rounded-full px-8 py-3.5 h-auto text-xs font-black gap-2 bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95"
+              className="w-full lg:w-auto rounded-xl px-6 py-2.5 h-auto text-xs font-semibold gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shrink-0 transition-colors cursor-pointer"
             >
-              <Search className="h-4 w-4 stroke-[2.8]" aria-hidden="true" />
+              <Search className="h-4 w-4" aria-hidden="true" />
               <span>{isBn ? 'অনুসন্ধান' : 'Search'}</span>
             </Button>
           </div>
@@ -374,7 +374,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
             key={tag.query}
             type="button"
             onClick={() => handleTagClick(tag.query)}
-            className="rounded-full px-3 py-1 text-[11px] font-bold bg-primary-soft text-primary hover:bg-primary hover:text-white border border-primary/15 transition-all duration-150 whitespace-nowrap shrink-0 cursor-pointer active:scale-95"
+            className="rounded-lg px-2.5 py-1 text-[11px] font-semibold bg-muted text-muted-foreground hover:bg-primary hover:text-primary-foreground border border-border transition-colors whitespace-nowrap shrink-0 cursor-pointer"
           >
             {tag.label}
           </button>
