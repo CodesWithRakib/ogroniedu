@@ -68,7 +68,7 @@ export function PaymentCheckoutView({
       </div>
 
       {/* Sandbox Notice Banner */}
-      <div className="bg-amber-50 border border-amber-300 rounded-2xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-foreground shadow-2xs">
+      <div className="bg-amber-50 border border-amber-300 rounded-xl p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 text-foreground shadow-2xs">
         <div className="flex items-center gap-3">
           <div className="p-2 rounded-xl bg-amber-100 text-amber-800 shrink-0">
             <ShieldCheck className="w-5 h-5 shrink-0" />

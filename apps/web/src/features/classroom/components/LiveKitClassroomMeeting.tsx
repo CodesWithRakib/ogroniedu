@@ -271,7 +271,7 @@ function LiveKitClassroomMeetingBase({
     return (
       <div className={lobbyWrapperClasses} data-testid="livekit-classroom-container">
         {joinError && (
-          <div className="max-w-4xl mx-auto mb-4 p-4 bg-rose-50 border-2 border-rose-300 text-rose-950 rounded-2xl text-xs sm:text-sm flex items-center gap-3 shadow-md">
+          <div className="max-w-4xl mx-auto mb-4 p-4 bg-rose-50 border border-rose-300 text-rose-950 rounded-xl text-xs sm:text-sm flex items-center gap-3 shadow-sm">
             <AlertCircle className="w-5 h-5 text-rose-600 shrink-0" />
             <div>
               <p className="font-extrabold text-rose-900">
@@ -792,11 +792,11 @@ function EnhancedParticipantTile({
 
   return (
     <div
-      className={`relative w-full h-full rounded-2xl overflow-hidden border-2 transition-all ${
+      className={`relative w-full h-full rounded-xl overflow-hidden border transition-all ${
         isSpeaking
-          ? 'border-emerald-500 ring-4 ring-emerald-500/50 shadow-xl shadow-emerald-500/20'
+          ? 'border-emerald-500 ring-4 ring-emerald-500/50 shadow-lg shadow-emerald-500/20'
           : isPinned
-            ? 'border-amber-400 ring-4 ring-amber-500/40 shadow-xl'
+            ? 'border-amber-400 ring-4 ring-amber-500/40 shadow-lg'
             : 'border-slate-300'
       }`}
     >
@@ -990,7 +990,7 @@ function ClassroomStage({
     return (
       <div className="w-full h-full flex flex-col md:flex-row gap-3 items-center justify-center overflow-hidden">
         {/* Main Stage (Presenter / Screen Share) */}
-        <div className="flex-1 w-full h-full bg-slate-900 rounded-2xl overflow-hidden relative border-2 border-slate-800 flex items-center justify-center">
+        <div className="flex-1 w-full h-full bg-slate-900 rounded-xl overflow-hidden relative border border-slate-800 flex items-center justify-center">
           {screenShareTrack ? (
             <EnhancedParticipantTile
               trackRef={screenShareTrack}
@@ -1064,7 +1064,7 @@ function ClassroomStage({
         tracks.map((trackRef) => (
           <div
             key={trackRef.publication?.trackSid || trackRef.participant.identity}
-            className="w-full h-full max-h-[75vh] bg-slate-900 rounded-2xl overflow-hidden shadow-xl relative"
+            className="w-full h-full max-h-[75vh] bg-slate-900 rounded-xl overflow-hidden shadow-lg relative"
           >
             <EnhancedParticipantTile
               trackRef={trackRef}

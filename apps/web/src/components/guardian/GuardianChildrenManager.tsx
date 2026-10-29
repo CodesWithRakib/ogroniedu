@@ -249,7 +249,7 @@ export function GuardianChildrenManager({
       {/* Minor Protection & Autonomy Info Banner */}
       <div className="rounded-xl border border-border bg-card p-5 flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
         <div className="flex items-start gap-3">
-          <div className="h-10 w-10 rounded-2xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 mt-0.5">
+          <div className="h-10 w-10 rounded-xl bg-primary text-primary-foreground flex items-center justify-center shrink-0 mt-0.5">
             <ShieldCheck className="h-5 w-5" />
           </div>
           <div className="flex flex-col gap-1">
@@ -284,9 +284,9 @@ export function GuardianChildrenManager({
 
       {/* Children List */}
       {children.length === 0 ? (
-        <Card className="text-center py-16 rounded-2xl border-dashed border-2 border-border bg-card/60">
+        <Card className="text-center py-16 rounded-xl border-dashed border border-border bg-card/60">
           <CardContent className="flex flex-col gap-4 max-w-md mx-auto">
-            <div className="h-16 w-16 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto">
+            <div className="h-16 w-16 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center mx-auto">
               <GraduationCap className="h-8 w-8" />
             </div>
             <div className="flex flex-col gap-1">
@@ -437,7 +437,7 @@ export function GuardianChildrenManager({
 
       {/* Comprehensive Dual-Tab Modal */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-2xl p-6 border-border bg-card">
+        <DialogContent className="w-full max-w-xl max-h-[90vh] overflow-y-auto rounded-xl p-6 border-border bg-card">
           <DialogHeader className="text-left pb-2">
             <div className="flex items-center justify-between gap-2">
               <DialogTitle className="text-xl font-bold flex items-center gap-2">
@@ -453,7 +453,7 @@ export function GuardianChildrenManager({
           </DialogHeader>
 
           {/* Tab selector */}
-          <div className="flex p-1 bg-surface-muted rounded-2xl border border-border gap-1 my-2">
+          <div className="flex p-1 bg-surface-muted rounded-xl border border-border gap-1 my-2">
             <button
               type="button"
               onClick={() => setActiveTab('register')}
@@ -535,7 +535,7 @@ export function GuardianChildrenManager({
                   >
                     <SelectTrigger
                       id="reg-child-gender"
-                      className="rounded-2xl bg-card border-border text-sm"
+                      className="rounded-xl bg-card border-border text-sm"
                     >
                       <SelectValue placeholder={isBn ? 'লিঙ্গ নির্বাচন করুন' : 'Select gender'} />
                     </SelectTrigger>
@@ -593,7 +593,7 @@ export function GuardianChildrenManager({
                     >
                       <SelectTrigger
                         id="reg-child-institution"
-                        className="rounded-2xl bg-card border-border text-sm"
+                        className="rounded-xl bg-card border-border text-sm"
                       >
                         <SelectValue
                           placeholder={
@@ -630,7 +630,7 @@ export function GuardianChildrenManager({
                   >
                     <SelectTrigger
                       id="reg-child-level"
-                      className="rounded-2xl bg-card border-border text-sm"
+                      className="rounded-xl bg-card border-border text-sm"
                     >
                       <SelectValue placeholder={isBn ? 'শ্রেণি নির্বাচন করুন' : 'Select Grade'} />
                     </SelectTrigger>
@@ -654,7 +654,7 @@ export function GuardianChildrenManager({
                   <Select value={regCurriculumId} onValueChange={(val) => setRegCurriculumId(val)}>
                     <SelectTrigger
                       id="reg-child-curriculum"
-                      className="rounded-2xl bg-card border-border text-sm"
+                      className="rounded-xl bg-card border-border text-sm"
                     >
                       <SelectValue
                         placeholder={isBn ? 'কারিকুলাম নির্বাচন করুন' : 'Select Curriculum'}
@@ -717,7 +717,7 @@ export function GuardianChildrenManager({
                     >
                       <SelectTrigger
                         id="reg-child-stream"
-                        className="rounded-2xl bg-card border-border text-sm"
+                        className="rounded-xl bg-card border-border text-sm"
                       >
                         <SelectValue
                           placeholder={
@@ -751,7 +751,7 @@ export function GuardianChildrenManager({
                     value={regLearningGoals}
                     onChange={(e) => setRegLearningGoals(e.target.value)}
                     rows={2}
-                    className="w-full rounded-2xl border border-input bg-background p-3 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                    className="w-full rounded-xl border border-input bg-background p-3 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                     placeholder={
                       isBn
                         ? 'যেমন: পদার্থবিজ্ঞান ও উচ্চতর গণিতে দুর্বলতা কাটাতে হবে, বোর্ড পরীক্ষার প্রস্তুতি...'
@@ -805,7 +805,7 @@ export function GuardianChildrenManager({
                   >
                     <SelectTrigger
                       id="reg-select-relationship"
-                      className="w-full rounded-2xl bg-card border-border text-sm"
+                      className="w-full rounded-xl bg-card border-border text-sm"
                     >
                       <SelectValue placeholder={dict.guardian.relationship} />
                     </SelectTrigger>
@@ -819,7 +819,7 @@ export function GuardianChildrenManager({
               </div>
 
               {/* Minor Consent statement */}
-              <div className="p-3.5 bg-surface-muted/60 rounded-2xl border border-border flex flex-col gap-2 mt-2">
+              <div className="p-3.5 bg-surface-muted/60 rounded-xl border border-border flex flex-col gap-2 mt-2">
                 <div className="flex items-start gap-2.5">
                   <Checkbox
                     id="reg-checkbox-consent"
@@ -893,7 +893,7 @@ export function GuardianChildrenManager({
                 >
                   <SelectTrigger
                     id="select-relationship"
-                    className="w-full rounded-2xl bg-card border-border text-sm"
+                    className="w-full rounded-xl bg-card border-border text-sm"
                   >
                     <SelectValue placeholder={dict.guardian.relationship} />
                   </SelectTrigger>
@@ -905,7 +905,7 @@ export function GuardianChildrenManager({
                 </Select>
               </div>
 
-              <div className="p-3.5 bg-surface-muted/60 rounded-2xl border border-border flex flex-col gap-2">
+              <div className="p-3.5 bg-surface-muted/60 rounded-xl border border-border flex flex-col gap-2">
                 <div className="flex items-start gap-2.5">
                   <Checkbox
                     id="checkbox-consent"

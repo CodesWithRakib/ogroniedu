@@ -509,10 +509,10 @@ export function ProfilePage({ locale }: { locale: Locale }) {
       ) : (
         <div className="flex flex-col gap-6">
           {/* Identity Hero Card */}
-          <Card className="rounded-xl border-border bg-gradient-to-br from-card via-card to-surface-muted p-6">
+          <Card className="rounded-xl border-border bg-card p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
               <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 border border-primary/30 text-primary font-black text-xl flex items-center justify-center shrink-0">
+                <div className="h-16 w-16 rounded-xl bg-primary/10 border border-primary/20 text-primary font-black text-xl flex items-center justify-center shrink-0">
                   {initials}
                 </div>
                 <div className="flex flex-col gap-1.5">

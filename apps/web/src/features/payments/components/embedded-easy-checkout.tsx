@@ -378,7 +378,7 @@ export function EmbeddedEasyCheckout({
 
               {/* Delayed Loading / Browser Adblocker Rescue Banner */}
               {iframeDelayed && (
-                <div className="absolute inset-x-4 bottom-4 p-3.5 bg-amber-50/95 backdrop-blur-xs border border-amber-300 rounded-2xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-xs text-amber-950 shadow-lg z-20 animate-in fade-in slide-in-from-bottom-2 duration-200">
+                <div className="absolute inset-x-4 bottom-4 p-3.5 bg-amber-50/95 backdrop-blur-xs border border-amber-300 rounded-xl flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 text-xs text-amber-950 shadow-lg z-20 animate-in fade-in slide-in-from-bottom-2 duration-200">
                   <div className="flex items-center gap-2">
                     <AlertTriangle className="w-4 h-4 text-amber-700 shrink-0" />
                     <span className="font-medium">
@@ -391,7 +391,7 @@ export function EmbeddedEasyCheckout({
                     type="button"
                     size="sm"
                     onClick={handleOpenDirect}
-                    className="h-8 px-3 text-xs bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shrink-0 shadow-xs"
+                    className="h-8 px-3 text-xs bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl shrink-0 shadow-xs"
                   >
                     {isBn ? 'সরাসরি উইন্ডোতে খুলুন' : 'Open Direct Window'}
                   </Button>

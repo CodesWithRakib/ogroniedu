@@ -34,7 +34,7 @@ export function SessionReminderCard({
   const fallbackScheduleHref = scheduleHref || withLocale('/dashboard/student/sessions', locale);
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between select-none">
+    <div className="bg-card border border-border rounded-xl p-5 sm:p-6 shadow-xs flex flex-col justify-between select-none">
       {/* Header */}
       <div>
         <div className="flex items-center justify-between pb-3">

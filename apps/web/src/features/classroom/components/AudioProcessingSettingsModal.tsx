@@ -104,7 +104,7 @@ export function AudioProcessingSettingsModal({
             </h4>
 
             {/* Noise Suppression */}
-            <label className="flex items-center justify-between p-3.5 bg-surface-muted border border-border hover:border-border-strong rounded-2xl cursor-pointer transition-all">
+            <label className="flex items-center justify-between p-3.5 bg-surface-muted border border-border hover:border-border-strong rounded-xl cursor-pointer transition-all">
               <div className="pr-3">
                 <p className="text-xs sm:text-sm font-black text-foreground">
                   {isBn ? 'নয়েজ সাপ্রেশন (Noise Suppression)' : 'Background Noise Suppression'}
@@ -124,7 +124,7 @@ export function AudioProcessingSettingsModal({
             </label>
 
             {/* Echo Cancellation */}
-            <label className="flex items-center justify-between p-3.5 bg-surface-muted border border-border hover:border-border-strong rounded-2xl cursor-pointer transition-all">
+            <label className="flex items-center justify-between p-3.5 bg-surface-muted border border-border hover:border-border-strong rounded-xl cursor-pointer transition-all">
               <div className="pr-3">
                 <p className="text-xs sm:text-sm font-black text-foreground">
                   {isBn ? 'ইকো ক্যান্সেলেশন (Echo Cancellation)' : 'Acoustic Echo Cancellation'}
@@ -144,7 +144,7 @@ export function AudioProcessingSettingsModal({
             </label>
 
             {/* Sound Effects / Chimes */}
-            <label className="flex items-center justify-between p-3.5 bg-surface-muted border border-border hover:border-border-strong rounded-2xl cursor-pointer transition-all">
+            <label className="flex items-center justify-between p-3.5 bg-surface-muted border border-border hover:border-border-strong rounded-xl cursor-pointer transition-all">
               <div className="pr-3">
                 <p className="text-xs sm:text-sm font-black text-foreground">
                   {isBn ? 'ইন্টারঅ্যাক্টিভ সাউন্ড চাইম' : 'Notification Sound Effects'}
@@ -217,7 +217,7 @@ export function AudioProcessingSettingsModal({
             <button
               type="button"
               onClick={onClose}
-              className="w-full py-3 px-4 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white font-black text-xs sm:text-sm shadow-md shadow-blue-600/30 active:scale-98 transition-all"
+              className="w-full py-3 px-4 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs sm:text-sm shadow-xs active:scale-98 transition-all"
             >
               {isBn ? 'সেটিংস নিশ্চিত করুন' : 'Confirm & Save'}
             </button>

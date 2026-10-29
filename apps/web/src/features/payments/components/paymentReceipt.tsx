@@ -150,7 +150,7 @@ export function PaymentReceipt({ receipt, locale, onPrint, onClose }: PaymentRec
         </div>
 
         {/* Total Amount */}
-        <div className="flex justify-between py-3 items-baseline bg-surface-muted p-3 rounded-2xl border border-border">
+        <div className="flex justify-between py-3 items-baseline bg-surface-muted p-3 rounded-xl border border-border">
           <span className="font-black text-foreground">{p.totalAmount}</span>
           <span className="text-2xl font-black text-success tabular-nums">
             ৳ {formatLocalizedNumber(receipt.amountBdt, locale)}{' '}
@@ -181,7 +181,7 @@ export function PaymentReceipt({ receipt, locale, onPrint, onClose }: PaymentRec
         </div>
 
         {/* Safety & Compliance Assurance */}
-        <div className="pt-2 text-[11px] text-foreground bg-success-soft/50 p-3 rounded-2xl border border-success/30 text-center leading-relaxed font-medium">
+        <div className="pt-2 text-[11px] text-foreground bg-success-soft/50 p-3 rounded-xl border border-success/30 text-center leading-relaxed font-medium">
           {isBn
             ? '✓ এই পেমেন্টটি বাংলাদেশ ব্যাংক ও এসক্রো নীতিমালার অধীনে সুরক্ষিত এবং যাচাইকৃত। ক্লাস সন্তোষজনক না হলে ১০০% রিফান্ড গ্যারান্টি প্রযোজ্য।'
             : '✓ Verified double-entry escrow transaction protected under platform consumer safety policies. 100% refund guarantee applies.'}

@@ -341,7 +341,7 @@ export function BookingChatView({
                             <TooltipContent
                               side="top"
                               align="end"
-                              className="bg-popover/95 backdrop-blur-md text-popover-foreground border border-border shadow-xl rounded-xl p-2.5 text-xs max-w-xs z-50 animate-in fade-in-0 zoom-in-95"
+                              className="bg-popover/95 backdrop-blur-md text-popover-foreground border border-border shadow-md rounded-xl p-2.5 text-xs max-w-xs z-50 animate-in fade-in-0 zoom-in-95"
                             >
                               <div className="flex flex-col gap-1.5">
                                 <div className="flex items-center gap-1.5 font-semibold text-[11px] text-primary border-b border-border pb-1">
@@ -401,7 +401,7 @@ export function BookingChatView({
                             <TooltipContent
                               side="top"
                               align="end"
-                              className="bg-popover/95 backdrop-blur-md text-popover-foreground border border-border shadow-xl rounded-lg px-2.5 py-1 text-[11px] z-50"
+                              className="bg-popover/95 backdrop-blur-md text-popover-foreground border border-border shadow-md rounded-lg px-2.5 py-1 text-[11px] z-50"
                             >
                               <span>{locale === 'bn' ? 'প্রেরিত (পৌঁছেছে)' : 'Delivered'}</span>
                             </TooltipContent>

@@ -153,7 +153,7 @@ export function BetaFeedbackModal({
           {/* Header */}
           <DialogHeader className="flex flex-col gap-1.5 border-b border-border pb-3.5 text-left">
             <div className="flex items-center gap-2.5">
-              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-2xl bg-primary-soft text-primary border border-primary/20 shadow-2xs">
+              <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-primary-soft text-primary border border-primary/20 shadow-2xs">
                 <MessageSquarePlus className="h-5 w-5" />
               </div>
               <div className="min-w-0 flex-1">
@@ -174,7 +174,7 @@ export function BetaFeedbackModal({
 
           {/* Success State */}
           {isSuccess ? (
-            <Alert className="rounded-2xl border-2 border-emerald-300 bg-emerald-50 p-6 text-center">
+            <Alert className="rounded-xl border border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20 p-6 text-center">
               <CheckCircle2 className="mx-auto h-12 w-12 text-emerald-600 animate-bounce" />
               <h4 className="mt-3 text-base font-black text-emerald-950">
                 {isBn
@@ -213,7 +213,7 @@ export function BetaFeedbackModal({
                   </SelectTrigger>
                   <SelectContent
                     position="popper"
-                    className="rounded-2xl border border-border bg-card shadow-xl"
+                    className="rounded-xl border border-border bg-card shadow-md"
                   >
                     {categoryOptions.map((opt) => (
                       <SelectItem

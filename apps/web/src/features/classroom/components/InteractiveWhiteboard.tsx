@@ -616,7 +616,7 @@ export function InteractiveWhiteboard({
         </div>
 
         {/* Color Palette */}
-        <div className="flex items-center gap-1.5 bg-surface-muted p-1.5 rounded-2xl border border-border">
+        <div className="flex items-center gap-1.5 bg-surface-muted p-1.5 rounded-xl border border-border">
           {COLOR_PRESETS.map((color) => (
             <button
               key={color.value}
@@ -638,7 +638,7 @@ export function InteractiveWhiteboard({
         </div>
 
         {/* Stroke Width Selector */}
-        <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-2xl border border-border text-xs">
+        <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-xl border border-border text-xs">
           {STROKE_SIZES.map((sz) => (
             <button
               key={sz.value}
@@ -658,7 +658,7 @@ export function InteractiveWhiteboard({
         {/* Background, Undo, Redo, Export & Fullscreen */}
         <div className="flex items-center gap-1.5">
           {/* Background Toggle */}
-          <div className="flex items-center bg-surface-muted p-1 rounded-2xl border border-border">
+          <div className="flex items-center bg-surface-muted p-1 rounded-xl border border-border">
             <button
               type="button"
               onClick={() => handleChangeBackground('grid')}
@@ -704,7 +704,7 @@ export function InteractiveWhiteboard({
           </div>
 
           {/* Undo & Redo */}
-          <div className="flex items-center bg-surface-muted p-1 rounded-2xl border border-border">
+          <div className="flex items-center bg-surface-muted p-1 rounded-xl border border-border">
             <button
               type="button"
               onClick={handleUndo}
@@ -733,7 +733,7 @@ export function InteractiveWhiteboard({
           <button
             type="button"
             onClick={handleClear}
-            className="p-2 rounded-2xl bg-destructive/10 hover:bg-destructive/20 text-destructive-soft-foreground border border-destructive/40 transition-all"
+            className="p-2 rounded-xl bg-destructive/10 hover:bg-destructive/20 text-destructive-soft-foreground border border-destructive/40 transition-all"
             title={locale === 'bn' ? 'সম্পূর্ণ পরিষ্কার করুন' : 'Clear Board'}
             aria-label={locale === 'bn' ? 'সম্পূর্ণ পরিষ্কার করুন' : 'Clear Board'}
             data-testid="wb-btn-clear"
@@ -745,7 +745,7 @@ export function InteractiveWhiteboard({
           <button
             type="button"
             onClick={handleExportPNG}
-            className="px-3 py-2 rounded-2xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm border border-emerald-500 transition-all flex items-center gap-1.5 text-xs font-black active:scale-95"
+            className="px-3 py-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm border border-emerald-500 transition-all flex items-center gap-1.5 text-xs font-black active:scale-95"
             title={
               locale === 'bn'
                 ? 'হোয়াইটবোর্ড নোট ডাউনলোড করুন (PNG)'
@@ -766,7 +766,7 @@ export function InteractiveWhiteboard({
           <button
             type="button"
             onClick={toggleFullscreen}
-            className="p-2 rounded-2xl bg-muted hover:bg-surface-hover text-muted-foreground transition-all"
+            className="p-2 rounded-xl bg-muted hover:bg-surface-hover text-muted-foreground transition-all"
             title={locale === 'bn' ? 'ফুলস্ক্রিন' : 'Fullscreen'}
             aria-label={locale === 'bn' ? 'ফুলস্ক্রিন' : 'Fullscreen'}
           >
@@ -792,7 +792,7 @@ export function InteractiveWhiteboard({
         {/* Text Input Modal on Canvas */}
         {textInputVisible && (
           <div
-            className="absolute z-20 bg-card border border-info/40 p-2.5 rounded-2xl flex items-center gap-2"
+            className="absolute z-20 bg-card border border-info/40 p-2.5 rounded-xl flex items-center gap-2"
             style={{ left: Math.min(textInputPos.x, 300), top: Math.min(textInputPos.y, 400) }}
           >
             <Input

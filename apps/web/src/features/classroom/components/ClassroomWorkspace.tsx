@@ -456,7 +456,7 @@ export function ClassroomWorkspace({
         <main className="flex-1 w-full h-[calc(100dvh-3.5rem)] min-h-0 overflow-hidden relative bg-slate-100 p-2 sm:p-3 flex flex-col lg:flex-row gap-3 items-stretch">
           {/* Main Stage: Live Video Meeting (Expands to 100% when no side tool is open, or 50% split) */}
           <div
-            className={`h-full min-h-0 bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col transition-all duration-200 ${
+            className={`h-full min-h-0 bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm flex flex-col transition-all duration-200 ${
               sideTool ? 'w-full lg:w-1/2' : 'w-full'
             }`}
           >
@@ -474,7 +474,7 @@ export function ClassroomWorkspace({
 
           {/* Right Side Panel: Whiteboard, Notes, or Attendance (Opens without unmounting video!) */}
           {sideTool && (
-            <div className="w-full lg:w-1/2 h-full min-h-0 bg-white rounded-2xl overflow-hidden border border-slate-200 shadow-sm flex flex-col animate-in fade-in zoom-in-95 duration-150">
+            <div className="w-full lg:w-1/2 h-full min-h-0 bg-white rounded-xl overflow-hidden border border-slate-200 shadow-sm flex flex-col animate-in fade-in zoom-in-95 duration-150">
               {/* Panel Header */}
               <div className="flex items-center justify-between px-4 py-3 border-b border-slate-200 bg-slate-50 shrink-0">
                 <div className="flex items-center gap-2">
@@ -673,7 +673,7 @@ export function ClassroomWorkspace({
                 href={session.meetingUrl}
                 target="_blank"
                 rel="noreferrer"
-                className="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors text-xs flex items-center gap-1"
+                className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors text-xs flex items-center gap-1"
                 title={isBn ? 'বাইরে মিটিং লিংক খুলুন' : 'Open meeting link externally'}
               >
                 <ExternalLink className="w-4 h-4 text-slate-600" />
@@ -686,7 +686,7 @@ export function ClassroomWorkspace({
                 <button
                   type="button"
                   onClick={handleCopyLink}
-                  className="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors text-xs flex items-center gap-1.5 font-bold"
+                  className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 transition-colors text-xs flex items-center gap-1.5 font-bold"
                   title={isBn ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
                   aria-label={isBn ? 'মিটিং লিংক কপি করুন' : 'Copy Meeting Link'}
                   data-testid="copy-meeting-link-btn"
@@ -707,7 +707,7 @@ export function ClassroomWorkspace({
                   )}`}
                   target="_blank"
                   rel="noreferrer"
-                  className="p-2.5 rounded-2xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 transition-colors text-xs flex items-center gap-1"
+                  className="p-2.5 rounded-xl bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-300 transition-colors text-xs flex items-center gap-1"
                   title={isBn ? 'হোয়াটসঅ্যাপে শেয়ার করুন' : 'Share on WhatsApp'}
                   aria-label={isBn ? 'হোয়াটসঅ্যাপে শেয়ার করুন' : 'Share on WhatsApp'}
                 >
@@ -722,7 +722,7 @@ export function ClassroomWorkspace({
                 size="sm"
                 onClick={handleStartClass}
                 isLoading={isStarting}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-xs"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl shadow-xs"
                 data-testid="start-class-btn"
               >
                 <Play className="w-4 h-4 mr-1.5 fill-current" />
@@ -735,7 +735,7 @@ export function ClassroomWorkspace({
                 size="sm"
                 onClick={() => setShowCompletionModal(true)}
                 isLoading={isCompleting}
-                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-2xl shadow-xs"
+                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-extrabold px-4 py-2.5 rounded-xl shadow-xs"
                 data-testid="complete-class-btn"
               >
                 <CheckCircle2 className="w-4 h-4 mr-1.5 text-emerald-400" />
@@ -747,7 +747,7 @@ export function ClassroomWorkspace({
               <button
                 type="button"
                 onClick={() => setIsEditingMeetingUrl(!isEditingMeetingUrl)}
-                className="p-2.5 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300"
+                className="p-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300"
                 title={isBn ? 'মিটিং লিংক পরিবর্তন করুন' : 'Edit Meeting Link'}
                 aria-label={isBn ? 'মিটিং লিংক পরিবর্তন করুন' : 'Edit Meeting Link'}
                 data-testid="set-meeting-url-btn"
@@ -798,13 +798,13 @@ export function ClassroomWorkspace({
 
         {/* Action Status Feedback */}
         {actionSuccess && (
-          <div className="mt-4 p-3 rounded-2xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-semibold flex items-center gap-2">
+          <div className="mt-4 p-3 rounded-xl bg-emerald-50 border border-emerald-300 text-emerald-900 text-xs font-semibold flex items-center gap-2">
             <CheckCircle2 className="w-4 h-4 shrink-0 text-emerald-700" />
             <span>{actionSuccess}</span>
           </div>
         )}
         {actionError && (
-          <div className="mt-4 p-3 rounded-2xl bg-rose-50 border border-rose-300 text-rose-900 text-xs font-semibold">
+          <div className="mt-4 p-3 rounded-xl bg-rose-50 border border-rose-300 text-rose-900 text-xs font-semibold">
             {actionError}
           </div>
         )}
@@ -816,7 +816,7 @@ export function ClassroomWorkspace({
           <button
             type="button"
             onClick={() => setActiveTab('video')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
               activeTab === 'video'
                 ? 'bg-slate-950 text-white shadow-md'
                 : 'bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-900 border border-slate-300/80'
@@ -830,7 +830,7 @@ export function ClassroomWorkspace({
           <button
             type="button"
             onClick={() => setActiveTab('whiteboard')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
               activeTab === 'whiteboard'
                 ? 'bg-slate-950 text-white shadow-md'
                 : 'bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-900 border border-slate-300/80'
@@ -844,7 +844,7 @@ export function ClassroomWorkspace({
           <button
             type="button"
             onClick={() => setActiveTab('formulas')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
               activeTab === 'formulas'
                 ? 'bg-slate-950 text-white shadow-md'
                 : 'bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-900 border border-slate-300/80'
@@ -858,7 +858,7 @@ export function ClassroomWorkspace({
           <button
             type="button"
             onClick={() => setActiveTab('attendance')}
-            className={`flex items-center gap-2 px-4 py-2.5 rounded-2xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
+            className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-xs font-black whitespace-nowrap shrink-0 transition-all ${
               activeTab === 'attendance'
                 ? 'bg-slate-950 text-white shadow-md'
                 : 'bg-slate-100 text-slate-800 hover:bg-slate-200 hover:text-slate-900 border border-slate-300/80'
@@ -1090,7 +1090,7 @@ function AttendanceSection({
         </p>
 
         {latestAttendance && (
-          <div className="p-4 bg-surface-muted rounded-2xl border border-border mb-4 flex flex-col gap-2 text-xs">
+          <div className="p-4 bg-surface-muted rounded-xl border border-border mb-4 flex flex-col gap-2 text-xs">
             <div className="flex items-center justify-between">
               <span className="text-slate-600 font-bold">
                 {isBn ? 'সর্বশেষ রেকর্ডকৃত স্ট্যাটাস:' : 'Recorded Status:'}
@@ -1220,7 +1220,7 @@ function AttendanceSection({
               : 'All sessions are monitored under OgroniEdu safety standards. Escrow milestone releases are executed upon verified session completion.'}
           </p>
 
-          <div className="p-3.5 rounded-2xl bg-surface-muted border border-border flex flex-col gap-2 text-xs font-medium">
+          <div className="p-3.5 rounded-xl bg-surface-muted border border-border flex flex-col gap-2 text-xs font-medium">
             <div className="flex items-center justify-between text-slate-600">
               <span>{isBn ? 'বুকিং আইডি:' : 'Booking ID:'}</span>
               <span className="font-mono text-slate-900 font-bold">

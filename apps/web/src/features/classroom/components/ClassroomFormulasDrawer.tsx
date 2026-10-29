@@ -166,11 +166,11 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
   };
 
   return (
-    <div className="bg-card border border-border rounded-2xl p-6 flex flex-col gap-5 text-foreground">
+    <div className="bg-card border border-border rounded-xl p-6 flex flex-col gap-5 text-foreground">
       {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 rounded-2xl bg-interactive/10 border border-info/40 text-info-soft-foreground">
+          <div className="p-2 rounded-xl bg-interactive/10 border border-info/40 text-info-soft-foreground">
             <BookOpen className="w-5 h-5" />
           </div>
           <div>
@@ -265,7 +265,7 @@ export function ClassroomFormulasDrawer({ locale = 'bn' }: ClassroomFormulasDraw
           return (
             <div
               key={item.id}
-              className="p-3.5 rounded-2xl bg-surface-muted border border-border hover:border-info/40 transition-all flex flex-col justify-between group"
+              className="p-3.5 rounded-xl bg-surface-muted border border-border hover:border-info/40 transition-all flex flex-col justify-between group"
               data-testid={`formula-card-${item.id}`}
             >
               <div className="flex flex-col gap-1">

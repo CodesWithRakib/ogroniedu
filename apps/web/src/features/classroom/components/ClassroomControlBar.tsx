@@ -267,7 +267,7 @@ export function ClassroomControlBar({
           type="button"
           disabled={!canPublish}
           onClick={() => localParticipant.setMicrophoneEnabled(!isMicrophoneEnabled)}
-          className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-center ${
+          className={`min-w-[46px] min-h-[46px] p-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center ${
             !canPublish
               ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50'
               : isMicrophoneEnabled
@@ -302,7 +302,7 @@ export function ClassroomControlBar({
           type="button"
           disabled={!canPublish}
           onClick={() => localParticipant.setCameraEnabled(!isCameraEnabled)}
-          className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md active:scale-95 flex items-center justify-center ${
+          className={`min-w-[46px] min-h-[46px] p-3 rounded-xl transition-all shadow-md active:scale-95 flex items-center justify-center ${
             !canPublish
               ? 'bg-slate-100 text-slate-400 cursor-not-allowed opacity-50'
               : isCameraEnabled
@@ -337,7 +337,7 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={handleCameraFlip}
-            className="min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-xs sm:hidden active:scale-95 flex items-center justify-center border border-slate-200"
+            className="min-w-[46px] min-h-[46px] p-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-xs sm:hidden active:scale-95 flex items-center justify-center border border-slate-200"
             title={isBn ? 'ক্যামেরা পরিবর্তন করুন' : 'Flip Camera'}
             aria-label={isBn ? 'ক্যামেরা পরিবর্তন করুন' : 'Flip Camera'}
             data-testid="control-flip-camera"
@@ -353,7 +353,7 @@ export function ClassroomControlBar({
             onClick={() =>
               localParticipant.setScreenShareEnabled(!isScreenShareEnabled, { audio: true })
             }
-            className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md hidden sm:flex items-center justify-center active:scale-95 ${
+            className={`min-w-[46px] min-h-[46px] p-3 rounded-xl transition-all shadow-md hidden sm:flex items-center justify-center active:scale-95 ${
               isScreenShareEnabled
                 ? 'bg-blue-600 hover:bg-blue-700 text-white ring-4 ring-blue-300'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
@@ -370,7 +370,7 @@ export function ClassroomControlBar({
         <button
           type="button"
           onClick={() => setShowEmojiPicker(!showEmojiPicker)}
-          className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-xs flex items-center justify-center active:scale-95 ${
+          className={`min-w-[46px] min-h-[46px] p-3 rounded-xl transition-all shadow-xs flex items-center justify-center active:scale-95 ${
             showEmojiPicker
               ? 'bg-amber-400 text-slate-950 font-black ring-2 ring-amber-300'
               : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
@@ -386,7 +386,7 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={handleHandRaiseClick}
-            className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-md flex items-center gap-1.5 active:scale-95 ${
+            className={`min-w-[46px] min-h-[46px] p-3 rounded-xl transition-all shadow-md flex items-center gap-1.5 active:scale-95 ${
               isHandRaised
                 ? 'bg-amber-400 hover:bg-amber-500 text-slate-950 font-black animate-bounce ring-4 ring-amber-300 shadow-amber-500/40'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
@@ -421,7 +421,7 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={onTogglePollModal}
-            className={`relative min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-xs flex items-center justify-center active:scale-95 ${
+            className={`relative min-w-[46px] min-h-[46px] p-3 rounded-xl transition-all shadow-xs flex items-center justify-center active:scale-95 ${
               hasActivePoll
                 ? 'bg-blue-600 text-white font-black ring-4 ring-blue-300'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-200'
@@ -442,7 +442,7 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={onToggleModeration}
-            className="relative min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-indigo-600 hover:bg-indigo-700 text-white font-extrabold transition-all shadow-md shadow-indigo-600/30 flex items-center gap-1.5 active:scale-95"
+            className="relative min-w-[46px] min-h-[46px] p-3 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold transition-all shadow-xs flex items-center gap-1.5 active:scale-95"
             title={isBn ? 'মডারেশন ও হাত তোলার তালিকা' : 'Host Moderation Hub'}
             aria-label={isBn ? 'মডারেশন ও হাত তোলার তালিকা' : 'Host Moderation Hub'}
             data-testid="control-moderation-toggle"
@@ -466,7 +466,7 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={onToggleTheaterMode}
-            className={`min-w-[46px] min-h-[46px] p-3 rounded-2xl transition-all shadow-xs border flex items-center justify-center active:scale-95 ${
+            className={`min-w-[46px] min-h-[46px] p-3 rounded-xl transition-all shadow-xs border flex items-center justify-center active:scale-95 ${
               isTheaterMode
                 ? 'bg-indigo-600 border-indigo-400 text-white ring-2 ring-indigo-300'
                 : 'bg-slate-100 hover:bg-slate-200 text-slate-700 border-slate-200'
@@ -491,7 +491,7 @@ export function ClassroomControlBar({
           <button
             type="button"
             onClick={onOpenSettings}
-            className="min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-xs border border-slate-200 flex items-center justify-center active:scale-95"
+            className="min-w-[46px] min-h-[46px] p-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-xs border border-slate-200 flex items-center justify-center active:scale-95"
             title={isBn ? 'মিডিয়া ও সাউন্ড সেটিংস' : 'Media & Sound Settings'}
             aria-label={isBn ? 'মিডিয়া ও সাউন্ড সেটিংস' : 'Media & Sound Settings'}
             data-testid="control-settings-toggle"
@@ -503,7 +503,7 @@ export function ClassroomControlBar({
         <button
           type="button"
           onClick={onToggleChat}
-          className="min-w-[46px] min-h-[46px] p-3 rounded-2xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-xs border border-slate-200 flex items-center justify-center active:scale-95"
+          className="min-w-[46px] min-h-[46px] p-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 transition-colors shadow-xs border border-slate-200 flex items-center justify-center active:scale-95"
           title={isBn ? 'ক্লাস চ্যাট' : 'In-Class Chat'}
           aria-label={isBn ? 'ক্লাস চ্যাট' : 'In-Class Chat'}
           data-testid="control-chat-toggle"
@@ -514,7 +514,7 @@ export function ClassroomControlBar({
         <button
           type="button"
           onClick={onLeave}
-          className="min-w-[46px] min-h-[46px] p-3 px-3.5 sm:px-4 rounded-2xl bg-rose-600 hover:bg-rose-700 text-white font-black text-xs flex items-center gap-1.5 transition-all shadow-md shadow-rose-600/30 active:scale-95"
+          className="min-w-[46px] min-h-[46px] p-3 px-3.5 sm:px-4 rounded-xl bg-destructive hover:bg-destructive/90 text-destructive-foreground font-semibold text-xs flex items-center gap-1.5 transition-all shadow-xs active:scale-95"
           title={
             isTutor
               ? isBn

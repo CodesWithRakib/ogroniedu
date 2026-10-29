@@ -240,7 +240,7 @@ export function PreJoinLobby({
         <button
           type="button"
           onClick={() => setShowSettings(!showSettings)}
-          className={`self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-2xl border-2 font-bold text-xs transition-all shadow-xs ${settingsBtnClass}`}
+          className={`self-start sm:self-auto flex items-center gap-2 px-3.5 py-2 rounded-xl border font-semibold text-xs transition-all shadow-xs ${settingsBtnClass}`}
           title={isBn ? 'ডিভাইস সেটিংস' : 'Device Settings'}
           aria-label={isBn ? 'ডিভাইস সেটিংস' : 'Device Settings'}
         >
@@ -250,7 +250,7 @@ export function PreJoinLobby({
       </div>
 
       {permissionError && (
-        <div className="mb-5 p-4 bg-amber-50 border-2 border-amber-300 text-amber-950 rounded-2xl text-xs sm:text-sm flex items-start gap-3 shadow-xs">
+        <div className="mb-5 p-4 bg-amber-50 border border-amber-300 text-amber-950 rounded-xl text-xs sm:text-sm flex items-start gap-3 shadow-xs">
           <AlertTriangle className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
           <div>
             <p className="font-extrabold text-amber-900">

@@ -383,7 +383,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
         )}
 
         {/* Hero Card */}
-        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-card via-card/95 to-primary/5 p-6 sm:p-8">
+        <div className="relative overflow-hidden rounded-xl border border-border bg-card p-6 sm:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="flex flex-col gap-3">
               <div className="flex flex-wrap items-center gap-2.5">
@@ -805,8 +805,8 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           <div
             className={`rounded-xl border p-5 sm:p-6 transition-all ${
               dispute?.status?.startsWith('resolved_')
-                ? 'border-emerald-300 bg-gradient-to-br from-emerald-50/90 via-card to-emerald-50/30'
-                : 'border-amber-300 bg-gradient-to-br from-amber-50/90 via-card to-amber-50/30'
+                ? 'border-emerald-500/30 bg-emerald-50/50 dark:bg-emerald-950/20'
+                : 'border-amber-500/30 bg-amber-50/50 dark:bg-amber-950/20'
             }`}
             data-testid="booking-dispute-dossier-card"
           >
@@ -976,7 +976,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
         {bookingReview && (
           <div
             data-testid="booking-review-dossier-card"
-            className="rounded-xl border border-warning/30 bg-gradient-to-br from-warning-soft/50 via-card to-warning-soft/20 p-5 sm:p-6 flex flex-col gap-4"
+            className="rounded-xl border border-warning/30 bg-warning-soft/20 p-5 sm:p-6 flex flex-col gap-4"
           >
             <div className="flex items-center justify-between gap-3 border-b border-amber-200 pb-3">
               <div className="flex items-center gap-2.5">

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { useTranslations, useLocale } from 'next-intl';
 import { formatGroupedNumber } from '@/lib/format';
@@ -13,7 +13,7 @@ export function AnalyticsIntegrityCards({ data }: { data: AnalyticsOperationalDa
   return (
     <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
       <div
-        className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs"
+        className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs"
         data-testid="financial-overview-card"
       >
         <h3 className="text-base font-bold text-foreground">{t('financialOverviewTitle')}</h3>
@@ -44,7 +44,7 @@ export function AnalyticsIntegrityCards({ data }: { data: AnalyticsOperationalDa
       </div>
 
       <div
-        className="bg-card border border-border rounded-2xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs"
+        className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-4 shadow-xs"
         data-testid="trust-quality-card"
       >
         <h3 className="text-base font-bold text-foreground">{t('qualityTitle')}</h3>

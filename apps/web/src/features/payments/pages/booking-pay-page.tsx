@@ -242,8 +242,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
         </Link>
 
         {/* Hero — matches the home / tutor discovery visual language */}
-        <section className="relative overflow-hidden rounded-xl sm:rounded-xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-5 sm:p-8">
-          <div className="absolute -top-20 -right-16 w-72 h-72 rounded-full bg-brand-soft blur-3xl pointer-events-none" />
+        <section className="relative overflow-hidden rounded-xl border border-border bg-card p-5 sm:p-8">
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
             <div className="flex flex-col gap-3 max-w-2xl">
               <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-soft px-3 py-1 text-[11px] font-bold text-primary">
@@ -255,16 +254,14 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                   isBn ? (
                     <>
                       পেমেন্ট{' '}
-                      <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-500 bg-clip-text text-transparent">
+                      <span className="text-primary font-bold">
                         নিশ্চিত হয়েছে
                       </span>
                     </>
                   ) : (
                     <>
                       Payment{' '}
-                      <span className="text-primary font-bold">
-                        confirmed
-                      </span>
+                      <span className="text-primary font-bold">confirmed</span>
                     </>
                   )
                 ) : isBn ? (
@@ -610,7 +607,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
               </div>
             </div>
 
-            <div className="rounded-xl border border-border bg-gradient-to-br from-card to-primary-soft/20 p-5 flex flex-col gap-2.5 text-[11px] text-muted-foreground">
+            <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-2.5 text-[11px] text-muted-foreground">
               <div className="flex items-center gap-2 font-bold text-foreground text-xs">
                 <ShieldCheck className="w-4 h-4 text-primary" />
                 {isBn ? 'কেন এই পেমেন্ট নিরাপদ' : 'Why this payment is safe'}

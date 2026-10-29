@@ -649,12 +649,12 @@ export function SessionScheduleCalendar({
 
       {/* 5. Alerts */}
       {actionError && (
-        <Alert variant="destructive" className="rounded-2xl" data-testid="scheduling-action-error">
+        <Alert variant="destructive" className="rounded-xl" data-testid="scheduling-action-error">
           <AlertDescription role="alert">{actionError}</AlertDescription>
         </Alert>
       )}
       {queryError && (
-        <Alert variant="destructive" className="rounded-2xl" data-testid="scheduling-query-error">
+        <Alert variant="destructive" className="rounded-xl" data-testid="scheduling-query-error">
           <AlertDescription role="alert">{queryError}</AlertDescription>
         </Alert>
       )}

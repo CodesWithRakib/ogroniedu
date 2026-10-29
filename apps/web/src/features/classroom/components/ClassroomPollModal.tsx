@@ -160,7 +160,7 @@ export function ClassroomPollModal({
           {currentPoll && currentPoll.isActive ? (
             <div className="flex flex-col gap-4" data-testid="active-poll-container">
               {/* Poll Question Banner */}
-              <div className="p-4 bg-primary-soft/40 border-2 border-primary/20 rounded-2xl">
+              <div className="p-4 bg-primary-soft/40 border border-primary/20 rounded-xl">
                 <div className="flex items-center justify-between text-xs font-bold text-primary mb-1.5">
                   <span className="flex items-center gap-1">
                     <Radio className="w-3.5 h-3.5 text-primary animate-pulse" />
@@ -195,7 +195,7 @@ export function ClassroomPollModal({
                           setSelectedVoteIndex(idx);
                         }
                       }}
-                      className={`relative p-3.5 rounded-2xl border-2 transition-all select-none ${
+                      className={`relative p-3.5 rounded-xl border transition-all select-none ${
                         !isVoted && !isTutor
                           ? isSelected
                             ? 'border-blue-600 bg-blue-50/70 shadow-md cursor-pointer ring-2 ring-blue-500/40'

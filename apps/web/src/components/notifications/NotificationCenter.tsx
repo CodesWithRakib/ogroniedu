@@ -295,7 +295,7 @@ export function NotificationCenter({ locale = 'bn' }: NotificationCenterProps) {
         <div className="flex-1 overflow-y-auto divide-y divide-border">
           {filteredItems.length === 0 ? (
             <div className="flex flex-col items-center justify-center p-12 text-center text-muted-foreground">
-              <div className="p-4 rounded-2xl bg-muted border border-border mb-3">
+              <div className="p-4 rounded-xl bg-muted border border-border mb-3">
                 <Inbox className="w-10 h-10 text-muted-foreground stroke-1" />
               </div>
               <p className="text-sm font-semibold text-foreground">

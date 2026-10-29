@@ -115,7 +115,7 @@ export default function AdminReplacementsPage({ params }: { params: Promise<{ lo
       </div>
 
       {notice && (
-        <Alert className="rounded-2xl">
+        <Alert className="rounded-xl">
           <AlertDescription>{notice}</AlertDescription>
         </Alert>
       )}
@@ -125,7 +125,7 @@ export default function AdminReplacementsPage({ params }: { params: Promise<{ lo
           {isBn ? 'লোড হচ্ছে...' : 'Loading cases...'}
         </p>
       ) : isError ? (
-        <Card className="py-12 text-center rounded-2xl">
+        <Card className="py-12 text-center rounded-xl">
           <CardContent className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
               {isBn ? 'কিউ লোড করা যায়নি।' : 'Failed to load the queue.'}
@@ -136,7 +136,7 @@ export default function AdminReplacementsPage({ params }: { params: Promise<{ lo
           </CardContent>
         </Card>
       ) : cases.length === 0 ? (
-        <Card className="py-16 text-center rounded-2xl">
+        <Card className="py-16 text-center rounded-xl">
           <CardContent>
             <p className="text-sm text-muted-foreground">
               {isBn ? 'এই ফিল্টারে কোনো কেস নেই।' : 'No cases match this filter.'}
@@ -146,7 +146,7 @@ export default function AdminReplacementsPage({ params }: { params: Promise<{ lo
       ) : (
         <div className="flex flex-col gap-3" data-testid="admin-replacement-queue">
           {cases.map((item) => (
-            <Card key={item.id} className="rounded-2xl bg-card p-4">
+            <Card key={item.id} className="rounded-xl bg-card p-4">
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">

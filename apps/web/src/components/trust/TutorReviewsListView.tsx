@@ -58,7 +58,7 @@ export function TutorReviewsListView({
       </h3>
 
       {localReviews.length === 0 ? (
-        <div className="p-6 text-center bg-surface-muted/50 rounded-2xl border border-dashed border-border text-muted-foreground text-sm">
+        <div className="p-6 text-center bg-surface-muted/50 rounded-xl border border-dashed border-border text-muted-foreground text-sm">
           No reviews yet. Completed session students and guardians will be able to leave feedback
           here.
         </div>

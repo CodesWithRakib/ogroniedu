@@ -159,7 +159,7 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
               <div
                 className={cn(
                   'h-full animate-[shrink_6s_linear_forwards]',
-                  isUrgent ? 'bg-destructive' : 'bg-gradient-to-r from-brand to-brand-accent',
+                  isUrgent ? 'bg-destructive' : 'bg-primary',
                 )}
                 style={{
                   animation: 'toastCountdown 6s linear forwards',

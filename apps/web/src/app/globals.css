@@ -572,7 +572,7 @@ h3 em {
 }
 
 /* ==========================================================================
- * Form control defaults: Modern rounded-2xl select & inputs
+ * Form control defaults: Modern rounded-xl select & inputs
  * ========================================================================== */
 
 select:not([multiple]) {

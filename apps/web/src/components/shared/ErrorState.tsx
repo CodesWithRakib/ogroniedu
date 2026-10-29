@@ -17,7 +17,7 @@ export function ErrorState({
     <div
       role="alert"
       data-testid={testId}
-      className="flex flex-col items-center justify-center rounded-2xl border border-destructive/30 bg-destructive/5 p-8 text-center"
+      className="flex flex-col items-center justify-center rounded-xl border border-destructive/30 bg-destructive/5 p-8 text-center"
     >
       <AlertTriangle className="h-8 w-8 text-destructive" aria-hidden />
       <p className="mt-3 text-sm font-medium text-foreground ">{message}</p>

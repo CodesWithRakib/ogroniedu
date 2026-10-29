@@ -77,7 +77,7 @@ export function NetworkDiagnosticsModal({
         <div className="p-5 flex flex-col gap-4">
           {/* Main Quality Banner */}
           <div
-            className={`p-4 rounded-2xl border-2 flex items-center justify-between ${
+            className={`p-4 rounded-xl border flex items-center justify-between ${
               isExcellent
                 ? 'bg-emerald-50 border-emerald-200 text-emerald-800'
                 : isGood
@@ -146,7 +146,7 @@ export function NetworkDiagnosticsModal({
           </div>
 
           {/* Advice / Low-Data Suggestion */}
-          <div className="p-3.5 bg-slate-50 rounded-2xl border border-slate-200 flex items-start gap-3">
+          <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 flex items-start gap-3">
             <Zap className="w-5 h-5 text-amber-500 shrink-0 mt-0.5" />
             <div className="text-xs">
               <p className="font-bold text-slate-900">
@@ -165,7 +165,7 @@ export function NetworkDiagnosticsModal({
             <button
               type="button"
               onClick={onToggleLowDataMode}
-              className={`w-full py-3 px-4 rounded-2xl text-xs sm:text-sm font-black border-2 transition-all flex items-center justify-center gap-2 active:scale-98 ${
+              className={`w-full py-3 px-4 rounded-xl text-xs sm:text-sm font-semibold border transition-all flex items-center justify-center gap-2 active:scale-98 ${
                 lowDataMode
                   ? 'bg-amber-400 border-amber-500 text-slate-950 shadow-md'
                   : 'bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-800'
