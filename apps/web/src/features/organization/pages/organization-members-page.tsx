@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -127,7 +127,7 @@ export function OrganizationMembersPageView() {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setShowInviteModal(true)}
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 transition"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition"
           >
             <UserPlus className="w-3.5 h-3.5" />
             Invite Member / Tutor
@@ -136,7 +136,7 @@ export function OrganizationMembersPageView() {
       </div>
 
       {/* Roster Table */}
-      <div className="bg-card rounded-xl border border-border shadow-xs overflow-hidden">
+      <div className="bg-card rounded-xl border border-border overflow-hidden">
         <div className="p-4 border-b border-border bg-muted/20 flex items-center justify-between">
           <h2 className="text-xs font-bold text-foreground uppercase tracking-wider">
             Active Members ({members.length})
@@ -217,7 +217,7 @@ export function OrganizationMembersPageView() {
       {/* Invite Modal */}
       {showInviteModal && (
         <Dialog open={showInviteModal} onOpenChange={(open) => !open && setShowInviteModal(false)}>
-          <DialogContent className="bg-card w-full max-w-md rounded-3xl border border-border shadow-2xl p-6 flex flex-col gap-4 text-left">
+          <DialogContent className="bg-card w-full max-w-md rounded-xl border border-border p-6 flex flex-col gap-4 text-left">
             <DialogHeader className="border-b border-slate-100 pb-3 text-left">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-blue-50 text-blue-600 border border-blue-200/80 flex items-center justify-center shrink-0">

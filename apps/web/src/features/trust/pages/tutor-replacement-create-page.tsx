@@ -127,7 +127,7 @@ export function NewReplacementRequestPage({ locale }: NewReplacementRequestPageP
           {isBn ? 'লোড হচ্ছে...' : 'Loading eligible bookings...'}
         </p>
       ) : isError ? (
-        <Card className="py-12 text-center rounded-2xl">
+        <Card className="py-12 text-center rounded-xl">
           <CardContent className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
               {isBn ? 'বুকিং লোড করা যায়নি।' : 'Failed to load eligible bookings.'}
@@ -138,7 +138,7 @@ export function NewReplacementRequestPage({ locale }: NewReplacementRequestPageP
           </CardContent>
         </Card>
       ) : bookings.length === 0 ? (
-        <Card className="py-16 text-center rounded-2xl">
+        <Card className="py-16 text-center rounded-xl">
           <CardContent className="flex flex-col gap-3">
             <AlertTriangle className="w-12 h-12 text-warning mx-auto" aria-hidden="true" />
             <h3 className="text-base font-bold text-foreground">

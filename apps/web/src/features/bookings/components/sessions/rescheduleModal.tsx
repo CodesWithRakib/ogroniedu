@@ -87,7 +87,7 @@ export function RescheduleModal({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="reschedule-modal"
-        className="bg-card border-2 border-border rounded-3xl max-w-lg w-full p-6 sm:p-7 shadow-2xl flex flex-col gap-4 text-left text-card-foreground"
+        className="bg-card border border-border rounded-xl max-w-lg w-full p-6 sm:p-7 flex flex-col gap-4 text-left text-card-foreground"
       >
         <DialogHeader className="border-b border-border pb-3 text-left">
           <div className="flex items-center gap-2.5">

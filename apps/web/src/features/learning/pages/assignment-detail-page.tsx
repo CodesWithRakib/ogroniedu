@@ -168,7 +168,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
   if (error || !assignment) {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4">
-        <div className="rounded-2xl border border-destructive/40 bg-destructive/10 p-6 text-center text-destructive-soft-foreground">
+        <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-6 text-center text-destructive-soft-foreground">
           <AlertCircle className="w-10 h-10 mx-auto mb-2 text-destructive-soft-foreground" />
           <h2 className="text-lg font-bold mb-1">
             {locale === 'bn' ? 'বাড়ির কাজ পাওয়া যায়নি' : 'Assignment Not Found'}
@@ -217,7 +217,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
       </div>
 
       {/* Main Assignment Banner */}
-      <div className="rounded-2xl bg-card border border-primary/40 p-8 text-foreground flex flex-col gap-4">
+      <div className="rounded-xl bg-card border border-primary/40 p-8 text-foreground flex flex-col gap-4">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div className="flex items-center gap-2">
             <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-primary/20 border border-primary/40 rounded-full text-xs font-medium text-primary-soft-foreground">
@@ -273,7 +273,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
 
       {/* Instructions Card */}
       {assignment.instructions && (
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6">
+        <Card className="bg-card border border-border text-foreground rounded-xl p-6">
           <CardHeader className="p-0 pb-3 flex flex-row items-center gap-2 text-muted-foreground font-semibold text-sm">
             <FileText className="w-4 h-4 text-primary-soft-foreground" />
             <span>{locale === 'bn' ? 'নির্দেশাবলী ও প্রশ্নসমূহ' : 'Instructions & Details'}</span>
@@ -287,7 +287,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
       {/* Submission & Grading Section */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Student Submission Card */}
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col gap-4">
+        <Card className="bg-card border border-border text-foreground rounded-xl p-6 flex flex-col gap-4">
           <CardHeader className="p-0 pb-2">
             <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
               <Send className="w-4 h-4 text-success-soft-foreground" />
@@ -306,7 +306,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
 
           <CardContent className="p-0 flex flex-col gap-3">
             {submission ? (
-              <div className="p-4 bg-muted rounded-2xl border border-border flex flex-col gap-2">
+              <div className="p-4 bg-muted rounded-xl border border-border flex flex-col gap-2">
                 <div className="flex items-center justify-between text-[11px] text-muted-foreground">
                   <span>{locale === 'bn' ? 'জমার সময়:' : 'Submitted on:'}</span>
                   <span className="font-medium text-foreground">
@@ -368,7 +368,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
                   type="submit"
                   size="sm"
                   isLoading={isSubmitting}
-                  className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs shadow-blue-500/25"
+                  className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-blue-500/25"
                   data-testid="submit-solution-btn"
                 >
                   <Send className="w-3.5 h-3.5 mr-1.5" />
@@ -386,7 +386,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
         </Card>
 
         {/* Evaluation / Feedback Card */}
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col gap-4">
+        <Card className="bg-card border border-border text-foreground rounded-xl p-6 flex flex-col gap-4">
           <CardHeader className="p-0 pb-2">
             <CardTitle className="text-base font-bold flex items-center gap-2 text-foreground">
               <Award className="w-4 h-4 text-warning-soft-foreground" />
@@ -405,7 +405,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
 
           <CardContent className="p-0 flex flex-col gap-3">
             {hasScore && !isEditingGrade && (
-              <div className="p-4 bg-primary-soft border border-primary/40 rounded-2xl flex flex-col gap-3">
+              <div className="p-4 bg-primary-soft border border-primary/40 rounded-xl flex flex-col gap-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs text-success-soft-foreground font-semibold">
                     {locale === 'bn' ? 'প্রাপ্ত স্কোর:' : 'Awarded Score:'}

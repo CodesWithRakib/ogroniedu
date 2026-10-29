@@ -115,7 +115,7 @@ export function UserNavDropdown({ authUser, locale, role, onLogout }: UserNavDro
       <DropdownMenuContent
         align="end"
         sideOffset={8}
-        className="w-68 rounded-2xl bg-card/95 border border-border p-2 shadow-sm backdrop-blur-xl text-foreground animate-in fade-in-0 zoom-in-95 z-50"
+        className="w-68 rounded-xl bg-card/95 border border-border p-2 shadow-sm backdrop-blur-xl text-foreground animate-in fade-in-0 zoom-in-95 z-50"
       >
         {/* Header Label: Full User Info */}
         <DropdownMenuLabel className="p-2.5 rounded-xl bg-card/90 border border-border mb-1">

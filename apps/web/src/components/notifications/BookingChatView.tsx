@@ -280,14 +280,14 @@ export function BookingChatView({
                   </div>
 
                   <div
-                    className={`rounded-2xl px-4 py-2.5 text-sm flex flex-col gap-2 shadow-2xs ${
+                    className={`rounded-xl px-4 py-2.5 text-sm flex flex-col gap-2 ${
                       isMine
                         ? 'bg-primary text-primary-foreground rounded-tr-none'
                         : msg.senderRole === 'admin'
                           ? 'bg-purple-50 border border-purple-200 text-purple-950 rounded-tl-none'
                           : isGuardian
                             ? 'bg-amber-50/80 border border-amber-200 text-amber-950 rounded-tl-none'
-                            : 'bg-surface-muted border border-border text-foreground rounded-tl-none'
+                            : 'bg-muted/50 border border-border text-foreground rounded-tl-none'
                     }`}
                   >
                     <p className="leading-relaxed whitespace-pre-wrap font-normal">{msg.content}</p>
@@ -481,7 +481,7 @@ export function BookingChatView({
             <Button
               type="submit"
               disabled={(!inputText.trim() && attachedFiles.length === 0) || isSending}
-              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl px-4 py-2.5 flex items-center gap-1.5 shrink-0 shadow-xs shadow-blue-500/25"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold rounded-xl px-4 py-2.5 flex items-center gap-1.5 shrink-0"
             >
               <Send className="w-4 h-4" />
               <span className="hidden sm:inline text-xs font-semibold">{n.sendMessage}</span>

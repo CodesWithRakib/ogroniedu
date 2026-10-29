@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -1341,7 +1341,7 @@ function DocumentsStepForm({
       data-testid="onboarding-documents-form"
     >
       {/* 1-Click Realistic Test Documents Selection */}
-      <div className="rounded-2xl border border-primary/25 bg-primary/5 p-4 flex flex-col gap-3">
+      <div className="rounded-xl border border-primary/25 bg-primary/5 p-4 flex flex-col gap-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="h-4 w-4 text-primary" />
@@ -1399,7 +1399,7 @@ function DocumentsStepForm({
       </div>
 
       {/* Manual File Upload */}
-      <div className="rounded-2xl border border-border bg-card p-4 flex flex-col gap-3.5">
+      <div className="rounded-xl border border-border bg-card p-4 flex flex-col gap-3.5">
         <h4 className="text-xs font-bold text-foreground flex items-center gap-2">
           <Upload className="h-4 w-4 text-primary" />
           {isBn ? 'আপনার নিজস্ব ফাইল আপলোড করুন' : 'Or Upload Your Own Document'}
@@ -1830,7 +1830,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
 
       {data.isComplete && (
         <div
-          className="mb-6 flex items-start gap-2.5 rounded-2xl border border-primary/25 bg-primary-soft p-4 text-xs font-medium text-primary"
+          className="mb-6 flex items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/10 p-4 text-xs font-medium text-primary"
           data-testid="onboarding-complete"
         >
           <CheckCircle2 className="h-4 w-4 shrink-0 text-primary mt-0.5" />
@@ -1846,7 +1846,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
         {data.steps.map((step) => (
           <li
             key={step.key}
-            className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card px-4 py-3"
+            className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card px-4 py-3"
           >
             <div className="flex items-center gap-2.5">
               <StepIcon status={step.status} />
@@ -1898,7 +1898,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
       )}
 
       {nextStep && (
-        <section className="rounded-2xl border border-border bg-card p-5">
+        <section className="rounded-xl border border-border bg-card p-5">
           <h2 className="mb-3 text-sm font-bold text-foreground">
             {isBn ? nextStep.titleBn : nextStep.titleEn}
           </h2>
@@ -1971,7 +1971,7 @@ export function OnboardingPage({ locale }: { locale: Locale }) {
       )}
 
       {(data.isComplete || data.status === 'pending_review') && user && (
-        <div className="mt-6 rounded-2xl border border-primary/30 bg-primary/5 p-4 text-left">
+        <div className="mt-6 rounded-xl border border-primary/20 bg-primary/10 p-4 text-left">
           <div className="flex items-center gap-2 mb-2">
             <CheckCircle2 className="h-5 w-5 text-primary" />
             <h3 className="text-sm font-bold text-foreground">

@@ -5,17 +5,15 @@ import Link from 'next/link';
 import {
   Calendar,
   Clock,
-  Video,
   Sparkles,
   RotateCcw,
   User,
   GraduationCap,
-  ExternalLink,
   ChevronRight,
   CheckCircle2,
   XCircle,
 } from 'lucide-react';
-import { Button, Badge } from '@/components/ui';
+import { Button } from '@/components/ui';
 import { type Locale } from '@/lib/i18n';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
 import { withLocale } from '@/lib/auth';
@@ -40,8 +38,8 @@ export function SessionTimelineView({
   if (sessions.length === 0) return null;
 
   return (
-    <div className="relative pl-6 sm:pl-8 flex flex-col gap-6 before:absolute before:left-3 before:top-3 before:bottom-3 before:w-0.5 before:bg-border/80">
-      {sessions.map((session, idx) => {
+    <div className="relative pl-6 sm:pl-8 flex flex-col gap-5 before:absolute before:left-3 before:top-3 before:bottom-3 before:w-0.5 before:bg-border">
+      {sessions.map((session) => {
         const formattedDate = formatWeekdayDate(session.startsAt, locale);
         const formattedTime = formatTime(session.startsAt, locale);
         const isScheduled = session.status === 'scheduled' || session.status === 'in_progress';
@@ -52,31 +50,31 @@ export function SessionTimelineView({
             <div
               className={`absolute -left-6 sm:-left-8 top-4 w-6 h-6 rounded-full border-2 flex items-center justify-center transition-transform group-hover:scale-110 shadow-xs ${
                 session.status === 'in_progress'
-                  ? 'bg-emerald-500 border-white text-white animate-pulse'
+                  ? 'bg-emerald-500 border-background text-white animate-pulse'
                   : session.status === 'scheduled'
-                    ? 'bg-blue-600 border-white text-white'
+                    ? 'bg-primary border-background text-primary-foreground'
                     : session.status === 'completed'
-                      ? 'bg-slate-200 border-slate-300 text-slate-700'
-                      : 'bg-rose-100 border-rose-300 text-rose-600'
+                      ? 'bg-muted border-border text-muted-foreground'
+                      : 'bg-destructive/10 border-destructive/30 text-destructive'
               }`}
             >
               {session.status === 'completed' ? (
-                <CheckCircle2 className="w-3.5 h-3.5 text-slate-700" />
+                <CheckCircle2 className="w-3.5 h-3.5" />
               ) : session.status === 'cancelled' ? (
-                <XCircle className="w-3.5 h-3.5 text-rose-600" />
+                <XCircle className="w-3.5 h-3.5" />
               ) : (
-                <Clock className="w-3 h-3 text-white" />
+                <Clock className="w-3 h-3" />
               )}
             </div>
 
             {/* Timeline Session Row Card */}
-            <div className="rounded-2xl sm:rounded-3xl border border-border/80 bg-card/90 backdrop-blur-sm p-4 sm:p-6 hover:shadow-lg transition-all duration-300 flex flex-col md:flex-row md:items-center justify-between gap-4">
+            <div className="rounded-xl border border-border bg-card p-4 sm:p-5 transition-colors flex flex-col md:flex-row md:items-center justify-between gap-4">
               <div className="flex flex-col gap-2 min-w-0 flex-1">
                 <div className="flex flex-wrap items-center gap-2">
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-soft text-primary font-bold text-xs border border-primary/20">
-                    <Calendar className="w-3 h-3" />
+                  <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-muted text-foreground font-medium text-xs border border-border">
+                    <Calendar className="w-3 h-3 text-primary" />
                     <span>{formattedDate}</span>
-                    <span className="text-muted-foreground/60">•</span>
+                    <span className="text-muted-foreground">•</span>
                     <Clock className="w-3 h-3 text-muted-foreground" />
                     <span>{formattedTime}</span>
                   </span>
@@ -84,7 +82,7 @@ export function SessionTimelineView({
                 </div>
 
                 <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4">
-                  <h3 className="text-base sm:text-lg font-black text-foreground tracking-tight">
+                  <h3 className="text-base sm:text-lg font-semibold text-foreground tracking-tight">
                     {session.subjectName || (isBn ? 'পদার্থবিজ্ঞান ১ম পত্র' : 'Physics Paper 1')}
                   </h3>
                   <div className="flex items-center gap-3 text-xs text-muted-foreground">
@@ -94,7 +92,7 @@ export function SessionTimelineView({
                     </span>
                     <span>•</span>
                     <span className="flex items-center gap-1">
-                      <User className="w-3.5 h-3.5 text-indigo-500" />
+                      <User className="w-3.5 h-3.5 text-primary" />
                       <span>{session.studentName}</span>
                     </span>
                   </div>
@@ -102,16 +100,16 @@ export function SessionTimelineView({
               </div>
 
               {/* Action Buttons */}
-              <div className="flex flex-wrap items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-border/70">
+              <div className="flex flex-wrap items-center gap-2 shrink-0 pt-2 md:pt-0 border-t md:border-t-0 border-border">
                 {session.meetingUrl && session.status !== 'cancelled' && (
                   <a
                     href={session.meetingUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="px-4 py-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white rounded-xl font-bold text-xs shadow-xs shadow-blue-500/25 transition-all flex items-center gap-1.5 active:scale-95"
+                    className="px-3.5 py-1.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold text-xs transition-colors flex items-center gap-1.5"
                   >
                     <Sparkles className="w-3.5 h-3.5" />
-                    <span>{isBn ? 'ক্লাসে প্রবেশ' : 'Join Classroom'}</span>
+                    <span>{isBn ? 'ক্লাসে যোগ দিন' : 'Join Classroom'}</span>
                   </a>
                 )}
 
@@ -125,7 +123,7 @@ export function SessionTimelineView({
                     href={withLocale(`/sessions/${session.id}`, locale)}
                     className="flex items-center gap-1"
                   >
-                    <span>{isBn ? 'বিবরণ' : 'Details'}</span>
+                    <span>{isBn ? 'বিস্তারিত' : 'Details'}</span>
                     <ChevronRight className="w-3.5 h-3.5" />
                   </Link>
                 </Button>
@@ -136,16 +134,16 @@ export function SessionTimelineView({
                       variant="ghost"
                       size="sm"
                       onClick={() => onRescheduleClick(session)}
-                      className="rounded-xl text-xs font-semibold text-muted-foreground hover:text-foreground"
+                      className="rounded-xl text-xs font-medium text-muted-foreground hover:text-foreground"
                     >
                       <RotateCcw className="w-3.5 h-3.5 mr-1" />
-                      {isBn ? 'রিশিডিউল' : 'Reschedule'}
+                      {isBn ? 'পুনঃনির্ধারণ' : 'Reschedule'}
                     </Button>
                     <Button
                       variant="ghost"
                       size="sm"
                       onClick={() => onCancelClick(session)}
-                      className="rounded-xl text-xs font-semibold text-destructive hover:bg-destructive/10"
+                      className="rounded-xl text-xs font-medium text-destructive hover:bg-destructive/10"
                     >
                       {isBn ? 'বাতিল' : 'Cancel'}
                     </Button>

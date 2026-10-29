@@ -277,14 +277,14 @@ export function ClassroomWorkspace({
 
   if (standalone) {
     return (
-      <div className="fixed inset-0 z-40 w-screen h-[100dvh] bg-slate-100 text-slate-900 overflow-hidden flex flex-col select-none">
-        {/* Sleek Top Bar (Google Meet Style - Light Mode) */}
-        <header className="h-14 px-3 sm:px-5 bg-white border-b border-slate-200/90 flex items-center justify-between shrink-0 z-30 shadow-xs">
+      <div className="fixed inset-0 z-40 w-screen h-[100dvh] bg-background text-foreground overflow-hidden flex flex-col select-none">
+        {/* Sleek Top Bar (Google Meet Style) */}
+        <header className="h-14 px-3 sm:px-5 bg-card border-b border-border flex items-center justify-between shrink-0 z-30">
           {/* Left: Back Link & Subject Info */}
           <div className="flex items-center gap-2 sm:gap-3 min-w-0">
             <Link
               href={withLocale(`/sessions/${session.id}`, locale)}
-              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold border border-slate-200 transition-colors shrink-0"
+              className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-xl bg-card hover:bg-muted text-foreground text-xs font-semibold border border-border transition-colors shrink-0"
               data-testid="back-to-session-detail"
               title={isBn ? 'সেশন বিবরণে ফিরে যান' : 'Back to Session Details'}
             >
@@ -292,25 +292,25 @@ export function ClassroomWorkspace({
               <span className="hidden sm:inline">{isBn ? 'সেশন বিবরণী' : 'Details'}</span>
             </Link>
 
-            <div className="h-5 w-px bg-slate-200 hidden sm:block" />
+            <div className="h-5 w-px bg-border hidden sm:block" />
 
             <div className="flex items-center gap-2 min-w-0">
               <span className="w-2.5 h-2.5 rounded-full bg-rose-500 ring-4 ring-rose-500/20 animate-pulse shrink-0" />
-              <h1 className="text-xs sm:text-sm font-extrabold text-slate-900 truncate max-w-[140px] sm:max-w-xs">
+              <h1 className="text-xs sm:text-sm font-bold text-foreground truncate max-w-[140px] sm:max-w-xs">
                 {subjectTitle}
               </h1>
 
               {session.status === 'in_progress' ? (
-                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-200 text-emerald-800 text-xs font-mono font-bold">
+                <div className="hidden sm:flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-700 text-xs font-mono font-bold">
                   <Radio className="w-3 h-3 text-emerald-600 animate-pulse" />
                   <span>{formatTimer(secondsElapsed)}</span>
                 </div>
               ) : session.status === 'completed' ? (
-                <Badge className="bg-emerald-50 text-emerald-800 border border-emerald-200 text-[10px] font-bold px-2 py-0.5">
+                <Badge className="bg-emerald-500/10 text-emerald-700 border border-emerald-500/20 text-[10px] font-bold px-2 py-0.5">
                   {isBn ? 'ক্লাস সম্পন্ন' : 'Completed'}
                 </Badge>
               ) : (
-                <Badge className="bg-blue-50 text-blue-800 border border-blue-200 text-[10px] font-bold px-2 py-0.5">
+                <Badge className="bg-primary/10 text-primary border border-primary/20 text-[10px] font-bold px-2 py-0.5">
                   {isBn ? 'নির্ধারিত' : 'Scheduled'}
                 </Badge>
               )}
@@ -318,14 +318,14 @@ export function ClassroomWorkspace({
           </div>
 
           {/* Center: Tools (Whiteboard, Notes, Attendance) as Side-Panel Toggles without leaving the meeting */}
-          <div className="flex items-center gap-1 sm:gap-1.5 bg-slate-100 p-1 rounded-xl border border-slate-200 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1 sm:gap-1.5 bg-muted/40 p-1 rounded-xl border border-border overflow-x-auto no-scrollbar">
             <button
               type="button"
               onClick={() => setSideTool(null)}
-              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-bold transition-all shrink-0 ${
+              className={`flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg text-xs font-semibold transition-colors shrink-0 ${
                 sideTool === null
-                  ? 'bg-blue-600 text-white shadow-xs'
-                  : 'text-slate-700 hover:text-slate-900 hover:bg-slate-200/80'
+                  ? 'bg-primary text-primary-foreground shadow-xs'
+                  : 'text-muted-foreground hover:text-foreground hover:bg-muted'
               }`}
               data-testid="tab-video"
               title={isBn ? 'ফুলস্ক্রিন ভিডিও ক্লাসরুম' : 'Fullscreen Video'}

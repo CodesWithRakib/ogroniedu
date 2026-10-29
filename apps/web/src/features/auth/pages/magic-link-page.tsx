@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -31,7 +31,7 @@ export function MagicLinkPage({ locale }: { locale: Locale }) {
 
   async function handleConfirm() {
     if (!token) {
-      setError(isBn ? 'সাইন-ইন লিংকটি অসম্পূর্ণ।' : 'This sign-in link is incomplete.');
+      setError(isBn ? 'সাইন-ইন লিঙ্কটি অসম্পূর্ণ।' : 'This sign-in link is incomplete.');
       return;
     }
     setError(null);
@@ -64,23 +64,23 @@ export function MagicLinkPage({ locale }: { locale: Locale }) {
 
   return (
     <div className="relative mx-auto w-full max-w-md px-4 py-8" data-testid="magic-link-page">
-      <div className="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-card">
+      <div className="rounded-xl border border-border bg-card p-6 sm:p-8">
         <header className="mb-6 flex flex-col gap-1.5 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/25">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <KeyRound className="h-6 w-6 stroke-[2.2]" />
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-foreground font-bengali">
-            {isBn ? 'পাসওয়ার্ড ছাড়া লগইন' : 'Passwordless sign in'}
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground font-bengali">
+            {isBn ? 'পাসওয়ার্ডহীন প্রবেশ' : 'Passwordless sign in'}
           </h1>
           <p className="text-xs text-muted-foreground leading-relaxed">
             {isBn
-              ? 'নিচের বাটনে ক্লিক করে আপনার অ্যাকাউন্টে প্রবেশ করুন। লিংকটি শুধু একবার ব্যবহারযোগ্য।'
+              ? 'নিচের বাটনে ক্লিক করে অ্যাকাউন্টে প্রবেশ নিশ্চিত করুন। লিংকটি একবারই ব্যবহারযোগ্য।'
               : 'Confirm below to sign in. This link can be used only once.'}
           </p>
         </header>
 
         {error && (
-          <Alert variant="destructive" className="mb-4 rounded-2xl" data-testid="magic-link-error">
+          <Alert variant="destructive" className="mb-4 rounded-xl" data-testid="magic-link-error">
             <AlertDescription>{error}</AlertDescription>
           </Alert>
         )}
@@ -92,19 +92,19 @@ export function MagicLinkPage({ locale }: { locale: Locale }) {
             disabled={!token}
             isLoading={isLoading}
             size="lg"
-            className="w-full h-12 rounded-2xl font-black text-xs sm:text-sm gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
+            className="w-full h-11 rounded-xl font-semibold text-xs sm:text-sm gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs shrink-0 cursor-pointer active:scale-98 group"
             data-testid="magic-link-confirm-btn"
           >
-            <ShieldCheck className="h-4 w-4 stroke-[2.2]" />
-            <span>{isBn ? 'নিশ্চিত করে লগইন করুন' : 'Confirm and sign in'}</span>
-            <ArrowRight className="h-4 w-4 stroke-[2.5] transition-transform group-hover:translate-x-1" />
+            <ShieldCheck className="h-4 w-4" />
+            <span>{isBn ? 'নিশ্চিত করে প্রবেশ করুন' : 'Confirm and sign in'}</span>
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
 
         {!token && (
           <p className="mt-4 text-center text-xs text-muted-foreground font-medium">
             {isBn
-              ? 'লিংকটি ভুল বা মেয়াদোত্তীর্ণ মনে হচ্ছে। আবার অনুরোধ করুন।'
+              ? 'লিংকটি সঠিক নয় অথবা মেয়াদোত্তীর্ণ। নতুন লিঙ্কের জন্য অনুরোধ করুন।'
               : 'The link looks invalid or expired. Please request a new one.'}
           </p>
         )}
@@ -112,7 +112,7 @@ export function MagicLinkPage({ locale }: { locale: Locale }) {
         <p className="mt-6 text-center text-xs text-muted-foreground font-medium">
           <Link
             href={withLocale('/login', locale)}
-            className="font-bold text-primary hover:underline hover:text-primary-hover"
+            className="font-semibold text-primary hover:underline"
           >
             {isBn ? 'লগইনে ফিরে যান' : 'Back to sign in'}
           </Link>

@@ -140,7 +140,7 @@ export function SavedTutorCard({
                 <img
                   src={profile.avatarUrl}
                   alt={resolvedDisplayName}
-                  className="h-14 w-14 sm:h-16 sm:w-16 rounded-xl object-cover ring-1 ring-border shadow-2xs group-hover:ring-primary/40 transition-all"
+                  className="h-14 w-14 sm:h-16 sm:w-16 rounded-xl object-cover ring-1 ring-border group-hover:ring-primary/40 transition-all"
                 />
               ) : (
                 <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold text-lg sm:text-xl">
@@ -148,7 +148,7 @@ export function SavedTutorCard({
                 </div>
               )}
               <span
-                className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-emerald-500 shadow-xs"
+                className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-emerald-500"
                 title={isBn ? 'সক্রিয় শিক্ষক' : 'Active Tutor'}
               />
             </Link>
@@ -459,7 +459,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
       <div className="w-full flex flex-col gap-6">
         {/* KPI Stats Bar */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
-          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
+          <Card className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-blue-50 text-blue-700">
                 <Bookmark className="w-5 h-5 fill-blue-600/20" aria-hidden="true" />
@@ -475,7 +475,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
+          <Card className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-amber-50 text-amber-700">
                 <Star className="w-5 h-5 fill-amber-500/20 text-amber-600" aria-hidden="true" />
@@ -491,7 +491,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
+          <Card className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700">
                 <Video className="w-5 h-5 text-emerald-600" aria-hidden="true" />
@@ -507,7 +507,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
             </div>
           </Card>
 
-          <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs">
+          <Card className="rounded-xl border border-border bg-card p-4">
             <div className="flex items-center gap-3">
               <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-50 text-indigo-700">
                 <GraduationCap className="w-5 h-5 text-indigo-600" aria-hidden="true" />
@@ -525,7 +525,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
         </div>
 
         {/* Search, Filter Tabs & Sort Controls */}
-        <Card className="rounded-2xl border border-border bg-card p-4 shadow-2xs flex flex-col gap-3">
+        <Card className="rounded-xl border border-border bg-card p-4 flex flex-col gap-3">
           <div className="flex flex-col md:flex-row items-stretch md:items-center justify-between gap-3">
             {/* Search Input */}
             <div className="relative flex-1">
@@ -582,7 +582,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
                 onClick={() => setFilterMode('all')}
                 className={`px-3 py-1 rounded-xl text-xs font-bold transition-colors ${
                   filterMode === 'all'
-                    ? 'bg-blue-600 text-white shadow-2xs'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
                 data-testid="filter-all"
@@ -595,7 +595,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
                 onClick={() => setFilterMode('top_rated')}
                 className={`px-3 py-1 rounded-xl text-xs font-bold transition-colors ${
                   filterMode === 'top_rated'
-                    ? 'bg-blue-600 text-white shadow-2xs'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
                 data-testid="filter-top-rated"
@@ -608,7 +608,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
                 onClick={() => setFilterMode('online')}
                 className={`px-3 py-1 rounded-xl text-xs font-bold transition-colors ${
                   filterMode === 'online'
-                    ? 'bg-blue-600 text-white shadow-2xs'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
                 data-testid="filter-online"
@@ -620,7 +620,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
                 onClick={() => setFilterMode('in_person')}
                 className={`px-3 py-1 rounded-xl text-xs font-bold transition-colors ${
                   filterMode === 'in_person'
-                    ? 'bg-blue-600 text-white shadow-2xs'
+                    ? 'bg-blue-600 text-white'
                     : 'bg-slate-100 text-slate-700 hover:bg-slate-200'
                 }`}
                 data-testid="filter-in-person"
@@ -650,7 +650,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
             {isBn ? 'সংরক্ষিত শিক্ষক লোড হচ্ছে...' : 'Loading saved tutors...'}
           </div>
         ) : isError ? (
-          <Card className="py-12 text-center rounded-3xl border-rose-200 bg-rose-50/30">
+          <Card className="py-12 text-center rounded-xl border-rose-200 bg-rose-50/30">
             <CardContent className="flex flex-col gap-3">
               <p className="text-sm font-semibold text-rose-900">
                 {isBn
@@ -669,9 +669,9 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
           </Card>
         ) : saved.length === 0 ? (
           /* Empty state: No saved tutors in DB */
-          <Card className="py-16 text-center rounded-3xl border border-border bg-card">
+          <Card className="py-16 text-center rounded-xl border border-border bg-card">
             <CardContent className="max-w-md mx-auto flex flex-col gap-4">
-              <div className="w-16 h-16 rounded-3xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto shadow-2xs">
+              <div className="w-16 h-16 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center mx-auto">
                 <Bookmark className="w-8 h-8 fill-blue-600/20" aria-hidden="true" />
               </div>
               <div className="flex flex-col gap-1.5">
@@ -686,7 +686,7 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
               </div>
               <div className="pt-2">
                 <Link href={withLocale('/tutors', locale)}>
-                  <Button className="gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl shadow-xs">
+                  <Button className="gap-2 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs px-5 py-2.5 rounded-xl">
                     <Search className="w-4 h-4" aria-hidden="true" />
                     {isBn ? 'শিক্ষক খুঁজুন' : 'Browse Tutors'}
                   </Button>
@@ -696,9 +696,9 @@ export function SavedTutorsPage({ locale, role = 'student' }: SavedTutorsPagePro
           </Card>
         ) : filteredItems.length === 0 ? (
           /* Empty state: Search/Filter returned 0 results */
-          <Card className="py-16 text-center rounded-3xl border border-border bg-card">
+          <Card className="py-16 text-center rounded-xl border border-border bg-card">
             <CardContent className="max-w-md mx-auto flex flex-col gap-3">
-              <div className="w-12 h-12 rounded-2xl bg-slate-100 text-muted-foreground flex items-center justify-center mx-auto">
+              <div className="w-12 h-12 rounded-xl bg-slate-100 text-muted-foreground flex items-center justify-center mx-auto">
                 <Search className="w-6 h-6" aria-hidden="true" />
               </div>
               <h3 className="text-base font-bold text-foreground">

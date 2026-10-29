@@ -10,9 +10,9 @@ export const buttonVariants = cva(
     variants: {
       variant: {
         primary:
-          'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 active:opacity-95',
+          'bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs active:opacity-95 font-semibold',
         default:
-          'bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 active:opacity-95',
+          'bg-primary text-primary-foreground hover:bg-primary/90 shadow-xs active:opacity-95 font-semibold',
         secondary:
           'bg-primary-soft text-primary hover:bg-primary-soft/80 border border-primary/20 active:bg-primary-soft shadow-2xs font-semibold',
         outline:

@@ -227,7 +227,7 @@ export function StudentPendingAssignmentsCard({
         onOpenChange={(open) => !open && setActiveAssignment(null)}
       >
         {activeAssignment && (
-          <DialogContent className="bg-card border border-border w-full max-w-lg rounded-2xl p-6 text-foreground flex flex-col gap-4">
+          <DialogContent className="bg-card border border-border w-full max-w-lg rounded-xl p-6 text-foreground flex flex-col gap-4">
             <DialogHeader className="border-b border-border pb-3 text-left">
               <div className="flex items-center gap-3">
                 <div className="h-10 w-10 rounded-xl bg-warning-soft text-warning flex items-center justify-center shrink-0">
@@ -293,7 +293,7 @@ export function StudentPendingAssignmentsCard({
                   variant="primary"
                   size="sm"
                   disabled={isSubmitting || !submissionText.trim()}
-                  className="rounded-xl shadow-xs font-semibold"
+                  className="rounded-xl font-semibold"
                 >
                   {isSubmitting
                     ? isBn

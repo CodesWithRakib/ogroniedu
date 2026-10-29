@@ -231,7 +231,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
         className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4"
         data-testid="child-kpi-grid"
       >
-        <Card className="rounded-2xl border-border bg-card p-4">
+        <Card className="rounded-xl border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">
               {isBn ? 'সক্রিয় শিক্ষক ও কোর্স' : 'Active Tutors'}
@@ -248,7 +248,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
           </div>
         </Card>
 
-        <Card className="rounded-2xl border-border bg-card p-4">
+        <Card className="rounded-xl border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">
               {isBn ? 'ক্লাস উপস্থিতি হার' : 'Attendance Rate'}
@@ -271,7 +271,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
           </div>
         </Card>
 
-        <Card className="rounded-2xl border-border bg-card p-4">
+        <Card className="rounded-xl border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">
               {isBn ? 'হোমওয়ার্ক সম্পন্ন' : 'Assignments'}
@@ -294,7 +294,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
           </div>
         </Card>
 
-        <Card className="rounded-2xl border-border bg-card p-4">
+        <Card className="rounded-xl border-border bg-card p-4">
           <div className="flex items-center justify-between">
             <span className="text-xs font-semibold text-muted-foreground">
               {isBn ? 'আর্থিক এসক্রো সুরক্ষা' : 'Escrow Protected'}
@@ -377,7 +377,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
       {activeTab === 'tutors' && (
         <div className="flex flex-col gap-4" data-testid="child-tutors-list">
           {childBookings.length === 0 ? (
-            <Card className="py-12 text-center rounded-2xl">
+            <Card className="py-12 text-center rounded-xl">
               <CardContent className="flex flex-col gap-3">
                 <GraduationCap className="w-12 h-12 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
@@ -403,7 +403,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
               {childBookings.map((b) => (
                 <Card
                   key={b.id}
-                  className="rounded-2xl border-border bg-card hover:border-primary/40 transition-all p-5"
+                  className="rounded-xl border-border bg-card hover:border-primary/40 transition-all p-5"
                 >
                   <div className="flex items-start justify-between gap-3">
                     <div className="flex flex-col gap-1">
@@ -476,7 +476,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
       {activeTab === 'sessions' && (
         <div className="flex flex-col gap-4" data-testid="child-sessions-list">
           {childSessions.length === 0 ? (
-            <Card className="py-12 text-center rounded-2xl">
+            <Card className="py-12 text-center rounded-xl">
               <CardContent className="flex flex-col gap-2">
                 <Calendar className="w-10 h-10 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
@@ -494,7 +494,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
               {childSessions.map((s) => (
                 <Card
                   key={s.id}
-                  className="rounded-2xl border-border bg-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  className="rounded-xl border-border bg-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                 >
                   <div className="flex flex-col gap-1">
                     <div className="flex items-center gap-2">
@@ -558,7 +558,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
       {activeTab === 'homework' && (
         <div className="flex flex-col gap-4" data-testid="child-homework-list">
           {!learningSummary?.assignments || learningSummary.assignments.length === 0 ? (
-            <Card className="py-12 text-center rounded-2xl">
+            <Card className="py-12 text-center rounded-xl">
               <CardContent className="flex flex-col gap-2">
                 <BookOpen className="w-10 h-10 text-muted-foreground mx-auto" />
                 <h4 className="font-bold text-foreground">
@@ -576,7 +576,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
               {learningSummary.assignments.map((a) => (
                 <Card
                   key={a.id}
-                  className="rounded-2xl border-border bg-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
+                  className="rounded-xl border-border bg-card p-4 flex flex-col sm:flex-row sm:items-center justify-between gap-3"
                 >
                   <div className="flex flex-col gap-1">
                     <h4 className="font-bold text-foreground text-sm">{a.title}</h4>
@@ -603,9 +603,9 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
       {/* TAB D: CHILD SAFETY & TRUST ACTIONS */}
       {activeTab === 'safety' && (
         <div className="flex flex-col gap-4" data-testid="child-safety-section">
-          <Card className="rounded-2xl border-destructive/40 bg-surface-muted p-6 text-foreground">
+          <Card className="rounded-xl border-destructive/40 bg-surface-muted p-6 text-foreground">
             <div className="flex items-start gap-4">
-              <div className="h-12 w-12 rounded-2xl bg-destructive/20 border border-destructive/40 text-destructive-soft-foreground flex items-center justify-center shrink-0">
+              <div className="h-12 w-12 rounded-xl bg-destructive/20 border border-destructive/40 text-destructive-soft-foreground flex items-center justify-center shrink-0">
                 <ShieldAlert className="w-6 h-6" />
               </div>
               <div className="flex flex-col gap-2">
@@ -663,7 +663,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
 
           {/* National Helpline Contact Grid */}
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="p-4 rounded-2xl border border-destructive/20 bg-destructive-soft flex items-center justify-between">
+            <div className="p-4 rounded-xl border border-destructive/20 bg-destructive-soft flex items-center justify-between">
               <div>
                 <span className="text-[11px] font-bold uppercase tracking-wider text-destructive-soft-foreground">
                   {isBn ? 'জাতীয় জরুরি হটলাইন' : 'National Emergency Hotline'}
@@ -680,7 +680,7 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
               </span>
             </div>
 
-            <div className="p-4 rounded-2xl border border-primary/30 bg-primary/10 flex items-center justify-between">
+            <div className="p-4 rounded-xl border border-primary/30 bg-primary/10 flex items-center justify-between">
               <div>
                 <span className="text-[11px] font-bold uppercase tracking-wider text-primary">
                   {isBn ? 'অগ্রণী এডু ট্রাস্ট ও নিরাপত্তা টিম' : 'OgroniEdu Trust & Safety'}

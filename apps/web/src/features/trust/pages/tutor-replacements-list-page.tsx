@@ -63,7 +63,7 @@ export function CaseCard({
   const isBn = locale === 'bn';
   return (
     <Card
-      className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-4 shadow-xs"
+      className="rounded-xl border border-border bg-card p-5 flex flex-col gap-4"
       data-testid={`replacement-case-${item.id}`}
     >
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-border/40 pb-3">
@@ -132,7 +132,7 @@ export function CaseCard({
 
       {item.status === 'offered' && item.replacementTutor && (
         <div
-          className="p-4 rounded-2xl bg-primary/5 border border-primary/20 flex flex-col gap-3"
+          className="p-4 rounded-xl bg-primary/5 border border-primary/20 flex flex-col gap-3"
           data-testid={`offer-${item.id}`}
         >
           <div className="flex items-center justify-between">
@@ -251,7 +251,7 @@ export function TutorReplacementsListPage({ locale }: TutorReplacementsListPageP
         </Link>
       }
     >
-      <div className="p-5 rounded-2xl border border-primary/20 bg-primary/5 flex items-start gap-4 shadow-xs">
+      <div className="p-5 rounded-xl border border-primary/20 bg-primary/5 flex items-start gap-4">
         <RefreshCw className="w-6 h-6 text-primary shrink-0 mt-0.5" aria-hidden="true" />
         <div className="flex flex-col gap-1">
           <h4 className="text-sm font-black text-foreground">
@@ -268,7 +268,7 @@ export function TutorReplacementsListPage({ locale }: TutorReplacementsListPageP
       </div>
 
       {actionError && (
-        <Alert variant="destructive" className="rounded-2xl">
+        <Alert variant="destructive" className="rounded-xl">
           <AlertDescription role="alert">{actionError}</AlertDescription>
         </Alert>
       )}
@@ -278,7 +278,7 @@ export function TutorReplacementsListPage({ locale }: TutorReplacementsListPageP
           {isBn ? 'লোড হচ্ছে...' : 'Loading replacement cases...'}
         </div>
       ) : isError ? (
-        <Card className="py-12 text-center rounded-2xl">
+        <Card className="py-12 text-center rounded-xl">
           <CardContent className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
               {isBn ? 'কেস লোড করা যায়নি।' : 'Failed to load replacement cases.'}
@@ -289,7 +289,7 @@ export function TutorReplacementsListPage({ locale }: TutorReplacementsListPageP
           </CardContent>
         </Card>
       ) : cases.length === 0 ? (
-        <Card className="py-16 text-center rounded-2xl">
+        <Card className="py-16 text-center rounded-xl">
           <CardContent className="flex flex-col gap-3">
             <ShieldCheck className="w-14 h-14 text-success mx-auto" aria-hidden="true" />
             <h4 className="text-base font-bold text-foreground">

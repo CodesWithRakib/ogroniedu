@@ -98,10 +98,10 @@ export function DisputeModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-md p-6 bg-card border border-border rounded-3xl shadow-2xl max-h-[90vh] overflow-y-auto text-left">
+      <DialogContent className="sm:max-w-md p-6 bg-card border border-border rounded-xl max-h-[90vh] overflow-y-auto text-left">
         <DialogHeader className="flex flex-col gap-1.5 border-b border-border/40 pb-3.5 text-left">
           <div className="flex items-center gap-2.5 text-amber-500">
-            <div className="p-2.5 rounded-2xl bg-amber-50 border border-amber-200 text-amber-600">
+            <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-200 text-amber-600">
               <Scale className="w-5 h-5" />
             </div>
             <div>

@@ -63,7 +63,7 @@ export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCas
           {isBn ? 'লোড হচ্ছে...' : 'Loading case...'}
         </p>
       ) : isError || !item ? (
-        <Card className="py-16 text-center rounded-2xl">
+        <Card className="py-16 text-center rounded-xl">
           <CardContent className="flex flex-col gap-3">
             <p className="text-sm text-muted-foreground">
               {isBn
@@ -78,12 +78,12 @@ export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCas
       ) : (
         <div className="flex flex-col gap-5 max-w-3xl">
           {actionError && (
-            <Alert variant="destructive" className="rounded-2xl">
+            <Alert variant="destructive" className="rounded-xl">
               <AlertDescription role="alert">{actionError}</AlertDescription>
             </Alert>
           )}
 
-          <Card className="rounded-2xl bg-card border border-border p-5 flex flex-col gap-4 shadow-xs">
+          <Card className="rounded-xl bg-card border border-border p-5 flex flex-col gap-4">
             <div className="flex flex-wrap items-center justify-between gap-2">
               <div className="flex items-center gap-2">
                 <Badge
@@ -137,7 +137,7 @@ export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCas
 
           {item.status === 'offered' && item.replacementTutor && (
             <Card
-              className="rounded-2xl bg-primary/5 border border-primary/20 p-5 flex flex-col gap-3 shadow-xs"
+              className="rounded-xl bg-primary/5 border border-primary/20 p-5 flex flex-col gap-3"
               data-testid="case-offer"
             >
               <p className="text-sm font-black text-foreground">
@@ -170,7 +170,7 @@ export function ReplacementCaseDetailPageView({ locale, caseId }: ReplacementCas
             </Card>
           )}
 
-          <Card className="rounded-2xl bg-card border border-border p-5 flex flex-col gap-3 shadow-xs">
+          <Card className="rounded-xl bg-card border border-border p-5 flex flex-col gap-3">
             <h3 className="text-sm font-black text-foreground flex items-center gap-2">
               <History className="w-4 h-4 text-primary" aria-hidden="true" />
               {isBn ? 'কেস ইতিহাস' : 'Case history'}

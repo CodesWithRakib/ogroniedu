@@ -48,7 +48,7 @@ export function ReviewCard({
   return (
     <Card
       data-testid="review-card"
-      className="p-5 border border-border bg-card rounded-2xl shadow-xs flex flex-col gap-3.5 text-foreground"
+      className="p-5 border border-border bg-card rounded-xl flex flex-col gap-3.5 text-foreground"
     >
       <div className="flex justify-between items-start gap-3">
         <div>
@@ -82,17 +82,17 @@ export function ReviewCard({
       {/* Multi-Criteria Breakdown Badges */}
       <div className="flex flex-wrap gap-2 pt-0.5">
         {rev.punctualityRating != null && (
-          <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
+          <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2 py-0.5 text-[11px] font-bold text-foreground border border-border">
             ⏱ {isBn ? 'সময়নিষ্ঠতা' : 'Punctuality'}: {rev.punctualityRating}/5
           </span>
         )}
         {rev.teachingClarityRating != null && (
-          <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
+          <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2 py-0.5 text-[11px] font-bold text-foreground border border-border">
             💡 {isBn ? 'পাঠদান স্পষ্টতা' : 'Clarity'}: {rev.teachingClarityRating}/5
           </span>
         )}
         {rev.subjectMasteryRating != null && (
-          <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
+          <span className="inline-flex items-center gap-1 rounded-lg bg-muted px-2 py-0.5 text-[11px] font-bold text-foreground border border-border">
             📚 {isBn ? 'বিষয় দক্ষতা' : 'Mastery'}: {rev.subjectMasteryRating}/5
           </span>
         )}
@@ -105,7 +105,7 @@ export function ReviewCard({
 
       {/* Tutor Response / Rebuttal */}
       {tutorReply && (
-        <div className="p-4 bg-primary/5 border-l-4 border-primary rounded-r-2xl text-xs flex flex-col gap-1.5 shadow-2xs">
+        <div className="p-4 bg-primary/5 border-l-4 border-primary rounded-r-2xl text-xs flex flex-col gap-1.5">
           <div className="font-bold text-foreground flex items-center justify-between">
             <div className="flex items-center gap-1.5">
               <MessageSquare className="w-3.5 h-3.5 text-primary" />

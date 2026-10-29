@@ -107,7 +107,7 @@ export function ReviewModalForm({
       {/* Header Info */}
       <div className="border-b border-border/40 pb-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-2xl bg-amber-50 border border-amber-300 text-amber-600 shadow-2xs">
+          <div className="p-2.5 rounded-xl bg-amber-50 border border-amber-300 text-amber-600">
             <Star className="w-5 h-5 fill-amber-500 text-amber-600" />
           </div>
           <div>
@@ -123,7 +123,7 @@ export function ReviewModalForm({
       </div>
 
       {/* Verified Booking Notice */}
-      <Alert className="bg-primary/5 border border-primary/20 text-foreground text-xs flex items-center gap-2.5 p-3.5 rounded-2xl shadow-2xs">
+      <Alert className="bg-primary/5 border border-primary/20 text-foreground text-xs flex items-center gap-2.5 p-3.5 rounded-xl">
         <ShieldCheck className="w-4 h-4 text-primary shrink-0" />
         <AlertDescription className="font-bold text-foreground">
           {isBn
@@ -135,7 +135,7 @@ export function ReviewModalForm({
       {/* Form */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         {/* Overall Rating */}
-        <div className="p-4 rounded-2xl bg-muted/40 border border-border flex flex-col gap-1 shadow-2xs">
+        <div className="p-4 rounded-xl bg-muted/40 border border-border flex flex-col gap-1">
           <StarSelector
             label={isBn ? 'সামগ্রিক সন্তুষ্টি (Overall Rating)' : 'Overall Rating'}
             value={rating}
@@ -145,7 +145,7 @@ export function ReviewModalForm({
         </div>
 
         {/* Breakdown Criteria Ratings */}
-        <div className="p-4 rounded-2xl bg-muted/40 border border-border flex flex-col gap-3.5 shadow-2xs">
+        <div className="p-4 rounded-xl bg-muted/40 border border-border flex flex-col gap-3.5">
           <span className="text-xs font-black text-foreground block uppercase tracking-wider">
             {isBn ? 'বিস্তারিত ক্রাইটেরিয়া মূল্যায়ন:' : 'Detailed Criteria Breakdown:'}
           </span>
@@ -225,7 +225,7 @@ export function ReviewModalForm({
             variant="primary"
             size="sm"
             isLoading={isLoading}
-            className="text-xs rounded-xl font-bold px-6 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs"
+            className="text-xs rounded-xl font-bold px-6 bg-primary hover:bg-primary/90 text-primary-foreground"
             data-testid="submit-review-btn"
           >
             {isBn ? 'রিভিউ প্রকাশ করুন' : 'Submit Review'}
@@ -263,7 +263,7 @@ export function ReviewModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="review-modal"
-        className="w-full max-w-lg bg-card border border-border rounded-3xl p-6 md:p-8 shadow-2xl text-foreground max-h-[90vh] overflow-y-auto text-left"
+        className="w-full max-w-lg bg-card border border-border rounded-xl p-6 md:p-8 text-foreground max-h-[90vh] overflow-y-auto text-left"
       >
         <DialogHeader className="sr-only">
           <DialogTitle>

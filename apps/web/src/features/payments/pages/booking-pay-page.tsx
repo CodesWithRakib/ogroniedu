@@ -242,7 +242,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
         </Link>
 
         {/* Hero — matches the home / tutor discovery visual language */}
-        <section className="relative overflow-hidden rounded-2xl sm:rounded-3xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-5 sm:p-8 shadow-xs">
+        <section className="relative overflow-hidden rounded-xl sm:rounded-xl border border-border bg-gradient-to-br from-card via-card/90 to-primary-soft/30 p-5 sm:p-8">
           <div className="absolute -top-20 -right-16 w-72 h-72 rounded-full bg-brand-soft blur-3xl pointer-events-none" />
           <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
             <div className="flex flex-col gap-3 max-w-2xl">
@@ -308,7 +308,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-border bg-card/80 backdrop-blur px-5 py-4 min-w-[210px] shadow-xs">
+            <div className="rounded-xl border border-border bg-card/80 backdrop-blur px-5 py-4 min-w-[210px]">
               <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
                 {isBn ? 'প্রদেয় পরিমাণ' : 'Amount due'}
               </p>
@@ -323,7 +323,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
         </section>
 
         {errorText && (
-          <div className="rounded-2xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-xs text-destructive flex items-start gap-2">
+          <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-xs text-destructive flex items-start gap-2">
             <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
             <span role="alert">{errorText}</span>
           </div>
@@ -333,9 +333,9 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
           {/* Main column */}
           <div className="lg:col-span-3 flex flex-col gap-5">
             {isConfirmed ? (
-              <div className="rounded-2xl border border-success/30 bg-success-soft/40 p-6 flex flex-col gap-4">
+              <div className="rounded-xl border border-success/30 bg-success-soft/40 p-6 flex flex-col gap-4">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-success/15 text-success flex items-center justify-center">
+                  <div className="w-11 h-11 rounded-xl bg-success/15 text-success flex items-center justify-center">
                     <CheckCircle2 className="w-6 h-6" />
                   </div>
                   <div>
@@ -392,9 +392,9 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                   />
                 )}
 
-                <div className="rounded-2xl border border-warning/30 bg-warning-soft/40 p-6 flex flex-col gap-4">
+                <div className="rounded-xl border border-warning/30 bg-warning-soft/40 p-6 flex flex-col gap-4">
                   <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-2xl bg-warning/15 text-warning flex items-center justify-center">
+                    <div className="w-11 h-11 rounded-xl bg-warning/15 text-warning flex items-center justify-center">
                       <Clock className="w-6 h-6" />
                     </div>
                     <div>
@@ -453,7 +453,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                 </div>
               </div>
             ) : isPayable ? (
-              <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 flex flex-col gap-4">
+              <div className="rounded-xl border border-border bg-card p-5 sm:p-6 flex flex-col gap-4">
                 <div className="flex items-center gap-2 pb-3 border-b border-border">
                   <CreditCard className="w-4 h-4 text-interactive" />
                   <h2 className="text-sm font-extrabold text-foreground">
@@ -469,9 +469,9 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                         type="button"
                         onClick={() => setProvider(item.id)}
                         aria-pressed={selected}
-                        className={`text-left rounded-2xl border p-4 transition-all ${
+                        className={`text-left rounded-xl border p-4 transition-all ${
                           selected
-                            ? 'border-primary bg-primary-soft/60 shadow-xs'
+                            ? 'border-primary bg-primary-soft/60'
                             : 'border-border bg-surface hover:border-primary/40 hover:bg-surface-hover'
                         }`}
                       >
@@ -525,9 +525,9 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                 </Button>
               </div>
             ) : isTerminal ? (
-              <div className="rounded-2xl border border-border bg-card p-6 flex flex-col gap-3">
+              <div className="rounded-xl border border-border bg-card p-6 flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center">
+                  <div className="w-11 h-11 rounded-xl bg-destructive/10 text-destructive flex items-center justify-center">
                     <AlertTriangle className="w-6 h-6" />
                   </div>
                   <div>
@@ -548,9 +548,9 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                 </Link>
               </div>
             ) : (
-              <div className="rounded-2xl border border-info/30 bg-info-soft/50 p-6 flex flex-col gap-3">
+              <div className="rounded-xl border border-info/30 bg-info-soft/50 p-6 flex flex-col gap-3">
                 <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-2xl bg-info/15 text-info flex items-center justify-center">
+                  <div className="w-11 h-11 rounded-xl bg-info/15 text-info flex items-center justify-center">
                     <Clock className="w-6 h-6" />
                   </div>
                   <div>
@@ -575,7 +575,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
 
           {/* Summary column */}
           <aside className="lg:col-span-2 flex flex-col gap-5">
-            <div className="rounded-2xl border border-border bg-card p-5 flex flex-col gap-3">
+            <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-3">
               <h2 className="text-sm font-extrabold text-foreground flex items-center gap-2 pb-3 border-b border-border">
                 <Receipt className="w-4 h-4 text-interactive" />
                 {isBn ? 'অর্ডার সারসংক্ষেপ' : 'Order summary'}
@@ -610,7 +610,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
               </div>
             </div>
 
-            <div className="rounded-2xl border border-border bg-gradient-to-br from-card to-primary-soft/20 p-5 flex flex-col gap-2.5 text-[11px] text-muted-foreground">
+            <div className="rounded-xl border border-border bg-gradient-to-br from-card to-primary-soft/20 p-5 flex flex-col gap-2.5 text-[11px] text-muted-foreground">
               <div className="flex items-center gap-2 font-bold text-foreground text-xs">
                 <ShieldCheck className="w-4 h-4 text-primary" />
                 {isBn ? 'কেন এই পেমেন্ট নিরাপদ' : 'Why this payment is safe'}

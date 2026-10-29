@@ -101,7 +101,7 @@ export function SafetyReportModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="safety-report-modal"
-        className="w-full max-w-xl rounded-3xl border border-border bg-card p-6 md:p-8 text-foreground shadow-2xl max-h-[90vh] overflow-y-auto text-left"
+        className="w-full max-w-xl rounded-xl border border-border bg-card p-6 md:p-8 text-foreground max-h-[90vh] overflow-y-auto text-left"
       >
         {isSuccess ? (
           <div className="py-10 text-center flex flex-col gap-4">
@@ -119,7 +119,7 @@ export function SafetyReportModal({
           <form onSubmit={handleSubmit} className="flex flex-col gap-4">
             <DialogHeader className="border-b border-border/40 pb-4 text-left">
               <div className="flex items-center gap-3">
-                <div className="h-10 w-10 rounded-2xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
+                <div className="h-10 w-10 rounded-xl bg-rose-50 border border-rose-200 text-rose-600 flex items-center justify-center shrink-0">
                   <ShieldAlert className="w-5 h-5" />
                 </div>
                 <div>

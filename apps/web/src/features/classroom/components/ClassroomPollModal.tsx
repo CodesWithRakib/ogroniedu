@@ -121,9 +121,9 @@ export function ClassroomPollModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-fade-in"
       data-testid="classroom-poll-modal"
     >
-      <div className="relative w-full max-w-lg bg-white rounded-3xl shadow-2xl border-2 border-slate-200 overflow-hidden flex flex-col max-h-[90vh]">
+      <div className="relative w-full max-w-lg bg-card rounded-xl border border-border text-card-foreground overflow-hidden flex flex-col max-h-[90vh]">
         {/* Header */}
-        <div className="flex items-center justify-between px-6 py-4 bg-slate-50 text-slate-900 border-b border-slate-200">
+        <div className="flex items-center justify-between px-6 py-4 bg-muted/20 text-foreground border-b border-border">
           <div className="flex items-center gap-2.5">
             <div className="p-2 bg-amber-50 border border-amber-200 rounded-xl">
               <BarChart3 className="w-5 h-5 text-amber-600" />

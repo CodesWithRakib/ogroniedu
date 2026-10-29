@@ -285,7 +285,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                     onClick={() => setFilterCategory(c.id)}
                     className={`px-3 py-1 rounded-xl text-xs font-bold transition-all cursor-pointer ${
                       filterCategory === c.id
-                        ? 'bg-rose-600 text-white shadow-2xs'
+                        ? 'bg-rose-600 text-white'
                         : 'bg-muted text-muted-foreground hover:bg-muted/80'
                     }`}
                     data-testid={`filter-cat-${c.id}`}
@@ -388,7 +388,7 @@ export function SafetyReportsPageView({ locale }: SafetyReportsPageProps) {
                   </p>
 
                   {report.resolutionNotes && (
-                    <div className="p-3.5 rounded-2xl bg-muted/40 border border-border text-xs text-foreground flex flex-col gap-1">
+                    <div className="p-3.5 rounded-xl bg-muted/40 border border-border text-xs text-foreground flex flex-col gap-1">
                       <span className="font-bold text-emerald-800 flex items-center gap-1.5 block">
                         <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600" />
                         {isBn ? 'নিরাপত্তা টিমের তদন্ত ও নিষ্পত্তি নোট:' : 'Investigation Outcome:'}

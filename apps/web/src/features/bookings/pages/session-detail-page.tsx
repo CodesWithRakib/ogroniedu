@@ -250,7 +250,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
   if (sessionError || !session) {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4">
-        <div className="rounded-2xl border border-destructive/40 bg-destructive/10 p-6 text-center text-destructive-soft-foreground">
+        <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-6 text-center text-destructive-soft-foreground">
           <AlertCircle className="w-10 h-10 mx-auto mb-2 text-destructive-soft-foreground" />
           <h2 className="text-lg font-bold mb-1">
             {locale === 'bn' ? 'ক্লাস সেশন পাওয়া যায়নি' : 'Session Not Found'}
@@ -365,7 +365,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       </div>
 
       {/* Live Interactive Classroom Workspace Launch Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200 shadow-sm p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
+      <div className="relative overflow-hidden rounded-xl bg-white border border-slate-200 p-6 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-6">
         <div className="flex flex-col gap-1.5 text-center md:text-left max-w-2xl">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-blue-50 text-blue-800 text-xs font-bold border border-blue-200">
             <Radio className="w-3.5 h-3.5 text-blue-600 animate-pulse" />
@@ -384,7 +384,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
         </div>
         <Link
           href={withLocale(`/classroom/${sessionId}`, locale)}
-          className="shrink-0 flex items-center gap-2 px-6 py-3.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs sm:text-sm font-bold rounded-2xl shadow-md shadow-blue-500/25 transition-all transform hover:scale-105 active:scale-95"
+          className="shrink-0 flex items-center gap-2 px-6 py-3.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs sm:text-sm font-semibold rounded-xl transition-all transform hover:scale-105 active:scale-95"
           data-testid="enter-live-classroom-btn"
         >
           <Sparkles className="w-4 h-4 fill-current" />
@@ -405,7 +405,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       />
 
       {/* Main Session Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-white border border-slate-200 p-8 shadow-sm text-slate-900">
+      <div className="relative overflow-hidden rounded-xl bg-white border border-slate-200 p-8 text-slate-900">
         <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 relative z-10">
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2">
@@ -434,7 +434,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
             </p>
           </div>
 
-          <div className="bg-surface-muted border border-border rounded-2xl p-5 shrink-0 text-center flex flex-col gap-1">
+          <div className="bg-surface-muted border border-border rounded-xl p-5 shrink-0 text-center flex flex-col gap-1">
             <div className="text-xs uppercase tracking-wider font-bold text-slate-600">
               {formatWeekdayDate(startsAt, locale)}
             </div>
@@ -446,7 +446,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       </div>
 
       {actionNotice && (
-        <div className="rounded-2xl border border-emerald-300 bg-emerald-50 p-4 text-xs text-emerald-950 font-bold flex items-center gap-2 shadow-2xs">
+        <div className="rounded-xl border border-emerald-300 bg-emerald-50 p-4 text-xs text-emerald-950 font-bold flex items-center gap-2">
           <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
           <span>{actionNotice}</span>
         </div>
@@ -455,7 +455,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       {session.rescheduledAt && (
         <div
           data-testid="session-rescheduled-notice"
-          className="rounded-2xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950 flex items-start gap-3 shadow-2xs"
+          className="rounded-xl border border-amber-300 bg-amber-50 p-4 text-xs text-amber-950 flex items-start gap-3"
         >
           <RotateCcw className="w-5 h-5 text-amber-700 shrink-0 mt-0.5" />
           <div className="flex flex-col gap-1">
@@ -486,7 +486,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       {/* Class Schedule, Reschedule & Calendar Sync Card */}
       <Card
         data-testid="session-calendar-sync-card"
-        className="bg-card border-2 border-border rounded-3xl p-6 shadow-sm text-card-foreground flex flex-col gap-4"
+        className="bg-card border-2 border-border rounded-xl p-6 text-card-foreground flex flex-col gap-4"
       >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex flex-col gap-1">
@@ -572,7 +572,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       {/* Grid: Classroom Link & Attendance */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Live Classroom Card */}
-        <Card className="bg-white border border-slate-200 text-slate-900 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+        <Card className="bg-card border border-border text-foreground rounded-xl p-6 flex flex-col justify-between">
           <CardHeader className="p-0 pb-4">
             <div className="flex items-center gap-2 text-blue-700 mb-1">
               <Video className="w-5 h-5 text-blue-600" />
@@ -589,7 +589,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
 
           <CardContent className="p-0 flex flex-col gap-4 pt-2">
             {meetingUrl ? (
-              <div className="p-4 bg-surface-muted border border-border rounded-2xl flex flex-col gap-3">
+              <div className="p-4 bg-surface-muted border border-border rounded-xl flex flex-col gap-3">
                 <div className="flex items-center gap-2 text-xs font-bold text-emerald-800">
                   <ShieldCheck className="w-4 h-4 text-emerald-600" />
                   <span>
@@ -624,7 +624,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
                 </Link>
               </div>
             ) : (
-              <div className="p-5 bg-surface-muted border border-border rounded-2xl text-center flex flex-col gap-3">
+              <div className="p-5 bg-surface-muted border border-border rounded-xl text-center flex flex-col gap-3">
                 <Video className="w-8 h-8 mx-auto text-slate-400" />
                 <p className="text-xs text-slate-600 font-medium">
                   {locale === 'bn'
@@ -646,7 +646,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
         </Card>
 
         {/* Attendance Card */}
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6">
+        <Card className="bg-card border border-border text-foreground rounded-xl p-6">
           <CardHeader className="p-0 pb-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center gap-2 text-info-soft-foreground mb-1">

@@ -231,17 +231,17 @@ export function EmbeddedEasyCheckout({
   return (
     <div className="w-full flex flex-col gap-4" data-testid="embedded-easy-checkout-container">
       {/* Primary Embedded Action Card */}
-      <div className="rounded-2xl sm:rounded-3xl border-2 border-primary/30 bg-gradient-to-br from-primary-soft/40 via-card to-primary-soft/20 p-5 sm:p-6 shadow-sm text-foreground">
+      <div className="rounded-xl border border-border bg-card p-5 sm:p-6 text-foreground">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div className="flex flex-col gap-1.5">
             <div className="flex items-center gap-2">
-              <span className="w-8 h-8 rounded-xl bg-primary text-primary-foreground font-black text-xs flex items-center justify-center shadow-xs">
+              <span className="w-8 h-8 rounded-lg bg-primary text-primary-foreground font-bold text-xs flex items-center justify-center">
                 SSL
               </span>
-              <h3 className="text-base sm:text-lg font-black text-foreground">
+              <h3 className="text-base sm:text-lg font-bold text-foreground">
                 {isBn ? 'এসএসএলকমার্জ ইনস্ট্যান্ট চেকআউট' : 'SSLCOMMERZ Easy Checkout'}
               </h3>
-              <span className="px-2 py-0.5 rounded-full text-[10px] font-black bg-primary-soft text-primary border border-primary/30">
+              <span className="px-2 py-0.5 rounded-full text-[10px] font-semibold bg-primary/10 text-primary border border-primary/20">
                 {isBn ? 'এমবেডেড' : 'Embedded'}
               </span>
             </div>
@@ -257,7 +257,7 @@ export function EmbeddedEasyCheckout({
               type="button"
               onClick={handleOpenEmbedded}
               data-testid="sslcommerz-embedded-pay-btn"
-              className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-black text-sm h-11 px-6 rounded-2xl shadow-md shadow-blue-500/20 active:scale-95 transition-all flex items-center justify-center gap-2"
+              className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm h-11 px-6 rounded-xl transition-colors flex items-center justify-center gap-2"
             >
               <CreditCard className="w-4 h-4" />
               <span>
@@ -274,7 +274,7 @@ export function EmbeddedEasyCheckout({
               onClick={handleOpenDirect}
               data-testid="sslcommerz-fallback-pay-btn"
               title={isBn ? 'নতুন ট্যাবে খুলুন' : 'Open in new tab'}
-              className="h-11 px-3.5 rounded-2xl border-slate-200 text-slate-700 hover:bg-slate-100 font-bold text-xs"
+              className="h-11 px-3.5 rounded-xl border-border text-muted-foreground hover:text-foreground hover:bg-muted font-medium text-xs"
             >
               <ExternalLink className="w-3.5 h-3.5" />
             </Button>
@@ -301,9 +301,9 @@ export function EmbeddedEasyCheckout({
         )}
 
         {/* Security Assurance Footer */}
-        <div className="mt-4 pt-3 border-t border-slate-200/60 flex items-center justify-between text-[11px] text-slate-500 font-semibold">
+        <div className="mt-4 pt-3 border-t border-border flex items-center justify-between text-[11px] text-muted-foreground font-medium">
           <div className="flex items-center gap-1.5">
-            <Lock className="w-3.5 h-3.5 text-emerald-600" />
+            <Lock className="w-3.5 h-3.5 text-primary" />
             <span>{isBn ? '১২৮-বিট এসএসএল সুরক্ষিত' : '128-bit SSL Encrypted Gateway'}</span>
           </div>
           <div>
@@ -322,22 +322,22 @@ export function EmbeddedEasyCheckout({
         >
           <div
             ref={modalRef}
-            className="relative w-full max-w-md sm:max-w-lg lg:max-w-xl h-[88vh] max-h-[760px] bg-white rounded-3xl shadow-2xl flex flex-col overflow-hidden border border-slate-200 text-slate-900"
+            className="relative w-full max-w-md sm:max-w-lg lg:max-w-xl h-[88vh] max-h-[760px] bg-card rounded-xl shadow-lg flex flex-col overflow-hidden border border-border text-foreground"
           >
             {/* Modal Header */}
-            <div className="px-5 py-3.5 border-b border-slate-100 bg-slate-50/80 flex items-center justify-between shrink-0">
+            <div className="px-5 py-3.5 border-b border-border bg-muted/20 flex items-center justify-between shrink-0">
               <div className="flex items-center gap-2.5">
-                <div className="w-7 h-7 rounded-xl bg-blue-600 text-white font-black text-[10px] flex items-center justify-center">
+                <div className="w-7 h-7 rounded-lg bg-primary text-primary-foreground font-bold text-[10px] flex items-center justify-center">
                   SSL
                 </div>
                 <div>
                   <h4
                     id="sslcz-modal-title"
-                    className="text-xs sm:text-sm font-black text-slate-900"
+                    className="text-xs sm:text-sm font-bold text-foreground"
                   >
                     {isBn ? 'এসএসএলকমার্জ নিরাপদ চেকআউট' : 'SSLCOMMERZ Secure Checkout'}
                   </h4>
-                  <p className="text-[10px] text-slate-500 font-semibold">
+                  <p className="text-[10px] text-muted-foreground font-medium">
                     {isBn ? 'অগ্রণী এডু এসক্রো ডিপোজিট' : 'OgroniEdu Escrow Deposit'} ·{' '}
                     {formatBDTMinor(amountMinor, locale)}
                   </p>
@@ -348,8 +348,8 @@ export function EmbeddedEasyCheckout({
                 <button
                   type="button"
                   onClick={handleOpenDirect}
-                  title={isBn ? 'পূর্ণ স্ক্রিনে খুলুন' : 'Open in full window'}
-                  className="p-1.5 rounded-xl hover:bg-slate-200 text-slate-600 transition-colors"
+                  title={isBn ? 'নতুন উইন্ডোতে খুলুন' : 'Open in full window'}
+                  className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                 >
                   <Maximize2 className="w-4 h-4" />
                 </button>
@@ -357,7 +357,7 @@ export function EmbeddedEasyCheckout({
                   type="button"
                   onClick={handleCloseModal}
                   aria-label={isBn ? 'বন্ধ করুন' : 'Close'}
-                  className="p-1.5 rounded-xl hover:bg-slate-200 text-slate-600 transition-colors"
+                  className="p-1.5 rounded-lg hover:bg-muted text-muted-foreground hover:text-foreground transition-colors"
                   data-testid="close-embedded-checkout-btn"
                 >
                   <X className="w-4 h-4" />
@@ -409,15 +409,15 @@ export function EmbeddedEasyCheckout({
             </div>
 
             {/* Modal Footer */}
-            <div className="px-5 py-2.5 border-t border-slate-100 bg-slate-50 flex items-center justify-between text-[11px] text-slate-500 font-semibold shrink-0">
-              <span className="flex items-center gap-1 text-emerald-700">
+            <div className="px-5 py-2.5 border-t border-border bg-muted/20 flex items-center justify-between text-[11px] text-muted-foreground font-medium shrink-0">
+              <span className="flex items-center gap-1 text-primary">
                 <ShieldCheck className="w-3.5 h-3.5" />
                 <span>{isBn ? 'এসক্রো নীতিমালায় সংরক্ষিত' : 'Escrow Protected'}</span>
               </span>
               <button
                 type="button"
                 onClick={handleCloseModal}
-                className="text-slate-600 hover:text-slate-900 underline font-medium"
+                className="text-muted-foreground hover:text-foreground underline font-medium cursor-pointer"
               >
                 {isBn ? 'পেমেন্ট বাতিল করুন' : 'Cancel & Return'}
               </button>

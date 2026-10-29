@@ -103,7 +103,7 @@ export function TutorReplacementModalForm({
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <div className="border-b border-border/40 pb-4 text-left">
             <div className="flex items-center gap-3">
-              <div className="h-10 w-10 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
+              <div className="h-10 w-10 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
                 <RefreshCw className="w-5 h-5" />
               </div>
               <div>
@@ -256,7 +256,7 @@ export function TutorReplacementModal({ isOpen, onClose, ...rest }: TutorReplace
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="tutor-replacement-modal"
-        className="w-full max-w-xl rounded-3xl border border-border bg-card p-6 text-foreground shadow-2xl max-h-[90vh] overflow-y-auto text-left"
+        className="w-full max-w-xl rounded-xl border border-border bg-card p-6 text-foreground max-h-[90vh] overflow-y-auto text-left"
       >
         <TutorReplacementModalForm onClose={onClose} {...rest} />
       </DialogContent>

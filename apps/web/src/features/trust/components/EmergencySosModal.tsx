@@ -78,7 +78,7 @@ export function EmergencySosContent({
       {/* Header */}
       <div className="border-b border-border/40 pb-4 text-left">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 rounded-2xl bg-rose-50 border border-rose-200 animate-pulse text-rose-600">
+          <div className="p-2.5 rounded-xl bg-rose-50 border border-rose-200 animate-pulse text-rose-600">
             <ShieldAlert className="w-6 h-6" />
           </div>
           <div>
@@ -101,7 +101,7 @@ export function EmergencySosContent({
         {EMERGENCY_HOTLINES.map((item) => (
           <div
             key={item.telNumber}
-            className={`p-4 rounded-2xl border ${item.color} flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-[transform,border-color] duration-150 hover:scale-[1.01]`}
+            className={`p-4 rounded-xl border ${item.color} flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-[transform,border-color] duration-150 hover:scale-[1.01]`}
           >
             <div className="flex flex-col gap-1">
               <div className="flex items-center gap-2">
@@ -124,7 +124,7 @@ export function EmergencySosContent({
 
             <a
               href={`tel:${item.telNumber}`}
-              className="shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl transition-[background-color,transform] duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500 shadow-xs"
+              className="shrink-0 flex items-center justify-center gap-2 px-5 py-2.5 bg-rose-600 hover:bg-rose-700 text-white font-black text-xs rounded-xl transition-[background-color,transform] duration-150 active:scale-95 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-rose-500"
               data-testid={`dial-${item.telNumber}`}
             >
               <PhoneCall className="w-4 h-4" aria-hidden="true" />
@@ -135,7 +135,7 @@ export function EmergencySosContent({
       </div>
 
       {/* File Immediate Incident Report CTA */}
-      <div className="p-4 rounded-2xl bg-muted/50 border border-border shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      <div className="p-4 rounded-xl bg-muted/50 border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex flex-col gap-0.5">
           <span className="text-xs font-bold text-foreground flex items-center gap-1.5">
             <AlertTriangle className="w-4 h-4 text-amber-600" />
@@ -157,7 +157,7 @@ export function EmergencySosContent({
               onClose();
               onOpenFileReport();
             }}
-            className="shrink-0 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl shadow-xs"
+            className="shrink-0 bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs rounded-xl"
             data-testid="open-incident-form-btn"
           >
             {isBn ? 'অভিযোগ ফর্ম খুলুন' : 'File Incident Report'}
@@ -166,7 +166,7 @@ export function EmergencySosContent({
           <Link
             href={withLocale('/dashboard/guardian/safety-reports', locale)}
             onClick={onClose}
-            className="shrink-0 inline-flex items-center justify-center bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-4 py-2 rounded-xl shadow-xs"
+            className="shrink-0 inline-flex items-center justify-center bg-rose-600 hover:bg-rose-700 text-white font-bold text-xs px-4 py-2 rounded-xl"
             data-testid="open-incident-form-btn"
           >
             {isBn ? 'অভিযোগ ফর্ম খুলুন' : 'File Incident Report'}
@@ -220,7 +220,7 @@ export function EmergencySosModal({
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="emergency-sos-modal"
-        className="w-full max-w-xl bg-card border border-border rounded-3xl p-6 md:p-8 flex flex-col gap-6 text-foreground max-h-[90vh] overflow-y-auto shadow-2xl text-left"
+        className="w-full max-w-xl bg-card border border-border rounded-xl p-6 md:p-8 flex flex-col gap-6 text-foreground max-h-[90vh] overflow-y-auto text-left"
       >
         <EmergencySosContent
           onClose={onClose}

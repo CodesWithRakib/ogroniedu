@@ -40,7 +40,7 @@ export function LearningTabsBar({
   ];
 
   return (
-    <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-2xl bg-surface border border-border/80">
+    <div className="flex flex-wrap items-center gap-2 p-1.5 rounded-xl bg-surface border border-border/80">
       {tabs.map(({ key, label, count, Icon }) => {
         const isActive = activeTab === key;
         return (
@@ -50,7 +50,7 @@ export function LearningTabsBar({
             onClick={() => onSelect(key)}
             className={`px-4 py-2 text-xs sm:text-sm font-bold transition-all rounded-xl flex items-center gap-2 cursor-pointer ${
               isActive
-                ? 'bg-card text-foreground shadow-xs border border-border/80'
+                ? 'bg-card text-foreground border border-border/80'
                 : 'text-muted-foreground hover:text-foreground hover:bg-muted/40'
             }`}
           >

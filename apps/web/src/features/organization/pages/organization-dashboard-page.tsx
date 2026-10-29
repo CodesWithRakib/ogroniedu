@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
@@ -102,7 +102,7 @@ export function OrganizationDashboardPageView() {
         </p>
         <button
           onClick={() => setIsRegistering(true)}
-          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 transition"
+          className="inline-flex items-center gap-2 px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition"
         >
           <Plus className="w-4 h-4" />
           Register New Organization
@@ -113,7 +113,7 @@ export function OrganizationDashboardPageView() {
 
   if (isRegistering) {
     return (
-      <div className="max-w-lg mx-auto bg-card p-6 rounded-2xl border border-border shadow-xs flex flex-col gap-5">
+      <div className="max-w-lg mx-auto bg-card p-6 rounded-xl border border-border flex flex-col gap-5">
         <div>
           <h2 className="text-lg font-bold text-foreground">Register Educational Organization</h2>
           <p className="text-xs text-muted-foreground mt-0.5">
@@ -202,7 +202,7 @@ export function OrganizationDashboardPageView() {
             <button
               type="submit"
               disabled={isCreating}
-              className="px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 transition"
+              className="px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition"
             >
               {isCreating ? 'Submitting...' : 'Submit Application'}
             </button>
@@ -245,7 +245,7 @@ export function OrganizationDashboardPageView() {
         <div className="flex items-center gap-2">
           <Link
             href="/dashboard/organization/members"
-            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 transition"
+            className="inline-flex items-center gap-1.5 px-3.5 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition"
           >
             <Users className="w-3.5 h-3.5" />
             Manage Tutors & Staff
@@ -255,7 +255,7 @@ export function OrganizationDashboardPageView() {
 
       {/* Overview Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-        <div className="bg-card p-4 rounded-xl border border-border shadow-xs flex flex-col gap-1">
+        <div className="bg-card p-4 rounded-xl border border-border flex flex-col gap-1">
           <div className="text-xs font-medium text-muted-foreground">Accreditation Status</div>
           <div className="text-lg font-bold text-foreground capitalize">
             {currentOrg?.status.replace('_', ' ')}
@@ -267,7 +267,7 @@ export function OrganizationDashboardPageView() {
           </p>
         </div>
 
-        <div className="bg-card p-4 rounded-xl border border-border shadow-xs flex flex-col gap-1">
+        <div className="bg-card p-4 rounded-xl border border-border flex flex-col gap-1">
           <div className="text-xs font-medium text-muted-foreground">Institution Type</div>
           <div className="text-lg font-bold text-foreground capitalize">
             {currentOrg?.type.replace('_', ' ')}
@@ -275,7 +275,7 @@ export function OrganizationDashboardPageView() {
           <p className="text-[11px] text-muted-foreground">Registered educational provider</p>
         </div>
 
-        <div className="bg-card p-4 rounded-xl border border-border shadow-xs flex flex-col gap-1">
+        <div className="bg-card p-4 rounded-xl border border-border flex flex-col gap-1">
           <div className="text-xs font-medium text-muted-foreground">Affiliated Roster</div>
           <div className="text-lg font-bold text-foreground">
             {currentOrg?.memberCount || 1} Member(s)
@@ -290,7 +290,7 @@ export function OrganizationDashboardPageView() {
       </div>
 
       {/* Profile & Metadata Settings Form */}
-      <div className="bg-card rounded-xl border border-border shadow-xs p-6 flex flex-col gap-4">
+      <div className="bg-card rounded-xl border border-border p-6 flex flex-col gap-4">
         <div>
           <h2 className="text-base font-bold text-foreground">Organization Profile & Contact</h2>
           <p className="text-xs text-muted-foreground">
@@ -377,7 +377,7 @@ export function OrganizationDashboardPageView() {
             <button
               type="submit"
               disabled={isUpdating}
-              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground shadow-xs hover:bg-primary/90 transition"
+              className="inline-flex items-center gap-1.5 px-4 py-2 text-xs font-semibold rounded-lg bg-primary text-primary-foreground hover:bg-primary/90 transition"
             >
               <Save className="w-3.5 h-3.5" />
               {isUpdating ? 'Saving...' : 'Save Profile Changes'}

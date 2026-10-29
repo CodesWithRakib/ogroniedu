@@ -251,7 +251,7 @@ export function StudentAcademicProfileCard({
 
       {/* Edit Profile Modal using shadcn Dialog */}
       <Dialog open={isModalOpen} onOpenChange={setIsModalOpen}>
-        <DialogContent className="max-w-lg rounded-2xl p-6 bg-card border-border">
+        <DialogContent className="max-w-lg rounded-xl p-6 bg-card border-border">
           <DialogHeader className="text-left pb-3 border-b border-border">
             <div className="flex items-center gap-3">
               <div className="h-10 w-10 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
@@ -417,7 +417,7 @@ export function StudentAcademicProfileCard({
                 type="submit"
                 size="sm"
                 disabled={isSaving}
-                className="rounded-xl shadow-xs font-semibold"
+                className="rounded-xl font-semibold"
               >
                 {isSaving
                   ? isBn

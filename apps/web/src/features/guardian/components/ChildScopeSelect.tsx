@@ -58,7 +58,7 @@ export function ChildScopeSelect({ locale, scope, className = '' }: ChildScopeSe
 
   return (
     <label
-      className={`inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-foreground shadow-xs ${className}`}
+      className={`inline-flex items-center gap-2 rounded-full border border-border bg-card px-3 py-1.5 text-[11px] font-semibold text-foreground ${className}`}
     >
       <UserRound className="w-3.5 h-3.5 text-primary" />
       <span className="text-muted-foreground">{isBn ? 'শিশু নির্বাচন:' : 'Viewing child:'}</span>

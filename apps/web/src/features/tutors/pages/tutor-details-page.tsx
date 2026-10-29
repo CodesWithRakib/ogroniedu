@@ -379,7 +379,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             disabled={isSaving || isUnsaving}
             data-testid="profile-save-toggle"
             aria-pressed={isSaved}
-            className={`inline-flex items-center gap-1.5 rounded-2xl border px-3.5 py-2 text-xs font-bold transition-all disabled:opacity-50 ${
+            className={`inline-flex items-center gap-1.5 rounded-xl border px-3.5 py-2 text-xs font-bold transition-all disabled:opacity-50 ${
               isSaved
                 ? 'border-blue-300 bg-blue-50 text-blue-800'
                 : 'border-slate-300 bg-white text-muted-foreground hover:border-blue-500 hover:text-foreground'
@@ -403,7 +403,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
       </div>
 
       {saveError && (
-        <Alert variant="destructive" className="max-w-7xl mx-auto rounded-2xl">
+        <Alert variant="destructive" className="max-w-7xl mx-auto rounded-xl">
           <AlertDescription role="alert">{saveError}</AlertDescription>
         </Alert>
       )}
@@ -419,7 +419,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 <img
                   src={profile.avatarUrl}
                   alt={displayName}
-                  className="h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 rounded-xl object-cover ring-1 ring-border shadow-2xs"
+                  className="h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 rounded-xl object-cover ring-1 ring-border"
                 />
               ) : (
                 <div className="flex h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold text-2xl sm:text-3xl lg:text-4xl">
@@ -427,7 +427,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 </div>
               )}
               <span
-                className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full border-2 border-white bg-emerald-600 shadow-xs ring-2 ring-emerald-500/30"
+                className="absolute -bottom-1 -right-1 h-5 w-5 rounded-full border-2 border-white bg-emerald-600 ring-2 ring-emerald-500/30"
                 title={isBn ? 'সক্রিয় ও যাচাইকৃত শিক্ষক' : 'Active Verified Tutor'}
               />
             </div>
@@ -449,7 +449,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 sm:gap-3 text-xs sm:text-sm">
                 {profile.totalReviews > 0 && profile.ratingAverage != null ? (
                   <span
-                    className="inline-flex items-center gap-1.5 font-bold text-amber-900 bg-amber-50 px-3 py-1 rounded-full border-2 border-amber-300 shadow-2xs"
+                    className="inline-flex items-center gap-1.5 font-bold text-amber-900 bg-amber-50 px-3 py-1 rounded-full border-2 border-amber-300"
                     data-testid="profile-rating"
                   >
                     <Star className="w-4 h-4 fill-amber-500 text-amber-600" aria-hidden="true" />
@@ -461,7 +461,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   </span>
                 ) : (
                   <span
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground bg-slate-100 px-3 py-1 rounded-full border border-slate-300 shadow-2xs"
+                    className="inline-flex items-center gap-1 text-xs font-semibold text-muted-foreground bg-slate-100 px-3 py-1 rounded-full border border-slate-300"
                     data-testid="profile-no-rating"
                   >
                     <Sparkles className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
@@ -470,7 +470,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 )}
 
                 {expYears && (
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground bg-slate-100 px-3 py-1 rounded-full border border-slate-300 shadow-2xs">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-foreground bg-slate-100 px-3 py-1 rounded-full border border-slate-300">
                     <Clock className="w-3.5 h-3.5 text-muted-foreground" aria-hidden="true" />
                     <span>
                       {expYears} {isBn ? 'বছরের অভিজ্ঞতা' : 'yrs experience'}
@@ -479,7 +479,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 )}
 
                 {profile.completedSessions > 0 && (
-                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-300 shadow-2xs">
+                  <span className="inline-flex items-center gap-1.5 text-xs font-bold text-emerald-800 bg-emerald-50 px-3 py-1 rounded-full border border-emerald-300">
                     <CheckCircle2 className="w-3.5 h-3.5 text-emerald-700" aria-hidden="true" />
                     <span>
                       {formatLocalizedNumber(profile.completedSessions, locale)}{' '}
@@ -491,27 +491,27 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
 
               {/* Trust & Verification Badges with Strong Contrast */}
               <div className="flex flex-wrap items-center justify-center sm:justify-start gap-2 pt-1">
-                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border-2 border-emerald-300 shadow-2xs">
+                <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-emerald-50 text-emerald-800 border-2 border-emerald-300">
                   <ShieldCheck className="w-4 h-4 text-emerald-700" aria-hidden="true" />
                   {isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor'}
                 </span>
 
                 {profile.badges.includes('verified_identity') && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border-2 border-blue-300 shadow-2xs">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-blue-50 text-blue-800 border-2 border-blue-300">
                     <UserCheck className="w-3.5 h-3.5 text-blue-700" aria-hidden="true" />
                     {isBn ? 'এনআইডি ভেরিফাইড' : 'NID Verified'}
                   </span>
                 )}
 
                 {profile.badges.includes('verified_academic') && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-800 border-2 border-indigo-300 shadow-2xs">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-indigo-50 text-indigo-800 border-2 border-indigo-300">
                     <GraduationCap className="w-3.5 h-3.5 text-indigo-700" aria-hidden="true" />
                     {isBn ? 'শিক্ষাগত সনদ অনুমোদিত' : 'Academic Verified'}
                   </span>
                 )}
 
                 {profile.badges.includes('verified_institutional') && (
-                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-900 border-2 border-purple-300 shadow-2xs">
+                  <span className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-bold bg-purple-50 text-purple-900 border-2 border-purple-300">
                     <Award className="w-3.5 h-3.5 text-purple-700" aria-hidden="true" />
                     {isBn ? 'প্রাতিষ্ঠানিক সনদ অনুমোদিত' : 'Institutional Verified'}
                   </span>
@@ -586,7 +586,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   return (
                     <div
                       key={q.id}
-                      className="flex items-start gap-3.5 sm:gap-4 rounded-2xl border border-border bg-card p-3.5 sm:p-5 hover:border-blue-500/40 transition-colors shadow-2xs"
+                      className="flex items-start gap-3.5 sm:gap-4 rounded-xl border border-border bg-card p-3.5 sm:p-5 hover:border-blue-500/40 transition-colors"
                     >
                       <div className="flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-50 text-emerald-700 border border-emerald-200 mt-0.5">
                         <CheckCircle2 className="w-5 h-5" aria-hidden="true" />
@@ -630,7 +630,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 {subjects.map((s) => (
                   <div
                     key={s.id}
-                    className="flex items-center justify-between gap-3 rounded-2xl border border-border bg-card p-4 hover:border-blue-500/40 transition-colors shadow-2xs"
+                    className="flex items-center justify-between gap-3 rounded-xl border border-border bg-card p-4 hover:border-blue-500/40 transition-colors"
                   >
                     <div className="min-w-0">
                       <p className="font-bold text-foreground text-sm sm:text-base truncate">
@@ -697,7 +697,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   return (
                     <div
                       key={review.id}
-                      className="rounded-2xl border border-border bg-card p-4 sm:p-5 flex flex-col gap-3.5 shadow-2xs"
+                      className="rounded-xl border border-border bg-card p-4 sm:p-5 flex flex-col gap-3.5"
                     >
                       <div className="flex items-center justify-between gap-3">
                         <div className="flex items-center gap-2.5">
@@ -727,19 +727,19 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                       {/* Multi-Criteria Breakdown Badges */}
                       <div className="flex flex-wrap gap-2 pt-0.5">
                         {review.punctualityRating != null && (
-                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-foreground border border-border">
                             ⏱ {isBn ? 'সময়নিষ্ঠতা' : 'Punctuality'}:{' '}
                             {formatLocalizedNumber(review.punctualityRating, locale)}/5
                           </span>
                         )}
                         {review.teachingClarityRating != null && (
-                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-foreground border border-border">
                             💡 {isBn ? 'পাঠদান স্পষ্টতা' : 'Clarity'}:{' '}
                             {formatLocalizedNumber(review.teachingClarityRating, locale)}/5
                           </span>
                         )}
                         {review.subjectMasteryRating != null && (
-                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-foreground border border-border shadow-2xs">
+                          <span className="inline-flex items-center gap-1 rounded-lg bg-slate-100 px-2 py-0.5 text-[11px] font-bold text-foreground border border-border">
                             📚 {isBn ? 'বিষয় দক্ষতা' : 'Mastery'}:{' '}
                             {formatLocalizedNumber(review.subjectMasteryRating, locale)}/5
                           </span>
@@ -751,7 +751,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                       </p>
 
                       {replyText && (
-                        <div className="rounded-2xl bg-blue-50/80 border border-blue-200 p-3.5 text-xs text-foreground flex flex-col gap-1.5">
+                        <div className="rounded-xl bg-blue-50/80 border border-blue-200 p-3.5 text-xs text-foreground flex flex-col gap-1.5">
                           <div className="flex items-center gap-1.5 font-bold text-blue-900">
                             <MessageSquare
                               className="w-3.5 h-3.5 text-blue-700"
@@ -796,7 +796,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                       return (
                         <span
                           key={area.id ?? `${area.districtCode}-${areaLocality}`}
-                          className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-foreground shadow-2xs"
+                          className="inline-flex items-center gap-1.5 rounded-xl border border-slate-300 bg-slate-50 px-3 py-1.5 text-xs font-semibold text-foreground"
                         >
                           <MapPin className="w-3.5 h-3.5 text-blue-700 shrink-0" />
                           <span>
@@ -821,7 +821,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                   {profile.teachingModes.map((mode) => (
                     <span
                       key={mode}
-                      className="rounded-xl border border-blue-300 bg-blue-50 text-blue-800 px-3 py-1 text-xs font-bold shadow-2xs"
+                      className="rounded-xl border border-blue-300 bg-blue-50 text-blue-800 px-3 py-1 text-xs font-bold"
                     >
                       {mode === 'online'
                         ? isBn
@@ -1047,7 +1047,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 </Button>
 
                 {/* Trust and Escrow Notice */}
-                <div className="rounded-2xl bg-muted/40 p-3.5 flex flex-col gap-1.5 text-[11px] text-muted-foreground border border-border">
+                <div className="rounded-xl bg-muted/40 p-3.5 flex flex-col gap-1.5 text-[11px] text-muted-foreground border border-border">
                   <div className="flex items-center gap-1.5 font-bold text-foreground">
                     <Lock className="w-3.5 h-3.5 text-blue-700" />
                     <span>

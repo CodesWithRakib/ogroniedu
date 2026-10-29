@@ -106,7 +106,7 @@ export function ScheduleSessionModal({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         data-testid="schedule-modal"
-        className="bg-card border border-border rounded-3xl max-w-md w-full p-6 shadow-2xl flex flex-col gap-4 text-left text-card-foreground"
+        className="bg-card border border-border rounded-xl max-w-md w-full p-6 flex flex-col gap-4 text-left text-card-foreground"
       >
         <DialogHeader className="border-b border-border pb-3 text-left">
           <DialogTitle className="font-black text-foreground text-lg">

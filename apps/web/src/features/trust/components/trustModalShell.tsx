@@ -37,7 +37,7 @@ export function TrustModalShell({
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
       <DialogContent
         style={{ maxWidth: `${maxWidth}px` }}
-        className="w-full p-6 rounded-3xl bg-card border border-border shadow-2xl flex flex-col gap-4 text-foreground max-h-[90vh] overflow-y-auto text-left"
+        className="w-full p-6 rounded-xl bg-card border border-border flex flex-col gap-4 text-foreground max-h-[90vh] overflow-y-auto text-left"
         aria-label={closeLabel}
       >
         <DialogHeader className="border-b border-border/40 pb-3 text-left flex flex-col gap-1">

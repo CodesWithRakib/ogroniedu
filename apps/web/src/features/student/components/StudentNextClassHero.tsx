@@ -37,7 +37,7 @@ export function StudentNextClassHero({
 
   if (isLoading) {
     return (
-      <div className="w-full h-44 rounded-3xl bg-muted/30 border border-border animate-pulse flex items-center justify-center">
+      <div className="w-full h-44 rounded-xl bg-muted/30 border border-border animate-pulse flex items-center justify-center">
         <div className="h-6 w-32 bg-muted rounded-full" />
       </div>
     );
@@ -45,7 +45,7 @@ export function StudentNextClassHero({
 
   if (!nextSession) {
     return (
-      <div className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white p-6 sm:p-8 shadow-md border border-indigo-900/40">
+      <div className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white p-6 sm:p-8 border border-indigo-900/40">
         {/* Subtle background glow */}
         <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 rounded-full bg-blue-500/10 blur-3xl pointer-events-none" />
         <div className="absolute bottom-0 left-1/3 -mb-16 w-48 h-48 rounded-full bg-indigo-500/10 blur-2xl pointer-events-none" />
@@ -97,7 +97,7 @@ export function StudentNextClassHero({
 
   return (
     <div
-      className="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white p-6 sm:p-7 shadow-lg border border-indigo-900/50"
+      className="relative overflow-hidden rounded-xl bg-gradient-to-br from-slate-900 via-indigo-950 to-blue-950 text-white p-6 sm:p-7 border border-indigo-900/50"
       data-testid="student-next-class-hero"
     >
       {/* Decorative ambient gradients */}

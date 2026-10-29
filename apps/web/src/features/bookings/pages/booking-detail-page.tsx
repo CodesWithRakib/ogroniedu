@@ -368,7 +368,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
         {actionMessage && (
           <div
             role="status"
-            className="rounded-2xl border border-emerald-300 bg-emerald-50 p-4 text-xs font-semibold text-emerald-950 flex items-center gap-2.5"
+            className="rounded-xl border border-emerald-300 bg-emerald-50 p-4 text-xs font-semibold text-emerald-950 flex items-center gap-2.5"
             data-testid="booking-success-banner"
           >
             <CheckCircle2 className="w-4 h-4 text-emerald-700 shrink-0" />
@@ -376,14 +376,14 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           </div>
         )}
         {errorMessage && (
-          <Alert variant="destructive" className="rounded-2xl" data-testid="booking-error-banner">
+          <Alert variant="destructive" className="rounded-xl" data-testid="booking-error-banner">
             <AlertTriangle className="w-4 h-4 shrink-0" />
             <AlertDescription role="alert">{errorMessage}</AlertDescription>
           </Alert>
         )}
 
         {/* Hero Card */}
-        <div className="relative overflow-hidden rounded-2xl border border-slate-200 bg-gradient-to-br from-card via-card/95 to-primary/5 p-6 sm:p-8 shadow-xs">
+        <div className="relative overflow-hidden rounded-xl border border-slate-200 bg-gradient-to-br from-card via-card/95 to-primary/5 p-6 sm:p-8">
           <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
             <div className="flex flex-col gap-3">
               <div className="flex flex-wrap items-center gap-2.5">
@@ -480,7 +480,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
               {(status === 'accepted' || status === 'awaiting_payment') && (
                 <Link
                   href={withLocale(`/dashboard/bookings/${bookingId}/pay`, locale)}
-                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-sm shadow-xs shadow-blue-500/25 transition-all hover:scale-102"
+                  className="inline-flex items-center gap-2 px-5 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm transition-all hover:scale-102"
                   data-testid="pay-escrow-cta-btn"
                 >
                   <CreditCard className="w-4 h-4" />
@@ -494,7 +494,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                     size="sm"
                     disabled={responding}
                     onClick={() => handleTutorResponse('accept')}
-                    className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-xs shadow-blue-500/25"
+                    className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-blue-500/25"
                     data-testid="tutor-accept-booking-btn"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
@@ -602,7 +602,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
         {/* Tutor Replacement Guarantee Dossier Card */}
         {(activeReplacementCase || status === 'replacement_requested') && (
           <div
-            className={`rounded-2xl border p-5 sm:p-6 shadow-xs transition-all ${
+            className={`rounded-xl border p-5 sm:p-6 transition-all ${
               activeReplacementCase?.status === 'accepted'
                 ? 'border-emerald-300 bg-gradient-to-br from-emerald-50/90 via-white to-emerald-50/30'
                 : activeReplacementCase?.status === 'offered'
@@ -712,7 +712,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
               {activeReplacementCase?.status === 'offered' &&
                 activeReplacementCase.replacementTutor && (
                   <div
-                    className="rounded-2xl border border-info/30 bg-info-soft/60 p-4 flex flex-col gap-3"
+                    className="rounded-xl border border-info/30 bg-info-soft/60 p-4 flex flex-col gap-3"
                     data-testid="booking-replacement-offer-card"
                   >
                     <div className="flex items-center justify-between">
@@ -753,7 +753,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                             );
                           }
                         }}
-                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs gap-1.5 shadow-xs"
+                        className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs gap-1.5"
                         data-testid="booking-accept-replacement-offer-btn"
                       >
                         <UserCheck className="w-4 h-4" />
@@ -809,7 +809,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
         {/* Dispute Investigation / Resolution Dossier Card */}
         {(dispute || status === 'disputed') && (
           <div
-            className={`rounded-2xl border p-5 sm:p-6 shadow-xs transition-all ${
+            className={`rounded-xl border p-5 sm:p-6 transition-all ${
               dispute?.status?.startsWith('resolved_')
                 ? 'border-emerald-300 bg-gradient-to-br from-emerald-50/90 via-card to-emerald-50/30'
                 : 'border-amber-300 bg-gradient-to-br from-amber-50/90 via-card to-amber-50/30'
@@ -982,7 +982,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
         {bookingReview && (
           <div
             data-testid="booking-review-dossier-card"
-            className="rounded-2xl border border-warning/30 bg-gradient-to-br from-warning-soft/50 via-card to-warning-soft/20 p-5 sm:p-6 shadow-xs flex flex-col gap-4"
+            className="rounded-xl border border-warning/30 bg-gradient-to-br from-warning-soft/50 via-card to-warning-soft/20 p-5 sm:p-6 flex flex-col gap-4"
           >
             <div className="flex items-center justify-between gap-3 border-b border-amber-200 pb-3">
               <div className="flex items-center gap-2.5">
@@ -1034,7 +1034,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
 
         {/* 4 KPI Metrics */}
         <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-          <div className="rounded-2xl border border-border bg-card p-4.5 flex flex-col gap-1 shadow-xs">
+          <div className="rounded-xl border border-border bg-card p-4.5 flex flex-col gap-1">
             <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">
               {isBn ? 'সেশন ফি (প্রতি ক্লাস)' : 'Fee Per Session'}
             </p>
@@ -1043,7 +1043,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4.5 flex flex-col gap-1 shadow-xs">
+          <div className="rounded-xl border border-border bg-card p-4.5 flex flex-col gap-1">
             <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">
               {isBn ? 'ক্লাসের মাধ্যম' : 'Tutoring Mode'}
             </p>
@@ -1058,7 +1058,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4.5 flex flex-col gap-1 shadow-xs">
+          <div className="rounded-xl border border-border bg-card p-4.5 flex flex-col gap-1">
             <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">
               {isBn ? 'সেশন ব্যাপ্তি' : 'Duration'}
             </p>
@@ -1068,7 +1068,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
             </p>
           </div>
 
-          <div className="rounded-2xl border border-border bg-card p-4.5 flex flex-col gap-1 shadow-xs">
+          <div className="rounded-xl border border-border bg-card p-4.5 flex flex-col gap-1">
             <p className="text-xs text-slate-600 font-bold uppercase tracking-wider">
               {isBn ? 'এসক্রো নিরাপত্তা' : 'Escrow Protection'}
             </p>
@@ -1084,7 +1084,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           {/* Left Column (2 Cols wide) */}
           <div className="lg:col-span-2 flex flex-col gap-6">
             {/* Preferred Weekly Routine & Schedule Slots */}
-            <div className="rounded-2xl border border-border bg-card p-6 flex flex-col gap-4 shadow-xs">
+            <div className="rounded-xl border border-border bg-card p-6 flex flex-col gap-4">
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4 text-blue-700" />
@@ -1126,7 +1126,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                 booking?.messageNotes ||
                 (booking?.serviceAgreementSnapshot as Record<string, unknown> | undefined)?.message,
               ) && (
-                <div className="rounded-2xl border border-border bg-surface-muted p-4 flex flex-col gap-1.5">
+                <div className="rounded-xl border border-border bg-surface-muted p-4 flex flex-col gap-1.5">
                   <p className="text-xs font-bold text-slate-700 uppercase tracking-wider">
                     {isBn ? 'শিক্ষার্থীর প্রয়োজন ও শিক্ষকের জন্য নোট:' : 'Learning Goals & Notes:'}
                   </p>
@@ -1145,7 +1145,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
             </div>
 
             {/* Scheduled Sessions Breakdown */}
-            <div className="rounded-2xl border border-border bg-card p-6 flex flex-col gap-4 shadow-xs">
+            <div className="rounded-xl border border-border bg-card p-6 flex flex-col gap-4">
               <div className="flex items-center justify-between pb-3 border-b border-border">
                 <div className="flex items-center gap-2">
                   <Clock className="w-4 h-4 text-blue-700" />
@@ -1178,7 +1178,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                   {sessions.map((session, idx) => (
                     <div
                       key={session.id}
-                      className="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors shadow-xs"
+                      className="p-4 rounded-xl border border-slate-200 bg-white hover:border-blue-300 flex flex-col sm:flex-row sm:items-center justify-between gap-4 transition-colors"
                       data-testid={`booking-session-item-${idx}`}
                     >
                       <div className="flex flex-col gap-1">
@@ -1222,7 +1222,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                             href={session.meetingUrl}
                             target="_blank"
                             rel="noreferrer"
-                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors shadow-xs"
+                            className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-xl bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs transition-colors"
                           >
                             <Video className="w-3.5 h-3.5" />
                             <span>{isBn ? 'ক্লাসে যোগ দিন' : 'Join Class'}</span>
@@ -1250,7 +1250,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
           {/* Right Column (1 Col wide) */}
           <div className="flex flex-col gap-6">
             {/* Calendar Synchronization Hub */}
-            <div className="rounded-2xl border border-border bg-card p-6 flex flex-col gap-4 shadow-xs">
+            <div className="rounded-xl border border-border bg-card p-6 flex flex-col gap-4">
               <div className="flex items-center gap-2 pb-3 border-b border-border">
                 <Calendar className="w-4 h-4 text-blue-700" />
                 <h3 className="font-extrabold text-base text-slate-900">
@@ -1270,7 +1270,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                     href={googleCalUrl}
                     target="_blank"
                     rel="noreferrer"
-                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-2xl bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-900 font-bold text-xs transition-all hover:border-blue-400"
+                    className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-slate-50 hover:bg-slate-100 border border-slate-300 text-slate-900 font-bold text-xs transition-all hover:border-blue-400"
                     data-testid="google-calendar-sync-btn"
                   >
                     <ExternalLink className="w-3.5 h-3.5 text-blue-700" />
@@ -1301,7 +1301,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
             </div>
 
             {/* Escrow Guarantee & Trust Seal */}
-            <div className="rounded-2xl border border-border bg-card p-6 flex flex-col gap-4 shadow-xs">
+            <div className="rounded-xl border border-border bg-card p-6 flex flex-col gap-4">
               <div className="flex items-center gap-2 pb-3 border-b border-border">
                 <ShieldCheck className="w-4 h-4 text-emerald-700" />
                 <h3 className="font-extrabold text-base text-slate-900">

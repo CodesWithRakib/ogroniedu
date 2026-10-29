@@ -907,7 +907,7 @@ export function TutorProfileSettingsPage({
                       {configuredQualifications.map((qual, idx) => (
                         <div
                           key={String(qual.id || idx)}
-                          className="rounded-xl border border-border bg-card p-4 flex flex-col justify-between gap-3 shadow-xs"
+                          className="rounded-xl border border-border bg-card p-4 flex flex-col justify-between gap-3"
                         >
                           <div className="flex flex-col gap-1">
                             <div className="flex items-center justify-between gap-2">
@@ -1015,7 +1015,7 @@ export function TutorProfileSettingsPage({
                         return (
                           <div
                             key={sub.id}
-                            className="rounded-xl border border-border bg-card p-3 flex items-center justify-between gap-2 shadow-xs"
+                            className="rounded-xl border border-border bg-card p-3 flex items-center justify-between gap-2"
                           >
                             <div className="flex flex-col gap-0.5 min-w-0">
                               <p className="text-xs font-bold text-foreground truncate">

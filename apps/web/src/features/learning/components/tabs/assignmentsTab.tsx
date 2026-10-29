@@ -140,7 +140,7 @@ export function AssignmentsTab({
                   <Button
                     size="sm"
                     onClick={() => onSubmit(asgn)}
-                    className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25"
+                    className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-blue-500/25"
                   >
                     <Send className="w-3.5 h-3.5 mr-1.5" />
                     {t.submitHomework}

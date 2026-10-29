@@ -237,7 +237,7 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
           <h1 className="text-lg sm:text-xl font-black tracking-tight text-foreground flex items-center gap-2">
             {locale === 'bn' ? 'বার্তালাপ' : 'Messages'}
             {totalUnread > 0 && (
-              <Badge className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold rounded-full px-2 py-0.5 text-[10px] shadow-xs">
+              <Badge className="bg-primary text-primary-foreground font-semibold rounded-full px-2 py-0.5 text-[10px]">
                 {totalUnread}
               </Badge>
             )}
@@ -310,9 +310,9 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
 
       {conversations.length === 0 ? (
         /* Empty Inbox State */
-        <Card className="flex-1 flex flex-col items-center justify-center p-8 text-center border-border bg-muted/10">
-          <div className="w-16 h-16 mx-auto rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 flex items-center justify-center mb-4">
-            <Inbox className="w-8 h-8 text-muted-foreground/40" />
+        <Card className="flex-1 flex flex-col items-center justify-center p-8 text-center border-border bg-card">
+          <div className="w-14 h-14 mx-auto rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+            <Inbox className="w-7 h-7 text-primary" />
           </div>
           <h3 className="text-lg font-bold text-foreground">
             {locale === 'bn' ? 'কোনো বার্তালাপ নেই' : 'No Conversations Yet'}
@@ -325,7 +325,7 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
         </Card>
       ) : (
         /* Full-Height Split Pane Container */
-        <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-12 gap-0 border border-border rounded-2xl overflow-hidden bg-card shadow-xs">
+        <div className="flex-1 min-h-0 grid grid-cols-1 md:grid-cols-12 gap-0 border border-border rounded-xl overflow-hidden bg-card">
           {/* ── Left Column: Conversation List ── */}
           <div
             className={`md:col-span-4 lg:col-span-4 border-r border-border h-full flex flex-col min-h-0 bg-card ${
@@ -384,9 +384,9 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                             />
                           )}
                           <AvatarFallback
-                            className={`font-bold text-xs ${
+                            className={`font-semibold text-xs ${
                               isSelected
-                                ? 'bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-sm shadow-blue-500/20'
+                                ? 'bg-primary text-primary-foreground'
                                 : 'bg-primary/10 text-primary'
                             }`}
                           >
@@ -402,20 +402,20 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                           <span
                             className={`text-xs truncate ${
                               hasUnread
-                                ? 'font-bold text-slate-900'
-                                : 'font-semibold text-slate-800'
+                                ? 'font-bold text-foreground'
+                                : 'font-medium text-foreground'
                             }`}
                           >
                             {c.partnerUser.displayName}
                           </span>
-                          <span className="text-[10px] text-slate-500 shrink-0">
+                          <span className="text-[10px] text-muted-foreground shrink-0">
                             {c.lastMessage?.createdAt
                               ? relativeTime(c.lastMessage.createdAt, locale)
                               : ''}
                           </span>
                         </div>
 
-                        <p className="text-[11px] font-medium text-blue-700 truncate mb-0.5">
+                        <p className="text-[11px] font-medium text-primary truncate mb-0.5">
                           {c.subjectName}
                           {c.educationLevelName && ` · ${c.educationLevelName}`}
                         </p>
@@ -424,8 +424,8 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                           <p
                             className={`text-[11px] truncate max-w-[190px] ${
                               hasUnread
-                                ? 'text-slate-950 font-semibold'
-                                : 'text-slate-600 font-normal'
+                                ? 'text-foreground font-semibold'
+                                : 'text-muted-foreground font-normal'
                             }`}
                           >
                             {c.lastMessage ? (
@@ -449,7 +449,7 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                           </p>
 
                           {hasUnread && (
-                            <span className="shrink-0 bg-gradient-to-r from-blue-600 to-indigo-600 text-white text-[10px] font-bold min-w-[18px] h-4 flex items-center justify-center rounded-full px-1 shadow-sm shadow-blue-500/20">
+                            <span className="shrink-0 bg-primary text-primary-foreground text-[10px] font-semibold min-w-[18px] h-4 flex items-center justify-center rounded-full px-1">
                               {c.unreadCount}
                             </span>
                           )}
@@ -489,7 +489,7 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                           alt={activeConversation.partnerUser.displayName}
                         />
                       )}
-                      <AvatarFallback className="bg-gradient-to-br from-blue-600 to-indigo-600 text-white font-bold text-xs shadow-sm shadow-blue-500/20">
+                      <AvatarFallback className="bg-primary text-primary-foreground font-semibold text-xs">
                         {activeConversation.partnerUser.displayName.charAt(0).toUpperCase()}
                       </AvatarFallback>
                     </Avatar>
@@ -497,12 +497,12 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                   </div>
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5">
-                      <p className="text-xs sm:text-sm font-bold text-slate-900 truncate">
+                      <p className="text-xs sm:text-sm font-bold text-foreground truncate">
                         {activeConversation.partnerUser.displayName}
                       </p>
                       <Badge
                         variant="outline"
-                        className="text-[10px] py-0 px-1.5 border-blue-300 text-blue-700 bg-blue-50/50 font-semibold shrink-0 hidden sm:inline-flex"
+                        className="text-[10px] py-0 px-1.5 border-primary/30 text-primary bg-primary/10 font-semibold shrink-0 hidden sm:inline-flex"
                       >
                         {activeConversation.partnerUser.role === 'tutor'
                           ? locale === 'bn'
@@ -517,11 +517,11 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
                               : 'Student'}
                       </Badge>
                     </div>
-                    <p className="text-[11px] text-slate-600 font-medium truncate">
+                    <p className="text-[11px] text-muted-foreground font-medium truncate">
                       {activeConversation.subjectName}
                       {activeConversation.educationLevelName &&
                         ` · ${activeConversation.educationLevelName}`}
-                      <span className="opacity-70 ml-1.5 text-slate-500">
+                      <span className="opacity-70 ml-1.5 text-muted-foreground">
                         • #{activeConversation.bookingId.slice(0, 8)}
                       </span>
                     </p>
@@ -597,9 +597,9 @@ export function ConversationsInboxView({ locale }: ConversationsInboxViewProps) 
               </div>
             ) : (
               /* No Conversation Selected Placeholder */
-              <div className="h-full flex flex-col items-center justify-center p-8 text-center bg-muted/5">
-                <div className="w-16 h-16 rounded-3xl bg-gradient-to-br from-blue-50 to-indigo-50 dark:from-blue-950/30 dark:to-indigo-950/30 flex items-center justify-center mb-4 ring-1 ring-border shadow-xs">
-                  <MessageSquare className="w-8 h-8 text-primary/40" />
+              <div className="h-full flex flex-col items-center justify-center p-8 text-center bg-card">
+                <div className="w-14 h-14 rounded-xl bg-primary/10 flex items-center justify-center mb-4">
+                  <MessageSquare className="w-7 h-7 text-primary" />
                 </div>
                 <h3 className="text-base font-bold text-foreground">
                   {locale === 'bn' ? 'একটি বার্তালাপ নির্বাচন করুন' : 'Select a Conversation'}

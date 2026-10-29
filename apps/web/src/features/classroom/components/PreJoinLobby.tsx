@@ -198,26 +198,26 @@ export function PreJoinLobby({
   };
 
   const cardBgClass =
-    'w-full max-w-5xl mx-auto p-4 sm:p-8 bg-card rounded-3xl border-2 border-border shadow-xl overflow-hidden text-card-foreground';
+    'w-full max-w-5xl mx-auto p-4 sm:p-8 bg-card rounded-xl border border-border overflow-hidden text-card-foreground';
 
-  const headingTextClass = 'text-xl sm:text-2xl font-black text-foreground tracking-tight';
+  const headingTextClass = 'text-xl sm:text-2xl font-bold text-foreground tracking-tight';
 
-  const subTextClass = 'text-xs sm:text-sm font-semibold text-muted-foreground mt-1';
+  const subTextClass = 'text-xs sm:text-sm font-medium text-muted-foreground mt-1';
 
   const readinessCardClass =
-    'p-4 bg-surface-muted rounded-2xl border-2 border-border flex flex-col gap-2.5';
+    'p-4 bg-muted/20 rounded-xl border border-border flex flex-col gap-2.5';
 
-  const readinessLabelClass = 'text-xs font-black text-slate-800 uppercase tracking-wider block';
+  const readinessLabelClass = 'text-xs font-semibold text-foreground uppercase tracking-wider block';
 
   const readinessRowClass =
-    'flex items-center justify-between text-xs sm:text-sm font-bold text-slate-800';
+    'flex items-center justify-between text-xs sm:text-sm font-medium text-foreground';
 
   const lowDataBoxClass =
-    'flex items-center justify-between p-3.5 bg-blue-50/80 hover:bg-blue-50 border-2 border-blue-200 rounded-2xl cursor-pointer transition-colors shadow-2xs';
+    'flex items-center justify-between p-3.5 bg-muted/20 hover:bg-muted/40 border border-border rounded-xl cursor-pointer transition-colors';
 
   const settingsBtnClass = showSettings
-    ? 'bg-blue-600 border-blue-600 text-white shadow-md'
-    : 'bg-slate-50 border-slate-300 text-slate-800 hover:bg-slate-100';
+    ? 'bg-primary border-primary text-primary-foreground'
+    : 'bg-card border-border text-foreground hover:bg-muted';
 
   return (
     <div className={cardBgClass} data-testid="prejoin-lobby">
@@ -431,7 +431,7 @@ export function PreJoinLobby({
             size="lg"
             onClick={handleJoinClick}
             isLoading={isLoading}
-            className="w-full min-h-[52px] bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-700 hover:from-blue-700 hover:to-indigo-800 text-white font-black text-sm sm:text-base py-4 rounded-2xl shadow-lg shadow-blue-500/30 transition-all flex items-center justify-center gap-2.5 active:scale-98"
+            className="w-full min-h-[48px] bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-sm sm:text-base py-3 rounded-xl transition-colors flex items-center justify-center gap-2.5 active:scale-98"
             data-testid="join-classroom-btn"
           >
             <Video className="w-5 h-5" />

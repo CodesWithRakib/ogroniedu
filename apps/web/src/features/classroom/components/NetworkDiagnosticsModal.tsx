@@ -47,7 +47,7 @@ export function NetworkDiagnosticsModal({
       className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/50 backdrop-blur-xs animate-in fade-in duration-150"
       data-testid="network-diagnostics-modal"
     >
-      <div className="w-full max-w-md bg-card border-2 border-border rounded-3xl shadow-2xl text-card-foreground overflow-hidden animate-in zoom-in-95 duration-150">
+      <div className="w-full max-w-md bg-card border border-border rounded-xl text-card-foreground overflow-hidden animate-in zoom-in-95 duration-150">
         {/* Header */}
         <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border bg-surface-muted">
           <div className="flex items-center gap-2.5">

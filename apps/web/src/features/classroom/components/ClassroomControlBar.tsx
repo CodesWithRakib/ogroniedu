@@ -196,7 +196,7 @@ export function ClassroomControlBar({
 
   return (
     <div
-      className="relative w-full flex items-center justify-between px-3 sm:px-6 py-3 bg-white/95 backdrop-blur-xl border-t border-slate-200 text-slate-800 shadow-xl z-30 select-none"
+      className="relative w-full flex items-center justify-between px-3 sm:px-6 py-3 bg-card/95 backdrop-blur-md border-t border-border text-foreground z-30 select-none"
       data-testid="classroom-control-bar"
     >
       {/* Floating Emoji Picker Popup */}

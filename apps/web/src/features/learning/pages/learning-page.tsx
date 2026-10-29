@@ -188,7 +188,7 @@ export function LearningPage({ locale }: { locale: Locale }) {
       {role === 'tutor' &&
         records.activeBookingId &&
         (showCreateForm || records.assignments.length === 0) && (
-          <Card className="mb-6 border-primary/30 shadow-xs">
+          <Card className="mb-6 border-primary/30">
             <CardContent className="py-4">
               <form
                 onSubmit={handleCreateAssignment}

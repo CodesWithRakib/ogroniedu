@@ -37,7 +37,7 @@ export function TutorStudioDeskHeader({
 
   return (
     <div
-      className="bg-card border border-border rounded-3xl p-6 sm:p-7 shadow-xs mb-6"
+      className="bg-card border border-border rounded-xl p-6 sm:p-7 mb-6"
       data-testid="tutor-studio-desk-header"
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
@@ -61,7 +61,7 @@ export function TutorStudioDeskHeader({
 
         {/* Quick KPI Strip & New Assignment CTA */}
         <div className="flex flex-wrap items-center gap-3 shrink-0">
-          <div className="px-3.5 py-2 rounded-2xl bg-surface border border-border/80 text-center">
+          <div className="px-3.5 py-2 rounded-xl bg-surface border border-border/80 text-center">
             <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
               {isBn ? 'মূল্যায়ন অপেক্ষমান' : 'To Grade'}
             </span>
@@ -70,7 +70,7 @@ export function TutorStudioDeskHeader({
             </span>
           </div>
 
-          <div className="px-3.5 py-2 rounded-2xl bg-surface border border-border/80 text-center">
+          <div className="px-3.5 py-2 rounded-xl bg-surface border border-border/80 text-center">
             <span className="text-[10px] font-bold uppercase tracking-wider text-muted-foreground block">
               {isBn ? 'উপস্থিতির হার' : 'Attendance'}
             </span>
@@ -83,7 +83,7 @@ export function TutorStudioDeskHeader({
             <Button
               onClick={onCreateAssignmentClick}
               size="sm"
-              className="rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-md shadow-blue-500/25 h-11 px-4 cursor-pointer"
+              className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs h-11 px-4 cursor-pointer"
             >
               <Plus className="w-4 h-4 mr-1.5" />
               <span>

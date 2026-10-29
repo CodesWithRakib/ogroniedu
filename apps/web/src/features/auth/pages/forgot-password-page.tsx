@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -51,7 +51,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
             ? 'পাসওয়ার্ড কমপক্ষে ৮ অক্ষরের হতে হবে।'
             : 'Password must be at least 8 characters.'
           : isBn
-            ? 'পাসওয়ার্ডে বড় হাতের, ছোট হাতের অক্ষর ও সংখ্যা থাকতে হবে।'
+            ? 'পাসওয়ার্ডে বড় অক্ষর, ছোট অক্ষর এবং সংখ্যা থাকতে হবে।'
             : 'Password needs uppercase, lowercase, and a number.',
       );
       return;
@@ -71,17 +71,17 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
   return (
     <div className="relative mx-auto w-full max-w-md px-4 py-8" data-testid="forgot-password-page">
       {/* Container Card */}
-      <div className="rounded-3xl border border-border/80 bg-card p-6 sm:p-8 shadow-card">
+      <div className="rounded-xl border border-border bg-card p-6 sm:p-8">
         <header className="mb-6 flex flex-col gap-1.5 text-center">
-          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/25">
+          <div className="mx-auto mb-3 flex h-12 w-12 items-center justify-center rounded-xl bg-primary/10 text-primary">
             <KeyRound className="h-6 w-6 stroke-[2.2]" />
           </div>
-          <h1 className="text-xl sm:text-2xl font-black text-foreground font-bengali">
-            {isBn ? 'পাসওয়ার্ড রিসেট করুন' : 'Reset your password'}
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground font-bengali">
+            {isBn ? 'পাসওয়ার্ড পুনরুদ্ধার' : 'Reset your password'}
           </h1>
           <p className="text-xs text-muted-foreground leading-relaxed">
             {isBn
-              ? 'নিবন্ধিত ইমেইল বা মোবাইল নম্বর দিয়ে রিকভারি কোড নিন।'
+              ? 'আপনার ইমেইল বা মোবাইল নম্বর দিয়ে রিকভারি কোড গ্রহণ করুন।'
               : 'Request a recovery code using your registered email or mobile number.'}
           </p>
         </header>
@@ -89,7 +89,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
         {error && (
           <Alert
             variant="destructive"
-            className="mb-4 rounded-2xl"
+            className="mb-4 rounded-xl"
             data-testid="forgot-password-error"
           >
             <AlertDescription>{error}</AlertDescription>
@@ -99,12 +99,12 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
         {notice && stage === 'reset' && (
           <div
             role="status"
-            className="mb-4 flex items-start gap-2.5 rounded-2xl border border-primary/25 bg-primary-soft/80 p-3.5 text-xs font-semibold text-primary"
+            className="mb-4 flex items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/10 p-3 text-xs font-medium text-primary"
           >
             <ShieldCheck className="h-4 w-4 shrink-0 text-primary mt-0.5" />
             <span>
               {isBn
-                ? 'কোড পাঠানো হয়েছে (যদি অ্যাকাউন্ট থাকে)। ইমেইল/এসএমএস দেখুন।'
+                ? 'কোড পাঠানো হয়েছে (যদি অ্যাকাউন্ট থাকে)। ইমেইল/মেসেজ দেখুন।'
                 : 'A code was sent if the account exists. Check your email/SMS.'}
             </span>
           </div>
@@ -113,7 +113,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
         {stage === 'request' && (
           <form onSubmit={handleRequest} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5 text-left">
-              <Label htmlFor="recovery-contact" className="text-xs font-bold text-foreground">
+              <Label htmlFor="recovery-contact" className="text-xs font-semibold text-foreground">
                 {isBn ? 'ইমেইল অথবা মোবাইল নম্বর' : 'Email or mobile number'}
               </Label>
               <Input
@@ -124,7 +124,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
                 required
                 autoComplete="username"
                 leadingIcon={<Mail className="h-4 w-4 text-muted-foreground" />}
-                className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold"
+                className="h-10 rounded-xl border-border bg-card text-xs font-medium"
                 data-testid="forgot-password-contact"
               />
             </div>
@@ -134,7 +134,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
                 disabled={contactError}
                 isLoading={isRequesting}
                 size="lg"
-                className="w-full h-12 rounded-2xl font-black text-xs sm:text-sm gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
+                className="w-full h-11 rounded-xl font-semibold text-xs sm:text-sm bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs shrink-0 cursor-pointer active:scale-98"
                 data-testid="forgot-password-request-btn"
               >
                 <span>{isBn ? 'রিকভারি কোড পাঠান' : 'Send recovery code'}</span>
@@ -146,8 +146,8 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
         {stage === 'reset' && (
           <form onSubmit={handleReset} className="flex flex-col gap-4">
             <div className="flex flex-col gap-1.5 text-left">
-              <Label htmlFor="recovery-code" className="text-xs font-bold text-foreground">
-                {isBn ? '৬-ডিজিট কোড' : '6-digit code'}
+              <Label htmlFor="recovery-code" className="text-xs font-semibold text-foreground">
+                {isBn ? '৬-সংখ্যার কোড' : '6-digit code'}
               </Label>
               <Input
                 id="recovery-code"
@@ -158,12 +158,12 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
                 value={code}
                 onChange={(e) => setCode(e.target.value)}
                 required
-                className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold tracking-[0.4em]"
+                className="h-10 rounded-xl border-border bg-card text-xs font-medium tracking-[0.4em]"
                 data-testid="forgot-password-code"
               />
             </div>
             <div className="flex flex-col gap-1.5 text-left">
-              <Label htmlFor="recovery-password" className="text-xs font-bold text-foreground">
+              <Label htmlFor="recovery-password" className="text-xs font-semibold text-foreground">
                 {isBn ? 'নতুন পাসওয়ার্ড' : 'New password'}
               </Label>
               <Input
@@ -173,7 +173,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
                 onChange={(e) => setNewPassword(e.target.value)}
                 required
                 autoComplete="new-password"
-                className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold"
+                className="h-10 rounded-xl border-border bg-card text-xs font-medium"
                 data-testid="forgot-password-new-password"
               />
             </div>
@@ -182,10 +182,10 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
                 type="submit"
                 isLoading={isResetting}
                 size="lg"
-                className="w-full h-12 rounded-2xl font-black text-xs sm:text-sm gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
+                className="w-full h-11 rounded-xl font-semibold text-xs sm:text-sm bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs shrink-0 cursor-pointer active:scale-98"
                 data-testid="forgot-password-reset-btn"
               >
-                <span>{isBn ? 'পাসওয়ার্ড রিসেট করুন' : 'Reset password'}</span>
+                <span>{isBn ? 'পাসওয়ার্ড সংরক্ষণ করুন' : 'Reset password'}</span>
               </Button>
             </div>
           </form>
@@ -193,13 +193,13 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
 
         {stage === 'done' && (
           <div
-            className="flex items-start gap-2.5 rounded-2xl border border-primary/25 bg-primary-soft/80 p-4 text-xs font-semibold text-primary"
+            className="flex items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/10 p-4 text-xs font-medium text-primary"
             data-testid="forgot-password-done"
           >
             <CheckCircle2 className="h-4 w-4 shrink-0 text-primary mt-0.5" />
             <span>
               {isBn
-                ? 'পাসওয়ার্ড পরিবর্তন হয়েছে। আপনার সব সেশন সাইন-আউট করা হয়েছে। এখন নতুন পাসওয়ার্ডে লগইন করুন।'
+                ? 'পাসওয়ার্ড সফলভাবে সংরক্ষিত হয়েছে। এবার নতুন পাসওয়ার্ড দিয়ে লগইন করুন।'
                 : 'Password updated. All your sessions were signed out. Please sign in with your new password.'}
             </span>
           </div>
@@ -208,7 +208,7 @@ export function ForgotPasswordPage({ locale }: { locale: Locale }) {
         <p className="mt-6 text-center text-xs text-muted-foreground font-medium">
           <Link
             href={withLocale('/login', locale)}
-            className="font-bold text-primary hover:underline hover:text-primary-hover"
+            className="font-semibold text-primary hover:underline"
           >
             {isBn ? 'লগইনে ফিরে যান' : 'Back to sign in'}
           </Link>

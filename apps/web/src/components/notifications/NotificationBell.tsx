@@ -58,8 +58,8 @@ export function NotificationBell({ className, locale = 'bn' }: NotificationBellP
           <span className="absolute inline-flex h-full w-full rounded-full bg-info opacity-75 animate-ping" />
           <span
             className={cn(
-              'relative inline-flex items-center justify-center min-w-5 h-5 px-1.5 text-[11px] font-black rounded-full',
-              'bg-gradient-to-r from-brand to-primary text-foreground',
+              'relative inline-flex items-center justify-center min-w-5 h-5 px-1.5 text-[11px] font-bold rounded-full',
+              'bg-primary text-primary-foreground',
             )}
           >
             {formatCount(unreadCount)}

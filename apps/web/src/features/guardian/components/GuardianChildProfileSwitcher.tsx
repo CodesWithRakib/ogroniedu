@@ -33,7 +33,7 @@ export function GuardianChildProfileSwitcher({
 
   if (childrenList.length === 0) {
     return (
-      <div className="p-4 sm:p-5 rounded-2xl bg-card border border-border shadow-xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+      <div className="p-4 sm:p-5 rounded-xl bg-card border border-border flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div className="flex items-center gap-3">
           <div className="h-10 w-10 rounded-xl bg-primary-soft text-primary flex items-center justify-center shrink-0">
             <Users className="w-5 h-5" />
@@ -90,7 +90,7 @@ export function GuardianChildProfileSwitcher({
               onClick={() => onSelectChild(child.studentId)}
               className={`flex items-center gap-2.5 px-3.5 py-2 rounded-xl text-left transition-all cursor-pointer ${
                 isSelected
-                  ? 'bg-primary-soft text-foreground border-2 border-primary shadow-xs'
+                  ? 'bg-primary-soft text-foreground border-2 border-primary'
                   : 'bg-surface hover:bg-muted/40 border border-border/80 text-muted-foreground'
               }`}
             >

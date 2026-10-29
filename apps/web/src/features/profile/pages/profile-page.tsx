@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -92,7 +92,7 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
   }
 
   return (
-    <Card className="rounded-2xl border-border bg-card shadow-xs">
+    <Card className="rounded-xl border-border bg-card">
       <CardHeader>
         <CardTitle className="text-base flex items-center gap-2">
           <KeyRound className="h-4 w-4 text-primary" />
@@ -105,7 +105,7 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
         </CardDescription>
       </CardHeader>
       <CardContent className="flex flex-col gap-4">
-        <div className="p-3.5 rounded-2xl bg-surface-muted border border-border text-xs text-muted-foreground flex items-start gap-2.5">
+        <div className="p-3.5 rounded-xl bg-surface-muted border border-border text-xs text-muted-foreground flex items-start gap-2.5">
           <ShieldCheck className="h-4 w-4 text-success-soft-foreground shrink-0 mt-0.5" />
           <span>
             {isBn
@@ -126,19 +126,19 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
             size="sm"
             onClick={() => setConfirming(true)}
             data-testid="revoke-all-btn"
-            className="rounded-full px-5 text-destructive border-destructive/30 hover:bg-destructive/10"
+            className="rounded-xl px-5 text-destructive border-destructive/30 hover:bg-destructive/10"
           >
             {isBn ? 'সব ডিভাইস থেকে সাইন-আউট' : 'Sign out all devices'}
           </Button>
         ) : (
-          <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-2xl bg-destructive-soft border border-destructive/30">
+          <div className="flex flex-wrap items-center gap-2.5 p-3 rounded-xl bg-destructive-soft border border-destructive/30">
             <Button
               variant="destructive"
               size="sm"
               isLoading={isLoading}
               onClick={handleRevokeAll}
               data-testid="revoke-all-confirm-btn"
-              className="rounded-full px-5 font-semibold"
+              className="rounded-xl px-5 font-semibold"
             >
               {isBn ? 'নিশ্চিত করুন — সব সেশন বাতিল' : 'Confirm — revoke all'}
             </Button>
@@ -146,7 +146,7 @@ function SessionSecurityCard({ locale }: { locale: Locale }) {
               variant="outline"
               size="sm"
               onClick={() => setConfirming(false)}
-              className="rounded-full px-4"
+              className="rounded-xl px-4"
             >
               {isBn ? 'বাতিল' : 'Cancel'}
             </Button>
@@ -182,10 +182,10 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
 
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
         {/* Card 1: Minor Child Learner */}
-        <Card className="rounded-2xl border-border bg-card p-5 flex flex-col gap-4 flex flex-col justify-between hover:border-primary/40 transition-all">
+        <Card className="rounded-xl border-border bg-card p-5 flex flex-col gap-4 flex flex-col justify-between hover:border-primary/40 transition-all">
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2.5 pb-2 border-b border-border">
-              <div className="h-9 w-9 rounded-2xl bg-warning-soft border border-warning/20 text-warning flex items-center justify-center shrink-0">
+              <div className="h-9 w-9 rounded-xl bg-warning-soft border border-warning/20 text-warning flex items-center justify-center shrink-0">
                 <ShieldAlert className="h-5 w-5" />
               </div>
               <div>
@@ -280,10 +280,10 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
         </Card>
 
         {/* Card 2: Standalone Student */}
-        <Card className="rounded-2xl border-border bg-card p-5 flex flex-col gap-4 flex flex-col justify-between hover:border-primary/40 transition-all">
+        <Card className="rounded-xl border-border bg-card p-5 flex flex-col gap-4 flex flex-col justify-between hover:border-primary/40 transition-all">
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2.5 pb-2 border-b border-border">
-              <div className="h-9 w-9 rounded-2xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
+              <div className="h-9 w-9 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
                 <GraduationCap className="h-5 w-5" />
               </div>
               <div>
@@ -370,10 +370,10 @@ function AutonomyMatrixCard({ locale }: { locale: Locale }) {
         </Card>
 
         {/* Card 3: Guardian */}
-        <Card className="rounded-2xl border-border bg-card p-5 flex flex-col gap-4 flex flex-col justify-between hover:border-primary/40 transition-all">
+        <Card className="rounded-xl border-border bg-card p-5 flex flex-col gap-4 flex flex-col justify-between hover:border-primary/40 transition-all">
           <div className="flex flex-col gap-3">
             <div className="flex items-center gap-2.5 pb-2 border-b border-border">
-              <div className="h-9 w-9 rounded-2xl bg-success-soft border border-success/20 text-success flex items-center justify-center shrink-0">
+              <div className="h-9 w-9 rounded-xl bg-success-soft border border-success/20 text-success flex items-center justify-center shrink-0">
                 <ShieldCheck className="h-5 w-5" />
               </div>
               <div>
@@ -501,7 +501,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
           </p>
         </div>
       ) : profile.queryError ? (
-        <Card className="rounded-2xl border-destructive/30 bg-destructive-soft">
+        <Card className="rounded-xl border-destructive/30 bg-destructive-soft">
           <CardContent className="py-8 text-center text-sm text-destructive font-medium">
             {profile.queryError}
           </CardContent>
@@ -509,10 +509,10 @@ export function ProfilePage({ locale }: { locale: Locale }) {
       ) : (
         <div className="flex flex-col gap-6">
           {/* Identity Hero Card */}
-          <Card className="rounded-2xl border-border bg-gradient-to-br from-card via-card to-surface-muted p-6 shadow-xs">
+          <Card className="rounded-xl border-border bg-gradient-to-br from-card via-card to-surface-muted p-6">
             <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-5">
               <div className="flex items-center gap-4">
-                <div className="h-16 w-16 rounded-2xl bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 border border-primary/30 text-primary font-black text-xl flex items-center justify-center shrink-0">
+                <div className="h-16 w-16 rounded-xl bg-gradient-to-br from-primary/20 via-primary/10 to-primary/5 border border-primary/30 text-primary font-black text-xl flex items-center justify-center shrink-0">
                   {initials}
                 </div>
                 <div className="flex flex-col gap-1.5">
@@ -565,7 +565,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
               <div className="shrink-0 w-full sm:w-auto">
                 {isStudent ? (
                   isMinor ? (
-                    <div className="p-3 rounded-2xl bg-warning-soft border border-warning/30 flex items-center gap-2.5">
+                    <div className="p-3 rounded-xl bg-warning-soft border border-warning/30 flex items-center gap-2.5">
                       <ShieldAlert className="h-5 w-5 text-warning shrink-0" />
                       <div>
                         <span className="text-xs font-bold text-warning-soft-foreground block">
@@ -581,7 +581,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       </div>
                     </div>
                   ) : (
-                    <div className="p-3 rounded-2xl bg-primary/10 border border-primary/30 flex items-center gap-2.5">
+                    <div className="p-3 rounded-xl bg-primary/10 border border-primary/30 flex items-center gap-2.5">
                       <GraduationCap className="h-5 w-5 text-primary shrink-0" />
                       <div>
                         <span className="text-xs font-bold text-primary block">
@@ -598,7 +598,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </div>
                   )
                 ) : isGuardian ? (
-                  <div className="p-3 rounded-2xl bg-success-soft border border-success/30 flex items-center gap-2.5">
+                  <div className="p-3 rounded-xl bg-success-soft border border-success/30 flex items-center gap-2.5">
                     <ShieldCheck className="h-5 w-5 text-success shrink-0" />
                     <div>
                       <span className="text-xs font-bold text-success-soft-foreground block">
@@ -612,7 +612,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </div>
                   </div>
                 ) : (
-                  <div className="p-3 rounded-2xl bg-primary/10 border border-primary/30 flex items-center gap-2.5">
+                  <div className="p-3 rounded-xl bg-primary/10 border border-primary/30 flex items-center gap-2.5">
                     <BookOpen className="h-5 w-5 text-primary shrink-0" />
                     <div>
                       <span className="text-xs font-bold text-primary block">
@@ -630,7 +630,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
 
           {/* Tutor Credentials Command Center Banner */}
           {isTutor && (
-            <div className="rounded-2xl border border-primary/30 bg-primary/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-xs">
+            <div className="rounded-xl border border-primary/30 bg-primary/5 p-4 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
               <div className="flex items-center gap-3">
                 <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary shrink-0">
                   <ShieldCheck className="w-5 h-5" />
@@ -658,13 +658,13 @@ export function ProfilePage({ locale }: { locale: Locale }) {
           )}
 
           {/* Tab Navigation Controls */}
-          <div className="flex flex-wrap p-1 bg-surface-muted rounded-2xl border border-border gap-1">
+          <div className="flex flex-wrap p-1 bg-surface-muted rounded-xl border border-border gap-1">
             <button
               type="button"
               onClick={() => setActiveTab('personal')}
               className={`flex-1 min-w-[140px] py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'personal'
-                  ? 'bg-card text-foreground shadow-xs border border-border'
+                  ? 'bg-card text-foreground border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -678,7 +678,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                 onClick={() => setActiveTab('academic')}
                 className={`flex-1 min-w-[140px] py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
                   activeTab === 'academic'
-                    ? 'bg-card text-foreground shadow-xs border border-border'
+                    ? 'bg-card text-foreground border border-border'
                     : 'text-muted-foreground hover:text-foreground'
                 }`}
               >
@@ -692,7 +692,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
               onClick={() => setActiveTab('matrix')}
               className={`flex-1 min-w-[140px] py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'matrix'
-                  ? 'bg-card text-foreground shadow-xs border border-border'
+                  ? 'bg-card text-foreground border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -705,7 +705,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
               onClick={() => setActiveTab('security')}
               className={`flex-1 min-w-[140px] py-2.5 text-xs font-semibold rounded-xl transition-all flex items-center justify-center gap-2 ${
                 activeTab === 'security'
-                  ? 'bg-card text-foreground shadow-xs border border-border'
+                  ? 'bg-card text-foreground border border-border'
                   : 'text-muted-foreground hover:text-foreground'
               }`}
             >
@@ -716,7 +716,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
 
           {/* TAB 1: Personal Details */}
           {activeTab === 'personal' && (
-            <Card className="rounded-2xl border-border bg-card shadow-xs">
+            <Card className="rounded-xl border-border bg-card">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <User className="h-4 w-4 text-primary" />
@@ -740,7 +740,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </Alert>
                   )}
                   {profile.saved && (
-                    <div className="p-3 rounded-2xl bg-success-soft border border-success/30 flex items-center gap-2 text-xs text-success-soft-foreground font-medium">
+                    <div className="p-3 rounded-xl bg-success-soft border border-success/30 flex items-center gap-2 text-xs text-success-soft-foreground font-medium">
                       <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
                       <span>{profile.saved}</span>
                     </div>
@@ -815,7 +815,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       >
                         <SelectTrigger
                           id="profile-locale"
-                          className="rounded-2xl bg-card border-border text-sm"
+                          className="rounded-xl bg-card border-border text-sm"
                         >
                           <SelectValue placeholder="Language" />
                         </SelectTrigger>
@@ -830,7 +830,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       <Label className="text-xs font-semibold text-foreground">
                         {isBn ? 'নিবন্ধনের তারিখ' : 'Member Since'}
                       </Label>
-                      <div className="h-10 px-3 rounded-2xl bg-surface-muted border border-border flex items-center text-xs font-mono text-muted-foreground">
+                      <div className="h-10 px-3 rounded-xl bg-surface-muted border border-border flex items-center text-xs font-mono text-muted-foreground">
                         {user?.createdAt
                           ? new Date(user.createdAt).toLocaleDateString()
                           : 'Active Member'}
@@ -843,7 +843,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       type="submit"
                       isLoading={profile.saving}
                       data-testid="profile-save-btn"
-                      className="rounded-full px-6 shadow-xs font-semibold"
+                      className="rounded-xl px-6 font-semibold"
                     >
                       {isBn ? 'ব্যক্তিগত তথ্য সংরক্ষণ করুন' : 'Save Personal Details'}
                     </Button>
@@ -855,7 +855,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
 
           {/* TAB 2: Academic Profile (For Students) */}
           {activeTab === 'academic' && isStudent && (
-            <Card className="rounded-2xl border-border bg-card shadow-xs">
+            <Card className="rounded-xl border-border bg-card">
               <CardHeader>
                 <CardTitle className="text-base flex items-center gap-2">
                   <School className="h-4 w-4 text-primary" />
@@ -877,7 +877,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     </Alert>
                   )}
                   {profile.academicSaved && (
-                    <div className="p-3 rounded-2xl bg-success-soft border border-success/30 flex items-center gap-2 text-xs text-success-soft-foreground font-medium">
+                    <div className="p-3 rounded-xl bg-success-soft border border-success/30 flex items-center gap-2 text-xs text-success-soft-foreground font-medium">
                       <CheckCircle2 className="h-4 w-4 text-success shrink-0" />
                       <span>{profile.academicSaved}</span>
                     </div>
@@ -934,7 +934,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       >
                         <SelectTrigger
                           id="academic-level"
-                          className="rounded-2xl bg-card border-border text-sm"
+                          className="rounded-xl bg-card border-border text-sm"
                         >
                           <SelectValue
                             placeholder={isBn ? 'শ্রেণি নির্বাচন করুন' : 'Select Grade'}
@@ -963,7 +963,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       >
                         <SelectTrigger
                           id="academic-curriculum"
-                          className="rounded-2xl bg-card border-border text-sm"
+                          className="rounded-xl bg-card border-border text-sm"
                         >
                           <SelectValue
                             placeholder={isBn ? 'কারিকুলাম নির্বাচন করুন' : 'Select Curriculum'}
@@ -1012,7 +1012,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                         value={profile.learningGoals}
                         onChange={(e) => profile.setLearningGoals(e.target.value)}
                         rows={3}
-                        className="w-full rounded-2xl border border-input bg-background p-3 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
+                        className="w-full rounded-xl border border-input bg-background p-3 text-sm text-foreground ring-offset-background placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
                         placeholder={
                           isBn
                             ? 'যেমন: পদার্থবিজ্ঞান ও উচ্চতর গণিতে দুর্বলতা কাটিয়ে এ+ নিশ্চিত করা এবং নিয়মিত প্র্যাকটিস করা...'
@@ -1036,7 +1036,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                       >
                         <SelectTrigger
                           id="academic-visibility"
-                          className="rounded-2xl bg-card border-border text-sm"
+                          className="rounded-xl bg-card border-border text-sm"
                         >
                           <SelectValue placeholder="Visibility" />
                         </SelectTrigger>
@@ -1058,7 +1058,7 @@ export function ProfilePage({ locale }: { locale: Locale }) {
                     <Button
                       type="submit"
                       isLoading={profile.academicSaving}
-                      className="rounded-full px-6 shadow-xs font-semibold"
+                      className="rounded-xl px-6 font-semibold"
                     >
                       {isBn ? 'একাডেমিক তথ্য সংরক্ষণ করুন' : 'Save Academic Profile'}
                     </Button>

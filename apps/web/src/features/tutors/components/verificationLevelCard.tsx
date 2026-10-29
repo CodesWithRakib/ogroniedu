@@ -210,7 +210,7 @@ export function VerificationLevelCard({
           </CardTitle>
           <Badge
             variant={levelStatusTone(record.status)}
-            className="font-bold border shadow-2xs"
+            className="font-bold border"
             data-testid={`level-status-${record.level}`}
           >
             {levelStatusLabel(record.status, locale)}
@@ -247,7 +247,7 @@ export function VerificationLevelCard({
         )}
 
         {record.applicantFeedback && (
-          <div className="rounded-xl border border-amber-300 bg-amber-50/90 p-3.5 text-xs text-amber-950 flex flex-col gap-1.5 shadow-2xs">
+          <div className="rounded-xl border border-amber-300 bg-amber-50/90 p-3.5 text-xs text-amber-950 flex flex-col gap-1.5">
             <span className="font-bold flex items-center gap-1.5 text-amber-900">
               <Info className="w-4 h-4 text-amber-700" />
               {isBn ? 'পর্যালোচকের মন্তব্য' : 'Reviewer feedback'}
@@ -305,7 +305,7 @@ export function VerificationLevelCard({
                 return (
                   <li
                     key={document.id}
-                    className="flex items-center justify-between gap-2 rounded-xl border border-border bg-muted/40/80 px-3.5 py-2.5 text-xs shadow-2xs"
+                    className="flex items-center justify-between gap-2 rounded-xl border border-border bg-muted/40/80 px-3.5 py-2.5 text-xs"
                     data-testid={`document-${document.id}`}
                   >
                     <div className="min-w-0">
@@ -446,7 +446,7 @@ export function VerificationLevelCard({
                 size="sm"
                 disabled={busy || !record.requirements.submitReady}
                 onClick={handleSubmit}
-                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold shadow-xs disabled:opacity-50"
+                className="bg-emerald-600 hover:bg-emerald-700 text-white font-bold disabled:opacity-50"
                 data-testid={`submit-level-${record.level}`}
               >
                 <Send className="w-3.5 h-3.5 mr-1" />

@@ -479,7 +479,7 @@ export function InteractiveWhiteboard({
   return (
     <div
       ref={containerRef}
-      className={`relative flex flex-col bg-background border border-info/40 rounded-2xl overflow-hidden shadow-xs transition-all ${
+      className={`relative flex flex-col bg-background border border-border rounded-xl overflow-hidden transition-all ${
         isFullscreen ? 'p-4 h-screen w-screen rounded-none' : 'h-[680px]'
       }`}
       data-testid="interactive-whiteboard"
@@ -487,7 +487,7 @@ export function InteractiveWhiteboard({
       {/* Top Toolbar */}
       <div className="flex flex-wrap items-center justify-between gap-3 px-4 py-2.5 bg-card border-b border-border text-foreground z-10 backdrop-blur-md">
         {/* Drawing Tools */}
-        <div className="flex items-center gap-1 bg-surface-muted p-1 rounded-2xl border border-border">
+        <div className="flex items-center gap-1 bg-muted/40 p-1 rounded-xl border border-border">
           <button
             type="button"
             onClick={() => setActiveTool('pen')}

@@ -60,7 +60,7 @@ export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDet
   if (error || !report) {
     return (
       <div className="max-w-4xl mx-auto py-12 px-4">
-        <div className="rounded-2xl border border-destructive/40 bg-destructive/10 p-6 text-center text-destructive-soft-foreground">
+        <div className="rounded-xl border border-destructive/40 bg-destructive/10 p-6 text-center text-destructive-soft-foreground">
           <AlertCircle className="w-10 h-10 mx-auto mb-2 text-destructive-soft-foreground" />
           <h2 className="text-lg font-bold mb-1">
             {locale === 'bn' ? 'অগ্রগতি রিপোর্ট পাওয়া যায়নি' : 'Progress Report Not Found'}
@@ -99,7 +99,7 @@ export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDet
       </div>
 
       {/* Banner */}
-      <div className="rounded-2xl bg-card border border-interactive/25 p-8 text-foreground flex flex-col gap-3">
+      <div className="rounded-xl bg-card border border-interactive/25 p-8 text-foreground flex flex-col gap-3">
         <div className="flex items-center gap-2">
           <span className="inline-flex items-center gap-1.5 px-3 py-1 bg-interactive/20 border border-interactive/40 rounded-full text-xs font-medium text-interactive-soft-foreground">
             <TrendingUp className="w-3.5 h-3.5" />
@@ -132,7 +132,7 @@ export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDet
 
       {/* Metric Cards */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <Card className="bg-card border border-border p-5 rounded-2xl">
+        <Card className="bg-card border border-border p-5 rounded-xl">
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>{locale === 'bn' ? 'উপস্থিতির হার' : 'Attendance Rate'}</span>
             <Percent className="w-4 h-4 text-success-soft-foreground" />
@@ -142,7 +142,7 @@ export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDet
           </div>
         </Card>
 
-        <Card className="bg-card border border-border p-5 rounded-2xl">
+        <Card className="bg-card border border-border p-5 rounded-xl">
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>{locale === 'bn' ? 'সম্পন্ন বাড়ির কাজ' : 'Assignments Done'}</span>
             <FileCheck2 className="w-4 h-4 text-info-soft-foreground" />
@@ -152,7 +152,7 @@ export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDet
           </div>
         </Card>
 
-        <Card className="bg-card border border-border p-5 rounded-2xl">
+        <Card className="bg-card border border-border p-5 rounded-xl">
           <div className="flex items-center justify-between text-xs text-muted-foreground mb-2">
             <span>{locale === 'bn' ? 'গড় স্কোর' : 'Average Score'}</span>
             <Award className="w-4 h-4 text-warning-soft-foreground" />
@@ -168,7 +168,7 @@ export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDet
       {/* Report Body Details */}
       <div className="flex flex-col gap-4">
         {/* Observable Progress */}
-        <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col gap-2">
+        <Card className="bg-card border border-border text-foreground rounded-xl p-6 flex flex-col gap-2">
           <div className="flex items-center gap-2 text-success-soft-foreground text-sm font-bold">
             <CheckCircle2 className="w-4 h-4" />
             <span>
@@ -182,7 +182,7 @@ export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDet
 
         {/* Areas for Growth */}
         {report.areasForGrowth && (
-          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col gap-2">
+          <Card className="bg-card border border-border text-foreground rounded-xl p-6 flex flex-col gap-2">
             <div className="flex items-center gap-2 text-info-soft-foreground text-sm font-bold">
               <TrendingUp className="w-4 h-4" />
               <span>
@@ -199,7 +199,7 @@ export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDet
 
         {/* Tutor Remarks */}
         {report.tutorRemarks && (
-          <Card className="bg-card border border-border text-foreground rounded-2xl p-6 flex flex-col gap-2">
+          <Card className="bg-card border border-border text-foreground rounded-xl p-6 flex flex-col gap-2">
             <div className="flex items-center gap-2 text-warning-soft-foreground text-sm font-bold">
               <Award className="w-4 h-4" />
               <span>

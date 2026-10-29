@@ -24,7 +24,7 @@ import { cn } from '@/lib/utils';
 import { useRegisterForm } from './use-register-form';
 
 function calculatePasswordStrength(pass: string) {
-  if (!pass) return { score: 0, labelBn: '', labelEn: '', colorClass: 'bg-slate-200' };
+  if (!pass) return { score: 0, labelBn: '', labelEn: '', colorClass: 'bg-muted' };
   let score = 0;
   if (pass.length >= 8) score += 1;
   if (/[A-Z]/.test(pass) && /[a-z]/.test(pass)) score += 1;
@@ -42,8 +42,8 @@ function calculatePasswordStrength(pass: string) {
   }
   return {
     score: 4,
-    labelBn: 'চমৎকার ও সুরক্ষিত',
-    labelEn: 'Strong & Secure',
+    labelBn: 'শক্তিশালী',
+    labelEn: 'Strong',
     colorClass: 'bg-emerald-500',
   };
 }
@@ -81,7 +81,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
       value: 'student',
       labelBn: 'শিক্ষার্থী',
       labelEn: 'Student',
-      subBn: '১:১ ক্লাস ও মেন্টরিং',
+      subBn: '১:১ শিখন ও প্রস্তুতি',
       subEn: '1:1 Mentoring',
       icon: GraduationCap,
     },
@@ -89,7 +89,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
       value: 'guardian',
       labelBn: 'অভিভাবক',
       labelEn: 'Guardian',
-      subBn: 'সন্তানের সেরা শিক্ষক',
+      subBn: 'সন্তানের জন্য সেরা শিক্ষক',
       subEn: 'Hire Top Tutors',
       icon: ShieldCheck,
     },
@@ -97,7 +97,7 @@ export function RegisterForm({ locale }: { locale: Locale }) {
       value: 'tutor',
       labelBn: 'শিক্ষক',
       labelEn: 'Tutor',
-      subBn: 'পাঠদান ও উপার্জন',
+      subBn: 'পাঠদান ও আয় করুন',
       subEn: 'Teach & Earn',
       icon: BookOpen,
     },
@@ -112,24 +112,24 @@ export function RegisterForm({ locale }: { locale: Locale }) {
       title={isBn ? 'নতুন অ্যাকাউন্ট খুলুন' : 'Create an Account'}
       subtitle={
         isBn
-          ? 'সহজেই নিবন্ধন করে আপনার পড়াশোনা বা শিক্ষকতা শুরু করুন।'
+          ? 'অগ্রণীএডু-তে যোগ দিয়ে সেরা শিক্ষক বা শিক্ষার্থীদের সাথে যুক্ত হোন।'
           : 'Join OgroniEdu to connect with verified mentors or find students.'
       }
     >
       <form onSubmit={handleSubmit} className="flex flex-col gap-4" data-testid="register-form">
         {/* Error Alert */}
         {formError && (
-          <Alert variant="destructive" className="rounded-2xl" data-testid="register-error">
+          <Alert variant="destructive" className="rounded-xl" data-testid="register-error">
             <AlertDescription>{formError}</AlertDescription>
           </Alert>
         )}
 
-        {/* Role Picker: Modern High-Impact Segmented Cards */}
+        {/* Role Picker: Clean Segmented Cards */}
         <div className="flex flex-col gap-2 text-left">
-          <Label htmlFor="register-role" className="text-xs font-bold text-foreground">
+          <Label htmlFor="register-role" className="text-xs font-semibold text-foreground">
             {isBn ? 'আপনার ভূমিকা নির্বাচন করুন' : 'Select Account Type'}
           </Label>
-          <div className="grid grid-cols-3 gap-2.5">
+          <div className="grid grid-cols-3 gap-2">
             {roleOptions.map((opt) => {
               const Icon = opt.icon;
               const active = role === opt.value;
@@ -139,75 +139,51 @@ export function RegisterForm({ locale }: { locale: Locale }) {
                   type="button"
                   onClick={() => setRole(opt.value)}
                   className={cn(
-                    'relative flex flex-col items-center justify-center gap-1 py-3 px-2 rounded-2xl border text-xs font-bold transition-all duration-200 cursor-pointer focus-visible:ring-2 focus-visible:ring-primary/20 active:scale-95',
+                    'relative flex flex-col items-center justify-center gap-1 py-2.5 px-2 rounded-xl border text-xs font-medium transition-all cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring active:scale-98',
                     active
-                      ? 'border-primary bg-gradient-to-b from-blue-50/90 to-indigo-50/40 text-primary shadow-xs ring-1 ring-primary/20'
-                      : 'border-border/80 bg-surface/50 hover:bg-surface text-muted-foreground hover:text-foreground hover:border-border',
+                      ? 'border-primary bg-primary/10 text-primary font-semibold'
+                      : 'border-border bg-card hover:bg-muted text-muted-foreground hover:text-foreground',
                   )}
                 >
                   {active && (
-                    <div className="absolute top-1.5 right-1.5 h-3.5 w-3.5 rounded-full bg-primary text-white flex items-center justify-center">
+                    <div className="absolute top-1.5 right-1.5 h-3.5 w-3.5 rounded-full bg-primary text-primary-foreground flex items-center justify-center">
                       <Check className="h-2.5 w-2.5 stroke-[3]" />
                     </div>
                   )}
-                  <div
-                    className={cn(
-                      'h-8 w-8 rounded-xl flex items-center justify-center transition-colors',
-                      active
-                        ? 'bg-primary text-white shadow-2xs'
-                        : 'bg-surface text-muted-foreground',
-                    )}
-                  >
-                    <Icon className="h-4 w-4 stroke-[2.2]" aria-hidden="true" />
-                  </div>
-                  <span className="font-extrabold text-foreground text-xs mt-0.5">
-                    {isBn ? opt.labelBn : opt.labelEn}
-                  </span>
-                  <span className="text-[10px] text-muted-foreground font-semibold line-clamp-1">
+                  <Icon className={cn('h-4 w-4', active ? 'text-primary' : 'text-muted-foreground')} />
+                  <span className="font-semibold text-xs leading-none">{isBn ? opt.labelBn : opt.labelEn}</span>
+                  <span className="text-[10px] text-muted-foreground hidden sm:inline leading-none">
                     {isBn ? opt.subBn : opt.subEn}
                   </span>
                 </button>
               );
             })}
           </div>
-
-          {/* Hidden select strictly preserved for automated test ID compatibility */}
-          <select
-            id="register-role"
-            value={role}
-            onChange={(e) => setRole(e.target.value as RegisterRole)}
-            className="sr-only"
-            data-testid="register-role-select"
-          >
-            <option value="student">{isBn ? 'শিক্ষার্থী' : 'Student'}</option>
-            <option value="guardian">{isBn ? 'অভিভাবক' : 'Guardian'}</option>
-            <option value="tutor">{isBn ? 'শিক্ষক' : 'Tutor'}</option>
-          </select>
         </div>
 
         {/* Full Name Input */}
         <div className="flex flex-col gap-1.5 text-left">
-          <Label htmlFor="register-name" className="text-xs font-bold text-foreground">
-            {isBn ? 'পুরো নাম' : 'Full Name'}
+          <Label htmlFor="register-name" className="text-xs font-semibold text-foreground">
+            {isBn ? 'আপনার পূর্ণ নাম' : 'Full Name'}
           </Label>
           <Input
             id="register-name"
             type="text"
             value={displayName}
             onChange={(e) => setDisplayName(e.target.value)}
-            placeholder={isBn ? 'উদা: আবরার আহমেদ' : 'e.g. Abrar Ahmed'}
+            placeholder={isBn ? 'যেমন: তানভীর আহমেদ' : 'e.g. Tanvir Ahmed'}
             autoComplete="name"
             leadingIcon={<User className="h-4 w-4 text-muted-foreground" />}
-            className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold"
+            className="h-10 rounded-xl border-border bg-card text-xs"
             data-testid="register-name-input"
           />
         </div>
 
-        {/* Email & Phone Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-          <div className="flex flex-col gap-1.5 text-left">
-            <Label htmlFor="register-email" className="text-xs font-bold text-foreground">
-              {isBn ? 'ইমেইল (ঐচ্ছিক)' : 'Email (optional)'}
+        {/* Email & Phone Dual Inputs */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-left">
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="register-email" className="text-xs font-semibold text-foreground">
+              {isBn ? 'ইমেইল ঠিকানা' : 'Email Address'}
             </Label>
             <Input
               id="register-email"
@@ -217,14 +193,14 @@ export function RegisterForm({ locale }: { locale: Locale }) {
               placeholder="you@mail.com"
               autoComplete="email"
               leadingIcon={<Mail className="h-4 w-4 text-muted-foreground" />}
-              className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold"
+              className="h-10 rounded-xl border-border bg-card text-xs"
               data-testid="register-email-input"
             />
           </div>
 
-          <div className="flex flex-col gap-1.5 text-left">
-            <Label htmlFor="register-phone" className="text-xs font-bold text-foreground">
-              {isBn ? 'মোবাইল (ঐচ্ছিক)' : 'Mobile (optional)'}
+          <div className="flex flex-col gap-1.5">
+            <Label htmlFor="register-phone" className="text-xs font-semibold text-foreground">
+              {dict.auth.phoneLabel}
             </Label>
             <Input
               id="register-phone"
@@ -234,15 +210,15 @@ export function RegisterForm({ locale }: { locale: Locale }) {
               placeholder="+8801XXXXXXXXX"
               autoComplete="tel"
               leadingIcon={<Phone className="h-4 w-4 text-muted-foreground" />}
-              className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold"
+              className="h-10 rounded-xl border-border bg-card text-xs"
               data-testid="register-phone-input"
             />
           </div>
         </div>
 
-        {/* Password Input + Live Strength Bar */}
+        {/* Password Input + Strength Bar */}
         <div className="flex flex-col gap-1.5 text-left">
-          <Label htmlFor="register-password" className="text-xs font-bold text-foreground">
+          <Label htmlFor="register-password" className="text-xs font-semibold text-foreground">
             {dict.auth.passwordLabel}
           </Label>
           <div className="relative">
@@ -254,47 +230,47 @@ export function RegisterForm({ locale }: { locale: Locale }) {
               placeholder="••••••••"
               autoComplete="new-password"
               leadingIcon={<Lock className="h-4 w-4 text-muted-foreground" />}
-              className="h-11 rounded-2xl border-border/90 bg-surface/40 hover:bg-surface focus:bg-card transition-colors text-xs font-semibold pr-11"
+              className="h-10 rounded-xl border-border bg-card text-xs pr-10"
               data-testid="register-password-input"
             />
             <button
               type="button"
               onClick={() => setShowPassword(!showPassword)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-xl transition-colors cursor-pointer z-10 active:scale-90"
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground p-1 rounded-lg transition-colors cursor-pointer z-10"
               aria-label={showPassword ? 'Hide password' : 'Show password'}
             >
               {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
             </button>
           </div>
 
-          {/* Interactive Multi-Segment Password Strength Indicator */}
+          {/* Interactive Strength Indicator */}
           {password.length > 0 && (
-            <div className="flex flex-col gap-1 pt-1 animate-in fade-in duration-200">
+            <div className="flex flex-col gap-1 pt-1">
               <div className="grid grid-cols-4 gap-1.5 h-1.5 w-full">
                 {[1, 2, 3, 4].map((seg) => (
                   <div
                     key={seg}
                     className={cn(
                       'rounded-full transition-all duration-300',
-                      seg <= strength.score ? strength.colorClass : 'bg-slate-200',
+                      seg <= strength.score ? strength.colorClass : 'bg-muted',
                     )}
                   />
                 ))}
               </div>
-              <div className="flex items-center justify-between text-[11px] font-semibold text-muted-foreground">
+              <div className="flex items-center justify-between text-[11px] font-medium text-muted-foreground">
                 <span>
-                  {isBn ? 'নিরাপত্তা স্তর: ' : 'Strength: '}
-                  <span className="font-bold text-foreground">
+                  {isBn ? 'পাসওয়ার্ড শক্তি: ' : 'Strength: '}
+                  <span className="font-semibold text-foreground">
                     {isBn ? strength.labelBn : strength.labelEn}
                   </span>
                 </span>
                 <span className="text-[10px]">
                   {strength.score >= 3
                     ? isBn
-                      ? '✓ আদর্শ পাসওয়ার্ড'
+                      ? '✓ যথেষ্ট নিরাপদ'
                       : '✓ Strong password'
                     : isBn
-                      ? '৮+ অক্ষর, বড়/ছোট হাত ও সংখ্যা'
+                      ? '৮+ অক্ষর, বড়/ছোট বর্ণ ও সংখ্যা'
                       : '8+ chars, mix case & number'}
                 </span>
               </div>
@@ -302,34 +278,34 @@ export function RegisterForm({ locale }: { locale: Locale }) {
           )}
 
           {password.length === 0 && (
-            <p className="text-[11px] text-muted-foreground font-medium">
+            <p className="text-[11px] text-muted-foreground font-normal">
               {isBn
-                ? 'কমপক্ষে ৮ অক্ষর (বড় হাতের, ছোট হাতের অক্ষর ও সংখ্যা)'
+                ? 'কমপক্ষে ৮ অক্ষর (বড় অক্ষর, ছোট অক্ষর এবং সংখ্যাসহ)'
                 : 'At least 8 characters with upper, lowercase and number'}
             </p>
           )}
         </div>
 
-        {/* Primary Action Button with Hero Gradient */}
+        {/* Primary Action Button */}
         <div className="pt-2">
           <Button
             type="submit"
             size="lg"
             isLoading={isLoading}
-            className="w-full h-12 rounded-2xl font-black text-xs sm:text-sm gap-2 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 shrink-0 transition-all duration-200 cursor-pointer active:scale-95 group"
+            className="w-full h-11 rounded-xl font-semibold text-xs sm:text-sm gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs shrink-0 cursor-pointer active:scale-98 group"
             data-testid="register-submit-btn"
           >
             <span>{dict.nav.register}</span>
-            <ArrowRight className="h-4 w-4 stroke-[2.5] transition-transform group-hover:translate-x-1" />
+            <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
           </Button>
         </div>
 
         {/* Switch to Login */}
-        <p className="text-center text-xs text-muted-foreground pt-3 font-medium">
+        <p className="text-center text-xs text-muted-foreground pt-2 font-medium">
           <span>{isBn ? 'ইতিমধ্যে অ্যাকাউন্ট আছে? ' : 'Already have an account? '}</span>
           <Link
             href={withLocale('/login', locale)}
-            className="font-bold text-primary hover:underline hover:text-primary-hover ml-1"
+            className="font-semibold text-primary hover:underline ml-1"
           >
             {dict.nav.login}
           </Link>
