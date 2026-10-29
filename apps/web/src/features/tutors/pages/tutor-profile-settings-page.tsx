@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -475,10 +475,10 @@ export function TutorProfileSettingsPage({
         {/* ============================================================ */}
         {/* HERO COMMAND CENTER BANNER                                   */}
         {/* ============================================================ */}
-        <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs flex flex-col gap-4">
+        <div className="rounded-xl border border-border bg-card p-5 sm:p-6 flex flex-col gap-4">
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
             <div className="flex items-center gap-4">
-              <div className="w-14 h-14 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl uppercase">
+              <div className="w-14 h-14 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-xl uppercase">
                 {profile?.headlineEn?.slice(0, 2) || 'TU'}
               </div>
               <div className="flex flex-col gap-1">
@@ -587,7 +587,7 @@ export function TutorProfileSettingsPage({
           onValueChange={setActiveTab}
           className="w-full flex flex-col gap-4"
         >
-          <TabList className="w-full flex flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-2xl border border-border">
+          <TabList className="w-full flex flex-wrap justify-start gap-1 p-1.5 bg-muted/40 rounded-xl border border-border">
             <TabTrigger value="bio" className="flex items-center gap-1.5 text-xs">
               <User className="h-3.5 w-3.5" />
               <span>{isBn ? 'পরিচিতি ও মূল তথ্য' : 'Bio & Overview'}</span>
@@ -637,7 +637,7 @@ export function TutorProfileSettingsPage({
           {/* TAB 1: BIO & PROFILE INFO                                    */}
           {/* ============================================================ */}
           <TabContent value="bio">
-            <Card className="rounded-2xl border border-border shadow-xs">
+            <Card className="rounded-xl border border-border">
               <CardHeader className="border-b border-border/80 pb-4">
                 <CardTitle className="text-base flex items-center gap-2">
                   <User className="h-4 w-4 text-primary" />
@@ -814,7 +814,7 @@ export function TutorProfileSettingsPage({
           {/* TAB 2: QUALIFICATIONS & DEGREES                              */}
           {/* ============================================================ */}
           <TabContent value="qualifications">
-            <Card className="rounded-2xl border border-border shadow-xs">
+            <Card className="rounded-xl border border-border">
               <CardHeader className="border-b border-border/80 pb-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
@@ -862,7 +862,7 @@ export function TutorProfileSettingsPage({
 
                 {/* Upload Degree Card Accordion */}
                 {showAddQual && (
-                  <div className="rounded-2xl border border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
+                  <div className="rounded-xl border border-primary/20 bg-primary/5 p-4 flex flex-col gap-3">
                     <h4 className="text-xs font-bold text-foreground flex items-center gap-1.5">
                       <Sparkles className="h-3.5 w-3.5 text-primary" />
                       <span>
@@ -889,7 +889,7 @@ export function TutorProfileSettingsPage({
                 {/* Existing Qualifications List */}
                 <div className="flex flex-col gap-3">
                   {configuredQualifications.length === 0 ? (
-                    <div className="rounded-2xl border border-dashed border-border p-8 text-center flex flex-col gap-2">
+                    <div className="rounded-xl border border-dashed border-border p-8 text-center flex flex-col gap-2">
                       <GraduationCap className="h-8 w-8 text-muted-foreground/60 mx-auto" />
                       <p className="text-xs font-semibold text-foreground">
                         {isBn
@@ -957,7 +957,7 @@ export function TutorProfileSettingsPage({
           {/* TAB 3: SUBJECTS & RATES                                      */}
           {/* ============================================================ */}
           <TabContent value="subjects">
-            <Card className="rounded-2xl border border-border shadow-xs">
+            <Card className="rounded-xl border border-border">
               <CardHeader className="border-b border-border/80 pb-4">
                 <CardTitle className="text-base flex items-center gap-2">
                   <BookOpen className="h-4 w-4 text-primary" />
@@ -1140,7 +1140,7 @@ export function TutorProfileSettingsPage({
           {/* TAB 4: SCHEDULE & AVAILABILITY                               */}
           {/* ============================================================ */}
           <TabContent value="schedule">
-            <Card className="rounded-2xl border border-border shadow-xs">
+            <Card className="rounded-xl border border-border">
               <CardHeader className="border-b border-border/80 pb-4">
                 <CardTitle className="text-base flex items-center gap-2">
                   <Calendar className="h-4 w-4 text-primary" />
@@ -1325,7 +1325,7 @@ export function TutorProfileSettingsPage({
           <TabContent value="verification">
             <div className="flex flex-col gap-6">
               {/* Dossier status hero */}
-              <div className="rounded-2xl border border-border bg-card p-5 sm:p-6 shadow-xs flex flex-col gap-3">
+              <div className="rounded-xl border border-border bg-card p-5 sm:p-6 flex flex-col gap-3">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div className="flex items-center gap-3">
                     <div className="w-10 h-10 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary">
@@ -1376,7 +1376,7 @@ export function TutorProfileSettingsPage({
           {/* TAB 6: LIVE MARKETPLACE PREVIEW                              */}
           {/* ============================================================ */}
           <TabContent value="preview">
-            <Card className="rounded-2xl border border-border shadow-xs">
+            <Card className="rounded-xl border border-border">
               <CardHeader className="border-b border-border/80 pb-4">
                 <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
                   <div>
@@ -1397,7 +1397,7 @@ export function TutorProfileSettingsPage({
                     <Link
                       href={withLocale(`/tutors/${tutorId}`, locale)}
                       target="_blank"
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground font-semibold text-xs shadow-xs hover:bg-primary/90 transition-colors"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground font-semibold text-xs hover:bg-primary/90 transition-colors"
                     >
                       <span>{isBn ? 'সরাসরি পাবলিক পেজ খুলুন' : 'Open Public Page'}</span>
                       <ExternalLink className="w-3.5 h-3.5" />
@@ -1408,10 +1408,10 @@ export function TutorProfileSettingsPage({
 
               <CardContent className="p-5 sm:p-6 flex flex-col gap-6">
                 {/* Simulated Tutor Card */}
-                <div className="rounded-2xl border border-border bg-card p-6 shadow-sm max-w-2xl mx-auto flex flex-col gap-6">
+                <div className="rounded-xl border border-border bg-card p-6 max-w-2xl mx-auto flex flex-col gap-6">
                   {/* Tutor header */}
                   <div className="flex items-start gap-4">
-                    <div className="w-16 h-16 rounded-2xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-2xl uppercase">
+                    <div className="w-16 h-16 rounded-xl bg-primary/10 border border-primary/20 flex items-center justify-center text-primary font-bold text-2xl uppercase">
                       {form.headlineEn?.slice(0, 2) || 'TU'}
                     </div>
                     <div className="flex flex-col gap-1 flex-1">

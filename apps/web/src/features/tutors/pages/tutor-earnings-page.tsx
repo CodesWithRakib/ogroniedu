@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useMemo, useState } from 'react';
 import {
@@ -225,7 +225,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
           size="sm"
           onClick={openWithdrawModal}
           disabled={!hasAvailable}
-          className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs gap-1.5 shadow-xs shadow-blue-500/25"
+          className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs gap-1.5 rounded-xl"
           data-testid="open-withdraw-modal-btn"
         >
           <ArrowUpRight className="w-3.5 h-3.5" />
@@ -294,7 +294,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
         />
       </div>
 
-      <div className="rounded-2xl p-6 bg-card border border-brand/25 text-foreground flex flex-col md:flex-row md:items-center justify-between gap-6">
+      <div className="rounded-xl p-5 sm:p-6 bg-card border border-border text-foreground flex flex-col md:flex-row md:items-center justify-between gap-6">
         <div className="flex flex-col gap-2 max-w-2xl">
           <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-primary-soft text-primary-soft-foreground text-xs font-semibold">
             <ShieldCheck className="w-3.5 h-3.5" />
@@ -318,7 +318,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
             size="sm"
             onClick={openWithdrawModal}
             disabled={!hasAvailable}
-            className="bg-brand text-brand-foreground hover:bg-brand-accent font-bold text-xs"
+            className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs rounded-xl"
           >
             <ArrowUpRight className="w-3.5 h-3.5 mr-1" />
             {isBn ? 'পে-আউট অনুরোধ' : 'Request Payout'}
@@ -328,7 +328,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
 
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         <div className="lg:col-span-1 flex flex-col gap-4">
-          <Card className="rounded-2xl border-border shadow-xs">
+          <Card className="rounded-xl border-border">
             <CardHeader className="pb-3 border-b border-border">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <Receipt className="w-4 h-4 text-primary" />
@@ -344,7 +344,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
                 payouts.map((rec) => (
                   <div
                     key={rec.id}
-                    className="p-3 rounded-2xl bg-card/80 border border-border flex items-center justify-between gap-3 text-xs"
+                    className="p-3 rounded-xl bg-card border border-border flex items-center justify-between gap-3 text-xs"
                     data-testid={`payout-record-${rec.id}`}
                   >
                     <div className="flex flex-col gap-1">
@@ -373,7 +373,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
             </CardContent>
           </Card>
 
-          <Card className="rounded-2xl border-border shadow-xs">
+          <Card className="rounded-xl border-border">
             <CardHeader className="pb-3 border-b border-border">
               <CardTitle className="text-sm font-bold flex items-center gap-2">
                 <Smartphone className="w-4 h-4 text-muted-foreground" />
@@ -397,7 +397,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
         </div>
 
         <div className="lg:col-span-2 flex flex-col gap-4">
-          <Card className="rounded-2xl border-border shadow-xs">
+          <Card className="rounded-xl border-border">
             <CardHeader className="pb-3 border-b border-border">
               <CardTitle className="text-base font-bold flex items-center gap-2">
                 <FileText className="w-4 h-4 text-primary" />
@@ -575,7 +575,7 @@ export function TutorEarningsPage({ locale }: { locale: Locale }) {
               <Button
                 type="submit"
                 disabled={requestState.isLoading}
-                className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-xs shadow-blue-500/25"
+                className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs rounded-xl"
                 data-testid="confirm-withdraw-btn"
               >
                 {requestState.isLoading ? (

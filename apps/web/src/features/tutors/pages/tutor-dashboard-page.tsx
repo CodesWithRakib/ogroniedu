@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -21,9 +21,7 @@ import {
 import { TutorLayout } from '@/layouts/tutor/TutorLayout';
 import { HeroKpiCard } from '@/components/dashboard/HeroKpiCard';
 import { WeeklyActivityChart } from '@/components/dashboard/WeeklyActivityChart';
-import { SessionReminderCard } from '@/components/dashboard/SessionReminderCard';
 import { ProgressGaugeCard } from '@/components/dashboard/ProgressGaugeCard';
-import { StudyTimeTrackerCard } from '@/components/dashboard/StudyTimeTrackerCard';
 import { LoadingSpinner, Alert, AlertDescription, Badge } from '@/components/ui';
 import { Button } from '@/components/ui/Button';
 import { TutorVerificationStatusCard } from '@/components/tutor/TutorVerificationStatusCard';
@@ -198,15 +196,13 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
   const fData = finance.data?.data;
   const availableBdt = fData?.availableMinor
     ? Math.round(Number(fData.availableMinor) / 100)
-    : earningsVal > 0
-      ? earningsVal
-      : 14250;
+    : earningsVal;
   const escrowPendingBdt = fData?.escrowPendingMinor
     ? Math.round(Number(fData.escrowPendingMinor) / 100)
-    : 8500;
+    : 0;
   const lifetimeNetBdt = fData?.lifetimeNetMinor
     ? Math.round(Number(fData.lifetimeNetMinor) / 100)
-    : 65000;
+    : earningsVal;
   const minPayoutBdt = fData?.minimumPayoutMinor
     ? Math.round(Number(fData.minimumPayoutMinor) / 100)
     : 500;
@@ -222,7 +218,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       }
       actions={
         <div className="flex items-center gap-2">
-          <Button asChild size="sm" className="rounded-full shadow-xs">
+          <Button asChild size="sm" className="rounded-xl">
             <Link
               href={withLocale('/dashboard/tutor/sessions', locale)}
               className="flex items-center gap-1.5"
@@ -231,7 +227,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
               <span>{isBn ? 'নতুন ক্লাস' : 'Schedule Class'}</span>
             </Link>
           </Button>
-          <Button asChild variant="outline" size="sm" className="rounded-full">
+          <Button asChild variant="outline" size="sm" className="rounded-xl">
             <Link
               href={withLocale('/dashboard/tutor/payments', locale)}
               className="flex items-center gap-1.5"
@@ -251,7 +247,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {verificationStatus === 'under_review' || verificationStatus === 'submitted' ? (
         <div
-          className="rounded-2xl border border-primary/30 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
+          className="rounded-xl border border-primary/30 bg-primary/5 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           data-testid="tutor-verification-banner-under-review"
         >
           <div className="flex items-start gap-3.5">
@@ -282,7 +278,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
         </div>
       ) : verificationStatus === 'needs_information' ? (
         <div
-          className="rounded-2xl border border-warning/40 bg-warning/10 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
+          className="rounded-xl border border-warning/40 bg-warning/10 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           data-testid="tutor-verification-banner-needs-info"
         >
           <div className="flex items-start gap-3.5">
@@ -312,7 +308,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
           <Button
             asChild
             size="sm"
-            className="shrink-0 rounded-xl text-xs bg-warning hover:bg-warning/90 text-warning-foreground font-bold shadow-xs"
+            className="shrink-0 rounded-xl text-xs bg-warning hover:bg-warning/90 text-warning-foreground font-bold"
           >
             <Link href={withLocale('/dashboard/tutor/verification', locale)}>
               {isBn ? 'নথি সংশোধন ও আপলোড' : 'Fix & Re-upload'}
@@ -321,7 +317,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
         </div>
       ) : verificationStatus === 'rejected' ? (
         <div
-          className="rounded-2xl border border-destructive/40 bg-destructive/10 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
+          className="rounded-xl border border-destructive/40 bg-destructive/10 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           data-testid="tutor-verification-banner-rejected"
         >
           <div className="flex items-start gap-3.5">
@@ -354,7 +350,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
         </div>
       ) : verificationStatus === 'approved' && publicationStatus !== 'published' ? (
         <div
-          className="rounded-2xl border border-primary/30 bg-primary/10 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 shadow-xs"
+          className="rounded-xl border border-primary/30 bg-primary/10 p-4 sm:p-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4"
           data-testid="tutor-verification-banner-publish-cta"
         >
           <div className="flex items-start gap-3.5">
@@ -384,14 +380,14 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
             size="sm"
             disabled={isPublishing}
             isLoading={isPublishing}
-            className="shrink-0 rounded-xl text-xs font-bold shadow-xs"
+            className="shrink-0 rounded-xl text-xs font-bold"
           >
             <Sparkles className="w-3.5 h-3.5 mr-1" />
             {isBn ? 'মার্কেটপ্লেসে প্রোফাইল প্রকাশ করুন' : 'Publish Profile Now'}
           </Button>
         </div>
       ) : verificationStatus === 'approved' && publicationStatus === 'published' ? (
-        <div className="rounded-2xl border border-primary/20 bg-primary/5 px-4 py-3 flex items-center justify-between text-xs">
+        <div className="rounded-xl border border-primary/20 bg-primary/5 px-4 py-3 flex items-center justify-between text-xs">
           <div className="flex items-center gap-2 text-primary font-medium">
             <CheckCircle2 className="h-4 w-4" />
             <span>
@@ -489,8 +485,20 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
           variant="secondary"
           icon={Sparkles}
           title={isBn ? 'টিচিং রেটিং' : 'Teaching Rating'}
-          value={isBn ? '৫.০ ★' : '5.0 ★'}
-          changeText={isBn ? '১০০% বিশ্বস্ততা স্কোর' : '100% Trust score'}
+          value={
+            typeof aData?.rating?.averageRating === 'number' && aData.rating.averageRating > 0
+              ? `${formatLocalizedNumber(aData.rating.averageRating, locale)} ★`
+              : '—'
+          }
+          changeText={
+            (aData?.rating?.reviewsCount ?? 0) > 0
+              ? isBn
+                ? `${formatLocalizedNumber(aData?.rating?.reviewsCount ?? 0, locale)}টি রিভিউ`
+                : `${aData?.rating?.reviewsCount ?? 0} reviews`
+              : isBn
+                ? 'নতুন শিক্ষক'
+                : 'New tutor'
+          }
           href={withLocale('/dashboard/tutor/learning', locale)}
         />
       </div>
@@ -498,42 +506,42 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
       {/* ======================================================== */}
       {/* 2. QUICK ACTIONS BAR                                     */}
       {/* ======================================================== */}
-      <div className="flex flex-wrap items-center gap-2 p-3 sm:p-3.5 rounded-2xl bg-card border border-border/80 shadow-xs">
+      <div className="flex flex-wrap items-center gap-2 p-3 sm:p-3.5 rounded-xl bg-card border border-border">
         <span className="text-xs font-bold text-muted-foreground mr-1.5 flex items-center gap-1.5 px-1">
           <Sparkles className="w-3.5 h-3.5 text-primary" />
           {isBn ? 'দ্রুত সেবা:' : 'Quick Actions:'}
         </span>
         <Link
           href={withLocale('/dashboard/tutor/requests', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/40 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
         >
           <Inbox className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'টিউশন অনুরোধসমূহ' : 'Requests'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/sessions', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/40 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
         >
           <Calendar className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'ক্লাস শিডিউল' : 'Class Schedule'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/learning', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/40 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
         >
           <BookOpen className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'স্টাডি রুম ও টিচিং' : 'Teaching Hub'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/verification', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/40 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors"
         >
           <ShieldCheck className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'সনদ ও ভেরিফিকেশন' : 'Verification'}</span>
         </Link>
         <Link
           href={withLocale('/dashboard/tutor/payments', locale)}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-surface hover:bg-primary-soft hover:border-primary/30 border border-border/70 text-foreground text-xs font-semibold transition-all duration-150 sm:ml-auto"
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-muted/40 hover:bg-muted border border-border text-foreground text-xs font-semibold transition-colors sm:ml-auto"
         >
           <CreditCard className="w-3.5 h-3.5 text-primary" />
           <span>{isBn ? 'আয় ও উত্তোলন' : 'Earnings'}</span>
@@ -607,30 +615,33 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
         <div className="lg:col-span-2 flex flex-col gap-5">
           <TutorPerformanceRadar
             locale={locale}
-            rating={4.9}
-            reviewCount={18}
-            responseRate={98}
-            completionRate={100}
-            profileStrength={95}
+            rating={typeof aData?.rating?.averageRating === 'number' ? aData.rating.averageRating : 0}
+            reviewCount={aData?.rating?.reviewsCount ?? 0}
+            responseRate={aData?.inquiries?.acceptanceRate ?? 100}
+            completionRate={aData?.sessions?.completionRate ?? 100}
+            profileStrength={
+              publicationStatus === 'published' ? 100 : verificationStatus === 'approved' ? 80 : 50
+            }
           />
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <ProgressGaugeCard
               locale={locale}
-              percentage={92}
-              title={isBn ? 'ক্লাস উপস্থিতি হার' : 'Attendance Rate'}
-              subtitle={isBn ? 'শিক্ষার্থীদের নিয়মিত উপস্থিতি' : 'On-time student attendance'}
+              percentage={aData?.sessions?.completionRate ?? 100}
+              title={isBn ? 'ক্লাস সমাপ্তি হার' : 'Completion Rate'}
+              subtitle={isBn ? 'সফলভাবে সম্পন্ন ক্লাসের অনুপাত' : 'Successfully completed sessions'}
             />
 
-            <StudyTimeTrackerCard
+            <ProgressGaugeCard
               locale={locale}
-              title={isBn ? 'টিচিং সেশন টাইমার' : 'Teaching Session Timer'}
-              subtitle={isBn ? 'সরাসরি ক্লাসের সময় নির্ধারণ' : 'Real-time live class duration'}
+              percentage={aData?.inquiries?.acceptanceRate ?? 100}
+              title={isBn ? 'অনুরোধ গ্রহণযোগ্যতা' : 'Inquiry Acceptance'}
+              subtitle={isBn ? 'টিউশন অনুরোধ গ্রহণের হার' : 'Tuition inquiry acceptance rate'}
             />
           </div>
 
           {/* Performance & Analytics Details Card */}
-          <div className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs">
+          <div className="bg-card border border-border rounded-xl p-5 sm:p-6">
             <div className="flex items-center justify-between pb-3 border-b border-border">
               <div className="flex items-center gap-2">
                 <TrendingUp className="w-4 h-4 text-primary" />
@@ -653,7 +664,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                   className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4"
                   data-testid="tutor-analytics-data"
                 >
-                  <div className="p-4 rounded-2xl bg-surface/70 border border-border/80 hover:border-primary/30 transition-colors">
+                  <div className="p-4 rounded-xl bg-muted/30 border border-border hover:border-primary/40 transition-colors">
                     <span className="text-[11px] text-muted-foreground font-semibold block">
                       {isBn ? 'মোট আয়' : 'Total Earnings'}
                     </span>
@@ -661,7 +672,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                       ৳{formatLocalizedNumber(earningsVal, locale)}
                     </span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-surface/70 border border-border/80 hover:border-primary/30 transition-colors">
+                  <div className="p-4 rounded-xl bg-muted/30 border border-border hover:border-primary/40 transition-colors">
                     <span className="text-[11px] text-muted-foreground font-semibold block">
                       {isBn ? 'অনুরোধ গ্রহণ হার' : 'Acceptance'}
                     </span>
@@ -669,7 +680,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                       {formatLocalizedNumber(aData?.inquiries?.acceptanceRate ?? 100, locale)}%
                     </span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-surface/70 border border-border/80 hover:border-primary/30 transition-colors">
+                  <div className="p-4 rounded-xl bg-muted/30 border border-border hover:border-primary/40 transition-colors">
                     <span className="text-[11px] text-muted-foreground font-semibold block">
                       {isBn ? 'ক্লাস সমাপ্তি হার' : 'Completion'}
                     </span>
@@ -677,12 +688,14 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
                       {formatLocalizedNumber(aData?.sessions?.completionRate ?? 100, locale)}%
                     </span>
                   </div>
-                  <div className="p-4 rounded-2xl bg-surface/70 border border-border/80 hover:border-primary/30 transition-colors">
+                  <div className="p-4 rounded-xl bg-muted/30 border border-border hover:border-primary/40 transition-colors">
                     <span className="text-[11px] text-muted-foreground font-semibold block">
                       {isBn ? 'শিক্ষার্থী রেটিং' : 'Rating'}
                     </span>
                     <span className="text-lg sm:text-xl font-extrabold text-amber-600 tabular-nums mt-1 block">
-                      {formatLocalizedNumber(aData?.rating?.averageRating ?? 5.0, locale)} ★
+                      {typeof aData?.rating?.averageRating === 'number' && aData.rating.averageRating > 0
+                        ? `${formatLocalizedNumber(aData.rating.averageRating, locale)} ★`
+                        : '—'}
                     </span>
                   </div>
                 </div>

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -33,7 +33,7 @@ export function TutorTodayScheduleTimeline({
 
   return (
     <div
-      className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between"
+      className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col justify-between"
       data-testid="tutor-today-timeline"
     >
       {/* Header */}
@@ -82,7 +82,7 @@ export function TutorTodayScheduleTimeline({
             </p>
             <Link
               href={withLocale('/dashboard/tutor/requests', locale)}
-              className="mt-3.5 inline-flex items-center gap-1.5 px-4 py-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-xs shadow-blue-500/25 transition-all"
+              className="mt-3.5 inline-flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors"
             >
               <span>{isBn ? 'অনুরোধ ইনবক্স' : 'Check Requests'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
@@ -146,7 +146,7 @@ export function TutorTodayScheduleTimeline({
                         href={session.meetingUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-xs shadow-blue-500/25"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors"
                       >
                         <Video className="w-3.5 h-3.5" />
                         <span>{isBn ? 'ক্লাস শুরু' : 'Launch Class'}</span>

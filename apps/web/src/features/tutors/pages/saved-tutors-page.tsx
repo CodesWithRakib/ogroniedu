@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useMemo, useState } from 'react';
 import Link from 'next/link';
@@ -56,7 +56,7 @@ export function SavedTutorCard({
   if (!profile) {
     return (
       <Card
-        className="rounded-3xl border border-amber-200 bg-amber-50/40 p-5 sm:p-6 flex flex-col gap-3"
+        className="rounded-xl border border-border bg-card p-5 sm:p-6 flex flex-col gap-3"
         data-testid="saved-tutor-unavailable"
       >
         <div className="flex items-start justify-between gap-3">
@@ -127,7 +127,7 @@ export function SavedTutorCard({
 
   return (
     <Card
-      className="group rounded-3xl border border-border bg-card p-5 sm:p-6 shadow-xs hover:shadow-md transition-all duration-200 hover:border-blue-400/80 flex flex-col justify-between gap-5 text-left w-full"
+      className="group rounded-xl border border-border bg-card p-5 sm:p-6 transition-colors hover:border-primary/40 flex flex-col justify-between gap-5 text-left w-full"
       data-testid={`saved-tutor-${item.tutorId}`}
     >
       <div className="flex flex-col gap-4">
@@ -140,15 +140,15 @@ export function SavedTutorCard({
                 <img
                   src={profile.avatarUrl}
                   alt={resolvedDisplayName}
-                  className="h-14 w-14 sm:h-16 sm:w-16 rounded-2xl object-cover ring-2 ring-blue-100 shadow-2xs group-hover:ring-blue-400 transition-all"
+                  className="h-14 w-14 sm:h-16 sm:w-16 rounded-xl object-cover ring-1 ring-border shadow-2xs group-hover:ring-primary/40 transition-all"
                 />
               ) : (
-                <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-blue-50 to-indigo-100 border border-blue-200 text-blue-700 font-black text-lg sm:text-xl shadow-2xs">
+                <div className="flex h-14 w-14 sm:h-16 sm:w-16 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold text-lg sm:text-xl">
                   {initials}
                 </div>
               )}
               <span
-                className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-white bg-emerald-500 shadow-xs"
+                className="absolute -bottom-0.5 -right-0.5 h-3.5 w-3.5 rounded-full border-2 border-background bg-emerald-500 shadow-xs"
                 title={isBn ? 'সক্রিয় শিক্ষক' : 'Active Tutor'}
               />
             </Link>
@@ -308,7 +308,7 @@ export function SavedTutorCard({
           <Link href={bookingPath} className="flex-1 sm:flex-initial">
             <Button
               size="sm"
-              className="w-full gap-1.5 bg-blue-600 hover:bg-blue-700 text-white font-bold text-xs shadow-xs px-3.5 py-2 rounded-xl"
+              className="w-full gap-1.5 bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs px-3.5 py-2 rounded-xl"
             >
               <Send className="w-3.5 h-3.5" aria-hidden="true" />
               {isBn ? 'বুকিং অনুরোধ' : 'Request Tutoring'}
@@ -319,9 +319,9 @@ export function SavedTutorCard({
             <Button
               variant="outline"
               size="sm"
-              className="w-full gap-1.5 border-slate-200 text-foreground hover:bg-slate-100 font-bold text-xs px-3 py-2 rounded-xl"
+              className="w-full gap-1.5 text-foreground font-semibold text-xs px-3 py-2 rounded-xl"
             >
-              <MessageSquare className="w-3.5 h-3.5 text-blue-600" aria-hidden="true" />
+              <MessageSquare className="w-3.5 h-3.5 text-primary" aria-hidden="true" />
               {isBn ? 'বার্তা' : 'Message'}
             </Button>
           </Link>
@@ -330,7 +330,7 @@ export function SavedTutorCard({
             <Button
               variant="ghost"
               size="sm"
-              className="gap-1 text-muted-foreground hover:text-blue-600 text-xs px-2.5 py-2 rounded-xl"
+              className="gap-1 text-muted-foreground hover:text-foreground text-xs px-2.5 py-2 rounded-xl"
               title={isBn ? 'সম্পূর্ণ প্রোফাইল দেখুন' : 'View Full Profile'}
             >
               <span className="hidden lg:inline">{isBn ? 'প্রোফাইল' : 'Profile'}</span>

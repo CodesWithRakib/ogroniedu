@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
@@ -64,10 +64,10 @@ function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="rounded-3xl bg-card border border-border p-5 sm:p-7 lg:p-8 flex flex-col gap-5 shadow-xs hover:border-blue-500/30 transition-all duration-300">
+    <div className="rounded-xl bg-card border border-border p-5 sm:p-6 lg:p-7 flex flex-col gap-5">
       <div className="flex items-center justify-between border-b border-border/80 pb-4">
         <div className="flex items-center gap-3">
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-blue-50 text-blue-700 border border-blue-200 shadow-2xs shrink-0">
+          <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary border border-primary/20 shrink-0">
             {icon}
           </div>
           <h2 className="text-base sm:text-lg lg:text-xl font-bold text-foreground tracking-tight">
@@ -287,14 +287,14 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
         data-testid="profile-loading"
       >
         <div className="max-w-7xl mx-auto flex flex-col gap-6 animate-pulse" aria-hidden="true">
-          <div className="h-56 rounded-3xl bg-white border border-border" />
+          <div className="h-56 rounded-xl bg-card border border-border" />
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
             <div className="lg:col-span-8 flex flex-col gap-6">
-              <div className="h-44 rounded-3xl bg-white border border-border" />
-              <div className="h-60 rounded-3xl bg-white border border-border" />
+              <div className="h-44 rounded-xl bg-card border border-border" />
+              <div className="h-60 rounded-xl bg-card border border-border" />
             </div>
             <div className="lg:col-span-4 flex flex-col gap-6">
-              <div className="h-80 rounded-3xl bg-white border border-border" />
+              <div className="h-80 rounded-xl bg-card border border-border" />
             </div>
           </div>
         </div>
@@ -305,9 +305,9 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
   if (profileQuery.error || !profile) {
     return (
       <div className="min-h-screen bg-slate-50/60 py-16 px-4" data-testid="profile-unavailable">
-        <div className="max-w-xl mx-auto rounded-3xl border border-border bg-card p-6 sm:p-10 text-center flex flex-col gap-5 shadow-xs">
-          <div className="flex h-16 w-16 items-center justify-center rounded-3xl bg-amber-50 text-amber-700 border border-amber-300 mx-auto">
-            <AlertCircle className="h-8 w-8" aria-hidden="true" />
+        <div className="max-w-xl mx-auto rounded-xl border border-border bg-card p-6 sm:p-10 text-center flex flex-col gap-5">
+          <div className="flex h-14 w-14 items-center justify-center rounded-xl bg-amber-50 text-amber-700 border border-amber-300 mx-auto">
+            <AlertCircle className="h-7 w-7" aria-hidden="true" />
           </div>
           <h1 className="text-xl sm:text-2xl font-black text-foreground">
             {isBn ? 'এই প্রোফাইলটি পাওয়া যায়নি' : 'This tutor profile is unavailable'}
@@ -328,7 +328,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
             </Button>
             <Link
               href={withLocale('/tutors', locale)}
-              className="inline-flex items-center gap-2 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 px-4 py-2 text-sm font-semibold text-white shadow-xs shadow-blue-500/20 transition-all"
+              className="inline-flex items-center gap-2 rounded-xl bg-primary hover:bg-primary/90 px-4 py-2 text-sm font-semibold text-primary-foreground transition-colors"
             >
               <ArrowLeft className="h-4 w-4" aria-hidden="true" />
               {isBn ? 'শিক্ষক তালিকায় ফিরুন' : 'Back to tutors'}
@@ -409,10 +409,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
       )}
 
       {/* Hero Profile Banner */}
-      <div className="max-w-7xl mx-auto rounded-3xl bg-card border border-border p-5 sm:p-8 lg:p-10 shadow-xs relative overflow-hidden">
-        {/* Subtle decorative background glow */}
-        <div className="absolute top-0 right-0 -mt-16 -mr-16 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl pointer-events-none" />
-
+      <div className="max-w-7xl mx-auto rounded-xl bg-card border border-border p-5 sm:p-6 lg:p-8 relative overflow-hidden">
         <div className="relative z-10 flex flex-col lg:flex-row items-start lg:items-center justify-between gap-6 sm:gap-8">
           {/* Avatar and Main Info */}
           <div className="flex flex-col sm:flex-row items-center sm:items-start text-center sm:text-left gap-4 sm:gap-6 flex-1 min-w-0 w-full sm:w-auto">
@@ -422,10 +419,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 <img
                   src={profile.avatarUrl}
                   alt={displayName}
-                  className="h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 rounded-3xl object-cover ring-4 ring-blue-100 shadow-xs"
+                  className="h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 rounded-xl object-cover ring-1 ring-border shadow-2xs"
                 />
               ) : (
-                <div className="flex h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 items-center justify-center rounded-3xl bg-gradient-to-br from-blue-600 to-indigo-700 text-white font-black text-2xl sm:text-3xl lg:text-4xl shadow-xs">
+                <div className="flex h-24 w-24 sm:h-28 sm:w-28 lg:h-32 lg:w-32 items-center justify-center rounded-xl bg-primary/10 border border-primary/20 text-primary font-bold text-2xl sm:text-3xl lg:text-4xl">
                   {initials}
                 </div>
               )}
@@ -538,7 +535,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
               type="button"
               onClick={handleOpenRequestModal}
               data-testid="request-tutoring-btn"
-              className="inline-flex items-center justify-center gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold px-6 py-3.5 text-sm shadow-xs shadow-blue-500/20 hover:shadow-xs hover:shadow-blue-500/30 transition-all duration-200 w-full sm:w-auto cursor-pointer active:scale-[0.98]"
+              className="inline-flex items-center justify-center gap-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold px-5 py-2.5 text-sm transition-colors w-full sm:w-auto cursor-pointer"
             >
               <Send className="w-4 h-4" aria-hidden="true" />
               <span>{isBn ? 'টিউশন অনুরোধ পাঠান' : 'Request Tutoring'}</span>
@@ -892,7 +889,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                     : 'Sign in to send a direct tutoring booking request to this educator.'}
                 </p>
                 <Link href={withLocale('/login', locale)} className="block">
-                  <Button className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3 rounded-2xl shadow-xs shadow-blue-500/25">
+                  <Button className="w-full bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 rounded-xl">
                     {isBn ? 'লগইন করুন' : 'Sign in'}
                   </Button>
                 </Link>
@@ -986,10 +983,10 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                           type="button"
                           onClick={() => toggleDay(key)}
                           aria-pressed={isSelected}
-                          className={`rounded-xl border px-3 py-1.5 text-xs font-bold transition-all ${
+                          className={`rounded-xl border px-3 py-1.5 text-xs font-semibold transition-colors ${
                             isSelected
-                              ? 'border-transparent bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs'
-                              : 'border-slate-300 bg-white text-muted-foreground hover:border-blue-500 hover:text-foreground'
+                              ? 'border-primary bg-primary text-primary-foreground'
+                              : 'border-border bg-card text-muted-foreground hover:border-primary/40 hover:text-foreground'
                           }`}
                         >
                           {isBn ? WEEKDAY_LABELS[index]?.bn : WEEKDAY_LABELS[index]?.en}
@@ -1036,7 +1033,7 @@ export function TutorDetailsPage({ tutorId, locale }: { tutorId: string; locale:
                 <Button
                   type="submit"
                   disabled={isBookingSubmitting || !selectedSubject}
-                  className="w-full gap-2 rounded-2xl bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-3.5 shadow-xs shadow-blue-500/20 hover:shadow-xs transition-all"
+                  className="w-full gap-2 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold py-2.5 transition-colors"
                   data-testid="submit-booking-request"
                 >
                   <Send className="w-4 h-4" aria-hidden="true" />

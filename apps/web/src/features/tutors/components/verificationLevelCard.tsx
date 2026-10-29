@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import {
@@ -199,7 +199,7 @@ export function VerificationLevelCard({
 
   return (
     <Card
-      className="rounded-2xl border border-border bg-card shadow-xs overflow-hidden"
+      className="rounded-xl border border-border bg-card overflow-hidden"
       data-testid={`verification-level-${record.level}`}
     >
       <CardHeader className="pb-3 border-b border-border/40 bg-muted/40">

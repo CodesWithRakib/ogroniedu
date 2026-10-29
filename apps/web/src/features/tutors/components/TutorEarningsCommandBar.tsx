@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -27,9 +27,9 @@ interface TutorEarningsCommandBarProps {
 
 export function TutorEarningsCommandBar({
   locale,
-  availableBdt = 14250,
-  escrowPendingBdt = 8500,
-  lifetimeNetBdt = 65000,
+  availableBdt = 0,
+  escrowPendingBdt = 0,
+  lifetimeNetBdt = 0,
   minPayoutBdt = 500,
   isLoading,
 }: TutorEarningsCommandBarProps) {
@@ -38,14 +38,14 @@ export function TutorEarningsCommandBar({
 
   return (
     <div
-      className="bg-card border border-border rounded-3xl p-5 sm:p-6 shadow-xs"
+      className="bg-card border border-border rounded-xl p-5 sm:p-6"
       data-testid="tutor-earnings-command-bar"
     >
       <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         {/* Available Balance Box */}
         <div className="flex items-center gap-4">
-          <div className="h-14 w-14 rounded-2xl bg-gradient-to-br from-blue-600 via-indigo-600 to-blue-600 text-white flex items-center justify-center shrink-0 shadow-md shadow-blue-500/20">
-            <Wallet className="w-7 h-7" />
+          <div className="h-12 w-12 rounded-xl bg-primary/10 border border-primary/20 text-primary flex items-center justify-center shrink-0">
+            <Wallet className="w-6 h-6" />
           </div>
 
           <div>
@@ -53,8 +53,8 @@ export function TutorEarningsCommandBar({
               <span className="text-xs font-bold text-muted-foreground uppercase tracking-wider">
                 {isBn ? 'উত্তোলনযোগ্য ব্যালেন্স' : 'Available for Payout'}
               </span>
-              <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full bg-emerald-500/15 text-emerald-700 dark:text-emerald-300 text-[10px] font-bold">
-                <CheckCircle2 className="w-3 h-3" />
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-xl bg-muted/40 border border-border text-[10px] font-bold text-foreground">
+                <CheckCircle2 className="w-3 h-3 text-primary" />
                 <span>{isBn ? 'উত্তোলন প্রস্তুত' : 'Ready'}</span>
               </span>
             </div>
@@ -89,7 +89,7 @@ export function TutorEarningsCommandBar({
 
           <div className="flex flex-col gap-1">
             <div className="flex items-center gap-1 text-xs text-muted-foreground">
-              <TrendingUp className="w-3.5 h-3.5 text-blue-500" />
+              <TrendingUp className="w-3.5 h-3.5 text-primary" />
               <span>{isBn ? 'সর্বমোট অর্জিত আয়' : 'Lifetime Earnings'}</span>
             </div>
             <div className="text-lg font-black text-foreground">
@@ -105,7 +105,7 @@ export function TutorEarningsCommandBar({
         <div className="flex flex-col sm:flex-row lg:flex-col items-stretch lg:items-end gap-2 shrink-0">
           <Link
             href={withLocale('/dashboard/tutor/payments', locale)}
-            className="inline-flex items-center justify-center gap-2 px-5 py-3 rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-blue-500/25 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs sm:text-sm transition-colors"
           >
             <CreditCard className="w-4 h-4" />
             <span>{isBn ? 'টাকা উত্তোলন করুন' : 'Withdraw Earnings'}</span>

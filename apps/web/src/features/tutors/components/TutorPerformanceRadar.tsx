@@ -26,17 +26,17 @@ interface TutorPerformanceRadarProps {
 
 export function TutorPerformanceRadar({
   locale,
-  rating = 4.9,
-  reviewCount = 18,
-  responseRate = 98,
+  rating = 0,
+  reviewCount = 0,
+  responseRate = 100,
   completionRate = 100,
-  profileStrength = 95,
+  profileStrength = 50,
 }: TutorPerformanceRadarProps) {
   const isBn = locale === 'bn';
 
   return (
     <div
-      className="bg-card border border-border rounded-2xl p-5 sm:p-6 shadow-xs flex flex-col justify-between"
+      className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col justify-between"
       data-testid="tutor-performance-radar"
     >
       {/* Header */}
@@ -67,7 +67,7 @@ export function TutorPerformanceRadar({
       {/* Grid of 4 Key Performance Indicators */}
       <div className="my-4 grid grid-cols-2 gap-3">
         {/* Rating Card */}
-        <div className="p-3.5 rounded-xl bg-surface border border-border/80">
+        <div className="p-3.5 rounded-xl bg-muted/30 border border-border">
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">
               {isBn ? 'শিক্ষার্থী মূল্যায়ন' : 'Student Rating'}
@@ -77,23 +77,27 @@ export function TutorPerformanceRadar({
             </div>
           </div>
           <div className="text-xl font-black text-foreground mt-1 flex items-baseline gap-1">
-            <span>{rating.toFixed(1)}</span>
-            <span className="text-xs text-muted-foreground font-normal">/ 5.0</span>
+            <span>{rating > 0 ? rating.toFixed(1) : '—'}</span>
+            {rating > 0 && <span className="text-xs text-muted-foreground font-normal">/ 5.0</span>}
           </div>
           <p className="text-[11px] text-muted-foreground mt-0.5">
-            {isBn
-              ? `${formatLocalizedNumber(reviewCount, locale)}টি যাচাইকৃত রিভিউ`
-              : `${reviewCount} verified reviews`}
+            {reviewCount > 0
+              ? isBn
+                ? `${formatLocalizedNumber(reviewCount, locale)}টি যাচাইকৃত রিভিউ`
+                : `${reviewCount} verified reviews`
+              : isBn
+                ? 'নতুন শিক্ষক — রিভিউ নেই'
+                : 'No reviews yet'}
           </p>
         </div>
 
         {/* Response Rate Card */}
-        <div className="p-3.5 rounded-xl bg-surface border border-border/80">
+        <div className="p-3.5 rounded-xl bg-muted/30 border border-border">
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">
               {isBn ? 'সাড়া দেওয়ার হার' : 'Response Rate'}
             </span>
-            <Zap className="w-3.5 h-3.5 text-blue-500" />
+            <Zap className="w-3.5 h-3.5 text-primary" />
           </div>
           <div className="text-xl font-black text-foreground mt-1">
             {formatLocalizedNumber(responseRate, locale)}%
@@ -104,12 +108,12 @@ export function TutorPerformanceRadar({
         </div>
 
         {/* Session Completion Rate */}
-        <div className="p-3.5 rounded-xl bg-surface border border-border/80">
+        <div className="p-3.5 rounded-xl bg-muted/30 border border-border">
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">
               {isBn ? 'ক্লাস সম্পন্নতা' : 'Completion'}
             </span>
-            <CheckCircle2 className="w-3.5 h-3.5 text-emerald-500" />
+            <CheckCircle2 className="w-3.5 h-3.5 text-primary" />
           </div>
           <div className="text-xl font-black text-foreground mt-1">
             {formatLocalizedNumber(completionRate, locale)}%
@@ -120,12 +124,12 @@ export function TutorPerformanceRadar({
         </div>
 
         {/* Profile Strength / Ranking */}
-        <div className="p-3.5 rounded-xl bg-surface border border-border/80">
+        <div className="p-3.5 rounded-xl bg-muted/30 border border-border">
           <div className="flex items-center justify-between">
             <span className="text-xs text-muted-foreground">
               {isBn ? 'প্রোফাইল স্কোর' : 'Profile Rank'}
             </span>
-            <TrendingUp className="w-3.5 h-3.5 text-purple-500" />
+            <TrendingUp className="w-3.5 h-3.5 text-primary" />
           </div>
           <div className="text-xl font-black text-foreground mt-1">
             {formatLocalizedNumber(profileStrength, locale)}%
