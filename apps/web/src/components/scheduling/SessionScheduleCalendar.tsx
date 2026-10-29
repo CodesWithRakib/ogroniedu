@@ -23,6 +23,8 @@ import {
 import { Button, Card, CardContent, Alert, AlertDescription, Badge } from '@/components/ui';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
+import { useAppSelector } from '@/store';
+import { primaryRole } from '@/store/slices/auth-slice';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
 import { playAudioTone } from '@/lib/audio/notification-sound';
 import type {
@@ -122,6 +124,15 @@ export function SessionScheduleCalendar({
     'all',
   );
   const [viewMode, setViewMode] = useState<'grid' | 'timeline' | 'month'>('grid');
+
+  const user = useAppSelector((s) => s.auth.user);
+  const role = primaryRole(user?.roles);
+  const requestsHref =
+    role === 'guardian'
+      ? withLocale('/dashboard/guardian/requests', locale)
+      : role === 'tutor'
+        ? withLocale('/dashboard/tutor/requests', locale)
+        : withLocale('/dashboard/student/requests', locale);
 
   const filteredSessions = React.useMemo(() => {
     let list = [...sessions];
@@ -665,7 +676,7 @@ export function SessionScheduleCalendar({
             <Button
               asChild
               size="default"
-              className="rounded-2xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs h-11 px-5 shadow-sm shadow-blue-500/20"
+              className="rounded-xl font-semibold text-xs h-10 px-4"
             >
               <Link href={withLocale('/tutors', locale)} className="flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4" />
@@ -676,9 +687,9 @@ export function SessionScheduleCalendar({
               asChild
               variant="outline"
               size="default"
-              className="rounded-2xl font-bold text-xs h-11 px-5"
+              className="rounded-xl font-semibold text-xs h-10 px-4"
             >
-              <Link href={withLocale('/requests', locale)} className="flex items-center gap-1.5">
+              <Link href={requestsHref} className="flex items-center gap-1.5">
                 <BookOpen className="w-4 h-4" />
                 <span>{isBn ? 'বুকিং অনুরোধ চেক করুন' : 'View Booking Requests'}</span>
               </Link>

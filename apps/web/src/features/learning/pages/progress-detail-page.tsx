@@ -20,6 +20,8 @@ import {
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { parseItem } from '@/lib/api/parse';
 import { withLocale } from '@/lib/auth';
+import { useAppSelector } from '@/store';
+import { primaryRole } from '@/store/slices/auth-slice';
 
 export interface ProgressReportDetailPageProps {
   locale: Locale;
@@ -27,6 +29,15 @@ export interface ProgressReportDetailPageProps {
 }
 
 export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDetailPageProps) {
+  const currentUser = useAppSelector((s) => s.auth.user);
+  const userRole = primaryRole(currentUser?.roles);
+  const backToLearningHref =
+    userRole === 'guardian'
+      ? withLocale('/dashboard/guardian/learning', locale)
+      : userRole === 'tutor'
+        ? withLocale('/dashboard/tutor/learning', locale)
+        : withLocale('/dashboard/student/learning', locale);
+
   const { data: reportData, isLoading, error } = useGetProgressReportByIdQuery(reportId);
 
   const report = React.useMemo<ProgressReportRecord | null>(() => {
@@ -60,7 +71,7 @@ export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDet
               : 'The requested report could not be found or you do not have permission to view it.'}
           </p>
           <Link
-            href={withLocale('/learning', locale)}
+            href={backToLearningHref}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-destructive text-white text-xs font-semibold rounded-xl"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -78,7 +89,7 @@ export function ProgressReportDetailPage({ locale, reportId }: ProgressReportDet
       {/* Navigation */}
       <div className="flex items-center justify-between">
         <Link
-          href={withLocale('/learning', locale)}
+          href={backToLearningHref}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
           data-testid="back-to-learning-from-report-btn"
         >

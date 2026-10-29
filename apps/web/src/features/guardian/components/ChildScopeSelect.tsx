@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import { UserRound } from 'lucide-react';
 import { useChildScope } from '@/features/guardian/hooks/use-child-scope';

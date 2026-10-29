@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -216,7 +216,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
           <span>{isBn ? 'টিউশন ফি ও এসক্রো' : 'Fees & Payments'}</span>
         </Link>
         <Link
-          href={withLocale('/safety-reports', locale)}
+          href={withLocale('/dashboard/guardian/safety-reports', locale)}
           className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-destructive/25 bg-destructive-soft hover:bg-destructive/15 text-destructive font-semibold text-xs transition-colors"
           id="link-safety-hub"
         >
@@ -379,6 +379,7 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
         <div className="lg:col-span-1">
           <SessionReminderCard
             locale={locale}
+            scheduleHref={withLocale('/dashboard/guardian/sessions', locale)}
             title={
               upcomingSession?.subjectName ||
               (upcomingSession?.subject ? String(upcomingSession.subject) : undefined)

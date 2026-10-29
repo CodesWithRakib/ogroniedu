@@ -46,6 +46,7 @@ import {
   type AttendanceStatus,
 } from '@/store/services/learning-api';
 import { useAppSelector } from '@/store';
+import { primaryRole } from '@/store/slices/auth-slice';
 import { type Locale } from '@/lib/i18n';
 import { formatWeekdayDate, formatTime } from '@/lib/format';
 import { parseItem } from '@/lib/api/parse';
@@ -82,6 +83,13 @@ export interface SessionDetailPageProps {
 export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps) {
   const currentUser = useAppSelector((s) => s.auth.user);
   const isTutor = currentUser?.roles?.includes('tutor');
+  const userRole = primaryRole(currentUser?.roles);
+  const backToSessionsHref =
+    userRole === 'guardian'
+      ? withLocale('/dashboard/guardian/sessions', locale)
+      : userRole === 'tutor'
+        ? withLocale('/dashboard/tutor/sessions', locale)
+        : withLocale('/dashboard/student/sessions', locale);
 
   const {
     data: sessionData,
@@ -253,7 +261,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
               : 'The requested class session could not be found or you may not have access.'}
           </p>
           <Link
-            href={withLocale('/sessions', locale)}
+            href={backToSessionsHref}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-destructive hover:bg-destructive/90 text-white text-xs font-semibold rounded-xl"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -337,7 +345,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
       {/* Navigation */}
       <div className="flex items-center justify-between">
         <Link
-          href={withLocale('/sessions', locale)}
+          href={backToSessionsHref}
           className="inline-flex items-center gap-1.5 text-xs font-bold text-muted-foreground hover:text-foreground transition-colors"
           data-testid="back-to-sessions-btn"
         >

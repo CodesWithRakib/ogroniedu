@@ -35,6 +35,7 @@ import {
   type AssignmentRecord,
 } from '@/store/services/learning-api';
 import { useAppSelector } from '@/store';
+import { primaryRole } from '@/store/slices/auth-slice';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
 import { parseItem } from '@/lib/api/parse';
 import { withLocale } from '@/lib/auth';
@@ -48,6 +49,13 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
   const currentUser = useAppSelector((s) => s.auth.user);
   const isTutor = currentUser?.roles?.includes('tutor');
   const isStudent = currentUser?.roles?.includes('student');
+  const userRole = primaryRole(currentUser?.roles);
+  const backToLearningHref =
+    userRole === 'guardian'
+      ? withLocale('/dashboard/guardian/learning', locale)
+      : userRole === 'tutor'
+        ? withLocale('/dashboard/tutor/learning', locale)
+        : withLocale('/dashboard/student/learning', locale);
 
   const {
     data: assignmentData,
@@ -171,7 +179,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
               : 'The requested assignment could not be found or you do not have permission to view it.'}
           </p>
           <Link
-            href={withLocale('/learning', locale)}
+            href={backToLearningHref}
             className="inline-flex items-center gap-1.5 px-4 py-2 bg-destructive hover:bg-destructive/90 text-white text-xs font-semibold rounded-xl"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -191,7 +199,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
       {/* Navigation */}
       <div className="flex items-center justify-between">
         <Link
-          href={withLocale('/learning', locale)}
+          href={backToLearningHref}
           className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
           data-testid="back-to-learning-btn"
         >
