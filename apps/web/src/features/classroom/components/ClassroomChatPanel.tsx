@@ -1,50 +1,39 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import { X, Send, MessageSquare, User, Smile, Sparkles } from 'lucide-react';
 import { useChat } from '@livekit/components-react';
-import { classroomAudio } from '../utils/classroom-audio';
+import { MessageSquare, Send, X } from 'lucide-react';
 
-export interface ClassroomChatPanelProps {
-  isOpen: boolean;
-  onClose: () => void;
-  locale?: 'bn' | 'en';
+interface ClassroomChatPanelProps {
+  isOpen?: boolean;
   displayName: string;
+  locale?: 'bn' | 'en';
+  onClose: () => void;
 }
 
-const QUICK_TEXT_REACTIONS = ['👍 বুঝেছি', '❓ প্রশ্ন আছে', '👏 দারুণ', '✋ হাত তুললাম'];
+const QUICK_TEXT_REACTIONS = [
+  '👍 বুঝেছি',
+  '❓ প্রশ্ন আছে',
+  '🙌 ধন্যবাদ স্যার',
+  '✅ Done',
+  '👏 অসাধারণ',
+];
 
 export function ClassroomChatPanel({
-  isOpen,
-  onClose,
-  locale = 'bn',
+  isOpen = true,
   displayName,
+  locale = 'bn',
+  onClose,
 }: ClassroomChatPanelProps) {
+  if (!isOpen) return null;
   const isBn = locale === 'bn';
   const { chatMessages, send } = useChat();
   const [inputText, setInputText] = useState('');
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  const prevCountRef = useRef(chatMessages.length);
 
   useEffect(() => {
-    if (chatMessages.length > prevCountRef.current) {
-      const latestMsg = chatMessages[chatMessages.length - 1];
-      const isSelf =
-        latestMsg?.from?.identity === displayName || latestMsg?.from?.name === displayName;
-      if (!isSelf) {
-        classroomAudio.playChatMessageChime();
-      }
-    }
-    prevCountRef.current = chatMessages.length;
-  }, [chatMessages, displayName]);
-
-  useEffect(() => {
-    if (isOpen) {
-      messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-    }
-  }, [chatMessages, isOpen]);
-
-  if (!isOpen) return null;
+    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [chatMessages]);
 
   const handleSend = async (e?: React.FormEvent, overrideText?: string) => {
     if (e) e.preventDefault();
@@ -60,20 +49,20 @@ export function ClassroomChatPanel({
 
   return (
     <div
-      className="fixed inset-y-0 right-0 w-full sm:w-96 bg-white border-l-2 border-slate-200 text-slate-900 z-50 flex flex-col shadow-2xl animate-in slide-in-from-right duration-200"
+      className="fixed inset-y-0 right-0 w-full sm:w-96 bg-card border-l border-border text-foreground z-50 flex flex-col shadow-lg animate-in slide-in-from-right duration-200"
       data-testid="classroom-chat-panel"
     >
       {/* Header */}
-      <div className="flex items-center justify-between p-4 border-b border-slate-200 bg-slate-50">
+      <div className="flex items-center justify-between p-4 border-b border-border bg-muted/30">
         <div className="flex items-center gap-2.5">
-          <div className="p-2 bg-blue-50 border border-blue-200 rounded-xl">
-            <MessageSquare className="w-5 h-5 text-blue-600" />
+          <div className="p-2 bg-primary/10 border border-primary/20 rounded-xl">
+            <MessageSquare className="w-5 h-5 text-primary" />
           </div>
           <div>
-            <h3 className="font-black text-base text-slate-900 tracking-tight">
+            <h3 className="font-bold text-base text-foreground tracking-tight">
               {isBn ? 'ইন-রুম লাইভ চ্যাট' : 'In-Class Chat'}
             </h3>
-            <p className="text-[11px] font-bold text-slate-500">
+            <p className="text-[11px] font-medium text-muted-foreground">
               {isBn ? 'ক্লাসের সাথে সরাসরি আলোচনা' : 'Live conversation'}
             </p>
           </div>
@@ -81,7 +70,7 @@ export function ClassroomChatPanel({
         <button
           type="button"
           onClick={onClose}
-          className="p-2 rounded-xl text-slate-500 hover:text-slate-800 hover:bg-slate-200 transition-colors"
+          className="p-2 rounded-xl text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
           title={isBn ? 'বন্ধ করুন' : 'Close'}
         >
           <X className="w-5 h-5" />
@@ -89,16 +78,16 @@ export function ClassroomChatPanel({
       </div>
 
       {/* Message List */}
-      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 bg-surface-muted/50">
+      <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3.5 bg-background">
         {chatMessages.length === 0 ? (
-          <div className="h-full flex flex-col items-center justify-center text-center p-6 text-slate-500">
-            <div className="w-16 h-16 rounded-full bg-slate-100 border border-slate-200 flex items-center justify-center mb-3 shadow-inner">
-              <MessageSquare className="w-8 h-8 text-slate-400" />
+          <div className="h-full flex flex-col items-center justify-center text-center p-6 text-muted-foreground">
+            <div className="w-14 h-14 rounded-full bg-muted border border-border flex items-center justify-center mb-3">
+              <MessageSquare className="w-7 h-7 text-muted-foreground" />
             </div>
-            <p className="text-sm font-bold text-slate-800">
+            <p className="text-sm font-semibold text-foreground">
               {isBn ? 'এখনো কোনো মেসেজ নেই' : 'No messages yet'}
             </p>
-            <p className="text-xs text-slate-500 mt-1 max-w-xs font-medium">
+            <p className="text-xs text-muted-foreground mt-1 max-w-xs font-normal">
               {isBn
                 ? 'ক্লাসের সাথে প্রশ্ন বা প্রয়োজনীয় মন্তব্য শেয়ার করুন।'
                 : 'Post questions or comments to the class.'}
@@ -119,17 +108,17 @@ export function ClassroomChatPanel({
               >
                 <div className="flex items-center gap-1.5 mb-1 px-1">
                   <span
-                    className={`text-xs font-black ${isSelf ? 'text-blue-700' : 'text-slate-700'}`}
+                    className={`text-xs font-semibold ${isSelf ? 'text-primary' : 'text-foreground'}`}
                   >
                     {isSelf ? (isBn ? 'আপনি' : 'You') : msg.from?.name || 'User'}
                   </span>
-                  <span className="text-[10px] font-semibold text-slate-400">{timeStr}</span>
+                  <span className="text-[10px] text-muted-foreground">{timeStr}</span>
                 </div>
                 <div
-                  className={`px-4 py-2.5 rounded-2xl text-xs sm:text-sm font-semibold max-w-[85%] break-words shadow-xs ${
+                  className={`px-3.5 py-2 rounded-xl text-xs sm:text-sm font-medium max-w-[85%] break-words shadow-2xs ${
                     isSelf
-                      ? 'bg-blue-600 text-white rounded-br-xs'
-                      : 'bg-white text-slate-800 rounded-bl-xs border border-slate-200'
+                      ? 'bg-primary text-primary-foreground rounded-br-xs'
+                      : 'bg-card text-foreground rounded-bl-xs border border-border'
                   }`}
                 >
                   {msg.message}
@@ -142,13 +131,13 @@ export function ClassroomChatPanel({
       </div>
 
       {/* Quick Text Reactions Strip */}
-      <div className="px-3 py-2 border-t border-slate-200 bg-slate-50 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+      <div className="px-3 py-2 border-t border-border bg-muted/30 flex items-center gap-1.5 overflow-x-auto no-scrollbar">
         {QUICK_TEXT_REACTIONS.map((tag) => (
           <button
             key={tag}
             type="button"
             onClick={() => handleSend(undefined, tag)}
-            className="px-2.5 py-1 rounded-lg bg-white hover:bg-slate-100 text-[11px] font-bold text-slate-700 border border-slate-200 whitespace-nowrap active:scale-95 transition-all shadow-2xs"
+            className="px-2.5 py-1 rounded-lg bg-card hover:bg-muted text-[11px] font-medium text-foreground border border-border whitespace-nowrap active:scale-95 transition-all shadow-2xs"
           >
             {tag}
           </button>
@@ -158,20 +147,20 @@ export function ClassroomChatPanel({
       {/* Message Input */}
       <form
         onSubmit={handleSend}
-        className="p-3 sm:p-4 border-t border-slate-200 bg-white flex items-center gap-2"
+        className="p-3 sm:p-4 border-t border-border bg-card flex items-center gap-2"
       >
         <input
           type="text"
           value={inputText}
           onChange={(e) => setInputText(e.target.value)}
           placeholder={isBn ? 'একটি বার্তা লিখুন...' : 'Type a message...'}
-          className="flex-1 bg-slate-50 border border-slate-300 rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-medium text-slate-900 placeholder-slate-400 focus:bg-white focus:outline-hidden focus:ring-2 focus:ring-blue-500"
+          className="flex-1 bg-muted/40 border border-border rounded-xl px-3.5 py-2.5 text-xs sm:text-sm font-medium text-foreground placeholder:text-muted-foreground focus:bg-card focus:outline-hidden focus:ring-1 focus:ring-primary"
           data-testid="classroom-chat-input"
         />
         <button
           type="submit"
           disabled={!inputText.trim()}
-          className="min-w-[44px] min-h-[44px] p-2.5 rounded-xl bg-blue-600 hover:bg-blue-700 disabled:opacity-40 text-white font-bold transition-all flex items-center justify-center active:scale-95 shadow-md shadow-blue-600/30"
+          className="min-w-[40px] min-h-[40px] p-2 rounded-xl bg-primary hover:bg-primary/90 disabled:opacity-40 text-primary-foreground font-semibold transition-all flex items-center justify-center active:scale-95 shadow-xs"
           title={isBn ? 'পাঠান' : 'Send'}
           data-testid="classroom-chat-send-btn"
         >

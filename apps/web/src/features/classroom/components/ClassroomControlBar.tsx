@@ -201,7 +201,7 @@ export function ClassroomControlBar({
     >
       {/* Floating Emoji Picker Popup */}
       {showEmojiPicker && (
-        <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-white border-2 border-slate-200 rounded-full px-3 py-1.5 flex items-center gap-2 shadow-2xl animate-in zoom-in-95 duration-150 z-50">
+        <div className="absolute -top-14 left-1/2 -translate-x-1/2 bg-card border border-border rounded-full px-3 py-1.5 flex items-center gap-2 shadow-md animate-in zoom-in-95 duration-150 z-50">
           {REACTION_EMOJIS.map((emoji) => (
             <button
               key={emoji}

@@ -51,13 +51,13 @@ const Toaster = ({
       toastOptions={{
         classNames: {
           toast:
-            'group toast flex items-center gap-3.5 rounded-2xl border px-4 py-3.5 shadow-popover backdrop-blur-md transition-all duration-300 text-sm font-medium ' +
+            'group toast flex items-center gap-3.5 rounded-xl border px-4 py-3.5 shadow-sm backdrop-blur-md transition-all duration-300 text-sm font-medium ' +
             'group-[.toaster]:bg-card/95 ' +
             'group-[.toaster]:text-foreground ' +
             'group-[.toaster]:border-border ',
           description: 'text-xs text-muted-foreground font-normal leading-relaxed mt-0.5',
           actionButton:
-            'rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white shadow-xs shadow-blue-500/25 px-3 py-1.5 text-xs font-semibold transition active:scale-95',
+            'rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs px-3 py-1.5 text-xs font-semibold transition active:scale-95',
           cancelButton:
             'rounded-xl bg-surface-muted px-3 py-1.5 text-xs font-medium text-foreground hover:bg-surface-hover',
           closeButton: 'border-none bg-transparent text-muted-foreground hover:text-foreground',

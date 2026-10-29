@@ -35,7 +35,7 @@ export function HomeworkSubmitModal({
 
   return (
     <Dialog open={true} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="bg-card text-card-foreground rounded-xl max-w-lg w-full p-6 border border-border shadow-2xl flex flex-col gap-4 text-left">
+      <DialogContent className="bg-card text-card-foreground rounded-xl max-w-lg w-full p-6 border border-border shadow-lg flex flex-col gap-4 text-left">
         <DialogHeader className="border-b border-border pb-3 text-left">
           <DialogTitle className="text-base font-black text-foreground">
             {t.submitHomework}: {assignment.title}

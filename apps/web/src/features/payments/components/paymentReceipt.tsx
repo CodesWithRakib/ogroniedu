@@ -67,7 +67,7 @@ export function PaymentReceipt({ receipt, locale, onPrint, onClose }: PaymentRec
   };
 
   return (
-    <Card className="border border-border bg-card rounded-3xl overflow-hidden shadow-2xl text-card-foreground">
+    <Card className="border border-border bg-card rounded-xl overflow-hidden shadow-sm text-card-foreground">
       <CardHeader className="pb-4 border-b border-border bg-surface-muted">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <CardTitle className="text-base sm:text-lg font-black text-foreground flex items-center gap-2">

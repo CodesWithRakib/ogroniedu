@@ -368,7 +368,7 @@ export function AssignmentDetailPage({ locale, assignmentId }: AssignmentDetailP
                   type="submit"
                   size="sm"
                   isLoading={isSubmitting}
-                  className="w-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-blue-500/25"
+                  className="w-full bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow-xs"
                   data-testid="submit-solution-btn"
                 >
                   <Send className="w-3.5 h-3.5 mr-1.5" />

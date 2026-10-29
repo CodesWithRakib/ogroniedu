@@ -35,7 +35,7 @@ export function StudyTimeTrackerCard({ locale, title, subtitle }: StudyTimeTrack
   const secs = String(seconds % 60).padStart(2, '0');
 
   return (
-    <div className="relative rounded-2xl p-5 sm:p-6 overflow-hidden bg-card border border-primary/20 text-foreground flex flex-col justify-between select-none shadow-xs">
+    <div className="relative rounded-xl p-5 sm:p-6 overflow-hidden bg-card border border-border text-foreground flex flex-col justify-between select-none shadow-xs">
       {/* Abstract undulating mesh wave background pattern (Donezo visual style) */}
       <div className="absolute inset-0 opacity-15 pointer-events-none">
         <svg viewBox="0 0 200 200" className="w-full h-full object-cover">
@@ -77,7 +77,7 @@ export function StudyTimeTrackerCard({ locale, title, subtitle }: StudyTimeTrack
         <button
           type="button"
           onClick={() => setIsRunning(!isRunning)}
-          className="h-10 w-10 rounded-full bg-gradient-to-r from-blue-600 to-indigo-600 text-white flex items-center justify-center font-bold shadow-xs shadow-blue-500/25 hover:from-blue-700 hover:to-indigo-700 hover:scale-105 active:scale-95 transition-all cursor-pointer"
+          className="h-10 w-10 rounded-full bg-primary hover:bg-primary/90 text-primary-foreground flex items-center justify-center font-bold shadow-xs hover:scale-105 active:scale-95 transition-all cursor-pointer"
           aria-label={isRunning ? 'Pause timer' : 'Start timer'}
           title={isRunning ? 'Pause' : 'Start'}
         >

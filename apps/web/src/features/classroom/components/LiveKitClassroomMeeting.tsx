@@ -248,7 +248,7 @@ function LiveKitClassroomMeetingBase({
   if (kickedNotice) {
     return (
       <div
-        className="w-full aspect-video min-h-[380px] bg-slate-950 rounded-3xl border-2 border-slate-800 flex flex-col items-center justify-center p-6 text-center text-white shadow-2xl"
+        className="w-full aspect-video min-h-[380px] bg-slate-950 rounded-xl border border-slate-800 flex flex-col items-center justify-center p-6 text-center text-white shadow-lg"
         data-testid="classroom-kicked-state"
       >
         <ShieldAlert className="w-14 h-14 text-rose-500 mb-3" />
@@ -303,7 +303,7 @@ function LiveKitClassroomMeetingBase({
   const containerClasses =
     isTheaterMode || isStandalone
       ? `relative w-full h-full flex-1 rounded-none border-none bg-slate-100 flex flex-col overflow-hidden ${className}`
-      : `relative w-full h-[58vh] sm:h-[68vh] lg:h-[75vh] min-h-[360px] max-h-[85vh] bg-slate-100 rounded-3xl overflow-hidden shadow-xl border-2 border-slate-200 flex flex-col ${className}`;
+      : `relative w-full h-[58vh] sm:h-[68vh] lg:h-[75vh] min-h-[360px] max-h-[85vh] bg-muted/20 rounded-xl overflow-hidden shadow-xs border border-border flex flex-col ${className}`;
 
   // Active LiveKit Classroom Session
   return (
@@ -901,7 +901,7 @@ function ClassroomStage({
     return (
       <div className="w-full h-full flex flex-col lg:flex-row gap-3 items-center justify-center overflow-hidden p-1 sm:p-2">
         {/* Main Stage: Screen Share (80-85% screen space) */}
-        <div className="flex-1 w-full h-full min-h-0 bg-slate-950 rounded-2xl overflow-hidden relative border-2 border-blue-500/80 shadow-2xl flex items-center justify-center">
+        <div className="flex-1 w-full h-full min-h-0 bg-slate-950 rounded-xl overflow-hidden relative border border-primary shadow-md flex items-center justify-center">
           <TrackRefContext.Provider value={screenShareTrack}>
             <ParticipantTile className="w-full h-full [&_video]:w-full [&_video]:h-full [&_video]:object-contain [&_video]:max-h-full" />
           </TrackRefContext.Provider>
@@ -951,7 +951,7 @@ function ClassroomStage({
     return (
       <div className="w-full h-full flex flex-col md:flex-row gap-3 items-center justify-center overflow-hidden">
         {/* Pinned Hero Stage */}
-        <div className="flex-1 w-full h-full bg-slate-900 rounded-2xl overflow-hidden relative border-2 border-amber-500/60 shadow-2xl flex items-center justify-center">
+        <div className="flex-1 w-full h-full bg-slate-900 rounded-xl overflow-hidden relative border border-amber-500/60 shadow-md flex items-center justify-center">
           <EnhancedParticipantTile
             trackRef={pinnedTrack}
             isMainStage={true}

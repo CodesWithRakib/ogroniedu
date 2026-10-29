@@ -57,7 +57,7 @@ function ClassroomPageContent({ locale, sessionId }: { locale: Locale; sessionId
   if (error || !session) {
     return (
       <div className="fixed inset-0 w-screen h-[100dvh] bg-background text-foreground flex items-center justify-center p-4 z-50">
-        <div className="max-w-md w-full bg-card border border-border rounded-3xl p-6 shadow-xl">
+        <div className="max-w-md w-full bg-card border border-border rounded-xl p-6 shadow-sm">
           <EmptyState
             title={locale === 'bn' ? 'ক্লাসরুম পাওয়া যায়নি' : 'Classroom Not Found'}
             description={

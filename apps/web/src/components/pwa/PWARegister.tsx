@@ -91,9 +91,9 @@ export function PWARegister({ locale }: { locale: Locale }) {
 
   return (
     <div className="fixed bottom-20 md:bottom-6 left-3 right-3 md:left-auto md:right-6 md:max-w-md z-40 animate-in fade-in slide-in-from-bottom-5 duration-300">
-      <div className="relative rounded-2xl bg-card/95 border border-border p-3 sm:p-4 shadow-popover backdrop-blur-xl flex items-center justify-between gap-3 text-foreground">
+      <div className="relative rounded-xl bg-card/95 border border-border p-3 sm:p-4 shadow-md backdrop-blur-xl flex items-center justify-between gap-3 text-foreground">
         {/* App Icon */}
-        <div className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-gradient-to-br from-blue-600 to-indigo-600 text-white shadow-xs">
+        <div className="flex h-10 w-10 sm:h-11 sm:w-11 shrink-0 items-center justify-center rounded-xl bg-primary text-primary-foreground shadow-xs">
           <Smartphone className="h-5 w-5 sm:h-6 sm:w-6 stroke-[2.2]" />
         </div>
 
@@ -116,7 +116,7 @@ export function PWARegister({ locale }: { locale: Locale }) {
         <div className="flex items-center gap-1.5 shrink-0">
           <button
             onClick={handleInstallClick}
-            className="inline-flex items-center gap-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs px-3.5 py-2 shadow-xs shadow-blue-500/25 transition-transform active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-1.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs px-3.5 py-2 shadow-xs transition-transform active:scale-95 cursor-pointer"
           >
             <Download className="h-3.5 w-3.5 stroke-[2.5]" />
             <span>{isBn ? 'ইনস্টল' : 'Install'}</span>

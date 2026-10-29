@@ -262,7 +262,7 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                   ) : (
                     <>
                       Payment{' '}
-                      <span className="bg-gradient-to-r from-emerald-600 via-teal-600 to-sky-500 bg-clip-text text-transparent">
+                      <span className="text-primary font-bold">
                         confirmed
                       </span>
                     </>
@@ -270,14 +270,14 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
                 ) : isBn ? (
                   <>
                     ক্লাস শুরু করার আগে{' '}
-                    <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
+                    <span className="text-primary font-bold">
                       পেমেন্ট সম্পন্ন করুন
                     </span>
                   </>
                 ) : (
                   <>
                     Complete your payment{' '}
-                    <span className="bg-gradient-to-r from-blue-600 via-indigo-600 to-sky-500 bg-clip-text text-transparent">
+                    <span className="text-primary font-bold">
                       before class starts
                     </span>
                   </>

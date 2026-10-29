@@ -494,7 +494,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
                     size="sm"
                     disabled={responding}
                     onClick={() => handleTutorResponse('accept')}
-                    className="bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-blue-500/25"
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs rounded-xl shadow-xs"
                     data-testid="tutor-accept-booking-btn"
                   >
                     <CheckCircle2 className="w-3.5 h-3.5 mr-1.5" />
@@ -602,13 +602,7 @@ export function BookingDetailPage({ bookingId, locale }: BookingDetailPageProps)
         {/* Tutor Replacement Guarantee Dossier Card */}
         {(activeReplacementCase || status === 'replacement_requested') && (
           <div
-            className={`rounded-xl border p-5 sm:p-6 transition-all ${
-              activeReplacementCase?.status === 'accepted'
-                ? 'border-emerald-300 bg-gradient-to-br from-emerald-50/90 via-white to-emerald-50/30'
-                : activeReplacementCase?.status === 'offered'
-                  ? 'border-blue-300 bg-gradient-to-br from-blue-50/90 via-white to-blue-50/30'
-                  : 'border-purple-300 bg-gradient-to-br from-purple-50/90 via-white to-purple-50/30'
-            }`}
+            className="rounded-xl border border-border bg-card text-foreground p-5 sm:p-6 transition-all"
             data-testid="booking-replacement-dossier-card"
           >
             <div className="flex flex-col sm:flex-row sm:items-start justify-between gap-4 pb-4 border-b border-border/60">

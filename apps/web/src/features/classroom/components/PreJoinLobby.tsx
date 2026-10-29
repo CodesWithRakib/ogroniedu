@@ -268,7 +268,7 @@ export function PreJoinLobby({
       {/* Main Grid: Preview on Left, Join Actions on Right */}
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
         {/* Video Preview Box */}
-        <div className="md:col-span-7 relative w-full aspect-video min-h-[220px] sm:min-h-[280px] bg-slate-900 rounded-2xl overflow-hidden shadow-xl border-2 border-slate-200 flex items-center justify-center">
+        <div className="md:col-span-7 relative w-full aspect-video min-h-[220px] sm:min-h-[280px] bg-slate-900 rounded-xl overflow-hidden shadow-xs border border-border flex items-center justify-center">
           {videoEnabled ? (
             <video
               ref={videoRef}
@@ -293,25 +293,25 @@ export function PreJoinLobby({
           )}
 
           {/* Audio Level Indicator overlay */}
-          <div className="absolute top-3 left-3 bg-white/95 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 border border-slate-200 shadow-md">
+          <div className="absolute top-3 left-3 bg-card/95 backdrop-blur-md px-3 py-1.5 rounded-full flex items-center gap-2 border border-border shadow-xs text-foreground">
             {audioEnabled ? (
               <Mic className="w-4 h-4 text-emerald-600 animate-pulse" />
             ) : (
               <MicOff className="w-4 h-4 text-rose-600" />
             )}
-            <div className="w-20 h-2 bg-slate-200 rounded-full overflow-hidden border border-slate-300">
+            <div className="w-20 h-2 bg-muted rounded-full overflow-hidden border border-border">
               <div
-                className="h-full bg-gradient-to-r from-emerald-500 via-green-500 to-emerald-600 transition-all duration-75"
+                className="h-full bg-emerald-500 transition-all duration-75"
                 style={{ width: `${audioEnabled ? audioLevel : 0}%` }}
               />
             </div>
-            <span className="text-[10px] font-black text-slate-800 min-w-7">
+            <span className="text-[10px] font-bold text-foreground min-w-7">
               {audioEnabled ? `${audioLevel}%` : isBn ? 'মিউট' : 'Muted'}
             </span>
           </div>
 
           {/* Quick toggle overlay on preview */}
-          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-white/95 backdrop-blur-md px-4 py-2 rounded-full border border-slate-200 shadow-xl">
+          <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-3 bg-card/95 backdrop-blur-md px-4 py-2 rounded-full border border-border shadow-xs">
             <button
               type="button"
               onClick={toggleAudio}

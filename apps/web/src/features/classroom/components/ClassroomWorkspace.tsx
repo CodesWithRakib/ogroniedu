@@ -539,11 +539,11 @@ export function ClassroomWorkspace({
         {/* Completion Modal - Light Mode */}
         {showCompletionModal && (
           <div className="fixed inset-0 bg-slate-900/50 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-            <div className="bg-card border-2 border-border text-foreground rounded-3xl p-6 max-w-md w-full shadow-2xl flex flex-col gap-4">
-              <h3 className="text-lg font-black text-slate-900">
+            <div className="bg-card border border-border text-foreground rounded-xl p-6 max-w-md w-full shadow-lg flex flex-col gap-4">
+              <h3 className="text-lg font-bold text-foreground">
                 {isBn ? 'ক্লাস সমাপ্ত ঘোষণা করুন' : 'Complete Tutoring Class'}
               </h3>
-              <p className="text-xs text-slate-600 font-medium">
+              <p className="text-xs text-muted-foreground font-medium">
                 {isBn
                   ? 'ক্লাস সম্পন্ন হিসেবে চিহ্নিত করলে এসক্রো পেমেন্ট ছাড় এবং এটেনডেন্স রেকর্ড চূড়ান্ত করা হবে।'
                   : 'Marking session as completed finalizes attendance and releases escrow payment.'}
@@ -616,35 +616,35 @@ export function ClassroomWorkspace({
       </div>
 
       {/* Main Header Banner */}
-      <div className="relative overflow-hidden rounded-3xl bg-white border-2 border-slate-200 shadow-md p-4 sm:p-6 md:p-8 text-slate-900">
+      <div className="relative overflow-hidden rounded-xl bg-card border border-border shadow-xs p-4 sm:p-6 md:p-8 text-foreground">
         <div className="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-4 sm:gap-6">
           <div className="flex flex-col gap-2">
-            <div className="flex items-center gap-2 text-xs text-blue-700 font-extrabold">
-              <Sparkles className="w-4 h-4 text-blue-600" />
+            <div className="flex items-center gap-2 text-xs text-primary font-semibold">
+              <Sparkles className="w-4 h-4 text-primary" />
               <span>
                 {isBn
                   ? 'অগ্রণী এডু ইন্টারেক্টিভ লাইভ ক্লাসরুম ও ভিডিও স্টুডিও'
                   : 'OgroniEdu Live Interactive Classroom & Video Studio'}
               </span>
             </div>
-            <h1 className="text-xl sm:text-2xl md:text-3xl font-black text-slate-900 tracking-tight">
+            <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-foreground tracking-tight">
               {subjectTitle}
             </h1>
-            <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 text-xs font-semibold text-slate-700">
+            <div className="flex flex-wrap items-center gap-2.5 sm:gap-4 text-xs font-medium text-muted-foreground">
               <span className="flex items-center gap-1.5">
-                <span className="text-slate-500 font-bold">{isBn ? 'শিক্ষক:' : 'Tutor:'}</span>
-                <strong className="text-slate-900 font-black">{tutorName}</strong>
+                <span className="text-muted-foreground">{isBn ? 'শিক্ষক:' : 'Tutor:'}</span>
+                <strong className="text-foreground font-semibold">{tutorName}</strong>
               </span>
               <span>•</span>
               <span className="flex items-center gap-1.5">
-                <span className="text-slate-500 font-bold">
+                <span className="text-muted-foreground">
                   {isBn ? 'শিক্ষার্থী:' : 'Student:'}
                 </span>
-                <strong className="text-slate-900 font-black">{studentName}</strong>
+                <strong className="text-foreground font-semibold">{studentName}</strong>
               </span>
               <span>•</span>
-              <span className="flex items-center gap-1.5 text-slate-800 font-bold">
-                <Clock className="w-3.5 h-3.5 text-blue-600" />
+              <span className="flex items-center gap-1.5 text-foreground font-medium">
+                <Clock className="w-3.5 h-3.5 text-primary" />
                 <span>
                   {formatWeekdayDate(session.startsAt, locale)} (
                   {formatTime(session.startsAt, locale)})
@@ -660,7 +660,7 @@ export function ClassroomWorkspace({
               type="button"
               size="sm"
               onClick={() => setActiveTab('video')}
-              className="flex items-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-2xl shadow-xs"
+              className="flex items-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow-xs transition-colors"
               data-testid="launch-meeting-btn"
             >
               <Video className="w-4 h-4" />
@@ -976,7 +976,7 @@ export function ClassroomWorkspace({
 
       {/* Class Completion Modal */}
       <Dialog open={showCompletionModal} onOpenChange={setShowCompletionModal}>
-        <DialogContent className="max-w-md w-full flex flex-col gap-4 bg-card text-foreground border border-border rounded-3xl p-6 shadow-2xl">
+        <DialogContent className="max-w-md w-full flex flex-col gap-4 bg-card text-foreground border border-border rounded-xl p-6 shadow-lg">
           <DialogHeader className="text-left flex flex-col gap-1">
             <div className="flex items-center gap-2 text-foreground">
               <CheckCircle2 className="w-5 h-5 text-success" />
@@ -1078,12 +1078,12 @@ function AttendanceSection({
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
       {/* Attendance Status Card */}
-      <Card className="bg-white border border-slate-200 text-slate-900 rounded-3xl p-6 shadow-sm">
-        <h3 className="text-base font-black text-slate-900 mb-2 flex items-center gap-2">
-          <UserCheck className="w-5 h-5 text-blue-600" />
+      <Card className="bg-card border border-border text-foreground rounded-xl p-6 shadow-xs">
+        <h3 className="text-base font-bold text-foreground mb-2 flex items-center gap-2">
+          <UserCheck className="w-5 h-5 text-primary" />
           <span>{isBn ? 'শিক্ষার্থীর হাজিরা / উপস্থিতি' : 'Student Attendance'}</span>
         </h3>
-        <p className="text-xs text-slate-600 font-medium mb-4">
+        <p className="text-xs text-muted-foreground font-medium mb-4">
           {isBn
             ? 'উপস্থিতি নিশ্চিত করলে অভিভাবক ও শিক্ষার্থী অ্যাকাউন্টে তাৎক্ষণিক নোটিফিকেশন পাবেন।'
             : 'Recorded attendance triggers automated notifications to student & guardians.'}
@@ -1208,13 +1208,13 @@ function AttendanceSection({
       </Card>
 
       {/* Session Safety & Security Card */}
-      <Card className="bg-white border border-slate-200 text-slate-900 rounded-3xl p-6 shadow-sm flex flex-col justify-between">
+      <Card className="bg-card border border-border text-foreground rounded-xl p-6 shadow-xs flex flex-col justify-between">
         <div className="flex flex-col gap-4">
-          <h3 className="text-base font-black text-slate-900 flex items-center gap-2">
+          <h3 className="text-base font-bold text-foreground flex items-center gap-2">
             <ShieldCheck className="w-5 h-5 text-emerald-600" />
             <span>{isBn ? 'নিরাপত্তা ও এস্ক্রো প্রতিশ্রুতি' : 'Safety & Escrow Protection'}</span>
           </h3>
-          <p className="text-xs text-slate-600 font-medium leading-relaxed">
+          <p className="text-xs text-muted-foreground font-medium leading-relaxed">
             {isBn
               ? 'অগ্রণী এডুর ক্লাসরুম সেশন এন্ড-টু-এন্ড সুরক্ষিত। সেশন সম্পন্ন হওয়ার পর শিক্ষক ও শিক্ষার্থীর রিভিউয়ের ভিত্তিতে এস্ক্রো ফান্ড রিলিজ কার্যকর হয়।'
               : 'All sessions are monitored under OgroniEdu safety standards. Escrow milestone releases are executed upon verified session completion.'}

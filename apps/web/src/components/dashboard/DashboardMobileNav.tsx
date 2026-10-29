@@ -44,7 +44,7 @@ export function DashboardMobileNav({
           />
 
           {/* Drawer Menu */}
-          <div className="relative z-[70] w-72 max-w-[85vw] h-full bg-card border-r border-border flex flex-col p-4 shadow-2xl animate-in slide-in-from-left duration-200">
+          <div className="relative z-[70] w-72 max-w-[85vw] h-full bg-card border-r border-border flex flex-col p-4 shadow-lg animate-in slide-in-from-left duration-200">
             <div className="flex items-center justify-between pb-4 border-b border-border">
               <OgroniEduBrand locale={locale} showSubtitle={false} />
               <button
@@ -78,7 +78,7 @@ export function DashboardMobileNav({
                             className={cn(
                               'flex items-center gap-3 rounded-xl px-3 min-h-[44px] text-xs font-semibold transition-colors',
                               active
-                                ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/20'
+                                ? 'bg-primary text-primary-foreground shadow-xs'
                                 : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground',
                             )}
                           >
@@ -105,7 +105,7 @@ export function DashboardMobileNav({
                         className={cn(
                           'flex items-center gap-3 rounded-xl px-3 min-h-[44px] text-xs font-semibold transition-colors',
                           active
-                            ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white shadow-xs shadow-blue-500/20'
+                            ? 'bg-primary text-primary-foreground shadow-xs'
                             : 'text-muted-foreground hover:bg-surface-hover hover:text-foreground',
                         )}
                       >

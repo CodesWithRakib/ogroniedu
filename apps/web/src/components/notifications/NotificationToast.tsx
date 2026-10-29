@@ -81,7 +81,7 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
           <div
             key={toast.toastId}
             className={cn(
-              'pointer-events-auto relative overflow-hidden flex flex-col rounded-2xl shadow-2xl transition-all duration-300',
+              'pointer-events-auto relative overflow-hidden flex flex-col rounded-xl shadow-md transition-all duration-300',
               'bg-card  backdrop-blur-xl border border-border  text-foreground',
               'border-l-4 animate-in slide-in-from-bottom-5',
               isUrgent

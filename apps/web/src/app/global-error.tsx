@@ -14,21 +14,21 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
 
   return (
     <html lang="bn">
-      <body className="min-h-screen bg-slate-50 flex items-center justify-center p-6 font-sans">
-        <div className="max-w-md w-full bg-white border border-slate-200 rounded-2xl p-8 text-center shadow-xl">
-          <div className="w-16 h-16 bg-red-50 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 text-2xl font-bold">
+      <body className="min-h-screen bg-background text-foreground flex items-center justify-center p-6 font-sans antialiased">
+        <div className="max-w-md w-full bg-card border border-border rounded-xl p-8 text-center shadow-xs">
+          <div className="w-14 h-14 bg-destructive/15 text-destructive border border-destructive/25 rounded-xl flex items-center justify-center mx-auto mb-5 text-xl font-bold">
             !
           </div>
 
-          <h1 className="text-2xl font-bold text-slate-900 mb-2">গুরুতর ত্রুটি ঘটেছে</h1>
-          <h2 className="text-sm font-semibold text-slate-500 mb-4">Critical System Error</h2>
+          <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-2 tracking-tight">গুরুতর ত্রুটি ঘটেছে</h1>
+          <h2 className="text-xs sm:text-sm font-medium text-muted-foreground mb-4">Critical System Error</h2>
 
-          <p className="text-slate-600 text-sm mb-6">
+          <p className="text-muted-foreground text-xs sm:text-sm mb-6 leading-relaxed">
             অ্যাপ্লিকেশনটি লোড করার সময় মারাত্মক সমস্যা হয়েছে। পুনরায় লোড করার চেষ্টা করুন।
           </p>
 
           {error.digest && (
-            <p className="text-xs font-mono text-slate-400 bg-slate-100 p-2 rounded mb-6 break-all">
+            <p className="text-xs font-mono text-muted-foreground bg-muted/40 border border-border p-2 rounded-xl mb-6 break-all">
               ID: {error.digest}
             </p>
           )}
@@ -36,7 +36,7 @@ export default function GlobalError({ error, reset }: GlobalErrorProps) {
           <button
             type="button"
             onClick={() => reset()}
-            className="w-full px-5 py-3 bg-emerald-600 text-white rounded-xl font-medium text-sm hover:bg-emerald-700 transition"
+            className="w-full px-5 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold text-xs sm:text-sm transition-colors cursor-pointer"
           >
             পুনরায় চেষ্টা করুন (Reload)
           </button>

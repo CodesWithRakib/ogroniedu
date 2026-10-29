@@ -1,16 +1,16 @@
-'use client';
-
-import { use } from 'react';
-import { RequireRole } from '@/components/auth/RequireRole';
-import { AnalyticsPage } from '@/features/analytics/pages/analytics-page';
+import { redirect } from 'next/navigation';
 import type { Locale } from '@/lib/i18n';
 
-export default function AnalyticsRoute({ params }: { params: Promise<{ locale: string }> }) {
-  const resolved = use(params);
-  const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
-  return (
-    <RequireRole locale={locale} allow={['admin', 'super_admin']}>
-      <AnalyticsPage locale={locale} />
-    </RequireRole>
-  );
+/**
+ * Legacy standalone analytics route redirector.
+ * Automatically translates `/:locale/analytics` into `/:locale/dashboard/admin/analytics`.
+ */
+export default async function AnalyticsLegacyRedirectRoute({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale: rawLocale } = await params;
+  const locale: Locale = rawLocale === 'en' ? 'en' : 'bn';
+  redirect(`/${locale}/dashboard/admin/analytics`);
 }

@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -98,7 +98,7 @@ export function DashboardSidebar({
                       className={cn(
                         'group flex items-center px-3.5 py-2 rounded-xl text-xs font-medium transition-all duration-150',
                         active
-                          ? 'bg-gradient-to-r from-blue-600 to-indigo-600 text-white font-bold shadow-xs shadow-blue-500/20'
+                          ? 'bg-primary text-primary-foreground font-semibold shadow-xs'
                           : 'text-muted-foreground hover:text-foreground hover:bg-surface-hover',
                       )}
                     >
@@ -107,7 +107,7 @@ export function DashboardSidebar({
                           className={cn(
                             'h-4 w-4 shrink-0 transition-transform group-hover:scale-105',
                             active
-                              ? 'text-white'
+                              ? 'text-primary-foreground'
                               : 'text-muted-foreground group-hover:text-foreground',
                           )}
                         />

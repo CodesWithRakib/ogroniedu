@@ -149,7 +149,7 @@ export function StudentUpcomingClassesCard({
                         href={s.meetingUrl}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-semibold text-xs shadow-blue-500/25 transition-all"
+                        className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs shadow-xs transition-colors"
                       >
                         <Video className="h-3.5 w-3.5" />
                         <span>{isBn ? 'ক্লাসে যোগ দিন' : 'Join Class'}</span>

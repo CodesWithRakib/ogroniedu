@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import {
@@ -158,7 +158,7 @@ export function AdminSafetyActionModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={(open) => !open && onClose()}>
-      <DialogContent className="max-w-xl sm:max-w-2xl bg-card border-border shadow-2xl p-6 rounded-2xl">
+      <DialogContent className="max-w-xl sm:max-w-2xl bg-card border border-border shadow-lg p-6 rounded-xl">
         <DialogHeader className="flex flex-col gap-1.5 pb-2 border-b border-border">
           <div className="flex items-center justify-between gap-2">
             <div className="flex items-center gap-2">

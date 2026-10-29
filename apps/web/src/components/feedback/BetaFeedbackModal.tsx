@@ -136,7 +136,7 @@ export function BetaFeedbackModal({
       <button
         type="button"
         onClick={() => setIsOpen(true)}
-        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 px-4 py-2.5 text-xs sm:text-sm font-black text-white shadow-lg shadow-blue-500/25 ring-2 ring-blue-400/30 transition-all hover:shadow-xl hover:scale-105 active:scale-95 cursor-pointer"
+        className="fixed bottom-6 right-6 z-40 flex items-center gap-2 rounded-full bg-primary hover:bg-primary/90 px-4 py-2.5 text-xs sm:text-sm font-semibold text-primary-foreground shadow-md transition-all hover:scale-105 active:scale-95 cursor-pointer"
         aria-label={isBn ? 'বেটা মতামত পাঠান' : 'Send Beta Feedback'}
         data-testid="beta-feedback-trigger"
       >
@@ -148,7 +148,7 @@ export function BetaFeedbackModal({
       <Dialog open={isOpen} onOpenChange={setIsOpen}>
         <DialogContent
           data-testid="beta-feedback-modal"
-          className="w-[94vw] max-w-lg max-h-[90vh] overflow-y-auto p-5 sm:p-6 flex flex-col gap-4 rounded-3xl border border-border bg-card shadow-2xl text-left"
+          className="w-[94vw] max-w-lg max-h-[90vh] overflow-y-auto p-5 sm:p-6 flex flex-col gap-4 rounded-xl border border-border bg-card shadow-lg text-left"
         >
           {/* Header */}
           <DialogHeader className="flex flex-col gap-1.5 border-b border-border pb-3.5 text-left">
@@ -319,7 +319,7 @@ export function BetaFeedbackModal({
                   type="submit"
                   size="md"
                   isLoading={isSubmitting}
-                  className="rounded-xl bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold text-xs shadow-xs shadow-blue-500/25 gap-2"
+                  className="rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs shadow-xs gap-2"
                 >
                   <Send className="h-4 w-4" />
                   <span>{isBn ? 'জমা দিন' : 'Submit'}</span>

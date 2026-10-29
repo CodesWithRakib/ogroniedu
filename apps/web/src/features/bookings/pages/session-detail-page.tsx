@@ -603,7 +603,7 @@ export function SessionDetailPage({ locale, sessionId }: SessionDetailPageProps)
                 </div>
                 <Link
                   href={withLocale(`/classroom/${sessionId}`, locale)}
-                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-gradient-to-r from-blue-600 via-indigo-600 to-blue-600 hover:from-blue-700 hover:to-indigo-700 text-white text-xs font-bold rounded-xl shadow-xs shadow-blue-500/25 transition-all"
+                  className="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold rounded-xl shadow-xs transition-colors"
                   data-testid="join-classroom-btn"
                 >
                   <ExternalLink className="w-4 h-4" />

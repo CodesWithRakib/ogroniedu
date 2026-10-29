@@ -12,31 +12,30 @@ interface ErrorProps {
 
 export default function ErrorBoundary({ error, reset }: ErrorProps) {
   useEffect(() => {
-    // Log error to monitoring without exposing sensitive user state
     console.error('[ErrorBoundary caught error]:', error.message, error.digest);
   }, [error]);
 
   return (
-    <div className="min-h-[70vh] flex items-center justify-center p-6">
-      <div className="max-w-md w-full bg-white border border-slate-200 rounded-3xl p-8 text-center shadow-xl">
-        <div className="w-16 h-16 bg-amber-50 text-amber-600 rounded-2xl border border-amber-200 flex items-center justify-center mx-auto mb-6">
-          <AlertTriangle className="w-8 h-8" />
+    <div className="min-h-[70vh] flex items-center justify-center p-6 bg-background text-foreground">
+      <div className="max-w-md w-full bg-card border border-border rounded-xl p-8 text-center shadow-xs">
+        <div className="w-14 h-14 bg-warning/15 text-warning rounded-xl border border-warning/25 flex items-center justify-center mx-auto mb-5">
+          <AlertTriangle className="w-7 h-7" />
         </div>
 
-        <h1 className="text-2xl font-black text-slate-900 mb-2">
-          কিছু সমস্যা হয়েছে (Something went wrong)
+        <h1 className="text-xl sm:text-2xl font-bold text-foreground mb-2 tracking-tight">
+          কিছু সমস্যা হয়েছে
         </h1>
 
-        <p className="text-slate-600 text-sm mb-6">
+        <p className="text-muted-foreground text-xs sm:text-sm mb-6 leading-relaxed">
           পৃষ্ঠাটি লোড করতে অপ্রত্যাশিত ত্রুটি ঘটেছে। পুনরায় চেষ্টা করুন অথবা হোমপেজে ফিরে যান।
           <br />
-          <span className="text-xs text-slate-500 mt-2 block">
+          <span className="text-xs text-muted-foreground/80 mt-1.5 block">
             An unexpected error occurred while loading this page.
           </span>
         </p>
 
         {error.digest && (
-          <p className="text-xs font-mono text-slate-500 bg-slate-50 border border-slate-200 px-3 py-1.5 rounded-xl mb-6 break-all">
+          <p className="text-xs font-mono text-muted-foreground bg-muted/40 border border-border px-3 py-1.5 rounded-xl mb-6 break-all">
             Reference ID: {error.digest}
           </p>
         )}
@@ -45,16 +44,16 @@ export default function ErrorBoundary({ error, reset }: ErrorProps) {
           <Button
             variant="primary"
             onClick={() => reset()}
-            className="flex items-center justify-center gap-2"
+            className="flex items-center justify-center gap-2 rounded-xl font-semibold"
           >
             <RotateCcw className="w-4 h-4" />
-            আবার চেষ্টা করুন (Try Again)
+            <span>আবার চেষ্টা করুন</span>
           </Button>
 
           <Link href="/" className="inline-flex">
-            <Button variant="outline" className="w-full flex items-center justify-center gap-2">
+            <Button variant="outline" className="w-full flex items-center justify-center gap-2 rounded-xl font-semibold">
               <Home className="w-4 h-4" />
-              হোম (Home)
+              <span>হোমপেজ</span>
             </Button>
           </Link>
         </div>

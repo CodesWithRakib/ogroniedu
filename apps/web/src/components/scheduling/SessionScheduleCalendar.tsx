@@ -661,7 +661,7 @@ export function SessionScheduleCalendar({
 
       {/* 6. Sessions Body (Loading / Empty / Rendered Views) */}
       {isLoading ? (
-        <Card className="text-center py-16 rounded-3xl border-border/80">
+        <Card className="text-center py-16 rounded-xl border-border bg-card">
           <CardContent className="flex flex-col gap-3">
             <div className="w-8 h-8 rounded-full border-2 border-primary border-t-transparent animate-spin mx-auto" />
             <p className="text-muted-foreground text-sm font-semibold">

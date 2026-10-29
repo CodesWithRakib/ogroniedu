@@ -125,7 +125,6 @@ export function HomePage({ locale }: { locale: Locale }) {
               )
               .join(isBn ? ' ও ' : ' & ')
           : null,
-      avatarBg: 'from-blue-600 to-indigo-600',
     };
   });
 
