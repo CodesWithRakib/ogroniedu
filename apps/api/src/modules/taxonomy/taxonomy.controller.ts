@@ -57,8 +57,14 @@ export class TaxonomyController {
    * ========================================================================= */
 
   @Get('subjects')
-  async getSubjects(@Query('all') all?: string) {
-    const where = all === 'true' ? {} : { isActive: true };
+  async getSubjects(
+    @Query('all') all?: string,
+    @Query('category') category?: string,
+  ) {
+    const where: any = all === 'true' ? {} : { isActive: true };
+    if (category) {
+      where.category = category;
+    }
     const data = await this.subjectRepo.find({
       where,
       order: { nameEn: 'ASC' },

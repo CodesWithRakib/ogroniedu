@@ -135,7 +135,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
     }
 
     const queryStr = params.toString();
-    router.push(`/${locale}/tutors${queryStr ? `?${queryStr}` : ''}`);
+    router.push(`/${locale}/request-tutor${queryStr ? `?${queryStr}` : ''}`);
   }
 
   function handleCurriculumClick(id: string) {
@@ -149,12 +149,12 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
     if (matched) {
       setSelectedLevel(String(matched.id));
     } else {
-      router.push(`/${locale}/tutors?q=${encodeURIComponent(id)}`);
+      router.push(`/${locale}/request-tutor?q=${encodeURIComponent(id)}`);
     }
   }
 
   function handleTagClick(query: string) {
-    router.push(`/${locale}/tutors?q=${encodeURIComponent(query)}`);
+    router.push(`/${locale}/request-tutor?q=${encodeURIComponent(query)}`);
   }
 
   return (
@@ -324,7 +324,7 @@ export function HeroSearchBar({ locale }: HeroSearchBarProps) {
               className="w-full lg:w-auto rounded-xl px-6 py-2.5 h-auto text-xs font-semibold gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shrink-0 transition-colors cursor-pointer"
             >
               <Search className="h-4 w-4" aria-hidden="true" />
-              <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
+              <span>{isBn ? 'টিউটর ম্যাচ করুন' : 'Match My Tutor'}</span>
               <ArrowRight
                 className="h-3.5 w-3.5 hidden sm:inline"
                 aria-hidden="true"

@@ -295,9 +295,21 @@ export function LearningPage({ locale }: { locale: Locale }) {
               : 'Once you book a tutor and start sessions, your attendance, homework and progress reports will appear here.'
           }
           actionLabel={
-            role === 'tutor' ? undefined : locale === 'bn' ? 'টিউটর খুঁজুন' : 'Find a Tutor'
+            role === 'tutor'
+              ? undefined
+              : locale === 'bn'
+                ? role === 'guardian'
+                  ? 'টিউশন রিকোয়েস্ট করুন'
+                  : 'ড্যাশবোর্ডে ফিরুন'
+                : role === 'guardian'
+                  ? 'Request a Tutor'
+                  : 'Back to Dashboard'
           }
-          actionHref={role === 'tutor' ? undefined : withLocale('/tutors', locale)}
+          actionHref={
+            role === 'tutor'
+              ? undefined
+              : withLocale(role === 'guardian' ? '/request-tutor' : '/dashboard/student', locale)
+          }
         />
       ) : (
         <div className="flex flex-col gap-4">

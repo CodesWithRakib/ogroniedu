@@ -160,19 +160,45 @@ export class FilesService {
     // 5. Generate storage key & checksum
     const fileId = crypto.randomUUID();
     const sanitizedName = rawFilename.replace(/[^a-zA-Z0-9._-]/g, '_');
-    const storageKey = `private/evidence/${user.id}/${fileId}-${sanitizedName}`;
+    const storageKey = `evidence/${user.id}/${fileId}-${sanitizedName}`;
     const checksum = cleanBase64
       ? crypto.createHash('sha256').update(cleanBase64).digest('hex')
       : crypto.randomBytes(16).toString('hex');
 
+    let storageProvider = 'local_secure';
+
     if (cleanBase64) {
+      const buffer = Buffer.from(cleanBase64, 'base64');
+
+      // Upload to Supabase Storage if configured
+      if (process.env.SUPABASE_URL && process.env.SUPABASE_SECRET_KEY) {
+        try {
+          const supabaseUrl = `${process.env.SUPABASE_URL}/storage/v1/object/ogroni-bucket/${storageKey}`;
+          const sRes = await fetch(supabaseUrl, {
+            method: 'POST',
+            headers: {
+              apikey: process.env.SUPABASE_SECRET_KEY,
+              Authorization: `Bearer ${process.env.SUPABASE_SECRET_KEY}`,
+              'Content-Type': dto.mediaType,
+            },
+            body: buffer,
+          });
+          if (sRes.ok) {
+            storageProvider = 'supabase';
+          }
+        } catch {
+          // Fall back gracefully to local storage
+        }
+      }
+
+      // Also persist locally in uploads folder
       try {
         const uploadsDir = path.resolve(process.cwd(), 'uploads');
         const targetDir = path.dirname(path.join(uploadsDir, storageKey));
         if (!fs.existsSync(targetDir)) {
           fs.mkdirSync(targetDir, { recursive: true });
         }
-        fs.writeFileSync(path.join(uploadsDir, storageKey), Buffer.from(cleanBase64, 'base64'));
+        fs.writeFileSync(path.join(uploadsDir, storageKey), buffer);
       } catch {
         // Fall back gracefully if filesystem write fails in restricted environments
       }
@@ -181,7 +207,7 @@ export class FilesService {
     const fileAsset = this.fileRepo.create({
       id: fileId,
       ownerUserId: user.id,
-      storageProvider: 'local_secure',
+      storageProvider,
       storageKey,
       originalFilename: sanitizedName,
       mediaType: dto.mediaType,
@@ -347,6 +373,12 @@ export class FilesService {
     const localPath = path.join(uploadsDir, file.storageKey);
 
     res.setHeader('Content-Disposition', `inline; filename="${file.originalFilename}"`);
+
+    if (file.storageProvider === 'supabase' && process.env.SUPABASE_URL) {
+      const publicUrl = `${process.env.SUPABASE_URL}/storage/v1/object/public/ogroni-bucket/${file.storageKey}`;
+      res.redirect(publicUrl);
+      return;
+    }
 
     if (fs.existsSync(localPath)) {
       res.setHeader('Content-Type', file.mediaType || 'application/octet-stream');

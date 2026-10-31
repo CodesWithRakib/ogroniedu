@@ -18,6 +18,8 @@
   },
   "nav": {
     "home": "মূলপাতা",
+    "requestTutor": "টিউশন রিকোয়েস্ট",
+    "tuitionBoard": "টিউশন বোর্ড",
     "findTutors": "শিক্ষক খুঁজুন",
     "becomeTutor": "শিক্ষক হিসেবে যোগ দিন",
     "howItWorks": "কীভাবে কাজ করে",

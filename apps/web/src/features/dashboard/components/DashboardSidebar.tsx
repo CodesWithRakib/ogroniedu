@@ -157,7 +157,7 @@ export function DashboardSidebar({
                 ? 'ডাউনলোড'
                 : 'Download'
           }
-          actionHref={roleKey === 'tutor' ? '/profile' : '/tutors'}
+          actionHref={roleKey === 'tutor' ? '/dashboard/tutor/profile' : '/request-tutor'}
         />
       </div>
     </aside>

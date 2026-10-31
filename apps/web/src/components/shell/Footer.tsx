@@ -132,7 +132,7 @@ export function Footer({ locale }: FooterProps) {
               </li>
               <li>
                 <Link
-                  href={`/${locale}/tutors`}
+                  href={`/${locale}/request-tutor`}
                   className="hover:text-primary transition-colors font-semibold text-primary flex items-center gap-1.5"
                 >
                   <span>{dict.nav.findTutors}</span>

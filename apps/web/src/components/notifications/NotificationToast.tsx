@@ -70,7 +70,7 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
     <div
       role="status"
       aria-live="polite"
-      className="fixed bottom-5 right-5 z-50 flex flex-col gap-3 max-w-md w-full pointer-events-none px-3 sm:px-0"
+      className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 z-50 flex flex-col gap-2.5 sm:max-w-md pointer-events-none"
     >
       {toasts.map((toast) => {
         const meta = getCategoryMeta(toast.category);
@@ -81,29 +81,29 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
           <div
             key={toast.toastId}
             className={cn(
-              'pointer-events-auto relative overflow-hidden flex flex-col rounded-xl shadow-md transition-all duration-300',
-              'bg-card  backdrop-blur-xl border border-border  text-foreground',
-              'border-l-4 animate-in slide-in-from-bottom-5',
+              'pointer-events-auto relative overflow-hidden flex flex-col rounded-2xl shadow-xl transition-all duration-300',
+              'bg-card/95 backdrop-blur-xl border text-foreground',
+              'animate-in slide-in-from-bottom-5',
               isUrgent
-                ? 'border-l-destructive shadow-sm'
+                ? 'border-destructive/40 shadow-destructive/10'
                 : isHigh
-                  ? 'border-l-warning'
-                  : meta.accent.split(' ')[0],
+                  ? 'border-warning/40 shadow-warning/10'
+                  : 'border-border/80 shadow-black/5',
             )}
           >
             <div className="p-4 flex items-start gap-3.5">
               <div
                 className={cn(
-                  'shrink-0 p-2.5 rounded-xl border border-border shadow-xs flex items-center justify-center',
+                  'shrink-0 w-10 h-10 rounded-xl border border-border/60 shadow-xs flex items-center justify-center mt-0.5',
                   meta.accent.split(' ').slice(1).join(' '),
                 )}
               >
                 {meta.icon}
               </div>
 
-              <div className="flex-1 min-w-0 pr-1">
-                <div className="flex items-center gap-2 mb-1 flex-wrap">
-                  <span className="text-[11px] font-semibold uppercase tracking-wider px-2 py-0.5 rounded-md bg-muted text-muted-foreground">
+              <div className="flex-1 min-w-0 pr-1 flex flex-col gap-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-md bg-muted/80 text-muted-foreground border border-border/50">
                     {locale === 'bn' ? meta.badgeBn : meta.badgeEn}
                   </span>
                   {soundEnabled && (
@@ -125,18 +125,18 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
                 <h4 className="text-sm font-bold text-foreground leading-snug line-clamp-1">
                   {toast.title}
                 </h4>
-                <p className="mt-1 text-xs text-muted-foreground  line-clamp-2 leading-relaxed">
+                <p className="text-xs text-muted-foreground line-clamp-2 leading-relaxed">
                   {toast.body}
                 </p>
 
                 {toast.navigationTarget && (
-                  <div className="mt-2.5 flex items-center gap-3">
+                  <div className="mt-1.5 flex items-center gap-3">
                     <Link
                       href={toast.navigationTarget}
                       onClick={() => dismissToast(toast.toastId)}
-                      className="inline-flex items-center gap-1 text-xs font-semibold text-info-soft-foreground hover:text-info-soft-foreground hover:underline transition-colors"
+                      className="inline-flex items-center gap-1.5 text-xs font-semibold text-primary hover:underline transition-colors"
                     >
-                      <Sparkles className="w-3 h-3" />
+                      <Sparkles className="w-3.5 h-3.5" />
                       <span>{locale === 'bn' ? 'কার্যক্রম দেখুন' : 'View Action'}</span>
                       <ExternalLink className="w-3 h-3 ml-0.5" />
                     </Link>
@@ -147,7 +147,7 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
               <button
                 type="button"
                 onClick={() => dismissToast(toast.toastId)}
-                className="shrink-0 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-hover transition-colors"
+                className="shrink-0 p-1.5 rounded-lg text-muted-foreground hover:text-foreground hover:bg-surface-muted transition-colors -mr-1 -mt-1"
                 aria-label={locale === 'bn' ? 'বিজ্ঞপ্তি বন্ধ করুন' : 'Dismiss notification'}
               >
                 <X className="w-4 h-4" />
@@ -155,7 +155,7 @@ export function NotificationToastContainer({ locale = 'bn' }: NotificationToastC
             </div>
 
             {/* Visual 6-second auto-dismiss progress countdown */}
-            <div className="h-0.5 w-full bg-muted overflow-hidden">
+            <div className="h-1 w-full bg-surface-muted overflow-hidden rounded-b-2xl">
               <div
                 className={cn(
                   'h-full animate-[shrink_6s_linear_forwards]',

@@ -499,14 +499,15 @@ export function AdminSafetyTab({ locale }: { locale: Locale }) {
                   <span className="text-[10px] text-muted-foreground font-semibold uppercase">
                     {isBn ? 'গোপনীয়তা' : 'Privacy'}
                   </span>
-                  <div className="font-bold text-foreground mt-0.5">
-                    {activeReport.isConfidential
-                      ? isBn
-                        ? 'গোপনীয় 🔒'
-                        : 'Confidential 🔒'
-                      : isBn
-                        ? 'সাধারণ'
-                        : 'Standard'}
+                  <div className="font-bold text-foreground mt-0.5 flex items-center gap-1">
+                    {activeReport.isConfidential ? (
+                      <>
+                        <Lock className="w-3.5 h-3.5 text-amber-600 dark:text-amber-400 inline" />
+                        <span>{isBn ? 'গোপনীয়' : 'Confidential'}</span>
+                      </>
+                    ) : (
+                      <span>{isBn ? 'সাধারণ' : 'Standard'}</span>
+                    )}
                   </div>
                 </div>
                 <div>

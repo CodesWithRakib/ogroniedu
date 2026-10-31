@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { createContext, useContext, useState } from 'react';
 import { usePathname, useRouter } from 'next/navigation';
@@ -8,6 +8,7 @@ import { primaryRole, logout, type UserRole } from '@/store/slices/auth-slice';
 import { useLogoutMutation } from '@/store/services/auth-api';
 import type { Locale } from '@/lib/i18n';
 import { navForRole, navSectionsForRole, ROLE_PRESETS } from '@/lib/navigation';
+import { useGetMyGuardiansQuery } from '@/store/services/guardians-api';
 import { Breadcrumbs } from '@/components/shared/Breadcrumbs';
 import { DashboardSidebar } from './DashboardSidebar';
 import { DashboardTopbar } from './DashboardTopbar';
@@ -65,8 +66,17 @@ export function DashboardShell({
     roleOverride && effectiveUser?.roles?.includes(roleOverride)
       ? roleOverride
       : primaryRole(effectiveUser?.roles);
-  const items = navForRole(activeRole);
-  const sections = navSectionsForRole(activeRole);
+
+  const { data: myGuardians } = useGetMyGuardiansQuery(undefined, {
+    skip: !effectiveUser?.id || activeRole !== 'student',
+  });
+  const hasLinkedGuardian = Boolean(myGuardians && myGuardians.length > 0);
+  const isChildStudent =
+    activeRole === 'student' &&
+    Boolean(effectiveUser?.hasGuardian || effectiveUser?.isMinor || hasLinkedGuardian);
+
+  const items = navForRole(activeRole, { isChildStudent });
+  const sections = navSectionsForRole(activeRole, { isChildStudent });
   const isBn = locale === 'bn';
 
   const roleKey = activeRole === 'super_admin' ? 'admin' : (activeRole ?? 'student');
@@ -162,7 +172,7 @@ export function DashboardShell({
             authUser={effectiveUser}
             role={activeRole}
             onOpenDrawer={() => setMobileDrawerOpen(true)}
-            onSearchTutors={() => router.push(withLocale('/tutors', locale))}
+            onSearchTutors={() => router.push(withLocale('/request-tutor', locale))}
             onLogout={handleLogout}
           />
 

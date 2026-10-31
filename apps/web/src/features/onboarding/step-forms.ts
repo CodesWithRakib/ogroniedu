@@ -118,6 +118,30 @@ const TUTOR_PROFILE_FIELDS: StepField[] = [
     required: false,
     placeholder: '500',
   },
+  {
+    name: 'gender',
+    labelBn: 'জেন্ডার',
+    labelEn: 'Gender',
+    kind: 'text',
+    required: false,
+    placeholder: 'male / female',
+  },
+  {
+    name: 'district',
+    labelBn: 'টিউশন জেলা',
+    labelEn: 'Tuition district',
+    kind: 'text',
+    required: false,
+    placeholder: 'Dhaka',
+  },
+  {
+    name: 'preferredAreas',
+    labelBn: 'পছন্দের পাঠদান এলাকাসমূহ',
+    labelEn: 'Preferred areas',
+    kind: 'text',
+    required: false,
+    placeholder: 'Dhanmondi, Mohammadpur, Gulshan',
+  },
 ];
 
 const TUTOR_EDUCATION_FIELDS: StepField[] = [

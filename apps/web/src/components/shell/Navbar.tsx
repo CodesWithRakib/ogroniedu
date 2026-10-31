@@ -51,9 +51,10 @@ export function Navbar({ locale }: NavbarProps) {
     router.replace(withLocale('/login', locale));
   }
 
-  // Core essential navigation links only (uncluttered)
+  // Core essential navigation links (Find tutor & Job board)
   const navLinks = [
-    { href: `/${locale}/tutors`, label: dict.nav.findTutors, isHighlight: true },
+    { href: `/${locale}/request-tutor`, label: (dict.nav as any).requestTutor || 'Request a Tutor', isPrimary: true },
+    { href: `/${locale}/tuitions`, label: (dict.nav as any).tuitionBoard || 'Tuition Board' },
     { href: `/${locale}/how-it-works`, label: dict.nav.howItWorks },
     { href: `/${locale}/pricing`, label: dict.nav.pricing },
     { href: `/${locale}/safety`, label: dict.nav.safety },
@@ -81,9 +82,11 @@ export function Navbar({ locale }: NavbarProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`relative px-4 py-1.5 rounded-full text-xs font-semibold transition-colors ${
+                className={`relative px-3.5 py-1.5 rounded-full text-xs font-semibold transition-all ${
                   active
-                    ? 'bg-primary text-primary-foreground'
+                    ? 'bg-primary text-primary-foreground shadow-sm'
+                    : (link as any).isPrimary
+                    ? 'bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/30 hover:bg-emerald-500/20 font-bold'
                     : 'text-muted-foreground hover:text-foreground hover:bg-muted'
                 }`}
               >
@@ -185,7 +188,17 @@ export function Navbar({ locale }: NavbarProps) {
                     </p>
                   </div>
                   <Link
-                    href={withLocale('/profile', locale)}
+                    href={
+                      user.roles?.includes('tutor')
+                        ? withLocale('/dashboard/tutor/profile', locale)
+                        : user.roles?.includes('guardian')
+                          ? withLocale('/dashboard/guardian/children', locale)
+                          : user.roles?.includes('student')
+                            ? withLocale('/dashboard/student/learning', locale)
+                            : user.roles?.includes('admin') || user.roles?.includes('super_admin')
+                              ? withLocale('/dashboard/admin/settings', locale)
+                              : withLocale('/dashboard', locale)
+                    }
                     onClick={() => setMobileMenuOpen(false)}
                     className="text-xs font-bold text-primary hover:underline"
                   >

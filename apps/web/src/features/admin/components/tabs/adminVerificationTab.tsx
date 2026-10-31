@@ -147,61 +147,137 @@ export function VerificationQueueTable({
       />
     );
   }
+
+  // Group rows by tutorUserId so a teacher is never repeated multiple times!
+  const groupedTutors = React.useMemo(() => {
+    const map = new Map<
+      string,
+      {
+        tutorUserId: string;
+        displayName: string;
+        headline?: string | null;
+        email?: string | null;
+        phoneE164?: string | null;
+        submittedAt?: string | null;
+        overallVerificationStatus?: string | null;
+        levels: Array<{
+          level: TutorVerificationLevel;
+          levelStatus: string;
+          pendingDocuments: number;
+        }>;
+        primaryRow: VerificationQueueRow;
+      }
+    >();
+
+    for (const r of rows) {
+      if (!map.has(r.tutorUserId)) {
+        map.set(r.tutorUserId, {
+          tutorUserId: r.tutorUserId,
+          displayName: r.displayName,
+          headline: r.headline,
+          email: r.email,
+          phoneE164: r.phoneE164,
+          submittedAt: r.submittedAt,
+          overallVerificationStatus: r.overallVerificationStatus,
+          levels: [],
+          primaryRow: r,
+        });
+      }
+      map.get(r.tutorUserId)!.levels.push({
+        level: r.level,
+        levelStatus: r.levelStatus,
+        pendingDocuments: r.pendingDocuments,
+      });
+    }
+
+    return Array.from(map.values());
+  }, [rows]);
+
   return (
     <div className="border border-border rounded-xl overflow-x-auto bg-card">
       <Table data-testid="verification-table">
         <TableHeader>
           <TableRow className="uppercase tracking-wider text-[11px] font-bold">
-            <TableHead className="px-4 py-3.5">{isBn ? 'টিউটর' : 'Tutor'}</TableHead>
-            <TableHead className="px-4 py-3.5">{isBn ? 'স্তর' : 'Level'}</TableHead>
-            <TableHead className="px-4 py-3.5">{isBn ? 'অবস্থা' : 'Status'}</TableHead>
-            <TableHead className="px-4 py-3.5">{isBn ? 'নথি' : 'Docs'}</TableHead>
-            <TableHead className="px-4 py-3.5">{isBn ? 'জমা' : 'Submitted'}</TableHead>
+            <TableHead className="px-4 py-3.5">{isBn ? 'শিক্ষক' : 'Tutor'}</TableHead>
+            <TableHead className="px-4 py-3.5">{isBn ? 'যাচাই স্তরসমূহ' : 'Verification Levels'}</TableHead>
+            <TableHead className="px-4 py-3.5">{isBn ? 'সার্বিক অবস্থা' : 'Overall Status'}</TableHead>
+            <TableHead className="px-4 py-3.5">{isBn ? 'অপেক্ষমাণ নথি' : 'Pending Docs'}</TableHead>
+            <TableHead className="px-4 py-3.5">{isBn ? 'সর্বশেষ জমা' : 'Submitted'}</TableHead>
             <TableHead className="px-4 py-3.5 text-right">{isBn ? 'পদক্ষেপ' : 'Actions'}</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody className="text-foreground text-xs">
-          {rows.map((row) => (
-            <TableRow
-              key={`${row.tutorUserId}:${row.level}`}
-              className="hover:bg-muted/40 transition-colors"
-              data-testid={`verification-row-${row.tutorUserId}-${row.level}`}
-            >
-              <TableCell className="px-4 py-3 font-medium">
-                {row.displayName}
-                <span className="block text-[11px] text-muted-foreground font-normal">
-                  {row.headline || row.email || '—'}
-                </span>
-              </TableCell>
-              <TableCell className="px-4 py-3">{levelLabel(row.level, locale)}</TableCell>
-              <TableCell className="px-4 py-3">
-                <StatusBadge status={row.levelStatus} size="sm">
-                  {levelStatusLabel(row.levelStatus, locale)}
-                </StatusBadge>
-              </TableCell>
-              <TableCell className="px-4 py-3 text-muted-foreground">
-                {formatLocalizedNumber(row.pendingDocuments, locale)}{' '}
-                {isBn ? 'অপেক্ষমান' : 'pending'}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-muted-foreground">
-                {row.submittedAt ? formatDate(row.submittedAt, locale) : '—'}
-              </TableCell>
-              <TableCell className="px-4 py-3 text-right">
-                <Link
-                  href={withLocale(`/dashboard/admin/verification/${row.tutorUserId}`, locale)}
-                  data-testid={`review-tutor-btn-${row.tutorUserId}-${row.level}`}
-                  className="inline-flex items-center justify-center rounded-xl bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow hover:bg-primary/90 transition-colors"
-                >
-                  {isBn ? 'পর্যালোচনা' : 'Review'}
-                </Link>
-              </TableCell>
-            </TableRow>
-          ))}
+          {groupedTutors.map((tutor) => {
+            const totalPendingDocs = tutor.levels.reduce(
+              (acc, l) => acc + (l.pendingDocuments || 0),
+              0,
+            );
+            return (
+              <TableRow
+                key={tutor.tutorUserId}
+                className="hover:bg-muted/40 transition-colors"
+                data-testid={`verification-row-${tutor.tutorUserId}`}
+              >
+                <TableCell className="px-4 py-3 font-medium">
+                  <div className="font-bold text-foreground text-xs">{tutor.displayName}</div>
+                  <span className="block text-[11px] text-muted-foreground font-normal">
+                    {tutor.headline || tutor.email || '—'}
+                  </span>
+                </TableCell>
+                <TableCell className="px-4 py-3">
+                  <div className="flex flex-wrap gap-1.5">
+                    {tutor.levels.map((lvl) => (
+                      <span
+                        key={lvl.level}
+                        className={`inline-flex items-center gap-1 px-2 py-0.5 rounded text-[10px] font-bold ${
+                          lvl.levelStatus === 'approved'
+                            ? 'bg-success-soft text-success border border-success/20'
+                            : lvl.levelStatus === 'submitted' || lvl.levelStatus === 'under_review'
+                              ? 'bg-warning-soft text-warning border border-warning/20'
+                              : 'bg-muted text-muted-foreground border border-border'
+                        }`}
+                      >
+                        <span>{levelLabel(lvl.level, locale)}:</span>
+                        <span>{levelStatusLabel(lvl.levelStatus as any, locale)}</span>
+                      </span>
+                    ))}
+                  </div>
+                </TableCell>
+                <TableCell className="px-4 py-3">
+                  <StatusBadge
+                    status={(tutor.overallVerificationStatus as any) || 'submitted'}
+                    size="sm"
+                  >
+                    {levelStatusLabel(
+                      (tutor.overallVerificationStatus as any) || 'submitted',
+                      locale,
+                    )}
+                  </StatusBadge>
+                </TableCell>
+                <TableCell className="px-4 py-3 text-muted-foreground font-mono">
+                  {formatLocalizedNumber(totalPendingDocs, locale)} {isBn ? 'টি নথি' : 'docs'}
+                </TableCell>
+                <TableCell className="px-4 py-3 text-muted-foreground font-mono text-[11px]">
+                  {tutor.submittedAt ? formatDate(tutor.submittedAt, locale) : '—'}
+                </TableCell>
+                <TableCell className="px-4 py-3 text-right">
+                  <Link
+                    href={withLocale(`/dashboard/admin/users/tutors/${tutor.tutorUserId}`, locale)}
+                    data-testid={`review-tutor-btn-${tutor.tutorUserId}`}
+                    className="inline-flex items-center justify-center rounded-xl bg-primary px-3 py-1.5 text-xs font-semibold text-primary-foreground shadow-2xs hover:bg-primary/90 transition-colors"
+                  >
+                    {isBn ? 'পর্যালোচনা ও এডিট' : 'Review & Manage'}
+                  </Link>
+                </TableCell>
+              </TableRow>
+            );
+          })}
         </TableBody>
       </Table>
     </div>
   );
 }
+
 
 function docStatusLabel(status: string, isBn: boolean): string {
   const labels: Record<string, { en: string; bn: string }> = {
@@ -274,7 +350,7 @@ export function AdminVerificationTab() {
   const totalPages = pagination?.totalPages ?? 1;
 
   function openDossier(row: VerificationQueueRow) {
-    router.push(withLocale(`/dashboard/admin/verification/${row.tutorUserId}`, locale));
+    router.push(withLocale(`/dashboard/admin/users/tutors/${row.tutorUserId}`, locale));
   }
 
   const dossierLevels = dossier.data?.data?.levels ?? [];

@@ -5,7 +5,6 @@
  * removed). Routes must import from `@/features/tutors`, not deep paths.
  */
 export * from './pages/tutor-dashboard-page';
-export * from './pages/tutor-details-page';
 export * from './pages/tutor-profile-settings-page';
 export * from './pages/tutor-verification-page';
 export * from './pages/tutor-earnings-page';

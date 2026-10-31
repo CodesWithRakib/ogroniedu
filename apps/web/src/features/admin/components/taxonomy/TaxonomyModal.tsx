@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import { Button, Input } from '@/components/ui';
@@ -228,8 +228,17 @@ export function TaxonomyModal({
                   <SelectItem value="admission">
                     {isBn ? 'ভর্তি প্রস্তুতি (Admission Test)' : 'University / College Admission'}
                   </SelectItem>
+                  <SelectItem value="university">
+                    {isBn ? 'বিশ্ববিদ্যালয় কোর্স (University)' : 'University Degree Courses'}
+                  </SelectItem>
                   <SelectItem value="skill">
                     {isBn ? 'দক্ষতা উন্নয়ন (Skill / IT)' : 'Practical / ICT Skills'}
+                  </SelectItem>
+                  <SelectItem value="creative">
+                    {isBn ? 'শিল্প ও সংগীত (Arts & Hobbies)' : 'Music, Arts & Hobbies'}
+                  </SelectItem>
+                  <SelectItem value="special_care">
+                    {isBn ? 'বিশেষ যত্ন (Special Needs)' : 'Special Education & Care'}
                   </SelectItem>
                 </SelectContent>
               </Select>

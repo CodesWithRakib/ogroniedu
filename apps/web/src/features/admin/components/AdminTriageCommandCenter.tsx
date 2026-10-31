@@ -69,7 +69,7 @@ export function AdminTriageCommandCenter({
           </div>
 
           <Link
-            href={withLocale('/dashboard/admin/verification', locale)}
+            href={withLocale('/dashboard/admin/users/tutors?tab=kyc', locale)}
             className="mt-3.5 inline-flex items-center justify-between px-3 py-2 rounded-xl bg-primary-soft hover:bg-primary-soft/80 text-primary font-bold text-xs transition-colors"
           >
             <span>{isBn ? 'দস্তাবেজ পর্যালোচনা করুন' : 'Review Dossiers'}</span>

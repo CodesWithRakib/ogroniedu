@@ -22,6 +22,7 @@ import {
   MapPin,
 } from 'lucide-react';
 import { formatLocalizedNumber, type Locale } from '@/lib/i18n';
+import { withLocale } from '@/lib/auth';
 import { Button } from '@/components/ui/Button';
 import { Skeleton } from '@/components/ui/skeleton';
 import { useSearchTutorsQuery } from '@/store/services/tutors-api';
@@ -209,6 +210,31 @@ export function HomePage({ locale }: { locale: Locale }) {
               <div className="pt-1">
                 <HeroSearchBar locale={locale} />
               </div>
+
+              {/* Instant Request a Tutor Action Banner */}
+              <div className="flex flex-col sm:flex-row items-center justify-between gap-3 p-3.5 rounded-2xl bg-emerald-500/10 border border-emerald-500/25 backdrop-blur-md">
+                <div className="flex items-center gap-2.5">
+                  <div className="w-9 h-9 rounded-xl bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-sm">
+                    <Sparkles className="w-4 h-4" />
+                  </div>
+                  <div>
+                    <h4 className="text-xs font-bold text-foreground">
+                      {isBn ? 'টিউটর খুঁজছেন? আপনার রিকোয়েস্ট পোস্ট করুন' : 'Need a Tutor? Post Your Request'}
+                    </h4>
+                    <p className="text-[11px] text-muted-foreground">
+                      {isBn
+                        ? 'আপনার চাহিদা ও বাজেট জানান, আমাদের টিম সেরা শিক্ষক খুঁজে দেবে'
+                        : 'Specify your requirements, our matching team will find verified educators'}
+                    </p>
+                  </div>
+                </div>
+                <Link href={withLocale('/request-tutor', locale)} className="w-full sm:w-auto shrink-0">
+                  <Button size="sm" className="w-full sm:w-auto bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs shadow-sm flex items-center gap-1.5 whitespace-nowrap">
+                    <span>{isBn ? 'রিকোয়েস্ট পোস্ট করুন' : 'Post Request'}</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Button>
+                </Link>
+              </div>
             </div>
 
             {/* Right Column: Hero Visual Stage Focused on Verified Educators */}
@@ -348,10 +374,10 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             <Link
-              href={`/${locale}/tutors`}
+              href={`/${locale}/request-tutor`}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary-hover transition-colors"
             >
-              <span>{isBn ? 'সকল বিষয় ও শিক্ষক দেখুন' : 'Explore All Subjects'}</span>
+              <span>{isBn ? 'সকল বিষয় ও শিক্ষক রিকোয়েস্ট' : 'Request Tutors for Any Subject'}</span>
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
@@ -362,7 +388,7 @@ export function HomePage({ locale }: { locale: Locale }) {
               return (
                 <Link
                   key={cat.id}
-                  href={`/${locale}/tutors?q=${encodeURIComponent(cat.query)}`}
+                  href={`/${locale}/request-tutor?q=${encodeURIComponent(cat.query)}`}
                   className="rounded-xl border border-border bg-card p-4 sm:p-5 hover:border-primary/40 transition-colors group text-left flex flex-col justify-between min-h-[140px]"
                 >
                   <div
@@ -404,10 +430,10 @@ export function HomePage({ locale }: { locale: Locale }) {
             </div>
 
             <Link
-              href={`/${locale}/tutors`}
+              href={`/${locale}/request-tutor`}
               className="inline-flex items-center gap-1.5 text-xs font-bold text-primary hover:text-primary/80 transition-colors"
             >
-              <span>{isBn ? 'সকল শিক্ষক খুঁজুন' : 'View All Tutors'}</span>
+              <span>{isBn ? 'শিক্ষক রিকোয়েস্ট করুন' : 'Request a Tutor'}</span>
               <ArrowRight className="h-4 w-4" aria-hidden="true" />
             </Link>
           </div>
@@ -549,14 +575,10 @@ export function HomePage({ locale }: { locale: Locale }) {
                     </div>
 
                     <Link
-                      href={
-                        tutor.id.includes('-')
-                          ? `/${locale}/tutors/${tutor.id}`
-                          : `/${locale}/tutors`
-                      }
+                      href={withLocale('/request-tutor', locale)}
                       className="rounded-xl bg-muted hover:bg-primary hover:text-primary-foreground border border-border px-3 py-1.5 text-xs font-semibold text-foreground transition-colors inline-flex items-center gap-1 cursor-pointer shrink-0"
                     >
-                      <span>{isBn ? 'প্রোফাইল' : 'Profile'}</span>
+                      <span>{isBn ? 'রিকোয়েস্ট' : 'Request'}</span>
                       <ArrowRight className="h-3 w-3" />
                     </Link>
                   </div>
@@ -766,9 +788,9 @@ export function HomePage({ locale }: { locale: Locale }) {
                   size="lg"
                   className="rounded-xl px-6 py-2.5 h-auto text-xs font-semibold border border-border bg-background hover:bg-muted text-foreground transition-colors"
                 >
-                  <Link href={`/${locale}/tutors`} className="flex items-center gap-2">
+                  <Link href={`/${locale}/request-tutor`} className="flex items-center gap-2">
                     <Search className="w-4 h-4 text-primary" aria-hidden="true" />
-                    <span>{isBn ? 'সকল শিক্ষক দেখুন' : 'Browse All Tutors'}</span>
+                    <span>{isBn ? 'টিউশন রিকোয়েস্ট পোস্ট করুন' : 'Post Tuition Request'}</span>
                   </Link>
                 </Button>
               </div>

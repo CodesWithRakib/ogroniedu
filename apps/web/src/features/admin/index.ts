@@ -28,6 +28,8 @@ export * from './pages/users/admin-users-admins-page';
 export * from './pages/users/admin-users-directory-page';
 export * from './pages/users/admin-users-tutors-page';
 export * from './pages/users/admin-users-students-page';
+export * from './pages/users/admin-tutor-detail-page';
+export * from './pages/users/admin-student-detail-page';
 
 export * from './types/admin.types';
 export * from './utils/admin-mappers';

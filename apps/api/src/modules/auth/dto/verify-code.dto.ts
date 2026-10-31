@@ -5,7 +5,7 @@ export class VerifyCodeDto {
   contact!: string;
 
   @IsString()
-  @Matches(/^\d{6}$/, { message: 'code must be a 6-digit numeric OTP' })
+  @Matches(/^(\d{4}|\d{6})$/, { message: 'code must be a 4 to 6 digit numeric OTP' })
   code!: string;
 
   @IsIn(['contact_verification', 'password_recovery'], {

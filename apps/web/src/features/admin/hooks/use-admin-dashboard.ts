@@ -91,7 +91,10 @@ export function useAdminDashboard(locale: Locale) {
   // pages sync local state from them in effects keyed on the array itself
   // (useAdminActions), and a fresh array each render would loop setState forever.
   const users = React.useMemo(
-    () => mapAdminUsers((usersQuery.data?.data ?? []) as unknown[]),
+    () =>
+      mapAdminUsers((usersQuery.data?.data ?? []) as unknown[]).filter(
+        (u) => !u.roles.includes('super_admin'),
+      ),
     [usersQuery.data],
   );
   const bookings = React.useMemo(

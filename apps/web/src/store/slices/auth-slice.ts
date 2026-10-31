@@ -20,6 +20,9 @@ export interface AuthUser {
   status?: string;
   preferredLocale: 'bn' | 'en';
   avatarUrl?: string;
+  hasGuardian?: boolean;
+  isMinor?: boolean;
+  isStandalone?: boolean;
 }
 
 export interface AuthState {
@@ -177,7 +180,7 @@ export function dashboardPathForRole(role: UserRole | null | undefined): string 
   switch (role) {
     case 'super_admin':
     case 'admin':
-      return '/admin';
+      return '/dashboard/admin';
     case 'tutor':
       return '/dashboard/tutor';
     case 'guardian':
@@ -186,7 +189,7 @@ export function dashboardPathForRole(role: UserRole | null | undefined): string 
       return '/dashboard/student';
     case 'support_agent':
     case 'compliance_reviewer':
-      return '/admin';
+      return '/dashboard/admin';
     case 'organization_owner':
     case 'organization_staff':
       return '/dashboard';

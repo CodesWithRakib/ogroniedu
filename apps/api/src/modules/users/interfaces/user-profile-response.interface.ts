@@ -7,6 +7,15 @@ export interface UserProfileResponse {
   status: string;
   roles: string[];
   isMinor: boolean;
+  hasGuardian?: boolean;
+  isStandalone?: boolean;
+  guardianInfo?: {
+    id: string;
+    guardianUserId: string;
+    guardianName: string;
+    guardianEmail: string | null;
+    guardianPhone: string | null;
+  } | null;
   studentProfile?: {
     dateOfBirth: string | null;
     educationLevelId: string | null;

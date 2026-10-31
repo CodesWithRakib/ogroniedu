@@ -31,8 +31,8 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
     portalTitleBn: 'শিক্ষার্থী ড্যাশবোর্ড',
     portalTitleEn: 'Student Portal',
     widget: {
-      titleBn: 'স্টাডি স্ট্রিক 🔥',
-      titleEn: 'Study Streak 🔥',
+      titleBn: 'স্টাডি স্ট্রিক',
+      titleEn: 'Study Streak',
       descBn: 'ধারাবাহিক লার্নিং ট্র্যাক সক্রিয়',
       descEn: 'Consistent learning tracker active',
       icon: Sparkles,
@@ -48,8 +48,8 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
     widget: {
       titleBn: 'টিচিং স্ট্যাটাস',
       titleEn: 'Teaching Status',
-      descBn: '🟢 নতুন শিক্ষার্থী গ্রহণে সক্রিয়',
-      descEn: '🟢 Open for new bookings',
+      descBn: 'নতুন শিক্ষার্থী গ্রহণে সক্রিয়',
+      descEn: 'Open for new bookings',
       icon: CheckCircle2,
       accentColor: 'text-primary',
     },
@@ -63,8 +63,8 @@ export const ROLE_PRESETS: Record<string, RoleConfig> = {
     widget: {
       titleBn: 'সিস্টেম স্ট্যাটাস',
       titleEn: 'System Health',
-      descBn: '⚡ ৯৯.৯৯% আপটাইম ও নিরাপদ',
-      descEn: '⚡ 99.99% uptime & secure',
+      descBn: '৯৯.৯৯% আপটাইম ও নিরাপদ',
+      descEn: '99.99% uptime & secure',
       icon: ShieldCheck,
       accentColor: 'text-interactive',
     },

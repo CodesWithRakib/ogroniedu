@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React from 'react';
 import Link from 'next/link';
@@ -58,9 +58,7 @@ export function AdminUsersDirectoryPage({ locale }: { locale: Locale }) {
   const activeCount = admin.users.filter((u) => u.status === 'active').length;
   const suspendedCount = admin.users.filter((u) => u.status === 'suspended').length;
   const staffCount = admin.users.filter((u) =>
-    u.roles.some((r) =>
-      ['super_admin', 'admin', 'support_agent', 'compliance_reviewer'].includes(r),
-    ),
+    u.roles.some((r) => ['admin', 'support_agent', 'compliance_reviewer'].includes(r)),
   ).length;
 
   return (
@@ -70,10 +68,10 @@ export function AdminUsersDirectoryPage({ locale }: { locale: Locale }) {
         <div>
           <Link
             href={withLocale('/dashboard/admin/users', locale)}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors group"
+            className="inline-flex items-center gap-2 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors group"
           >
             <ArrowLeft className="w-3.5 h-3.5 transition-transform group-hover:-translate-x-0.5" />
-            <span>{isBn ? '← ইউজার ও স্টাফ হাব-এ ফিরে যান' : '← Back to Users & Staff'}</span>
+            <span>{isBn ? 'ইউজার ও স্টাফ হাব-এ ফিরে যান' : 'Back to Users & Staff'}</span>
           </Link>
         </div>
 

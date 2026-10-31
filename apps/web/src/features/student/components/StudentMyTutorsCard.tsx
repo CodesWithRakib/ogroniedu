@@ -36,10 +36,10 @@ export function StudentMyTutorsCard({ locale, tutors, isLoading }: StudentMyTuto
         </div>
 
         <Link
-          href={withLocale('/tutors', locale)}
+          href={withLocale('/dashboard/student/learning', locale)}
           className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
         >
-          <span>{isBn ? 'নতুন শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
+          <span>{isBn ? 'স্টাডি রুম' : 'Study Room'}</span>
           <ArrowRight className="h-3.5 w-3.5" />
         </Link>
       </div>
@@ -60,14 +60,14 @@ export function StudentMyTutorsCard({ locale, tutors, isLoading }: StudentMyTuto
             </p>
             <p className="text-[11px] text-muted-foreground mt-1 max-w-xs mx-auto">
               {isBn
-                ? 'যাচাইকৃত শিক্ষকদের তালিকা থেকে আপনার পাঠ্যক্রমের জন্য সেরা শিক্ষক নির্বাচন করুন।'
-                : 'Browse verified tutors to start your personalized learning journey.'}
+                ? 'আপনার অভিভাবক আপনার পাঠ্যক্রমের জন্য অগ্রণী এডুতে শিক্ষক রিকোয়েস্ট করতে পারেন।'
+                : 'Your guardian can request verified educators for your curriculum on OgroniEdu.'}
             </p>
             <Link
-              href={withLocale('/tutors', locale)}
+              href={withLocale('/dashboard/student/learning', locale)}
               className="mt-3.5 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors"
             >
-              <span>{isBn ? 'শিক্ষক ব্রাউজ করুন' : 'Browse Tutors'}</span>
+              <span>{isBn ? 'স্টাডি রুমে যান' : 'Go to Study Room'}</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>

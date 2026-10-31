@@ -101,9 +101,9 @@ export function StudentSubjectMasteryCard({
               : 'Enrolled subject milestones and chapter progress will appear here.'}
           </p>
           <Button asChild size="sm" variant="outline" className="mt-3.5 rounded-lg text-xs">
-            <Link href={withLocale('/tutors', locale)} className="flex items-center gap-1.5">
+            <Link href={withLocale('/dashboard/student/learning', locale)} className="flex items-center gap-1.5">
               <Sparkles className="w-3.5 h-3.5 text-primary" />
-              <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
+              <span>{isBn ? 'স্টাডি রুমে যান' : 'Go to Study Room'}</span>
             </Link>
           </Button>
         </div>

@@ -16,6 +16,9 @@ export interface AuthUserSummary {
   roles: string[];
   status: string;
   preferredLocale: string;
+  hasGuardian?: boolean;
+  isMinor?: boolean;
+  isStandalone?: boolean;
 }
 
 export interface AuthResponse {

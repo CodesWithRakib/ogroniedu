@@ -18,6 +18,8 @@
   },
   "nav": {
     "home": "Home",
+    "requestTutor": "Request a Tutor",
+    "tuitionBoard": "Tuition Board",
     "findTutors": "Find Tutors",
     "becomeTutor": "Become a Tutor",
     "howItWorks": "How It Works",

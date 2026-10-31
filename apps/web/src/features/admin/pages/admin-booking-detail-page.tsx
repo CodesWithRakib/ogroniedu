@@ -1,4 +1,4 @@
-﻿'use client';
+'use client';
 
 import React, { useState } from 'react';
 import Link from 'next/link';
@@ -540,7 +540,7 @@ export function AdminBookingDetailPage({
                     </div>
                   </div>
                   <Link
-                    href={`/${locale}/dashboard/admin/verification/${booking.tutorUserId}`}
+                    href={`/${locale}/dashboard/admin/users/tutors/${booking.tutorUserId}`}
                     className="inline-flex items-center gap-1 text-xs text-primary font-semibold hover:underline"
                   >
                     <span>{isBn ? 'ভেরিফিকেশন দেখুন' : 'View Verification'}</span>

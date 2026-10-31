@@ -29,6 +29,7 @@ export interface LinkedChild {
   linkId: string;
   studentId: string;
   displayName: string;
+  studentCode?: string | null;
   relationshipType: string;
   status: 'pending' | 'active' | 'rejected' | 'revoked';
   consentPolicyVersion: string | null;
@@ -133,6 +134,57 @@ export const guardiansApi = baseApi.injectEndpoints({
         { type: 'Notification', id: 'LIST' },
       ],
     }),
+    generateChildMagicLink: builder.mutation<
+      {
+        magicLinkUrl: string;
+        token: string;
+        expiresInSeconds: number;
+        studentName: string;
+        studentCode?: string | null;
+      },
+      string
+    >({
+      query: (studentId) => ({
+        url: `/api/v1/guardians/children/${studentId}/magic-link`,
+        method: 'POST',
+      }),
+      transformResponse: (
+        response:
+          | ApiSuccessEnvelope<{
+              magicLinkUrl: string;
+              token: string;
+              expiresInSeconds: number;
+              studentName: string;
+              studentCode?: string | null;
+            }>
+          | {
+              magicLinkUrl: string;
+              token: string;
+              expiresInSeconds: number;
+              studentName: string;
+              studentCode?: string | null;
+            },
+      ) => unwrapEnvelope(response),
+    }),
+    setChildPin: builder.mutation<
+      { success: boolean; message: string; studentCode?: string | null },
+      { studentId: string; pin: string }
+    >({
+      query: ({ studentId, pin }) => ({
+        url: `/api/v1/guardians/children/${studentId}/pin`,
+        method: 'POST',
+        body: { pin },
+      }),
+      transformResponse: (
+        response:
+          | ApiSuccessEnvelope<{ success: boolean; message: string; studentCode?: string | null }>
+          | { success: boolean; message: string; studentCode?: string | null },
+      ) => unwrapEnvelope(response),
+      invalidatesTags: (_r, _e, { studentId }) => [
+        { type: 'GuardianChild', id: studentId },
+        { type: 'GuardianChild', id: 'LIST' },
+      ],
+    }),
     revokeChildLink: builder.mutation<
       { success: boolean; message: string },
       { studentId: string; reason: string }
@@ -163,6 +215,8 @@ export const {
   useRegisterChildMutation,
   useLinkChildRequestMutation,
   useGetChildDetailsQuery,
+  useGenerateChildMagicLinkMutation,
+  useSetChildPinMutation,
   useVerifyChildLinkMutation,
   useRevokeChildLinkMutation,
 } = guardiansApi;

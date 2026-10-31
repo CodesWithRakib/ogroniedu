@@ -11,6 +11,7 @@ export interface ChildItem {
   linkId: string;
   studentId: string;
   displayName: string;
+  studentCode?: string | null;
   relationshipType: 'father' | 'mother' | 'legal_guardian' | string;
   status: 'pending' | 'active' | 'rejected' | 'revoked';
   consentPolicyVersion: string | null;
@@ -32,6 +33,7 @@ export interface GuardianChildrenCallbacks {
   }) => Promise<void>;
   onRegisterChild?: (data: {
     displayName: string;
+  studentCode?: string | null;
     dateOfBirth?: string;
     gender?: string;
     institutionName?: string;

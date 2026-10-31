@@ -59,6 +59,15 @@ export class TutorProfileEntity {
   @Column({ name: 'years_experience', type: 'smallint', nullable: true })
   yearsExperience!: number | null;
 
+  @Column({ name: 'gender', type: 'text', default: 'male' })
+  gender!: 'male' | 'female';
+
+  @Column({ name: 'district', type: 'text', nullable: true })
+  district!: string | null;
+
+  @Column({ name: 'preferred_areas', type: 'text', array: true, default: '{}' })
+  preferredAreas!: string[];
+
   @Column({ name: 'teaching_modes', type: 'text', array: true, default: '{}' })
   teachingModes!: TeachingMode[];
 

@@ -7,3 +7,4 @@ export * from './start-impersonation.dto';
 export * from './query-audit-logs.dto';
 export * from './admin-cancel-booking.dto';
 export * from './assign-support-case.dto';
+export * from './staff-management.dto';

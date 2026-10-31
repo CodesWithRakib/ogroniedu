@@ -3,6 +3,8 @@ import {
   Get,
   Post,
   Put,
+  Patch,
+  Delete,
   Param,
   Body,
   Query,
@@ -31,6 +33,8 @@ import {
   QueryAuditLogsDto,
   AdminCancelBookingDto,
   AssignSupportCaseDto,
+  CreateStaffDto,
+  UpdateStaffDto,
 } from './dto';
 
 @Controller('api/v1/admin')
@@ -152,6 +156,149 @@ export class AdminOperationsController {
       data: result,
     };
   }
+
+  /**
+   * 2b. Staff Governance (Super Admin Sole Authority, Hidden Owner)
+   */
+  @Get('staff')
+  @Roles(...ADMIN_ROLES)
+  async listStaff(
+    @Query('search') search?: string,
+    @Query('role') role?: string,
+    @Query('status') status?: string,
+    @Query('page') pageRaw?: string,
+    @Query('limit') limitRaw?: string,
+  ) {
+    const page = Math.max(1, parseInt(pageRaw || '1', 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(limitRaw || '10', 10) || 10));
+    const result = await this.adminService.listStaff({ search, role, status, page, limit });
+    return {
+      success: true,
+      data: result.staff,
+      meta: {
+        pagination: {
+          page: result.page,
+          limit: result.limit,
+          total: result.total,
+          totalPages: result.totalPages,
+        },
+      },
+    };
+  }
+
+  @Post('staff')
+  @Roles(SUPER_ADMIN_ROLE)
+  async createStaff(
+    @CurrentUser() superAdmin: AuthenticatedUser,
+    @Body() dto: CreateStaffDto,
+  ) {
+    const staff = await this.adminService.createStaff(superAdmin, dto);
+    return {
+      success: true,
+      message: `Staff account created successfully with role '${dto.role}'.`,
+      data: staff,
+    };
+  }
+
+  @Patch('staff/:id')
+  @Roles(SUPER_ADMIN_ROLE)
+  async updateStaff(
+    @CurrentUser() superAdmin: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) staffId: string,
+    @Body() dto: UpdateStaffDto,
+  ) {
+    const staff = await this.adminService.updateStaff(superAdmin, staffId, dto);
+    return {
+      success: true,
+      message: 'Staff account updated successfully.',
+      data: staff,
+    };
+  }
+
+  @Delete('staff/:id')
+  @Roles(SUPER_ADMIN_ROLE)
+  async deleteStaff(
+    @CurrentUser() superAdmin: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) staffId: string,
+  ) {
+    await this.adminService.deleteStaff(superAdmin, staffId);
+    return {
+      success: true,
+      message: 'Staff account deleted and sessions invalidated.',
+    };
+  }
+
+  @Post('users/:id/force-logout')
+  @HttpCode(HttpStatus.OK)
+  @Roles(...ADMIN_ROLES)
+  async forceLogout(
+    @CurrentUser() adminUser: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) targetUserId: string,
+  ) {
+    const result = await this.adminService.forceLogout(adminUser, targetUserId);
+    return {
+      success: true,
+      message: result.message,
+    };
+  }
+
+  @Get('students-guardians')
+  @Roles(...ADMIN_ROLES)
+  async listStudentsAndGuardians(
+    @Query('search') search?: string,
+    @Query('status') status?: string,
+    @Query('userType') userType?: string,
+    @Query('page') pageRaw?: string,
+    @Query('limit') limitRaw?: string,
+  ) {
+    const page = Math.max(1, parseInt(pageRaw || '1', 10) || 1);
+    const limit = Math.min(100, Math.max(1, parseInt(limitRaw || '10', 10) || 10));
+    const result = await this.adminService.listStudentsAndGuardians({
+      search,
+      status,
+      userType,
+      page,
+      limit,
+    });
+    return {
+      success: true,
+      data: result.learners,
+      meta: {
+        pagination: {
+          page: result.page,
+          limit: result.limit,
+          total: result.total,
+          totalPages: result.totalPages,
+        },
+      },
+    };
+  }
+
+  @Get('students-guardians/:id')
+  @Roles(...ADMIN_ROLES)
+  async getStudentOrGuardianDossier(@Param('id', ParseUUIDPipe) id: string) {
+    const dossier = await this.adminService.getStudentOrGuardianDossier(id);
+    return {
+      success: true,
+      data: dossier,
+    };
+  }
+
+  @Put('students-guardians/:id')
+  @Roles(...ADMIN_ROLES)
+  async updateStudentOrGuardian(
+    @CurrentUser() adminUser: AuthenticatedUser,
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body() dto: { displayName?: string; phoneE164?: string; status?: string; preferredLocale?: string },
+  ) {
+    const result = await this.adminService.updateStudentOrGuardian(adminUser, id, dto);
+    return {
+      success: true,
+      message: 'Learner profile updated successfully.',
+      data: result,
+    };
+  }
+
 
   /**
    * 3. Bookings Operations & Emergency Intervention

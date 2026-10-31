@@ -1,8 +1,8 @@
 'use client';
 
-import { use } from 'react';
-import { AdminTutorVerificationDetailPage } from '@/features/admin';
-import type { Locale } from '@/lib/i18n';
+import { use, useEffect } from 'react';
+import { useRouter } from 'next/navigation';
+import { LoadingSpinner } from '@/components/ui';
 
 export default function AdminTutorVerificationDetailRoute({
   params,
@@ -10,6 +10,16 @@ export default function AdminTutorVerificationDetailRoute({
   params: Promise<{ locale: string; id: string }>;
 }) {
   const resolved = use(params);
-  const locale = (resolved.locale === 'en' ? 'en' : 'bn') as Locale;
-  return <AdminTutorVerificationDetailPage locale={locale} tutorId={resolved.id} />;
+  const locale = resolved.locale === 'en' ? 'en' : 'bn';
+  const router = useRouter();
+
+  useEffect(() => {
+    router.replace(`/${locale}/dashboard/admin/users/tutors/${resolved.id}`);
+  }, [locale, resolved.id, router]);
+
+  return (
+    <div className="flex items-center justify-center min-h-[60vh]">
+      <LoadingSpinner />
+    </div>
+  );
 }

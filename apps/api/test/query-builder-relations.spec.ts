@@ -30,6 +30,9 @@ import { SafetyReportEntity } from '../src/modules/trust/entities/safety-report.
 import { SafetyCaseMessageEntity } from '../src/modules/trust/entities/safety-case-message.entity';
 import { SafetyCaseEventEntity } from '../src/modules/trust/entities/safety-case-event.entity';
 import { SafetyActionEntity } from '../src/modules/trust/entities/safety-action.entity';
+import { TuitionRequestEntity } from '../src/modules/tuition-requests/entities/tuition-request.entity';
+import { TuitionRequestSuggestionEntity } from '../src/modules/tuition-requests/entities/tuition-request-suggestion.entity';
+import { TuitionRequestApplicationEntity } from '../src/modules/tuition-requests/entities/tuition-request-application.entity';
 
 const ENTITIES = [
   BookingEntity,
@@ -57,6 +60,9 @@ const ENTITIES = [
   SafetyCaseMessageEntity,
   SafetyCaseEventEntity,
   SafetyActionEntity,
+  TuitionRequestEntity,
+  TuitionRequestSuggestionEntity,
+  TuitionRequestApplicationEntity,
 ] as const;
 
 type EntityCtor = { name: string };

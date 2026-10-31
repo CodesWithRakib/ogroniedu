@@ -106,13 +106,22 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter, OnModul
     );
   }
 
+  private get resolvedWebhookUrl(): string {
+    if (process.env.PAYMENT_WEBHOOK_URL?.trim()) {
+      return process.env.PAYMENT_WEBHOOK_URL.trim();
+    }
+    return `${this.tunnelBaseUrl}/api/v1/payments/webhook/sslcommerz`;
+  }
+
   private get tunnelBaseUrl(): string {
     const rawUrl =
-      process.env.API_BASE_URL ||
       process.env.RENDER_EXTERNAL_URL ||
       process.env.PAYMENT_TUNNEL_URL ||
       process.env.NGROK_TUNNEL_URL ||
-      'http://localhost:4000';
+      (process.env.API_BASE_URL && !process.env.API_BASE_URL.includes('localhost')
+        ? process.env.API_BASE_URL
+        : null) ||
+      'https://ogroniedu.onrender.com';
 
     const trimmed = rawUrl.trim().replace(/\/+$/, '');
     return /^https?:\/\//i.test(trimmed) ? trimmed : `https://${trimmed}`;
@@ -166,7 +175,8 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter, OnModul
     }
 
     const amountBdt = (amountMinor / 100).toFixed(2);
-    const callbackUrl = `${this.tunnelBaseUrl}/api/v1/payments/webhook/sslcommerz`;
+    const callbackUrl = this.resolvedWebhookUrl;
+    this.logger.log(`Using SSLCOMMERZ Callback & IPN Webhook URL: ${callbackUrl}`);
 
     const payload = new URLSearchParams({
       store_id: this.storeId,
@@ -190,7 +200,21 @@ export class SslcommerzSandboxAdapter implements PaymentProviderAdapter, OnModul
       product_profile: 'non-physical-goods',
       value_a: (metadata?.locale as string) || 'bn',
       value_b: (metadata?.bookingId as string) || '',
+      value_c: (metadata?.frontendOrigin as string) || '',
     });
+
+    const requestedMethod = (metadata?.paymentMethod as string)?.toLowerCase();
+    if (requestedMethod && requestedMethod !== 'any') {
+      if (requestedMethod === 'bkash') {
+        payload.append('multi_card_name', 'bkash');
+      } else if (requestedMethod === 'nagad') {
+        payload.append('multi_card_name', 'nagad');
+      } else if (requestedMethod === 'rocket') {
+        payload.append('multi_card_name', 'dbblmobilebanking,rocket');
+      } else if (requestedMethod === 'card' || requestedMethod === 'cards') {
+        payload.append('multi_card_name', 'mastercard,visa,amex');
+      }
+    }
 
     try {
       this.logger.log(

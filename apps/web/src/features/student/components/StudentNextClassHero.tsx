@@ -48,11 +48,11 @@ export function StudentNextClassHero({
         <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-6">
           <div className="flex flex-col gap-3 max-w-xl">
             <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-primary/10 border border-primary/20 text-primary text-xs font-semibold w-fit">
-              <Flame className="w-3.5 h-3.5 text-amber-500 animate-bounce" />
+              <Flame className="w-3.5 h-3.5 text-amber-500" />
               <span>
                 {isBn
-                  ? `${formatLocalizedNumber(streakDays, locale)} দিনের সক্রিয় স্টাডি স্ট্রিক 🔥`
-                  : `${streakDays}-day learning streak 🔥`}
+                  ? `${formatLocalizedNumber(streakDays, locale)} দিনের সক্রিয় স্টাডি স্ট্রিক`
+                  : `${streakDays}-day learning streak`}
               </span>
             </div>
             <h2 className="text-xl sm:text-2xl font-bold tracking-tight text-foreground">
@@ -74,11 +74,11 @@ export function StudentNextClassHero({
               <span>{isBn ? 'স্টাডি রুমে যান' : 'Open Study Room'}</span>
             </Link>
             <Link
-              href={withLocale('/tutors', locale)}
+              href={withLocale('/dashboard/student/sessions', locale)}
               className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors"
             >
               <Sparkles className="w-4 h-4" />
-              <span>{isBn ? 'নতুন শিক্ষক খুঁজুন' : 'Browse Tutors'}</span>
+              <span>{isBn ? 'ক্লাস রুটিন দেখুন' : 'View Schedule'}</span>
               <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>

@@ -83,7 +83,12 @@ export class PaymentsController {
       headers['content-type']?.includes('application/x-www-form-urlencoded');
 
     if (isBrowserPost && res) {
+      const originFromSession =
+        typeof body.value_c === 'string' && /^https?:\/\//i.test(body.value_c.trim())
+          ? body.value_c.trim()
+          : null;
       const rawFrontend =
+        originFromSession ||
         process.env.FRONTEND_URL?.split(',')[0] ||
         (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : undefined) ||
         'http://localhost:5000';

@@ -122,7 +122,12 @@ export class PaymentOrdersService {
         ? dto.paymentMethod
         : 'sslcommerz');
     const adapter = this.adapterFactory.getAdapter(providerName);
-    const sessionMetadata = { locale: dto.locale || 'bn', bookingId: booking.id };
+    const sessionMetadata = {
+      locale: dto.locale || 'bn',
+      bookingId: booking.id,
+      frontendOrigin: dto.frontendOrigin || '',
+      paymentMethod: dto.paymentMethod || '',
+    };
 
     if (existingOrder) {
       if (

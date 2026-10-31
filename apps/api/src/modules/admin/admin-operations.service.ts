@@ -60,6 +60,31 @@ export class AdminOperationsService {
   updateUserRoles(superAdmin: AuthenticatedUser, targetUserId: string, dto: UpdateUserRolesDto) {
     return this.users.updateUserRoles(superAdmin, targetUserId, dto);
   }
+  listStaff(query?: any) {
+    return this.users.listStaff(query);
+  }
+  createStaff(superAdmin: AuthenticatedUser, dto: any) {
+    return this.users.createStaff(superAdmin, dto);
+  }
+  updateStaff(superAdmin: AuthenticatedUser, staffId: string, dto: any) {
+    return this.users.updateStaff(superAdmin, staffId, dto);
+  }
+  deleteStaff(superAdmin: AuthenticatedUser, staffId: string) {
+    return this.users.deleteStaff(superAdmin, staffId);
+  }
+  forceLogout(adminUser: AuthenticatedUser, targetUserId: string) {
+    return this.users.forceLogout(adminUser, targetUserId);
+  }
+  listStudentsAndGuardians(query?: any) {
+    return this.users.listStudentsAndGuardians(query);
+  }
+  getStudentOrGuardianDossier(userId: string) {
+    return this.users.getStudentOrGuardianDossier(userId);
+  }
+  updateStudentOrGuardian(actorUser: AuthenticatedUser, userId: string, dto: any) {
+    return this.users.updateStudentOrGuardian(actorUser, userId, dto);
+  }
+
   listAllBookings(query: Parameters<AdminBookingsService['listAllBookings']>[0]) {
     return this.bookings.listAllBookings(query);
   }

@@ -8,6 +8,8 @@ import {
   Inject,
   forwardRef,
 } from '@nestjs/common';
+import crypto from 'node:crypto';
+import bcrypt from 'bcryptjs';
 import { InjectRepository, InjectDataSource } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
 import { UserEntity } from '../auth/entities/user.entity';
@@ -16,7 +18,13 @@ import { UserRoleEntity } from '../auth/entities/user-role.entity';
 import { StudentProfileEntity } from '../users/entities/student-profile.entity';
 import { GuardianStudentLinkEntity } from './entities/guardian-student-link.entity';
 import { AuditService } from '../audit/audit.service';
-import { LinkChildRequestDto, RegisterChildDto, VerifyLinkDto, RevokeLinkDto } from './dto';
+import {
+  LinkChildRequestDto,
+  RegisterChildDto,
+  VerifyLinkDto,
+  RevokeLinkDto,
+  SetChildPinDto,
+} from './dto';
 import { assertGuardianConsent } from './utils/guardian-consent.util';
 import { APPROVED_CONSENT_POLICY } from './constants/guardian-policy.constants';
 import { GuardianProvisioningService } from './services/guardian-provisioning.service';
@@ -178,6 +186,7 @@ export class GuardiansService {
         linkId: link.id,
         studentId: studentUser.id,
         displayName: studentUser.displayName,
+        studentCode: profile?.studentCode ?? null,
         relationshipType: link.relationshipType,
         status: link.status,
         consentPolicyVersion: link.consentPolicyVersion,
@@ -185,6 +194,7 @@ export class GuardiansService {
         isMinor: this.isMinor(profile?.dateOfBirth),
         studentProfile: profile
           ? {
+              studentCode: profile.studentCode ?? null,
               dateOfBirth: profile.dateOfBirth,
               educationLevelId: profile.educationLevelId,
               curriculumId: profile.curriculumId,
@@ -270,6 +280,7 @@ export class GuardiansService {
       linkId: link.id,
       studentId: studentUser.id,
       displayName: studentUser.displayName,
+      studentCode: profile?.studentCode ?? null,
       relationshipType: link.relationshipType,
       status: link.status,
       consentPolicyVersion: link.consentPolicyVersion,
@@ -279,6 +290,7 @@ export class GuardiansService {
       educationLevelName: null,
       studentProfile: profile
         ? {
+            studentCode: profile.studentCode ?? null,
             dateOfBirth: profile.dateOfBirth,
             educationLevelId: profile.educationLevelId,
             curriculumId: profile.curriculumId,
@@ -371,6 +383,132 @@ export class GuardiansService {
     return {
       success: true,
       message: 'Guardian-student relationship successfully revoked.',
+    };
+  }
+
+  /**
+   * Issue a secure, 1-click magic login link for a linked child/student.
+   * Guardian can send this link to the child's device (tablet/browser)
+   * so the child immediately enters /dashboard/student without typing a password.
+   */
+  async generateChildMagicLink(
+    guardianUserId: string,
+    studentId: string,
+    origin?: string,
+  ): Promise<{
+    magicLinkUrl: string;
+    token: string;
+    expiresInSeconds: number;
+    studentName: string;
+    studentCode: string | null;
+  }> {
+    const link = await this.linkRepository.findOne({
+      where: { guardianUserId, studentUserId: studentId, status: 'active' },
+    });
+    if (!link) {
+      throw new ForbiddenException(
+        'Access denied: You do not have an active guardian relationship with this student.',
+      );
+    }
+
+    const studentUser = await this.userRepository.findOne({ where: { id: studentId } });
+    if (!studentUser) {
+      throw new NotFoundException('Student user not found');
+    }
+
+    const profile = await this.studentProfileRepository.findOne({ where: { userId: studentId } });
+
+    // Generate 32-byte cryptographically secure token
+    const token = crypto.randomBytes(32).toString('hex');
+    const tokenHash = crypto.createHash('sha256').update(token).digest('hex');
+    const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24-hour validity
+
+    // Invalidate prior unused links for this student
+    await this.dataSource.query(
+      `UPDATE auth_magic_links
+       SET consumed_at = now()
+       WHERE user_id = $1 AND consumed_at IS NULL;`,
+      [studentId],
+    );
+
+    const email = studentUser.email || `child.${studentUser.id.substring(0, 8)}@ogroniedu.internal`;
+    await this.dataSource.query(
+      `INSERT INTO auth_magic_links (user_id, email, token_hash, purpose, redirect_path, expires_at)
+       VALUES ($1, $2, $3, 'login', '/dashboard/student', $4);`,
+      [studentId, email, tokenHash, expiresAt],
+    );
+
+    await this.auditService.record({
+      actorUserId: guardianUserId,
+      action: 'guardian.child.magic_link_generated',
+      resourceType: 'user',
+      resourceId: studentId,
+      safeMetadata: {
+        studentName: studentUser.displayName,
+        studentCode: profile?.studentCode ?? null,
+      },
+    });
+
+    const baseUrl = origin ? origin.replace(/\/$/, '') : (process.env.FRONTEND_URL?.split(',')[0] || 'http://localhost:5000');
+    const magicLinkUrl = `${baseUrl}/en/magic-link?token=${token}&redirect=/dashboard/student`;
+
+    return {
+      magicLinkUrl,
+      token,
+      expiresInSeconds: 86400,
+      studentName: studentUser.displayName,
+      studentCode: profile?.studentCode ?? null,
+    };
+  }
+
+  /**
+   * Set or update a 4-8 digit PIN or password for the child student.
+   * Enables the child to log in directly via /login using Student Code + PIN.
+   */
+  async setChildPin(
+    guardianUserId: string,
+    studentId: string,
+    dto: SetChildPinDto,
+  ): Promise<{ success: boolean; message: string; studentCode: string | null }> {
+    const link = await this.linkRepository.findOne({
+      where: { guardianUserId, studentUserId: studentId, status: 'active' },
+    });
+    if (!link) {
+      throw new ForbiddenException(
+        'Access denied: You do not have an active guardian relationship with this student.',
+      );
+    }
+
+    const studentUser = await this.userRepository.findOne({ where: { id: studentId } });
+    if (!studentUser) {
+      throw new NotFoundException('Student user not found');
+    }
+
+    const passwordHash = await bcrypt.hash(dto.pin, 10);
+    await this.dataSource.query(
+      `UPDATE users
+       SET password_hash = $1, auth_epoch = COALESCE(auth_epoch, 0) + 1, updated_at = now()
+       WHERE id = $2;`,
+      [passwordHash, studentId],
+    );
+
+    const profile = await this.studentProfileRepository.findOne({ where: { userId: studentId } });
+
+    await this.auditService.record({
+      actorUserId: guardianUserId,
+      action: 'guardian.child.pin_updated',
+      resourceType: 'user',
+      resourceId: studentId,
+      safeMetadata: {
+        studentName: studentUser.displayName,
+        studentCode: profile?.studentCode ?? null,
+      },
+    });
+
+    return {
+      success: true,
+      message: 'Child PIN/Password updated successfully.',
+      studentCode: profile?.studentCode ?? null,
     };
   }
 }

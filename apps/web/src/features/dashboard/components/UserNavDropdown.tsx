@@ -144,7 +144,17 @@ export function UserNavDropdown({ authUser, locale, role, onLogout }: UserNavDro
         {/* Profile Link */}
         <DropdownMenuItem asChild>
           <Link
-            href={withLocale('/profile', locale)}
+            href={
+              roleKey === 'tutor'
+                ? withLocale('/dashboard/tutor/profile', locale)
+                : roleKey === 'guardian'
+                  ? withLocale('/dashboard/guardian/children', locale)
+                  : roleKey === 'student'
+                    ? withLocale('/dashboard/student/learning', locale)
+                    : roleKey === 'admin' || roleKey === 'super_admin'
+                      ? withLocale('/dashboard/admin/settings', locale)
+                      : withLocale('/dashboard', locale)
+            }
             className="flex items-center gap-2.5 px-3 py-2 text-xs font-semibold rounded-xl text-foreground hover:text-primary hover:bg-card/70 cursor-pointer transition-colors"
           >
             <User className="h-4 w-4 text-primary" />

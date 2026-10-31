@@ -404,7 +404,14 @@ export class TutorVerificationService {
         'Self-approval denial: Reviewer cannot decide verification on their own tutor profile.',
       );
     }
-    const levelRow = await this.statusService.getLevel(effectiveUserId, level);
+    let levelRow = await this.statusService.getLevel(effectiveUserId, level);
+    if (!levelRow) {
+      await this.statusService.ensureLevels(
+        effectiveUserId,
+        TUTOR_VERIFICATION_POLICY_VERSION,
+      );
+      levelRow = await this.statusService.getLevel(effectiveUserId, level);
+    }
     if (!levelRow) {
       throw new NotFoundException(`Verification level '${level}' not found for tutor: ${tutorId}`);
     }
@@ -418,9 +425,22 @@ export class TutorVerificationService {
 
     const targetStatus = this.resolveLevelTarget(levelRow.status, dto.decision);
     if (!canTransitionLevel(levelRow.status, targetStatus)) {
-      throw new ConflictException(
-        `Illegal verification transition: ${levelRow.status} -> ${targetStatus}.`,
-      );
+      const docsCount = this.documentRepo
+        ? await this.documentRepo.count({
+            where: { tutorUserId: effectiveUserId, level, deletedAt: IsNull() },
+          })
+        : 0;
+      if (
+        docsCount > 0 &&
+        (levelRow.status === 'not_started' || levelRow.status === 'draft')
+      ) {
+        levelRow.status = 'submitted';
+        await this.levelRepo.save(levelRow);
+      } else {
+        throw new ConflictException(
+          `Cannot mark verification level '${level}' as '${dto.decision}' from status '${levelRow.status}'. The tutor has not submitted evidence documents for this level yet.`,
+        );
+      }
     }
     if (
       (dto.decision === 'rejected' ||

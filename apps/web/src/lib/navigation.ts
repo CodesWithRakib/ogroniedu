@@ -3,7 +3,7 @@
 import { GraduationCap } from 'lucide-react';
 import type { UserRole } from '@/store/slices/auth-slice';
 import type { NavItem, NavSection } from './navigation/types';
-import { STUDENT_NAV_SECTIONS } from './navigation/student.nav';
+import { STUDENT_NAV_SECTIONS, CHILD_STUDENT_NAV_SECTIONS } from './navigation/student.nav';
 import { GUARDIAN_NAV_SECTIONS } from './navigation/guardian.nav';
 import { TUTOR_NAV_SECTIONS } from './navigation/tutor.nav';
 import {
@@ -16,7 +16,7 @@ import {
 
 export * from './navigation/types';
 export * from './navigation/presets';
-export { GraduationCap };
+export { GraduationCap, STUDENT_NAV_SECTIONS, CHILD_STUDENT_NAV_SECTIONS };
 
 /** True when the nav item matches the current pathname (shared by all shell navs). */
 export function isNavActive(pathname: string | null, href: string): boolean {
@@ -40,10 +40,13 @@ export function isNavActive(pathname: string | null, href: string): boolean {
 }
 
 /** Categorized navigation sections for sidebar and mobile drawer. */
-export function navSectionsForRole(role: UserRole | null): NavSection[] {
+export function navSectionsForRole(
+  role: UserRole | null,
+  options?: { isChildStudent?: boolean },
+): NavSection[] {
   switch (role) {
     case 'student':
-      return STUDENT_NAV_SECTIONS;
+      return options?.isChildStudent ? CHILD_STUDENT_NAV_SECTIONS : STUDENT_NAV_SECTIONS;
     case 'guardian':
       return GUARDIAN_NAV_SECTIONS;
     case 'tutor':
@@ -64,6 +67,6 @@ export function navSectionsForRole(role: UserRole | null): NavSection[] {
 }
 
 /** Single source of truth for role → navigation items. DashboardShell renders this. */
-export function navForRole(role: UserRole | null): NavItem[] {
-  return navSectionsForRole(role).flatMap((s) => s.items);
+export function navForRole(role: UserRole | null, options?: { isChildStudent?: boolean }): NavItem[] {
+  return navSectionsForRole(role, options).flatMap((s) => s.items);
 }

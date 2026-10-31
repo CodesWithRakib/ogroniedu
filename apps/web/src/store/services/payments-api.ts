@@ -14,6 +14,7 @@ export interface CreatePaymentOrderRequest {
   provider?: PaymentProvider;
   paymentMethod?: string;
   locale?: string;
+  frontendOrigin?: string;
 }
 
 export interface PaymentReceipt {

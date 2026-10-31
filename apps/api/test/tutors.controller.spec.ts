@@ -56,7 +56,11 @@ describe('TutorsController & AdminTutorsController Unit Tests', () => {
     };
 
     tutorsController = new TutorsController(mockTutorsService as TutorsService);
-    adminController = new AdminTutorsController(mockTutorsService as TutorsService);
+    adminController = new AdminTutorsController(
+      mockTutorsService as TutorsService,
+      {} as any,
+      {} as any,
+    );
   });
 
   describe('TutorsController Endpoints', () => {

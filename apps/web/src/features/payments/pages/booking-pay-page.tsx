@@ -1,62 +1,35 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState, useMemo } from 'react';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 import {
   ShieldCheck,
-  CreditCard,
   CheckCircle2,
   ArrowLeft,
-  Lock,
-  Sparkles,
-  Receipt,
-  Clock,
-  ExternalLink,
-  RefreshCw,
   AlertTriangle,
+  RefreshCw,
+  Calendar,
+  GraduationCap,
 } from 'lucide-react';
-import { Button, LoadingSpinner, EmptyState } from '@/components/ui';
-import { DashboardShell } from '@/components/dashboard/DashboardShell';
+import { Button, LoadingSpinner, Alert, AlertDescription } from '@/components/ui';
 import { useGetBookingRequestByIdQuery } from '@/store/services/bookings-api';
 import {
   useCreatePaymentOrderMutation,
   type CreatePaymentOrderResponse,
-  type PaymentProvider,
 } from '@/store/services/payments-api';
 import { normalizeUnknownError, newIdempotencyKey } from '@/lib/api-error';
 import { formatBDTMinor } from '@/lib/format';
-import { type Locale } from '@/lib/i18n';
+import { type Locale, formatLocalizedNumber } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
-import { EmbeddedEasyCheckout } from '../components/embedded-easy-checkout';
 import { usePaymentStatus } from '../hooks/use-payment-status';
+import { EasyCheckoutDesk } from '../components/easy-checkout-desk';
+import { SaasCheckoutFlow, type PaymentMethodId } from '../components/saas-checkout-flow';
 
 export interface BookingPayPageProps {
   bookingId: string;
   locale: Locale;
 }
-
-const PROVIDERS: Array<{
-  id: PaymentProvider;
-  nameEn: string;
-  nameBn: string;
-  hintEn: string;
-  hintBn: string;
-}> = [
-  {
-    id: 'sslcommerz',
-    nameEn: 'SSLCOMMERZ',
-    nameBn: 'SSLCOMMERZ',
-    hintEn: 'Cards, mobile banking & net banking',
-    hintBn: 'কার্ড, মোবাইল ব্যাংকিং ও নেট ব্যাংকিং',
-  },
-  {
-    id: 'bkash',
-    nameEn: 'bKash',
-    nameBn: 'বিকাশ',
-    hintEn: 'Pay from your bKash wallet',
-    hintBn: 'বিকাশ ওয়ালেট থেকে পরিশোধ করুন',
-  },
-];
 
 const PAYABLE_STATUSES = new Set(['accepted', 'awaiting_payment']);
 const CONFIRMED_STATUSES = new Set(['confirmed', 'in_progress', 'completed']);
@@ -70,20 +43,24 @@ const TERMINAL_STATUSES = new Set([
 ]);
 
 export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
+  const router = useRouter();
   const isBn = locale === 'bn';
 
   const {
     data: bookingData,
     isLoading: loadingBooking,
-    isFetching,
     isError,
     refetch,
   } = useGetBookingRequestByIdQuery(bookingId);
+
   const [createOrder, { isLoading: creatingOrder }] = useCreatePaymentOrderMutation();
 
-  const [provider, setProvider] = useState<PaymentProvider>('sslcommerz');
   const [pendingOrder, setPendingOrder] = useState<CreatePaymentOrderResponse | null>(null);
+  const [inPageIframeLoading, setInPageIframeLoading] = useState(true);
+  const [showIframeModal, setShowIframeModal] = useState(false);
   const [errorText, setErrorText] = useState<string | null>(null);
+  const [paymentFailedState, setPaymentFailedState] = useState<string | null>(null);
+  const [viewMode, setViewMode] = useState<'saas' | 'desk'>('saas');
 
   const booking = bookingData?.data;
   const status = String(booking?.status ?? '');
@@ -92,11 +69,12 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
   const isConfirmed = CONFIRMED_STATUSES.has(status);
   const isTerminal = TERMINAL_STATUSES.has(status);
 
-  // Real-time authoritative payment status check while waiting for gateway confirmation
-  usePaymentStatus({
+  // Authoritative real-time payment status polling with backend
+  const { isSucceeded: orderSucceeded, isFailed: orderFailed } = usePaymentStatus({
     orderId: pendingOrder?.orderId,
-    enabled: Boolean(pendingOrder && isPayable),
+    enabled: Boolean(pendingOrder && isPayable && !isConfirmed),
     onSuccess: () => {
+      setShowIframeModal(false);
       void refetch();
     },
     onTerminalState: () => {
@@ -104,528 +82,528 @@ export function BookingPayPage({ bookingId, locale }: BookingPayPageProps) {
     },
   });
 
-  // Poll the authoritative booking record while the provider is processing.
-  // The browser itself is never allowed to mark the booking paid.
+  // Background polling while payment is payable or awaiting confirmation
   useEffect(() => {
-    if (!isPayable) return undefined;
+    if (!isPayable || isConfirmed) return undefined;
     const timer = setInterval(() => {
       void refetch();
-    }, 5000);
+    }, 4000);
     return () => clearInterval(timer);
-  }, [isPayable, refetch]);
+  }, [isPayable, isConfirmed, refetch]);
 
-  const openCheckout = useCallback((url: string) => {
-    const popup = window.open(url, '_blank');
-    if (popup) {
-      popup.opener = null;
-    } else {
-      window.location.assign(url);
+  // When order succeeds from hook, ensure refetch & close modal
+  useEffect(() => {
+    if (orderSucceeded) {
+      setShowIframeModal(false);
+      void refetch();
     }
-  }, []);
+  }, [orderSucceeded, refetch]);
 
-  async function handlePay() {
-    setErrorText(null);
-    if (!isPayable || priceMinor <= 0) {
-      setErrorText(
+  // When order fails from hook
+  useEffect(() => {
+    if (orderFailed) {
+      setShowIframeModal(false);
+      setPaymentFailedState(
         isBn
-          ? 'এই বুকিংটি এখন পেমেন্টের জন্য প্রস্তুত নয়।'
-          : 'This booking is not ready for payment yet.',
+          ? 'পেমেন্ট ব্যর্থ হয়েছে বা গেটওয়েতে বাতিল করা হয়েছে।'
+          : 'Payment failed or was cancelled at the gateway.',
       );
-      return;
+    }
+  }, [orderFailed, isBn]);
+
+  // Resolve frameable EasyCheckOut URL
+  const targetIframeUrl = useMemo(() => {
+    if (!pendingOrder) return '';
+    const rawUrl = pendingOrder.gatewayPageUrl || pendingOrder.checkoutUrl;
+    if (!rawUrl) return '';
+
+    if (rawUrl.includes('/EasyCheckOut/')) {
+      return rawUrl.includes('full=1')
+        ? rawUrl
+        : rawUrl.includes('?')
+          ? `${rawUrl}&full=1`
+          : `${rawUrl}?full=1`;
     }
 
-    if (provider === 'sslcommerz') {
+    const sessionKey =
+      pendingOrder.sessionKey ||
+      rawUrl.match(/[?&]SESSIONKEY=([A-Za-z0-9]+)/i)?.[1] ||
+      rawUrl.match(/\/EasyCheckOut\/(?:testcde)?([A-Za-z0-9]+)/i)?.[1];
+
+    if (sessionKey) {
+      const isSandbox =
+        rawUrl.includes('sandbox.sslcommerz.com') || !rawUrl.includes('securepay.sslcommerz.com');
+      const baseDomain = isSandbox
+        ? 'https://sandbox.sslcommerz.com'
+        : 'https://seamless-epay.sslcommerz.com';
+      const pathPrefix = isSandbox ? 'testcde' : '';
+      return `${baseDomain}/EasyCheckOut/${pathPrefix}${sessionKey}?full=1`;
+    }
+
+    return rawUrl;
+  }, [pendingOrder]);
+
+  // PostMessage listener for SSLCommerz callback or /payments/result
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
+
+    const handleMessage = (event: MessageEvent) => {
+      if (!event.data) return;
+
+      let data: Record<string, unknown> = {};
       try {
-        const res = await createOrder({
-          body: { bookingId, provider, locale },
-          idempotencyKey: newIdempotencyKey('order'),
-        }).unwrap();
-        const created = (res.data ?? res) as CreatePaymentOrderResponse;
-        if (!created?.checkoutUrl) {
-          throw new Error(
+        data = typeof event.data === 'string' ? JSON.parse(event.data) : event.data;
+      } catch {
+        return;
+      }
+
+      // 1. Direct message from internal result
+      if (data.type === 'PAYMENT_RESULT' || data.type === 'PAYMENT_COMPLETE') {
+        const resultStatus = String(data.status || '');
+        if (resultStatus === 'succeeded' || resultStatus === 'success') {
+          setShowIframeModal(false);
+          void refetch();
+        } else if (resultStatus === 'failed' || resultStatus === 'cancelled') {
+          setShowIframeModal(false);
+          setPaymentFailedState(
             isBn
-              ? 'পেমেন্ট গেটওয়ে চেকআউট লিংক দেয়নি। আবার চেষ্টা করুন।'
-              : 'The payment gateway did not return a checkout session. Please try again.',
+              ? 'পেমেন্ট সম্পন্ন হয়নি বা বাতিল করা হয়েছে।'
+              : 'Payment was not completed or was cancelled.',
           );
         }
+        return;
+      }
+
+      // 2. Official SSLCommerz easyCheckout postMessage
+      if (data.status === 'success') {
+        if (typeof data.url === 'string' && data.url.includes('http')) {
+          setShowIframeModal(false);
+          if (data.url.includes('status=failed') || data.url.includes('status=cancelled')) {
+            setPaymentFailedState(
+              isBn
+                ? 'পেমেন্ট গেটওয়েতে বাতিল বা ব্যর্থ হয়েছে।'
+                : 'Payment was cancelled or failed at the gateway.',
+            );
+          } else {
+            void refetch();
+          }
+        }
+      } else if (data.status === 'failed' || data.status === 'cancel') {
+        if (typeof data.url === 'string' && data.url.includes('http')) {
+          setShowIframeModal(false);
+          setPaymentFailedState(
+            isBn
+              ? 'পেমেন্ট সম্পন্ন হয়নি বা বাতিল করা হয়েছে।'
+              : 'Payment was cancelled or failed.',
+          );
+        }
+      }
+    };
+
+    window.addEventListener('message', handleMessage);
+    return () => window.removeEventListener('message', handleMessage);
+  }, [isBn, refetch]);
+
+  // Trigger In-Page Payment Order Creation & Open SSLCommerz Easy Checkout
+  const handleInitiatePayment = useCallback(
+    async (payload: {
+      method: string;
+      selectedChannel: string;
+      emiTenure?: string;
+      discountMinor: number;
+      finalAmountMinor: number;
+    }) => {
+      setErrorText(null);
+      setPaymentFailedState(null);
+
+      if (!isPayable || priceMinor <= 0) {
+        setErrorText(
+          isBn
+            ? 'এই বুকিংটি এখন পেমেন্টের জন্য প্রস্তুত নয়।'
+            : 'This booking is not ready for payment yet.',
+        );
+        return;
+      }
+
+      try {
+        setInPageIframeLoading(true);
+        const res = await createOrder({
+          body: {
+            bookingId,
+            provider: 'sslcommerz',
+            locale,
+            paymentMethod: payload.selectedChannel,
+            frontendOrigin: typeof window !== 'undefined' ? window.location.origin : undefined,
+          },
+          idempotencyKey: newIdempotencyKey('order'),
+        }).unwrap();
+
+        const created = (res.data ?? res) as CreatePaymentOrderResponse;
+        if (!created?.checkoutUrl && !created?.gatewayPageUrl) {
+          throw new Error(
+            isBn
+              ? 'পেমেন্ট গেটওয়ে চেকআউট লিংক পাওয়া যায়নি। আবার চেষ্টা করুন।'
+              : 'The payment gateway did not return a valid session. Please try again.',
+          );
+        }
+
         setPendingOrder(created);
-        void refetch();
+        setShowIframeModal(true);
       } catch (err) {
         setErrorText(normalizeUnknownError(err, locale).message);
       }
-      return;
-    }
+    },
+    [isPayable, priceMinor, isBn, createOrder, bookingId, locale],
+  );
 
-    // Open synchronously so the browser does not block the provider window for external gateways.
-    const checkoutWindow = window.open('about:blank', '_blank');
-    if (checkoutWindow) checkoutWindow.opener = null;
+  // Cancel in-page checkout frame & return to review
+  const handleCancelInPageCheckout = useCallback(() => {
+    setShowIframeModal(false);
+    setPendingOrder(null);
+    setPaymentFailedState(null);
+    setErrorText(null);
+  }, []);
 
-    try {
-      const res = await createOrder({
-        body: { bookingId, provider, locale },
-        idempotencyKey: newIdempotencyKey('order'),
-      }).unwrap();
-      const created = (res.data ?? res) as CreatePaymentOrderResponse;
-      if (!created?.checkoutUrl) {
-        throw new Error(
+  // Trigger SaaS Direct Payment initiation (Redirects directly to bKash / Cards without modal repetition!)
+  const handleInitiatePaymentSaas = useCallback(
+    async (payload: {
+      method: PaymentMethodId;
+      payerPhone?: string;
+      discountMinor: number;
+      finalAmountMinor: number;
+    }) => {
+      setErrorText(null);
+      setPaymentFailedState(null);
+
+      if (!isPayable || priceMinor <= 0) {
+        setErrorText(
           isBn
-            ? 'পেমেন্ট গেটওয়ে চেকআউট লিংক দেয়নি। আবার চেষ্টা করুন।'
-            : 'The payment gateway did not return a checkout session. Please try again.',
+            ? 'এই বুকিংটি এখন পেমেন্টের জন্য প্রস্তুত নয়।'
+            : 'This booking is not ready for payment yet.',
         );
+        return;
       }
 
-      setPendingOrder(created);
-      if (checkoutWindow) {
-        checkoutWindow.location.replace(created.checkoutUrl);
-      } else {
-        window.location.assign(created.checkoutUrl);
+      try {
+        setInPageIframeLoading(true);
+        const res = await createOrder({
+          body: {
+            bookingId,
+            provider: 'sslcommerz',
+            locale,
+            paymentMethod: payload.method === 'any' ? undefined : payload.method,
+            frontendOrigin: typeof window !== 'undefined' ? window.location.origin : undefined,
+          },
+          idempotencyKey: newIdempotencyKey('order'),
+        }).unwrap();
+
+        const created = (res.data ?? res) as CreatePaymentOrderResponse;
+        if (!created?.checkoutUrl && !created?.gatewayPageUrl) {
+          throw new Error(
+            isBn
+              ? 'পেমেন্ট গেটওয়ে চেকআউট লিংক পাওয়া যায়নি। আবার চেষ্টা করুন।'
+              : 'The payment gateway did not return a valid session. Please try again.',
+          );
+        }
+
+        setPendingOrder(created);
+
+        // Direct hosted redirect straight into the selected payment channel (bKash/Cards/MFS)
+        const targetUrl = created.gatewayPageUrl || created.checkoutUrl;
+        if (targetUrl) {
+          window.location.href = targetUrl;
+        }
+
+        return created;
+      } catch (err) {
+        setErrorText(normalizeUnknownError(err, locale).message);
+      } finally {
+        setInPageIframeLoading(false);
       }
-      void refetch();
-    } catch (err) {
-      checkoutWindow?.close();
-      setErrorText(normalizeUnknownError(err, locale).message);
-    }
-  }
+    },
+    [isPayable, priceMinor, isBn, createOrder, bookingId, locale],
+  );
 
   const subjectName = isBn
     ? booking?.subject?.nameBn || booking?.subject?.name
     : booking?.subject?.name || booking?.subject?.nameBn;
   const tutorUser = booking?.tutorProfile?.user as
-    { displayName?: string | null; fullName?: string | null } | undefined;
-  const tutorName = tutorUser?.displayName || tutorUser?.fullName || (isBn ? 'শিক্ষক' : 'Tutor');
+    | { displayName?: string | null; fullName?: string | null }
+    | undefined;
+  const tutorName =
+    tutorUser?.displayName || tutorUser?.fullName || (isBn ? 'যাচাইকৃত শিক্ষক' : 'Verified Tutor');
   const displaySubject = subjectName || (isBn ? 'সাধারণ বিষয়' : 'General Subject');
+  const educationLevel =
+    (isBn ? booking?.educationLevel?.nameBn : booking?.educationLevel?.name) ||
+    booking?.educationLevel?.name ||
+    '';
 
+  // Loading state
   if (loadingBooking) {
     return (
-      <DashboardShell locale={locale} title={isBn ? 'পেমেন্ট' : 'Payment'}>
-        <div className="py-24 flex justify-center">
-          <LoadingSpinner />
-        </div>
-      </DashboardShell>
+      <div className="min-h-screen bg-muted/15 flex flex-col items-center justify-center p-4">
+        <LoadingSpinner className="w-10 h-10 text-primary" />
+        <p className="mt-3 text-xs font-bold text-muted-foreground">
+          {isBn ? 'চেকআউট তথ্য লোড হচ্ছে…' : 'Loading checkout details…'}
+        </p>
+      </div>
     );
   }
 
+  // Not found or access error state
   if (isError || !booking) {
     return (
-      <DashboardShell locale={locale} title={isBn ? 'পেমেন্ট' : 'Payment'}>
-        <EmptyState
-          title={isBn ? 'বুকিং পাওয়া যায়নি' : 'Booking not found'}
-          description={
-            isBn
+      <div className="min-h-screen bg-muted/15 flex flex-col items-center justify-center p-4">
+        <div className="w-full max-w-md p-6 bg-card border border-border rounded-2xl text-center shadow-lg">
+          <div className="w-12 h-12 rounded-xl bg-destructive/10 text-destructive flex items-center justify-center mx-auto mb-3">
+            <AlertTriangle className="w-6 h-6" />
+          </div>
+          <h2 className="text-base font-bold text-foreground">
+            {isBn ? 'বুকিং পাওয়া যায়নি' : 'Booking Not Found'}
+          </h2>
+          <p className="mt-1 text-xs text-muted-foreground">
+            {isBn
               ? 'আপনি এই বুকিংয়ের পেমেন্ট দেখার অনুমতি রাখেন না অথবা বুকিংটি মুছে ফেলা হয়েছে।'
-              : 'You do not have access to this booking, or it no longer exists.'
-          }
-          actionLabel={isBn ? 'বুকিংয়ে ফিরুন' : 'Back to bookings'}
-          actionHref={withLocale('/dashboard/student/requests', locale)}
-        />
-      </DashboardShell>
+              : 'You do not have permission to view this booking, or it has been removed.'}
+          </p>
+          <div className="mt-4">
+            <Button asChild size="sm" className="rounded-xl font-bold">
+              <Link href={withLocale('/dashboard/student/payments', locale)}>
+                {isBn ? 'পেমেন্ট তালিকায় ফিরুন' : 'Back to Payments'}
+              </Link>
+            </Button>
+          </div>
+        </div>
+      </div>
     );
   }
 
   return (
-    <DashboardShell
-      locale={locale}
-      title={isBn ? 'সুরক্ষিত পেমেন্ট' : 'Secure Payment'}
-      subtitle={
-        isBn
-          ? 'পেমেন্টের অবস্থা সরাসরি ব্যাকএন্ড থেকে যাচাই করা হয়'
-          : 'Payment status is verified directly with the backend'
-      }
-    >
-      <div className="w-full flex flex-col gap-6">
-        <Link
-          href={withLocale(`/dashboard/bookings/${bookingId}`, locale)}
-          className="inline-flex items-center gap-1.5 text-xs font-semibold text-muted-foreground hover:text-foreground transition-colors"
-        >
-          <ArrowLeft className="w-3.5 h-3.5" />
-          {isBn ? 'বুকিং বিবরণে ফিরুন' : 'Back to booking'}
-        </Link>
-
-        {/* Hero — matches the home / tutor discovery visual language */}
-        <section className="relative overflow-hidden rounded-xl border border-border bg-card p-5 sm:p-8">
-          <div className="relative z-10 flex flex-col lg:flex-row lg:items-center lg:justify-between gap-5">
-            <div className="flex flex-col gap-3 max-w-2xl">
-              <div className="inline-flex items-center gap-1.5 rounded-full border border-primary/20 bg-primary-soft px-3 py-1 text-[11px] font-bold text-primary">
-                <ShieldCheck className="w-3.5 h-3.5" />
-                {isBn ? 'সুরক্ষিত চেকআউট' : 'Secure checkout'}
-              </div>
-              <h1 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight text-foreground leading-tight">
-                {isConfirmed ? (
-                  isBn ? (
-                    <>
-                      পেমেন্ট{' '}
-                      <span className="text-primary font-bold">
-                        নিশ্চিত হয়েছে
-                      </span>
-                    </>
-                  ) : (
-                    <>
-                      Payment{' '}
-                      <span className="text-primary font-bold">confirmed</span>
-                    </>
-                  )
-                ) : isBn ? (
-                  <>
-                    ক্লাস শুরু করার আগে{' '}
-                    <span className="text-primary font-bold">
-                      পেমেন্ট সম্পন্ন করুন
-                    </span>
-                  </>
-                ) : (
-                  <>
-                    Complete your payment{' '}
-                    <span className="text-primary font-bold">
-                      before class starts
-                    </span>
-                  </>
-                )}
-              </h1>
-              <p className="text-xs sm:text-sm text-muted-foreground leading-relaxed">
-                {isConfirmed
-                  ? isBn
-                    ? 'পেমেন্ট প্রোভাইডার লেনদেন যাচাই করেছে এবং বুকিং নিশ্চিত হয়েছে।'
-                    : 'The payment provider verified the transaction and the booking is confirmed.'
-                  : isBn
-                    ? 'পেমেন্ট গেটওয়েতে সম্পন্ন করুন। ফিরে এলে এই পেজটি ব্যাকএন্ড থেকে সর্বশেষ অবস্থা দেখাবে।'
-                    : 'Complete the payment on the provider page. When you return, this page reads the latest status from the backend.'}
-              </p>
-              <div className="flex flex-wrap gap-2 pt-1 text-[11px] font-semibold">
-                <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card/80 px-2.5 py-1 text-foreground">
-                  <Lock className="w-3 hand-3 text-primary" />
-                  {isBn ? 'গেটওয়ে-যাচাইকৃত' : 'Gateway-verified'}
-                </span>
-                <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card/80 px-2.5 py-1 text-foreground">
-                  <Receipt className="w-3 h-3 text-primary" />
-                  {isBn ? 'স্বচ্ছ ফি' : 'Transparent fee'}
-                </span>
-                <span className="inline-flex items-center gap-1 rounded-full border border-border bg-card/80 px-2.5 py-1 text-foreground">
-                  <Sparkles className="w-3 h-3 text-primary" />
-                  {isBn ? 'লাইভ স্ট্যাটাস' : 'Live status'}
-                </span>
-              </div>
+    <div className="min-h-screen bg-muted/10 flex flex-col">
+      {/* Global Minimal Checkout Bar */}
+      <header className="sticky top-0 z-40 w-full border-b border-border bg-card/95 backdrop-blur-md">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between gap-4">
+          <Link
+            href={withLocale('/', locale)}
+            className="flex items-center gap-2 group transition-transform active:scale-98"
+          >
+            <div className="w-8 h-8 rounded-lg bg-primary text-primary-foreground flex items-center justify-center font-black shadow-xs">
+              <GraduationCap className="w-5 h-5" />
             </div>
-
-            <div className="rounded-xl border border-border bg-card/80 backdrop-blur px-5 py-4 min-w-[210px]">
-              <p className="text-[11px] font-semibold uppercase tracking-wider text-muted-foreground">
-                {isBn ? 'প্রদেয় পরিমাণ' : 'Amount due'}
-              </p>
-              <p className="mt-1 text-2xl font-black text-foreground tabular-nums">
-                {formatBDTMinor(priceMinor, locale)}
-              </p>
-              <p className="mt-1 text-[11px] text-muted-foreground">
-                {isBn ? 'একটি সেশন' : 'One session'} · #{bookingId.slice(0, 8)}
-              </p>
+            <div className="text-base font-black tracking-tight text-foreground flex items-center gap-1.5">
+              <span>Ogroni</span>
+              <span className="text-[10px] font-bold px-1.5 py-0.5 rounded-md bg-primary/10 text-primary border border-primary/20">
+                Easy Checkout
+              </span>
             </div>
-          </div>
-        </section>
+          </Link>
 
-        {errorText && (
-          <div className="rounded-xl border border-destructive/30 bg-destructive/5 px-4 py-3 text-xs text-destructive flex items-start gap-2">
-            <AlertTriangle className="w-4 h-4 shrink-0 mt-0.5" />
-            <span role="alert">{errorText}</span>
-          </div>
-        )}
-
-        <div className="grid grid-cols-1 lg:grid-cols-5 gap-5">
-          {/* Main column */}
-          <div className="lg:col-span-3 flex flex-col gap-5">
-            {isConfirmed ? (
-              <div className="rounded-xl border border-success/30 bg-success-soft/40 p-6 flex flex-col gap-4">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-success/15 text-success flex items-center justify-center">
-                    <CheckCircle2 className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h2 className="text-base font-extrabold text-foreground">
-                      {isBn ? 'বুকিং নিশ্চিত হয়েছে' : 'Booking confirmed'}
-                    </h2>
-                    <p className="text-xs text-muted-foreground">
-                      {isBn
-                        ? 'পেমেন্ট ব্যাকএন্ডে যাচাই ও রেকর্ড করা হয়েছে।'
-                        : 'The payment was verified and recorded by the backend.'}
-                    </p>
-                  </div>
-                </div>
-                <dl className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-xs">
-                  <div className="rounded-xl border border-border bg-card px-3 py-2.5">
-                    <dt className="text-muted-foreground">{isBn ? 'বুকিং আইডি' : 'Booking ID'}</dt>
-                    <dd className="mt-0.5 font-mono font-semibold text-foreground break-all">
-                      {bookingId}
-                    </dd>
-                  </div>
-                  <div className="rounded-xl border border-border bg-card px-3 py-2.5">
-                    <dt className="text-muted-foreground">{isBn ? 'পরিশোধিত' : 'Paid'}</dt>
-                    <dd className="mt-0.5 font-semibold text-foreground">
-                      {formatBDTMinor(priceMinor, locale)}
-                    </dd>
-                  </div>
-                </dl>
-                <div className="flex flex-wrap gap-2">
-                  <Link href={withLocale(`/dashboard/bookings/${bookingId}`, locale)}>
-                    <Button size="sm" className="rounded-xl font-semibold">
-                      {isBn ? 'বুকিং দেখুন' : 'View booking'}
-                    </Button>
-                  </Link>
-                  <Link href={withLocale('/dashboard/student/sessions', locale)}>
-                    <Button size="sm" variant="outline" className="rounded-xl font-semibold">
-                      {isBn ? 'সেশন ক্যালেন্ডার' : 'Session calendar'}
-                    </Button>
-                  </Link>
-                </div>
-              </div>
-            ) : pendingOrder && isPayable ? (
-              <div className="flex flex-col gap-5">
-                {provider === 'sslcommerz' && (
-                  <EmbeddedEasyCheckout
-                    orderId={pendingOrder.orderId}
-                    checkoutUrl={pendingOrder.checkoutUrl}
-                    sessionKey={pendingOrder.sessionKey}
-                    gatewayPageUrl={pendingOrder.gatewayPageUrl}
-                    storeLogo={pendingOrder.storeLogo}
-                    amountMinor={pendingOrder.amountMinor || priceMinor}
-                    locale={locale}
-                    onPaymentCompleted={() => void refetch()}
-                    onPaymentFailed={() => void refetch()}
-                  />
-                )}
-
-                <div className="rounded-xl border border-warning/30 bg-warning-soft/40 p-6 flex flex-col gap-4">
-                  <div className="flex items-center gap-3">
-                    <div className="w-11 h-11 rounded-xl bg-warning/15 text-warning flex items-center justify-center">
-                      <Clock className="w-6 h-6" />
-                    </div>
-                    <div>
-                      <h2 className="text-base font-extrabold text-foreground">
-                        {isBn
-                          ? 'প্রোভাইডার নিশ্চিতকরণের অপেক্ষায়'
-                          : 'Waiting for provider confirmation'}
-                      </h2>
-                      <p className="text-xs text-muted-foreground">
-                        {isBn
-                          ? 'পেমেন্ট সম্পন্ন হলে এই পেজ স্বয়ংক্রিয়ভাবে আপডেট হবে।'
-                          : 'This page updates automatically after the provider confirms the payment.'}
-                      </p>
-                    </div>
-                  </div>
-                  <div className="rounded-xl border border-border bg-card px-3 py-2.5 text-xs">
-                    <span className="text-muted-foreground">
-                      {isBn ? 'অর্ডার আইডি' : 'Order ID'}:{' '}
-                    </span>
-                    <span className="font-mono font-semibold text-foreground break-all">
-                      {pendingOrder.orderId}
-                    </span>
-                  </div>
-                  <div className="flex flex-wrap items-center justify-between gap-2 pt-1">
-                    <div className="flex flex-wrap gap-2">
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="rounded-xl font-semibold"
-                        onClick={() => openCheckout(pendingOrder.checkoutUrl)}
-                      >
-                        <ExternalLink className="w-3.5 h-3.5 mr-1.5" />
-                        {isBn ? 'চেকআউট আবার খুলুন' : 'Reopen checkout'}
-                      </Button>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        className="rounded-xl font-semibold"
-                        onClick={() => void refetch()}
-                        disabled={isFetching}
-                      >
-                        <RefreshCw
-                          className={`w-3.5 h-3.5 mr-1.5 ${isFetching ? 'animate-spin' : ''}`}
-                        />
-                        {isBn ? 'স্ট্যাটাস যাচাই করুন' : 'Check status'}
-                      </Button>
-                    </div>
-                    <button
-                      type="button"
-                      onClick={() => setPendingOrder(null)}
-                      className="text-xs text-muted-foreground hover:text-foreground underline font-medium"
-                    >
-                      {isBn ? 'পেমেন্ট পদ্ধতি পরিবর্তন' : 'Change method'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            ) : isPayable ? (
-              <div className="rounded-xl border border-border bg-card p-5 sm:p-6 flex flex-col gap-4">
-                <div className="flex items-center gap-2 pb-3 border-b border-border">
-                  <CreditCard className="w-4 h-4 text-interactive" />
-                  <h2 className="text-sm font-extrabold text-foreground">
-                    {isBn ? 'পেমেন্ট পদ্ধতি নির্বাচন করুন' : 'Choose a payment method'}
-                  </h2>
-                </div>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-                  {PROVIDERS.map((item) => {
-                    const selected = provider === item.id;
-                    return (
-                      <button
-                        key={item.id}
-                        type="button"
-                        onClick={() => setProvider(item.id)}
-                        aria-pressed={selected}
-                        className={`text-left rounded-xl border p-4 transition-all ${
-                          selected
-                            ? 'border-primary bg-primary-soft/60'
-                            : 'border-border bg-surface hover:border-primary/40 hover:bg-surface-hover'
-                        }`}
-                      >
-                        <span className="flex items-center justify-between gap-2">
-                          <span className="text-sm font-extrabold text-foreground">
-                            {isBn ? item.nameBn : item.nameEn}
-                          </span>
-                          <span
-                            className={`w-4 h-4 rounded-full border-2 flex items-center justify-center ${
-                              selected ? 'border-primary' : 'border-muted-foreground/40'
-                            }`}
-                          >
-                            {selected && <span className="w-2 h-2 rounded-full bg-primary" />}
-                          </span>
-                        </span>
-                        <span className="mt-1 block text-[11px] text-muted-foreground">
-                          {isBn ? item.hintBn : item.hintEn}
-                        </span>
-                      </button>
-                    );
-                  })}
-                </div>
-
-                <div className="rounded-xl border border-info/30 bg-info-soft/60 px-3.5 py-3 text-[11px] text-info-soft-foreground flex items-start gap-2">
-                  <Lock className="w-3.5 h-3.5 mt-0.5 shrink-0" />
-                  <span>
-                    {isBn
-                      ? 'আপনি প্রোভাইডারের নিরাপদ পেজে যাবেন। এখানে কার্ড বা ওয়ালেট তথ্য নেওয়া হয় না।'
-                      : 'You will be redirected to the provider’s secure page. Card and wallet details are never collected here.'}
-                  </span>
-                </div>
-
-                <Button
-                  onClick={() => void handlePay()}
-                  disabled={creatingOrder || priceMinor <= 0}
-                  className="w-full rounded-xl font-bold"
-                >
-                  {creatingOrder ? (
-                    <>
-                      <LoadingSpinner className="w-4 h-4 mr-2" />
-                      {isBn ? 'চেকআউট তৈরি হচ্ছে…' : 'Creating checkout…'}
-                    </>
-                  ) : (
-                    <>
-                      <Lock className="w-4 h-4 mr-2" />
-                      {isBn
-                        ? `${formatBDTMinor(priceMinor, locale)} পরিশোধ করুন`
-                        : `Pay ${formatBDTMinor(priceMinor, locale)} securely`}
-                    </>
-                  )}
-                </Button>
-              </div>
-            ) : isTerminal ? (
-              <div className="rounded-xl border border-border bg-card p-6 flex flex-col gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-destructive/10 text-destructive flex items-center justify-center">
-                    <AlertTriangle className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h2 className="text-base font-extrabold text-foreground">
-                      {isBn ? 'এই বুকিংটি আর সক্রিয় নেই' : 'This booking is no longer active'}
-                    </h2>
-                    <p className="text-xs text-muted-foreground">
-                      {isBn
-                        ? `বর্তমান অবস্থা: ${status}. পেমেন্ট নেওয়া হবে না।`
-                        : `Current status: ${status}. No payment will be taken.`}
-                    </p>
-                  </div>
-                </div>
-                <Link href={withLocale('/dashboard/student/requests', locale)}>
-                  <Button size="sm" variant="outline" className="rounded-xl font-semibold">
-                    {isBn ? 'অনুরোধে ফিরুন' : 'Back to requests'}
-                  </Button>
-                </Link>
-              </div>
-            ) : (
-              <div className="rounded-xl border border-info/30 bg-info-soft/50 p-6 flex flex-col gap-3">
-                <div className="flex items-center gap-3">
-                  <div className="w-11 h-11 rounded-xl bg-info/15 text-info flex items-center justify-center">
-                    <Clock className="w-6 h-6" />
-                  </div>
-                  <div>
-                    <h2 className="text-base font-extrabold text-foreground">
-                      {isBn ? 'শিক্ষকের উত্তরের অপেক্ষায়' : 'Waiting for the tutor'}
-                    </h2>
-                    <p className="text-xs text-muted-foreground">
-                      {isBn
-                        ? 'শিক্ষক অনুরোধ গ্রহণ করলে পেমেন্ট চালু হবে।'
-                        : 'Payment becomes available after the tutor accepts your request.'}
-                    </p>
-                  </div>
-                </div>
-                <Link href={withLocale('/dashboard/student/requests', locale)}>
-                  <Button size="sm" variant="outline" className="rounded-xl font-semibold">
-                    {isBn ? 'অনুরোধ দেখুন' : 'View requests'}
-                  </Button>
-                </Link>
-              </div>
-            )}
+          <div className="flex items-center gap-1 bg-muted/60 p-1 rounded-xl border border-border text-xs font-bold">
+            <button
+              type="button"
+              onClick={() => setViewMode('saas')}
+              className={`px-3 py-1 rounded-lg transition-all ${
+                viewMode === 'saas'
+                  ? 'bg-card text-foreground shadow-xs font-black'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {isBn ? '৩-ধাপ চেকআউট' : '3-Step Checkout'}
+            </button>
+            <button
+              type="button"
+              onClick={() => setViewMode('desk')}
+              className={`px-3 py-1 rounded-lg transition-all ${
+                viewMode === 'desk'
+                  ? 'bg-card text-foreground shadow-xs font-black'
+                  : 'text-muted-foreground hover:text-foreground'
+              }`}
+            >
+              {isBn ? 'Easy ডাবল ডেস্ক' : 'Easy Desk'}
+            </button>
           </div>
 
-          {/* Summary column */}
-          <aside className="lg:col-span-2 flex flex-col gap-5">
-            <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-3">
-              <h2 className="text-sm font-extrabold text-foreground flex items-center gap-2 pb-3 border-b border-border">
-                <Receipt className="w-4 h-4 text-interactive" />
-                {isBn ? 'অর্ডার সারসংক্ষেপ' : 'Order summary'}
+          <div className="hidden sm:flex items-center gap-2 text-xs font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/20">
+            <ShieldCheck className="w-4 h-4 text-emerald-600" />
+            <span>{isBn ? '১০০% এসক্রো সুরক্ষিত গেটওয়ে' : '100% Escrow Secured Gateway'}</span>
+          </div>
+
+          <Link
+            href={withLocale('/dashboard/student/payments', locale)}
+            className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl border border-border bg-card text-xs font-bold text-muted-foreground hover:text-foreground hover:bg-muted transition-colors"
+            data-testid="checkout-back-link"
+          >
+            <ArrowLeft className="w-3.5 h-3.5" />
+            <span>{isBn ? 'ফিরে যান' : 'Back'}</span>
+          </Link>
+        </div>
+      </header>
+
+      {/* Main Container */}
+      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 flex flex-col items-center">
+        {/* SUCCESS STATE */}
+        {isConfirmed ? (
+          <div
+            className="w-full max-w-lg my-8 rounded-2xl border border-emerald-500/30 bg-card p-6 sm:p-8 shadow-xl flex flex-col items-center text-center gap-5 animate-in fade-in"
+            data-testid="checkout-success-view"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-emerald-500/15 text-emerald-600 flex items-center justify-center shadow-xs">
+              <CheckCircle2 className="w-10 h-10" />
+            </div>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black text-foreground">
+                {isBn ? 'পেমেন্ট সফলভাবে সম্পন্ন হয়েছে!' : 'Payment Completed Successfully!'}
               </h2>
-              <dl className="flex flex-col gap-2.5 text-xs">
-                <div className="flex items-start justify-between gap-3">
-                  <dt className="text-muted-foreground">{isBn ? 'বিষয়' : 'Subject'}</dt>
-                  <dd className="font-semibold text-foreground text-right">{displaySubject}</dd>
-                </div>
-                <div className="flex items-start justify-between gap-3">
-                  <dt className="text-muted-foreground">{isBn ? 'শিক্ষক' : 'Tutor'}</dt>
-                  <dd className="font-semibold text-foreground text-right">{tutorName}</dd>
-                </div>
-                <div className="flex items-start justify-between gap-3">
-                  <dt className="text-muted-foreground">{isBn ? 'সেশন মূল্য' : 'Session fee'}</dt>
-                  <dd className="font-semibold text-foreground text-right tabular-nums">
-                    {formatBDTMinor(priceMinor, locale)}
-                  </dd>
-                </div>
-                <div className="flex items-start justify-between gap-3">
-                  <dt className="text-muted-foreground">{isBn ? 'স্ট্যাটাস' : 'Status'}</dt>
-                  <dd className="font-semibold text-foreground text-right capitalize">
-                    {status ? status.replace(/_/g, ' ') : '—'}
-                  </dd>
-                </div>
-              </dl>
-              <div className="pt-3 border-t border-border flex items-center justify-between text-sm">
-                <span className="font-bold text-foreground">{isBn ? 'মোট' : 'Total'}</span>
-                <span className="font-black text-foreground tabular-nums">
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
+                {isBn
+                  ? 'আপনার বুকিং নিশ্চিত হয়েছে এবং অর্থ অগ্রণী এডু এসক্রোতে শতভাগ সুরক্ষিত রয়েছে।'
+                  : 'Your tuition booking is verified and funds are safely held in OgroniEdu Escrow.'}
+              </p>
+            </div>
+
+            <div className="w-full rounded-xl bg-muted/30 border border-border p-4 flex flex-col sm:flex-row items-center justify-between gap-3 text-xs">
+              <div>
+                <span className="text-muted-foreground block text-[11px]">
+                  {isBn ? 'পরিশোধিত পরিমাণ' : 'Amount Paid'}
+                </span>
+                <span className="text-base font-black text-foreground">
                   {formatBDTMinor(priceMinor, locale)}
                 </span>
               </div>
+              <div className="sm:text-right">
+                <span className="text-muted-foreground block text-[11px]">
+                  {isBn ? 'বুকিং রেফারেন্স' : 'Booking Reference'}
+                </span>
+                <span className="font-mono font-bold text-foreground">#{bookingId.slice(0, 8)}</span>
+              </div>
             </div>
 
-            <div className="rounded-xl border border-border bg-card p-5 flex flex-col gap-2.5 text-[11px] text-muted-foreground">
-              <div className="flex items-center gap-2 font-bold text-foreground text-xs">
-                <ShieldCheck className="w-4 h-4 text-primary" />
-                {isBn ? 'কেন এই পেমেন্ট নিরাপদ' : 'Why this payment is safe'}
-              </div>
-              <p className="leading-relaxed">
-                {isBn
-                  ? 'পেমেন্ট সফল হয়েছে কেবল তখনই ধরা হয় যখন প্রোভাইডার সার্ভার-টু-সার্ভার যাচাই করে ব্যাকএন্ডে নিশ্চিত করে।'
-                  : 'A payment is treated as successful only after the provider is verified server-to-server and the backend confirms it.'}
+            <div className="flex flex-wrap items-center justify-center gap-3 w-full pt-2">
+              <Button
+                asChild
+                size="default"
+                className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                <Link href={withLocale('/dashboard/student/sessions', locale)}>
+                  <Calendar className="w-4 h-4 mr-2" />
+                  <span>{isBn ? 'সেশন ক্যালেন্ডার ও রুটিন' : 'View Session Calendar'}</span>
+                </Link>
+              </Button>
+              <Button asChild variant="outline" size="default" className="rounded-xl font-bold">
+                <Link href={withLocale('/dashboard/student', locale)}>
+                  <span>{isBn ? 'ড্যাশবোর্ডে ফিরুন' : 'Back to Dashboard'}</span>
+                </Link>
+              </Button>
+            </div>
+          </div>
+        ) : paymentFailedState ? (
+          /* FAILED / CANCELLED STATE */
+          <div
+            className="w-full max-w-lg my-8 rounded-2xl border border-destructive/30 bg-card p-6 sm:p-8 shadow-xl flex flex-col items-center text-center gap-5 animate-in fade-in"
+            data-testid="checkout-failed-view"
+          >
+            <div className="w-16 h-16 rounded-2xl bg-destructive/10 text-destructive flex items-center justify-center shadow-xs">
+              <AlertTriangle className="w-10 h-10" />
+            </div>
+            <div>
+              <h2 className="text-xl sm:text-2xl font-black text-foreground">
+                {isBn ? 'পেমেন্ট সম্পন্ন হয়নি' : 'Payment Incomplete or Cancelled'}
+              </h2>
+              <p className="text-xs sm:text-sm text-muted-foreground mt-1.5 max-w-md mx-auto">
+                {paymentFailedState}
               </p>
-              <p className="leading-relaxed">
+              <p className="text-xs text-muted-foreground mt-1">
                 {isBn
-                  ? 'এই পেজে কোনো কার্ড নম্বর, ওয়ালেট পিন বা গোপন কোড নেওয়া হয় না।'
-                  : 'No card number, wallet PIN or secret code is collected on this page.'}
+                  ? 'আপনার অ্যাকাউন্ট থেকে কোনো অর্থ কাটা হয়নি। আপনি যেকোনো সময় আবার চেষ্টা করতে পারেন।'
+                  : 'No funds were deducted from your account. You can retry anytime.'}
               </p>
             </div>
-          </aside>
-        </div>
-      </div>
-    </DashboardShell>
+
+            <div className="flex flex-wrap items-center justify-center gap-3 w-full pt-2">
+              <Button
+                onClick={() =>
+                  void handleInitiatePayment({
+                    method: 'card',
+                    selectedChannel: 'sslcommerz',
+                    discountMinor: 0,
+                    finalAmountMinor: priceMinor,
+                  })
+                }
+                size="default"
+                className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
+                data-testid="checkout-retry-btn"
+              >
+                <RefreshCw className="w-4 h-4 mr-2" />
+                <span>{isBn ? 'আবার চেষ্টা করুন' : 'Try Again'}</span>
+              </Button>
+              <Button
+                onClick={handleCancelInPageCheckout}
+                variant="outline"
+                size="default"
+                className="rounded-xl font-bold"
+              >
+                <span>{isBn ? 'পেমেন্ট পদ্ধতি পরিবর্তন' : 'Change Payment Method'}</span>
+              </Button>
+            </div>
+          </div>
+        ) : isTerminal ? (
+          /* TERMINAL STATE */
+          <div className="w-full max-w-md my-8 rounded-2xl border border-border bg-card p-6 text-center text-foreground shadow-lg">
+            <AlertTriangle className="w-8 h-8 text-destructive mx-auto mb-2" />
+            <h3 className="text-sm font-bold">
+              {isBn ? 'এই বুকিংটি আর সক্রিয় নেই' : 'Booking no longer active'}
+            </h3>
+            <p className="text-xs text-muted-foreground mt-1">
+              {isBn ? `স্ট্যাটাস: ${status}` : `Status: ${status}`}
+            </p>
+          </div>
+        ) : viewMode === 'saas' ? (
+          /* PREMIUM SAAS 3-STEP CHECKOUT (MATCHING USER NEW REFERENCE IMAGES) */
+          <SaasCheckoutFlow
+            bookingId={bookingId}
+            orderId={pendingOrder?.orderId}
+            amountMinor={priceMinor}
+            currency="BDT"
+            locale={locale}
+            bookingDetails={{
+              tutorName,
+              subjectName: displaySubject,
+              educationLevel,
+              sessionCount: 1,
+              studentPhone: (booking?.studentUser as { phone?: string })?.phone || '01700000000',
+            }}
+            isProcessing={creatingOrder || inPageIframeLoading}
+            errorText={errorText}
+            onInitiatePayment={handleInitiatePaymentSaas}
+            verifiedSuccess={isConfirmed}
+            transactionId={pendingOrder?.orderId}
+          />
+        ) : (
+          /* CUSTOM EASY CHECKOUT DESK (MATCHING USER SCREENSHOT) */
+          <EasyCheckoutDesk
+            bookingId={bookingId}
+            orderId={pendingOrder?.orderId}
+            amountMinor={priceMinor}
+            currency="BDT"
+            locale={locale}
+            bookingDetails={{
+              tutorName,
+              subjectName: displaySubject,
+              educationLevel,
+              sessionCount: 1,
+            }}
+            isProcessing={creatingOrder}
+            errorText={errorText}
+            onPayNow={handleInitiatePayment}
+            onCancel={() => router.push(withLocale('/dashboard/student/payments', locale))}
+            targetIframeUrl={targetIframeUrl}
+            iframeLoading={inPageIframeLoading}
+            onIframeLoaded={() => setInPageIframeLoading(false)}
+            showIframeModal={showIframeModal}
+            onCloseIframeModal={() => setShowIframeModal(false)}
+          />
+        )}
+      </main>
+    </div>
   );
 }

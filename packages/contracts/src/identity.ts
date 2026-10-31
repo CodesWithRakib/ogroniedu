@@ -48,7 +48,19 @@ export const LoginSchema = z.object({
 export type LoginInput = z.infer<typeof LoginSchema>;
 
 export const VerificationPurposes = ['contact_verification', 'password_recovery'] as const;
-const otp = /^\d{6}$/;
+const otp = /^(\d{4}|\d{6})$/;
+
+/**
+ * Centralized Static Development & Bypass OTP Configuration.
+ * Single source of truth for the entire platform.
+ * Change this value (or set STATIC_DEV_OTP / NEXT_PUBLIC_STATIC_DEV_OTP env var)
+ * to update OTP verification across API, Onboarding, and Web interfaces.
+ */
+export const DEFAULT_STATIC_OTP = '123456';
+const envMap = (globalThis as unknown as { process?: { env?: Record<string, string | undefined> } })
+  .process?.env;
+export const STATIC_DEV_OTP =
+  envMap?.NEXT_PUBLIC_STATIC_DEV_OTP || envMap?.STATIC_DEV_OTP || DEFAULT_STATIC_OTP;
 
 export const RequestCodeSchema = z.object({
   contact: z.string().min(3).max(128),

@@ -23,6 +23,7 @@ import {
   Phone,
   Layers,
   FileSearch,
+  Lock,
 } from 'lucide-react';
 import { AdminLayout } from '@/layouts/admin/AdminLayout';
 import type { Locale } from '@/lib/i18n';
@@ -359,8 +360,8 @@ export function AdminTutorVerificationDetailPage({
                   >
                     {profile.publicationStatus === 'published'
                       ? isBn
-                        ? '🟢 মার্কেটপ্লেসে লাইভ'
-                        : '🟢 Live'
+                        ? 'মার্কেটপ্লেসে লাইভ'
+                        : 'Live'
                       : isBn
                         ? '⚪ খসড়া'
                         : '⚪ Draft'}
@@ -893,8 +894,9 @@ export function AdminTutorVerificationDetailPage({
                         )}
 
                         {item.internalNotes && (
-                          <p className="text-[11px] text-muted-foreground italic">
-                            🔒 {isBn ? 'অভ্যন্তরীণ নোট: ' : 'Internal note: '} {item.internalNotes}
+                          <p className="text-[11px] text-muted-foreground italic flex items-center gap-1">
+                            <Lock className="w-3 h-3 inline text-muted-foreground" />
+                            <span>{isBn ? 'অভ্যন্তরীণ নোট: ' : 'Internal note: '} {item.internalNotes}</span>
                           </p>
                         )}
                       </div>

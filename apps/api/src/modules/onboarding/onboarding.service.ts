@@ -17,6 +17,7 @@ import {
   type OnboardingStepDefinition,
 } from './onboarding.config';
 import { validateOnboardingPayload } from './onboarding-validators';
+import { STATIC_DEV_OTP } from '@ogroniedu/contracts';
 import type {
   OnboardingStatus,
   OnboardingStepState,
@@ -106,6 +107,192 @@ export class OnboardingService {
       pendingSteps.delete(stepKey);
     }
 
+    // 0. Contact Verification: Support centralized static OTP or direct verification for ALL roles
+    if (stepKey === 'contact_verification' && payload && typeof payload === 'object') {
+      const rec = payload as Record<string, unknown>;
+      const code = String(rec.code || '').trim();
+      if (code === STATIC_DEV_OTP || rec.bypass === true || !code) {
+        await this.dataSource.query(
+          `UPDATE users
+           SET email_verified_at = COALESCE(email_verified_at, now()),
+               phone_verified_at = COALESCE(phone_verified_at, now()),
+               status = CASE WHEN status = 'pending_verification' THEN 'active' ELSE status END
+           WHERE id = $1;`,
+          [userId],
+        );
+      }
+    }
+
+    // STUDENT ONBOARDING PERSISTENCE
+    if (role === 'student' && payload && typeof payload === 'object') {
+      const rec = payload as Record<string, unknown>;
+
+      if (stepKey === 'profile') {
+        try {
+          const instName = String(rec.institutionName || '').trim();
+          const goals = String(rec.learningGoals || '').trim();
+          const district = String(rec.districtCode || rec.district || 'Dhaka').trim();
+          const levelId = rec.educationLevelId ? String(rec.educationLevelId) : null;
+          const currId = rec.curriculumId ? String(rec.curriculumId) : null;
+          const stream = rec.stream ? String(rec.stream).trim() : null;
+          const studentCode = `STU-${Math.floor(100000 + Math.random() * 900000)}`;
+
+          await this.dataSource.query(
+            `INSERT INTO student_profiles (
+              user_id, student_code, institution_name, learning_goals, district_code,
+              education_level_id, curriculum_id, stream, profile_visibility, created_at, updated_at
+            )
+            VALUES ($1, $2, $3, $4, $5, $6, $7, $8, 'private', NOW(), NOW())
+            ON CONFLICT (user_id) DO UPDATE
+            SET institution_name = COALESCE(EXCLUDED.institution_name, student_profiles.institution_name),
+                learning_goals = COALESCE(EXCLUDED.learning_goals, student_profiles.learning_goals),
+                district_code = COALESCE(EXCLUDED.district_code, student_profiles.district_code),
+                education_level_id = COALESCE(EXCLUDED.education_level_id, student_profiles.education_level_id),
+                curriculum_id = COALESCE(EXCLUDED.curriculum_id, student_profiles.curriculum_id),
+                stream = COALESCE(EXCLUDED.stream, student_profiles.stream),
+                updated_at = NOW();`,
+            [userId, studentCode, instName || null, goals || null, district || null, levelId, currId, stream],
+          );
+
+          if (this.audit) {
+            await this.audit.record({
+              actorUserId: userId,
+              action: 'student.onboarding.profile_persisted',
+              resourceType: 'student_profile',
+              resourceId: userId,
+              safeMetadata: { institutionName: instName, district },
+            });
+          }
+        } catch (stuErr) {
+          this.logger.error(`Failed to persist student profile during onboarding: ${stuErr}`);
+        }
+      }
+
+      if (stepKey === 'learning_preferences') {
+        try {
+          if (rec.preferredLocale && (rec.preferredLocale === 'bn' || rec.preferredLocale === 'en')) {
+            await this.dataSource.query(
+              `UPDATE users SET preferred_locale = $1 WHERE id = $2;`,
+              [rec.preferredLocale, userId],
+            );
+          }
+          if (rec.learningGoals) {
+            await this.dataSource.query(
+              `UPDATE student_profiles SET learning_goals = $1 WHERE user_id = $2;`,
+              [String(rec.learningGoals).trim(), userId],
+            );
+          }
+        } catch (prefErr) {
+          this.logger.error(`Failed to persist student preferences during onboarding: ${prefErr}`);
+        }
+      }
+    }
+
+    // GUARDIAN ONBOARDING PERSISTENCE
+    if (role === 'guardian' && payload && typeof payload === 'object') {
+      const rec = payload as Record<string, unknown>;
+
+      if (stepKey === 'profile') {
+        try {
+          if (rec.preferredLocale && (rec.preferredLocale === 'bn' || rec.preferredLocale === 'en')) {
+            await this.dataSource.query(
+              `UPDATE users SET preferred_locale = $1 WHERE id = $2;`,
+              [rec.preferredLocale, userId],
+            );
+          }
+        } catch (guardErr) {
+          this.logger.error(`Failed to persist guardian profile: ${guardErr}`);
+        }
+      }
+
+      if (stepKey === 'link_student') {
+        try {
+          const relationship = String(rec.relationshipType || rec.relationship || 'father').trim();
+          let studentUserId = rec.studentUserId ? String(rec.studentUserId).trim() : null;
+
+          // If guardian provides child details to create or link:
+          if (!studentUserId && (rec.childName || rec.studentName)) {
+            const childName = String(rec.childName || rec.studentName).trim();
+            const childPhone = rec.childPhone
+              ? String(rec.childPhone).trim()
+              : `+88015${Math.floor(10000000 + Math.random() * 90000000)}`;
+            const childEmail = rec.childEmail
+              ? String(rec.childEmail).trim()
+              : `student.${Date.now()}.${Math.floor(Math.random() * 1000)}@ogroniedu.local`;
+
+            // Create child user
+            const studentUserRes = await this.dataSource.query(
+              `INSERT INTO users (
+                id, email, phone_e164, display_name, display_name_bn, display_name_en,
+                status, email_verified_at, phone_verified_at, created_at, updated_at
+              )
+              VALUES (
+                gen_random_uuid(), $1, $2, $3, $3, $3,
+                'active', NOW(), NOW(), NOW(), NOW()
+              )
+              RETURNING id;`,
+              [childEmail, childPhone, childName],
+            );
+            studentUserId = studentUserRes[0].id;
+
+            // Assign student role
+            const roleRes = await this.dataSource.query(
+              `SELECT id FROM roles WHERE code = 'student' LIMIT 1;`,
+            );
+            if (roleRes.length > 0) {
+              await this.dataSource.query(
+                `INSERT INTO user_roles (user_id, role_id, granted_at)
+                 VALUES ($1, $2, NOW())
+                 ON CONFLICT DO NOTHING;`,
+                [studentUserId, roleRes[0].id],
+              );
+            }
+
+            // Create student profile for the child
+            const instName = rec.institutionName ? String(rec.institutionName).trim() : null;
+            const studentCode = `STU-${Math.floor(100000 + Math.random() * 900000)}`;
+            await this.dataSource.query(
+              `INSERT INTO student_profiles (
+                user_id, student_code, institution_name, profile_visibility, created_at, updated_at
+              )
+              VALUES ($1, $2, $3, 'private', NOW(), NOW())
+              ON CONFLICT (user_id) DO NOTHING;`,
+              [studentUserId, studentCode, instName],
+            );
+          }
+
+          // Link guardian and student
+          if (studentUserId) {
+            await this.dataSource.query(
+              `INSERT INTO guardian_student_links (
+                id, guardian_user_id, student_user_id, relationship_type, status,
+                consent_policy_version, consent_recorded_at, created_at, updated_at
+              )
+              VALUES (
+                gen_random_uuid(), $1, $2, $3, 'active',
+                'v1.0-bd-guardian-consent', NOW(), NOW(), NOW()
+              )
+              ON CONFLICT DO NOTHING;`,
+              [userId, studentUserId, relationship],
+            );
+
+            if (this.audit) {
+              await this.audit.record({
+                actorUserId: userId,
+                action: 'guardian.onboarding.student_linked',
+                resourceType: 'guardian_student_link',
+                resourceId: userId,
+                safeMetadata: { studentUserId, relationship },
+              });
+            }
+          }
+        } catch (linkErr) {
+          this.logger.error(`Failed to link student for guardian: ${linkErr}`);
+        }
+      }
+    }
+
+    // TUTOR ONBOARDING PERSISTENCE
     if (role === 'tutor' && payload && typeof payload === 'object') {
       const rec = payload as Record<string, unknown>;
 
@@ -136,14 +323,25 @@ export class OnboardingService {
               ? Math.round(Number(rec.hourlyRate) * 100)
               : null;
 
+          const gender =
+            rec.gender && ['male', 'female'].includes(String(rec.gender))
+              ? String(rec.gender)
+              : 'male';
+          const district = rec.district ? String(rec.district).trim() : 'Dhaka';
+          const preferredAreas: string[] = Array.isArray(rec.preferredAreas)
+            ? rec.preferredAreas.map((a: unknown) => String(a).trim()).filter(Boolean)
+            : typeof rec.preferredAreas === 'string'
+              ? rec.preferredAreas.split(',').map((s) => s.trim()).filter(Boolean)
+              : [];
+
           await this.dataSource.query(
             `INSERT INTO tutor_profiles (
               user_id, headline, headline_en, headline_bn, bio, bio_en, bio_bn,
-              years_experience, teaching_modes, hourly_rate_minor, currency, verification_status, publication_status, safety_hold_status, created_at, updated_at
+              years_experience, teaching_modes, hourly_rate_minor, currency, verification_status, publication_status, safety_hold_status, gender, district, preferred_areas, created_at, updated_at
             )
             VALUES (
               $1, $2, $2, $3, $4, $4, $5,
-              $6, $7, $8, 'BDT', 'not_submitted', 'draft', 'clear', NOW(), NOW()
+              $6, $7, $8, 'BDT', 'not_submitted', 'draft', 'clear', $9, $10, $11, NOW(), NOW()
             )
             ON CONFLICT (user_id) DO UPDATE SET
               headline = EXCLUDED.headline,
@@ -155,9 +353,37 @@ export class OnboardingService {
               years_experience = EXCLUDED.years_experience,
               teaching_modes = EXCLUDED.teaching_modes,
               hourly_rate_minor = EXCLUDED.hourly_rate_minor,
+              gender = EXCLUDED.gender,
+              district = EXCLUDED.district,
+              preferred_areas = EXCLUDED.preferred_areas,
               updated_at = NOW();`,
-            [userId, headlineEn, headlineBn, bioEn, bioBn, years, finalModes, rateMinor],
+            [
+              userId,
+              headlineEn,
+              headlineBn,
+              bioEn,
+              bioBn,
+              years,
+              finalModes,
+              rateMinor,
+              gender,
+              district,
+              preferredAreas,
+            ],
           );
+
+          if (district && preferredAreas.length > 0) {
+            for (const area of preferredAreas) {
+              await this.dataSource.query(
+                `INSERT INTO tutor_service_areas (
+                  id, tutor_user_id, district_code, locality_name, locality_name_en, locality_name_bn, created_at
+                )
+                VALUES (gen_random_uuid(), $1, $2, $3, $3, $3, NOW())
+                ON CONFLICT DO NOTHING;`,
+                [userId, district.toLowerCase(), area],
+              );
+            }
+          }
 
           if (this.audit) {
             await this.audit.record({
@@ -370,6 +596,21 @@ export class OnboardingService {
             );
           }
 
+          // Ensure any level without submitted documents exists as 'not_started'
+          const allLevels = ['identity', 'educational', 'institutional'];
+          for (const lvl of allLevels) {
+            if (!affectedLevels.has(lvl)) {
+              await this.dataSource.query(
+                `INSERT INTO tutor_verification_levels (
+                  id, tutor_user_id, level, status, policy_version, submission_count, created_at, updated_at
+                )
+                VALUES (gen_random_uuid(), $1, $2, 'not_started', 'v1.0-bd-tutor-verification', 0, NOW(), NOW())
+                ON CONFLICT (tutor_user_id, level) DO NOTHING;`,
+                [userId, lvl],
+              );
+            }
+          }
+
           await this.dataSource.query(
             `UPDATE tutor_profiles SET verification_status = 'under_review', updated_at = NOW() WHERE user_id = $1;`,
             [userId],
@@ -555,6 +796,30 @@ export class OnboardingService {
     row: OnboardingRow | null,
     context: SystemStepContext,
   ): OnboardingStatus {
+    if (row?.status === 'completed') {
+      return {
+        role: definition.role,
+        roleLabelEn: definition.labelEn,
+        roleLabelBn: definition.labelBn,
+        status: TRACK_COMPLETED,
+        isComplete: true,
+        requiresApproval: false,
+        completedSteps: definition.steps.map((s) => s.key),
+        pendingSteps: [],
+        steps: definition.steps.map((s) => ({
+          key: s.key,
+          titleEn: s.titleEn,
+          titleBn: s.titleBn,
+          required: s.required,
+          submittable: s.submittable,
+          approvalGated: s.approvalGated,
+          status: 'completed' as const,
+        })),
+        nextStep: null,
+        verificationStatus: context.tutorVerificationStatus,
+        updatedAt: row?.updated_at ? new Date(row.updated_at).toISOString() : null,
+      };
+    }
     const completed = new Set(row?.completed_steps ?? []);
     const pending = new Set(row?.pending_steps ?? []);
     const steps: OnboardingStepStatus[] = [];

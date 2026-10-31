@@ -111,7 +111,16 @@ export class AllExceptionsFilter implements ExceptionFilter {
           : 'The request could not be processed.';
     } else {
       code = 'INTERNAL_ERROR';
-      message = 'Internal server error. Please contact support with request ID.';
+      const isDev = process.env.NODE_ENV !== 'production';
+      const exactDetail =
+        exception instanceof Error ? exception.message : String(exception);
+      message =
+        isDev && exactDetail
+          ? exactDetail
+          : 'Internal server error. Please contact support with request ID.';
+      if (isDev && !details && exactDetail) {
+        details = [{ code: 'INTERNAL_EXCEPTION', message: exactDetail }];
+      }
     }
 
     if (status >= 500) {

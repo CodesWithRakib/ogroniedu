@@ -53,13 +53,29 @@ export class UsersService {
     const roles: string[] = rolesResult.map((r: { code: string }) => r.code);
 
     let studentProfileData: StudentProfileEntity | null = null;
+    let guardianLinkData: { id: string; guardian_user_id: string; guardian_name: string; guardian_email: string | null; guardian_phone: string | null } | null = null;
+
     if (roles.includes('student')) {
       studentProfileData = await this.studentProfileRepository.findOne({
         where: { userId },
       });
+
+      const guardianLinkRows = await this.dataSource.query(
+        `SELECT gsl.id, gsl.guardian_user_id, u.display_name as guardian_name, u.email as guardian_email, u.phone_e164 as guardian_phone
+         FROM guardian_student_links gsl
+         JOIN users u ON u.id = gsl.guardian_user_id
+         WHERE gsl.student_user_id = $1 AND gsl.status = 'active'
+         LIMIT 1;`,
+        [userId],
+      );
+      if (guardianLinkRows.length > 0) {
+        guardianLinkData = guardianLinkRows[0];
+      }
     }
 
-    const minor = this.isMinor(studentProfileData?.dateOfBirth);
+    const hasGuardian = Boolean(guardianLinkData);
+    const minor = hasGuardian || this.isMinor(studentProfileData?.dateOfBirth);
+    const isStandalone = roles.includes('student') && !hasGuardian && !minor;
 
     return {
       id: user.id,
@@ -70,6 +86,17 @@ export class UsersService {
       status: user.status,
       roles,
       isMinor: minor,
+      hasGuardian,
+      isStandalone,
+      guardianInfo: guardianLinkData
+        ? {
+            id: guardianLinkData.id,
+            guardianUserId: guardianLinkData.guardian_user_id,
+            guardianName: guardianLinkData.guardian_name,
+            guardianEmail: guardianLinkData.guardian_email,
+            guardianPhone: guardianLinkData.guardian_phone,
+          }
+        : null,
       studentProfile: studentProfileData
         ? {
             dateOfBirth: studentProfileData.dateOfBirth,

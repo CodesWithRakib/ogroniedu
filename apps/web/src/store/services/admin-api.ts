@@ -463,6 +463,120 @@ export const adminApi = baseApi.injectEndpoints({
         { type: 'TutorVerification', id: 'LIST' },
       ],
     }),
+    listStaff: builder.query<
+      ApiSuccessEnvelope<any[]>,
+      { page?: number; limit?: number; search?: string; role?: string; status?: string } | void
+    >({
+      query: (params) => {
+        const qs = params ? toQueryString(params as Record<string, unknown>) : '';
+        return `/api/v1/admin/staff${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: ['AdminUser'],
+    }),
+    createStaff: builder.mutation<
+      ApiSuccessEnvelope<any>,
+      { email: string; password: string; displayName: string; phoneE164?: string; role: string }
+    >({
+      query: (body) => ({
+        url: '/api/v1/admin/staff',
+        method: 'POST',
+        body,
+      }),
+      invalidatesTags: ['AdminUser'],
+    }),
+    updateStaff: builder.mutation<
+      ApiSuccessEnvelope<any>,
+      { id: string; displayName?: string; phoneE164?: string; role?: string; status?: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/api/v1/admin/staff/${id}`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: ['AdminUser'],
+    }),
+    deleteStaff: builder.mutation<ApiSuccessEnvelope<any>, string>({
+      query: (id) => ({
+        url: `/api/v1/admin/staff/${id}`,
+        method: 'DELETE',
+      }),
+      invalidatesTags: ['AdminUser'],
+    }),
+    forceLogoutUser: builder.mutation<ApiSuccessEnvelope<any>, string>({
+      query: (id) => ({
+        url: `/api/v1/admin/users/${id}/force-logout`,
+        method: 'POST',
+      }),
+      invalidatesTags: ['AdminUser'],
+    }),
+    listAllTutors: builder.query<
+      ApiSuccessEnvelope<any[]>,
+      { page?: number; limit?: number; search?: string; status?: string; verificationStatus?: string; gender?: string; district?: string } | void
+    >({
+      query: (params) => {
+        const qs = params ? toQueryString(params as Record<string, unknown>) : '';
+        return `/api/v1/admin/tutors${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: ['AdminUser', 'TutorVerification'],
+    }),
+    getFullTutorProfile: builder.query<ApiSuccessEnvelope<any>, string>({
+      query: (tutorId) => `/api/v1/admin/tutors/${tutorId}/full-profile`,
+      providesTags: (_res, _err, tutorId) => [{ type: 'AdminUser', id: tutorId }],
+    }),
+    adminUpdateTutorProfile: builder.mutation<
+      ApiSuccessEnvelope<any>,
+      {
+        tutorId: string;
+        headline?: string;
+        bio?: string;
+        gender?: 'male' | 'female';
+        district?: string;
+        hourlyRateMinor?: number;
+        yearsExperience?: number;
+        verificationStatus?: string;
+        publicationStatus?: string;
+        preferredAreas?: string[];
+        displayName?: string;
+        phoneE164?: string;
+        userStatus?: string;
+      }
+    >({
+      query: ({ tutorId, ...body }) => ({
+        url: `/api/v1/admin/tutors/${tutorId}/profile`,
+        method: 'PATCH',
+        body,
+      }),
+      invalidatesTags: (_res, _err, { tutorId }) => ['AdminUser', { type: 'AdminUser', id: tutorId }],
+    }),
+    getTutorAuditLogs: builder.query<ApiSuccessEnvelope<any[]>, string>({
+      query: (tutorId) => `/api/v1/admin/tutors/${tutorId}/audit-logs`,
+    }),
+    listStudentsAndGuardians: builder.query<
+      ApiSuccessEnvelope<any[]>,
+      { page?: number; limit?: number; search?: string; userType?: string; status?: string } | void
+    >({
+      query: (params) => {
+        const qs = params ? toQueryString(params as Record<string, unknown>) : '';
+        return `/api/v1/admin/students-guardians${qs ? `?${qs}` : ''}`;
+      },
+      providesTags: ['AdminUser'],
+    }),
+    getStudentOrGuardianDossier: builder.query<ApiSuccessEnvelope<any>, string>({
+      query: (id) => `/api/v1/admin/students-guardians/${id}`,
+      providesTags: (_res, _err, id) => [{ type: 'AdminUser', id }],
+    }),
+    updateStudentOrGuardian: builder.mutation<
+      ApiSuccessEnvelope<any>,
+      { id: string; displayName?: string; phoneE164?: string; status?: string; preferredLocale?: string }
+    >({
+      query: ({ id, ...body }) => ({
+        url: `/api/v1/admin/students-guardians/${id}`,
+        method: 'PUT',
+        body,
+      }),
+      invalidatesTags: (_res, _err, { id }) => ['AdminUser', { type: 'AdminUser', id }],
+    }),
+
   }),
   overrideExisting: false,
 });
@@ -500,4 +614,16 @@ export const {
   useLazyGetTutorReviewDossierQuery,
   useReviewTutorMutation,
   useVerifyTutorQualificationMutation,
+  useListStaffQuery,
+  useCreateStaffMutation,
+  useUpdateStaffMutation,
+  useDeleteStaffMutation,
+  useForceLogoutUserMutation,
+  useListAllTutorsQuery,
+  useGetFullTutorProfileQuery,
+  useAdminUpdateTutorProfileMutation,
+  useGetTutorAuditLogsQuery,
+  useListStudentsAndGuardiansQuery,
+  useGetStudentOrGuardianDossierQuery,
+  useUpdateStudentOrGuardianMutation,
 } = adminApi;

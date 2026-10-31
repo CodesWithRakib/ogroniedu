@@ -1,4 +1,4 @@
-import { IsString, IsNotEmpty, IsIn, IsOptional } from 'class-validator';
+import { IsString, IsNotEmpty, IsIn, IsOptional, IsNumber, IsArray } from 'class-validator';
 import { ReviewDecision } from '../entities/tutor-verification-review.entity';
 
 export class AdminReviewTutorDto {
@@ -32,4 +32,54 @@ export class AdminVerifyQualificationDto {
   @IsNotEmpty()
   @IsIn(['approved', 'rejected'])
   reviewStatus!: 'approved' | 'rejected';
+}
+
+export class AdminUpdateTutorProfileDto {
+  @IsOptional()
+  @IsString()
+  headline?: string;
+
+  @IsOptional()
+  @IsString()
+  bio?: string;
+
+  @IsOptional()
+  @IsIn(['male', 'female'], { message: 'Gender must be either male or female' })
+  gender?: 'male' | 'female';
+
+  @IsOptional()
+  @IsString()
+  district?: string;
+
+  @IsOptional()
+  @IsNumber()
+  hourlyRateMinor?: number;
+
+  @IsOptional()
+  @IsNumber()
+  yearsExperience?: number;
+
+  @IsOptional()
+  @IsIn(['draft', 'pending_approval', 'approved', 'rejected', 'suspended'])
+  verificationStatus?: string;
+
+  @IsOptional()
+  @IsIn(['draft', 'published', 'archived', 'hidden'])
+  publicationStatus?: string;
+
+  @IsOptional()
+  @IsArray()
+  preferredAreas?: string[];
+
+  @IsOptional()
+  @IsString()
+  displayName?: string;
+
+  @IsOptional()
+  @IsString()
+  phoneE164?: string;
+
+  @IsOptional()
+  @IsIn(['active', 'suspended', 'banned'])
+  userStatus?: string;
 }

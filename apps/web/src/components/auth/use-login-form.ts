@@ -63,7 +63,7 @@ export function useLoginForm(locale: Locale) {
           type: 'success',
         }),
       );
-      router.replace(withLocale(dashboardPathForRoles(payload.user.roles, locale), locale));
+      router.replace(dashboardPathForRoles(payload.user.roles, locale));
     } catch (err) {
       setFormError(normalizeUnknownError(err, locale).message);
     }

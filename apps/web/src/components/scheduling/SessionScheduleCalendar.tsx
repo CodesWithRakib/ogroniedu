@@ -691,9 +691,9 @@ export function SessionScheduleCalendar({
               size="default"
               className="rounded-xl font-semibold text-xs h-10 px-4"
             >
-              <Link href={withLocale('/tutors', locale)} className="flex items-center gap-1.5">
+              <Link href={withLocale('/request-tutor', locale)} className="flex items-center gap-1.5">
                 <Sparkles className="w-4 h-4" />
-                <span>{isBn ? 'অভিজ্ঞ শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
+                <span>{isBn ? 'টিউশন রিকোয়েস্ট করুন' : 'Request Tutor'}</span>
               </Link>
             </Button>
             <Button

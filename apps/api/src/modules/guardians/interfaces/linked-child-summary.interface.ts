@@ -2,6 +2,7 @@ export interface LinkedChildSummary {
   linkId: string;
   studentId: string;
   displayName: string;
+  studentCode?: string | null;
   relationshipType: string;
   status: 'pending' | 'active' | 'rejected' | 'revoked';
   consentPolicyVersion: string | null;
@@ -10,6 +11,7 @@ export interface LinkedChildSummary {
   institutionName?: string | null;
   educationLevelName?: string | null;
   studentProfile: {
+    studentCode?: string | null;
     dateOfBirth: string | null;
     educationLevelId: string | null;
     curriculumId: string | null;

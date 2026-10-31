@@ -90,7 +90,7 @@ export function useRegisterForm(locale: Locale) {
           type: 'success',
         }),
       );
-      router.replace(withLocale(dashboardPathForRoles(payload.user.roles, locale), locale));
+      router.replace(withLocale('/onboarding', locale));
     } catch (err) {
       setFormError(normalizeUnknownError(err, locale).message);
     }

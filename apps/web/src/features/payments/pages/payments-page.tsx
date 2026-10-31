@@ -288,9 +288,9 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                   size="sm"
                   className="rounded-xl font-bold bg-primary hover:bg-primary/90 text-primary-foreground"
                 >
-                  <Link href={withLocale('/tutors', locale)}>
+                  <Link href={withLocale('/request-tutor', locale)}>
                     <Sparkles className="w-4 h-4 mr-1.5" />
-                    <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
+                    <span>{isBn ? 'টিউশন রিকোয়েস্ট করুন' : 'Request Tutor'}</span>
                   </Link>
                 </Button>
               </div>
@@ -372,14 +372,15 @@ function PaymentsContent({ locale }: { locale: Locale }) {
                         <span>{isBn ? 'এসক্রো সুরক্ষা সক্রিয়' : 'Escrow Protected'}</span>
                       </span>
                       <Button
-                        type="button"
-                        onClick={() => pay.selectBookingForPayment(b.id)}
+                        asChild
                         className="bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-bold h-10 px-4 rounded-xl flex items-center gap-1.5"
                         data-testid={`pay-now-btn-${b.id}`}
                       >
-                        <CreditCard className="w-4 h-4" />
-                        <span>{isBn ? 'এখনই পরিশোধ করুন' : 'Pay Now'}</span>
-                        <ArrowRight className="w-3.5 h-3.5" />
+                        <Link href={withLocale(`/dashboard/bookings/${b.id}/pay`, locale)}>
+                          <CreditCard className="w-4 h-4" />
+                          <span>{isBn ? 'এখনই পরিশোধ করুন' : 'Pay Now'}</span>
+                          <ArrowRight className="w-3.5 h-3.5" />
+                        </Link>
                       </Button>
                     </div>
                   </div>
@@ -663,7 +664,7 @@ function PaymentsContent({ locale }: { locale: Locale }) {
               actionHref={
                 pay.pendingCount > 0
                   ? withLocale('/dashboard/student/requests', locale)
-                  : withLocale('/tutors', locale)
+                  : withLocale('/request-tutor', locale)
               }
             />
           ) : (

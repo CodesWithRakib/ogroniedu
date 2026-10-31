@@ -2,7 +2,7 @@
 
 import React from 'react';
 import Link from 'next/link';
-import { Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle2 } from 'lucide-react';
+import { Mail, Lock, Eye, EyeOff, ArrowRight, CheckCircle2, Sparkles } from 'lucide-react';
 import { getDictionary, type Locale } from '@/lib/i18n';
 import { withLocale } from '@/lib/auth';
 import { Button, Input, Label, Alert, AlertDescription } from '@/components/ui';
@@ -44,7 +44,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         {notice && (
           <div
             role="status"
-            className="flex items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/10 p-3 text-xs font-medium text-primary"
+            className="flex items-start gap-2.5 rounded-xl border border-primary/20 bg-primary/10 p-3 text-xs font-semibold text-primary"
             data-testid="login-notice"
           >
             <CheckCircle2 className="h-4 w-4 shrink-0 text-primary mt-0.5" />
@@ -55,18 +55,18 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         {/* Error Alert */}
         {formError && (
           <Alert variant="destructive" className="rounded-xl" data-testid="login-error">
-            <AlertDescription>{formError}</AlertDescription>
+            <AlertDescription className="text-xs font-medium">{formError}</AlertDescription>
           </Alert>
         )}
 
-        {/* Email or Phone Input */}
+        {/* Email, Phone or Student ID Input */}
         <div className="flex flex-col gap-1.5 text-left">
           <Label
             htmlFor="login-identifier"
-            className="text-xs font-semibold text-foreground flex items-center justify-between"
+            className="text-xs font-bold text-foreground flex items-center justify-between"
           >
-            <span>{isBn ? 'ইমেইল অথবা মোবাইল নম্বর' : 'Email or Mobile Number'}</span>
-            <span className="text-[11px] text-muted-foreground font-normal">
+            <span>{isBn ? 'ইমেইল, মোবাইল অথবা স্টুডেন্ট আইডি' : 'Email, Mobile or Student ID'}</span>
+            <span className="text-[10px] text-muted-foreground font-normal">
               {isBn ? 'আবশ্যক' : 'Required'}
             </span>
           </Label>
@@ -76,11 +76,11 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
             value={identifier}
             onChange={(e) => setIdentifier(e.target.value)}
             placeholder={
-              isBn ? '+8801XXXXXXXXX অথবা you@mail.com' : '+8801XXXXXXXXX or you@mail.com'
+              isBn ? '+8801XXXXXXXXX, mail@domain.com বা STU-XXXXXX' : '+8801XXXXXXXXX, mail@domain.com, or STU-XXXXXX'
             }
             autoComplete="username"
             leadingIcon={<Mail className="h-4 w-4 text-muted-foreground" />}
-            className="h-10 rounded-xl border-border bg-card text-xs"
+            className="h-11 rounded-xl border-border bg-card text-xs transition-colors focus:border-primary"
             data-testid="login-identifier-input"
           />
         </div>
@@ -88,12 +88,12 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
         {/* Password Input */}
         <div className="flex flex-col gap-1.5 text-left">
           <div className="flex items-center justify-between">
-            <Label htmlFor="login-password" className="text-xs font-semibold text-foreground">
+            <Label htmlFor="login-password" className="text-xs font-bold text-foreground">
               {t.passwordLabel}
             </Label>
             <Link
               href={withLocale('/forgot-password', locale)}
-              className="text-xs font-medium text-primary hover:underline transition-colors"
+              className="text-xs font-semibold text-primary hover:underline transition-colors"
             >
               {isBn ? 'পাসওয়ার্ড ভুলে গেছেন?' : 'Forgot password?'}
             </Link>
@@ -107,7 +107,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
               placeholder="••••••••"
               autoComplete="current-password"
               leadingIcon={<Lock className="h-4 w-4 text-muted-foreground" />}
-              className="h-10 rounded-xl border-border bg-card text-xs pr-10"
+              className="h-11 rounded-xl border-border bg-card text-xs pr-10 transition-colors focus:border-primary"
               data-testid="login-password-input"
             />
             <button
@@ -127,7 +127,7 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
             type="submit"
             size="lg"
             isLoading={isLoading}
-            className="w-full h-11 rounded-xl font-semibold text-xs sm:text-sm gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs shrink-0 cursor-pointer active:scale-98 group"
+            className="w-full h-11 rounded-xl font-bold text-xs sm:text-sm gap-2 bg-primary hover:bg-primary/90 text-primary-foreground shadow-md hover:shadow-lg shrink-0 cursor-pointer active:scale-98 transition-all group"
             data-testid="login-submit-btn"
           >
             <span>{dict.nav.login}</span>
@@ -135,16 +135,29 @@ export function LoginForm({ locale, notice }: { locale: Locale; notice?: string 
           </Button>
         </div>
 
-        {/* Switch to Register */}
-        <p className="text-center text-xs text-muted-foreground pt-2 font-medium">
-          <span>{isBn ? 'অ্যাকাউন্ট নেই? ' : "Don't have an account? "}</span>
-          <Link
-            href={withLocale('/register', locale)}
-            className="font-semibold text-primary hover:underline ml-1"
-          >
-            {isBn ? 'নতুন অ্যাকাউন্ট খুলুন' : 'Sign up'}
-          </Link>
-        </p>
+        {/* Links */}
+        <div className="flex flex-col gap-2 pt-2 text-center text-xs">
+          <p className="text-muted-foreground font-medium">
+            <span>{isBn ? 'অ্যাকাউন্ট নেই? ' : "Don't have an account? "}</span>
+            <Link
+              href={withLocale('/register', locale)}
+              className="font-bold text-primary hover:underline ml-1"
+            >
+              {isBn ? 'নতুন অ্যাকাউন্ট খুলুন' : 'Sign up'}
+            </Link>
+          </p>
+
+          <p className="text-[11px] text-muted-foreground">
+            <span>{isBn ? 'শিক্ষক খুঁজছেন? ' : 'Looking for a tutor? '}</span>
+            <Link
+              href={withLocale('/request-tutor', locale)}
+              className="font-semibold text-emerald-600 dark:text-emerald-400 hover:underline ml-0.5 inline-flex items-center gap-0.5"
+            >
+              <Sparkles className="w-3 h-3 inline" />
+              {isBn ? 'সরাসরি টিউশন রিকোয়েস্ট করুন' : 'Post a Tuition Request'}
+            </Link>
+          </p>
+        </div>
       </form>
     </AuthShell>
   );

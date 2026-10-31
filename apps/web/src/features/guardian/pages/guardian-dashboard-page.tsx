@@ -96,9 +96,9 @@ export function GuardianDashboardPage({ locale }: { locale: Locale }) {
       actions={
         <div className="flex items-center gap-2">
           <Button asChild size="sm" className="rounded-xl">
-            <Link href={withLocale('/tutors', locale)}>
+            <Link href={withLocale('/request-tutor', locale)}>
               <Plus className="h-3.5 w-3.5 mr-1" />
-              <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutor'}</span>
+              <span>{isBn ? 'টিউশন রিকোয়েস্ট করুন' : 'Post Tuition Request'}</span>
             </Link>
           </Button>
           <Button asChild variant="outline" size="sm" className="rounded-xl">

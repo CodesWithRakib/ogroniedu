@@ -95,9 +95,11 @@ export class GuardianProvisioningService {
         await queryRunner.manager.save(userRole);
       }
 
-      // 3. Create StudentProfileEntity
+      // 3. Create StudentProfileEntity with generated Student Code
+      const studentCode = 'STU-' + Math.floor(100000 + Math.random() * 900000);
       const studentProfile = queryRunner.manager.create(StudentProfileEntity, {
         userId: savedStudent.id,
+        studentCode,
         dateOfBirth: dto.dateOfBirth ?? null,
         educationLevelId: dto.educationLevelId ?? null,
         curriculumId: dto.curriculumId ?? null,

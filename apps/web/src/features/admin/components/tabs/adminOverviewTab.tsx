@@ -1,6 +1,7 @@
 'use client';
 
 import { useTranslations } from 'next-intl';
+import { Shield } from 'lucide-react';
 import type { AdminReconciliationData } from '../../types/admin.types';
 
 /** Overview tab: reconciliation snapshot + audit-trail policy notice. */
@@ -50,8 +51,8 @@ export function AdminOverviewTab({ reconciliation }: { reconciliation: AdminReco
 
       <div className="bg-card border border-border rounded-xl p-5 sm:p-6 flex flex-col gap-3">
         <h3 className="text-base font-bold text-foreground">{t('auditTrailTitle')}</h3>
-        <p className="text-xs text-primary  font-semibold flex items-center gap-1.5">
-          <span>🛡️</span>
+        <p className="text-xs text-primary font-semibold flex items-center gap-1.5">
+          <Shield className="w-4 h-4 text-primary shrink-0" />
           <span>{t('auditRedactedNotice')}</span>
         </p>
         <div className="text-xs text-muted-foreground flex flex-col gap-2">

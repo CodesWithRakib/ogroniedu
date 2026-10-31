@@ -7,6 +7,8 @@ export * from './components/checkoutMethodPicker';
 export * from './components/paymentReceipt';
 export * from './components/checkoutLedger';
 export * from './components/embedded-easy-checkout';
+export * from './components/easy-checkout-desk';
+export * from './components/saas-checkout-flow';
 export * from './components/payment-result-view';
 export * from './pages/payments-page';
 export * from './pages/booking-pay-page';

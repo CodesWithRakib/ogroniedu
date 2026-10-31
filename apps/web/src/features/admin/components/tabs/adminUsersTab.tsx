@@ -58,8 +58,9 @@ export function AdminUsersTab({
   const tCommon = useTranslations('common');
 
   // Server already scopes rows by the lifted search/status query; the local
-  // pass only guards against stale rows racing a refetch.
+  // pass only guards against stale rows racing a refetch and strictly filters out super_admin.
   const filteredUsers = users.filter((u) => {
+    if (u.roles?.includes('super_admin')) return false;
     const query = searchQuery.trim().toLowerCase();
     if (!query) return true;
     return (

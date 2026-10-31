@@ -27,6 +27,7 @@ import { AnalyticsModule } from './modules/analytics/analytics.module';
 import { OrganizationsModule } from './modules/organizations/organizations.module';
 import { FeedbackModule } from './modules/feedback/feedback.module';
 import { ClassroomModule } from './modules/classroom/classroom.module';
+import { TuitionRequestsModule } from './modules/tuition-requests/tuition-requests.module';
 import { AppController } from './app.controller';
 
 @Module({
@@ -112,6 +113,7 @@ import { AppController } from './app.controller';
     OrganizationsModule,
     FeedbackModule,
     ClassroomModule,
+    TuitionRequestsModule,
   ],
   controllers: [AppController],
   providers: [StructuredLoggerService],

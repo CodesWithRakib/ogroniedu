@@ -29,8 +29,8 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
   }, []);
   const authedUser = mounted && isAuthenticated ? user : null;
 
-  // Do not render bottom navbar on admin routes or if on full-screen editor
-  if (pathname?.includes('/admin')) {
+  // Do not render bottom navbar on admin routes, checkout/pay flows, or if on full-screen editor
+  if (pathname?.includes('/admin') || pathname?.includes('/pay') || pathname?.includes('/checkout')) {
     return null;
   }
 
@@ -45,11 +45,11 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
   }
 
   const isHomeActive = isActive(`/${locale}`, true);
-  const isTutorsActive = isActive(`/${locale}/tutors`);
-  const isRequestsActive = isActive(`/${locale}/requests`);
+  const isTutorsActive = isActive(`/${locale}/tuitions`);
+  const isRequestsActive = isActive(`/${locale}/request-tutor`);
   const isNotificationsActive = isActive(`/${locale}/notifications`);
   const isAccountActive = authedUser
-    ? pathname.includes('/dashboard') || pathname.includes('/profile')
+    ? pathname.includes('/dashboard')
     : pathname.includes('/login') || pathname.includes('/register');
 
   return (
@@ -74,9 +74,9 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
           <span className="text-[10px] tracking-tight mt-1">{isBn ? 'হোম' : 'Home'}</span>
         </Link>
 
-        {/* 2. Find Tutors Tab */}
+        {/* 2. Tuitions Tab */}
         <Link
-          href={`/${locale}/tutors`}
+          href={`/${locale}/tuitions`}
           className={`relative flex flex-col items-center justify-center flex-1 min-h-[44px] py-1 transition-[color,transform] duration-150 active:scale-95 ${
             isTutorsActive
               ? 'text-primary font-bold'
@@ -89,17 +89,17 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
               <span className="absolute -bottom-1 left-1/2 -translate-x-1/2 h-1 w-1 rounded-full bg-primary" />
             )}
           </div>
-          <span className="text-[10px] tracking-tight mt-1">{isBn ? 'শিক্ষক' : 'Tutors'}</span>
+          <span className="text-[10px] tracking-tight mt-1">{isBn ? 'টিউশন' : 'Tuitions'}</span>
         </Link>
 
         {/* 3. Center Elevated Action: Post Tuition Request */}
         <Link
-          href={`/${locale}/requests`}
+          href={`/${locale}/request-tutor`}
           className="relative flex flex-col items-center justify-center -top-3.5 px-1 min-h-[44px] group active:scale-95 transition-transform duration-150"
           aria-label={isBn ? 'টিউশন রিকোয়েস্ট পোস্ট করুন' : 'Post Tuition Request'}
         >
           <div
-            className={`flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground ring-4 ring-card transition-transform duration-150 group-hover:scale-105 ${
+            className={`flex h-12 w-12 items-center justify-center rounded-full bg-primary text-primary-foreground ring-4 ring-card transition-transform duration-150 group-hover:scale-105 shadow-md ${
               isRequestsActive ? 'ring-primary/40' : ''
             }`}
           >
@@ -110,7 +110,7 @@ export function BottomNavbar({ locale }: BottomNavbarProps) {
               isRequestsActive ? 'text-primary font-bold' : 'text-muted-foreground font-medium'
             }`}
           >
-            {isBn ? 'টিউশন পোস্ট' : 'Post Request'}
+            {isBn ? 'পোস্ট' : 'Request'}
           </span>
         </Link>
 

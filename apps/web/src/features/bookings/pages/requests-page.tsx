@@ -254,13 +254,13 @@ export function RequestsPage({ locale }: { locale: Locale }) {
           <div className="flex flex-wrap items-center gap-2.5 shrink-0">
             <ChildScopeSelect locale={locale} scope={scope} />
             {!req.isTutor && (
-              <Link href={withLocale('/tutors', locale)}>
+              <Link href={withLocale('/request-tutor', locale)}>
                 <Button
                   size="sm"
                   className="bg-primary hover:bg-primary/90 text-primary-foreground rounded-xl font-semibold"
                 >
                   <Search className="w-4 h-4 mr-1.5" />
-                  {locale === 'bn' ? 'নতুন শিক্ষক খুঁজুন' : 'Find a Tutor'}
+                  {locale === 'bn' ? 'টিউশন রিকোয়েস্ট করুন' : 'Post Tuition Request'}
                 </Button>
               </Link>
             )}
@@ -398,8 +398,8 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                 ? 'অন্যান্য ফিল্টার দেখুন অথবা নতুন শিক্ষকের সাথে যোগাযোগ করুন।'
                 : 'Switch filters or search for another qualified tutor.'
           }
-          actionLabel={req.isTutor ? undefined : dict.nav.findTutors}
-          actionHref={req.isTutor ? undefined : withLocale('/tutors', locale)}
+          actionLabel={req.isTutor ? undefined : locale === 'bn' ? 'টিউশন রিকোয়েস্ট করুন' : 'Post Tuition Request'}
+          actionHref={req.isTutor ? undefined : withLocale('/request-tutor', locale)}
         />
       ) : (
         <div
@@ -618,13 +618,13 @@ export function RequestsPage({ locale }: { locale: Locale }) {
                               {locale === 'bn' ? 'বুকিং বিবরণ' : 'Booking Details'}
                             </Button>
                           </Link>
-                          <Link href={withLocale('/tutors', locale)}>
+                          <Link href={withLocale('/request-tutor', locale)}>
                             <Button
                               size="sm"
                               variant="ghost"
                               className="text-xs font-bold text-primary hover:text-primary hover:bg-primary-soft"
                             >
-                              {locale === 'bn' ? 'অন্য শিক্ষক খুঁজুন' : 'Search Other Tutors'}
+                              {locale === 'bn' ? 'নতুন রিকোয়েস্ট করুন' : 'Post New Request'}
                               <ArrowRight className="w-3.5 h-3.5 ml-1" />
                             </Button>
                           </Link>

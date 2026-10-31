@@ -59,7 +59,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
       titleEn: 'Tutor Verification',
       descBn: 'টিউটরদের এনআইডি, ডিগ্রি সনদ ও যোগ্যতা নিরীক্ষা ও অনুমোদন',
       descEn: 'Inspect NID, degree certificates and approve tutor credentials',
-      href: `/${locale}/dashboard/admin/verification`,
+      href: `/${locale}/dashboard/admin/users/tutors?tab=kyc`,
       icon: Search,
       accent: 'bg-primary-soft border-primary/30 text-primary',
       actionTextBn: 'ভেরিফিকেশন কিউ খুলুন',
@@ -151,7 +151,7 @@ export function AdminOverviewPage({ locale }: { locale: Locale }) {
           {/* 3. 5 Executive KPI Metric Cards */}
           <div className="grid grid-cols-2 lg:grid-cols-5 gap-3.5 sm:gap-4">
             <Link
-              href={`/${locale}/dashboard/admin/verification`}
+              href={`/${locale}/dashboard/admin/users/tutors?tab=kyc`}
               className="bg-card hover:bg-surface-hover/80 border border-border hover:border-primary/40 rounded-xl p-4 sm:p-4.5 transition-colors group flex flex-col justify-between"
             >
               <div className="flex justify-between items-start gap-2">

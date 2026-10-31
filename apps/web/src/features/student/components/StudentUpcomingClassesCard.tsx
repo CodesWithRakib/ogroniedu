@@ -76,10 +76,10 @@ export function StudentUpcomingClassesCard({
                 : 'Book a session or wait for your tutor to schedule your next learning slot.'}
             </p>
             <Link
-              href={withLocale('/tutors', locale)}
+              href={withLocale('/dashboard/student/learning', locale)}
               className="mt-3.5 inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground font-semibold text-xs transition-colors"
             >
-              <span>{isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}</span>
+              <span>{isBn ? 'স্টাডি রুমে যান' : 'Go to Study Room'}</span>
               <ArrowRight className="h-3.5 w-3.5" />
             </Link>
           </div>

@@ -28,4 +28,8 @@ export class CreatePaymentOrderDto {
     message: 'locale must be bn or en',
   })
   locale?: string;
+
+  @IsString()
+  @IsOptional()
+  frontendOrigin?: string;
 }

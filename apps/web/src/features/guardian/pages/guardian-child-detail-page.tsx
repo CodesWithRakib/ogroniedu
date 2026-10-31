@@ -14,10 +14,28 @@ import {
   Clock,
   Video,
   FileText,
+  KeyRound,
+  Copy,
+  Check,
+  ExternalLink,
+  Lock,
+  Sparkles,
 } from 'lucide-react';
 import { DashboardShell } from '@/components/dashboard/DashboardShell';
-import { Card, CardContent, Button, Badge } from '@/components/ui';
-import { useGetChildDetailsQuery } from '@/store/services/guardians-api';
+import { Card, CardContent, Button, Badge, Input } from '@/components/ui';
+import { Label } from '@/components/ui/label';
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from '@/components/ui/dialog';
+import {
+  useGetChildDetailsQuery,
+  useGenerateChildMagicLinkMutation,
+  useSetChildPinMutation,
+} from '@/store/services/guardians-api';
 import { useGetStudentLearningSummaryQuery } from '@/store/services/learning-api';
 import { useGetBookingRequestsQuery } from '@/store/services/bookings-api';
 import { useGetSessionsQuery } from '@/store/services/sessions-api';
@@ -53,6 +71,60 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
     tutorName?: string | null;
     subjectName?: string | null;
   } | null>(null);
+
+  // Magic link & PIN state
+  const [generateMagicLink, { isLoading: isGeneratingLink }] = useGenerateChildMagicLinkMutation();
+  const [setChildPinMutation, { isLoading: isSettingPin }] = useSetChildPinMutation();
+  const [generatedLink, setGeneratedLink] = useState<string | null>(null);
+  const [copiedLink, setCopiedLink] = useState(false);
+  const [pinInput, setPinInput] = useState('');
+  const [isPinModalOpen, setIsPinModalOpen] = useState(false);
+
+  const handleGenerateMagicLink = async () => {
+    try {
+      const res = await generateMagicLink(studentId).unwrap();
+      setGeneratedLink(res.magicLinkUrl);
+      playAudioTone('success');
+      toast.success(isBn ? 'ম্যাজিক লগইন লিংক সফলভাবে তৈরি হয়েছে' : 'Magic Login Link Generated', {
+        description: isBn
+          ? 'এই লিংক দিয়ে শিক্ষার্থী সরাসরি পাসওয়ার্ড ছাড়াই লগইন করতে পারবে।'
+          : 'The student can sign in directly with 1 click using this link.',
+      });
+    } catch {
+      playAudioTone('alert');
+      toast.error(isBn ? 'লিংক তৈরি করতে ব্যর্থ হয়েছে' : 'Failed to generate link');
+    }
+  };
+
+  const handleCopyLink = () => {
+    if (!generatedLink) return;
+    navigator.clipboard.writeText(generatedLink);
+    setCopiedLink(true);
+    toast.success(isBn ? 'লিংক ক্লিপবোর্ডে কপি করা হয়েছে!' : 'Link copied to clipboard!');
+    setTimeout(() => setCopiedLink(false), 2500);
+  };
+
+  const handleSetPin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!pinInput || pinInput.length < 4) {
+      toast.error(isBn ? 'পিন কমপক্ষে ৪ অক্ষরের হতে হবে' : 'PIN must be at least 4 characters');
+      return;
+    }
+    try {
+      await setChildPinMutation({ studentId, pin: pinInput }).unwrap();
+      playAudioTone('success');
+      toast.success(isBn ? 'শিক্ষার্থীর লগইন পিন আপডেট সম্পন্ন হয়েছে' : 'Child Login PIN updated successfully', {
+        description: isBn
+          ? `স্টুডেন্ট আইডি (${child?.studentCode || 'STU-...'}) ও এই পিন দিয়ে লগইন করা যাবে।`
+          : 'Student can now log in using Student ID and this PIN.',
+      });
+      setPinInput('');
+      setIsPinModalOpen(false);
+    } catch {
+      playAudioTone('alert');
+      toast.error(isBn ? 'পিন পরিবর্তন ব্যর্থ হয়েছে' : 'Failed to update PIN');
+    }
+  };
 
   // Active section tab
   const [activeTab, setActiveTab] = useState<'tutors' | 'sessions' | 'homework' | 'safety'>(
@@ -196,8 +268,8 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
           <div className="flex flex-wrap md:flex-col items-start md:items-end gap-2 shrink-0">
             <span className="text-[11px] text-muted-foreground">
               {isBn ? 'স্টুডেন্ট আইডি:' : 'Student ID:'}{' '}
-              <span className="font-mono text-foreground font-semibold">
-                {studentId.slice(0, 8)}...
+              <span className="font-mono text-foreground font-bold">
+                {child?.studentCode || `${studentId.slice(0, 8)}...`}
               </span>
             </span>
             <Button
@@ -224,6 +296,125 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
             </Button>
           </div>
         </div>
+      </div>
+
+      {/* 1.5. CHILD ACCESS & LOGIN MANAGEMENT CARD */}
+      <div
+        className="p-5 rounded-xl bg-card border border-border relative overflow-hidden"
+        data-testid="child-access-card"
+      >
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 pb-4 border-b border-border">
+          <div className="flex items-start gap-3.5">
+            <div className="p-2.5 rounded-xl bg-primary/10 text-primary shrink-0 mt-0.5">
+              <KeyRound className="w-5 h-5 stroke-[2.2]" />
+            </div>
+            <div className="flex flex-col gap-1">
+              <div className="flex items-center gap-2">
+                <h3 className="text-base font-bold text-foreground">
+                  {isBn ? 'শিক্ষার্থীর প্রবেশ ও লগইন ব্যবস্থাপনা' : 'Child Access & Sign-In Controls'}
+                </h3>
+                <Badge variant="outline" className="text-[10px] font-semibold text-primary border-primary/30">
+                  {isBn ? '১-ক্লিক ম্যাজিক লিংক' : '1-Click Magic Link'}
+                </Badge>
+              </div>
+              <p className="text-xs text-muted-foreground leading-relaxed max-w-2xl">
+                {isBn
+                  ? 'ছোট বাচ্চাদের জন্য পাসওয়ার্ড মুখস্থ করার কোনো প্রয়োজন নেই। ম্যাজিক লিংক দিয়ে ১-ক্লিকে যেকোনো ট্যাবলেট বা কম্পিউটারে সন্তান সরাসরি ক্লাসরুমে প্রবেশ করতে পারবে। অথবা স্টুডেন্ট আইডি ও কুইক পিন ব্যবহার করতে পারে।'
+                  : 'Frictionless passwordless entry for young students. Generate a secure 1-click link to open on your child’s tablet or browser, or use Student ID with a quick PIN.'}
+              </p>
+            </div>
+          </div>
+
+          <div className="flex flex-wrap items-center gap-2 shrink-0">
+            <Button
+              type="button"
+              onClick={handleGenerateMagicLink}
+              isLoading={isGeneratingLink}
+              size="sm"
+              className="gap-2 text-xs font-semibold rounded-xl bg-primary hover:bg-primary/90 text-primary-foreground shadow-xs cursor-pointer active:scale-98"
+              data-testid="btn-generate-magic-link"
+            >
+              <Sparkles className="w-3.5 h-3.5" />
+              <span>{isBn ? 'ম্যাজিক লগইন লিংক তৈরি করুন' : 'Generate 1-Click Magic Link'}</span>
+            </Button>
+            <Button
+              type="button"
+              variant="outline"
+              size="sm"
+              onClick={() => setIsPinModalOpen(true)}
+              className="gap-2 text-xs font-semibold rounded-xl border-border hover:bg-surface-hover"
+              data-testid="btn-open-pin-modal"
+            >
+              <Lock className="w-3.5 h-3.5 text-muted-foreground" />
+              <span>{isBn ? 'কুইক পিন সেট করুন' : 'Set Student PIN'}</span>
+            </Button>
+          </div>
+        </div>
+
+        {/* Credentials Summary Pill Bar */}
+        <div className="flex flex-wrap items-center gap-3 pt-3.5 text-xs">
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-muted border border-border">
+            <span className="text-muted-foreground">{isBn ? 'স্টুডেন্ট আইডি (Student Code):' : 'Student Code:'}</span>
+            <span className="font-mono font-bold text-foreground">
+              {child?.studentCode || 'STU-ASSIGNED'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-surface-muted border border-border">
+            <span className="text-muted-foreground">{isBn ? 'লগইন পদ্ধতি:' : 'Sign-in Modes:'}</span>
+            <span className="font-semibold text-foreground">
+              {isBn ? 'ম্যাজিক লিংক • স্টুডেন্ট কোড • পাসওয়ার্ড' : 'Magic Link • Student Code • Password'}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-1.5 text-muted-foreground text-[11px] sm:ml-auto">
+            <ShieldCheck className="w-3.5 h-3.5 text-success-soft-foreground" />
+            <span>{isBn ? 'অভিভাবক কর্তৃক সুরক্ষিত ও তদারকিযোগ্য' : 'Parent Controlled & Monitored'}</span>
+          </div>
+        </div>
+
+        {/* Generated Link Display Box */}
+        {generatedLink && (
+          <div
+            className="mt-4 p-4 rounded-xl bg-primary/5 border border-primary/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 animate-in fade-in slide-in-from-top-2 duration-300"
+            data-testid="generated-magic-link-box"
+          >
+            <div className="flex flex-col gap-1 min-w-0 flex-1">
+              <span className="text-xs font-bold text-primary flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5" />
+                <span>{isBn ? 'শিক্ষার্থীর সক্রিয় ম্যাজিক লিংক (মেয়াদ ২৪ ঘণ্টা):' : 'Active Child Magic Access Link (Valid 24h):'}</span>
+              </span>
+              <p className="font-mono text-xs text-foreground bg-card px-2.5 py-1.5 rounded-lg border border-border truncate select-all">
+                {generatedLink}
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <Button
+                type="button"
+                size="sm"
+                variant="outline"
+                onClick={handleCopyLink}
+                className="gap-1.5 text-xs font-semibold rounded-xl bg-card hover:bg-surface-hover border-border"
+                data-testid="btn-copy-magic-link"
+              >
+                {copiedLink ? <Check className="w-3.5 h-3.5 text-success" /> : <Copy className="w-3.5 h-3.5" />}
+                <span>{copiedLink ? (isBn ? 'কপি হয়েছে!' : 'Copied!') : (isBn ? 'লিংক কপি করুন' : 'Copy Link')}</span>
+              </Button>
+
+              <a
+                href={generatedLink}
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-primary text-primary-foreground hover:bg-primary/90 text-xs font-semibold transition-colors shadow-xs"
+                data-testid="btn-open-child-portal"
+              >
+                <ExternalLink className="w-3.5 h-3.5" />
+                <span>{isBn ? 'নতুন ট্যাবে খুলুন' : 'Open Child Portal'}</span>
+              </a>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* 2. 4-METRIC KPI GRID */}
@@ -391,10 +582,10 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
                     : 'Search verified tutors by subject and grade level to schedule classes.'}
                 </p>
                 <Link
-                  href={withLocale('/tutors', locale)}
+                  href={withLocale('/request-tutor', locale)}
                   className="inline-flex items-center justify-center gap-1.5 px-3.5 py-2 rounded-lg bg-primary hover:bg-primary/90 text-primary-foreground text-xs font-semibold transition-colors"
                 >
-                  {isBn ? 'শিক্ষক খুঁজুন' : 'Find Tutors'}
+                  {isBn ? 'টিউশন রিকোয়েস্ট করুন' : 'Request Tutor'}
                 </Link>
               </CardContent>
             </Card>
@@ -721,6 +912,62 @@ export function GuardianChildDetailPage({ studentId, locale }: GuardianChildDeta
         }
         subjectName={selectedBookingForReplacement?.subjectName || childBookings[0]?.subject?.name}
       />
+
+      {/* Set Student PIN Dialog */}
+      <Dialog open={isPinModalOpen} onOpenChange={setIsPinModalOpen}>
+        <DialogContent className="w-full max-w-md rounded-xl p-6 border-border bg-card">
+          <DialogHeader className="text-left pb-2">
+            <DialogTitle className="text-lg font-bold flex items-center gap-2">
+              <Lock className="h-5 w-5 text-primary" />
+              <span>{isBn ? 'শিক্ষার্থীর লগইন পিন সেট করুন' : 'Set Child Login PIN'}</span>
+            </DialogTitle>
+            <DialogDescription className="text-xs text-muted-foreground">
+              {isBn
+                ? `স্টুডেন্ট আইডি (${child?.studentCode || 'STU-...'}) দিয়ে শিক্ষার্থী সরাসরি লগইন করতে এই পিন ব্যবহার করবে।`
+                : 'Student will use their Student ID and this PIN to sign in directly at /login.'}
+            </DialogDescription>
+          </DialogHeader>
+
+          <form onSubmit={handleSetPin} className="flex flex-col gap-4 pt-2">
+            <div className="flex flex-col gap-1.5">
+              <Label htmlFor="child-pin-input" className="text-xs font-bold text-foreground">
+                {isBn ? 'নতুন পিন বা পাসওয়ার্ড (ন্যূনতম ৪ ডিজিট)' : 'New PIN or Password (min 4 chars)'}
+              </Label>
+              <Input
+                id="child-pin-input"
+                type="password"
+                placeholder={isBn ? 'যেমন: 1234 বা গোপন পাসওয়ার্ড' : 'e.g. 1234 or secure password'}
+                value={pinInput}
+                onChange={(e) => setPinInput(e.target.value)}
+                required
+                className="h-10 text-sm rounded-xl"
+                autoFocus
+              />
+            </div>
+
+            <div className="flex items-center justify-end gap-2 pt-2 border-t border-border mt-2">
+              <Button
+                type="button"
+                variant="outline"
+                size="sm"
+                onClick={() => setIsPinModalOpen(false)}
+                className="rounded-xl text-xs"
+              >
+                {isBn ? 'বাতিল' : 'Cancel'}
+              </Button>
+              <Button
+                type="submit"
+                size="sm"
+                isLoading={isSettingPin}
+                className="rounded-xl text-xs bg-primary hover:bg-primary/90 text-primary-foreground font-semibold"
+                data-testid="btn-save-child-pin"
+              >
+                {isBn ? 'পিন সংরক্ষণ করুন' : 'Save PIN'}
+              </Button>
+            </div>
+          </form>
+        </DialogContent>
+      </Dialog>
     </DashboardShell>
   );
 }

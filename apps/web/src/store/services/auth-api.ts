@@ -37,6 +37,9 @@ export interface AuthResponseUser {
   roles: AuthUser['roles'];
   status: string;
   preferredLocale: 'bn' | 'en';
+  hasGuardian?: boolean;
+  isMinor?: boolean;
+  isStandalone?: boolean;
 }
 
 export interface AuthResponse {
@@ -76,6 +79,9 @@ export interface MeResponse {
   preferredLocale: 'bn' | 'en';
   status: string;
   roles: AuthUser['roles'];
+  hasGuardian?: boolean;
+  isMinor?: boolean;
+  isStandalone?: boolean;
 }
 
 export function toAuthUser(raw: AuthResponseUser | MeResponse): AuthUser {
@@ -87,6 +93,9 @@ export function toAuthUser(raw: AuthResponseUser | MeResponse): AuthUser {
     roles: raw.roles,
     status: 'status' in raw ? raw.status : undefined,
     preferredLocale: raw.preferredLocale,
+    hasGuardian: raw.hasGuardian,
+    isMinor: raw.isMinor,
+    isStandalone: raw.isStandalone,
   };
 }
 

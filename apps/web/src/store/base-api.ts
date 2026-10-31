@@ -182,6 +182,7 @@ export const baseApi = createApi({
     'Onboarding',
     'Organizations',
     'Classroom',
+    'TuitionRequest',
   ],
   endpoints: () => ({}),
 });

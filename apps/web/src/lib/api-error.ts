@@ -12,33 +12,144 @@ function isFetchBaseQueryError(error: unknown): error is FetchBaseQueryError {
 }
 
 function messageFromData(data: unknown, fallback: string): string {
-  if (typeof data === 'string' && data.trim()) return data;
-  if (typeof data === 'object' && data !== null) {
-    const record = data as Record<string, unknown>;
-    // Canonical envelope: { success:false, error:{ code, message, details? } }
-    const err = record.error;
-    if (typeof err === 'object' && err !== null) {
-      const errRec = err as Record<string, unknown>;
-      if (typeof errRec.message === 'string' && errRec.message.trim()) return errRec.message;
-      const details = errRec.details;
-      if (Array.isArray(details)) {
-        const first = details[0] as Record<string, unknown> | undefined;
-        if (first && typeof first.message === 'string' && first.message.trim()) {
-          return first.message;
-        }
+  return extractExactErrorMessage(data, fallback);
+}
+
+/** Extract an exact, human-readable error message from any backend API or runtime error. */
+export function extractExactErrorMessage(
+  error: unknown,
+  fallback = 'An unexpected error occurred. Please try again.',
+): string {
+  if (!error) return fallback;
+
+  // 1. If error is a string
+  if (typeof error === 'string') {
+    const trimmed = error.trim();
+    if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+      try {
+        const parsed = JSON.parse(trimmed);
+        return extractExactErrorMessage(parsed, fallback);
+      } catch {
+        return trimmed;
       }
     }
-    const direct = record.message;
-    if (typeof direct === 'string' && direct.trim()) return direct;
-    // Legacy Nest shape: { statusCode, message: string | string[] }
-    if (Array.isArray(direct) && typeof direct[0] === 'string') return direct[0];
-    const errors = record.errors;
-    if (Array.isArray(errors) && typeof errors[0] === 'string') return errors[0];
-    if (Array.isArray(errors) && errors[0] && typeof errors[0] === 'object') {
-      const first = errors[0] as Record<string, unknown>;
-      if (typeof first.message === 'string') return first.message;
+    return trimmed || fallback;
+  }
+
+  // 2. If error is an Error instance
+  if (error instanceof Error && error.message) {
+    if (error.message.trim().startsWith('{')) {
+      try {
+        const parsed = JSON.parse(error.message);
+        return extractExactErrorMessage(parsed, fallback);
+      } catch {
+        // proceed
+      }
+    }
+    if (!('data' in (error as any))) {
+      return error.message;
     }
   }
+
+  // 3. Inspect object structures (RTK Query FetchBaseQueryError, Axios, NestJS)
+  if (typeof error === 'object' && error !== null) {
+    const obj = error as Record<string, unknown>;
+
+    // Case A: RTK Query FetchBaseQueryError where payload is under `data`
+    const payload = obj.data !== undefined ? obj.data : obj;
+
+    if (typeof payload === 'string' && payload.trim()) {
+      const trimmed = payload.trim();
+      if (trimmed.startsWith('{') && trimmed.endsWith('}')) {
+        try {
+          const parsed = JSON.parse(trimmed);
+          return extractExactErrorMessage(parsed, fallback);
+        } catch {
+          return trimmed;
+        }
+      }
+      return trimmed;
+    }
+
+    if (typeof payload === 'object' && payload !== null) {
+      const p = payload as Record<string, unknown>;
+
+      // Canonical backend envelope: { success: false, error: { code, message, details } }
+      if (p.error && typeof p.error === 'object' && p.error !== null) {
+        const errObj = p.error as Record<string, unknown>;
+
+        // If there are specific validation details, format them clearly
+        if (Array.isArray(errObj.details) && errObj.details.length > 0) {
+          const detailMsgs = errObj.details
+            .map((d: any) => {
+              if (typeof d === 'string') return d;
+              if (typeof d === 'object' && d !== null) {
+                const field = d.field ? `${d.field}: ` : '';
+                const msg = d.message || JSON.stringify(d);
+                return `${field}${msg}`;
+              }
+              return String(d);
+            })
+            .filter(Boolean);
+
+          if (detailMsgs.length > 0) {
+            return detailMsgs.join('; ');
+          }
+        }
+
+        if (typeof errObj.message === 'string' && errObj.message.trim()) {
+          return errObj.message.trim();
+        }
+      }
+
+      // Case B: NestJS default validation pipe: { statusCode: 400, message: string | string[], error: string }
+      if (Array.isArray(p.message) && p.message.length > 0) {
+        const msgs = p.message.map((m) => {
+          if (typeof m === 'string') return m;
+          if (typeof m === 'object' && m !== null) {
+            return (m as any).message || JSON.stringify(m);
+          }
+          return String(m);
+        });
+        return msgs.join('; ');
+      }
+
+      if (typeof p.message === 'string' && p.message.trim()) {
+        return p.message.trim();
+      }
+
+      // Case C: Array of errors: { errors: [...] }
+      if (Array.isArray(p.errors) && p.errors.length > 0) {
+        const msgs = p.errors.map((e) => {
+          if (typeof e === 'string') return e;
+          if (typeof e === 'object' && e !== null) {
+            return (e as any).message || (e as any).detail || JSON.stringify(e);
+          }
+          return String(e);
+        });
+        return msgs.join('; ');
+      }
+
+      // Case D: Direct detail or description (Postgres or RFC 7807 problem details)
+      if (typeof p.detail === 'string' && p.detail.trim()) {
+        return p.detail.trim();
+      }
+      if (typeof p.description === 'string' && p.description.trim()) {
+        return p.description.trim();
+      }
+
+      // Case E: If error property itself is a string
+      if (typeof p.error === 'string' && p.error.trim()) {
+        return p.error.trim();
+      }
+    }
+
+    // Direct error object's message
+    if (typeof obj.message === 'string' && obj.message.trim()) {
+      return obj.message.trim();
+    }
+  }
+
   return fallback;
 }
 

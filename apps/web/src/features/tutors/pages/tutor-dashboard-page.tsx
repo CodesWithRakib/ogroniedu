@@ -343,7 +343,7 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
             </div>
           </div>
           <Button asChild size="sm" variant="outline" className="shrink-0 rounded-xl text-xs">
-            <Link href={withLocale('/support', locale)}>
+            <Link href={withLocale('/contact', locale)}>
               {isBn ? 'সাপোর্টে যোগাযোগ' : 'Contact Support'}
             </Link>
           </Button>
@@ -397,11 +397,10 @@ export function TutorDashboardPage({ locale }: { locale: Locale }) {
             </span>
           </div>
           <Link
-            href={withLocale(`/tutors/${user?.id}`, locale)}
-            target="_blank"
+            href={withLocale('/dashboard/tutor/profile', locale)}
             className="text-xs font-semibold text-primary hover:underline flex items-center gap-1"
           >
-            <span>{isBn ? 'পাবলিক প্রোফাইল দেখুন' : 'View Public Profile'}</span>
+            <span>{isBn ? 'প্রোফাইল সেটিংস দেখুন' : 'View Profile Details'}</span>
             <ExternalLink className="h-3 w-3" />
           </Link>
         </div>
